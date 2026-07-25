@@ -1,0 +1,185 @@
+#!/usr/bin/env python3
+"""Validate the deterministic engineering-workspace contract."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+
+REQUIRED_PATHS = (
+    ".github/dependabot.yml",
+    ".github/workflows/ci.yml",
+    ".clang-format",
+    ".clang-tidy",
+    ".editorconfig",
+    ".gitignore",
+    "ARCHITECTURE.md",
+    "CMakeLists.txt",
+    "CMakePresets.json",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "README.md",
+    "ROADMAP.md",
+    "cmake/CCAProjectOptions.cmake",
+    "cmake/CCATesting.cmake",
+    "cmake/CCAVersion.cmake",
+    "docs/ambiguity-register.md",
+    "docs/build-instructions.md",
+    "docs/coding-standards.md",
+    "docs/compiler-modules.md",
+    "docs/developer-setup.md",
+    "docs/repository-overview.md",
+    "repositories/cca-core/CMakeLists.txt",
+    "repositories/cca-compiler/CMakeLists.txt",
+    "scripts/bootstrap.ps1",
+    "scripts/bootstrap.sh",
+    "scripts/build.ps1",
+    "scripts/build.sh",
+    "scripts/coverage.ps1",
+    "scripts/coverage.sh",
+    "scripts/format.ps1",
+    "scripts/format.sh",
+    "specification/README.md",
+    "tests/CMakeLists.txt",
+    "tools/run_clang_format.py",
+    "tools/vcpkg-commit.txt",
+    "tools/vcpkg-version.txt",
+    "vcpkg-configuration.json",
+    "vcpkg.json",
+)
+
+DEFERRED_REPOSITORIES = (
+    "memoryos",
+    "cca-studio",
+    "cca-sdk",
+    "cca-conformance",
+    "cca-atlas",
+)
+
+REQUIRED_PRESETS = {
+    "default",
+    "minimal",
+    "release",
+    "analysis",
+    "coverage",
+    "sanitizer",
+    "ci",
+}
+
+COMPILER_MODULES = (
+    ("analyzer", "analyzer"),
+    ("artifact_generator", "artifact-generator"),
+    ("cli", "cli"),
+    ("configuration", "configuration"),
+    ("conformance_generator", "conformance-generator"),
+    ("diagnostics", "diagnostics"),
+    ("documentation_generator", "documentation-generator"),
+    ("logging", "logging"),
+    ("package_generator", "package-generator"),
+    ("parser", "parser"),
+    ("validator", "validator"),
+)
+
+
+def parse_arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", type=Path, required=True, help="CCA workspace root")
+    return parser.parse_args()
+
+
+def load_json(path: Path) -> dict[str, object]:
+    with path.open(encoding="utf-8") as stream:
+        value = json.load(stream)
+    if not isinstance(value, dict):
+        raise ValueError(f"{path} must contain a JSON object")
+    return value
+
+
+def validate(root: Path) -> list[str]:
+    errors: list[str] = []
+
+    for relative_path in REQUIRED_PATHS:
+        if not (root / relative_path).is_file():
+            errors.append(f"missing required file: {relative_path}")
+
+    for repository in DEFERRED_REPOSITORIES:
+        directory = root / "repositories" / repository
+        if not directory.is_dir():
+            errors.append(f"missing deferred repository: repositories/{repository}")
+            continue
+        actual_files = {
+            path.relative_to(directory).as_posix()
+            for path in directory.rglob("*")
+            if path.is_file()
+        }
+        unexpected_files = actual_files - {"CMakeLists.txt", "README.md"}
+        if unexpected_files:
+            errors.append(
+                f"deferred repository {repository} contains implementation files: "
+                + ", ".join(sorted(unexpected_files))
+            )
+
+    compiler_root = root / "repositories" / "cca-compiler"
+    for module_name, documentation_name in COMPILER_MODULES:
+        module_paths = (
+            compiler_root / "include" / "cca" / "compiler" / f"{module_name}.hpp",
+            compiler_root / "src" / f"{module_name}.cpp",
+            compiler_root / "tests" / f"{module_name}_test.cpp",
+            compiler_root / "docs" / "modules" / f"{documentation_name}.md",
+        )
+        for module_path in module_paths:
+            if not module_path.is_file():
+                errors.append(
+                    "compiler module is incomplete: "
+                    + module_path.relative_to(root).as_posix()
+                )
+
+    try:
+        presets = load_json(root / "CMakePresets.json")
+        configure_presets = presets.get("configurePresets", [])
+        preset_names = {
+            item.get("name")
+            for item in configure_presets
+            if isinstance(item, dict) and isinstance(item.get("name"), str)
+        }
+        missing_presets = REQUIRED_PRESETS - preset_names
+        if missing_presets:
+            errors.append("missing configure presets: " + ", ".join(sorted(missing_presets)))
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid CMakePresets.json: {exception}")
+
+    try:
+        manifest = load_json(root / "vcpkg.json")
+        pinned_commit = (root / "tools" / "vcpkg-commit.txt").read_text(
+            encoding="utf-8"
+        ).strip()
+        if manifest.get("builtin-baseline") != pinned_commit:
+            errors.append("vcpkg manifest baseline differs from tools/vcpkg-commit.txt")
+        dependencies = manifest.get("dependencies", [])
+        if "googletest" not in dependencies:
+            errors.append("vcpkg manifest must provide googletest")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid vcpkg configuration: {exception}")
+
+    return errors
+
+
+def main() -> int:
+    arguments = parse_arguments()
+    root = arguments.root.resolve(strict=True)
+    errors = validate(root)
+    if errors:
+        for error in errors:
+            print(f"error: {error}", file=sys.stderr)
+        return 1
+
+    print(f"CCA workspace verification passed: {root}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

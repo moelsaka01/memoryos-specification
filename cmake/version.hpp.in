@@ -1,0 +1,15 @@
+#pragma once
+
+#include <cstdint>
+#include <string_view>
+
+namespace cca::version {
+
+inline constexpr std::uint32_t major = @CCA_VERSION_MAJOR@U;
+inline constexpr std::uint32_t minor = @CCA_VERSION_MINOR@U;
+inline constexpr std::uint32_t patch = @CCA_VERSION_PATCH@U;
+inline constexpr std::string_view prerelease{"@CCA_VERSION_PRERELEASE_VALUE@"};
+inline constexpr std::string_view build_metadata{"@CCA_VERSION_BUILD_METADATA_VALUE@"};
+inline constexpr std::string_view string{"@CCA_VERSION_STRING@"};
+
+}  // namespace cca::version

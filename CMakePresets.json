@@ -1,0 +1,207 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 28,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "installDir": "${sourceDir}/out/install/${presetName}",
+      "cacheVariables": {
+        "CMAKE_CXX_STANDARD": "23",
+        "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+        "CMAKE_CXX_EXTENSIONS": "OFF",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CCA_BUILD_TESTS": "ON",
+        "CCA_WARNINGS_AS_ERRORS": "OFF",
+        "BUILD_TESTING": "ON"
+      }
+    },
+    {
+      "name": "local-vcpkg",
+      "hidden": true,
+      "inherits": "base",
+      "toolchainFile": "${sourceDir}/.cache/vcpkg/scripts/buildsystems/vcpkg.cmake",
+      "cacheVariables": {
+        "VCPKG_MANIFEST_MODE": "ON",
+        "VCPKG_MANIFEST_DIR": "${sourceDir}"
+      }
+    },
+    {
+      "name": "default",
+      "displayName": "CCA developer build",
+      "description": "Debug build with tests and the workspace-managed vcpkg checkout",
+      "inherits": "local-vcpkg",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "minimal",
+      "displayName": "CCA dependency-free configuration",
+      "description": "Configures production targets without vcpkg or tests",
+      "inherits": "base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "BUILD_TESTING": "OFF",
+        "CCA_BUILD_TESTS": "OFF"
+      }
+    },
+    {
+      "name": "release",
+      "displayName": "CCA release build",
+      "inherits": "local-vcpkg",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CCA_ENABLE_IPO": "ON",
+        "CCA_VERSION_PRERELEASE": ""
+      }
+    },
+    {
+      "name": "analysis",
+      "displayName": "CCA clang-tidy build",
+      "inherits": "local-vcpkg",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CCA_ENABLE_CLANG_TIDY": "ON"
+      }
+    },
+    {
+      "name": "coverage",
+      "displayName": "CCA coverage build",
+      "inherits": "local-vcpkg",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CCA_ENABLE_COVERAGE": "ON"
+      }
+    },
+    {
+      "name": "sanitizer",
+      "displayName": "CCA AddressSanitizer and UBSan build",
+      "inherits": "local-vcpkg",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CCA_ENABLE_ADDRESS_SANITIZER": "ON",
+        "CCA_ENABLE_UNDEFINED_SANITIZER": "ON"
+      },
+      "condition": {
+        "type": "notEquals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "ci",
+      "displayName": "CCA continuous-integration build",
+      "inherits": "local-vcpkg",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CCA_WARNINGS_AS_ERRORS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "default",
+      "configurePreset": "default",
+      "jobs": 4
+    },
+    {
+      "name": "minimal",
+      "configurePreset": "minimal",
+      "jobs": 4
+    },
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "jobs": 4
+    },
+    {
+      "name": "analysis",
+      "configurePreset": "analysis",
+      "jobs": 4
+    },
+    {
+      "name": "coverage",
+      "configurePreset": "coverage",
+      "jobs": 4
+    },
+    {
+      "name": "sanitizer",
+      "configurePreset": "sanitizer",
+      "jobs": 4
+    },
+    {
+      "name": "ci",
+      "configurePreset": "ci",
+      "jobs": 4
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "default",
+      "configurePreset": "default",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "analysis",
+      "configurePreset": "analysis",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "coverage",
+      "configurePreset": "coverage",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "sanitizer",
+      "configurePreset": "sanitizer",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "ci",
+      "configurePreset": "ci",
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "noTestsAction": "error"
+      }
+    }
+  ]
+}
