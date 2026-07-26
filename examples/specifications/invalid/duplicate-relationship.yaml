@@ -1,0 +1,47 @@
+$schema: cca://schemas/canonical-specification/1.0
+format_version: 1.0.0
+kind: canonical_specification
+id: fixture.duplicate-relationship
+version: 1.0.0
+metadata: {name: Duplicate relationship}
+categories:
+  - {id: architecture, name: Architecture, annotations: {}, extensions: {}}
+objects:
+  - type: component
+    id: architecture.source
+    version: 1.0.0
+    category: architecture
+    metadata: {name: Source}
+    contracts: []
+    requirements: []
+    properties: {}
+    annotations: {}
+    extensions: {}
+  - type: contract
+    id: architecture.target
+    version: 1.0.0
+    category: architecture
+    metadata: {name: Target}
+    properties: {}
+    annotations: {}
+    extensions: {}
+relationships:
+  - id: relationship.first
+    type: implements
+    source: architecture.source
+    target: architecture.target
+    metadata: {name: First edge}
+    annotations: {}
+    extensions: {}
+  - id: relationship.second
+    type: implements
+    source: architecture.source
+    target: architecture.target
+    metadata: {name: Duplicate edge}
+    annotations: {}
+    extensions: {}
+dependencies: []
+validation_rules: []
+artifacts: []
+annotations: {}
+extensions: {}

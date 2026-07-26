@@ -8,7 +8,7 @@ the caller owns the stream and must keep it alive.
 calls. Other `ILogger` implementations define their own synchronization.
 
 Records intentionally contain no wall-clock time, thread identifier, or process
-identifier so placeholder behavior remains reproducible. Logging policy,
+identifier so output remains reproducible. Logging policy,
 filtering, and structured serialization remain deferred.
 
 ```cpp
@@ -26,5 +26,5 @@ std::shared_ptr<cca::compiler::ILogger> logger =
 logger->log({cca::compiler::LogLevel::info, "compiler", "ready"});
 ```
 
-Implementation: `src/logging.cpp`. Test placeholder:
+Implementation: `src/logging.cpp`. Tests:
 `tests/logging_test.cpp`.

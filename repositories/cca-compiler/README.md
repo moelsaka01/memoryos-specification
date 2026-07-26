@@ -1,10 +1,23 @@
-# CCA Compiler
+# CCA Standards Compiler
 
-`cca-compiler` is the C++23 framework for the reference Cognitive Computing
-Architecture compiler. This foundation release defines module boundaries,
-dependency-injection seams, deterministic diagnostics, and the `cca` command
-line interface. It deliberately contains no parsing, compilation, generation,
-AI, reasoning, persistence, networking, or plugin behavior.
+`cca-compiler` is the C++23 implementation of the architecture-neutral
+Canonical Specification 1.0 compiler. It loads UTF-8 YAML, parses to a
+format-independent tree, validates schema and semantics, analyzes references,
+resolves dependencies, builds a typed model, and generates deterministic
+documentation and reports.
+
+The executable supports:
+
+```text
+cca validate specification.yaml
+cca analyze specification.yaml
+cca compile specification.yaml [--output directory]
+cca report specification.yaml [--output directory]
+```
+
+Compiler commands emit deterministic JSON. A successful compile or report
+writes the seven-file IS-002 bundle documented in
+[the generator contract](../../docs/generators.md).
 
 ## Build
 
@@ -16,26 +29,20 @@ cmake --build --preset default
 ctest --preset default
 ```
 
-The repository can also be configured independently:
+The repository can also be configured independently when `yaml-cpp` and,
+for tests, GoogleTest are discoverable:
 
 ```sh
-cmake -S . -B build -DBUILD_TESTING=ON
+cmake -S repositories/cca-compiler -B build
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-When included by the workspace, the repository consumes
-`cca_configure_target()` and `cca_add_google_test()`. The independent build
-uses an already installed GoogleTest package when one is available.
+Public headers are under `include/cca/compiler`. Module contracts and examples
+are under [docs](docs/architecture.md). The canonical format, pipeline,
+validation, CLI, and limitations are documented in the workspace
+[documentation index](../../docs/README.md).
 
-## Modules
-
-Public headers are under `include/cca/compiler`. Per-module contracts and
-examples are under `docs/modules`.
-
-All pipeline operations return either `StatusCode::invalid_argument` for an
-empty required path or `StatusCode::not_implemented` for a well-formed
-request. This behavior is intentional and is covered by tests.
-
-See [docs/architecture.md](docs/architecture.md) for dependency direction and
-the boundaries reserved for later milestones.
+IS-002 does not implement runtime execution, MemoryOS, cognition, AI,
+persistence, plugins, networking, conformance certification, packaging, or
+production code generation.

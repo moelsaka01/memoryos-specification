@@ -10,26 +10,28 @@ Status meanings:
 - **Open**: foundation work can continue, but affected contracts must remain
   provisional or absent.
 - **Deferred**: explicitly outside the milestone; no implementation is allowed.
+- **Resolved for IS-002**: the increment records a scoped decision; broader
+  future behavior may still require a new decision.
 
 ## Register
 
 | ID | Status | Ambiguity | Required decision or evidence |
 |---|---|---|---|
 | CCA-A001 | Blocker | No project license, copyright holder, or inbound contribution terms are specified. | Authorized owner selects terms and records repository/documentation/artifact coverage before distribution or external contribution intake. |
-| CCA-A002 | Blocker for compiler logic | The authoritative CCA specification, its owner, version, and change process are not provided. | Identify the normative specification and establish versioning and approval authority before language or semantic behavior is implemented. |
+| CCA-A002 | Resolved for IS-002 | Canonical source authority and version were previously absent. | Canonical Specification 1.0 schema and architecture are the approved IS-002 contracts; broader CCA semantic governance remains future work. |
 | CCA-A003 | Open | The directories are described as independent repositories, but the long-term topology is not defined. | Decide monorepo, superproject/submodules, or another integration model, including atomic change policy. |
 | CCA-A004 | Open | Public API, ABI, and source-compatibility guarantees are not defined. | Select compatibility scope, supported consumers, deprecation policy, visibility, and versioning rules before promising stability. |
-| CCA-A005 | Blocker for compiler logic | Compiler stage ordering, orchestration, intermediate representations, and failure propagation are unspecified. | Approve data contracts and control flow before one module calls another. |
-| CCA-A006 | Blocker for generators | Artifact, documentation, conformance, and package formats and ownership are unspecified. | Approve schemas, normalization, versioning, and normative status before generators emit real outputs. |
-| CCA-A007 | Open | Long-term diagnostic identifiers, source locations, serialization, localization, and stability are unspecified. | Define the diagnostic compatibility contract before consumers persist or compare diagnostics. |
+| CCA-A005 | Resolved for IS-002 | Pipeline ordering and failure propagation were previously unspecified. | The architecture fixes Load through Generate Reports with typed stage results and error blocking. |
+| CCA-A006 | Resolved for IS-002 | Initial documentation/report outputs were previously unspecified. | The fixed seven-file bundle is approved; conformance, packages, and production code remain excluded. |
+| CCA-A007 | Resolved for IS-002 | Diagnostic structure and ordering were previously unspecified. | IS-002 fixes identifier, code, severity, message, suggestion, location, category, and deterministic order. |
 | CCA-A008 | Open | Durable configuration format, schema, precedence, environment mapping, and compatibility are unspecified. | Approve configuration sources and precedence before file/environment loading is added. |
 | CCA-A009 | Open | Dependency approval, pinning, update cadence, provenance, and license review policy are unspecified. | Adopt a supply-chain policy and approved dependency process. |
 | CCA-A010 | Blocker for public community operation | Conduct contact, private reporting channel, enforcement authority, and appeal process are unspecified. | Project governance names responsible roles and a private channel before opening public participation. |
 | CCA-A011 | Open | Cross-repository versioning and release coordination are unspecified. | Decide independent versus synchronized versions, compatibility matrix ownership, and release evidence. |
 | CCA-A012 | Open | Supported compilers, minimum CMake/vcpkg revisions, and platform support windows are not fixed. | Publish and test a support matrix before making compatibility commitments. |
-| CCA-A013 | Open | Coverage thresholds, warning policy, analyzer baseline, and required versus advisory CI checks are unspecified. | Establish measurable quality gates and exception handling. |
-| CCA-A014 | Open | CLI spelling was requested only as commands "similar to" the examples; output text and exit-code compatibility are not normative. | Approve CLI grammar, stdout/stderr rules, exit codes, and stability policy before treating placeholders as a public protocol. |
-| CCA-A015 | Open | Deterministic output requirements do not yet define paths, locale, timestamps, ordering, environment capture, or reproducible-build evidence. | Define normalized inputs and reproducibility rules before artifact generation. |
+| CCA-A013 | Resolved for IS-002 | The compiler quality threshold was previously unspecified. | CI enforces warnings-as-errors, format/static-analysis checks, and at least 90% line coverage; exception governance remains future work. |
+| CCA-A014 | Resolved for IS-002 | Compiler command grammar and output were previously provisional. | `validate`, `analyze`, `compile`, and `report`, JSON stream rules, options, and exit statuses are documented in `docs/cli.md`. |
+| CCA-A015 | Resolved for IS-002 | Output normalization was previously unspecified. | IS-002 fixes lexical ordering, JSON member order, generic displayed paths, and exclusion of clock, locale, randomness, host, and network state. |
 | CCA-A016 | Deferred | Security, privacy, threat, and trust models for future domain behavior are unspecified. | Perform dedicated architecture work before MemoryOS, AI, database, plugin, or network implementation. |
 | CCA-A017 | Deferred | Plugin and network architectures are unspecified and explicitly excluded. | No decision is needed in this milestone; future work requires an approved architecture. |
 | CCA-A018 | Deferred | MemoryOS boundaries and behavior are unspecified and explicitly excluded. | Do not implement MemoryOS in this or the recommended next milestone. |

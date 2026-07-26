@@ -1,21 +1,21 @@
 # Artifact Generator
 
-`ArtifactGenerator` reserves the boundary for future compiled artifacts.
-`ArtifactGenerationRequest::source` names an input and
-`output_directory` names the intended destination. Artifact schemas and writes
-are not part of this milestone.
-
-Both paths are required. An incomplete request returns `invalid_argument`; a
-complete request emits `CCA-ARTIFACT-900` and returns `not_implemented`.
-Neither path is inspected or created.
-Concurrent calls require thread-safe injected dependencies.
+`ArtifactGenerator::generate()` receives a validated `Specification`, the
+accumulated validation result, and an explicit output directory.
 
 ```cpp
 #include <cca/compiler/artifact_generator.hpp>
 
 const cca::compiler::ArtifactGenerator generator;
-const auto result = generator.generate({"model.cca", "cca-out"});
+const auto result =
+    generator.generate(specification, validation, "cca-out");
 ```
 
-Implementation: `src/artifact_generator.cpp`. Test placeholder:
-`tests/artifact_generator_test.cpp`.
+It writes the fixed IS-002 documentation index, dependency graph,
+specification report, validation report, object inventory, architecture
+summary, and generated-code placeholder README. Returned file paths identify
+successful outputs.
+
+Generation is deterministic and performs no source parsing, dependency lookup,
+network access, package creation, or production code generation. An I/O failure
+returns an artifact diagnostic and no successful file list.

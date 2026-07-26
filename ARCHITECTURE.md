@@ -1,27 +1,19 @@
 # CCA reference implementation architecture
 
-## 1. Authority and interpretation
+## 1. Authority
 
-This document is the authoritative architecture record for the CCA reference
-implementation workspace. Source code, build files, tests, examples, and other
-documentation must conform to it and must not create architecture by accident.
+This document is the authoritative implementation architecture for the CCA
+reference workspace. The
+[Canonical Specification 1.0 schema](specification/schema/canonical-specification-1.0.schema.json)
+is the authoritative data-shape contract consumed by the IS-002 compiler.
 
-This architecture records only requirements established for the engineering
-foundation. It does not define the Cognitive Computing Architecture
-specification itself. A class name, source layout, placeholder return value, or
-test seam must never be interpreted as a CCA semantic rule.
+Source, tests, examples, generated reports, and supporting documentation must
+conform to both records. When a requirement is not decided, implementation
+stops at the documented boundary and the question is recorded in the
+[ambiguity register](docs/ambiguity-register.md).
 
-When this document does not decide an architectural question:
-
-1. implementation stops at an interface or placeholder boundary;
-2. the question is recorded in
-   [docs/ambiguity-register.md](docs/ambiguity-register.md);
-3. an authorized architecture decision is required before dependent behavior
-   is implemented;
-4. this document and affected contracts are updated before code relies on that
-   decision.
-
-Supporting documents may explain this architecture but cannot override it.
+The IM-001 engineering foundation remains valid, but its placeholder-only
+compiler restriction is superseded by this approved IS-002 vertical slice.
 
 ## 2. Architectural priorities
 
@@ -35,197 +27,186 @@ Decisions are evaluated in this order:
 6. documentation;
 7. performance after correctness.
 
-These priorities prohibit optimizing an unspecified compiler design or
-introducing convenient dependencies that pre-empt an architectural decision.
+Public C++ uses C++23, RAII, strong value types, const correctness, explicit
+dependency injection, header/source separation, and composition. Raw pointers
+never own resources. Mutable global state is prohibited.
 
-## 3. Foundation milestone boundary
+## 3. IS-002 scope
 
-The current milestone creates:
+IS-002 implements:
 
-- the multi-repository workspace structure;
-- cross-platform CMake and dependency-management foundations;
-- shared configuration, logging, utility, testing, and versioning foundations;
-- a C++23 compiler framework made of public seams and private
-  implementations;
-- CLI command placeholders;
-- quality-tooling and test integration;
-- documentation and usage examples appropriate to placeholder behavior.
+- a human- and machine-readable canonical YAML format;
+- a checked Draft 2020-12 JSON Schema for the equivalent data model;
+- source loading and YAML parsing with source locations;
+- schema and semantic validation;
+- stable, structured diagnostics;
+- deterministic analysis and dependency resolution;
+- a typed internal model;
+- an ordered compiler pipeline;
+- deterministic Markdown, Mermaid, and JSON artifacts;
+- `validate`, `analyze`, `compile`, and `report` CLI operations;
+- examples, invalid fixtures, tests, and a 90% line-coverage target.
 
-The current milestone does not create:
-
-- MemoryOS behavior;
-- AI, reasoning, or LLM behavior;
-- databases or persistence services;
-- plugin loading or extension systems;
-- network protocols, clients, or servers;
-- a source language grammar, parser semantics, semantic model, intermediate
-  representation, artifact format, package format, or conformance rules;
-- a production compiler pipeline.
-
-These are hard boundaries. They are not optional stretch goals.
+It does not implement a runtime or computational model.
 
 ## 4. Workspace and repository boundaries
 
-The workspace is an integration and governance boundary. It hosts shared build
-configuration, quality policy, documentation, examples, scripts, and the
-repository directories.
+The workspace owns integration, governance, shared build policy, schema,
+examples, and cross-repository validation.
 
 ### `cca-core`
 
-`cca-core` owns generally reusable engineering-foundation facilities required
-by CCA components, including common utilities, logging, configuration,
-versioning, and common testing seams. It must not contain compiler semantics or
-become a catch-all for undefined domain concepts.
+`cca-core` owns generally reusable engineering facilities: logging,
+configuration, string utilities, version information, and test support. It
+does not own canonical compiler types or domain semantics.
 
 ### `cca-compiler`
 
-`cca-compiler` owns the compiler-facing public interfaces, private skeleton
-implementations, diagnostic contracts, configuration facade, logging adapter
-seams, CLI dispatch, and module-level tests and examples. It may consume the
-shared foundation but must not push compiler-specific concepts into
-`cca-core`.
+`cca-compiler` owns source loading, parsing, validation, analysis, dependency
+resolution, model construction, generation, serialization, CLI composition,
+compiler diagnostics, and compiler-specific logging/configuration seams.
+
+The compiler may depend on `cca-core`. `cca-core` must not depend on compiler
+interfaces.
 
 ### Reserved repositories
 
-`memoryos`, `cca-studio`, `cca-sdk`, `cca-conformance`, and `cca-atlas` are
-reserved repository boundaries. Their presence in the workspace communicates
-the intended ecosystem map only. No behavior or dependency relationship is
-authorized for them in this milestone.
+`memoryos`, `cca-studio`, `cca-sdk`, `cca-conformance`, and `cca-atlas` remain
+reserved. They have no authorized implementation or dependency edges in
+IS-002.
 
-Whether the workspace remains a monorepo, becomes a superproject, or maps these
-directories to independent version-control repositories is unresolved.
+## 5. Canonical specification
 
-## 5. Dependency and control boundaries
+Canonical source is one UTF-8 YAML document equivalent to the JSON data model
+defined in [the schema](specification/schema/canonical-specification-1.0.schema.json).
+Every document is self-describing through:
 
-The only dependency direction authorized by this milestone is that the compiler
-framework may use the shared engineering foundation. The shared foundation
-must not depend on compiler-specific interfaces.
+- `$schema`: `cca://schemas/canonical-specification/1.0`;
+- `format_version`: compatible semantic version in major line 1;
+- `kind`: `canonical_specification`;
+- its own stable `id` and content `version`.
 
-No required ordering among parser, validator, analyzer, or generator modules is
-defined. Their names do not authorize a pipeline. Orchestration, data passed
-between stages, concurrency, caching, incremental processing, and failure
-propagation remain unresolved.
+The root inventories metadata, categories, typed objects, relationships,
+dependencies, validation rules, artifact requests, annotations, and
+extensions. Core records reject unknown fields. Architecture-neutral
+type-specific payload belongs in object `properties`; vendor custom data
+belongs only in explicit extension maps. Neither becomes executable behavior.
 
-Dependencies on concrete loggers, diagnostic sinks, filesystems, clocks,
-process state, or environment state should be placed behind explicit seams
-where appropriate. Avoid global mutable state. A dependency-injection
-framework is not authorized or required.
+Objects use the types Package, Domain, Component, Contract, and Requirement.
+These are architectural records, not runtime instances. The full contract is
+in [the canonical-format reference](specification/canonical-format.md).
 
-## 6. Compiler framework boundaries
+## 6. Compiler control flow
 
-The compiler framework contains these named modules:
+The authorized pipeline is:
 
-- Parser
-- Validator
-- Analyzer
-- Artifact Generator
-- Documentation Generator
-- Conformance Generator
-- Package Generator
-- CLI
-- Configuration
-- Logging
-- Diagnostics
+```text
+Load -> Parse -> Validate -> Analyze -> Resolve Dependencies
+     -> Build Internal Model -> Generate Artifacts -> Generate Reports
+```
 
-Each processing or generation module exposes one public operation appropriate
-to its name and hides implementation detail behind source-file boundaries.
-During this milestone, requests can be checked only for basic structural
-validity needed to exercise the interface. A structurally acceptable request
-must still report that the domain operation is not implemented.
+Each stage has one responsibility and receives explicit typed input. Errors
+block dependent stages; warnings and notes accumulate. The final result records
+completed stages, diagnostics, optional analysis/model values, and generated
+files.
 
-The CLI recognizes placeholder command surfaces for `compile`, `validate`,
-`generate`, `doctor`, `version`, and `help`. A successful help, version, or
-foundation-health response does not imply compilation capability. Compiler
-commands must not report domain success while their underlying behavior is a
-placeholder.
+`ISourceLoader` isolates filesystem input and permits deterministic in-memory
+tests. `CanonicalValue` isolates YAML syntax from validation and model types.
+`CompilerPipeline` is the orchestrator. `CompilerCommandService` adapts it to
+the CLI command boundary. The executable is the composition root.
 
-Detailed public names and current placeholder behavior are recorded in
-[docs/compiler-modules.md](docs/compiler-modules.md). That document must be
-kept consistent with the implemented headers, but it cannot add compiler
-semantics.
+[Pipeline documentation](docs/pipeline.md) defines mode and failure behavior.
 
-## 7. Diagnostics, logging, and configuration
+## 7. Internal model
 
-Diagnostics communicate structured operation status at public compiler seams.
-The foundation distinguishes invalid requests from operations unavailable
-because their semantics are not implemented. The exact long-term error model,
-diagnostic code taxonomy, source-location model, localization policy, and
-serialization format are unresolved.
+The aggregate root is `Specification`. It composes Metadata, Version,
+Category, Package, Domain, Component, Contract, Requirement, Relationship,
+Dependency, ValidationRule, ArtifactRequest, and ValidationResult values.
 
-Logging is an operational observability boundary, not a substitute for a
-public diagnostic result. The compiler offers a no-op logger for deterministic
-embedding and a stream-oriented implementation for basic integration. Global
-logger registration is not part of the architecture.
+`Identifier` and `Version` prevent unvalidated primitive strings at model
+boundaries. Object kinds use composition through a common header rather than a
+behavioral inheritance hierarchy. Ordered collections preserve deterministic
+output. The model owns data and contains no filesystem, network, persistence,
+plugin, or runtime handles.
 
-Compiler configuration has an explicit default construction path and a
-validation seam. The durable configuration file format, precedence rules,
-environment-variable mapping, schema, and compatibility guarantees are
-unresolved.
+See [internal model](docs/internal-model.md).
 
-## 8. Public interface quality contract
+## 8. Validation and diagnostics
 
-Every public class must document:
+The compiler enforces:
 
-- responsibility and non-responsibilities;
-- ownership and lifetime expectations;
-- input preconditions and output meaning;
-- errors or status results;
-- observable side effects;
-- determinism;
-- thread-safety status;
-- current milestone limitations.
+- schema identity, format major, required fields, shapes, and closed records;
+- identifier, metadata, enum, and semantic-version rules;
+- unique identifiers;
+- known object types;
+- category and object reference resolution;
+- unique relationship identities and edge triples;
+- dependency endpoints, constraints, and acyclic ordering;
+- supported artifact types and safe relative output paths.
 
-Every public class also requires a unit-test placeholder or implemented
-interface-level test and an example usage location. Placeholders must be named
-and described honestly; they must not assert future semantics.
+Every diagnostic contains stable identifier, code, severity, message,
+suggestion, 1-based source location, and category. Diagnostics sort by path,
+line, column, code, and message. Logs are operational observation and never
+replace a public diagnostic result.
 
-Public C++ interfaces use C++23, RAII, strong typing, const correctness,
-namespaces, and header/source separation. Raw pointers are never owning.
-`std::unique_ptr` represents sole ownership; `std::shared_ptr` is used only for
-real shared ownership. Macros are limited to include guards or `#pragma once`.
+Declared custom rule expressions are preserved but not evaluated in IS-002.
+See [validation and diagnostics](docs/validation.md).
 
-The conceptual checklist and class-by-class expectations are in
-[docs/public-api-contract.md](docs/public-api-contract.md).
+## 9. Generation
 
-## 9. Determinism and state
+Only a valid typed model reaches generation. The fixed output bundle is:
 
-Given equivalent explicit inputs and dependencies, placeholder operations must
-produce equivalent status and diagnostic outcomes. The foundation must not
-silently depend on wall-clock time, randomness, network state, mutable global
-state, or unspecified iteration order.
+- `documentation-index.md`;
+- `dependency-graph.mmd`;
+- `specification-report.json`;
+- `validation-report.json`;
+- `object-inventory.json`;
+- `architecture-summary.md`;
+- `generated/README.md`.
 
-This statement does not decide the future compiler's reproducible-build model,
-artifact normalization rules, path normalization, locale behavior, or
-concurrency model. Those require architecture decisions before compilation
-logic is implemented.
+Outputs contain no timestamp, randomness, host identity, network data, or
+machine-specific absolute path. The generated README is the sole
+code-generation placeholder; no production source is emitted.
 
-## 10. Platform and tool boundaries
+See [generator contracts](docs/generators.md).
 
-The engineering foundation targets Windows, Linux, and macOS. C++23 is the
-primary implementation language. Python 3.12 or newer may support engineering
-tools. TypeScript and React are reserved for future frontend work, and Qt is a
-future possibility. Java is excluded.
+## 10. Determinism and environmental state
 
-CMake, vcpkg integration, clang-format, clang-tidy, CTest, GoogleTest, continuous
-integration, coverage integration, and static analysis form the quality
-foundation. A configured tool is not evidence that a particular run passes on
-every supported platform.
+Equivalent explicit input, compiler version, and output option produce
+equivalent diagnostics and artifact bytes. Externally visible collections are
+sorted, JSON member order is fixed, paths use documented display
+normalization, and ASCII/semantic-version rules avoid locale dependence.
 
-## 11. Architectural unknowns
+Compiler semantics do not consult the network, clock, random source, current
+environment variables, or mutable process-global registry. Concurrent writes
+to one output directory require external synchronization.
 
-The following decisions are deliberately not made here:
+## 11. Public interface and quality contract
 
-- the CCA specification, syntax, semantics, and versioning authority;
-- compiler stage ordering and intermediate representations;
-- artifact, documentation, conformance, and package formats;
-- error-code stability and diagnostic serialization;
-- configuration formats and precedence;
-- ABI, API compatibility, package naming, and distribution policy;
-- repository topology and cross-repository release coordination;
-- dependency approval and supply-chain policy;
-- plugin and network architecture;
-- security, threat, privacy, and trust models for future domain behavior;
-- project license and contribution terms.
+Public classes document responsibility, ownership, preconditions, results,
+side effects, determinism, thread safety, and limitations. Tests target public
+behavior and injected seams. The workspace quality gate targets at least 90%
+line coverage for compiler production sources, in addition to formatting,
+static analysis, unit, integration, CLI, fixture, install/export, and
+cross-platform checks.
 
-The complete register, including blockers and decision evidence required, is in
-[docs/ambiguity-register.md](docs/ambiguity-register.md).
+This source contract does not promise a frozen C++ ABI. Format compatibility
+and diagnostic identities are the durable integration surfaces in IS-002.
+
+## 12. Hard exclusions
+
+IS-002 contains no MemoryOS, runtime execution, cognition, reasoning, AI, LLM,
+database, persistence, plugin system, networking, Studio, SDK, package manager,
+conformance certification engine, or generated production code.
+
+Names, categories, reserved directories, and interfaces do not authorize
+those features. Crossing one of these boundaries requires a separately
+approved architecture.
+
+## 13. Remaining decisions
+
+Licensing, public contribution governance, long-term repository topology,
+release coordination, dependency supply-chain policy, frozen API/ABI policy,
+custom-rule execution, transactional output, and future subsystem
+architectures remain unresolved or deferred. The
+[ambiguity register](docs/ambiguity-register.md) tracks their status.

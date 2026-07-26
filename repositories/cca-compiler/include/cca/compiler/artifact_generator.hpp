@@ -1,31 +1,25 @@
 #pragma once
 
 #include <filesystem>
-#include <memory>
+#include <vector>
 
 #include "cca/compiler/diagnostics.hpp"
-#include "cca/compiler/logging.hpp"
+#include "cca/compiler/internal_model.hpp"
 
 namespace cca::compiler {
 
-/// Input accepted by the artifact-generation boundary.
-struct ArtifactGenerationRequest final {
-    std::filesystem::path source;
-    std::filesystem::path output_directory;
+/// Outcome of writing the deterministic IS-002 artifact bundle.
+struct GenerationResult final {
+    ValidationResult validation;
+    std::vector<std::filesystem::path> files;
 };
 
-/// Artifact generator boundary. Artifact formats are intentionally deferred.
+/// Writes architecture-neutral reports from the typed canonical model.
 class ArtifactGenerator final {
   public:
-    ArtifactGenerator();
-    ArtifactGenerator(std::shared_ptr<ILogger> logger,
-                      std::shared_ptr<IDiagnosticSink> diagnostics);
-
-    [[nodiscard]] Status generate(const ArtifactGenerationRequest& request) const;
-
-  private:
-    std::shared_ptr<ILogger> logger_;
-    std::shared_ptr<IDiagnosticSink> diagnostics_;
+    [[nodiscard]] GenerationResult generate(const Specification& specification,
+                                            const ValidationResult& validation,
+                                            const std::filesystem::path& output_directory) const;
 };
 
 } // namespace cca::compiler

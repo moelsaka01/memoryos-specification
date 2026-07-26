@@ -25,8 +25,7 @@ Status PackageGenerator::generate(const PackageGenerationRequest& request) const
         return status;
     }
 
-    auto status =
-        Status::not_implemented("package generation is not implemented in the foundation release");
+    auto status = Status::not_implemented("package generation is outside the IS-002 scope");
     diagnostics_->report({DiagnosticSeverity::note, "CCA-PACKAGE-900", status.message()});
     logger_->log({LogLevel::info, "package-generator", status.message()});
     return status;

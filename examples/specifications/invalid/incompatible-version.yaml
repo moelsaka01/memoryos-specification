@@ -1,0 +1,41 @@
+$schema: cca://schemas/canonical-specification/1.0
+format_version: 1.0.0
+kind: canonical_specification
+id: fixture.incompatible-version
+version: 1.0.0
+metadata: {name: Incompatible version}
+categories:
+  - {id: architecture, name: Architecture, annotations: {}, extensions: {}}
+objects:
+  - type: package
+    id: architecture.foundation
+    version: 1.4.0
+    category: architecture
+    metadata: {name: Foundation}
+    members: []
+    properties: {}
+    annotations: {}
+    extensions: {}
+  - type: package
+    id: architecture.application
+    version: 1.0.0
+    category: architecture
+    metadata: {name: Application}
+    members: []
+    properties: {}
+    annotations: {}
+    extensions: {}
+relationships: []
+dependencies:
+  - id: dependency.application-foundation
+    source: architecture.application
+    target: architecture.foundation
+    version: ~1.3.0
+    optional: false
+    metadata: {name: Foundation dependency}
+    annotations: {}
+    extensions: {}
+validation_rules: []
+artifacts: []
+annotations: {}
+extensions: {}

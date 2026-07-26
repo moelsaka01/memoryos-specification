@@ -1,20 +1,8 @@
-# Conformance Generator
+# Conformance Generator compatibility seam
 
-`ConformanceGenerator` reserves generation of future CCA conformance material.
-`ConformanceGenerationRequest` contains a source path and output directory.
-Suite schemas, runners, and assertions are intentionally undefined.
+`ConformanceGenerator` reserves an IM-001 public boundary. It is not part of
+the IS-002 pipeline and does not create conformance suites, execute tests,
+certify implementations, or define the reserved `cca-conformance` repository.
 
-Both paths must be non-empty. Complete requests emit
-`CCA-CONFORMANCE-900` and return `not_implemented`; incomplete requests return
-`invalid_argument`. The implementation performs no I/O.
-Concurrent calls require thread-safe injected dependencies.
-
-```cpp
-#include <cca/compiler/conformance_generator.hpp>
-
-const cca::compiler::ConformanceGenerator generator;
-const auto result = generator.generate({"model.cca", "conformance-out"});
-```
-
-Implementation: `src/conformance_generator.cpp`. Test placeholder:
-`tests/conformance_generator_test.cpp`.
+A future conformance milestone requires an approved evidence and runner
+architecture.

@@ -28,7 +28,7 @@ Status DocumentationGenerator::generate(const DocumentationGenerationRequest& re
     }
 
     auto status = Status::not_implemented(
-        "documentation generation is not implemented in the foundation release");
+        "the legacy path-only documentation seam is unavailable; use the compiler pipeline");
     diagnostics_->report({DiagnosticSeverity::note, "CCA-DOCUMENTATION-900", status.message()});
     logger_->log({LogLevel::info, "documentation-generator", status.message()});
     return status;

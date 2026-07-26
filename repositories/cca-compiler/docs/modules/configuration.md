@@ -19,5 +19,5 @@ if (!configuration.validate().ok()) {
 }
 ```
 
-Implementation: `src/configuration.cpp`. Test placeholder:
+Implementation: `src/configuration.cpp`. Tests:
 `tests/configuration_test.cpp`.

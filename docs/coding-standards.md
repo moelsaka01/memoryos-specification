@@ -25,7 +25,8 @@ support beyond verified configurations.
 
 - Treat [../ARCHITECTURE.md](../ARCHITECTURE.md) as authoritative.
 - Keep shared foundation concepts independent of compiler-specific concepts.
-- Do not infer a compiler pipeline from module names.
+- Follow the pipeline and stage contracts in [pipeline.md](pipeline.md);
+  do not introduce a second orchestration path.
 - Stop and record an ambiguity before introducing a new public data model,
   dependency direction, format, or compatibility promise.
 - Do not implement MemoryOS, AI, reasoning, LLM, database, plugin, or network
@@ -90,14 +91,15 @@ Every public class must satisfy
 - Give callers structured diagnostics when they need actionable detail.
 - Use logging for operational observation, not as the only error result.
 - Never report success for unimplemented compiler behavior.
-- Do not make exact placeholder message prose a compatibility contract.
+- Do not make exact diagnostic message prose a compatibility contract; use
+  stable identifiers and codes.
 - Preserve exception safety appropriate to owned resources. Do not add a
   blanket exception policy before it is architecturally decided.
 
 ## Determinism
 
 - Equivalent explicit inputs and dependencies must produce equivalent
-  placeholder outcomes.
+  diagnostics, analysis, and artifacts.
 - Avoid dependence on unspecified container iteration order.
 - Sort externally visible collections when ordering is part of the documented
   result.
@@ -137,7 +139,7 @@ Do not use macros except include guards or `#pragma once`.
 ## Documentation
 
 - Use documentation comments on public declarations.
-- State limitations next to placeholder APIs.
+- State implemented behavior and limitations next to public APIs.
 - Update module documentation and examples with public API changes.
 - Use "configured," "implemented," and "verified" precisely.
 - Link to the architecture rather than copying and subtly altering it.
@@ -149,7 +151,7 @@ Do not use macros except include guards or `#pragma once`.
 - Test public behavior and meaningful seams, not private implementation layout.
 - Use temporary paths rather than fixed machine-specific directories.
 - Do not require network access.
-- A placeholder test must state which future contract is absent.
+- Reserved compatibility seams must state which future contract is absent.
 - Do not weaken an assertion merely to accommodate nondeterministic code.
 - Do not claim a test passed unless the run was observed.
 

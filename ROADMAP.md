@@ -1,98 +1,91 @@
 # CCA reference workspace roadmap
 
-This roadmap separates committed milestone boundaries from proposed future
-work. It does not authorize implementation beyond the architecture in
-[ARCHITECTURE.md](ARCHITECTURE.md).
+This roadmap separates implemented increments from proposed work. It does not
+authorize behavior beyond [the architecture](ARCHITECTURE.md).
 
-## Milestone 0: engineering foundation
+## IM-001: engineering foundation
 
-Status: current milestone.
+Status: complete and retained.
 
-Scope:
+Delivered the workspace layout, C++23/CMake/vcpkg foundation, common logging
+and configuration facilities, compiler module seams, test/quality
+infrastructure, and reserved repository boundaries.
 
-- establish the workspace and reserved repository map;
-- establish cross-platform CMake and vcpkg integration;
-- configure formatting, static analysis, tests, CI, and coverage seams;
-- establish shared logging, configuration, utilities, testing, and versioning;
-- create public and private skeletons for all named compiler modules;
-- create placeholder CLI commands;
-- document architecture, repository boundaries, setup, build workflows, coding
-  standards, public interfaces, examples, risks, and ambiguities.
+IM-001 intentionally stopped before compiler semantics. IS-002 supersedes that
+placeholder restriction only for the approved Standards Compiler slice.
 
-Exit evidence should include reviewable source and documentation, platform
-configuration, discoverable tests, and honest placeholder behavior. Merely
-configuring a tool is not the same as demonstrating a successful run, so build,
-test, analysis, coverage, and platform results must be reported separately when
-they are actually executed.
+## IS-002: Canonical Specification and Standards Compiler
 
-Explicit exclusions:
+Status: implemented in this workspace.
 
-- MemoryOS;
-- AI, reasoning, and LLM integration;
-- databases;
-- plugins;
-- networking;
-- compiler language or generation semantics.
+Outcomes:
 
-## Recommended next milestone: specification and contracts
+1. Canonical Specification 1.0 YAML profile and Draft 2020-12 schema.
+2. Self-description, semantic versions, metadata, categories, typed objects,
+   relationships, dependencies, rules, artifacts, annotations, and extensions.
+3. Ordered Load-to-Report pipeline with explicit failure propagation.
+4. Typed syntax and internal-model values.
+5. Duplicate, reference, relationship, dependency, version, type, and metadata
+   validation with structured diagnostics.
+6. Deterministic `validate`, `analyze`, `compile`, and `report` CLI commands.
+7. Documentation index, dependency graph, specification report, validation
+   report, object inventory, architecture summary, and code-placeholder README.
+8. Valid and invalid fixtures, automated tests, and a 90% line-coverage target.
 
-The next milestone should freeze the minimum specification and compatibility
-contracts needed before compiler logic begins. It should not begin MemoryOS.
+IS-002 explicitly excludes all runtime and MemoryOS behavior.
 
-Recommended outcomes:
+## Recommended IS-003: contract hardening and traceability
 
-1. identify the authority and versioning process for the CCA specification;
-2. decide source syntax boundaries and a testable grammar strategy;
-3. define diagnostic identity, severity, source-location, and compatibility
-   rules;
-4. define the data contracts between compiler stages without implementing the
-   full stages;
-5. select artifact, documentation, conformance, and package output contracts;
-6. define configuration schema and precedence;
-7. decide deterministic-build inputs, path handling, locale, and ordering;
-8. decide API/ABI and repository release policies;
-9. resolve licensing, copyright, and contribution governance;
-10. convert approved decisions into architecture records and conformance
-    fixtures.
+IS-003 should deepen the compiler contract rather than expand into another
+subsystem:
 
-The milestone should end with reviewed contracts, golden fixtures, and a
-traceability map from specification statements to planned tests. Only then
-should a narrow vertical compiler slice be proposed.
+1. publish a diagnostic compatibility catalog with golden JSON;
+2. define schema-minor migration and deprecation policy;
+3. decide and govern a custom validation-rule expression language;
+4. trace requirements and source spans through reports;
+5. define atomic output, rollback, and reproducibility manifests;
+6. add fuzzing, malformed-input corpus, scale limits, and performance budgets;
+7. broaden recorded Windows, Linux, and macOS evidence;
+8. adopt dependency provenance, update, and vulnerability policy;
+9. resolve licensing, copyright, contribution, and release governance;
+10. decide API/ABI stability separately from source-format compatibility.
 
-## Possible later milestones
+Exit evidence should include reviewed architecture decisions, golden fixtures,
+migration tests, reproducibility evidence, and an updated threat assessment
+for the compiler input/output boundary.
 
-These are directional proposals, not approved scope:
+## Possible later increments
 
-- implement a minimal parser slice against an approved grammar and fixtures;
-- implement validation and analysis slices against approved semantic contracts;
-- implement one deterministic artifact path with conformance evidence;
-- harden packaging, release, and compatibility workflows;
-- establish SDK and conformance repository work after their boundaries are
-  approved;
-- evaluate studio, atlas, and MemoryOS work only under separately approved
-  architectures.
+These are proposals, not authorization:
 
-AI, reasoning, LLM, database, plugin, and networking work requires explicit
-future architecture. It must not be smuggled into a compiler milestone.
+- package and registry contracts after an offline reproducibility design;
+- a governed conformance evidence format and independent runner;
+- specific code-generation targets after their production contracts exist;
+- SDK bindings after compatibility policy is approved;
+- Studio or Atlas only after their APIs and security boundaries are defined;
+- MemoryOS or any runtime only under a separate architecture.
+
+AI, reasoning, LLM, database, persistence, plugin, networking, and runtime work
+must not be smuggled into a compiler milestone.
 
 ## Principal risks
 
-| Risk | Consequence | Current mitigation |
+| Risk | Consequence | IS-002 mitigation |
 |---|---|---|
-| Skeletons are mistaken for semantics | Consumers depend on accidental behavior | Explicit placeholder statuses, scope labels, and module docs |
-| Code becomes the de facto architecture | Unreviewed dependencies and contracts harden | `ARCHITECTURE.md` is authoritative; ambiguities block assumptions |
-| Compiler stages imply an unapproved pipeline | Data and sequencing choices become costly to reverse | Modules are independent seams; ordering remains unresolved |
-| Reserved repositories attract premature work | Milestone expands into MemoryOS or other systems | Reserved directories are documented as non-implementation boundaries |
-| Cross-platform configuration drifts | Builds differ across Windows, Linux, and macOS | Preset-based workflows and CI matrix foundations |
-| Dependency supply chain is underspecified | Reproducibility, security, or license exposure | vcpkg foundation; approval and pinning policy remains a recorded blocker |
-| Licensing is unresolved | External use and contribution rights are unclear | Pending-decision notice; no license grant is claimed |
-| Quality tooling creates false confidence | Configured checks are described as passing | Documentation separates configuration from observed execution results |
-| Public placeholders become compatibility commitments | Future specification work is constrained by incidental APIs | Compatibility policy remains unresolved; version interfaces deliberately |
-| Diagnostics and logs are conflated | Embedders cannot handle failures deterministically | Structured diagnostics are separate from operational logging |
+| Canonical data is mistaken for runtime behavior | Consumers infer executable semantics | Architecture-neutral model and explicit exclusions |
+| Schema and validator drift | Different tools accept different inputs | Normative checked-in schema, fixtures, and paired tests |
+| Diagnostics become prose protocols | Integrations break on wording changes | Stable identifier/code fields and deterministic JSON |
+| Two dependency representations diverge | Analysis becomes ambiguous | One top-level directed dependency graph |
+| Extension data becomes a plugin escape hatch | Unreviewed executable behavior enters scope | Extensions are preserved data and never executed |
+| Generated outputs vary by host | Diffs and automation become unreliable | Ordered serialization with no time, locale, randomness, or host state |
+| Partial writes look successful | Consumers use incomplete bundles | Generation error diagnostics and explicit generated-file result |
+| Reserved repositories attract premature work | Scope expands into runtime systems | No implementation or dependency edges in reserved repositories |
+| Dependency supply chain is underspecified | Reproducibility or license exposure | Pinned foundation; governance remains an IS-003 decision |
+| Licensing is unresolved | External rights are unclear | Pending-decision notice and no license grant |
 
 ## Roadmap change rule
 
-Moving an item between milestones requires an architecture and scope review.
-The review must identify affected decisions in
-[docs/ambiguity-register.md](docs/ambiguity-register.md), update this roadmap,
-and update `ARCHITECTURE.md` before implementation starts.
+Moving work between increments requires architecture and scope review. The
+review updates [the ambiguity register](docs/ambiguity-register.md), this
+roadmap, architecture, schema/contracts, fixtures, and affected tests before
+implementation relies on the decision.

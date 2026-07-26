@@ -1,57 +1,86 @@
-# Compiler Architecture
+# Standards Compiler architecture
 
-The compiler repository is a dependency-light C++23 boundary layer. It defines
-the eleven modules required by the foundation milestone without selecting a CCA
-source grammar, intermediate representation, validation rule set, artifact
-schema, documentation format, conformance format, or package format.
+`cca-compiler` is a dependency-injected C++23 implementation of the Canonical
+Specification 1.0 vertical slice. It depends on `cca-core` engineering
+utilities and yaml-cpp; it does not depend on any reserved runtime repository.
 
-## Dependency direction
+## Layers
 
-`Parser`, `Validator`, `Analyzer`, and the four generators depend only on the
-logging and diagnostics abstractions. `Cli` depends on `Configuration` and
-writes to caller-owned streams. The executable is the composition root.
-Nothing in this repository performs file I/O, network I/O, persistence, AI,
-reasoning, or plugin discovery.
+```text
+CLI / CompilerCommandService
+              |
+       CompilerPipeline
+              |
+ SourceLoader -> Parser -> Validator -> Analyzer -> DependencyResolver
+                                                |
+                                           ModelBuilder
+                                                |
+                           ArtifactGenerator / Serialization
+```
 
-Logging and diagnostic dependencies use `std::shared_ptr` because a composition
-root may share one sink across several independently owned modules. Null-object
-implementations make the default constructors deterministic without global
-state. Streams passed to `Cli` and `StreamLogger` remain caller-owned and must
-outlive the receiving object.
+- `ISourceLoader` is the environmental input seam.
+- `Parser` converts YAML to source-located `CanonicalValue`.
+- `Validator` enforces the canonical schema profile.
+- `Analyzer` builds symbols and validates identity and references.
+- `DependencyResolver` validates directed edges, version constraints, and
+  cycles.
+- `ModelBuilder` constructs the typed `Specification`.
+- `ArtifactGenerator` and serialization functions derive fixed outputs.
+- `CompilerPipeline` owns ordering and failure propagation.
+- `CompilerCommandService` adapts pipeline results to deterministic CLI JSON.
 
-Processing and generation objects have no mutable module state, but concurrent
-calls are safe only when their injected logger and diagnostic sink are safe for
-concurrent use. `StreamLogger` and `CollectingDiagnosticSink` serialize their
-own state. `Cli` does not synchronize caller-owned streams and requires
-external synchronization. Configuration and status values support concurrent
-read-only access.
+The executable is the composition root. Module code does not use a service
+locator or mutable global registry.
 
-## Foundation behavior
+## Data boundaries
 
-Pipeline requests contain paths only as boundary placeholders. Empty required
-paths return `StatusCode::invalid_argument` (`2`). Well-formed requests emit a
-module-specific note and return `StatusCode::not_implemented` (`69`). These
-calls never inspect the path or create output.
+`SourceDocument` owns the explicit path and UTF-8 bytes. `ParsedDocument` owns
+the YAML-independent syntax tree. `AnalysisSummary` and
+`DependencyResolution` contain deterministic semantic facts.
+`Specification` is the typed model accepted by generators.
+`PipelineResult` owns all caller-visible values for one run.
 
-The numeric statuses, diagnostic identifiers, CLI spelling, and CLI output are
-deterministic values for this foundation release, not a long-term compatibility
-commitment. Their normative compatibility policy remains an architecture
-decision.
+The syntax tree preserves source locations for diagnostics. The typed model
+uses `Identifier`, `Version`, metadata, and separate Package, Domain,
+Component, Contract, and Requirement values composed from common fields.
 
-The request shapes are intentionally narrow. Future milestones must replace or
-extend them only after the authoritative CCA grammar, model, artifact, and
-package contracts are approved.
+## Diagnostics
+
+Every processing boundary returns a value that includes `ValidationResult`.
+Errors stop dependent stages; warnings and notes do not. Diagnostics are sorted
+before public serialization. Injected `IDiagnosticSink` remains available for
+embedding, but the returned validation value is authoritative.
+
+Logging is operational observation and is never required to determine command
+success.
+
+## I/O
+
+Loading reads exactly the requested source. Generation writes exactly the
+fixed IS-002 bundle beneath the requested output directory. No module accesses
+the network, database, clock, randomness, runtime repository, or plugin
+discovery.
+
+## Compatibility seams
+
+Some IM-001 path-only request overloads remain source-compatibility seams. They
+do not bypass the ordered pipeline and should not be used for new
+orchestration. The canonical format and structured command results are the
+IS-002 integration contracts; a stable C++ ABI is not promised.
+
+## Thread safety
+
+Pipeline processors are stateless or own immutable configuration. Concurrent
+use requires thread-safe injected loggers/sinks. Caller-owned streams used by
+`Cli` require external synchronization. Runs that write to the same output
+directory must be serialized.
 
 ## Source layout
 
-- `include/cca/compiler`: documented public API
-- `src`: implementation and CLI composition root
-- `tests`: one GoogleTest translation unit per module
-- `docs/modules`: module contract and example usage
+- `include/cca/compiler`: documented public declarations
+- `src`: implementations and executable composition root
+- `tests`: unit, integration, fixture, generator, and CLI tests
+- `docs/modules`: focused module contracts and examples
 
-The workspace build supplies target policy and GoogleTest helpers. A standalone
-build generates the same `cca::version` API and uses an installed GoogleTest
-package when available.
-
-Examples in `docs/modules` are function-body fragments intended to compile
-when placed in an appropriate function. They exercise only foundation behavior.
+The workspace build is the integration path; standalone compiler builds still
+use the same public target and generated version contract.

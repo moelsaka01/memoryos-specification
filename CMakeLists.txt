@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 
 project(
   CCA
-  VERSION 0.1.0
+  VERSION 0.2.0
   DESCRIPTION "Reference engineering workspace for the Cognitive Computing Architecture"
   LANGUAGES CXX
 )
@@ -32,6 +32,11 @@ cca_initialize_project_options()
 install(
   FILES "${CMAKE_BINARY_DIR}/generated/include/cca/version.hpp"
   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/cca"
+)
+install(
+  FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/specification/schema/canonical-specification-1.0.schema.json"
+  DESTINATION "${CMAKE_INSTALL_DATADIR}/cca/schema"
 )
 
 function(cca_add_workspace_repository repository_name)

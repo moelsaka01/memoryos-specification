@@ -24,11 +24,11 @@ belong to the repository that owns the behavior.
 | Repository | Milestone status | Responsibility |
 |---|---|---|
 | `cca-core` | Foundation implementation target | Reusable configuration, logging, utilities, testing support, and versioning foundations |
-| `cca-compiler` | Skeleton implementation target | Compiler module interfaces, private placeholder implementations, diagnostics, configuration facade, logging seams, and CLI |
+| `cca-compiler` | IS-002 implementation target | Canonical source loading, parsing, validation, analysis, dependency resolution, model construction, deterministic generation, diagnostics, and CLI |
 | `memoryos` | Reserved only | Future boundary; MemoryOS implementation is explicitly excluded |
 | `cca-studio` | Reserved only | Future frontend/studio boundary; no implementation authorized |
 | `cca-sdk` | Reserved only | Future SDK boundary; public language/platform bindings are undecided |
-| `cca-conformance` | Reserved only | Future conformance suite boundary; compiler skeleton conformance generation does not define this repository |
+| `cca-conformance` | Reserved only | Future conformance suite boundary; the retained compatibility seam does not define this repository |
 | `cca-atlas` | Reserved only | Future atlas boundary; responsibilities beyond the name are undecided |
 
 See [../repositories/README.md](../repositories/README.md) for the concise
@@ -54,14 +54,11 @@ repository.
 
 ## `cca-compiler`
 
-`cca-compiler` contains independent skeleton seams for Parser, Validator,
-Analyzer, Artifact Generator, Documentation Generator, Conformance Generator,
-Package Generator, CLI, Configuration, Logging, and Diagnostics.
-
-The module list is not a pipeline definition. It does not decide which stage
-calls another, what intermediate data looks like, whether work is incremental
-or concurrent, or which generated artifacts are normative. See
-[compiler-modules.md](compiler-modules.md).
+`cca-compiler` implements the ordered Standards Compiler and its Canonical
+Specification 1.0 types. Source Loader, Parser, Validator, Analyzer, Dependency
+Resolver, Model Builder, Artifact Generator, and report serialization execute
+under `CompilerPipeline`. CLI, Configuration, Logging, and Diagnostics are
+cross-cutting boundaries. See [compiler-modules.md](compiler-modules.md).
 
 ## Reserved directories
 
@@ -77,8 +74,8 @@ future behavior.
 - Reserved repositories have no authorized dependency edges.
 - A new cross-repository dependency is an architecture change.
 - Versioning and release coordination across repositories are unresolved.
-- Each public interface requires documentation, a test or honest test
-  placeholder, and an example location.
+- Each implemented public interface requires documentation, public-behavior
+  tests, and an example location.
 
 ## Languages
 

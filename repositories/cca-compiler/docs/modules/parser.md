@@ -1,26 +1,24 @@
 # Parser
 
-`Parser` is the future source-to-syntax boundary. The foundation contract is
-`Parser::parse(const ParseRequest&)`, where `ParseRequest::source` names the
-source without reading it. Syntax-tree representation and grammar behavior are
-deliberately absent.
-
-The default constructor installs null logging and diagnostic sinks. The
-dependency-injection constructor accepts shared `ILogger` and
-`IDiagnosticSink` instances and rejects null dependencies. An empty path
-returns `invalid_argument`; any non-empty path emits `CCA-PARSER-900` and
-returns `not_implemented`.
-Concurrent calls require thread-safe injected dependencies.
+`Parser::parse(const SourceDocument&)` converts one loaded UTF-8 YAML document
+to a `ParsedDocument`. The recursive `CanonicalValue` result is independent of
+yaml-cpp and preserves 1-based source locations for diagnostics.
 
 ```cpp
 #include <cca/compiler/parser.hpp>
+#include <cca/compiler/source_loader.hpp>
 
-cca::compiler::Parser parser;
-const auto result = parser.parse({std::filesystem::path{"model.cca"}});
-if (result.code() == cca::compiler::StatusCode::not_implemented) {
-    // Expected in the foundation release.
+const cca::compiler::FileSourceLoader loader;
+const auto loaded = loader.load("specification.yaml");
+if (loaded.ok()) {
+    const cca::compiler::Parser parser;
+    const auto parsed = parser.parse(*loaded.document);
 }
 ```
 
-Implementation: `src/parser.cpp`. Test placeholder:
-`tests/parser_test.cpp`.
+Malformed YAML, multiple documents, or unsupported source values produce
+structured syntax diagnostics. Parsing does not perform schema or reference
+validation and does not build the internal model.
+
+The path-only `ParseRequest` overload is retained for IM-001 source
+compatibility. New orchestration loads explicitly and uses the typed result.

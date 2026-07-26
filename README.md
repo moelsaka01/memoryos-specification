@@ -1,40 +1,71 @@
 # Cognitive Computing Architecture reference workspace
 
-This workspace is the engineering foundation for the official reference
-implementation of the Cognitive Computing Architecture (CCA). The current
-milestone establishes shared C++23 infrastructure and a compiler framework. It
-does not implement a CCA language, compilation semantics, or runtime behavior.
+This workspace contains the C++23 reference engineering foundation and the
+first working CCA Standards Compiler. IS-002 adds a versioned canonical YAML
+format, deterministic validation and analysis, a typed internal model,
+dependency resolution, structured diagnostics, and a fixed report bundle.
 
-## Architecture authority
+The compiler is architecture-neutral. It describes architecture records; it
+does not implement MemoryOS, cognition, AI, persistence, plugins, networking,
+or any other runtime.
 
-[ARCHITECTURE.md](ARCHITECTURE.md) is the authoritative architecture record for
-this workspace. Code and supporting documentation implement that architecture;
-they do not redefine it. When a requirement is unclear, record it in the
-[ambiguity register](docs/ambiguity-register.md) and stop at the boundary rather
-than embedding an assumption in code.
+## Start here
 
-## Current milestone
+- [Authoritative architecture](ARCHITECTURE.md)
+- [Canonical format and schema](specification/README.md)
+- [Comprehensive specification example](examples/specifications/reference-architecture.yaml)
+- [Compiler pipeline](docs/pipeline.md)
+- [CLI reference](docs/cli.md)
+- [Generated artifacts](docs/generators.md)
+- [Limitations and recommended IS-003](docs/limitations.md)
 
-In scope:
+## Build and test
 
-- a cross-platform workspace and repository layout;
-- shared build, dependency, quality, test, and versioning foundations;
-- reusable logging, configuration, utility, and testing interfaces;
-- the `cca-compiler` module and CLI skeletons;
-- documentation, public-interface expectations, and example placeholders.
+Bootstrap the pinned dependencies, then configure, build, and test:
 
-Explicitly out of scope:
+```sh
+bash scripts/bootstrap.sh
+cmake --build --preset default
+ctest --preset default
+```
 
-- MemoryOS;
-- artificial intelligence, reasoning, or LLM integration;
-- databases or persistence services;
-- plugin systems;
-- networking;
-- production parsing, validation, analysis, generation, packaging, or
-  conformance logic.
+On Windows PowerShell:
 
-An interface in this milestone is a stable place for future behavior, not
-evidence that the behavior exists.
+```powershell
+pwsh -File scripts/bootstrap.ps1
+cmake --build --preset default
+ctest --preset default
+```
+
+See [developer setup](docs/developer-setup.md) and
+[build instructions](docs/build-instructions.md) for prerequisites, presets,
+formatting, static analysis, and the coverage gate.
+
+## Compile a canonical specification
+
+```console
+cca validate examples/specifications/reference-architecture.yaml
+cca analyze examples/specifications/reference-architecture.yaml
+cca compile examples/specifications/reference-architecture.yaml --output cca-out
+cca report examples/specifications/reference-architecture.yaml --output cca-out
+```
+
+Compiler commands emit deterministic JSON. `compile` and `report` create:
+
+```text
+cca-out/
+|-- documentation-index.md
+|-- dependency-graph.mmd
+|-- specification-report.json
+|-- validation-report.json
+|-- object-inventory.json
+|-- architecture-summary.md
+`-- generated/
+    `-- README.md
+```
+
+The generated README is an explicit code-generation placeholder. No
+production code is generated.
 
 ## Workspace map
 
@@ -43,9 +74,6 @@ evidence that the behavior exists.
 |-- CMakeLists.txt
 |-- CMakePresets.json
 |-- ARCHITECTURE.md
-|-- CODE_OF_CONDUCT.md
-|-- CONTRIBUTING.md
-|-- LICENSE
 |-- ROADMAP.md
 |-- docs/
 |-- examples/
@@ -63,65 +91,26 @@ evidence that the behavior exists.
     `-- cca-atlas/
 ```
 
-Only `cca-core` and `cca-compiler` are implementation targets for this
-milestone. The other repository directories are reserved boundaries and must
-not acquire implementation merely because they appear in the workspace.
+`cca-core` and `cca-compiler` are the only implementation repositories in
+IS-002. The other repository directories remain reserved scope boundaries.
 
-See [repositories/README.md](repositories/README.md) for repository
-responsibilities and [docs/repository-overview.md](docs/repository-overview.md)
-for the workspace-level view.
+## Architecture authority
 
-## Getting started
+[ARCHITECTURE.md](ARCHITECTURE.md) is authoritative for implementation scope
+and dependency direction. The
+[Canonical Specification 1.0 schema](specification/schema/canonical-specification-1.0.schema.json)
+is authoritative for source-data shape. Code and supporting documentation
+implement these records; they do not silently redefine them.
 
-1. Review the prerequisites and dependency setup in
-   [docs/developer-setup.md](docs/developer-setup.md).
-2. Use only the configure and build commands documented in
-   [docs/build-instructions.md](docs/build-instructions.md).
-3. Read [docs/coding-standards.md](docs/coding-standards.md) before changing
-   C++.
-4. Consult [docs/compiler-modules.md](docs/compiler-modules.md) before working
-   on a compiler interface.
-5. Check [docs/ambiguity-register.md](docs/ambiguity-register.md) before making
-   a new architectural choice.
-
-The standard first-time bootstrap is:
-
-```sh
-bash scripts/bootstrap.sh
-cmake --build --preset default
-ctest --preset default
-```
-
-On Windows PowerShell:
-
-```powershell
-pwsh -File scripts/bootstrap.ps1
-cmake --build --preset default
-ctest --preset default
-```
-
-Build and test tooling is configured as an engineering foundation. This
-document intentionally makes no claim that any particular build, test, static
-analysis, or coverage run has passed in the reader's environment.
-
-## Documentation
-
-- [Architecture](ARCHITECTURE.md)
-- [Reserved specification boundary](specification/README.md)
-- [Documentation index](docs/README.md)
-- [Developer setup](docs/developer-setup.md)
-- [Build instructions](docs/build-instructions.md)
-- [Coding standards](docs/coding-standards.md)
-- [Compiler modules](docs/compiler-modules.md)
-- [Public API contract](docs/public-api-contract.md)
-- [Ambiguity register](docs/ambiguity-register.md)
-- [Roadmap, risks, and recommended next milestone](ROADMAP.md)
-- [Examples catalog](examples/README.md)
+Unresolved decisions remain in the
+[ambiguity register](docs/ambiguity-register.md). A future milestone requires
+architecture approval before crossing a documented limitation.
 
 ## Project status and licensing
 
-This is foundation-stage work. Interfaces and repository boundaries may not be
-used to infer unspecified CCA semantics.
+IS-002 stops at the Standards Compiler. Interfaces outside that boundary must
+not be read as evidence that a runtime, SDK, Studio, conformance engine, or
+package manager exists.
 
 The project license has not been selected. [LICENSE](LICENSE) is a
 pending-decision notice, not an open-source license grant. Licensing must be

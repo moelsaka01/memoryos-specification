@@ -186,8 +186,9 @@ cmake --build out/coverage --target cca_coverage
 When available, `cca_coverage` writes detailed HTML to
 `out/coverage/coverage/index.html` and Cobertura XML to
 `out/coverage/coverage/coverage.xml`. If `gcovr` is not found, configuration
-continues without creating that report target. No coverage threshold is
-currently authoritative.
+continues without creating that report target. When the coverage target is
+available it enforces the IS-002 minimum of 90% line coverage for production
+compiler code.
 
 ## Formatting
 
@@ -230,6 +231,28 @@ The workspace build remains the integration path because it supplies shared
 project options and versioning. A standalone repository build does not verify
 cross-repository integration.
 
+## Install and consume the compiler
+
+Install the configured workspace:
+
+```sh
+cmake --install out/build/default --prefix out/install/default
+```
+
+The installation exports the `ccaCompiler` CMake package, the
+`cca::compiler` library target, the `cca::cli` executable target, public
+headers, the `cca` command, and the canonical JSON Schema. A downstream CMake
+project can consume the library with:
+
+```cmake
+find_package(ccaCompiler CONFIG REQUIRED)
+target_link_libraries(my_tool PRIVATE cca::compiler)
+```
+
+Make the installation prefix and the `yaml-cpp` package visible through
+`CMAKE_PREFIX_PATH` or the downstream package manager. The exported package
+declares `yaml-cpp` as a dependency.
+
 ## CLI smoke usage
 
 After locating the built `cca` executable for the selected generator:
@@ -238,11 +261,15 @@ After locating the built `cca` executable for the selected generator:
 cca help
 cca version
 cca doctor
+cca validate examples/specifications/reference-architecture.yaml
+cca analyze examples/specifications/reference-architecture.yaml
+cca compile examples/specifications/reference-architecture.yaml --output cca-out
+cca report examples/specifications/reference-architecture.yaml --output cca-out
 ```
 
-These commands exercise the foundation surface. Compiler-shaped commands return
-an unavailable placeholder and do not produce domain artifacts. See
-[compiler-modules.md](compiler-modules.md).
+The first three exercise process readiness. The remaining commands exercise
+the working canonical pipeline and deterministic output bundle. See
+[cli.md](cli.md).
 
 ## Reporting results
 

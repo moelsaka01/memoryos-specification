@@ -1,0 +1,32 @@
+$schema: cca://schemas/canonical-specification/1.0
+format_version: 1.0.0
+kind: canonical_specification
+id: fixture.unresolved-reference
+version: 1.0.0
+metadata: {name: Unresolved reference}
+categories:
+  - {id: architecture, name: Architecture, annotations: {}, extensions: {}}
+objects:
+  - type: component
+    id: architecture.source
+    version: 1.0.0
+    category: architecture
+    metadata: {name: Source}
+    contracts: []
+    requirements: []
+    properties: {}
+    annotations: {}
+    extensions: {}
+relationships:
+  - id: relationship.unresolved
+    type: depends
+    source: architecture.source
+    target: architecture.missing
+    metadata: {name: Unresolved target}
+    annotations: {}
+    extensions: {}
+dependencies: []
+validation_rules: []
+artifacts: []
+annotations: {}
+extensions: {}

@@ -26,8 +26,8 @@ Status ConformanceGenerator::generate(const ConformanceGenerationRequest& reques
         return status;
     }
 
-    auto status = Status::not_implemented(
-        "conformance generation is not implemented in the foundation release");
+    auto status =
+        Status::not_implemented("conformance-suite generation is outside the IS-002 scope");
     diagnostics_->report({DiagnosticSeverity::note, "CCA-CONFORMANCE-900", status.message()});
     logger_->log({LogLevel::info, "conformance-generator", status.message()});
     return status;

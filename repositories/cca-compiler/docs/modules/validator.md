@@ -1,22 +1,23 @@
 # Validator
 
-`Validator` is the future validation-rule boundary.
-`Validator::validate(const ValidationRequest&)` accepts a source path but does
-not inspect it. Rule definitions, validation phases, and parsed-model contracts
-remain deferred.
-
-An empty `ValidationRequest::source` returns `invalid_argument`. A non-empty
-source emits `CCA-VALIDATOR-900` through the injected diagnostic sink and
-returns `not_implemented`. Default construction uses null sinks; callers may
-inject shared `ILogger` and `IDiagnosticSink` instances.
-Concurrent calls require thread-safe injected dependencies.
+`Validator::validate(const ParsedDocument&)` enforces the Canonical
+Specification 1.0 schema profile before semantic analysis.
 
 ```cpp
 #include <cca/compiler/validator.hpp>
 
 const cca::compiler::Validator validator;
-const auto result = validator.validate({"model.cca"});
+const cca::compiler::ValidationResult validation =
+    validator.validate(parsed_document);
+if (validation.has_errors()) {
+    // Do not continue to dependent stages.
+}
 ```
 
-Implementation: `src/validator.cpp`. Test placeholder:
-`tests/validator_test.cpp`.
+The validator checks schema identity, format major, required fields, closed
+records, metadata, identifiers, versions, object types, rule severities, and
+artifact shapes. It accumulates independent schema errors in deterministic
+order.
+
+Duplicate identity, reference resolution, duplicate relationship edges, and
+dependency cycles are semantic stages rather than schema checks.

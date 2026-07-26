@@ -14,7 +14,7 @@ class CompilerConfiguration final {
                           LogLevel minimum_log_level,
                           bool diagnostics_enabled);
 
-    /// Returns the deterministic foundation-release configuration.
+    /// Returns the deterministic IS-002 compiler configuration.
     [[nodiscard]] static CompilerConfiguration defaults();
 
     [[nodiscard]] const std::filesystem::path& output_directory() const noexcept;

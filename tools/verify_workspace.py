@@ -29,12 +29,20 @@ REQUIRED_PATHS = (
     "cmake/CCAVersion.cmake",
     "docs/ambiguity-register.md",
     "docs/build-instructions.md",
+    "docs/cli.md",
     "docs/coding-standards.md",
     "docs/compiler-modules.md",
     "docs/developer-setup.md",
+    "docs/generators.md",
+    "docs/internal-model.md",
+    "docs/limitations.md",
+    "docs/pipeline.md",
     "docs/repository-overview.md",
+    "docs/validation.md",
+    "examples/specifications/reference-architecture.yaml",
     "repositories/cca-core/CMakeLists.txt",
     "repositories/cca-compiler/CMakeLists.txt",
+    "repositories/cca-compiler/cmake/ccaCompilerConfig.cmake.in",
     "scripts/bootstrap.ps1",
     "scripts/bootstrap.sh",
     "scripts/build.ps1",
@@ -43,7 +51,9 @@ REQUIRED_PATHS = (
     "scripts/coverage.sh",
     "scripts/format.ps1",
     "scripts/format.sh",
+    "specification/canonical-format.md",
     "specification/README.md",
+    "specification/schema/canonical-specification-1.0.schema.json",
     "tests/CMakeLists.txt",
     "tools/run_clang_format.py",
     "tools/vcpkg-commit.txt",
@@ -73,15 +83,32 @@ REQUIRED_PRESETS = {
 COMPILER_MODULES = (
     ("analyzer", "analyzer"),
     ("artifact_generator", "artifact-generator"),
+    ("canonical_value", "canonical-value"),
     ("cli", "cli"),
+    ("compiler_pipeline", "compiler-pipeline"),
+    ("compiler_service", "compiler-service"),
     ("configuration", "configuration"),
     ("conformance_generator", "conformance-generator"),
+    ("dependency_resolver", "dependency-resolver"),
     ("diagnostics", "diagnostics"),
     ("documentation_generator", "documentation-generator"),
+    ("internal_model", "internal-model"),
     ("logging", "logging"),
+    ("model_builder", "model-builder"),
     ("package_generator", "package-generator"),
     ("parser", "parser"),
+    ("serialization", "serialization"),
+    ("source_loader", "source-loader"),
     ("validator", "validator"),
+)
+
+INVALID_SPECIFICATION_FIXTURES = (
+    "circular-dependency.yaml",
+    "duplicate-identifiers.yaml",
+    "duplicate-relationship.yaml",
+    "incompatible-version.yaml",
+    "schema-violation.yaml",
+    "unresolved-reference.yaml",
 )
 
 
@@ -138,6 +165,11 @@ def validate(root: Path) -> list[str]:
                     + module_path.relative_to(root).as_posix()
                 )
 
+    fixture_root = root / "examples" / "specifications" / "invalid"
+    for fixture in INVALID_SPECIFICATION_FIXTURES:
+        if not (fixture_root / fixture).is_file():
+            errors.append(f"missing invalid specification fixture: {fixture}")
+
     try:
         presets = load_json(root / "CMakePresets.json")
         configure_presets = presets.get("configurePresets", [])
@@ -162,8 +194,24 @@ def validate(root: Path) -> list[str]:
         dependencies = manifest.get("dependencies", [])
         if "googletest" not in dependencies:
             errors.append("vcpkg manifest must provide googletest")
+        if "yaml-cpp" not in dependencies:
+            errors.append("vcpkg manifest must provide yaml-cpp")
     except (OSError, ValueError, json.JSONDecodeError) as exception:
         errors.append(f"invalid vcpkg configuration: {exception}")
+
+    try:
+        schema = load_json(
+            root
+            / "specification"
+            / "schema"
+            / "canonical-specification-1.0.schema.json"
+        )
+        if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
+            errors.append("canonical schema must use JSON Schema Draft 2020-12")
+        if schema.get("$id") != "cca://schemas/canonical-specification/1.0":
+            errors.append("canonical schema identifier is incorrect")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid canonical specification schema: {exception}")
 
     return errors
 

@@ -1,22 +1,23 @@
 # Analyzer
 
-`Analyzer` reserves the semantic-analysis boundary. The foundation method
-`Analyzer::analyze(const AnalysisRequest&)` accepts
-`AnalysisRequest::source`; no semantic model, symbol table, or reasoning logic
-is defined.
-
-Empty paths return `invalid_argument`. Non-empty paths emit
-`CCA-ANALYZER-900` and return `not_implemented`. The module supports the same
-null-object defaults and injected logger/diagnostic dependencies as the parser
-and validator.
-Concurrent calls require thread-safe injected dependencies.
+`Analyzer::analyze(const ParsedDocument&)` performs deterministic semantic
+checks after schema validation. It builds an object symbol table, validates
+identities and references, detects duplicate relationship edges, and returns
+an `AnalysisSummary`.
 
 ```cpp
 #include <cca/compiler/analyzer.hpp>
 
 const cca::compiler::Analyzer analyzer;
-const auto result = analyzer.analyze({"model.cca"});
+const auto result = analyzer.analyze(parsed_document);
+if (result.ok()) {
+    const auto total = result.summary.object_count();
+}
 ```
 
-Implementation: `src/analyzer.cpp`. Test placeholder:
-`tests/analyzer_test.cpp`.
+The summary contains object counts by type, a lexically ordered identifier
+list, and relationship/dependency counts. Dependency cycle and version
+constraint resolution belong to `DependencyResolver`.
+
+The path-only `AnalysisRequest` overload remains a compatibility seam and is
+not the pipeline entry point.

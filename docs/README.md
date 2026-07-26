@@ -1,38 +1,44 @@
 # CCA workspace documentation
 
-Read [the architecture](../ARCHITECTURE.md) first. It is authoritative; the
-documents in this directory explain developer workflows and contracts without
-adding architecture.
+Read [the architecture](../ARCHITECTURE.md) first. It is authoritative for
+scope and dependency direction.
 
-## Guides
+## Standards Compiler
 
-- [Repository overview](repository-overview.md): workspace and repository
-  responsibilities.
-- [Developer setup](developer-setup.md): prerequisites and first-time setup.
-- [Build instructions](build-instructions.md): configure, build, test, format,
-  analysis, and coverage workflows.
-- [Coding standards](coding-standards.md): C++23 design and source policy.
-- [Compiler modules](compiler-modules.md): module-by-module skeleton behavior.
-- [Public API contract](public-api-contract.md): documentation, test, and
-  example expectations for every public class.
-- [Ambiguity register](ambiguity-register.md): decisions the implementation is
-  forbidden to guess.
+- [Canonical format](../specification/canonical-format.md)
+- [Normative schema](../specification/schema/canonical-specification-1.0.schema.json)
+- [Compiler architecture](../repositories/cca-compiler/docs/architecture.md)
+- [Pipeline](pipeline.md)
+- [Internal model](internal-model.md)
+- [Validation and diagnostics](validation.md)
+- [Generators](generators.md)
+- [CLI](cli.md)
+- [Limitations and recommended IS-003](limitations.md)
+- [Compiler module map](compiler-modules.md)
 
-Project-level records:
+## Engineering guides
+
+- [Repository overview](repository-overview.md)
+- [Developer setup](developer-setup.md)
+- [Build instructions](build-instructions.md)
+- [Coding standards](coding-standards.md)
+- [Public API contract](public-api-contract.md)
+- [Ambiguity register](ambiguity-register.md)
+
+## Project records
 
 - [Architecture](../ARCHITECTURE.md)
-- [Reserved specification boundary](../specification/README.md)
+- [Canonical specification index](../specification/README.md)
 - [Roadmap and risks](../ROADMAP.md)
 - [Contribution guide](../CONTRIBUTING.md)
 - [Examples](../examples/README.md)
 
-Documentation should distinguish all of the following:
+Documentation uses these terms precisely:
 
-- **required**: established by the architecture or milestone;
+- **required**: established by architecture or milestone;
 - **implemented**: present in source;
-- **configured**: wired into build or automation files;
-- **verified**: actually observed in a recorded run;
-- **planned**: proposed but not authorized implementation.
+- **configured**: wired into build or automation;
+- **verified**: observed in a recorded run;
+- **planned**: proposed but not yet authorized.
 
-Do not replace one of these terms with another. In particular, configured
-tests or CI are not automatically verified tests or CI.
+Configured tests or CI are not automatically verified tests or CI.
