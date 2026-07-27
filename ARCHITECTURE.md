@@ -6,14 +6,18 @@ This document is the authoritative implementation architecture for the CCA
 reference workspace. The
 [Canonical Specification 1.0 schema](specification/schema/canonical-specification-1.0.schema.json)
 is the authoritative data-shape contract consumed by the IS-002 compiler.
+CCA-RF-1.0 is the authoritative architecture and behavior contract for the
+IM-003 Runtime Foundation.
 
 Source, tests, examples, generated reports, and supporting documentation must
-conform to both records. When a requirement is not decided, implementation
-stops at the documented boundary and the question is recorded in the
-[ambiguity register](docs/ambiguity-register.md).
+conform to the applicable record. When a requirement is not decided,
+implementation stops at the documented boundary and the question is recorded
+in the [ambiguity register](docs/ambiguity-register.md).
 
 The IM-001 engineering foundation remains valid, but its placeholder-only
-compiler restriction is superseded by this approved IS-002 vertical slice.
+compiler restriction is superseded by the approved IS-002 vertical slice.
+The former exclusion of all runtime work is superseded only by the approved
+CCA-RF-1.0 Runtime Foundation implemented in IM-003.
 
 ## 2. Architectural priorities
 
@@ -47,18 +51,83 @@ IS-002 implements:
 - `validate`, `analyze`, `compile`, and `report` CLI operations;
 - examples, invalid fixtures, tests, and a 90% line-coverage target.
 
-It does not implement a runtime or computational model.
+The IS-002 compiler does not implement a Runtime or computational model.
+IM-003 is a separate implementation boundary governed by CCA-RF-1.0.
 
-## 4. Workspace and repository boundaries
+## 4. IM-003 Runtime Foundation scope
+
+IM-003 implements a headless Layer 3 Runtime Foundation under CCA-RF-1.0. The
+official executable host is `cca-runtime`. One `RuntimeHost` can own multiple
+identified Runtime instances; each instance owns an independent execution
+context, and no Runtime is a global singleton.
+
+The Runtime Foundation contains exactly these six components:
+
+1. Lifecycle Manager;
+2. Service Registry;
+3. Dependency Injector;
+4. Event Bus;
+5. Configuration Manager;
+6. Observability.
+
+`Runtime`, `RuntimeBuilder`, `RuntimeContext`, `RuntimeState`, and
+`RuntimeHost` are implementation and composition surfaces around those six
+components. They are not additional peer components. Logging, diagnostics,
+metrics, and health are facets of Observability, not separate components.
+
+The normal lifecycle is:
+
+```text
+Constructed -> Initializing -> Configuring -> Registering Services
+-> Resolving Dependencies -> Validating -> Runtime Freeze -> Starting
+-> Running -> Stopping -> Stopped -> Destroyed
+```
+
+Lifecycle failure enters `Failed`, proceeds through `Rollback`, performs
+deterministic cleanup, and terminates in `Destroyed`. Runtime Freeze makes
+configuration, contract/provider composition, the validated dependency graph,
+and Event Bus subscriptions immutable before any Provider starts.
+
+Service identity is compile-time typed. Each Service Contract declares
+`ExactlyOne`, `ZeroOrOne`, or `OneOrMore` provider cardinality. Provider
+implementations remain internal to Runtime composition. Required collaborators
+are constructor-injected from a complete, validated, acyclic dependency graph;
+string-based service lookup is not exposed. Dependency levels start
+sequentially, with explicitly selected concurrency permitted only within one
+level. Shutdown follows reverse dependency order. Typed asynchronous
+notification crosses the instance-local Event Bus.
+
+The canonical layer model is:
+
+1. Layer 1 — Operating System;
+2. Layer 2 — Platform Abstraction;
+3. Layer 3 — Runtime Foundation;
+4. Layer 4 — Domain Engines: Representation, Process, and Persistence;
+5. Layer 5 — Applications.
+
+Every inter-layer dependency originates in a higher-numbered layer and targets
+a lower-numbered layer. IM-003 implements Layer 3, its headless host surface,
+and its use of existing lower-layer engineering facilities; it does not
+implement Layer 4 Domain Engines or Layer 5 application behavior.
+
+The concrete API, lifetime, error, and thread-safety contracts are in the
+[Runtime Foundation programming model](repositories/cca-core/docs/runtime-programming-model.md).
+The requirement and ADR trace is in the
+[Runtime Foundation conformance evidence](repositories/cca-core/docs/runtime-conformance-evidence.md).
+
+## 5. Workspace and repository boundaries
 
 The workspace owns integration, governance, shared build policy, schema,
 examples, and cross-repository validation.
 
 ### `cca-core`
 
-`cca-core` owns generally reusable engineering facilities: logging,
-configuration, string utilities, version information, and test support. It
-does not own canonical compiler types or domain semantics.
+`cca-core` owns generally reusable engineering facilities and the approved
+Runtime Foundation implementation. Its shared facilities include logging,
+configuration, string utilities, version information, and test support. Its
+Runtime namespace owns the six CCA-RF-1.0 components plus the implementation
+surfaces described in Section 4. It does not own canonical compiler types,
+MemoryOS, or domain-engine semantics.
 
 ### `cca-compiler`
 
@@ -66,16 +135,17 @@ does not own canonical compiler types or domain semantics.
 resolution, model construction, generation, serialization, CLI composition,
 compiler diagnostics, and compiler-specific logging/configuration seams.
 
-The compiler may depend on `cca-core`. `cca-core` must not depend on compiler
-interfaces.
+The compiler may depend on `cca-core`. The Runtime Foundation may depend on
+lower-layer facilities in `cca-core`. `cca-core` must not depend on compiler or
+higher-layer domain interfaces.
 
 ### Reserved repositories
 
 `memoryos`, `cca-studio`, `cca-sdk`, `cca-conformance`, and `cca-atlas` remain
 reserved. They have no authorized implementation or dependency edges in
-IS-002.
+IS-002 or IM-003.
 
-## 5. Canonical specification
+## 6. Canonical specification
 
 Canonical source is one UTF-8 YAML document equivalent to the JSON data model
 defined in [the schema](specification/schema/canonical-specification-1.0.schema.json).
@@ -96,7 +166,7 @@ Objects use the types Package, Domain, Component, Contract, and Requirement.
 These are architectural records, not runtime instances. The full contract is
 in [the canonical-format reference](specification/canonical-format.md).
 
-## 6. Compiler control flow
+## 7. Compiler control flow
 
 The authorized pipeline is:
 
@@ -117,7 +187,7 @@ the CLI command boundary. The executable is the composition root.
 
 [Pipeline documentation](docs/pipeline.md) defines mode and failure behavior.
 
-## 7. Internal model
+## 8. Internal model
 
 The aggregate root is `Specification`. It composes Metadata, Version,
 Category, Package, Domain, Component, Contract, Requirement, Relationship,
@@ -131,7 +201,7 @@ plugin, or runtime handles.
 
 See [internal model](docs/internal-model.md).
 
-## 8. Validation and diagnostics
+## 9. Validation and diagnostics
 
 The compiler enforces:
 
@@ -152,7 +222,7 @@ replace a public diagnostic result.
 Declared custom rule expressions are preserved but not evaluated in IS-002.
 See [validation and diagnostics](docs/validation.md).
 
-## 9. Generation
+## 10. Generation
 
 Only a valid typed model reaches generation. The fixed output bundle is:
 
@@ -170,7 +240,7 @@ code-generation placeholder; no production source is emitted.
 
 See [generator contracts](docs/generators.md).
 
-## 10. Determinism and environmental state
+## 11. Determinism and environmental state
 
 Equivalent explicit input, compiler version, and output option produce
 equivalent diagnostics and artifact bytes. Externally visible collections are
@@ -181,7 +251,7 @@ Compiler semantics do not consult the network, clock, random source, current
 environment variables, or mutable process-global registry. Concurrent writes
 to one output directory require external synchronization.
 
-## 11. Public interface and quality contract
+## 12. Public interface and quality contract
 
 Public classes document responsibility, ownership, preconditions, results,
 side effects, determinism, thread safety, and limitations. Tests target public
@@ -193,20 +263,23 @@ cross-platform checks.
 This source contract does not promise a frozen C++ ABI. Format compatibility
 and diagnostic identities are the durable integration surfaces in IS-002.
 
-## 12. Hard exclusions
+## 13. Hard exclusions
 
-IS-002 contains no MemoryOS, runtime execution, cognition, reasoning, AI, LLM,
-database, persistence, plugin system, networking, Studio, SDK, package manager,
-conformance certification engine, or generated production code.
+IS-002 contains no Runtime execution; its compiler boundary remains unchanged.
+IM-003 contains only the CCA-RF-1.0 Runtime Foundation described in Section 4.
+The workspace contains no MemoryOS, Representation engine, Process engine,
+Persistence engine, cognition, reasoning, AI, LLM, database, application
+domain semantics, plugin system, networking, GUI, Studio, SDK, package
+manager, conformance certification engine, or generated production code.
 
 Names, categories, reserved directories, and interfaces do not authorize
 those features. Crossing one of these boundaries requires a separately
 approved architecture.
 
-## 13. Remaining decisions
+## 14. Remaining decisions
 
 Licensing, public contribution governance, long-term repository topology,
 release coordination, dependency supply-chain policy, frozen API/ABI policy,
 custom-rule execution, transactional output, and future subsystem
-architectures remain unresolved or deferred. The
+architectures beyond CCA-RF-1.0 remain unresolved or deferred. The
 [ambiguity register](docs/ambiguity-register.md) tracks their status.

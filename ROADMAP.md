@@ -32,7 +32,47 @@ Outcomes:
    report, object inventory, architecture summary, and code-placeholder README.
 8. Valid and invalid fixtures, automated tests, and a 90% line-coverage target.
 
-IS-002 explicitly excludes all runtime and MemoryOS behavior.
+IS-002 explicitly excludes Runtime and MemoryOS behavior from the compiler
+milestone. That compiler boundary remains in force alongside the separate
+IM-003 Runtime Foundation below.
+
+## IM-003: Runtime Foundation
+
+Status: implemented in this workspace.
+
+Outcomes:
+
+1. Headless `cca-runtime` executable and a `RuntimeHost` that owns multiple
+   isolated, explicitly identified Runtime instances without a global
+   singleton.
+2. The complete CCA-RF-1.0 normal lifecycle and the explicit
+   `Failed -> Rollback -> Destroyed` failure path.
+3. Exactly six Runtime Foundation components: Lifecycle Manager, Service
+   Registry, Dependency Injector, Event Bus, Configuration Manager, and
+   Observability.
+4. Compile-time typed Service Contracts, the `ExactlyOne`, `ZeroOrOne`, and
+   `OneOrMore` cardinalities, duplicate detection, composition validation, and
+   internal Provider ownership.
+5. Constructor injection from a validated, acyclic dependency graph; complete
+   dependency levels computed before Provider startup.
+6. Sequential startup levels, optional explicitly selected concurrency within
+   one level, and reverse dependency shutdown.
+7. Runtime Freeze before startup, after which configuration, composition,
+   dependency graph, and Event Bus subscriptions are immutable.
+8. Typed asynchronous Event Bus delivery and instance-scoped Observability
+   whose logging, diagnostics, metrics, and health remain facets of one
+   component.
+9. Runtime Foundation unit-test sources, a programming model, requirement and
+   ADR evidence mapping, and a minimal headless example.
+
+`Runtime`, `RuntimeBuilder`, `RuntimeContext`, `RuntimeState`, and
+`RuntimeHost` are implementation surfaces, not extra Runtime Foundation
+components. This roadmap records implementation scope; executed validation
+results must be reported separately by the build/test workflow.
+
+IM-003 explicitly excludes MemoryOS, Representation, Process, Persistence,
+GUI, plugins, networking, SDK, Studio, AI, reasoning, and application-domain
+behavior.
 
 ## Recommended IS-003: contract hardening and traceability
 
@@ -63,23 +103,25 @@ These are proposals, not authorization:
 - specific code-generation targets after their production contracts exist;
 - SDK bindings after compatibility policy is approved;
 - Studio or Atlas only after their APIs and security boundaries are defined;
-- MemoryOS or any runtime only under a separate architecture.
+- MemoryOS and all Domain Engine behavior only under separate approved
+  architecture.
 
-AI, reasoning, LLM, database, persistence, plugin, networking, and runtime work
-must not be smuggled into a compiler milestone.
+AI, reasoning, LLM, database, domain persistence, plugin, networking, and
+Runtime behavior beyond CCA-RF-1.0 must not be smuggled into a compiler or
+Runtime Foundation milestone.
 
 ## Principal risks
 
 | Risk | Consequence | IS-002 mitigation |
 |---|---|---|
-| Canonical data is mistaken for runtime behavior | Consumers infer executable semantics | Architecture-neutral model and explicit exclusions |
+| Canonical data is mistaken for Runtime behavior | Consumers infer executable semantics | Compiler model remains architecture-neutral and separate from the IM-003 Runtime |
 | Schema and validator drift | Different tools accept different inputs | Normative checked-in schema, fixtures, and paired tests |
 | Diagnostics become prose protocols | Integrations break on wording changes | Stable identifier/code fields and deterministic JSON |
 | Two dependency representations diverge | Analysis becomes ambiguous | One top-level directed dependency graph |
 | Extension data becomes a plugin escape hatch | Unreviewed executable behavior enters scope | Extensions are preserved data and never executed |
 | Generated outputs vary by host | Diffs and automation become unreliable | Ordered serialization with no time, locale, randomness, or host state |
 | Partial writes look successful | Consumers use incomplete bundles | Generation error diagnostics and explicit generated-file result |
-| Reserved repositories attract premature work | Scope expands into runtime systems | No implementation or dependency edges in reserved repositories |
+| Reserved repositories attract premature work | Scope expands into MemoryOS, domain, GUI, SDK, or conformance systems | No implementation or dependency edges in reserved repositories |
 | Dependency supply chain is underspecified | Reproducibility or license exposure | Pinned foundation; governance remains an IS-003 decision |
 | Licensing is unresolved | External rights are unclear | Pending-decision notice and no license grant |
 

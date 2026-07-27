@@ -22,6 +22,19 @@ cca compile examples/specifications/reference-architecture.yaml --output cca-out
 logging, string utility, and version usage. Those examples remain engineering
 utilities and do not define CCA domain behavior.
 
+## Runtime Foundation
+
+[runtime_foundation.cpp](runtime_foundation.cpp) is a minimal, valid headless
+CCA-RF-1.0 host lifecycle. It creates one identified Runtime with no service
+Providers, advances it through startup and normal shutdown, and removes it from
+the host. The no-service composition keeps the example focused on the stable
+`RuntimeHost` and `RuntimeBuilder` APIs.
+
+The [Runtime Foundation programming model](../repositories/cca-core/docs/runtime-programming-model.md)
+documents typed contracts, Provider composition, dependency injection,
+asynchronous events, ownership, errors, and thread safety. The example does
+not define Domain Engine or MemoryOS behavior.
+
 ## Compiler API examples
 
 Module contracts live with the compiler repository under
@@ -36,8 +49,9 @@ Module contracts live with the compiler repository under
 - [Configuration](../repositories/cca-compiler/docs/modules/configuration.md)
 - [Logging](../repositories/cca-compiler/docs/modules/logging.md)
 
-Foundation-era conformance, documentation, and package generator seams remain
-reserved and are not part of the working IS-002 pipeline.
+Compiler conformance, documentation, and package generator seams remain
+reserved and are not part of the working IS-002 pipeline. The IM-003 Runtime
+Foundation and its evidence mapping are separate from those compiler seams.
 
 ## Example quality rules
 
