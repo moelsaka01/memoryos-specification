@@ -7,6 +7,8 @@ set(
   lifecycle_manager_test.cpp
   logging_test.cpp
   observability_test.cpp
+  representation_internal_test.cpp
+  representation_test.cpp
   recording_log_sink_test.cpp
   runtime_host_test.cpp
   runtime_test.cpp
@@ -19,8 +21,8 @@ if(COMMAND cca_add_google_test)
   cca_add_google_test(
     TARGET cca_core_tests
     SOURCES ${CCA_CORE_TEST_SOURCES}
-    LIBRARIES cca::core cca::runtime cca::testing
-    LABELS core runtime unit
+    LIBRARIES cca::core cca::representation cca::runtime cca::testing
+    LABELS core representation runtime unit
   )
 else()
   find_package(GTest CONFIG REQUIRED)
@@ -30,6 +32,7 @@ else()
     cca_core_tests
     PRIVATE
       cca::core
+      cca::representation
       cca::runtime
       cca::testing
       GTest::gtest_main
@@ -47,3 +50,8 @@ else()
   include(GoogleTest)
   gtest_discover_tests(cca_core_tests DISCOVERY_TIMEOUT 30)
 endif()
+
+target_include_directories(
+  cca_core_tests
+  PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../src/representation"
+)

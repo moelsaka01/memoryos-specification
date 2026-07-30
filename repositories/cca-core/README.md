@@ -1,7 +1,8 @@
 # cca-core
 
-Shared, dependency-light infrastructure and the CCA-RF-1.0 Runtime Foundation
-for the CCA reference ecosystem.
+Shared, dependency-light infrastructure, the CCA-RF-1.0 Runtime Foundation,
+and the CCA-REP-1.0 Representation Foundation for the CCA reference
+ecosystem.
 
 This foundation currently provides:
 
@@ -13,7 +14,10 @@ This foundation currently provides:
 - the headless, multi-instance `cca-runtime` host;
 - the complete Runtime lifecycle, Runtime Freeze, typed service composition,
   dependency injection, deterministic startup and shutdown, typed asynchronous
-  events, and instance-scoped observability.
+  events, and instance-scoped observability;
+- the passive Representation document model, typed values, deterministic
+  document-local identity, validation, transactions, queries, and freeze
+  lifecycle.
 
 The Runtime Foundation contains exactly Lifecycle Manager, Service Registry,
 Dependency Injector, Event Bus, Configuration Manager, and Observability.
@@ -22,15 +26,20 @@ Dependency Injector, Event Bus, Configuration Manager, and Observability.
 additional components. Logging, diagnostics, metrics, and health are facets of
 Observability.
 
-It does not contain CCA Domain Engine semantics, MemoryOS, memory behavior,
-Representation, Process, Persistence, reasoning, AI, networking, database,
-GUI, or plugin behavior.
+It does not contain CCA Domain Engine behavior, MemoryOS, memory behavior,
+Process, Persistence, reasoning, AI, networking, database, GUI, or plugin
+behavior.
 
 ## Runtime Foundation
 
 - [Programming model](docs/runtime-programming-model.md)
 - [CCA-RF-1.0 conformance evidence mapping](docs/runtime-conformance-evidence.md)
 - [Minimal headless example](../../examples/runtime_foundation.cpp)
+
+## Representation Foundation
+
+- [Public API, developer guide, architecture, and RR-001 coverage](docs/representation-foundation.md)
+- [Complete usage example](examples/representation_usage.cpp)
 
 ## Build independently
 
@@ -42,4 +51,5 @@ cmake --build build
 Tests use GoogleTest from the workspace dependency configuration. The
 public-class examples and design boundaries are documented in `docs/`.
 Foundation utility examples are in `examples/core_usage.cpp`; the workspace
-Runtime example is `../../examples/runtime_foundation.cpp`.
+Runtime example is `../../examples/runtime_foundation.cpp`; and the
+Representation example is `examples/representation_usage.cpp`.

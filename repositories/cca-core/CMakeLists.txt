@@ -48,6 +48,32 @@ else()
 endif()
 
 add_library(
+  cca_representation
+  STATIC
+    src/representation/representation.cpp
+)
+add_library(cca::representation ALIAS cca_representation)
+
+target_compile_features(cca_representation PUBLIC cxx_std_23)
+target_include_directories(
+  cca_representation
+  PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include>"
+)
+
+if(COMMAND cca_configure_target)
+  cca_configure_target(cca_representation)
+elseif(MSVC)
+  target_compile_options(cca_representation PRIVATE /W4 /permissive-)
+else()
+  target_compile_options(
+    cca_representation
+    PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+  )
+endif()
+
+add_library(
   cca_testing
   STATIC
     src/testing/recording_log_sink.cpp
