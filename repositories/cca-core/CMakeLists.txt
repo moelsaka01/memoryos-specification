@@ -8,6 +8,11 @@ project(cca_core VERSION 0.2.0 LANGUAGES CXX)
 endif()
 
 find_package(Threads REQUIRED)
+option(
+  CCA_BUILD_PROCESS_EXAMPLES
+  "Build CCA Process Foundation examples"
+  "${BUILD_TESTING}"
+)
 
 add_library(
   cca_core
@@ -139,6 +144,107 @@ else()
     cca_runtime
     PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
   )
+endif()
+
+add_library(
+  cca_process
+  STATIC
+    src/process/process.cpp
+    src/process/process_runtime_integration.cpp
+)
+add_library(cca::process ALIAS cca_process)
+
+target_compile_features(cca_process PUBLIC cxx_std_23)
+target_include_directories(
+  cca_process
+  PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include>"
+)
+target_link_libraries(
+  cca_process
+  PUBLIC
+    cca::representation
+  PRIVATE
+    cca::runtime
+)
+
+if(COMMAND cca_configure_target)
+  cca_configure_target(cca_process)
+elseif(MSVC)
+  target_compile_options(cca_process PRIVATE /W4 /permissive-)
+else()
+  target_compile_options(
+    cca_process
+    PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+  )
+endif()
+
+if(CCA_BUILD_PROCESS_EXAMPLES)
+  add_executable(
+    cca_process_direct_example
+    examples/process_usage.cpp
+  )
+  target_compile_features(
+    cca_process_direct_example
+    PRIVATE cxx_std_23
+  )
+  target_link_libraries(
+    cca_process_direct_example
+    PRIVATE cca::process
+  )
+
+  add_executable(
+    cca_process_runtime_example
+    examples/process_runtime_usage.cpp
+  )
+  target_compile_features(
+    cca_process_runtime_example
+    PRIVATE cxx_std_23
+  )
+  target_link_libraries(
+    cca_process_runtime_example
+    PRIVATE cca::process cca::runtime
+  )
+
+  if(COMMAND cca_configure_target)
+    cca_configure_target(cca_process_direct_example)
+    cca_configure_target(cca_process_runtime_example)
+  elseif(MSVC)
+    target_compile_options(
+      cca_process_direct_example
+      PRIVATE /W4 /permissive-
+    )
+    target_compile_options(
+      cca_process_runtime_example
+      PRIVATE /W4 /permissive-
+    )
+  else()
+    target_compile_options(
+      cca_process_direct_example
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+    target_compile_options(
+      cca_process_runtime_example
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+  endif()
+
+  if(BUILD_TESTING)
+    add_test(
+      NAME cca.process.example.direct
+      COMMAND cca_process_direct_example
+    )
+    add_test(
+      NAME cca.process.example.runtime
+      COMMAND cca_process_runtime_example
+    )
+    set_tests_properties(
+      cca.process.example.direct
+      cca.process.example.runtime
+      PROPERTIES LABELS "example;process"
+    )
+  endif()
 endif()
 
 add_executable(cca_runtime_host src/runtime/main.cpp)

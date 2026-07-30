@@ -1,8 +1,8 @@
 # cca-core
 
 Shared, dependency-light infrastructure, the CCA-RF-1.0 Runtime Foundation,
-and the CCA-REP-1.0 Representation Foundation for the CCA reference
-ecosystem.
+the CCA-REP-1.0 Representation Foundation, and the CCA-PROC-1.0 Process
+Foundation for the CCA reference ecosystem.
 
 This foundation currently provides:
 
@@ -17,7 +17,10 @@ This foundation currently provides:
   events, and instance-scoped observability;
 - the passive Representation document model, typed values, deterministic
   document-local identity, validation, transactions, queries, and freeze
-  lifecycle.
+  lifecycle; and
+- deterministic Process definition materialization, isolated execution
+  contexts, terminal results, and Runtime-hosted ProcessEngine service
+  composition.
 
 The Runtime Foundation contains exactly Lifecycle Manager, Service Registry,
 Dependency Injector, Event Bus, Configuration Manager, and Observability.
@@ -26,8 +29,8 @@ Dependency Injector, Event Bus, Configuration Manager, and Observability.
 additional components. Logging, diagnostics, metrics, and health are facets of
 Observability.
 
-It does not contain CCA Domain Engine behavior, MemoryOS, memory behavior,
-Process, Persistence, reasoning, AI, networking, database, GUI, or plugin
+It does not contain MemoryOS, memory behavior, Persistence, reasoning, AI,
+networking, database, GUI, plugin, scheduling, BPMN, or workflow-engine
 behavior.
 
 ## Runtime Foundation
@@ -41,6 +44,13 @@ behavior.
 - [Public API, developer guide, architecture, and RR-001 coverage](docs/representation-foundation.md)
 - [Complete usage example](examples/representation_usage.cpp)
 
+## Process Foundation
+
+- [Programming model and API guide](docs/process-foundation.md)
+- [CCA-PROC-1.0 conformance evidence mapping](docs/process-conformance-evidence.md)
+- [Direct execution example](examples/process_usage.cpp)
+- [Runtime-hosted execution example](examples/process_runtime_usage.cpp)
+
 ## Build independently
 
 ```sh
@@ -51,5 +61,6 @@ cmake --build build
 Tests use GoogleTest from the workspace dependency configuration. The
 public-class examples and design boundaries are documented in `docs/`.
 Foundation utility examples are in `examples/core_usage.cpp`; the workspace
-Runtime example is `../../examples/runtime_foundation.cpp`; and the
-Representation example is `examples/representation_usage.cpp`.
+Runtime example is `../../examples/runtime_foundation.cpp`; the Representation
+example is `examples/representation_usage.cpp`; and the Process examples are
+`examples/process_usage.cpp` and `examples/process_runtime_usage.cpp`.
