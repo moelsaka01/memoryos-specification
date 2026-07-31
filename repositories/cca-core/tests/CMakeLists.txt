@@ -8,6 +8,7 @@ set(
   logging_test.cpp
   observability_test.cpp
   process_test.cpp
+  persistence_test.cpp
   representation_internal_test.cpp
   representation_test.cpp
   recording_log_sink_test.cpp
@@ -35,7 +36,7 @@ if(COMMAND cca_add_google_test)
   cca_add_google_test(
     TARGET cca_core_tests
     SOURCES ${CCA_CORE_TEST_SOURCES}
-    LIBRARIES cca::core cca::process cca::representation cca::runtime cca::testing
+    LIBRARIES cca::core cca::process cca::persistence cca::representation cca::runtime cca::testing
     LABELS core process representation runtime unit
   )
   cca_add_google_test(
@@ -53,6 +54,7 @@ else()
     PRIVATE
       cca::core
       cca::process
+      cca::persistence
       cca::representation
       cca::runtime
       cca::testing

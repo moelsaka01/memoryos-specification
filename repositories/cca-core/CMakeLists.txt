@@ -13,6 +13,11 @@ option(
   "Build CCA Process Foundation examples"
   "${BUILD_TESTING}"
 )
+option(
+  CCA_BUILD_PERSISTENCE_EXAMPLES
+  "Build CCA Persistence Foundation examples"
+  "${BUILD_TESTING}"
+)
 
 add_library(
   cca_core
@@ -153,6 +158,36 @@ add_library(
     src/process/process_runtime_integration.cpp
 )
 add_library(cca::process ALIAS cca_process)
+
+add_library(cca_persistence STATIC src/persistence/persistence.cpp)
+add_library(cca::persistence ALIAS cca_persistence)
+target_compile_features(cca_persistence PUBLIC cxx_std_23)
+target_include_directories(cca_persistence PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
+target_link_libraries(cca_persistence PUBLIC cca::process cca::representation)
+if(COMMAND cca_configure_target)
+  cca_configure_target(cca_persistence)
+elseif(MSVC)
+  target_compile_options(cca_persistence PRIVATE /W4 /permissive-)
+else()
+  target_compile_options(cca_persistence PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion)
+endif()
+
+if(CCA_BUILD_PERSISTENCE_EXAMPLES)
+  add_executable(cca_persistence_example examples/persistence_usage.cpp)
+  target_compile_features(cca_persistence_example PRIVATE cxx_std_23)
+  target_link_libraries(cca_persistence_example PRIVATE cca::persistence)
+  if(COMMAND cca_configure_target)
+    cca_configure_target(cca_persistence_example)
+  elseif(MSVC)
+    target_compile_options(cca_persistence_example PRIVATE /W4 /permissive-)
+  else()
+    target_compile_options(cca_persistence_example PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion)
+  endif()
+  if(BUILD_TESTING)
+    add_test(NAME cca.persistence.example COMMAND cca_persistence_example)
+    set_tests_properties(cca.persistence.example PROPERTIES LABELS "example;persistence")
+  endif()
+endif()
 
 target_compile_features(cca_process PUBLIC cxx_std_23)
 target_include_directories(
