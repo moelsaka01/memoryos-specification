@@ -18,6 +18,11 @@ option(
   "Build CCA Persistence Foundation examples"
   "${BUILD_TESTING}"
 )
+option(
+  CCA_BUILD_MEMORY_EXAMPLES
+  "Build CCA Memory Foundation examples"
+  "${BUILD_TESTING}"
+)
 
 add_library(
   cca_core
@@ -282,6 +287,26 @@ if(CCA_BUILD_PROCESS_EXAMPLES)
   endif()
 endif()
 
+add_library(cca_memory STATIC src/memory/memory.cpp)
+add_library(cca::memory ALIAS cca_memory)
+target_compile_features(cca_memory PUBLIC cxx_std_23)
+target_include_directories(
+  cca_memory
+  PUBLIC
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:include>"
+)
+if(COMMAND cca_configure_target)
+  cca_configure_target(cca_memory)
+elseif(MSVC)
+  target_compile_options(cca_memory PRIVATE /W4 /permissive-)
+else()
+  target_compile_options(
+    cca_memory
+    PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+  )
+endif()
+
 add_executable(cca_runtime_host src/runtime/main.cpp)
 add_executable(cca::runtime_host ALIAS cca_runtime_host)
 set_target_properties(cca_runtime_host PROPERTIES OUTPUT_NAME "cca-runtime")
@@ -300,6 +325,31 @@ else()
 endif()
 
 install(TARGETS cca_runtime_host RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
+
+if(CCA_BUILD_MEMORY_EXAMPLES)
+  add_executable(cca_memory_example examples/memory_usage.cpp)
+  target_compile_features(cca_memory_example PRIVATE cxx_std_23)
+  target_link_libraries(cca_memory_example PRIVATE cca::memory)
+
+  if(COMMAND cca_configure_target)
+    cca_configure_target(cca_memory_example)
+  elseif(MSVC)
+    target_compile_options(cca_memory_example PRIVATE /W4 /permissive-)
+  else()
+    target_compile_options(
+      cca_memory_example
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+  endif()
+
+  if(BUILD_TESTING)
+    add_test(NAME cca.memory.example COMMAND cca_memory_example)
+    set_tests_properties(
+      cca.memory.example
+      PROPERTIES LABELS "example;memory"
+    )
+  endif()
+endif()
 
 if(BUILD_TESTING AND CCA_BUILD_TESTS)
   add_subdirectory(tests)

@@ -6,6 +6,7 @@ set(
   event_bus_test.cpp
   lifecycle_manager_test.cpp
   logging_test.cpp
+  memory_test.cpp
   observability_test.cpp
   process_test.cpp
   persistence_test.cpp
@@ -17,6 +18,19 @@ set(
   service_registry_test.cpp
   string_utils_test.cpp
   version_test.cpp
+)
+
+add_test(
+  NAME cca.memory.architecture
+  COMMAND
+    "${CMAKE_COMMAND}"
+    "-DCCA_CORE_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/.."
+    -P
+    "${CMAKE_CURRENT_SOURCE_DIR}/memory_architecture_test.cmake"
+)
+set_tests_properties(
+  cca.memory.architecture
+  PROPERTIES LABELS "architecture;core;memory"
 )
 
 add_test(
@@ -36,14 +50,20 @@ if(COMMAND cca_add_google_test)
   cca_add_google_test(
     TARGET cca_core_tests
     SOURCES ${CCA_CORE_TEST_SOURCES}
-    LIBRARIES cca::core cca::process cca::persistence cca::representation cca::runtime cca::testing
-    LABELS core process representation runtime unit
+    LIBRARIES cca::core cca::memory cca::process cca::persistence cca::representation cca::runtime cca::testing
+    LABELS core memory process representation runtime unit
   )
   cca_add_google_test(
     TARGET cca_process_allocation_tests
     SOURCES process_allocation_failure_test.cpp
     LIBRARIES cca::process cca::representation
     LABELS core process unit
+  )
+  cca_add_google_test(
+    TARGET cca_memory_allocation_tests
+    SOURCES memory_allocation_failure_test.cpp
+    LIBRARIES cca::memory
+    LABELS core memory unit
   )
 else()
   find_package(GTest CONFIG REQUIRED)
@@ -53,6 +73,7 @@ else()
     cca_core_tests
     PRIVATE
       cca::core
+      cca::memory
       cca::process
       cca::persistence
       cca::representation
@@ -99,6 +120,34 @@ else()
 
   gtest_discover_tests(
     cca_process_allocation_tests
+    DISCOVERY_TIMEOUT 30
+  )
+
+  add_executable(
+    cca_memory_allocation_tests
+    memory_allocation_failure_test.cpp
+  )
+  target_link_libraries(
+    cca_memory_allocation_tests
+    PRIVATE
+      cca::memory
+      GTest::gtest_main
+  )
+
+  if(MSVC)
+    target_compile_options(
+      cca_memory_allocation_tests
+      PRIVATE /W4 /permissive-
+    )
+  else()
+    target_compile_options(
+      cca_memory_allocation_tests
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+  endif()
+
+  gtest_discover_tests(
+    cca_memory_allocation_tests
     DISCOVERY_TIMEOUT 30
   )
 endif()
