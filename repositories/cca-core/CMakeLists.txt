@@ -287,7 +287,12 @@ if(CCA_BUILD_PROCESS_EXAMPLES)
   endif()
 endif()
 
-add_library(cca_memory STATIC src/memory/memory.cpp)
+add_library(
+  cca_memory
+  STATIC
+    src/memory/memory.cpp
+    src/memory/working_memory.cpp
+)
 add_library(cca::memory ALIAS cca_memory)
 target_compile_features(cca_memory PUBLIC cxx_std_23)
 target_include_directories(
@@ -331,22 +336,52 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
   target_compile_features(cca_memory_example PRIVATE cxx_std_23)
   target_link_libraries(cca_memory_example PRIVATE cca::memory)
 
+  add_executable(
+    cca_working_memory_example
+    examples/working_memory_usage.cpp
+  )
+  target_compile_features(
+    cca_working_memory_example
+    PRIVATE cxx_std_23
+  )
+  target_link_libraries(
+    cca_working_memory_example
+    PRIVATE cca::memory
+  )
+
   if(COMMAND cca_configure_target)
     cca_configure_target(cca_memory_example)
+    cca_configure_target(cca_working_memory_example)
   elseif(MSVC)
     target_compile_options(cca_memory_example PRIVATE /W4 /permissive-)
+    target_compile_options(
+      cca_working_memory_example
+      PRIVATE /W4 /permissive-
+    )
   else()
     target_compile_options(
       cca_memory_example
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+    target_compile_options(
+      cca_working_memory_example
       PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
     )
   endif()
 
   if(BUILD_TESTING)
     add_test(NAME cca.memory.example COMMAND cca_memory_example)
+    add_test(
+      NAME cca.working_memory.example
+      COMMAND cca_working_memory_example
+    )
     set_tests_properties(
       cca.memory.example
       PROPERTIES LABELS "example;memory"
+    )
+    set_tests_properties(
+      cca.working_memory.example
+      PROPERTIES LABELS "example;memory;working_memory"
     )
   endif()
 endif()

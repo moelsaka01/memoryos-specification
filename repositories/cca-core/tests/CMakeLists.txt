@@ -18,6 +18,7 @@ set(
   service_registry_test.cpp
   string_utils_test.cpp
   version_test.cpp
+  working_memory_test.cpp
 )
 
 add_test(
@@ -31,6 +32,19 @@ add_test(
 set_tests_properties(
   cca.memory.architecture
   PROPERTIES LABELS "architecture;core;memory"
+)
+
+add_test(
+  NAME cca.working_memory.architecture
+  COMMAND
+    "${CMAKE_COMMAND}"
+    "-DCCA_CORE_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/.."
+    -P
+    "${CMAKE_CURRENT_SOURCE_DIR}/working_memory_architecture_test.cmake"
+)
+set_tests_properties(
+  cca.working_memory.architecture
+  PROPERTIES LABELS "architecture;core;memory;working_memory"
 )
 
 add_test(
@@ -64,6 +78,12 @@ if(COMMAND cca_add_google_test)
     SOURCES memory_allocation_failure_test.cpp
     LIBRARIES cca::memory
     LABELS core memory unit
+  )
+  cca_add_google_test(
+    TARGET cca_working_memory_allocation_tests
+    SOURCES working_memory_allocation_failure_test.cpp
+    LIBRARIES cca::memory
+    LABELS core memory working_memory unit
   )
 else()
   find_package(GTest CONFIG REQUIRED)
@@ -148,6 +168,34 @@ else()
 
   gtest_discover_tests(
     cca_memory_allocation_tests
+    DISCOVERY_TIMEOUT 30
+  )
+
+  add_executable(
+    cca_working_memory_allocation_tests
+    working_memory_allocation_failure_test.cpp
+  )
+  target_link_libraries(
+    cca_working_memory_allocation_tests
+    PRIVATE
+      cca::memory
+      GTest::gtest_main
+  )
+
+  if(MSVC)
+    target_compile_options(
+      cca_working_memory_allocation_tests
+      PRIVATE /W4 /permissive-
+    )
+  else()
+    target_compile_options(
+      cca_working_memory_allocation_tests
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+  endif()
+
+  gtest_discover_tests(
+    cca_working_memory_allocation_tests
     DISCOVERY_TIMEOUT 30
   )
 endif()
