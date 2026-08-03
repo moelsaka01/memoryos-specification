@@ -290,6 +290,8 @@ endif()
 add_library(
   cca_memory
   STATIC
+    src/memory/long_term_memory.cpp
+    src/memory/long_term_memory_persistence.cpp
     src/memory/memory.cpp
     src/memory/working_memory.cpp
 )
@@ -301,6 +303,7 @@ target_include_directories(
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:include>"
 )
+target_link_libraries(cca_memory PRIVATE cca::persistence)
 if(COMMAND cca_configure_target)
   cca_configure_target(cca_memory)
 elseif(MSVC)
@@ -337,6 +340,19 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
   target_link_libraries(cca_memory_example PRIVATE cca::memory)
 
   add_executable(
+    cca_long_term_memory_example
+    examples/long_term_memory_usage.cpp
+  )
+  target_compile_features(
+    cca_long_term_memory_example
+    PRIVATE cxx_std_23
+  )
+  target_link_libraries(
+    cca_long_term_memory_example
+    PRIVATE cca::memory
+  )
+
+  add_executable(
     cca_working_memory_example
     examples/working_memory_usage.cpp
   )
@@ -351,9 +367,14 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
 
   if(COMMAND cca_configure_target)
     cca_configure_target(cca_memory_example)
+    cca_configure_target(cca_long_term_memory_example)
     cca_configure_target(cca_working_memory_example)
   elseif(MSVC)
     target_compile_options(cca_memory_example PRIVATE /W4 /permissive-)
+    target_compile_options(
+      cca_long_term_memory_example
+      PRIVATE /W4 /permissive-
+    )
     target_compile_options(
       cca_working_memory_example
       PRIVATE /W4 /permissive-
@@ -361,6 +382,10 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
   else()
     target_compile_options(
       cca_memory_example
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+    target_compile_options(
+      cca_long_term_memory_example
       PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
     )
     target_compile_options(
@@ -372,12 +397,20 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
   if(BUILD_TESTING)
     add_test(NAME cca.memory.example COMMAND cca_memory_example)
     add_test(
+      NAME cca.long_term_memory.example
+      COMMAND cca_long_term_memory_example
+    )
+    add_test(
       NAME cca.working_memory.example
       COMMAND cca_working_memory_example
     )
     set_tests_properties(
       cca.memory.example
       PROPERTIES LABELS "example;memory"
+    )
+    set_tests_properties(
+      cca.long_term_memory.example
+      PROPERTIES LABELS "example;memory;long_term_memory"
     )
     set_tests_properties(
       cca.working_memory.example

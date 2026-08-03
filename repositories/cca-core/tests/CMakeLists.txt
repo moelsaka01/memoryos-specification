@@ -6,6 +6,7 @@ set(
   event_bus_test.cpp
   lifecycle_manager_test.cpp
   logging_test.cpp
+  long_term_memory_test.cpp
   memory_test.cpp
   observability_test.cpp
   process_test.cpp
@@ -48,6 +49,19 @@ set_tests_properties(
 )
 
 add_test(
+  NAME cca.long_term_memory.architecture
+  COMMAND
+    "${CMAKE_COMMAND}"
+    "-DCCA_CORE_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/.."
+    -P
+    "${CMAKE_CURRENT_SOURCE_DIR}/long_term_memory_architecture_test.cmake"
+)
+set_tests_properties(
+  cca.long_term_memory.architecture
+  PROPERTIES LABELS "architecture;core;memory;long_term_memory"
+)
+
+add_test(
   NAME cca.process.architecture
   COMMAND
     "${CMAKE_COMMAND}"
@@ -84,6 +98,12 @@ if(COMMAND cca_add_google_test)
     SOURCES working_memory_allocation_failure_test.cpp
     LIBRARIES cca::memory
     LABELS core memory working_memory unit
+  )
+  cca_add_google_test(
+    TARGET cca_long_term_memory_allocation_tests
+    SOURCES long_term_memory_allocation_failure_test.cpp
+    LIBRARIES cca::memory
+    LABELS core memory long_term_memory unit
   )
 else()
   find_package(GTest CONFIG REQUIRED)
@@ -198,9 +218,39 @@ else()
     cca_working_memory_allocation_tests
     DISCOVERY_TIMEOUT 30
   )
+
+  add_executable(
+    cca_long_term_memory_allocation_tests
+    long_term_memory_allocation_failure_test.cpp
+  )
+  target_link_libraries(
+    cca_long_term_memory_allocation_tests
+    PRIVATE
+      cca::memory
+      GTest::gtest_main
+  )
+
+  if(MSVC)
+    target_compile_options(
+      cca_long_term_memory_allocation_tests
+      PRIVATE /W4 /permissive-
+    )
+  else()
+    target_compile_options(
+      cca_long_term_memory_allocation_tests
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+  endif()
+
+  gtest_discover_tests(
+    cca_long_term_memory_allocation_tests
+    DISCOVERY_TIMEOUT 30
+  )
 endif()
 
 target_include_directories(
   cca_core_tests
-  PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../src/representation"
+  PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/../src/memory"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../src/representation"
 )

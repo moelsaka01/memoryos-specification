@@ -3,8 +3,8 @@
 Shared, dependency-light infrastructure, the CCA-RF-1.0 Runtime Foundation,
 the CCA-REP-1.0 Representation Foundation, the CCA-PROC-1.0 Process
 Foundation, the CCA-PERSIST-1.0 Persistence Foundation, and the CCA-MEM-1.0
-Memory Foundation, including the CCA-WMEM-1.0 Working Memory capability, for
-the CCA reference ecosystem.
+Memory Foundation, including the CCA-WMEM-1.0 Working Memory and
+CCA-LTMEM-1.0 Long-Term Memory capabilities, for the CCA reference ecosystem.
 
 This foundation currently provides:
 
@@ -27,7 +27,9 @@ This foundation currently provides:
 - Workspace-owned Memory with deterministic store, retrieve, search, and
   forget behavior; and
 - temporary, task-oriented Working Memory with explicit activation and logical
-  expiration.
+  expiration; and
+- Workspace-owned Long-Term Memory with deterministic retention, archival,
+  irreversible forgetting, and provider-independent restoration.
 
 The Runtime Foundation contains exactly Lifecycle Manager, Service Registry,
 Dependency Injector, Event Bus, Configuration Manager, and Observability.
@@ -72,6 +74,11 @@ plugin, scheduling, BPMN, or workflow-engine behavior.
 - [Programming model, API guide, and requirement evidence](docs/working-memory.md)
 - [Activation, expiration, and entry operations example](examples/working_memory_usage.cpp)
 
+## Long-Term Memory
+
+- [Programming model, API guide, and requirement evidence](docs/long-term-memory.md)
+- [Retention, archival, forgetting, and restoration example](examples/long_term_memory_usage.cpp)
+
 ## Build independently
 
 ```sh
@@ -86,4 +93,5 @@ Runtime example is `../../examples/runtime_foundation.cpp`; the Representation
 example is `examples/representation_usage.cpp`; and the Process examples are
 `examples/process_usage.cpp` and `examples/process_runtime_usage.cpp`. The
 Persistence and Memory examples are `examples/persistence_usage.cpp`,
-`examples/memory_usage.cpp`, and `examples/working_memory_usage.cpp`.
+`examples/memory_usage.cpp`, `examples/working_memory_usage.cpp`, and
+`examples/long_term_memory_usage.cpp`.
