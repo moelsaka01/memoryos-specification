@@ -4,7 +4,8 @@ Shared, dependency-light infrastructure, the CCA-RF-1.0 Runtime Foundation,
 the CCA-REP-1.0 Representation Foundation, the CCA-PROC-1.0 Process
 Foundation, the CCA-PERSIST-1.0 Persistence Foundation, and the CCA-MEM-1.0
 Memory Foundation, including the CCA-WMEM-1.0 Working Memory and
-CCA-LTMEM-1.0 Long-Term Memory capabilities, for the CCA reference ecosystem.
+CCA-LTMEM-1.0 Long-Term Memory, CCA-SEMMEM-1.0 Semantic Memory, and
+CCA-EPMEM-1.0 Episodic Memory capabilities, for the CCA reference ecosystem.
 
 This foundation currently provides:
 
@@ -29,7 +30,11 @@ This foundation currently provides:
 - temporary, task-oriented Working Memory with explicit activation and logical
   expiration; and
 - Workspace-owned Long-Term Memory with deterministic retention, archival,
-  irreversible forgetting, and provider-independent restoration.
+  irreversible forgetting, and provider-independent restoration; and
+- Workspace-owned Semantic Memory with source-preserving conceptual
+  derivation, evidence provenance, direct links, and deterministic forgetting.
+- Workspace-owned Episodic Memory with source-preserving experiences,
+  explicit logical chronology, direct links, and deterministic forgetting.
 
 The Runtime Foundation contains exactly Lifecycle Manager, Service Registry,
 Dependency Injector, Event Bus, Configuration Manager, and Observability.
@@ -79,6 +84,16 @@ plugin, scheduling, BPMN, or workflow-engine behavior.
 - [Programming model, API guide, and requirement evidence](docs/long-term-memory.md)
 - [Retention, archival, forgetting, and restoration example](examples/long_term_memory_usage.cpp)
 
+## Semantic Memory
+
+- [Programming model, API guide, and requirement evidence](docs/semantic-memory.md)
+- [Classification, categorization, linking, retrieval, search, update, and forgetting example](examples/semantic_memory_usage.cpp)
+
+## Episodic Memory
+
+- [Programming model, API guide, and requirement evidence](docs/episodic-memory.md)
+- [Recording, retrospective derivation, linking, retrieval, search, update, and forgetting example](examples/episodic_memory_usage.cpp)
+
 ## Build independently
 
 ```sh
@@ -94,4 +109,6 @@ example is `examples/representation_usage.cpp`; and the Process examples are
 `examples/process_usage.cpp` and `examples/process_runtime_usage.cpp`. The
 Persistence and Memory examples are `examples/persistence_usage.cpp`,
 `examples/memory_usage.cpp`, `examples/working_memory_usage.cpp`, and
-`examples/long_term_memory_usage.cpp`.
+`examples/long_term_memory_usage.cpp`, and
+`examples/semantic_memory_usage.cpp`, and
+`examples/episodic_memory_usage.cpp`.

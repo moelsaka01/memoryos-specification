@@ -4,6 +4,7 @@ set(
   configuration_manager_runtime_test.cpp
   dependency_injector_test.cpp
   event_bus_test.cpp
+  episodic_memory_test.cpp
   lifecycle_manager_test.cpp
   logging_test.cpp
   long_term_memory_test.cpp
@@ -16,10 +17,24 @@ set(
   recording_log_sink_test.cpp
   runtime_host_test.cpp
   runtime_test.cpp
+  semantic_memory_test.cpp
   service_registry_test.cpp
   string_utils_test.cpp
   version_test.cpp
   working_memory_test.cpp
+)
+
+add_test(
+  NAME cca.episodic_memory.architecture
+  COMMAND
+    "${CMAKE_COMMAND}"
+    "-DCCA_CORE_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/.."
+    -P
+    "${CMAKE_CURRENT_SOURCE_DIR}/episodic_memory_architecture_test.cmake"
+)
+set_tests_properties(
+  cca.episodic_memory.architecture
+  PROPERTIES LABELS "architecture;core;memory;episodic_memory"
 )
 
 add_test(
@@ -62,6 +77,19 @@ set_tests_properties(
 )
 
 add_test(
+  NAME cca.semantic_memory.architecture
+  COMMAND
+    "${CMAKE_COMMAND}"
+    "-DCCA_CORE_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/.."
+    -P
+    "${CMAKE_CURRENT_SOURCE_DIR}/semantic_memory_architecture_test.cmake"
+)
+set_tests_properties(
+  cca.semantic_memory.architecture
+  PROPERTIES LABELS "architecture;core;memory;semantic_memory"
+)
+
+add_test(
   NAME cca.process.architecture
   COMMAND
     "${CMAKE_COMMAND}"
@@ -88,6 +116,12 @@ if(COMMAND cca_add_google_test)
     LABELS core process unit
   )
   cca_add_google_test(
+    TARGET cca_episodic_memory_allocation_tests
+    SOURCES episodic_memory_allocation_failure_test.cpp
+    LIBRARIES cca::memory
+    LABELS core memory episodic_memory unit
+  )
+  cca_add_google_test(
     TARGET cca_memory_allocation_tests
     SOURCES memory_allocation_failure_test.cpp
     LIBRARIES cca::memory
@@ -104,6 +138,12 @@ if(COMMAND cca_add_google_test)
     SOURCES long_term_memory_allocation_failure_test.cpp
     LIBRARIES cca::memory
     LABELS core memory long_term_memory unit
+  )
+  cca_add_google_test(
+    TARGET cca_semantic_memory_allocation_tests
+    SOURCES semantic_memory_allocation_failure_test.cpp
+    LIBRARIES cca::memory
+    LABELS core memory semantic_memory unit
   )
 else()
   find_package(GTest CONFIG REQUIRED)
@@ -160,6 +200,34 @@ else()
 
   gtest_discover_tests(
     cca_process_allocation_tests
+    DISCOVERY_TIMEOUT 30
+  )
+
+  add_executable(
+    cca_episodic_memory_allocation_tests
+    episodic_memory_allocation_failure_test.cpp
+  )
+  target_link_libraries(
+    cca_episodic_memory_allocation_tests
+    PRIVATE
+      cca::memory
+      GTest::gtest_main
+  )
+
+  if(MSVC)
+    target_compile_options(
+      cca_episodic_memory_allocation_tests
+      PRIVATE /W4 /permissive-
+    )
+  else()
+    target_compile_options(
+      cca_episodic_memory_allocation_tests
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+  endif()
+
+  gtest_discover_tests(
+    cca_episodic_memory_allocation_tests
     DISCOVERY_TIMEOUT 30
   )
 
@@ -246,6 +314,35 @@ else()
     cca_long_term_memory_allocation_tests
     DISCOVERY_TIMEOUT 30
   )
+
+  add_executable(
+    cca_semantic_memory_allocation_tests
+    semantic_memory_allocation_failure_test.cpp
+  )
+  target_link_libraries(
+    cca_semantic_memory_allocation_tests
+    PRIVATE
+      cca::memory
+      GTest::gtest_main
+  )
+
+  if(MSVC)
+    target_compile_options(
+      cca_semantic_memory_allocation_tests
+      PRIVATE /W4 /permissive-
+    )
+  else()
+    target_compile_options(
+      cca_semantic_memory_allocation_tests
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+  endif()
+
+  gtest_discover_tests(
+    cca_semantic_memory_allocation_tests
+    DISCOVERY_TIMEOUT 30
+  )
+
 endif()
 
 target_include_directories(
