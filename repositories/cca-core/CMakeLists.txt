@@ -295,6 +295,8 @@ add_library(
     src/memory/long_term_memory.cpp
     src/memory/long_term_memory_persistence.cpp
     src/memory/memory.cpp
+    src/memory/procedural_memory.cpp
+    src/memory/procedural_memory_persistence.cpp
     src/memory/semantic_memory.cpp
     src/memory/semantic_memory_persistence.cpp
     src/memory/working_memory.cpp
@@ -395,10 +397,24 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
     PRIVATE cca::memory
   )
 
+  add_executable(
+    cca_procedural_memory_example
+    examples/procedural_memory_usage.cpp
+  )
+  target_compile_features(
+    cca_procedural_memory_example
+    PRIVATE cxx_std_23
+  )
+  target_link_libraries(
+    cca_procedural_memory_example
+    PRIVATE cca::memory
+  )
+
   if(COMMAND cca_configure_target)
     cca_configure_target(cca_memory_example)
     cca_configure_target(cca_long_term_memory_example)
     cca_configure_target(cca_episodic_memory_example)
+    cca_configure_target(cca_procedural_memory_example)
     cca_configure_target(cca_semantic_memory_example)
     cca_configure_target(cca_working_memory_example)
   elseif(MSVC)
@@ -409,6 +425,10 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
     )
     target_compile_options(
       cca_episodic_memory_example
+      PRIVATE /W4 /permissive-
+    )
+    target_compile_options(
+      cca_procedural_memory_example
       PRIVATE /W4 /permissive-
     )
     target_compile_options(
@@ -433,6 +453,10 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
       PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
     )
     target_compile_options(
+      cca_procedural_memory_example
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+    target_compile_options(
       cca_semantic_memory_example
       PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
     )
@@ -453,6 +477,10 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
       COMMAND cca_episodic_memory_example
     )
     add_test(
+      NAME cca.procedural_memory.example
+      COMMAND cca_procedural_memory_example
+    )
+    add_test(
       NAME cca.semantic_memory.example
       COMMAND cca_semantic_memory_example
     )
@@ -471,6 +499,10 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
     set_tests_properties(
       cca.episodic_memory.example
       PROPERTIES LABELS "example;memory;episodic_memory"
+    )
+    set_tests_properties(
+      cca.procedural_memory.example
+      PROPERTIES LABELS "example;memory;procedural_memory"
     )
     set_tests_properties(
       cca.semantic_memory.example
