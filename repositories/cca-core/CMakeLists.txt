@@ -292,6 +292,7 @@ add_library(
   STATIC
     src/memory/episodic_memory.cpp
     src/memory/episodic_memory_persistence.cpp
+    src/memory/knowledge_retrieval.cpp
     src/memory/long_term_memory.cpp
     src/memory/long_term_memory_persistence.cpp
     src/memory/memory.cpp
@@ -410,11 +411,25 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
     PRIVATE cca::memory
   )
 
+  add_executable(
+    cca_knowledge_retrieval_example
+    examples/knowledge_retrieval_usage.cpp
+  )
+  target_compile_features(
+    cca_knowledge_retrieval_example
+    PRIVATE cxx_std_23
+  )
+  target_link_libraries(
+    cca_knowledge_retrieval_example
+    PRIVATE cca::memory
+  )
+
   if(COMMAND cca_configure_target)
     cca_configure_target(cca_memory_example)
     cca_configure_target(cca_long_term_memory_example)
     cca_configure_target(cca_episodic_memory_example)
     cca_configure_target(cca_procedural_memory_example)
+    cca_configure_target(cca_knowledge_retrieval_example)
     cca_configure_target(cca_semantic_memory_example)
     cca_configure_target(cca_working_memory_example)
   elseif(MSVC)
@@ -429,6 +444,10 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
     )
     target_compile_options(
       cca_procedural_memory_example
+      PRIVATE /W4 /permissive-
+    )
+    target_compile_options(
+      cca_knowledge_retrieval_example
       PRIVATE /W4 /permissive-
     )
     target_compile_options(
@@ -457,6 +476,10 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
       PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
     )
     target_compile_options(
+      cca_knowledge_retrieval_example
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+    target_compile_options(
       cca_semantic_memory_example
       PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
     )
@@ -481,6 +504,10 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
       COMMAND cca_procedural_memory_example
     )
     add_test(
+      NAME cca.knowledge_retrieval.example
+      COMMAND cca_knowledge_retrieval_example
+    )
+    add_test(
       NAME cca.semantic_memory.example
       COMMAND cca_semantic_memory_example
     )
@@ -503,6 +530,10 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
     set_tests_properties(
       cca.procedural_memory.example
       PROPERTIES LABELS "example;memory;procedural_memory"
+    )
+    set_tests_properties(
+      cca.knowledge_retrieval.example
+      PROPERTIES LABELS "example;memory;knowledge_retrieval"
     )
     set_tests_properties(
       cca.semantic_memory.example

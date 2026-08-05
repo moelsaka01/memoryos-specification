@@ -7,6 +7,7 @@ set(
   episodic_memory_test.cpp
   lifecycle_manager_test.cpp
   logging_test.cpp
+  knowledge_retrieval_test.cpp
   long_term_memory_test.cpp
   memory_test.cpp
   observability_test.cpp
@@ -15,6 +16,7 @@ set(
   representation_internal_test.cpp
   representation_test.cpp
   recording_log_sink_test.cpp
+  procedural_memory_test.cpp
   runtime_host_test.cpp
   runtime_test.cpp
   semantic_memory_test.cpp
@@ -90,6 +92,32 @@ set_tests_properties(
 )
 
 add_test(
+  NAME cca.procedural_memory.architecture
+  COMMAND
+    "${CMAKE_COMMAND}"
+    "-DCCA_CORE_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/.."
+    -P
+    "${CMAKE_CURRENT_SOURCE_DIR}/procedural_memory_architecture_test.cmake"
+)
+set_tests_properties(
+  cca.procedural_memory.architecture
+  PROPERTIES LABELS "architecture;core;memory;procedural_memory"
+)
+
+add_test(
+  NAME cca.knowledge_retrieval.architecture
+  COMMAND
+    "${CMAKE_COMMAND}"
+    "-DCCA_CORE_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/.."
+    -P
+    "${CMAKE_CURRENT_SOURCE_DIR}/knowledge_retrieval_architecture_test.cmake"
+)
+set_tests_properties(
+  cca.knowledge_retrieval.architecture
+  PROPERTIES LABELS "architecture;core;memory;knowledge_retrieval"
+)
+
+add_test(
   NAME cca.process.architecture
   COMMAND
     "${CMAKE_COMMAND}"
@@ -144,6 +172,18 @@ if(COMMAND cca_add_google_test)
     SOURCES semantic_memory_allocation_failure_test.cpp
     LIBRARIES cca::memory
     LABELS core memory semantic_memory unit
+  )
+  cca_add_google_test(
+    TARGET cca_procedural_memory_allocation_tests
+    SOURCES procedural_memory_allocation_failure_test.cpp
+    LIBRARIES cca::memory
+    LABELS core memory procedural_memory unit
+  )
+  cca_add_google_test(
+    TARGET cca_knowledge_retrieval_allocation_tests
+    SOURCES knowledge_retrieval_allocation_failure_test.cpp
+    LIBRARIES cca::memory
+    LABELS core memory knowledge_retrieval unit
   )
 else()
   find_package(GTest CONFIG REQUIRED)
@@ -340,6 +380,62 @@ else()
 
   gtest_discover_tests(
     cca_semantic_memory_allocation_tests
+    DISCOVERY_TIMEOUT 30
+  )
+
+  add_executable(
+    cca_procedural_memory_allocation_tests
+    procedural_memory_allocation_failure_test.cpp
+  )
+  target_link_libraries(
+    cca_procedural_memory_allocation_tests
+    PRIVATE
+      cca::memory
+      GTest::gtest_main
+  )
+
+  if(MSVC)
+    target_compile_options(
+      cca_procedural_memory_allocation_tests
+      PRIVATE /W4 /permissive-
+    )
+  else()
+    target_compile_options(
+      cca_procedural_memory_allocation_tests
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+  endif()
+
+  gtest_discover_tests(
+    cca_procedural_memory_allocation_tests
+    DISCOVERY_TIMEOUT 30
+  )
+
+  add_executable(
+    cca_knowledge_retrieval_allocation_tests
+    knowledge_retrieval_allocation_failure_test.cpp
+  )
+  target_link_libraries(
+    cca_knowledge_retrieval_allocation_tests
+    PRIVATE
+      cca::memory
+      GTest::gtest_main
+  )
+
+  if(MSVC)
+    target_compile_options(
+      cca_knowledge_retrieval_allocation_tests
+      PRIVATE /W4 /permissive-
+    )
+  else()
+    target_compile_options(
+      cca_knowledge_retrieval_allocation_tests
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+  endif()
+
+  gtest_discover_tests(
+    cca_knowledge_retrieval_allocation_tests
     DISCOVERY_TIMEOUT 30
   )
 
