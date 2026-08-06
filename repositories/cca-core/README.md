@@ -6,7 +6,8 @@ Foundation, the CCA-PERSIST-1.0 Persistence Foundation, and the CCA-MEM-1.0
 Memory Foundation, including the CCA-WMEM-1.0 Working Memory and
 CCA-LTMEM-1.0 Long-Term Memory, CCA-SEMMEM-1.0 Semantic Memory, and
 CCA-EPMEM-1.0 Episodic Memory, and CCA-PRMEM-1.0 Procedural Memory
-capabilities, plus CCA-CONS-1.0 Memory Consolidation, for the CCA reference
+capabilities, plus CCA-KR-1.0 Memory Retrieval, CCA-CONS-1.0 Memory
+Consolidation, and CCA-REFLECT-1.0 Memory Reflection, for the CCA reference
 ecosystem.
 
 This foundation currently provides:
@@ -41,6 +42,10 @@ This foundation currently provides:
   ordered descriptive steps, direct links, and deterministic forgetting.
 - explicit, deterministic Working-to-Long-Term Memory consolidation with
   same-identity provenance and atomic successor-pair publication.
+- deterministic cross-category retrieval with detached candidates and complete
+  explanation chains.
+- source-preserving Reflection derivation from retrieved Semantic, Episodic,
+  and Procedural knowledge with complete provenance and Workspace isolation.
 
 The Runtime Foundation contains exactly Lifecycle Manager, Service Registry,
 Dependency Injector, Event Bus, Configuration Manager, and Observability.
@@ -115,6 +120,11 @@ plugin, scheduling, BPMN, or workflow-engine behavior.
 - [Programming model, API guide, and requirement evidence](docs/memory-consolidation.md)
 - [Working-to-Long-Term promotion and atomic successor example](examples/memory_consolidation_usage.cpp)
 
+## Memory Reflection
+
+- [Programming model, API guide, and requirement evidence](docs/memory-reflection.md)
+- [Retrieved-evidence preparation, derivation, explanation, validation, and session example](examples/memory_reflection_usage.cpp)
+
 ## Build independently
 
 ```sh
@@ -135,4 +145,5 @@ Persistence and Memory examples are `examples/persistence_usage.cpp`,
 `examples/episodic_memory_usage.cpp`, and
 `examples/procedural_memory_usage.cpp`, and
 `examples/knowledge_retrieval_usage.cpp`, and
-`examples/memory_consolidation_usage.cpp`.
+`examples/memory_consolidation_usage.cpp`, and
+`examples/memory_reflection_usage.cpp`.
