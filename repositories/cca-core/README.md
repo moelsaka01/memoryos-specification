@@ -6,7 +6,8 @@ Foundation, the CCA-PERSIST-1.0 Persistence Foundation, and the CCA-MEM-1.0
 Memory Foundation, including the CCA-WMEM-1.0 Working Memory and
 CCA-LTMEM-1.0 Long-Term Memory, CCA-SEMMEM-1.0 Semantic Memory, and
 CCA-EPMEM-1.0 Episodic Memory, and CCA-PRMEM-1.0 Procedural Memory
-capabilities, for the CCA reference ecosystem.
+capabilities, plus CCA-CONS-1.0 Memory Consolidation, for the CCA reference
+ecosystem.
 
 This foundation currently provides:
 
@@ -38,6 +39,8 @@ This foundation currently provides:
   explicit logical chronology, direct links, and deterministic forgetting.
 - Workspace-owned Procedural Memory with source-preserving activity knowledge,
   ordered descriptive steps, direct links, and deterministic forgetting.
+- explicit, deterministic Working-to-Long-Term Memory consolidation with
+  same-identity provenance and atomic successor-pair publication.
 
 The Runtime Foundation contains exactly Lifecycle Manager, Service Registry,
 Dependency Injector, Event Bus, Configuration Manager, and Observability.
@@ -107,6 +110,11 @@ plugin, scheduling, BPMN, or workflow-engine behavior.
 - [Programming model, API guide, and requirement evidence](docs/memory-retrieval.md)
 - [Cross-category retrieval, filtering, ranking, explanation, and session-forgetting example](examples/knowledge_retrieval_usage.cpp)
 
+## Memory Consolidation
+
+- [Programming model, API guide, and requirement evidence](docs/memory-consolidation.md)
+- [Working-to-Long-Term promotion and atomic successor example](examples/memory_consolidation_usage.cpp)
+
 ## Build independently
 
 ```sh
@@ -126,4 +134,5 @@ Persistence and Memory examples are `examples/persistence_usage.cpp`,
 `examples/semantic_memory_usage.cpp`, and
 `examples/episodic_memory_usage.cpp`, and
 `examples/procedural_memory_usage.cpp`, and
-`examples/knowledge_retrieval_usage.cpp`.
+`examples/knowledge_retrieval_usage.cpp`, and
+`examples/memory_consolidation_usage.cpp`.

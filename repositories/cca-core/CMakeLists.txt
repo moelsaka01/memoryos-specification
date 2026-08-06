@@ -296,6 +296,7 @@ add_library(
     src/memory/long_term_memory.cpp
     src/memory/long_term_memory_persistence.cpp
     src/memory/memory.cpp
+    src/memory/memory_consolidation.cpp
     src/memory/procedural_memory.cpp
     src/memory/procedural_memory_persistence.cpp
     src/memory/semantic_memory.cpp
@@ -345,6 +346,19 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
   add_executable(cca_memory_example examples/memory_usage.cpp)
   target_compile_features(cca_memory_example PRIVATE cxx_std_23)
   target_link_libraries(cca_memory_example PRIVATE cca::memory)
+
+  add_executable(
+    cca_memory_consolidation_example
+    examples/memory_consolidation_usage.cpp
+  )
+  target_compile_features(
+    cca_memory_consolidation_example
+    PRIVATE cxx_std_23
+  )
+  target_link_libraries(
+    cca_memory_consolidation_example
+    PRIVATE cca::memory
+  )
 
   add_executable(
     cca_long_term_memory_example
@@ -426,6 +440,7 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
 
   if(COMMAND cca_configure_target)
     cca_configure_target(cca_memory_example)
+    cca_configure_target(cca_memory_consolidation_example)
     cca_configure_target(cca_long_term_memory_example)
     cca_configure_target(cca_episodic_memory_example)
     cca_configure_target(cca_procedural_memory_example)
@@ -434,6 +449,10 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
     cca_configure_target(cca_working_memory_example)
   elseif(MSVC)
     target_compile_options(cca_memory_example PRIVATE /W4 /permissive-)
+    target_compile_options(
+      cca_memory_consolidation_example
+      PRIVATE /W4 /permissive-
+    )
     target_compile_options(
       cca_long_term_memory_example
       PRIVATE /W4 /permissive-
@@ -461,6 +480,10 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
   else()
     target_compile_options(
       cca_memory_example
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+    target_compile_options(
+      cca_memory_consolidation_example
       PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
     )
     target_compile_options(
@@ -492,6 +515,10 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
   if(BUILD_TESTING)
     add_test(NAME cca.memory.example COMMAND cca_memory_example)
     add_test(
+      NAME cca.memory_consolidation.example
+      COMMAND cca_memory_consolidation_example
+    )
+    add_test(
       NAME cca.long_term_memory.example
       COMMAND cca_long_term_memory_example
     )
@@ -518,6 +545,10 @@ if(CCA_BUILD_MEMORY_EXAMPLES)
     set_tests_properties(
       cca.memory.example
       PROPERTIES LABELS "example;memory"
+    )
+    set_tests_properties(
+      cca.memory_consolidation.example
+      PROPERTIES LABELS "example;memory;memory_consolidation"
     )
     set_tests_properties(
       cca.long_term_memory.example
