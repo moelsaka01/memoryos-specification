@@ -11,6 +11,7 @@ set(
   long_term_memory_test.cpp
   memory_test.cpp
   memory_consolidation_test.cpp
+  memory_provider_test.cpp
   memory_reflection_test.cpp
   observability_test.cpp
   process_test.cpp
@@ -146,6 +147,19 @@ set_tests_properties(
 )
 
 add_test(
+  NAME cca.memory_provider.architecture
+  COMMAND
+    "${CMAKE_COMMAND}"
+    "-DCCA_CORE_SOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}/.."
+    -P
+    "${CMAKE_CURRENT_SOURCE_DIR}/memory_provider_architecture_test.cmake"
+)
+set_tests_properties(
+  cca.memory_provider.architecture
+  PROPERTIES LABELS "architecture;core;memory;memory_provider"
+)
+
+add_test(
   NAME cca.process.architecture
   COMMAND
     "${CMAKE_COMMAND}"
@@ -224,6 +238,12 @@ if(COMMAND cca_add_google_test)
     SOURCES memory_reflection_allocation_failure_test.cpp
     LIBRARIES cca::memory
     LABELS core memory memory_reflection unit
+  )
+  cca_add_google_test(
+    TARGET cca_memory_provider_allocation_tests
+    SOURCES memory_provider_allocation_failure_test.cpp
+    LIBRARIES cca::memory
+    LABELS core memory memory_provider unit
   )
 else()
   find_package(GTest CONFIG REQUIRED)
@@ -532,6 +552,34 @@ else()
 
   gtest_discover_tests(
     cca_memory_reflection_allocation_tests
+    DISCOVERY_TIMEOUT 30
+  )
+
+  add_executable(
+    cca_memory_provider_allocation_tests
+    memory_provider_allocation_failure_test.cpp
+  )
+  target_link_libraries(
+    cca_memory_provider_allocation_tests
+    PRIVATE
+      cca::memory
+      GTest::gtest_main
+  )
+
+  if(MSVC)
+    target_compile_options(
+      cca_memory_provider_allocation_tests
+      PRIVATE /W4 /permissive-
+    )
+  else()
+    target_compile_options(
+      cca_memory_provider_allocation_tests
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion
+    )
+  endif()
+
+  gtest_discover_tests(
+    cca_memory_provider_allocation_tests
     DISCOVERY_TIMEOUT 30
   )
 

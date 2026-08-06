@@ -46,6 +46,8 @@ This foundation currently provides:
   explanation chains.
 - source-preserving Reflection derivation from retrieved Semantic, Episodic,
   and Procedural knowledge with complete provenance and Workspace isolation.
+- deterministic provider-neutral MemoryOS handoff with caller-owned
+  registration, complete value fidelity, and no external Provider semantics.
 
 The Runtime Foundation contains exactly Lifecycle Manager, Service Registry,
 Dependency Injector, Event Bus, Configuration Manager, and Observability.
@@ -125,6 +127,11 @@ plugin, scheduling, BPMN, or workflow-engine behavior.
 - [Programming model, API guide, and requirement evidence](docs/memory-reflection.md)
 - [Retrieved-evidence preparation, derivation, explanation, validation, and session example](examples/memory_reflection_usage.cpp)
 
+## Memory Providers
+
+- [Programming model, API guide, and requirement evidence](docs/memory-providers.md)
+- [Complete detached handoff example](examples/memory_provider_usage.cpp)
+
 ## Build independently
 
 ```sh
@@ -146,4 +153,5 @@ Persistence and Memory examples are `examples/persistence_usage.cpp`,
 `examples/procedural_memory_usage.cpp`, and
 `examples/knowledge_retrieval_usage.cpp`, and
 `examples/memory_consolidation_usage.cpp`, and
-`examples/memory_reflection_usage.cpp`.
+`examples/memory_reflection_usage.cpp`, and
+`examples/memory_provider_usage.cpp`.
