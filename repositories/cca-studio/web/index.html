@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#06111b">
+  <meta name="description" content="Memory intelligence graph - the graph-native Mission Control for MemoryOS.">
+  <meta name="application-name" content="Memory intelligence graph">
+  <title>Mission Control · Memory intelligence graph</title>
+  <link rel="icon" href="assets/cca-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#studio-main">Skip to Memory Studio content</a>
+
+  <div class="studio-shell" data-session-state="Observed" data-product-interface="memory-intelligence-graph">
+    <header class="topbar">
+      <button class="icon-button mobile-menu" id="menu-toggle" type="button"
+              aria-label="Open scope navigation" aria-controls="scope-nav"
+              aria-expanded="false">
+        <span aria-hidden="true">☰</span>
+      </button>
+      <a class="brand" href="#complete" aria-label="CCA Memory Studio Mission Control">
+        <img src="assets/cca-mark.svg" width="34" height="34" alt="">
+        <span class="brand-copy">
+          <strong>MemoryOS</strong>
+          <small>Mission Control</small>
+        </span>
+      </a>
+      <div class="breadcrumb" aria-label="Current location">
+        <span>Memory Studio</span><span aria-hidden="true">/</span>
+        <strong id="breadcrumb-scope">Complete</strong>
+      </div>
+      <div class="topbar-actions">
+        <label class="command-search" for="global-query">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input id="global-query" type="search" autocomplete="off"
+                 placeholder="Exact identifier…" aria-label="Exact identifier query">
+          <kbd>⌘K</kbd>
+        </label>
+        <span class="snapshot-state status-observed" id="top-session-state">
+          <span class="status-dot" aria-hidden="true"></span>Observed
+        </span>
+        <button class="icon-button" id="inspector-toggle" type="button"
+                aria-label="Toggle inspector" aria-controls="studio-inspector"
+                aria-expanded="false">◫</button>
+      </div>
+    </header>
+
+    <aside class="sidebar" id="scope-nav" aria-label="Memory Studio scopes">
+      <nav>
+        <p class="nav-label">Workspace</p>
+        <a class="nav-item is-active" href="#complete" data-scope="complete" aria-label="Mission Control" title="Mission Control">
+          <span class="nav-icon nav-icon-complete" aria-hidden="true">⬡</span>
+          <span>Mission Control</span>
+        </a>
+
+        <p class="nav-label">Memory lifecycle</p>
+        <a class="nav-item" href="#memory" data-scope="memory" aria-label="Memory" title="Memory">
+          <span class="nav-icon scope-memory" aria-hidden="true">◇</span><span>Memory</span>
+        </a>
+        <a class="nav-item" href="#working" data-scope="working" aria-label="Working Memory" title="Working Memory">
+          <span class="nav-icon scope-working" aria-hidden="true">◉</span><span>Working Memory</span>
+        </a>
+        <a class="nav-item" href="#consolidation" data-scope="consolidation" aria-label="Memory Consolidation" title="Memory Consolidation">
+          <span class="nav-icon scope-consolidation" aria-hidden="true">⇢</span><span>Consolidation</span>
+        </a>
+        <a class="nav-item" href="#long-term" data-scope="long-term" aria-label="Long-Term Memory" title="Long-Term Memory">
+          <span class="nav-icon scope-long-term" aria-hidden="true">▣</span><span>Long-Term Memory</span>
+        </a>
+
+        <p class="nav-label">Knowledge lifecycle</p>
+        <a class="nav-item" href="#semantic" data-scope="semantic" aria-label="Semantic Knowledge" title="Semantic Knowledge">
+          <span class="nav-icon scope-semantic" aria-hidden="true">⌘</span><span>Semantic Knowledge</span>
+        </a>
+        <a class="nav-item" href="#episodic" data-scope="episodic" aria-label="Episodic Knowledge" title="Episodic Knowledge">
+          <span class="nav-icon scope-episodic" aria-hidden="true">◷</span><span>Episodic Knowledge</span>
+        </a>
+        <a class="nav-item" href="#procedural" data-scope="procedural" aria-label="Procedural Knowledge" title="Procedural Knowledge">
+          <span class="nav-icon scope-procedural" aria-hidden="true">↯</span><span>Procedural Knowledge</span>
+        </a>
+        <a class="nav-item" href="#retrieval" data-scope="retrieval" aria-label="Memory Retrieval" title="Memory Retrieval">
+          <span class="nav-icon scope-retrieval" aria-hidden="true">⌕</span><span>Retrieval</span>
+        </a>
+        <a class="nav-item" href="#reflection" data-scope="reflection" aria-label="Memory Reflection" title="Memory Reflection">
+          <span class="nav-icon scope-reflection" aria-hidden="true">✦</span><span>Reflection</span>
+        </a>
+
+        <p class="nav-label">System evidence</p>
+        <a class="nav-item" href="#providers" data-scope="providers" aria-label="Memory Providers" title="Memory Providers">
+          <span class="nav-icon scope-providers" aria-hidden="true">⬢</span><span>Providers</span>
+        </a>
+        <a class="nav-item" href="#provenance" data-scope="provenance" aria-label="Workspace Provenance" title="Workspace Provenance">
+          <span class="nav-icon scope-provenance" aria-hidden="true">⤳</span><span>Provenance</span>
+        </a>
+        <a class="nav-item" href="#validation" data-scope="validation" aria-label="Validation State" title="Validation State">
+          <span class="nav-icon scope-validation" aria-hidden="true">✓</span><span>Validation</span>
+        </a>
+      </nav>
+
+      <section class="session-mini" aria-labelledby="session-mini-title">
+        <div class="eyebrow" id="session-mini-title">Studio session</div>
+        <strong id="sidebar-session-id">S-7F3A9C2</strong>
+        <div class="mini-row"><span>Workspace</span><span id="sidebar-workspace">cca-memory</span></div>
+        <div class="mini-row"><span>State</span><span class="text-success" id="sidebar-state">Observed</span></div>
+      </section>
+    </aside>
+
+    <button class="nav-backdrop" id="nav-backdrop" type="button" aria-label="Close navigation"></button>
+
+    <main class="main-content" id="studio-main" tabindex="-1" aria-label="Memory intelligence graph">
+      <section class="session-banner panel command-header" id="session-banner" aria-labelledby="page-title">
+        <div>
+          <div class="eyebrow">MemoryOS Mission Control · Workspace snapshot</div>
+          <h1 id="page-title">MemoryOS Mission Control</h1>
+          <p id="page-description">See how active context becomes retained knowledge, retrieval evidence, and new reflection.</p>
+        </div>
+        <div class="session-actions">
+          <div class="validation-pill" title="The last observe operation returned OK">
+            <span aria-hidden="true">✓</span>
+            <span><small>Validation</small><strong>Passed</strong></span>
+          </div>
+          <button class="button secondary" id="observe-view" type="button">Observe view</button>
+          <button class="button secondary" id="export-view" type="button">Export view</button>
+          <button class="button danger-quiet" id="forget-session" type="button">Forget session</button>
+        </div>
+      </section>
+
+      <section class="query-bar panel command-deck" aria-label="Studio operation controls">
+        <label>
+          <span>Scope</span>
+          <select id="query-scope" aria-label="Studio query scope"></select>
+        </label>
+        <label class="query-identifier-field">
+          <span>Find by exact ID</span>
+          <input id="query-identifier" type="text" autocomplete="off"
+                 placeholder="Empty selects the full scope">
+        </label>
+        <div class="query-actions" role="group" aria-label="Studio operations">
+          <button class="button primary" id="run-inspect" type="button">Inspect</button>
+          <button class="button secondary" id="run-trace" type="button">Trace provenance</button>
+          <button class="button secondary" id="run-summary" type="button">View summary</button>
+        </div>
+      </section>
+
+      <div id="view-root" aria-live="polite" aria-label="Memory intelligence graph"></div>
+    </main>
+
+    <aside class="inspector is-closed" id="studio-inspector" aria-label="Selected observation inspector" inert>
+      <div class="inspector-header">
+        <div>
+          <div class="eyebrow">Selected observation</div>
+          <h2 id="inspector-title">No selection</h2>
+        </div>
+        <button class="icon-button" id="inspector-close" type="button" aria-label="Close inspector">×</button>
+      </div>
+      <div id="inspector-content" class="inspector-content">
+        <div class="empty-state compact">
+          <span class="empty-icon" aria-hidden="true">◇</span>
+          <p>Select an observation to inspect its exact released values.</p>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="toast-region" id="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <dialog class="confirm-dialog" id="forget-dialog" aria-labelledby="forget-title">
+    <form method="dialog">
+      <div class="dialog-icon" aria-hidden="true">!</div>
+      <h2 id="forget-title">Forget this Studio session?</h2>
+      <p>This clears only the detached Studio view. It does not forget or modify any MemoryOS source.</p>
+      <div class="dialog-actions">
+        <button class="button secondary" value="cancel">Cancel</button>
+        <button class="button danger" value="confirm">Forget session</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
