@@ -61,4 +61,6 @@ observation paths, and explanation-chain boundaries.
 
 - [Public API and behavior](docs/memory-studio.md)
 - [Requirement and test evidence](docs/memory-studio-conformance-evidence.md)
+- [MemoryOS 1.0 launch demo production package](docs/memoryos-1.0-launch-demo-production-package.md)
+- [GitHub screenshot specification](docs/github-screenshot-specification.md)
 - [C++ example](examples/memory_studio_usage.cpp)
