@@ -5797,6 +5797,422 @@ body:has(.neural-interface) {
   }
 }
 
+/* MemoryOS 1.1 Sprint 3: Living Connectome investigation identity.
+   This layer changes only the presentation of the immutable semantic world and
+   validated Cognitive Trace references. It contains no inferred activity. */
+.cognitive-regions {
+  pointer-events: none;
+}
+
+.cognitive-region {
+  color: #658096;
+  opacity: .28;
+  transition: opacity 160ms ease;
+}
+
+.cognitive-region-boundary {
+  fill: rgb(5 20 31 / 36%);
+  stroke: currentcolor;
+  stroke-width: .75;
+  stroke-dasharray: 2 5;
+  vector-effect: non-scaling-stroke;
+}
+
+.cognitive-region-label {
+  fill: currentcolor;
+  font-size: 7px;
+  font-weight: 720;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.cognitive-region-motif {
+  fill: none;
+  stroke: currentcolor;
+  stroke-width: .75;
+  opacity: .48;
+}
+
+.region-working { color: #15c7df; }
+.region-long-term { color: #72d96f; }
+.region-semantic { color: #8c62ff; }
+.region-retrieval { color: #00c7c7; }
+.region-reflection { color: #e85ad6; }
+.region-providers { color: #8da0b6; }
+.region-validation { color: #38d996; }
+
+.has-active-trace .cognitive-region {
+  opacity: .09;
+}
+
+.has-active-trace .cognitive-region.is-trace-region {
+  opacity: .62;
+}
+
+.has-active-trace .cognitive-region.is-trace-region .cognitive-region-boundary {
+  fill: rgb(7 22 34 / 55%);
+  stroke-width: 1.25;
+  stroke-dasharray: none;
+}
+
+.cognitive-trace-routes {
+  display: none;
+}
+
+.has-active-trace .cognitive-trace-routes {
+  display: block;
+}
+
+.cognitive-trace-route {
+  fill: none;
+  stroke: #c7e9ff;
+  stroke-width: 5.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-opacity: .18;
+  vector-effect: non-scaling-stroke;
+  animation: none !important;
+}
+
+#cognitive-trace-arrow path {
+  fill: #d8f2ff;
+  opacity: .72;
+}
+
+.route-origin-evidence { stroke: #72d96f; }
+.route-semantic-transformation { stroke: #a985ff; }
+.route-retrieval { stroke: #32d8d2; }
+.route-reflection-current { stroke: #f06ddd; }
+
+.has-active-trace .graph-edge-base.is-trace-relationship {
+  stroke-width: 1.4 !important;
+  stroke-opacity: .82 !important;
+  filter: none !important;
+}
+
+.has-active-trace .graph-edge-flow.is-trace-relationship {
+  stroke-width: .7 !important;
+  stroke-opacity: .65 !important;
+}
+
+.has-active-trace .graph-node.is-trace-dimmed {
+  opacity: .035 !important;
+  filter: grayscale(.8) brightness(.55) !important;
+}
+
+.has-active-trace .graph-node.is-trace-step .graph-node-body {
+  filter: none !important;
+  stroke-width: 2.7 !important;
+}
+
+.has-active-trace .graph-node.is-trace-step .graph-node-halo {
+  opacity: .16 !important;
+  filter: none !important;
+}
+
+.has-active-trace .graph-node.is-trace-origin .graph-node-body {
+  stroke-width: 4 !important;
+  stroke-dasharray: 2.5 1.5;
+}
+
+.has-active-trace .graph-node.is-trace-target .graph-node-body {
+  stroke-width: 4.6 !important;
+}
+
+.cognitive-trace-waypoint {
+  fill: #dff4ff;
+  font-size: 6px;
+  font-weight: 850;
+  letter-spacing: .18em;
+  paint-order: stroke;
+  stroke: #01070d;
+  stroke-width: 2.5px;
+}
+
+.has-active-trace .graph-node.is-journey-upcoming {
+  opacity: .4 !important;
+}
+
+.has-active-trace .graph-node.is-journey-complete {
+  opacity: .68 !important;
+}
+
+.has-active-trace .graph-node.is-journey-current {
+  opacity: 1 !important;
+}
+
+.has-active-trace .graph-node.is-journey-current .graph-node-body {
+  stroke: #fff !important;
+  stroke-width: 4.8 !important;
+}
+
+.has-investigation .neural-signal-ribbon {
+  width: min(660px, calc(100vw - 320px));
+  border-color: rgb(111 157 187 / 25%);
+  background: rgb(3 14 23 / 68%);
+}
+
+.trace-signal-ribbon > span {
+  min-width: 112px;
+}
+
+.has-investigation .neural-flow-ribbon,
+.has-investigation .graph-legend,
+.has-investigation .graph-accessible-list {
+  opacity: .18;
+}
+
+.has-investigation .neural-context {
+  right: 18px;
+  bottom: 118px;
+  width: min(250px, 22vw);
+  max-height: 270px;
+  overflow: auto;
+  border-color: rgb(89 131 158 / 22%);
+  background: rgb(2 11 18 / 72%);
+  box-shadow: 0 16px 44px rgb(0 0 0 / 22%);
+}
+
+.has-investigation .neural-selection .key-value-list,
+.has-investigation .neural-selection .inspector-card,
+.has-investigation .neural-selection .selection-actions {
+  display: none;
+}
+
+.has-investigation .neural-selection {
+  gap: 8px;
+}
+
+.has-investigation .selection-identity {
+  padding: 9px;
+}
+
+.topology-interface.has-active-trace .graph-toolbar {
+  gap: 4px;
+  padding: 5px;
+  border-color: rgb(92 141 172 / 32%);
+  background: rgb(2 12 20 / 82%);
+}
+
+.trace-journey-controls {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  margin-right: 3px;
+  padding-right: 7px;
+  border-right: 1px solid rgb(74 113 140 / 35%);
+}
+
+.trace-journey-position {
+  min-width: 52px;
+  color: #d9effd;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.topology-interface.has-active-trace .graph-tool[aria-label="Follow selected node"] {
+  border-color: rgb(232 90 214 / 45%);
+  color: #ffd8fa;
+}
+
+.topology-interface.has-active-trace .cognitive-trace-accessible-list {
+  bottom: 104px;
+}
+
+@media (max-width: 900px) {
+  .has-investigation .neural-signal-ribbon {
+    width: calc(100vw - 120px);
+  }
+
+  .has-investigation .neural-context {
+    display: none;
+  }
+
+  .trace-journey-controls .graph-tool {
+    min-width: 54px;
+  }
+}
+
+/* MemoryOS 1.1 Sprint 2: immutable Cognitive Trace emphasis.
+   Trace mode is a static rendering of validated observation references. */
+.neural-world .memory-intelligence-graph.has-active-trace .topology-microstructure,
+.neural-world .memory-intelligence-graph.has-active-trace .topology-synapse {
+  opacity: .035 !important;
+}
+
+.neural-world .memory-intelligence-graph.has-active-trace .graph-node.is-trace-dimmed {
+  opacity: .09 !important;
+  filter: saturate(.3) brightness(.7);
+}
+
+.neural-world .memory-intelligence-graph.has-active-trace .graph-node.is-trace-dimmed:focus-visible,
+.neural-world .memory-intelligence-graph.has-active-trace .graph-node.is-trace-dimmed:hover {
+  opacity: .62 !important;
+  filter: saturate(.72) brightness(.9);
+}
+
+.neural-world .memory-intelligence-graph.has-active-trace .graph-node.is-trace-step {
+  opacity: 1 !important;
+  filter: none !important;
+  pointer-events: auto !important;
+}
+
+.neural-world .memory-intelligence-graph.has-active-trace .graph-node.is-trace-step .graph-node-body {
+  stroke-width: 3.2;
+  filter: url(#node-glow);
+}
+
+.neural-world .memory-intelligence-graph.has-active-trace .graph-node.is-trace-step .graph-node-halo {
+  opacity: .34;
+}
+
+.neural-world .memory-intelligence-graph.has-active-trace .graph-node.is-trace-target .graph-node-body {
+  stroke-width: 4;
+}
+
+.neural-world .memory-intelligence-graph.has-active-trace .graph-node.is-trace-target .graph-node-halo {
+  opacity: .5;
+}
+
+.neural-world .memory-intelligence-graph.has-active-trace .graph-edge-base.is-trace-dimmed,
+.neural-world .memory-intelligence-graph.has-active-trace .graph-edge-flow.is-trace-dimmed {
+  stroke-opacity: .018 !important;
+}
+
+.neural-world .memory-intelligence-graph.has-active-trace .graph-edge-base.is-trace-relationship {
+  stroke-width: 3 !important;
+  stroke-opacity: .94 !important;
+  stroke-dasharray: none !important;
+  filter: drop-shadow(0 0 5px currentcolor);
+}
+
+.neural-world .memory-intelligence-graph.has-active-trace .graph-edge-flow.is-trace-relationship {
+  stroke-width: 1.35 !important;
+  stroke-opacity: .76 !important;
+  stroke-dasharray: none !important;
+}
+
+.neural-world .memory-intelligence-graph.has-active-trace .is-trace-relationship,
+.neural-world .memory-intelligence-graph.has-active-trace .is-trace-step * {
+  animation: none !important;
+}
+
+.cognitive-trace-marker circle {
+  fill: #04131f;
+  stroke: #d9f3ff;
+  stroke-width: 1.2;
+  filter: drop-shadow(0 0 4px rgb(85 190 255 / 72%));
+}
+
+.cognitive-trace-marker text {
+  fill: #f1fbff;
+  font-size: 5.8px;
+  font-weight: 800;
+  letter-spacing: -.2px;
+}
+
+.neural-world .memory-intelligence-graph.has-active-trace .cognitive-trace-node-label {
+  fill: #eef9ff;
+  font-size: 8.5px;
+  font-weight: 720;
+  opacity: 1;
+  paint-order: stroke;
+  stroke: #01070d;
+  stroke-width: 2.4px;
+}
+
+.graph-node[data-trace-role="origin-evidence"] .cognitive-trace-marker circle,
+.cognitive-trace-marker-entry[data-trace-role="origin-evidence"] circle {
+  stroke: #72d96f;
+}
+
+.graph-node[data-trace-role="semantic-transformation"] .cognitive-trace-marker circle,
+.cognitive-trace-marker-entry[data-trace-role="semantic-transformation"] circle {
+  stroke: #a985ff;
+}
+
+.graph-node[data-trace-role="retrieval"] .cognitive-trace-marker circle,
+.cognitive-trace-marker-entry[data-trace-role="retrieval"] circle {
+  stroke: #32d8d2;
+}
+
+.graph-node[data-trace-role="reflection-current"] .cognitive-trace-marker circle,
+.cognitive-trace-marker-entry[data-trace-role="reflection-current"] circle {
+  stroke: #f06ddd;
+  stroke-width: 1.8;
+}
+
+.cognitive-trace-accessible-list {
+  position: absolute;
+  z-index: 12;
+  right: 142px;
+  bottom: 123px;
+  color: #b8d8eb;
+  font-size: 11px;
+}
+
+.cognitive-trace-accessible-list > summary {
+  padding: 5px 9px;
+  border: 1px solid rgb(232 90 214 / 38%);
+  border-radius: 999px;
+  background: rgb(21 8 31 / 78%);
+  cursor: pointer;
+  list-style-position: inside;
+  backdrop-filter: blur(12px);
+}
+
+.trace-diagnostic {
+  display: grid;
+  gap: 4px;
+  margin: 10px 0;
+  padding: 10px 12px;
+  border: 1px solid rgb(255 166 71 / 34%);
+  border-radius: 10px;
+  background: rgb(47 24 8 / 54%);
+  color: #ffd7a3;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.trace-diagnostic strong {
+  color: #ffb764;
+  font-size: 10px;
+  letter-spacing: .08em;
+}
+
+.cognitive-trace-accessible-list[open] {
+  width: min(360px, calc(100vw - 32px));
+  max-height: 240px;
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid rgb(232 90 214 / 32%);
+  border-radius: 10px;
+  background: rgb(3 13 23 / 94%);
+  box-shadow: 0 18px 48px rgb(0 0 0 / 45%);
+}
+
+.cognitive-trace-accessible-list ol {
+  margin: 9px 0 0;
+  padding-left: 22px;
+}
+
+.cognitive-trace-accessible-list button {
+  border: 0;
+  background: transparent;
+  color: #c4dcec;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+@media (max-width: 720px) {
+  .cognitive-trace-accessible-list {
+    right: 10px;
+    bottom: 167px;
+  }
+}
+
 @media print {
   .topbar,
   .sidebar,
@@ -5822,5 +6238,85 @@ body:has(.neural-interface) {
     background: white;
     color: black;
     box-shadow: none;
+  }
+}
+
+/* MemoryOS 1.1: deterministic observation motion.
+   The detached topology is static. Motion is reserved for accepted observation
+   deltas and direct camera interaction; route changes never manufacture activity. */
+.neural-world .graph-edge-base,
+.neural-world .graph-edge-flow,
+.neural-world .topology-flow,
+.neural-world .topology-synapse,
+.neural-world .topology-micro-node,
+.neural-world .graph-node,
+.neural-world .graph-node-halo,
+.neural-world .graph-node-core,
+.neural-world .graph-node-pulse,
+.neural-world .graph-identity-mark::after,
+.neural-world .graph-live-state i,
+.neural-world .reflection-glyph,
+.neural-world .neural-reflection-beacon::after,
+.neural-world .neural-flow-ribbon a > i {
+  animation: none !important;
+}
+
+.neural-world .graph-edge-base {
+  stroke-dashoffset: 0;
+}
+
+.neural-world .topology-camera {
+  transition: transform 220ms cubic-bezier(.2, .72, .25, 1);
+}
+
+.neural-world .topology-interface.is-dragging .topology-camera {
+  transition: none;
+}
+
+.topology-node.is-followed .graph-node-halo {
+  opacity: .3;
+  filter: drop-shadow(0 0 8px var(--node-aura));
+}
+
+.topology-node.is-followed .graph-node-body {
+  stroke-width: 3.4;
+}
+
+.topology-node.is-followed .graph-node-pulse {
+  opacity: .42;
+}
+
+.topology-interface .graph-tool[aria-label="Follow selected node"].is-active {
+  border-color: rgb(72 184 255 / 62%);
+  background: rgb(19 104 165 / 28%);
+  color: #ccecff;
+}
+
+.neural-world .graph-edge-base.is-observed-activity,
+.neural-world .graph-edge-flow.is-observed-activity {
+  animation: observed-edge-delta 760ms cubic-bezier(.16, .76, .25, 1) 1 both !important;
+}
+
+.neural-world .graph-node.is-observed-activity .graph-node-pulse {
+  animation: observed-node-delta 760ms cubic-bezier(.16, .76, .25, 1) 1 both !important;
+}
+
+@keyframes observed-edge-delta {
+  0% { stroke-opacity: 0; stroke-dashoffset: 1; }
+  46% { stroke-opacity: .95; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes observed-node-delta {
+  0% { opacity: .08; transform: scale(.76); }
+  54% { opacity: .68; transform: scale(1.24); }
+  100% { opacity: .22; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neural-world .graph-edge-base.is-observed-activity,
+  .neural-world .graph-edge-flow.is-observed-activity,
+  .neural-world .graph-node.is-observed-activity .graph-node-pulse {
+    animation: none !important;
   }
 }

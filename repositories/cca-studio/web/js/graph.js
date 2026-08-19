@@ -1,19 +1,13 @@
-const viewBox = Object.freeze({ width: 960, height: 540, centerX: 480, centerY: 270 });
+import { semanticWorldLayout, stableWorldHash as stableHash } from "./semantic-world.js";
+import {
+  createGraphViewState,
+  endGraphFollow,
+  reconcileGraphViewState,
+  selectGraphNode,
+  toggleGraphFollow,
+} from "./graph-view-state.js";
 
-const topologyAnchors = Object.freeze({
-  workspace: [470, 265],
-  memory: [310, 295],
-  validation: [300, 225],
-  "long-term": [395, 195],
-  semantic: [500, 175],
-  episodic: [600, 205],
-  procedural: [650, 280],
-  retrieval: [565, 275],
-  reflection: [535, 340],
-  providers: [485, 390],
-  consolidation: [420, 335],
-  working: [350, 345],
-});
+const viewBox = semanticWorldLayout.viewBox;
 
 const palettes = Object.freeze({
   workspace: ["#1688ff", "#071b31"],
@@ -61,14 +55,29 @@ const perspectiveKinds = Object.freeze({
   validation: "validation",
 });
 
-function stableHash(value) {
-  let hash = 2166136261;
-  for (const character of String(value)) {
-    hash ^= character.codePointAt(0);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
+const traceRoleOrder = Object.freeze([
+  "origin-evidence",
+  "semantic-transformation",
+  "retrieval",
+  "reflection-current",
+]);
+
+const traceRoleLabels = Object.freeze({
+  "origin-evidence": "Evidence",
+  "semantic-transformation": "Transform",
+  retrieval: "Retrieve",
+  "reflection-current": "Outcome",
+});
+
+export const cognitiveRegionDefinitions = Object.freeze([
+  Object.freeze({ kind: "validation", label: "Validation", signature: "boundary", x: 300, y: 225, width: 92, height: 76 }),
+  Object.freeze({ kind: "long-term", label: "Long-Term", signature: "archive", x: 395, y: 195, width: 116, height: 82 }),
+  Object.freeze({ kind: "semantic", label: "Semantic", signature: "lattice", x: 500, y: 175, width: 116, height: 78 }),
+  Object.freeze({ kind: "retrieval", label: "Retrieval", signature: "corridor", x: 565, y: 275, width: 102, height: 58 }),
+  Object.freeze({ kind: "reflection", label: "Reflection", signature: "convergence", x: 535, y: 340, width: 124, height: 88 }),
+  Object.freeze({ kind: "working", label: "Working", signature: "buffer", x: 350, y: 345, width: 108, height: 66 }),
+  Object.freeze({ kind: "providers", label: "Providers", signature: "ports", x: 485, y: 390, width: 112, height: 60 }),
+]);
 
 function clamp(value, minimum, maximum) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -81,112 +90,19 @@ function pointWithinViewport(point) {
   };
 }
 
-function orderedAroundCenter(nodes, degreeByKey) {
-  return [...nodes].sort((left, right) => {
-    const degreeDifference = (degreeByKey.get(right.key) ?? 0) - (degreeByKey.get(left.key) ?? 0);
-    if (degreeDifference !== 0) return degreeDifference;
-    return left.key.localeCompare(right.key);
-  });
-}
-
-function fanPosition(anchor, index, count, radius, spread = Math.PI * 2) {
-  const outward = Math.atan2(anchor[1] - viewBox.centerY, anchor[0] - viewBox.centerX);
-  const offset = count <= 1 ? 0 : (index / count) * spread;
-  return pointWithinViewport({
-    x: anchor[0] + (Math.cos(outward + offset) * radius),
-    y: anchor[1] + (Math.sin(outward + offset) * radius),
-  });
-}
-
-function layoutNodes(nodes, edges) {
-  const byKey = new Map(nodes.map((node) => [node.key, node]));
-  const positioned = new Map();
-  const degreeByKey = new Map(nodes.map((node) => [node.key, 0]));
-  const aggregateByKind = new Map();
-  const nestedParentByKey = new Map();
-
-  edges.forEach((edge) => {
-    degreeByKey.set(edge.from, (degreeByKey.get(edge.from) ?? 0) + 1);
-    degreeByKey.set(edge.to, (degreeByKey.get(edge.to) ?? 0) + 1);
-    const parent = byKey.get(edge.from);
-    if (edge.relation === "contains" && parent && !parent.aggregate) {
-      nestedParentByKey.set(edge.to, edge.from);
-    }
-  });
-
-  nodes.forEach((node) => {
-    if (node.kind === "workspace") {
-      positioned.set(node.key, { ...node, x: topologyAnchors.workspace[0], y: topologyAnchors.workspace[1] });
-      return;
-    }
-    if (!node.aggregate) return;
-    aggregateByKind.set(node.kind, node);
-    const anchor = topologyAnchors[node.kind] ?? topologyAnchors.workspace;
-    positioned.set(node.key, { ...node, x: anchor[0], y: anchor[1] });
-  });
-
-  aggregateByKind.forEach((aggregate, kind) => {
-    const anchor = topologyAnchors[kind] ?? topologyAnchors.workspace;
-    const members = nodes.filter((node) => node.kind === kind
-      && node.key !== aggregate.key
-      && !nestedParentByKey.has(node.key));
-    const ordered = orderedAroundCenter(members, degreeByKey);
-    const radius = ordered.length > 5 ? 58 : ordered.length > 2 ? 51 : 43;
-    ordered.forEach((node, index) => {
-      positioned.set(node.key, { ...node, ...fanPosition(anchor, index, ordered.length, radius) });
-    });
-  });
-
-  const nestedByParent = new Map();
-  nestedParentByKey.forEach((parentKey, childKey) => {
-    const children = nestedByParent.get(parentKey) ?? [];
-    children.push(byKey.get(childKey));
-    nestedByParent.set(parentKey, children);
-  });
-  nestedByParent.forEach((children, parentKey) => {
-    const parent = positioned.get(parentKey);
-    if (!parent) return;
-    const outward = Math.atan2(parent.y - viewBox.centerY, parent.x - viewBox.centerX);
-    const ordered = orderedAroundCenter(children.filter(Boolean), degreeByKey);
-    ordered.forEach((node, index) => {
-      const offset = ordered.length <= 1 ? 0 : ((index / (ordered.length - 1)) - .5) * 1.35;
-      const radius = 24 + Math.min(12, ordered.length * 2);
-      positioned.set(node.key, {
-        ...node,
-        ...pointWithinViewport({
-          x: parent.x + (Math.cos(outward + offset) * radius),
-          y: parent.y + (Math.sin(outward + offset) * radius),
-        }),
-      });
-    });
-  });
-
-  const unplaced = nodes.filter((node) => !positioned.has(node.key));
-  unplaced.forEach((node, index) => {
-    const angle = ((index / Math.max(unplaced.length, 1)) * Math.PI * 2) - (Math.PI / 2);
-    positioned.set(node.key, {
-      ...node,
-      x: viewBox.centerX + (Math.cos(angle) * 195),
-      y: viewBox.centerY + (Math.sin(angle) * 145),
-    });
-  });
-
-  return nodes.map((node) => positioned.get(node.key));
-}
-
 function svgElement(name, attributes = {}) {
   const element = document.createElementNS("http://www.w3.org/2000/svg", name);
   Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, String(value)));
   return element;
 }
 
-function curvedEdge(from, to, edge, edgeIndex) {
+function curvedEdge(from, to, edge) {
   const dx = to.x - from.x;
   const dy = to.y - from.y;
   const distance = Math.max(1, Math.hypot(dx, dy));
   const normalX = -dy / distance;
   const normalY = dx / distance;
-  const direction = stableHash(`${edge.from}|${edge.to}|${edge.relation}|${edgeIndex}`) % 2 === 0 ? 1 : -1;
+  const direction = stableHash(edge.key ?? `${edge.from}|${edge.to}|${edge.relation}`) % 2 === 0 ? 1 : -1;
   const bend = clamp(distance * .13, 9, edge.relation === "contains" ? 28 : 48) * direction;
   const controlX = ((from.x + to.x) / 2) + (normalX * bend);
   const controlY = ((from.y + to.y) / 2) + (normalY * bend);
@@ -207,24 +123,13 @@ function pointOnEdge(from, to, geometry, t) {
   };
 }
 
-function edgeFlowKind(edge, from, to) {
-  if (edge.relation === "evidence") return "evidence";
-  if (edge.relation === "contributes" && to.kind === "reflection") return "reflection";
-  if (from.kind === "retrieval" || to.kind === "retrieval") {
-    if (edge.relation !== "contains" || (!from.aggregate && !to.aggregate)) return "retrieval";
-  }
-  if (edge.relation === "contributes" && (from.kind === "consolidation" || to.kind === "consolidation")) return "consolidation";
-  if (edge.relation === "links") return "association";
-  return null;
-}
-
 function flowAppearance(kind) {
   const appearances = {
-    evidence: { color: "#59d998", duration: 5.2, opacity: .62 },
-    retrieval: { color: "#32d8d2", duration: 2.7, opacity: .82 },
-    reflection: { color: "#f06ddd", duration: 3.15, opacity: .9 },
-    consolidation: { color: "#67d17a", duration: 4.4, opacity: .7 },
-    association: { color: "#75a9d6", duration: 7.2, opacity: .38 },
+    evidence: { color: "#59d998", opacity: .62 },
+    retrieval: { color: "#32d8d2", opacity: .82 },
+    reflection: { color: "#f06ddd", opacity: .9 },
+    consolidation: { color: "#67d17a", opacity: .7 },
+    association: { color: "#75a9d6", opacity: .38 },
   };
   return appearances[kind];
 }
@@ -236,26 +141,231 @@ function normalizePerspective(perspective) {
     : "complete";
 }
 
-export function renderGraph(container, graph, onSelect, { perspective = "complete" } = {}) {
+function regionOutline(definition) {
+  const { x, y, width, height, signature } = definition;
+  const left = x - (width / 2);
+  const right = x + (width / 2);
+  const top = y - (height / 2);
+  const bottom = y + (height / 2);
+  if (signature === "lattice") {
+    return `M ${left + 14} ${top} L ${right - 14} ${top} L ${right} ${y} L ${right - 14} ${bottom} L ${left + 14} ${bottom} L ${left} ${y} Z`;
+  }
+  if (signature === "corridor") {
+    return `M ${left + 12} ${top} L ${right} ${top} L ${right - 12} ${bottom} L ${left} ${bottom} Z`;
+  }
+  if (signature === "convergence") {
+    return `M ${x} ${top} L ${right} ${y} L ${x} ${bottom} L ${left} ${y} Z`;
+  }
+  if (signature === "boundary") {
+    return `M ${x} ${top} L ${right} ${top + 16} L ${right - 8} ${bottom - 13} L ${x} ${bottom} L ${left + 8} ${bottom - 13} L ${left} ${top + 16} Z`;
+  }
+  const radius = signature === "buffer" ? height / 2 : 10;
+  return `M ${left + radius} ${top} H ${right - radius} Q ${right} ${top} ${right} ${top + radius} V ${bottom - radius} Q ${right} ${bottom} ${right - radius} ${bottom} H ${left + radius} Q ${left} ${bottom} ${left} ${bottom - radius} V ${top + radius} Q ${left} ${top} ${left + radius} ${top} Z`;
+}
+
+function appendRegionMotif(group, definition) {
+  const { x, y, width, height, signature } = definition;
+  const motif = svgElement("g", { class: `cognitive-region-motif motif-${signature}`, "aria-hidden": "true" });
+  if (signature === "archive") {
+    [-.2, .12].forEach((offset) => motif.append(svgElement("line", {
+      x1: x - (width * .34), y1: y + (height * offset), x2: x + (width * .34), y2: y + (height * offset),
+    })));
+  } else if (signature === "lattice") {
+    motif.append(
+      svgElement("line", { x1: x - 24, y1: y + 18, x2: x, y2: y - 18 }),
+      svgElement("line", { x1: x, y1: y - 18, x2: x + 25, y2: y + 16 }),
+      svgElement("line", { x1: x - 24, y1: y + 18, x2: x + 25, y2: y + 16 }),
+    );
+  } else if (signature === "corridor") {
+    motif.append(
+      svgElement("line", { x1: x - 25, y1: y, x2: x + 24, y2: y }),
+      svgElement("path", { d: `M ${x + 16} ${y - 6} L ${x + 25} ${y} L ${x + 16} ${y + 6}` }),
+    );
+  } else if (signature === "convergence") {
+    motif.append(
+      svgElement("line", { x1: x - 30, y1: y - 18, x2: x, y2: y }),
+      svgElement("line", { x1: x - 30, y1: y + 18, x2: x, y2: y }),
+      svgElement("circle", { cx: x, cy: y, r: 5 }),
+    );
+  } else if (signature === "buffer") {
+    [-18, 0, 18].forEach((offset) => motif.append(svgElement("rect", {
+      x: x + offset - 5, y: y - 5, width: 10, height: 10, rx: 2,
+    })));
+  } else if (signature === "ports") {
+    [-24, 0, 24].forEach((offset) => motif.append(svgElement("line", {
+      x1: x + offset, y1: y + (height * .26), x2: x + offset, y2: y + (height * .43),
+    })));
+  } else if (signature === "boundary") {
+    motif.append(svgElement("path", { d: `M ${x - 12} ${y} L ${x - 3} ${y + 9} L ${x + 15} ${y - 12}` }));
+  }
+  group.append(motif);
+}
+
+export function prepareTraceJourney(renderingState) {
+  if (!renderingState?.active) return Object.freeze([]);
+  const seen = new Set();
+  const steps = [];
+  traceRoleOrder.forEach((role) => {
+    renderingState.orderedSteps
+      .filter((step) => step.role === role)
+      .forEach((step) => {
+        if (seen.has(step.nodeKey)) return;
+        seen.add(step.nodeKey);
+        steps.push(Object.freeze({ ...step, journeyIndex: steps.length }));
+      });
+  });
+  return Object.freeze(steps);
+}
+
+export function prepareTraceRenderingState(world, trace = null) {
+  const inactive = Object.freeze({
+    active: false,
+    identifier: null,
+    targetNodeKey: null,
+    nodeKeys: Object.freeze([]),
+    edgeKeys: Object.freeze([]),
+    nodeRecords: Object.freeze([]),
+    orderedSteps: Object.freeze([]),
+  });
+  if (trace === null || trace === undefined) return inactive;
+  if (!world || !trace || trace.kind !== "MemoryOSCognitiveTrace" || trace.version !== "1.1") {
+    throw new TypeError("A MemoryOS 1.1 Cognitive Trace is required for Trace mode.");
+  }
+  if (trace.frameIdentifier !== world.frame?.identifier) {
+    throw new TypeError("The Cognitive Trace is not bound to the rendered semantic-world frame.");
+  }
+  const worldNodes = new Map(world.nodes.map((node) => [node.key, node]));
+  const worldEdges = new Map(world.edges.map((edge) => [edge.key, edge]));
+  const nodeRecords = new Map();
+  const edgeKeys = new Set();
+  const orderedSteps = [];
+
+  trace.branches.forEach((branch, branchIndex) => {
+    branch.steps.forEach((step, stepIndex) => {
+      const node = worldNodes.get(step.nodeKey);
+      if (!node) throw new TypeError(`Cognitive Trace node '${step.nodeKey}' is absent from the rendered world.`);
+      if (step.edgeKey !== null) {
+        const edge = worldEdges.get(step.edgeKey);
+        if (!edge) throw new TypeError(`Cognitive Trace relationship '${step.edgeKey}' is absent from the rendered world.`);
+        edgeKeys.add(step.edgeKey);
+      }
+      const ordinalLabel = `${branchIndex + 1}.${stepIndex + 1}`;
+      const record = Object.freeze({
+        branch: branchIndex + 1,
+        step: stepIndex + 1,
+        ordinalLabel,
+        role: step.role,
+        nodeKey: step.nodeKey,
+        edgeKey: step.edgeKey,
+        direction: step.direction,
+      });
+      orderedSteps.push(record);
+      const memberships = nodeRecords.get(step.nodeKey) ?? [];
+      memberships.push(record);
+      nodeRecords.set(step.nodeKey, memberships);
+    });
+  });
+  if (!worldNodes.has(trace.targetNodeKey) || !nodeRecords.has(trace.targetNodeKey)) {
+    throw new TypeError("The Cognitive Trace target is absent from the rendered world.");
+  }
+  const frozenNodeRecords = Object.freeze([...nodeRecords.entries()].map(([nodeKey, memberships]) => {
+    const frozenMemberships = Object.freeze([...memberships]);
+    const primary = frozenMemberships[0];
+    return Object.freeze({
+      ...primary,
+      nodeKey,
+      ordinalLabel: frozenMemberships.map(({ ordinalLabel }) => ordinalLabel).join(", "),
+      roles: Object.freeze([...new Set(frozenMemberships.map(({ role }) => role))]),
+      memberships: frozenMemberships,
+    });
+  }));
+  return Object.freeze({
+    active: true,
+    identifier: trace.identifier,
+    targetNodeKey: trace.targetNodeKey,
+    nodeKeys: Object.freeze(frozenNodeRecords.map(({ nodeKey }) => nodeKey)),
+    edgeKeys: Object.freeze([...edgeKeys]),
+    nodeRecords: frozenNodeRecords,
+    orderedSteps: Object.freeze(orderedSteps),
+  });
+}
+
+export function renderGraph(
+  container,
+  world,
+  onSelect,
+  {
+    perspective = "complete",
+    viewState = {},
+    activity = {},
+    trace = null,
+    onViewStateChange = null,
+  } = {},
+) {
   const activePerspective = normalizePerspective(perspective);
-  const identity = graph.identity ?? "Memory intelligence graph";
-  const graphDescription = graph.description ?? "One interactive topology of MemoryOS cognitive state.";
-  const positioned = layoutNodes(graph.nodes, graph.edges);
+  const identity = world.identity ?? "Memory intelligence graph";
+  const graphDescription = world.description ?? "One interactive topology of MemoryOS cognitive state.";
+  const positioned = world.nodes;
   const byId = new Map(positioned.map((node) => [node.key, node]));
+  const incomingViewState = createGraphViewState(viewState);
+  const reconciledViewState = reconcileGraphViewState(world, incomingViewState);
+  const viewStateWasReconciled = incomingViewState.selectedKey !== reconciledViewState.selectedKey
+    || incomingViewState.followedKey !== reconciledViewState.followedKey;
+  const activeNodeKeys = new Set(activity.nodeKeys ?? []);
+  const activeEdgeKeys = new Set(activity.edgeKeys ?? []);
+  const traceState = prepareTraceRenderingState(world, trace);
+  const traceNodeKeys = new Set(traceState.nodeKeys);
+  const traceEdgeKeys = new Set(traceState.edgeKeys);
+  const traceNodeRecords = new Map(traceState.nodeRecords.map((record) => [record.nodeKey, record]));
+  const traceJourney = prepareTraceJourney(traceState);
+  const traceJourneyIndex = new Map(traceJourney.map((step) => [step.nodeKey, step.journeyIndex]));
+  const traceRegionKinds = new Set(traceJourney.map((step) => byId.get(step.nodeKey)?.kind).filter(Boolean));
   const shell = document.createElement("div");
   shell.className = "knowledge-graph topology-interface memory-intelligence-graph";
   shell.dataset.perspective = activePerspective;
   shell.dataset.graphIdentity = "memory-intelligence-graph";
+  shell.dataset.layout = world.layout?.identifier ?? "unidentified-layout";
+  shell.dataset.frame = world.frame?.identifier ?? "unidentified-frame";
+  shell.dataset.traceMode = traceState.active ? "active" : "inactive";
+  if (traceState.active) {
+    shell.dataset.traceIdentifier = traceState.identifier;
+    shell.classList.add("has-active-trace");
+  }
   shell.setAttribute("role", "region");
   shell.setAttribute("aria-label", identity);
 
-  let interactionMode = "select";
-  let selectedKey = null;
+  let interactionMode = reconciledViewState.interactionMode;
+  let selectedKey = reconciledViewState.selectedKey;
+  let followedKey = reconciledViewState.followedKey;
   let previewKey = null;
-  let filteredKind = null;
+  let filteredKind = layerDefinitions.some(([kind]) => kind === reconciledViewState.filteredKind)
+    ? reconciledViewState.filteredKind
+    : null;
   let dragging = false;
   let dragOrigin = null;
-  const camera = { scale: 1, x: 0, y: 0 };
+  const camera = {
+    scale: clamp(reconciledViewState.camera.scale, .75, 2.5),
+    x: reconciledViewState.camera.x,
+    y: reconciledViewState.camera.y,
+  };
+  let followButton = null;
+  const emitViewState = () => {
+    if (typeof onViewStateChange !== "function") return;
+    onViewStateChange({
+      selectedKey,
+      followedKey,
+      filteredKind,
+      interactionMode,
+      camera: { ...camera },
+    });
+  };
+  const currentViewState = () => ({
+    selectedKey,
+    followedKey,
+    filteredKind,
+    interactionMode,
+    camera: { ...camera },
+  });
 
   const svg = svgElement("svg", {
     class: "graph-surface topology-surface",
@@ -267,7 +377,9 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
   const title = svgElement("title", { id: "graph-title" });
   title.textContent = identity;
   const description = svgElement("desc", { id: "graph-description" });
-  description.textContent = graphDescription;
+  description.textContent = traceState.active
+    ? `${graphDescription} Cognitive Trace mode is active with ${traceState.orderedSteps.length} ordered observations across ${trace.branches.length} evidence branches.`
+    : graphDescription;
   svg.append(title, description);
 
   const defs = svgElement("defs");
@@ -277,17 +389,48 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
   merge.append(svgElement("feMergeNode", { in: "blur" }), svgElement("feMergeNode", { in: "SourceGraphic" }));
   filter.append(merge);
   defs.append(filter);
+  const routeMarker = svgElement("marker", {
+    id: "cognitive-trace-arrow",
+    viewBox: "0 0 10 10",
+    refX: "8",
+    refY: "5",
+    markerWidth: "5",
+    markerHeight: "5",
+    orient: "auto-start-reverse",
+  });
+  routeMarker.append(svgElement("path", { d: "M 1 1 L 9 5 L 1 9 Z" }));
+  defs.append(routeMarker);
   svg.append(defs);
 
   const scene = svgElement("g", { class: "graph-camera topology-camera" });
+  const regions = svgElement("g", { class: "cognitive-regions", "aria-hidden": "true" });
+  cognitiveRegionDefinitions.forEach((definition) => {
+    const region = svgElement("g", {
+      class: `cognitive-region region-${definition.kind}${traceRegionKinds.has(definition.kind) ? " is-trace-region" : ""}`,
+      "data-region-kind": definition.kind,
+      "data-region-signature": definition.signature,
+    });
+    region.append(svgElement("path", { class: "cognitive-region-boundary", d: regionOutline(definition) }));
+    appendRegionMotif(region, definition);
+    const label = svgElement("text", {
+      class: "cognitive-region-label",
+      x: definition.x - (definition.width / 2) + 8,
+      y: definition.y - (definition.height / 2) - 7,
+    });
+    label.textContent = definition.label;
+    region.append(label);
+    regions.append(region);
+  });
+  scene.append(regions);
   const edges = svgElement("g", { class: "graph-edges topology-edges", "aria-hidden": "true" });
+  const traceRoutes = svgElement("g", { class: "cognitive-trace-routes", "aria-hidden": "true" });
   const edgeRecords = [];
-  graph.edges.forEach((edge, edgeIndex) => {
+  world.edges.forEach((edge, edgeIndex) => {
     const from = byId.get(edge.from);
     const to = byId.get(edge.to);
     if (!from || !to) return;
-    const geometry = curvedEdge(from, to, edge, edgeIndex);
-    const flowKind = edgeFlowKind(edge, from, to);
+    const geometry = curvedEdge(from, to, edge);
+    const flowKind = edge.flowKind;
     const color = flowAppearance(flowKind)?.color ?? palettes[to.kind]?.[0] ?? "#42617b";
     const sharedAttributes = {
       pathLength: "1",
@@ -295,7 +438,6 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
       stroke: color,
       "stroke-width": edge.relation === "contains" ? 1 : 1.25,
       "stroke-opacity": edge.relation === "contains" ? .24 : .5,
-      style: `--edge-delay:${100 + (edgeIndex * 14)}ms;--flow-delay:${edgeIndex * -145}ms`,
       "data-relation": edge.relation,
       "data-flow": flowKind ?? "structural",
       "data-from": edge.from,
@@ -308,6 +450,24 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
       d: geometry.forward,
       ...sharedAttributes,
     });
+    if (activeEdgeKeys.has(edge.key)) base.classList.add("is-observed-activity");
+    if (traceState.active) {
+      base.classList.add(traceEdgeKeys.has(edge.key) ? "is-trace-relationship" : "is-trace-dimmed");
+      const traceStep = traceState.orderedSteps.find((step) => step.edgeKey === edge.key);
+      if (traceStep) {
+        base.dataset.traceDirection = traceStep.direction;
+        base.dataset.traceOrdinal = traceStep.ordinalLabel;
+        const route = svgElement("path", {
+          class: `cognitive-trace-route route-${traceStep.role}`,
+          d: traceStep.direction === "reverse" ? geometry.reverse : geometry.forward,
+          "data-trace-ordinal": traceStep.ordinalLabel,
+          "data-from": edge.from,
+          "data-to": edge.to,
+          "marker-end": "url(#cognitive-trace-arrow)",
+        });
+        traceRoutes.append(route);
+      }
+    }
     const edgeTitle = svgElement("title");
     edgeTitle.textContent = `${from.label} ${edge.relation} ${to.label}`;
     base.append(edgeTitle);
@@ -323,8 +483,16 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
         ...sharedAttributes,
         stroke: appearance.color,
         "stroke-opacity": appearance.opacity,
-        style: `${sharedAttributes.style};animation-duration:${appearance.duration}s;${flowKind === "consolidation" ? "filter:none" : ""}`,
       });
+      if (activeEdgeKeys.has(edge.key)) flow.classList.add("is-observed-activity");
+      if (traceState.active) {
+        flow.classList.add(traceEdgeKeys.has(edge.key) ? "is-trace-relationship" : "is-trace-dimmed");
+        const traceStep = traceState.orderedSteps.find((step) => step.edgeKey === edge.key);
+        if (traceStep) {
+          flow.dataset.traceDirection = traceStep.direction;
+          flow.dataset.traceOrdinal = traceStep.ordinalLabel;
+        }
+      }
       edges.append(flow);
     }
     const synapseCount = flowKind ? 3 : 2;
@@ -338,12 +506,11 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
         r: flowKind ? .95 : .62,
         fill: color,
         opacity: flowKind ? .7 : .3,
-        style: `--synapse-delay:${-((edgeIndex * 83) + (synapseIndex * 240))}ms`,
       }));
     }
     edgeRecords.push({ edge, from, to, base, flow, flowKind });
   });
-  scene.append(edges);
+  scene.append(edges, traceRoutes);
 
   const microstructure = svgElement("g", { class: "topology-microstructure", "aria-hidden": "true" });
   positioned.forEach((node) => {
@@ -373,7 +540,6 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
         cy: Number(point.y.toFixed(2)),
         r: node.aggregate ? 1.55 : 1.05,
         fill: color,
-        style: `--micro-delay:${-((seed % 5200))}ms`,
       }));
     }
     for (let microIndex = 1; microIndex < microPoints.length; microIndex += 1) {
@@ -392,9 +558,10 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
   scene.append(microstructure);
 
   const nodeGroup = svgElement("g", { class: "graph-nodes topology-nodes" });
+  let focusCameraOn = () => {};
   const relatedKeysFor = (nodeKey) => {
     const relatedKeys = new Set([nodeKey]);
-    graph.edges.forEach((edge) => {
+    world.edges.forEach((edge) => {
       if (edge.from === nodeKey) relatedKeys.add(edge.to);
       if (edge.to === nodeKey) relatedKeys.add(edge.from);
     });
@@ -429,17 +596,28 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
     const focusKey = previewKey ?? selectedKey;
     const relatedKeys = focusKey ? relatedKeysFor(focusKey) : new Set();
     const hasPerspective = activePerspective !== "complete";
+    svg.classList.toggle("has-active-trace", traceState.active);
     svg.classList.toggle("is-graph-focused", Boolean(focusKey));
     svg.classList.toggle("has-perspective", hasPerspective);
     nodeGroup.querySelectorAll(".graph-node").forEach((nodeElement) => {
       const key = nodeElement.dataset.observationKey;
       const selected = key === selectedKey;
+      const followed = key === followedKey;
       const inPerspective = !hasPerspective || perspectiveKeys.has(key);
       nodeElement.classList.toggle("is-selected", selected);
+      nodeElement.classList.toggle("is-followed", followed);
       nodeElement.classList.toggle("is-graph-related", Boolean(focusKey) && relatedKeys.has(key));
       nodeElement.classList.toggle("is-perspective-primary", Boolean(perspectiveKind) && nodeElement.dataset.kind === perspectiveKind);
       nodeElement.classList.toggle("is-perspective-dimmed", !inPerspective);
       nodeElement.classList.toggle("is-filter-dimmed", Boolean(filteredKind) && nodeElement.dataset.kind !== filteredKind);
+      nodeElement.classList.toggle("is-trace-step", traceState.active && traceNodeKeys.has(key));
+      nodeElement.classList.toggle("is-trace-target", traceState.active && key === traceState.targetNodeKey);
+      nodeElement.classList.toggle("is-trace-dimmed", traceState.active && !traceNodeKeys.has(key));
+      const journeyIndex = traceJourneyIndex.get(key);
+      const followedIndex = traceJourneyIndex.get(followedKey);
+      nodeElement.classList.toggle("is-journey-current", traceState.active && key === followedKey);
+      nodeElement.classList.toggle("is-journey-complete", Number.isInteger(journeyIndex) && Number.isInteger(followedIndex) && journeyIndex < followedIndex);
+      nodeElement.classList.toggle("is-journey-upcoming", Number.isInteger(journeyIndex) && Number.isInteger(followedIndex) && journeyIndex > followedIndex);
       nodeElement.setAttribute("aria-pressed", String(selected));
     });
     edgeRecords.forEach((record, index) => {
@@ -454,13 +632,28 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
         edgeElement.classList.toggle("is-filter-dimmed", filtered);
       });
     });
+    if (followButton) {
+      followButton.classList.toggle("is-active", Boolean(followedKey));
+      followButton.setAttribute("aria-pressed", String(Boolean(followedKey)));
+      followButton.disabled = traceState.active ? traceJourney.length === 0 : !selectedKey && !followedKey;
+      followButton.textContent = traceState.active
+        ? (followedKey ? "Following trace" : "Follow trace")
+        : (followedKey ? "Following" : "Follow");
+    }
+    shell.querySelectorAll("[data-trace-journey-action]").forEach((button) => {
+      const currentIndex = traceJourneyIndex.get(followedKey);
+      if (button.dataset.traceJourneyAction === "previous") button.disabled = !Number.isInteger(currentIndex) || currentIndex <= 0;
+      if (button.dataset.traceJourneyAction === "next") button.disabled = !Number.isInteger(currentIndex) || currentIndex >= traceJourney.length - 1;
+    });
+    const journeyOutput = shell.querySelector(".trace-journey-position");
+    if (journeyOutput) {
+      const currentIndex = traceJourneyIndex.get(followedKey);
+      journeyOutput.value = Number.isInteger(currentIndex) ? `${currentIndex + 1} / ${traceJourney.length}` : `${traceJourney.length} steps`;
+    }
   };
 
-  positioned.forEach((node, nodeIndex) => {
+  positioned.forEach((node) => {
     const [stroke, fill] = palettes[node.kind] ?? palettes.workspace;
-    const revealIndex = node.kind === "workspace" ? 0 : nodeIndex + 1;
-    const pulseOffset = -((stableHash(node.key) % 4000) / 1000);
-    const pulseDuration = 4.8 + ((stableHash(`${node.key}:pulse`) % 22) / 10);
     const group = svgElement("g", {
       class: `graph-node topology-node graph-node-${node.kind}${node.aggregate ? " is-aggregate" : ""}${node.detail ? " is-detail" : ""}`,
       tabindex: "0",
@@ -468,11 +661,29 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
       "aria-label": `${node.family ?? node.kind}: ${node.label}`,
       "aria-pressed": "false",
       "data-observation-key": node.key,
+      "data-observation-path": node.observationPath ?? "",
       "data-kind": node.kind,
       "data-family": node.family ?? node.kind,
-      style: `--node-delay:${130 + (revealIndex * 18)}ms;--pulse-delay:${pulseOffset}s;--pulse-duration:${pulseDuration}s`,
       transform: `translate(${node.x} ${node.y})`,
     });
+    const traceRecord = traceNodeRecords.get(node.key);
+    if (traceRecord) {
+      group.dataset.traceRole = traceRecord.roles.join(" ");
+      group.dataset.traceOrdinal = traceRecord.ordinalLabel;
+      const memberships = traceRecord.memberships
+        .map(({ branch, step }) => `branch ${branch}, step ${step}`)
+        .join("; ");
+      const roles = traceRecord.roles.map((role) => role.replaceAll("-", " ")).join(", ");
+      group.setAttribute(
+        "aria-label",
+        `${node.key === traceState.targetNodeKey ? "Current Reflection; " : ""}Trace memberships: ${memberships}; ${roles}; ${node.family ?? node.kind}: ${node.label}`,
+      );
+      if (node.key === traceState.targetNodeKey) group.setAttribute("aria-current", "true");
+      const journeyIndex = traceJourneyIndex.get(node.key);
+      if (Number.isInteger(journeyIndex)) group.dataset.journeyIndex = String(journeyIndex);
+      if (traceRecord.roles.includes("origin-evidence")) group.classList.add("is-trace-origin");
+    }
+    if (activeNodeKeys.has(node.key)) group.classList.add("is-observed-activity");
     const pulse = svgElement("circle", {
       class: `graph-node-pulse graph-node-pulse-${node.kind}`,
       r: node.size + (node.aggregate ? 8 : 5),
@@ -487,7 +698,6 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
       fill: stroke,
       opacity: node.detail ? .06 : .12,
       filter: "url(#node-glow)",
-      style: node.detail ? "" : `animation:graph-node-breathe ${pulseDuration}s ${pulseOffset}s ease-in-out infinite`,
     });
     const body = svgElement("circle", {
       class: "graph-node-body",
@@ -504,16 +714,59 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
     const nodeTitle = svgElement("title");
     nodeTitle.textContent = `${node.label} - select for exact details`;
     group.append(pulse, halo, body, core, nodeTitle);
-    if (node.kind === "workspace" || node.aggregate || (!node.detail && node.size >= 12)) {
-      const label = svgElement("text", { x: 0, y: node.size + 18, "text-anchor": "middle" });
+    if (traceRecord) {
+      const marker = svgElement("g", { class: "cognitive-trace-marker", "aria-hidden": "true" });
+      traceRecord.memberships.forEach((membership, membershipIndex) => {
+        const markerX = node.size + 7 + ((membershipIndex % 2) * 17);
+        const markerY = -(node.size + 7) - (Math.floor(membershipIndex / 2) * 17);
+        const markerEntry = svgElement("g", {
+          class: "cognitive-trace-marker-entry",
+          "data-trace-ordinal": membership.ordinalLabel,
+          "data-trace-role": membership.role,
+        });
+        markerEntry.append(svgElement("circle", { cx: markerX, cy: markerY, r: 7.5 }));
+        const markerText = svgElement("text", {
+          x: markerX,
+          y: markerY + 2.5,
+          "text-anchor": "middle",
+        });
+        markerText.textContent = membership.role === "origin-evidence"
+          ? "O"
+          : membership.role === "reflection-current" ? "R" : String(membershipIndex + 1);
+        markerEntry.append(markerText);
+        marker.append(markerEntry);
+      });
+      group.append(marker);
+      if (traceRecord.roles.includes("origin-evidence") || node.key === traceState.targetNodeKey) {
+        const waypoint = svgElement("text", {
+          class: "cognitive-trace-waypoint",
+          x: 0,
+          y: -(node.size + 18),
+          "text-anchor": "middle",
+        });
+        waypoint.textContent = node.key === traceState.targetNodeKey ? "OUTCOME" : "ORIGIN";
+        group.append(waypoint);
+      }
+    }
+    if (traceRecord || node.kind === "workspace" || node.aggregate || (!node.detail && node.size >= 12)) {
+      const label = svgElement("text", {
+        class: traceRecord ? "graph-node-label cognitive-trace-node-label" : "graph-node-label",
+        x: 0,
+        y: node.size + 18,
+        "text-anchor": "middle",
+      });
       label.textContent = node.label;
       group.append(label);
     }
     const select = () => {
       if (interactionMode === "pan") return;
-      selectedKey = node.key;
+      const next = selectGraphNode(currentViewState(), node.key);
+      selectedKey = next.selectedKey;
+      followedKey = next.followedKey;
       previewKey = null;
       applyGraphEmphasis();
+      if (followedKey) focusCameraOn(node);
+      emitViewState();
       if (typeof onSelect === "function") onSelect(node);
     };
     group.addEventListener("click", select);
@@ -549,17 +802,20 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
   };
   const selectModeButton = createToolButton("Select nodes", null, "Select");
   const panModeButton = createToolButton("Pan graph", null, "Pan");
-  selectModeButton.classList.add("is-active");
-  selectModeButton.setAttribute("aria-pressed", "true");
-  panModeButton.setAttribute("aria-pressed", "false");
+  selectModeButton.classList.toggle("is-active", interactionMode === "select");
+  panModeButton.classList.toggle("is-active", interactionMode === "pan");
+  selectModeButton.setAttribute("aria-pressed", String(interactionMode === "select"));
+  panModeButton.setAttribute("aria-pressed", String(interactionMode === "pan"));
+  shell.classList.toggle("is-pan-mode", interactionMode === "pan");
   const cameraReadout = document.createElement("output");
   cameraReadout.className = "graph-zoom-readout";
   cameraReadout.setAttribute("aria-live", "polite");
-  const applyCamera = () => {
+  const applyCamera = (notify = true) => {
     camera.x = clamp(camera.x, -340 * camera.scale, 340 * camera.scale);
     camera.y = clamp(camera.y, -210 * camera.scale, 210 * camera.scale);
     scene.setAttribute("transform", `translate(${camera.x} ${camera.y}) scale(${camera.scale})`);
     cameraReadout.value = `${Math.round(camera.scale * 100)}%`;
+    if (notify) emitViewState();
   };
   const zoomBy = (factor) => {
     const previous = camera.scale;
@@ -570,9 +826,18 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
     applyCamera();
   };
   const resetCamera = () => {
+    followedKey = endGraphFollow(currentViewState()).followedKey;
     camera.scale = 1;
     camera.x = 0;
     camera.y = 0;
+    applyCamera();
+    applyGraphEmphasis();
+  };
+  focusCameraOn = (node) => {
+    if (!node) return;
+    camera.scale = Math.max(camera.scale, traceState.active ? 1.18 : 1.35);
+    camera.x = viewBox.centerX - (node.x * camera.scale);
+    camera.y = viewBox.centerY - (node.y * camera.scale);
     applyCamera();
   };
   const setInteractionMode = (mode) => {
@@ -582,19 +847,74 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
     panModeButton.classList.toggle("is-active", mode === "pan");
     selectModeButton.setAttribute("aria-pressed", String(mode === "select"));
     panModeButton.setAttribute("aria-pressed", String(mode === "pan"));
+    emitViewState();
   };
+  const focusTraceStep = (index) => {
+    const step = traceJourney[index];
+    const node = step ? byId.get(step.nodeKey) : null;
+    if (!node) return;
+    const next = selectGraphNode(currentViewState(), node.key);
+    selectedKey = next.selectedKey;
+    followedKey = node.key;
+    previewKey = null;
+    applyGraphEmphasis();
+    focusCameraOn(node);
+    emitViewState();
+    if (typeof onSelect === "function") onSelect(node);
+  };
+  followButton = createToolButton("Follow selected node", null, "Follow");
+  followButton.setAttribute("aria-pressed", String(Boolean(followedKey)));
+  followButton.addEventListener("click", () => {
+    if (traceState.active && !followedKey) {
+      focusTraceStep(0);
+      return;
+    }
+    const next = toggleGraphFollow(currentViewState());
+    if (next.followedKey === followedKey) return;
+    followedKey = next.followedKey;
+    applyGraphEmphasis();
+    if (followedKey) focusCameraOn(byId.get(followedKey));
+    else emitViewState();
+  });
   selectModeButton.addEventListener("click", () => setInteractionMode("select"));
   panModeButton.addEventListener("click", () => setInteractionMode("pan"));
   toolbar.append(
     selectModeButton,
     panModeButton,
+    followButton,
     createToolButton("Zoom out", () => zoomBy(1 / 1.18), "-"),
     cameraReadout,
     createToolButton("Zoom in", () => zoomBy(1.18), "+"),
     createToolButton("Fit graph", resetCamera, "Fit"),
   );
+  if (traceState.active) {
+    toolbar.classList.add("has-trace-journey");
+    const journeyGroup = document.createElement("div");
+    journeyGroup.className = "trace-journey-controls";
+    journeyGroup.setAttribute("role", "group");
+    journeyGroup.setAttribute("aria-label", "Move through the active cognitive trace");
+    const previousButton = createToolButton("Previous trace step", null, "Previous");
+    previousButton.dataset.traceJourneyAction = "previous";
+    previousButton.addEventListener("click", () => {
+      const currentIndex = traceJourneyIndex.get(followedKey);
+      if (Number.isInteger(currentIndex)) focusTraceStep(currentIndex - 1);
+    });
+    const position = document.createElement("output");
+    position.className = "trace-journey-position";
+    position.setAttribute("aria-live", "polite");
+    const nextButton = createToolButton("Next trace step", null, "Next");
+    nextButton.dataset.traceJourneyAction = "next";
+    nextButton.addEventListener("click", () => {
+      const currentIndex = traceJourneyIndex.get(followedKey);
+      if (Number.isInteger(currentIndex)) focusTraceStep(currentIndex + 1);
+    });
+    journeyGroup.append(previousButton, position, nextButton);
+    toolbar.prepend(journeyGroup);
+  }
   shell.append(toolbar);
-  resetCamera();
+  applyCamera(false);
+  if (followedKey) focusCameraOn(byId.get(followedKey));
+  applyGraphEmphasis();
 
   svg.addEventListener("wheel", (event) => {
     if (!event.ctrlKey && !event.metaKey) return;
@@ -603,6 +923,11 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
   }, { passive: false });
   svg.addEventListener("pointerdown", (event) => {
     if (interactionMode !== "pan" || event.button !== 0) return;
+    if (followedKey) {
+      followedKey = endGraphFollow(currentViewState()).followedKey;
+      applyGraphEmphasis();
+      emitViewState();
+    }
     dragging = true;
     dragOrigin = { x: event.clientX, y: event.clientY, cameraX: camera.x, cameraY: camera.y };
     svg.setPointerCapture(event.pointerId);
@@ -633,11 +958,16 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
       selectedKey = null;
       previewKey = null;
       applyGraphEmphasis();
+      emitViewState();
       container.dispatchEvent(new CustomEvent("graphselectionclear"));
     }
     const cameraKeys = { ArrowLeft: [24, 0], ArrowRight: [-24, 0], ArrowUp: [0, 24], ArrowDown: [0, -24] };
     if (interactionMode === "pan" && cameraKeys[event.key]) {
       event.preventDefault();
+      if (followedKey) {
+        followedKey = endGraphFollow(currentViewState()).followedKey;
+        applyGraphEmphasis();
+      }
       camera.x += cameraKeys[event.key][0];
       camera.y += cameraKeys[event.key][1];
       applyCamera();
@@ -647,17 +977,18 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
     selectedKey = null;
     previewKey = null;
     applyGraphEmphasis();
+    emitViewState();
   });
 
   const legend = document.createElement("ul");
   legend.className = "graph-legend topology-legend";
   legend.setAttribute("aria-label", "Graph layer filters");
-  layerDefinitions.forEach(([kind, label], index) => {
+  layerDefinitions.forEach(([kind, label]) => {
     const item = document.createElement("li");
     const button = document.createElement("button");
     button.type = "button";
     button.className = "graph-layer-filter";
-    button.setAttribute("aria-pressed", String(index === 0));
+    button.setAttribute("aria-pressed", String(kind === filteredKind || (kind === null && filteredKind === null)));
     const swatch = document.createElement("span");
     swatch.className = `legend-swatch graph-kind-${kind ?? "all"}`;
     if (kind) swatch.style.background = palettes[kind]?.[0] ?? palettes.workspace[0];
@@ -668,11 +999,46 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
       filteredKind = kind;
       legend.querySelectorAll("button").forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === button)));
       applyGraphEmphasis();
+      emitViewState();
     });
     item.append(button);
     legend.append(item);
   });
   shell.append(legend);
+
+  if (traceState.active) {
+    const traceList = document.createElement("details");
+    traceList.className = "cognitive-trace-accessible-list";
+    const traceSummary = document.createElement("summary");
+    traceSummary.textContent = `Active cognitive trace (${trace.branches.length} branches)`;
+    const orderedTrace = document.createElement("ol");
+    traceState.orderedSteps.forEach((step) => {
+      const node = byId.get(step.nodeKey);
+      const item = document.createElement("li");
+      const button = document.createElement("button");
+      button.type = "button";
+      button.dataset.listNode = step.nodeKey;
+      button.textContent = `Branch ${step.branch}, step ${step.step}: ${step.role} - ${node.label}`;
+      item.append(button);
+      orderedTrace.append(item);
+    });
+    traceList.append(traceSummary, orderedTrace);
+    traceList.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-list-node]");
+      if (!button) return;
+      const node = positioned.find(({ key }) => key === button.dataset.listNode);
+      if (!node) return;
+      const next = selectGraphNode(currentViewState(), node.key);
+      selectedKey = next.selectedKey;
+      followedKey = next.followedKey;
+      previewKey = null;
+      applyGraphEmphasis();
+      if (followedKey) focusCameraOn(node);
+      emitViewState();
+      if (typeof onSelect === "function") onSelect(node);
+    });
+    shell.append(traceList);
+  }
 
   const list = document.createElement("details");
   list.className = "graph-accessible-list";
@@ -694,13 +1060,18 @@ export function renderGraph(container, graph, onSelect, { perspective = "complet
     if (!button) return;
     const node = positioned.find(({ key }) => key === button.dataset.listNode);
     if (!node) return;
-    selectedKey = node.key;
+    const next = selectGraphNode(currentViewState(), node.key);
+    selectedKey = next.selectedKey;
+    followedKey = next.followedKey;
     previewKey = null;
     applyGraphEmphasis();
+    if (followedKey) focusCameraOn(node);
+    emitViewState();
     if (typeof onSelect === "function") onSelect(node);
   });
   shell.append(list);
 
   applyGraphEmphasis();
   container.replaceChildren(shell);
+  if (viewStateWasReconciled) emitViewState();
 }

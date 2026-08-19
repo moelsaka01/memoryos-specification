@@ -7,14 +7,36 @@ import {
   scopeForRoute,
 } from "./studio-model.js";
 import { renderGraph } from "./graph.js";
+import {
+  createGraphViewState,
+  reconcileGraphViewState,
+  selectGraphNode,
+} from "./graph-view-state.js";
 import { resolveCommandAdapter } from "./host-adapter.js";
+import {
+  appendObservationFrame,
+  createObservationTimeline,
+} from "./observation-timeline.js";
+import {
+  createCognitiveTraceQuery,
+  queryCognitiveTrace,
+} from "./cognitive-trace.js";
 
-let snapshot = resolveSnapshot();
+let snapshot = cloneDetached(resolveSnapshot());
+let observationTimeline = createObservationTimeline();
+const initialObservation = appendObservationFrame(observationTimeline, {
+  snapshot,
+  graph: buildGraph(snapshot),
+  operation: "InitialObservation",
+  resultCode: "OK",
+});
+observationTimeline = initialObservation.frames;
+let currentFrame = initialObservation.current;
 let commandAdapter = null;
 let operationSequence = 0;
 
 const routeMetadata = Object.freeze({
-  complete: ["MemoryOS Mission Control", "Observe the complete MemoryOS cognitive system as one living topology."],
+  complete: ["MemoryOS Mission Control", "Observe the complete MemoryOS cognitive system as one deterministic semantic world."],
   memory: ["Memory Foundation", "Follow canonical Memory Domain values within the same cognitive topology."],
   working: ["Working Memory", "Observe temporary task context, activation, and explicit expiration."],
   consolidation: ["Memory Consolidation", "Follow Working Memory as it is promoted into retained knowledge."],
@@ -22,8 +44,8 @@ const routeMetadata = Object.freeze({
   semantic: ["Semantic Knowledge", "Explore concepts, classifications, relationships, and source evidence."],
   episodic: ["Episodic Knowledge", "Explore experiences in deterministic logical chronology."],
   procedural: ["Procedural Knowledge", "Explore reusable procedures, ordered steps, and provenance."],
-  retrieval: ["Memory Retrieval", "Watch deterministic candidates propagate from knowledge sources."],
-  reflection: ["Memory Reflection", "Watch retrieved evidence converge into new knowledge."],
+  retrieval: ["Memory Retrieval", "Inspect deterministic candidates and their explicit knowledge-source paths."],
+  reflection: ["Memory Reflection", "Inspect derived knowledge and every contributing evidence path."],
   providers: ["Memory Providers", "Observe provider-neutral transport without provider implementation state."],
   provenance: ["Workspace Provenance", "Trace explicit evidence paths without inferred relationships."],
   validation: ["Validation State", "Observe Workspace, ordering, provenance, and boundary checks."],
@@ -45,12 +67,14 @@ const routeByFamily = Object.freeze({
   "Provenance snapshot": "provenance",
   SemanticMemory: "semantic",
   "Semantic concept": "semantic",
+  "Semantic category": "semantic",
   "SemanticMemory aggregate": "semantic",
   EpisodicMemory: "episodic",
   Episode: "episodic",
   "EpisodicMemory aggregate": "episodic",
   ProceduralMemory: "procedural",
   Procedure: "procedural",
+  "Procedure step": "procedural",
   "ProceduralMemory aggregate": "procedural",
   "Retrieval aggregate": "retrieval",
   "Retrieval session": "retrieval",
@@ -121,6 +145,10 @@ const state = {
   sessionState: snapshot.session?.state ?? "Open",
   selectedIdentifier: null,
   graphSelection: null,
+  graphViewState: createGraphViewState(),
+  pendingActivity: null,
+  activeTrace: null,
+  traceDiagnostic: null,
   lastOperation: null,
   busy: false,
 };
@@ -148,17 +176,29 @@ function status(value) {
   return `<span class="status-chip ${stateClass(value)}"><span class="status-dot" aria-hidden="true"></span>${escapeHtml(value)}</span>`;
 }
 
-function graphIdentity(graph, route) {
+function graphIdentity(world, frame, route, activeTrace = null) {
   const [title] = routeMetadata[route];
   const observation = route === "complete" ? "Complete cognitive system" : `${title} perspective`;
   return `<header class="neural-graph-identity" aria-labelledby="memory-intelligence-graph-title">
     <span class="graph-identity-mark" aria-hidden="true"><i></i><i></i><i></i></span>
     <span class="graph-identity-copy">
-      <small>Mission Control · ${escapeHtml(observation)}</small>
-      <strong id="memory-intelligence-graph-title">${escapeHtml(graph.identity)}</strong>
+      <small>${activeTrace ? "Living Connectome · Cognitive investigation" : `Mission Control · ${escapeHtml(observation)}`}</small>
+      <strong id="memory-intelligence-graph-title">${activeTrace ? "Evidence to observable reflection" : escapeHtml(world.identity)}</strong>
     </span>
-    <span class="graph-live-state"><i aria-hidden="true"></i>Live topology</span>
+    <span class="graph-live-state"><i aria-hidden="true"></i>${activeTrace ? "Cognitive Trace" : `Observed frame ${escapeHtml(frame.sequence + 1)}`}</span>
   </header>`;
+}
+
+function traceSignals(trace) {
+  const orderedSteps = trace.branches.flatMap((branch) => branch.steps);
+  const uniqueNodes = new Set(orderedSteps.map(({ nodeKey }) => nodeKey)).size;
+  const origins = orderedSteps.filter(({ role }) => role === "origin-evidence").length;
+  return `<div class="neural-signal-ribbon trace-signal-ribbon" aria-label="Active cognitive investigation">
+    <span><small>Origin evidence</small><strong>${origins}</strong></span>
+    <span><small>Evidence branches</small><strong>${trace.branches.length}</strong></span>
+    <span><small>Observed stages</small><strong>${uniqueNodes}</strong></span>
+    <span><small>Destination</small><strong>Reflection</strong></span>
+  </div>`;
 }
 
 function neuralSignals(route) {
@@ -205,6 +245,7 @@ function neuralOperationSignal() {
 }
 
 function primitiveRows(value) {
+  if (value === null || typeof value !== "object") return [["value", value === null ? "Not set" : value]];
   return Object.entries(value).flatMap(([key, item]) => {
     if (Array.isArray(item)) return [[key, `${item.length} observed`]];
     if (item && typeof item === "object") return [[key, "Observed value"]];
@@ -213,11 +254,17 @@ function primitiveRows(value) {
 }
 
 function renderNestedInspector(value) {
+  if (value === null || typeof value !== "object") return "";
   const groups = Object.entries(value).filter(([, item]) => Array.isArray(item) && item.length > 0);
   return groups.map(([key, values]) => `<section class="inspector-card"><h3>${escapeHtml(key)}</h3><div class="tag-row">${values.map((item) => {
     const label = typeof item === "object" ? (item.identifier ?? item.sourceIdentifier ?? item.value ?? JSON.stringify(item)) : item;
     return `<span class="tag">${escapeHtml(label)}</span>`;
   }).join("")}</div></section>`).join("");
+}
+
+function traceDiagnosticView() {
+  if (!state.traceDiagnostic) return "";
+  return `<div class="trace-diagnostic" role="status"><strong>${escapeHtml(state.traceDiagnostic.code)}</strong><span>${escapeHtml(state.traceDiagnostic.message)}</span></div>`;
 }
 
 function graphSelectionView(selection) {
@@ -230,6 +277,7 @@ function graphSelectionView(selection) {
   return `<section class="neural-selection">
     <header><div><span class="eyebrow">Graph selection</span><h2>${escapeHtml(observation.family)}</h2></div><button class="rail-close" type="button" data-graph-clear aria-label="Clear graph selection">&times;</button></header>
     <div class="selection-identity"><span class="selection-glyph" aria-hidden="true"></span><span><small>Selected observation</small><strong class="identifier">${escapeHtml(selection.identifier)}</strong></span>${status("Observed")}</div>
+    ${traceDiagnosticView()}
     <ul class="key-value-list selection-values">${rows.map(([key, value]) => `<li><span>${escapeHtml(key)}</span><span>${escapeHtml(value)}</span></li>`).join("")}</ul>
     ${renderNestedInspector(observation.value)}
     <div class="selection-actions"><a class="button secondary" href="#${route}">Open perspective</a>${traceAction}</div>
@@ -238,13 +286,18 @@ function graphSelectionView(selection) {
 
 function neuralDefaultContext(route) {
   const [title, description] = routeMetadata[route];
-  const reflection = snapshot.reflections[0];
+  const standaloneReflection = snapshot.reflections[0];
+  const sessionPosition = snapshot.reflectionSessions.findIndex((session) => session.reflection);
+  const reflection = standaloneReflection ?? snapshot.reflectionSessions[sessionPosition]?.reflection;
+  const reflectionPath = standaloneReflection
+    ? "Reflection.values[0]"
+    : `Reflection.sessions[${sessionPosition}].reflection`;
   if ((route === "complete" || route === "reflection") && reflection) {
     return `<section class="neural-reflection-beacon">
       <span class="reflection-glyph" aria-hidden="true">&#10022;</span>
       <span class="eyebrow">Reflection convergence</span>
       <h2>${escapeHtml(reflection.knowledge)}</h2>
-      <button type="button" data-select-id="${escapeHtml(reflection.identifier)}">Trace ${reflection.sources.length} evidence sources <span aria-hidden="true">&rarr;</span></button>
+      <button type="button" data-select-id="${escapeHtml(reflection.identifier)}" data-select-family="Reflection" data-select-path="${escapeHtml(reflectionPath)}">Trace ${reflection.sources.length} evidence sources <span aria-hidden="true">&rarr;</span></button>
     </section>`;
   }
   return `<section class="neural-perspective-guide">
@@ -256,30 +309,132 @@ function neuralDefaultContext(route) {
 }
 
 function graphContext(route = state.route) {
-  return state.graphSelection ? graphSelectionView(state.graphSelection) : neuralDefaultContext(route);
+  if (state.graphSelection) return graphSelectionView(state.graphSelection);
+  return `${state.traceDiagnostic ? `<section class="neural-perspective-guide"><span class="eyebrow">Cognitive Trace unavailable</span><h2>Observed journey rejected</h2>${traceDiagnosticView()}</section>` : ""}${neuralDefaultContext(route)}`;
+}
+
+function traceContainsNode(trace, nodeKey) {
+  return Boolean(trace && nodeKey && trace.branches.some((branch) => (
+    branch.steps.some((step) => step.nodeKey === nodeKey)
+  )));
+}
+
+function queryTraceForNode(node) {
+  if (!currentFrame || !node || node.aggregate || node.family !== "Reflection" || node.kind !== "reflection") {
+    state.traceDiagnostic = null;
+    return null;
+  }
+  const query = createCognitiveTraceQuery({
+    workspaceIdentifier: snapshot.workspaceIdentifier,
+    sessionIdentifier: currentFrame.world.frame.sessionIdentifier ?? null,
+    frameIdentifier: currentFrame.world.frame.identifier,
+    targetNodeKey: node.key,
+  });
+  const result = queryCognitiveTrace(currentFrame, query);
+  state.traceDiagnostic = result.succeeded
+    ? null
+    : { code: result.code, message: result.message, targetNodeKey: node.key };
+  return result.succeeded ? result.trace : null;
+}
+
+function reconcileActiveTraceForSelection(node) {
+  const previous = state.activeTrace;
+  if (node && !node.aggregate && node.family === "Reflection" && node.kind === "reflection") {
+    state.activeTrace = queryTraceForNode(node);
+  } else if (!traceContainsNode(previous, node?.key)) {
+    state.activeTrace = null;
+    state.traceDiagnostic = null;
+  }
+  return previous?.identifier !== state.activeTrace?.identifier;
+}
+
+function rebuildActiveTrace(targetNodeKey) {
+  if (!targetNodeKey || !currentFrame) {
+    state.activeTrace = null;
+    state.traceDiagnostic = null;
+    return false;
+  }
+  const target = currentFrame.world.nodes.find((node) => node.key === targetNodeKey);
+  const nextTrace = queryTraceForNode(target);
+  state.activeTrace = nextTrace;
+  return Boolean(nextTrace);
+}
+
+function acceptObservationFrame(view, operation, query, resultCode) {
+  const selectedKey = state.graphSelection?.nodeKey ?? state.graphViewState.selectedKey;
+  const traceTargetKey = state.activeTrace?.targetNodeKey ?? null;
+  const nextSnapshot = cloneDetached(view);
+  const accepted = appendObservationFrame(observationTimeline, {
+    snapshot: nextSnapshot,
+    graph: buildGraph(nextSnapshot),
+    operation,
+    query,
+    resultCode,
+  });
+  snapshot = nextSnapshot;
+  observationTimeline = accepted.frames;
+  currentFrame = accepted.current;
+  state.pendingActivity = currentFrame.activity;
+  state.graphViewState = reconcileGraphViewState(currentFrame.world, state.graphViewState);
+  synchronizeSelectionWithCurrentFrame(selectedKey);
+  if (selectedKey && !state.graphSelection) {
+    state.activeTrace = null;
+    state.traceDiagnostic = null;
+  } else if (traceTargetKey) {
+    if (!rebuildActiveTrace(traceTargetKey)) {
+      clearObservedSelection();
+    } else {
+      const activeSelectedKey = state.graphSelection?.nodeKey ?? state.graphViewState.selectedKey;
+      const activeFollowedKey = state.graphViewState.followedKey;
+      if ((activeSelectedKey && !traceContainsNode(state.activeTrace, activeSelectedKey))
+        || (activeFollowedKey && !traceContainsNode(state.activeTrace, activeFollowedKey))) {
+        const target = currentFrame.world.nodes.find((node) => node.key === state.activeTrace.targetNodeKey);
+        const observations = target ? observationsForWorldNode(target) : [];
+        if (target && observations.length > 0) {
+          state.graphSelection = { identifier: target.identifier, observations, nodeKey: target.key };
+          state.graphViewState = selectGraphNode(state.graphViewState, target.key);
+          populateInspector(target.identifier, observations, false);
+        } else {
+          state.activeTrace = null;
+          clearObservedSelection();
+        }
+      }
+    }
+  }
 }
 
 function renderNeuralPerspective(route = state.route) {
-  const graph = buildGraph(snapshot);
+  const frame = currentFrame;
+  const world = frame.world;
+  const activity = state.pendingActivity ?? {};
   elements.root.innerHTML = `<div class="neural-interface" data-perspective="${escapeHtml(route)}">
-    <section class="neural-world" aria-label="${escapeHtml(graph.identity)}">
-      ${graphIdentity(graph, route)}
-      ${neuralSignals(route)}
-      <div id="memory-graph" class="memory-intelligence-graph-host" aria-label="${escapeHtml(graph.identity)}"></div>
+    <section class="neural-world${state.activeTrace ? " has-investigation" : ""}" aria-label="${escapeHtml(world.identity)}">
+      ${graphIdentity(world, frame, route, state.activeTrace)}
+      ${state.activeTrace ? traceSignals(state.activeTrace) : neuralSignals(route)}
+      <div id="memory-graph" class="memory-intelligence-graph-host" aria-label="${escapeHtml(world.identity)}"></div>
       <aside class="neural-context" id="graph-context" aria-label="Selected graph context">${graphContext(route)}</aside>
       ${neuralFlowRibbon()}
       ${neuralOperationSignal()}
     </section>
   </div>`;
   const graphContainer = document.querySelector("#memory-graph");
-  renderGraph(graphContainer, graph, (node) => {
+  renderGraph(graphContainer, world, (node) => {
     const targetRoute = routeByFamily[node.family];
     if (node.aggregate && targetRoute && targetRoute !== state.route) {
       location.hash = targetRoute;
       return;
     }
-    selectObservation(node.identifier, node.family);
-  }, { perspective: perspectiveKindByRoute[route] });
+    selectObservation(node.identifier, node.family, node.observationPath, node.key);
+  }, {
+    perspective: perspectiveKindByRoute[route],
+    viewState: state.graphViewState,
+    activity,
+    trace: state.activeTrace,
+    onViewStateChange(nextViewState) {
+      state.graphViewState = nextViewState;
+    },
+  });
+  state.pendingActivity = null;
   graphContainer.addEventListener("graphselectionclear", clearGraphSelection);
   bindGraphContext();
 }
@@ -384,15 +539,74 @@ function populateInspector(identifier, observations, open = true) {
   if (open) setInspectorClosed(false);
 }
 
-function selectObservation(identifier, familyHint = null) {
-  const observations = findAnyObservations(identifier, familyHint);
+function matchingWorldNode(identifier, familyHint = null, observationPath = null) {
+  if (!currentFrame) return null;
+  if (observationPath) {
+    const exact = currentFrame.world.nodes.find((node) => node.observationPath === observationPath);
+    if (exact) return exact;
+  }
+  const matches = currentFrame.world.nodes.filter((node) => node.identifier === identifier
+    && (familyHint === null || node.family === familyHint));
+  return matches.length === 1 ? matches[0] : null;
+}
+
+function observationsForWorldNode(node) {
+  const exact = node.observationPath
+    ? resolveInspectionDetails(snapshot, [node.observationPath])
+      .map(({ path, family, value }) => ({ title: node.identifier, path, family, value }))
+    : [];
+  return exact.length > 0 ? exact : findAnyObservations(node.identifier, node.family);
+}
+
+function clearObservedSelection() {
+  state.graphSelection = null;
+  state.selectedIdentifier = null;
+  state.graphViewState = { ...state.graphViewState, selectedKey: null };
+  elements.inspectorTitle.textContent = "No observation selected";
+  elements.inspectorContent.replaceChildren();
+  setInspectorClosed(true);
+}
+
+function synchronizeSelectionWithCurrentFrame(selectedKey) {
+  if (!state.graphSelection && !selectedKey) return;
+  const node = selectedKey
+    ? currentFrame.world.nodes.find(({ key }) => key === selectedKey)
+    : null;
+  if (!node) {
+    clearObservedSelection();
+    return;
+  }
+  const observations = observationsForWorldNode(node);
+  if (observations.length === 0) {
+    clearObservedSelection();
+    return;
+  }
+  state.graphSelection = { identifier: node.identifier, observations, nodeKey: node.key };
+  state.graphViewState = { ...state.graphViewState, selectedKey: node.key };
+  populateInspector(node.identifier, observations, false);
+}
+
+function selectObservation(identifier, familyHint = null, observationPath = null, nodeKey = null) {
+  const exact = observationPath
+    ? resolveInspectionDetails(snapshot, [observationPath])
+      .map(({ path, family, value }) => ({ title: identifier, path, family, value }))
+    : [];
+  const observations = exact.length > 0 ? exact : findAnyObservations(identifier, familyHint);
   if (observations.length === 0) {
     showToast("Observation not found", identifier, "error");
     return;
   }
-  state.graphSelection = { identifier, observations };
+  const worldNode = nodeKey
+    ? currentFrame.world.nodes.find((node) => node.key === nodeKey)
+    : matchingWorldNode(identifier, familyHint, observationPath);
+  state.graphSelection = { identifier, observations, nodeKey: worldNode?.key ?? null };
+  state.graphViewState = worldNode
+    ? selectGraphNode(state.graphViewState, worldNode.key)
+    : { ...state.graphViewState, selectedKey: null };
+  const traceChanged = reconcileActiveTraceForSelection(worldNode);
   populateInspector(identifier, observations, false);
-  renderGraphContext();
+  if (traceChanged) renderRoute();
+  else renderGraphContext();
 }
 
 function renderGraphContext() {
@@ -403,14 +617,24 @@ function renderGraphContext() {
 }
 
 function clearGraphSelection() {
-  state.graphSelection = null;
-  renderGraphContext();
-  document.querySelector("#memory-graph")?.dispatchEvent(new CustomEvent("cleargraphselection"));
+  clearObservedSelection();
+  const traceWasActive = Boolean(state.activeTrace);
+  state.activeTrace = null;
+  state.traceDiagnostic = null;
+  if (traceWasActive) renderRoute();
+  else {
+    renderGraphContext();
+    document.querySelector("#memory-graph")?.dispatchEvent(new CustomEvent("cleargraphselection"));
+  }
 }
 
 function bindSelectableRows(root = document) {
   root.querySelectorAll("[data-select-id]").forEach((element) => {
-    const select = () => selectObservation(element.dataset.selectId);
+    const select = () => selectObservation(
+      element.dataset.selectId,
+      element.dataset.selectFamily ?? null,
+      element.dataset.selectPath ?? null,
+    );
     element.addEventListener("click", select);
     element.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
@@ -440,9 +664,19 @@ function selectInspectionResult(query, operationResult) {
   const observations = resolveInspectionDetails(operationResult.view, operationResult.observations)
     .map(({ path, family, value }) => ({ title: path, path, family, value }));
   if (observations.length > 0) {
-    state.graphSelection = { identifier: query.identifier, observations };
+    const worldNode = matchingWorldNode(
+      query.identifier,
+      observations.length === 1 ? observations[0].family : null,
+      observations.length === 1 ? observations[0].path : null,
+    );
+    state.graphSelection = { identifier: query.identifier, observations, nodeKey: worldNode?.key ?? null };
+    state.graphViewState = worldNode
+      ? selectGraphNode(state.graphViewState, worldNode.key)
+      : { ...state.graphViewState, selectedKey: null };
+    const traceChanged = reconcileActiveTraceForSelection(worldNode);
     populateInspector(query.identifier, observations, false);
-    renderGraphContext();
+    if (traceChanged) renderRoute();
+    else renderGraphContext();
   }
 }
 
@@ -464,11 +698,10 @@ async function execute(name) {
   try {
     const operationResult = await commandAdapter[name.toLowerCase()](query);
     if (sequence !== operationSequence) return;
-    if (name === "Inspect" && operationResult.succeeded && operationResult.view) snapshot = cloneDetached(operationResult.view);
     state.lastOperation = { name, result: operationResult };
     showToast(`${name}: ${operationResult.code}`, operationResult.message || "Operation completed with a detached result.", operationResult.succeeded ? "success" : "error");
-    renderRoute();
     if (name === "Inspect" && operationResult.succeeded) selectInspectionResult(query, operationResult);
+    renderRoute();
   } catch (error) {
     if (sequence === operationSequence) showToast(`${name} failed`, error instanceof Error ? error.message : String(error), "error");
   } finally {
@@ -483,10 +716,21 @@ async function executeSessionOperation(name) {
   try {
     const result = name === "observe" ? await commandAdapter.observe(snapshot) : await commandAdapter[name]();
     if (sequence !== operationSequence) return null;
-    if (result.succeeded && name === "observe" && result.view) snapshot = cloneDetached(result.view);
+    if (result.succeeded && name === "observe" && result.view) {
+      acceptObservationFrame(result.view, "Observe", null, result.code);
+    }
     state.lastOperation = { name: name === "exportView" ? "ExportView" : name === "forgetSession" ? "ForgetSession" : "Observe", result };
     if (result.succeeded && name === "observe") state.sessionState = "Observed";
-    if (result.succeeded && name === "forgetSession") state.sessionState = "Forgotten";
+    if (result.succeeded && name === "forgetSession") {
+      state.sessionState = "Forgotten";
+      observationTimeline = createObservationTimeline();
+      currentFrame = null;
+      state.pendingActivity = null;
+      state.activeTrace = null;
+      state.traceDiagnostic = null;
+      state.graphSelection = null;
+      state.graphViewState = createGraphViewState();
+    }
     showToast(`${state.lastOperation.name}: ${result.code}`, result.message || "Operation completed with a detached result.", result.succeeded ? "success" : "error");
     updateSessionChrome();
     renderRoute();
@@ -546,7 +790,9 @@ function initialize() {
 
   window.addEventListener("hashchange", () => {
     state.route = normalizeRoute(location.hash.slice(1));
-    state.graphSelection = null;
+    state.activeTrace = null;
+    state.traceDiagnostic = null;
+    clearObservedSelection();
     state.lastOperation = null;
     renderRoute();
   });
