@@ -21,6 +21,17 @@ import {
   createCognitiveTraceQuery,
   queryCognitiveTrace,
 } from "./cognitive-trace.js";
+import {
+  advanceReplay,
+  buildCognitiveReplay,
+  createReplayState,
+  nextReplayStep,
+  pauseReplay,
+  playReplay,
+  previousReplayStep,
+  projectReplay,
+  restartReplay,
+} from "./cognitive-replay.js";
 
 let snapshot = cloneDetached(resolveSnapshot());
 let observationTimeline = createObservationTimeline();
@@ -34,6 +45,8 @@ observationTimeline = initialObservation.frames;
 let currentFrame = initialObservation.current;
 let commandAdapter = null;
 let operationSequence = 0;
+let replayTimer = null;
+const replayStepDelay = 1100;
 
 const routeMetadata = Object.freeze({
   complete: ["MemoryOS Mission Control", "Observe the complete MemoryOS cognitive system as one deterministic semantic world."],
@@ -148,10 +161,62 @@ const state = {
   graphViewState: createGraphViewState(),
   pendingActivity: null,
   activeTrace: null,
+  activeReplay: null,
+  replayState: null,
   traceDiagnostic: null,
   lastOperation: null,
   busy: false,
 };
+
+function clearReplayTimer() {
+  if (replayTimer !== null) window.clearTimeout(replayTimer);
+  replayTimer = null;
+}
+
+function clearReplay() {
+  clearReplayTimer();
+  state.activeReplay = null;
+  state.replayState = null;
+}
+
+function synchronizeReplayWithTrace() {
+  if (!state.activeTrace) {
+    clearReplay();
+    return;
+  }
+  if (state.activeReplay?.traceIdentifier === state.activeTrace.identifier) return;
+  clearReplayTimer();
+  state.activeReplay = buildCognitiveReplay(state.activeTrace);
+  state.replayState = createReplayState(state.activeReplay);
+}
+
+function updateReplay(action) {
+  if (!state.activeReplay || !state.replayState) return;
+  clearReplayTimer();
+  const operations = {
+    play: playReplay,
+    pause: pauseReplay,
+    restart: restartReplay,
+    previous: previousReplayStep,
+    next: nextReplayStep,
+  };
+  const operation = operations[action];
+  if (!operation) return;
+  state.replayState = operation(state.activeReplay, state.replayState);
+  renderRoute();
+}
+
+function scheduleReplay() {
+  clearReplayTimer();
+  if (!state.activeReplay || state.replayState?.status !== "playing") return;
+  const replayIdentifier = state.activeReplay.identifier;
+  replayTimer = window.setTimeout(() => {
+    replayTimer = null;
+    if (state.activeReplay?.identifier !== replayIdentifier || state.replayState?.status !== "playing") return;
+    state.replayState = advanceReplay(state.activeReplay, state.replayState);
+    renderRoute();
+  }, replayStepDelay);
+}
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -176,16 +241,17 @@ function status(value) {
   return `<span class="status-chip ${stateClass(value)}"><span class="status-dot" aria-hidden="true"></span>${escapeHtml(value)}</span>`;
 }
 
-function graphIdentity(world, frame, route, activeTrace = null) {
+function graphIdentity(world, frame, route, activeTrace = null, replayState = null) {
   const [title] = routeMetadata[route];
   const observation = route === "complete" ? "Complete cognitive system" : `${title} perspective`;
+  const replayLabels = { ready: "Replay ready", playing: "Constructing", paused: "Replay paused", completed: "Replay complete" };
   return `<header class="neural-graph-identity" aria-labelledby="memory-intelligence-graph-title">
     <span class="graph-identity-mark" aria-hidden="true"><i></i><i></i><i></i></span>
     <span class="graph-identity-copy">
-      <small>${activeTrace ? "Living Connectome · Cognitive investigation" : `Mission Control · ${escapeHtml(observation)}`}</small>
-      <strong id="memory-intelligence-graph-title">${activeTrace ? "Evidence to observable reflection" : escapeHtml(world.identity)}</strong>
+      <small>${activeTrace ? "Living Connectome · Cognitive reconstruction" : `Mission Control · ${escapeHtml(observation)}`}</small>
+      <strong id="memory-intelligence-graph-title">${activeTrace ? "Evidence becomes Reflection" : escapeHtml(world.identity)}</strong>
     </span>
-    <span class="graph-live-state"><i aria-hidden="true"></i>${activeTrace ? "Cognitive Trace" : `Observed frame ${escapeHtml(frame.sequence + 1)}`}</span>
+    <span class="graph-live-state"><i aria-hidden="true"></i>${activeTrace ? replayLabels[replayState?.status] ?? "Cognitive Trace" : `Observed frame ${escapeHtml(frame.sequence + 1)}`}</span>
   </header>`;
 }
 
@@ -345,18 +411,21 @@ function reconcileActiveTraceForSelection(node) {
     state.activeTrace = null;
     state.traceDiagnostic = null;
   }
+  synchronizeReplayWithTrace();
   return previous?.identifier !== state.activeTrace?.identifier;
 }
 
 function rebuildActiveTrace(targetNodeKey) {
   if (!targetNodeKey || !currentFrame) {
     state.activeTrace = null;
+    clearReplay();
     state.traceDiagnostic = null;
     return false;
   }
   const target = currentFrame.world.nodes.find((node) => node.key === targetNodeKey);
   const nextTrace = queryTraceForNode(target);
   state.activeTrace = nextTrace;
+  synchronizeReplayWithTrace();
   return Boolean(nextTrace);
 }
 
@@ -379,6 +448,7 @@ function acceptObservationFrame(view, operation, query, resultCode) {
   synchronizeSelectionWithCurrentFrame(selectedKey);
   if (selectedKey && !state.graphSelection) {
     state.activeTrace = null;
+    clearReplay();
     state.traceDiagnostic = null;
   } else if (traceTargetKey) {
     if (!rebuildActiveTrace(traceTargetKey)) {
@@ -396,6 +466,7 @@ function acceptObservationFrame(view, operation, query, resultCode) {
           populateInspector(target.identifier, observations, false);
         } else {
           state.activeTrace = null;
+          clearReplay();
           clearObservedSelection();
         }
       }
@@ -409,7 +480,7 @@ function renderNeuralPerspective(route = state.route) {
   const activity = state.pendingActivity ?? {};
   elements.root.innerHTML = `<div class="neural-interface" data-perspective="${escapeHtml(route)}">
     <section class="neural-world${state.activeTrace ? " has-investigation" : ""}" aria-label="${escapeHtml(world.identity)}">
-      ${graphIdentity(world, frame, route, state.activeTrace)}
+      ${graphIdentity(world, frame, route, state.activeTrace, state.replayState)}
       ${state.activeTrace ? traceSignals(state.activeTrace) : neuralSignals(route)}
       <div id="memory-graph" class="memory-intelligence-graph-host" aria-label="${escapeHtml(world.identity)}"></div>
       <aside class="neural-context" id="graph-context" aria-label="Selected graph context">${graphContext(route)}</aside>
@@ -419,6 +490,10 @@ function renderNeuralPerspective(route = state.route) {
   </div>`;
   const graphContainer = document.querySelector("#memory-graph");
   renderGraph(graphContainer, world, (node) => {
+    if (state.replayState?.status === "playing") {
+      clearReplayTimer();
+      state.replayState = pauseReplay(state.activeReplay, state.replayState);
+    }
     const targetRoute = routeByFamily[node.family];
     if (node.aggregate && targetRoute && targetRoute !== state.route) {
       location.hash = targetRoute;
@@ -430,6 +505,10 @@ function renderNeuralPerspective(route = state.route) {
     viewState: state.graphViewState,
     activity,
     trace: state.activeTrace,
+    replayView: state.activeReplay && state.replayState
+      ? projectReplay(state.activeReplay, state.replayState)
+      : null,
+    onReplayAction: updateReplay,
     onViewStateChange(nextViewState) {
       state.graphViewState = nextViewState;
     },
@@ -437,6 +516,7 @@ function renderNeuralPerspective(route = state.route) {
   state.pendingActivity = null;
   graphContainer.addEventListener("graphselectionclear", clearGraphSelection);
   bindGraphContext();
+  scheduleReplay();
 }
 
 function renderRoute() {
@@ -620,6 +700,7 @@ function clearGraphSelection() {
   clearObservedSelection();
   const traceWasActive = Boolean(state.activeTrace);
   state.activeTrace = null;
+  clearReplay();
   state.traceDiagnostic = null;
   if (traceWasActive) renderRoute();
   else {
@@ -727,6 +808,7 @@ async function executeSessionOperation(name) {
       currentFrame = null;
       state.pendingActivity = null;
       state.activeTrace = null;
+      clearReplay();
       state.traceDiagnostic = null;
       state.graphSelection = null;
       state.graphViewState = createGraphViewState();
@@ -791,6 +873,7 @@ function initialize() {
   window.addEventListener("hashchange", () => {
     state.route = normalizeRoute(location.hash.slice(1));
     state.activeTrace = null;
+    clearReplay();
     state.traceDiagnostic = null;
     clearObservedSelection();
     state.lastOperation = null;
@@ -809,6 +892,27 @@ function initialize() {
     execute("Inspect");
   });
   document.addEventListener("keydown", (event) => {
+    if (event.defaultPrevented) return;
+    const typing = event.target instanceof HTMLElement
+      && (event.target.matches("input, select, textarea") || event.target.isContentEditable);
+    if (!typing && state.activeReplay && !event.ctrlKey && !event.metaKey && !event.altKey) {
+      const replayActions = {
+        ArrowLeft: "previous",
+        ArrowRight: "next",
+        r: "restart",
+        R: "restart",
+      };
+      if (event.code === "Space") {
+        event.preventDefault();
+        updateReplay(state.replayState?.status === "playing" ? "pause" : "play");
+        return;
+      }
+      if (replayActions[event.key]) {
+        event.preventDefault();
+        updateReplay(replayActions[event.key]);
+        return;
+      }
+    }
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
       event.preventDefault();
       elements.globalQuery.focus();

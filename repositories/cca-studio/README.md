@@ -31,6 +31,12 @@ recognizable, Trace mode establishes an explicit origin-to-outcome hierarchy,
 and manual Follow moves through validated membership only. No activity is
 simulated and no semantic state is written by the presentation.
 
+Sprint 4 adds deterministic Cognitive Replay. Replay reconstructs one
+immutable Cognitive Trace as actual node and relationship references, one
+semantic step at a time. The application owns the explicit Play/Pause
+scheduler; the renderer receives completed replay state and never computes
+events or ordering. Replay does not change the runtime or public C++ Contract.
+
 ## Build and verify
 
 From the workspace root:
@@ -82,6 +88,7 @@ observation paths, and explanation-chain boundaries.
 - [MemoryOS 1.1 observable cognition foundation](docs/memoryos-1.1-sprint-1.md)
 - [MemoryOS 1.1 Cognitive Trace architecture](docs/memoryos-1.1-sprint-2.md)
 - [MemoryOS 1.1 Living Connectome identity](docs/memoryos-1.1-sprint-3.md)
+- [MemoryOS 1.1 Cognitive Replay](docs/memoryos-1.1-sprint-4.md)
 - [MemoryOS 1.0 launch demo production package](docs/memoryos-1.0-launch-demo-production-package.md)
 - [GitHub screenshot specification](docs/github-screenshot-specification.md)
 - [C++ example](examples/memory_studio_usage.cpp)

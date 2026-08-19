@@ -60,7 +60,12 @@ add_custom_target(
     web/data/studio-snapshot.js
     web/js/app.js
     web/js/graph.js
+    web/js/graph-view-state.js
+    web/js/cognitive-trace.js
+    web/js/cognitive-replay.js
     web/js/host-adapter.js
+    web/js/observation-timeline.js
+    web/js/semantic-world.js
     web/js/studio-model.js
 )
 

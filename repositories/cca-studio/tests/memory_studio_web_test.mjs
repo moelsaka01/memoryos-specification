@@ -47,6 +47,19 @@ import {
   validateCognitiveTrace,
 } from "../web/js/cognitive-trace.js";
 import {
+  advanceReplay,
+  buildCognitiveReplay,
+  createReplayState,
+  nextReplayStep,
+  pauseReplay,
+  playReplay,
+  previousReplayStep,
+  projectReplay,
+  restartReplay,
+  restoreReplayState,
+  snapshotReplayState,
+} from "../web/js/cognitive-replay.js";
+import {
   cognitiveRegionDefinitions,
   prepareTraceJourney,
   prepareTraceRenderingState,
@@ -1086,6 +1099,99 @@ test("Trace Follow derives one deterministic view-only journey from validated me
   assert.deepEqual(journey.map(({ journeyIndex }) => journeyIndex), journey.map((_, index) => index));
   assert.equal(journey.at(-1).nodeKey, trace.targetNodeKey);
   assert.equal(frame.world.nodes.length, 81, "view-only sequencing must not alter the semantic world");
+});
+
+test("Cognitive Replay reconstructs only actual trace nodes and relationships in deterministic order", () => {
+  const frame = observationFrameFor();
+  const trace = buildCognitiveTrace(frame, referenceReflectionNode(frame).key);
+  const replay = buildCognitiveReplay(trace);
+  const second = buildCognitiveReplay(trace);
+  const traceNodes = new Set(trace.branches.flatMap(({ steps }) => steps.map(({ nodeKey }) => nodeKey)));
+  const traceEdges = new Set(trace.branches.flatMap(({ steps }) => steps.map(({ edgeKey }) => edgeKey).filter(Boolean)));
+
+  assert.deepEqual(replay, second);
+  assert.equal(Object.isFrozen(replay), true);
+  assert.equal(replay.steps.every(Object.isFrozen), true);
+  assert.equal(replay.steps.every((step) => (
+    step.type === "node" ? traceNodes.has(step.nodeKey) : traceEdges.has(step.edgeKey)
+  )), true);
+  assert.equal(replay.steps.at(-1).nodeKey, trace.targetNodeKey);
+  assert.deepEqual(
+    [...new Set(replay.steps.map(({ role }) => role))],
+    ["origin-evidence", "semantic-transformation", "retrieval", "reflection-current"],
+  );
+  assert.deepEqual(
+    replay.steps.slice(0, 6).map(({ type }) => type),
+    ["node", "node", "node", "relationship", "relationship", "relationship"],
+    "origin evidence is revealed before the explicit relationships it contributes",
+  );
+  assert.deepEqual(
+    replay.steps.slice(-3).map(({ type }) => type),
+    ["relationship", "relationship", "node"],
+    "all observed contributions precede the Reflection destination",
+  );
+});
+
+test("Cognitive Replay play pause restart completion and interruption are exact", () => {
+  const frame = observationFrameFor();
+  const replay = buildCognitiveReplay(buildCognitiveTrace(frame, referenceReflectionNode(frame).key));
+  const ready = createReplayState(replay);
+  const playing = playReplay(replay, ready);
+  assert.deepEqual(playing, { replayIdentifier: replay.identifier, status: "playing", cursor: 0 });
+
+  const advanced = advanceReplay(replay, playing);
+  assert.equal(advanced.cursor, 1);
+  const paused = pauseReplay(replay, advanced);
+  assert.equal(paused.status, "paused");
+  assert.equal(advanceReplay(replay, paused), paused, "paused replay never advances itself");
+  assert.equal(nextReplayStep(replay, paused).cursor, 2);
+  assert.equal(previousReplayStep(replay, paused).cursor, 0);
+  assert.deepEqual(restartReplay(replay, paused), ready);
+
+  let completed = playing;
+  while (completed.status !== "completed") completed = advanceReplay(replay, completed);
+  assert.equal(completed.cursor, replay.steps.length - 1);
+  assert.equal(projectReplay(replay, completed).currentNodeKey, null);
+  assert.equal(projectReplay(replay, completed).futureNodeKeys.length, 0);
+  assert.equal(projectReplay(replay, completed).futureEdgeKeys.length, 0);
+});
+
+test("Cognitive Replay state restoration is immutable frame-bound and deterministic", () => {
+  const frame = observationFrameFor();
+  const replay = buildCognitiveReplay(buildCognitiveTrace(frame, referenceReflectionNode(frame).key));
+  const state = nextReplayStep(replay, nextReplayStep(replay, createReplayState(replay)));
+  const snapshot = snapshotReplayState(replay, state);
+  const restored = restoreReplayState(replay, snapshot);
+  assert.deepEqual(restored, state);
+  assert.equal(Object.isFrozen(snapshot), true);
+
+  const nextFrame = observationFrameFor(referenceSnapshot, 1);
+  const nextReplay = buildCognitiveReplay(buildCognitiveTrace(nextFrame, referenceReflectionNode(nextFrame).key));
+  assert.throws(() => restoreReplayState(nextReplay, snapshot), /not bound/);
+});
+
+test("Cognitive Replay remains controller-owned and renderer-independent", async () => {
+  const [replaySource, appSource, rendererSource, styles] = await Promise.all([
+    readFile(resolve(studioRoot, "web/js/cognitive-replay.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/js/app.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/js/graph.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/styles.css"), "utf8"),
+  ]);
+  assert.doesNotMatch(replaySource, /\bwindow\b|\bdocument\b|setTimeout|setInterval|requestAnimationFrame|Math\.random|Date\./);
+  assert.doesNotMatch(rendererSource, /from\s+["']\.\/cognitive-replay\.js["']|buildCognitiveReplay|advanceReplay|playReplay/);
+  assert.match(appSource, /buildCognitiveReplay\(state\.activeTrace\)/);
+  assert.match(appSource, /projectReplay\(state\.activeReplay, state\.replayState\)/);
+  assert.match(appSource, /advanceReplay\(state\.activeReplay, state\.replayState\)/);
+  assert.match(rendererSource, /Cognitive Replay controls/);
+  for (const control of ["Play replay", "Pause replay", "Restart replay", "Previous replay step", "Next replay step"]) {
+    assert.match(rendererSource, new RegExp(control));
+  }
+  assert.match(appSource, /event\.code === "Space"/);
+  assert.match(appSource, /ArrowLeft: "previous"/);
+  assert.match(appSource, /ArrowRight: "next"/);
+  const replayStyles = styles.slice(styles.indexOf("MemoryOS 1.1 Sprint 4"));
+  assert.match(replayStyles, /\.has-cognitive-replay/);
+  assert.doesNotMatch(replayStyles, /animation\s*:/, "Replay visibility never manufactures an animated semantic transition");
 });
 
 test("the application exposes deterministic Cognitive Trace query failures", async () => {
