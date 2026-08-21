@@ -1194,6 +1194,32 @@ test("Cognitive Replay remains controller-owned and renderer-independent", async
   assert.doesNotMatch(replayStyles, /animation\s*:/, "Replay visibility never manufactures an animated semantic transition");
 });
 
+test("Sprint 5 updates Replay in place and keeps investigation context dominant", async () => {
+  const [appSource, rendererSource, styles] = await Promise.all([
+    readFile(resolve(studioRoot, "web/js/app.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/js/graph.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/styles.css"), "utf8"),
+  ]);
+  const updateReplaySource = applicationFunctionSource(appSource, "updateReplay", "scheduleReplay");
+  const scheduleReplaySource = applicationFunctionSource(appSource, "scheduleReplay", "escapeHtml");
+  assert.match(updateReplaySource, /refreshReplayPresentation\(\)/);
+  assert.match(scheduleReplaySource, /refreshReplayPresentation\(\)/);
+  assert.match(appSource, /graphController\s*=\s*renderGraph/);
+  assert.match(rendererSource, /const updateReplayView\s*=\s*\(nextReplayView\)/);
+  assert.match(rendererSource, /return Object\.freeze\(\{ updateReplayView \}\)/);
+  assert.match(rendererSource, /nextReplayView\.completedNodeKeys/);
+  assert.match(rendererSource, /nextReplayView\.completedEdgeKeys/);
+  assert.doesNotMatch(rendererSource, /from\s+["']\.\/cognitive-replay\.js["']/);
+  assert.match(appSource, /Cognitive investigation/);
+  assert.match(appSource, /Return to semantic world/);
+  assert.match(appSource, /No inferred steps/);
+  assert.match(appSource, /investigation-stages/);
+  const polishStyles = styles.slice(styles.indexOf("MemoryOS 1.1 Sprint 5"));
+  assert.match(polishStyles, /data-investigation="active"/);
+  assert.match(polishStyles, /\.investigation-context/);
+  assert.doesNotMatch(polishStyles, /animation\s*:/, "product polish must not manufacture activity");
+});
+
 test("the application exposes deterministic Cognitive Trace query failures", async () => {
   const source = await readFile(resolve(studioRoot, "web/js/app.js"), "utf8");
   assert.match(source, /traceDiagnostic/);

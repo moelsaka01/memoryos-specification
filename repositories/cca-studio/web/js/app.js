@@ -46,7 +46,8 @@ let currentFrame = initialObservation.current;
 let commandAdapter = null;
 let operationSequence = 0;
 let replayTimer = null;
-const replayStepDelay = 1100;
+let graphController = null;
+const replayStepDelay = 1250;
 
 const routeMetadata = Object.freeze({
   complete: ["MemoryOS Mission Control", "Observe the complete MemoryOS cognitive system as one deterministic semantic world."],
@@ -203,7 +204,8 @@ function updateReplay(action) {
   const operation = operations[action];
   if (!operation) return;
   state.replayState = operation(state.activeReplay, state.replayState);
-  renderRoute();
+  if (!refreshReplayPresentation()) renderRoute();
+  scheduleReplay();
 }
 
 function scheduleReplay() {
@@ -214,7 +216,8 @@ function scheduleReplay() {
     replayTimer = null;
     if (state.activeReplay?.identifier !== replayIdentifier || state.replayState?.status !== "playing") return;
     state.replayState = advanceReplay(state.activeReplay, state.replayState);
-    renderRoute();
+    if (!refreshReplayPresentation()) renderRoute();
+    scheduleReplay();
   }, replayStepDelay);
 }
 
@@ -255,16 +258,64 @@ function graphIdentity(world, frame, route, activeTrace = null, replayState = nu
   </header>`;
 }
 
-function traceSignals(trace) {
+const traceStages = Object.freeze([
+  ["origin-evidence", "Evidence"],
+  ["semantic-transformation", "Transformation"],
+  ["retrieval", "Retrieval"],
+  ["reflection-current", "Reflection"],
+]);
+
+function traceSignals(trace, replayView) {
   const orderedSteps = trace.branches.flatMap((branch) => branch.steps);
-  const uniqueNodes = new Set(orderedSteps.map(({ nodeKey }) => nodeKey)).size;
-  const origins = orderedSteps.filter(({ role }) => role === "origin-evidence").length;
+  const completedRoles = new Set();
+  if (replayView?.status === "completed") traceStages.forEach(([role]) => completedRoles.add(role));
+  else if (replayView) {
+    const replaySteps = state.activeReplay?.steps ?? [];
+    replaySteps.slice(0, replayView.cursor + 1).forEach(({ role }) => completedRoles.add(role));
+  }
+  const currentRole = replayView?.status === "completed"
+    ? "reflection-current"
+    : state.activeReplay?.steps[replayView?.cursor]?.role ?? (replayView?.status === "ready" ? "origin-evidence" : null);
+  const stageMarkup = traceStages.map(([role, label], index) => {
+    const nodeCount = new Set(orderedSteps.filter((step) => step.role === role).map(({ nodeKey }) => nodeKey)).size;
+    const classes = [completedRoles.has(role) ? "is-complete" : "", currentRole === role ? "is-current" : ""].filter(Boolean).join(" ");
+    return `<span class="investigation-stage ${classes}" data-investigation-role="${role}"><i aria-hidden="true">${index + 1}</i><span><small>${escapeHtml(label)}</small><strong>${nodeCount || 1} ${nodeCount === 1 || nodeCount === 0 ? "element" : "elements"}</strong></span></span>`;
+  }).join('<b aria-hidden="true">&rarr;</b>');
+  const progress = replayView?.status === "completed"
+    ? "Reconstruction complete"
+    : replayView?.cursor >= 0
+      ? `Step ${replayView.cursor + 1} of ${replayView.total}`
+      : `${trace.branches.length} evidence branches ready`;
   return `<div class="neural-signal-ribbon trace-signal-ribbon" aria-label="Active cognitive investigation">
-    <span><small>Origin evidence</small><strong>${origins}</strong></span>
-    <span><small>Evidence branches</small><strong>${trace.branches.length}</strong></span>
-    <span><small>Observed stages</small><strong>${uniqueNodes}</strong></span>
-    <span><small>Destination</small><strong>Reflection</strong></span>
+    <div class="investigation-stages">${stageMarkup}</div>
+    <output class="investigation-progress" aria-live="polite">${escapeHtml(progress)}</output>
   </div>`;
+}
+
+function replayElementLabel(step) {
+  if (!step || !currentFrame) return null;
+  if (step.type === "node") return currentFrame.world.nodes.find(({ key }) => key === step.nodeKey)?.label ?? step.role;
+  const edge = currentFrame.world.edges.find(({ key }) => key === step.edgeKey);
+  if (!edge) return step.role;
+  const from = currentFrame.world.nodes.find(({ key }) => key === edge.from)?.label ?? "Evidence";
+  const to = currentFrame.world.nodes.find(({ key }) => key === edge.to)?.label ?? "Knowledge";
+  return `${from} → ${to}`;
+}
+
+function investigationContextView() {
+  const target = currentFrame?.world.nodes.find(({ key }) => key === state.activeTrace?.targetNodeKey);
+  const targetObservation = target ? observationsForWorldNode(target)[0]?.value : null;
+  const replayView = state.activeReplay && state.replayState ? projectReplay(state.activeReplay, state.replayState) : null;
+  const currentStep = state.activeReplay?.steps[replayView?.cursor] ?? null;
+  const roleLabel = traceStages.find(([role]) => role === currentStep?.role)?.[1] ?? "Origin evidence";
+  const currentLabel = replayView?.status === "completed"
+    ? "Reflection reconstructed"
+    : replayElementLabel(currentStep) ?? "Evidence paths are ready";
+  return `<section class="investigation-context">
+    <header><div><span class="eyebrow">Cognitive investigation</span><h2>${escapeHtml(targetObservation?.knowledge ?? target?.label ?? "Reflection")}</h2></div><button class="return-to-world" type="button" data-graph-clear aria-label="Return to semantic world">Return to world</button></header>
+    <div class="investigation-current" data-replay-status="${escapeHtml(replayView?.status ?? "ready")}"><span aria-hidden="true"></span><div><small>${escapeHtml(roleLabel)}</small><strong>${escapeHtml(currentLabel)}</strong></div></div>
+    <footer><span>${state.activeTrace.branches.length} evidence branches</span><span>${state.activeReplay.steps.length} observed elements</span><span>No inferred steps</span></footer>
+  </section>`;
 }
 
 function neuralSignals(route) {
@@ -375,6 +426,7 @@ function neuralDefaultContext(route) {
 }
 
 function graphContext(route = state.route) {
+  if (state.activeTrace) return investigationContextView();
   if (state.graphSelection) return graphSelectionView(state.graphSelection);
   return `${state.traceDiagnostic ? `<section class="neural-perspective-guide"><span class="eyebrow">Cognitive Trace unavailable</span><h2>Observed journey rejected</h2>${traceDiagnosticView()}</section>` : ""}${neuralDefaultContext(route)}`;
 }
@@ -478,10 +530,14 @@ function renderNeuralPerspective(route = state.route) {
   const frame = currentFrame;
   const world = frame.world;
   const activity = state.pendingActivity ?? {};
+  const replayView = state.activeReplay && state.replayState
+    ? projectReplay(state.activeReplay, state.replayState)
+    : null;
+  elements.shell.dataset.investigation = state.activeTrace ? "active" : "inactive";
   elements.root.innerHTML = `<div class="neural-interface" data-perspective="${escapeHtml(route)}">
     <section class="neural-world${state.activeTrace ? " has-investigation" : ""}" aria-label="${escapeHtml(world.identity)}">
       ${graphIdentity(world, frame, route, state.activeTrace, state.replayState)}
-      ${state.activeTrace ? traceSignals(state.activeTrace) : neuralSignals(route)}
+      ${state.activeTrace ? traceSignals(state.activeTrace, replayView) : neuralSignals(route)}
       <div id="memory-graph" class="memory-intelligence-graph-host" aria-label="${escapeHtml(world.identity)}"></div>
       <aside class="neural-context" id="graph-context" aria-label="Selected graph context">${graphContext(route)}</aside>
       ${neuralFlowRibbon()}
@@ -489,7 +545,7 @@ function renderNeuralPerspective(route = state.route) {
     </section>
   </div>`;
   const graphContainer = document.querySelector("#memory-graph");
-  renderGraph(graphContainer, world, (node) => {
+  graphController = renderGraph(graphContainer, world, (node) => {
     if (state.replayState?.status === "playing") {
       clearReplayTimer();
       state.replayState = pauseReplay(state.activeReplay, state.replayState);
@@ -505,9 +561,7 @@ function renderNeuralPerspective(route = state.route) {
     viewState: state.graphViewState,
     activity,
     trace: state.activeTrace,
-    replayView: state.activeReplay && state.replayState
-      ? projectReplay(state.activeReplay, state.replayState)
-      : null,
+    replayView,
     onReplayAction: updateReplay,
     onViewStateChange(nextViewState) {
       state.graphViewState = nextViewState;
@@ -517,6 +571,19 @@ function renderNeuralPerspective(route = state.route) {
   graphContainer.addEventListener("graphselectionclear", clearGraphSelection);
   bindGraphContext();
   scheduleReplay();
+}
+
+function refreshReplayPresentation() {
+  if (!state.activeTrace || !state.activeReplay || !state.replayState || !graphController) return false;
+  const replayView = projectReplay(state.activeReplay, state.replayState);
+  if (!graphController.updateReplayView(replayView)) return false;
+  const liveState = document.querySelector(".graph-live-state");
+  const replayLabels = { ready: "Replay ready", playing: "Constructing", paused: "Replay paused", completed: "Replay complete" };
+  if (liveState) liveState.innerHTML = `<i aria-hidden="true"></i>${replayLabels[state.replayState.status]}`;
+  const ribbon = document.querySelector(".trace-signal-ribbon");
+  if (ribbon) ribbon.outerHTML = traceSignals(state.activeTrace, replayView);
+  renderGraphContext();
+  return true;
 }
 
 function renderRoute() {

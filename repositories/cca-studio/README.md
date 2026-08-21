@@ -37,6 +37,13 @@ semantic step at a time. The application owns the explicit Play/Pause
 scheduler; the renderer receives completed replay state and never computes
 events or ordering. Replay does not change the runtime or public C++ Contract.
 
+Sprint 5 refines that completed architecture into a calmer cognitive
+investigation product. Replay updates the mounted semantic world in place,
+the investigation rail exposes the exact evidence-to-Reflection progression,
+and generic object chrome yields to the current observed element without
+changing any runtime or public contract. See
+[MemoryOS 1.1 Sprint 5](docs/memoryos-1.1-sprint-5.md).
+
 ## Build and verify
 
 From the workspace root:

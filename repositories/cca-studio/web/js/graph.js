@@ -323,6 +323,7 @@ export function renderGraph(
   const traceJourneyIndex = new Map(traceJourney.map((step) => [step.nodeKey, step.journeyIndex]));
   const traceRegionKinds = new Set(traceJourney.map((step) => byId.get(step.nodeKey)?.kind).filter(Boolean));
   const replayActive = Boolean(traceState.active && replayView?.active);
+  let currentReplayView = replayView;
   const replayCompletedNodes = new Set(replayView?.completedNodeKeys ?? []);
   const replayCompletedEdges = new Set(replayView?.completedEdgeKeys ?? []);
   const replayFutureNodes = new Set(replayView?.futureNodeKeys ?? []);
@@ -650,7 +651,7 @@ export function renderGraph(
       nodeElement.classList.toggle("is-journey-complete", Number.isInteger(journeyIndex) && Number.isInteger(followedIndex) && journeyIndex < followedIndex);
       nodeElement.classList.toggle("is-journey-upcoming", Number.isInteger(journeyIndex) && Number.isInteger(followedIndex) && journeyIndex > followedIndex);
       nodeElement.classList.toggle("is-replay-completed", replayActive && replayCompletedNodes.has(key));
-      nodeElement.classList.toggle("is-replay-current", replayActive && replayView.currentNodeKey === key);
+      nodeElement.classList.toggle("is-replay-current", replayActive && currentReplayView.currentNodeKey === key);
       nodeElement.classList.toggle("is-replay-future", replayActive && replayFutureNodes.has(key));
       nodeElement.setAttribute("aria-pressed", String(selected));
     });
@@ -921,6 +922,7 @@ export function renderGraph(
     createToolButton("Zoom in", () => zoomBy(1.18), "+"),
     createToolButton("Fit graph", resetCamera, "Fit"),
   );
+  let replayControlState = null;
   if (replayActive) {
     toolbar.classList.add("has-replay-controls");
     const replayControls = document.createElement("div");
@@ -931,22 +933,25 @@ export function renderGraph(
       if (typeof onReplayAction === "function") onReplayAction(action);
     };
     const restartButton = createToolButton("Restart replay", replayAction("restart"), "Restart");
-    const previousButton = createToolButton("Previous replay step", replayAction("previous"), "Previous Step");
-    const playButton = createToolButton("Play replay", replayAction("play"), "Play");
+    const previousButton = createToolButton("Previous replay step", replayAction("previous"), "Previous");
+    const playButton = createToolButton("Play replay", replayAction("play"), "Reconstruct");
     const pauseButton = createToolButton("Pause replay", replayAction("pause"), "Pause");
-    const nextButton = createToolButton("Next replay step", replayAction("next"), "Next Step");
+    const nextButton = createToolButton("Next replay step", replayAction("next"), "Next");
     restartButton.disabled = replayView.status === "ready";
     previousButton.disabled = replayView.cursor < 0;
     playButton.disabled = replayView.status === "playing" || replayView.status === "completed";
     pauseButton.disabled = replayView.status !== "playing";
+    playButton.hidden = replayView.status === "playing";
+    pauseButton.hidden = replayView.status !== "playing";
     nextButton.disabled = replayView.status === "completed";
     const replayPosition = document.createElement("output");
     replayPosition.className = "cognitive-replay-position";
     replayPosition.setAttribute("aria-live", "polite");
     replayPosition.value = replayView.status === "completed"
-      ? `Complete · ${replayView.total} / ${replayView.total}`
-      : replayView.cursor < 0 ? `Ready · 0 / ${replayView.total}` : `${replayView.cursor + 1} / ${replayView.total}`;
+      ? "Reconstruction complete"
+      : replayView.cursor < 0 ? `Ready · ${replayView.total} steps` : `${String(replayView.cursor + 1).padStart(2, "0")} / ${replayView.total}`;
     replayControls.append(restartButton, previousButton, playButton, pauseButton, nextButton, replayPosition);
+    replayControlState = { restartButton, previousButton, playButton, pauseButton, nextButton, replayPosition };
     toolbar.prepend(replayControls);
   } else if (traceState.active) {
     toolbar.classList.add("has-trace-journey");
@@ -1135,4 +1140,57 @@ export function renderGraph(
   applyGraphEmphasis();
   container.replaceChildren(shell);
   if (viewStateWasReconciled) emitViewState();
+
+  const updateReplayView = (nextReplayView) => {
+    if (!replayActive || !nextReplayView?.active || nextReplayView.identifier !== currentReplayView.identifier) return false;
+    currentReplayView = nextReplayView;
+    replayCompletedNodes.clear();
+    replayCompletedEdges.clear();
+    replayFutureNodes.clear();
+    replayFutureEdges.clear();
+    nextReplayView.completedNodeKeys.forEach((key) => replayCompletedNodes.add(key));
+    nextReplayView.completedEdgeKeys.forEach((key) => replayCompletedEdges.add(key));
+    nextReplayView.futureNodeKeys.forEach((key) => replayFutureNodes.add(key));
+    nextReplayView.futureEdgeKeys.forEach((key) => replayFutureEdges.add(key));
+    shell.dataset.replayStatus = nextReplayView.status;
+    shell.dataset.replayCursor = String(nextReplayView.cursor);
+    nodeGroup.querySelectorAll(".graph-node").forEach((nodeElement) => {
+      const key = nodeElement.dataset.observationKey;
+      nodeElement.classList.toggle("is-replay-completed", replayCompletedNodes.has(key));
+      nodeElement.classList.toggle("is-replay-current", nextReplayView.currentNodeKey === key);
+      nodeElement.classList.toggle("is-replay-future", replayFutureNodes.has(key));
+    });
+    edgeRecords.forEach(({ edge, base, flow }) => {
+      [base, flow].filter(Boolean).forEach((edgeElement) => {
+        edgeElement.classList.toggle("is-replay-completed", replayCompletedEdges.has(edge.key));
+        edgeElement.classList.toggle("is-replay-current", nextReplayView.currentEdgeKey === edge.key);
+        edgeElement.classList.toggle("is-replay-future", replayFutureEdges.has(edge.key));
+      });
+    });
+    traceRoutes.querySelectorAll(".cognitive-trace-route").forEach((route) => {
+      const edgeKey = route.dataset.edgeKey;
+      route.classList.toggle("is-replay-completed", replayCompletedEdges.has(edgeKey));
+      route.classList.toggle("is-replay-current", nextReplayView.currentEdgeKey === edgeKey);
+      route.classList.toggle("is-replay-future", replayFutureEdges.has(edgeKey));
+    });
+    if (replayControlState) {
+      const { restartButton, previousButton, playButton, pauseButton, nextButton, replayPosition } = replayControlState;
+      restartButton.disabled = nextReplayView.status === "ready";
+      previousButton.disabled = nextReplayView.cursor < 0;
+      playButton.disabled = nextReplayView.status === "playing" || nextReplayView.status === "completed";
+      pauseButton.disabled = nextReplayView.status !== "playing";
+      playButton.hidden = nextReplayView.status === "playing";
+      pauseButton.hidden = nextReplayView.status !== "playing";
+      nextButton.disabled = nextReplayView.status === "completed";
+      replayPosition.value = nextReplayView.status === "completed"
+        ? "Reconstruction complete"
+        : nextReplayView.cursor < 0
+          ? `Ready · ${nextReplayView.total} steps`
+          : `${String(nextReplayView.cursor + 1).padStart(2, "0")} / ${nextReplayView.total}`;
+    }
+    applyGraphEmphasis();
+    return true;
+  };
+
+  return Object.freeze({ updateReplayView });
 }
