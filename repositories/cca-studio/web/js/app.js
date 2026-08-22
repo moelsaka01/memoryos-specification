@@ -32,6 +32,18 @@ import {
   projectReplay,
   restartReplay,
 } from "./cognitive-replay.js";
+import {
+  compareCognitiveEvolution,
+  validateCognitiveEvolution,
+} from "./cognitive-evolution.js";
+import {
+  compareEvolution,
+  createEvolutionController,
+  evolutionFrames,
+  nextEvolutionObservation,
+  previousEvolutionObservation,
+  reconcileEvolutionController,
+} from "./cognitive-evolution-controller.js";
 
 let snapshot = cloneDetached(resolveSnapshot());
 let observationTimeline = createObservationTimeline();
@@ -164,6 +176,8 @@ const state = {
   activeTrace: null,
   activeReplay: null,
   replayState: null,
+  evolutionController: createEvolutionController(observationTimeline.length),
+  evolutionSelection: null,
   traceDiagnostic: null,
   lastOperation: null,
   busy: false,
@@ -244,17 +258,17 @@ function status(value) {
   return `<span class="status-chip ${stateClass(value)}"><span class="status-dot" aria-hidden="true"></span>${escapeHtml(value)}</span>`;
 }
 
-function graphIdentity(world, frame, route, activeTrace = null, replayState = null) {
+function graphIdentity(world, frame, route, activeTrace = null, replayState = null, evolution = null) {
   const [title] = routeMetadata[route];
   const observation = route === "complete" ? "Complete cognitive system" : `${title} perspective`;
   const replayLabels = { ready: "Replay ready", playing: "Constructing", paused: "Replay paused", completed: "Replay complete" };
   return `<header class="neural-graph-identity" aria-labelledby="memory-intelligence-graph-title">
     <span class="graph-identity-mark" aria-hidden="true"><i></i><i></i><i></i></span>
     <span class="graph-identity-copy">
-      <small>${activeTrace ? "Living Connectome · Cognitive reconstruction" : `Mission Control · ${escapeHtml(observation)}`}</small>
-      <strong id="memory-intelligence-graph-title">${activeTrace ? "Evidence becomes Reflection" : escapeHtml(world.identity)}</strong>
+      <small>${activeTrace ? "Living Connectome · Cognitive reconstruction" : evolution ? "Living Connectome · Cognitive evolution" : `Mission Control · ${escapeHtml(observation)}`}</small>
+      <strong id="memory-intelligence-graph-title">${activeTrace ? "Evidence becomes Reflection" : evolution ? "What changed?" : escapeHtml(world.identity)}</strong>
     </span>
-    <span class="graph-live-state"><i aria-hidden="true"></i>${activeTrace ? replayLabels[replayState?.status] ?? "Cognitive Trace" : `Observed frame ${escapeHtml(frame.sequence + 1)}`}</span>
+    <span class="graph-live-state"><i aria-hidden="true"></i>${activeTrace ? replayLabels[replayState?.status] ?? "Cognitive Trace" : evolution ? `Observation ${evolution.from.sequence + 1} → ${evolution.to.sequence + 1}` : `Observed frame ${escapeHtml(frame.sequence + 1)}`}</span>
   </header>`;
 }
 
@@ -343,6 +357,22 @@ function neuralSignals(route) {
   return `<div class="neural-signal-ribbon" aria-label="Observed product signals">${signalsByRoute[route].map(([label, value]) => `<span><small>${escapeHtml(label)}</small><strong>${escapeHtml(value)}</strong></span>`).join("")}</div>`;
 }
 
+function evolutionSignals(evolution) {
+  const count = (name) => evolution.summary[name] ?? 0;
+  const added = count("addedEvidence") + count("addedSemanticTransformations")
+    + count("addedRetrievals") + count("addedReflections") + count("addedRelationships");
+  const removed = count("removedEvidence") + count("removedSemanticTransformations")
+    + count("removedRetrievals") + count("removedReflections") + count("removedRelationships");
+  const values = [
+    ["Added cognition", added],
+    ["Removed cognition", removed],
+    ["Modified relationships", count("modifiedRelationships")],
+    ["Stable cognition", evolution.unchanged.nodeKeys.length],
+    ["Stable relationships", evolution.unchanged.relationshipKeys.length],
+  ];
+  return `<div class="neural-signal-ribbon evolution-signal-ribbon" aria-label="Cognitive Evolution summary">${values.map(([label, value]) => `<span><small>${escapeHtml(label)}</small><strong>${escapeHtml(value)}</strong></span>`).join("")}</div>`;
+}
+
 function neuralFlowRibbon() {
   const retrievalCandidates = snapshot.retrievalSessions.reduce((sum, session) => sum + session.candidates.length, 0);
   const values = [
@@ -426,9 +456,66 @@ function neuralDefaultContext(route) {
 }
 
 function graphContext(route = state.route) {
+  const evolution = currentEvolution();
+  if (evolution) return evolutionContextView(evolution);
   if (state.activeTrace) return investigationContextView();
   if (state.graphSelection) return graphSelectionView(state.graphSelection);
   return `${state.traceDiagnostic ? `<section class="neural-perspective-guide"><span class="eyebrow">Cognitive Trace unavailable</span><h2>Observed journey rejected</h2>${traceDiagnosticView()}</section>` : ""}${neuralDefaultContext(route)}`;
+}
+
+function currentEvolution() {
+  if (!state.evolutionController.active) return null;
+  const pair = evolutionFrames(observationTimeline, state.evolutionController);
+  if (!pair) return null;
+  const evolution = compareCognitiveEvolution(pair.from, pair.to);
+  validateCognitiveEvolution(evolution);
+  return evolution;
+}
+
+function evolutionContextView(evolution) {
+  const groups = [
+    ["Evidence", "addedEvidence", "removedEvidence"],
+    ["Semantic transformations", "addedSemanticTransformations", "removedSemanticTransformations"],
+    ["Retrievals", "addedRetrievals", "removedRetrievals"],
+    ["Reflections", "addedReflections", "removedReflections"],
+    ["Relationships", "addedRelationships", "removedRelationships"],
+  ];
+  if (state.evolutionSelection) {
+    const node = state.evolutionSelection;
+    const added = evolution.view.addedNodeKeys.includes(node.key);
+    const removed = evolution.view.removedNodeKeys.includes(node.key);
+    const evolved = evolution.view.evolvedNodeKeys.includes(node.key);
+    const stateLabel = evolved ? "Evolved" : added ? "Added" : removed ? "Removed" : "Stable context";
+    return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${escapeHtml(node.label)}</h2></div><button class="rail-close" type="button" data-evolution-clear aria-label="Clear evolution selection">&times;</button></header><div class="evolution-state is-${stateLabel.toLowerCase().replaceAll(" ", "-")}"><span aria-hidden="true"></span><div><small>${escapeHtml(node.family ?? node.kind)}</small><strong>${escapeHtml(stateLabel)}</strong></div></div><p>${evolved ? "The same cognitive identity has a different observed semantic revision." : added ? "This cognition is present only in Observation B." : removed ? "This cognition is present only in Observation A." : "This cognition remained semantically unchanged across both observations."}</p></section>`;
+  }
+  const rows = groups.map(([label, addedKey, removedKey]) => {
+    const added = evolution.summary[addedKey];
+    const removed = evolution.summary[removedKey];
+    return `<li><span>${escapeHtml(label)}</span><span><b class="evolution-added">+${added}</b><b class="evolution-removed">−${removed}</b></span></li>`;
+  }).join("");
+  const total = Object.values(evolution.summary).reduce((sum, value) => sum + value, 0);
+  return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${total === 0 ? "No semantic changes" : `${total} semantic differences`}</h2></div></header><p>Observation ${evolution.from.sequence + 1} is compared with Observation ${evolution.to.sequence + 1}. Every emphasis comes from immutable runtime truth.</p><ul class="key-value-list evolution-difference-list">${rows}<li><span>Modified relationships</span><span><b class="evolution-modified">~${evolution.summary.modifiedRelationships}</b></span></li></ul><footer>${evolution.unchanged.nodeKeys.length} cognitive records and ${evolution.unchanged.relationshipKeys.length} relationships remained stable.</footer></section>`;
+}
+
+function updateEvolution(action) {
+  const frameCount = observationTimeline.length;
+  const operations = {
+    compare: compareEvolution,
+    previous: previousEvolutionObservation,
+    next: nextEvolutionObservation,
+  };
+  const operation = operations[action];
+  if (!operation) return;
+  const wasActive = state.evolutionController.active;
+  state.evolutionController = operation(state.evolutionController, frameCount);
+  state.evolutionSelection = null;
+  if (!wasActive && state.evolutionController.active) {
+    state.activeTrace = null;
+    clearReplay();
+    state.traceDiagnostic = null;
+    clearObservedSelection();
+  }
+  renderRoute();
 }
 
 function traceContainsNode(trace, nodeKey) {
@@ -495,6 +582,8 @@ function acceptObservationFrame(view, operation, query, resultCode) {
   snapshot = nextSnapshot;
   observationTimeline = accepted.frames;
   currentFrame = accepted.current;
+  state.evolutionController = reconcileEvolutionController(state.evolutionController, observationTimeline.length);
+  state.evolutionSelection = null;
   state.pendingActivity = currentFrame.activity;
   state.graphViewState = reconcileGraphViewState(currentFrame.world, state.graphViewState);
   synchronizeSelectionWithCurrentFrame(selectedKey);
@@ -528,16 +617,18 @@ function acceptObservationFrame(view, operation, query, resultCode) {
 
 function renderNeuralPerspective(route = state.route) {
   const frame = currentFrame;
-  const world = frame.world;
+  const evolution = currentEvolution();
+  const world = evolution?.world ?? frame.world;
   const activity = state.pendingActivity ?? {};
   const replayView = state.activeReplay && state.replayState
     ? projectReplay(state.activeReplay, state.replayState)
     : null;
   elements.shell.dataset.investigation = state.activeTrace ? "active" : "inactive";
+  elements.shell.dataset.evolution = evolution ? "active" : "inactive";
   elements.root.innerHTML = `<div class="neural-interface" data-perspective="${escapeHtml(route)}">
-    <section class="neural-world${state.activeTrace ? " has-investigation" : ""}" aria-label="${escapeHtml(world.identity)}">
-      ${graphIdentity(world, frame, route, state.activeTrace, state.replayState)}
-      ${state.activeTrace ? traceSignals(state.activeTrace, replayView) : neuralSignals(route)}
+    <section class="neural-world${state.activeTrace ? " has-investigation" : ""}${evolution ? " has-evolution" : ""}" aria-label="${escapeHtml(world.identity)}">
+      ${graphIdentity(world, frame, route, state.activeTrace, state.replayState, evolution)}
+      ${state.activeTrace ? traceSignals(state.activeTrace, replayView) : evolution ? evolutionSignals(evolution) : neuralSignals(route)}
       <div id="memory-graph" class="memory-intelligence-graph-host" aria-label="${escapeHtml(world.identity)}"></div>
       <aside class="neural-context" id="graph-context" aria-label="Selected graph context">${graphContext(route)}</aside>
       ${neuralFlowRibbon()}
@@ -549,6 +640,11 @@ function renderNeuralPerspective(route = state.route) {
     if (state.replayState?.status === "playing") {
       clearReplayTimer();
       state.replayState = pauseReplay(state.activeReplay, state.replayState);
+    }
+    if (evolution) {
+      state.evolutionSelection = node;
+      renderGraphContext();
+      return;
     }
     const targetRoute = routeByFamily[node.family];
     if (node.aggregate && targetRoute && targetRoute !== state.route) {
@@ -562,7 +658,10 @@ function renderNeuralPerspective(route = state.route) {
     activity,
     trace: state.activeTrace,
     replayView,
+    evolutionView: evolution?.view ?? null,
+    evolutionControl: state.evolutionController,
     onReplayAction: updateReplay,
+    onEvolutionAction: updateEvolution,
     onViewStateChange(nextViewState) {
       state.graphViewState = nextViewState;
     },
@@ -798,6 +897,11 @@ function bindGraphContext() {
   if (!context) return;
   bindSelectableRows(context);
   context.querySelector("[data-graph-clear]")?.addEventListener("click", clearGraphSelection);
+  context.querySelector("[data-evolution-clear]")?.addEventListener("click", () => {
+    state.evolutionSelection = null;
+    renderGraphContext();
+    document.querySelector("#memory-graph")?.dispatchEvent(new CustomEvent("cleargraphselection"));
+  });
   context.querySelector("[data-graph-trace]")?.addEventListener("click", (event) => {
     const button = event.currentTarget;
     const route = ["retrieval", "reflection"].includes(button.dataset.route) ? button.dataset.route : "complete";
@@ -873,6 +977,8 @@ async function executeSessionOperation(name) {
       state.sessionState = "Forgotten";
       observationTimeline = createObservationTimeline();
       currentFrame = null;
+      state.evolutionController = createEvolutionController(0);
+      state.evolutionSelection = null;
       state.pendingActivity = null;
       state.activeTrace = null;
       clearReplay();

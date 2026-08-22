@@ -63,6 +63,8 @@ add_custom_target(
     web/js/graph-view-state.js
     web/js/cognitive-trace.js
     web/js/cognitive-replay.js
+    web/js/cognitive-evolution.js
+    web/js/cognitive-evolution-controller.js
     web/js/host-adapter.js
     web/js/observation-timeline.js
     web/js/semantic-world.js

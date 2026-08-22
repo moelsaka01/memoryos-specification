@@ -61,9 +61,22 @@ import {
 } from "../web/js/cognitive-replay.js";
 import {
   cognitiveRegionDefinitions,
+  prepareEvolutionRenderingState,
   prepareTraceJourney,
   prepareTraceRenderingState,
 } from "../web/js/graph.js";
+import {
+  compareCognitiveEvolution,
+  validateCognitiveEvolution,
+} from "../web/js/cognitive-evolution.js";
+import {
+  compareEvolution,
+  createEvolutionController,
+  evolutionFrames,
+  nextEvolutionObservation,
+  previousEvolutionObservation,
+  reconcileEvolutionController,
+} from "../web/js/cognitive-evolution-controller.js";
 
 const testDirectory = dirname(fileURLToPath(import.meta.url));
 const studioRoot = resolve(testDirectory, "..");
@@ -82,6 +95,22 @@ function observationFrameFor(observation = referenceSnapshot, sequence = 0) {
     current = accepted.current;
   }
   return current;
+}
+
+function observationPair(before, after, graphForAfter = buildGraph(after)) {
+  const first = appendObservationFrame(createObservationTimeline(), {
+    snapshot: before,
+    graph: buildGraph(before),
+    operation: "InitialObservation",
+    resultCode: "OK",
+  });
+  const second = appendObservationFrame(first.frames, {
+    snapshot: after,
+    graph: graphForAfter,
+    operation: "Observe",
+    resultCode: "OK",
+  });
+  return { from: first.current, to: second.current, frames: second.frames };
 }
 
 function referenceReflectionNode(frame) {
@@ -1218,6 +1247,130 @@ test("Sprint 5 updates Replay in place and keeps investigation context dominant"
   assert.match(polishStyles, /data-investigation="active"/);
   assert.match(polishStyles, /\.investigation-context/);
   assert.doesNotMatch(polishStyles, /animation\s*:/, "product polish must not manufacture activity");
+});
+
+test("Cognitive Evolution reports identical observations without semantic false positives", () => {
+  const pair = observationPair(referenceSnapshot, referenceSnapshot);
+  const evolution = compareCognitiveEvolution(pair.from, pair.to);
+  assert.equal(validateCognitiveEvolution(evolution), true);
+  assert.equal(Object.isFrozen(evolution), true);
+  assert.equal(Object.isFrozen(evolution.world.nodes), true);
+  assert.ok(Object.values(evolution.summary).every((count) => count === 0));
+  assert.equal(evolution.view.addedNodeKeys.length, 0);
+  assert.equal(evolution.view.removedNodeKeys.length, 0);
+  assert.equal(evolution.view.evolvedNodeKeys.length, 0);
+  assert.ok(evolution.unchanged.nodeKeys.length > 0);
+  assert.ok(evolution.unchanged.relationshipKeys.length > 0);
+});
+
+test("Cognitive Evolution distinguishes added removed and evolved cognition from aggregate changes", () => {
+  const changed = cloneDetached(referenceSnapshot);
+  const removedEvidence = changed.longTermMemory.entries.shift();
+  changed.longTermMemory.entries.push({ identifier: "ltm-evolution-added", value: "new evidence", archived: false });
+  changed.semanticMemory.concepts[0].meaning = "same concept identity with a new observed meaning";
+  changed.retrievalSessions.pop();
+  changed.reflections[0].knowledge = "same Reflection identity with new runtime truth";
+  const pair = observationPair(referenceSnapshot, changed);
+  const evolution = compareCognitiveEvolution(pair.from, pair.to);
+
+  assert.deepEqual(evolution.differences.addedEvidence.map(({ identifier }) => identifier), ["ltm-evolution-added"]);
+  assert.deepEqual(evolution.differences.removedEvidence.map(({ identifier }) => identifier), [removedEvidence.identifier]);
+  assert.equal(evolution.differences.addedSemanticTransformations.length, 1);
+  assert.equal(evolution.differences.removedSemanticTransformations.length, 1);
+  assert.equal(evolution.differences.addedReflections.length, 1);
+  assert.equal(evolution.differences.removedReflections.length, 1);
+  assert.equal(evolution.differences.removedRetrievals.length, 1);
+  assert.ok(evolution.view.evolvedNodeKeys.includes("semantic:sem-ownership:0"));
+  assert.ok(evolution.view.evolvedNodeKeys.includes("reflection:reflection-release-integrity:0"));
+  assert.equal(evolution.differences.addedEvidence.some(({ family }) => /aggregate/i.test(family)), false);
+
+  const worldKeys = new Set(evolution.world.nodes.map(({ key }) => key));
+  assert.ok(worldKeys.has(`long-term:${removedEvidence.identifier}:0`), "removed cognition remains visible in the comparison world");
+  assert.ok(worldKeys.has("long-term:ltm-evolution-added:0"));
+});
+
+test("Cognitive Evolution detects added removed and modified semantic relationships", () => {
+  const changed = cloneDetached(referenceSnapshot);
+  changed.semanticMemory.concepts[0].linkedConceptIdentifiers = [];
+  changed.semanticMemory.concepts[1].linkedConceptIdentifiers.push("sem-ownership");
+  changed.reflections[0].sources.reverse();
+  const pair = observationPair(referenceSnapshot, changed);
+  const evolution = compareCognitiveEvolution(pair.from, pair.to);
+
+  assert.ok(evolution.differences.addedRelationships.length > 0);
+  assert.ok(evolution.differences.removedRelationships.length > 0);
+  assert.ok(evolution.differences.modifiedRelationships.length > 0);
+  assert.deepEqual(
+    evolution.view.modifiedRelationshipKeys,
+    evolution.differences.modifiedRelationships.map(({ key }) => key),
+  );
+});
+
+test("Cognitive Evolution rejects graph-only differences that are absent from runtime truth", () => {
+  const graph = buildGraph(referenceSnapshot);
+  graph.edges.find((edge) => edge.relation === "evidence").validationState = "fabricated";
+  const pair = observationPair(referenceSnapshot, referenceSnapshot, graph);
+  assert.throws(
+    () => compareCognitiveEvolution(pair.from, pair.to),
+    /not the canonical projection of runtime truth/,
+  );
+});
+
+test("Cognitive Evolution comparison is canonical and independent of graph input order", () => {
+  const changed = cloneDetached(referenceSnapshot);
+  changed.longTermMemory.entries.push({ identifier: "ltm-order-test", value: "order-independent", archived: false });
+  const graph = buildGraph(changed);
+  const ordered = observationPair(referenceSnapshot, changed, graph);
+  const reordered = observationPair(referenceSnapshot, changed, {
+    ...graph,
+    nodes: [...graph.nodes].reverse(),
+    edges: [...graph.edges].reverse(),
+  });
+  assert.deepEqual(
+    compareCognitiveEvolution(reordered.from, reordered.to),
+    compareCognitiveEvolution(ordered.from, ordered.to),
+  );
+});
+
+test("Cognitive Evolution controller exposes only explicit adjacent observation comparison", () => {
+  let controller = createEvolutionController(4);
+  assert.deepEqual({ from: controller.fromIndex, to: controller.toIndex, active: controller.active }, { from: 2, to: 3, active: false });
+  controller = previousEvolutionObservation(controller, 4);
+  assert.deepEqual({ from: controller.fromIndex, to: controller.toIndex, active: controller.active }, { from: 1, to: 2, active: false });
+  controller = compareEvolution(controller, 4);
+  assert.equal(controller.active, true);
+  assert.deepEqual({ from: controller.fromIndex, to: controller.toIndex }, { from: 1, to: 2 });
+  controller = previousEvolutionObservation(controller, 4);
+  assert.deepEqual({ from: controller.fromIndex, to: controller.toIndex }, { from: 0, to: 1 });
+  assert.equal(controller.canGoPrevious, false);
+  controller = nextEvolutionObservation(controller, 4);
+  assert.deepEqual({ from: controller.fromIndex, to: controller.toIndex }, { from: 1, to: 2 });
+  assert.deepEqual(evolutionFrames(["zero", "one", "two", "three"], controller), { from: "one", to: "two" });
+  assert.equal(reconcileEvolutionController(controller, 5).active, true);
+  assert.equal(createEvolutionController(1).available, false);
+});
+
+test("the Evolution renderer consumes engine classifications and never computes semantic differences", async () => {
+  const changed = cloneDetached(referenceSnapshot);
+  changed.longTermMemory.entries.push({ identifier: "ltm-render-test", value: "visible addition", archived: false });
+  const pair = observationPair(referenceSnapshot, changed);
+  const evolution = compareCognitiveEvolution(pair.from, pair.to);
+  const rendering = prepareEvolutionRenderingState(evolution.world, evolution.view);
+  assert.deepEqual(rendering.addedNodeKeys, evolution.view.addedNodeKeys);
+  assert.deepEqual(rendering.removedRelationshipKeys, evolution.view.removedRelationshipKeys);
+  assert.throws(() => prepareEvolutionRenderingState(pair.to.world, evolution.view), /not bound/);
+
+  const [engineSource, rendererSource, appSource] = await Promise.all([
+    readFile(resolve(studioRoot, "web/js/cognitive-evolution.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/js/graph.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/js/app.js"), "utf8"),
+  ]);
+  assert.doesNotMatch(engineSource, /\bwindow\b|\bdocument\b|setTimeout|setInterval|requestAnimationFrame|Math\.random|Date\./);
+  assert.doesNotMatch(rendererSource, /from\s+["']\.\/cognitive-evolution\.js["']|compareCognitiveEvolution|canonicalObservation/);
+  assert.match(appSource, /compareCognitiveEvolution\(pair\.from, pair\.to\)/);
+  for (const control of ["Compare", "Previous Observation", "Next Observation"]) {
+    assert.match(rendererSource, new RegExp(control));
+  }
 });
 
 test("the application exposes deterministic Cognitive Trace query failures", async () => {

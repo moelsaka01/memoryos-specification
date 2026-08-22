@@ -34,6 +34,236 @@
   text-rendering: optimizeLegibility;
 }
 
+/* MemoryOS 1.1 MO-1106 · Cognitive Evolution */
+.cognitive-evolution-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 10px;
+  margin-right: 4px;
+  border-right: 1px solid rgba(111, 148, 179, .22);
+}
+
+.cognitive-evolution-controls .graph-tool[aria-label="Compare"] {
+  min-width: 76px;
+  border-color: rgba(103, 181, 255, .42);
+  color: #bdddff;
+}
+
+.cognitive-evolution-controls .graph-tool[aria-label="Compare"].is-active {
+  color: #e9f6ff;
+  border-color: rgba(50, 201, 238, .72);
+  background: linear-gradient(180deg, rgba(22, 136, 255, .27), rgba(8, 54, 92, .38));
+  box-shadow: inset 0 0 0 1px rgba(75, 213, 255, .1);
+}
+
+.cognitive-evolution-position {
+  min-width: 132px;
+  color: #87a8c4;
+  font: 600 10px/1.2 var(--font-mono, ui-monospace, monospace);
+  text-align: center;
+}
+
+.has-evolution .evolution-signal-ribbon strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .topology-microstructure,
+.memory-intelligence-graph.has-cognitive-evolution .topology-synapse {
+  opacity: .12;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .cognitive-region {
+  opacity: .22;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .cognitive-region.is-evolution-region {
+  opacity: .82;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .cognitive-region.is-evolution-region .cognitive-region-boundary {
+  stroke-width: 1.25;
+  stroke-dasharray: 4 3;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .graph-node.is-evolution-stable {
+  opacity: .18;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .graph-node.is-evolution-added,
+.memory-intelligence-graph.has-cognitive-evolution .graph-node.is-evolution-removed,
+.memory-intelligence-graph.has-cognitive-evolution .graph-node.is-evolution-evolved {
+  opacity: 1;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .graph-node.is-evolution-added .graph-node-body {
+  stroke: #48df91;
+  stroke-width: 3;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .graph-node.is-evolution-added .graph-node-halo {
+  fill: #48df91;
+  opacity: .26;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .graph-node.is-evolution-removed .graph-node-body {
+  stroke: #ff6b72;
+  stroke-width: 3;
+  stroke-dasharray: 3 2;
+  fill-opacity: .35;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .graph-node.is-evolution-removed .graph-node-core {
+  opacity: .32;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .graph-node.is-evolution-evolved .graph-node-body {
+  stroke: #ffc857;
+  stroke-width: 3.4;
+  stroke-dasharray: 7 2;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .graph-node.is-evolution-evolved .graph-node-halo {
+  fill: #ffc857;
+  opacity: .25;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .graph-node-label {
+  fill: #ddecfa;
+  paint-order: stroke;
+  stroke: rgba(2, 10, 20, .96);
+  stroke-width: 3px;
+}
+
+.cognitive-evolution-marker circle {
+  fill: #07131f;
+  stroke-width: 1.5;
+}
+
+.cognitive-evolution-marker text {
+  fill: #f6fbff;
+  font: 800 10px/1 var(--font-sans, Inter, sans-serif);
+}
+
+.cognitive-evolution-marker.marker-added circle { stroke: #48df91; }
+.cognitive-evolution-marker.marker-removed circle { stroke: #ff6b72; }
+.cognitive-evolution-marker.marker-evolved circle { stroke: #ffc857; }
+
+.memory-intelligence-graph.has-cognitive-evolution .graph-edge-base.is-evolution-stable,
+.memory-intelligence-graph.has-cognitive-evolution .graph-edge-flow.is-evolution-stable {
+  opacity: .1;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .graph-edge-base.is-evolution-added,
+.memory-intelligence-graph.has-cognitive-evolution .graph-edge-flow.is-evolution-added {
+  stroke: #48df91;
+  stroke-width: 2.8;
+  stroke-opacity: .95;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .graph-edge-base.is-evolution-removed,
+.memory-intelligence-graph.has-cognitive-evolution .graph-edge-flow.is-evolution-removed {
+  stroke: #ff6b72;
+  stroke-width: 2.4;
+  stroke-opacity: .86;
+  stroke-dasharray: .07 .045;
+}
+
+.memory-intelligence-graph.has-cognitive-evolution .graph-edge-base.is-evolution-modified,
+.memory-intelligence-graph.has-cognitive-evolution .graph-edge-flow.is-evolution-modified {
+  stroke: #ffc857;
+  stroke-width: 3;
+  stroke-opacity: .96;
+  stroke-dasharray: .15 .035;
+}
+
+.evolution-context {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.evolution-context > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.evolution-context h2 {
+  margin: 5px 0 0;
+  font-size: clamp(18px, 1.45vw, 25px);
+  line-height: 1.1;
+}
+
+.evolution-context > p,
+.evolution-context > footer {
+  margin: 0;
+  color: #8da9c1;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.evolution-difference-list {
+  margin: 0;
+}
+
+.evolution-difference-list li > span:last-child {
+  display: flex;
+  gap: 8px;
+}
+
+.evolution-added,
+.evolution-removed,
+.evolution-modified {
+  min-width: 28px;
+  font: 700 11px/1.2 var(--font-mono, ui-monospace, monospace);
+  text-align: right;
+}
+
+.evolution-added { color: #48df91; }
+.evolution-removed { color: #ff7c82; }
+.evolution-modified { color: #ffc857; }
+
+.evolution-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border: 1px solid rgba(111, 148, 179, .2);
+  border-radius: 8px;
+  background: rgba(5, 20, 34, .62);
+}
+
+.evolution-state > span {
+  width: 10px;
+  height: 10px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.evolution-state div {
+  display: grid;
+  gap: 2px;
+}
+
+.evolution-state small { color: #829eb5; }
+.evolution-state.is-added { color: #48df91; }
+.evolution-state.is-removed { color: #ff7c82; }
+.evolution-state.is-evolved { color: #ffc857; }
+.evolution-state.is-stable-context { color: #79a7ca; }
+
+@media (max-width: 1100px) {
+  .cognitive-evolution-position { display: none; }
+  .cognitive-evolution-controls { padding-right: 6px; }
+}
+
+@media (max-width: 720px) {
+  .cognitive-evolution-controls .graph-tool { min-width: 58px; }
+  .cognitive-evolution-controls .graph-tool[aria-label="Compare"] { min-width: 66px; }
+  .evolution-context { padding: 14px; }
+}
+
 * {
   box-sizing: border-box;
 }

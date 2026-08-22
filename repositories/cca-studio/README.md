@@ -44,6 +44,14 @@ and generic object chrome yields to the current observed element without
 changing any runtime or public contract. See
 [MemoryOS 1.1 Sprint 5](docs/memoryos-1.1-sprint-5.md).
 
+MO-1106 adds deterministic Cognitive Evolution over two immutable Observation
+Frames. The engine compares authoritative cognitive identity and semantic
+relationships—not rendering, layout, or pixels—and supplies the Living
+Connectome with a reference-only evolution view plus a stable union world.
+Compare, Previous Observation, and Next Observation are explicit; no replay,
+runtime, trace, or public API behavior changes. See
+[Cognitive Evolution](docs/memoryos-1.1-cognitive-evolution.md).
+
 ## Build and verify
 
 From the workspace root:
@@ -96,6 +104,7 @@ observation paths, and explanation-chain boundaries.
 - [MemoryOS 1.1 Cognitive Trace architecture](docs/memoryos-1.1-sprint-2.md)
 - [MemoryOS 1.1 Living Connectome identity](docs/memoryos-1.1-sprint-3.md)
 - [MemoryOS 1.1 Cognitive Replay](docs/memoryos-1.1-sprint-4.md)
+- [MemoryOS 1.1 Cognitive Evolution](docs/memoryos-1.1-cognitive-evolution.md)
 - [MemoryOS 1.0 launch demo production package](docs/memoryos-1.0-launch-demo-production-package.md)
 - [GitHub screenshot specification](docs/github-screenshot-specification.md)
 - [C++ example](examples/memory_studio_usage.cpp)

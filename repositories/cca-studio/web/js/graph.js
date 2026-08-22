@@ -290,6 +290,45 @@ export function prepareTraceRenderingState(world, trace = null) {
   });
 }
 
+export function prepareEvolutionRenderingState(world, evolutionView = null) {
+  const inactive = Object.freeze({
+    active: false,
+    identifier: null,
+    addedNodeKeys: Object.freeze([]),
+    removedNodeKeys: Object.freeze([]),
+    evolvedNodeKeys: Object.freeze([]),
+    addedRelationshipKeys: Object.freeze([]),
+    removedRelationshipKeys: Object.freeze([]),
+    modifiedRelationshipKeys: Object.freeze([]),
+  });
+  if (evolutionView === null || evolutionView === undefined) return inactive;
+  if (!world || evolutionView.kind !== "MemoryOSCognitiveEvolutionView" || evolutionView.version !== "1.1") {
+    throw new TypeError("A MemoryOS 1.1 Cognitive Evolution view is required.");
+  }
+  if (world.kind !== "MemoryOSCognitiveEvolutionWorld" || world.frame?.identifier !== evolutionView.identifier) {
+    throw new TypeError("The Cognitive Evolution view is not bound to the rendered semantic world.");
+  }
+  const nodeKeys = new Set(world.nodes.map(({ key }) => key));
+  const relationshipKeys = new Set(world.edges.map(({ key }) => key));
+  const requireKeys = (keys, available, label) => {
+    if (!Array.isArray(keys)) throw new TypeError(`Cognitive Evolution ${label} must be an array.`);
+    keys.forEach((key) => {
+      if (!available.has(key)) throw new TypeError(`Cognitive Evolution ${label} '${key}' is absent from the rendered world.`);
+    });
+    return Object.freeze([...keys]);
+  };
+  return Object.freeze({
+    active: true,
+    identifier: evolutionView.identifier,
+    addedNodeKeys: requireKeys(evolutionView.addedNodeKeys, nodeKeys, "added node"),
+    removedNodeKeys: requireKeys(evolutionView.removedNodeKeys, nodeKeys, "removed node"),
+    evolvedNodeKeys: requireKeys(evolutionView.evolvedNodeKeys, nodeKeys, "evolved node"),
+    addedRelationshipKeys: requireKeys(evolutionView.addedRelationshipKeys, relationshipKeys, "added relationship"),
+    removedRelationshipKeys: requireKeys(evolutionView.removedRelationshipKeys, relationshipKeys, "removed relationship"),
+    modifiedRelationshipKeys: requireKeys(evolutionView.modifiedRelationshipKeys, relationshipKeys, "modified relationship"),
+  });
+}
+
 export function renderGraph(
   container,
   world,
@@ -300,7 +339,10 @@ export function renderGraph(
     activity = {},
     trace = null,
     replayView = null,
+    evolutionView = null,
+    evolutionControl = null,
     onReplayAction = null,
+    onEvolutionAction = null,
     onViewStateChange = null,
   } = {},
 ) {
@@ -316,6 +358,10 @@ export function renderGraph(
   const activeNodeKeys = new Set(activity.nodeKeys ?? []);
   const activeEdgeKeys = new Set(activity.edgeKeys ?? []);
   const traceState = prepareTraceRenderingState(world, trace);
+  const evolutionState = prepareEvolutionRenderingState(world, evolutionView);
+  if (traceState.active && evolutionState.active) {
+    throw new TypeError("Trace and Cognitive Evolution cannot be rendered at the same time.");
+  }
   const traceNodeKeys = new Set(traceState.nodeKeys);
   const traceEdgeKeys = new Set(traceState.edgeKeys);
   const traceNodeRecords = new Map(traceState.nodeRecords.map((record) => [record.nodeKey, record]));
@@ -328,6 +374,17 @@ export function renderGraph(
   const replayCompletedEdges = new Set(replayView?.completedEdgeKeys ?? []);
   const replayFutureNodes = new Set(replayView?.futureNodeKeys ?? []);
   const replayFutureEdges = new Set(replayView?.futureEdgeKeys ?? []);
+  const evolutionAddedNodes = new Set(evolutionState.addedNodeKeys);
+  const evolutionRemovedNodes = new Set(evolutionState.removedNodeKeys);
+  const evolutionEvolvedNodes = new Set(evolutionState.evolvedNodeKeys);
+  const evolutionAddedRelationships = new Set(evolutionState.addedRelationshipKeys);
+  const evolutionRemovedRelationships = new Set(evolutionState.removedRelationshipKeys);
+  const evolutionModifiedRelationships = new Set(evolutionState.modifiedRelationshipKeys);
+  const evolutionRegionKinds = new Set([
+    ...evolutionState.addedNodeKeys,
+    ...evolutionState.removedNodeKeys,
+    ...evolutionState.evolvedNodeKeys,
+  ].map((key) => byId.get(key)?.kind).filter(Boolean));
   const shell = document.createElement("div");
   shell.className = "knowledge-graph topology-interface memory-intelligence-graph";
   shell.dataset.perspective = activePerspective;
@@ -343,6 +400,10 @@ export function renderGraph(
     shell.dataset.replayStatus = replayView.status;
     shell.dataset.replayCursor = String(replayView.cursor);
     shell.classList.add("has-cognitive-replay");
+  }
+  if (evolutionState.active) {
+    shell.dataset.evolutionIdentifier = evolutionState.identifier;
+    shell.classList.add("has-cognitive-evolution");
   }
   shell.setAttribute("role", "region");
   shell.setAttribute("aria-label", identity);
@@ -419,7 +480,7 @@ export function renderGraph(
   const regions = svgElement("g", { class: "cognitive-regions", "aria-hidden": "true" });
   cognitiveRegionDefinitions.forEach((definition) => {
     const region = svgElement("g", {
-      class: `cognitive-region region-${definition.kind}${traceRegionKinds.has(definition.kind) ? " is-trace-region" : ""}`,
+      class: `cognitive-region region-${definition.kind}${traceRegionKinds.has(definition.kind) ? " is-trace-region" : ""}${evolutionRegionKinds.has(definition.kind) ? " is-evolution-region" : ""}`,
       "data-region-kind": definition.kind,
       "data-region-signature": definition.signature,
     });
@@ -464,6 +525,13 @@ export function renderGraph(
       ...sharedAttributes,
     });
     if (activeEdgeKeys.has(edge.key)) base.classList.add("is-observed-activity");
+    if (evolutionState.active) {
+      base.classList.toggle("is-evolution-added", evolutionAddedRelationships.has(edge.key));
+      base.classList.toggle("is-evolution-removed", evolutionRemovedRelationships.has(edge.key));
+      base.classList.toggle("is-evolution-modified", evolutionModifiedRelationships.has(edge.key));
+      base.classList.toggle("is-evolution-stable", !evolutionAddedRelationships.has(edge.key)
+        && !evolutionRemovedRelationships.has(edge.key) && !evolutionModifiedRelationships.has(edge.key));
+    }
     if (traceState.active) {
       base.classList.add(traceEdgeKeys.has(edge.key) ? "is-trace-relationship" : "is-trace-dimmed");
       const traceStep = traceState.orderedSteps.find((step) => step.edgeKey === edge.key);
@@ -488,7 +556,10 @@ export function renderGraph(
       base.classList.toggle("is-replay-future", replayFutureEdges.has(edge.key));
     }
     const edgeTitle = svgElement("title");
-    edgeTitle.textContent = `${from.label} ${edge.relation} ${to.label}`;
+    const relationshipEvolution = evolutionAddedRelationships.has(edge.key) ? "Added relationship: "
+      : evolutionRemovedRelationships.has(edge.key) ? "Removed relationship: "
+        : evolutionModifiedRelationships.has(edge.key) ? "Modified relationship: " : "";
+    edgeTitle.textContent = `${relationshipEvolution}${from.label} ${edge.relation} ${to.label}`;
     base.append(edgeTitle);
     edges.append(base);
 
@@ -504,6 +575,13 @@ export function renderGraph(
         "stroke-opacity": appearance.opacity,
       });
       if (activeEdgeKeys.has(edge.key)) flow.classList.add("is-observed-activity");
+      if (evolutionState.active) {
+        flow.classList.toggle("is-evolution-added", evolutionAddedRelationships.has(edge.key));
+        flow.classList.toggle("is-evolution-removed", evolutionRemovedRelationships.has(edge.key));
+        flow.classList.toggle("is-evolution-modified", evolutionModifiedRelationships.has(edge.key));
+        flow.classList.toggle("is-evolution-stable", !evolutionAddedRelationships.has(edge.key)
+          && !evolutionRemovedRelationships.has(edge.key) && !evolutionModifiedRelationships.has(edge.key));
+      }
       if (traceState.active) {
         flow.classList.add(traceEdgeKeys.has(edge.key) ? "is-trace-relationship" : "is-trace-dimmed");
         const traceStep = traceState.orderedSteps.find((step) => step.edgeKey === edge.key);
@@ -629,6 +707,7 @@ export function renderGraph(
     const relatedKeys = focusKey ? relatedKeysFor(focusKey) : new Set();
     const hasPerspective = activePerspective !== "complete";
     svg.classList.toggle("has-active-trace", traceState.active);
+    svg.classList.toggle("has-cognitive-evolution", evolutionState.active);
     svg.classList.toggle("is-graph-focused", Boolean(focusKey));
     svg.classList.toggle("has-perspective", hasPerspective);
     nodeGroup.querySelectorAll(".graph-node").forEach((nodeElement) => {
@@ -653,6 +732,11 @@ export function renderGraph(
       nodeElement.classList.toggle("is-replay-completed", replayActive && replayCompletedNodes.has(key));
       nodeElement.classList.toggle("is-replay-current", replayActive && currentReplayView.currentNodeKey === key);
       nodeElement.classList.toggle("is-replay-future", replayActive && replayFutureNodes.has(key));
+      nodeElement.classList.toggle("is-evolution-added", evolutionState.active && evolutionAddedNodes.has(key));
+      nodeElement.classList.toggle("is-evolution-removed", evolutionState.active && evolutionRemovedNodes.has(key));
+      nodeElement.classList.toggle("is-evolution-evolved", evolutionState.active && evolutionEvolvedNodes.has(key));
+      nodeElement.classList.toggle("is-evolution-stable", evolutionState.active
+        && !evolutionAddedNodes.has(key) && !evolutionRemovedNodes.has(key) && !evolutionEvolvedNodes.has(key));
       nodeElement.setAttribute("aria-pressed", String(selected));
     });
     edgeRecords.forEach((record, index) => {
@@ -702,6 +786,13 @@ export function renderGraph(
       transform: `translate(${node.x} ${node.y})`,
     });
     const traceRecord = traceNodeRecords.get(node.key);
+    const evolutionStatus = evolutionEvolvedNodes.has(node.key) ? "evolved"
+      : evolutionAddedNodes.has(node.key) ? "added"
+        : evolutionRemovedNodes.has(node.key) ? "removed" : evolutionState.active ? "stable" : null;
+    if (evolutionStatus) {
+      group.dataset.evolutionState = evolutionStatus;
+      group.setAttribute("aria-label", `${evolutionStatus} cognition; ${node.family ?? node.kind}: ${node.label}`);
+    }
     if (traceRecord) {
       group.dataset.traceRole = traceRecord.roles.join(" ");
       group.dataset.traceOrdinal = traceRecord.ordinalLabel;
@@ -749,6 +840,14 @@ export function renderGraph(
     const nodeTitle = svgElement("title");
     nodeTitle.textContent = `${node.label} - select for exact details`;
     group.append(pulse, halo, body, core, nodeTitle);
+    if (["added", "removed", "evolved"].includes(evolutionStatus)) {
+      const evolutionMarker = svgElement("g", { class: `cognitive-evolution-marker marker-${evolutionStatus}`, "aria-hidden": "true" });
+      evolutionMarker.append(svgElement("circle", { cx: node.size + 7, cy: -(node.size + 7), r: 7.5 }));
+      const markerText = svgElement("text", { x: node.size + 7, y: -(node.size + 4.2), "text-anchor": "middle" });
+      markerText.textContent = evolutionStatus === "added" ? "+" : evolutionStatus === "removed" ? "−" : "~";
+      evolutionMarker.append(markerText);
+      group.append(evolutionMarker);
+    }
     if (traceRecord) {
       const marker = svgElement("g", { class: "cognitive-trace-marker", "aria-hidden": "true" });
       traceRecord.memberships.forEach((membership, membershipIndex) => {
@@ -783,7 +882,8 @@ export function renderGraph(
         group.append(waypoint);
       }
     }
-    if (traceRecord || node.kind === "workspace" || node.aggregate || (!node.detail && node.size >= 12)) {
+    if (traceRecord || ["added", "removed", "evolved"].includes(evolutionStatus)
+      || node.kind === "workspace" || node.aggregate || (!node.detail && node.size >= 12)) {
       const label = svgElement("text", {
         class: traceRecord ? "graph-node-label cognitive-trace-node-label" : "graph-node-label",
         x: 0,
@@ -976,6 +1076,31 @@ export function renderGraph(
     });
     journeyGroup.append(previousButton, position, nextButton);
     toolbar.prepend(journeyGroup);
+  }
+  if (!traceState.active && evolutionControl) {
+    const evolutionControls = document.createElement("div");
+    evolutionControls.className = "cognitive-evolution-controls";
+    evolutionControls.setAttribute("role", "group");
+    evolutionControls.setAttribute("aria-label", "Cognitive Evolution controls");
+    const evolutionAction = (action) => () => {
+      if (typeof onEvolutionAction === "function") onEvolutionAction(action);
+    };
+    const previousButton = createToolButton("Previous Observation", evolutionAction("previous"), "Previous");
+    const compareButton = createToolButton("Compare", evolutionAction("compare"), evolutionControl.active ? "Comparing" : "Compare");
+    const nextButton = createToolButton("Next Observation", evolutionAction("next"), "Next");
+    previousButton.disabled = !evolutionControl.available || !evolutionControl.canGoPrevious;
+    compareButton.disabled = !evolutionControl.available;
+    compareButton.classList.toggle("is-active", Boolean(evolutionControl.active));
+    compareButton.setAttribute("aria-pressed", String(Boolean(evolutionControl.active)));
+    nextButton.disabled = !evolutionControl.available || !evolutionControl.canGoNext;
+    const position = document.createElement("output");
+    position.className = "cognitive-evolution-position";
+    position.setAttribute("aria-live", "polite");
+    position.value = evolutionControl.available
+      ? `Observation ${evolutionControl.fromIndex + 1} → ${evolutionControl.toIndex + 1}`
+      : "Observe again to compare";
+    evolutionControls.append(previousButton, compareButton, nextButton, position);
+    toolbar.prepend(evolutionControls);
   }
   shell.append(toolbar);
   applyCamera(false);
