@@ -52,6 +52,14 @@ Compare, Previous Observation, and Next Observation are explicit; no replay,
 runtime, trace, or public API behavior changes. See
 [Cognitive Evolution](docs/memoryos-1.1-cognitive-evolution.md).
 
+MO-1107 adds deterministic Comparative Reconstruction over two existing
+Cognitive Traces. Exact semantic identities are aligned in one stable union
+world, shared cognition stays unified, and synchronized replay pauses at every
+real divergence. The engine—not the renderer—determines where Evidence,
+Semantic Transformation, Retrieval, Relationship, or Reflection state became
+different. Previous milestones and the frozen C++ Contract remain unchanged.
+See [Comparative Reconstruction](docs/memoryos-1.1-comparative-reconstruction.md).
+
 ## Build and verify
 
 From the workspace root:
@@ -105,6 +113,7 @@ observation paths, and explanation-chain boundaries.
 - [MemoryOS 1.1 Living Connectome identity](docs/memoryos-1.1-sprint-3.md)
 - [MemoryOS 1.1 Cognitive Replay](docs/memoryos-1.1-sprint-4.md)
 - [MemoryOS 1.1 Cognitive Evolution](docs/memoryos-1.1-cognitive-evolution.md)
+- [MemoryOS 1.1 Comparative Reconstruction](docs/memoryos-1.1-comparative-reconstruction.md)
 - [MemoryOS 1.0 launch demo production package](docs/memoryos-1.0-launch-demo-production-package.md)
 - [GitHub screenshot specification](docs/github-screenshot-specification.md)
 - [C++ example](examples/memory_studio_usage.cpp)

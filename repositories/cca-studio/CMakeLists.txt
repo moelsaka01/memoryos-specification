@@ -65,6 +65,8 @@ add_custom_target(
     web/js/cognitive-replay.js
     web/js/cognitive-evolution.js
     web/js/cognitive-evolution-controller.js
+    web/js/cognitive-comparative-reconstruction.js
+    web/js/cognitive-comparative-replay.js
     web/js/host-adapter.js
     web/js/observation-timeline.js
     web/js/semantic-world.js

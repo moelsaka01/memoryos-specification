@@ -329,6 +329,75 @@ export function prepareEvolutionRenderingState(world, evolutionView = null) {
   });
 }
 
+export function prepareComparativeRenderingState(world, comparativeView = null) {
+  const inactive = Object.freeze({
+    active: false,
+    identifier: null,
+    status: null,
+    nodeRecords: Object.freeze([]),
+    relationshipRecords: Object.freeze([]),
+  });
+  if (comparativeView === null || comparativeView === undefined) return inactive;
+  if (!world || comparativeView.kind !== "MemoryOSComparativeReconstructionView"
+    || comparativeView.version !== "1.1") {
+    throw new TypeError("A MemoryOS 1.1 Comparative Reconstruction view is required.");
+  }
+  if (world.kind !== "MemoryOSCognitiveEvolutionWorld"
+    || world.frame?.identifier !== comparativeView.worldIdentifier) {
+    throw new TypeError("The Comparative Reconstruction view is not bound to the rendered one-world projection.");
+  }
+  const nodeKeys = new Set(world.nodes.map(({ key }) => key));
+  const relationshipKeys = new Set(world.edges.map(({ key }) => key));
+  const semanticStates = new Set(["shared", "a-only", "b-only", "modified", "split"]);
+  const phases = new Set(["completed", "current", "future", "split"]);
+  const sides = new Set(["a", "b"]);
+  const requireRecords = (records, available, label) => {
+    if (!Array.isArray(records)) throw new TypeError(`Comparative ${label} records must be an array.`);
+    return Object.freeze(records.map((record) => {
+      if (!record || !available.has(record.key) || !semanticStates.has(record.semanticState)
+        || !phases.has(record.phase) || !Array.isArray(record.sides)
+        || record.sides.some((side) => !sides.has(side))
+        || !Array.isArray(record.occurrences) || !Array.isArray(record.sideRecords)) {
+        throw new TypeError(`Comparative ${label} record is not an exact member of the one-world projection.`);
+      }
+      const requireOccurrence = (occurrence) => {
+        if (!occurrence || !sides.has(occurrence.side)
+          || !semanticStates.has(occurrence.semanticState) || !phases.has(occurrence.phase)
+          || !Number.isSafeInteger(occurrence.momentIndex)) {
+          throw new TypeError(`Comparative ${label} occurrence is invalid.`);
+        }
+        return Object.freeze({ ...occurrence });
+      };
+      const occurrences = Object.freeze(record.occurrences.map(requireOccurrence));
+      const sideRecords = Object.freeze(record.sideRecords.map((sideRecord) => {
+        if (!sideRecord || !sides.has(sideRecord.side)
+          || !semanticStates.has(sideRecord.semanticState) || !phases.has(sideRecord.phase)
+          || !Array.isArray(sideRecord.occurrences)) {
+          throw new TypeError(`Comparative ${label} side record is invalid.`);
+        }
+        return Object.freeze({
+          ...sideRecord,
+          occurrences: Object.freeze(sideRecord.occurrences.map(requireOccurrence)),
+        });
+      }));
+      return Object.freeze({ ...record, occurrences, sideRecords });
+    }));
+  };
+  return Object.freeze({
+    active: true,
+    identifier: comparativeView.identifier,
+    status: comparativeView.status,
+    pauseReason: comparativeView.pauseReason,
+    cursor: comparativeView.cursor,
+    total: comparativeView.total,
+    atDivergence: comparativeView.atDivergence,
+    currentMoment: comparativeView.currentMoment,
+    moments: Object.freeze([...(comparativeView.moments ?? [])]),
+    nodeRecords: requireRecords(comparativeView.nodeRecords, nodeKeys, "node"),
+    relationshipRecords: requireRecords(comparativeView.relationshipRecords, relationshipKeys, "relationship"),
+  });
+}
+
 export function renderGraph(
   container,
   world,
@@ -341,8 +410,10 @@ export function renderGraph(
     replayView = null,
     evolutionView = null,
     evolutionControl = null,
+    comparativeView = null,
     onReplayAction = null,
     onEvolutionAction = null,
+    onComparativeAction = null,
     onViewStateChange = null,
   } = {},
 ) {
@@ -359,8 +430,9 @@ export function renderGraph(
   const activeEdgeKeys = new Set(activity.edgeKeys ?? []);
   const traceState = prepareTraceRenderingState(world, trace);
   const evolutionState = prepareEvolutionRenderingState(world, evolutionView);
-  if (traceState.active && evolutionState.active) {
-    throw new TypeError("Trace and Cognitive Evolution cannot be rendered at the same time.");
+  const comparativeState = prepareComparativeRenderingState(world, comparativeView);
+  if ([traceState.active, evolutionState.active, comparativeState.active].filter(Boolean).length > 1) {
+    throw new TypeError("Trace, Cognitive Evolution, and Comparative Reconstruction are exclusive renderer modes.");
   }
   const traceNodeKeys = new Set(traceState.nodeKeys);
   const traceEdgeKeys = new Set(traceState.edgeKeys);
@@ -385,6 +457,73 @@ export function renderGraph(
     ...evolutionState.removedNodeKeys,
     ...evolutionState.evolvedNodeKeys,
   ].map((key) => byId.get(key)?.kind).filter(Boolean));
+  let currentComparativeView = comparativeView;
+  const comparativeNodeRecords = new Map(comparativeState.nodeRecords.map((record) => [record.key, record]));
+  const comparativeRelationshipRecords = new Map(comparativeState.relationshipRecords.map((record) => [record.key, record]));
+  const comparativeRegionKinds = new Set(comparativeState.nodeRecords
+    .map(({ key }) => byId.get(key)?.kind)
+    .filter(Boolean));
+  const comparativeClasses = [
+    "is-comparative-step",
+    "is-comparative-shared",
+    "is-comparative-a-only",
+    "is-comparative-b-only",
+    "is-comparative-modified",
+    "is-comparative-split",
+    "is-comparative-completed",
+    "is-comparative-current",
+    "is-comparative-future",
+    "is-comparative-side-a",
+    "is-comparative-side-b",
+    "is-comparative-side-both",
+  ];
+  const applyComparativeRecord = (element, record) => {
+    if (!element) return;
+    comparativeClasses.forEach((className) => element.classList.remove(className));
+    if (!record) return;
+    element.classList.add(
+      "is-comparative-step",
+      `is-comparative-${record.semanticState}`,
+      `is-comparative-${record.phase}`,
+      `is-comparative-side-${record.sides.length === 2 ? "both" : record.sides[0]}`,
+    );
+  };
+  const comparativeStateLabels = Object.freeze({
+    shared: "Shared cognition",
+    "a-only": "Observation A only",
+    "b-only": "Observation B only",
+    modified: "Modified cognition",
+    split: "Divergent trace order",
+  });
+  const comparativeSideRecord = (record, side) => (
+    record?.sideRecords.find((sideRecord) => sideRecord.side === side) ?? null
+  );
+  const updateComparativeMarker = (marker, record) => {
+    if (!marker) return;
+    const semanticState = record?.semanticState ?? "shared";
+    const visible = semanticState !== "shared";
+    marker.setAttribute("display", visible ? "inline" : "none");
+    marker.setAttribute("class", `comparative-reconstruction-marker marker-${semanticState}`);
+    const shape = semanticState === "a-only" ? "a"
+      : semanticState === "b-only" ? "b" : "both";
+    marker.querySelectorAll("[data-comparative-marker-shape]").forEach((element) => {
+      element.setAttribute("display", element.dataset.comparativeMarkerShape === shape ? "inline" : "none");
+    });
+    const label = marker.querySelector("text");
+    if (label) label.textContent = semanticState === "a-only" ? "A" : semanticState === "b-only" ? "B" : "A|B";
+  };
+  const applyComparativeNodeRecord = (element, record) => {
+    applyComparativeRecord(element, record);
+    const node = byId.get(element?.dataset.observationKey);
+    if (!element || !node || !record) return;
+    element.dataset.comparativeState = record.semanticState;
+    element.dataset.comparativePhase = record.phase;
+    element.setAttribute(
+      "aria-label",
+      `${comparativeStateLabels[record.semanticState]}; ${record.phase} comparative step; ${node.family ?? node.kind}: ${node.label}`,
+    );
+    updateComparativeMarker(element.querySelector(".comparative-reconstruction-marker"), record);
+  };
   const shell = document.createElement("div");
   shell.className = "knowledge-graph topology-interface memory-intelligence-graph";
   shell.dataset.perspective = activePerspective;
@@ -404,6 +543,13 @@ export function renderGraph(
   if (evolutionState.active) {
     shell.dataset.evolutionIdentifier = evolutionState.identifier;
     shell.classList.add("has-cognitive-evolution");
+  }
+  if (comparativeState.active) {
+    shell.dataset.comparativeIdentifier = comparativeState.identifier;
+    shell.dataset.comparativeStatus = comparativeState.status;
+    shell.dataset.comparativeCursor = String(comparativeState.cursor);
+    shell.dataset.comparativeDivergence = String(Boolean(comparativeState.atDivergence));
+    shell.classList.add("has-comparative-reconstruction");
   }
   shell.setAttribute("role", "region");
   shell.setAttribute("aria-label", identity);
@@ -451,7 +597,9 @@ export function renderGraph(
   const title = svgElement("title", { id: "graph-title" });
   title.textContent = identity;
   const description = svgElement("desc", { id: "graph-description" });
-  description.textContent = traceState.active
+  description.textContent = comparativeState.active
+    ? `${graphDescription} Comparative Reconstruction is active in one semantic world with two synchronized deterministic traces.`
+    : traceState.active
     ? `${graphDescription} Cognitive Trace mode is active with ${traceState.orderedSteps.length} ordered observations across ${trace.branches.length} evidence branches.`
     : graphDescription;
   svg.append(title, description);
@@ -480,7 +628,7 @@ export function renderGraph(
   const regions = svgElement("g", { class: "cognitive-regions", "aria-hidden": "true" });
   cognitiveRegionDefinitions.forEach((definition) => {
     const region = svgElement("g", {
-      class: `cognitive-region region-${definition.kind}${traceRegionKinds.has(definition.kind) ? " is-trace-region" : ""}${evolutionRegionKinds.has(definition.kind) ? " is-evolution-region" : ""}`,
+      class: `cognitive-region region-${definition.kind}${traceRegionKinds.has(definition.kind) ? " is-trace-region" : ""}${evolutionRegionKinds.has(definition.kind) ? " is-evolution-region" : ""}${comparativeRegionKinds.has(definition.kind) ? " is-comparative-region" : ""}`,
       "data-region-kind": definition.kind,
       "data-region-signature": definition.signature,
     });
@@ -498,6 +646,7 @@ export function renderGraph(
   scene.append(regions);
   const edges = svgElement("g", { class: "graph-edges topology-edges", "aria-hidden": "true" });
   const traceRoutes = svgElement("g", { class: "cognitive-trace-routes", "aria-hidden": "true" });
+  const comparativeRoutes = svgElement("g", { class: "comparative-reconstruction-routes", "aria-hidden": "true" });
   const edgeRecords = [];
   world.edges.forEach((edge, edgeIndex) => {
     const from = byId.get(edge.from);
@@ -555,6 +704,7 @@ export function renderGraph(
       base.classList.toggle("is-replay-current", replayView.currentEdgeKey === edge.key);
       base.classList.toggle("is-replay-future", replayFutureEdges.has(edge.key));
     }
+    applyComparativeRecord(base, comparativeRelationshipRecords.get(edge.key));
     const edgeTitle = svgElement("title");
     const relationshipEvolution = evolutionAddedRelationships.has(edge.key) ? "Added relationship: "
       : evolutionRemovedRelationships.has(edge.key) ? "Removed relationship: "
@@ -595,7 +745,38 @@ export function renderGraph(
         flow.classList.toggle("is-replay-current", replayView.currentEdgeKey === edge.key);
         flow.classList.toggle("is-replay-future", replayFutureEdges.has(edge.key));
       }
+      applyComparativeRecord(flow, comparativeRelationshipRecords.get(edge.key));
       edges.append(flow);
+    }
+    const comparativeRecord = comparativeRelationshipRecords.get(edge.key);
+    const comparativeEdgeRoutes = [];
+    if (comparativeRecord) {
+      const sharedOnly = comparativeRecord.occurrences.every(({ semanticState }) => semanticState === "shared");
+      if (sharedOnly) {
+        const sharedRoute = svgElement("path", {
+          class: "comparative-reconstruction-route route-shared",
+          d: geometry.forward,
+          fill: "none",
+          "data-edge-key": edge.key,
+          "data-comparative-side": "both",
+        });
+        applyComparativeRecord(sharedRoute, comparativeRecord);
+        comparativeRoutes.append(sharedRoute);
+        comparativeEdgeRoutes.push(sharedRoute);
+      } else {
+        comparativeRecord.sideRecords.forEach(({ side }) => {
+          const sideRoute = svgElement("path", {
+            class: `comparative-reconstruction-route route-side-${side}`,
+            d: geometry.forward,
+            fill: "none",
+            "data-edge-key": edge.key,
+            "data-comparative-side": side,
+          });
+          applyComparativeRecord(sideRoute, comparativeSideRecord(comparativeRecord, side));
+          comparativeRoutes.append(sideRoute);
+          comparativeEdgeRoutes.push(sideRoute);
+        });
+      }
     }
     const synapseCount = flowKind ? 3 : 2;
     for (let synapseIndex = 1; synapseIndex <= synapseCount; synapseIndex += 1) {
@@ -610,7 +791,7 @@ export function renderGraph(
         opacity: flowKind ? .7 : .3,
       }));
     }
-    edgeRecords.push({ edge, from, to, base, flow, flowKind });
+    edgeRecords.push({ edge, from, to, base, flow, flowKind, comparativeEdgeRoutes });
   });
   if (replayActive) {
     traceRoutes.querySelectorAll(".cognitive-trace-route").forEach((route) => {
@@ -620,7 +801,7 @@ export function renderGraph(
       route.classList.toggle("is-replay-future", replayFutureEdges.has(edgeKey));
     });
   }
-  scene.append(edges, traceRoutes);
+  scene.append(edges, traceRoutes, comparativeRoutes);
 
   const microstructure = svgElement("g", { class: "topology-microstructure", "aria-hidden": "true" });
   positioned.forEach((node) => {
@@ -708,6 +889,7 @@ export function renderGraph(
     const hasPerspective = activePerspective !== "complete";
     svg.classList.toggle("has-active-trace", traceState.active);
     svg.classList.toggle("has-cognitive-evolution", evolutionState.active);
+    svg.classList.toggle("has-comparative-reconstruction", comparativeState.active);
     svg.classList.toggle("is-graph-focused", Boolean(focusKey));
     svg.classList.toggle("has-perspective", hasPerspective);
     nodeGroup.querySelectorAll(".graph-node").forEach((nodeElement) => {
@@ -737,6 +919,7 @@ export function renderGraph(
       nodeElement.classList.toggle("is-evolution-evolved", evolutionState.active && evolutionEvolvedNodes.has(key));
       nodeElement.classList.toggle("is-evolution-stable", evolutionState.active
         && !evolutionAddedNodes.has(key) && !evolutionRemovedNodes.has(key) && !evolutionEvolvedNodes.has(key));
+      applyComparativeNodeRecord(nodeElement, comparativeNodeRecords.get(key));
       nodeElement.setAttribute("aria-pressed", String(selected));
     });
     edgeRecords.forEach((record, index) => {
@@ -786,12 +969,22 @@ export function renderGraph(
       transform: `translate(${node.x} ${node.y})`,
     });
     const traceRecord = traceNodeRecords.get(node.key);
+    const comparativeRecord = comparativeNodeRecords.get(node.key);
     const evolutionStatus = evolutionEvolvedNodes.has(node.key) ? "evolved"
       : evolutionAddedNodes.has(node.key) ? "added"
         : evolutionRemovedNodes.has(node.key) ? "removed" : evolutionState.active ? "stable" : null;
     if (evolutionStatus) {
       group.dataset.evolutionState = evolutionStatus;
       group.setAttribute("aria-label", `${evolutionStatus} cognition; ${node.family ?? node.kind}: ${node.label}`);
+    }
+    if (comparativeRecord) {
+      group.dataset.comparativeState = comparativeRecord.semanticState;
+      group.dataset.comparativePhase = comparativeRecord.phase;
+      group.setAttribute(
+        "aria-label",
+        `${comparativeStateLabels[comparativeRecord.semanticState]}; ${comparativeRecord.phase} comparative step; ${node.family ?? node.kind}: ${node.label}`,
+      );
+      if (comparativeRecord.phase === "current") group.setAttribute("aria-current", "step");
     }
     if (traceRecord) {
       group.dataset.traceRole = traceRecord.roles.join(" ");
@@ -848,6 +1041,32 @@ export function renderGraph(
       evolutionMarker.append(markerText);
       group.append(evolutionMarker);
     }
+    if (comparativeRecord && comparativeRecord.occurrences.some(({ semanticState }) => semanticState !== "shared")) {
+      const marker = svgElement("g", {
+        class: `comparative-reconstruction-marker marker-${comparativeRecord.semanticState}`,
+        "aria-hidden": "true",
+      });
+      const markerX = node.size + 8;
+      const markerY = -(node.size + 8);
+      marker.append(
+        svgElement("rect", {
+          x: markerX - 7, y: markerY - 7, width: 14, height: 14, rx: 2,
+          "data-comparative-marker-shape": "a",
+        }),
+        svgElement("path", {
+          d: `M ${markerX} ${markerY - 8} L ${markerX + 8} ${markerY} L ${markerX} ${markerY + 8} L ${markerX - 8} ${markerY} Z`,
+          "data-comparative-marker-shape": "b",
+        }),
+        svgElement("circle", {
+          cx: markerX, cy: markerY, r: 8,
+          "data-comparative-marker-shape": "both",
+        }),
+      );
+      const markerText = svgElement("text", { x: markerX, y: markerY + 3, "text-anchor": "middle" });
+      marker.append(markerText);
+      updateComparativeMarker(marker, comparativeRecord);
+      group.append(marker);
+    }
     if (traceRecord) {
       const marker = svgElement("g", { class: "cognitive-trace-marker", "aria-hidden": "true" });
       traceRecord.memberships.forEach((membership, membershipIndex) => {
@@ -882,7 +1101,7 @@ export function renderGraph(
         group.append(waypoint);
       }
     }
-    if (traceRecord || ["added", "removed", "evolved"].includes(evolutionStatus)
+    if (traceRecord || comparativeRecord || ["added", "removed", "evolved"].includes(evolutionStatus)
       || node.kind === "workspace" || node.aggregate || (!node.detail && node.size >= 12)) {
       const label = svgElement("text", {
         class: traceRecord ? "graph-node-label cognitive-trace-node-label" : "graph-node-label",
@@ -1023,7 +1242,53 @@ export function renderGraph(
     createToolButton("Fit graph", resetCamera, "Fit"),
   );
   let replayControlState = null;
-  if (replayActive) {
+  let comparativeControlState = null;
+  if (comparativeState.active) {
+    toolbar.classList.add("has-comparative-controls");
+    const controls = document.createElement("div");
+    controls.className = "comparative-reconstruction-controls";
+    controls.setAttribute("role", "group");
+    controls.setAttribute("aria-label", "Comparative Reconstruction controls");
+    const comparativeAction = (action) => () => {
+      if (typeof onComparativeAction === "function") onComparativeAction(action);
+    };
+    const compareButton = createToolButton("Compare", comparativeAction("compare"), "Comparing");
+    compareButton.classList.add("is-active");
+    compareButton.setAttribute("aria-pressed", "true");
+    const resetButton = createToolButton("Reset", comparativeAction("reset"), "Reset");
+    const previousButton = createToolButton("Previous Step", comparativeAction("previous"), "Previous");
+    const playButton = createToolButton("Play", comparativeAction("play"), "Play");
+    const pauseButton = createToolButton("Pause", comparativeAction("pause"), "Pause");
+    const nextButton = createToolButton("Next Step", comparativeAction("next"), "Next");
+    resetButton.disabled = comparativeState.status === "ready";
+    previousButton.disabled = comparativeState.cursor < 0;
+    playButton.disabled = comparativeState.status === "playing" || comparativeState.status === "completed";
+    pauseButton.disabled = comparativeState.status !== "playing";
+    playButton.hidden = comparativeState.status === "playing";
+    pauseButton.hidden = comparativeState.status !== "playing";
+    nextButton.disabled = comparativeState.status === "completed";
+    const position = document.createElement("output");
+    position.className = "comparative-reconstruction-position";
+    position.setAttribute("aria-live", "polite");
+    position.setAttribute("aria-atomic", "true");
+    position.value = comparativeState.atDivergence
+      ? `Divergence · ${String(comparativeState.cursor + 1).padStart(2, "0")} / ${comparativeState.total}`
+      : comparativeState.status === "completed"
+        ? "Reconstruction complete"
+        : comparativeState.cursor < 0
+          ? `Synchronized · ${comparativeState.total} steps`
+          : `${String(comparativeState.cursor + 1).padStart(2, "0")} / ${comparativeState.total}`;
+    controls.append(compareButton, resetButton, previousButton, playButton, pauseButton, nextButton, position);
+    comparativeControlState = {
+      resetButton,
+      previousButton,
+      playButton,
+      pauseButton,
+      nextButton,
+      position,
+    };
+    toolbar.prepend(controls);
+  } else if (replayActive) {
     toolbar.classList.add("has-replay-controls");
     const replayControls = document.createElement("div");
     replayControls.className = "cognitive-replay-controls";
@@ -1077,7 +1342,7 @@ export function renderGraph(
     journeyGroup.append(previousButton, position, nextButton);
     toolbar.prepend(journeyGroup);
   }
-  if (!traceState.active && evolutionControl) {
+  if (!traceState.active && !comparativeState.active && evolutionControl) {
     const evolutionControls = document.createElement("div");
     evolutionControls.className = "cognitive-evolution-controls";
     evolutionControls.setAttribute("role", "group");
@@ -1196,6 +1461,32 @@ export function renderGraph(
     legend.append(item);
   });
   shell.append(legend);
+
+  if (comparativeState.active) {
+    const reconstructionList = document.createElement("details");
+    reconstructionList.className = "comparative-reconstruction-accessible-list";
+    const reconstructionSummary = document.createElement("summary");
+    reconstructionSummary.textContent = `Comparative Reconstruction (${comparativeState.moments.length} synchronized moments)`;
+    const ordered = document.createElement("ol");
+    const describeStep = (step) => {
+      if (!step) return "no matching step";
+      if (step.elementType === "node") return byId.get(step.key)?.label ?? step.key;
+      const edge = world.edges.find(({ key }) => key === step.key);
+      if (!edge) return step.key;
+      return `${byId.get(edge.from)?.label ?? edge.from} ${edge.relation} ${byId.get(edge.to)?.label ?? edge.to}`;
+    };
+    comparativeState.moments.forEach((moment) => {
+      const item = document.createElement("li");
+      item.dataset.comparativeMoment = String(moment.index);
+      if (moment.index === comparativeState.cursor && comparativeState.status !== "completed") {
+        item.setAttribute("aria-current", "step");
+      }
+      item.textContent = `Step ${moment.index + 1}, ${moment.state}: A ${describeStep(moment.from)}; B ${describeStep(moment.to)}. ${moment.reason}`;
+      ordered.append(item);
+    });
+    reconstructionList.append(reconstructionSummary, ordered);
+    shell.append(reconstructionList);
+  }
 
   if (traceState.active) {
     const traceList = document.createElement("details");
@@ -1317,5 +1608,57 @@ export function renderGraph(
     return true;
   };
 
-  return Object.freeze({ updateReplayView });
+  const updateComparativeView = (nextComparativeView) => {
+    if (!comparativeState.active || !nextComparativeView?.active
+      || nextComparativeView.identifier !== currentComparativeView.identifier) return false;
+    const next = prepareComparativeRenderingState(world, nextComparativeView);
+    currentComparativeView = nextComparativeView;
+    comparativeNodeRecords.clear();
+    comparativeRelationshipRecords.clear();
+    next.nodeRecords.forEach((record) => comparativeNodeRecords.set(record.key, record));
+    next.relationshipRecords.forEach((record) => comparativeRelationshipRecords.set(record.key, record));
+    shell.dataset.comparativeStatus = next.status;
+    shell.dataset.comparativeCursor = String(next.cursor);
+    shell.dataset.comparativeDivergence = String(Boolean(next.atDivergence));
+    nodeGroup.querySelectorAll(".graph-node").forEach((nodeElement) => {
+      const record = comparativeNodeRecords.get(nodeElement.dataset.observationKey);
+      applyComparativeNodeRecord(nodeElement, record);
+      if (record?.phase === "current") nodeElement.setAttribute("aria-current", "step");
+      else nodeElement.removeAttribute("aria-current");
+    });
+    edgeRecords.forEach(({ edge, base, flow, comparativeEdgeRoutes }) => {
+      const record = comparativeRelationshipRecords.get(edge.key);
+      [base, flow].filter(Boolean).forEach((element) => applyComparativeRecord(element, record));
+      comparativeEdgeRoutes.forEach((route) => {
+        const side = route.dataset.comparativeSide;
+        applyComparativeRecord(route, side === "both" ? record : comparativeSideRecord(record, side));
+      });
+    });
+    shell.querySelectorAll("[data-comparative-moment]").forEach((item) => {
+      const active = Number(item.dataset.comparativeMoment) === next.cursor && next.status !== "completed";
+      if (active) item.setAttribute("aria-current", "step");
+      else item.removeAttribute("aria-current");
+    });
+    if (comparativeControlState) {
+      const { resetButton, previousButton, playButton, pauseButton, nextButton, position } = comparativeControlState;
+      resetButton.disabled = next.status === "ready";
+      previousButton.disabled = next.cursor < 0;
+      playButton.disabled = next.status === "playing" || next.status === "completed";
+      pauseButton.disabled = next.status !== "playing";
+      playButton.hidden = next.status === "playing";
+      pauseButton.hidden = next.status !== "playing";
+      nextButton.disabled = next.status === "completed";
+      position.value = next.atDivergence
+        ? `Divergence · ${String(next.cursor + 1).padStart(2, "0")} / ${next.total}`
+        : next.status === "completed"
+          ? "Reconstruction complete"
+          : next.cursor < 0
+            ? `Synchronized · ${next.total} steps`
+            : `${String(next.cursor + 1).padStart(2, "0")} / ${next.total}`;
+    }
+    applyGraphEmphasis();
+    return true;
+  };
+
+  return Object.freeze({ updateReplayView, updateComparativeView });
 }

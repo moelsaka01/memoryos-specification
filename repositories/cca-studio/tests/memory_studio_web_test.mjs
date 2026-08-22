@@ -61,6 +61,7 @@ import {
 } from "../web/js/cognitive-replay.js";
 import {
   cognitiveRegionDefinitions,
+  prepareComparativeRenderingState,
   prepareEvolutionRenderingState,
   prepareTraceJourney,
   prepareTraceRenderingState,
@@ -77,6 +78,21 @@ import {
   previousEvolutionObservation,
   reconcileEvolutionController,
 } from "../web/js/cognitive-evolution-controller.js";
+import {
+  buildComparativeReconstruction,
+  ComparativeReconstructionError,
+  validateComparativeReconstruction,
+} from "../web/js/cognitive-comparative-reconstruction.js";
+import {
+  advanceComparativeReplay,
+  createComparativeReplayState,
+  nextComparativeStep,
+  pauseComparativeReplay,
+  playComparativeReplay,
+  previousComparativeStep,
+  projectComparativeReplay,
+  resetComparativeReplay,
+} from "../web/js/cognitive-comparative-replay.js";
 
 const testDirectory = dirname(fileURLToPath(import.meta.url));
 const studioRoot = resolve(testDirectory, "..");
@@ -118,6 +134,21 @@ function referenceReflectionNode(frame) {
     ?? frame.world.nodes.find((node) => (
       node.family === "Reflection" && node.identifier === "reflection-release-integrity"
     ));
+}
+
+function comparativeReconstructionFor(before, after) {
+  const pair = observationPair(before, after);
+  const fromTarget = referenceReflectionNode(pair.from);
+  const toTarget = referenceReflectionNode(pair.to);
+  assert.ok(fromTarget && toTarget, "the fixture must expose the same Reflection investigation in both observations");
+  const fromTrace = buildCognitiveTrace(pair.from, fromTarget.key);
+  const toTrace = buildCognitiveTrace(pair.to, toTarget.key);
+  return {
+    pair,
+    fromTrace,
+    toTrace,
+    reconstruction: buildComparativeReconstruction(pair.from, fromTrace, pair.to, toTrace),
+  };
 }
 
 function applicationFunctionSource(source, name, nextName) {
@@ -1235,7 +1266,7 @@ test("Sprint 5 updates Replay in place and keeps investigation context dominant"
   assert.match(scheduleReplaySource, /refreshReplayPresentation\(\)/);
   assert.match(appSource, /graphController\s*=\s*renderGraph/);
   assert.match(rendererSource, /const updateReplayView\s*=\s*\(nextReplayView\)/);
-  assert.match(rendererSource, /return Object\.freeze\(\{ updateReplayView \}\)/);
+  assert.match(rendererSource, /return Object\.freeze\(\{ updateReplayView, updateComparativeView \}\)/);
   assert.match(rendererSource, /nextReplayView\.completedNodeKeys/);
   assert.match(rendererSource, /nextReplayView\.completedEdgeKeys/);
   assert.doesNotMatch(rendererSource, /from\s+["']\.\/cognitive-replay\.js["']/);
@@ -1371,6 +1402,263 @@ test("the Evolution renderer consumes engine classifications and never computes 
   for (const control of ["Compare", "Previous Observation", "Next Observation"]) {
     assert.match(rendererSource, new RegExp(control));
   }
+});
+
+test("Comparative Reconstruction keeps identical investigations unified", () => {
+  const { pair, fromTrace, toTrace, reconstruction } = comparativeReconstructionFor(
+    referenceSnapshot,
+    referenceSnapshot,
+  );
+  assert.equal(validateComparativeReconstruction(reconstruction), true);
+  assert.equal(Object.isFrozen(reconstruction), true);
+  assert.equal(Object.isFrozen(reconstruction.moments), true);
+  assert.notEqual(fromTrace.identifier, toTrace.identifier, "frame identity is not semantic divergence");
+  assert.ok(reconstruction.moments.every(({ state, divergent }) => state === "shared" && !divergent));
+  assert.equal(reconstruction.firstDivergenceIndex, null);
+  assert.deepEqual(reconstruction.divergenceIndices, []);
+  assert.equal(reconstruction.summary.divergent, 0);
+  assert.equal(reconstruction.summary.shared, reconstruction.moments.length);
+  assert.equal(reconstruction.world.frame.identifier, reconstruction.worldIdentifier);
+  assert.equal(reconstruction.world.layout.identifier, pair.from.world.layout.identifier);
+  assert.equal(reconstruction.world.layout.identifier, pair.to.world.layout.identifier);
+});
+
+test("Comparative Reconstruction detects exact Evidence Transformation Retrieval and Reflection divergence", () => {
+  const fixtures = [
+    ["origin-evidence", (changed) => {
+      changed.reflections[0].sources[0].semanticConcept.sourceEntries[0].value = "Changed exact evidence value";
+    }],
+    ["semantic-transformation", (changed) => {
+      changed.reflections[0].sources[0].semanticConcept.meaning = "Changed exact semantic transformation";
+    }],
+    ["retrieval", (changed) => {
+      changed.reflections[0].sources[0].rankScore += 1;
+    }],
+    ["reflection-current", (changed) => {
+      changed.reflections[0].knowledge = "Changed exact Reflection result";
+    }],
+  ];
+  fixtures.forEach(([expectedRole, mutate]) => {
+    const changed = cloneDetached(referenceSnapshot);
+    mutate(changed);
+    const { reconstruction } = comparativeReconstructionFor(referenceSnapshot, changed);
+    const first = reconstruction.moments[reconstruction.firstDivergenceIndex];
+    assert.equal(first.role, expectedRole);
+    assert.equal(first.state, "modified");
+    assert.ok(first.reasonCodes.includes("SEMANTIC_REVISION_CHANGED"));
+    assert.notEqual(first.from.revisionFingerprint, first.to.revisionFingerprint);
+  });
+});
+
+test("Comparative Reconstruction realigns after inserted evidence without cascading divergence", () => {
+  const changed = cloneDetached(referenceSnapshot);
+  changed.reflections[0].sources[0].semanticConcept.sourceEntries.push({
+    identifier: "ltm-comparative-added",
+    value: "An additional exact evidence value.",
+    archived: false,
+  });
+  changed.reflections[0].sources[0].chain.splice(-1, 0, "ltm-comparative-added");
+  const first = comparativeReconstructionFor(referenceSnapshot, changed).reconstruction;
+  const second = comparativeReconstructionFor(referenceSnapshot, changed).reconstruction;
+  assert.deepEqual(first, second, "equivalent observation pairs reconstruct identically");
+
+  const inserted = first.moments.find((moment) => (
+    moment.state === "b-only"
+      && moment.role === "origin-evidence"
+      && moment.to?.key.includes("ltm-comparative-added")
+  ));
+  assert.ok(inserted, "the inserted evidence is one exact Observation-B-only moment");
+  assert.equal(first.moments.slice(inserted.index + 1).some((moment) => (
+    moment.state === "shared"
+      && moment.role === "semantic-transformation"
+      && moment.from?.key.includes("proc-release-review")
+  )), true, "later unchanged cognition reconverges after the insertion");
+  assert.equal(first.world.nodes.filter(({ key }) => key === inserted.to.key).length, 1,
+    "both investigations remain in one union semantic world");
+});
+
+test("Comparative Reconstruction rejects invalid bindings atomically", () => {
+  const { pair, fromTrace, toTrace } = comparativeReconstructionFor(referenceSnapshot, referenceSnapshot);
+  assert.throws(
+    () => buildComparativeReconstruction(pair.from, toTrace, pair.to, fromTrace),
+    (error) => error instanceof ComparativeReconstructionError && error.code === "FRAME_MISMATCH",
+  );
+
+  const mutableTrace = structuredClone(fromTrace);
+  assert.throws(
+    () => buildComparativeReconstruction(pair.from, mutableTrace, pair.to, toTrace),
+    (error) => error instanceof ComparativeReconstructionError && error.code === "MUTABLE_TRACE",
+  );
+
+  const wrongWorkspace = cloneDetached(referenceSnapshot);
+  wrongWorkspace.workspaceIdentifier = "another-workspace";
+  wrongWorkspace.session.workspaceIdentifier = "another-workspace";
+  assert.throws(() => observationPair(referenceSnapshot, wrongWorkspace), /Workspace boundary/);
+});
+
+test("Comparative Replay synchronizes, pauses at every divergence, and resumes explicitly", () => {
+  const changed = cloneDetached(referenceSnapshot);
+  changed.reflections[0].sources[0].semanticConcept.sourceEntries[0].value = "Changed evidence";
+  changed.reflections[0].knowledge = "Changed Reflection";
+  const { reconstruction } = comparativeReconstructionFor(referenceSnapshot, changed);
+  let state = createComparativeReplayState(reconstruction);
+  assert.deepEqual(state, {
+    reconstructionIdentifier: reconstruction.identifier,
+    status: "ready",
+    cursor: -1,
+    pauseReason: null,
+  });
+
+  state = playComparativeReplay(reconstruction, state);
+  assert.equal(state.status, "paused");
+  assert.equal(state.pauseReason, "divergence");
+  assert.equal(state.cursor, reconstruction.firstDivergenceIndex);
+  assert.equal(advanceComparativeReplay(reconstruction, state), state, "a paused divergence never advances itself");
+
+  state = playComparativeReplay(reconstruction, state);
+  assert.equal(state.status, "playing", "Play explicitly acknowledges the current divergence");
+  do state = advanceComparativeReplay(reconstruction, state);
+  while (state.status === "playing");
+  assert.equal(state.pauseReason, "divergence", "the next exact divergence pauses reconstruction again");
+  assert.ok(state.cursor > reconstruction.firstDivergenceIndex);
+
+  const previous = previousComparativeStep(reconstruction, state);
+  assert.equal(previous.status, "paused");
+  assert.equal(previous.cursor, state.cursor - 1);
+  assert.equal(nextComparativeStep(reconstruction, previous).cursor, state.cursor);
+  assert.equal(resetComparativeReplay(reconstruction, state).cursor, -1);
+});
+
+test("Comparative Replay completes identical traces deterministically and remains frame-bound", () => {
+  const identical = comparativeReconstructionFor(referenceSnapshot, referenceSnapshot).reconstruction;
+  let state = playComparativeReplay(identical, createComparativeReplayState(identical));
+  assert.equal(state.status, "playing");
+  const paused = pauseComparativeReplay(identical, state);
+  assert.equal(paused.status, "paused");
+  state = playComparativeReplay(identical, paused);
+  while (state.status === "playing") state = advanceComparativeReplay(identical, state);
+  assert.equal(state.status, "completed");
+  const view = projectComparativeReplay(identical, state);
+  assert.equal(view.currentMoment, null);
+  assert.equal(view.nodeRecords.every(({ phase }) => phase === "completed"), true);
+  assert.equal(view.relationshipRecords.every(({ phase }) => phase === "completed"), true);
+
+  const changed = cloneDetached(referenceSnapshot);
+  changed.reflections[0].knowledge = "Another frame-bound reconstruction";
+  const another = comparativeReconstructionFor(referenceSnapshot, changed).reconstruction;
+  assert.throws(() => projectComparativeReplay(another, state), /not bound/);
+});
+
+test("Comparative Replay preserves per-side phases when trace order diverges and reconverges", () => {
+  const changed = cloneDetached(referenceSnapshot);
+  changed.reflections[0].sources.reverse();
+  const { reconstruction } = comparativeReconstructionFor(referenceSnapshot, changed);
+  const occurrences = new Map();
+  reconstruction.moments.forEach((moment) => {
+    [["a", moment.from], ["b", moment.to]].forEach(([side, step]) => {
+      if (!step || !["a-only", "b-only"].includes(moment.state)) return;
+      const identity = `${step.elementType}:${step.key}`;
+      const values = occurrences.get(identity) ?? [];
+      values.push({ index: moment.index, side, state: moment.state, key: step.key, elementType: step.elementType });
+      occurrences.set(identity, values);
+    });
+  });
+  const moved = [...occurrences.values()].find((values) => (
+    values.some(({ state }) => state === "a-only") && values.some(({ state }) => state === "b-only")
+  ));
+  assert.ok(moved, "reordered trace cognition must align as local A-only and B-only moments");
+  const aOnly = moved.find(({ state }) => state === "a-only");
+  const bOnly = moved.find(({ state }) => state === "b-only");
+  assert.ok(aOnly.index < bOnly.index, "the fixed LCS tie emits Observation A before Observation B");
+
+  let controller = createComparativeReplayState(reconstruction);
+  while (controller.cursor < aOnly.index) controller = nextComparativeStep(reconstruction, controller);
+  let view = projectComparativeReplay(reconstruction, controller);
+  let record = view.records.find(({ key, elementType }) => key === aOnly.key && elementType === aOnly.elementType);
+  assert.equal(record.semanticState, "a-only");
+  assert.equal(record.phase, "current");
+  assert.deepEqual(record.sides, ["a"]);
+  assert.equal(record.sideRecords.find(({ side }) => side === "a").phase, "current");
+  assert.equal(record.sideRecords.find(({ side }) => side === "b").phase, "future");
+
+  while (controller.cursor < bOnly.index) controller = nextComparativeStep(reconstruction, controller);
+  view = projectComparativeReplay(reconstruction, controller);
+  record = view.records.find(({ key, elementType }) => key === bOnly.key && elementType === bOnly.elementType);
+  assert.equal(record.semanticState, "b-only");
+  assert.equal(record.phase, "current");
+  assert.deepEqual(record.sides, ["b"]);
+  assert.equal(record.sideRecords.find(({ side }) => side === "a").phase, "completed");
+  assert.equal(record.sideRecords.find(({ side }) => side === "b").phase, "current");
+});
+
+test("the Comparative renderer consumes aligned classifications and never computes divergence", async () => {
+  const changed = cloneDetached(referenceSnapshot);
+  changed.reflections[0].sources[0].semanticConcept.sourceEntries[0].value = "Renderer-visible exact divergence";
+  const { reconstruction, pair } = comparativeReconstructionFor(referenceSnapshot, changed);
+  const controller = playComparativeReplay(reconstruction, createComparativeReplayState(reconstruction));
+  const view = projectComparativeReplay(reconstruction, controller);
+  const rendering = prepareComparativeRenderingState(reconstruction.world, view);
+  assert.equal(rendering.active, true);
+  assert.deepEqual(rendering.nodeRecords, view.nodeRecords);
+  assert.deepEqual(rendering.relationshipRecords, view.relationshipRecords);
+  assert.equal(rendering.atDivergence, true);
+  assert.throws(() => prepareComparativeRenderingState(pair.to.world, view), /not bound/);
+
+  const [engineSource, controllerSource, rendererSource, appSource, styles] = await Promise.all([
+    readFile(resolve(studioRoot, "web/js/cognitive-comparative-reconstruction.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/js/cognitive-comparative-replay.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/js/graph.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/js/app.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/styles.css"), "utf8"),
+  ]);
+  for (const source of [engineSource, controllerSource]) {
+    assert.doesNotMatch(source, /\bwindow\b|\bdocument\b|setTimeout|setInterval|requestAnimationFrame|Math\.random|Date\./);
+  }
+  assert.doesNotMatch(rendererSource, /from\s+["']\.\/cognitive-comparative|buildComparativeReconstruction|advanceComparativeReplay|canonicalObservation/);
+  assert.match(appSource, /buildComparativeReconstruction\(pair\.from, fromTrace, pair\.to, toTrace\)/);
+  assert.match(rendererSource, /prepareComparativeRenderingState\(world, comparativeView\)/);
+  assert.match(rendererSource, /comparativeSideRecord\(record, side\)/);
+  assert.match(rendererSource, /updateComparativeMarker/);
+  assert.match(rendererSource, /updateComparativeView/);
+  for (const control of ["Compare", "Play", "Pause", "Previous Step", "Next Step", "Reset"]) {
+    assert.match(rendererSource, new RegExp(`createToolButton\\(\"${control}`));
+  }
+  const comparativeStyles = styles.slice(styles.indexOf("MemoryOS 1.1 MO-1107"));
+  assert.match(comparativeStyles, /is-comparative-side-a/);
+  assert.match(comparativeStyles, /is-comparative-side-b/);
+  assert.match(comparativeStyles, /stroke-dasharray/);
+  assert.doesNotMatch(comparativeStyles, /animation\s*:/, "comparative presentation never manufactures cognition");
+  for (const unsupported of ["Time Machine", "Counterfactual", "timeline scrubber", "branch reality"]) {
+    assert.doesNotMatch(`${engineSource}\n${controllerSource}\n${comparativeStyles}`, new RegExp(unsupported, "i"));
+  }
+});
+
+test("Comparative Reconstruction requires explicit activation and preserves Cognitive Evolution", async () => {
+  const applicationSource = await readFile(resolve(studioRoot, "web/js/app.js"), "utf8");
+  const synchronizeSource = applicationFunctionSource(
+    applicationSource,
+    "synchronizeComparativeReconstruction",
+    "activateComparativeReconstruction",
+  );
+  const activationSource = applicationFunctionSource(
+    applicationSource,
+    "activateComparativeReconstruction",
+    "updateComparativeReplay",
+  );
+  const comparativeControlSource = applicationFunctionSource(
+    applicationSource,
+    "updateComparativeReplay",
+    "scheduleComparativeReplay",
+  );
+  assert.match(synchronizeSource, /!state\.comparativeActive/);
+  assert.match(activationSource, /state\.comparativeActive = true/);
+  assert.match(applicationSource, /data-comparative-start/);
+  assert.match(applicationSource, /evolutionView: comparativeView \? null : evolution\?\.view/);
+  assert.doesNotMatch(synchronizeSource, /comparativeActive = true/,
+    "activating Cognitive Evolution alone must never enter Comparative Reconstruction");
+  assert.match(comparativeControlSource, /state\.comparativeActive = false/);
+  assert.doesNotMatch(comparativeControlSource, /updateEvolution\(/,
+    "leaving Comparative Reconstruction must return to the existing Evolution view");
 });
 
 test("the application exposes deterministic Cognitive Trace query failures", async () => {

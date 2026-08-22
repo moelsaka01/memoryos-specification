@@ -18,6 +18,7 @@ import {
   createObservationTimeline,
 } from "./observation-timeline.js";
 import {
+  buildCognitiveTrace,
   createCognitiveTraceQuery,
   queryCognitiveTrace,
 } from "./cognitive-trace.js";
@@ -44,6 +45,20 @@ import {
   previousEvolutionObservation,
   reconcileEvolutionController,
 } from "./cognitive-evolution-controller.js";
+import {
+  buildComparativeReconstruction,
+  validateComparativeReconstruction,
+} from "./cognitive-comparative-reconstruction.js";
+import {
+  advanceComparativeReplay,
+  createComparativeReplayState,
+  nextComparativeStep,
+  pauseComparativeReplay,
+  playComparativeReplay,
+  previousComparativeStep,
+  projectComparativeReplay,
+  resetComparativeReplay,
+} from "./cognitive-comparative-replay.js";
 
 let snapshot = cloneDetached(resolveSnapshot());
 let observationTimeline = createObservationTimeline();
@@ -58,6 +73,7 @@ let currentFrame = initialObservation.current;
 let commandAdapter = null;
 let operationSequence = 0;
 let replayTimer = null;
+let comparativeReplayTimer = null;
 let graphController = null;
 const replayStepDelay = 1250;
 
@@ -178,6 +194,11 @@ const state = {
   replayState: null,
   evolutionController: createEvolutionController(observationTimeline.length),
   evolutionSelection: null,
+  comparativeActive: false,
+  comparativeTargetKey: null,
+  comparativeReconstruction: null,
+  comparativeReplayState: null,
+  comparativeDiagnostic: null,
   traceDiagnostic: null,
   lastOperation: null,
   busy: false,
@@ -235,6 +256,126 @@ function scheduleReplay() {
   }, replayStepDelay);
 }
 
+function clearComparativeReplayTimer() {
+  if (comparativeReplayTimer !== null) window.clearTimeout(comparativeReplayTimer);
+  comparativeReplayTimer = null;
+}
+
+function clearComparativeReconstruction(resetTarget = true) {
+  clearComparativeReplayTimer();
+  state.comparativeReconstruction = null;
+  state.comparativeReplayState = null;
+  state.comparativeDiagnostic = null;
+  if (resetTarget) {
+    state.comparativeActive = false;
+    state.comparativeTargetKey = null;
+  }
+}
+
+function comparableReflectionTarget(pair) {
+  const toKeys = new Set(pair.to.world.nodes
+    .filter((node) => !node.aggregate && node.kind === "reflection" && node.family === "Reflection")
+    .map(({ key }) => key));
+  if (state.comparativeTargetKey && toKeys.has(state.comparativeTargetKey)
+    && pair.from.world.nodes.some(({ key }) => key === state.comparativeTargetKey)) {
+    return state.comparativeTargetKey;
+  }
+  return pair.from.world.nodes.find((node) => (
+    !node.aggregate && node.kind === "reflection" && node.family === "Reflection" && toKeys.has(node.key)
+  ))?.key ?? null;
+}
+
+function synchronizeComparativeReconstruction(evolution) {
+  if (!evolution || !state.evolutionController.active) {
+    clearComparativeReconstruction();
+    return null;
+  }
+  if (!state.comparativeActive) {
+    clearComparativeReconstruction(false);
+    return null;
+  }
+  const pair = evolutionFrames(observationTimeline, state.evolutionController);
+  const targetNodeKey = pair ? comparableReflectionTarget(pair) : null;
+  if (!pair || !targetNodeKey) {
+    clearComparativeReconstruction(false);
+    state.comparativeDiagnostic = "Both observations require the same exact Reflection identity for synchronized reconstruction.";
+    return null;
+  }
+  try {
+    const fromTrace = buildCognitiveTrace(pair.from, targetNodeKey);
+    const toTrace = buildCognitiveTrace(pair.to, targetNodeKey);
+    const reconstruction = buildComparativeReconstruction(pair.from, fromTrace, pair.to, toTrace);
+    validateComparativeReconstruction(reconstruction);
+    state.comparativeTargetKey = targetNodeKey;
+    state.comparativeDiagnostic = null;
+    if (state.comparativeReconstruction?.identifier !== reconstruction.identifier) {
+      clearComparativeReplayTimer();
+      state.comparativeReconstruction = reconstruction;
+      state.comparativeReplayState = createComparativeReplayState(reconstruction);
+    }
+    return state.comparativeReconstruction;
+  } catch (error) {
+    clearComparativeReconstruction(false);
+    state.comparativeDiagnostic = error instanceof Error ? error.message : String(error);
+    return null;
+  }
+}
+
+function activateComparativeReconstruction() {
+  const evolution = currentEvolution();
+  const pair = evolution ? evolutionFrames(observationTimeline, state.evolutionController) : null;
+  const targetNodeKey = pair ? comparableReflectionTarget(pair) : null;
+  if (!evolution || !pair || !targetNodeKey) {
+    state.comparativeDiagnostic = "Both observations require the same exact Reflection identity for synchronized reconstruction.";
+    renderGraphContext();
+    return;
+  }
+  state.comparativeTargetKey = targetNodeKey;
+  state.comparativeActive = true;
+  renderRoute();
+}
+
+function updateComparativeReplay(action) {
+  if (action === "compare") {
+    state.comparativeActive = false;
+    clearComparativeReconstruction(false);
+    renderRoute();
+    return;
+  }
+  const reconstruction = state.comparativeReconstruction;
+  if (!reconstruction || !state.comparativeReplayState) return;
+  clearComparativeReplayTimer();
+  const operations = {
+    play: playComparativeReplay,
+    pause: pauseComparativeReplay,
+    previous: previousComparativeStep,
+    next: nextComparativeStep,
+    reset: resetComparativeReplay,
+  };
+  const operation = operations[action];
+  if (!operation) return;
+  state.comparativeReplayState = operation(reconstruction, state.comparativeReplayState);
+  if (!refreshComparativePresentation()) renderRoute();
+  scheduleComparativeReplay();
+}
+
+function scheduleComparativeReplay() {
+  clearComparativeReplayTimer();
+  if (!state.comparativeReconstruction || state.comparativeReplayState?.status !== "playing") return;
+  const reconstructionIdentifier = state.comparativeReconstruction.identifier;
+  comparativeReplayTimer = window.setTimeout(() => {
+    comparativeReplayTimer = null;
+    if (state.comparativeReconstruction?.identifier !== reconstructionIdentifier
+      || state.comparativeReplayState?.status !== "playing") return;
+    state.comparativeReplayState = advanceComparativeReplay(
+      state.comparativeReconstruction,
+      state.comparativeReplayState,
+    );
+    if (!refreshComparativePresentation()) renderRoute();
+    scheduleComparativeReplay();
+  }, replayStepDelay);
+}
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
@@ -258,17 +399,23 @@ function status(value) {
   return `<span class="status-chip ${stateClass(value)}"><span class="status-dot" aria-hidden="true"></span>${escapeHtml(value)}</span>`;
 }
 
-function graphIdentity(world, frame, route, activeTrace = null, replayState = null, evolution = null) {
+function graphIdentity(world, frame, route, activeTrace = null, replayState = null, evolution = null, comparativeView = null) {
   const [title] = routeMetadata[route];
   const observation = route === "complete" ? "Complete cognitive system" : `${title} perspective`;
   const replayLabels = { ready: "Replay ready", playing: "Constructing", paused: "Replay paused", completed: "Replay complete" };
+  const comparativeLabels = {
+    ready: "Synchronized",
+    playing: "Reconstructing together",
+    paused: comparativeView?.atDivergence ? "Paused at divergence" : "Reconstruction paused",
+    completed: "Comparison complete",
+  };
   return `<header class="neural-graph-identity" aria-labelledby="memory-intelligence-graph-title">
     <span class="graph-identity-mark" aria-hidden="true"><i></i><i></i><i></i></span>
     <span class="graph-identity-copy">
-      <small>${activeTrace ? "Living Connectome · Cognitive reconstruction" : evolution ? "Living Connectome · Cognitive evolution" : `Mission Control · ${escapeHtml(observation)}`}</small>
-      <strong id="memory-intelligence-graph-title">${activeTrace ? "Evidence becomes Reflection" : evolution ? "What changed?" : escapeHtml(world.identity)}</strong>
+      <small>${comparativeView ? "Living Connectome · Comparative reconstruction" : activeTrace ? "Living Connectome · Cognitive reconstruction" : evolution ? "Living Connectome · Cognitive evolution" : `Mission Control · ${escapeHtml(observation)}`}</small>
+      <strong id="memory-intelligence-graph-title">${comparativeView ? "Where cognition diverged" : activeTrace ? "Evidence becomes Reflection" : evolution ? "What changed?" : escapeHtml(world.identity)}</strong>
     </span>
-    <span class="graph-live-state"><i aria-hidden="true"></i>${activeTrace ? replayLabels[replayState?.status] ?? "Cognitive Trace" : evolution ? `Observation ${evolution.from.sequence + 1} → ${evolution.to.sequence + 1}` : `Observed frame ${escapeHtml(frame.sequence + 1)}`}</span>
+    <span class="graph-live-state"><i aria-hidden="true"></i>${comparativeView ? comparativeLabels[comparativeView.status] ?? "Comparative Reconstruction" : activeTrace ? replayLabels[replayState?.status] ?? "Cognitive Trace" : evolution ? `Observation ${evolution.from.sequence + 1} → ${evolution.to.sequence + 1}` : `Observed frame ${escapeHtml(frame.sequence + 1)}`}</span>
   </header>`;
 }
 
@@ -373,6 +520,60 @@ function evolutionSignals(evolution) {
   return `<div class="neural-signal-ribbon evolution-signal-ribbon" aria-label="Cognitive Evolution summary">${values.map(([label, value]) => `<span><small>${escapeHtml(label)}</small><strong>${escapeHtml(value)}</strong></span>`).join("")}</div>`;
 }
 
+function comparativeSignals(reconstruction, view) {
+  const values = [
+    ["Shared steps", reconstruction.summary.shared],
+    ["Divergences", reconstruction.summary.divergent],
+    ["Observation A only", reconstruction.summary.aOnly],
+    ["Observation B only", reconstruction.summary.bOnly],
+    ["Modified", reconstruction.summary.modified],
+  ];
+  const position = view.status === "completed"
+    ? "Complete"
+    : view.cursor < 0 ? "Ready" : `${view.cursor + 1} / ${view.total}`;
+  return `<div class="neural-signal-ribbon comparative-signal-ribbon" aria-label="Comparative Reconstruction summary">${values.map(([label, value]) => `<span><small>${escapeHtml(label)}</small><strong>${escapeHtml(value)}</strong></span>`).join("")}<span class="comparative-signal-position"><small>Position</small><strong>${escapeHtml(position)}</strong></span></div>`;
+}
+
+function comparativeElementLabel(step, reconstruction) {
+  if (!step) return "No matching semantic step";
+  if (step.elementType === "node") {
+    return reconstruction.world.nodes.find(({ key }) => key === step.key)?.label ?? step.key;
+  }
+  const edge = reconstruction.world.edges.find(({ key }) => key === step.key);
+  if (!edge) return step.key;
+  const from = reconstruction.world.nodes.find(({ key }) => key === edge.from)?.label ?? edge.from;
+  const to = reconstruction.world.nodes.find(({ key }) => key === edge.to)?.label ?? edge.to;
+  return `${from} ${edge.relation} ${to}`;
+}
+
+function comparativeContextView(reconstruction, view) {
+  const current = view.currentMoment;
+  const first = reconstruction.firstDivergenceIndex === null
+    ? null
+    : reconstruction.moments[reconstruction.firstDivergenceIndex];
+  const roleLabels = {
+    "origin-evidence": "Evidence",
+    "semantic-transformation": "Semantic transformation",
+    retrieval: "Retrieval",
+    "reflection-current": "Reflection",
+  };
+  if (!current) {
+    const completed = view.status === "completed";
+    const heading = reconstruction.summary.divergent === 0
+      ? "Investigations are semantically identical"
+      : completed ? "Comparative reconstruction complete" : "Two investigations synchronized";
+    const firstLabel = first ? `${roleLabels[first.role] ?? first.elementType} at step ${first.index + 1}` : "No divergence";
+    return `<section class="comparative-context ${completed ? "is-completed" : "is-ready"}"><header><div><span class="eyebrow">Comparative Reconstruction</span><h2>${escapeHtml(heading)}</h2></div></header><p>Observation ${reconstruction.from.frameSequence + 1} and Observation ${reconstruction.to.frameSequence + 1} share one stable semantic world.</p><dl><div><dt>First divergence</dt><dd>${escapeHtml(firstLabel)}</dd></div><div><dt>Shared moments</dt><dd>${reconstruction.summary.shared}</dd></div><div><dt>Exact divergences</dt><dd>${reconstruction.summary.divergent}</dd></div></dl><footer>No inferred correspondence · no rendering comparison</footer></section>`;
+  }
+  const stateLabels = {
+    shared: "Shared cognition",
+    "a-only": "Observation A only",
+    "b-only": "Observation B only",
+    modified: "Same identity, changed revision",
+  };
+  return `<section class="comparative-context ${current.divergent ? "is-divergence" : "is-shared"}"><header><div><span class="eyebrow">${escapeHtml(roleLabels[current.role] ?? current.elementType)}</span><h2>${escapeHtml(current.divergent ? "Cognition diverges here" : "Investigations remain identical")}</h2></div><span class="comparative-step-state">${escapeHtml(stateLabels[current.state] ?? current.state)}</span></header><div class="comparative-observations"><section class="observation-a"><span aria-hidden="true"><i>A</i></span><div><small>Observation ${reconstruction.from.frameSequence + 1}</small><strong>${escapeHtml(comparativeElementLabel(current.from, reconstruction))}</strong></div></section><section class="observation-b"><span aria-hidden="true"><i>B</i></span><div><small>Observation ${reconstruction.to.frameSequence + 1}</small><strong>${escapeHtml(comparativeElementLabel(current.to, reconstruction))}</strong></div></section></div><p>${escapeHtml(current.reason)}</p><footer>Semantic step ${current.index + 1} of ${reconstruction.moments.length} · exact runtime fingerprints</footer></section>`;
+}
+
 function neuralFlowRibbon() {
   const retrievalCandidates = snapshot.retrievalSessions.reduce((sum, session) => sum + session.candidates.length, 0);
   const values = [
@@ -457,6 +658,14 @@ function neuralDefaultContext(route) {
 
 function graphContext(route = state.route) {
   const evolution = currentEvolution();
+  const reconstruction = evolution ? synchronizeComparativeReconstruction(evolution) : null;
+  const comparativeView = reconstruction && state.comparativeReplayState
+    ? projectComparativeReplay(reconstruction, state.comparativeReplayState)
+    : null;
+  if (reconstruction && comparativeView) return comparativeContextView(reconstruction, comparativeView);
+  if (state.comparativeDiagnostic && evolution) {
+    return `<section class="evolution-context"><header><div><span class="eyebrow">Comparative Reconstruction unavailable</span><h2>Exact trace pair required</h2></div></header><p>${escapeHtml(state.comparativeDiagnostic)}</p></section>`;
+  }
   if (evolution) return evolutionContextView(evolution);
   if (state.activeTrace) return investigationContextView();
   if (state.graphSelection) return graphSelectionView(state.graphSelection);
@@ -470,6 +679,13 @@ function currentEvolution() {
   const evolution = compareCognitiveEvolution(pair.from, pair.to);
   validateCognitiveEvolution(evolution);
   return evolution;
+}
+
+function comparativeEntryControl() {
+  const pair = evolutionFrames(observationTimeline, state.evolutionController);
+  const targetNodeKey = pair ? comparableReflectionTarget(pair) : null;
+  if (!targetNodeKey) return "";
+  return `<button class="button secondary comparative-entry-action" type="button" data-comparative-start>Compare traces</button>`;
 }
 
 function evolutionContextView(evolution) {
@@ -486,7 +702,7 @@ function evolutionContextView(evolution) {
     const removed = evolution.view.removedNodeKeys.includes(node.key);
     const evolved = evolution.view.evolvedNodeKeys.includes(node.key);
     const stateLabel = evolved ? "Evolved" : added ? "Added" : removed ? "Removed" : "Stable context";
-    return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${escapeHtml(node.label)}</h2></div><button class="rail-close" type="button" data-evolution-clear aria-label="Clear evolution selection">&times;</button></header><div class="evolution-state is-${stateLabel.toLowerCase().replaceAll(" ", "-")}"><span aria-hidden="true"></span><div><small>${escapeHtml(node.family ?? node.kind)}</small><strong>${escapeHtml(stateLabel)}</strong></div></div><p>${evolved ? "The same cognitive identity has a different observed semantic revision." : added ? "This cognition is present only in Observation B." : removed ? "This cognition is present only in Observation A." : "This cognition remained semantically unchanged across both observations."}</p></section>`;
+    return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${escapeHtml(node.label)}</h2></div><button class="rail-close" type="button" data-evolution-clear aria-label="Clear evolution selection">&times;</button></header><div class="evolution-state is-${stateLabel.toLowerCase().replaceAll(" ", "-")}"><span aria-hidden="true"></span><div><small>${escapeHtml(node.family ?? node.kind)}</small><strong>${escapeHtml(stateLabel)}</strong></div></div><p>${evolved ? "The same cognitive identity has a different observed semantic revision." : added ? "This cognition is present only in Observation B." : removed ? "This cognition is present only in Observation A." : "This cognition remained semantically unchanged across both observations."}</p>${comparativeEntryControl()}</section>`;
   }
   const rows = groups.map(([label, addedKey, removedKey]) => {
     const added = evolution.summary[addedKey];
@@ -494,7 +710,7 @@ function evolutionContextView(evolution) {
     return `<li><span>${escapeHtml(label)}</span><span><b class="evolution-added">+${added}</b><b class="evolution-removed">−${removed}</b></span></li>`;
   }).join("");
   const total = Object.values(evolution.summary).reduce((sum, value) => sum + value, 0);
-  return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${total === 0 ? "No semantic changes" : `${total} semantic differences`}</h2></div></header><p>Observation ${evolution.from.sequence + 1} is compared with Observation ${evolution.to.sequence + 1}. Every emphasis comes from immutable runtime truth.</p><ul class="key-value-list evolution-difference-list">${rows}<li><span>Modified relationships</span><span><b class="evolution-modified">~${evolution.summary.modifiedRelationships}</b></span></li></ul><footer>${evolution.unchanged.nodeKeys.length} cognitive records and ${evolution.unchanged.relationshipKeys.length} relationships remained stable.</footer></section>`;
+  return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${total === 0 ? "No semantic changes" : `${total} semantic differences`}</h2></div></header><p>Observation ${evolution.from.sequence + 1} is compared with Observation ${evolution.to.sequence + 1}. Every emphasis comes from immutable runtime truth.</p><ul class="key-value-list evolution-difference-list">${rows}<li><span>Modified relationships</span><span><b class="evolution-modified">~${evolution.summary.modifiedRelationships}</b></span></li></ul>${comparativeEntryControl()}<footer>${evolution.unchanged.nodeKeys.length} cognitive records and ${evolution.unchanged.relationshipKeys.length} relationships remained stable.</footer></section>`;
 }
 
 function updateEvolution(action) {
@@ -509,6 +725,7 @@ function updateEvolution(action) {
   const wasActive = state.evolutionController.active;
   state.evolutionController = operation(state.evolutionController, frameCount);
   state.evolutionSelection = null;
+  clearComparativeReconstruction(!state.evolutionController.active);
   if (!wasActive && state.evolutionController.active) {
     state.activeTrace = null;
     clearReplay();
@@ -584,12 +801,14 @@ function acceptObservationFrame(view, operation, query, resultCode) {
   currentFrame = accepted.current;
   state.evolutionController = reconcileEvolutionController(state.evolutionController, observationTimeline.length);
   state.evolutionSelection = null;
+  clearComparativeReconstruction(false);
   state.pendingActivity = currentFrame.activity;
   state.graphViewState = reconcileGraphViewState(currentFrame.world, state.graphViewState);
   synchronizeSelectionWithCurrentFrame(selectedKey);
   if (selectedKey && !state.graphSelection) {
     state.activeTrace = null;
     clearReplay();
+    clearComparativeReconstruction();
     state.traceDiagnostic = null;
   } else if (traceTargetKey) {
     if (!rebuildActiveTrace(traceTargetKey)) {
@@ -618,17 +837,22 @@ function acceptObservationFrame(view, operation, query, resultCode) {
 function renderNeuralPerspective(route = state.route) {
   const frame = currentFrame;
   const evolution = currentEvolution();
-  const world = evolution?.world ?? frame.world;
+  const reconstruction = evolution ? synchronizeComparativeReconstruction(evolution) : null;
+  const comparativeView = reconstruction && state.comparativeReplayState
+    ? projectComparativeReplay(reconstruction, state.comparativeReplayState)
+    : null;
+  const world = reconstruction?.world ?? evolution?.world ?? frame.world;
   const activity = state.pendingActivity ?? {};
   const replayView = state.activeReplay && state.replayState
     ? projectReplay(state.activeReplay, state.replayState)
     : null;
   elements.shell.dataset.investigation = state.activeTrace ? "active" : "inactive";
   elements.shell.dataset.evolution = evolution ? "active" : "inactive";
+  elements.shell.dataset.comparative = comparativeView ? "active" : "inactive";
   elements.root.innerHTML = `<div class="neural-interface" data-perspective="${escapeHtml(route)}">
-    <section class="neural-world${state.activeTrace ? " has-investigation" : ""}${evolution ? " has-evolution" : ""}" aria-label="${escapeHtml(world.identity)}">
-      ${graphIdentity(world, frame, route, state.activeTrace, state.replayState, evolution)}
-      ${state.activeTrace ? traceSignals(state.activeTrace, replayView) : evolution ? evolutionSignals(evolution) : neuralSignals(route)}
+    <section class="neural-world${state.activeTrace ? " has-investigation" : ""}${evolution ? " has-evolution" : ""}${comparativeView ? " has-comparative-reconstruction" : ""}" aria-label="${escapeHtml(world.identity)}">
+      ${graphIdentity(world, frame, route, state.activeTrace, state.replayState, evolution, comparativeView)}
+      ${comparativeView ? comparativeSignals(reconstruction, comparativeView) : state.activeTrace ? traceSignals(state.activeTrace, replayView) : evolution ? evolutionSignals(evolution) : neuralSignals(route)}
       <div id="memory-graph" class="memory-intelligence-graph-host" aria-label="${escapeHtml(world.identity)}"></div>
       <aside class="neural-context" id="graph-context" aria-label="Selected graph context">${graphContext(route)}</aside>
       ${neuralFlowRibbon()}
@@ -641,8 +865,31 @@ function renderNeuralPerspective(route = state.route) {
       clearReplayTimer();
       state.replayState = pauseReplay(state.activeReplay, state.replayState);
     }
+    if (comparativeView) {
+      if (state.comparativeReplayState?.status === "playing") {
+        clearComparativeReplayTimer();
+        state.comparativeReplayState = pauseComparativeReplay(reconstruction, state.comparativeReplayState);
+      }
+      const pair = evolutionFrames(observationTimeline, state.evolutionController);
+      const comparable = !node.aggregate && node.kind === "reflection" && node.family === "Reflection"
+        && pair?.from.world.nodes.some(({ key }) => key === node.key)
+        && pair?.to.world.nodes.some(({ key }) => key === node.key);
+      if (comparable && node.key !== state.comparativeTargetKey) {
+        state.comparativeTargetKey = node.key;
+        clearComparativeReconstruction(false);
+        renderRoute();
+      } else {
+        refreshComparativePresentation();
+      }
+      return;
+    }
     if (evolution) {
       state.evolutionSelection = node;
+      const pair = evolutionFrames(observationTimeline, state.evolutionController);
+      const comparable = !node.aggregate && node.kind === "reflection" && node.family === "Reflection"
+        && pair?.from.world.nodes.some(({ key }) => key === node.key)
+        && pair?.to.world.nodes.some(({ key }) => key === node.key);
+      if (comparable) state.comparativeTargetKey = node.key;
       renderGraphContext();
       return;
     }
@@ -658,10 +905,12 @@ function renderNeuralPerspective(route = state.route) {
     activity,
     trace: state.activeTrace,
     replayView,
-    evolutionView: evolution?.view ?? null,
+    evolutionView: comparativeView ? null : evolution?.view ?? null,
     evolutionControl: state.evolutionController,
+    comparativeView,
     onReplayAction: updateReplay,
     onEvolutionAction: updateEvolution,
+    onComparativeAction: updateComparativeReplay,
     onViewStateChange(nextViewState) {
       state.graphViewState = nextViewState;
     },
@@ -670,6 +919,7 @@ function renderNeuralPerspective(route = state.route) {
   graphContainer.addEventListener("graphselectionclear", clearGraphSelection);
   bindGraphContext();
   scheduleReplay();
+  scheduleComparativeReplay();
 }
 
 function refreshReplayPresentation() {
@@ -681,6 +931,25 @@ function refreshReplayPresentation() {
   if (liveState) liveState.innerHTML = `<i aria-hidden="true"></i>${replayLabels[state.replayState.status]}`;
   const ribbon = document.querySelector(".trace-signal-ribbon");
   if (ribbon) ribbon.outerHTML = traceSignals(state.activeTrace, replayView);
+  renderGraphContext();
+  return true;
+}
+
+function refreshComparativePresentation() {
+  const reconstruction = state.comparativeReconstruction;
+  if (!reconstruction || !state.comparativeReplayState || !graphController) return false;
+  const view = projectComparativeReplay(reconstruction, state.comparativeReplayState);
+  if (!graphController.updateComparativeView(view)) return false;
+  const liveState = document.querySelector(".graph-live-state");
+  const labels = {
+    ready: "Synchronized",
+    playing: "Reconstructing together",
+    paused: view.atDivergence ? "Paused at divergence" : "Reconstruction paused",
+    completed: "Comparison complete",
+  };
+  if (liveState) liveState.innerHTML = `<i aria-hidden="true"></i>${labels[view.status]}`;
+  const ribbon = document.querySelector(".comparative-signal-ribbon");
+  if (ribbon) ribbon.outerHTML = comparativeSignals(reconstruction, view);
   renderGraphContext();
   return true;
 }
@@ -902,6 +1171,7 @@ function bindGraphContext() {
     renderGraphContext();
     document.querySelector("#memory-graph")?.dispatchEvent(new CustomEvent("cleargraphselection"));
   });
+  context.querySelector("[data-comparative-start]")?.addEventListener("click", activateComparativeReconstruction);
   context.querySelector("[data-graph-trace]")?.addEventListener("click", (event) => {
     const button = event.currentTarget;
     const route = ["retrieval", "reflection"].includes(button.dataset.route) ? button.dataset.route : "complete";
@@ -979,6 +1249,7 @@ async function executeSessionOperation(name) {
       currentFrame = null;
       state.evolutionController = createEvolutionController(0);
       state.evolutionSelection = null;
+      clearComparativeReconstruction();
       state.pendingActivity = null;
       state.activeTrace = null;
       clearReplay();
@@ -1068,6 +1339,24 @@ function initialize() {
     if (event.defaultPrevented) return;
     const typing = event.target instanceof HTMLElement
       && (event.target.matches("input, select, textarea") || event.target.isContentEditable);
+    if (!typing && state.comparativeReconstruction && !event.ctrlKey && !event.metaKey && !event.altKey) {
+      const comparativeActions = {
+        ArrowLeft: "previous",
+        ArrowRight: "next",
+        r: "reset",
+        R: "reset",
+      };
+      if (event.code === "Space") {
+        event.preventDefault();
+        updateComparativeReplay(state.comparativeReplayState?.status === "playing" ? "pause" : "play");
+        return;
+      }
+      if (comparativeActions[event.key]) {
+        event.preventDefault();
+        updateComparativeReplay(comparativeActions[event.key]);
+        return;
+      }
+    }
     if (!typing && state.activeReplay && !event.ctrlKey && !event.metaKey && !event.altKey) {
       const replayActions = {
         ArrowLeft: "previous",
