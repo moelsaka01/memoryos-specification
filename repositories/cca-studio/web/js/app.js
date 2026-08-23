@@ -21,6 +21,7 @@ import {
   buildCognitiveTrace,
   createCognitiveTraceQuery,
   queryCognitiveTrace,
+  resolveCognitiveTraceTarget,
 } from "./cognitive-trace.js";
 import {
   advanceReplay,
@@ -32,6 +33,8 @@ import {
   previousReplayStep,
   projectReplay,
   restartReplay,
+  restoreReplayState,
+  snapshotReplayState,
 } from "./cognitive-replay.js";
 import {
   compareCognitiveEvolution,
@@ -165,6 +168,7 @@ const perspectiveKindByRoute = Object.freeze({
 
 const elements = {
   shell: document.querySelector(".studio-shell"),
+  main: document.querySelector("#studio-main"),
   root: document.querySelector("#view-root"),
   pageTitle: document.querySelector("#page-title"),
   pageDescription: document.querySelector("#page-description"),
@@ -181,6 +185,9 @@ const elements = {
   forgetDialog: document.querySelector("#forget-dialog"),
   toastRegion: document.querySelector("#toast-region"),
 };
+const mobileNavigationQuery = window.matchMedia("(max-width: 900px)");
+const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+const overlayFocusDelay = 180;
 
 const state = {
   route: normalizeRoute(location.hash.slice(1)),
@@ -199,10 +206,83 @@ const state = {
   comparativeReconstruction: null,
   comparativeReplayState: null,
   comparativeDiagnostic: null,
+  investigationCheckpoint: null,
   traceDiagnostic: null,
   lastOperation: null,
   busy: false,
 };
+
+function workflowPhase() {
+  if (state.comparativeActive && state.comparativeReconstruction) return "compare";
+  if (state.evolutionController.active) return "evolution";
+  if (state.activeTrace && state.replayState
+    && (state.replayState.cursor >= 0 || state.replayState.status !== "ready")) return "replay";
+  if (state.activeTrace) return "trace";
+  return "observe";
+}
+
+function comparisonAvailability() {
+  if (!state.evolutionController.available) {
+    return { available: false, reason: "Observe another frame to compare deterministic cognition." };
+  }
+  if (state.evolutionController.active || state.comparativeActive) return { available: true, reason: "" };
+  if (!state.activeTrace || !state.activeReplay || state.replayState?.status !== "completed") {
+    return { available: false, reason: "Complete Cognitive Replay before comparing deterministic cognition." };
+  }
+  return { available: true, reason: "" };
+}
+
+function captureInvestigationCheckpoint() {
+  if (!state.activeTrace || !state.activeReplay || !state.replayState) return null;
+  return Object.freeze({
+    frameIdentifier: state.activeTrace.frameIdentifier,
+    targetNodeKey: state.activeTrace.targetNodeKey,
+    graphViewState: createGraphViewState(state.graphViewState),
+    replayState: snapshotReplayState(state.activeReplay, state.replayState),
+  });
+}
+
+function restoreInvestigationCheckpoint() {
+  const checkpoint = state.investigationCheckpoint;
+  state.investigationCheckpoint = null;
+  if (!checkpoint || checkpoint.frameIdentifier !== currentFrame?.world.frame.identifier) return false;
+  if (!rebuildActiveTrace(checkpoint.targetNodeKey)) return false;
+  state.graphViewState = reconcileGraphViewState(currentFrame.world, checkpoint.graphViewState);
+  const target = currentFrame.world.nodes.find(({ key }) => key === checkpoint.targetNodeKey);
+  const observations = target ? observationsForWorldNode(target) : [];
+  if (target && observations.length > 0) {
+    state.graphSelection = { identifier: target.identifier, observations, nodeKey: target.key };
+    state.graphViewState = { ...state.graphViewState, selectedKey: target.key };
+  }
+  if (state.activeReplay && checkpoint.replayState.replayIdentifier === state.activeReplay.identifier) {
+    state.replayState = restoreReplayState(state.activeReplay, checkpoint.replayState);
+  }
+  return true;
+}
+
+function focusGraphControl(label) {
+  const control = [...document.querySelectorAll(".graph-tool")]
+    .find((element) => element.getAttribute("aria-label") === label);
+  if (!control || control.disabled || control.hidden) return false;
+  control.focus();
+  return document.activeElement === control;
+}
+
+function focusGraphNode(nodeKey) {
+  const node = [...document.querySelectorAll("[data-observation-key]")]
+    .find((element) => element.dataset.observationKey === nodeKey);
+  node?.focus();
+}
+
+function focusGraphSurface() {
+  document.querySelector("#memory-graph .graph-surface")?.focus();
+}
+
+function focusAfterOverlayReveal(resolveTarget, isOpen) {
+  window.setTimeout(() => {
+    if (isOpen()) resolveTarget()?.focus();
+  }, reducedMotionQuery.matches ? 0 : overlayFocusDelay);
+}
 
 function clearReplayTimer() {
   if (replayTimer !== null) window.clearTimeout(replayTimer);
@@ -280,9 +360,7 @@ function comparableReflectionTarget(pair) {
     && pair.from.world.nodes.some(({ key }) => key === state.comparativeTargetKey)) {
     return state.comparativeTargetKey;
   }
-  return pair.from.world.nodes.find((node) => (
-    !node.aggregate && node.kind === "reflection" && node.family === "Reflection" && toKeys.has(node.key)
-  ))?.key ?? null;
+  return null;
 }
 
 function synchronizeComparativeReconstruction(evolution) {
@@ -328,18 +406,21 @@ function activateComparativeReconstruction() {
   if (!evolution || !pair || !targetNodeKey) {
     state.comparativeDiagnostic = "Both observations require the same exact Reflection identity for synchronized reconstruction.";
     renderGraphContext();
+    document.querySelector("[data-comparative-start]")?.focus();
     return;
   }
   state.comparativeTargetKey = targetNodeKey;
   state.comparativeActive = true;
   renderRoute();
+  focusGraphControl("Play");
 }
 
 function updateComparativeReplay(action) {
-  if (action === "compare") {
+  if (action === "compare" || action === "back") {
     state.comparativeActive = false;
     clearComparativeReconstruction(false);
     renderRoute();
+    focusGraphControl("Compare");
     return;
   }
   const reconstruction = state.comparativeReconstruction;
@@ -419,6 +500,93 @@ function graphIdentity(world, frame, route, activeTrace = null, replayState = nu
   </header>`;
 }
 
+function investigationWorkflowView() {
+  const phase = workflowPhase();
+  const comparison = comparisonAvailability();
+  const hasInvestigation = Boolean(state.activeTrace || state.investigationCheckpoint);
+  const replayComplete = state.replayState?.status === "completed"
+    || (phase === "evolution" || phase === "compare") && Boolean(state.investigationCheckpoint);
+  const phaseOrder = { observe: 0, trace: 1, replay: 2, evolution: 3, compare: 3 };
+  const activeIndex = phaseOrder[phase];
+  const replayActionable = phase !== "replay" || state.replayState?.status !== "playing";
+  const evolutionPair = phase === "evolution"
+    ? evolutionFrames(observationTimeline, state.evolutionController)
+    : null;
+  const compareActionable = phase === "evolution"
+    ? Boolean(evolutionPair && comparableReflectionTarget(evolutionPair))
+    : phase !== "compare";
+  const steps = [
+    {
+      id: "observe",
+      label: "Observe",
+      available: phase !== "observe",
+      reason: "Observe is the current stage. Select a Reflection to begin an investigation.",
+      title: "Return to the observed semantic world",
+    },
+    {
+      id: "trace",
+      label: "Trace",
+      available: hasInvestigation && phase !== "trace",
+      reason: hasInvestigation
+        ? "Trace is the current stage. Use the replay controls to reconstruct it."
+        : "Select a Reflection to establish a deterministic Cognitive Trace.",
+      title: "Return to the validated Cognitive Trace",
+    },
+    {
+      id: "replay",
+      label: "Replay",
+      available: hasInvestigation && replayActionable,
+      reason: !hasInvestigation
+        ? "A validated Cognitive Trace is required before Replay."
+        : "Replay is already reconstructing. Use Pause before requesting another replay action.",
+      title: state.replayState?.status === "completed" ? "Restart Cognitive Replay" : "Start or resume Cognitive Replay",
+    },
+    {
+      id: "compare",
+      label: "Compare",
+      available: comparison.available && compareActionable,
+      reason: !comparison.available
+        ? comparison.reason
+        : phase === "compare"
+          ? "Comparative Reconstruction is active. Use Back to changes to leave it."
+          : "Select a shared Reflection before starting Comparative Reconstruction.",
+      title: phase === "evolution" ? "Reconstruct where the selected Reflection diverged" : "Compare adjacent observations",
+    },
+  ];
+  const reasonByPhase = {
+    observe: "Select a Reflection to investigate its exact evidence journey.",
+    trace: "Trace validated. Reconstruct it one observed semantic step at a time.",
+    replay: state.replayState?.status === "completed"
+      ? "Replay complete. Compare with another observation or return to the semantic world."
+      : "Replay is reconstructing only elements present in the immutable trace.",
+    evolution: state.comparativeTargetKey
+      ? "Semantic changes are resolved. Reconstruct the selected Reflection to locate divergence."
+      : "Select a shared Reflection to reconstruct the exact point of divergence.",
+    compare: "Two deterministic traces share one stable semantic world.",
+  };
+  const returnLabel = phase === "compare"
+    ? "Back to changes"
+    : phase === "evolution" && state.investigationCheckpoint ? "Back to replay" : "Return to world";
+  return `<nav class="investigation-workflow" data-phase="${escapeHtml(phase)}" aria-label="Cognitive investigation workflow">
+    <ol>${steps.map((step, index) => {
+      const active = step.id === phase || (step.id === "compare" && ["evolution", "compare"].includes(phase));
+      const complete = index < activeIndex || (step.id === "replay" && replayComplete);
+      const title = step.available ? step.title : step.reason;
+      const disabledReason = step.available ? "" : ` data-disabled-reason="${escapeHtml(step.reason)}"`;
+      return `<li><button class="workflow-step${active ? " is-active" : ""}${complete ? " is-complete" : ""}" type="button" data-workflow-action="${step.id}"${active ? ' aria-current="step"' : ""}${step.available ? "" : " disabled"}${disabledReason} title="${escapeHtml(title)}" aria-description="${escapeHtml(step.available ? step.title : step.reason)}"><i aria-hidden="true">${complete ? "✓" : index + 1}</i><span>${escapeHtml(step.label)}</span></button></li>`;
+    }).join('<li class="workflow-connector" aria-hidden="true">→</li>')}</ol>
+    ${phase === "observe" ? "" : `<button class="workflow-return" type="button" data-workflow-action="return">${escapeHtml(returnLabel)}</button>`}
+    <p class="workflow-reason" aria-live="polite">${escapeHtml(reasonByPhase[phase])}</p>
+  </nav>`;
+}
+
+function refreshInvestigationWorkflow() {
+  const current = document.querySelector(".investigation-workflow");
+  if (!current) return;
+  current.outerHTML = investigationWorkflowView();
+  bindInvestigationWorkflow(document.querySelector(".investigation-workflow"));
+}
+
 const traceStages = Object.freeze([
   ["origin-evidence", "Evidence"],
   ["semantic-transformation", "Transformation"],
@@ -473,7 +641,7 @@ function investigationContextView() {
     ? "Reflection reconstructed"
     : replayElementLabel(currentStep) ?? "Evidence paths are ready";
   return `<section class="investigation-context">
-    <header><div><span class="eyebrow">Cognitive investigation</span><h2>${escapeHtml(targetObservation?.knowledge ?? target?.label ?? "Reflection")}</h2></div><button class="return-to-world" type="button" data-graph-clear aria-label="Return to semantic world">Return to world</button></header>
+    <header><div><span class="eyebrow">Cognitive investigation</span><h2>${escapeHtml(targetObservation?.knowledge ?? target?.label ?? "Reflection")}</h2></div><button class="return-to-world workflow-context-return" type="button" data-workflow-return aria-label="Return to semantic world">Return to world</button></header>
     <div class="investigation-current" data-replay-status="${escapeHtml(replayView?.status ?? "ready")}"><span aria-hidden="true"></span><div><small>${escapeHtml(roleLabel)}</small><strong>${escapeHtml(currentLabel)}</strong></div></div>
     <footer><span>${state.activeTrace.branches.length} evidence branches</span><span>${state.activeReplay.steps.length} observed elements</span><span>No inferred steps</span></footer>
   </section>`;
@@ -563,7 +731,7 @@ function comparativeContextView(reconstruction, view) {
       ? "Investigations are semantically identical"
       : completed ? "Comparative reconstruction complete" : "Two investigations synchronized";
     const firstLabel = first ? `${roleLabels[first.role] ?? first.elementType} at step ${first.index + 1}` : "No divergence";
-    return `<section class="comparative-context ${completed ? "is-completed" : "is-ready"}"><header><div><span class="eyebrow">Comparative Reconstruction</span><h2>${escapeHtml(heading)}</h2></div></header><p>Observation ${reconstruction.from.frameSequence + 1} and Observation ${reconstruction.to.frameSequence + 1} share one stable semantic world.</p><dl><div><dt>First divergence</dt><dd>${escapeHtml(firstLabel)}</dd></div><div><dt>Shared moments</dt><dd>${reconstruction.summary.shared}</dd></div><div><dt>Exact divergences</dt><dd>${reconstruction.summary.divergent}</dd></div></dl><footer>No inferred correspondence · no rendering comparison</footer></section>`;
+    return `<section class="comparative-context ${completed ? "is-completed" : "is-ready"}"><header><div><span class="eyebrow">Comparative Reconstruction</span><h2>${escapeHtml(heading)}</h2></div><button class="workflow-context-return" type="button" data-workflow-return>Back to changes</button></header><p>Observation ${reconstruction.from.frameSequence + 1} and Observation ${reconstruction.to.frameSequence + 1} share one stable semantic world.</p><dl><div><dt>First divergence</dt><dd>${escapeHtml(firstLabel)}</dd></div><div><dt>Shared moments</dt><dd>${reconstruction.summary.shared}</dd></div><div><dt>Exact divergences</dt><dd>${reconstruction.summary.divergent}</dd></div></dl><footer>No inferred correspondence · no rendering comparison</footer></section>`;
   }
   const stateLabels = {
     shared: "Shared cognition",
@@ -571,7 +739,7 @@ function comparativeContextView(reconstruction, view) {
     "b-only": "Observation B only",
     modified: "Same identity, changed revision",
   };
-  return `<section class="comparative-context ${current.divergent ? "is-divergence" : "is-shared"}"><header><div><span class="eyebrow">${escapeHtml(roleLabels[current.role] ?? current.elementType)}</span><h2>${escapeHtml(current.divergent ? "Cognition diverges here" : "Investigations remain identical")}</h2></div><span class="comparative-step-state">${escapeHtml(stateLabels[current.state] ?? current.state)}</span></header><div class="comparative-observations"><section class="observation-a"><span aria-hidden="true"><i>A</i></span><div><small>Observation ${reconstruction.from.frameSequence + 1}</small><strong>${escapeHtml(comparativeElementLabel(current.from, reconstruction))}</strong></div></section><section class="observation-b"><span aria-hidden="true"><i>B</i></span><div><small>Observation ${reconstruction.to.frameSequence + 1}</small><strong>${escapeHtml(comparativeElementLabel(current.to, reconstruction))}</strong></div></section></div><p>${escapeHtml(current.reason)}</p><footer>Semantic step ${current.index + 1} of ${reconstruction.moments.length} · exact runtime fingerprints</footer></section>`;
+  return `<section class="comparative-context ${current.divergent ? "is-divergence" : "is-shared"}"><header><div><span class="eyebrow">${escapeHtml(roleLabels[current.role] ?? current.elementType)}</span><h2>${escapeHtml(current.divergent ? "Cognition diverges here" : "Investigations remain identical")}</h2></div><button class="workflow-context-return" type="button" data-workflow-return>Back to changes</button></header><span class="comparative-step-state">${escapeHtml(stateLabels[current.state] ?? current.state)}</span><div class="comparative-observations"><section class="observation-a"><span aria-hidden="true"><i>A</i></span><div><small>Observation ${reconstruction.from.frameSequence + 1}</small><strong>${escapeHtml(comparativeElementLabel(current.from, reconstruction))}</strong></div></section><section class="observation-b"><span aria-hidden="true"><i>B</i></span><div><small>Observation ${reconstruction.to.frameSequence + 1}</small><strong>${escapeHtml(comparativeElementLabel(current.to, reconstruction))}</strong></div></section></div><p>${escapeHtml(current.reason)}</p><footer>Semantic step ${current.index + 1} of ${reconstruction.moments.length} · exact runtime fingerprints</footer></section>`;
 }
 
 function neuralFlowRibbon() {
@@ -583,13 +751,61 @@ function neuralFlowRibbon() {
     ["retrieval", "Retrieval", retrievalCandidates],
     ["reflection", "Reflection", snapshot.reflections.length],
   ];
-  return `<nav class="neural-flow-ribbon" aria-label="Observed MemoryOS lifecycle"><span class="eyebrow">Observed paths</span>${values.map(([target, label, value], index) => `<a href="#${target}" data-flow-route="${target}"><i aria-hidden="true"></i><span><strong>${escapeHtml(label)}</strong><small>${escapeHtml(value)} observed</small></span>${index < values.length - 1 ? '<b aria-hidden="true">&rarr;</b>' : ""}</a>`).join("")}</nav>`;
+  return `<nav class="neural-flow-ribbon" aria-label="Observed MemoryOS lifecycle"><span class="eyebrow">Observed paths</span>${values.map(([target, label, value], index) => {
+    const current = target === state.route;
+    return `<a href="#${target}" data-flow-route="${target}"${current ? ' aria-current="page" aria-disabled="true" tabindex="-1" title="This perspective is already active"' : ""}><i aria-hidden="true"></i><span><strong>${escapeHtml(label)}</strong><small>${escapeHtml(value)} observed</small></span>${index < values.length - 1 ? '<b aria-hidden="true">&rarr;</b>' : ""}</a>`;
+  }).join("")}</nav>`;
 }
 
 function neuralOperationSignal() {
   if (!state.lastOperation) return "";
   const { name, result } = state.lastOperation;
   return `<details class="neural-operation-signal"><summary><span>${escapeHtml(name)}</span>${status(result.succeeded ? "Passed" : "Failed")}</summary><strong>${escapeHtml(result.code)}</strong><p>${escapeHtml(result.message || "Detached result available for inspection.")}</p></details>`;
+}
+
+function downloadDetachedView(view) {
+  const payload = `${JSON.stringify(view, null, 2)}\n`;
+  const blob = new Blob([payload], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `memoryos-${snapshot.workspaceIdentifier}-observation-${currentFrame.sequence + 1}.json`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function presentOperationResult(name, result, query = null) {
+  if (!result?.succeeded || !["Trace", "Summarize", "ExportView"].includes(name)) return;
+  let title = "Detached operation result";
+  let content = "";
+  if (name === "Trace") {
+    title = "Evidence report";
+    const chains = Array.isArray(result.explanationChains) ? result.explanationChains : [];
+    content = `<section class="operation-result-panel"><header><span class="eyebrow">CP-011 evidence operation</span><h3>${chains.length} exact explanation ${chains.length === 1 ? "chain" : "chains"}</h3></header><p>This detached report is distinct from the interactive Cognitive Trace investigation.</p>${chains.length === 0 ? '<p class="text-muted">No explanation chain matched this query.</p>' : chains.map((chain, index) => `<section class="operation-result-group"><h4>Chain ${index + 1}</h4><ol class="operation-result-chain">${chain.map((identifier) => `<li class="identifier">${escapeHtml(identifier)}</li>`).join("")}</ol></section>`).join("")}</section>`;
+    if (query?.identifier) {
+      const reflection = matchingWorldNode(query.identifier, "Reflection");
+      if (reflection) selectObservation(reflection.identifier, reflection.family, reflection.observationPath, reflection.key);
+    }
+  } else if (name === "Summarize") {
+    title = `${query?.scope ?? "Complete"} summary`;
+    const observations = Array.isArray(result.observations) ? result.observations : [];
+    content = `<section class="operation-result-panel"><header><span class="eyebrow">Observed scope summary</span><h3>${observations.length} deterministic values</h3></header><ul class="operation-result-values">${observations.map((line) => {
+      const separator = line.indexOf("=");
+      const key = separator < 0 ? line : line.slice(0, separator);
+      const value = separator < 0 ? "" : line.slice(separator + 1);
+      return `<li><span>${escapeHtml(key)}</span><strong>${escapeHtml(value)}</strong></li>`;
+    }).join("")}</ul></section>`;
+  } else {
+    title = "Exported observation view";
+    const exported = result.view;
+    content = `<section class="operation-result-panel"><header><span class="eyebrow">Detached export</span><h3>${escapeHtml(exported?.workspaceIdentifier ?? snapshot.workspaceIdentifier)}</h3></header><p>The exported value is a detached observation. Downloading it does not modify MemoryOS cognition.</p><button class="button primary" id="download-export-result" type="button">Download JSON</button></section>`;
+  }
+  elements.inspectorTitle.textContent = title;
+  elements.inspectorContent.innerHTML = content;
+  document.querySelector("#download-export-result")?.addEventListener("click", () => downloadDetachedView(result.view));
+  setInspectorClosed(false, { focusInside: true });
 }
 
 function primitiveRows(value) {
@@ -619,16 +835,20 @@ function graphSelectionView(selection) {
   const observation = selection.observations[0];
   const route = observation.route ?? routeByFamily[observation.family] ?? "provenance";
   const rows = primitiveRows(observation.value);
+  const traceLabel = observation.family === "Reflection" ? "Trace cognition" : "Evidence report";
   const traceAction = traceableFamilies.has(observation.family)
-    ? `<button class="button secondary" type="button" data-graph-trace data-identifier="${escapeHtml(selection.identifier)}" data-route="${route}">Trace provenance</button>`
+    ? `<button class="button secondary" type="button" data-graph-trace data-identifier="${escapeHtml(selection.identifier)}" data-route="${route}">${traceLabel}</button>`
     : "";
+  const perspectiveAction = route === state.route
+    ? '<span class="button secondary is-disabled" aria-disabled="true" title="This perspective is already active">Current perspective</span>'
+    : `<a class="button secondary" href="#${route}">Open perspective</a>`;
   return `<section class="neural-selection">
     <header><div><span class="eyebrow">Graph selection</span><h2>${escapeHtml(observation.family)}</h2></div><button class="rail-close" type="button" data-graph-clear aria-label="Clear graph selection">&times;</button></header>
     <div class="selection-identity"><span class="selection-glyph" aria-hidden="true"></span><span><small>Selected observation</small><strong class="identifier">${escapeHtml(selection.identifier)}</strong></span>${status("Observed")}</div>
     ${traceDiagnosticView()}
     <ul class="key-value-list selection-values">${rows.map(([key, value]) => `<li><span>${escapeHtml(key)}</span><span>${escapeHtml(value)}</span></li>`).join("")}</ul>
     ${renderNestedInspector(observation.value)}
-    <div class="selection-actions"><a class="button secondary" href="#${route}">Open perspective</a>${traceAction}</div>
+    <div class="selection-actions">${perspectiveAction}${traceAction}</div>
   </section>`;
 }
 
@@ -658,7 +878,7 @@ function neuralDefaultContext(route) {
 
 function graphContext(route = state.route) {
   const evolution = currentEvolution();
-  const reconstruction = evolution ? synchronizeComparativeReconstruction(evolution) : null;
+  const reconstruction = state.comparativeActive ? state.comparativeReconstruction : null;
   const comparativeView = reconstruction && state.comparativeReplayState
     ? projectComparativeReplay(reconstruction, state.comparativeReplayState)
     : null;
@@ -684,7 +904,10 @@ function currentEvolution() {
 function comparativeEntryControl() {
   const pair = evolutionFrames(observationTimeline, state.evolutionController);
   const targetNodeKey = pair ? comparableReflectionTarget(pair) : null;
-  if (!targetNodeKey) return "";
+  if (!targetNodeKey) {
+    const reason = "Select a Reflection that exists in both observations to reconstruct divergence.";
+    return `<button class="button secondary comparative-entry-action" type="button" disabled title="${escapeHtml(reason)}" aria-description="${escapeHtml(reason)}">Reconstruct divergence</button>`;
+  }
   return `<button class="button secondary comparative-entry-action" type="button" data-comparative-start>Compare traces</button>`;
 }
 
@@ -702,7 +925,7 @@ function evolutionContextView(evolution) {
     const removed = evolution.view.removedNodeKeys.includes(node.key);
     const evolved = evolution.view.evolvedNodeKeys.includes(node.key);
     const stateLabel = evolved ? "Evolved" : added ? "Added" : removed ? "Removed" : "Stable context";
-    return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${escapeHtml(node.label)}</h2></div><button class="rail-close" type="button" data-evolution-clear aria-label="Clear evolution selection">&times;</button></header><div class="evolution-state is-${stateLabel.toLowerCase().replaceAll(" ", "-")}"><span aria-hidden="true"></span><div><small>${escapeHtml(node.family ?? node.kind)}</small><strong>${escapeHtml(stateLabel)}</strong></div></div><p>${evolved ? "The same cognitive identity has a different observed semantic revision." : added ? "This cognition is present only in Observation B." : removed ? "This cognition is present only in Observation A." : "This cognition remained semantically unchanged across both observations."}</p>${comparativeEntryControl()}</section>`;
+    return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${escapeHtml(node.label)}</h2></div><span class="context-header-actions"><button class="workflow-context-return" type="button" data-workflow-return>${state.investigationCheckpoint ? "Back to replay" : "Return to world"}</button><button class="rail-close" type="button" data-evolution-clear aria-label="Clear evolution selection">&times;</button></span></header><div class="evolution-state is-${stateLabel.toLowerCase().replaceAll(" ", "-")}"><span aria-hidden="true"></span><div><small>${escapeHtml(node.family ?? node.kind)}</small><strong>${escapeHtml(stateLabel)}</strong></div></div><p>${evolved ? "The same cognitive identity has a different observed semantic revision." : added ? "This cognition is present only in Observation B." : removed ? "This cognition is present only in Observation A." : "This cognition remained semantically unchanged across both observations."}</p>${comparativeEntryControl()}</section>`;
   }
   const rows = groups.map(([label, addedKey, removedKey]) => {
     const added = evolution.summary[addedKey];
@@ -710,7 +933,7 @@ function evolutionContextView(evolution) {
     return `<li><span>${escapeHtml(label)}</span><span><b class="evolution-added">+${added}</b><b class="evolution-removed">−${removed}</b></span></li>`;
   }).join("");
   const total = Object.values(evolution.summary).reduce((sum, value) => sum + value, 0);
-  return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${total === 0 ? "No semantic changes" : `${total} semantic differences`}</h2></div></header><p>Observation ${evolution.from.sequence + 1} is compared with Observation ${evolution.to.sequence + 1}. Every emphasis comes from immutable runtime truth.</p><ul class="key-value-list evolution-difference-list">${rows}<li><span>Modified relationships</span><span><b class="evolution-modified">~${evolution.summary.modifiedRelationships}</b></span></li></ul>${comparativeEntryControl()}<footer>${evolution.unchanged.nodeKeys.length} cognitive records and ${evolution.unchanged.relationshipKeys.length} relationships remained stable.</footer></section>`;
+  return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${total === 0 ? "No semantic changes" : `${total} semantic differences`}</h2></div><button class="workflow-context-return" type="button" data-workflow-return>${state.investigationCheckpoint ? "Back to replay" : "Return to world"}</button></header><p>Observation ${evolution.from.sequence + 1} is compared with Observation ${evolution.to.sequence + 1}. Every emphasis comes from immutable runtime truth.</p><ul class="key-value-list evolution-difference-list">${rows}<li><span>Modified relationships</span><span><b class="evolution-modified">~${evolution.summary.modifiedRelationships}</b></span></li></ul>${comparativeEntryControl()}<footer>${evolution.unchanged.nodeKeys.length} cognitive records and ${evolution.unchanged.relationshipKeys.length} relationships remained stable.</footer></section>`;
 }
 
 function updateEvolution(action) {
@@ -722,17 +945,105 @@ function updateEvolution(action) {
   };
   const operation = operations[action];
   if (!operation) return;
+  if (action === "compare" && !state.evolutionController.active && !comparisonAvailability().available) return;
   const wasActive = state.evolutionController.active;
+  const checkpoint = !wasActive && action === "compare" ? captureInvestigationCheckpoint() : null;
   state.evolutionController = operation(state.evolutionController, frameCount);
   state.evolutionSelection = null;
-  clearComparativeReconstruction(!state.evolutionController.active);
+  const pairChanged = wasActive && action !== "compare";
+  clearComparativeReconstruction(pairChanged || !state.evolutionController.active);
   if (!wasActive && state.evolutionController.active) {
+    state.investigationCheckpoint = checkpoint;
+    state.comparativeTargetKey = checkpoint?.targetNodeKey ?? state.comparativeTargetKey;
     state.activeTrace = null;
     clearReplay();
     state.traceDiagnostic = null;
     clearObservedSelection();
+  } else if (wasActive && !state.evolutionController.active) {
+    restoreInvestigationCheckpoint();
   }
   renderRoute();
+  const requestedControl = action === "previous" ? "Previous Observation" : action === "next" ? "Next Observation" : "Compare";
+  if (!focusGraphControl(requestedControl)) focusGraphControl("Compare");
+}
+
+function returnFromInvestigation() {
+  if (state.comparativeActive) {
+    updateComparativeReplay("back");
+    return;
+  }
+  if (state.evolutionController.active) {
+    updateEvolution("compare");
+    return;
+  }
+  if (state.activeTrace) {
+    state.investigationCheckpoint = null;
+    clearGraphSelection();
+  }
+}
+
+function restoreTraceFromComparison() {
+  if (!state.evolutionController.active) return Boolean(state.activeTrace);
+  state.comparativeActive = false;
+  clearComparativeReconstruction(true);
+  state.evolutionController = compareEvolution(state.evolutionController, observationTimeline.length);
+  state.evolutionSelection = null;
+  return restoreInvestigationCheckpoint();
+}
+
+function returnToSemanticWorld() {
+  clearReplayTimer();
+  clearComparativeReplayTimer();
+  state.activeTrace = null;
+  clearReplay();
+  state.evolutionController = createEvolutionController(observationTimeline.length);
+  state.evolutionSelection = null;
+  clearComparativeReconstruction();
+  state.investigationCheckpoint = null;
+  state.traceDiagnostic = null;
+  clearObservedSelection();
+  renderRoute();
+  focusGraphSurface();
+}
+
+function handleWorkflowAction(action) {
+  if (action === "return") {
+    returnFromInvestigation();
+    return;
+  }
+  if (action === "observe") {
+    if (workflowPhase() === "observe") focusGraphSurface();
+    else returnToSemanticWorld();
+    return;
+  }
+  if (action === "trace") {
+    if (state.evolutionController.active) restoreTraceFromComparison();
+    if (!state.activeTrace) return;
+    updateReplay("restart");
+    focusGraphNode(state.activeTrace.targetNodeKey);
+    return;
+  }
+  if (action === "replay") {
+    if (state.evolutionController.active) restoreTraceFromComparison();
+    if (!state.activeReplay || !state.replayState) return;
+    updateReplay(state.replayState.status === "completed" ? "restart" : "play");
+    return;
+  }
+  if (action === "compare") {
+    if (!comparisonAvailability().available) return;
+    if (!state.evolutionController.active) updateEvolution("compare");
+    else if (!state.comparativeActive) activateComparativeReconstruction();
+  }
+}
+
+function bindInvestigationWorkflow(root = document) {
+  if (!root) return;
+  root.querySelectorAll("[data-workflow-action]").forEach((button) => {
+    button.addEventListener("click", () => handleWorkflowAction(button.dataset.workflowAction));
+  });
+  root.querySelectorAll("[data-workflow-return]").forEach((button) => {
+    button.addEventListener("click", returnFromInvestigation);
+  });
 }
 
 function traceContainsNode(trace, nodeKey) {
@@ -761,8 +1072,9 @@ function queryTraceForNode(node) {
 
 function reconcileActiveTraceForSelection(node) {
   const previous = state.activeTrace;
-  if (node && !node.aggregate && node.family === "Reflection" && node.kind === "reflection") {
-    state.activeTrace = queryTraceForNode(node);
+  const target = currentFrame ? resolveCognitiveTraceTarget(currentFrame.world, node?.key) : null;
+  if (target) {
+    state.activeTrace = queryTraceForNode(target);
   } else if (!traceContainsNode(previous, node?.key)) {
     state.activeTrace = null;
     state.traceDiagnostic = null;
@@ -837,7 +1149,9 @@ function acceptObservationFrame(view, operation, query, resultCode) {
 function renderNeuralPerspective(route = state.route) {
   const frame = currentFrame;
   const evolution = currentEvolution();
-  const reconstruction = evolution ? synchronizeComparativeReconstruction(evolution) : null;
+  const reconstruction = evolution && state.comparativeActive
+    ? synchronizeComparativeReconstruction(evolution)
+    : null;
   const comparativeView = reconstruction && state.comparativeReplayState
     ? projectComparativeReplay(reconstruction, state.comparativeReplayState)
     : null;
@@ -846,12 +1160,20 @@ function renderNeuralPerspective(route = state.route) {
   const replayView = state.activeReplay && state.replayState
     ? projectReplay(state.activeReplay, state.replayState)
     : null;
+  const comparison = comparisonAvailability();
+  const evolutionControl = {
+    ...state.evolutionController,
+    available: comparison.available,
+    unavailableReason: comparison.reason,
+  };
   elements.shell.dataset.investigation = state.activeTrace ? "active" : "inactive";
   elements.shell.dataset.evolution = evolution ? "active" : "inactive";
   elements.shell.dataset.comparative = comparativeView ? "active" : "inactive";
+  elements.shell.dataset.workflowPhase = workflowPhase();
   elements.root.innerHTML = `<div class="neural-interface" data-perspective="${escapeHtml(route)}">
     <section class="neural-world${state.activeTrace ? " has-investigation" : ""}${evolution ? " has-evolution" : ""}${comparativeView ? " has-comparative-reconstruction" : ""}" aria-label="${escapeHtml(world.identity)}">
       ${graphIdentity(world, frame, route, state.activeTrace, state.replayState, evolution, comparativeView)}
+      ${investigationWorkflowView()}
       ${comparativeView ? comparativeSignals(reconstruction, comparativeView) : state.activeTrace ? traceSignals(state.activeTrace, replayView) : evolution ? evolutionSignals(evolution) : neuralSignals(route)}
       <div id="memory-graph" class="memory-intelligence-graph-host" aria-label="${escapeHtml(world.identity)}"></div>
       <aside class="neural-context" id="graph-context" aria-label="Selected graph context">${graphContext(route)}</aside>
@@ -864,6 +1186,7 @@ function renderNeuralPerspective(route = state.route) {
     if (state.replayState?.status === "playing") {
       clearReplayTimer();
       state.replayState = pauseReplay(state.activeReplay, state.replayState);
+      if (!refreshReplayPresentation()) renderRoute();
     }
     if (comparativeView) {
       if (state.comparativeReplayState?.status === "playing") {
@@ -889,7 +1212,8 @@ function renderNeuralPerspective(route = state.route) {
       const comparable = !node.aggregate && node.kind === "reflection" && node.family === "Reflection"
         && pair?.from.world.nodes.some(({ key }) => key === node.key)
         && pair?.to.world.nodes.some(({ key }) => key === node.key);
-      if (comparable) state.comparativeTargetKey = node.key;
+      state.comparativeTargetKey = comparable ? node.key : null;
+      refreshInvestigationWorkflow();
       renderGraphContext();
       return;
     }
@@ -906,7 +1230,7 @@ function renderNeuralPerspective(route = state.route) {
     trace: state.activeTrace,
     replayView,
     evolutionView: comparativeView ? null : evolution?.view ?? null,
-    evolutionControl: state.evolutionController,
+    evolutionControl,
     comparativeView,
     onReplayAction: updateReplay,
     onEvolutionAction: updateEvolution,
@@ -916,8 +1240,18 @@ function renderNeuralPerspective(route = state.route) {
     },
   });
   state.pendingActivity = null;
-  graphContainer.addEventListener("graphselectionclear", clearGraphSelection);
+  graphContainer.addEventListener("graphselectionclear", () => {
+    if (state.evolutionController.active && state.evolutionSelection) {
+      state.evolutionSelection = null;
+      state.comparativeTargetKey = null;
+      refreshInvestigationWorkflow();
+      renderGraphContext();
+      return;
+    }
+    clearGraphSelection();
+  });
   bindGraphContext();
+  bindInvestigationWorkflow(document.querySelector(".investigation-workflow"));
   scheduleReplay();
   scheduleComparativeReplay();
 }
@@ -931,6 +1265,7 @@ function refreshReplayPresentation() {
   if (liveState) liveState.innerHTML = `<i aria-hidden="true"></i>${replayLabels[state.replayState.status]}`;
   const ribbon = document.querySelector(".trace-signal-ribbon");
   if (ribbon) ribbon.outerHTML = traceSignals(state.activeTrace, replayView);
+  refreshInvestigationWorkflow();
   renderGraphContext();
   return true;
 }
@@ -950,6 +1285,7 @@ function refreshComparativePresentation() {
   if (liveState) liveState.innerHTML = `<i aria-hidden="true"></i>${labels[view.status]}`;
   const ribbon = document.querySelector(".comparative-signal-ribbon");
   if (ribbon) ribbon.outerHTML = comparativeSignals(reconstruction, view);
+  refreshInvestigationWorkflow();
   renderGraphContext();
   return true;
 }
@@ -964,9 +1300,28 @@ function renderRoute() {
   document.querySelectorAll(".nav-item").forEach((item) => {
     const active = item.dataset.scope === state.route;
     item.classList.toggle("is-active", active);
-    if (active) item.setAttribute("aria-current", "page");
-    else item.removeAttribute("aria-current");
+    if (active) {
+      item.setAttribute("aria-current", "page");
+      item.setAttribute("aria-disabled", "true");
+      item.setAttribute("tabindex", "-1");
+      item.title = `${item.getAttribute("aria-label") ?? "This perspective"} is already active`;
+    } else {
+      item.removeAttribute("aria-current");
+      item.removeAttribute("aria-disabled");
+      item.removeAttribute("tabindex");
+      item.title = item.getAttribute("aria-label") ?? "";
+    }
   });
+  const brand = document.querySelector(".brand");
+  const brandCurrent = state.route === "complete";
+  brand?.setAttribute("aria-disabled", String(brandCurrent));
+  if (brandCurrent) {
+    brand?.setAttribute("tabindex", "-1");
+    if (brand) brand.title = "Mission Control is already active";
+  } else {
+    brand?.removeAttribute("tabindex");
+    if (brand) brand.title = "Return to Mission Control";
+  }
   elements.queryScope.value = scopeForRoute(["provenance", "validation"].includes(state.route) ? "complete" : state.route);
 
   if (state.sessionState === "Forgotten") {
@@ -1057,8 +1412,9 @@ function populateInspector(identifier, observations, open = true) {
 function matchingWorldNode(identifier, familyHint = null, observationPath = null) {
   if (!currentFrame) return null;
   if (observationPath) {
-    const exact = currentFrame.world.nodes.find((node) => node.observationPath === observationPath);
-    if (exact) return exact;
+    return currentFrame.world.nodes.find((node) => node.observationPath === observationPath
+      && node.identifier === identifier
+      && (familyHint === null || node.family === familyHint)) ?? null;
   }
   const matches = currentFrame.world.nodes.filter((node) => node.identifier === identifier
     && (familyHint === null || node.family === familyHint));
@@ -1078,7 +1434,7 @@ function clearObservedSelection() {
   state.selectedIdentifier = null;
   state.graphViewState = { ...state.graphViewState, selectedKey: null };
   elements.inspectorTitle.textContent = "No observation selected";
-  elements.inspectorContent.replaceChildren();
+  elements.inspectorContent.innerHTML = '<div class="empty-state compact"><span class="empty-icon" aria-hidden="true">◇</span><p>Select an observation to inspect its exact released values.</p></div>';
   setInspectorClosed(true);
 }
 
@@ -1111,16 +1467,26 @@ function selectObservation(identifier, familyHint = null, observationPath = null
     showToast("Observation not found", identifier, "error");
     return;
   }
-  const worldNode = nodeKey
+  const requestedNode = nodeKey
     ? currentFrame.world.nodes.find((node) => node.key === nodeKey)
     : matchingWorldNode(identifier, familyHint, observationPath);
-  state.graphSelection = { identifier, observations, nodeKey: worldNode?.key ?? null };
+  const worldNode = resolveCognitiveTraceTarget(currentFrame.world, requestedNode?.key) ?? requestedNode;
+  const resolvedObservations = worldNode && worldNode.key !== requestedNode?.key
+    ? observationsForWorldNode(worldNode)
+    : observations;
+  const resolvedIdentifier = worldNode && worldNode.key !== requestedNode?.key
+    ? worldNode.identifier
+    : identifier;
+  state.graphSelection = { identifier: resolvedIdentifier, observations: resolvedObservations, nodeKey: worldNode?.key ?? null };
   state.graphViewState = worldNode
     ? selectGraphNode(state.graphViewState, worldNode.key)
     : { ...state.graphViewState, selectedKey: null };
   const traceChanged = reconcileActiveTraceForSelection(worldNode);
-  populateInspector(identifier, observations, false);
-  if (traceChanged) renderRoute();
+  populateInspector(resolvedIdentifier, resolvedObservations, false);
+  if (traceChanged) {
+    renderRoute();
+    if (worldNode) focusGraphNode(worldNode.key);
+  }
   else renderGraphContext();
 }
 
@@ -1137,7 +1503,10 @@ function clearGraphSelection() {
   state.activeTrace = null;
   clearReplay();
   state.traceDiagnostic = null;
-  if (traceWasActive) renderRoute();
+  if (traceWasActive) {
+    renderRoute();
+    focusGraphSurface();
+  }
   else {
     renderGraphContext();
     document.querySelector("#memory-graph")?.dispatchEvent(new CustomEvent("cleargraphselection"));
@@ -1168,10 +1537,12 @@ function bindGraphContext() {
   context.querySelector("[data-graph-clear]")?.addEventListener("click", clearGraphSelection);
   context.querySelector("[data-evolution-clear]")?.addEventListener("click", () => {
     state.evolutionSelection = null;
+    state.comparativeTargetKey = null;
+    refreshInvestigationWorkflow();
     renderGraphContext();
     document.querySelector("#memory-graph")?.dispatchEvent(new CustomEvent("cleargraphselection"));
   });
-  context.querySelector("[data-comparative-start]")?.addEventListener("click", activateComparativeReconstruction);
+  bindInvestigationWorkflow(context);
   context.querySelector("[data-graph-trace]")?.addEventListener("click", (event) => {
     const button = event.currentTarget;
     const route = ["retrieval", "reflection"].includes(button.dataset.route) ? button.dataset.route : "complete";
@@ -1197,15 +1568,41 @@ function selectInspectionResult(query, operationResult) {
       : { ...state.graphViewState, selectedKey: null };
     const traceChanged = reconcileActiveTraceForSelection(worldNode);
     populateInspector(query.identifier, observations, false);
-    if (traceChanged) renderRoute();
+  if (traceChanged) {
+    renderRoute();
+    if (worldNode) focusGraphNode(worldNode.key);
+  }
     else renderGraphContext();
+  }
+}
+
+function setStaticControlDisabled(control, disabled, reason = "") {
+  if (!control) return;
+  control.disabled = Boolean(disabled);
+  if (control.disabled) {
+    control.title = reason;
+    control.setAttribute("aria-description", reason);
+    control.dataset.disabledReason = reason;
+  } else {
+    control.removeAttribute("title");
+    control.removeAttribute("aria-description");
+    delete control.dataset.disabledReason;
   }
 }
 
 function setBusy(busy) {
   state.busy = busy;
+  elements.root.setAttribute("aria-busy", String(busy));
+  const unavailableReason = !commandAdapter
+    ? "The production Studio host adapter is unavailable."
+    : state.sessionState === "Forgotten"
+      ? "This detached Studio session has already been forgotten."
+      : busy ? "Another Studio operation is in progress." : "";
+  const unavailable = Boolean(unavailableReason);
   document.querySelectorAll("#run-inspect, #run-trace, #run-summary, #observe-view, #export-view, #forget-session")
-    .forEach((button) => { button.disabled = busy || (state.sessionState === "Forgotten" && button.id !== "forget-session"); });
+    .forEach((button) => setStaticControlDisabled(button, unavailable, unavailableReason));
+  [elements.queryScope, elements.queryIdentifier, elements.globalQuery]
+    .forEach((control) => setStaticControlDisabled(control, unavailable, unavailableReason));
 }
 
 async function execute(name) {
@@ -1223,6 +1620,7 @@ async function execute(name) {
     state.lastOperation = { name, result: operationResult };
     showToast(`${name}: ${operationResult.code}`, operationResult.message || "Operation completed with a detached result.", operationResult.succeeded ? "success" : "error");
     if (name === "Inspect" && operationResult.succeeded) selectInspectionResult(query, operationResult);
+    if (["Trace", "Summarize"].includes(name)) presentOperationResult(name, operationResult, query);
     renderRoute();
   } catch (error) {
     if (sequence === operationSequence) showToast(`${name} failed`, error instanceof Error ? error.message : String(error), "error");
@@ -1256,7 +1654,9 @@ async function executeSessionOperation(name) {
       state.traceDiagnostic = null;
       state.graphSelection = null;
       state.graphViewState = createGraphViewState();
+      state.investigationCheckpoint = null;
     }
+    if (result.succeeded && name === "exportView") presentOperationResult("ExportView", result);
     showToast(`${state.lastOperation.name}: ${result.code}`, result.message || "Operation completed with a detached result.", result.succeeded ? "success" : "error");
     updateSessionChrome();
     renderRoute();
@@ -1272,6 +1672,7 @@ async function executeSessionOperation(name) {
 function showToast(title, message, kind = "success") {
   const toast = document.createElement("div");
   toast.className = `toast ${kind}`;
+  toast.setAttribute("role", kind === "error" ? "alert" : "status");
   toast.innerHTML = `<span aria-hidden="true">${kind === "error" ? "!" : "✓"}</span><span><strong>${escapeHtml(title)}</strong><p>${escapeHtml(message)}</p></span>`;
   elements.toastRegion.append(toast);
   window.setTimeout(() => toast.remove(), 4200);
@@ -1284,20 +1685,34 @@ function updateSessionChrome() {
   elements.shell.classList.toggle("session-forgotten", state.sessionState === "Forgotten");
   const forgotten = state.sessionState === "Forgotten";
   document.querySelector(".query-bar").hidden = forgotten;
+  setStaticControlDisabled(
+    document.querySelector("#inspector-toggle"),
+    forgotten,
+    forgotten ? "The detached Studio session has been forgotten; there is nothing to inspect." : "",
+  );
   if (forgotten) setInspectorClosed(true);
   setBusy(state.busy);
 }
 
-function setInspectorClosed(closed) {
+function setInspectorClosed(closed, { focusInside = false, restoreFocus = false } = {}) {
   elements.inspector.classList.toggle("is-closed", closed);
   elements.inspector.toggleAttribute("inert", closed);
+  elements.shell.classList.toggle("inspector-open", !closed);
   document.querySelector("#inspector-toggle").setAttribute("aria-expanded", String(!closed));
+  if (!closed && focusInside) {
+    focusAfterOverlayReveal(
+      () => document.querySelector("#inspector-close"),
+      () => !elements.inspector.classList.contains("is-closed"),
+    );
+  }
+  if (closed && restoreFocus) document.querySelector("#inspector-toggle")?.focus();
 }
 
-function closeMobileNavigation() {
+function closeMobileNavigation({ restoreFocus = false } = {}) {
   elements.sidebar.classList.remove("is-open");
-  elements.sidebar.toggleAttribute("inert", window.matchMedia("(max-width: 900px)").matches);
+  elements.sidebar.toggleAttribute("inert", mobileNavigationQuery.matches);
   elements.menuToggle.setAttribute("aria-expanded", "false");
+  if (restoreFocus && mobileNavigationQuery.matches) elements.menuToggle.focus();
 }
 
 function initialize() {
@@ -1314,14 +1729,26 @@ function initialize() {
   updateSessionChrome();
   renderRoute();
 
+  elements.root.addEventListener("click", (event) => {
+    const start = event.target instanceof Element ? event.target.closest("[data-comparative-start]") : null;
+    if (start) activateComparativeReconstruction();
+  });
+
   window.addEventListener("hashchange", () => {
     state.route = normalizeRoute(location.hash.slice(1));
+    clearReplayTimer();
+    clearComparativeReplayTimer();
     state.activeTrace = null;
     clearReplay();
+    state.evolutionController = createEvolutionController(observationTimeline.length);
+    state.evolutionSelection = null;
+    clearComparativeReconstruction();
+    state.investigationCheckpoint = null;
     state.traceDiagnostic = null;
     clearObservedSelection();
     state.lastOperation = null;
     renderRoute();
+    elements.main?.focus?.();
   });
   document.querySelector("#run-inspect").addEventListener("click", () => execute("Inspect"));
   document.querySelector("#run-trace").addEventListener("click", () => execute("Trace"));
@@ -1339,7 +1766,9 @@ function initialize() {
     if (event.defaultPrevented) return;
     const typing = event.target instanceof HTMLElement
       && (event.target.matches("input, select, textarea") || event.target.isContentEditable);
-    if (!typing && state.comparativeReconstruction && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    const interactive = event.target instanceof Element
+      && Boolean(event.target.closest("button, a, input, select, textarea, summary, [role='button'], [contenteditable='true']"));
+    if (!typing && !interactive && state.comparativeReconstruction && !event.ctrlKey && !event.metaKey && !event.altKey) {
       const comparativeActions = {
         ArrowLeft: "previous",
         ArrowRight: "next",
@@ -1357,7 +1786,7 @@ function initialize() {
         return;
       }
     }
-    if (!typing && state.activeReplay && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    if (!typing && !interactive && state.activeReplay && !event.ctrlKey && !event.metaKey && !event.altKey) {
       const replayActions = {
         ArrowLeft: "previous",
         ArrowRight: "next",
@@ -1380,9 +1809,18 @@ function initialize() {
       elements.globalQuery.focus();
     }
     if (event.key === "Escape") {
-      closeMobileNavigation();
-      if (state.graphSelection) clearGraphSelection();
-      else setInspectorClosed(true);
+      if (elements.forgetDialog.open) return;
+      if (elements.sidebar.classList.contains("is-open")) {
+        closeMobileNavigation({ restoreFocus: true });
+        return;
+      }
+      if (state.graphSelection) {
+        clearGraphSelection();
+        return;
+      }
+      if (!elements.inspector.classList.contains("is-closed")) {
+        setInspectorClosed(true, { restoreFocus: true });
+      }
     }
   });
   document.querySelector("#observe-view").addEventListener("click", () => executeSessionOperation("observe"));
@@ -1398,15 +1836,27 @@ function initialize() {
     }
   });
   elements.menuToggle.addEventListener("click", () => {
-    const open = elements.sidebar.classList.toggle("is-open");
-    elements.sidebar.toggleAttribute("inert", !open);
-    elements.menuToggle.setAttribute("aria-expanded", String(open));
+    if (elements.sidebar.classList.contains("is-open")) {
+      closeMobileNavigation({ restoreFocus: true });
+      return;
+    }
+    elements.sidebar.classList.add("is-open");
+    elements.sidebar.removeAttribute("inert");
+    elements.menuToggle.setAttribute("aria-expanded", "true");
+    focusAfterOverlayReveal(
+      () => elements.sidebar.querySelector("[aria-current='page']"),
+      () => elements.sidebar.classList.contains("is-open"),
+    );
   });
-  elements.backdrop.addEventListener("click", closeMobileNavigation);
+  elements.backdrop.addEventListener("click", () => closeMobileNavigation({ restoreFocus: true }));
+  mobileNavigationQuery.addEventListener("change", () => closeMobileNavigation());
   document.querySelector("#inspector-toggle").addEventListener("click", () => {
-    setInspectorClosed(!elements.inspector.classList.contains("is-closed"));
+    const closed = !elements.inspector.classList.contains("is-closed");
+    setInspectorClosed(closed, { focusInside: !closed, restoreFocus: closed });
   });
-  document.querySelector("#inspector-close").addEventListener("click", () => setInspectorClosed(true));
+  document.querySelector("#inspector-close").addEventListener("click", () => {
+    setInspectorClosed(true, { restoreFocus: true });
+  });
 }
 
 initialize();

@@ -43,6 +43,7 @@ import {
   createCognitiveTraceQuery,
   deserializeCognitiveTrace,
   queryCognitiveTrace,
+  resolveCognitiveTraceTarget,
   serializeCognitiveTrace,
   validateCognitiveTrace,
 } from "../web/js/cognitive-trace.js";
@@ -724,6 +725,51 @@ test("Follow state is stable, transferable, and reconciled without touching obse
   assert.equal(canonicalObservation(referenceSnapshot), snapshotFingerprint, "view interaction never mutates an observation");
 });
 
+test("investigation target resolution preserves exact Reflection ownership and cardinality", () => {
+  const frame = observationFrameFor();
+  const { world } = frame;
+  const standalone = world.nodes.find((node) => node.observationPath === "Reflection.values[0]");
+  const session = world.nodes.find((node) => node.observationPath === "Reflection.sessions[0]");
+  const nested = world.nodes.find((node) => node.observationPath === "Reflection.sessions[0].reflection");
+  const aggregate = world.nodes.find((node) => node.key === "aggregate:reflection");
+  const semantic = world.nodes.find((node) => node.family === "SemanticMemory");
+
+  assert.ok(standalone && session && nested && aggregate && semantic);
+  assert.equal(standalone.identifier, nested.identifier, "the fixture must retain its duplicate public Reflection identity");
+  assert.equal(resolveCognitiveTraceTarget(world, standalone.key)?.key, standalone.key);
+  assert.equal(resolveCognitiveTraceTarget(world, nested.key)?.key, nested.key);
+  assert.equal(resolveCognitiveTraceTarget(world, session.key)?.key, nested.key, "a session resolves only its exact directly owned result");
+  assert.equal(resolveCognitiveTraceTarget(world, aggregate.key)?.key, standalone.key, "the aggregate resolves its sole directly owned Reflection value");
+  assert.equal(resolveCognitiveTraceTarget(world, semantic.key), null);
+  assert.equal(resolveCognitiveTraceTarget(world, "missing"), null);
+
+  const duplicateNested = { ...nested, key: `${nested.key}:duplicate` };
+  const ambiguous = {
+    ...world,
+    nodes: [...world.nodes, duplicateNested].reverse(),
+    edges: [...world.edges, { from: session.key, to: duplicateNested.key, relation: "contains" }].reverse(),
+  };
+  assert.equal(resolveCognitiveTraceTarget(ambiguous, session.key), null, "multiple direct candidates never fall back to collection order");
+
+  const mismatched = {
+    ...world,
+    edges: world.edges
+      .filter((edge) => !(edge.from === session.key && edge.to === nested.key && edge.relation === "contains"))
+      .concat({ from: session.key, to: standalone.key, relation: "contains" }),
+  };
+  assert.equal(resolveCognitiveTraceTarget(mismatched, session.key), null, "a directly contained value with the wrong observation path is rejected");
+
+  const reordered = { ...world, nodes: [...world.nodes].reverse(), edges: [...world.edges].reverse() };
+  assert.equal(resolveCognitiveTraceTarget(reordered, session.key)?.key, nested.key);
+  assert.equal(resolveCognitiveTraceTarget(reordered, aggregate.key)?.key, standalone.key);
+  assert.equal(queryCognitiveTrace(frame, createCognitiveTraceQuery({
+    workspaceIdentifier: referenceSnapshot.workspaceIdentifier,
+    sessionIdentifier: referenceSnapshot.session.identifier,
+    frameIdentifier: frame.world.frame.identifier,
+    targetNodeKey: resolveCognitiveTraceTarget(world, aggregate.key).key,
+  })).succeeded, true, "the resolved production target constructs a validated trace");
+});
+
 test("Cognitive Traces reconstruct every Reflection-owned candidate through a Retrieval boundary", () => {
   const frame = observationFrameFor();
   const target = referenceReflectionNode(frame);
@@ -790,6 +836,25 @@ test("mutable and shallow-frozen Cognitive Traces are rejected and cannot be ser
   });
   assert.equal(Object.isFrozen(shallowFrozen), true);
   assert.equal(Object.isFrozen(shallowFrozen.branches), false, "freezing only the root does not establish trace immutability");
+});
+
+test("mutable Observation Frame identity replacement invalidates an earlier trace binding", () => {
+  const mutableFrame = structuredClone(observationFrameFor());
+  const trace = buildCognitiveTrace(mutableFrame, referenceReflectionNode(mutableFrame).key);
+  assert.equal(validateCognitiveTrace(trace, mutableFrame).valid, true);
+
+  const changed = cloneDetached(referenceSnapshot);
+  changed.reflections[0].query = "Which evidence changed after replacement?";
+  const replacement = structuredClone(observationFrameFor(changed));
+  Object.keys(mutableFrame).forEach((key) => delete mutableFrame[key]);
+  Object.assign(mutableFrame, replacement);
+
+  const validation = validateCognitiveTrace(trace, mutableFrame);
+  assert.equal(validation.valid, false);
+  assert.equal(
+    validation.issues.some(({ code }) => ["FRAME_MISMATCH", "INCONSISTENT_TARGET"].includes(code)),
+    true,
+  );
 });
 
 test("Cognitive Trace queries enforce exact Workspace, session, frame, and typed target bindings", () => {
@@ -1860,6 +1925,56 @@ test("the application shell is local, accessible, responsive, and injection-read
   assert.doesNotMatch(app, /setInterval|WebSocket|EventSource/);
   const forbiddenGraphName = new RegExp(["Memory", "provenance", "graph"].join(" "));
   for (const source of [html, css, app, graph, model, semanticWorld, observationTimeline, graphViewState]) assert.doesNotMatch(source, forbiddenGraphName);
+});
+
+test("MO-1108 bounds graph Tab order with deterministic spatial keyboard navigation", async () => {
+  const [graph, css] = await Promise.all([
+    readFile(resolve(studioRoot, "web/js/graph.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/styles.css"), "utf8"),
+  ]);
+
+  assert.match(graph, /let rovingNodeKey\s*=\s*\[/);
+  assert.match(graph, /tabindex:\s*interactionMode\s*===\s*"select"\s*&&\s*node\.key\s*===\s*rovingNodeKey\s*\?\s*"0"\s*:\s*"-1"/);
+  assert.match(graph, /"aria-disabled": interactionMode === "pan" \? "true" : "false"/);
+  assert.match(graph, /function|const spatialNeighbor\s*=/);
+  assert.match(graph, /\["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"\]\.includes\(event\.key\)/);
+  assert.match(graph, /setRovingNode\(neighbor\.key, true\)/);
+  assert.match(graph, /event\.key === "Enter" \|\| event\.key === " "/, "Enter and Space retain native node activation semantics");
+  assert.match(css, /\.graph-node\[tabindex="0"\]:focus-visible \.graph-node-body/);
+  assert.match(css, /stroke:\s*#f5fbff/);
+});
+
+test("MO-1108 preserves native controls and focus across replay and comparison transitions", async () => {
+  const [html, app, graph, css] = await Promise.all([
+    readFile(resolve(studioRoot, "web/index.html"), "utf8"),
+    readFile(resolve(studioRoot, "web/js/app.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/js/graph.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/styles.css"), "utf8"),
+  ]);
+
+  assert.match(app, /closest\("button, a, input, select, textarea, summary, \[role='button'\], \[contenteditable='true'\]"\)/);
+  assert.match(app, /!typing && !interactive && state\.activeReplay/);
+  assert.match(app, /!typing && !interactive && state\.comparativeReconstruction/);
+  assert.match(graph, /focusedControl === playButton[\s\S]*pauseButton\.focus\(\)/);
+  assert.match(graph, /focusedControl === pauseButton[\s\S]*restartButton : playButton/);
+  assert.match(graph, /focusedControl === pauseButton[\s\S]*resetButton : playButton/);
+  assert.equal((graph.match(/aria-keyshortcuts/g) ?? []).length, 10);
+  assert.match(app, /mobileNavigationQuery\.addEventListener\("change", \(\) => closeMobileNavigation\(\)\)/);
+  assert.match(app, /setInspectorClosed\(true, \{ restoreFocus: true \}\)/);
+  assert.match(app, /\(\) => elements\.sidebar\.querySelector\("\[aria-current='page'\]"\)/);
+  assert.match(app, /const overlayFocusDelay\s*=\s*180/);
+  assert.match(app, /function focusAfterOverlayReveal\(resolveTarget, isOpen\)/);
+  assert.match(app, /window\.setTimeout\(\(\) => \{[\s\S]*if \(isOpen\(\)\) resolveTarget\(\)\?\.focus\(\)/);
+  assert.match(app, /reducedMotionQuery\.matches \? 0 : overlayFocusDelay/);
+  assert.match(app, /focusAfterOverlayReveal\([\s\S]*elements\.inspector\.classList\.contains\("is-closed"\)/);
+  assert.match(app, /focusAfterOverlayReveal\([\s\S]*elements\.sidebar\.classList\.contains\("is-open"\)/);
+  assert.match(app, /elements\.root\.setAttribute\("aria-busy", String\(busy\)\)/);
+  assert.match(app, /toast\.setAttribute\("role", kind === "error" \? "alert" : "status"\)/);
+  assert.doesNotMatch(html, /<div id="view-root"[^>]*aria-live=/, "the complete graph must not be an unbounded live region");
+  assert.match(css, /@media \(max-width: 760px\)[\s\S]*\.topology-interface \.graph-toolbar/);
+  assert.match(css, /\.investigation-stage small,[\s\S]*font-size:\s*11px/);
+  assert.match(css, /\.comparative-context > p,[\s\S]*font-size:\s*12px/);
+  assert.match(css, /@media \(forced-colors: active\)/);
 });
 
 test("the local server rejects malformed encoding without terminating", async (context) => {

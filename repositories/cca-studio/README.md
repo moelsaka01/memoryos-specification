@@ -60,6 +60,17 @@ Semantic Transformation, Retrieval, Relationship, or Reflection state became
 different. Previous milestones and the frozen C++ Contract remain unchanged.
 See [Comparative Reconstruction](docs/memoryos-1.1-comparative-reconstruction.md).
 
+MO-1108 begins from the completed Engineering Excellence evidence and closes
+the release-candidate integration gap without adding a cognitive capability or
+architecture. Observe, Trace, Replay, Evolution, and Comparative
+Reconstruction share one reversible workflow; application-owned checkpoints
+restore the exact investigation after comparison, while region isolation,
+Focus, Fit, and the calibrated 100% camera remain presentation-only. The
+MemoryOS 1.0 runtime, frozen C++ Contract, and deterministic MemoryOS 1.1
+engines remain unchanged. See
+[Integration & Workflow Unification](docs/memoryos-1.1-integration-workflow.md)
+and the [MemoryOS Studio documentation index](docs/README.md).
+
 ## Build and verify
 
 From the workspace root:
@@ -106,14 +117,25 @@ observation paths, and explanation-chain boundaries.
 
 ## Documentation
 
+- [MemoryOS Studio documentation index](docs/README.md)
 - [Public API and behavior](docs/memory-studio.md)
 - [Requirement and test evidence](docs/memory-studio-conformance-evidence.md)
 - [MemoryOS 1.1 observable cognition foundation](docs/memoryos-1.1-sprint-1.md)
 - [MemoryOS 1.1 Cognitive Trace architecture](docs/memoryos-1.1-sprint-2.md)
 - [MemoryOS 1.1 Living Connectome identity](docs/memoryos-1.1-sprint-3.md)
 - [MemoryOS 1.1 Cognitive Replay](docs/memoryos-1.1-sprint-4.md)
+- [MemoryOS 1.1 Cognitive Polish](docs/memoryos-1.1-sprint-5.md)
 - [MemoryOS 1.1 Cognitive Evolution](docs/memoryos-1.1-cognitive-evolution.md)
 - [MemoryOS 1.1 Comparative Reconstruction](docs/memoryos-1.1-comparative-reconstruction.md)
+- [MemoryOS 1.1 Integration & Workflow Unification](docs/memoryos-1.1-integration-workflow.md)
+- [MemoryOS 1.1 performance report](docs/memoryos-1.1-performance-report.md)
+- [MemoryOS 1.1 scalability report](docs/memoryos-1.1-scalability-report.md)
+- [MemoryOS 1.1 engineering benchmark](docs/memoryos-1.1-engineering-benchmark.md)
+- [MemoryOS 1.1 UX audit](docs/memoryos-1.1-ux-audit.md)
+- [MemoryOS 1.1 accessibility audit](docs/memoryos-1.1-accessibility-audit.md)
+- [MemoryOS 1.1 Engineering architecture review](docs/memoryos-1.1-engineering-architecture-review.md)
+- [MemoryOS 1.1 documentation audit](docs/memoryos-1.1-documentation-audit.md)
+- [Official MemoryOS 1.1 demonstration](docs/media/memoryos-1.1-official-demo.gif)
 - [MemoryOS 1.0 launch demo production package](docs/memoryos-1.0-launch-demo-production-package.md)
 - [GitHub screenshot specification](docs/github-screenshot-specification.md)
 - [C++ example](examples/memory_studio_usage.cpp)

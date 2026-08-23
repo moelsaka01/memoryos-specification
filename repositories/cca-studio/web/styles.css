@@ -34,6 +34,22 @@
   text-rendering: optimizeLegibility;
 }
 
+/* MO-1108 dense-world emphasis updates only the indexed local neighborhood. */
+.is-dense-world .graph-node {
+  animation: none;
+  transition: none;
+}
+
+.is-dense-world .graph-node.is-graph-related .graph-node-body {
+  stroke-width: 3;
+  filter: drop-shadow(0 0 3px currentColor);
+}
+
+.is-dense-world .graph-edge-base.is-graph-related,
+.is-dense-world .graph-edge-flow.is-graph-related {
+  stroke-opacity: .9;
+}
+
 /* MemoryOS 1.1 MO-1106 · Cognitive Evolution */
 .cognitive-evolution-controls {
   display: flex;
@@ -3049,6 +3065,54 @@ kbd {
   }
 }
 
+/* Active investigation rows use more vertical space because Replay and
+   Comparative controls are intentionally complete, not abbreviated. */
+@media (min-width: 1181px) {
+  .studio-shell[data-investigation="active"] .neural-graph-identity,
+  .studio-shell[data-evolution="active"] .neural-graph-identity,
+  .studio-shell[data-comparative="active"] .neural-graph-identity {
+    top: 116px;
+    left: 88px;
+  }
+
+  .studio-shell[data-investigation="active"] .topology-interface .graph-toolbar,
+  .studio-shell[data-evolution="active"] .topology-interface .graph-toolbar,
+  .studio-shell[data-comparative="active"] .topology-interface .graph-toolbar {
+    top: 216px;
+  }
+
+  .studio-shell[data-investigation="active"] .has-investigation .neural-context,
+  .studio-shell[data-evolution="active"] .neural-context,
+  .studio-shell[data-comparative="active"] .has-comparative-reconstruction .neural-context {
+    top: 266px;
+  }
+}
+
+.studio-shell[data-investigation="active"] .graph-legend,
+.studio-shell[data-evolution="active"] .graph-legend,
+.studio-shell[data-comparative="active"] .graph-legend {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.has-active-trace .cognitive-trace-node-label {
+  display: none;
+}
+
+.has-active-trace .graph-node.is-trace-origin .cognitive-trace-node-label,
+.has-active-trace .graph-node.is-trace-target .cognitive-trace-node-label,
+.has-active-trace .graph-node.is-replay-current .cognitive-trace-node-label,
+.has-active-trace .graph-node.is-selected .cognitive-trace-node-label,
+.has-active-trace .graph-node:hover .cognitive-trace-node-label,
+.has-active-trace .graph-node:focus-visible .cognitive-trace-node-label {
+  display: block;
+}
+
+.has-active-trace .graph-node.is-trace-label-duplicate .cognitive-trace-node-label {
+  display: none;
+}
+
 @media (max-width: 640px) {
   .brand img {
     width: 29px;
@@ -3276,6 +3340,190 @@ kbd {
   }
 }
 
+/* MO-1108 calibrated control rows: overlays never compete at the default view. */
+.workflow-reason {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 120ms ease, transform 120ms ease, visibility 120ms ease;
+}
+
+.investigation-workflow:focus-within .workflow-reason,
+.investigation-workflow:hover .workflow-reason {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (min-width: 1181px) {
+  .studio-shell[data-route] .session-banner {
+    top: 70px;
+    height: 38px;
+  }
+
+  .studio-shell[data-route] .session-banner > div:first-child {
+    padding: 0;
+  }
+
+  .studio-shell[data-route] .session-banner p {
+    display: none;
+  }
+
+  .neural-graph-identity {
+    top: 116px;
+  }
+
+  .investigation-workflow,
+  .studio-shell[data-investigation="active"] .investigation-workflow,
+  .studio-shell[data-comparative="active"] .investigation-workflow {
+    top: 114px;
+    left: 500px;
+    width: min(520px, calc(100vw - 620px));
+    min-width: 430px;
+  }
+
+  .neural-interface:has(.investigation-workflow) .topology-interface .graph-toolbar {
+    top: 162px;
+  }
+
+  .neural-interface:has(.investigation-workflow) .neural-signal-ribbon,
+  .studio-shell[data-investigation="active"] .trace-signal-ribbon,
+  .studio-shell[data-comparative="active"] .comparative-signal-ribbon {
+    top: 164px;
+  }
+
+  .neural-context,
+  .studio-shell[data-investigation="active"] .has-investigation .neural-context,
+  .studio-shell[data-comparative="active"] .has-comparative-reconstruction .neural-context {
+    top: 214px;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1180px) {
+  .neural-graph-identity {
+    top: 140px;
+  }
+
+  .investigation-workflow,
+  .studio-shell[data-investigation="active"] .investigation-workflow,
+  .studio-shell[data-comparative="active"] .investigation-workflow {
+    top: 138px;
+    left: 480px;
+    width: calc(100vw - 500px);
+  }
+
+  .neural-interface:has(.investigation-workflow) .topology-interface .graph-toolbar {
+    top: 184px;
+  }
+
+  .neural-interface:has(.investigation-workflow) .neural-signal-ribbon,
+  .studio-shell[data-investigation="active"] .trace-signal-ribbon,
+  .studio-shell[data-comparative="active"] .comparative-signal-ribbon {
+    top: 228px;
+  }
+
+  .neural-context {
+    top: 278px;
+  }
+}
+
+@media (max-width: 900px) {
+  .neural-graph-identity {
+    top: 160px;
+  }
+
+  .neural-interface:has(.investigation-workflow) .topology-interface .graph-toolbar {
+    top: 202px;
+  }
+
+  .neural-interface:has(.investigation-workflow) .neural-signal-ribbon,
+  .studio-shell[data-investigation="active"] .trace-signal-ribbon,
+  .studio-shell[data-comparative="active"] .comparative-signal-ribbon {
+    top: 246px;
+  }
+}
+
+/* Inspector-open offsets are specificity-locked so later sprint breakpoint
+   rules cannot move interactive controls beneath the drawer. */
+@media (min-width: 1400px) {
+  .studio-shell.inspector-open .investigation-workflow,
+  .studio-shell.inspector-open[data-investigation="active"] .investigation-workflow,
+  .studio-shell.inspector-open[data-comparative="active"] .investigation-workflow {
+    right: 384px !important;
+    left: auto !important;
+    width: min(520px, calc(100vw - 884px)) !important;
+    min-width: 430px !important;
+  }
+
+  .studio-shell.inspector-open .topology-interface .graph-toolbar {
+    right: 384px !important;
+    left: auto !important;
+    max-width: calc(100vw - 408px) !important;
+    overflow-x: auto !important;
+    scrollbar-width: thin;
+  }
+
+  .studio-shell.inspector-open .query-bar {
+    right: 384px !important;
+    left: auto !important;
+    width: min(760px, calc(100vw - 580px)) !important;
+    transform: none !important;
+  }
+
+  .studio-shell.inspector-open .has-investigation .cognitive-trace-accessible-list {
+    right: 384px !important;
+  }
+}
+
+/* One durable identifier may appear in multiple provenance branches. Both
+   nodes remain visible and addressable; only the redundant text is quieted. */
+.has-active-trace .graph-node.is-trace-label-duplicate .cognitive-trace-node-label {
+  display: none;
+}
+
+/* Active modes reserve a full row for deterministic reconstruction controls. */
+@media (min-width: 1181px) {
+  .studio-shell[data-investigation="active"] .neural-graph-identity,
+  .studio-shell[data-evolution="active"] .neural-graph-identity,
+  .studio-shell[data-comparative="active"] .neural-graph-identity {
+    top: 116px;
+    left: 88px;
+  }
+
+  .studio-shell[data-investigation="active"] .topology-interface .graph-toolbar,
+  .studio-shell[data-evolution="active"] .topology-interface .graph-toolbar,
+  .studio-shell[data-comparative="active"] .topology-interface .graph-toolbar {
+    top: 216px;
+  }
+
+  .studio-shell[data-investigation="active"] .has-investigation .neural-context,
+  .studio-shell[data-evolution="active"] .neural-context,
+  .studio-shell[data-comparative="active"] .has-comparative-reconstruction .neural-context {
+    top: 266px;
+  }
+}
+
+.studio-shell[data-investigation="active"] .graph-legend,
+.studio-shell[data-evolution="active"] .graph-legend,
+.studio-shell[data-comparative="active"] .graph-legend {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.has-active-trace .cognitive-trace-node-label {
+  display: none;
+}
+
+.has-active-trace .graph-node.is-trace-origin .cognitive-trace-node-label,
+.has-active-trace .graph-node.is-trace-target .cognitive-trace-node-label,
+.has-active-trace .graph-node.is-replay-current .cognitive-trace-node-label,
+.has-active-trace .graph-node.is-selected .cognitive-trace-node-label,
+.has-active-trace .graph-node:hover .cognitive-trace-node-label,
+.has-active-trace .graph-node:focus-visible .cognitive-trace-node-label {
+  display: block;
+}
+
 /* MemoryOS 1.0 final Mission Control composition */
 
 .studio-shell[data-route="complete"] .main-content {
@@ -3433,10 +3681,20 @@ kbd {
   transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
 }
 
-.graph-tool:hover {
+.graph-tool:hover:not(:disabled) {
   border-color: rgb(75 132 176 / 32%);
   background: rgb(34 92 137 / 17%);
   color: #e6f4ff;
+}
+
+.graph-tool:disabled,
+.graph-layer-filter:disabled {
+  border-color: transparent !important;
+  background: transparent !important;
+  color: #526a7b !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+  opacity: .42;
 }
 
 .graph-tool.is-active,
@@ -7441,7 +7699,7 @@ body:has(.neural-interface) {
   background: transparent;
 }
 
-.comparative-reconstruction-controls .graph-tool[aria-label="Compare"].is-active {
+.comparative-reconstruction-controls .graph-tool[aria-label="Back to changes"].is-active {
   border-color: rgb(100 184 237 / 42%);
   background: rgb(35 93 131 / 28%);
   color: #dbeffc;
@@ -7543,5 +7801,1071 @@ body:has(.neural-interface) {
 
   .has-investigation .neural-context {
     display: none;
+  }
+}
+
+/* MemoryOS 1.1 MO-1108 · Engineering Excellence.
+   These rules improve focus, legibility, and responsive control access without
+   changing any semantic state or renderer classification. */
+.graph-node[tabindex="0"]:focus-visible .graph-node-body {
+  stroke: #f5fbff;
+  stroke-width: 4.6px;
+  filter: drop-shadow(0 0 7px rgb(100 181 246 / 78%));
+}
+
+.graph-node[tabindex="0"]:focus-visible .graph-node-halo {
+  opacity: .3;
+}
+
+.graph-tool:focus-visible,
+.graph-layer-filter:focus-visible,
+.cognitive-trace-accessible-list button:focus-visible,
+.graph-accessible-list button:focus-visible {
+  outline-color: #8ed0ff;
+  background: rgb(34 92 137 / 34%);
+  color: #f4faff;
+}
+
+.graph-tool {
+  min-height: 32px;
+}
+
+.investigation-stage small,
+.investigation-current small,
+.comparative-observations small {
+  color: #91a9ba;
+  font-size: 11px;
+}
+
+.investigation-stage strong,
+.investigation-current strong,
+.comparative-observations strong,
+.comparative-context > p,
+.comparative-context > footer {
+  font-size: 12px;
+}
+
+.investigation-progress,
+.comparative-step-state,
+.comparative-reconstruction-position,
+.cognitive-replay-position,
+.trace-journey-position {
+  font-size: 11px;
+}
+
+@media (max-width: 980px) {
+  .has-investigation .neural-context {
+    top: auto;
+    right: 10px;
+    bottom: 72px;
+    display: block;
+    width: min(310px, calc(100% - 20px));
+    max-height: min(320px, 44vh);
+    overflow: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .topology-interface .graph-toolbar,
+  .topology-interface.has-active-trace .graph-toolbar,
+  .topology-interface.has-comparative-reconstruction .graph-toolbar {
+    right: 8px;
+    left: 8px;
+    max-width: none;
+    min-height: 48px;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 6px;
+    scrollbar-color: rgb(91 137 168 / 55%) transparent;
+    scrollbar-width: thin;
+  }
+
+  .graph-tool,
+  .cognitive-replay-controls .graph-tool,
+  .comparative-reconstruction-controls .graph-tool,
+  .cognitive-evolution-controls .graph-tool {
+    min-width: 44px;
+    min-height: 40px;
+    flex: 0 0 auto;
+    font-size: 11px;
+  }
+
+  .has-investigation .trace-signal-ribbon,
+  .has-comparative-reconstruction .comparative-signal-ribbon {
+    left: 18px;
+    width: calc(100% - 36px);
+  }
+
+  .has-comparative-reconstruction .neural-context {
+    max-height: min(320px, 44vh);
+    overflow: auto;
+  }
+
+  .comparative-context > p,
+  .comparative-context > footer {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topology-camera,
+  .graph-node-body,
+  .graph-tool,
+  .investigation-stage,
+  .sidebar,
+  .inspector {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .graph-node-body,
+  .cognitive-trace-route,
+  .comparative-reconstruction-route {
+    forced-color-adjust: auto;
+    stroke: CanvasText !important;
+  }
+
+  .graph-node[tabindex="0"]:focus-visible .graph-node-body,
+  .graph-tool:focus-visible {
+    outline-color: Highlight;
+    stroke: Highlight !important;
+  }
+}
+
+/* MO-1108 workflow markup and detached-result integration. */
+.investigation-workflow > ol {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: center;
+  margin: 0;
+  padding: 0 4px;
+  list-style: none;
+}
+
+.investigation-workflow > ol > li:not(.workflow-connector) {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.investigation-workflow .workflow-step {
+  width: 100%;
+}
+
+.investigation-workflow .workflow-step::after {
+  display: none;
+}
+
+.investigation-workflow .workflow-step > i {
+  display: grid;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #557185;
+  border-radius: 50%;
+  color: #7893a6;
+  font-size: 8px;
+  font-style: normal;
+}
+
+.investigation-workflow .workflow-step.is-active > i,
+.investigation-workflow .workflow-step[aria-current="step"] > i {
+  border-color: var(--workflow-accent);
+  background: color-mix(in srgb, var(--workflow-accent) 18%, transparent);
+  color: #f4fbff;
+}
+
+.investigation-workflow .workflow-step.is-complete > i {
+  border-color: #5bc79b;
+  color: #7fe0b9;
+}
+
+.workflow-connector {
+  flex: 0 0 auto;
+  color: #355064;
+  font-size: 9px;
+}
+
+.workflow-context-return {
+  min-height: 28px;
+  border: 0;
+  border-left: 1px solid rgb(76 111 136 / 28%);
+  background: transparent;
+  color: #95adbd;
+  cursor: pointer;
+  font-size: 9px;
+}
+
+.workflow-context-return:hover,
+.workflow-context-return:focus-visible {
+  color: #e6f3fa;
+}
+
+.context-header-actions {
+  display: inline-flex;
+  align-items: center;
+}
+
+.operation-result-panel,
+.operation-result-group {
+  display: grid;
+  gap: 10px;
+}
+
+.operation-result-panel > header {
+  padding-bottom: 9px;
+  border-bottom: 1px solid rgb(71 106 130 / 28%);
+}
+
+.operation-result-panel h3,
+.operation-result-panel h4,
+.operation-result-panel p {
+  margin: 0;
+}
+
+.operation-result-panel h4 {
+  color: #91adbe;
+  font-size: 10px;
+}
+
+.operation-result-chain,
+.operation-result-values {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.operation-result-chain li,
+.operation-result-values li {
+  padding: 7px 8px;
+  border: 1px solid rgb(57 93 119 / 22%);
+  border-radius: 6px;
+  background: rgb(7 24 37 / 45%);
+}
+
+.operation-result-values li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+}
+
+.operation-result-values span {
+  overflow-wrap: anywhere;
+  color: #829aab;
+  font-size: 9px;
+}
+
+.operation-result-values strong {
+  color: #d7e7f0;
+  font: 600 10px/1.4 "Cascadia Code", Consolas, monospace;
+}
+
+@media (max-width: 640px) {
+  .workflow-connector {
+    display: none;
+  }
+
+  .investigation-workflow > ol > li:not(.workflow-connector) {
+    flex-basis: 82px;
+  }
+}
+
+/* MemoryOS 1.1 MO-1108 · Integration and workflow unification.
+   This final layer changes composition and direct-manipulation affordances only.
+   Runtime cognition, semantic coordinates, trace construction, replay, evolution,
+   and comparative reconstruction remain untouched. */
+
+/* The graph remains the workspace. Generic CP-011 operations sit in a quiet dock
+   and return to full contrast only when the engineer interacts with them. */
+.studio-shell[data-route] .query-bar {
+  grid-template-columns: minmax(112px, .48fr) minmax(180px, 1.2fr) auto;
+  width: min(760px, calc(100vw - 220px));
+  border-color: rgb(67 105 130 / 30%);
+  background: linear-gradient(180deg, rgb(4 17 28 / 68%), rgb(2 11 19 / 64%));
+  box-shadow: 0 14px 38px rgb(0 0 0 / 22%), inset 0 1px 0 rgb(255 255 255 / 3%);
+  opacity: .72;
+  transition: border-color 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
+}
+
+.studio-shell[data-route] .query-bar:hover,
+.studio-shell[data-route] .query-bar:focus-within {
+  border-color: rgb(78 137 176 / 52%);
+  box-shadow: 0 18px 48px rgb(0 0 0 / 30%), inset 0 1px 0 rgb(255 255 255 / 4%);
+  opacity: 1;
+}
+
+.studio-shell[data-route] .query-actions .button {
+  padding-inline: 10px;
+  font-size: 10px;
+}
+
+.studio-shell[data-route] .session-actions {
+  border-color: rgb(47 88 117 / 24%);
+  background: rgb(2 12 20 / 44%);
+  box-shadow: 0 8px 22px rgb(0 0 0 / 12%);
+}
+
+.studio-shell[data-route] .session-actions .button,
+.studio-shell[data-route] .validation-pill {
+  border-color: rgb(52 91 119 / 26%);
+  background: rgb(9 29 44 / 30%);
+}
+
+/* Observe → Trace → Replay → Compare is one investigation, not four screens. */
+.investigation-workflow {
+  --workflow-accent: #67b9ec;
+  position: absolute;
+  z-index: 31;
+  top: 116px;
+  left: 292px;
+  display: flex;
+  width: min(600px, calc(100vw - 680px));
+  min-width: 490px;
+  min-height: 38px;
+  align-items: center;
+  overflow: visible;
+  border: 1px solid rgb(72 112 139 / 28%);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgb(4 17 28 / 78%), rgb(2 11 19 / 72%));
+  box-shadow: 0 12px 34px rgb(0 0 0 / 18%), inset 0 1px 0 rgb(255 255 255 / 3%);
+  backdrop-filter: blur(16px) saturate(115%);
+  pointer-events: auto;
+}
+
+.investigation-workflow[data-phase="trace"] { --workflow-accent: #a986ff; }
+.investigation-workflow[data-phase="replay"] { --workflow-accent: #d7edf9; }
+.investigation-workflow[data-phase="evolution"] { --workflow-accent: #58c7ee; }
+.investigation-workflow[data-phase="compare"] { --workflow-accent: #e5b862; }
+
+.workflow-step,
+.workflow-return {
+  position: relative;
+  display: inline-flex;
+  min-width: 0;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #718b9d;
+  cursor: pointer;
+  font: 600 10px/1 Inter, system-ui, sans-serif;
+  letter-spacing: .01em;
+  transition: background-color 130ms ease, color 130ms ease, opacity 130ms ease;
+}
+
+.workflow-step {
+  flex: 1 1 0;
+  gap: 7px;
+  padding: 0 10px;
+}
+
+.workflow-step + .workflow-step::before {
+  position: absolute;
+  left: -3px;
+  color: #395266;
+  content: "›";
+  font-size: 11px;
+  font-weight: 400;
+  pointer-events: none;
+}
+
+.workflow-step::after {
+  width: 5px;
+  height: 5px;
+  flex: 0 0 auto;
+  order: -1;
+  border: 1px solid #5a7588;
+  border-radius: 50%;
+  content: "";
+}
+
+.workflow-step:hover:not(:disabled),
+.workflow-step:focus-visible:not(:disabled),
+.workflow-return:hover,
+.workflow-return:focus-visible {
+  background: rgb(52 105 142 / 17%);
+  color: #dcebf4;
+}
+
+.workflow-step.is-complete {
+  color: #91afc1;
+}
+
+.workflow-step.is-complete::after {
+  border-color: #5bc79b;
+  background: #5bc79b;
+  box-shadow: 0 0 8px rgb(91 199 155 / 22%);
+}
+
+.workflow-step.is-active,
+.workflow-step[aria-current="step"] {
+  background: color-mix(in srgb, var(--workflow-accent) 10%, transparent);
+  color: #edf7fc;
+}
+
+.workflow-step.is-active::after,
+.workflow-step[aria-current="step"]::after {
+  border-color: var(--workflow-accent);
+  background: var(--workflow-accent);
+  box-shadow: 0 0 9px color-mix(in srgb, var(--workflow-accent) 45%, transparent);
+}
+
+.workflow-step:disabled,
+.workflow-step[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: .34;
+}
+
+.workflow-return,
+.workflow-context-return {
+  flex: 0 0 auto;
+  min-width: 66px;
+  margin: 3px;
+  padding: 0 9px;
+  border-left: 1px solid rgb(76 111 136 / 28%);
+  color: #95adbd;
+}
+
+.workflow-return::before,
+.workflow-context-return::before {
+  margin-right: 5px;
+  content: "←";
+}
+
+.workflow-reason {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  left: auto;
+  max-width: min(330px, calc(100vw - 32px));
+  margin: 0;
+  padding: 6px 8px;
+  border: 1px solid rgb(73 111 137 / 28%);
+  border-radius: 6px;
+  background: rgb(3 13 21 / 94%);
+  color: #8ea7b8;
+  box-shadow: 0 10px 28px rgb(0 0 0 / 24%);
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.workflow-reason:empty {
+  display: none;
+}
+
+/* The workflow rail gets a dedicated row. Existing runtime signals are shifted
+   below it, while graph tools retain a stable top-right position. */
+.neural-interface:has(.investigation-workflow) .neural-signal-ribbon {
+  top: 166px;
+}
+
+.neural-interface:has(.investigation-workflow) .topology-interface .graph-toolbar {
+  top: 116px;
+}
+
+.studio-shell[data-investigation="active"] .investigation-workflow,
+.studio-shell[data-comparative="active"] .investigation-workflow {
+  top: 116px;
+  left: 92px;
+  width: min(700px, calc(100vw - 520px));
+}
+
+.studio-shell[data-investigation="active"] .trace-signal-ribbon,
+.studio-shell[data-comparative="active"] .comparative-signal-ribbon {
+  top: 166px;
+}
+
+.studio-shell[data-investigation="active"] .has-investigation .neural-context,
+.studio-shell[data-comparative="active"] .has-comparative-reconstruction .neural-context {
+  top: 166px;
+}
+
+/* Calm observe-mode microstructure. Active trace, replay, evolution, and compare
+   classes continue to override these values with semantic emphasis. */
+.neural-world:not(.has-investigation):not(.has-comparative-reconstruction) .topology-microstructure {
+  opacity: .42;
+}
+
+.neural-world:not(.has-investigation):not(.has-comparative-reconstruction) .topology-synapse {
+  opacity: .58;
+  filter: none;
+}
+
+.neural-world:not(.has-investigation):not(.has-comparative-reconstruction) .topology-micro-edge {
+  stroke-opacity: .14;
+}
+
+.neural-world:not(.has-investigation):not(.has-comparative-reconstruction) .topology-micro-node {
+  opacity: .42;
+  filter: none;
+}
+
+.neural-world:not(.has-investigation):not(.has-comparative-reconstruction) .graph-node-pulse {
+  opacity: .14;
+  filter: drop-shadow(0 0 2px var(--node-aura));
+}
+
+.neural-world:not(.has-investigation):not(.has-comparative-reconstruction) .graph-edge-flow {
+  opacity: .5;
+  filter: none;
+}
+
+.neural-world:not(.has-investigation):not(.has-comparative-reconstruction) .graph-node-label {
+  opacity: .58;
+  transition: opacity 130ms ease;
+}
+
+.neural-world:not(.has-investigation):not(.has-comparative-reconstruction) .graph-node:hover .graph-node-label,
+.neural-world:not(.has-investigation):not(.has-comparative-reconstruction) .graph-node:focus-visible .graph-node-label,
+.neural-world:not(.has-investigation):not(.has-comparative-reconstruction) .graph-node.is-selected .graph-node-label,
+.neural-world:not(.has-investigation):not(.has-comparative-reconstruction) .graph-node.is-graph-related .graph-node-label {
+  opacity: 1;
+}
+
+/* Cognitive regions are workspace affordances. They manipulate presentation
+   state only; region boundaries never imply changes to runtime cognition. */
+.cognitive-regions {
+  pointer-events: auto;
+}
+
+.cognitive-region[role="button"],
+.cognitive-region[data-interactive="true"] {
+  cursor: pointer;
+  outline: none;
+  pointer-events: all;
+}
+
+.cognitive-region[role="button"] .cognitive-region-boundary,
+.cognitive-region[data-interactive="true"] .cognitive-region-boundary {
+  pointer-events: visiblePainted;
+}
+
+.cognitive-region[role="button"]:hover,
+.cognitive-region[role="button"]:focus-visible,
+.cognitive-region[data-interactive="true"]:hover,
+.cognitive-region[data-interactive="true"]:focus-visible,
+.cognitive-region.is-pinned {
+  opacity: .72;
+}
+
+.cognitive-region[role="button"]:focus-visible .cognitive-region-boundary,
+.cognitive-region[data-interactive="true"]:focus-visible .cognitive-region-boundary {
+  fill: rgb(9 31 46 / 52%);
+  stroke-width: 1.6;
+  stroke-dasharray: none;
+}
+
+.cognitive-region.is-pinned .cognitive-region-boundary {
+  stroke-dasharray: none;
+}
+
+.cognitive-region.is-pinned .cognitive-region-label::after {
+  content: "";
+}
+
+.cognitive-region.is-isolated {
+  opacity: .88 !important;
+}
+
+.cognitive-region.is-isolated .cognitive-region-boundary {
+  fill: rgb(7 27 41 / 58%);
+  stroke-width: 1.45;
+  stroke-dasharray: none;
+}
+
+.has-region-isolation .cognitive-region:not(.is-isolated),
+.has-isolated-region .cognitive-region:not(.is-isolated),
+.memory-intelligence-graph[data-isolated-region] .cognitive-region:not(.is-isolated) {
+  opacity: .035;
+}
+
+.cognitive-region.is-collapsed .cognitive-region-boundary {
+  fill: rgb(7 24 36 / 68%);
+  stroke-dasharray: 1 3;
+}
+
+.cognitive-region.is-collapsed .cognitive-region-motif {
+  opacity: .18;
+}
+
+.graph-node.is-region-collapsed,
+.graph-edge-base.is-region-collapsed,
+.graph-edge-flow.is-region-collapsed {
+  opacity: .025 !important;
+  pointer-events: none;
+}
+
+.graph-node.is-region-pinned .graph-node-body {
+  stroke-width: 2.6;
+}
+
+/* Mode context is the only card allowed to compete with the active trace. */
+.studio-shell[data-investigation="active"] .neural-operation-signal,
+.studio-shell[data-comparative="active"] .neural-operation-signal,
+.studio-shell[data-investigation="active"] .neural-perspective-guide,
+.studio-shell[data-comparative="active"] .neural-perspective-guide {
+  display: none;
+}
+
+.studio-shell[data-investigation="active"] .investigation-context,
+.studio-shell[data-comparative="active"] .comparative-context,
+.studio-shell[data-workflow-phase="evolution"] .evolution-context {
+  border-color: rgb(96 137 164 / 34%);
+  background: rgb(3 13 21 / 88%);
+  box-shadow: 0 20px 52px rgb(0 0 0 / 28%);
+}
+
+/* Operation output is evidence, not another dashboard card. */
+.operation-result,
+.operation-result-content {
+  display: grid;
+  gap: 10px;
+}
+
+.operation-result header,
+.operation-result-content header {
+  padding-bottom: 9px;
+  border-bottom: 1px solid rgb(71 106 130 / 28%);
+}
+
+.operation-result dl,
+.operation-result-content dl {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+
+.operation-result dl > div,
+.operation-result-content dl > div {
+  display: grid;
+  grid-template-columns: minmax(92px, .7fr) minmax(0, 1.3fr);
+  gap: 12px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid rgb(58 91 115 / 18%);
+}
+
+.operation-result dt,
+.operation-result dd,
+.operation-result-content dt,
+.operation-result-content dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.operation-result dt,
+.operation-result-content dt {
+  color: #738da0;
+  font-size: 10px;
+}
+
+.operation-result dd,
+.operation-result-content dd {
+  color: #c8dbe6;
+  font: 500 10px/1.45 "Cascadia Code", Consolas, monospace;
+}
+
+@media (max-width: 1180px) {
+  .investigation-workflow {
+    left: 82px;
+    width: min(650px, calc(100vw - 480px));
+    min-width: 0;
+  }
+
+  .neural-interface:has(.investigation-workflow) .topology-interface .graph-toolbar {
+    top: 162px;
+  }
+
+  .neural-interface:has(.investigation-workflow) .neural-signal-ribbon {
+    top: 205px;
+  }
+
+  .studio-shell[data-investigation="active"] .investigation-workflow,
+  .studio-shell[data-comparative="active"] .investigation-workflow {
+    width: min(630px, calc(100vw - 420px));
+  }
+
+  .studio-shell[data-investigation="active"] .trace-signal-ribbon,
+  .studio-shell[data-comparative="active"] .comparative-signal-ribbon,
+  .studio-shell[data-investigation="active"] .has-investigation .neural-context,
+  .studio-shell[data-comparative="active"] .has-comparative-reconstruction .neural-context {
+    top: 166px;
+  }
+}
+
+@media (max-width: 900px) {
+  .studio-shell[data-route] .query-bar {
+    width: calc(100vw - 20px);
+  }
+
+  .investigation-workflow,
+  .studio-shell[data-investigation="active"] .investigation-workflow,
+  .studio-shell[data-comparative="active"] .investigation-workflow {
+    top: 112px;
+    right: 10px;
+    left: 10px;
+    width: auto;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .workflow-step {
+    flex: 1 0 88px;
+  }
+
+  .workflow-return {
+    position: sticky;
+    right: 0;
+    background: rgb(3 14 23 / 96%);
+  }
+
+  .workflow-reason {
+    position: sticky;
+    right: 0;
+    flex: 0 0 auto;
+    max-width: 230px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .neural-interface:has(.investigation-workflow) .topology-interface .graph-toolbar {
+    top: 158px;
+  }
+
+  .neural-interface:has(.investigation-workflow) .neural-signal-ribbon,
+  .studio-shell[data-investigation="active"] .trace-signal-ribbon,
+  .studio-shell[data-comparative="active"] .comparative-signal-ribbon {
+    top: 202px;
+  }
+
+  .studio-shell[data-investigation="active"] .has-investigation .neural-context,
+  .studio-shell[data-comparative="active"] .has-comparative-reconstruction .neural-context {
+    top: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .investigation-workflow,
+  .studio-shell[data-investigation="active"] .investigation-workflow,
+  .studio-shell[data-comparative="active"] .investigation-workflow {
+    top: 108px;
+    right: 8px;
+    left: 8px;
+    min-height: 44px;
+  }
+
+  .workflow-step,
+  .workflow-return {
+    min-height: 42px;
+    font-size: 10px;
+  }
+
+  .workflow-step {
+    flex-basis: 82px;
+    padding-inline: 8px;
+  }
+
+  .workflow-step::after {
+    width: 6px;
+    height: 6px;
+  }
+
+  .workflow-reason {
+    display: none;
+  }
+
+  .neural-interface:has(.investigation-workflow) .topology-interface .graph-toolbar {
+    top: 158px;
+  }
+
+  .neural-interface:has(.investigation-workflow) .neural-signal-ribbon,
+  .studio-shell[data-investigation="active"] .trace-signal-ribbon,
+  .studio-shell[data-comparative="active"] .comparative-signal-ribbon {
+    top: 207px;
+  }
+
+  .studio-shell[data-route] .query-bar {
+    width: calc(100vw - 16px);
+    opacity: .86;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .investigation-workflow,
+  .workflow-step,
+  .workflow-return,
+  .studio-shell[data-route] .query-bar,
+  .cognitive-region,
+  .graph-node-label {
+    transition: none !important;
+  }
+}
+
+@media (forced-colors: active) {
+  .investigation-workflow,
+  .workflow-step.is-active,
+  .workflow-step[aria-current="step"],
+  .cognitive-region.is-isolated .cognitive-region-boundary {
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+}
+
+/* Final MO-1108 row calibration; kept last so earlier sprint media rules cannot
+   reintroduce overlay collisions. */
+.workflow-reason,
+.neural-signal-ribbon {
+  pointer-events: none !important;
+}
+
+.nav-item[aria-disabled="true"],
+.brand[aria-disabled="true"],
+.neural-flow-ribbon a[aria-disabled="true"] {
+  cursor: default;
+  pointer-events: none;
+}
+
+.button.is-disabled,
+.button[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: .46;
+}
+
+.graph-node[aria-disabled="true"] {
+  cursor: grab;
+}
+
+.graph-node[aria-disabled="true"]:active {
+  cursor: grabbing;
+}
+
+.toast-region {
+  bottom: calc(82px + env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+
+.studio-shell.inspector-open .session-actions,
+.studio-shell.inspector-open .neural-context,
+.studio-shell.inspector-open .neural-operation-signal,
+.studio-shell.inspector-open .graph-legend,
+.studio-shell.inspector-open .graph-accessible-list {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.has-investigation .cognitive-trace-accessible-list,
+.comparative-reconstruction-accessible-list {
+  bottom: calc(88px + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 640px) {
+  .has-investigation .cognitive-trace-accessible-list,
+  .comparative-reconstruction-accessible-list {
+    bottom: calc(118px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 1399px) {
+  .studio-shell.inspector-open .investigation-workflow,
+  .studio-shell.inspector-open .topology-interface .graph-toolbar,
+  .studio-shell.inspector-open .query-bar,
+  .studio-shell.inspector-open .cognitive-trace-accessible-list,
+  .studio-shell.inspector-open .comparative-reconstruction-accessible-list,
+  .studio-shell.inspector-open .neural-flow-ribbon {
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
+@media (min-width: 901px) {
+  .studio-shell:has(.inspector:not(.is-closed)) .query-bar {
+    right: 384px;
+    left: auto;
+    width: min(760px, calc(100vw - 580px));
+    transform: none;
+  }
+}
+
+@media (max-width: 1180px) {
+  .topology-interface.has-comparative-reconstruction .graph-toolbar {
+    right: 8px;
+    left: 8px;
+    max-width: none;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+}
+
+@media (max-width: 900px) {
+  .studio-shell:has(.inspector:not(.is-closed)) .query-bar {
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+.studio-shell[data-investigation="active"] .graph-legend,
+.studio-shell[data-evolution="active"] .graph-legend,
+.studio-shell[data-comparative="active"] .graph-legend {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.has-active-trace .cognitive-trace-node-label {
+  display: none;
+}
+
+.has-active-trace .graph-node.is-trace-origin:not(.is-trace-label-duplicate) .cognitive-trace-node-label,
+.has-active-trace .graph-node.is-trace-target:not(.is-trace-label-duplicate) .cognitive-trace-node-label,
+.has-active-trace .graph-node.is-replay-current:not(.is-trace-label-duplicate) .cognitive-trace-node-label,
+.has-active-trace .graph-node.is-selected:not(.is-trace-label-duplicate) .cognitive-trace-node-label,
+.has-active-trace .graph-node:not(.is-trace-label-duplicate):hover .cognitive-trace-node-label,
+.has-active-trace .graph-node:not(.is-trace-label-duplicate):focus-visible .cognitive-trace-node-label {
+  display: block;
+}
+
+.memory-intelligence-graph.has-active-trace .graph-node.is-trace-label-duplicate .cognitive-trace-node-label {
+  display: none !important;
+}
+
+.topology-interface .graph-legend,
+.topology-interface .graph-layer-filter {
+  pointer-events: auto;
+}
+
+@media (min-width: 1181px) {
+  .neural-interface:has(.investigation-workflow) .neural-operation-signal {
+    right: 338px;
+  }
+}
+
+.workflow-reason {
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(-2px);
+}
+
+.investigation-workflow:focus-within .workflow-reason,
+.investigation-workflow:hover .workflow-reason {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (min-width: 1181px) {
+  .studio-shell[data-route] .session-banner {
+    top: 70px;
+    height: 38px;
+  }
+
+  .studio-shell[data-route] .session-banner > div:first-child {
+    padding: 0;
+  }
+
+  .studio-shell[data-route] .session-banner p {
+    display: none;
+  }
+
+  .neural-graph-identity {
+    top: 116px;
+  }
+
+  .investigation-workflow,
+  .studio-shell[data-investigation="active"] .investigation-workflow,
+  .studio-shell[data-comparative="active"] .investigation-workflow {
+    top: 114px;
+    left: 500px;
+    width: min(520px, calc(100vw - 620px));
+    min-width: 430px;
+  }
+
+  .neural-interface:has(.investigation-workflow) .topology-interface .graph-toolbar {
+    top: 162px;
+  }
+
+  .neural-interface:has(.investigation-workflow) .neural-signal-ribbon,
+  .studio-shell[data-investigation="active"] .trace-signal-ribbon,
+  .studio-shell[data-comparative="active"] .comparative-signal-ribbon {
+    top: 164px;
+  }
+
+  .neural-context,
+  .studio-shell[data-investigation="active"] .has-investigation .neural-context,
+  .studio-shell[data-comparative="active"] .has-comparative-reconstruction .neural-context {
+    top: 214px;
+  }
+
+  .studio-shell[data-investigation="active"] .neural-graph-identity,
+  .studio-shell[data-evolution="active"] .neural-graph-identity,
+  .studio-shell[data-comparative="active"] .neural-graph-identity {
+    top: 116px;
+    left: 88px;
+  }
+
+  .studio-shell[data-investigation="active"] .topology-interface .graph-toolbar,
+  .studio-shell[data-evolution="active"] .topology-interface .graph-toolbar,
+  .studio-shell[data-comparative="active"] .topology-interface .graph-toolbar {
+    top: 216px;
+  }
+
+  .studio-shell[data-investigation="active"] .has-investigation .neural-context,
+  .studio-shell[data-evolution="active"] .neural-context,
+  .studio-shell[data-comparative="active"] .has-comparative-reconstruction .neural-context {
+    top: 266px;
+  }
+}
+
+@media (min-width: 901px) and (max-width: 1180px) {
+  .neural-graph-identity {
+    top: 140px;
+  }
+
+  .investigation-workflow,
+  .studio-shell[data-investigation="active"] .investigation-workflow,
+  .studio-shell[data-comparative="active"] .investigation-workflow {
+    top: 138px;
+    left: 480px;
+    width: calc(100vw - 500px);
+  }
+
+  .neural-interface:has(.investigation-workflow) .topology-interface .graph-toolbar {
+    top: 184px;
+  }
+
+  .neural-interface:has(.investigation-workflow) .neural-signal-ribbon,
+  .studio-shell[data-investigation="active"] .trace-signal-ribbon,
+  .studio-shell[data-comparative="active"] .comparative-signal-ribbon {
+    top: 228px;
+  }
+
+  .neural-context {
+    top: 278px;
+  }
+}
+
+@media (max-width: 900px) {
+  .neural-graph-identity {
+    top: 160px;
+  }
+
+  .neural-interface:has(.investigation-workflow) .topology-interface .graph-toolbar {
+    top: 202px;
+  }
+
+  .neural-interface:has(.investigation-workflow) .neural-signal-ribbon,
+  .studio-shell[data-investigation="active"] .trace-signal-ribbon,
+  .studio-shell[data-comparative="active"] .comparative-signal-ribbon {
+    top: 246px;
   }
 }
