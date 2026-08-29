@@ -3,6 +3,38 @@
 This roadmap separates implemented increments from proposed work. It does not
 authorize behavior beyond [the architecture](ARCHITECTURE.md).
 
+## MemoryOS product releases
+
+| Release | Status | Scope |
+|---|---|---|
+| MemoryOS 1.0 | Released | Deterministic memory lifecycle, source-preserving knowledge, retrieval, reflection, provider-neutral handoff, and the frozen Memory Studio contract |
+| MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
+| MemoryOS 1.2 | In development | Canonical Memory Investigation Packages, dependency-free AI runtime adapter interfaces, and planned investigation onboarding refinements |
+
+MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
+contracts while moving deterministic investigation into the downstream Studio
+presentation. The renderer consumes validated projections; it does not derive
+traces, replay order, evolution, or divergence.
+
+The complete milestone map and evidence index are maintained in the
+[MemoryOS 1.1 documentation index](repositories/cca-studio/docs/README.md).
+Measured [performance](repositories/cca-studio/docs/memoryos-1.1-performance-report.md),
+[scalability](repositories/cca-studio/docs/memoryos-1.1-scalability-report.md),
+[benchmark](repositories/cca-studio/docs/memoryos-1.1-engineering-benchmark.md),
+[UX](repositories/cca-studio/docs/memoryos-1.1-ux-audit.md),
+[accessibility](repositories/cca-studio/docs/memoryos-1.1-accessibility-audit.md),
+and [documentation](repositories/cca-studio/docs/memoryos-1.1-rc-documentation-audit.md)
+evidence closes MO-1108. RC-001 validated the production workflow, RC-001A
+completed the documentation freeze, and RC-001B completed the repository
+audit without changing the product architecture.
+
+MemoryOS 1.2 begins with MIP-001 and its MO-1201 implementation. MO-1202 adds
+provider-neutral interfaces that privately validate OpenAI Agents SDK,
+Anthropic SDK, and LangGraph event lifecycles and translate only settled
+source-authored cognition into verified, Observation-only MIPs. The reference
+adapters do not import provider SDKs, persist transport state, control external
+runtimes, or infer cognitive semantics.
+
 ## IM-001: engineering foundation
 
 Status: complete and retained.
@@ -94,6 +126,19 @@ Exit evidence should include reviewed architecture decisions, golden fixtures,
 migration tests, reproducibility evidence, and an updated threat assessment
 for the compiler input/output boundary.
 
+## CP-011: Memory Studio
+
+Status: released in MemoryOS 1.0; additive MemoryOS 1.1 presentation released
+in v1.1.0.
+
+CP-011 implements the final MemoryOS capability as a passive observability
+boundary. The delivered scope is the frozen CCA-STUDIO-1.0 C++ Contract,
+complete conformance evidence, a checked example, and a responsive downstream
+presentation of detached MemoryOS observations. MemoryOS 1.1 adds deterministic
+observation frames, traces, replay, evolution, and comparative reconstruction
+only downstream of that frozen Contract. It adds no memory mutation, retrieval,
+persistence, Runtime ownership, or Provider implementation.
+
 ## Possible later increments
 
 These are proposals, not authorization:
@@ -101,10 +146,11 @@ These are proposals, not authorization:
 - package and registry contracts after an offline reproducibility design;
 - a governed conformance evidence format and independent runner;
 - specific code-generation targets after their production contracts exist;
-- SDK bindings after compatibility policy is approved;
-- Studio or Atlas only after their APIs and security boundaries are defined;
-- MemoryOS and all Domain Engine behavior only under separate approved
-  architecture.
+- provider SDK packages and live-client bindings after compatibility policy is
+  approved; MO-1202 remains a dependency-free settled-source interface;
+- additional public Studio behavior or Atlas only after their APIs and
+  security boundaries are defined;
+- new MemoryOS capabilities only under a separately approved milestone.
 
 AI, reasoning, LLM, database, domain persistence, plugin, networking, and
 Runtime behavior beyond CCA-RF-1.0 must not be smuggled into a compiler or

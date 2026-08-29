@@ -35,6 +35,20 @@ documents typed contracts, Provider composition, dependency injection,
 asynchronous events, ownership, errors, and thread safety. The example does
 not define Domain Engine or MemoryOS behavior.
 
+## Process Foundation
+
+The Process implementation provides two deterministic IM-005 examples:
+
+- [direct Process execution](../repositories/cca-core/examples/process_usage.cpp);
+  and
+- [Runtime-hosted Process execution](../repositories/cca-core/examples/process_runtime_usage.cpp).
+
+The [Process Foundation programming model](../repositories/cca-core/docs/process-foundation.md)
+documents the public API, structural execution order, lifecycle, ownership,
+errors, Runtime composition, and thread safety. The
+[conformance evidence mapping](../repositories/cca-core/docs/process-conformance-evidence.md)
+maps all CCA-PROC-001 through CCA-PROC-038 requirements to automated tests.
+
 ## Compiler API examples
 
 Module contracts live with the compiler repository under
@@ -53,13 +67,28 @@ Compiler conformance, documentation, and package generator seams remain
 reserved and are not part of the working IS-002 pipeline. The IM-003 Runtime
 Foundation and its evidence mapping are separate from those compiler seams.
 
+## MemoryOS 1.2 adapters
+
+The [AI runtime adapter example](../repositories/cca-studio/examples/ai_runtime_adapter_usage.mjs)
+uses an offline OpenAI Agents SDK `StreamedRunResult`-shaped source to create a
+verified MIP. Its provider events are private lifecycle-validation input; only
+the settled, source-authored output enters the package. No SDK package,
+credential, network request, live agent, Runtime instance, or Studio process is
+required.
+
+Run it from the workspace root:
+
+```text
+node repositories/cca-studio/examples/ai_runtime_adapter_usage.mjs
+```
+
 ## Example quality rules
 
 - State whether an example is valid, intentionally invalid, or conceptual.
 - Check command status and structured diagnostics.
 - Keep input and expected output deterministic.
-- Never require network, database, plugin, AI, cognition, LLM, or MemoryOS
-  behavior.
+- Never require network, database, plugin, live AI/LLM execution, or ambient
+  MemoryOS behavior; capability-specific examples use detached fixtures.
 - Update schema, example, compiler validation, and tests together.
 
 Examples demonstrate the format and implementation. Only the checked-in schema

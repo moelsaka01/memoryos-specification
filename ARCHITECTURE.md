@@ -122,12 +122,13 @@ examples, and cross-repository validation.
 
 ### `cca-core`
 
-`cca-core` owns generally reusable engineering facilities and the approved
-Runtime Foundation implementation. Its shared facilities include logging,
-configuration, string utilities, version information, and test support. Its
-Runtime namespace owns the six CCA-RF-1.0 components plus the implementation
-surfaces described in Section 4. It does not own canonical compiler types,
-MemoryOS, or domain-engine semantics.
+`cca-core` owns generally reusable engineering facilities; the approved
+Runtime, Representation, Process, and Persistence foundations; and the current
+CP-001 through CP-010 MemoryOS implementation. Its shared facilities include
+logging, configuration, string utilities, version information, and test
+support. Its Runtime namespace owns the six CCA-RF-1.0 components plus the
+implementation surfaces described in Section 4. It does not own canonical
+compiler types or the downstream Memory Studio presentation.
 
 ### `cca-compiler`
 
@@ -139,11 +140,28 @@ The compiler may depend on `cca-core`. The Runtime Foundation may depend on
 lower-layer facilities in `cca-core`. `cca-core` must not depend on compiler or
 higher-layer domain interfaces.
 
+### `cca-studio`
+
+`cca-studio` owns the CP-011 CCA-STUDIO-1.0 passive observation Contract. Its
+headless `cca::studio` target depends only on the released public
+`cca::memory` surface. The responsive presentation is downstream of that
+Contract and is not part of the frozen C++ API. Released MemoryOS capabilities
+have no reverse dependency on Studio.
+
+MemoryOS 1.2 adds two headless JavaScript boundaries in `cca-studio`: the
+MIP-001 Producer/Consumer/Verifier and AI runtime adapters that translate
+successfully settled external runtime results into Observation-only MIPs. Raw
+transport remains private adapter input. Adapters depend on the MIP module,
+never on Runtime or the renderer, and import no provider SDK. External AI
+runtimes retain ownership of execution and cognitive truth.
+
 ### Reserved repositories
 
-`memoryos`, `cca-studio`, `cca-sdk`, `cca-conformance`, and `cca-atlas` remain
-reserved. They have no authorized implementation or dependency edges in
-IS-002 or IM-003.
+`memoryos`, `cca-sdk`, `cca-conformance`, and `cca-atlas` remain reserved as
+future repository boundaries. The released MemoryOS implementation currently
+resides in `cca-core` and `cca-studio`; the reserved `memoryos` directory does
+not create a second implementation or authorize dependency edges merely by
+its presence.
 
 ## 6. Canonical specification
 
@@ -267,10 +285,13 @@ and diagnostic identities are the durable integration surfaces in IS-002.
 
 IS-002 contains no Runtime execution; its compiler boundary remains unchanged.
 IM-003 contains only the CCA-RF-1.0 Runtime Foundation described in Section 4.
-The workspace contains no MemoryOS, Representation engine, Process engine,
-Persistence engine, cognition, reasoning, AI, LLM, database, application
-domain semantics, plugin system, networking, GUI, Studio, SDK, package
-manager, conformance certification engine, or generated production code.
+Those historical milestone exclusions do not authorize or constrain later
+frozen capability packages. Current later packages add the documented
+foundations, CP-011 Studio, MO-1201 MIP, and MO-1202 settled-source adapter
+interfaces.
+AI execution, LLM behavior, provider SDK packages/live clients, databases,
+plugins, networking, package management, and generated production code remain
+excluded.
 
 Names, categories, reserved directories, and interfaces do not authorize
 those features. Crossing one of these boundaries requires a separately
@@ -281,5 +302,6 @@ approved architecture.
 Licensing, public contribution governance, long-term repository topology,
 release coordination, dependency supply-chain policy, frozen API/ABI policy,
 custom-rule execution, transactional output, and future subsystem
-architectures beyond CCA-RF-1.0 remain unresolved or deferred. The
+architectures beyond the currently frozen capability packages remain
+unresolved or deferred. The
 [ambiguity register](docs/ambiguity-register.md) tracks their status.

@@ -1,0 +1,57 @@
+[
+  {
+    "seq": 10,
+    "method": "lifecycle",
+    "params": { "namespace": [], "timestamp": 1770000000000, "data": { "event": "started" } }
+  },
+  {
+    "seq": 20,
+    "method": "lifecycle",
+    "params": { "namespace": [], "timestamp": 1769999999000, "data": { "event": "running" } }
+  },
+  {
+    "seq": 30,
+    "method": "updates",
+    "params": { "namespace": [], "timestamp": 1770000001000, "node": "retrieve", "data": { "evidenceIdentifiers": ["evidence-001"] } }
+  },
+  {
+    "seq": 40,
+    "method": "tools",
+    "params": { "namespace": ["retrieve:reference"], "timestamp": 1770000002000, "node": "tools", "data": { "event": "tool-started", "id": "tool-reference" } }
+  },
+  {
+    "seq": 50,
+    "method": "tools",
+    "params": { "namespace": ["retrieve:reference"], "timestamp": 1770000003000, "node": "tools", "data": { "event": "tool-finished", "id": "tool-reference" } }
+  },
+  {
+    "seq": 60,
+    "method": "messages",
+    "params": { "namespace": [], "timestamp": 1770000004000, "node": "reflect", "data": { "event": "message-start", "id": "message-reference" } }
+  },
+  {
+    "seq": 70,
+    "method": "messages",
+    "params": { "namespace": [], "timestamp": 1770000005000, "node": "reflect", "data": { "event": "content-block-start", "id": "message-reference" } }
+  },
+  {
+    "seq": 80,
+    "method": "messages",
+    "params": { "namespace": [], "timestamp": 1770000006000, "node": "reflect", "data": { "event": "content-block-delta", "delta": { "type": "text-delta", "text": "Evidence preserved." } } }
+  },
+  {
+    "seq": 90,
+    "method": "messages",
+    "params": { "namespace": [], "timestamp": 1770000007000, "node": "reflect", "data": { "event": "content-block-finish", "id": "message-reference" } }
+  },
+  {
+    "seq": 100,
+    "method": "messages",
+    "params": { "namespace": [], "timestamp": 1770000008000, "node": "reflect", "data": { "event": "message-finish", "id": "message-reference" } }
+  },
+  {
+    "seq": 110,
+    "method": "lifecycle",
+    "params": { "namespace": [], "timestamp": 1770000009000, "data": { "event": "completed" } }
+  }
+]

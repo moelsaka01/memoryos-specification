@@ -6,8 +6,10 @@ scope and dependency direction.
 ## MemoryOS
 
 - [MemoryOS 1.1 product overview](../README.md)
+- [MemoryOS 1.2 Memory Investigation Packages](../repositories/cca-studio/docs/memory-investigation-packages.md)
+- [MemoryOS 1.2 AI Runtime Adapters](../repositories/cca-studio/docs/ai-runtime-adapters.md)
 - [MemoryOS 1.1 release notes](../RELEASE_NOTES.md)
-- [MemoryOS 1.1 changelog](../CHANGELOG.md)
+- [MemoryOS changelog](../CHANGELOG.md)
 - [MemoryOS 1.1 known issues](../KNOWN_ISSUES.md)
 - [RC-001B repository audit](../repositories/cca-studio/docs/memoryos-1.1-rc-repository-audit.md)
 - [MemoryOS 1.1 Studio documentation and evidence index](../repositories/cca-studio/docs/README.md)

@@ -196,7 +196,7 @@ tooling.
 | Path | Purpose |
 | :--- | :--- |
 | [`repositories/cca-core`](repositories/cca-core) | MemoryOS capabilities plus the Runtime, Representation, Process, and Persistence foundations. |
-| [`repositories/cca-studio`](repositories/cca-studio) | The frozen Memory Studio contract, dependency-free Mission Control UI, tests, release media, and Studio documentation. |
+| [`repositories/cca-studio`](repositories/cca-studio) | The frozen Memory Studio contract, Mission Control UI, canonical MIP implementation, dependency-free AI runtime adapters, tests, media, and documentation. |
 | [`docs`](docs) | Workspace engineering, compiler, build, and contributor documentation. |
 | [`specification`](specification) | Canonical specification format and schema used by the CCA Standards Compiler. |
 
@@ -210,6 +210,7 @@ implementation.
 | :--- | :--- |
 | **MemoryOS 1.0** | Established the deterministic memory lifecycle: Working Memory, Consolidation, Long-Term Memory, semantic, episodic, and procedural derivation, Retrieval, Reflection, Providers, and the frozen Studio contract. |
 | **MemoryOS 1.1 · v1.1.0** | Added observable cognition without changing the MemoryOS 1.0 runtime or public memory contracts. MO-1101 through MO-1108 delivered the Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and the unified production workflow. |
+| **MemoryOS 1.2 · in development** | Adds the canonical Memory Investigation Package (MO-1201) and dependency-free adapters that translate settled OpenAI Agents SDK, Anthropic SDK, and LangGraph cognition into verified packages without persisting transport state (MO-1202). |
 
 See [CHANGELOG.md](CHANGELOG.md) for milestone-level engineering records and
 [RELEASE_NOTES.md](RELEASE_NOTES.md) for compatibility and verification details.
@@ -227,9 +228,12 @@ repository publication notes.
 
 ## Roadmap
 
-MemoryOS 1.2 is focused on investigation onboarding and Reflection
-discoverability while preserving the deterministic architecture introduced in
-1.1. It is an experience refinement, not a Runtime redesign.
+MemoryOS 1.2 begins with portable deterministic investigations: MIP-001 defines
+the canonical package, MO-1201 implements it, and MO-1202 adds provider-neutral
+[AI runtime adapters](repositories/cca-studio/docs/ai-runtime-adapters.md).
+Investigation onboarding and Reflection discoverability remain planned product
+refinements. None of this redesigns the MemoryOS 1.0 Runtime or the released
+MemoryOS 1.1 investigation architecture.
 
 See [ROADMAP.md](ROADMAP.md) for governed release themes and foundation history.
 

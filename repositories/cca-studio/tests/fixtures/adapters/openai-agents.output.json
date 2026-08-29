@@ -1,0 +1,28 @@
+[
+  {
+    "type": "function_call",
+    "id": "call-weather",
+    "callId": "call-weather",
+    "name": "lookup_weather",
+    "arguments": "{\"city\":\"Dubai\"}",
+    "status": "completed"
+  },
+  {
+    "type": "function_call_result",
+    "id": "output-weather",
+    "callId": "call-weather",
+    "name": "lookup_weather",
+    "output": "{\"temperatureC\":34}",
+    "status": "completed"
+  },
+  {
+    "type": "message",
+    "id": "msg-final",
+    "role": "assistant",
+    "status": "completed",
+    "phase": "final_answer",
+    "content": [
+      { "type": "output_text", "text": "The observed temperature is 34 C." }
+    ]
+  }
+]

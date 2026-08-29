@@ -1,0 +1,37 @@
+[
+  {
+    "type": "raw_model_stream_event",
+    "data": {
+      "type": "response.created",
+      "sequence_number": 0,
+      "response": { "id": "resp-reference" }
+    }
+  },
+  {
+    "type": "agent_updated_stream_event",
+    "agent": { "name": "Weather Agent" }
+  },
+  {
+    "type": "run_item_stream_event",
+    "name": "tool_called",
+    "item": { "type": "tool_call_item" }
+  },
+  {
+    "type": "run_item_stream_event",
+    "name": "tool_output",
+    "item": { "type": "tool_call_output_item" }
+  },
+  {
+    "type": "run_item_stream_event",
+    "name": "message_output_created",
+    "item": { "type": "message_output_item" }
+  },
+  {
+    "type": "raw_model_stream_event",
+    "data": {
+      "type": "response.completed",
+      "sequence_number": 1,
+      "response": { "id": "resp-reference", "status": "completed" }
+    }
+  }
+]

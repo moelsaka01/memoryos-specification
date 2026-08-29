@@ -22,7 +22,7 @@ option(
 )
 option(
   CCA_ENABLE_STUDIO_WEB_TESTS
-  "Run dependency-free Memory Studio presentation tests when Node.js is available"
+  "Run the required dependency-free Memory Studio, MIP, and adapter conformance tests"
   ON
 )
 
@@ -55,10 +55,12 @@ add_custom_target(
     package.json
     scripts/serve.mjs
     web/index.html
+    web/benchmark.html
     web/styles.css
     web/assets/cca-mark.svg
     web/data/studio-snapshot.js
     web/js/app.js
+    web/js/browser-render-benchmark.js
     web/js/graph.js
     web/js/graph-view-state.js
     web/js/cognitive-trace.js
@@ -67,6 +69,27 @@ add_custom_target(
     web/js/cognitive-evolution-controller.js
     web/js/cognitive-comparative-reconstruction.js
     web/js/cognitive-comparative-replay.js
+    web/js/deterministic-sequence-alignment.js
+    web/js/mip-canonical.js
+    web/js/memory-investigation-package.js
+    web/js/ai-runtime-adapter.js
+    web/js/adapters/openai-agents-sdk-adapter.js
+    web/js/adapters/anthropic-sdk-adapter.js
+    web/js/adapters/langgraph-adapter.js
+    scripts/generate-ai-runtime-adapter-fixtures.mjs
+    examples/ai_runtime_adapter_usage.mjs
+    tests/fixtures/adapters/README.md
+    tests/fixtures/adapters/reference-sources.mjs
+    tests/fixtures/adapters/openai-agents.events.json
+    tests/fixtures/adapters/openai-agents.output.json
+    tests/fixtures/adapters/anthropic.events.json
+    tests/fixtures/adapters/langgraph.events.json
+    tests/fixtures/adapters/langgraph.output.json
+    examples/ai-runtime-adapters/reference-packages/openai-agents-reference.mip
+    examples/ai-runtime-adapters/reference-packages/anthropic-reference.mip
+    examples/ai-runtime-adapters/reference-packages/langgraph-reference.mip
+    benchmarks/memoryos-scalability-fixture.mjs
+    benchmarks/memoryos-scalability.mjs
     web/js/host-adapter.js
     web/js/observation-timeline.js
     web/js/semantic-world.js
@@ -170,8 +193,58 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS)
         cca.memory_studio.web
         PROPERTIES LABELS "studio;memory;web;unit"
       )
+      add_test(
+        NAME cca.memory_studio.integration
+        COMMAND
+          "${CCA_NODE_EXECUTABLE}" --test
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/memory_studio_integration_test.mjs"
+      )
+      set_tests_properties(
+        cca.memory_studio.integration
+        PROPERTIES LABELS "studio;memory;web;integration"
+      )
+      add_test(
+        NAME cca.memory_studio.mip
+        COMMAND
+          "${CCA_NODE_EXECUTABLE}" --test
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/mip_canonical_test.mjs"
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/memory_investigation_package_test.mjs"
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/mip_schema_conformance_test.mjs"
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/mip_adversarial_conformance_test.mjs"
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/mip_ordering_conformance_test.mjs"
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/mip_derived_edge_conformance_test.mjs"
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/mip_pipeline_conformance_test.mjs"
+      )
+      set_tests_properties(
+        cca.memory_studio.mip
+        PROPERTIES LABELS "studio;memory;mip;conformance;unit"
+      )
+      add_test(
+        NAME cca.memory_studio.adapters
+        COMMAND
+          "${CCA_NODE_EXECUTABLE}" --test
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/ai_runtime_adapter_test.mjs"
+      )
+      set_tests_properties(
+        cca.memory_studio.adapters
+        PROPERTIES LABELS "studio;memory;adapter;mip;unit"
+      )
+      add_test(
+        NAME cca.memory_studio.scalability
+        COMMAND
+          "${CCA_NODE_EXECUTABLE}" --test
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/memory_studio_scalability_test.mjs"
+      )
+      set_tests_properties(
+        cca.memory_studio.scalability
+        PROPERTIES
+          LABELS "studio;memory;web;scalability;benchmark"
+          TIMEOUT 180
+      )
     else()
-      message(STATUS "Node.js is unavailable; Memory Studio web tests are not registered")
+      message(FATAL_ERROR
+        "CCA_ENABLE_STUDIO_WEB_TESTS=ON requires Node.js; disabling the mandatory Memory Studio, MIP, and adapter conformance suites is not permitted implicitly"
+      )
     endif()
   endif()
 endif()

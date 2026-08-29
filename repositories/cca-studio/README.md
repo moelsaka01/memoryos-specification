@@ -1,5 +1,7 @@
 # CCA Memory Studio
 
+[← MemoryOS and workspace overview](../../README.md) · [Workspace documentation](../../docs/README.md)
+
 `cca-studio` implements CP-011 as two deliberately separated surfaces:
 
 - `cca::studio`, the frozen CCA-STUDIO-1.0 headless C++ Contract in
@@ -71,6 +73,25 @@ engines remain unchanged. See
 [Integration & Workflow Unification](docs/memoryos-1.1-integration-workflow.md)
 and the [MemoryOS Studio documentation index](docs/README.md).
 
+MO-1201 adds the first MemoryOS 1.2 platform artifact: the canonical Memory
+Investigation Package (`.mip`). A dependency-free, renderer-independent module
+imports, exports, verifies, and byte-identically round-trips deterministic
+cognition under the frozen MIP-001 contract. It uses strict RFC 8785 bytes,
+domain-separated SHA-256 integrity, and independent reconstruction of Trace,
+Replay, Evolution, and Comparative Reconstruction. It does not change Studio
+interaction or the MemoryOS runtime. See
+[Memory Investigation Packages](docs/memory-investigation-packages.md).
+
+MO-1202 adds a generic AI runtime adapter contract plus dependency-free
+reference adapters for the OpenAI Agents SDK, Anthropic SDK, and LangGraph.
+Adapters consume runtime events privately, require a successfully settled
+source, and publish only completed source-authored cognition as opaque
+Observation context. Transport deltas, timestamps, usage, lifecycle traffic,
+and live SDK objects never enter MIP. They import no provider SDK, make no
+network request, infer no MIP semantic role or provenance, and do not change
+Runtime, Studio, or MIP. See
+[AI Runtime Adapters](docs/ai-runtime-adapters.md).
+
 ## Build and verify
 
 From the workspace root:
@@ -84,7 +105,10 @@ ctest --preset ci -L studio
 The Studio test inventory includes public behavior, lifecycle, ordering,
 failure precedence, moved-from state, ownership and lifetime, exhaustive
 allocation-failure campaigns, architecture-boundary checks, the executable
-example, and the dependency-free presentation model.
+example, and the dependency-free presentation model. Separate JavaScript
+conformance suites verify MIP-001 and the MO-1202 adapters, including provider
+lifecycle validation, settled projections, deterministic reference packages,
+invariance, and failure/resource boundaries.
 
 ## Run the presentation
 
@@ -118,11 +142,13 @@ observation paths, and explanation-chain boundaries.
 ## Documentation
 
 - [MemoryOS Studio documentation index](docs/README.md)
+- [MemoryOS 1.2 Memory Investigation Packages](docs/memory-investigation-packages.md)
+- [MemoryOS 1.2 AI Runtime Adapters](docs/ai-runtime-adapters.md)
 - [Public API and behavior](docs/memory-studio.md)
 - [Requirement and test evidence](docs/memory-studio-conformance-evidence.md)
-- [MemoryOS 1.1 observable cognition foundation](docs/memoryos-1.1-sprint-1.md)
+- [MemoryOS 1.1 Stable Semantic World](docs/memoryos-1.1-sprint-1.md)
 - [MemoryOS 1.1 Cognitive Trace architecture](docs/memoryos-1.1-sprint-2.md)
-- [MemoryOS 1.1 Living Connectome identity](docs/memoryos-1.1-sprint-3.md)
+- [MemoryOS 1.1 Living Connectome](docs/memoryos-1.1-sprint-3.md)
 - [MemoryOS 1.1 Cognitive Replay](docs/memoryos-1.1-sprint-4.md)
 - [MemoryOS 1.1 Cognitive Polish](docs/memoryos-1.1-sprint-5.md)
 - [MemoryOS 1.1 Cognitive Evolution](docs/memoryos-1.1-cognitive-evolution.md)
@@ -135,7 +161,12 @@ observation paths, and explanation-chain boundaries.
 - [MemoryOS 1.1 accessibility audit](docs/memoryos-1.1-accessibility-audit.md)
 - [MemoryOS 1.1 Engineering architecture review](docs/memoryos-1.1-engineering-architecture-review.md)
 - [MemoryOS 1.1 documentation audit](docs/memoryos-1.1-documentation-audit.md)
+- [MemoryOS 1.1 RC documentation audit](docs/memoryos-1.1-rc-documentation-audit.md)
+- [MemoryOS 1.1 RC repository audit](docs/memoryos-1.1-rc-repository-audit.md)
+- [MemoryOS 1.1 release notes](../../RELEASE_NOTES.md)
+- [MemoryOS 1.1 known issues](../../KNOWN_ISSUES.md)
 - [Official MemoryOS 1.1 demonstration](docs/media/memoryos-1.1-official-demo.gif)
 - [MemoryOS 1.0 launch demo production package](docs/memoryos-1.0-launch-demo-production-package.md)
 - [GitHub screenshot specification](docs/github-screenshot-specification.md)
 - [C++ example](examples/memory_studio_usage.cpp)
+- [AI runtime adapter example](examples/ai_runtime_adapter_usage.mjs)
