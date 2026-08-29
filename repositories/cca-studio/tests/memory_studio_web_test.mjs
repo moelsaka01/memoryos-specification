@@ -1296,17 +1296,19 @@ test("Cognitive Replay state restoration is immutable frame-bound and determinis
 });
 
 test("Cognitive Replay remains controller-owned and renderer-independent", async () => {
-  const [replaySource, appSource, rendererSource, styles] = await Promise.all([
+  const [replaySource, coreSource, appSource, rendererSource, styles] = await Promise.all([
     readFile(resolve(studioRoot, "web/js/cognitive-replay.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/js/investigation-core.js"), "utf8"),
     readFile(resolve(studioRoot, "web/js/app.js"), "utf8"),
     readFile(resolve(studioRoot, "web/js/graph.js"), "utf8"),
     readFile(resolve(studioRoot, "web/styles.css"), "utf8"),
   ]);
   assert.doesNotMatch(replaySource, /\bwindow\b|\bdocument\b|setTimeout|setInterval|requestAnimationFrame|Math\.random|Date\./);
   assert.doesNotMatch(rendererSource, /from\s+["']\.\/cognitive-replay\.js["']|buildCognitiveReplay|advanceReplay|playReplay/);
-  assert.match(appSource, /buildCognitiveReplay\(state\.activeTrace\)/);
-  assert.match(appSource, /projectReplay\(state\.activeReplay, state\.replayState\)/);
-  assert.match(appSource, /advanceReplay\(state\.activeReplay, state\.replayState\)/);
+  assert.match(appSource, /investigationCore\.replay\(investigationIdentifier, action\)/);
+  assert.match(coreSource, /buildCognitiveReplay\(state\.activeTrace\)/);
+  assert.match(coreSource, /projectReplay\(replay, current\)/);
+  assert.match(coreSource, /advance: advanceReplay/);
   assert.match(rendererSource, /Cognitive Replay controls/);
   for (const control of ["Play replay", "Pause replay", "Restart replay", "Previous replay step", "Next replay step"]) {
     assert.match(rendererSource, new RegExp(control));
@@ -1456,14 +1458,16 @@ test("the Evolution renderer consumes engine classifications and never computes 
   assert.deepEqual(rendering.removedRelationshipKeys, evolution.view.removedRelationshipKeys);
   assert.throws(() => prepareEvolutionRenderingState(pair.to.world, evolution.view), /not bound/);
 
-  const [engineSource, rendererSource, appSource] = await Promise.all([
+  const [engineSource, rendererSource, appSource, coreSource] = await Promise.all([
     readFile(resolve(studioRoot, "web/js/cognitive-evolution.js"), "utf8"),
     readFile(resolve(studioRoot, "web/js/graph.js"), "utf8"),
     readFile(resolve(studioRoot, "web/js/app.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/js/investigation-core.js"), "utf8"),
   ]);
   assert.doesNotMatch(engineSource, /\bwindow\b|\bdocument\b|setTimeout|setInterval|requestAnimationFrame|Math\.random|Date\./);
   assert.doesNotMatch(rendererSource, /from\s+["']\.\/cognitive-evolution\.js["']|compareCognitiveEvolution|canonicalObservation/);
-  assert.match(appSource, /compareCognitiveEvolution\(pair\.from, pair\.to\)/);
+  assert.match(appSource, /investigationCore\.compare\(investigationIdentifier, coreAction\)/);
+  assert.match(coreSource, /compareCognitiveEvolution\(pair\.from, pair\.to\)/);
   for (const control of ["Compare", "Previous Observation", "Next Observation"]) {
     assert.match(rendererSource, new RegExp(control));
   }
@@ -1669,18 +1673,20 @@ test("the Comparative renderer consumes aligned classifications and never comput
   assert.equal(rendering.atDivergence, true);
   assert.throws(() => prepareComparativeRenderingState(pair.to.world, view), /not bound/);
 
-  const [engineSource, controllerSource, rendererSource, appSource, styles] = await Promise.all([
+  const [engineSource, controllerSource, rendererSource, appSource, coreSource, styles] = await Promise.all([
     readFile(resolve(studioRoot, "web/js/cognitive-comparative-reconstruction.js"), "utf8"),
     readFile(resolve(studioRoot, "web/js/cognitive-comparative-replay.js"), "utf8"),
     readFile(resolve(studioRoot, "web/js/graph.js"), "utf8"),
     readFile(resolve(studioRoot, "web/js/app.js"), "utf8"),
+    readFile(resolve(studioRoot, "web/js/investigation-core.js"), "utf8"),
     readFile(resolve(studioRoot, "web/styles.css"), "utf8"),
   ]);
   for (const source of [engineSource, controllerSource]) {
     assert.doesNotMatch(source, /\bwindow\b|\bdocument\b|setTimeout|setInterval|requestAnimationFrame|Math\.random|Date\./);
   }
   assert.doesNotMatch(rendererSource, /from\s+["']\.\/cognitive-comparative|buildComparativeReconstruction|advanceComparativeReplay|canonicalObservation/);
-  assert.match(appSource, /buildComparativeReconstruction\(pair\.from, fromTrace, pair\.to, toTrace\)/);
+  assert.match(appSource, /investigationCore\.compare\(investigationIdentifier, \{/);
+  assert.match(coreSource, /buildComparativeReconstruction\(pair\.from, fromTrace, pair\.to, toTrace\)/);
   assert.match(rendererSource, /prepareComparativeRenderingState\(world, comparativeView\)/);
   assert.match(rendererSource, /comparativeSideRecord\(record, side\)/);
   assert.match(rendererSource, /updateComparativeMarker/);
@@ -1715,13 +1721,14 @@ test("Comparative Reconstruction requires explicit activation and preserves Cogn
     "updateComparativeReplay",
     "scheduleComparativeReplay",
   );
-  assert.match(synchronizeSource, /!state\.comparativeActive/);
-  assert.match(activationSource, /state\.comparativeActive = true/);
+  assert.match(synchronizeSource, /!state\.evolutionController\.active/);
+  assert.match(activationSource, /investigationCore\.compare\(investigationIdentifier, \{/);
+  assert.match(applicationSource, /state\.comparativeActive = Boolean\(investigationView\.comparativeReconstruction\)/);
   assert.match(applicationSource, /data-comparative-start/);
   assert.match(applicationSource, /evolutionView: comparativeView \? null : evolution\?\.view/);
-  assert.doesNotMatch(synchronizeSource, /comparativeActive = true/,
+  assert.doesNotMatch(synchronizeSource, /investigationCore\.compare|comparativeActive = true/,
     "activating Cognitive Evolution alone must never enter Comparative Reconstruction");
-  assert.match(comparativeControlSource, /state\.comparativeActive = false/);
+  assert.match(comparativeControlSource, /investigationCore\.compare\(investigationIdentifier, "back"\)/);
   assert.doesNotMatch(comparativeControlSource, /updateEvolution\(/,
     "leaving Comparative Reconstruction must return to the existing Evolution view");
 });
@@ -1744,7 +1751,7 @@ test("a rebuilt trace retargets both selection and follow when their former memb
     /!traceContainsNode\(state\.activeTrace, activeSelectedKey\)[\s\S]*!traceContainsNode\(state\.activeTrace, activeFollowedKey\)/,
     "both stale interaction anchors must be detected after trace reconstruction",
   );
-  assert.match(acceptFrame, /node\.key\s*===\s*state\.activeTrace\.targetNodeKey/);
+  assert.match(acceptFrame, /\(\{ key \}\) => key === state\.activeTrace\.targetNodeKey/);
   assert.match(acceptFrame, /state\.graphSelection\s*=\s*\{\s*identifier:\s*target\.identifier,\s*observations,\s*nodeKey:\s*target\.key\s*\}/);
   assert.match(acceptFrame, /state\.graphViewState\s*=\s*selectGraphNode\(state\.graphViewState,\s*target\.key\)/);
 
@@ -1758,18 +1765,15 @@ test("a rebuilt trace retargets both selection and follow when their former memb
 
 test("a failed trace rebuild survives selection clearing and renders in the default graph context", async () => {
   const source = await readFile(resolve(studioRoot, "web/js/app.js"), "utf8");
+  const coreSource = await readFile(resolve(studioRoot, "web/js/investigation-core.js"), "utf8");
   const acceptFrame = applicationFunctionSource(source, "acceptObservationFrame", "renderNeuralPerspective");
   const clearSelection = applicationFunctionSource(source, "clearObservedSelection", "synchronizeSelectionWithCurrentFrame");
   const graphContext = applicationFunctionSource(source, "graphContext", "traceContainsNode");
-  const failedRebuild = acceptFrame.match(/if\s*\(!rebuildActiveTrace\(traceTargetKey\)\)\s*\{([\s\S]*?)\}\s*else/);
-
-  assert.ok(failedRebuild, "the frame acceptance path must handle trace rebuild rejection explicitly");
-  assert.match(failedRebuild[1], /clearObservedSelection\(\)/);
-  assert.doesNotMatch(
-    failedRebuild[1],
-    /traceDiagnostic\s*=\s*null/,
-    "clearing the rejected selection must retain the deterministic query diagnostic",
-  );
+  assert.match(coreSource, /previousTargetNodeKey[\s\S]*state\.traceDiagnostic = deepFreeze\(\{/,
+    "the Core must retain a deterministic trace-rebuild diagnostic");
+  assert.match(acceptFrame, /else if \(state\.traceDiagnostic\) \{[\s\S]*clearObservedSelection\(\)/);
+  assert.doesNotMatch(acceptFrame, /traceDiagnostic\s*=\s*null/,
+    "frame acceptance must retain the Core diagnostic");
   assert.doesNotMatch(clearSelection, /traceDiagnostic/, "selection cleanup must not erase trace-query evidence");
   assert.match(graphContext, /if\s*\(state\.graphSelection\)\s*return\s+graphSelectionView\(state\.graphSelection\)/);
   assert.match(graphContext, /state\.traceDiagnostic\s*\?/);

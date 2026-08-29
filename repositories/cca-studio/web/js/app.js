@@ -1,6 +1,5 @@
 import { resolveSnapshot, scopeDefinitions } from "../data/studio-snapshot.js";
 import {
-  buildGraph,
   cloneDetached,
   findObservation,
   resolveInspectionDetails,
@@ -14,65 +13,23 @@ import {
 } from "./graph-view-state.js";
 import { resolveCommandAdapter } from "./host-adapter.js";
 import {
-  appendObservationFrame,
-  createObservationTimeline,
-} from "./observation-timeline.js";
-import {
-  buildCognitiveTrace,
-  createCognitiveTraceQuery,
-  queryCognitiveTrace,
-  resolveCognitiveTraceTarget,
-} from "./cognitive-trace.js";
-import {
-  advanceReplay,
-  buildCognitiveReplay,
-  createReplayState,
-  nextReplayStep,
-  pauseReplay,
-  playReplay,
-  previousReplayStep,
-  projectReplay,
-  restartReplay,
-  restoreReplayState,
-  snapshotReplayState,
-} from "./cognitive-replay.js";
-import {
-  compareCognitiveEvolution,
-  validateCognitiveEvolution,
-} from "./cognitive-evolution.js";
-import {
-  compareEvolution,
-  createEvolutionController,
-  evolutionFrames,
-  nextEvolutionObservation,
-  previousEvolutionObservation,
-  reconcileEvolutionController,
-} from "./cognitive-evolution-controller.js";
-import {
-  buildComparativeReconstruction,
-  validateComparativeReconstruction,
-} from "./cognitive-comparative-reconstruction.js";
-import {
-  advanceComparativeReplay,
-  createComparativeReplayState,
-  nextComparativeStep,
-  pauseComparativeReplay,
-  playComparativeReplay,
-  previousComparativeStep,
-  projectComparativeReplay,
-  resetComparativeReplay,
-} from "./cognitive-comparative-replay.js";
+  InvestigationCore,
+  investigationPhase,
+  projectInvestigation,
+} from "./investigation-core.js";
 
 let snapshot = cloneDetached(resolveSnapshot());
-let observationTimeline = createObservationTimeline();
-const initialObservation = appendObservationFrame(observationTimeline, {
+const investigationCore = new InvestigationCore();
+const investigationIdentifier = `studio-investigation:${snapshot.workspaceIdentifier}:${snapshot.session?.identifier ?? "detached"}`;
+let investigation = investigationCore.create({
+  identifier: investigationIdentifier,
   snapshot,
-  graph: buildGraph(snapshot),
   operation: "InitialObservation",
   resultCode: "OK",
 });
-observationTimeline = initialObservation.frames;
-let currentFrame = initialObservation.current;
+let investigationView = projectInvestigation(investigation);
+let observationTimeline = investigationView.observationFrames;
+let currentFrame = investigationView.currentFrame;
 let commandAdapter = null;
 let operationSequence = 0;
 let replayTimer = null;
@@ -196,15 +153,20 @@ const state = {
   graphSelection: null,
   graphViewState: createGraphViewState(),
   pendingActivity: null,
-  activeTrace: null,
-  activeReplay: null,
-  replayState: null,
-  evolutionController: createEvolutionController(observationTimeline.length),
+  activeTrace: investigationView.trace,
+  activeReplay: investigationView.replay,
+  replayState: investigationView.replayState,
+  replayView: investigationView.replayView,
+  evolutionController: investigationView.evolutionController,
+  evolution: investigationView.evolution,
+  comparisonFrames: investigationView.comparisonFrames,
+  coreAvailability: investigationView.availability,
   evolutionSelection: null,
   comparativeActive: false,
   comparativeTargetKey: null,
-  comparativeReconstruction: null,
-  comparativeReplayState: null,
+  comparativeReconstruction: investigationView.comparativeReconstruction,
+  comparativeReplayState: investigationView.comparativeReplayState,
+  comparativeView: investigationView.comparativeView,
   comparativeDiagnostic: null,
   investigationCheckpoint: null,
   traceDiagnostic: null,
@@ -212,17 +174,33 @@ const state = {
   busy: false,
 };
 
+function synchronizeFromInvestigationCore(next = investigationCore.load(investigationIdentifier)) {
+  investigation = next;
+  investigationView = projectInvestigation(investigation);
+  observationTimeline = investigationView.observationFrames;
+  currentFrame = investigationView.currentFrame;
+  state.activeTrace = investigationView.trace;
+  state.activeReplay = investigationView.replay;
+  state.replayState = investigationView.replayState;
+  state.replayView = investigationView.replayView;
+  state.evolutionController = investigationView.evolutionController;
+  state.evolution = investigationView.evolution;
+  state.comparisonFrames = investigationView.comparisonFrames;
+  state.coreAvailability = investigationView.availability;
+  state.comparativeActive = Boolean(investigationView.comparativeReconstruction);
+  state.comparativeReconstruction = investigationView.comparativeReconstruction;
+  state.comparativeReplayState = investigationView.comparativeReplayState;
+  state.comparativeView = investigationView.comparativeView;
+  state.traceDiagnostic = investigationView.traceDiagnostic;
+  return investigationView;
+}
+
 function workflowPhase() {
-  if (state.comparativeActive && state.comparativeReconstruction) return "compare";
-  if (state.evolutionController.active) return "evolution";
-  if (state.activeTrace && state.replayState
-    && (state.replayState.cursor >= 0 || state.replayState.status !== "ready")) return "replay";
-  if (state.activeTrace) return "trace";
-  return "observe";
+  return investigationPhase(investigation);
 }
 
 function comparisonAvailability() {
-  if (!state.evolutionController.available) {
+  if (!state.coreAvailability.compare) {
     return { available: false, reason: "Observe another frame to compare deterministic cognition." };
   }
   if (state.evolutionController.active || state.comparativeActive) return { available: true, reason: "" };
@@ -238,24 +216,21 @@ function captureInvestigationCheckpoint() {
     frameIdentifier: state.activeTrace.frameIdentifier,
     targetNodeKey: state.activeTrace.targetNodeKey,
     graphViewState: createGraphViewState(state.graphViewState),
-    replayState: snapshotReplayState(state.activeReplay, state.replayState),
   });
 }
 
 function restoreInvestigationCheckpoint() {
   const checkpoint = state.investigationCheckpoint;
   state.investigationCheckpoint = null;
-  if (!checkpoint || checkpoint.frameIdentifier !== currentFrame?.world.frame.identifier) return false;
-  if (!rebuildActiveTrace(checkpoint.targetNodeKey)) return false;
+  if (!checkpoint || !state.activeTrace
+    || checkpoint.frameIdentifier !== state.activeTrace.frameIdentifier
+    || checkpoint.targetNodeKey !== state.activeTrace.targetNodeKey) return false;
   state.graphViewState = reconcileGraphViewState(currentFrame.world, checkpoint.graphViewState);
   const target = currentFrame.world.nodes.find(({ key }) => key === checkpoint.targetNodeKey);
   const observations = target ? observationsForWorldNode(target) : [];
   if (target && observations.length > 0) {
     state.graphSelection = { identifier: target.identifier, observations, nodeKey: target.key };
     state.graphViewState = { ...state.graphViewState, selectedKey: target.key };
-  }
-  if (state.activeReplay && checkpoint.replayState.replayIdentifier === state.activeReplay.identifier) {
-    state.replayState = restoreReplayState(state.activeReplay, checkpoint.replayState);
   }
   return true;
 }
@@ -289,36 +264,11 @@ function clearReplayTimer() {
   replayTimer = null;
 }
 
-function clearReplay() {
-  clearReplayTimer();
-  state.activeReplay = null;
-  state.replayState = null;
-}
-
-function synchronizeReplayWithTrace() {
-  if (!state.activeTrace) {
-    clearReplay();
-    return;
-  }
-  if (state.activeReplay?.traceIdentifier === state.activeTrace.identifier) return;
-  clearReplayTimer();
-  state.activeReplay = buildCognitiveReplay(state.activeTrace);
-  state.replayState = createReplayState(state.activeReplay);
-}
-
 function updateReplay(action) {
   if (!state.activeReplay || !state.replayState) return;
   clearReplayTimer();
-  const operations = {
-    play: playReplay,
-    pause: pauseReplay,
-    restart: restartReplay,
-    previous: previousReplayStep,
-    next: nextReplayStep,
-  };
-  const operation = operations[action];
-  if (!operation) return;
-  state.replayState = operation(state.activeReplay, state.replayState);
+  if (!["play", "pause", "restart", "previous", "next"].includes(action)) return;
+  synchronizeFromInvestigationCore(investigationCore.replay(investigationIdentifier, action));
   if (!refreshReplayPresentation()) renderRoute();
   scheduleReplay();
 }
@@ -330,7 +280,7 @@ function scheduleReplay() {
   replayTimer = window.setTimeout(() => {
     replayTimer = null;
     if (state.activeReplay?.identifier !== replayIdentifier || state.replayState?.status !== "playing") return;
-    state.replayState = advanceReplay(state.activeReplay, state.replayState);
+    synchronizeFromInvestigationCore(investigationCore.replay(investigationIdentifier, "advance"));
     if (!refreshReplayPresentation()) renderRoute();
     scheduleReplay();
   }, replayStepDelay);
@@ -339,17 +289,6 @@ function scheduleReplay() {
 function clearComparativeReplayTimer() {
   if (comparativeReplayTimer !== null) window.clearTimeout(comparativeReplayTimer);
   comparativeReplayTimer = null;
-}
-
-function clearComparativeReconstruction(resetTarget = true) {
-  clearComparativeReplayTimer();
-  state.comparativeReconstruction = null;
-  state.comparativeReplayState = null;
-  state.comparativeDiagnostic = null;
-  if (resetTarget) {
-    state.comparativeActive = false;
-    state.comparativeTargetKey = null;
-  }
 }
 
 function comparableReflectionTarget(pair) {
@@ -365,43 +304,14 @@ function comparableReflectionTarget(pair) {
 
 function synchronizeComparativeReconstruction(evolution) {
   if (!evolution || !state.evolutionController.active) {
-    clearComparativeReconstruction();
     return null;
   }
-  if (!state.comparativeActive) {
-    clearComparativeReconstruction(false);
-    return null;
-  }
-  const pair = evolutionFrames(observationTimeline, state.evolutionController);
-  const targetNodeKey = pair ? comparableReflectionTarget(pair) : null;
-  if (!pair || !targetNodeKey) {
-    clearComparativeReconstruction(false);
-    state.comparativeDiagnostic = "Both observations require the same exact Reflection identity for synchronized reconstruction.";
-    return null;
-  }
-  try {
-    const fromTrace = buildCognitiveTrace(pair.from, targetNodeKey);
-    const toTrace = buildCognitiveTrace(pair.to, targetNodeKey);
-    const reconstruction = buildComparativeReconstruction(pair.from, fromTrace, pair.to, toTrace);
-    validateComparativeReconstruction(reconstruction);
-    state.comparativeTargetKey = targetNodeKey;
-    state.comparativeDiagnostic = null;
-    if (state.comparativeReconstruction?.identifier !== reconstruction.identifier) {
-      clearComparativeReplayTimer();
-      state.comparativeReconstruction = reconstruction;
-      state.comparativeReplayState = createComparativeReplayState(reconstruction);
-    }
-    return state.comparativeReconstruction;
-  } catch (error) {
-    clearComparativeReconstruction(false);
-    state.comparativeDiagnostic = error instanceof Error ? error.message : String(error);
-    return null;
-  }
+  return state.comparativeReconstruction;
 }
 
 function activateComparativeReconstruction() {
   const evolution = currentEvolution();
-  const pair = evolution ? evolutionFrames(observationTimeline, state.evolutionController) : null;
+  const pair = evolution ? state.comparisonFrames : null;
   const targetNodeKey = pair ? comparableReflectionTarget(pair) : null;
   if (!evolution || !pair || !targetNodeKey) {
     state.comparativeDiagnostic = "Both observations require the same exact Reflection identity for synchronized reconstruction.";
@@ -410,15 +320,22 @@ function activateComparativeReconstruction() {
     return;
   }
   state.comparativeTargetKey = targetNodeKey;
-  state.comparativeActive = true;
+  try {
+    synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, {
+      action: "start",
+      targetNodeKey,
+    }));
+    state.comparativeDiagnostic = null;
+  } catch (error) {
+    state.comparativeDiagnostic = error instanceof Error ? error.message : String(error);
+  }
   renderRoute();
   focusGraphControl("Play");
 }
 
 function updateComparativeReplay(action) {
   if (action === "compare" || action === "back") {
-    state.comparativeActive = false;
-    clearComparativeReconstruction(false);
+    synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, "back"));
     renderRoute();
     focusGraphControl("Compare");
     return;
@@ -426,16 +343,9 @@ function updateComparativeReplay(action) {
   const reconstruction = state.comparativeReconstruction;
   if (!reconstruction || !state.comparativeReplayState) return;
   clearComparativeReplayTimer();
-  const operations = {
-    play: playComparativeReplay,
-    pause: pauseComparativeReplay,
-    previous: previousComparativeStep,
-    next: nextComparativeStep,
-    reset: resetComparativeReplay,
-  };
-  const operation = operations[action];
-  if (!operation) return;
-  state.comparativeReplayState = operation(reconstruction, state.comparativeReplayState);
+  const coreAction = { previous: "previousStep", next: "nextStep" }[action] ?? action;
+  if (!["play", "pause", "previousStep", "nextStep", "reset"].includes(coreAction)) return;
+  synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, coreAction));
   if (!refreshComparativePresentation()) renderRoute();
   scheduleComparativeReplay();
 }
@@ -448,10 +358,7 @@ function scheduleComparativeReplay() {
     comparativeReplayTimer = null;
     if (state.comparativeReconstruction?.identifier !== reconstructionIdentifier
       || state.comparativeReplayState?.status !== "playing") return;
-    state.comparativeReplayState = advanceComparativeReplay(
-      state.comparativeReconstruction,
-      state.comparativeReplayState,
-    );
+    synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, "advance"));
     if (!refreshComparativePresentation()) renderRoute();
     scheduleComparativeReplay();
   }, replayStepDelay);
@@ -510,7 +417,7 @@ function investigationWorkflowView() {
   const activeIndex = phaseOrder[phase];
   const replayActionable = phase !== "replay" || state.replayState?.status !== "playing";
   const evolutionPair = phase === "evolution"
-    ? evolutionFrames(observationTimeline, state.evolutionController)
+    ? state.comparisonFrames
     : null;
   const compareActionable = phase === "evolution"
     ? Boolean(evolutionPair && comparableReflectionTarget(evolutionPair))
@@ -634,7 +541,7 @@ function replayElementLabel(step) {
 function investigationContextView() {
   const target = currentFrame?.world.nodes.find(({ key }) => key === state.activeTrace?.targetNodeKey);
   const targetObservation = target ? observationsForWorldNode(target)[0]?.value : null;
-  const replayView = state.activeReplay && state.replayState ? projectReplay(state.activeReplay, state.replayState) : null;
+  const replayView = state.replayView;
   const currentStep = state.activeReplay?.steps[replayView?.cursor] ?? null;
   const roleLabel = traceStages.find(([role]) => role === currentStep?.role)?.[1] ?? "Origin evidence";
   const currentLabel = replayView?.status === "completed"
@@ -879,9 +786,7 @@ function neuralDefaultContext(route) {
 function graphContext(route = state.route) {
   const evolution = currentEvolution();
   const reconstruction = state.comparativeActive ? state.comparativeReconstruction : null;
-  const comparativeView = reconstruction && state.comparativeReplayState
-    ? projectComparativeReplay(reconstruction, state.comparativeReplayState)
-    : null;
+  const comparativeView = reconstruction ? state.comparativeView : null;
   if (reconstruction && comparativeView) return comparativeContextView(reconstruction, comparativeView);
   if (state.comparativeDiagnostic && evolution) {
     return `<section class="evolution-context"><header><div><span class="eyebrow">Comparative Reconstruction unavailable</span><h2>Exact trace pair required</h2></div></header><p>${escapeHtml(state.comparativeDiagnostic)}</p></section>`;
@@ -893,16 +798,11 @@ function graphContext(route = state.route) {
 }
 
 function currentEvolution() {
-  if (!state.evolutionController.active) return null;
-  const pair = evolutionFrames(observationTimeline, state.evolutionController);
-  if (!pair) return null;
-  const evolution = compareCognitiveEvolution(pair.from, pair.to);
-  validateCognitiveEvolution(evolution);
-  return evolution;
+  return state.evolution;
 }
 
 function comparativeEntryControl() {
-  const pair = evolutionFrames(observationTimeline, state.evolutionController);
+  const pair = state.comparisonFrames;
   const targetNodeKey = pair ? comparableReflectionTarget(pair) : null;
   if (!targetNodeKey) {
     const reason = "Select a Reflection that exists in both observations to reconstruct divergence.";
@@ -937,26 +837,21 @@ function evolutionContextView(evolution) {
 }
 
 function updateEvolution(action) {
-  const frameCount = observationTimeline.length;
-  const operations = {
-    compare: compareEvolution,
-    previous: previousEvolutionObservation,
-    next: nextEvolutionObservation,
-  };
-  const operation = operations[action];
-  if (!operation) return;
+  if (!["compare", "previous", "next"].includes(action)) return;
   if (action === "compare" && !state.evolutionController.active && !comparisonAvailability().available) return;
   const wasActive = state.evolutionController.active;
   const checkpoint = !wasActive && action === "compare" ? captureInvestigationCheckpoint() : null;
-  state.evolutionController = operation(state.evolutionController, frameCount);
+  const coreAction = action === "compare" ? (wasActive ? "back" : "enter") : action;
+  synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, coreAction));
   state.evolutionSelection = null;
   const pairChanged = wasActive && action !== "compare";
-  clearComparativeReconstruction(pairChanged || !state.evolutionController.active);
+  if (pairChanged || !state.evolutionController.active) {
+    state.comparativeTargetKey = null;
+    state.comparativeDiagnostic = null;
+  }
   if (!wasActive && state.evolutionController.active) {
     state.investigationCheckpoint = checkpoint;
     state.comparativeTargetKey = checkpoint?.targetNodeKey ?? state.comparativeTargetKey;
-    state.activeTrace = null;
-    clearReplay();
     state.traceDiagnostic = null;
     clearObservedSelection();
   } else if (wasActive && !state.evolutionController.active) {
@@ -984,9 +879,10 @@ function returnFromInvestigation() {
 
 function restoreTraceFromComparison() {
   if (!state.evolutionController.active) return Boolean(state.activeTrace);
-  state.comparativeActive = false;
-  clearComparativeReconstruction(true);
-  state.evolutionController = compareEvolution(state.evolutionController, observationTimeline.length);
+  if (state.comparativeReconstruction) {
+    synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, "back"));
+  }
+  synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, "back"));
   state.evolutionSelection = null;
   return restoreInvestigationCheckpoint();
 }
@@ -994,11 +890,10 @@ function restoreTraceFromComparison() {
 function returnToSemanticWorld() {
   clearReplayTimer();
   clearComparativeReplayTimer();
-  state.activeTrace = null;
-  clearReplay();
-  state.evolutionController = createEvolutionController(observationTimeline.length);
+  synchronizeFromInvestigationCore(investigationCore.returnToWorld(investigationIdentifier));
   state.evolutionSelection = null;
-  clearComparativeReconstruction();
+  state.comparativeTargetKey = null;
+  state.comparativeDiagnostic = null;
   state.investigationCheckpoint = null;
   state.traceDiagnostic = null;
   clearObservedSelection();
@@ -1053,96 +948,67 @@ function traceContainsNode(trace, nodeKey) {
 }
 
 function queryTraceForNode(node) {
-  if (!currentFrame || !node || node.aggregate || node.family !== "Reflection" || node.kind !== "reflection") {
+  if (!currentFrame || !node || node.kind !== "reflection") {
     state.traceDiagnostic = null;
     return null;
   }
-  const query = createCognitiveTraceQuery({
-    workspaceIdentifier: snapshot.workspaceIdentifier,
-    sessionIdentifier: currentFrame.world.frame.sessionIdentifier ?? null,
-    frameIdentifier: currentFrame.world.frame.identifier,
-    targetNodeKey: node.key,
-  });
-  const result = queryCognitiveTrace(currentFrame, query);
-  state.traceDiagnostic = result.succeeded
-    ? null
-    : { code: result.code, message: result.message, targetNodeKey: node.key };
-  return result.succeeded ? result.trace : null;
+  try {
+    synchronizeFromInvestigationCore(investigationCore.trace(investigationIdentifier, node.key));
+    state.traceDiagnostic = null;
+    return state.activeTrace;
+  } catch (error) {
+    state.traceDiagnostic = {
+      code: error?.code ?? "INVALID_TRACE",
+      message: error instanceof Error ? error.message : String(error),
+      targetNodeKey: node.key,
+    };
+    return null;
+  }
 }
 
 function reconcileActiveTraceForSelection(node) {
   const previous = state.activeTrace;
-  const target = currentFrame ? resolveCognitiveTraceTarget(currentFrame.world, node?.key) : null;
-  if (target) {
-    state.activeTrace = queryTraceForNode(target);
+  if (node?.kind === "reflection") {
+    const nextTrace = queryTraceForNode(node);
+    if (!nextTrace && !traceContainsNode(previous, node.key)) {
+      synchronizeFromInvestigationCore(investigationCore.returnToWorld(investigationIdentifier));
+    }
   } else if (!traceContainsNode(previous, node?.key)) {
-    state.activeTrace = null;
+    synchronizeFromInvestigationCore(investigationCore.returnToWorld(investigationIdentifier));
     state.traceDiagnostic = null;
   }
-  synchronizeReplayWithTrace();
   return previous?.identifier !== state.activeTrace?.identifier;
 }
 
-function rebuildActiveTrace(targetNodeKey) {
-  if (!targetNodeKey || !currentFrame) {
-    state.activeTrace = null;
-    clearReplay();
-    state.traceDiagnostic = null;
-    return false;
-  }
-  const target = currentFrame.world.nodes.find((node) => node.key === targetNodeKey);
-  const nextTrace = queryTraceForNode(target);
-  state.activeTrace = nextTrace;
-  synchronizeReplayWithTrace();
-  return Boolean(nextTrace);
-}
-
 function acceptObservationFrame(view, operation, query, resultCode) {
-  const selectedKey = state.graphSelection?.nodeKey ?? state.graphViewState.selectedKey;
-  const traceTargetKey = state.activeTrace?.targetNodeKey ?? null;
+  const activeSelectedKey = state.graphSelection?.nodeKey ?? state.graphViewState.selectedKey;
+  const activeFollowedKey = state.graphViewState.followedKey;
   const nextSnapshot = cloneDetached(view);
-  const accepted = appendObservationFrame(observationTimeline, {
+  synchronizeFromInvestigationCore(investigationCore.observe(investigationIdentifier, {
     snapshot: nextSnapshot,
-    graph: buildGraph(nextSnapshot),
     operation,
     query,
     resultCode,
-  });
+  }));
   snapshot = nextSnapshot;
-  observationTimeline = accepted.frames;
-  currentFrame = accepted.current;
-  state.evolutionController = reconcileEvolutionController(state.evolutionController, observationTimeline.length);
   state.evolutionSelection = null;
-  clearComparativeReconstruction(false);
+  state.comparativeTargetKey = null;
+  state.comparativeDiagnostic = null;
+  state.investigationCheckpoint = null;
   state.pendingActivity = currentFrame.activity;
   state.graphViewState = reconcileGraphViewState(currentFrame.world, state.graphViewState);
-  synchronizeSelectionWithCurrentFrame(selectedKey);
-  if (selectedKey && !state.graphSelection) {
-    state.activeTrace = null;
-    clearReplay();
-    clearComparativeReconstruction();
-    state.traceDiagnostic = null;
-  } else if (traceTargetKey) {
-    if (!rebuildActiveTrace(traceTargetKey)) {
-      clearObservedSelection();
-    } else {
-      const activeSelectedKey = state.graphSelection?.nodeKey ?? state.graphViewState.selectedKey;
-      const activeFollowedKey = state.graphViewState.followedKey;
-      if ((activeSelectedKey && !traceContainsNode(state.activeTrace, activeSelectedKey))
-        || (activeFollowedKey && !traceContainsNode(state.activeTrace, activeFollowedKey))) {
-        const target = currentFrame.world.nodes.find((node) => node.key === state.activeTrace.targetNodeKey);
-        const observations = target ? observationsForWorldNode(target) : [];
-        if (target && observations.length > 0) {
-          state.graphSelection = { identifier: target.identifier, observations, nodeKey: target.key };
-          state.graphViewState = selectGraphNode(state.graphViewState, target.key);
-          populateInspector(target.identifier, observations, false);
-        } else {
-          state.activeTrace = null;
-          clearReplay();
-          clearObservedSelection();
-        }
-      }
+  synchronizeSelectionWithCurrentFrame(activeSelectedKey);
+  if (state.activeTrace
+    && ((!traceContainsNode(state.activeTrace, activeSelectedKey) && activeSelectedKey)
+      || (!traceContainsNode(state.activeTrace, activeFollowedKey) && activeFollowedKey))) {
+    const target = currentFrame.world.nodes.find(({ key }) => key === state.activeTrace.targetNodeKey);
+    const observations = target ? observationsForWorldNode(target) : [];
+    if (target && observations.length > 0) {
+      state.graphSelection = { identifier: target.identifier, observations, nodeKey: target.key };
+      state.graphViewState = selectGraphNode(state.graphViewState, target.key);
     }
+  } else if (state.traceDiagnostic) {
+    clearObservedSelection();
   }
 }
 
@@ -1152,14 +1018,10 @@ function renderNeuralPerspective(route = state.route) {
   const reconstruction = evolution && state.comparativeActive
     ? synchronizeComparativeReconstruction(evolution)
     : null;
-  const comparativeView = reconstruction && state.comparativeReplayState
-    ? projectComparativeReplay(reconstruction, state.comparativeReplayState)
-    : null;
+  const comparativeView = reconstruction ? state.comparativeView : null;
   const world = reconstruction?.world ?? evolution?.world ?? frame.world;
   const activity = state.pendingActivity ?? {};
-  const replayView = state.activeReplay && state.replayState
-    ? projectReplay(state.activeReplay, state.replayState)
-    : null;
+  const replayView = state.replayView;
   const comparison = comparisonAvailability();
   const evolutionControl = {
     ...state.evolutionController,
@@ -1184,22 +1046,24 @@ function renderNeuralPerspective(route = state.route) {
   const graphContainer = document.querySelector("#memory-graph");
   graphController = renderGraph(graphContainer, world, (node) => {
     if (state.replayState?.status === "playing") {
-      clearReplayTimer();
-      state.replayState = pauseReplay(state.activeReplay, state.replayState);
+      updateReplay("pause");
       if (!refreshReplayPresentation()) renderRoute();
     }
     if (comparativeView) {
       if (state.comparativeReplayState?.status === "playing") {
-        clearComparativeReplayTimer();
-        state.comparativeReplayState = pauseComparativeReplay(reconstruction, state.comparativeReplayState);
+        updateComparativeReplay("pause");
       }
-      const pair = evolutionFrames(observationTimeline, state.evolutionController);
+      const pair = state.comparisonFrames;
       const comparable = !node.aggregate && node.kind === "reflection" && node.family === "Reflection"
         && pair?.from.world.nodes.some(({ key }) => key === node.key)
         && pair?.to.world.nodes.some(({ key }) => key === node.key);
       if (comparable && node.key !== state.comparativeTargetKey) {
         state.comparativeTargetKey = node.key;
-        clearComparativeReconstruction(false);
+        synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, "back"));
+        synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, {
+          action: "start",
+          targetNodeKey: node.key,
+        }));
         renderRoute();
       } else {
         refreshComparativePresentation();
@@ -1208,7 +1072,7 @@ function renderNeuralPerspective(route = state.route) {
     }
     if (evolution) {
       state.evolutionSelection = node;
-      const pair = evolutionFrames(observationTimeline, state.evolutionController);
+      const pair = state.comparisonFrames;
       const comparable = !node.aggregate && node.kind === "reflection" && node.family === "Reflection"
         && pair?.from.world.nodes.some(({ key }) => key === node.key)
         && pair?.to.world.nodes.some(({ key }) => key === node.key);
@@ -1258,7 +1122,7 @@ function renderNeuralPerspective(route = state.route) {
 
 function refreshReplayPresentation() {
   if (!state.activeTrace || !state.activeReplay || !state.replayState || !graphController) return false;
-  const replayView = projectReplay(state.activeReplay, state.replayState);
+  const replayView = state.replayView;
   if (!graphController.updateReplayView(replayView)) return false;
   const liveState = document.querySelector(".graph-live-state");
   const replayLabels = { ready: "Replay ready", playing: "Constructing", paused: "Replay paused", completed: "Replay complete" };
@@ -1273,7 +1137,7 @@ function refreshReplayPresentation() {
 function refreshComparativePresentation() {
   const reconstruction = state.comparativeReconstruction;
   if (!reconstruction || !state.comparativeReplayState || !graphController) return false;
-  const view = projectComparativeReplay(reconstruction, state.comparativeReplayState);
+  const view = state.comparativeView;
   if (!graphController.updateComparativeView(view)) return false;
   const liveState = document.querySelector(".graph-live-state");
   const labels = {
@@ -1470,7 +1334,7 @@ function selectObservation(identifier, familyHint = null, observationPath = null
   const requestedNode = nodeKey
     ? currentFrame.world.nodes.find((node) => node.key === nodeKey)
     : matchingWorldNode(identifier, familyHint, observationPath);
-  const worldNode = resolveCognitiveTraceTarget(currentFrame.world, requestedNode?.key) ?? requestedNode;
+  const worldNode = requestedNode;
   const resolvedObservations = worldNode && worldNode.key !== requestedNode?.key
     ? observationsForWorldNode(worldNode)
     : observations;
@@ -1500,8 +1364,9 @@ function renderGraphContext() {
 function clearGraphSelection() {
   clearObservedSelection();
   const traceWasActive = Boolean(state.activeTrace);
-  state.activeTrace = null;
-  clearReplay();
+  if (traceWasActive || state.evolution || state.comparativeReconstruction) {
+    synchronizeFromInvestigationCore(investigationCore.returnToWorld(investigationIdentifier));
+  }
   state.traceDiagnostic = null;
   if (traceWasActive) {
     renderRoute();
@@ -1643,14 +1508,11 @@ async function executeSessionOperation(name) {
     if (result.succeeded && name === "observe") state.sessionState = "Observed";
     if (result.succeeded && name === "forgetSession") {
       state.sessionState = "Forgotten";
-      observationTimeline = createObservationTimeline();
+      synchronizeFromInvestigationCore(investigationCore.archive(investigationIdentifier));
+      observationTimeline = Object.freeze([]);
       currentFrame = null;
-      state.evolutionController = createEvolutionController(0);
       state.evolutionSelection = null;
-      clearComparativeReconstruction();
       state.pendingActivity = null;
-      state.activeTrace = null;
-      clearReplay();
       state.traceDiagnostic = null;
       state.graphSelection = null;
       state.graphViewState = createGraphViewState();
@@ -1738,11 +1600,12 @@ function initialize() {
     state.route = normalizeRoute(location.hash.slice(1));
     clearReplayTimer();
     clearComparativeReplayTimer();
-    state.activeTrace = null;
-    clearReplay();
-    state.evolutionController = createEvolutionController(observationTimeline.length);
+    if (investigation.state.lifecycle !== "Archived") {
+      synchronizeFromInvestigationCore(investigationCore.returnToWorld(investigationIdentifier));
+    }
     state.evolutionSelection = null;
-    clearComparativeReconstruction();
+    state.comparativeTargetKey = null;
+    state.comparativeDiagnostic = null;
     state.investigationCheckpoint = null;
     state.traceDiagnostic = null;
     clearObservedSelection();

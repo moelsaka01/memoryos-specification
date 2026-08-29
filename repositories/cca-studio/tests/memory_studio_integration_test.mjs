@@ -14,13 +14,14 @@ import { semanticWorldLayout } from "../web/js/semantic-world.js";
 const testDirectory = dirname(fileURLToPath(import.meta.url));
 const studioRoot = resolve(testDirectory, "..");
 
-const [appSource, graphSource, htmlSource, stylesSource, viewStateSource, semanticWorldSource] = await Promise.all([
+const [appSource, graphSource, htmlSource, stylesSource, viewStateSource, semanticWorldSource, investigationCoreSource] = await Promise.all([
   readFile(resolve(studioRoot, "web/js/app.js"), "utf8"),
   readFile(resolve(studioRoot, "web/js/graph.js"), "utf8"),
   readFile(resolve(studioRoot, "web/index.html"), "utf8"),
   readFile(resolve(studioRoot, "web/styles.css"), "utf8"),
   readFile(resolve(studioRoot, "web/js/graph-view-state.js"), "utf8"),
   readFile(resolve(studioRoot, "web/js/semantic-world.js"), "utf8"),
+  readFile(resolve(studioRoot, "web/js/investigation-core.js"), "utf8"),
 ]);
 
 function functionSource(source, name, nextName) {
@@ -111,13 +112,8 @@ test("MO-1108 calibrates the renderer viewport without changing semantic geograp
 
 test("MO-1108 exposes one exact Observe to Trace to Replay to Compare to Return workflow", () => {
   const phase = functionSource(appSource, "workflowPhase", "comparisonAvailability");
-  ordered(phase, [
-    'return "compare"',
-    'return "evolution"',
-    'return "replay"',
-    'return "trace"',
-    'return "observe"',
-  ], "workflow phases must have deterministic precedence");
+  assert.match(phase, /return investigationPhase\(investigation\)/,
+    "the Core is the single authority for deterministic lifecycle projection");
 
   const view = functionSource(appSource, "investigationWorkflowView", "refreshInvestigationWorkflow");
   ordered(view, [
@@ -144,6 +140,8 @@ test("MO-1108 exposes one exact Observe to Trace to Replay to Compare to Return 
   assert.match(actions, /updateReplay\(state\.replayState\.status === "completed" \? "restart" : "play"\)/);
   assert.match(actions, /updateEvolution\("compare"\)/);
   assert.match(actions, /activateComparativeReconstruction\(\)/);
+  assert.match(appSource, /investigationCore\.returnToWorld\(investigationIdentifier\)/);
+  assert.match(investigationCoreSource, /export function investigationPhase\(value\)/);
 
   const returnPath = functionSource(appSource, "returnFromInvestigation", "restoreTraceFromComparison");
   assert.match(returnPath, /state\.comparativeActive[\s\S]*updateComparativeReplay\("back"\)/);
@@ -162,20 +160,22 @@ test("RC-001 resolves exact investigation ownership and gates Compare on complet
   assert.match(matching, /matches\.length === 1 \? matches\[0\] : null/);
 
   const selection = functionSource(appSource, "selectObservation", "renderGraphContext");
-  assert.match(selection, /resolveCognitiveTraceTarget\(currentFrame\.world, requestedNode\?\.key\) \?\? requestedNode/);
   assert.match(selection, /reconcileActiveTraceForSelection\(worldNode\)/);
   assert.doesNotMatch(selection, /matches\[0\]|\.at\(-1\)|sort\(/, "selection must never choose an identifier-only fallback");
+  const traceQuery = functionSource(appSource, "queryTraceForNode", "reconcileActiveTraceForSelection");
+  assert.match(traceQuery, /investigationCore\.trace\(investigationIdentifier, node\.key\)/);
+  assert.match(investigationCoreSource, /resolveCognitiveTraceTarget\(state\.currentFrame\.world, payload\.selectedNodeKey\)/);
 
   const availability = functionSource(appSource, "comparisonAvailability", "captureInvestigationCheckpoint");
-  assert.match(availability, /!state\.evolutionController\.available/);
+  assert.match(availability, /!state\.coreAvailability\.compare/);
   assert.match(availability, /state\.evolutionController\.active \|\| state\.comparativeActive/);
   assert.match(availability, /!state\.activeTrace \|\| !state\.activeReplay \|\| state\.replayState\?\.status !== "completed"/);
   assert.match(availability, /Complete Cognitive Replay before comparing deterministic cognition/);
 
   const evolution = functionSource(appSource, "updateEvolution", "returnFromInvestigation");
   assert.match(evolution, /action === "compare" && !state\.evolutionController\.active && !comparisonAvailability\(\)\.available/);
-  assert.match(evolution, /const pairChanged = wasActive && action !== "compare"/);
-  assert.match(evolution, /clearComparativeReconstruction\(pairChanged \|\| !state\.evolutionController\.active\)/);
+  assert.match(evolution, /investigationCore\.compare\(investigationIdentifier, coreAction\)/);
+  assert.doesNotMatch(evolution, /compareCognitiveEvolution|buildComparativeReconstruction/);
 
   const actions = functionSource(appSource, "handleWorkflowAction", "bindInvestigationWorkflow");
   assert.match(actions, /action === "compare"[\s\S]*!comparisonAvailability\(\)\.available[\s\S]*updateEvolution\("compare"\)/);
@@ -204,13 +204,14 @@ test("MO-1108 comparison checkpoints restore the exact trace and replay state", 
   assert.match(capture, /frameIdentifier: state\.activeTrace\.frameIdentifier/);
   assert.match(capture, /targetNodeKey: state\.activeTrace\.targetNodeKey/);
   assert.match(capture, /graphViewState: createGraphViewState\(state\.graphViewState\)/);
-  assert.match(capture, /replayState: snapshotReplayState\(state\.activeReplay, state\.replayState\)/);
+  assert.doesNotMatch(capture, /replayState:|snapshotReplayState/,
+    "the application checkpoint contains presentation state only");
 
   assert.match(restore, /state\.investigationCheckpoint = null/);
-  assert.match(restore, /checkpoint\.frameIdentifier !== currentFrame\?\.world\.frame\.identifier/);
-  assert.match(restore, /rebuildActiveTrace\(checkpoint\.targetNodeKey\)/);
+  assert.match(restore, /checkpoint\.frameIdentifier !== state\.activeTrace\.frameIdentifier/);
+  assert.match(restore, /checkpoint\.targetNodeKey !== state\.activeTrace\.targetNodeKey/);
   assert.match(restore, /find\(\(\{ key \}\) => key === checkpoint\.targetNodeKey\)/);
-  assert.match(restore, /restoreReplayState\(state\.activeReplay, checkpoint\.replayState\)/);
+  assert.doesNotMatch(restore, /restoreReplayState|buildCognitiveTrace/);
   assert.doesNotMatch(
     restore,
     /matchingWorldNode|graphSelection\?\.nodeKey|graphViewState\.selectedKey|findAnyObservations\(checkpoint|\?\?\s*state\./,
@@ -220,6 +221,9 @@ test("MO-1108 comparison checkpoints restore the exact trace and replay state", 
   assert.match(evolution, /captureInvestigationCheckpoint\(\)/);
   assert.match(evolution, /state\.investigationCheckpoint = checkpoint/);
   assert.match(evolution, /restoreInvestigationCheckpoint\(\)/);
+  assert.match(investigationCoreSource, /comparisonCheckpoint = deepFreeze\(\{/);
+  assert.match(investigationCoreSource, /snapshotReplayState\(state\.activeReplay, state\.replayState\)/);
+  assert.match(investigationCoreSource, /restoreReplayState\(state\.activeReplay, checkpoint\.replayState\)/);
 });
 
 test("MO-1108 route changes clear every transient investigation controller", () => {
@@ -232,23 +236,19 @@ test("MO-1108 route changes clear every transient investigation controller", () 
   for (const contract of [
     /clearReplayTimer\(\)/,
     /clearComparativeReplayTimer\(\)/,
-    /state\.activeTrace = null/,
-    /clearReplay\(\)/,
-    /state\.evolutionController = createEvolutionController\(observationTimeline\.length\)/,
+    /investigationCore\.returnToWorld\(investigationIdentifier\)/,
     /state\.evolutionSelection = null/,
-    /clearComparativeReconstruction\(\)/,
+    /state\.comparativeTargetKey = null/,
+    /state\.comparativeDiagnostic = null/,
     /state\.investigationCheckpoint = null/,
     /state\.traceDiagnostic = null/,
     /clearObservedSelection\(\)/,
     /state\.lastOperation = null/,
   ]) assert.match(cleanup, contract);
-
-  const comparativeCleanup = functionSource(appSource, "clearComparativeReconstruction", "comparableReflectionTarget");
-  assert.match(comparativeCleanup, /state\.comparativeReconstruction = null/);
-  assert.match(comparativeCleanup, /state\.comparativeReplayState = null/);
-  assert.match(comparativeCleanup, /state\.comparativeDiagnostic = null/);
-  assert.match(comparativeCleanup, /state\.comparativeActive = false/);
-  assert.match(comparativeCleanup, /state\.comparativeTargetKey = null/);
+  const synchronization = functionSource(appSource, "synchronizeFromInvestigationCore", "workflowPhase");
+  for (const field of ["activeTrace", "activeReplay", "replayState", "evolution", "comparativeReconstruction", "comparativeReplayState"]) {
+    assert.match(synchronization, new RegExp(`state\\.${field} = investigationView\\.`));
+  }
 });
 
 test("MO-1108 surfaces detached Evidence, Summary, and Export results", () => {
@@ -308,11 +308,13 @@ test("release interaction audit connects hit targets, enabled state, and rendere
   assert.match(workflow, /available: hasInvestigation && phase !== "trace"/);
   assert.match(workflow, /available: hasInvestigation && replayActionable/);
   assert.match(workflow, /phase !== "compare"/);
-  assert.match(workflow, /evolutionFrames\(observationTimeline, state\.evolutionController\)/);
+  assert.match(workflow, /state\.comparisonFrames/);
   assert.match(workflow, /Boolean\(evolutionPair && comparableReflectionTarget\(evolutionPair\)\)/);
 
   const rendererCallback = functionSource(appSource, "renderNeuralPerspective", "refreshReplayPresentation");
-  assert.match(rendererCallback, /pauseReplay\(state\.activeReplay, state\.replayState\)[\s\S]*refreshReplayPresentation\(\)/);
+  assert.match(rendererCallback, /updateReplay\("pause"\)[\s\S]*refreshReplayPresentation\(\)/);
+  const replayUpdate = functionSource(appSource, "updateReplay", "scheduleReplay");
+  assert.match(replayUpdate, /investigationCore\.replay\(investigationIdentifier, action\)/);
   assert.match(rendererCallback, /state\.comparativeTargetKey = comparable \? node\.key : null;[\s\S]*refreshInvestigationWorkflow\(\)/);
   assert.match(rendererCallback, /graphselectionclear[\s\S]*state\.evolutionSelection = null;[\s\S]*renderGraphContext\(\)/);
 
