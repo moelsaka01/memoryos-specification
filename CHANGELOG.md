@@ -25,6 +25,26 @@ not enter MIP. Canonical reference packages, chunk/timestamp invariance tests,
 failure and resource tests, examples, and boundary checks cover the Producer
 source boundary without changing Runtime, Studio, or MIP behavior.
 
+### MO-1203 — Investigation Core
+
+Established one renderer-independent execution authority for deterministic
+investigations. The Core derives immutable state from an append-only,
+digest-linked transition log; wraps the released Trace, Replay, Cognitive
+Evolution, and Comparative Reconstruction semantics; owns verified MIP-backed
+investigations; and provides integrity-bound checkpoints and atomic failure
+behavior. Studio and future SDK, CLI, REST, and MCP clients remain thin. The
+Core never synthesizes cognitive artifacts absent from an imported package.
+
+### MO-1204 — MemoryOS SDK Facade
+
+Added the public JavaScript, Python, and C++ SDK facades over the frozen
+Investigation Core. Studio now uses the same JavaScript SDK surface as other
+consumers. Native clients communicate through one versioned, long-lived
+private binding that forwards explicit Core commands and immutable results;
+it implements no investigation behavior. Package verification remains MIP
+owned, package bytes remain exact, native observations cannot be exported,
+and comparison retains the Core's staged lifecycle.
+
 ## MemoryOS 1.1 — v1.1.0
 
 Released. MemoryOS 1.1 preserves the frozen MemoryOS 1.0 runtime and public

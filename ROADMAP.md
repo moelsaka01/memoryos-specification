@@ -9,7 +9,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 |---|---|---|
 | MemoryOS 1.0 | Released | Deterministic memory lifecycle, source-preserving knowledge, retrieval, reflection, provider-neutral handoff, and the frozen Memory Studio contract |
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
-| MemoryOS 1.2 | In development | Canonical Memory Investigation Packages, dependency-free AI runtime adapter interfaces, and planned investigation onboarding refinements |
+| MemoryOS 1.2 | In development | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, a single renderer-independent Investigation Core, public JavaScript/Python/C++ SDK facades, and planned investigation onboarding refinements |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -34,6 +34,20 @@ Anthropic SDK, and LangGraph event lifecycles and translate only settled
 source-authored cognition into verified, Observation-only MIPs. The reference
 adapters do not import provider SDKs, persist transport state, control external
 runtimes, or infer cognitive semantics.
+
+MO-1203 establishes the [Investigation Core](repositories/cca-studio/docs/investigation-core.md)
+as the single execution authority for create, load, restore, archive, Replay,
+comparison, verification, checkpoints, MIP export, and MIP import. State is
+always derived from an append-only digest-linked transition log. Studio and
+future clients consume immutable projections instead of implementing
+investigation behavior.
+
+MO-1204 exposes that authority through the [MemoryOS SDK](repositories/cca-sdk/README.md).
+Studio consumes the JavaScript facade; Python and C++ use one versioned private
+binding to the same JavaScript Core. The SDK requires explicit snapshots,
+Reflection selections, comparison sessions, checkpoints, and packages. It
+adds no cognition or package construction behavior, and native export remains
+available only for investigations imported from valid MIP artifacts.
 
 ## IM-001: engineering foundation
 

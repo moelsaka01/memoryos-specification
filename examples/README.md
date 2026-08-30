@@ -82,6 +82,33 @@ Run it from the workspace root:
 node repositories/cca-studio/examples/ai_runtime_adapter_usage.mjs
 ```
 
+## MemoryOS 1.2 Investigation Core
+
+The [Investigation Core example](../repositories/cca-studio/examples/investigation_core_usage.mjs)
+drives native Observe → Trace → Replay → Compare behavior through the single
+execution authority, restores an integrity-bound checkpoint, and imports and
+re-exports a verified Observation-only adapter MIP without inventing missing
+cognitive artifacts.
+
+```text
+node repositories/cca-studio/examples/investigation_core_usage.mjs
+```
+
+## MemoryOS 1.2 SDK
+
+The [MemoryOS SDK examples](../repositories/cca-sdk/examples/) exercise the
+same frozen Investigation Core through public Python and C++ facades. They use
+explicit snapshots, selections, comparison sessions, checkpoints, and MIP
+bytes; none constructs cognitive artifacts locally.
+
+- [Python examples](../repositories/cca-sdk/examples/python/) cover Observe,
+  Replay, staged Compare, Verify, exact import/export, and batch verification.
+- [C++ quick start](../repositories/cca-sdk/examples/cpp_quickstart.cpp) covers
+  explicit native observation and Core-owned verification.
+
+The examples are registered in the SDK's automated verification rather than
+being documentation-only snippets.
+
 ## Example quality rules
 
 - State whether an example is valid, intentionally invalid, or conceptual.

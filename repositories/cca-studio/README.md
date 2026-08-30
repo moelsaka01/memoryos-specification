@@ -92,6 +92,22 @@ network request, infer no MIP semantic role or provenance, and do not change
 Runtime, Studio, or MIP. See
 [AI Runtime Adapters](docs/ai-runtime-adapters.md).
 
+MO-1203 adds the renderer-independent
+[Investigation Core](docs/investigation-core.md). It is the single execution
+authority for native Studio investigations and verified MIP-backed
+investigations. State is always derived from its immutable digest-linked
+transition log; checkpoints bind that log rather than storing alternate truth.
+Studio and future SDK, CLI, REST, and MCP clients consume immutable
+projections. The Core never creates a Studio projection or cognitive artifacts
+that are absent from an Observation-only adapter package.
+
+MO-1204 makes Studio a client of the public in-process JavaScript
+[MemoryOS SDK facade](../cca-sdk/README.md). `app.js` no longer imports the
+Investigation Core. Explicit observation snapshots, Reflection selections,
+comparison sessions, and checkpoints cross the SDK boundary unchanged; the
+facade forwards state changes to the frozen Core and package verification to
+MIP-001.
+
 ## Build and verify
 
 From the workspace root:
@@ -106,9 +122,11 @@ The Studio test inventory includes public behavior, lifecycle, ordering,
 failure precedence, moved-from state, ownership and lifetime, exhaustive
 allocation-failure campaigns, architecture-boundary checks, the executable
 example, and the dependency-free presentation model. Separate JavaScript
-conformance suites verify MIP-001 and the MO-1202 adapters, including provider
+conformance suites verify MIP-001, the MO-1202 adapters, the MO-1203
+Investigation Core, and the MO-1204 JavaScript SDK facade, including provider
 lifecycle validation, settled projections, deterministic reference packages,
-invariance, and failure/resource boundaries.
+invariance, transition-log integrity, checkpoint restoration, lifecycle
+behavior, and failure/resource boundaries.
 
 ## Run the presentation
 
@@ -144,6 +162,10 @@ observation paths, and explanation-chain boundaries.
 - [MemoryOS Studio documentation index](docs/README.md)
 - [MemoryOS 1.2 Memory Investigation Packages](docs/memory-investigation-packages.md)
 - [MemoryOS 1.2 AI Runtime Adapters](docs/ai-runtime-adapters.md)
+- [MemoryOS 1.2 Investigation Core](docs/investigation-core.md)
+- [Investigation Core conformance evidence](docs/investigation-core-conformance-evidence.md)
+- [MemoryOS SDK](../cca-sdk/README.md)
+- [MemoryOS SDK conformance report](../cca-sdk/docs/conformance-report.md)
 - [Public API and behavior](docs/memory-studio.md)
 - [Requirement and test evidence](docs/memory-studio-conformance-evidence.md)
 - [MemoryOS 1.1 Stable Semantic World](docs/memoryos-1.1-sprint-1.md)
@@ -170,3 +192,4 @@ observation paths, and explanation-chain boundaries.
 - [GitHub screenshot specification](docs/github-screenshot-specification.md)
 - [C++ example](examples/memory_studio_usage.cpp)
 - [AI runtime adapter example](examples/ai_runtime_adapter_usage.mjs)
+- [Investigation Core example](examples/investigation_core_usage.mjs)

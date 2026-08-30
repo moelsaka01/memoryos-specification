@@ -23,11 +23,11 @@ belong to the repository that owns the behavior.
 
 | Repository | Milestone status | Responsibility |
 |---|---|---|
-| `cca-core` | Foundation and IM-003 implementation target | Reusable configuration, logging, utilities, testing support, versioning, and the CCA-RF-1.0 Runtime Foundation |
+| `cca-core` | Released foundations and MemoryOS capability implementation | Reusable engineering facilities; Runtime, Representation, Process, and Persistence foundations; and CP-001 through CP-010 MemoryOS behavior |
 | `cca-compiler` | IS-002 implementation target | Canonical source loading, parsing, validation, analysis, dependency resolution, model construction, deterministic generation, diagnostics, and CLI |
-| `memoryos` | Reserved only | Future boundary; MemoryOS implementation is explicitly excluded |
-| `cca-studio` | Reserved only | Future frontend/studio boundary; no implementation authorized |
-| `cca-sdk` | Reserved only | Future SDK boundary; public language/platform bindings are undecided |
+| `memoryos` | Reserved only | Reserved product repository boundary; the released implementation currently remains in `cca-core` and `cca-studio` |
+| `cca-studio` | CP-011 released; MemoryOS 1.1 released; MemoryOS 1.2 in development | Frozen CCA-STUDIO-1.0 Contract, deterministic investigation presentation, single Investigation Core, canonical MIP implementation, and dependency-free AI runtime adapter interfaces |
+| `cca-sdk` | MO-1204 implemented | Public JavaScript, Python, and native C++ facades over the frozen Investigation Core; one private versioned native binding |
 | `cca-conformance` | Reserved only | Future conformance suite boundary; the retained compatibility seam does not define this repository |
 | `cca-atlas` | Reserved only | Future atlas boundary; responsibilities beyond the name are undecided |
 
@@ -36,19 +36,23 @@ repository-local index.
 
 ## `cca-core`
 
-`cca-core` is a shared engineering foundation and the owner of the Layer 3
-Runtime Foundation. It is not the CCA domain model. A utility belongs there
-only when it is generally reusable, has a narrow contract, and does not
-introduce compiler, MemoryOS, or Domain Engine semantics.
+`cca-core` is the shared engineering foundation and current implementation
+home for the released Runtime, Representation, Process, Persistence, and
+MemoryOS CP-001 through CP-010 capabilities. A generally reusable facility
+still belongs there only when it has a narrow contract and does not create a
+reverse dependency on compiler- or Studio-specific interfaces.
 
-Implemented foundation areas are:
+Implemented areas include:
 
 - logging abstractions and basic implementations;
 - configuration abstractions;
 - common utilities;
 - common testing support;
 - shared version information;
-- the CCA-RF-1.0 Runtime Foundation.
+- the CCA-RF-1.0 Runtime Foundation;
+- Representation, Process, and Persistence foundations; and
+- released MemoryOS memory, knowledge, retrieval, reflection, consolidation,
+  and provider capabilities.
 
 Detailed public names must be documented next to the implemented headers. This
 workspace overview does not invent names or contracts not established by that
@@ -72,12 +76,28 @@ Resolver, Model Builder, Artifact Generator, and report serialization execute
 under `CompilerPipeline`. CLI, Configuration, Logging, and Diagnostics are
 cross-cutting boundaries. See [compiler-modules.md](compiler-modules.md).
 
+## `cca-sdk`
+
+`cca-sdk` is the MO-1204 public programmability boundary. The in-process
+JavaScript facade is shared by Studio. The Python and C++ facades retain one
+private JavaScript Core-host session per SDK instance and forward explicit
+commands over a versioned, bounded protocol. The binding contains transport
+only; the frozen Investigation Core remains the sole execution authority and
+MIP-001 remains the sole package verification authority.
+
+The SDK exposes immutable Workspace, Investigation, ReplaySession,
+ComparisonSession, VerificationResult, MemoryInvestigationPackage, and
+Checkpoint values. Observation requires an explicit Workspace and snapshot;
+Trace requires an explicit Reflection selection; comparison and restore
+require explicit session and checkpoint values. Export accepts only a valid
+MIP-backed investigation. See the [SDK documentation](../repositories/cca-sdk/README.md).
+
 ## Reserved directories
 
-A reserved directory may contain a short scope notice, but must not contain
-product implementation during IS-002 or IM-003. In particular, no shared
-helper may be placed in a reserved repository merely to prepare for
-hypothetical future behavior.
+A directory that remains reserved may contain a short scope notice, but must
+not contain product implementation without an approved capability. CP-011
+separately authorizes `cca-studio`; that repository is no longer governed by
+the reserved-directory check.
 
 ## Cross-repository rules
 
@@ -85,7 +105,18 @@ hypothetical future behavior.
 - The Runtime Foundation is implemented in `cca-core` and does not depend on
   compiler-specific or higher-layer domain interfaces.
 - The shared foundation must not depend on compiler-specific interfaces.
-- Reserved repositories have no authorized dependency edges.
+- Repositories that remain reserved have no authorized dependency edges.
+- `cca-studio` depends downstream on the released `cca::memory` Contract;
+  released MemoryOS capabilities have no reverse Studio dependency.
+- The MIP and AI runtime adapter modules are headless JavaScript boundaries;
+  adapters validate provider transport privately, translate only settled
+  source-authored cognition, and do not import or own provider SDKs.
+- The headless Investigation Core is the single execution authority for
+  deterministic investigation behavior. Clients consume immutable projections;
+  they do not derive Trace, Replay, Evolution, Comparative Reconstruction, or
+  cognition missing from an imported MIP.
+- Studio and native consumers use the MemoryOS SDK facade. The SDK may forward
+  Core or MIP operations but must not implement investigation semantics.
 - A new cross-repository dependency is an architecture change.
 - Versioning and release coordination across repositories are unresolved.
 - Each implemented public interface requires documentation, public-behavior
@@ -95,6 +126,7 @@ hypothetical future behavior.
 
 - C++23: primary implementation language.
 - Python 3.12 or newer: secondary engineering-tool language.
-- TypeScript and React: future frontend technologies, not current scope.
+- JavaScript, HTML, and CSS: the dependency-free Memory Studio presentation.
+- TypeScript and React: not required by the current presentation.
 - Qt: possible future technology, not current scope.
 - Java: excluded.

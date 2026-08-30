@@ -4,19 +4,29 @@ The workspace reserves these repository boundaries:
 
 | Directory | Current milestone |
 |---|---|
-| [`cca-core`](cca-core) | Shared engineering foundation and IM-003 CCA-RF-1.0 Runtime Foundation |
+| [`cca-core`](cca-core) | Released Runtime, Representation, Process, Persistence, and CP-001 through CP-010 MemoryOS implementation |
 | [`cca-compiler`](cca-compiler) | IS-002 Standards Compiler and CLI |
-| [`memoryos`](memoryos) | Reserved; no MemoryOS implementation |
-| [`cca-studio`](cca-studio) | Reserved; no implementation |
-| [`cca-sdk`](cca-sdk) | Reserved; no implementation |
+| [`memoryos`](memoryos) | Reserved future product-repository boundary; current implementation remains in `cca-core` and `cca-studio` |
+| [`cca-studio`](cca-studio) | CP-011 Studio, MemoryOS 1.1 investigation presentation, and MemoryOS 1.2 headless MIP, adapter, and Investigation Core modules |
+| [`cca-sdk`](cca-sdk) | MO-1204 JavaScript, Python, and C++ SDK facades plus the single private Investigation Core binding |
 | [`cca-conformance`](cca-conformance) | Reserved; no implementation |
 | [`cca-atlas`](cca-atlas) | Reserved; no implementation |
 
 Directory presence does not authorize behavior. The current dependency
-direction permits the compiler to use the shared core foundation. The Runtime
-Foundation is owned by `cca-core` and does not depend on compiler or
-higher-layer domain interfaces. Reserved repositories have no approved
-dependency relationships.
+direction permits the compiler to use the shared core foundation. The released
+foundations and CP-001 through CP-010 MemoryOS capabilities are owned by
+`cca-core`; the downstream CP-011 Contract and presentation are owned by
+`cca-studio`. MO-1201 and MO-1202 add dependency-free package and settled-source
+translation modules there. MO-1203 adds the single execution authority for
+native and verified MIP-backed investigations. Provider transport remains
+private validation input; the modules import no provider SDK, and the Core does
+not synthesize cognition absent from a package. MO-1204 activates `cca-sdk` as
+the public programmability boundary. Studio uses its JavaScript facade, while
+Python and C++ use the same versioned private Core-host protocol. The SDK owns
+no investigation or package behavior.
+No repository creates a reverse dependency into the compiler. Reserved
+repositories have no approved dependency relationships merely by directory
+presence.
 
 The Runtime Foundation consists of exactly Lifecycle Manager, Service
 Registry, Dependency Injector, Event Bus, Configuration Manager, and

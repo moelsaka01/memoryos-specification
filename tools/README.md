@@ -2,7 +2,7 @@
 
 This directory contains deterministic, repository-local quality tools and external tool pins.
 
-- `verify_workspace.py` validates the required workspace shape, JSON configuration, preset contract, and deferred-repository boundaries.
+- `verify_workspace.py` validates the required workspace shape, JSON configuration, preset contract, Memory Studio and SDK evidence, and remaining deferred-repository boundaries.
 - `run_clang_format.py` applies or verifies the root `.clang-format` policy in stable path order.
 - `vcpkg-version.txt` pins the immutable upstream release tag cloned by bootstrap.
 - `vcpkg-commit.txt` pins and verifies that tag's exact commit. The same commit is the manifest baseline in `vcpkg.json`.

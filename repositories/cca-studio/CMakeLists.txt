@@ -22,7 +22,7 @@ option(
 )
 option(
   CCA_ENABLE_STUDIO_WEB_TESTS
-  "Run the required dependency-free Memory Studio, MIP, and adapter conformance tests"
+  "Run the required dependency-free Memory Studio, MIP, adapter, and Investigation Core conformance tests"
   ON
 )
 
@@ -72,12 +72,19 @@ add_custom_target(
     web/js/deterministic-sequence-alignment.js
     web/js/mip-canonical.js
     web/js/memory-investigation-package.js
+    web/js/investigation-core.js
+    web/js/memoryos-sdk.js
     web/js/ai-runtime-adapter.js
     web/js/adapters/openai-agents-sdk-adapter.js
     web/js/adapters/anthropic-sdk-adapter.js
     web/js/adapters/langgraph-adapter.js
     scripts/generate-ai-runtime-adapter-fixtures.mjs
     examples/ai_runtime_adapter_usage.mjs
+    examples/investigation_core_usage.mjs
+    docs/investigation-core.md
+    docs/investigation-core-conformance-evidence.md
+    tests/investigation_core_test.mjs
+    tests/memoryos_sdk_test.mjs
     tests/fixtures/adapters/README.md
     tests/fixtures/adapters/reference-sources.mjs
     tests/fixtures/adapters/openai-agents.events.json
@@ -230,6 +237,26 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS)
         PROPERTIES LABELS "studio;memory;adapter;mip;unit"
       )
       add_test(
+        NAME cca.memory_studio.investigation_core
+        COMMAND
+          "${CCA_NODE_EXECUTABLE}" --test
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/investigation_core_test.mjs"
+      )
+      set_tests_properties(
+        cca.memory_studio.investigation_core
+        PROPERTIES LABELS "studio;memory;investigation;core;unit"
+      )
+      add_test(
+        NAME cca.memory_studio.sdk
+        COMMAND
+          "${CCA_NODE_EXECUTABLE}" --test
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/memoryos_sdk_test.mjs"
+      )
+      set_tests_properties(
+        cca.memory_studio.sdk
+        PROPERTIES LABELS "studio;memory;sdk;investigation;unit"
+      )
+      add_test(
         NAME cca.memory_studio.scalability
         COMMAND
           "${CCA_NODE_EXECUTABLE}" --test
@@ -243,7 +270,7 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS)
       )
     else()
       message(FATAL_ERROR
-        "CCA_ENABLE_STUDIO_WEB_TESTS=ON requires Node.js; disabling the mandatory Memory Studio, MIP, and adapter conformance suites is not permitted implicitly"
+        "CCA_ENABLE_STUDIO_WEB_TESTS=ON requires Node.js; disabling the mandatory Memory Studio, MIP, adapter, and Investigation Core conformance suites is not permitted implicitly"
       )
     endif()
   endif()

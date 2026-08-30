@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "memoryos-sdk"
+version = "1.0.0"
+description = "Deterministic Python client for the MemoryOS Investigation Core"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "CCA Project" }]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Typing :: Typed",
+]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+memoryos = ["py.typed"]

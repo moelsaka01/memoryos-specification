@@ -103,17 +103,20 @@ flowchart TB
     Replay[Deterministic Replay]
     Evolution[Semantic Evolution]
     Comparative[Comparative Reconstruction]
+    Core[Investigation Core]
+    SDK[MemoryOS SDK]
     Renderer[Living Connectome renderer]
 
     Runtime --> Observation
-    Observation --> Trace
-    Trace --> Replay
-    Observation --> Evolution
-    Trace --> Comparative
-    Evolution --> Comparative
-    Replay --> Renderer
-    Evolution --> Renderer
-    Comparative --> Renderer
+    Observation --> Core
+    Core --> Trace
+    Core --> Replay
+    Core --> Evolution
+    Core --> Comparative
+    Replay --> SDK
+    Evolution --> SDK
+    Comparative --> SDK
+    SDK --> Renderer
 ```
 
 The boundary is intentional:
@@ -130,6 +133,12 @@ Representation, Process, and Persistence foundations. See
 [ARCHITECTURE.md](ARCHITECTURE.md) for the governed boundaries and dependency
 direction, and the [Studio documentation](repositories/cca-studio/docs/README.md)
 for the investigation architecture.
+
+MemoryOS 1.2 exposes the frozen Investigation Core through a thin, versioned
+[SDK facade](repositories/cca-sdk/README.md). Studio imports that facade rather
+than the Core. Python and C++ retain one private Core binding per SDK instance;
+the binding transports explicit commands and immutable results but implements
+no investigation behavior.
 
 ## Getting Started
 
@@ -196,7 +205,8 @@ tooling.
 | Path | Purpose |
 | :--- | :--- |
 | [`repositories/cca-core`](repositories/cca-core) | MemoryOS capabilities plus the Runtime, Representation, Process, and Persistence foundations. |
-| [`repositories/cca-studio`](repositories/cca-studio) | The frozen Memory Studio contract, Mission Control UI, canonical MIP implementation, dependency-free AI runtime adapters, tests, media, and documentation. |
+| [`repositories/cca-studio`](repositories/cca-studio) | The frozen Memory Studio contract, Mission Control UI, single Investigation Core, canonical MIP implementation, dependency-free AI runtime adapters, tests, media, and documentation. |
+| [`repositories/cca-sdk`](repositories/cca-sdk) | The MO-1204 JavaScript, Python, and native C++ SDK facades, private Core binding, examples, tests, and conformance evidence. |
 | [`docs`](docs) | Workspace engineering, compiler, build, and contributor documentation. |
 | [`specification`](specification) | Canonical specification format and schema used by the CCA Standards Compiler. |
 
@@ -210,7 +220,7 @@ implementation.
 | :--- | :--- |
 | **MemoryOS 1.0** | Established the deterministic memory lifecycle: Working Memory, Consolidation, Long-Term Memory, semantic, episodic, and procedural derivation, Retrieval, Reflection, Providers, and the frozen Studio contract. |
 | **MemoryOS 1.1 · v1.1.0** | Added observable cognition without changing the MemoryOS 1.0 runtime or public memory contracts. MO-1101 through MO-1108 delivered the Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and the unified production workflow. |
-| **MemoryOS 1.2 · in development** | Adds the canonical Memory Investigation Package (MO-1201) and dependency-free adapters that translate settled OpenAI Agents SDK, Anthropic SDK, and LangGraph cognition into verified packages without persisting transport state (MO-1202). |
+| **MemoryOS 1.2 · in development** | Adds the canonical Memory Investigation Package (MO-1201), dependency-free adapters that translate settled external cognition into verified packages (MO-1202), one renderer-independent Investigation Core (MO-1203), and public JavaScript, Python, and C++ SDK facades over that Core (MO-1204). |
 
 See [CHANGELOG.md](CHANGELOG.md) for milestone-level engineering records and
 [RELEASE_NOTES.md](RELEASE_NOTES.md) for compatibility and verification details.
@@ -229,8 +239,13 @@ repository publication notes.
 ## Roadmap
 
 MemoryOS 1.2 begins with portable deterministic investigations: MIP-001 defines
-the canonical package, MO-1201 implements it, and MO-1202 adds provider-neutral
-[AI runtime adapters](repositories/cca-studio/docs/ai-runtime-adapters.md).
+the canonical package, MO-1201 implements it, MO-1202 adds provider-neutral
+[AI runtime adapters](repositories/cca-studio/docs/ai-runtime-adapters.md), and
+MO-1203 establishes the single [Investigation Core](repositories/cca-studio/docs/investigation-core.md)
+used by all clients. MO-1204 adds the public
+[MemoryOS SDK](repositories/cca-sdk/README.md), migrates Studio to its
+JavaScript facade, and gives Python and C++ the same deterministic Core
+behavior through one private binding contract.
 Investigation onboarding and Reflection discoverability remain planned product
 refinements. None of this redesigns the MemoryOS 1.0 Runtime or the released
 MemoryOS 1.1 investigation architecture.

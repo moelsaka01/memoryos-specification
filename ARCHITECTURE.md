@@ -148,20 +148,49 @@ headless `cca::studio` target depends only on the released public
 Contract and is not part of the frozen C++ API. Released MemoryOS capabilities
 have no reverse dependency on Studio.
 
-MemoryOS 1.2 adds two headless JavaScript boundaries in `cca-studio`: the
-MIP-001 Producer/Consumer/Verifier and AI runtime adapters that translate
+MemoryOS 1.2 adds three headless JavaScript boundaries in `cca-studio`: the
+MIP-001 Producer/Consumer/Verifier, AI runtime adapters that translate
 successfully settled external runtime results into Observation-only MIPs. Raw
 transport remains private adapter input. Adapters depend on the MIP module,
 never on Runtime or the renderer, and import no provider SDK. External AI
-runtimes retain ownership of execution and cognitive truth.
+runtimes retain ownership of execution and cognitive truth. The Investigation
+Core is the single authority for deterministic investigation execution. It
+wraps the released native Trace, Replay, Evolution, and Comparative semantics,
+owns verified MIP-backed investigations, and projects immutable state to thin
+clients; it never invents cognition absent from an imported package.
+
+Studio no longer imports the Investigation Core directly. Its only public
+investigation dependency is the in-process JavaScript MemoryOS SDK facade,
+which forwards every state-changing operation to the Core and every package
+verification request to the MIP verifier.
+
+### `cca-sdk`
+
+`cca-sdk` owns the MO-1204 public C++ and Python facades and the one private,
+versioned JavaScript binding used by native consumers. One SDK instance owns
+one long-lived, isolated binding session and therefore one Investigation Core
+instance. The binding transports explicit commands and immutable projections;
+it contains no Trace, Replay, Evolution, Comparative Reconstruction, Runtime,
+or MIP semantics. Native and Studio clients consequently observe the same Core
+transition log and the same canonical MIP bytes.
+
+The dependency direction is fixed:
+
+```text
+MemoryOS Runtime -> Investigation Core -> private binding -> MemoryOS SDK
+                                                        -> SDK consumers
+```
+
+The SDK cannot call the renderer, adapters, or Runtime directly. The Core does
+not depend on the SDK. Package verification remains owned by MIP-001.
 
 ### Reserved repositories
 
-`memoryos`, `cca-sdk`, `cca-conformance`, and `cca-atlas` remain reserved as
-future repository boundaries. The released MemoryOS implementation currently
-resides in `cca-core` and `cca-studio`; the reserved `memoryos` directory does
-not create a second implementation or authorize dependency edges merely by
-its presence.
+`memoryos`, `cca-conformance`, and `cca-atlas` remain reserved as future
+repository boundaries. The released MemoryOS implementation currently resides
+in `cca-core`, `cca-studio`, and the authorized `cca-sdk` facade; the reserved
+`memoryos` directory does not create a second implementation or authorize
+dependency edges merely by its presence.
 
 ## 6. Canonical specification
 
@@ -287,8 +316,8 @@ IS-002 contains no Runtime execution; its compiler boundary remains unchanged.
 IM-003 contains only the CCA-RF-1.0 Runtime Foundation described in Section 4.
 Those historical milestone exclusions do not authorize or constrain later
 frozen capability packages. Current later packages add the documented
-foundations, CP-011 Studio, MO-1201 MIP, and MO-1202 settled-source adapter
-interfaces.
+foundations, CP-011 Studio, MO-1201 MIP, MO-1202 settled-source adapter
+interfaces, the MO-1203 Investigation Core, and the MO-1204 SDK facade.
 AI execution, LLM behavior, provider SDK packages/live clients, databases,
 plugins, networking, package management, and generated production code remain
 excluded.

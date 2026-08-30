@@ -12,22 +12,18 @@ import {
   selectGraphNode,
 } from "./graph-view-state.js";
 import { resolveCommandAdapter } from "./host-adapter.js";
-import {
-  InvestigationCore,
-  investigationPhase,
-  projectInvestigation,
-} from "./investigation-core.js";
+import { MemoryOS } from "./memoryos-sdk.js";
 
 let snapshot = cloneDetached(resolveSnapshot());
-const investigationCore = new InvestigationCore();
+const memoryOS = new MemoryOS();
+const workspace = memoryOS.openWorkspace(snapshot.workspaceIdentifier);
 const investigationIdentifier = `studio-investigation:${snapshot.workspaceIdentifier}:${snapshot.session?.identifier ?? "detached"}`;
-let investigation = investigationCore.create({
+let investigation = memoryOS.observe(workspace, snapshot, {
   identifier: investigationIdentifier,
-  snapshot,
   operation: "InitialObservation",
   resultCode: "OK",
 });
-let investigationView = projectInvestigation(investigation);
+let investigationView = investigation.view;
 let observationTimeline = investigationView.observationFrames;
 let currentFrame = investigationView.currentFrame;
 let commandAdapter = null;
@@ -35,6 +31,7 @@ let operationSequence = 0;
 let replayTimer = null;
 let comparativeReplayTimer = null;
 let graphController = null;
+let activeComparisonSession = null;
 const replayStepDelay = 1250;
 
 const routeMetadata = Object.freeze({
@@ -174,9 +171,10 @@ const state = {
   busy: false,
 };
 
-function synchronizeFromInvestigationCore(next = investigationCore.load(investigationIdentifier)) {
+function synchronizeFromMemoryOS(next = investigation.refresh()) {
   investigation = next;
-  investigationView = projectInvestigation(investigation);
+  investigationView = investigation.view;
+  if (!["evolution", "compare"].includes(investigation.phase)) activeComparisonSession = null;
   observationTimeline = investigationView.observationFrames;
   currentFrame = investigationView.currentFrame;
   state.activeTrace = investigationView.trace;
@@ -196,7 +194,52 @@ function synchronizeFromInvestigationCore(next = investigationCore.load(investig
 }
 
 function workflowPhase() {
-  return investigationPhase(investigation);
+  return investigation.phase;
+}
+
+function executeReplayCommand(action) {
+  const session = investigation.replay();
+  const operation = session[action];
+  if (typeof operation !== "function") return investigation;
+  operation.call(session);
+  return session.investigation;
+}
+
+function executeComparisonCommand(command) {
+  const input = typeof command === "string" ? { action: command } : command;
+  if (!input?.action) return investigation;
+  if (input.action === "enter") {
+    const pending = investigation.comparisonSession(input.evolutionIdentifier ?? null);
+    activeComparisonSession = investigation.compare(pending);
+    return activeComparisonSession.investigation;
+  }
+  const session = activeComparisonSession;
+  if (!session) {
+    throw new Error("Cognitive Evolution must be entered before issuing comparison commands.");
+  }
+  const operations = {
+    previous: () => session.previousObservation(),
+    next: () => session.nextObservation(),
+    start: () => session.start({
+      comparativeIdentifier: input.comparativeIdentifier ?? null,
+      targetNodeKey: input.targetNodeKey ?? null,
+    }),
+    play: () => session.play(),
+    pause: () => session.pause(),
+    reset: () => session.reset(),
+    previousStep: () => session.previous(),
+    nextStep: () => session.next(),
+    advance: () => session.advance(),
+    back: () => session.back(),
+  };
+  const operation = operations[input?.action];
+  if (!operation) return investigation;
+  operation();
+  const next = session.investigation;
+  if (input.action === "back" && !["evolution", "compare"].includes(next.phase)) {
+    activeComparisonSession = null;
+  }
+  return next;
 }
 
 function comparisonAvailability() {
@@ -268,7 +311,7 @@ function updateReplay(action) {
   if (!state.activeReplay || !state.replayState) return;
   clearReplayTimer();
   if (!["play", "pause", "restart", "previous", "next"].includes(action)) return;
-  synchronizeFromInvestigationCore(investigationCore.replay(investigationIdentifier, action));
+  synchronizeFromMemoryOS(executeReplayCommand(action));
   if (!refreshReplayPresentation()) renderRoute();
   scheduleReplay();
 }
@@ -280,7 +323,7 @@ function scheduleReplay() {
   replayTimer = window.setTimeout(() => {
     replayTimer = null;
     if (state.activeReplay?.identifier !== replayIdentifier || state.replayState?.status !== "playing") return;
-    synchronizeFromInvestigationCore(investigationCore.replay(investigationIdentifier, "advance"));
+    synchronizeFromMemoryOS(executeReplayCommand("advance"));
     if (!refreshReplayPresentation()) renderRoute();
     scheduleReplay();
   }, replayStepDelay);
@@ -321,7 +364,7 @@ function activateComparativeReconstruction() {
   }
   state.comparativeTargetKey = targetNodeKey;
   try {
-    synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, {
+    synchronizeFromMemoryOS(executeComparisonCommand({
       action: "start",
       targetNodeKey,
     }));
@@ -335,7 +378,7 @@ function activateComparativeReconstruction() {
 
 function updateComparativeReplay(action) {
   if (action === "compare" || action === "back") {
-    synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, "back"));
+    synchronizeFromMemoryOS(executeComparisonCommand("back"));
     renderRoute();
     focusGraphControl("Compare");
     return;
@@ -345,7 +388,7 @@ function updateComparativeReplay(action) {
   clearComparativeReplayTimer();
   const coreAction = { previous: "previousStep", next: "nextStep" }[action] ?? action;
   if (!["play", "pause", "previousStep", "nextStep", "reset"].includes(coreAction)) return;
-  synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, coreAction));
+  synchronizeFromMemoryOS(executeComparisonCommand(coreAction));
   if (!refreshComparativePresentation()) renderRoute();
   scheduleComparativeReplay();
 }
@@ -358,7 +401,7 @@ function scheduleComparativeReplay() {
     comparativeReplayTimer = null;
     if (state.comparativeReconstruction?.identifier !== reconstructionIdentifier
       || state.comparativeReplayState?.status !== "playing") return;
-    synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, "advance"));
+    synchronizeFromMemoryOS(executeComparisonCommand("advance"));
     if (!refreshComparativePresentation()) renderRoute();
     scheduleComparativeReplay();
   }, replayStepDelay);
@@ -842,7 +885,7 @@ function updateEvolution(action) {
   const wasActive = state.evolutionController.active;
   const checkpoint = !wasActive && action === "compare" ? captureInvestigationCheckpoint() : null;
   const coreAction = action === "compare" ? (wasActive ? "back" : "enter") : action;
-  synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, coreAction));
+  synchronizeFromMemoryOS(executeComparisonCommand(coreAction));
   state.evolutionSelection = null;
   const pairChanged = wasActive && action !== "compare";
   if (pairChanged || !state.evolutionController.active) {
@@ -880,9 +923,9 @@ function returnFromInvestigation() {
 function restoreTraceFromComparison() {
   if (!state.evolutionController.active) return Boolean(state.activeTrace);
   if (state.comparativeReconstruction) {
-    synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, "back"));
+    synchronizeFromMemoryOS(executeComparisonCommand("back"));
   }
-  synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, "back"));
+  synchronizeFromMemoryOS(executeComparisonCommand("back"));
   state.evolutionSelection = null;
   return restoreInvestigationCheckpoint();
 }
@@ -890,7 +933,7 @@ function restoreTraceFromComparison() {
 function returnToSemanticWorld() {
   clearReplayTimer();
   clearComparativeReplayTimer();
-  synchronizeFromInvestigationCore(investigationCore.returnToWorld(investigationIdentifier));
+  synchronizeFromMemoryOS(investigation.returnToWorld());
   state.evolutionSelection = null;
   state.comparativeTargetKey = null;
   state.comparativeDiagnostic = null;
@@ -953,7 +996,7 @@ function queryTraceForNode(node) {
     return null;
   }
   try {
-    synchronizeFromInvestigationCore(investigationCore.trace(investigationIdentifier, node.key));
+    synchronizeFromMemoryOS(investigation.trace(node.key));
     state.traceDiagnostic = null;
     return state.activeTrace;
   } catch (error) {
@@ -971,10 +1014,10 @@ function reconcileActiveTraceForSelection(node) {
   if (node?.kind === "reflection") {
     const nextTrace = queryTraceForNode(node);
     if (!nextTrace && !traceContainsNode(previous, node.key)) {
-      synchronizeFromInvestigationCore(investigationCore.returnToWorld(investigationIdentifier));
+      synchronizeFromMemoryOS(investigation.returnToWorld());
     }
   } else if (!traceContainsNode(previous, node?.key)) {
-    synchronizeFromInvestigationCore(investigationCore.returnToWorld(investigationIdentifier));
+    synchronizeFromMemoryOS(investigation.returnToWorld());
     state.traceDiagnostic = null;
   }
   return previous?.identifier !== state.activeTrace?.identifier;
@@ -984,8 +1027,7 @@ function acceptObservationFrame(view, operation, query, resultCode) {
   const activeSelectedKey = state.graphSelection?.nodeKey ?? state.graphViewState.selectedKey;
   const activeFollowedKey = state.graphViewState.followedKey;
   const nextSnapshot = cloneDetached(view);
-  synchronizeFromInvestigationCore(investigationCore.observe(investigationIdentifier, {
-    snapshot: nextSnapshot,
+  synchronizeFromMemoryOS(investigation.observe(nextSnapshot, {
     operation,
     query,
     resultCode,
@@ -1059,8 +1101,8 @@ function renderNeuralPerspective(route = state.route) {
         && pair?.to.world.nodes.some(({ key }) => key === node.key);
       if (comparable && node.key !== state.comparativeTargetKey) {
         state.comparativeTargetKey = node.key;
-        synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, "back"));
-        synchronizeFromInvestigationCore(investigationCore.compare(investigationIdentifier, {
+        synchronizeFromMemoryOS(executeComparisonCommand("back"));
+        synchronizeFromMemoryOS(executeComparisonCommand({
           action: "start",
           targetNodeKey: node.key,
         }));
@@ -1365,7 +1407,7 @@ function clearGraphSelection() {
   clearObservedSelection();
   const traceWasActive = Boolean(state.activeTrace);
   if (traceWasActive || state.evolution || state.comparativeReconstruction) {
-    synchronizeFromInvestigationCore(investigationCore.returnToWorld(investigationIdentifier));
+    synchronizeFromMemoryOS(investigation.returnToWorld());
   }
   state.traceDiagnostic = null;
   if (traceWasActive) {
@@ -1508,7 +1550,7 @@ async function executeSessionOperation(name) {
     if (result.succeeded && name === "observe") state.sessionState = "Observed";
     if (result.succeeded && name === "forgetSession") {
       state.sessionState = "Forgotten";
-      synchronizeFromInvestigationCore(investigationCore.archive(investigationIdentifier));
+      synchronizeFromMemoryOS(investigation.archive());
       observationTimeline = Object.freeze([]);
       currentFrame = null;
       state.evolutionSelection = null;
@@ -1600,8 +1642,8 @@ function initialize() {
     state.route = normalizeRoute(location.hash.slice(1));
     clearReplayTimer();
     clearComparativeReplayTimer();
-    if (investigation.state.lifecycle !== "Archived") {
-      synchronizeFromInvestigationCore(investigationCore.returnToWorld(investigationIdentifier));
+    if (investigation.lifecycle !== "Archived") {
+      synchronizeFromMemoryOS(investigation.returnToWorld());
     }
     state.evolutionSelection = null;
     state.comparativeTargetKey = null;

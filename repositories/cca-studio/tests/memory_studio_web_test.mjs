@@ -1305,7 +1305,7 @@ test("Cognitive Replay remains controller-owned and renderer-independent", async
   ]);
   assert.doesNotMatch(replaySource, /\bwindow\b|\bdocument\b|setTimeout|setInterval|requestAnimationFrame|Math\.random|Date\./);
   assert.doesNotMatch(rendererSource, /from\s+["']\.\/cognitive-replay\.js["']|buildCognitiveReplay|advanceReplay|playReplay/);
-  assert.match(appSource, /investigationCore\.replay\(investigationIdentifier, action\)/);
+  assert.match(appSource, /executeReplayCommand\(action\)/);
   assert.match(coreSource, /buildCognitiveReplay\(state\.activeTrace\)/);
   assert.match(coreSource, /projectReplay\(replay, current\)/);
   assert.match(coreSource, /advance: advanceReplay/);
@@ -1466,7 +1466,7 @@ test("the Evolution renderer consumes engine classifications and never computes 
   ]);
   assert.doesNotMatch(engineSource, /\bwindow\b|\bdocument\b|setTimeout|setInterval|requestAnimationFrame|Math\.random|Date\./);
   assert.doesNotMatch(rendererSource, /from\s+["']\.\/cognitive-evolution\.js["']|compareCognitiveEvolution|canonicalObservation/);
-  assert.match(appSource, /investigationCore\.compare\(investigationIdentifier, coreAction\)/);
+  assert.match(appSource, /executeComparisonCommand\(coreAction\)/);
   assert.match(coreSource, /compareCognitiveEvolution\(pair\.from, pair\.to\)/);
   for (const control of ["Compare", "Previous Observation", "Next Observation"]) {
     assert.match(rendererSource, new RegExp(control));
@@ -1685,7 +1685,7 @@ test("the Comparative renderer consumes aligned classifications and never comput
     assert.doesNotMatch(source, /\bwindow\b|\bdocument\b|setTimeout|setInterval|requestAnimationFrame|Math\.random|Date\./);
   }
   assert.doesNotMatch(rendererSource, /from\s+["']\.\/cognitive-comparative|buildComparativeReconstruction|advanceComparativeReplay|canonicalObservation/);
-  assert.match(appSource, /investigationCore\.compare\(investigationIdentifier, \{/);
+  assert.match(appSource, /executeComparisonCommand\(\{/);
   assert.match(coreSource, /buildComparativeReconstruction\(pair\.from, fromTrace, pair\.to, toTrace\)/);
   assert.match(rendererSource, /prepareComparativeRenderingState\(world, comparativeView\)/);
   assert.match(rendererSource, /comparativeSideRecord\(record, side\)/);
@@ -1722,13 +1722,13 @@ test("Comparative Reconstruction requires explicit activation and preserves Cogn
     "scheduleComparativeReplay",
   );
   assert.match(synchronizeSource, /!state\.evolutionController\.active/);
-  assert.match(activationSource, /investigationCore\.compare\(investigationIdentifier, \{/);
+  assert.match(activationSource, /executeComparisonCommand\(\{/);
   assert.match(applicationSource, /state\.comparativeActive = Boolean\(investigationView\.comparativeReconstruction\)/);
   assert.match(applicationSource, /data-comparative-start/);
   assert.match(applicationSource, /evolutionView: comparativeView \? null : evolution\?\.view/);
-  assert.doesNotMatch(synchronizeSource, /investigationCore\.compare|comparativeActive = true/,
+  assert.doesNotMatch(synchronizeSource, /executeComparisonCommand|comparativeActive = true/,
     "activating Cognitive Evolution alone must never enter Comparative Reconstruction");
-  assert.match(comparativeControlSource, /investigationCore\.compare\(investigationIdentifier, "back"\)/);
+  assert.match(comparativeControlSource, /executeComparisonCommand\("back"\)/);
   assert.doesNotMatch(comparativeControlSource, /updateEvolution\(/,
     "leaving Comparative Reconstruction must return to the existing Evolution view");
 });

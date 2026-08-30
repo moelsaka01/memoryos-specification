@@ -14,7 +14,7 @@ import { semanticWorldLayout } from "../web/js/semantic-world.js";
 const testDirectory = dirname(fileURLToPath(import.meta.url));
 const studioRoot = resolve(testDirectory, "..");
 
-const [appSource, graphSource, htmlSource, stylesSource, viewStateSource, semanticWorldSource, investigationCoreSource] = await Promise.all([
+const [appSource, graphSource, htmlSource, stylesSource, viewStateSource, semanticWorldSource, investigationCoreSource, memoryOSSDKSource] = await Promise.all([
   readFile(resolve(studioRoot, "web/js/app.js"), "utf8"),
   readFile(resolve(studioRoot, "web/js/graph.js"), "utf8"),
   readFile(resolve(studioRoot, "web/index.html"), "utf8"),
@@ -22,6 +22,7 @@ const [appSource, graphSource, htmlSource, stylesSource, viewStateSource, semant
   readFile(resolve(studioRoot, "web/js/graph-view-state.js"), "utf8"),
   readFile(resolve(studioRoot, "web/js/semantic-world.js"), "utf8"),
   readFile(resolve(studioRoot, "web/js/investigation-core.js"), "utf8"),
+  readFile(resolve(studioRoot, "web/js/memoryos-sdk.js"), "utf8"),
 ]);
 
 function functionSource(source, name, nextName) {
@@ -111,9 +112,9 @@ test("MO-1108 calibrates the renderer viewport without changing semantic geograp
 });
 
 test("MO-1108 exposes one exact Observe to Trace to Replay to Compare to Return workflow", () => {
-  const phase = functionSource(appSource, "workflowPhase", "comparisonAvailability");
-  assert.match(phase, /return investigationPhase\(investigation\)/,
-    "the Core is the single authority for deterministic lifecycle projection");
+  const phase = functionSource(appSource, "workflowPhase", "executeReplayCommand");
+  assert.match(phase, /return investigation\.phase/,
+    "Studio consumes the SDK lifecycle projection backed by the Core");
 
   const view = functionSource(appSource, "investigationWorkflowView", "refreshInvestigationWorkflow");
   ordered(view, [
@@ -140,7 +141,10 @@ test("MO-1108 exposes one exact Observe to Trace to Replay to Compare to Return 
   assert.match(actions, /updateReplay\(state\.replayState\.status === "completed" \? "restart" : "play"\)/);
   assert.match(actions, /updateEvolution\("compare"\)/);
   assert.match(actions, /activateComparativeReconstruction\(\)/);
-  assert.match(appSource, /investigationCore\.returnToWorld\(investigationIdentifier\)/);
+  assert.match(appSource, /investigation\.returnToWorld\(\)/);
+  assert.match(appSource, /from ["']\.\/memoryos-sdk\.js["']/);
+  assert.doesNotMatch(appSource, /from ["']\.\/investigation-core\.js["']/);
+  assert.match(memoryOSSDKSource, /from ["']\.\/investigation-core\.js["']/);
   assert.match(investigationCoreSource, /export function investigationPhase\(value\)/);
 
   const returnPath = functionSource(appSource, "returnFromInvestigation", "restoreTraceFromComparison");
@@ -163,7 +167,7 @@ test("RC-001 resolves exact investigation ownership and gates Compare on complet
   assert.match(selection, /reconcileActiveTraceForSelection\(worldNode\)/);
   assert.doesNotMatch(selection, /matches\[0\]|\.at\(-1\)|sort\(/, "selection must never choose an identifier-only fallback");
   const traceQuery = functionSource(appSource, "queryTraceForNode", "reconcileActiveTraceForSelection");
-  assert.match(traceQuery, /investigationCore\.trace\(investigationIdentifier, node\.key\)/);
+  assert.match(traceQuery, /investigation\.trace\(node\.key\)/);
   assert.match(investigationCoreSource, /resolveCognitiveTraceTarget\(state\.currentFrame\.world, payload\.selectedNodeKey\)/);
 
   const availability = functionSource(appSource, "comparisonAvailability", "captureInvestigationCheckpoint");
@@ -174,7 +178,7 @@ test("RC-001 resolves exact investigation ownership and gates Compare on complet
 
   const evolution = functionSource(appSource, "updateEvolution", "returnFromInvestigation");
   assert.match(evolution, /action === "compare" && !state\.evolutionController\.active && !comparisonAvailability\(\)\.available/);
-  assert.match(evolution, /investigationCore\.compare\(investigationIdentifier, coreAction\)/);
+  assert.match(evolution, /executeComparisonCommand\(coreAction\)/);
   assert.doesNotMatch(evolution, /compareCognitiveEvolution|buildComparativeReconstruction/);
 
   const actions = functionSource(appSource, "handleWorkflowAction", "bindInvestigationWorkflow");
@@ -236,7 +240,7 @@ test("MO-1108 route changes clear every transient investigation controller", () 
   for (const contract of [
     /clearReplayTimer\(\)/,
     /clearComparativeReplayTimer\(\)/,
-    /investigationCore\.returnToWorld\(investigationIdentifier\)/,
+    /investigation\.returnToWorld\(\)/,
     /state\.evolutionSelection = null/,
     /state\.comparativeTargetKey = null/,
     /state\.comparativeDiagnostic = null/,
@@ -245,7 +249,7 @@ test("MO-1108 route changes clear every transient investigation controller", () 
     /clearObservedSelection\(\)/,
     /state\.lastOperation = null/,
   ]) assert.match(cleanup, contract);
-  const synchronization = functionSource(appSource, "synchronizeFromInvestigationCore", "workflowPhase");
+  const synchronization = functionSource(appSource, "synchronizeFromMemoryOS", "workflowPhase");
   for (const field of ["activeTrace", "activeReplay", "replayState", "evolution", "comparativeReconstruction", "comparativeReplayState"]) {
     assert.match(synchronization, new RegExp(`state\\.${field} = investigationView\\.`));
   }
@@ -314,7 +318,7 @@ test("release interaction audit connects hit targets, enabled state, and rendere
   const rendererCallback = functionSource(appSource, "renderNeuralPerspective", "refreshReplayPresentation");
   assert.match(rendererCallback, /updateReplay\("pause"\)[\s\S]*refreshReplayPresentation\(\)/);
   const replayUpdate = functionSource(appSource, "updateReplay", "scheduleReplay");
-  assert.match(replayUpdate, /investigationCore\.replay\(investigationIdentifier, action\)/);
+  assert.match(replayUpdate, /executeReplayCommand\(action\)/);
   assert.match(rendererCallback, /state\.comparativeTargetKey = comparable \? node\.key : null;[\s\S]*refreshInvestigationWorkflow\(\)/);
   assert.match(rendererCallback, /graphselectionclear[\s\S]*state\.evolutionSelection = null;[\s\S]*renderGraphContext\(\)/);
 
