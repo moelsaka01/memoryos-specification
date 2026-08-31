@@ -28,6 +28,7 @@ belong to the repository that owns the behavior.
 | `memoryos` | Reserved only | Reserved product repository boundary; the released implementation currently remains in `cca-core` and `cca-studio` |
 | `cca-studio` | CP-011 released; MemoryOS 1.1 released; MemoryOS 1.2 in development | Frozen CCA-STUDIO-1.0 Contract, deterministic investigation presentation, single Investigation Core, canonical MIP implementation, and dependency-free AI runtime adapter interfaces |
 | `cca-sdk` | MO-1204 implemented | Public JavaScript, Python, and native C++ facades over the frozen Investigation Core; one private versioned native binding |
+| `memoryos-cli` | MO-1205 implemented | Official `memoryos` executable, deterministic terminal/JSON output, and session-scoped automation through the public SDK |
 | `cca-conformance` | Reserved only | Future conformance suite boundary; the retained compatibility seam does not define this repository |
 | `cca-atlas` | Reserved only | Future atlas boundary; responsibilities beyond the name are undecided |
 
@@ -92,6 +93,19 @@ Trace requires an explicit Reflection selection; comparison and restore
 require explicit session and checkpoint values. Export accepts only a valid
 MIP-backed investigation. See the [SDK documentation](../repositories/cca-sdk/README.md).
 
+## `memoryos-cli`
+
+`memoryos-cli` is the MO-1205 automation boundary and the first independent
+consumer of the public SDK. It provides the `memoryos` executable, deterministic
+human and JSON output, stable exit codes, exact package file transport, and a
+JSON Lines session mode. It imports no Runtime, Investigation Core, MIP, or
+renderer module. Replay and comparison require explicit source-authored Trace
+selectors, and comparison accepts exactly one MIP-backed Investigation.
+
+The live session retains real SDK handles so checkpoint restoration cannot be
+forged or made portable. No checkpoint token or object is serialized. See the
+[CLI documentation](../repositories/memoryos-cli/README.md).
+
 ## Reserved directories
 
 A directory that remains reserved may contain a short scope notice, but must
@@ -115,6 +129,8 @@ the reserved-directory check.
   deterministic investigation behavior. Clients consume immutable projections;
   they do not derive Trace, Replay, Evolution, Comparative Reconstruction, or
   cognition missing from an imported MIP.
+- `memoryos-cli` is downstream of `cca-sdk`; it owns automation and output
+  formatting only and has no direct Core, MIP, Runtime, or renderer dependency.
 - Studio and native consumers use the MemoryOS SDK facade. The SDK may forward
   Core or MIP operations but must not implement investigation semantics.
 - A new cross-repository dependency is an architecture change.

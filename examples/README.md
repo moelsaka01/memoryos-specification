@@ -109,6 +109,20 @@ bytes; none constructs cognitive artifacts locally.
 The examples are registered in the SDK's automated verification rather than
 being documentation-only snippets.
 
+## MemoryOS 1.2 CLI
+
+The [MemoryOS CLI examples](../repositories/memoryos-cli/examples/) execute all
+eleven public commands through the released SDK facade. They decode the approved
+complete MIP fixture, use the detached reference snapshot, verify byte-exact
+export, and exercise session-scoped checkpoint restoration without serializing
+an opaque checkpoint.
+
+```text
+node repositories/memoryos-cli/examples/run-cli-examples.mjs
+```
+
+The example runner is also registered as an automated CTest and npm test.
+
 ## Example quality rules
 
 - State whether an example is valid, intentionally invalid, or conceptual.

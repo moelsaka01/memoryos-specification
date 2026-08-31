@@ -45,6 +45,16 @@ it implements no investigation behavior. Package verification remains MIP
 owned, package bytes remain exact, native observations cannot be exported,
 and comparison retains the Core's staged lifecycle.
 
+### MO-1205 — MemoryOS CLI
+
+Added the official `memoryos` command as the first standalone consumer of the
+public MemoryOS SDK. The CLI delegates Observe, Trace, Replay, Evolution,
+verification, exact MIP import/export, and inspection to the SDK; provides
+stable human and canonical JSON output plus deterministic exit codes; and
+supports JSON Lines automation through one live SDK session. Trace selectors
+remain explicit, cross-package comparison is rejected, native observations
+cannot be exported, and opaque checkpoints never leave their creating session.
+
 ## MemoryOS 1.1 — v1.1.0
 
 Released. MemoryOS 1.1 preserves the frozen MemoryOS 1.0 runtime and public

@@ -184,11 +184,35 @@ MemoryOS Runtime -> Investigation Core -> private binding -> MemoryOS SDK
 The SDK cannot call the renderer, adapters, or Runtime directly. The Core does
 not depend on the SDK. Package verification remains owned by MIP-001.
 
+### `memoryos-cli`
+
+`memoryos-cli` owns MO-1205 shell and CI automation. It consumes only the
+public JavaScript MemoryOS SDK facade and contains no Runtime, Investigation
+Core, MIP, Trace, Replay, Evolution, or renderer behavior. Every cognitive
+operation is an explicit SDK call. Package bytes and JSON inputs are transported
+without semantic reinterpretation.
+
+Each stateless invocation creates one isolated SDK instance. The `session`
+command retains one instance for a JSON Lines workflow; its checkpoints remain
+actual opaque SDK objects held only in memory and are never serialized. The CLI
+cannot restore checkpoints across processes or compare separate packages.
+
+The complete downstream direction is:
+
+```text
+MemoryOS Runtime -> Investigation Core -> MemoryOS SDK
+                                             |---> MemoryOS CLI
+                                             `---> Memory Studio
+```
+
+Neither consumer may call the Core directly.
+
 ### Reserved repositories
 
 `memoryos`, `cca-conformance`, and `cca-atlas` remain reserved as future
 repository boundaries. The released MemoryOS implementation currently resides
-in `cca-core`, `cca-studio`, and the authorized `cca-sdk` facade; the reserved
+in `cca-core`, `cca-studio`, and the authorized `cca-sdk` facade. The additive
+`memoryos-cli` repository is a downstream SDK consumer; the reserved
 `memoryos` directory does not create a second implementation or authorize
 dependency edges merely by its presence.
 

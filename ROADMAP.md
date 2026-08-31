@@ -9,7 +9,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 |---|---|---|
 | MemoryOS 1.0 | Released | Deterministic memory lifecycle, source-preserving knowledge, retrieval, reflection, provider-neutral handoff, and the frozen Memory Studio contract |
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
-| MemoryOS 1.2 | In development | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, a single renderer-independent Investigation Core, public JavaScript/Python/C++ SDK facades, and planned investigation onboarding refinements |
+| MemoryOS 1.2 | In development | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, and planned investigation onboarding refinements |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -48,6 +48,13 @@ binding to the same JavaScript Core. The SDK requires explicit snapshots,
 Reflection selections, comparison sessions, checkpoints, and packages. It
 adds no cognition or package construction behavior, and native export remains
 available only for investigations imported from valid MIP artifacts.
+
+MO-1205 implements the [MemoryOS CLI](repositories/memoryos-cli/README.md) as
+the first standalone SDK consumer. Human and canonical JSON output, explicit
+Trace/Replay/Compare inputs, exact MIP import/export, deterministic exit codes,
+and live JSON Lines sessions support local automation and CI without copying
+Investigation Core or MIP semantics. Checkpoints remain opaque and confined to
+the live CLI session that created them.
 
 ## IM-001: engineering foundation
 

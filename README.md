@@ -138,7 +138,9 @@ MemoryOS 1.2 exposes the frozen Investigation Core through a thin, versioned
 [SDK facade](repositories/cca-sdk/README.md). Studio imports that facade rather
 than the Core. Python and C++ retain one private Core binding per SDK instance;
 the binding transports explicit commands and immutable results but implements
-no investigation behavior.
+no investigation behavior. The official
+[MemoryOS CLI](repositories/memoryos-cli/README.md) is an independent SDK
+consumer for deterministic shell, CI, and JSON Lines automation.
 
 ## Getting Started
 
@@ -200,6 +202,20 @@ tooling.
 5. Use **Compare traces** for synchronized Comparative Reconstruction.
 6. Choose **Return to World** to leave the investigation without changing cognition.
 
+### 4. Automate through the SDK-backed CLI
+
+The workspace executable requires Node.js 20 or newer and no external npm
+packages:
+
+```bash
+node repositories/memoryos-cli/bin/memoryos.js help
+node repositories/memoryos-cli/bin/memoryos.js verify investigation.mip --json
+```
+
+Optionally link the `memoryos` command to this checkout with
+`cd repositories/memoryos-cli && npm link`. Replay and comparison require
+explicit package Trace selectors; the CLI never infers cognition.
+
 ## Repository Structure
 
 | Path | Purpose |
@@ -207,6 +223,7 @@ tooling.
 | [`repositories/cca-core`](repositories/cca-core) | MemoryOS capabilities plus the Runtime, Representation, Process, and Persistence foundations. |
 | [`repositories/cca-studio`](repositories/cca-studio) | The frozen Memory Studio contract, Mission Control UI, single Investigation Core, canonical MIP implementation, dependency-free AI runtime adapters, tests, media, and documentation. |
 | [`repositories/cca-sdk`](repositories/cca-sdk) | The MO-1204 JavaScript, Python, and native C++ SDK facades, private Core binding, examples, tests, and conformance evidence. |
+| [`repositories/memoryos-cli`](repositories/memoryos-cli) | The MO-1205 standalone, scriptable CLI; a thin consumer of the public SDK with no investigation behavior. |
 | [`docs`](docs) | Workspace engineering, compiler, build, and contributor documentation. |
 | [`specification`](specification) | Canonical specification format and schema used by the CCA Standards Compiler. |
 
@@ -220,7 +237,7 @@ implementation.
 | :--- | :--- |
 | **MemoryOS 1.0** | Established the deterministic memory lifecycle: Working Memory, Consolidation, Long-Term Memory, semantic, episodic, and procedural derivation, Retrieval, Reflection, Providers, and the frozen Studio contract. |
 | **MemoryOS 1.1 · v1.1.0** | Added observable cognition without changing the MemoryOS 1.0 runtime or public memory contracts. MO-1101 through MO-1108 delivered the Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and the unified production workflow. |
-| **MemoryOS 1.2 · in development** | Adds the canonical Memory Investigation Package (MO-1201), dependency-free adapters that translate settled external cognition into verified packages (MO-1202), one renderer-independent Investigation Core (MO-1203), and public JavaScript, Python, and C++ SDK facades over that Core (MO-1204). |
+| **MemoryOS 1.2 · in development** | Adds the canonical Memory Investigation Package (MO-1201), dependency-free adapters (MO-1202), one renderer-independent Investigation Core (MO-1203), public SDK facades (MO-1204), and the SDK-only automation CLI (MO-1205). |
 
 See [CHANGELOG.md](CHANGELOG.md) for milestone-level engineering records and
 [RELEASE_NOTES.md](RELEASE_NOTES.md) for compatibility and verification details.
@@ -245,7 +262,10 @@ MO-1203 establishes the single [Investigation Core](repositories/cca-studio/docs
 used by all clients. MO-1204 adds the public
 [MemoryOS SDK](repositories/cca-sdk/README.md), migrates Studio to its
 JavaScript facade, and gives Python and C++ the same deterministic Core
-behavior through one private binding contract.
+behavior through one private binding contract. MO-1205 adds the
+[MemoryOS CLI](repositories/memoryos-cli/README.md) as the first independent
+SDK consumer and keeps all automation downstream of the same execution
+authority.
 Investigation onboarding and Reflection discoverability remain planned product
 refinements. None of this redesigns the MemoryOS 1.0 Runtime or the released
 MemoryOS 1.1 investigation architecture.

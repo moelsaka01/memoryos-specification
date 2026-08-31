@@ -9,6 +9,7 @@ The workspace reserves these repository boundaries:
 | [`memoryos`](memoryos) | Reserved future product-repository boundary; current implementation remains in `cca-core` and `cca-studio` |
 | [`cca-studio`](cca-studio) | CP-011 Studio, MemoryOS 1.1 investigation presentation, and MemoryOS 1.2 headless MIP, adapter, and Investigation Core modules |
 | [`cca-sdk`](cca-sdk) | MO-1204 JavaScript, Python, and C++ SDK facades plus the single private Investigation Core binding |
+| [`memoryos-cli`](memoryos-cli) | MO-1205 standalone CLI and JSON Lines automation over the public SDK facade |
 | [`cca-conformance`](cca-conformance) | Reserved; no implementation |
 | [`cca-atlas`](cca-atlas) | Reserved; no implementation |
 
@@ -24,6 +25,9 @@ not synthesize cognition absent from a package. MO-1204 activates `cca-sdk` as
 the public programmability boundary. Studio uses its JavaScript facade, while
 Python and C++ use the same versioned private Core-host protocol. The SDK owns
 no investigation or package behavior.
+MO-1205 adds `memoryos-cli` downstream of the SDK. The CLI performs file and
+terminal transport, deterministic presentation, and automation only; it does
+not import the Core, MIP, Runtime, or renderer.
 No repository creates a reverse dependency into the compiler. Reserved
 repositories have no approved dependency relationships merely by directory
 presence.
