@@ -1,6 +1,6 @@
 # MemoryOS SDK API Reference
 
-This reference describes the public MO-1204 facade. The frozen Investigation Core remains authoritative for every lifecycle transition, Trace, Replay, Evolution, Comparative Reconstruction, checkpoint, and investigation-verification result. MIP remains authoritative for package verification and canonical package bytes.
+This reference describes the public SDK facade, including the MO-1206 Cognitive Regression extension. The frozen Investigation Core remains authoritative for every lifecycle transition, Trace, Replay, Evolution, Comparative Reconstruction, Cognitive Regression report, checkpoint, and investigation-verification result. MIP remains authoritative for package verification and canonical package bytes.
 
 The facade version is `1.0.0`, exposed as `MEMORYOS_SDK_VERSION` in JavaScript, `SDK_VERSION` / `memoryos.__version__` in Python, and `memoryos::sdkVersion` in C++. This is the SDK version shipped for MemoryOS 1.2; it is not the MIP format version.
 
@@ -18,6 +18,7 @@ All state-bearing SDK values are immutable handles or immutable projections.
 | `Checkpoint` | Opaque restoration handle over an intact Core checkpoint | One `MemoryOS` instance and Investigation |
 | `MemoryInvestigationPackage` | Detached immutable canonical MIP bytes | Freely copyable as data |
 | `VerificationResult` | Immutable Core or MIP verification evidence | Detached result |
+| `RegressionReport` | Immutable factual report produced by Investigation Core | Detached result; inputs must share one `MemoryOS` instance |
 | `InvestigationQuery` | Reserved type; no query operation exists in MO-1204 | Not applicable |
 
 Values created by one `MemoryOS` instance cannot be used to mutate another instance. A checkpoint additionally must match the Investigation from which it was captured.
@@ -64,6 +65,18 @@ restore(checkpoint)
 
 The argument must be an actual immutable `Checkpoint` issued by the same SDK instance for the same Investigation. Serialized checkpoint metadata is not a restoration credential.
 
+### Cognitive Regression
+
+```text
+regression(baselineInvestigation, candidateInvestigation)
+```
+
+Both handles must belong to the same SDK instance. The facade forwards their
+identifiers to the authoritative Core and returns its closed, immutable
+`MemoryOSCognitiveRegressionReport` version `1.0.0`. Category order is fixed:
+Replay, Reflection, Evidence, Retrieval, Evolution, Verification, Transition,
+and Lifecycle. The SDK performs no comparison logic and adds no interpretation.
+
 ### Package operations
 
 ```text
@@ -86,6 +99,7 @@ import {
   InvestigationQuery,
   MemoryInvestigationPackage,
   MemoryOS,
+  RegressionReport,
   ReplaySession,
   VerificationResult,
   Workspace,
@@ -102,6 +116,7 @@ import {
 | `importPackage(bytesOrPackage, options = {})` | `Investigation` | Imports exact bytes through Core and MIP. |
 | `exportPackage(investigation, options = {})` | `MemoryInvestigationPackage` | MIP-backed investigations only. |
 | `verifyPackage(bytesOrPackage, options = {})` | `VerificationResult` | MIP-owned verification; invalid input yields `valid === false`. |
+| `regression(baseline, candidate)` | `RegressionReport` | Core-owned factual comparison; both investigations must be owned by this instance. |
 | `restore(checkpoint)` | `Investigation` | Checkpoint must belong to this instance. |
 
 Package options may include `supportedExtensions`. Import options may also include an explicit Investigation identifier. `MemoryInvestigationPackage.toBytes()` returns a detached `Uint8Array` copy.
@@ -162,6 +177,7 @@ from memoryos import (
     MemoryOS,
     MemoryOSError,
     MemoryOSBindingError,
+    RegressionReport,
     ReplaySession,
     VerificationResult,
     Workspace,
@@ -183,9 +199,14 @@ The object owns one long-lived private Core host and supports the context-manage
 | `import_package(package_or_bytes, *, identifier=None, supported_extensions=())` | `Investigation` |
 | `export_package(investigation, *, supported_extensions=None)` | `MemoryInvestigationPackage` |
 | `verify_package(package_or_bytes, *, supported_extensions=())` | `VerificationResult` |
+| `regression(baseline, candidate)` | `RegressionReport` |
 | `restore(checkpoint)` | `Investigation` |
 
 `MemoryInvestigationPackage.data` contains immutable `bytes`; `bytes(package)` returns the same bytes. `VerificationResult` exposes `valid`, `status`, ordered `checks` or `diagnostics`, and the verified `package` when applicable.
+
+`RegressionReport` exposes `identifier`, `regression_detected`, `overall`, and
+the complete immutable Core `projection`. `overall` is exactly `identical` or
+`regressionDetected`; it is never a generated explanation.
 
 An omitted Python `operation` (or an empty C++ `ObserveOptions::operation`)
 is not replaced by SDK behavior. The binding omits the field so the frozen Core
@@ -263,6 +284,9 @@ MemoryInvestigationPackage exportPackage(
 VerificationResult verifyPackage(
     const MemoryInvestigationPackage&,
     std::vector<std::string> supportedExtensions = {}) const;
+RegressionReport regression(
+    const Investigation& baseline,
+    const Investigation& candidate) const;
 Investigation restore(const Checkpoint&) const;
 ```
 
@@ -271,6 +295,11 @@ constructor checks the environment override, then the source-checkout host,
 then the host under CMake's configured installation data directory. The
 environment variables `MEMORYOS_NODE_EXECUTABLE` and `MEMORYOS_CORE_HOST`
 remain explicit overrides.
+
+`RegressionReport` is an immutable value handle exposing `identifier()`,
+`regressionDetected()`, `overall()`, and `canonicalJson()`. The canonical JSON
+is the exact structured Core report, including source descriptors, fixed
+categories, and ordered factual differences.
 
 ### `Investigation`
 

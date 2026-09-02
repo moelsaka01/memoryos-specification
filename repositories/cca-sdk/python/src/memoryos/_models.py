@@ -63,6 +63,16 @@ class VerificationResult:
 
 
 @dataclass(frozen=True, slots=True)
+class RegressionReport:
+    """Immutable projection of one Core-owned Cognitive Regression report."""
+
+    identifier: str
+    regression_detected: bool
+    overall: str
+    projection: FrozenMap
+
+
+@dataclass(frozen=True, slots=True)
 class Investigation:
     """Immutable snapshot and command handle for one Core investigation."""
 

@@ -44,6 +44,7 @@ test("production CLI depends on the SDK facade and no lower platform layer", asy
     "cognitive-replay",
     "cognitive-evolution",
     "cognitive-comparative",
+    "cognitive-regression",
     "semantic-world",
     "studio-model",
   ];
@@ -93,4 +94,29 @@ test("CLI output preserves direct SDK transition truth", async (t) => {
   assert.equal(cliResult.transitionLogDigest, investigation.transitionLog.digest);
   assert.equal(cliResult.workspaceIdentifier, investigation.workspaceIdentifier);
   assert.deepEqual(cliResult.availability, investigation.availability);
+});
+
+test("Regression output is the exact public SDK report", async (t) => {
+  const fixture = await makeFixtures(t);
+  const cli = runCli([
+    "regression",
+    fixture.regressionBaselinePath,
+    fixture.regressionCandidatePath,
+    "--json",
+  ]);
+  assert.equal(cli.status, 0);
+  const cliResult = parseJsonOutput(cli).result;
+
+  const { MemoryOS } = await import("../../cca-studio/web/js/memoryos-sdk.js");
+  const memory = new MemoryOS();
+  const baseline = memory.importPackage(fixture.regressionBaselineBytes, {
+    identifier: "memoryos-regression-baseline",
+  });
+  const candidate = memory.importPackage(fixture.regressionCandidateBytes, {
+    identifier: "memoryos-regression-candidate",
+  });
+  assert.deepEqual(
+    cliResult,
+    JSON.parse(JSON.stringify(memory.regression(baseline, candidate))),
+  );
 });

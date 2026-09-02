@@ -102,9 +102,12 @@ explicit snapshots, selections, comparison sessions, checkpoints, and MIP
 bytes; none constructs cognitive artifacts locally.
 
 - [Python examples](../repositories/cca-sdk/examples/python/) cover Observe,
-  Replay, staged Compare, Verify, exact import/export, and batch verification.
+  Replay, staged Compare, Verify, exact import/export, batch verification, and
+  deterministic regression.
 - [C++ quick start](../repositories/cca-sdk/examples/cpp_quickstart.cpp) covers
   explicit native observation and Core-owned verification.
+- [C++ regression](../repositories/cca-sdk/examples/cpp_regression.cpp) compares
+  two imported investigations through the SDK and prints the Core report.
 
 The examples are registered in the SDK's automated verification rather than
 being documentation-only snippets.
@@ -112,10 +115,10 @@ being documentation-only snippets.
 ## MemoryOS 1.2 CLI
 
 The [MemoryOS CLI examples](../repositories/memoryos-cli/examples/) execute all
-eleven public commands through the released SDK facade. They decode the approved
+twelve public commands through the released SDK facade. They decode the approved
 complete MIP fixture, use the detached reference snapshot, verify byte-exact
-export, and exercise session-scoped checkpoint restoration without serializing
-an opaque checkpoint.
+export, compare two explicit packages for deterministic regression, and exercise
+session-scoped checkpoint restoration without serializing an opaque checkpoint.
 
 ```text
 node repositories/memoryos-cli/examples/run-cli-examples.mjs

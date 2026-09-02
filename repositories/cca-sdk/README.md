@@ -16,13 +16,14 @@ MemoryOS SDK
 Studio   Python   Native C++
 ```
 
-The SDK does not build traces, advance replay independently, compare rendered graphs, generate package content, or verify MIP artifacts itself. It forwards explicit commands to the existing authority and returns immutable projections of that authority's state.
+The SDK does not build traces, advance replay independently, compute cognitive regression, compare rendered graphs, generate package content, or verify MIP artifacts itself. It forwards explicit commands to the existing authority and returns immutable projections of that authority's state.
 
 ## Guarantees
 
 - **One execution authority.** Deterministic investigation behavior remains in the frozen Investigation Core.
 - **Explicit inputs.** Observation snapshots, Reflection selections, comparison sessions, checkpoints, and package bytes are caller supplied.
 - **Staged comparison.** Cognitive Evolution and Comparative Reconstruction retain the Core's existing lifecycle.
+- **Factual regression.** Baseline/candidate comparison is computed once by Investigation Core and transported without reinterpretation.
 - **Exact packages.** Import and export preserve canonical MIP bytes; only MIP-backed investigations can be exported.
 - **MIP-owned verification.** Package verification is forwarded to the canonical MIP implementation.
 - **Isolated ownership.** Each SDK instance owns one Core instance. Handles and checkpoints cannot cross SDK instances.
@@ -63,6 +64,17 @@ Comparative Reconstruction: play | pause | previous | next | reset | advance
 Session acquisition does not invent a semantic transition. `replay()` opens the already prepared Replay, and `comparisonSession(...)` configures an immutable request. Core state changes only when a command is forwarded.
 Replay handles are bound to the exact Core Replay identity; an unprepared or
 replaced Replay fails deterministically instead of controlling newer state.
+
+Regression compares two investigations owned by the same SDK instance:
+
+```python
+report = memory.regression(baseline, candidate)
+assert report.overall in ("identical", "regressionDetected")
+```
+
+The fixed Replay, Reflection, Evidence, Retrieval, Evolution, Verification,
+Transition, and Lifecycle categories come directly from Investigation Core.
+The SDK adds no explanation, heuristic, ranking, or inferred category.
 
 ## Quick start
 
@@ -168,10 +180,11 @@ The host performs framing, canonical transport serialization, Base64 byte transp
 
 - [API reference](docs/api-reference.md)
 - [Developer guide](docs/developer-guide.md)
+- [Cognitive Regression guide](docs/regression-guide.md)
 - [SDK conformance report](docs/conformance-report.md)
 - [Private binding contract](bridge/README.md)
 - [Python package guide](python/README.md)
 
 ## Scope
 
-MO-1204 intentionally does not add query execution, convenience inference, adapters, networking, REST, CLI behavior, or renderer behavior. `InvestigationQuery` is a reserved type with no operation in this milestone.
+The SDK intentionally does not add query execution, convenience inference, adapters, networking, REST, CLI behavior, or renderer behavior. `InvestigationQuery` remains a reserved type with no operation. MO-1206 adds only the regression facade; Investigation Core remains the sole regression authority.

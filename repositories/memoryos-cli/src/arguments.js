@@ -31,6 +31,7 @@ const definitions = Object.freeze({
     required: ["trace", "evolution"],
     options: { trace: "value", evolution: "value", id: "value", json: "flag" },
   },
+  regression: { positionals: [2, 2], options: { json: "flag" } },
   verify: { positionals: [1, 1], options: { json: "flag" } },
   import: { positionals: [1, 1], options: { id: "value", json: "flag" } },
   export: {

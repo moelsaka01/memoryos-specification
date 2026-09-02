@@ -108,6 +108,13 @@ comparison sessions, and checkpoints cross the SDK boundary unchanged; the
 facade forwards state changes to the frozen Core and package verification to
 MIP-001.
 
+MO-1206 adds read-only
+[Cognitive Regression Analysis](docs/cognitive-regression.md) to that same
+Investigation Core. The engine compares immutable Replay, Reflection,
+Evidence, Retrieval, Evolution, Verification, transition-history, and
+lifecycle facts. SDK and CLI consumers receive the same closed report; no
+renderer, heuristic, explanation, score, or inference participates.
+
 ## Build and verify
 
 From the workspace root:
@@ -123,10 +130,11 @@ failure precedence, moved-from state, ownership and lifetime, exhaustive
 allocation-failure campaigns, architecture-boundary checks, the executable
 example, and the dependency-free presentation model. Separate JavaScript
 conformance suites verify MIP-001, the MO-1202 adapters, the MO-1203
-Investigation Core, and the MO-1204 JavaScript SDK facade, including provider
-lifecycle validation, settled projections, deterministic reference packages,
-invariance, transition-log integrity, checkpoint restoration, lifecycle
-behavior, and failure/resource boundaries.
+Investigation Core, the MO-1204 JavaScript SDK facade, and MO-1206 Cognitive
+Regression, including provider lifecycle validation, settled projections,
+deterministic reference packages, invariance, transition-log integrity,
+checkpoint restoration, regression category correctness, lifecycle behavior,
+and failure/resource boundaries.
 
 ## Run the presentation
 
@@ -164,6 +172,9 @@ observation paths, and explanation-chain boundaries.
 - [MemoryOS 1.2 AI Runtime Adapters](docs/ai-runtime-adapters.md)
 - [MemoryOS 1.2 Investigation Core](docs/investigation-core.md)
 - [Investigation Core conformance evidence](docs/investigation-core-conformance-evidence.md)
+- [MemoryOS 1.2 Cognitive Regression Analysis](docs/cognitive-regression.md)
+- [Cognitive Regression engineering guide](docs/cognitive-regression-engineering-guide.md)
+- [Cognitive Regression conformance report](docs/cognitive-regression-conformance-report.md)
 - [MemoryOS SDK](../cca-sdk/README.md)
 - [MemoryOS SDK conformance report](../cca-sdk/docs/conformance-report.md)
 - [Public API and behavior](docs/memory-studio.md)

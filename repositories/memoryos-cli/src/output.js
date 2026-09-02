@@ -29,6 +29,32 @@ export function humanResult(command, result) {
   return `${lines.join("\n")}\n`;
 }
 
+function appendHumanFields(lines, path, value) {
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      lines.push(`${path}: none`);
+      return;
+    }
+    value.forEach((child, index) => appendHumanFields(lines, `${path}[${index}]`, child));
+    return;
+  }
+  if (value && typeof value === "object") {
+    for (const key of Object.keys(value).sort()) {
+      if (value[key] !== undefined) {
+        appendHumanFields(lines, path.length === 0 ? key : `${path}.${key}`, value[key]);
+      }
+    }
+    return;
+  }
+  lines.push(`${path}: ${humanValue(value)}`);
+}
+
+export function humanRegressionResult(report) {
+  const lines = ["MemoryOS regression"];
+  appendHumanFields(lines, "", report);
+  return `${lines.join("\n")}\n`;
+}
+
 export function successEnvelope(command, result) {
   return { command, ok: true, result, schemaVersion: "1.0" };
 }

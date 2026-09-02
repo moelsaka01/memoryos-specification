@@ -130,11 +130,36 @@ TEST(MemoryOsSdk, ExposesVersionedImmutableValueHandles) {
     static_assert(std::is_copy_constructible_v<memoryos::ReplaySession>);
     static_assert(std::is_copy_constructible_v<memoryos::ComparisonSession>);
     static_assert(std::is_copy_constructible_v<memoryos::VerificationResult>);
+    static_assert(std::is_copy_constructible_v<memoryos::RegressionReport>);
     static_assert(std::is_copy_constructible_v<memoryos::Checkpoint>);
 
     memoryos::MemoryOS memory;
     const auto workspace = memory.openWorkspace("workspace-memoryos-release");
     EXPECT_EQ(workspace.identifier(), "workspace-memoryos-release");
+}
+
+TEST(MemoryOsSdk, DelegatesImmutableDeterministicRegressionToCore) {
+    memoryos::MemoryOS memory;
+    const auto workspace = memory.openWorkspace("workspace-memoryos-release");
+    const auto baseline = memory.observe(
+        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+        observationOptions("cpp-regression-baseline"));
+    const auto candidate = memory.observe(
+        workspace, readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
+        observationOptions("cpp-regression-candidate"));
+
+    const auto first = memory.regression(baseline, candidate);
+    const auto second = memory.regression(baseline, candidate);
+    EXPECT_TRUE(first.regressionDetected());
+    EXPECT_EQ(first.overall(), "regressionDetected");
+    EXPECT_EQ(first.identifier(), second.identifier());
+    EXPECT_EQ(first.canonicalJson(), second.canonicalJson());
+    EXPECT_NE(first.canonicalJson().find("\"category\":\"evidence\""),
+              std::string::npos);
+
+    const auto identical = memory.regression(baseline, baseline);
+    EXPECT_FALSE(identical.regressionDetected());
+    EXPECT_EQ(identical.overall(), "identical");
 }
 
 TEST(MemoryOsSdk, DefaultObservationOperationsMatchCrossLanguageDigests) {
@@ -357,6 +382,12 @@ TEST(MemoryOsSdk, RejectsCrossInstanceAndNativeExport) {
             .identifier = "cpp-foreign",
             .supportedExtensions = {},
         });
+    expectInvalidInput([&first, &native, &foreign] {
+        static_cast<void>(first.regression(native, foreign));
+    });
+    expectInvalidInput([&second, &native, &foreign] {
+        static_cast<void>(second.regression(native, foreign));
+    });
     const auto configured = foreign.comparisonSession(
         std::optional<std::string>{package_evolution});
     expectInvalidInput(

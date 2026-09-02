@@ -10,6 +10,8 @@ The released MemoryOS 1.0 implementation currently resides in
 1.1 investigation presentation and MemoryOS 1.2 MIP, adapter, and Investigation
 Core modules also reside in `cca-studio`. The MO-1204 public facade and native
 bindings reside in [`cca-sdk`](../cca-sdk/), and the MO-1205 SDK-backed command
-line client resides in [`memoryos-cli`](../memoryos-cli/); begin with the
+line client resides in [`memoryos-cli`](../memoryos-cli/). MO-1206 adds
+Cognitive Regression to the existing Investigation Core, SDK, and CLI layers
+without creating behavior in this reserved directory; begin with the
 [root product overview](../../README.md). The reserved directory remains empty
 of product behavior and is not a second execution authority.

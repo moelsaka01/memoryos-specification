@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import copy
 import os
 import subprocess
 import sys
@@ -36,10 +37,18 @@ class PythonExamplesTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             snapshot = root / "snapshot.json"
+            candidate_snapshot = root / "candidate-snapshot.json"
             package = root / "investigation.mip"
             exported = root / "exported.mip"
             snapshot.write_text(
                 json.dumps(reference_snapshot(), ensure_ascii=False, separators=(",", ":")),
+                encoding="utf-8",
+            )
+            candidate = copy.deepcopy(reference_snapshot())
+            candidate["observationIdentifier"] = "python-example-regression-candidate"
+            candidate["reflections"][0]["knowledge"] = "Example regression truth."
+            candidate_snapshot.write_text(
+                json.dumps(candidate, ensure_ascii=False, separators=(",", ":")),
                 encoding="utf-8",
             )
             package.write_bytes(complete_package())
@@ -70,6 +79,14 @@ class PythonExamplesTest(unittest.TestCase):
                 "comparative-observation-a-observation-b",
             )
             self.assertEqual(comparison["stage"], "compare")
+
+            regression = self.run_example(
+                "regression.py",
+                str(snapshot),
+                str(candidate_snapshot),
+            )
+            self.assertTrue(regression["regressionDetected"])
+            self.assertEqual(regression["overall"], "regressionDetected")
 
             verified = self.run_example("verify.py", str(package))
             self.assertTrue(verified["valid"])

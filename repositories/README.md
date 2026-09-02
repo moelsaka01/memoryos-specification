@@ -7,9 +7,9 @@ The workspace reserves these repository boundaries:
 | [`cca-core`](cca-core) | Released Runtime, Representation, Process, Persistence, and CP-001 through CP-010 MemoryOS implementation |
 | [`cca-compiler`](cca-compiler) | IS-002 Standards Compiler and CLI |
 | [`memoryos`](memoryos) | Reserved future product-repository boundary; current implementation remains in `cca-core` and `cca-studio` |
-| [`cca-studio`](cca-studio) | CP-011 Studio, MemoryOS 1.1 investigation presentation, and MemoryOS 1.2 headless MIP, adapter, and Investigation Core modules |
-| [`cca-sdk`](cca-sdk) | MO-1204 JavaScript, Python, and C++ SDK facades plus the single private Investigation Core binding |
-| [`memoryos-cli`](memoryos-cli) | MO-1205 standalone CLI and JSON Lines automation over the public SDK facade |
+| [`cca-studio`](cca-studio) | CP-011 Studio, MemoryOS 1.1 investigation presentation, and MemoryOS 1.2 headless MIP, adapter, Investigation Core, and Cognitive Regression modules |
+| [`cca-sdk`](cca-sdk) | MO-1204 JavaScript, Python, and C++ SDK facades plus the MO-1206 regression facade and single private Investigation Core binding |
+| [`memoryos-cli`](memoryos-cli) | MO-1205 standalone CLI and JSON Lines automation plus MO-1206 SDK-backed regression reporting |
 | [`cca-conformance`](cca-conformance) | Reserved; no implementation |
 | [`cca-atlas`](cca-atlas) | Reserved; no implementation |
 
@@ -28,6 +28,9 @@ no investigation or package behavior.
 MO-1205 adds `memoryos-cli` downstream of the SDK. The CLI performs file and
 terminal transport, deterministic presentation, and automation only; it does
 not import the Core, MIP, Runtime, or renderer.
+MO-1206 adds one read-only Cognitive Regression implementation inside the
+Investigation Core. The SDK exposes its immutable report, and the CLI consumes
+that facade; neither layer recomputes regression facts.
 No repository creates a reverse dependency into the compiler. Reserved
 repositories have no approved dependency relationships merely by directory
 presence.

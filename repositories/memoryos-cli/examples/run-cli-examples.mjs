@@ -72,6 +72,11 @@ try {
     "--evolution", "evolution-observation-a-observation-b",
     "--id", "cli-example-compare", "--json",
   ]);
+  const [regression] = run("regression", [
+    "regression", packagePath, packagePath, "--json",
+  ]);
+  assert.equal(regression.result.overall, "identical");
+  assert.equal(regression.result.regressionDetected, false);
   run("verify", ["verify", packagePath, "--json"]);
   run("import", ["import", packagePath, "--id", "cli-example-import", "--json"]);
   run("export", [

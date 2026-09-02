@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://memoryos.dev/schemas/cognitive-regression-report-1.0.schema.json",
+  "title": "MemoryOS Cognitive Regression Report 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "version",
+    "identifier",
+    "baseline",
+    "candidate",
+    "categories",
+    "regressionDetected",
+    "overall"
+  ],
+  "properties": {
+    "kind": { "const": "MemoryOSCognitiveRegressionReport" },
+    "version": { "const": "1.0.0" },
+    "identifier": { "type": "string", "pattern": "^regression:[0-9a-f]{64}$" },
+    "baseline": { "$ref": "#/$defs/source" },
+    "candidate": { "$ref": "#/$defs/source" },
+    "categories": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "prefixItems": [
+        { "allOf": [{ "$ref": "#/$defs/category" }, { "properties": { "category": { "const": "replay" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/category" }, { "properties": { "category": { "const": "reflection" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/category" }, { "properties": { "category": { "const": "evidence" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/category" }, { "properties": { "category": { "const": "retrieval" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/category" }, { "properties": { "category": { "const": "evolution" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/category" }, { "properties": { "category": { "const": "verification" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/category" }, { "properties": { "category": { "const": "transition" } } }] },
+        { "allOf": [{ "$ref": "#/$defs/category" }, { "properties": { "category": { "const": "lifecycle" } } }] }
+      ],
+      "items": false
+    },
+    "regressionDetected": { "type": "boolean" },
+    "overall": { "enum": ["identical", "regressionDetected"] }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceIdentifier", "sourceKind", "workspaceIdentifier"],
+      "properties": {
+        "sourceIdentifier": { "type": "string", "minLength": 1 },
+        "sourceKind": { "enum": ["native", "mip"] },
+        "workspaceIdentifier": { "type": "string", "minLength": 1 }
+      }
+    },
+    "category": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "status", "differences"],
+      "properties": {
+        "category": {
+          "enum": [
+            "replay",
+            "reflection",
+            "evidence",
+            "retrieval",
+            "evolution",
+            "verification",
+            "transition",
+            "lifecycle"
+          ]
+        },
+        "status": { "enum": ["identical", "changed"] },
+        "differences": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/difference" }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "status": { "const": "identical" } } },
+          "then": { "properties": { "differences": { "maxItems": 0 } } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "changed" } } },
+          "then": { "properties": { "differences": { "minItems": 1 } } }
+        }
+      ]
+    },
+    "difference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["change", "subject", "beforeDigest", "afterDigest"],
+      "properties": {
+        "change": { "enum": ["added", "removed", "modified"] },
+        "subject": { "type": "object", "minProperties": 1 },
+        "beforeDigest": { "oneOf": [{ "$ref": "#/$defs/digest" }, { "type": "null" }] },
+        "afterDigest": { "oneOf": [{ "$ref": "#/$defs/digest" }, { "type": "null" }] }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "change": { "const": "added" } } },
+          "then": {
+            "properties": {
+              "beforeDigest": { "type": "null" },
+              "afterDigest": { "$ref": "#/$defs/digest" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "change": { "const": "removed" } } },
+          "then": {
+            "properties": {
+              "beforeDigest": { "$ref": "#/$defs/digest" },
+              "afterDigest": { "type": "null" }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "change": { "const": "modified" } } },
+          "then": {
+            "properties": {
+              "beforeDigest": { "$ref": "#/$defs/digest" },
+              "afterDigest": { "$ref": "#/$defs/digest" }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

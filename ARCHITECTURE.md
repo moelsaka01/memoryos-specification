@@ -157,12 +157,15 @@ runtimes retain ownership of execution and cognitive truth. The Investigation
 Core is the single authority for deterministic investigation execution. It
 wraps the released native Trace, Replay, Evolution, and Comparative semantics,
 owns verified MIP-backed investigations, and projects immutable state to thin
-clients; it never invents cognition absent from an imported package.
+clients. MO-1206 adds read-only Cognitive Regression Analysis inside this same
+authority. Regression compares immutable Core truth and never mutates either
+investigation, interprets a difference, or invents cognition absent from an
+imported package.
 
 Studio no longer imports the Investigation Core directly. Its only public
 investigation dependency is the in-process JavaScript MemoryOS SDK facade,
-which forwards every state-changing operation to the Core and every package
-verification request to the MIP verifier.
+which forwards every state-changing operation and regression request to the
+Core and every package verification request to the MIP verifier.
 
 ### `cca-sdk`
 
@@ -170,9 +173,10 @@ verification request to the MIP verifier.
 versioned JavaScript binding used by native consumers. One SDK instance owns
 one long-lived, isolated binding session and therefore one Investigation Core
 instance. The binding transports explicit commands and immutable projections;
-it contains no Trace, Replay, Evolution, Comparative Reconstruction, Runtime,
-or MIP semantics. Native and Studio clients consequently observe the same Core
-transition log and the same canonical MIP bytes.
+it contains no Trace, Replay, Evolution, Comparative Reconstruction, Cognitive
+Regression, Runtime, or MIP semantics. Native and Studio clients consequently
+observe the same Core transition log, regression report, and canonical MIP
+bytes.
 
 The dependency direction is fixed:
 
@@ -186,16 +190,18 @@ not depend on the SDK. Package verification remains owned by MIP-001.
 
 ### `memoryos-cli`
 
-`memoryos-cli` owns MO-1205 shell and CI automation. It consumes only the
+`memoryos-cli` owns shell and CI automation. It consumes only the
 public JavaScript MemoryOS SDK facade and contains no Runtime, Investigation
-Core, MIP, Trace, Replay, Evolution, or renderer behavior. Every cognitive
-operation is an explicit SDK call. Package bytes and JSON inputs are transported
-without semantic reinterpretation.
+Core, MIP, Trace, Replay, Evolution, Regression, or renderer behavior. Every
+cognitive operation is an explicit SDK call. Package bytes, regression reports,
+and JSON inputs are transported without semantic reinterpretation.
 
 Each stateless invocation creates one isolated SDK instance. The `session`
 command retains one instance for a JSON Lines workflow; its checkpoints remain
 actual opaque SDK objects held only in memory and are never serialized. The CLI
-cannot restore checkpoints across processes or compare separate packages.
+cannot restore checkpoints across processes. The MO-1206 `regression` command
+may load two verified packages only to pass their two SDK investigation handles
+to the Core; it does not compare their bytes, rendering, or layout itself.
 
 The complete downstream direction is:
 
@@ -341,7 +347,8 @@ IM-003 contains only the CCA-RF-1.0 Runtime Foundation described in Section 4.
 Those historical milestone exclusions do not authorize or constrain later
 frozen capability packages. Current later packages add the documented
 foundations, CP-011 Studio, MO-1201 MIP, MO-1202 settled-source adapter
-interfaces, the MO-1203 Investigation Core, and the MO-1204 SDK facade.
+interfaces, the MO-1203 Investigation Core, the MO-1204 SDK facade, the
+MO-1205 CLI, and MO-1206 deterministic Cognitive Regression Analysis.
 AI execution, LLM behavior, provider SDK packages/live clients, databases,
 plugins, networking, package management, and generated production code remain
 excluded.

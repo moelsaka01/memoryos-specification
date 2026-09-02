@@ -17,6 +17,7 @@ import {
   MEMORYOS_SDK_VERSION,
   MemoryInvestigationPackage,
   MemoryOS,
+  RegressionReport,
   ReplaySession,
   VerificationResult,
   Workspace,
@@ -86,6 +87,7 @@ test("MO-1204 exposes immutable versioned SDK objects without exposing Core cons
   assert.equal(Object.isFrozen(new InvestigationQuery()), true);
   assert.throws(() => new Workspace(), /created by MemoryOS/);
   assert.throws(() => new Investigation(), /created by MemoryOS/);
+  assert.throws(() => new RegressionReport(), /created by MemoryOS/);
 });
 
 test("MO-1204 default observation operations preserve cross-language Core parity", () => {
@@ -267,6 +269,50 @@ test("MO-1204 package verification import and export preserve exact MIP bytes", 
   const emptyVerification = memory.verifyPackage(new Uint8Array());
   assert.equal(emptyVerification.valid, false);
   assert.ok(emptyVerification.diagnostics.length > 0);
+});
+
+test("MO-1206 exposes one immutable read-only Regression path with exact Core parity", () => {
+  const memory = new MemoryOS();
+  const workspace = memory.openWorkspace(referenceSnapshot.workspaceIdentifier);
+  const baseline = memory.observe(workspace, referenceSnapshot, {
+    identifier: "sdk-regression-baseline",
+  });
+  const candidateSnapshot = changedSnapshot();
+  const candidate = memory.observe(workspace, candidateSnapshot, {
+    identifier: "sdk-regression-candidate",
+  });
+  const baselineDigest = baseline.transitionLog.digest;
+  const candidateDigest = candidate.transitionLog.digest;
+  const report = memory.regression(baseline, candidate);
+
+  assert.ok(report instanceof RegressionReport);
+  assert.equal(report.kind, "MemoryOSCognitiveRegressionReport");
+  assert.equal(report.version, "1.0.0");
+  assert.equal(report.regressionDetected, true);
+  assert.equal(report.overall, "regressionDetected");
+  assert.equal(Object.isFrozen(report), true);
+  assert.equal(Object.isFrozen(report.categories), true);
+  assert.equal(baseline.transitionLog.digest, baselineDigest);
+  assert.equal(candidate.transitionLog.digest, candidateDigest);
+
+  const core = new InvestigationCore();
+  core.create({ identifier: baseline.identifier, snapshot: referenceSnapshot });
+  core.create({ identifier: candidate.identifier, snapshot: candidateSnapshot });
+  assert.equal(
+    canonicalize(structuredClone(report)),
+    canonicalize(core.regression(baseline.identifier, candidate.identifier)),
+  );
+
+  const foreignMemory = new MemoryOS();
+  const foreign = foreignMemory.observe(
+    foreignMemory.openWorkspace(referenceSnapshot.workspaceIdentifier),
+    referenceSnapshot,
+    { identifier: "sdk-regression-foreign" },
+  );
+  assert.throws(
+    () => memory.regression(baseline, foreign),
+    /must belong to this MemoryOS instance/,
+  );
 });
 
 test("MO-1204 rejects implicit selections and cross-instance handles", () => {

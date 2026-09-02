@@ -37,7 +37,7 @@ test("version and help expose the deterministic supported command surface", () =
   assert.equal(help.stderr, "");
   for (const command of [
     "version", "help", "observe", "trace", "replay", "compare",
-    "verify", "import", "export", "inspect", "session",
+    "regression", "verify", "import", "export", "inspect", "session",
   ]) {
     assert.match(help.stdout, new RegExp(`^  ${command}\\s`, "mu"));
   }
@@ -45,6 +45,10 @@ test("version and help expose the deterministic supported command surface", () =
   assert.equal(runCli([]).stdout, help.stdout);
   assert.equal(runCli(["--help"]).stdout, help.stdout);
   assert.match(runCli(["help", "compare"]).stdout, /^memoryos compare PACKAGE /u);
+  assert.match(
+    runCli(["help", "regression"]).stdout,
+    /^memoryos regression BASELINE CANDIDATE /u,
+  );
 });
 
 test("argument failures are stable, non-interactive, and use exit code 1", () => {
@@ -55,6 +59,10 @@ test("argument failures are stable, non-interactive, and use exit code 1", () =>
     ["trace", "package.mip"],
     ["replay", "package.mip"],
     ["compare", "left.mip", "right.mip", "--trace", "t", "--evolution", "e"],
+    ["regression"],
+    ["regression", "baseline.mip"],
+    ["regression", "baseline.mip", "candidate.mip", "extra.mip"],
+    ["regression", "baseline.mip", "candidate.mip", "--id", "unsupported"],
     ["export", "package.mip"],
     ["version", "--json", "--json"],
   ];

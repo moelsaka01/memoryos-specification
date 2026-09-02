@@ -12,6 +12,7 @@ or start with the engineering question you need to answer.
 | Import, export, or verify a Memory Investigation Package | [Memory Investigation Packages](memory-investigation-packages.md) |
 | Translate settled external AI runtime cognition into a verified MIP | [AI Runtime Adapters](ai-runtime-adapters.md) |
 | Execute or embed a deterministic investigation | [Investigation Core](investigation-core.md) |
+| Detect deterministic differences between two investigations | [Cognitive Regression Analysis](cognitive-regression.md) |
 | Consume MemoryOS from JavaScript, Python, or C++ | [MemoryOS SDK](../../cca-sdk/README.md) · [API reference](../../cca-sdk/docs/api-reference.md) · [Developer guide](../../cca-sdk/docs/developer-guide.md) |
 | Audit Investigation Core acceptance evidence | [Investigation Core conformance evidence](investigation-core-conformance-evidence.md) |
 | Trace every frozen MIP requirement to implementation and tests | [MIP-001 conformance matrix](mip-conformance-matrix.md) |
@@ -58,6 +59,12 @@ private, long-lived transport implementation. The SDK forwards explicit Core
 and MIP operations; it contains no independent Trace, Replay, Evolution, or
 Comparative Reconstruction behavior.
 
+MO-1206 adds [Cognitive Regression Analysis](cognitive-regression.md) as a
+read-only Investigation Core operation. Its fixed report categories expose
+only observed Replay, Reflection, Evidence, Retrieval, Evolution,
+Verification, transition, and lifecycle differences. SDK and automation
+clients consume the same immutable report and do not implement comparison.
+
 The focused edge suites are:
 
 - [`mip_ordering_conformance_test.mjs`](../tests/mip_ordering_conformance_test.mjs)
@@ -73,7 +80,11 @@ The focused edge suites are:
   and
 - [`investigation_core_test.mjs`](../tests/investigation_core_test.mjs)
   for lifecycle, transition-log integrity, checkpoint restoration, native
-  semantic parity, verified MIP ownership, thin projections, and atomic failure.
+  semantic parity, verified MIP ownership, thin projections, and atomic failure;
+  and
+- [`cognitive_regression_test.mjs`](../tests/cognitive_regression_test.mjs)
+  for category correctness, ordering, package neutrality, immutability,
+  failure atomicity, renderer separation, and bounded deterministic analysis.
 
 ## MemoryOS 1.1 milestone map
 

@@ -5,6 +5,7 @@ import test from "node:test";
 import {
   SELECTORS,
   assertCanonicalJson,
+  assertPresentationFree,
   makeFixtures,
   parseJsonOutput,
   runCli,
@@ -158,6 +159,96 @@ test("compare uses one package, completes its Replay, and enters exact Evolution
     "--json",
   ]);
   assert.equal(crossPackage.status, 1);
+});
+
+test("regression delegates two packages to the SDK and preserves deterministic report truth", async (t) => {
+  const fixture = await makeFixtures(t);
+  const arguments_ = [
+    "regression",
+    fixture.regressionBaselinePath,
+    fixture.regressionCandidatePath,
+    "--json",
+  ];
+  const first = runCli(arguments_);
+  const second = runCli(arguments_);
+  assert.equal(first.status, 0);
+  assert.equal(first.stderr, "");
+  assert.equal(first.stdout, second.stdout);
+  assertCanonicalJson(first.stdout);
+
+  const report = parseJsonOutput(first).result;
+  assert.equal(report.kind, "MemoryOSCognitiveRegressionReport");
+  assert.equal(report.version, "1.0.0");
+  assert.equal(report.regressionDetected, true);
+  assert.equal(report.overall, "regressionDetected");
+  assert.deepEqual(
+    report.categories.map(({ category }) => category),
+    [
+      "replay",
+      "reflection",
+      "evidence",
+      "retrieval",
+      "evolution",
+      "verification",
+      "transition",
+      "lifecycle",
+    ],
+  );
+  const status = Object.fromEntries(
+    report.categories.map(({ category, status: value }) => [category, value]),
+  );
+  assert.equal(status.evidence, "changed");
+  assert.equal(status.transition, "changed");
+  assert.equal(status.verification, "identical");
+  assertPresentationFree(report);
+
+  const human = runCli(arguments_.slice(0, -1));
+  assert.equal(human.status, 0);
+  assert.equal(human.stderr, "");
+  assert.match(human.stdout, /^MemoryOS regression\n/u);
+  assert.match(human.stdout, /categories\[2\]\.category: evidence/u);
+  assert.match(human.stdout, /categories\[2\]\.status: changed/u);
+  assert.doesNotMatch(human.stdout, /\[object Object\]|\u001b\[|\d{4}-\d{2}-\d{2}T/u);
+});
+
+test("regression reports identical packages and accepts at most one stdin operand", async (t) => {
+  const fixture = await makeFixtures(t);
+  const identical = runCli([
+    "regression", fixture.packagePath, fixture.packagePath, "--json",
+  ]);
+  assert.equal(identical.status, 0);
+  const report = parseJsonOutput(identical).result;
+  assert.equal(report.regressionDetected, false);
+  assert.equal(report.overall, "identical");
+  assert.ok(report.categories.every(({ status }) => status === "identical"));
+
+  const streamed = runCli([
+    "regression", "-", fixture.packagePath, "--json",
+  ], { input: fixture.packageBytes });
+  assert.equal(streamed.status, 0);
+  assert.equal(parseJsonOutput(streamed).result.overall, "identical");
+
+  const ambiguous = runCli(["regression", "-", "-", "--json"], {
+    input: fixture.packageBytes,
+  });
+  assert.equal(ambiguous.status, 1);
+  assert.equal(ambiguous.stdout, "");
+  assert.equal(parseJsonOutput(ambiguous, "stderr").error.code, "INVALID_ARGUMENTS");
+
+  const invalid = runCli([
+    "regression", fixture.packagePath, fixture.corruptPackagePath, "--json",
+  ]);
+  assert.equal(invalid.status, 4);
+  assert.equal(invalid.stdout, "");
+
+  const foreignWorkspace = runCli([
+    "regression", fixture.packagePath, fixture.foreignPackagePath, "--json",
+  ]);
+  assert.equal(foreignWorkspace.status, 2);
+  assert.equal(foreignWorkspace.stdout, "");
+  const failure = parseJsonOutput(foreignWorkspace, "stderr");
+  assert.equal(failure.error.code, "WORKSPACE_MISMATCH");
+  assert.equal(failure.error.exitCode, 2);
 });
 
 test("export is a byte-for-byte SDK round trip for files and stdout", async (t) => {

@@ -75,6 +75,15 @@ using detail::Json;
     return static_cast<std::size_t>(count);
 }
 
+[[nodiscard]] bool requiredBool(const Json& value, std::string_view name) {
+    const Json* member = value.find(name);
+    if (member == nullptr || !member->isBool()) {
+        invalidProtocol("The Core host result omitted Boolean member '" +
+                        std::string{name} + "'.");
+    }
+    return member->asBool();
+}
+
 [[nodiscard]] std::vector<Diagnostic> diagnosticsFrom(const Json* entries,
                                                        std::string_view operation) {
     std::vector<Diagnostic> result;
@@ -215,6 +224,13 @@ struct VerificationResult::Impl final {
     std::string canonical_json;
 };
 
+struct RegressionReport::Impl final {
+    std::string identifier;
+    bool regression_detected{false};
+    std::string overall;
+    std::string canonical_json;
+};
+
 struct Checkpoint::Impl final {
     std::shared_ptr<detail::Client> client;
     std::string identifier;
@@ -337,6 +353,21 @@ VerificationResult::diagnostics() const noexcept {
     return impl_->diagnostics;
 }
 const std::string& VerificationResult::canonicalJson() const noexcept {
+    return impl_->canonical_json;
+}
+
+RegressionReport::RegressionReport(std::shared_ptr<const Impl> impl)
+    : impl_(std::move(impl)) {}
+const std::string& RegressionReport::identifier() const noexcept {
+    return impl_->identifier;
+}
+bool RegressionReport::regressionDetected() const noexcept {
+    return impl_->regression_detected;
+}
+const std::string& RegressionReport::overall() const noexcept {
+    return impl_->overall;
+}
+const std::string& RegressionReport::canonicalJson() const noexcept {
     return impl_->canonical_json;
 }
 
@@ -735,6 +766,62 @@ VerificationResult MemoryOS::verifyPackage(
     }
     return detail::verificationFrom(result, valid->asBool(), "verifyPackage",
                             result.find("diagnostics"));
+}
+
+RegressionReport MemoryOS::regression(
+    const Investigation& baseline,
+    const Investigation& candidate) const {
+    if (baseline.impl_->client != client_ || candidate.impl_->client != client_) {
+        invalidArgument(
+            "Regression investigations belong to a different MemoryOS instance.");
+    }
+    Json::Object params{
+        {"baselineInvestigationIdentifier", Json{baseline.identifier()}},
+        {"candidateInvestigationIdentifier", Json{candidate.identifier()}},
+    };
+    const Json result = client_->invoke("regression", std::move(params));
+    const Json* report = result.find("regression");
+    if (report == nullptr || !report->isObject()) {
+        invalidProtocol("The Core host omitted the Cognitive Regression report.");
+    }
+    const std::string& kind = requiredString(*report, "kind");
+    const std::string& version = requiredString(*report, "version");
+    const std::string& identifier = requiredString(*report, "identifier");
+    const std::string& overall = requiredString(*report, "overall");
+    const bool detected = requiredBool(*report, "regressionDetected");
+    const Json* categories = report->find("categories");
+    constexpr std::array<std::string_view, 8U> categoryNames{
+        "replay", "reflection", "evidence", "retrieval", "evolution",
+        "verification", "transition", "lifecycle",
+    };
+    bool validCategories = categories != nullptr && categories->isArray() &&
+        categories->asArray().size() == categoryNames.size();
+    if (validCategories) {
+        for (std::size_t index = 0U; index < categoryNames.size(); ++index) {
+            const Json& category = categories->asArray()[index];
+            const Json* name = category.isObject()
+                ? category.find("category")
+                : nullptr;
+            if (name == nullptr || !name->isString() ||
+                name->asString() != categoryNames[index]) {
+                validCategories = false;
+                break;
+            }
+        }
+    }
+    if (kind != "MemoryOSCognitiveRegressionReport" || version != "1.0.0" ||
+        identifier.empty() ||
+        (overall != "identical" && overall != "regressionDetected") ||
+        detected != (overall == "regressionDetected") || !validCategories) {
+        invalidProtocol(
+            "The Core host returned an invalid Cognitive Regression report.");
+    }
+    auto impl = std::make_shared<RegressionReport::Impl>();
+    impl->identifier = identifier;
+    impl->regression_detected = detected;
+    impl->overall = overall;
+    impl->canonical_json = report->serialize();
+    return RegressionReport{std::move(impl)};
 }
 
 Investigation MemoryOS::restore(const Checkpoint& checkpoint) const {

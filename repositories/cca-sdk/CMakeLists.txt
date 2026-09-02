@@ -105,30 +105,53 @@ if(MEMORYOS_BUILD_CPP_EXAMPLES)
     memoryos_sdk_cpp_quickstart
     examples/cpp_quickstart.cpp
   )
+  add_executable(
+    memoryos_sdk_cpp_regression
+    examples/cpp_regression.cpp
+  )
   target_compile_features(memoryos_sdk_cpp_quickstart PRIVATE cxx_std_23)
+  target_compile_features(memoryos_sdk_cpp_regression PRIVATE cxx_std_23)
   target_link_libraries(memoryos_sdk_cpp_quickstart PRIVATE memoryos::sdk)
+  target_link_libraries(memoryos_sdk_cpp_regression PRIVATE memoryos::sdk)
   add_dependencies(memoryos_sdk_cpp_quickstart memoryos_sdk_test_fixture)
+  add_dependencies(memoryos_sdk_cpp_regression memoryos_sdk_test_fixture)
   target_compile_definitions(
     memoryos_sdk_cpp_quickstart
     PRIVATE
       "MEMORYOS_SDK_REFERENCE_SNAPSHOT=\"${MEMORYOS_SDK_REFERENCE_SNAPSHOT}\""
   )
+  target_compile_definitions(
+    memoryos_sdk_cpp_regression
+    PRIVATE
+      "MEMORYOS_SDK_REFERENCE_SNAPSHOT=\"${MEMORYOS_SDK_REFERENCE_SNAPSHOT}\""
+      "MEMORYOS_SDK_CHANGED_SNAPSHOT=\"${MEMORYOS_SDK_CHANGED_SNAPSHOT}\""
+  )
   if(COMMAND cca_configure_target)
     cca_configure_target(memoryos_sdk_cpp_quickstart)
+    cca_configure_target(memoryos_sdk_cpp_regression)
   elseif(MSVC)
     target_compile_options(
       memoryos_sdk_cpp_quickstart PRIVATE /W4 /WX /permissive-
+    )
+    target_compile_options(
+      memoryos_sdk_cpp_regression PRIVATE /W4 /WX /permissive-
     )
   else()
     target_compile_options(
       memoryos_sdk_cpp_quickstart
       PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror
     )
+    target_compile_options(
+      memoryos_sdk_cpp_regression
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror
+    )
   endif()
   if(BUILD_TESTING)
     add_test(NAME memoryos.sdk.cpp.example COMMAND memoryos_sdk_cpp_quickstart)
+    add_test(NAME memoryos.sdk.cpp.regression.example COMMAND memoryos_sdk_cpp_regression)
     set_tests_properties(
       memoryos.sdk.cpp.example
+      memoryos.sdk.cpp.regression.example
       PROPERTIES LABELS "memoryos;sdk;cpp;example"
     )
   endif()
@@ -221,6 +244,7 @@ install(
 # depend on the source checkout and does not duplicate Core behavior.
 set(
   MEMORYOS_SDK_CORE_MODULES
+  ../cca-studio/web/js/cognitive-regression.js
   ../cca-studio/web/js/cognitive-comparative-reconstruction.js
   ../cca-studio/web/js/cognitive-comparative-replay.js
   ../cca-studio/web/js/cognitive-evolution.js

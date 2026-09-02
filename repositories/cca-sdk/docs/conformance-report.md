@@ -1,8 +1,8 @@
-# MO-1204 SDK Conformance Report
+# MO-1204 / MO-1206 SDK Conformance Report
 
 ## Assessment
 
-The MemoryOS SDK conforms to the MO-1204 facade boundary: the frozen Investigation Core remains the only deterministic investigation execution authority, MIP remains the package authority, and the JavaScript, Python, and C++ SDKs expose the same explicit lifecycle without duplicating semantic behavior.
+The MemoryOS SDK conforms to the MO-1204 facade boundary and the MO-1206 extension: the frozen Investigation Core remains the only deterministic investigation and regression authority, MIP remains the package authority, and the JavaScript, Python, and C++ SDKs expose the same explicit lifecycle and factual regression report without duplicating semantic behavior.
 
 This report maps the implementation to the milestone contract. Test counts and command outcomes belong in release validation; this document identifies enduring evidence rather than copying transient console output.
 
@@ -24,7 +24,8 @@ This report maps the implementation to the milestone contract. Test counts and c
 | Exactly one long-lived private native binding | [`investigation-core-host.mjs`](../bridge/investigation-core-host.mjs) is shared by Python and C++; each `MemoryOS` instance owns one host | Conformant |
 | Binding is internal | Host is documented as private; applications consume language APIs | Conformant |
 | Binding adds no semantics | Host dispatches Core/MIP operations, transports bytes, manages live checkpoint tokens, and canonicalizes protocol responses only | Conformant |
-| No duplicated cognition | No Trace, Replay, Evolution, or Comparative Reconstruction engine exists under `cca-sdk` | Conformant |
+| No duplicated cognition | No Trace, Replay, Evolution, Comparative Reconstruction, or Cognitive Regression engine exists under `cca-sdk` | Conformant |
+| Core-owned regression | SDK methods forward two owned Investigation identifiers to `InvestigationCore.regression()` and return its immutable report | Conformant |
 | Renderer independence | SDK has no canvas, DOM rendering, layout, animation, or pixel comparison dependency | Conformant |
 
 ## Explicit deterministic operations
@@ -38,6 +39,7 @@ This report maps the implementation to the milestone contract. Test counts and c
 | `exportPackage(mipBackedInvestigation)` | Export forwards through Core and fails for native observations | Conformant |
 | `importPackage(package)` | Exact caller bytes are imported; no package content is generated | Conformant |
 | `verifyPackage(package)` | Exact caller bytes reach the MIP verifier | Conformant |
+| `regression(baseline, candidate)` | Exact owned Investigation identities reach the Core; no SDK comparison is performed | Conformant |
 | No inferred comparison source | Native callers explicitly pass null/`None`/`std::nullopt`; MIP callers pass an exact Evolution identifier | Conformant |
 | No inferred reconstruction target | Native and MIP start operations require their exact, source-appropriate selector | Conformant |
 | Replay identity | Acquisition requires a prepared Replay; commands reject a handle after Core replaces that Replay | Conformant |
@@ -90,6 +92,7 @@ Observation
 | Immutable public state | JavaScript freezes public values; Python uses frozen dataclasses/maps; C++ uses shared immutable implementations and value handles | Conformant |
 | Workspace isolation | Foreign Workspace handles are rejected | Conformant |
 | Investigation isolation | Foreign Investigation/session handles are rejected | Conformant |
+| Regression ownership | Python and C++ reject either foreign input before transport; Core rejects cross-Workspace or mixed-source comparisons | Conformant |
 | Checkpoint integrity | Host retains real Core checkpoint objects behind opaque tokens; token, instance, and Investigation ownership are validated | Conformant |
 | Deterministic call order | One client serializes calls to one Core; separate instances are isolated | Conformant |
 | Atomic failure | Transport performs no automatic replay or retry of state-changing requests | Conformant |
@@ -101,9 +104,9 @@ Observation
 | --- | --- |
 | JavaScript facade | [`memoryos_sdk_test.mjs`](../../cca-studio/tests/memoryos_sdk_test.mjs) checks facade/Core parity, cross-language initial/append digests, explicit comparison, ownership, checkpoints, package bytes, and Studio import boundaries |
 | Production Studio | [`memory_studio_integration_test.mjs`](../../cca-studio/tests/memory_studio_integration_test.mjs) verifies the UI workflow while Studio consumes the SDK |
-| Python | [`test_memoryos_sdk.py`](../python/tests/test_memoryos_sdk.py) and [`test_examples.py`](../python/tests/test_examples.py) cover binding, lifecycle, cross-language initial/append digests, ownership, packages, errors, concurrency, and executable examples |
-| Native C++ | [`memoryos_sdk_test.cpp`](../tests/memoryos_sdk_test.cpp) covers public handles, Core delegation, lifecycle, cross-language initial/append digests, package byte identity, diagnostics, and client isolation |
-| Executable native usage | [`cpp_quickstart.cpp`](../examples/cpp_quickstart.cpp) is built and registered with CTest |
+| Python | [`test_memoryos_sdk.py`](../python/tests/test_memoryos_sdk.py) and [`test_examples.py`](../python/tests/test_examples.py) cover binding, lifecycle, regression determinism and ownership, packages, errors, concurrency, and executable examples |
+| Native C++ | [`memoryos_sdk_test.cpp`](../tests/memoryos_sdk_test.cpp) covers public handles, Core delegation, regression determinism and ownership, lifecycle, package byte identity, diagnostics, and client isolation |
+| Executable native usage | [`cpp_quickstart.cpp`](../examples/cpp_quickstart.cpp) and [`cpp_regression.cpp`](../examples/cpp_regression.cpp) are built and registered with CTest |
 | Frozen authorities | The complete Studio test command retains Core, MIP, adapter, and Studio regression suites |
 
 Run the validation commands from the [developer guide](developer-guide.md).
@@ -126,4 +129,4 @@ These omissions preserve, rather than reduce, conformance: the SDK exposes exist
 
 ## Conclusion
 
-The implementation maintains one deterministic investigation authority across Memory Studio, Python, and native C++. Every public lifecycle operation either reads an immutable Core projection or forwards one explicit Core/MIP command. No duplicated investigation behavior exists in the SDK layer.
+The implementation maintains one deterministic investigation and regression authority across Memory Studio, Python, and native C++. Every public operation either reads an immutable Core projection or forwards one explicit Core/MIP command. No duplicated investigation or regression behavior exists in the SDK layer.

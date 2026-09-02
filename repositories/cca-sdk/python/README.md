@@ -1,7 +1,7 @@
 # MemoryOS Python SDK 1.0
 
 The Python SDK is a thin, typed client for the authoritative MemoryOS
-Investigation Core. It does not build traces, advance replay, compare cognition,
+Investigation Core. It does not build traces, advance replay, compute regression,
 verify packages, or derive identifiers itself. Those operations remain owned by
 the existing Investigation Core and MIP implementation.
 
@@ -82,6 +82,19 @@ For native cognition, the caller explicitly passes `None` to
 `comparison_session(None)` to choose the Core's current observation pair, then
 passes an exact `target_node_key` to `start()`.
 
+Two investigations owned by the same `MemoryOS` instance may be compared by
+the Core's deterministic Cognitive Regression operation:
+
+```python
+report = memory.regression(baseline, candidate)
+print(report.overall)
+for category in report.projection["categories"]:
+    print(category["category"], category["status"])
+```
+
+`RegressionReport` is an immutable projection. Python transports the Core's
+fixed report and does not compute differences, explanations, scores, or ranks.
+
 ## Packages
 
 `MemoryInvestigationPackage` owns detached immutable bytes. Import and export
@@ -98,7 +111,7 @@ Each `MemoryOS` instance owns one private local host and one isolated
 `InvestigationCore`. Its transport serializes operations with a reentrant lock;
 independent SDK instances can execute concurrently without shared investigation
 state. Workspace, Investigation, ReplaySession, ComparisonSession, Checkpoint,
-VerificationResult, and package values are immutable.
+VerificationResult, RegressionReport, and package values are immutable.
 
 Checkpoints are opaque tokens backed by Core `Checkpoint` instances held in the
 same private host. They cannot be forged, moved between SDK instances, or used
@@ -116,6 +129,7 @@ immutable `diagnostics`. Local process/protocol failures raise
 - `observe.py`
 - `replay.py`
 - `compare.py`
+- `regression.py`
 - `verify.py`
 - `export_package.py`
 - `import_package.py`

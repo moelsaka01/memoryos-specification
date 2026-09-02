@@ -2,6 +2,7 @@ import {
   buildComparativeReconstruction,
   validateComparativeReconstruction,
 } from "./cognitive-comparative-reconstruction.js";
+import { compareCognitiveRegression } from "./cognitive-regression.js";
 import {
   advanceComparativeReplay,
   createComparativeReplayState,
@@ -1295,6 +1296,26 @@ export class InvestigationCore {
       kind: "COMPARATIVE_ACTION",
       payload: { action: input.action },
     }, "compare");
+  }
+
+  regression(baselineIdentifier, candidateIdentifier) {
+    const baseline = this.load(baselineIdentifier);
+    const candidate = this.load(candidateIdentifier);
+    if (baseline.state.workspaceIdentifier !== candidate.state.workspaceIdentifier) {
+      fail(
+        "WORKSPACE_MISMATCH",
+        "regression",
+        "Cognitive Regression cannot cross a Workspace boundary.",
+      );
+    }
+    if (baseline.state.sourceKind !== candidate.state.sourceKind) {
+      fail(
+        "SOURCE_KIND_MISMATCH",
+        "regression",
+        "Cognitive Regression requires investigations with the same source kind.",
+      );
+    }
+    return compareCognitiveRegression(baseline, candidate);
   }
 
   checkpoint(identifier) {

@@ -12,12 +12,20 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { referenceSnapshot } from "../../cca-studio/web/data/studio-snapshot.js";
+import {
+  exportMemoryInvestigationPackage,
+  importMemoryInvestigationPackage,
+} from "../../cca-studio/web/js/memory-investigation-package.js";
 
 export const CLI_ROOT = fileURLToPath(new URL("../", import.meta.url));
 export const CLI_BIN = fileURLToPath(new URL("../bin/memoryos.js", import.meta.url));
 export const CLI_PACKAGE = fileURLToPath(new URL("../package.json", import.meta.url));
 export const FULL_MIP_B64 = fileURLToPath(new URL(
   "../../cca-studio/tests/fixtures/mip/complete-investigation.mip.b64",
+  import.meta.url,
+));
+export const MINIMAL_MIP_B64 = fileURLToPath(new URL(
+  "../../cca-studio/tests/fixtures/mip/minimal-observation.mip.b64",
   import.meta.url,
 ));
 
@@ -101,12 +109,42 @@ export async function makeFixtures(testContext) {
 
   const encoded = (await readFile(FULL_MIP_B64, "ascii")).trim();
   const packageBytes = Buffer.from(encoded, "base64");
+  const foreignPackageBytes = Buffer.from(
+    (await readFile(MINIMAL_MIP_B64, "ascii")).trim(),
+    "base64",
+  );
+  const sourcePackage = importMemoryInvestigationPackage(packageBytes);
+  const regressionPackage = (packageIdentifier, mutate = () => {}) => {
+    const observations = structuredClone(sourcePackage.observations);
+    mutate(observations);
+    return exportMemoryInvestigationPackage({
+      comparativeReconstructions: [],
+      evolutions: [],
+      extensions: {},
+      metadata: sourcePackage.metadata,
+      observations,
+      packageIdentifier,
+      replays: [],
+      sourceAccepted: true,
+      sourceAuthorshipAttested: true,
+      traces: [],
+      workspaceIdentifier: sourcePackage.manifest.workspaceIdentifier,
+    });
+  };
+  const regressionBaselineBytes = regressionPackage("cli-regression-baseline");
+  const regressionCandidateBytes = regressionPackage("cli-regression-candidate", (observations) => {
+    const evidence = observations.at(-1).records.find(({ role }) => role === "evidence");
+    evidence.revision = { ...evidence.revision, regressionMarker: "candidate" };
+  });
   const corruptBytes = Buffer.from(packageBytes);
   corruptBytes[corruptBytes.length - 2] ^= 1;
 
   const packagePath = join(inputs, "complete investigation.mip");
   const corruptPackagePath = join(inputs, "corrupt investigation.mip");
   const emptyPackagePath = join(inputs, "empty investigation.mip");
+  const foreignPackagePath = join(inputs, "foreign workspace investigation.mip");
+  const regressionBaselinePath = join(inputs, "regression baseline.mip");
+  const regressionCandidatePath = join(inputs, "regression candidate.mip");
   const workspacePath = join(inputs, "workspace.json");
   const foreignWorkspacePath = join(inputs, "foreign workspace.json");
   const snapshotPath = join(inputs, "snapshot.json");
@@ -117,6 +155,9 @@ export async function makeFixtures(testContext) {
     writeFile(packagePath, packageBytes),
     writeFile(corruptPackagePath, corruptBytes),
     writeFile(emptyPackagePath, Buffer.alloc(0)),
+    writeFile(foreignPackagePath, foreignPackageBytes),
+    writeFile(regressionBaselinePath, regressionBaselineBytes),
+    writeFile(regressionCandidatePath, regressionCandidateBytes),
     writeFile(
       workspacePath,
       JSON.stringify({ identifier: referenceSnapshot.workspaceIdentifier }),
@@ -138,10 +179,15 @@ export async function makeFixtures(testContext) {
     corruptPackagePath,
     emptyPackagePath,
     foreignWorkspacePath,
+    foreignPackagePath,
     inputs,
     invalidJsonPath,
     packageBytes,
     packagePath,
+    regressionBaselineBytes,
+    regressionBaselinePath,
+    regressionCandidateBytes,
+    regressionCandidatePath,
     root,
     snapshotPath,
     workspacePath,

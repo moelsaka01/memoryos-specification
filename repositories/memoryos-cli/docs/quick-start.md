@@ -76,6 +76,15 @@ memoryos compare investigation.mip \
 
 These stateless commands begin with a fresh SDK instance. Consequently, `replay` and `compare` require the exact `--trace` selector needed to establish the frozen SDK lifecycle. The selector is not inferred. `compare` operates on one Investigation containing the named Evolution; two-package comparison is intentionally unsupported.
 
+## Analyze a cognitive regression
+
+```sh
+memoryos regression baseline.mip candidate.mip
+memoryos regression baseline.mip candidate.mip --json
+```
+
+Regression is distinct from `compare`: it compares two complete package-backed Investigations through the SDK and reports only deterministic source differences. The CLI does not compute categories, scores, explanations, or summaries. A report that detects a regression still exits successfully; use its `regressionDetected` field in automation.
+
 ## Export an existing package
 
 ```sh
@@ -119,4 +128,4 @@ Checkpoint values are opaque, integrity-bound SDK objects held only in that runn
 npm run test:examples
 ```
 
-The runner uses the approved complete MIP fixture and released Studio `referenceSnapshot`, invokes all eleven top-level commands, and checks session-only checkpoint/restore behavior.
+The runner uses the approved complete MIP fixture and released Studio `referenceSnapshot`, invokes all twelve top-level commands, and checks session-only checkpoint/restore behavior.

@@ -45,12 +45,15 @@ processed input record, followed by at most one error object.
 - `observe`, `trace`, `import`, `inspect`: Investigation metadata
 - `replay`: Investigation metadata plus `cursor`, `replayIdentifier`, `replayStatus`
 - `compare`: Investigation metadata plus `evolutionIdentifier`, `replaySteps`, `stage`
+- `regression`: the complete immutable SDK Regression Report
 - `verify`: `diagnosticCount`, `diagnostics`, `status`, `valid`
 - `export`: `byteLength`, `output`, `packageKind`, `packageVersion`
 
 Investigation metadata contains `availability`, `identifier`, `lifecycle`, `phase`, `sourceKind`, `transitionCount`, `transitionLogDigest`, and `workspaceIdentifier`.
 
 Session-only `checkpoint` returns the caller-assigned `name` and `stored: true`. It never emits the opaque Checkpoint object, internal state, or a restoration credential.
+
+The Regression result contains `kind`, `version`, `identifier`, `baseline`, `candidate`, `categories`, `regressionDetected`, and `overall`. Categories remain in the SDK-defined order: Replay, Reflection, Evidence, Retrieval, Evolution, Verification, transition, and lifecycle. Difference arrays remain in SDK order and contain only `change`, `subject`, `beforeDigest`, and `afterDigest`. The CLI performs no regression calculation or report transformation.
 
 ## Determinism boundary
 

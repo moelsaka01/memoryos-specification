@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import FrozenInstanceError
 from pathlib import Path
 
-from memoryos import MemoryOS, MemoryOSError
+from memoryos import MemoryOS, MemoryOSError, RegressionReport
 
 
 PYTHON_ROOT = Path(__file__).resolve().parents[1]
@@ -83,6 +83,76 @@ class MemoryOSSDKTest(unittest.TestCase):
                 appended.transition_log_digest,
                 "sha256:d71ea86ef5987acf507f57dfb61ca538e2ced64bad381cc799828a46060e142b",
             )
+
+    def test_regression_is_core_owned_immutable_and_deterministic(self) -> None:
+        with MemoryOS(node_executable=NODE) as memory:
+            workspace = memory.open_workspace(str(self.snapshot["workspaceIdentifier"]))
+            baseline = memory.observe(
+                workspace,
+                self.snapshot,
+                identifier="python-regression-baseline",
+            )
+            changed = copy.deepcopy(self.snapshot)
+            changed["observationIdentifier"] = "python-regression-observation-candidate"
+            changed["longTermMemory"]["entries"][0]["value"] = "Changed evidence."
+            changed["semanticMemory"]["concepts"][0]["meaning"] = "Changed meaning."
+            changed["retrievalSessions"][0]["candidates"][0]["rankScore"] += 1
+            changed["reflections"][0]["knowledge"] = "Changed reflection."
+            candidate = memory.observe(
+                workspace,
+                changed,
+                identifier="python-regression-candidate",
+            )
+
+            first = memory.regression(baseline, candidate)
+            second = memory.regression(baseline, candidate)
+            self.assertIsInstance(first, RegressionReport)
+            self.assertTrue(first.regression_detected)
+            self.assertEqual(first.overall, "regressionDetected")
+            self.assertEqual(first.identifier, second.identifier)
+            self.assertEqual(first.projection, second.projection)
+            self.assertEqual(
+                tuple(category["category"] for category in first.projection["categories"]),
+                (
+                    "replay",
+                    "reflection",
+                    "evidence",
+                    "retrieval",
+                    "evolution",
+                    "verification",
+                    "transition",
+                    "lifecycle",
+                ),
+            )
+            identical = memory.regression(baseline, baseline)
+            self.assertFalse(identical.regression_detected)
+            self.assertEqual(identical.overall, "identical")
+            with self.assertRaises(FrozenInstanceError):
+                first.overall = "identical"
+
+    def test_regression_rejects_foreign_investigation_handles(self) -> None:
+        first = MemoryOS(node_executable=NODE)
+        second = MemoryOS(node_executable=NODE)
+        try:
+            workspace = first.open_workspace(str(self.snapshot["workspaceIdentifier"]))
+            baseline = first.observe(
+                workspace,
+                self.snapshot,
+                identifier="python-regression-owned",
+            )
+            foreign_workspace = second.open_workspace(str(self.snapshot["workspaceIdentifier"]))
+            foreign = second.observe(
+                foreign_workspace,
+                self.snapshot,
+                identifier="python-regression-foreign",
+            )
+            with self.assertRaises(ValueError):
+                first.regression(baseline, foreign)
+            with self.assertRaises(ValueError):
+                second.regression(baseline, foreign)
+        finally:
+            first.close()
+            second.close()
 
     def test_explicit_observation_trace_replay_and_verification(self) -> None:
         with MemoryOS(node_executable=NODE) as memory:

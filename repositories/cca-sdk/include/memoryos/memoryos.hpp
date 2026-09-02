@@ -14,6 +14,7 @@
 namespace memoryos {
 
 class Investigation;
+class RegressionReport;
 class VerificationResult;
 
 inline constexpr std::string_view sdkVersion{"1.0.0"};
@@ -122,6 +123,27 @@ class VerificationResult final {
     friend class Investigation;
     friend VerificationResult detail::verificationFrom(
         const detail::Json&, bool, std::string_view, const detail::Json*);
+};
+
+class RegressionReport final {
+  public:
+    RegressionReport(const RegressionReport&) noexcept = default;
+    RegressionReport& operator=(const RegressionReport&) noexcept = default;
+    RegressionReport(RegressionReport&&) noexcept = default;
+    RegressionReport& operator=(RegressionReport&&) noexcept = default;
+    ~RegressionReport() = default;
+
+    [[nodiscard]] const std::string& identifier() const noexcept;
+    [[nodiscard]] bool regressionDetected() const noexcept;
+    [[nodiscard]] const std::string& overall() const noexcept;
+    [[nodiscard]] const std::string& canonicalJson() const noexcept;
+
+  private:
+    struct Impl;
+    explicit RegressionReport(std::shared_ptr<const Impl> impl);
+
+    std::shared_ptr<const Impl> impl_;
+    friend class MemoryOS;
 };
 
 class Checkpoint final {
@@ -279,6 +301,9 @@ class MemoryOS final {
     [[nodiscard]] VerificationResult verifyPackage(
         const MemoryInvestigationPackage& package,
         std::vector<std::string> supportedExtensions = {}) const;
+    [[nodiscard]] RegressionReport regression(
+        const Investigation& baseline,
+        const Investigation& candidate) const;
     [[nodiscard]] Investigation restore(const Checkpoint& checkpoint) const;
 
   private:

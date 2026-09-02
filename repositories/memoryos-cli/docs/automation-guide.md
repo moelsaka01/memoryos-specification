@@ -59,6 +59,23 @@ memoryos compare investigation.mip \
 
 The CLI applies the explicit Trace, completes finite SDK Replay, and enters the explicit Evolution. It never compares package files, constructs an Evolution, or infers a selector.
 
+## Cognitive regression
+
+Regression accepts two explicit package inputs and delegates the complete comparison to the SDK:
+
+```sh
+memoryos regression baseline.mip candidate.mip --json > regression.json
+```
+
+The command exits with `0` when the deterministic analysis completes, including when `regressionDetected` is `true`. Automation should inspect the report rather than reinterpret process status:
+
+```sh
+memoryos regression baseline.mip candidate.mip --json > regression.json
+node -e 'const value = JSON.parse(require("fs").readFileSync("regression.json", "utf8")); process.exit(value.result.regressionDetected ? 1 : 0)'
+```
+
+The CLI preserves SDK category and difference order. It adds no heuristic score, explanation, timestamp, or source-path metadata. At most one package operand may be `-`, because one process has one standard-input byte stream.
+
 ## Stateful JSON Lines workflow
 
 Use `session` when later operations must consume the exact live SDK binding or opaque Checkpoint created earlier.

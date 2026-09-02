@@ -5,6 +5,7 @@ const commandHelp = Object.freeze({
   trace: "memoryos trace PACKAGE --reflection ID [--id ID] [--json]",
   replay: "memoryos replay PACKAGE --trace ID [--action ACTION ...] [--id ID] [--json]",
   compare: "memoryos compare PACKAGE --trace ID --evolution ID [--id ID] [--json]",
+  regression: "memoryos regression BASELINE CANDIDATE [--json]",
   verify: "memoryos verify PACKAGE [--json]",
   import: "memoryos import PACKAGE [--id ID] [--json]",
   export: "memoryos export PACKAGE --output FILE|- [--id ID] [--json]",
@@ -30,6 +31,7 @@ Commands:
   trace    Select an exact Reflection or package Trace
   replay   Apply explicit Replay actions
   compare  Enter deterministic Evolution for one package
+  regression  Compare two investigations for deterministic cognitive regressions
   verify   Verify a Memory Investigation Package
   import   Import a Memory Investigation Package
   export   Export exact canonical package bytes

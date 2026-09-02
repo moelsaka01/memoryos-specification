@@ -2,7 +2,7 @@
 
 ## Purpose
 
-MO-1204 exposes MemoryOS through a thin SDK facade while preserving the frozen architecture delivered by MO-1201 through MO-1203. This guide explains how to consume, build, test, and extend the facade without creating a second investigation engine.
+MO-1204 exposes MemoryOS through a thin SDK facade while preserving the frozen architecture delivered by MO-1201 through MO-1203. MO-1206 extends that facade with Core-owned Cognitive Regression. This guide explains how to consume, build, test, and extend the facade without creating a second investigation or regression engine.
 
 ## Architecture boundary
 
@@ -11,7 +11,7 @@ external runtime truth
         |
 MemoryOS Runtime / adapters
         |
-frozen Investigation Core  <--- Trace, Replay, Evolution, Comparison authority
+frozen Investigation Core  <--- Trace, Replay, Evolution, Comparison, Regression authority
         |
 private JavaScript boundary <--- transport and value conversion only
         |
@@ -24,6 +24,7 @@ The dependency direction is one way. The Core has no dependency on the SDK. The 
 
 - derive identifiers, Reflection selections, Trace steps, or comparison stages;
 - compute Replay or Evolution state;
+- compare investigation facts or derive regression categories;
 - compare layouts, renderers, or pixels;
 - generate MIP content for a native observation;
 - reimplement MIP validation or compatibility policy;
@@ -38,9 +39,10 @@ repositories/cca-sdk/
 |-- docs/
 |   |-- api-reference.md
 |   |-- developer-guide.md
+|   |-- regression-guide.md
 |   `-- conformance-report.md
 |-- examples/
-|   |-- cpp_quickstart.cpp
+|   |-- cpp_quickstart.cpp / cpp_regression.cpp
 |   `-- python/
 |-- include/memoryos/memoryos.hpp     public C++23 API
 |-- python/
@@ -193,6 +195,19 @@ comparison = evolution.start(
 
 This is intentionally not one convenience call. The configured request, Evolution stage, observation navigation, Comparative Reconstruction selection, and comparative replay controls remain distinct because those are distinct Core states.
 
+### Compare investigations for regression
+
+```python
+report = memory.regression(baseline, candidate)
+for category in report.projection["categories"]:
+    print(category["category"], category["status"])
+```
+
+The facade validates ownership and the closed wire shape, then exposes the
+Core-produced report unchanged. It must never compare projections, transition
+logs, layouts, or canonical JSON locally. See the
+[Cognitive Regression guide](regression-guide.md).
+
 ### Capture and restore
 
 ```python
@@ -258,6 +273,7 @@ One SDK instance is one isolation boundary.
 - Investigation and session handles retain their creating instance.
 - Comparison sessions are tied to one Investigation.
 - Checkpoints are tied to one instance and Investigation.
+- Regression inputs must both be live handles owned by one instance; Core then enforces Workspace and source-kind compatibility.
 - Package bytes are detached values and may be passed to another instance for import or verification.
 
 Calls through one Python/native instance are serialized because Core transitions are ordered. Independent instances have independent hosts and can execute concurrently without shared Investigation state. JavaScript uses one private in-process Core binding per `MemoryOS` object.

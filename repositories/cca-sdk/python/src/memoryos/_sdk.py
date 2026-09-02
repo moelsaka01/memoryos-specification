@@ -15,6 +15,7 @@ from ._models import (
     ComparisonSession,
     Investigation,
     MemoryInvestigationPackage,
+    RegressionReport,
     ReplaySession,
     VerificationResult,
     Workspace,
@@ -156,6 +157,72 @@ class MemoryOS:
             diagnostics=diagnostics,
             package=package_value,
             manifest=freeze(manifest_value) if isinstance(manifest_value, Mapping) else None,
+        )
+
+    def regression(
+        self,
+        baseline: Investigation,
+        candidate: Investigation,
+    ) -> RegressionReport:
+        """Compare two owned investigations through the authoritative Core."""
+
+        self._require_investigation(baseline)
+        self._require_investigation(candidate)
+        result = self._bridge.call(
+            "regression",
+            {
+                "baselineInvestigationIdentifier": baseline.identifier,
+                "candidateInvestigationIdentifier": candidate.identifier,
+            },
+        )
+        value = result.get("regression")
+        if not isinstance(value, Mapping):
+            raise MemoryOSBindingError(
+                "INVALID_RESPONSE",
+                "binding",
+                "The private binding omitted the Cognitive Regression report.",
+            )
+        identifier = value.get("identifier")
+        detected = value.get("regressionDetected")
+        overall = value.get("overall")
+        categories = value.get("categories")
+        category_names = (
+            "replay",
+            "reflection",
+            "evidence",
+            "retrieval",
+            "evolution",
+            "verification",
+            "transition",
+            "lifecycle",
+        )
+        category_shape = (
+            isinstance(categories, list)
+            and tuple(
+                item.get("category") if isinstance(item, Mapping) else None
+                for item in categories
+            ) == category_names
+        )
+        if (
+            value.get("kind") != "MemoryOSCognitiveRegressionReport"
+            or value.get("version") != "1.0.0"
+            or not isinstance(identifier, str)
+            or not identifier
+            or not isinstance(detected, bool)
+            or overall not in ("identical", "regressionDetected")
+            or detected != (overall == "regressionDetected")
+            or not category_shape
+        ):
+            raise MemoryOSBindingError(
+                "INVALID_RESPONSE",
+                "binding",
+                "The private binding returned an invalid Cognitive Regression report.",
+            )
+        return RegressionReport(
+            identifier=identifier,
+            regression_detected=detected,
+            overall=overall,
+            projection=freeze(value),
         )
 
     def restore(self, checkpoint: Checkpoint) -> Investigation:

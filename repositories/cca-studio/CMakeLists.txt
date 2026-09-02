@@ -69,6 +69,7 @@ add_custom_target(
     web/js/cognitive-evolution-controller.js
     web/js/cognitive-comparative-reconstruction.js
     web/js/cognitive-comparative-replay.js
+    web/js/cognitive-regression.js
     web/js/deterministic-sequence-alignment.js
     web/js/mip-canonical.js
     web/js/memory-investigation-package.js
@@ -83,8 +84,13 @@ add_custom_target(
     examples/investigation_core_usage.mjs
     docs/investigation-core.md
     docs/investigation-core-conformance-evidence.md
+    docs/cognitive-regression.md
+    docs/cognitive-regression-engineering-guide.md
+    docs/cognitive-regression-conformance-report.md
+    docs/schemas/cognitive-regression-report-1.0.schema.json
     tests/investigation_core_test.mjs
     tests/memoryos_sdk_test.mjs
+    tests/cognitive_regression_test.mjs
     tests/fixtures/adapters/README.md
     tests/fixtures/adapters/reference-sources.mjs
     tests/fixtures/adapters/openai-agents.events.json
@@ -255,6 +261,16 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS)
       set_tests_properties(
         cca.memory_studio.sdk
         PROPERTIES LABELS "studio;memory;sdk;investigation;unit"
+      )
+      add_test(
+        NAME cca.memory_studio.regression
+        COMMAND
+          "${CCA_NODE_EXECUTABLE}" --test
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/cognitive_regression_test.mjs"
+      )
+      set_tests_properties(
+        cca.memory_studio.regression
+        PROPERTIES LABELS "studio;memory;investigation;regression;unit"
       )
       add_test(
         NAME cca.memory_studio.scalability

@@ -120,6 +120,17 @@ class PrivateSdkBinding {
     return wrapPackage(verification, supportedExtensions);
   }
 
+  regression(baseline, candidate) {
+    if (investigationBindings.get(baseline) !== this
+      || investigationBindings.get(candidate) !== this) {
+      throw new TypeError("Regression investigations must belong to this MemoryOS instance.");
+    }
+    return new RegressionReport(PRIVATE, this.core.regression(
+      investigationIdentifiers.get(baseline),
+      investigationIdentifiers.get(candidate),
+    ));
+  }
+
   restore(checkpoint) {
     const value = checkpointValues.get(checkpoint);
     if (!value || checkpointBindings.get(checkpoint) !== this) {
@@ -182,6 +193,21 @@ export class VerificationResult {
     this.transitionLogDigest = value.transitionLogDigest ?? null;
     this.lifecycle = value.lifecycle ?? null;
     this.checks = value.checks ?? Object.freeze([]);
+    Object.freeze(this);
+  }
+}
+
+export class RegressionReport {
+  constructor(token, value) {
+    requirePrivate(token, "RegressionReport");
+    this.kind = value.kind;
+    this.version = value.version;
+    this.identifier = value.identifier;
+    this.baseline = value.baseline;
+    this.candidate = value.candidate;
+    this.categories = value.categories;
+    this.regressionDetected = value.regressionDetected;
+    this.overall = value.overall;
     Object.freeze(this);
   }
 }
@@ -555,6 +581,10 @@ export class MemoryOS {
       diagnostics: verification.diagnostics,
       package: wrapPackage(verification, effectiveOptions.supportedExtensions ?? []),
     });
+  }
+
+  regression(baseline, candidate) {
+    return this.#binding().regression(baseline, candidate);
   }
 
   restore(checkpoint) {

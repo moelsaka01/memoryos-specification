@@ -147,6 +147,21 @@ function dispatch(method, rawParams) {
       requireText(params.investigationIdentifier, method, "investigationIdentifier"),
       params.command,
     ));
+  case "regression":
+    return {
+      regression: core.regression(
+        requireText(
+          params.baselineInvestigationIdentifier,
+          method,
+          "baselineInvestigationIdentifier",
+        ),
+        requireText(
+          params.candidateInvestigationIdentifier,
+          method,
+          "candidateInvestigationIdentifier",
+        ),
+      ),
+    };
   case "verifyInvestigation":
     return verificationResult(core.verify(requireText(
       params.investigationIdentifier,

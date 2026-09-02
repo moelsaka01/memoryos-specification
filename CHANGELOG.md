@@ -55,6 +55,16 @@ supports JSON Lines automation through one live SDK session. Trace selectors
 remain explicit, cross-package comparison is rejected, native observations
 cannot be exported, and opaque checkpoints never leave their creating session.
 
+### MO-1206 — Cognitive Regression Analysis
+
+Added one read-only deterministic Regression Engine to the Investigation Core
+and exposed its immutable reports through the JavaScript, Python, and native
+C++ SDK facades plus the SDK-only `memoryos regression` command. Reports compare
+Replay, Reflection, Evidence, Retrieval, Evolution, Verification, transition,
+and lifecycle facts using stable identities and canonical digests. No renderer,
+heuristic, score, explanation, summary, prediction, or AI interpretation enters
+the comparison, and neither source investigation is modified.
+
 ## MemoryOS 1.1 — v1.1.0
 
 Released. MemoryOS 1.1 preserves the frozen MemoryOS 1.0 runtime and public

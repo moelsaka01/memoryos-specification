@@ -7,6 +7,7 @@ import {
   deterministicJson,
   errorEnvelope,
   humanError,
+  humanRegressionResult,
   humanResult,
   successEnvelope,
 } from "./output.js";
@@ -37,6 +38,8 @@ export async function main(argv, io = processIO) {
       io.stdout(`${execution.result.usage}\n`);
     } else if (parsed.options.json) {
       io.stdout(deterministicJson(successEnvelope(parsed.command, execution.result)));
+    } else if (parsed.command === "regression") {
+      io.stdout(humanRegressionResult(execution.result));
     } else {
       io.stdout(humanResult(parsed.command, execution.result));
     }

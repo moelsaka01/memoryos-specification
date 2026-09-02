@@ -66,9 +66,8 @@ export function normalizeError(error, operation = "cli") {
 
   const sdkCode = typeof error?.code === "string" ? error.code : "SDK_FAILURE";
   const sdkOperation = typeof error?.operation === "string" ? error.operation : operation;
-  const packageOperation = ["import", "importPackage", "export", "exportPackage"].includes(
-    sdkOperation,
-  );
+  const packageOperation = error?.name === "MemoryInvestigationPackageError"
+    || ["import", "importPackage", "export", "exportPackage"].includes(sdkOperation);
   if (packageOperation || sdkCode === "CAPABILITY_UNAVAILABLE") {
     return new CliError(
       ExitCode.packageError,

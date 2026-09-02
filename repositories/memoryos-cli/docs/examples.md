@@ -72,6 +72,17 @@ memoryos compare investigation.mip \
 
 This is single-Investigation comparison. `memoryos compare left.mip right.mip` is unsupported because the frozen SDK does not combine investigations.
 
+## Cognitive regression
+
+Compare two complete investigations:
+
+```sh
+memoryos regression baseline.mip candidate.mip
+memoryos regression baseline.mip candidate.mip --json
+```
+
+The SDK returns observed differences in Replay, Reflection, Evidence, Retrieval, Evolution, Verification, transition history, and lifecycle. The CLI renders that report without interpreting it. The `compare` command remains the single-Investigation Evolution workflow; `regression` is the explicit two-Investigation analysis.
+
 ## Verify, import, export, and inspect
 
 ```sh
@@ -121,4 +132,4 @@ From `repositories/memoryos-cli`:
 npm run test:examples
 ```
 
-[`../examples/run-cli-examples.mjs`](../examples/run-cli-examples.mjs) materializes temporary inputs from the released `referenceSnapshot` and approved complete MIP fixture, runs all eleven top-level commands, verifies exact export bytes, and exercises checkpoint/restore in one live session.
+[`../examples/run-cli-examples.mjs`](../examples/run-cli-examples.mjs) materializes temporary inputs from the released `referenceSnapshot` and approved complete MIP fixture, runs all twelve top-level commands, verifies exact export bytes, and exercises checkpoint/restore in one live session.

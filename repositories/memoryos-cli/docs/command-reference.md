@@ -69,6 +69,18 @@ Imports one package, applies its exact Trace selector, advances that finite Repl
 
 Comparison never accepts two package operands and never constructs, merges, or infers Evolution data. Both `--trace` and `--evolution` are mandatory because they are frozen SDK lifecycle inputs.
 
+## `memoryos regression`
+
+```text
+memoryos regression BASELINE CANDIDATE [--json]
+```
+
+Imports the two MIP inputs through one SDK binding and passes the resulting Investigations directly to `MemoryOS.regression()`. The CLI assigns deterministic process-local role identifiers to avoid an import collision; the SDK compares package source truth rather than those aliases.
+
+The operation reports the fixed SDK categories `replay`, `reflection`, `evidence`, `retrieval`, `evolution`, `verification`, `transition`, and `lifecycle`. It does not explain, infer, summarize, rank, or modify either Investigation. `BASELINE` and `CANDIDATE` may each be a file path; at most one may be `-` for standard input.
+
+Regression detection is a successful analysis and returns exit code `0`. Invalid package transport or import remains a package error, and cross-Workspace inputs are rejected by the SDK as a validation failure.
+
 ## `memoryos verify`
 
 ```text
@@ -124,6 +136,8 @@ Executes one JSON object per non-empty input line. Without a file, input is read
 | `inspect` | none | Report current Investigation metadata. |
 
 Replay session actions are `open`, `play`, `pause`, `restart`, `previous`, `next`, and `advance`. A session never serializes Checkpoints. The caller-supplied `name` is only a key in the process-local object map. Checkpoints are integrity-bound, not rollback snapshots: restore is valid only in the same SDK binding while authoritative transition history still matches.
+
+Regression is a standalone two-package command. It is not a session record and does not change the session's one-current-Investigation contract.
 
 ## Common option
 

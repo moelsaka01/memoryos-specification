@@ -169,6 +169,24 @@ export function executeCommand(parsed, io = {}) {
   if (command === "verify") {
     return { result: verificationSummary(verifyPackage(memory, positionals[0], stdin)) };
   }
+  if (command === "regression") {
+    if (positionals[0] === "-" && positionals[1] === "-") {
+      throw argumentError("regression accepts at most one package from standard input.");
+    }
+    const baseline = importFromFile(
+      memory,
+      positionals[0],
+      "memoryos-regression-baseline",
+      stdin,
+    );
+    const candidate = importFromFile(
+      memory,
+      positionals[1],
+      "memoryos-regression-candidate",
+      stdin,
+    );
+    return { result: memory.regression(baseline, candidate) };
+  }
 
   const investigation = importFromFile(memory, positionals[0], options.id, stdin);
   if (command === "import" || command === "inspect") {
