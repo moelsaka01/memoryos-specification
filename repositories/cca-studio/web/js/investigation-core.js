@@ -2,6 +2,7 @@ import {
   buildComparativeReconstruction,
   validateComparativeReconstruction,
 } from "./cognitive-comparative-reconstruction.js";
+import { navigateCognitiveRegression } from "./cognitive-investigation-explorer.js";
 import { compareCognitiveRegression } from "./cognitive-regression.js";
 import {
   advanceComparativeReplay,
@@ -1316,6 +1317,17 @@ export class InvestigationCore {
       );
     }
     return compareCognitiveRegression(baseline, candidate);
+  }
+
+  investigate(report, query = {}) {
+    try {
+      return navigateCognitiveRegression(report, query);
+    } catch (error) {
+      const code = error?.code === "INVALID_QUERY"
+        ? "INVALID_QUERY"
+        : "INVALID_REGRESSION_REPORT";
+      fail(code, "investigate", error?.message ?? "Cognitive Investigation Explorer input is invalid.");
+    }
   }
 
   checkpoint(identifier) {

@@ -79,6 +79,8 @@ export function normalizeError(error, operation = "cli") {
 
   const callerFailure = new Set([
     "INVALID_INPUT",
+    "INVALID_QUERY",
+    "INVALID_REGRESSION_REPORT",
     "INVALID_SELECTION",
     "TRACE_NOT_FOUND",
     "WORKSPACE_MISMATCH",

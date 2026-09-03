@@ -165,6 +165,9 @@ const state = {
   comparativeReplayState: investigationView.comparativeReplayState,
   comparativeView: investigationView.comparativeView,
   comparativeDiagnostic: null,
+  investigationExplorerReport: null,
+  investigationExplorerAllResult: null,
+  investigationExplorerResult: null,
   investigationCheckpoint: null,
   traceDiagnostic: null,
   lastOperation: null,
@@ -830,6 +833,7 @@ function graphContext(route = state.route) {
   const evolution = currentEvolution();
   const reconstruction = state.comparativeActive ? state.comparativeReconstruction : null;
   const comparativeView = reconstruction ? state.comparativeView : null;
+  if (state.investigationExplorerResult) return investigationExplorerView();
   if (reconstruction && comparativeView) return comparativeContextView(reconstruction, comparativeView);
   if (state.comparativeDiagnostic && evolution) {
     return `<section class="evolution-context"><header><div><span class="eyebrow">Comparative Reconstruction unavailable</span><h2>Exact trace pair required</h2></div></header><p>${escapeHtml(state.comparativeDiagnostic)}</p></section>`;
@@ -837,11 +841,115 @@ function graphContext(route = state.route) {
   if (evolution) return evolutionContextView(evolution);
   if (state.activeTrace) return investigationContextView();
   if (state.graphSelection) return graphSelectionView(state.graphSelection);
-  return `${state.traceDiagnostic ? `<section class="neural-perspective-guide"><span class="eyebrow">Cognitive Trace unavailable</span><h2>Observed journey rejected</h2>${traceDiagnosticView()}</section>` : ""}${neuralDefaultContext(route)}`;
+  return `<div class="neural-context-stack">${state.traceDiagnostic ? `<section class="neural-perspective-guide"><span class="eyebrow">Cognitive Trace unavailable</span><h2>Observed journey rejected</h2>${traceDiagnosticView()}</section>` : ""}${neuralDefaultContext(route)}${investigationExplorerLauncherView()}</div>`;
 }
 
 function currentEvolution() {
   return state.evolution;
+}
+
+function clearInvestigationExplorer() {
+  state.investigationExplorerReport = null;
+  state.investigationExplorerAllResult = null;
+  state.investigationExplorerResult = null;
+}
+
+function dismissInvestigationExplorer() {
+  state.investigationExplorerResult = null;
+}
+
+async function loadInvestigationExplorerReport(file) {
+  try {
+    if (!file) return;
+    const report = JSON.parse(await file.text());
+    const result = memoryOS.investigate(report, {});
+    if (result.workspaceIdentifier !== snapshot.workspaceIdentifier) {
+      throw new Error("The regression report belongs to a different Workspace.");
+    }
+    state.investigationExplorerReport = report;
+    state.investigationExplorerAllResult = result;
+    state.investigationExplorerResult = result;
+    renderGraphContext();
+  } catch (error) {
+    clearInvestigationExplorer();
+    showToast(
+      "Regression report rejected",
+      error instanceof Error ? error.message : String(error),
+      "error",
+    );
+  }
+}
+
+function openInvestigationExplorer(category = null) {
+  try {
+    const report = state.investigationExplorerReport;
+    if (!report) {
+      throw new Error("No deterministic regression report has been loaded.");
+    }
+    const query = category === null ? {} : { category };
+    state.investigationExplorerResult = memoryOS.investigate(report, query);
+    renderGraphContext();
+  } catch (error) {
+    dismissInvestigationExplorer();
+    showToast(
+      "Investigation Explorer unavailable",
+      error instanceof Error ? error.message : String(error),
+      "error",
+    );
+  }
+}
+
+function investigationExplorerLauncherView() {
+  return `<section class="neural-explorer-launcher"><span class="eyebrow">Regression evidence</span><h2>${state.investigationExplorerReport ? "Report ready to investigate" : "Open an existing report"}</h2><p>Navigate deterministic evidence without replaying or recomputing either investigation.</p><div class="evolution-context-actions">${investigationExplorerEntryControl()}</div></section>`;
+}
+
+function investigationExplorerEntryControl() {
+  const importControl = `<label class="button secondary explorer-report-action">${state.investigationExplorerReport ? "Replace report" : "Open regression report"}<input type="file" accept="application/json,.json" data-explorer-report-input></label>`;
+  if (!state.investigationExplorerReport) {
+    return importControl;
+  }
+  return `<button class="button secondary explorer-entry-action" type="button" data-explorer-open>Investigate regression</button>${importControl}`;
+}
+
+function investigationExplorerView() {
+  const report = state.investigationExplorerReport;
+  const allResult = state.investigationExplorerAllResult;
+  const result = state.investigationExplorerResult;
+  if (!report || !allResult || !result) return "";
+  const categoryCounts = new Map();
+  allResult.matches.forEach(({ category }) => {
+    categoryCounts.set(category, (categoryCounts.get(category) ?? 0) + 1);
+  });
+  const categoryButtons = [
+    [null, "All", allResult.matchCount],
+    ...[...categoryCounts].map(([category, count]) => [
+      category,
+      category[0].toUpperCase() + category.slice(1),
+      count,
+    ]),
+  ].map(([category, label, count]) => {
+    const active = result.query.category === category;
+    const value = category ?? "";
+    return `<button type="button" class="explorer-category${active ? " is-active" : ""}" data-explorer-category="${escapeHtml(value)}" aria-pressed="${active}">${escapeHtml(label)} <span>${count}</span></button>`;
+  }).join("");
+  const matches = result.matches.length === 0
+    ? '<p class="text-muted">No deterministic regression evidence matches this query.</p>'
+    : `<ol class="explorer-match-list">${result.matches.map((match) => {
+      const subject = JSON.stringify(match.subject);
+      const endpoints = [match.baseline, match.candidate].filter(Boolean).map((endpoint) => (
+        `<span class="explorer-endpoint"><small>${escapeHtml(endpoint.sourceIdentifier)}</small><code>${escapeHtml(endpoint.pointer)}</code><code>${escapeHtml(endpoint.digest)}</code></span>`
+      )).join("");
+      const nodeKey = typeof match.subject.key === "string" ? match.subject.key : "";
+      const nodeExists = nodeKey && currentFrame?.world.nodes.some(({ key }) => key === nodeKey);
+      const locateControl = !nodeKey
+        ? ""
+        : nodeExists
+          ? `<button type="button" data-explorer-node-key="${escapeHtml(nodeKey)}">Locate in world</button>`
+          : '<button type="button" disabled title="This evidence is not present in the active observed frame." aria-description="This evidence is not present in the active observed frame.">Not in active world</button>';
+      return `<li><header><span class="explorer-change is-${escapeHtml(match.change)}">${escapeHtml(match.change)}</span><strong>${escapeHtml(match.category)}</strong>${locateControl}</header><code class="explorer-subject">${escapeHtml(subject)}</code><div class="explorer-endpoints">${endpoints}</div></li>`;
+    }).join("")}</ol>`;
+  const closeLabel = state.evolution ? "Back to changes" : "Return to world";
+  return `<section class="evolution-context investigation-explorer-context" data-explorer-result="${escapeHtml(result.identifier)}"><header><div><span class="eyebrow">Cognitive Investigation Explorer</span><h2>${result.matchCount} deterministic ${result.matchCount === 1 ? "match" : "matches"}</h2></div><button class="workflow-context-return" type="button" data-explorer-close>${closeLabel}</button></header><p>Navigation result <code>${escapeHtml(result.identifier)}</code> points only to evidence in <code>${escapeHtml(result.regressionIdentifier)}</code>.</p><div class="explorer-categories" role="group" aria-label="Regression evidence categories">${categoryButtons}</div>${matches}</section>`;
 }
 
 function comparativeEntryControl() {
@@ -868,7 +976,7 @@ function evolutionContextView(evolution) {
     const removed = evolution.view.removedNodeKeys.includes(node.key);
     const evolved = evolution.view.evolvedNodeKeys.includes(node.key);
     const stateLabel = evolved ? "Evolved" : added ? "Added" : removed ? "Removed" : "Stable context";
-    return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${escapeHtml(node.label)}</h2></div><span class="context-header-actions"><button class="workflow-context-return" type="button" data-workflow-return>${state.investigationCheckpoint ? "Back to replay" : "Return to world"}</button><button class="rail-close" type="button" data-evolution-clear aria-label="Clear evolution selection">&times;</button></span></header><div class="evolution-state is-${stateLabel.toLowerCase().replaceAll(" ", "-")}"><span aria-hidden="true"></span><div><small>${escapeHtml(node.family ?? node.kind)}</small><strong>${escapeHtml(stateLabel)}</strong></div></div><p>${evolved ? "The same cognitive identity has a different observed semantic revision." : added ? "This cognition is present only in Observation B." : removed ? "This cognition is present only in Observation A." : "This cognition remained semantically unchanged across both observations."}</p>${comparativeEntryControl()}</section>`;
+    return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${escapeHtml(node.label)}</h2></div><span class="context-header-actions"><button class="workflow-context-return" type="button" data-workflow-return>${state.investigationCheckpoint ? "Back to replay" : "Return to world"}</button><button class="rail-close" type="button" data-evolution-clear aria-label="Clear evolution selection">&times;</button></span></header><div class="evolution-state is-${stateLabel.toLowerCase().replaceAll(" ", "-")}"><span aria-hidden="true"></span><div><small>${escapeHtml(node.family ?? node.kind)}</small><strong>${escapeHtml(stateLabel)}</strong></div></div><p>${evolved ? "The same cognitive identity has a different observed semantic revision." : added ? "This cognition is present only in Observation B." : removed ? "This cognition is present only in Observation A." : "This cognition remained semantically unchanged across both observations."}</p><div class="evolution-context-actions">${investigationExplorerEntryControl()}${comparativeEntryControl()}</div></section>`;
   }
   const rows = groups.map(([label, addedKey, removedKey]) => {
     const added = evolution.summary[addedKey];
@@ -876,7 +984,7 @@ function evolutionContextView(evolution) {
     return `<li><span>${escapeHtml(label)}</span><span><b class="evolution-added">+${added}</b><b class="evolution-removed">−${removed}</b></span></li>`;
   }).join("");
   const total = Object.values(evolution.summary).reduce((sum, value) => sum + value, 0);
-  return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${total === 0 ? "No semantic changes" : `${total} semantic differences`}</h2></div><button class="workflow-context-return" type="button" data-workflow-return>${state.investigationCheckpoint ? "Back to replay" : "Return to world"}</button></header><p>Observation ${evolution.from.sequence + 1} is compared with Observation ${evolution.to.sequence + 1}. Every emphasis comes from immutable runtime truth.</p><ul class="key-value-list evolution-difference-list">${rows}<li><span>Modified relationships</span><span><b class="evolution-modified">~${evolution.summary.modifiedRelationships}</b></span></li></ul>${comparativeEntryControl()}<footer>${evolution.unchanged.nodeKeys.length} cognitive records and ${evolution.unchanged.relationshipKeys.length} relationships remained stable.</footer></section>`;
+  return `<section class="evolution-context"><header><div><span class="eyebrow">Cognitive Evolution</span><h2>${total === 0 ? "No semantic changes" : `${total} semantic differences`}</h2></div><button class="workflow-context-return" type="button" data-workflow-return>${state.investigationCheckpoint ? "Back to replay" : "Return to world"}</button></header><p>Observation ${evolution.from.sequence + 1} is compared with Observation ${evolution.to.sequence + 1}. Every emphasis comes from immutable runtime truth.</p><ul class="key-value-list evolution-difference-list">${rows}<li><span>Modified relationships</span><span><b class="evolution-modified">~${evolution.summary.modifiedRelationships}</b></span></li></ul><div class="evolution-context-actions">${investigationExplorerEntryControl()}${comparativeEntryControl()}</div><footer>${evolution.unchanged.nodeKeys.length} cognitive records and ${evolution.unchanged.relationshipKeys.length} relationships remained stable.</footer></section>`;
 }
 
 function updateEvolution(action) {
@@ -888,6 +996,7 @@ function updateEvolution(action) {
   synchronizeFromMemoryOS(executeComparisonCommand(coreAction));
   state.evolutionSelection = null;
   const pairChanged = wasActive && action !== "compare";
+  if (pairChanged || !state.evolutionController.active) clearInvestigationExplorer();
   if (pairChanged || !state.evolutionController.active) {
     state.comparativeTargetKey = null;
     state.comparativeDiagnostic = null;
@@ -937,6 +1046,7 @@ function returnToSemanticWorld() {
   state.evolutionSelection = null;
   state.comparativeTargetKey = null;
   state.comparativeDiagnostic = null;
+  clearInvestigationExplorer();
   state.investigationCheckpoint = null;
   state.traceDiagnostic = null;
   clearObservedSelection();
@@ -1036,6 +1146,7 @@ function acceptObservationFrame(view, operation, query, resultCode) {
   state.evolutionSelection = null;
   state.comparativeTargetKey = null;
   state.comparativeDiagnostic = null;
+  clearInvestigationExplorer();
   state.investigationCheckpoint = null;
   state.pendingActivity = currentFrame.activity;
   state.graphViewState = reconcileGraphViewState(currentFrame.world, state.graphViewState);
@@ -1113,6 +1224,7 @@ function renderNeuralPerspective(route = state.route) {
       return;
     }
     if (evolution) {
+      clearInvestigationExplorer();
       state.evolutionSelection = node;
       const pair = state.comparisonFrames;
       const comparable = !node.aggregate && node.kind === "reflection" && node.family === "Reflection"
@@ -1437,6 +1549,29 @@ function bindSelectableRows(root = document) {
   });
 }
 
+function locateInvestigationExplorerNode(nodeKey) {
+  const node = currentFrame?.world.nodes.find(({ key }) => key === nodeKey);
+  if (!node) {
+    showToast(
+      "Evidence unavailable",
+      "This regression evidence is not present in the active observed frame.",
+      "error",
+    );
+    return;
+  }
+  const observations = observationsForWorldNode(node);
+  if (observations.length === 0) {
+    showToast("Evidence unavailable", "The active world has no exact observation for this evidence.", "error");
+    return;
+  }
+  dismissInvestigationExplorer();
+  state.graphSelection = { identifier: node.identifier, observations, nodeKey: node.key };
+  state.graphViewState = selectGraphNode(state.graphViewState, node.key);
+  populateInspector(node.identifier, observations, false);
+  renderGraphContext();
+  focusGraphNode(node.key);
+}
+
 function bindGraphContext() {
   const context = document.querySelector("#graph-context");
   if (!context) return;
@@ -1448,6 +1583,28 @@ function bindGraphContext() {
     refreshInvestigationWorkflow();
     renderGraphContext();
     document.querySelector("#memory-graph")?.dispatchEvent(new CustomEvent("cleargraphselection"));
+  });
+  context.querySelector("[data-explorer-open]")?.addEventListener("click", () => {
+    openInvestigationExplorer();
+  });
+  context.querySelector("[data-explorer-report-input]")?.addEventListener("change", async (event) => {
+    const input = event.currentTarget;
+    await loadInvestigationExplorerReport(input.files?.[0] ?? null);
+    input.value = "";
+  });
+  context.querySelector("[data-explorer-close]")?.addEventListener("click", () => {
+    dismissInvestigationExplorer();
+    renderGraphContext();
+  });
+  context.querySelectorAll("[data-explorer-category]").forEach((button) => {
+    button.addEventListener("click", () => {
+      openInvestigationExplorer(button.dataset.explorerCategory || null);
+    });
+  });
+  context.querySelectorAll("[data-explorer-node-key]").forEach((button) => {
+    button.addEventListener("click", () => {
+      locateInvestigationExplorerNode(button.dataset.explorerNodeKey);
+    });
   });
   bindInvestigationWorkflow(context);
   context.querySelector("[data-graph-trace]")?.addEventListener("click", (event) => {
@@ -1556,6 +1713,7 @@ async function executeSessionOperation(name) {
       state.evolutionSelection = null;
       state.pendingActivity = null;
       state.traceDiagnostic = null;
+      clearInvestigationExplorer();
       state.graphSelection = null;
       state.graphViewState = createGraphViewState();
       state.investigationCheckpoint = null;
@@ -1648,6 +1806,7 @@ function initialize() {
     state.evolutionSelection = null;
     state.comparativeTargetKey = null;
     state.comparativeDiagnostic = null;
+    clearInvestigationExplorer();
     state.investigationCheckpoint = null;
     state.traceDiagnostic = null;
     clearObservedSelection();

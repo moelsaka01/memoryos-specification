@@ -26,9 +26,9 @@ belong to the repository that owns the behavior.
 | `cca-core` | Released foundations and MemoryOS capability implementation | Reusable engineering facilities; Runtime, Representation, Process, and Persistence foundations; and CP-001 through CP-010 MemoryOS behavior |
 | `cca-compiler` | IS-002 implementation target | Canonical source loading, parsing, validation, analysis, dependency resolution, model construction, deterministic generation, diagnostics, and CLI |
 | `memoryos` | Reserved only | Reserved product repository boundary; the released implementation currently remains in `cca-core` and `cca-studio` |
-| `cca-studio` | CP-011 released; MemoryOS 1.1 released; MemoryOS 1.2 in development | Frozen CCA-STUDIO-1.0 Contract, deterministic investigation presentation, single Investigation Core including MO-1206 regression, canonical MIP implementation, and dependency-free AI runtime adapter interfaces |
-| `cca-sdk` | MO-1204 and MO-1206 implemented | Public JavaScript, Python, and native C++ facades over the frozen Investigation Core; one private versioned native binding |
-| `memoryos-cli` | MO-1205 and MO-1206 implemented | Official `memoryos` executable, deterministic terminal/JSON output, session-scoped automation, and SDK-backed regression reporting |
+| `cca-studio` | CP-011 released; MemoryOS 1.1 released; MemoryOS 1.2 in development | Frozen CCA-STUDIO-1.0 Contract, deterministic investigation presentation, single Investigation Core including MO-1206 regression and MO-1207 evidence navigation, canonical MIP implementation, and dependency-free AI runtime adapter interfaces |
+| `cca-sdk` | MO-1204, MO-1206, and MO-1207 implemented | Public JavaScript, Python, and native C++ facades over the frozen Investigation Core; one private versioned native binding |
+| `memoryos-cli` | MO-1205 through MO-1207 implemented | Official `memoryos` executable, deterministic terminal/JSON output, session-scoped automation, SDK-backed regression reporting, and evidence navigation |
 | `cca-conformance` | Reserved only | Future conformance suite boundary; the retained compatibility seam does not define this repository |
 | `cca-atlas` | Reserved only | Future atlas boundary; responsibilities beyond the name are undecided |
 
@@ -88,25 +88,30 @@ only; the frozen Investigation Core remains the sole execution authority and
 MIP-001 remains the sole package verification authority.
 
 The SDK exposes immutable Workspace, Investigation, ReplaySession,
-ComparisonSession, VerificationResult, RegressionReport,
+ComparisonSession, VerificationResult, RegressionReport, InvestigationResult,
 MemoryInvestigationPackage, and Checkpoint values. Observation requires an
 explicit Workspace and snapshot;
 Trace requires an explicit Reflection selection; comparison and restore
 require explicit session and checkpoint values. Regression accepts two
 same-Workspace, same-source-kind investigations and returns the Core's factual
-report without modifying either input. Export accepts only a valid MIP-backed
-investigation. See the [SDK documentation](../repositories/cca-sdk/README.md).
+report without modifying either input. Explorer queries accept that report and
+return the Core's exact deterministic evidence matches without replay or
+recomputation. Export accepts only a valid MIP-backed investigation. See the
+[SDK documentation](../repositories/cca-sdk/README.md).
 
 ## `memoryos-cli`
 
 `memoryos-cli` is the MO-1205 automation boundary and the first independent
-consumer of the public SDK. MO-1206 adds the `regression` command through that
-same boundary. It provides the `memoryos` executable, deterministic human and
-JSON output, stable exit codes, exact package file transport, and a JSON Lines
-session mode. It imports no Runtime, Investigation Core, MIP, regression engine,
-or renderer module. Replay and staged comparison require explicit
+consumer of the public SDK. MO-1206 adds `regression`, and MO-1207 adds
+`investigate`, through that same boundary. It provides the `memoryos`
+executable, deterministic human and JSON output, stable exit codes, exact
+package file transport, and a JSON Lines session mode. It imports no Runtime,
+Investigation Core, MIP, regression engine, Explorer engine, or renderer
+module. Replay and staged comparison require explicit
 source-authored Trace selectors and one MIP-backed Investigation; regression
 requires two explicit packages and delegates to the SDK.
+Investigation accepts a regression report and delegates every evidence query to
+the SDK.
 
 The live session retains real SDK handles so checkpoint restoration cannot be
 forged or made portable. No checkpoint token or object is serialized. See the
@@ -133,8 +138,9 @@ the reserved-directory check.
   source-authored cognition, and do not import or own provider SDKs.
 - The headless Investigation Core is the single execution authority for
   deterministic investigation behavior. Clients consume immutable projections;
-  they do not derive Trace, Replay, Evolution, Comparative Reconstruction, or
-  Cognitive Regression facts, or cognition missing from an imported MIP.
+  they do not derive Trace, Replay, Evolution, Comparative Reconstruction,
+  Cognitive Regression, or Explorer facts, or cognition missing from an
+  imported MIP.
 - `memoryos-cli` is downstream of `cca-sdk`; it owns automation and output
   formatting only and has no direct Core, MIP, Runtime, or renderer dependency.
 - Studio and native consumers use the MemoryOS SDK facade. The SDK may forward

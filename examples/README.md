@@ -108,6 +108,11 @@ bytes; none constructs cognitive artifacts locally.
   explicit native observation and Core-owned verification.
 - [C++ regression](../repositories/cca-sdk/examples/cpp_regression.cpp) compares
   two imported investigations through the SDK and prints the Core report.
+- [C++ investigation](../repositories/cca-sdk/examples/cpp_investigate.cpp)
+  navigates exact evidence in a deterministic regression report through the
+  same SDK facade.
+- [Core Explorer](../repositories/cca-studio/examples/cognitive_investigation_explorer_usage.mjs)
+  demonstrates renderer-independent navigation to canonical report pointers.
 
 The examples are registered in the SDK's automated verification rather than
 being documentation-only snippets.
@@ -117,8 +122,9 @@ being documentation-only snippets.
 The [MemoryOS CLI examples](../repositories/memoryos-cli/examples/) execute all
 twelve public commands through the released SDK facade. They decode the approved
 complete MIP fixture, use the detached reference snapshot, verify byte-exact
-export, compare two explicit packages for deterministic regression, and exercise
-session-scoped checkpoint restoration without serializing an opaque checkpoint.
+export, compare two explicit packages for deterministic regression, navigate
+the saved report through `memoryos investigate`, and exercise session-scoped
+checkpoint restoration without serializing an opaque checkpoint.
 
 ```text
 node repositories/memoryos-cli/examples/run-cli-examples.mjs

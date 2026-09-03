@@ -115,6 +115,13 @@ Evidence, Retrieval, Evolution, Verification, transition-history, and
 lifecycle facts. SDK and CLI consumers receive the same closed report; no
 renderer, heuristic, explanation, score, or inference participates.
 
+MO-1207 adds the
+[Cognitive Investigation Explorer](docs/cognitive-investigation-explorer.md)
+as a read-only Core workflow. It navigates exact facts in an existing
+Regression Report and returns immutable digest endpoints for SDK, CLI, and
+Studio consumers. It does not rerun Replay, recompute Regression, or create an
+explanation.
+
 ## Build and verify
 
 From the workspace root:
@@ -175,6 +182,10 @@ observation paths, and explanation-chain boundaries.
 - [MemoryOS 1.2 Cognitive Regression Analysis](docs/cognitive-regression.md)
 - [Cognitive Regression engineering guide](docs/cognitive-regression-engineering-guide.md)
 - [Cognitive Regression conformance report](docs/cognitive-regression-conformance-report.md)
+- [MemoryOS 1.2 Cognitive Investigation Explorer](docs/cognitive-investigation-explorer.md)
+- [Explorer engineering guide](docs/cognitive-investigation-explorer-engineering-guide.md)
+- [Explorer architecture review](docs/cognitive-investigation-explorer-architecture-review.md)
+- [Explorer conformance report](docs/cognitive-investigation-explorer-conformance-report.md)
 - [MemoryOS SDK](../cca-sdk/README.md)
 - [MemoryOS SDK conformance report](../cca-sdk/docs/conformance-report.md)
 - [Public API and behavior](docs/memory-studio.md)
@@ -204,3 +215,4 @@ observation paths, and explanation-chain boundaries.
 - [C++ example](examples/memory_studio_usage.cpp)
 - [AI runtime adapter example](examples/ai_runtime_adapter_usage.mjs)
 - [Investigation Core example](examples/investigation_core_usage.mjs)
+- [Cognitive Investigation Explorer example](examples/cognitive_investigation_explorer_usage.mjs)

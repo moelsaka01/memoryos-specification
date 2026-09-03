@@ -88,6 +88,20 @@ class PythonExamplesTest(unittest.TestCase):
             self.assertTrue(regression["regressionDetected"])
             self.assertEqual(regression["overall"], "regressionDetected")
 
+            regression_report = root / "regression.json"
+            regression_report.write_text(
+                json.dumps(regression, ensure_ascii=False, separators=(",", ":")),
+                encoding="utf-8",
+            )
+            investigation_result = self.run_example(
+                "investigate.py",
+                str(regression_report),
+                "--category",
+                "reflection",
+            )
+            self.assertEqual(investigation_result["status"], "matched")
+            self.assertGreater(investigation_result["matchCount"], 0)
+
             verified = self.run_example("verify.py", str(package))
             self.assertTrue(verified["valid"])
 

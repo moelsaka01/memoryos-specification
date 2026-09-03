@@ -231,6 +231,15 @@ struct RegressionReport::Impl final {
     std::string canonical_json;
 };
 
+struct InvestigationResult::Impl final {
+    std::string identifier;
+    std::string regression_identifier;
+    std::string workspace_identifier;
+    std::string status;
+    std::size_t match_count{0U};
+    std::string canonical_json;
+};
+
 struct Checkpoint::Impl final {
     std::shared_ptr<detail::Client> client;
     std::string identifier;
@@ -368,6 +377,27 @@ const std::string& RegressionReport::overall() const noexcept {
     return impl_->overall;
 }
 const std::string& RegressionReport::canonicalJson() const noexcept {
+    return impl_->canonical_json;
+}
+
+InvestigationResult::InvestigationResult(std::shared_ptr<const Impl> impl)
+    : impl_(std::move(impl)) {}
+const std::string& InvestigationResult::identifier() const noexcept {
+    return impl_->identifier;
+}
+const std::string& InvestigationResult::regressionIdentifier() const noexcept {
+    return impl_->regression_identifier;
+}
+const std::string& InvestigationResult::workspaceIdentifier() const noexcept {
+    return impl_->workspace_identifier;
+}
+const std::string& InvestigationResult::status() const noexcept {
+    return impl_->status;
+}
+std::size_t InvestigationResult::matchCount() const noexcept {
+    return impl_->match_count;
+}
+const std::string& InvestigationResult::canonicalJson() const noexcept {
     return impl_->canonical_json;
 }
 
@@ -822,6 +852,94 @@ RegressionReport MemoryOS::regression(
     impl->overall = overall;
     impl->canonical_json = report->serialize();
     return RegressionReport{std::move(impl)};
+}
+
+InvestigationResult MemoryOS::investigate(
+    const RegressionReport& report,
+    InvestigationQuery query) const {
+    const auto queryMember = [](std::optional<std::string> value,
+                                std::string_view name) {
+        if (value.has_value() && value->empty()) {
+            invalidArgument("Investigation query '" + std::string{name} +
+                            "' must be absent or a non-empty string.");
+        }
+        return value.has_value() ? Json{std::move(*value)} : Json{};
+    };
+
+    Json reportValue;
+    try {
+        reportValue = Json::parse(report.canonicalJson());
+    } catch (const std::exception&) {
+        invalidProtocol(
+            "The SDK-owned Cognitive Regression report is not valid JSON.");
+    }
+    Json::Object queryValue{
+        {"category", queryMember(std::move(query.category), "category")},
+        {"reflectionIdentifier",
+         queryMember(std::move(query.reflectionIdentifier),
+                     "reflectionIdentifier")},
+        {"transition",
+         queryMember(std::move(query.transition), "transition")},
+    };
+    Json::Object params{
+        {"query", Json{std::move(queryValue)}},
+        {"report", std::move(reportValue)},
+    };
+    const Json response = client_->invoke("investigate", std::move(params));
+    const Json* result = response.find("investigationResult");
+    if (result == nullptr || !result->isObject()) {
+        invalidProtocol(
+            "The Core host omitted the Cognitive Investigation result.");
+    }
+    const std::string& kind = requiredString(*result, "kind");
+    const std::string& version = requiredString(*result, "version");
+    const std::string& identifier = requiredString(*result, "identifier");
+    const std::string& regressionIdentifier =
+        requiredString(*result, "regressionIdentifier");
+    const std::string& workspaceIdentifier =
+        requiredString(*result, "workspaceIdentifier");
+    const std::string& status = requiredString(*result, "status");
+    const std::size_t matchCount = requiredSize(*result, "matchCount");
+    const Json* normalizedQuery = result->find("query");
+    const Json* matches = result->find("matches");
+    const bool validStatus = status == "matched" || status == "empty";
+    const bool validCount = matches != nullptr && matches->isArray() &&
+        matches->asArray().size() == matchCount &&
+        ((status == "empty" && matchCount == 0U) ||
+         (status == "matched" && matchCount > 0U));
+    if (kind != "MemoryOSCognitiveInvestigationResult" ||
+        version != "1.0.0" || identifier.empty() ||
+        regressionIdentifier != report.identifier() ||
+        workspaceIdentifier.empty() || !validStatus || !validCount ||
+        normalizedQuery == nullptr || !normalizedQuery->isObject()) {
+        invalidProtocol(
+            "The Core host returned an invalid Cognitive Investigation result.");
+    }
+    for (std::size_t index = 0U; index < matchCount; ++index) {
+        const Json& match = matches->asArray()[index];
+        const Json* subject = match.find("subject");
+        const Json* baseline = match.find("baseline");
+        const Json* candidate = match.find("candidate");
+        if (!match.isObject() || requiredSize(match, "index") != index ||
+            requiredString(match, "category").empty() ||
+            requiredString(match, "change").empty() || subject == nullptr ||
+            !subject->isObject() || baseline == nullptr ||
+            (!baseline->isNull() && !baseline->isObject()) ||
+            candidate == nullptr ||
+            (!candidate->isNull() && !candidate->isObject())) {
+            invalidProtocol(
+                "The Core host returned an invalid Cognitive Investigation match.");
+        }
+    }
+
+    auto impl = std::make_shared<InvestigationResult::Impl>();
+    impl->identifier = identifier;
+    impl->regression_identifier = regressionIdentifier;
+    impl->workspace_identifier = workspaceIdentifier;
+    impl->status = status;
+    impl->match_count = matchCount;
+    impl->canonical_json = result->serialize();
+    return InvestigationResult{std::move(impl)};
 }
 
 Investigation MemoryOS::restore(const Checkpoint& checkpoint) const {

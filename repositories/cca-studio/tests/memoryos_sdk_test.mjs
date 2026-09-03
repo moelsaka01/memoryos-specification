@@ -14,6 +14,7 @@ import {
   ComparisonSession,
   Investigation,
   InvestigationQuery,
+  InvestigationResult,
   MEMORYOS_SDK_VERSION,
   MemoryInvestigationPackage,
   MemoryOS,
@@ -312,6 +313,79 @@ test("MO-1206 exposes one immutable read-only Regression path with exact Core pa
   assert.throws(
     () => memory.regression(baseline, foreign),
     /must belong to this MemoryOS instance/,
+  );
+});
+
+test("MO-1207 SDK navigates regression evidence with exact Core parity", () => {
+  const memory = new MemoryOS();
+  const workspace = memory.openWorkspace(referenceSnapshot.workspaceIdentifier);
+  const baseline = memory.observe(workspace, referenceSnapshot, {
+    identifier: "sdk-explorer-baseline",
+  });
+  const candidateSnapshot = changedSnapshot();
+  const candidate = memory.observe(workspace, candidateSnapshot, {
+    identifier: "sdk-explorer-candidate",
+  });
+  const report = memory.regression(baseline, candidate);
+  const query = new InvestigationQuery({ category: "reflection" });
+  const result = memory.investigate(report, query);
+
+  assert.ok(result instanceof InvestigationResult);
+  assert.equal(result.kind, "MemoryOSCognitiveInvestigationResult");
+  assert.equal(result.version, "1.0.0");
+  assert.equal(result.regressionIdentifier, report.identifier);
+  assert.equal(result.workspaceIdentifier, workspace.identifier);
+  assert.equal(result.status, "matched");
+  assert.ok(result.matchCount > 0);
+  assert.equal(result.matches.length, result.matchCount);
+  assert.equal(Object.isFrozen(result), true);
+  assert.equal(Object.isFrozen(result.matches), true);
+
+  const core = new InvestigationCore();
+  const directBaseline = core.create({
+    identifier: baseline.identifier,
+    snapshot: referenceSnapshot,
+  });
+  const directCandidate = core.create({
+    identifier: candidate.identifier,
+    snapshot: candidateSnapshot,
+  });
+  const directReport = core.regression(directBaseline.identifier, directCandidate.identifier);
+  assert.equal(
+    canonicalize(structuredClone(result)),
+    canonicalize(core.investigate(directReport, { category: "reflection" })),
+  );
+
+  const raw = structuredClone(report);
+  const envelope = {
+    command: "regression",
+    ok: true,
+    result: raw,
+    schemaVersion: "1.0",
+  };
+  assert.equal(
+    canonicalize(structuredClone(memory.investigate(raw, query))),
+    canonicalize(structuredClone(result)),
+  );
+  assert.equal(
+    canonicalize(structuredClone(memory.investigate(envelope, query))),
+    canonicalize(structuredClone(result)),
+  );
+
+  const empty = memory.investigate(report, { category: "replay" });
+  assert.equal(empty.status, "empty");
+  assert.equal(empty.matchCount, 0);
+  assert.throws(
+    () => memory.investigate(report, new InvestigationQuery({ category: "unknown" })),
+    /category|query/iu,
+  );
+  assert.throws(
+    () => new InvestigationQuery({ transition: "" }),
+    /non-empty string/u,
+  );
+  assert.throws(
+    () => memory.investigate(report, { unsupported: true }),
+    /unsupported member/u,
   );
 });
 

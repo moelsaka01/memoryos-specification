@@ -2,7 +2,7 @@
 
 ## Purpose
 
-MO-1204 exposes MemoryOS through a thin SDK facade while preserving the frozen architecture delivered by MO-1201 through MO-1203. MO-1206 extends that facade with Core-owned Cognitive Regression. This guide explains how to consume, build, test, and extend the facade without creating a second investigation or regression engine.
+MO-1204 exposes MemoryOS through a thin SDK facade, MO-1206 adds Core-owned Cognitive Regression, and MO-1207 adds Core-owned evidence navigation. This guide explains how to consume and extend the facade without creating a second investigation, regression, or Explorer engine.
 
 ## Architecture boundary
 
@@ -11,7 +11,7 @@ external runtime truth
         |
 MemoryOS Runtime / adapters
         |
-frozen Investigation Core  <--- Trace, Replay, Evolution, Comparison, Regression authority
+frozen Investigation Core  <--- Trace, Replay, Evolution, Comparison, Regression, Explorer authority
         |
 private JavaScript boundary <--- transport and value conversion only
         |
@@ -25,6 +25,7 @@ The dependency direction is one way. The Core has no dependency on the SDK. The 
 - derive identifiers, Reflection selections, Trace steps, or comparison stages;
 - compute Replay or Evolution state;
 - compare investigation facts or derive regression categories;
+- filter, rank, replay, resolve, or explain Regression evidence;
 - compare layouts, renderers, or pixels;
 - generate MIP content for a native observation;
 - reimplement MIP validation or compatibility policy;
@@ -40,9 +41,10 @@ repositories/cca-sdk/
 |   |-- api-reference.md
 |   |-- developer-guide.md
 |   |-- regression-guide.md
+|   |-- explorer-guide.md
 |   `-- conformance-report.md
 |-- examples/
-|   |-- cpp_quickstart.cpp / cpp_regression.cpp
+|   |-- cpp_quickstart.cpp / cpp_regression.cpp / cpp_investigate.cpp
 |   `-- python/
 |-- include/memoryos/memoryos.hpp     public C++23 API
 |-- python/
@@ -207,6 +209,13 @@ The facade validates ownership and the closed wire shape, then exposes the
 Core-produced report unchanged. It must never compare projections, transition
 logs, layouts, or canonical JSON locally. See the
 [Cognitive Regression guide](regression-guide.md).
+
+### Navigate deterministic regression evidence
+
+Use `MemoryOS.investigate()` with a Core-produced `RegressionReport` and a
+closed `InvestigationQuery`. See the [Explorer guide](explorer-guide.md). The
+SDK must forward both values intact; selection and ordered pointer construction
+remain Core behavior.
 
 ### Capture and restore
 

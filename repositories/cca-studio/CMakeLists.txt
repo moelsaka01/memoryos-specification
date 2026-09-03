@@ -70,6 +70,7 @@ add_custom_target(
     web/js/cognitive-comparative-reconstruction.js
     web/js/cognitive-comparative-replay.js
     web/js/cognitive-regression.js
+    web/js/cognitive-investigation-explorer.js
     web/js/deterministic-sequence-alignment.js
     web/js/mip-canonical.js
     web/js/memory-investigation-package.js
@@ -82,15 +83,22 @@ add_custom_target(
     scripts/generate-ai-runtime-adapter-fixtures.mjs
     examples/ai_runtime_adapter_usage.mjs
     examples/investigation_core_usage.mjs
+    examples/cognitive_investigation_explorer_usage.mjs
     docs/investigation-core.md
     docs/investigation-core-conformance-evidence.md
     docs/cognitive-regression.md
     docs/cognitive-regression-engineering-guide.md
     docs/cognitive-regression-conformance-report.md
     docs/schemas/cognitive-regression-report-1.0.schema.json
+    docs/cognitive-investigation-explorer.md
+    docs/cognitive-investigation-explorer-engineering-guide.md
+    docs/cognitive-investigation-explorer-architecture-review.md
+    docs/cognitive-investigation-explorer-conformance-report.md
+    docs/schemas/cognitive-investigation-result-1.0.schema.json
     tests/investigation_core_test.mjs
     tests/memoryos_sdk_test.mjs
     tests/cognitive_regression_test.mjs
+    tests/cognitive_investigation_explorer_test.mjs
     tests/fixtures/adapters/README.md
     tests/fixtures/adapters/reference-sources.mjs
     tests/fixtures/adapters/openai-agents.events.json
@@ -271,6 +279,16 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS)
       set_tests_properties(
         cca.memory_studio.regression
         PROPERTIES LABELS "studio;memory;investigation;regression;unit"
+      )
+      add_test(
+        NAME cca.memory_studio.investigation_explorer
+        COMMAND
+          "${CCA_NODE_EXECUTABLE}" --test
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/cognitive_investigation_explorer_test.mjs"
+      )
+      set_tests_properties(
+        cca.memory_studio.investigation_explorer
+        PROPERTIES LABELS "studio;memory;investigation;explorer;unit"
       )
       add_test(
         NAME cca.memory_studio.scalability

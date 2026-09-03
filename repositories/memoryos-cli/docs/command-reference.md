@@ -81,6 +81,18 @@ The operation reports the fixed SDK categories `replay`, `reflection`, `evidence
 
 Regression detection is a successful analysis and returns exit code `0`. Invalid package transport or import remains a package error, and cross-Workspace inputs are rejected by the SDK as a validation failure.
 
+## `memoryos investigate`
+
+```text
+memoryos investigate REPORT [--category CATEGORY] [--reflection ID] [--transition TRANSITION] [--json]
+```
+
+Reads a raw Regression Report or the successful JSON envelope produced by `memoryos regression --json`, then passes it and the explicit query directly to `MemoryOS.investigate()`.
+
+`--category` accepts `replay`, `reflection`, `evidence`, `retrieval`, `evolution`, `verification`, `transition`, or `lifecycle`. `--reflection` selects an exact Reflection identifier. `--transition` selects an exact transition token using the SDK's deterministic normalization. Reflection and transition selectors are mutually exclusive. A Reflection selector may only be combined with category `reflection`; a transition selector may only be combined with category `transition` or `lifecycle`. These constraints and all matching behavior are SDK-owned.
+
+With no selector, the result contains every observed Regression difference in SDK order. A valid query with no matches succeeds with status `empty`. Use `-` to read the JSON report from standard input.
+
 ## `memoryos verify`
 
 ```text
@@ -138,6 +150,8 @@ Executes one JSON object per non-empty input line. Without a file, input is read
 Replay session actions are `open`, `play`, `pause`, `restart`, `previous`, `next`, and `advance`. A session never serializes Checkpoints. The caller-supplied `name` is only a key in the process-local object map. Checkpoints are integrity-bound, not rollback snapshots: restore is valid only in the same SDK binding while authoritative transition history still matches.
 
 Regression is a standalone two-package command. It is not a session record and does not change the session's one-current-Investigation contract.
+
+Regression Report investigation is also a standalone command and is not a session record.
 
 ## Common option
 

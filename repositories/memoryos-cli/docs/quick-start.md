@@ -85,6 +85,18 @@ memoryos regression baseline.mip candidate.mip --json
 
 Regression is distinct from `compare`: it compares two complete package-backed Investigations through the SDK and reports only deterministic source differences. The CLI does not compute categories, scores, explanations, or summaries. A report that detects a regression still exits successfully; use its `regressionDetected` field in automation.
 
+## Investigate a Regression Report
+
+```sh
+memoryos regression baseline.mip candidate.mip --json > regression.json
+
+memoryos investigate regression.json --category evidence
+memoryos investigate regression.json --reflection reflection-001
+memoryos investigate regression.json --transition package-imported --json
+```
+
+`investigate` accepts the complete CLI Regression envelope directly. The SDK validates the report, resolves the query, and returns exact evidence references. The CLI performs no filtering or navigation.
+
 ## Export an existing package
 
 ```sh
@@ -128,4 +140,4 @@ Checkpoint values are opaque, integrity-bound SDK objects held only in that runn
 npm run test:examples
 ```
 
-The runner uses the approved complete MIP fixture and released Studio `referenceSnapshot`, invokes all twelve top-level commands, and checks session-only checkpoint/restore behavior.
+The runner uses the approved complete MIP fixture and released Studio `referenceSnapshot`, invokes all thirteen top-level commands, and checks session-only checkpoint/restore behavior.

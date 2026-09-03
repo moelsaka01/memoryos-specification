@@ -53,6 +53,11 @@ Differences are ordered by canonical subject identity and use exactly
 domain-separated SHA-256 digests, so reports disclose differences without
 duplicating semantic payloads.
 
+Transition and lifecycle subjects include additive factual navigation
+locators. These expose only the compared transition kind/action and lifecycle
+state and preserve the closed top-level report contract. MO-1207 uses them for
+exact navigation; they contain no explanation or inferred meaning.
+
 `regressionDetected` is true when any category changed. `overall` is exactly
 `identical` or `regressionDetected` and contains no severity or interpretation.
 
@@ -96,3 +101,4 @@ publishes no report and leaves both transition logs and derived states intact.
 - [Engineering guide](cognitive-regression-engineering-guide.md)
 - [Conformance report](cognitive-regression-conformance-report.md)
 - [Investigation Core](investigation-core.md)
+- [Cognitive Investigation Explorer](cognitive-investigation-explorer.md)

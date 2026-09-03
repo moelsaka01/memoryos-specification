@@ -104,6 +104,7 @@ flowchart TB
     Evolution[Semantic Evolution]
     Comparative[Comparative Reconstruction]
     Regression[Cognitive Regression]
+    Explorer[Cognitive Investigation Explorer]
     Core[Investigation Core]
     SDK[MemoryOS SDK]
     Renderer[Living Connectome renderer]
@@ -115,10 +116,12 @@ flowchart TB
     Core --> Evolution
     Core --> Comparative
     Core --> Regression
+    Regression --> Explorer
     Replay --> SDK
     Evolution --> SDK
     Comparative --> SDK
     Regression --> SDK
+    Explorer --> SDK
     SDK --> Renderer
 ```
 
@@ -128,7 +131,7 @@ The boundary is intentional:
 2. Long-Term Memory remains the authoritative evidence layer.
 3. Derived knowledge keeps its own identity and explicit source references.
 4. Observation never transfers ownership or mutates cognitive state.
-5. Trace, Replay, Evolution, Comparative Reconstruction, and Cognitive Regression are deterministic engines—not renderer behavior.
+5. Trace, Replay, Evolution, Comparative Reconstruction, Cognitive Regression, and evidence navigation are deterministic engines—not renderer behavior.
 
 MemoryOS is the product layer in the broader Cognitive Computing Architecture
 workspace. IM-001 through IM-006 provide its engineering, compiler, Runtime,
@@ -145,7 +148,9 @@ no investigation behavior. The official
 [MemoryOS CLI](repositories/memoryos-cli/README.md) is an independent SDK
 consumer for deterministic shell, CI, and JSON Lines automation. MO-1206 adds
 read-only Cognitive Regression Analysis to the same Core and exposes its exact
-reports through every SDK language and the CLI.
+reports through every SDK language and the CLI. MO-1207 adds the Cognitive
+Investigation Explorer, which follows canonical pointers already present in
+those reports without replay or inference.
 
 ## Getting Started
 
@@ -216,6 +221,7 @@ packages:
 node repositories/memoryos-cli/bin/memoryos.js help
 node repositories/memoryos-cli/bin/memoryos.js verify investigation.mip --json
 node repositories/memoryos-cli/bin/memoryos.js regression baseline.mip candidate.mip --json
+node repositories/memoryos-cli/bin/memoryos.js investigate regression.json --reflection reflection-17
 ```
 
 Optionally link the `memoryos` command to this checkout with
@@ -228,9 +234,9 @@ reports only Core-observed differences; the CLI never infers cognition.
 | Path | Purpose |
 | :--- | :--- |
 | [`repositories/cca-core`](repositories/cca-core) | MemoryOS capabilities plus the Runtime, Representation, Process, and Persistence foundations. |
-| [`repositories/cca-studio`](repositories/cca-studio) | The frozen Memory Studio contract, Mission Control UI, single Investigation Core—including the MO-1206 Regression Engine—canonical MIP implementation, dependency-free AI runtime adapters, tests, media, and documentation. |
-| [`repositories/cca-sdk`](repositories/cca-sdk) | The JavaScript, Python, and native C++ SDK facades, private Core binding, regression API, examples, tests, and conformance evidence. |
-| [`repositories/memoryos-cli`](repositories/memoryos-cli) | The standalone, scriptable SDK client, including deterministic two-package regression analysis and JSON automation. |
+| [`repositories/cca-studio`](repositories/cca-studio) | The frozen Memory Studio contract, Mission Control UI, single Investigation Core—including Cognitive Regression and the MO-1207 Explorer—canonical MIP implementation, dependency-free AI runtime adapters, tests, media, and documentation. |
+| [`repositories/cca-sdk`](repositories/cca-sdk) | The JavaScript, Python, and native C++ SDK facades, private Core binding, regression and evidence-navigation APIs, examples, tests, and conformance evidence. |
+| [`repositories/memoryos-cli`](repositories/memoryos-cli) | The standalone, scriptable SDK client, including deterministic regression analysis, evidence navigation, and JSON automation. |
 | [`docs`](docs) | Workspace engineering, compiler, build, and contributor documentation. |
 | [`specification`](specification) | Canonical specification format and schema used by the CCA Standards Compiler. |
 
@@ -244,7 +250,7 @@ implementation.
 | :--- | :--- |
 | **MemoryOS 1.0** | Established the deterministic memory lifecycle: Working Memory, Consolidation, Long-Term Memory, semantic, episodic, and procedural derivation, Retrieval, Reflection, Providers, and the frozen Studio contract. |
 | **MemoryOS 1.1 · v1.1.0** | Added observable cognition without changing the MemoryOS 1.0 runtime or public memory contracts. MO-1101 through MO-1108 delivered the Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and the unified production workflow. |
-| **MemoryOS 1.2 · in development** | Adds the canonical Memory Investigation Package (MO-1201), dependency-free adapters (MO-1202), one renderer-independent Investigation Core (MO-1203), public SDK facades (MO-1204), the SDK-only automation CLI (MO-1205), and deterministic Cognitive Regression Analysis (MO-1206). |
+| **MemoryOS 1.2 · in development** | Adds the canonical Memory Investigation Package (MO-1201), dependency-free adapters (MO-1202), one renderer-independent Investigation Core (MO-1203), public SDK facades (MO-1204), the SDK-only automation CLI (MO-1205), deterministic Cognitive Regression Analysis (MO-1206), and direct regression-evidence navigation (MO-1207). |
 
 See [CHANGELOG.md](CHANGELOG.md) for milestone-level engineering records and
 [RELEASE_NOTES.md](RELEASE_NOTES.md) for compatibility and verification details.
@@ -276,6 +282,11 @@ authority. MO-1206 adds [Cognitive Regression Analysis](repositories/cca-sdk/doc
 the Core compares two immutable investigations, while SDK and CLI consumers
 transport the same deterministic report without explanation, scoring, or
 inference.
+MO-1207 adds the
+[Cognitive Investigation Explorer](repositories/cca-studio/docs/cognitive-investigation-explorer.md),
+so engineers can move from that report to exact canonical evidence pointers
+through Studio, SDK, or `memoryos investigate` without rerunning Replay or
+duplicating investigation behavior.
 Investigation onboarding and Reflection discoverability remain planned product
 refinements. None of this redesigns the MemoryOS 1.0 Runtime or the released
 MemoryOS 1.1 investigation architecture.

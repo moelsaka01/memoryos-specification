@@ -131,6 +131,8 @@ TEST(MemoryOsSdk, ExposesVersionedImmutableValueHandles) {
     static_assert(std::is_copy_constructible_v<memoryos::ComparisonSession>);
     static_assert(std::is_copy_constructible_v<memoryos::VerificationResult>);
     static_assert(std::is_copy_constructible_v<memoryos::RegressionReport>);
+    static_assert(std::is_copy_constructible_v<memoryos::InvestigationResult>);
+    static_assert(std::is_copy_constructible_v<memoryos::InvestigationQuery>);
     static_assert(std::is_copy_constructible_v<memoryos::Checkpoint>);
 
     memoryos::MemoryOS memory;
@@ -160,6 +162,48 @@ TEST(MemoryOsSdk, DelegatesImmutableDeterministicRegressionToCore) {
     const auto identical = memory.regression(baseline, baseline);
     EXPECT_FALSE(identical.regressionDetected());
     EXPECT_EQ(identical.overall(), "identical");
+}
+
+TEST(MemoryOsSdk, NavigatesRegressionEvidenceExclusivelyThroughCore) {
+    memoryos::MemoryOS memory;
+    const auto workspace = memory.openWorkspace("workspace-memoryos-release");
+    const auto baseline = memory.observe(
+        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+        observationOptions("cpp-explorer-baseline"));
+    const auto candidate = memory.observe(
+        workspace, readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
+        observationOptions("cpp-explorer-candidate"));
+    const auto report = memory.regression(baseline, candidate);
+
+    memoryos::InvestigationQuery reflectionQuery;
+    reflectionQuery.category = "reflection";
+    const auto first = memory.investigate(report, reflectionQuery);
+    const auto second = memory.investigate(report, reflectionQuery);
+    EXPECT_EQ(first.regressionIdentifier(), report.identifier());
+    EXPECT_EQ(first.workspaceIdentifier(), workspace.identifier());
+    EXPECT_EQ(first.status(), "matched");
+    EXPECT_GT(first.matchCount(), 0U);
+    EXPECT_EQ(first.identifier(), second.identifier());
+    EXPECT_EQ(first.canonicalJson(), second.canonicalJson());
+    EXPECT_NE(first.canonicalJson().find("\"category\":\"reflection\""),
+              std::string::npos);
+
+    memoryos::InvestigationQuery replayQuery;
+    replayQuery.category = "replay";
+    const auto empty = memory.investigate(report, replayQuery);
+    EXPECT_EQ(empty.status(), "empty");
+    EXPECT_EQ(empty.matchCount(), 0U);
+
+    expectSdkError("INVALID_QUERY", "investigate", [&memory, &report] {
+        memoryos::InvestigationQuery query;
+        query.category = "not-a-category";
+        static_cast<void>(memory.investigate(report, std::move(query)));
+    });
+    expectInvalidInput([&memory, &report] {
+        memoryos::InvestigationQuery query;
+        query.transition = std::string{};
+        static_cast<void>(memory.investigate(report, std::move(query)));
+    });
 }
 
 TEST(MemoryOsSdk, DefaultObservationOperationsMatchCrossLanguageDigests) {

@@ -12,7 +12,7 @@ MemoryOS SDK
 MemoryOS CLI
 ```
 
-The CLI is deliberately thin: it validates command input, invokes the public SDK, and renders deterministic human-readable or JSON output. All investigation state transitions, trace construction, replay, comparison, cognitive regression, package verification, and checkpoint validity remain SDK-owned.
+The CLI is deliberately thin: it validates command input, invokes the public SDK, and renders deterministic human-readable or JSON output. All investigation state transitions, trace construction, replay, comparison, cognitive regression, Regression Report navigation, package verification, and checkpoint validity remain SDK-owned.
 
 ## Install
 
@@ -42,9 +42,10 @@ memoryos replay investigation.mip --trace trace-observation-b --action next
 memoryos compare investigation.mip --trace trace-observation-b \
   --evolution evolution-observation-a-observation-b
 memoryos regression baseline.mip candidate.mip --json
+memoryos investigate regression.json --reflection reflection-001 --json
 ```
 
-The stateless `replay` and `compare` commands require an exact `--trace` selector because the frozen SDK requires the Trace lifecycle transition before Replay. `compare` enters authored Evolution within one package. `regression` separately asks the SDK to compare two complete investigations and never computes differences in the CLI.
+The stateless `replay` and `compare` commands require an exact `--trace` selector because the frozen SDK requires the Trace lifecycle transition before Replay. `compare` enters authored Evolution within one package. `regression` separately asks the SDK to compare two complete investigations. `investigate` navigates the resulting deterministic report through the SDK. Neither command computes differences or navigation in the CLI.
 
 ## Commands
 
@@ -57,6 +58,7 @@ The stateless `replay` and `compare` commands require an exact `--trace` selecto
 | `replay` | Open Replay and apply explicit Replay actions. |
 | `compare` | Enter an authored Evolution in one package. |
 | `regression` | Report deterministic cognitive differences between two investigations. |
+| `investigate` | Navigate exact facts in a deterministic Regression Report. |
 | `verify` | Delegate MIP verification to the SDK. |
 | `import` | Import a deterministic MIP. |
 | `export` | Export the exact package backing an Investigation. |
@@ -75,6 +77,8 @@ Checkpoint and restore are session actions, not portable top-level commands. A c
 - [Automation Guide](docs/automation-guide.md)
 - [MO-1205 Conformance Report](docs/conformance-report.md)
 - [MO-1206 Regression Conformance Report](docs/regression-conformance-report.md)
+- [Regression Investigation Guide](docs/investigation-guide.md)
+- [MO-1207 Investigation Conformance Report](docs/investigation-conformance-report.md)
 
 ## Validate
 

@@ -42,10 +42,10 @@ export function readPackage(path, stdin = () => readFileSync(0)) {
   }
 }
 
-export function readJsonObject(path, label) {
+export function readJsonObject(path, label, stdin = () => readFileSync(0)) {
   let text;
   try {
-    text = readFileSync(path, "utf8");
+    text = path === "-" ? stdin().toString("utf8") : readFileSync(path, "utf8");
   } catch (error) {
     throw validationError(`Unable to read ${label} '${path}'.`, error?.code ?? "INPUT_READ_FAILED");
   }
@@ -163,6 +163,14 @@ export function executeCommand(parsed, io = {}) {
 
   const memory = newMemoryOS();
   const stdin = io.stdin;
+  if (command === "investigate") {
+    const report = readJsonObject(positionals[0], "Regression report", stdin);
+    const query = {};
+    if (options.category !== undefined) query.category = options.category;
+    if (options.reflection !== undefined) query.reflectionIdentifier = options.reflection;
+    if (options.transition !== undefined) query.transition = options.transition;
+    return { result: memory.investigate(report, query) };
+  }
   if (command === "observe") {
     return { result: investigationSummary(observeFromFiles(memory, options)) };
   }

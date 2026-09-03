@@ -13,6 +13,7 @@ or start with the engineering question you need to answer.
 | Translate settled external AI runtime cognition into a verified MIP | [AI Runtime Adapters](ai-runtime-adapters.md) |
 | Execute or embed a deterministic investigation | [Investigation Core](investigation-core.md) |
 | Detect deterministic differences between two investigations | [Cognitive Regression Analysis](cognitive-regression.md) |
+| Navigate directly to deterministic regression evidence | [Cognitive Investigation Explorer](cognitive-investigation-explorer.md) |
 | Consume MemoryOS from JavaScript, Python, or C++ | [MemoryOS SDK](../../cca-sdk/README.md) · [API reference](../../cca-sdk/docs/api-reference.md) · [Developer guide](../../cca-sdk/docs/developer-guide.md) |
 | Audit Investigation Core acceptance evidence | [Investigation Core conformance evidence](investigation-core-conformance-evidence.md) |
 | Trace every frozen MIP requirement to implementation and tests | [MIP-001 conformance matrix](mip-conformance-matrix.md) |
@@ -65,6 +66,13 @@ only observed Replay, Reflection, Evidence, Retrieval, Evolution,
 Verification, transition, and lifecycle differences. SDK and automation
 clients consume the same immutable report and do not implement comparison.
 
+MO-1207 adds the
+[Cognitive Investigation Explorer](cognitive-investigation-explorer.md). It
+validates detached Regression Reports and follows exact ordered difference
+subjects and digest pointers without rerunning Replay, recomputing Regression,
+or creating cognitive state. SDK, CLI, and Studio consume the same immutable
+Core result.
+
 The focused edge suites are:
 
 - [`mip_ordering_conformance_test.mjs`](../tests/mip_ordering_conformance_test.mjs)
@@ -84,7 +92,11 @@ The focused edge suites are:
   and
 - [`cognitive_regression_test.mjs`](../tests/cognitive_regression_test.mjs)
   for category correctness, ordering, package neutrality, immutability,
-  failure atomicity, renderer separation, and bounded deterministic analysis.
+  failure atomicity, renderer separation, and bounded deterministic analysis;
+  and
+- [`cognitive_investigation_explorer_test.mjs`](../tests/cognitive_investigation_explorer_test.mjs)
+  for evidence navigation, exact selectors, deterministic JSON, read-only
+  behavior, validation, performance, and renderer separation.
 
 ## MemoryOS 1.1 milestone map
 

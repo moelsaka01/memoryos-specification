@@ -55,6 +55,12 @@ export function humanRegressionResult(report) {
   return `${lines.join("\n")}\n`;
 }
 
+export function humanInvestigationResult(result) {
+  const lines = ["MemoryOS investigate"];
+  appendHumanFields(lines, "", result);
+  return `${lines.join("\n")}\n`;
+}
+
 export function successEnvelope(command, result) {
   return { command, ok: true, result, schemaVersion: "1.0" };
 }

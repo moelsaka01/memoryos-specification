@@ -45,6 +45,7 @@ test("production CLI depends on the SDK facade and no lower platform layer", asy
     "cognitive-evolution",
     "cognitive-comparative",
     "cognitive-regression",
+    "cognitive-investigation-explorer",
     "semantic-world",
     "studio-model",
   ];
@@ -119,4 +120,21 @@ test("Regression output is the exact public SDK report", async (t) => {
     cliResult,
     JSON.parse(JSON.stringify(memory.regression(baseline, candidate))),
   );
+});
+
+test("Investigation navigation output is the exact public SDK result", async (t) => {
+  const fixture = await makeFixtures(t);
+  const cli = runCli([
+    "investigate", fixture.regressionReportPath,
+    "--category", "evidence",
+    "--json",
+  ]);
+  assert.equal(cli.status, 0);
+  const cliResult = parseJsonOutput(cli).result;
+
+  const { MemoryOS } = await import("../../cca-studio/web/js/memoryos-sdk.js");
+  const direct = new MemoryOS().investigate(fixture.regressionReport, {
+    category: "evidence",
+  });
+  assert.deepEqual(cliResult, JSON.parse(JSON.stringify(direct)));
 });

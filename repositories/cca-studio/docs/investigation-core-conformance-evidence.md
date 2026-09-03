@@ -21,6 +21,7 @@ automated evidence. It supplements, and does not modify, the released MemoryOS
 | Thin clients | Studio routes production workflow commands through the Core | Integration and architecture tests cover Observe → Trace → Replay → Compare → Return without a second investigation implementation. |
 | Atomic publication | Candidate logs are derived before publication | Failed commands preserve the prior log digest, transition count, and projected state. |
 | Cognitive Regression | Read-only `regression()` delegates to the renderer-independent regression engine | Dedicated category, determinism, ownership, package-neutrality, SDK-parity, and atomicity tests. |
+| Cognitive Investigation Explorer | Read-only `investigate()` validates and navigates an existing Regression Report | Dedicated evidence, Reflection, Replay, transition, Verification, JSON stability, performance, and boundary tests. |
 
 ## Lifecycle evidence
 
@@ -72,6 +73,7 @@ From the workspace root:
 ```console
 npm --prefix repositories/cca-studio run test:investigation-core
 npm --prefix repositories/cca-studio run test:regression
+npm --prefix repositories/cca-studio run test:explorer
 npm --prefix repositories/cca-studio test
 node repositories/cca-studio/examples/investigation_core_usage.mjs
 python tools/verify_workspace.py --root .
@@ -80,7 +82,7 @@ python tools/verify_workspace.py --root .
 The CMake/CTest registration is `cca.memory_studio.investigation_core` when
 `CCA_ENABLE_STUDIO_WEB_TESTS=ON` and Node.js is available.
 The dedicated Cognitive Regression registration is
-`cca.memory_studio.regression`.
+`cca.memory_studio.regression` and `cca.memory_studio.investigation_explorer`.
 
 ## Related evidence
 

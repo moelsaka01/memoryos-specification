@@ -83,6 +83,21 @@ memoryos regression baseline.mip candidate.mip --json
 
 The SDK returns observed differences in Replay, Reflection, Evidence, Retrieval, Evolution, Verification, transition history, and lifecycle. The CLI renders that report without interpreting it. The `compare` command remains the single-Investigation Evolution workflow; `regression` is the explicit two-Investigation analysis.
 
+## Investigate Regression evidence
+
+Create one canonical CLI report and navigate it without recomputing Regression:
+
+```sh
+memoryos regression baseline.mip candidate.mip --json > regression.json
+memoryos investigate regression.json --category evidence --json
+memoryos investigate regression.json --category replay
+memoryos investigate regression.json --category verification
+memoryos investigate regression.json --reflection reflection-001
+memoryos investigate regression.json --transition replay-complete
+```
+
+A raw SDK Regression Report is also accepted. Omit selectors to retrieve every exact difference. Empty matches are successful deterministic results, not errors.
+
 ## Verify, import, export, and inspect
 
 ```sh
@@ -132,4 +147,4 @@ From `repositories/memoryos-cli`:
 npm run test:examples
 ```
 
-[`../examples/run-cli-examples.mjs`](../examples/run-cli-examples.mjs) materializes temporary inputs from the released `referenceSnapshot` and approved complete MIP fixture, runs all twelve top-level commands, verifies exact export bytes, and exercises checkpoint/restore in one live session.
+[`../examples/run-cli-examples.mjs`](../examples/run-cli-examples.mjs) materializes temporary inputs from the released `referenceSnapshot` and approved complete MIP fixture, runs all thirteen top-level commands, verifies exact export bytes, and exercises checkpoint/restore in one live session.

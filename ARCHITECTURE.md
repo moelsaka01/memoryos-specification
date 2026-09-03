@@ -160,12 +160,16 @@ owns verified MIP-backed investigations, and projects immutable state to thin
 clients. MO-1206 adds read-only Cognitive Regression Analysis inside this same
 authority. Regression compares immutable Core truth and never mutates either
 investigation, interprets a difference, or invents cognition absent from an
-imported package.
+imported package. MO-1207 adds the Cognitive Investigation Explorer inside the
+same authority. It traverses only validated report differences and returns
+canonical pointers to their existing digests; it never reloads or executes an
+investigation.
 
 Studio no longer imports the Investigation Core directly. Its only public
 investigation dependency is the in-process JavaScript MemoryOS SDK facade,
-which forwards every state-changing operation and regression request to the
-Core and every package verification request to the MIP verifier.
+which forwards every state-changing operation, regression request, and
+Explorer query to the Core and every package verification request to the MIP
+verifier.
 
 ### `cca-sdk`
 
@@ -174,9 +178,9 @@ versioned JavaScript binding used by native consumers. One SDK instance owns
 one long-lived, isolated binding session and therefore one Investigation Core
 instance. The binding transports explicit commands and immutable projections;
 it contains no Trace, Replay, Evolution, Comparative Reconstruction, Cognitive
-Regression, Runtime, or MIP semantics. Native and Studio clients consequently
-observe the same Core transition log, regression report, and canonical MIP
-bytes.
+Regression, Explorer, Runtime, or MIP semantics. Native and Studio clients
+consequently observe the same Core transition log, regression report, Explorer
+result, and canonical MIP bytes.
 
 The dependency direction is fixed:
 
@@ -192,9 +196,10 @@ not depend on the SDK. Package verification remains owned by MIP-001.
 
 `memoryos-cli` owns shell and CI automation. It consumes only the
 public JavaScript MemoryOS SDK facade and contains no Runtime, Investigation
-Core, MIP, Trace, Replay, Evolution, Regression, or renderer behavior. Every
-cognitive operation is an explicit SDK call. Package bytes, regression reports,
-and JSON inputs are transported without semantic reinterpretation.
+Core, MIP, Trace, Replay, Evolution, Regression, Explorer, or renderer behavior.
+Every cognitive operation is an explicit SDK call. Package bytes, regression
+reports, Explorer results, and JSON inputs are transported without semantic
+reinterpretation.
 
 Each stateless invocation creates one isolated SDK instance. The `session`
 command retains one instance for a JSON Lines workflow; its checkpoints remain
@@ -202,6 +207,9 @@ actual opaque SDK objects held only in memory and are never serialized. The CLI
 cannot restore checkpoints across processes. The MO-1206 `regression` command
 may load two verified packages only to pass their two SDK investigation handles
 to the Core; it does not compare their bytes, rendering, or layout itself.
+The MO-1207 `investigate` command passes one validated regression report and an
+explicit query to the SDK. It does not filter, match, replay, or resolve
+evidence locally.
 
 The complete downstream direction is:
 

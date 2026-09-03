@@ -36,6 +36,8 @@ investigation transition or semantic artifact.
 - `Checkpoint`, `ReplaySession`, `ComparisonSession`, and
   `VerificationSession`;
 - immutable Cognitive Regression reports through `InvestigationCore.regression()`;
+- immutable Cognitive Investigation Explorer results through
+  `InvestigationCore.investigate()`;
 - `LifecycleState`, `investigationPhase()`, `investigationAvailability()`, and
   `projectInvestigation()`.
 
@@ -53,6 +55,7 @@ with a stable `code`, `operation`, and immutable diagnostic list.
 | `replay(identifier, action)` | Applies `play`, `pause`, `restart`, `previous`, `next`, or `advance` to the existing deterministic Replay. A no-op does not append a transition. |
 | `compare(identifier, command)` | Enters or navigates Evolution and Comparative Reconstruction using `enter`, `previous`, `next`, `start`, `play`, `pause`, `reset`, `previousStep`, `nextStep`, `advance`, or `back`. |
 | `regression(baselineIdentifier, candidateIdentifier)` | Compares two immutable same-Workspace, same-source-kind investigations without appending a transition. Returns the fixed eight-category Cognitive Regression report. |
+| `investigate(report, query)` | Validates and navigates exact differences in an existing Cognitive Regression Report. It never recomputes Regression or replays either investigation. |
 | `verify(identifier)` | Re-derives and validates the transition chain and every active native artifact, or independently verifies the stored MIP. It appends `VERIFIED` only after all checks pass. |
 | `checkpoint(identifier)` | Captures the authoritative transition log, its digest and count, and a digest of derived state. A checkpoint is not an alternate state store. |
 | `export(identifier, options)` | Serializes the exact verified package owned by a MIP-backed investigation using MO-1201. Native Studio investigations are not projected into MIP. |
@@ -186,6 +189,7 @@ mapping exists. These boundaries prevent duplicated or inferred cognition.
 - Commands operate on detached canonical input and publish immutable output.
 - Replay and comparison consume existing deterministic artifacts.
 - Regression compares source-authored cognition and Core truth, excluding local aliases, package compatibility metadata, and all presentation state.
+- Investigation navigation follows only validated Regression Report subjects and digest pointers; it does not execute cognition.
 - No random number, wall clock, timer, polling loop, network request, provider
   SDK, DOM, or rendering API participates in Core execution.
 - Failures leave the previously published log and state unchanged.
@@ -197,3 +201,4 @@ mapping exists. These boundaries prevent duplicated or inferred cognition.
 - [Memory Investigation Packages](memory-investigation-packages.md)
 - [AI Runtime Adapters](ai-runtime-adapters.md)
 - [Cognitive Regression Analysis](cognitive-regression.md)
+- [Cognitive Investigation Explorer](cognitive-investigation-explorer.md)

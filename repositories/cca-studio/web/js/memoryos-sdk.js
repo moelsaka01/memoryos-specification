@@ -20,6 +20,12 @@ const checkpointBindings = new WeakMap();
 const checkpointValues = new WeakMap();
 const packageValues = new WeakMap();
 
+const investigationQueryMembers = Object.freeze([
+  "category",
+  "reflectionIdentifier",
+  "transition",
+]);
+
 function requirePrivate(token, type) {
   if (token !== PRIVATE) throw new TypeError(`${type} values are created by MemoryOS.`);
 }
@@ -54,6 +60,25 @@ function packageOptions(value, options = {}) {
   const stored = packageValues.get(value);
   if (!stored || options.supportedExtensions !== undefined) return options;
   return { ...options, supportedExtensions: stored.supportedExtensions };
+}
+
+function regressionReportInput(value) {
+  const input = requireObject(value, "Cognitive Regression report");
+  if (input.command === "regression" && input.ok === true && input.schemaVersion === "1.0") {
+    return requireObject(input.result, "Cognitive Regression report envelope result");
+  }
+  return input instanceof RegressionReport ? { ...input } : input;
+}
+
+function investigationQueryInput(value = {}) {
+  const input = requireObject(value, "Investigation query");
+  const unexpected = Object.keys(input).filter((key) => !investigationQueryMembers.includes(key));
+  if (unexpected.length > 0) {
+    throw new TypeError(`Investigation query contains unsupported member '${unexpected.sort()[0]}'.`);
+  }
+  return Object.fromEntries(
+    investigationQueryMembers.map((member) => [member, input[member] ?? null]),
+  );
 }
 
 function wrapPackage(verification, supportedExtensions = []) {
@@ -129,6 +154,16 @@ class PrivateSdkBinding {
       investigationIdentifiers.get(baseline),
       investigationIdentifiers.get(candidate),
     ));
+  }
+
+  investigate(report, query) {
+    return new InvestigationResult(
+      PRIVATE,
+      this.core.investigate(
+        regressionReportInput(report),
+        investigationQueryInput(query),
+      ),
+    );
   }
 
   restore(checkpoint) {
@@ -208,6 +243,22 @@ export class RegressionReport {
     this.categories = value.categories;
     this.regressionDetected = value.regressionDetected;
     this.overall = value.overall;
+    Object.freeze(this);
+  }
+}
+
+export class InvestigationResult {
+  constructor(token, value) {
+    requirePrivate(token, "InvestigationResult");
+    this.kind = value.kind;
+    this.version = value.version;
+    this.identifier = value.identifier;
+    this.regressionIdentifier = value.regressionIdentifier;
+    this.workspaceIdentifier = value.workspaceIdentifier;
+    this.query = value.query;
+    this.status = value.status;
+    this.matchCount = value.matchCount;
+    this.matches = value.matches;
     Object.freeze(this);
   }
 }
@@ -538,7 +589,15 @@ export class Investigation {
 }
 
 export class InvestigationQuery {
-  constructor() {
+  constructor(options = {}) {
+    const input = investigationQueryInput(options);
+    for (const member of investigationQueryMembers) {
+      const value = input[member] ?? null;
+      if (value !== null && (typeof value !== "string" || value.length === 0)) {
+        throw new TypeError(`Investigation query '${member}' must be null or a non-empty string.`);
+      }
+      this[member] = value;
+    }
     Object.freeze(this);
   }
 }
@@ -585,6 +644,10 @@ export class MemoryOS {
 
   regression(baseline, candidate) {
     return this.#binding().regression(baseline, candidate);
+  }
+
+  investigate(report, query = {}) {
+    return this.#binding().investigate(report, query);
   }
 
   restore(checkpoint) {

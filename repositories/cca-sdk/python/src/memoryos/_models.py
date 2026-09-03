@@ -33,7 +33,20 @@ class MemoryInvestigationPackage:
 
 @dataclass(frozen=True, slots=True)
 class InvestigationQuery:
-    """Reserved typed query seam; MO-1204 defines no query execution behavior."""
+    """Closed deterministic selectors for Cognitive Investigation navigation."""
+
+    category: str | None = None
+    reflection_identifier: str | None = None
+    transition: str | None = None
+
+    def __post_init__(self) -> None:
+        for name, value in (
+            ("category", self.category),
+            ("reflection_identifier", self.reflection_identifier),
+            ("transition", self.transition),
+        ):
+            if value is not None and (not isinstance(value, str) or not value):
+                raise ValueError(f"{name} must be None or a non-empty string")
 
 
 @dataclass(frozen=True, slots=True)
@@ -69,6 +82,22 @@ class RegressionReport:
     identifier: str
     regression_detected: bool
     overall: str
+    projection: FrozenMap
+
+
+@dataclass(frozen=True, slots=True)
+class InvestigationResult:
+    """Immutable Core-owned navigation result over regression evidence."""
+
+    kind: str
+    version: str
+    identifier: str
+    regression_identifier: str
+    workspace_identifier: str
+    query: FrozenMap
+    status: str
+    match_count: int
+    matches: tuple[FrozenMap, ...]
     projection: FrozenMap
 
 

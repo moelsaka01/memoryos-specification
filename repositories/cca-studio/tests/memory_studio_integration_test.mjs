@@ -366,6 +366,47 @@ test("MO-1108 keeps trace, replay, evolution, and comparison engines out of the 
   assert.match(graphSource, /prepareComparativeRenderingState\(world, comparativeView\)/);
 });
 
+test("MO-1207 Studio navigates regression evidence only through the public SDK", () => {
+  const report = functionSource(appSource, "loadInvestigationExplorerReport", "openInvestigationExplorer");
+  assert.match(report, /JSON\.parse\(await file\.text\(\)\)/);
+  assert.match(report, /memoryOS\.investigate\(report, \{\}\)/);
+  assert.match(report, /result\.workspaceIdentifier !== snapshot\.workspaceIdentifier/);
+  assert.doesNotMatch(report, /memoryOS\.observe|memoryOS\.regression|compareCognitiveRegression|navigateCognitiveRegression|replay\(/);
+
+  const navigation = functionSource(appSource, "openInvestigationExplorer", "investigationExplorerEntryControl");
+  assert.match(navigation, /state\.investigationExplorerReport/);
+  assert.match(navigation, /memoryOS\.investigate\(report, query\)/);
+  assert.doesNotMatch(navigation, /memoryOS\.observe|memoryOS\.regression|\.filter\(|\.sort\(|compareCognitiveRegression|navigateCognitiveRegression|replay\(/);
+
+  const view = functionSource(appSource, "investigationExplorerView", "comparativeEntryControl");
+  assert.match(view, /result\.matches/);
+  assert.match(view, /endpoint\.pointer/);
+  assert.match(view, /endpoint\.digest/);
+  assert.match(view, /data-explorer-category/);
+  assert.match(view, /data-explorer-node-key/);
+  assert.match(appSource, /data-explorer-open/);
+  assert.match(appSource, /data-explorer-report-input/);
+  assert.match(appSource, /data-explorer-close/);
+  const graphContextSource = functionSource(appSource, "graphContext", "currentEvolution");
+  assert.ok(
+    graphContextSource.indexOf("state.investigationExplorerResult") < graphContextSource.indexOf("if (evolution)"),
+    "an imported report is reachable before Cognitive Evolution",
+  );
+  assert.match(graphContextSource, /investigationExplorerLauncherView\(\)/);
+  const locator = functionSource(appSource, "locateInvestigationExplorerNode", "bindGraphContext");
+  assert.match(locator, /currentFrame\?\.world\.nodes\.find/);
+  assert.match(locator, /dismissInvestigationExplorer\(\)/);
+  assert.doesNotMatch(locator, /memoryOS\.(?:replay|regression|compare)|reconcileActiveTrace|updateEvolution/);
+  assert.match(view, /Not in active world/);
+  assert.match(stylesSource, /\.investigation-explorer-context/);
+  assert.match(stylesSource, /\.explorer-match-list/);
+  assert.match(stylesSource, /\.explorer-report-action input/);
+  assert.match(stylesSource, /\.neural-explorer-launcher/);
+
+  assert.doesNotMatch(appSource, /from ["']\.\/cognitive-investigation-explorer\.js["']/);
+  assert.doesNotMatch(graphSource, /cognitive-investigation-explorer|navigateCognitiveRegression|MemoryOSCognitiveInvestigationResult/);
+});
+
 test("MO-1108 preserves all six frozen Studio operation controls", () => {
   const controls = [
     ["observe-view", /executeSessionOperation\("observe"\)/],

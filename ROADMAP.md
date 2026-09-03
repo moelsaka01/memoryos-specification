@@ -9,7 +9,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 |---|---|---|
 | MemoryOS 1.0 | Released | Deterministic memory lifecycle, source-preserving knowledge, retrieval, reflection, provider-neutral handoff, and the frozen Memory Studio contract |
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
-| MemoryOS 1.2 | In development | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, and planned investigation onboarding refinements |
+| MemoryOS 1.2 | In development | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, and planned investigation onboarding refinements |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -62,6 +62,13 @@ One read-only Regression Engine in the Investigation Core compares Replay,
 Reflection, Evidence, Retrieval, Evolution, Verification, transition history,
 and lifecycle truth. JavaScript, Python, C++, and CLI consumers expose the same
 immutable report without heuristics, scoring, explanation, or AI inference.
+
+MO-1207 adds the
+[Cognitive Investigation Explorer](repositories/cca-studio/docs/cognitive-investigation-explorer.md).
+It navigates exact evidence locations already carried by a validated regression
+report and returns immutable, canonically ordered pointers through the same
+Core, SDK, CLI, and Studio boundaries. It does not rerun Replay, recompute a
+regression, load source cognition, rank evidence, or interpret a difference.
 
 ## IM-001: engineering foundation
 

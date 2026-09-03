@@ -46,6 +46,7 @@ processed input record, followed by at most one error object.
 - `replay`: Investigation metadata plus `cursor`, `replayIdentifier`, `replayStatus`
 - `compare`: Investigation metadata plus `evolutionIdentifier`, `replaySteps`, `stage`
 - `regression`: the complete immutable SDK Regression Report
+- `investigate`: the complete immutable SDK Cognitive Investigation result
 - `verify`: `diagnosticCount`, `diagnostics`, `status`, `valid`
 - `export`: `byteLength`, `output`, `packageKind`, `packageVersion`
 
@@ -54,6 +55,8 @@ Investigation metadata contains `availability`, `identifier`, `lifecycle`, `phas
 Session-only `checkpoint` returns the caller-assigned `name` and `stored: true`. It never emits the opaque Checkpoint object, internal state, or a restoration credential.
 
 The Regression result contains `kind`, `version`, `identifier`, `baseline`, `candidate`, `categories`, `regressionDetected`, and `overall`. Categories remain in the SDK-defined order: Replay, Reflection, Evidence, Retrieval, Evolution, Verification, transition, and lifecycle. Difference arrays remain in SDK order and contain only `change`, `subject`, `beforeDigest`, and `afterDigest`. The CLI performs no regression calculation or report transformation.
+
+The Investigation result contains `kind`, `version`, `identifier`, `regressionIdentifier`, `workspaceIdentifier`, `query`, `status`, `matchCount`, and `matches`. Each match contains its deterministic `index`, `category`, `change`, opaque `subject`, and nullable `baseline` and `candidate` evidence endpoints. The CLI preserves SDK match order and performs no filtering, pointer construction, transition normalization, or identifier matching.
 
 ## Determinism boundary
 

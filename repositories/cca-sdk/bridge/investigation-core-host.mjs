@@ -162,6 +162,13 @@ function dispatch(method, rawParams) {
         ),
       ),
     };
+  case "investigate":
+    return {
+      investigationResult: core.investigate(
+        requireObject(params.report, method, "report"),
+        requireObject(params.query, method, "query"),
+      ),
+    };
   case "verifyInvestigation":
     return verificationResult(core.verify(requireText(
       params.investigationIdentifier,

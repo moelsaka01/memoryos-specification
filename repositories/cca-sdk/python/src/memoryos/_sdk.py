@@ -14,6 +14,8 @@ from ._models import (
     Checkpoint,
     ComparisonSession,
     Investigation,
+    InvestigationQuery,
+    InvestigationResult,
     MemoryInvestigationPackage,
     RegressionReport,
     ReplaySession,
@@ -223,6 +225,112 @@ class MemoryOS:
             regression_detected=detected,
             overall=overall,
             projection=freeze(value),
+        )
+
+    def investigate(
+        self,
+        report: RegressionReport | Mapping[str, Any],
+        query: InvestigationQuery | Mapping[str, Any] | None = None,
+    ) -> InvestigationResult:
+        """Navigate factual evidence in a Core-produced regression report."""
+
+        if isinstance(report, RegressionReport):
+            report_value = thaw(report.projection)
+        elif isinstance(report, Mapping):
+            report_value = thaw(report)
+            if (
+                report_value.get("command") == "regression"
+                and report_value.get("ok") is True
+                and report_value.get("schemaVersion") == "1.0"
+            ):
+                report_value = report_value.get("result")
+        else:
+            raise TypeError("report must be a RegressionReport or JSON object")
+        if not isinstance(report_value, dict):
+            raise TypeError("regression report envelope must contain a JSON object result")
+
+        if query is None:
+            query_value: dict[str, Any] = {}
+        elif isinstance(query, InvestigationQuery):
+            query_value = {
+                "category": query.category,
+                "reflectionIdentifier": query.reflection_identifier,
+                "transition": query.transition,
+            }
+        elif isinstance(query, Mapping):
+            unexpected = set(query) - {
+                "category",
+                "reflectionIdentifier",
+                "transition",
+            }
+            if unexpected:
+                raise ValueError(
+                    f"unsupported Investigation query member: {sorted(unexpected)[0]}"
+                )
+            query_value = thaw(query)
+        else:
+            raise TypeError("query must be an InvestigationQuery or mapping")
+
+        response = self._bridge.call(
+            "investigate",
+            {"query": query_value, "report": report_value},
+        )
+        value = response.get("investigationResult")
+        if not isinstance(value, Mapping):
+            raise MemoryOSBindingError(
+                "INVALID_RESPONSE",
+                "binding",
+                "The private binding omitted the Cognitive Investigation result.",
+            )
+        identifier = value.get("identifier")
+        regression_identifier = value.get("regressionIdentifier")
+        workspace_identifier = value.get("workspaceIdentifier")
+        status = value.get("status")
+        match_count = value.get("matchCount")
+        matches = value.get("matches")
+        normalized_query = value.get("query")
+        valid_count = (
+            isinstance(match_count, int)
+            and not isinstance(match_count, bool)
+            and match_count >= 0
+            and isinstance(matches, list)
+            and len(matches) == match_count
+            and (
+                (status == "empty" and match_count == 0)
+                or (status == "matched" and match_count > 0)
+            )
+        )
+        if (
+            value.get("kind") != "MemoryOSCognitiveInvestigationResult"
+            or value.get("version") != "1.0.0"
+            or not isinstance(identifier, str)
+            or not identifier
+            or not isinstance(regression_identifier, str)
+            or not regression_identifier
+            or not isinstance(workspace_identifier, str)
+            or not workspace_identifier
+            or not isinstance(normalized_query, Mapping)
+            or status not in ("matched", "empty")
+            or not valid_count
+            or any(not isinstance(match, Mapping) for match in matches)
+        ):
+            raise MemoryOSBindingError(
+                "INVALID_RESPONSE",
+                "binding",
+                "The private binding returned an invalid Cognitive Investigation result.",
+            )
+        projection = freeze(value)
+        return InvestigationResult(
+            kind=str(value["kind"]),
+            version=str(value["version"]),
+            identifier=identifier,
+            regression_identifier=regression_identifier,
+            workspace_identifier=workspace_identifier,
+            query=freeze(normalized_query),
+            status=str(status),
+            match_count=match_count,
+            matches=tuple(freeze(match) for match in matches),
+            projection=projection,
         )
 
     def restore(self, checkpoint: Checkpoint) -> Investigation:

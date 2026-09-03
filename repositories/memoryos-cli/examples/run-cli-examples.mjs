@@ -43,6 +43,7 @@ try {
   const packagePath = join(directory, "investigation.mip");
   const exportedPath = join(directory, "exported.mip");
   const workflow = join(directory, "workflow.memoryos");
+  const regressionReport = join(directory, "regression.json");
 
   writeFileSync(
     workspace,
@@ -77,6 +78,11 @@ try {
   ]);
   assert.equal(regression.result.overall, "identical");
   assert.equal(regression.result.regressionDetected, false);
+  writeFileSync(regressionReport, JSON.stringify(regression), "utf8");
+  const [investigation] = run("investigate", [
+    "investigate", regressionReport, "--category", "reflection", "--json",
+  ]);
+  assert.equal(investigation.result.query.category, "reflection");
   run("verify", ["verify", packagePath, "--json"]);
   run("import", ["import", packagePath, "--id", "cli-example-import", "--json"]);
   run("export", [

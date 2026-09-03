@@ -7,6 +7,7 @@ import {
   deterministicJson,
   errorEnvelope,
   humanError,
+  humanInvestigationResult,
   humanRegressionResult,
   humanResult,
   successEnvelope,
@@ -40,6 +41,8 @@ export async function main(argv, io = processIO) {
       io.stdout(deterministicJson(successEnvelope(parsed.command, execution.result)));
     } else if (parsed.command === "regression") {
       io.stdout(humanRegressionResult(execution.result));
+    } else if (parsed.command === "investigate") {
+      io.stdout(humanInvestigationResult(execution.result));
     } else {
       io.stdout(humanResult(parsed.command, execution.result));
     }

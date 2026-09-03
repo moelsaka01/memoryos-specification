@@ -16,7 +16,7 @@ This report maps the MemoryOS CLI deliverable to the approved MO-1205 boundary.
 
 ## Command conformance
 
-At MO-1205 release, the executable exposed exactly eleven required top-level commands: `version`, `help`, `observe`, `trace`, `replay`, `compare`, `verify`, `import`, `export`, `inspect`, and `session`. MO-1206 adds the SDK-backed `regression` command without changing that released command behavior.
+At MO-1205 release, the executable exposed exactly eleven required top-level commands: `version`, `help`, `observe`, `trace`, `replay`, `compare`, `verify`, `import`, `export`, `inspect`, and `session`. MO-1206 adds the SDK-backed `regression` command, and MO-1207 adds SDK-backed Regression Report investigation, without changing that released command behavior.
 
 `checkpoint` and `restore` are intentionally session records rather than portable top-level commands. Their values remain opaque, integrity-bound objects in one live SDK binding; they are not rollback snapshots.
 
@@ -42,7 +42,7 @@ At MO-1205 release, the executable exposed exactly eleven required top-level com
 
 ## Executable evidence
 
-`examples/run-cli-examples.mjs` uses the released Studio `referenceSnapshot` and approved complete MIP fixture. It invokes the eleven MO-1205 commands plus the additive MO-1206 Regression command, checks deterministic JSON envelopes, compares exported bytes with the source package, and verifies session-only Checkpoint restoration through the production executable.
+`examples/run-cli-examples.mjs` uses the released Studio `referenceSnapshot` and approved complete MIP fixture. It invokes the eleven MO-1205 commands plus the additive MO-1206 Regression and MO-1207 Investigation commands, checks deterministic JSON envelopes, compares exported bytes with the source package, and verifies session-only Checkpoint restoration through the production executable.
 
 ```sh
 npm test

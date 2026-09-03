@@ -2,11 +2,21 @@ from __future__ import annotations
 
 import argparse
 import json
+from collections.abc import Mapping
 from pathlib import Path
+from typing import Any
 
 from memoryos import MemoryOS
 
 from _common import emit
+
+
+def detached(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        return {str(key): detached(item) for key, item in value.items()}
+    if isinstance(value, tuple):
+        return [detached(item) for item in value]
+    return value
 
 
 def snapshot(path: str) -> dict[str, object]:
@@ -44,11 +54,7 @@ def main() -> int:
             identifier="python-regression-candidate",
         )
         report = memory.regression(baseline, candidate)
-        emit({
-            "identifier": report.identifier,
-            "overall": report.overall,
-            "regressionDetected": report.regression_detected,
-        })
+        emit(detached(report.projection))
     return 0
 
 

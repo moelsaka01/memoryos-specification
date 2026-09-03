@@ -10,7 +10,13 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import FrozenInstanceError
 from pathlib import Path
 
-from memoryos import MemoryOS, MemoryOSError, RegressionReport
+from memoryos import (
+    InvestigationQuery,
+    InvestigationResult,
+    MemoryOS,
+    MemoryOSError,
+    RegressionReport,
+)
 
 
 PYTHON_ROOT = Path(__file__).resolve().parents[1]
@@ -153,6 +159,60 @@ class MemoryOSSDKTest(unittest.TestCase):
         finally:
             first.close()
             second.close()
+
+    def test_explorer_navigates_existing_regression_evidence_deterministically(self) -> None:
+        with MemoryOS(node_executable=NODE) as memory:
+            workspace = memory.open_workspace(str(self.snapshot["workspaceIdentifier"]))
+            baseline = memory.observe(
+                workspace,
+                self.snapshot,
+                identifier="python-explorer-baseline",
+            )
+            changed = copy.deepcopy(self.snapshot)
+            changed["observationIdentifier"] = "python-explorer-candidate-observation"
+            changed["reflections"][0]["knowledge"] = "Changed reflection evidence."
+            candidate = memory.observe(
+                workspace,
+                changed,
+                identifier="python-explorer-candidate",
+            )
+            report = memory.regression(baseline, candidate)
+            query = InvestigationQuery(category="reflection")
+
+            first = memory.investigate(report, query)
+            second = memory.investigate(report.projection, query)
+            envelope = {
+                "command": "regression",
+                "ok": True,
+                "result": report.projection,
+                "schemaVersion": "1.0",
+            }
+            third = memory.investigate(envelope, {"category": "reflection"})
+            self.assertIsInstance(first, InvestigationResult)
+            self.assertEqual(first.kind, "MemoryOSCognitiveInvestigationResult")
+            self.assertEqual(first.version, "1.0.0")
+            self.assertEqual(first.regression_identifier, report.identifier)
+            self.assertEqual(first.workspace_identifier, workspace.identifier)
+            self.assertEqual(first.status, "matched")
+            self.assertGreater(first.match_count, 0)
+            self.assertEqual(first.projection, second.projection)
+            self.assertEqual(first.projection, third.projection)
+            self.assertEqual(
+                tuple(match["index"] for match in first.matches),
+                tuple(range(first.match_count)),
+            )
+            with self.assertRaises(FrozenInstanceError):
+                first.status = "empty"
+
+            empty = memory.investigate(report, InvestigationQuery(category="replay"))
+            self.assertEqual(empty.status, "empty")
+            self.assertEqual(empty.match_count, 0)
+            with self.assertRaises(MemoryOSError) as invalid:
+                memory.investigate(report, InvestigationQuery(category="unknown"))
+            self.assertEqual(invalid.exception.code, "INVALID_QUERY")
+            self.assertEqual(invalid.exception.operation, "investigate")
+            with self.assertRaises(ValueError):
+                InvestigationQuery(transition="")
 
     def test_explicit_observation_trace_replay_and_verification(self) -> None:
         with MemoryOS(node_executable=NODE) as memory:

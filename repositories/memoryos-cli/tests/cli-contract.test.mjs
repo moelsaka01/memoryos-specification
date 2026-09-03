@@ -37,7 +37,7 @@ test("version and help expose the deterministic supported command surface", () =
   assert.equal(help.stderr, "");
   for (const command of [
     "version", "help", "observe", "trace", "replay", "compare",
-    "regression", "verify", "import", "export", "inspect", "session",
+    "regression", "investigate", "verify", "import", "export", "inspect", "session",
   ]) {
     assert.match(help.stdout, new RegExp(`^  ${command}\\s`, "mu"));
   }
@@ -48,6 +48,10 @@ test("version and help expose the deterministic supported command surface", () =
   assert.match(
     runCli(["help", "regression"]).stdout,
     /^memoryos regression BASELINE CANDIDATE /u,
+  );
+  assert.match(
+    runCli(["help", "investigate"]).stdout,
+    /^memoryos investigate REPORT /u,
   );
 });
 

@@ -7,9 +7,9 @@ The workspace reserves these repository boundaries:
 | [`cca-core`](cca-core) | Released Runtime, Representation, Process, Persistence, and CP-001 through CP-010 MemoryOS implementation |
 | [`cca-compiler`](cca-compiler) | IS-002 Standards Compiler and CLI |
 | [`memoryos`](memoryos) | Reserved future product-repository boundary; current implementation remains in `cca-core` and `cca-studio` |
-| [`cca-studio`](cca-studio) | CP-011 Studio, MemoryOS 1.1 investigation presentation, and MemoryOS 1.2 headless MIP, adapter, Investigation Core, and Cognitive Regression modules |
-| [`cca-sdk`](cca-sdk) | MO-1204 JavaScript, Python, and C++ SDK facades plus the MO-1206 regression facade and single private Investigation Core binding |
-| [`memoryos-cli`](memoryos-cli) | MO-1205 standalone CLI and JSON Lines automation plus MO-1206 SDK-backed regression reporting |
+| [`cca-studio`](cca-studio) | CP-011 Studio, MemoryOS 1.1 investigation presentation, and MemoryOS 1.2 headless MIP, adapter, Investigation Core, Cognitive Regression, and Explorer modules |
+| [`cca-sdk`](cca-sdk) | MO-1204 JavaScript, Python, and C++ SDK facades plus MO-1206 regression and MO-1207 evidence-navigation facades over one private Investigation Core binding |
+| [`memoryos-cli`](memoryos-cli) | MO-1205 standalone CLI and JSON Lines automation plus SDK-backed regression reporting and deterministic evidence navigation |
 | [`cca-conformance`](cca-conformance) | Reserved; no implementation |
 | [`cca-atlas`](cca-atlas) | Reserved; no implementation |
 
@@ -31,6 +31,9 @@ not import the Core, MIP, Runtime, or renderer.
 MO-1206 adds one read-only Cognitive Regression implementation inside the
 Investigation Core. The SDK exposes its immutable report, and the CLI consumes
 that facade; neither layer recomputes regression facts.
+MO-1207 adds one read-only Cognitive Investigation Explorer beside that engine.
+Studio, SDK, and CLI render or transport its canonical evidence pointers; none
+filters regression evidence or reruns an investigation independently.
 No repository creates a reverse dependency into the compiler. Reserved
 repositories have no approved dependency relationships merely by directory
 presence.

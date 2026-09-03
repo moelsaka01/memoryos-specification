@@ -318,9 +318,29 @@ function compareFacts(category, beforeValues, afterValues) {
     const beforeDigest = earlier ? factDigest(category, earlier.value) : null;
     const afterDigest = current ? factDigest(category, current.value) : null;
     if (beforeDigest === afterDigest) return;
+    let subject = earlier?.subject ?? current.subject;
+    if (category === RegressionCategory.Transition) {
+      subject = {
+        ...subject,
+        transition: {
+          afterAction: current?.value.payload?.action ?? null,
+          afterKind: current?.value.kind ?? null,
+          beforeAction: earlier?.value.payload?.action ?? null,
+          beforeKind: earlier?.value.kind ?? null,
+        },
+      };
+    } else if (category === RegressionCategory.Lifecycle) {
+      subject = {
+        ...subject,
+        lifecycle: {
+          afterState: current?.value.state ?? null,
+          beforeState: earlier?.value.state ?? null,
+        },
+      };
+    }
     differences.push({
       change: earlier ? current ? "modified" : "removed" : "added",
-      subject: earlier?.subject ?? current.subject,
+      subject,
       beforeDigest,
       afterDigest,
     });

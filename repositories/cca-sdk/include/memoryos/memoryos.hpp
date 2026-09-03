@@ -14,6 +14,7 @@
 namespace memoryos {
 
 class Investigation;
+class InvestigationResult;
 class RegressionReport;
 class VerificationResult;
 
@@ -58,6 +59,12 @@ struct ObserveOptions final {
 struct ImportOptions final {
     std::string identifier;
     std::vector<std::string> supportedExtensions;
+};
+
+struct InvestigationQuery final {
+    std::optional<std::string> category;
+    std::optional<std::string> reflectionIdentifier;
+    std::optional<std::string> transition;
 };
 
 namespace detail {
@@ -141,6 +148,29 @@ class RegressionReport final {
   private:
     struct Impl;
     explicit RegressionReport(std::shared_ptr<const Impl> impl);
+
+    std::shared_ptr<const Impl> impl_;
+    friend class MemoryOS;
+};
+
+class InvestigationResult final {
+  public:
+    InvestigationResult(const InvestigationResult&) noexcept = default;
+    InvestigationResult& operator=(const InvestigationResult&) noexcept = default;
+    InvestigationResult(InvestigationResult&&) noexcept = default;
+    InvestigationResult& operator=(InvestigationResult&&) noexcept = default;
+    ~InvestigationResult() = default;
+
+    [[nodiscard]] const std::string& identifier() const noexcept;
+    [[nodiscard]] const std::string& regressionIdentifier() const noexcept;
+    [[nodiscard]] const std::string& workspaceIdentifier() const noexcept;
+    [[nodiscard]] const std::string& status() const noexcept;
+    [[nodiscard]] std::size_t matchCount() const noexcept;
+    [[nodiscard]] const std::string& canonicalJson() const noexcept;
+
+  private:
+    struct Impl;
+    explicit InvestigationResult(std::shared_ptr<const Impl> impl);
 
     std::shared_ptr<const Impl> impl_;
     friend class MemoryOS;
@@ -304,14 +334,13 @@ class MemoryOS final {
     [[nodiscard]] RegressionReport regression(
         const Investigation& baseline,
         const Investigation& candidate) const;
+    [[nodiscard]] InvestigationResult investigate(
+        const RegressionReport& report,
+        InvestigationQuery query = {}) const;
     [[nodiscard]] Investigation restore(const Checkpoint& checkpoint) const;
 
   private:
     std::shared_ptr<detail::Client> client_;
 };
-
-// Reserved for a future query capability. MO-1204 intentionally defines no
-// query behavior.
-class InvestigationQuery;
 
 } // namespace memoryos

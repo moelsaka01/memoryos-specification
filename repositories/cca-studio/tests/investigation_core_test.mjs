@@ -585,6 +585,7 @@ test("MO-1203 Investigation Core is headless provider-neutral and renderer-indep
   assert.ok(imports.includes("./cognitive-evolution.js"));
   assert.ok(imports.includes("./cognitive-comparative-reconstruction.js"));
   assert.ok(imports.includes("./cognitive-regression.js"));
+  assert.ok(imports.includes("./cognitive-investigation-explorer.js"));
 
   const complete = importMemoryInvestigationPackage(await mipFixture("complete"));
   assert.equal(complete.kind, "MemoryInvestigationPackage");

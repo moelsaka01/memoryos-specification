@@ -76,6 +76,16 @@ node -e 'const value = JSON.parse(require("fs").readFileSync("regression.json", 
 
 The CLI preserves SDK category and difference order. It adds no heuristic score, explanation, timestamp, or source-path metadata. At most one package operand may be `-`, because one process has one standard-input byte stream.
 
+Navigate the saved report through the SDK without recomputing it:
+
+```sh
+memoryos investigate regression.json --category evidence --json > evidence.json
+memoryos investigate regression.json --reflection reflection-001 --json > reflection.json
+memoryos investigate regression.json --transition package-imported --json > transition.json
+```
+
+`investigate` accepts the standard successful Regression envelope. A raw SDK report is also valid. A matched or empty result returns `0`; invalid report JSON or query input returns `2`.
+
 ## Stateful JSON Lines workflow
 
 Use `session` when later operations must consume the exact live SDK binding or opaque Checkpoint created earlier.

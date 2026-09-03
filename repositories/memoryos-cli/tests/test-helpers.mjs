@@ -16,6 +16,7 @@ import {
   exportMemoryInvestigationPackage,
   importMemoryInvestigationPackage,
 } from "../../cca-studio/web/js/memory-investigation-package.js";
+import { MemoryOS } from "../../cca-studio/web/js/memoryos-sdk.js";
 
 export const CLI_ROOT = fileURLToPath(new URL("../", import.meta.url));
 export const CLI_BIN = fileURLToPath(new URL("../bin/memoryos.js", import.meta.url));
@@ -133,9 +134,37 @@ export async function makeFixtures(testContext) {
   };
   const regressionBaselineBytes = regressionPackage("cli-regression-baseline");
   const regressionCandidateBytes = regressionPackage("cli-regression-candidate", (observations) => {
-    const evidence = observations.at(-1).records.find(({ role }) => role === "evidence");
-    evidence.revision = { ...evidence.revision, regressionMarker: "candidate" };
+    for (const observation of observations) {
+      for (const record of observation.records) {
+        if (["evidence", "reflection", "retrieval", "semanticTransformation"].includes(record.role)) {
+          record.revision = { ...record.revision, regressionMarker: record.role };
+        }
+      }
+    }
   });
+  const regressionReportFor = (baselineBytes, candidateBytes, prepare = () => {}) => {
+    const memory = new MemoryOS();
+    const baseline = memory.importPackage(baselineBytes, {
+      identifier: "fixture-regression-baseline",
+    });
+    const candidate = memory.importPackage(candidateBytes, {
+      identifier: "fixture-regression-candidate",
+    });
+    prepare(candidate);
+    return JSON.parse(JSON.stringify(memory.regression(baseline, candidate)));
+  };
+  const regressionReport = regressionReportFor(
+    regressionBaselineBytes,
+    regressionCandidateBytes,
+  );
+  const replayRegressionReport = regressionReportFor(packageBytes, packageBytes, (candidate) => {
+    candidate.trace(SELECTORS.trace).replay().next();
+  });
+  const verificationRegressionReport = regressionReportFor(
+    packageBytes,
+    packageBytes,
+    (candidate) => candidate.verify(),
+  );
   const corruptBytes = Buffer.from(packageBytes);
   corruptBytes[corruptBytes.length - 2] ^= 1;
 
@@ -145,6 +174,11 @@ export async function makeFixtures(testContext) {
   const foreignPackagePath = join(inputs, "foreign workspace investigation.mip");
   const regressionBaselinePath = join(inputs, "regression baseline.mip");
   const regressionCandidatePath = join(inputs, "regression candidate.mip");
+  const regressionReportPath = join(inputs, "regression report.json");
+  const malformedRegressionReportPath = join(inputs, "malformed regression report.json");
+  const regressionEnvelopePath = join(inputs, "regression envelope.json");
+  const replayRegressionReportPath = join(inputs, "replay regression report.json");
+  const verificationRegressionReportPath = join(inputs, "verification regression report.json");
   const workspacePath = join(inputs, "workspace.json");
   const foreignWorkspacePath = join(inputs, "foreign workspace.json");
   const snapshotPath = join(inputs, "snapshot.json");
@@ -158,6 +192,20 @@ export async function makeFixtures(testContext) {
     writeFile(foreignPackagePath, foreignPackageBytes),
     writeFile(regressionBaselinePath, regressionBaselineBytes),
     writeFile(regressionCandidatePath, regressionCandidateBytes),
+    writeFile(regressionReportPath, JSON.stringify(regressionReport), "utf8"),
+    writeFile(malformedRegressionReportPath, JSON.stringify({ kind: "not-a-report" }), "utf8"),
+    writeFile(regressionEnvelopePath, JSON.stringify({
+      command: "regression",
+      ok: true,
+      result: regressionReport,
+      schemaVersion: "1.0",
+    }), "utf8"),
+    writeFile(replayRegressionReportPath, JSON.stringify(replayRegressionReport), "utf8"),
+    writeFile(
+      verificationRegressionReportPath,
+      JSON.stringify(verificationRegressionReport),
+      "utf8",
+    ),
     writeFile(
       workspacePath,
       JSON.stringify({ identifier: referenceSnapshot.workspaceIdentifier }),
@@ -182,12 +230,20 @@ export async function makeFixtures(testContext) {
     foreignPackagePath,
     inputs,
     invalidJsonPath,
+    malformedRegressionReportPath,
     packageBytes,
     packagePath,
     regressionBaselineBytes,
     regressionBaselinePath,
     regressionCandidateBytes,
     regressionCandidatePath,
+    regressionEnvelopePath,
+    regressionReport,
+    regressionReportPath,
+    replayRegressionReport,
+    replayRegressionReportPath,
+    verificationRegressionReport,
+    verificationRegressionReportPath,
     root,
     snapshotPath,
     workspacePath,

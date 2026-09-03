@@ -65,6 +65,16 @@ and lifecycle facts using stable identities and canonical digests. No renderer,
 heuristic, score, explanation, summary, prediction, or AI interpretation enters
 the comparison, and neither source investigation is modified.
 
+### MO-1207 — Cognitive Investigation Explorer
+
+Added one read-only Cognitive Investigation Explorer to the Investigation Core
+for direct navigation of Replay, Reflection, Evidence, Retrieval, Evolution,
+Verification, transition, and lifecycle differences already present in a
+validated Cognitive Regression report. Immutable navigation results retain
+canonical JSON Pointers and source digests; the SDK, CLI, and Studio consume
+those same results without replaying investigations, recomputing regression,
+ranking evidence, or generating explanations.
+
 ## MemoryOS 1.1 — v1.1.0
 
 Released. MemoryOS 1.1 preserves the frozen MemoryOS 1.0 runtime and public

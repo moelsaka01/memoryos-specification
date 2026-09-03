@@ -29,7 +29,7 @@ private live `Checkpoint` instances and are never accepted as caller-authored
 transition logs. Messages are limited to 64 MiB and are processed sequentially.
 
 The supported methods are `health`, `observe`, `load`, `trace`, `replay`,
-`compare`, `regression`, `verifyInvestigation`, `checkpoint`, `restore`, `archive`,
+`compare`, `regression`, `investigate`, `verifyInvestigation`, `checkpoint`, `restore`, `archive`,
 `returnToWorld`, `importPackage`, `exportPackage`, and `verifyPackage`.
 
 `observe` creates a native investigation when `investigationIdentifier` is
@@ -40,3 +40,7 @@ truth.
 `regression` requires explicit baseline and candidate Investigation identifiers.
 It returns the immutable report produced by `InvestigationCore.regression()`;
 the host performs no comparison, categorization, inference, or scoring.
+
+`investigate` transports one complete Cognitive Regression report and one
+closed query to `InvestigationCore.investigate()`. The host does not filter,
+rank, replay, resolve, or explain evidence.
