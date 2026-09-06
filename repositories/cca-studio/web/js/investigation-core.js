@@ -527,6 +527,12 @@ function referenceKey(reference) {
   return canonicalize(reference);
 }
 
+function hasPackageReplayForTrace(state, trace) {
+  return Boolean(trace) && state.package.replays.some(
+    ({ traceIdentifier }) => traceIdentifier === trace.identifier,
+  );
+}
+
 function createCoreReplayState(replay, sourceKind) {
   if (sourceKind === "native") return createReplayState(replay);
   return deepFreeze({ replayIdentifier: replay.identifier, status: "ready", cursor: -1 });
@@ -646,7 +652,7 @@ function selectPackageTrace(state, payload) {
   } else if (nonEmptyText(payload.targetIdentifier)) {
     trace = traces.find(({ target }) => target.identifier === payload.targetIdentifier) ?? null;
   } else {
-    trace = traces.at(-1) ?? null;
+    trace = traces.findLast((candidate) => hasPackageReplayForTrace(state, candidate)) ?? null;
   }
   if (!trace) {
     fail("CAPABILITY_UNAVAILABLE", "trace", "The imported package contains no matching source-authored Cognitive Trace.");
@@ -751,9 +757,12 @@ function enterComparative(state, payload) {
     validateComparativeReconstruction(reconstruction);
   } else {
     const values = state.package.comparativeReconstructions;
+    const bound = values.filter(
+      ({ evolutionIdentifier }) => evolutionIdentifier === state.evolution.identifier,
+    );
     const source = nonEmptyText(payload.comparativeIdentifier)
-      ? values.find(({ identifier }) => identifier === payload.comparativeIdentifier)
-      : values.find(({ evolutionIdentifier }) => evolutionIdentifier === state.evolution.identifier);
+      ? bound.find(({ identifier }) => identifier === payload.comparativeIdentifier)
+      : bound[0];
     if (!source) {
       fail("CAPABILITY_UNAVAILABLE", "compare", "The imported package contains no source-authored Comparative Reconstruction for this Evolution.");
     }
@@ -1065,15 +1074,23 @@ export function investigationAvailability(value) {
     ? state.observationFrames.length
     : state.packageObservations.length;
   const archived = state.lifecycle === LifecycleState.Archived;
+  const authoredEvolutionAvailable = state.sourceKind === "native"
+    || state.package?.evolutions.length > 0;
+  const authoredComparativeAvailable = state.sourceKind === "native"
+    || state.package?.comparativeReconstructions.some(
+      ({ evolutionIdentifier }) => evolutionIdentifier === state.evolution?.identifier,
+    ) === true;
   return deepFreeze({
     trace: !archived && (state.sourceKind === "native"
       ? Boolean(state.currentFrame)
-      : state.package?.traces.length > 0),
+      : state.package?.traces.some((trace) => hasPackageReplayForTrace(state, trace)) === true),
     replay: !archived && Boolean(state.activeReplay),
     compare: !archived && (Boolean(state.evolution)
-      || (state.replayState?.status === "completed" && observationCount >= 2)),
+      || (state.replayState?.status === "completed"
+        && observationCount >= 2
+        && authoredEvolutionAvailable)),
     comparative: !archived && Boolean(state.evolution)
-      && (state.sourceKind === "native" || state.package.comparativeReconstructions.length > 0),
+      && authoredComparativeAvailable,
     verify: !archived,
     checkpoint: true,
     export: state.sourceKind === "mip" && Boolean(state.package),

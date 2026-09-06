@@ -122,6 +122,90 @@ test("MO-1202 generic contract is immutable, provider-independent, and explicitl
   }), /attest source authorship/);
 });
 
+test("CCA-MOS-ADAPT-009: empty streams, adapter hooks, and MIP failures preserve the closed diagnostic contract", async () => {
+  const closedCodes = [
+    "EMPTY_RUNTIME_STREAM",
+    "INVALID_RUNTIME_EVENT",
+    "EVENT_ORDER_VIOLATION",
+    "INCOMPLETE_RUNTIME_STREAM",
+    "RUNTIME_STREAM_FAILURE",
+    "RUNTIME_EVENT_RESOURCE_LIMIT",
+  ];
+  for (const code of closedCodes) {
+    assert.equal(new AIRuntimeAdapterError(code).code, code);
+  }
+  assert.throws(
+    () => new AIRuntimeAdapterError("PRIVATE_PROVIDER_FAILURE"),
+    /closed adapter diagnostic set/u,
+  );
+
+  await adapterFailure(
+    customAdapter().createInvestigation([], request()),
+    "EMPTY_RUNTIME_STREAM",
+  );
+
+  const forged = new AIRuntimeAdapterError("INVALID_RUNTIME_EVENT");
+  forged.code = "PRIVATE_PROVIDER_FAILURE";
+  await adapterFailure(
+    customAdapter({ initialize() { throw forged; } }).createInvestigation([{}], request()),
+    "INVALID_RUNTIME_EVENT",
+  );
+  await adapterFailure(
+    customAdapter({ observeEvent() { throw forged; } }).createInvestigation([{}], request()),
+    "INVALID_RUNTIME_EVENT",
+    0,
+  );
+  await adapterFailure(
+    customAdapter({ finalize() { throw forged; } }).createInvestigation([{}], request()),
+    "INCOMPLETE_RUNTIME_STREAM",
+  );
+
+  const hostileDiagnostic = (member) => {
+    const error = Object.create(AIRuntimeAdapterError.prototype);
+    Object.defineProperties(error, {
+      code: { configurable: true, value: "INVALID_RUNTIME_EVENT" },
+      eventIndex: { configurable: true, value: null },
+      message: { configurable: true, value: "hostile diagnostic" },
+    });
+    Object.defineProperty(error, member, {
+      get() { throw new Error(`${member} accessor escaped`); },
+    });
+    return error;
+  };
+  await adapterFailure(
+    customAdapter({ initialize() { throw hostileDiagnostic("code"); } })
+      .createInvestigation([{}], request()),
+    "INVALID_RUNTIME_EVENT",
+  );
+  await adapterFailure(
+    customAdapter({ observeEvent() { throw hostileDiagnostic("eventIndex"); } })
+      .createInvestigation([{}], request()),
+    "INVALID_RUNTIME_EVENT",
+    0,
+  );
+  await adapterFailure(
+    customAdapter({ finalize() { throw hostileDiagnostic("message"); } })
+      .createInvestigation([{}], request()),
+    "INCOMPLETE_RUNTIME_STREAM",
+  );
+
+  const mipFailure = customAdapter({ finalize: () => ({
+    accepted: true,
+    records: [{
+      identifier: "prohibited",
+      kind: "memoryos.adapter.test.output",
+      revision: { screenshot: "data:image/png;base64,AAAA" },
+      sourceOrder: 0,
+    }],
+    relationships: [],
+  }) });
+  await assert.rejects(mipFailure.createInvestigation([{}], request()), (error) => {
+    assert.ok(error instanceof MemoryInvestigationPackageError);
+    assert.equal(error.diagnostics[0].code, "PROHIBITED_CONTENT");
+    return true;
+  });
+});
+
 test("MO-1202 published reference streams reproduce canonical verified MIP packages", async () => {
   for (const [name, expected] of Object.entries(references)) {
     const bytes = await expected.adapter.exportInvestigation(await referenceSource(name), request(name));

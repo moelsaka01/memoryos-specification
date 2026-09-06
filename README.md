@@ -152,6 +152,14 @@ reports through every SDK language and the CLI. MO-1207 adds the Cognitive
 Investigation Explorer, which follows canonical pointers already present in
 those reports without replay or inference.
 
+MO-1208 publishes **CCA-MEMORYOS-1.0**, the implementation-independent
+MemoryOS Standard, and activates the official
+[MemoryOS Conformance Suite](repositories/cca-conformance/README.md).
+MemoryOS 1.2.0 is the initial Reference Implementation of that Standard; the
+implementation is conformance evidence, not a normative definition of
+MemoryOS behavior. The authoritative publication is maintained separately at
+`cca-specifications/specifications/CCA-MEMORYOS-1.0/`.
+
 ## Getting Started
 
 ### 1. Run Mission Control
@@ -197,6 +205,7 @@ cmake --preset ci
 cmake --build --preset ci
 ctest --preset ci
 npm --prefix repositories/cca-studio test
+npm --prefix repositories/cca-conformance test
 ```
 
 See [developer setup](docs/developer-setup.md) and
@@ -237,6 +246,7 @@ reports only Core-observed differences; the CLI never infers cognition.
 | [`repositories/cca-studio`](repositories/cca-studio) | The frozen Memory Studio contract, Mission Control UI, single Investigation Core—including Cognitive Regression and the MO-1207 Explorer—canonical MIP implementation, dependency-free AI runtime adapters, tests, media, and documentation. |
 | [`repositories/cca-sdk`](repositories/cca-sdk) | The JavaScript, Python, and native C++ SDK facades, private Core binding, regression and evidence-navigation APIs, examples, tests, and conformance evidence. |
 | [`repositories/memoryos-cli`](repositories/memoryos-cli) | The standalone, scriptable SDK client, including deterministic regression analysis, evidence navigation, and JSON automation. |
+| [`repositories/cca-conformance`](repositories/cca-conformance) | The official deterministic CCA-MEMORYOS-1.0 conformance suite, pinned requirement manifest, schemas, reports, and Reference Implementation guidance. |
 | [`docs`](docs) | Workspace engineering, compiler, build, and contributor documentation. |
 | [`specification`](specification) | Canonical specification format and schema used by the CCA Standards Compiler. |
 
@@ -250,7 +260,7 @@ implementation.
 | :--- | :--- |
 | **MemoryOS 1.0** | Established the deterministic memory lifecycle: Working Memory, Consolidation, Long-Term Memory, semantic, episodic, and procedural derivation, Retrieval, Reflection, Providers, and the frozen Studio contract. |
 | **MemoryOS 1.1 · v1.1.0** | Added observable cognition without changing the MemoryOS 1.0 runtime or public memory contracts. MO-1101 through MO-1108 delivered the Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and the unified production workflow. |
-| **MemoryOS 1.2 · in development** | Adds the canonical Memory Investigation Package (MO-1201), dependency-free adapters (MO-1202), one renderer-independent Investigation Core (MO-1203), public SDK facades (MO-1204), the SDK-only automation CLI (MO-1205), deterministic Cognitive Regression Analysis (MO-1206), and direct regression-evidence navigation (MO-1207). |
+| **MemoryOS 1.2 · in development** | Adds the canonical Memory Investigation Package (MO-1201), dependency-free adapters (MO-1202), one renderer-independent Investigation Core (MO-1203), public SDK facades (MO-1204), the SDK-only automation CLI (MO-1205), deterministic Cognitive Regression Analysis (MO-1206), direct regression-evidence navigation (MO-1207), and the implementation-independent MemoryOS Standard with its official conformance suite (MO-1208). |
 
 See [CHANGELOG.md](CHANGELOG.md) for milestone-level engineering records and
 [RELEASE_NOTES.md](RELEASE_NOTES.md) for compatibility and verification details.
@@ -287,6 +297,11 @@ MO-1207 adds the
 so engineers can move from that report to exact canonical evidence pointers
 through Studio, SDK, or `memoryos investigate` without rerunning Replay or
 duplicating investigation behavior.
+MO-1208 publishes CCA-MEMORYOS-1.0 and assesses MemoryOS 1.2.0 as its initial
+Reference Implementation through the
+[official conformance suite](repositories/cca-conformance/README.md). Standard,
+product, package, Core, SDK, CLI, and suite versions remain independently
+identified.
 Investigation onboarding and Reflection discoverability remain planned product
 refinements. None of this redesigns the MemoryOS 1.0 Runtime or the released
 MemoryOS 1.1 investigation architecture.

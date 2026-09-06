@@ -8,6 +8,9 @@ reference workspace. The
 is the authoritative data-shape contract consumed by the IS-002 compiler.
 CCA-RF-1.0 is the authoritative architecture and behavior contract for the
 IM-003 Runtime Foundation.
+CCA-MEMORYOS-1.0 is the authoritative, implementation-independent MemoryOS
+platform contract. MemoryOS 1.2.0 is its initial Reference Implementation; the
+Reference Implementation and its tests do not define normative behavior.
 
 Source, tests, examples, generated reports, and supporting documentation must
 conform to the applicable record. When a requirement is not decided,
@@ -221,9 +224,19 @@ MemoryOS Runtime -> Investigation Core -> MemoryOS SDK
 
 Neither consumer may call the Core directly.
 
+### `cca-conformance`
+
+`cca-conformance` owns the official deterministic assessment harness for
+CCA-MEMORYOS-1.0. It pins the applicable requirement inventory, invokes the
+existing component evidence, validates compatibility and traceability, and
+emits one `PASS`, `FAIL`, or `NOT APPLICABLE` result per normative requirement.
+It contains no Runtime, MIP, Investigation Core, SDK, CLI, Regression,
+Explorer, or presentation behavior. The published Standard remains
+authoritative over both the suite and the Reference Implementation.
+
 ### Reserved repositories
 
-`memoryos`, `cca-conformance`, and `cca-atlas` remain reserved as future
+`memoryos` and `cca-atlas` remain reserved as future
 repository boundaries. The released MemoryOS implementation currently resides
 in `cca-core`, `cca-studio`, and the authorized `cca-sdk` facade. The additive
 `memoryos-cli` repository is a downstream SDK consumer; the reserved
@@ -356,7 +369,9 @@ Those historical milestone exclusions do not authorize or constrain later
 frozen capability packages. Current later packages add the documented
 foundations, CP-011 Studio, MO-1201 MIP, MO-1202 settled-source adapter
 interfaces, the MO-1203 Investigation Core, the MO-1204 SDK facade, the
-MO-1205 CLI, and MO-1206 deterministic Cognitive Regression Analysis.
+MO-1205 CLI, MO-1206 deterministic Cognitive Regression Analysis, MO-1207
+deterministic evidence navigation, and the MO-1208 implementation-independent
+MemoryOS Standard and conformance assessment.
 AI execution, LLM behavior, provider SDK packages/live clients, databases,
 plugins, networking, package management, and generated production code remain
 excluded.
@@ -368,7 +383,8 @@ approved architecture.
 ## 14. Remaining decisions
 
 Licensing, public contribution governance, long-term repository topology,
-release coordination, dependency supply-chain policy, frozen API/ABI policy,
+release coordination outside the MemoryOS Standard baseline, dependency
+supply-chain policy, frozen C++ API/ABI policy,
 custom-rule execution, transactional output, and future subsystem
 architectures beyond the currently frozen capability packages remain
 unresolved or deferred. The

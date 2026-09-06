@@ -23,6 +23,14 @@ const MAX_SNAPSHOT_DEPTH = 128;
 const MAX_SNAPSHOT_VALUES = 1_000_000;
 const ADAPTERS = new WeakSet();
 const ADAPTER_HOOKS = new WeakMap();
+const ADAPTER_FAILURE_CODES = new Set([
+  "EMPTY_RUNTIME_STREAM",
+  "INVALID_RUNTIME_EVENT",
+  "EVENT_ORDER_VIOLATION",
+  "INCOMPLETE_RUNTIME_STREAM",
+  "RUNTIME_STREAM_FAILURE",
+  "RUNTIME_EVENT_RESOURCE_LIMIT",
+]);
 
 function plainObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -46,11 +54,49 @@ function adapterError(code, eventIndex, message) {
   return new AIRuntimeAdapterError(code, eventIndex, message);
 }
 
+function adapterErrorSnapshot(error) {
+  try {
+    if (!(error instanceof AIRuntimeAdapterError)) return null;
+    const code = error.code;
+    const eventIndex = error.eventIndex;
+    const message = error.message;
+    if (!ADAPTER_FAILURE_CODES.has(code)
+      || (eventIndex !== null && (!Number.isSafeInteger(eventIndex) || eventIndex < 0))
+      || typeof message !== "string") {
+      return null;
+    }
+    return { code, eventIndex, message };
+  } catch {
+    return null;
+  }
+}
+
+function normalizedAdapterError(
+  error,
+  fallbackCode,
+  fallbackEventIndex,
+  fallbackMessage,
+  currentEventIndex = false,
+) {
+  const snapshot = adapterErrorSnapshot(error);
+  if (snapshot === null) {
+    return adapterError(fallbackCode, fallbackEventIndex, fallbackMessage);
+  }
+  return adapterError(
+    snapshot.code,
+    currentEventIndex && snapshot.eventIndex === null ? fallbackEventIndex : snapshot.eventIndex,
+    snapshot.message,
+  );
+}
+
 export class AIRuntimeAdapterError extends Error {
   constructor(code, eventIndex = null, message = "The AI runtime event stream is invalid.") {
     super(message);
     this.name = "AIRuntimeAdapterError";
-    this.code = requireNonEmptyString(code, "Adapter error code");
+    if (!ADAPTER_FAILURE_CODES.has(code)) {
+      throw new TypeError("Adapter error code is not part of the closed adapter diagnostic set.");
+    }
+    this.code = code;
     this.eventIndex = eventIndex;
   }
 }
@@ -148,8 +194,12 @@ function snapshotRuntimeEventWithBudget(value, budget, maxBytes) {
       snapshot: deepFreeze(cloneCanonical(detached)),
     };
   } catch (error) {
-    if (error instanceof AIRuntimeAdapterError) throw error;
-    throw adapterError("INVALID_RUNTIME_EVENT", null, "A runtime event cannot be represented as canonical JSON.");
+    throw normalizedAdapterError(
+      error,
+      "INVALID_RUNTIME_EVENT",
+      null,
+      "A runtime event cannot be represented as canonical JSON.",
+    );
   }
 }
 
@@ -348,8 +398,12 @@ async function adapt(adapter, events, request) {
   try {
     state = hooks.initialize ? await hooks.initialize(normalizedRequest, events) : Object.create(null);
   } catch (error) {
-    if (error instanceof AIRuntimeAdapterError) throw error;
-    throw adapterError("INVALID_RUNTIME_EVENT", null, "The adapter could not initialize an investigation.");
+    throw normalizedAdapterError(
+      error,
+      "INVALID_RUNTIME_EVENT",
+      null,
+      "The adapter could not initialize an investigation.",
+    );
   }
   let eventIndex = 0;
   let iterator = null;
@@ -381,20 +435,24 @@ async function adapt(adapter, events, request) {
           state,
         }));
       } catch (error) {
-        if (error instanceof AIRuntimeAdapterError) {
-          if (error.eventIndex === null) {
-            throw adapterError(error.code, eventIndex, error.message);
-          }
-          throw error;
-        }
-        throw adapterError("INVALID_RUNTIME_EVENT", eventIndex, "The runtime event does not satisfy the adapter contract.");
+        throw normalizedAdapterError(
+          error,
+          "INVALID_RUNTIME_EVENT",
+          eventIndex,
+          "The runtime event does not satisfy the adapter contract.",
+          true,
+        );
       }
       eventIndex += 1;
     }
     completed = true;
   } catch (error) {
-    if (error instanceof AIRuntimeAdapterError) throw error;
-    throw adapterError("RUNTIME_STREAM_FAILURE", eventIndex, "The runtime event stream failed before a complete investigation was captured.");
+    throw normalizedAdapterError(
+      error,
+      "RUNTIME_STREAM_FAILURE",
+      eventIndex,
+      "The runtime event stream failed before a complete investigation was captured.",
+    );
   } finally {
     if (!completed && iterator !== null) {
       try {
@@ -418,8 +476,12 @@ async function adapt(adapter, events, request) {
       state,
     }));
   } catch (error) {
-    if (error instanceof AIRuntimeAdapterError) throw error;
-    throw adapterError("INCOMPLETE_RUNTIME_STREAM", null, "The runtime event stream ended before its documented lifecycle completed.");
+    throw normalizedAdapterError(
+      error,
+      "INCOMPLETE_RUNTIME_STREAM",
+      null,
+      "The runtime event stream ended before its documented lifecycle completed.",
+    );
   }
   const captured = snapshotRuntimeEventWithBudget(
     projection,

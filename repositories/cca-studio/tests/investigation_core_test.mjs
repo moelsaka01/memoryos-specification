@@ -149,6 +149,20 @@ test("MO-1203 exposes the closed immutable Investigation Core contract", () => {
   assert.equal(Object.isFrozen(created.transitionLog), true);
   assert.equal(Object.isFrozen(projectInvestigation(created)), true);
   assert.equal(Object.isFrozen(investigationAvailability(created)), true);
+  const loadedCreated = core.load(created.identifier);
+  assert.notEqual(loadedCreated, created);
+  assert.deepEqual(projectInvestigation(loadedCreated), projectInvestigation(created));
+  assert.equal(loadedCreated.transitionLog.digest, created.transitionLog.digest);
+  assert.equal(loadedCreated.transitionLog.transitions.length, created.transitionLog.transitions.length);
+  const loadedAgain = core.load(created.identifier);
+  assert.equal(loadedAgain.transitionLog.digest, created.transitionLog.digest);
+  assert.equal(loadedAgain.transitionLog.transitions.length, created.transitionLog.transitions.length);
+  assertCoreFailure(() => core.load(""), "INVALID_INPUT", "load");
+  assertCoreFailure(
+    () => new InvestigationCore().load(created.identifier),
+    "NOT_FOUND",
+    "load",
+  );
 
   const observed = core.observe(created.identifier, { snapshot: referenceSnapshot });
   assert.equal(observed.state.lifecycle, LifecycleState.Observed);
@@ -172,6 +186,10 @@ test("MO-1203 exposes the closed immutable Investigation Core contract", () => {
 
   const archived = core.archive(verified.identifier);
   assert.equal(archived.state.lifecycle, LifecycleState.Archived);
+  const loadedArchived = core.load(archived.identifier);
+  assert.equal(loadedArchived.state.lifecycle, LifecycleState.Archived);
+  assert.deepEqual(projectInvestigation(loadedArchived), projectInvestigation(archived));
+  assert.equal(loadedArchived.transitionLog.digest, archived.transitionLog.digest);
   assert.equal(investigationPhase(archived), "archived");
   assert.deepEqual(investigationAvailability(archived), {
     trace: false,
@@ -432,7 +450,38 @@ test("MO-1203 complete MIP import export verification and capability playback ar
   assert.equal(investigation.state.activeReplay.identifier, "replay-observation-b");
   assert.equal(Object.hasOwn(investigation.state.activeReplay, "kind"), false,
     "MIP Replay truth must not masquerade as a native MemoryOS 1.1 artifact");
+  assert.deepEqual(investigation.state.replayState, {
+    replayIdentifier: "replay-observation-b",
+    status: "ready",
+    cursor: -1,
+  });
+  assert.deepEqual(Object.keys(investigation.state.replaySession.view), [
+    "kind", "version", "identifier", "status", "cursor", "total",
+    "completedNodeKeys", "completedEdgeKeys", "currentNodeKey", "currentEdgeKey",
+    "futureNodeKeys", "futureEdgeKeys", "currentRole", "currentType",
+  ]);
   assert.equal(investigation.state.replaySession.view.kind, "MemoryOSInvestigationPackageReplayView");
+  assert.equal(investigation.state.replaySession.view.version, INVESTIGATION_CORE_VERSION);
+  investigation = core.replay(investigation.identifier, "play");
+  assert.deepEqual(investigation.state.replayState, {
+    replayIdentifier: "replay-observation-b", status: "playing", cursor: 0,
+  });
+  investigation = core.replay(investigation.identifier, "pause");
+  assert.deepEqual(investigation.state.replayState, {
+    replayIdentifier: "replay-observation-b", status: "paused", cursor: 0,
+  });
+  investigation = core.replay(investigation.identifier, "previous");
+  assert.deepEqual(investigation.state.replayState, {
+    replayIdentifier: "replay-observation-b", status: "ready", cursor: -1,
+  });
+  investigation = core.replay(investigation.identifier, "next");
+  assert.deepEqual(investigation.state.replayState, {
+    replayIdentifier: "replay-observation-b", status: "paused", cursor: 0,
+  });
+  investigation = core.replay(investigation.identifier, "restart");
+  assert.deepEqual(investigation.state.replayState, {
+    replayIdentifier: "replay-observation-b", status: "ready", cursor: -1,
+  });
   investigation = completeReplay(core, investigation.identifier);
   investigation = core.compare(investigation.identifier, "enter");
   assert.equal(investigation.state.evolution.identifier, "evolution-observation-a-observation-b");
@@ -440,7 +489,44 @@ test("MO-1203 complete MIP import export verification and capability playback ar
   assert.equal(investigation.state.comparativeReconstruction.identifier, "comparative-observation-a-observation-b");
   assert.equal(Object.hasOwn(investigation.state.comparativeReconstruction, "kind"), false,
     "MIP Comparative truth must remain the exact source artifact");
+  assert.deepEqual(investigation.state.comparativeReplayState, {
+    reconstructionIdentifier: "comparative-observation-a-observation-b",
+    status: "ready",
+    cursor: -1,
+    pauseReason: null,
+  });
+  assert.deepEqual(Object.keys(investigation.state.comparisonSession.view), [
+    "kind", "version", "identifier", "active", "status", "pauseReason",
+    "cursor", "total", "firstDivergenceIndex", "divergenceIndices",
+    "divergenceCount", "currentMoment", "atDivergence", "moments",
+  ]);
   assert.equal(investigation.state.comparisonSession.view.kind, "MemoryOSInvestigationPackageComparativeView");
+  assert.equal(investigation.state.comparisonSession.view.version, INVESTIGATION_CORE_VERSION);
+  investigation = core.compare(investigation.identifier, "nextStep");
+  assert.deepEqual(investigation.state.comparativeReplayState, {
+    reconstructionIdentifier: "comparative-observation-a-observation-b",
+    status: "paused",
+    cursor: 0,
+    pauseReason: "engineer",
+  });
+  investigation = core.compare(investigation.identifier, "nextStep");
+  assert.deepEqual(investigation.state.comparativeReplayState, {
+    reconstructionIdentifier: "comparative-observation-a-observation-b",
+    status: "paused",
+    cursor: 1,
+    pauseReason: "divergence",
+  });
+  assert.equal(investigation.state.comparisonSession.view.atDivergence, true);
+  assert.deepEqual(
+    investigation.state.comparisonSession.view.currentMoment,
+    investigation.state.comparativeReconstruction.moments[1],
+  );
+  investigation = core.compare(investigation.identifier, "reset");
+  assert.equal(investigation.state.comparativeReplayState.status, "ready");
+  investigation = core.compare(investigation.identifier, "play");
+  assert.equal(investigation.state.comparativeReplayState.status, "playing");
+  investigation = core.compare(investigation.identifier, "advance");
+  assert.equal(investigation.state.comparativeReplayState.pauseReason, "divergence");
   investigation = core.verify(investigation.identifier);
   assert.equal(investigation.state.verificationSession.status, "passed");
   assert.ok(investigation.state.verificationSession.checks.some(({ code }) => code === "MIP"));
@@ -448,6 +534,118 @@ test("MO-1203 complete MIP import export verification and capability playback ar
 
   const exportedText = new TextDecoder().decode(core.export(investigation.identifier));
   assert.doesNotMatch(exportedText, /transitionLog|checkpoint|replayState|lifecycle|camera|layout/);
+});
+
+test("MO-1203 MIP availability exposes only authored Evolution and active-bound Comparative truth", async () => {
+  const source = importMemoryInvestigationPackage(await mipFixture("complete"));
+  const packageInput = (packageIdentifier, overrides) => ({
+    packageIdentifier,
+    workspaceIdentifier: source.manifest.workspaceIdentifier,
+    metadata: source.metadata,
+    observations: source.observations,
+    traces: source.traces,
+    replays: source.replays,
+    evolutions: source.evolutions,
+    comparativeReconstructions: source.comparativeReconstructions,
+    extensions: source.extensions,
+    sourceAccepted: true,
+    sourceAuthorshipAttested: true,
+    ...overrides,
+  });
+
+  const traceOnlyBytes = exportMemoryInvestigationPackage(packageInput(
+    "mip-core-trace-without-replay",
+    { replays: [], evolutions: [], comparativeReconstructions: [] },
+  ));
+  const traceOnlyCore = new InvestigationCore();
+  const traceOnly = traceOnlyCore.import(traceOnlyBytes, {
+    identifier: "investigation-core-trace-without-replay",
+  });
+  assert.equal(investigationAvailability(traceOnly).trace, false);
+  assertAtomicFailure(
+    traceOnlyCore,
+    traceOnly.identifier,
+    () => traceOnlyCore.trace(traceOnly.identifier, {}),
+    "CAPABILITY_UNAVAILABLE",
+    "trace",
+  );
+
+  const mixedTraceBytes = exportMemoryInvestigationPackage(packageInput(
+    "mip-core-last-trace-without-replay",
+    {
+      replays: [source.replays[0]],
+      evolutions: [],
+      comparativeReconstructions: [],
+    },
+  ));
+  const mixedTraceCore = new InvestigationCore();
+  let mixedTrace = mixedTraceCore.import(mixedTraceBytes, {
+    identifier: "investigation-core-last-trace-without-replay",
+  });
+  assert.equal(investigationAvailability(mixedTrace).trace, true);
+  mixedTrace = mixedTraceCore.trace(mixedTrace.identifier, {});
+  assert.equal(mixedTrace.state.activeTrace.identifier, source.traces[0].identifier);
+  assert.equal(mixedTrace.state.activeReplay.identifier, source.replays[0].identifier);
+
+  const noEvolutionBytes = exportMemoryInvestigationPackage(packageInput(
+    "mip-core-no-authored-evolution",
+    { evolutions: [], comparativeReconstructions: [] },
+  ));
+  const noEvolutionCore = new InvestigationCore();
+  let noEvolution = noEvolutionCore.import(noEvolutionBytes, {
+    identifier: "investigation-core-no-authored-evolution",
+  });
+  noEvolution = noEvolutionCore.trace(noEvolution.identifier, "trace-observation-b");
+  noEvolution = completeReplay(noEvolutionCore, noEvolution.identifier);
+  assert.equal(investigationAvailability(noEvolution).compare, false);
+  assertAtomicFailure(
+    noEvolutionCore,
+    noEvolution.identifier,
+    () => noEvolutionCore.compare(noEvolution.identifier, "enter"),
+    "CAPABILITY_UNAVAILABLE",
+    "compare",
+  );
+
+  const firstEvolution = cloneDetached(source.evolutions[0]);
+  const secondEvolution = cloneDetached(firstEvolution);
+  secondEvolution.identifier = "evolution-second-authored";
+  const secondComparative = cloneDetached(source.comparativeReconstructions[0]);
+  secondComparative.identifier = "comparative-second-authored";
+  secondComparative.evolutionIdentifier = secondEvolution.identifier;
+  const mismatchedBytes = exportMemoryInvestigationPackage(packageInput(
+    "mip-core-active-bound-comparative",
+    {
+      evolutions: [firstEvolution, secondEvolution],
+      comparativeReconstructions: [secondComparative],
+    },
+  ));
+  const mismatchedCore = new InvestigationCore();
+  let mismatched = mismatchedCore.import(mismatchedBytes, {
+    identifier: "investigation-core-active-bound-comparative",
+  });
+  mismatched = mismatchedCore.trace(mismatched.identifier, "trace-observation-b");
+  mismatched = completeReplay(mismatchedCore, mismatched.identifier);
+  mismatched = mismatchedCore.compare(mismatched.identifier, {
+    action: "enter",
+    evolutionIdentifier: firstEvolution.identifier,
+  });
+  assert.equal(investigationAvailability(mismatched).comparative, false);
+  assertAtomicFailure(
+    mismatchedCore,
+    mismatched.identifier,
+    () => mismatchedCore.compare(mismatched.identifier, {
+      action: "start",
+      comparativeIdentifier: secondComparative.identifier,
+    }),
+    "CAPABILITY_UNAVAILABLE",
+    "compare",
+  );
+  mismatched = mismatchedCore.compare(mismatched.identifier, "next");
+  assert.equal(mismatched.state.evolution.identifier, secondEvolution.identifier);
+  assert.equal(investigationAvailability(mismatched).comparative, true);
+  mismatched = mismatchedCore.compare(mismatched.identifier, "previous");
+  assert.equal(mismatched.state.evolution.identifier, firstEvolution.identifier);
+  assert.equal(investigationAvailability(mismatched).comparative, false);
 });
 
 test("MO-1203 MIP failures are atomic and observation-only packages never fabricate capabilities", async () => {

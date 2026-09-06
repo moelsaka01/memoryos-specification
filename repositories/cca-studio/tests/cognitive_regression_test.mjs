@@ -437,7 +437,11 @@ test("MO-1206 Regression is read-only atomic and enforces Core boundaries", asyn
   );
 });
 
-test("MO-1206 Regression remains deterministic under repeated bounded analysis", async () => {
+test("MO-1206 Regression remains deterministic under repeated bounded analysis", {
+  skip: process.env.MEMORYOS_DETERMINISTIC_CONFORMANCE === "1"
+    ? "timing-only check is outside deterministic conformance evidence"
+    : false,
+}, async () => {
   const bytes = await mipFixture();
   const core = new InvestigationCore();
   core.import(bytes, { identifier: "performance-baseline" });

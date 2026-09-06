@@ -192,6 +192,10 @@ test("investigate rejects invalid grammar, reports, categories, and selector com
 });
 
 test("investigate remains bounded for a complete deterministic Regression Report", async (t) => {
+  if (process.env.MEMORYOS_DETERMINISTIC_CONFORMANCE === "1") {
+    t.skip("timing-only check is outside deterministic conformance evidence");
+    return;
+  }
   const fixture = await makeFixtures(t);
   const started = performance.now();
   const result = runCli(["investigate", fixture.regressionReportPath, "--json"]);

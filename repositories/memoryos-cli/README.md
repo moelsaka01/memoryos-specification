@@ -14,6 +14,10 @@ MemoryOS CLI
 
 The CLI is deliberately thin: it validates command input, invokes the public SDK, and renders deterministic human-readable or JSON output. All investigation state transitions, trace construction, replay, comparison, cognitive regression, Regression Report navigation, package verification, and checkpoint validity remain SDK-owned.
 
+CCA-MEMORYOS-1.0 standardizes this existing automation boundary. CLI 1.0.0 is
+the baseline assessed as part of the MemoryOS 1.2.0 Reference Implementation;
+the CLI source and this guide remain informative implementation material.
+
 ## Install
 
 MemoryOS CLI requires Node.js 20 or later and has no third-party runtime dependencies.
@@ -79,6 +83,7 @@ Checkpoint and restore are session actions, not portable top-level commands. A c
 - [MO-1206 Regression Conformance Report](docs/regression-conformance-report.md)
 - [Regression Investigation Guide](docs/investigation-guide.md)
 - [MO-1207 Investigation Conformance Report](docs/investigation-conformance-report.md)
+- [Official MemoryOS Standard conformance suite](../cca-conformance/README.md)
 
 ## Validate
 

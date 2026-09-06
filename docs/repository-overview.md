@@ -29,7 +29,7 @@ belong to the repository that owns the behavior.
 | `cca-studio` | CP-011 released; MemoryOS 1.1 released; MemoryOS 1.2 in development | Frozen CCA-STUDIO-1.0 Contract, deterministic investigation presentation, single Investigation Core including MO-1206 regression and MO-1207 evidence navigation, canonical MIP implementation, and dependency-free AI runtime adapter interfaces |
 | `cca-sdk` | MO-1204, MO-1206, and MO-1207 implemented | Public JavaScript, Python, and native C++ facades over the frozen Investigation Core; one private versioned native binding |
 | `memoryos-cli` | MO-1205 through MO-1207 implemented | Official `memoryos` executable, deterministic terminal/JSON output, session-scoped automation, SDK-backed regression reporting, and evidence navigation |
-| `cca-conformance` | Reserved only | Future conformance suite boundary; the retained compatibility seam does not define this repository |
+| `cca-conformance` | MO-1208 implemented | Official deterministic CCA-MEMORYOS-1.0 conformance suite, pinned requirement manifest, report schemas, compatibility checks, and Reference Implementation evidence |
 | `cca-atlas` | Reserved only | Future atlas boundary; responsibilities beyond the name are undecided |
 
 See [../repositories/README.md](../repositories/README.md) for the concise
@@ -117,6 +117,16 @@ The live session retains real SDK handles so checkpoint restoration cannot be
 forged or made portable. No checkpoint token or object is serialized. See the
 [CLI documentation](../repositories/memoryos-cli/README.md).
 
+## `cca-conformance`
+
+`cca-conformance` is the MO-1208 assessment boundary. It consumes the
+published CCA-MEMORYOS-1.0 requirement inventory and invokes existing Runtime,
+MIP, Core, SDK, CLI, Regression, and Explorer evidence without reimplementing
+their behavior. Its reports classify each normative requirement as `PASS`,
+`FAIL`, or `NOT APPLICABLE`; a passing suite is evidence, not authority to
+rewrite the Standard. MemoryOS 1.2.0 is the initial Reference Implementation.
+See the [conformance suite](../repositories/cca-conformance/README.md).
+
 ## Reserved directories
 
 A directory that remains reserved may contain a short scope notice, but must
@@ -146,7 +156,9 @@ the reserved-directory check.
 - Studio and native consumers use the MemoryOS SDK facade. The SDK may forward
   Core or MIP operations but must not implement investigation semantics.
 - A new cross-repository dependency is an architecture change.
-- Versioning and release coordination across repositories are unresolved.
+- CCA-MEMORYOS-1.0 defines the assessed MemoryOS component-version matrix and
+  compatibility claims. Broader CCA repository coordination and C++ API/ABI
+  compatibility remain unresolved.
 - Each implemented public interface requires documentation, public-behavior
   tests, and an example location.
 

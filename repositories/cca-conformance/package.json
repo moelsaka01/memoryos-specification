@@ -1,0 +1,28 @@
+{
+  "name": "@cca/memoryos-conformance",
+  "version": "1.0.0",
+  "description": "Official deterministic conformance suite for the MemoryOS Standard",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node tools/run-js-conformance.mjs",
+    "test:boundary": "node --test tests/boundary_contract_conformance_test.mjs",
+    "test:compatibility": "node --test tests/compatibility_conformance_test.mjs",
+    "test:components": "node --test tests/component_evidence_conformance_test.mjs",
+    "test:coverage-gaps": "node --test tests/coverage_gap_conformance_test.mjs",
+    "test:independent": "node --test tests/independent_assessment_conformance_test.mjs",
+    "test:normative": "node --test tests/normative_vectors_conformance_test.mjs",
+    "test:reference": "node --test tests/reference_implementation_conformance_test.mjs",
+    "test:report": "node --test tests/report_conformance_test.mjs",
+    "test:selectors": "node --test tests/requirement_selector_catalog_test.mjs",
+    "test:schema": "node --test tests/schema_validation_conformance_test.mjs",
+    "test:specification": "node --test tests/specification_conformance_test.mjs",
+    "manifest:build": "node tools/build-pinned-manifest.mjs",
+    "report:validate": "node tools/conformance-report.mjs validate",
+    "report:portable": "node tools/portable-report.mjs",
+    "assessment": "node tools/independent-assessment.mjs"
+  }
+}

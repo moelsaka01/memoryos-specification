@@ -229,7 +229,11 @@ test("MO-1207 Explorer rejects malformed reports queries and results without par
   );
 });
 
-test("MO-1207 Explorer is read-only and deterministic under bounded navigation", () => {
+test("MO-1207 Explorer is read-only and deterministic under bounded navigation", {
+  skip: process.env.MEMORYOS_DETERMINISTIC_CONFORMANCE === "1"
+    ? "timing-only check is outside deterministic conformance evidence"
+    : false,
+}, () => {
   const { baseline, candidate, core } = pair(snapshot((value) => {
     value.longTermMemory.entries[0].value = "Performance evidence changed.";
   }), "performance");

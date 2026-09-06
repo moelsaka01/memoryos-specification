@@ -9,7 +9,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 |---|---|---|
 | MemoryOS 1.0 | Released | Deterministic memory lifecycle, source-preserving knowledge, retrieval, reflection, provider-neutral handoff, and the frozen Memory Studio contract |
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
-| MemoryOS 1.2 | In development | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, and planned investigation onboarding refinements |
+| MemoryOS 1.2 | In development | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, its official conformance suite, and planned investigation onboarding refinements |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -69,6 +69,15 @@ It navigates exact evidence locations already carried by a validated regression
 report and returns immutable, canonically ordered pointers through the same
 Core, SDK, CLI, and Studio boundaries. It does not rerun Replay, recompute a
 regression, load source cognition, rank evidence, or interpret a difference.
+
+MO-1208 publishes CCA-MEMORYOS-1.0 as the implementation-independent MemoryOS
+Standard and activates the
+[official conformance suite](repositories/cca-conformance/README.md). The
+Standard incorporates the exact CCA-RF-1.0 and CCA-MIP-1.0 baselines and
+defines lifecycle, adapter, Core, SDK, CLI, Regression, Explorer,
+compatibility, versioning, and certification obligations without changing
+platform behavior. MemoryOS 1.2.0 is the initial Reference Implementation, not
+the normative source of those obligations.
 
 ## IM-001: engineering foundation
 
@@ -179,7 +188,6 @@ persistence, Runtime ownership, or Provider implementation.
 These are proposals, not authorization:
 
 - package and registry contracts after an offline reproducibility design;
-- a governed conformance evidence format and independent runner;
 - specific code-generation targets after their production contracts exist;
 - provider SDK packages and live-client bindings after compatibility policy is
   approved; MO-1202 remains a dependency-free settled-source interface;
@@ -202,7 +210,7 @@ Runtime Foundation milestone.
 | Extension data becomes a plugin escape hatch | Unreviewed executable behavior enters scope | Extensions are preserved data and never executed |
 | Generated outputs vary by host | Diffs and automation become unreliable | Ordered serialization with no time, locale, randomness, or host state |
 | Partial writes look successful | Consumers use incomplete bundles | Generation error diagnostics and explicit generated-file result |
-| Reserved repositories attract premature work | Scope expands into MemoryOS, domain, GUI, SDK, or conformance systems | No implementation or dependency edges in reserved repositories |
+| Reserved repositories attract premature work | Scope expands into MemoryOS, domain, GUI, SDK, or atlas systems | No implementation or dependency edges in repositories that remain reserved |
 | Dependency supply chain is underspecified | Reproducibility or license exposure | Pinned foundation; governance remains an IS-003 decision |
 | Licensing is unresolved | External rights are unclear | Pending-decision notice and no license grant |
 

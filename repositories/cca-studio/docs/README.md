@@ -9,6 +9,7 @@ or start with the engineering question you need to answer.
 
 | Need | Document |
 |---|---|
+| Assess MemoryOS against the published platform Standard | [Official conformance suite](../../cca-conformance/README.md) |
 | Import, export, or verify a Memory Investigation Package | [Memory Investigation Packages](memory-investigation-packages.md) |
 | Translate settled external AI runtime cognition into a verified MIP | [AI Runtime Adapters](ai-runtime-adapters.md) |
 | Execute or embed a deterministic investigation | [Investigation Core](investigation-core.md) |
@@ -72,6 +73,11 @@ validates detached Regression Reports and follows exact ordered difference
 subjects and digest pointers without rerunning Replay, recomputing Regression,
 or creating cognitive state. SDK, CLI, and Studio consume the same immutable
 Core result.
+
+MO-1208 publishes CCA-MEMORYOS-1.0 outside the implementation workspace and
+activates the [official conformance suite](../../cca-conformance/README.md).
+MemoryOS 1.2.0 is the initial Reference Implementation; Studio documentation
+and source remain informative evidence rather than normative platform text.
 
 The focused edge suites are:
 

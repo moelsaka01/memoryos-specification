@@ -1,0 +1,371 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cca://schemas/memoryos/conformance-report/1.0",
+  "title": "MemoryOS Conformance Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "standard", "conformance", "scope", "implementation",
+    "incorporatedPublications", "evidenceRoot", "evidenceDigest", "assessor", "assessmentDate",
+    "assessmentLevel", "evidence", "results", "knownFailures", "summary"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "standard": {
+      "type": "object", "additionalProperties": false,
+      "required": ["identifier", "version", "publicationDate", "publicationDigest"],
+      "properties": {
+        "identifier": { "const": "CCA-MEMORYOS-1.0" },
+        "version": { "const": "1.0" },
+        "publicationDate": { "const": "2026-09-05" },
+        "publicationDigest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "conformance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["specificationVersion", "suiteIdentifier", "suiteVersion", "manifestDigest"],
+      "properties": {
+        "specificationVersion": { "const": "1.0.0" },
+        "suiteIdentifier": { "const": "memoryos-conformance" },
+        "suiteVersion": { "const": "1.0.0" },
+        "manifestDigest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "profiles"],
+      "properties": {
+        "kind": { "enum": ["complete", "profile"] },
+        "profiles": {
+          "type": "array", "minItems": 1, "uniqueItems": true,
+          "items": {
+            "enum": [
+              "AI Runtime Adapter",
+              "CLI",
+              "Cognitive Investigation Explorer",
+              "Cognitive Regression",
+              "Investigation Core",
+              "MIP Integration",
+              "Native Investigation Artifacts",
+              "Runtime Observation Boundary",
+              "SDK"
+            ]
+          }
+        }
+      }
+    },
+    "implementation": { "$ref": "#/$defs/implementation" },
+    "nativeProjectionProfile": {
+      "type": "object", "additionalProperties": false,
+      "required": ["identifier", "version"],
+      "properties": {
+        "identifier": { "type": "string", "minLength": 1 },
+        "version": { "$ref": "#/$defs/version" }
+      }
+    },
+    "independentAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "incorporatedPublications": {
+      "type": "array", "minItems": 2, "maxItems": 2, "uniqueItems": true,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["identifier", "version", "publicationDigest"],
+        "properties": {
+          "identifier": { "enum": ["CCA-MIP-1.0", "CCA-RF-1.0"] },
+          "version": { "$ref": "#/$defs/standardVersion" },
+          "publicationDigest": { "$ref": "#/$defs/sha256" }
+        }
+      },
+      "allOf": [
+        {
+          "prefixItems": [
+            {
+              "properties": {
+                "identifier": { "const": "CCA-MIP-1.0" },
+                "version": { "const": "1.0" }
+              },
+              "required": ["identifier", "version"]
+            },
+            {
+              "properties": {
+                "identifier": { "const": "CCA-RF-1.0" },
+                "version": { "const": "1.0" }
+              },
+              "required": ["identifier", "version"]
+            }
+          ]
+        }
+      ]
+    },
+    "evidenceRoot": { "type": "string", "minLength": 1 },
+    "evidenceDigest": { "$ref": "#/$defs/sha256" },
+    "assessor": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "independent"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "independent": { "type": "boolean" }
+      }
+    },
+    "assessmentDate": { "$ref": "#/$defs/date" },
+    "assessmentLevel": { "enum": ["C1", "C2", "C3"] },
+    "evidence": {
+      "type": "array", "minItems": 13, "maxItems": 13,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": [
+          "group", "status", "implementation", "requirementIds", "method", "inputs",
+          "inputInventory", "expectedOutcome", "observedOutcome", "durableEvidence",
+          "executionReferences"
+        ],
+        "properties": {
+          "group": { "type": "string", "pattern": "^MOS-EVID-[A-Z]+-[0-9]{3}$" },
+          "status": { "$ref": "#/$defs/status" },
+          "implementation": { "$ref": "#/$defs/implementation" },
+          "requirementIds": {
+            "type": "array", "minItems": 1, "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "method": { "type": "string", "minLength": 1 },
+          "inputs": {
+            "type": "array", "minItems": 1, "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "inputInventory": {
+            "type": "array", "minItems": 1, "uniqueItems": true,
+            "items": { "$ref": "#/$defs/inputInventoryRecord" }
+          },
+          "expectedOutcome": { "type": "string", "minLength": 1 },
+          "observedOutcome": { "type": "string", "minLength": 1 },
+          "durableEvidence": { "type": "string", "minLength": 1 },
+          "executionReferences": {
+            "type": "array", "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "reason": { "type": "string", "minLength": 1 }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": { "status": { "enum": ["FAIL", "NOT APPLICABLE"] } },
+              "required": ["status"]
+            },
+            "then": { "required": ["reason"] },
+            "else": { "not": { "required": ["reason"] } }
+          },
+          {
+            "if": {
+              "properties": { "status": { "const": "NOT APPLICABLE" } },
+              "required": ["status"]
+            },
+            "then": { "properties": { "executionReferences": { "maxItems": 0 } } },
+            "else": { "properties": { "executionReferences": { "minItems": 1 } } }
+          }
+        ]
+      }
+    },
+    "results": {
+      "type": "array", "minItems": 218, "maxItems": 218,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["requirementId", "status", "evidenceGroups", "evidenceReferences"],
+        "properties": {
+          "requirementId": { "type": "string", "minLength": 1 },
+          "status": { "$ref": "#/$defs/status" },
+          "evidenceGroups": {
+            "type": "array", "minItems": 1, "uniqueItems": true,
+            "items": { "type": "string", "pattern": "^MOS-EVID-[A-Z]+-[0-9]{3}$" }
+          },
+          "evidenceReferences": {
+            "type": "array", "minItems": 1, "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "reason": { "type": "string", "minLength": 1 }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": { "status": { "enum": ["FAIL", "NOT APPLICABLE"] } },
+              "required": ["status"]
+            },
+            "then": { "required": ["reason"] },
+            "else": { "not": { "required": ["reason"] } }
+          }
+        ]
+      }
+    },
+    "knownFailures": {
+      "type": "array", "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["total", "pass", "fail", "notApplicable"],
+      "properties": {
+        "total": { "const": 218 },
+        "pass": { "type": "integer", "minimum": 0 },
+        "fail": { "type": "integer", "minimum": 0 },
+        "notApplicable": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "anyOf": [
+          {
+            "properties": {
+              "scope": {
+                "properties": { "kind": { "const": "complete" } },
+                "required": ["kind"]
+              }
+            },
+            "required": ["scope"]
+          },
+          {
+            "properties": {
+              "scope": {
+                "properties": {
+                  "profiles": {
+                    "contains": {
+                      "enum": ["Native Investigation Artifacts", "Investigation Core", "SDK"]
+                    }
+                  }
+                },
+                "required": ["profiles"]
+              }
+            },
+            "required": ["scope"]
+          }
+        ]
+      },
+      "then": { "required": ["nativeProjectionProfile"] }
+    },
+    {
+      "if": {
+        "properties": {
+          "scope": {
+            "properties": { "kind": { "const": "complete" } },
+            "required": ["kind"]
+          }
+        },
+        "required": ["scope"]
+      },
+      "then": {
+        "properties": {
+          "scope": {
+            "properties": {
+              "profiles": {
+                "prefixItems": [
+                  { "const": "AI Runtime Adapter" },
+                  { "const": "CLI" },
+                  { "const": "Cognitive Investigation Explorer" },
+                  { "const": "Cognitive Regression" },
+                  { "const": "Investigation Core" },
+                  { "const": "MIP Integration" },
+                  { "const": "Native Investigation Artifacts" },
+                  { "const": "Runtime Observation Boundary" },
+                  { "const": "SDK" }
+                ],
+                "minItems": 9,
+                "maxItems": 9
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "assessmentLevel": { "const": "C3" } },
+        "required": ["assessmentLevel"]
+      },
+      "then": {
+        "required": ["independentAssessment"],
+        "properties": {
+          "assessor": {
+            "properties": { "independent": { "const": true } },
+            "required": ["independent"]
+          },
+          "knownFailures": { "maxItems": 0 },
+          "summary": {
+            "properties": { "fail": { "const": 0 } },
+            "required": ["fail"]
+          }
+        }
+      },
+      "else": {
+        "not": { "required": ["independentAssessment"] },
+        "properties": {
+          "assessor": {
+            "properties": { "independent": { "const": false } },
+            "required": ["independent"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "assessmentLevel": { "enum": ["C2", "C3"] } },
+        "required": ["assessmentLevel"]
+      },
+      "then": {
+        "properties": {
+          "knownFailures": { "maxItems": 0 },
+          "summary": {
+            "properties": { "fail": { "const": 0 } },
+            "required": ["fail"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": { "assessmentLevel": { "const": "C1" } },
+        "required": ["assessmentLevel"]
+      },
+      "then": {
+        "properties": {
+          "knownFailures": { "minItems": 1 },
+          "summary": {
+            "properties": { "fail": { "minimum": 1 } },
+            "required": ["fail"]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "standardVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "status": { "enum": ["PASS", "FAIL", "NOT APPLICABLE"] },
+    "implementation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "$ref": "#/$defs/version" },
+        "revision": { "type": "string", "minLength": 1 }
+      }
+    },
+    "inputInventoryRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "kind", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["file", "directory"] },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    }
+  }
+}

@@ -5,6 +5,17 @@ history remains available in `ROADMAP.md`.
 
 ## MemoryOS 1.2 — In development
 
+### MO-1208 — MemoryOS Standard
+
+Published CCA-MEMORYOS-1.0 as the implementation-independent definition of
+MemoryOS platform behavior and designated MemoryOS 1.2.0 as its initial
+Reference Implementation. The milestone adds normative Runtime, lifecycle,
+MIP integration, adapter, Investigation Core, SDK, CLI, Cognitive Regression,
+Explorer, compatibility, versioning, and certification contracts together
+with a deterministic conformance suite and requirement-by-requirement report.
+No Runtime, investigation, package, SDK, CLI, Regression, Explorer, or Studio
+contract was redesigned, and no new platform behavior was introduced.
+
 ### MO-1201 — Investigation Package Implementation
 
 Implemented the frozen MIP-001 contract as a dependency-free Producer,

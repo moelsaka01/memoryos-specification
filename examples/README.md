@@ -132,6 +132,15 @@ node repositories/memoryos-cli/examples/run-cli-examples.mjs
 
 The example runner is also registered as an automated CTest and npm test.
 
+## MemoryOS Standard conformance
+
+MO-1208 publishes CCA-MEMORYOS-1.0 as the implementation-independent platform
+contract and identifies MemoryOS 1.2.0 as its initial Reference
+Implementation. The official
+[conformance suite](../repositories/cca-conformance/README.md) reuses the
+executable examples and component tests above as evidence; it does not turn
+examples into normative behavior or implement a second investigation engine.
+
 ## Example quality rules
 
 - State whether an example is valid, intentionally invalid, or conceptual.

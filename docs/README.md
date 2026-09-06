@@ -6,6 +6,12 @@ scope and dependency direction.
 ## MemoryOS
 
 - [MemoryOS 1.1 product overview](../README.md)
+- [MemoryOS Standard and official conformance suite](../repositories/cca-conformance/README.md)
+- [MemoryOS 1.2.0 Reference Implementation guide](../repositories/cca-conformance/docs/reference-implementation-guide.md)
+- [MemoryOS compatibility guide](../repositories/cca-conformance/docs/compatibility-guide.md)
+- [MemoryOS versioning guide](../repositories/cca-conformance/docs/versioning-guide.md)
+- [MemoryOS certification guide](../repositories/cca-conformance/docs/certification-guide.md)
+- [MemoryOS 1.2.0 conformance report](../repositories/cca-conformance/docs/conformance-report.md)
 - [MemoryOS 1.2 Memory Investigation Packages](../repositories/cca-studio/docs/memory-investigation-packages.md)
 - [MemoryOS 1.2 AI Runtime Adapters](../repositories/cca-studio/docs/ai-runtime-adapters.md)
 - [MemoryOS 1.2 Investigation Core](../repositories/cca-studio/docs/investigation-core.md)

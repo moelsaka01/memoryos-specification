@@ -48,10 +48,14 @@ Expected implementation directories for this milestone are:
 ```text
 repositories/cca-core
 repositories/cca-compiler
+repositories/cca-studio
+repositories/cca-sdk
+repositories/memoryos-cli
+repositories/cca-conformance
 ```
 
-Other repository directories are reserved. Their absence or emptiness must not
-be "fixed" by implementing future systems.
+`repositories/memoryos` and `repositories/cca-atlas` remain reserved. Their
+absence or emptiness must not be "fixed" by implementing future systems.
 
 ## Recommended bootstrap
 

@@ -1,0 +1,381 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cca://schemas/memoryos/requirements-manifest/1.0",
+  "title": "MemoryOS Standard assessment requirements manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "standard", "incorporatedStandards", "normativeRegistryDigest", "implementation",
+    "conformanceProfiles", "evidenceGroups", "requirements"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "standard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identifier", "version", "publicationDate", "publicationDigest", "documents"],
+      "properties": {
+        "identifier": { "const": "CCA-MEMORYOS-1.0" },
+        "version": { "const": "1.0" },
+        "publicationDate": { "const": "2026-09-05" },
+        "publicationDigest": { "$ref": "#/$defs/sha256" },
+        "documents": {
+          "type": "array",
+          "minItems": 21,
+          "maxItems": 21,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "sha256"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1 },
+              "sha256": { "$ref": "#/$defs/sha256" }
+            }
+          }
+        }
+      }
+    },
+    "incorporatedStandards": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "identifier",
+          "version",
+          "publicationDigest",
+          "requirementRange",
+          "evidenceGroups",
+          "documents"
+        ],
+        "properties": {
+          "identifier": { "enum": ["CCA-MIP-1.0", "CCA-RF-1.0"] },
+          "version": { "$ref": "#/$defs/standardVersion" },
+          "publicationDigest": { "$ref": "#/$defs/sha256" },
+          "requirementRange": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["first", "last"],
+            "properties": {
+              "first": { "type": "string", "pattern": "^CCA-(?:MIP|RF)-[0-9]{3}$" },
+              "last": { "type": "string", "pattern": "^CCA-(?:MIP|RF)-[0-9]{3}$" }
+            }
+          },
+          "evidenceGroups": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "pattern": "^MOS-EVID-[A-Z]+-[0-9]{3}$" }
+          },
+          "documents": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "sha256"],
+              "properties": {
+                "path": { "type": "string", "minLength": 1 },
+                "sha256": { "$ref": "#/$defs/sha256" }
+              }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "prefixItems": [
+            {
+              "properties": {
+                "identifier": { "const": "CCA-MIP-1.0" },
+                "version": { "const": "1.0" },
+                "evidenceGroups": {
+                  "prefixItems": [{ "const": "MOS-EVID-MIP-001" }],
+                  "minItems": 1,
+                  "maxItems": 1
+                },
+                "documents": {
+                  "minItems": 4,
+                  "maxItems": 4
+                }
+              },
+              "required": ["identifier", "version", "evidenceGroups"]
+            },
+            {
+              "properties": {
+                "identifier": { "const": "CCA-RF-1.0" },
+                "version": { "const": "1.0" },
+                "evidenceGroups": {
+                  "prefixItems": [{ "const": "MOS-EVID-RT-001" }],
+                  "minItems": 1,
+                  "maxItems": 1
+                },
+                "documents": {
+                  "minItems": 4,
+                  "maxItems": 4
+                }
+              },
+              "required": ["identifier", "version", "evidenceGroups"]
+            }
+          ]
+        }
+      ]
+    },
+    "normativeRegistryDigest": { "$ref": "#/$defs/sha256" },
+    "implementation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "sourceInventory"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "$ref": "#/$defs/implementationVersion" },
+        "revision": { "type": "string", "minLength": 1 },
+        "sourceInventory": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/inputInventoryRecord" }
+        }
+      }
+    },
+    "conformanceProfiles": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["applicability", "commonEvidenceGroups", "profiles"],
+      "properties": {
+        "applicability": {
+          "const": "union_of_common_and_selected_profile_evidence_groups"
+        },
+        "commonEvidenceGroups": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^MOS-EVID-[A-Z]+-[0-9]{3}$" }
+        },
+        "profiles": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "evidenceGroups"],
+            "properties": {
+              "name": {
+                "enum": [
+                  "AI Runtime Adapter",
+                  "CLI",
+                  "Cognitive Investigation Explorer",
+                  "Cognitive Regression",
+                  "Investigation Core",
+                  "MIP Integration",
+                  "Native Investigation Artifacts",
+                  "Runtime Observation Boundary",
+                  "SDK"
+                ]
+              },
+              "evidenceGroups": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": { "type": "string", "pattern": "^MOS-EVID-[A-Z]+-[0-9]{3}$" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "evidenceGroups": {
+      "type": "array",
+      "minItems": 13,
+      "maxItems": 13,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "description",
+          "automated",
+          "implementation",
+          "requirementIds",
+          "method",
+          "inputs",
+          "inputInventory",
+          "expectedOutcome",
+          "durableEvidence",
+          "executionReferences"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^MOS-EVID-[A-Z]+-[0-9]{3}$" },
+          "description": { "type": "string", "minLength": 1 },
+          "automated": { "type": "boolean" },
+          "command": { "type": "string", "minLength": 1 },
+          "implementation": { "$ref": "#/$defs/implementation" },
+          "requirementIds": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/requirementId" }
+          },
+          "method": { "type": "string", "minLength": 1 },
+          "inputs": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "inputInventory": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/inputInventoryRecord" }
+          },
+          "expectedOutcome": { "type": "string", "minLength": 1 },
+          "durableEvidence": { "type": "string", "minLength": 1 },
+          "executionReferences": {
+            "type": "array", "minItems": 1, "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": { "automated": { "const": true } },
+              "required": ["automated"]
+            },
+            "then": { "required": ["command"] },
+            "else": { "not": { "required": ["command"] } }
+          }
+        ]
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 218,
+      "maxItems": 218,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "statement",
+          "sourceDocument",
+          "sourceAnchor",
+          "verification",
+          "verificationMethods",
+          "verificationCriteria",
+          "evidenceGroups",
+          "executionReferences",
+          "coverageSelectors"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/requirementId"
+          },
+          "title": { "type": "string", "minLength": 1 },
+          "statement": { "type": "string", "minLength": 1 },
+          "sourceDocument": { "type": "string", "minLength": 1 },
+          "sourceAnchor": { "type": "string", "minLength": 1 },
+          "verification": { "enum": ["automated", "review", "external"] },
+          "verificationMethods": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "verificationCriteria": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "evidenceGroups": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "pattern": "^MOS-EVID-[A-Z]+-[0-9]{3}$" },
+            "uniqueItems": true
+          },
+          "executionReferences": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          },
+          "coverageSelectors": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/coverageSelector" }
+          },
+          "incorporatedFrom": {
+            "type": "string",
+            "enum": ["CCA-RF-1.0", "CCA-MIP-1.0"]
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": { "verification": { "const": "automated" } },
+              "required": ["verification"]
+            },
+            "then": {
+              "properties": {
+                "evidenceGroups": { "minItems": 1 },
+                "executionReferences": { "minItems": 1 }
+              }
+            },
+            "else": {
+              "properties": {
+                "executionReferences": { "maxItems": 0 },
+                "coverageSelectors": { "maxItems": 0 }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "standardVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+$" },
+    "implementationVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "implementation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "$ref": "#/$defs/implementationVersion" },
+        "revision": { "type": "string", "minLength": 1 }
+      }
+    },
+    "inputInventoryRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "kind", "sha256"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["file", "directory"] },
+        "sha256": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "coverageSelector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["executionReference", "source", "selector"],
+      "properties": {
+        "executionReference": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "minLength": 1 },
+        "selector": { "type": "string", "minLength": 1 }
+      }
+    },
+    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "requirementId": {
+      "type": "string",
+      "pattern": "^(?:CCA-MOS-(?:RT|LIFE|MIP|ART|ADAPT|CORE|SDK|CLI|REG|EXPL|CONF|COMP|VER)-[0-9]{3}|CCA-RF-[0-9]{3}|CCA-MIP-[0-9]{3})$"
+    },
+    "sha256": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}

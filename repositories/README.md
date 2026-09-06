@@ -1,6 +1,6 @@
 # CCA repository index
 
-The workspace reserves these repository boundaries:
+The workspace coordinates these repository boundaries:
 
 | Directory | Current milestone |
 |---|---|
@@ -10,7 +10,7 @@ The workspace reserves these repository boundaries:
 | [`cca-studio`](cca-studio) | CP-011 Studio, MemoryOS 1.1 investigation presentation, and MemoryOS 1.2 headless MIP, adapter, Investigation Core, Cognitive Regression, and Explorer modules |
 | [`cca-sdk`](cca-sdk) | MO-1204 JavaScript, Python, and C++ SDK facades plus MO-1206 regression and MO-1207 evidence-navigation facades over one private Investigation Core binding |
 | [`memoryos-cli`](memoryos-cli) | MO-1205 standalone CLI and JSON Lines automation plus SDK-backed regression reporting and deterministic evidence navigation |
-| [`cca-conformance`](cca-conformance) | Reserved; no implementation |
+| [`cca-conformance`](cca-conformance) | MO-1208 official CCA-MEMORYOS-1.0 conformance suite and Reference Implementation evidence |
 | [`cca-atlas`](cca-atlas) | Reserved; no implementation |
 
 Directory presence does not authorize behavior. The current dependency
@@ -34,6 +34,9 @@ that facade; neither layer recomputes regression facts.
 MO-1207 adds one read-only Cognitive Investigation Explorer beside that engine.
 Studio, SDK, and CLI render or transport its canonical evidence pointers; none
 filters regression evidence or reruns an investigation independently.
+MO-1208 activates `cca-conformance` as a behavior-free assessment harness. It
+pins the published MemoryOS requirement inventory and verifies the existing
+implementation; it does not define or implement MemoryOS semantics.
 No repository creates a reverse dependency into the compiler. Reserved
 repositories have no approved dependency relationships merely by directory
 presence.

@@ -122,6 +122,12 @@ Regression Report and returns immutable digest endpoints for SDK, CLI, and
 Studio consumers. It does not rerun Replay, recompute Regression, or create an
 explanation.
 
+MO-1208 publishes CCA-MEMORYOS-1.0 as the implementation-independent platform
+Standard and designates MemoryOS 1.2.0 as its initial Reference
+Implementation. The [official conformance suite](../cca-conformance/README.md)
+assesses the existing Studio, MIP, adapter, Core, Regression, and Explorer
+behavior; neither the Standard nor the suite adds Studio behavior.
+
 ## Build and verify
 
 From the workspace root:
@@ -186,6 +192,8 @@ observation paths, and explanation-chain boundaries.
 - [Explorer engineering guide](docs/cognitive-investigation-explorer-engineering-guide.md)
 - [Explorer architecture review](docs/cognitive-investigation-explorer-architecture-review.md)
 - [Explorer conformance report](docs/cognitive-investigation-explorer-conformance-report.md)
+- [MemoryOS Standard conformance suite](../cca-conformance/README.md)
+- [MemoryOS 1.2.0 Reference Implementation guide](../cca-conformance/docs/reference-implementation-guide.md)
 - [MemoryOS SDK](../cca-sdk/README.md)
 - [MemoryOS SDK conformance report](../cca-sdk/docs/conformance-report.md)
 - [Public API and behavior](docs/memory-studio.md)

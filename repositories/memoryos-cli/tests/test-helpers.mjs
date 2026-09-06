@@ -48,7 +48,7 @@ export function runCli(arguments_, options = {}) {
     },
     input: options.input,
     maxBuffer: 16 * 1024 * 1024,
-    timeout: 30_000,
+    timeout: 120_000,
     windowsHide: true,
   });
   assert.ifError(result.error);

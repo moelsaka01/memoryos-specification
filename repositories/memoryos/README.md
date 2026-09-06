@@ -13,6 +13,9 @@ bindings reside in [`cca-sdk`](../cca-sdk/), and the MO-1205 SDK-backed command
 line client resides in [`memoryos-cli`](../memoryos-cli/). MO-1206 adds
 Cognitive Regression and MO-1207 adds deterministic regression-evidence
 navigation to the existing Investigation Core, SDK, CLI, and Studio layers
-without creating behavior in this reserved directory; begin with the
+without creating behavior in this reserved directory. MO-1208 publishes the
+implementation-independent CCA-MEMORYOS-1.0 Standard and assesses MemoryOS
+1.2.0 through the official [`cca-conformance`](../cca-conformance/) suite;
+neither moves product behavior into this directory. Begin with the
 [root product overview](../../README.md). The reserved directory remains empty
 of product behavior and is not a second execution authority.

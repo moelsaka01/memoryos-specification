@@ -4,6 +4,10 @@
 
 The MemoryOS SDK is the public, deterministic facade over the frozen MemoryOS Investigation Core. It gives browser JavaScript, Python, and native C++ consumers one investigation model without copying or reinterpreting cognition.
 
+CCA-MEMORYOS-1.0 standardizes this existing SDK boundary. SDK 1.0.0 is the
+baseline assessed as part of the MemoryOS 1.2.0 Reference Implementation; the
+SDK implementation and this guide are informative, not the normative Standard.
+
 ```text
 MemoryOS Runtime
         |
@@ -190,6 +194,7 @@ The host performs framing, canonical transport serialization, Base64 byte transp
 - [Cognitive Investigation Explorer guide](docs/explorer-guide.md)
 - [MO-1207 Explorer conformance](docs/explorer-conformance-report.md)
 - [SDK conformance report](docs/conformance-report.md)
+- [Official MemoryOS Standard conformance suite](../cca-conformance/README.md)
 - [Private binding contract](bridge/README.md)
 - [Python package guide](python/README.md)
 
