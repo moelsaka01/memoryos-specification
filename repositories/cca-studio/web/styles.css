@@ -1671,11 +1671,18 @@ kbd {
   border-radius: 50%;
 }
 
-.graph-kind-long-term { background: var(--representation); }
-.graph-kind-semantic { background: var(--commit); }
-.graph-kind-episodic { background: #00bcd4; }
-.graph-kind-procedural { background: var(--process); }
-.graph-kind-reflection { background: var(--reflection); }
+.graph-kind-workspace { background: #1688ff; }
+.graph-kind-memory { background: #2c9cff; }
+.graph-kind-working { background: #15c7df; }
+.graph-kind-consolidation { background: #43b581; }
+.graph-kind-long-term { background: #72d96f; }
+.graph-kind-semantic { background: #8c62ff; }
+.graph-kind-episodic { background: #38a8ff; }
+.graph-kind-procedural { background: #fb8c00; }
+.graph-kind-retrieval { background: #00c7c7; }
+.graph-kind-reflection { background: #e85ad6; }
+.graph-kind-providers { background: #8da0b6; }
+.graph-kind-validation { background: #38d996; }
 
 .graph-accessible-list {
   position: absolute;
@@ -8504,14 +8511,19 @@ body:has(.neural-interface) {
 /* Cognitive regions are workspace affordances. They manipulate presentation
    state only; region boundaries never imply changes to runtime cognition. */
 .cognitive-regions {
-  pointer-events: auto;
+  pointer-events: visiblePainted;
 }
 
 .cognitive-region[role="button"],
 .cognitive-region[data-interactive="true"] {
   cursor: pointer;
   outline: none;
-  pointer-events: all;
+  pointer-events: visiblePainted;
+}
+
+.knowledge-graph.is-pan-mode .cognitive-region[role="button"],
+.knowledge-graph.is-pan-mode .cognitive-region[data-interactive="true"] {
+  cursor: grab;
 }
 
 .cognitive-region[role="button"] .cognitive-region-boundary,
@@ -8555,7 +8567,58 @@ body:has(.neural-interface) {
 .has-region-isolation .cognitive-region:not(.is-isolated),
 .has-isolated-region .cognitive-region:not(.is-isolated),
 .memory-intelligence-graph[data-isolated-region] .cognitive-region:not(.is-isolated) {
-  opacity: .035;
+  opacity: .07;
+}
+
+/* The renderer benchmark is served under the same strict production CSP. */
+.benchmark-page {
+  margin: 0;
+  background: #020b14;
+  color: #d8e8f4;
+  font: 14px/1.5 Inter, system-ui, sans-serif;
+}
+
+.benchmark-page main {
+  display: grid;
+  grid-template-rows: auto minmax(420px, 70vh) auto;
+  min-height: 100vh;
+}
+
+.benchmark-page header,
+.benchmark-page pre {
+  padding: 16px 20px;
+  margin: 0;
+}
+
+.benchmark-page header {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  border-bottom: 1px solid #173044;
+}
+
+.benchmark-page header p {
+  margin: 0;
+  color: #86a1b5;
+}
+
+.benchmark-page button {
+  padding: 8px 14px;
+  color: white;
+  background: #0b3454;
+  border: 1px solid #1d5278;
+  border-radius: 6px;
+}
+
+.benchmark-page #benchmark-graph {
+  min-height: 420px;
+  overflow: hidden;
+}
+
+.benchmark-page pre {
+  overflow: auto;
+  white-space: pre-wrap;
+  border-top: 1px solid #173044;
 }
 
 .cognitive-region.is-collapsed .cognitive-region-boundary {

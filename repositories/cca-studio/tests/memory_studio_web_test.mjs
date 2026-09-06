@@ -2009,5 +2009,8 @@ test("the local server rejects malformed encoding without terminating", async (c
   assert.equal(status, 400);
   const healthy = await fetch(`http://127.0.0.1:${port}/`);
   assert.equal(healthy.status, 200);
+  const contentSecurityPolicy = healthy.headers.get("content-security-policy");
+  assert.match(contentSecurityPolicy, /style-src 'self'/);
+  assert.doesNotMatch(contentSecurityPolicy, /'unsafe-inline'/);
   assert.match(await healthy.text(), /CCA Memory Studio/);
 });

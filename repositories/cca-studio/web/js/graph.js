@@ -637,7 +637,6 @@ export function renderGraph(
       region.classList.toggle("is-isolated", isolated);
       region.classList.toggle("is-region-dimmed", Boolean(filteredKind) && !isolated);
       region.setAttribute("aria-pressed", String(isolated));
-      region.style.opacity = filteredKind ? (isolated ? ".78" : ".07") : "";
     });
     shell.querySelectorAll(".graph-layer-filter").forEach((button) => {
       const kind = button.dataset.regionKind || null;
@@ -702,7 +701,6 @@ export function renderGraph(
     class: "cognitive-regions",
     role: "group",
     "aria-label": "Cognitive region isolation controls",
-    style: "pointer-events: visiblePainted;",
   });
   cognitiveRegionDefinitions.forEach((definition) => {
     const region = svgElement("g", {
@@ -715,7 +713,6 @@ export function renderGraph(
       "aria-pressed": String(filteredKind === definition.kind),
       "data-region-kind": definition.kind,
       "data-region-signature": definition.signature,
-      style: `pointer-events: visiblePainted; cursor: ${interactionMode === "pan" ? "grab" : "pointer"};`,
     });
     const regionTitle = svgElement("title");
     regionTitle.textContent = `${definition.label} cognitive region. Activate to isolate this region.`;
@@ -1570,7 +1567,6 @@ export function renderGraph(
         disabled ? "Region isolation is disabled while Pan mode is active." : "Toggle this cognitive region isolation.",
       );
       region.setAttribute("tabindex", disabled ? "-1" : "0");
-      region.style.cursor = disabled ? "grab" : "pointer";
     });
     if (mode === "pan" && nodeElements.get(rovingNodeKey)?.contains(document.activeElement)) svg.focus();
     emitViewState();
@@ -1872,7 +1868,6 @@ export function renderGraph(
     button.setAttribute("aria-pressed", String(kind === filteredKind || (kind === null && filteredKind === null)));
     const swatch = document.createElement("span");
     swatch.className = `legend-swatch graph-kind-${kind ?? "all"}`;
-    if (kind) swatch.style.background = palettes[kind]?.[0] ?? palettes.workspace[0];
     const text = document.createElement("span");
     text.textContent = label;
     button.append(swatch, text);

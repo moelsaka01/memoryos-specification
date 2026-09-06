@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MemoryOS 1.1 Renderer Benchmark</title>
+  <link rel="icon" href="assets/cca-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="benchmark-page">
+  <main>
+    <header>
+      <button id="run" type="button">Run benchmark</button>
+      <p>Real browser DOM construction, frame delivery, and graph interaction. No simulated cognition.</p>
+      <output id="status" aria-live="polite">Ready</output>
+    </header>
+    <div id="benchmark-graph" aria-label="Renderer benchmark surface"></div>
+    <pre id="results">No benchmark has run.</pre>
+  </main>
+  <script type="module" src="js/browser-render-benchmark.js"></script>
+</body>
+</html>

@@ -14,7 +14,7 @@ import { semanticWorldLayout } from "../web/js/semantic-world.js";
 const testDirectory = dirname(fileURLToPath(import.meta.url));
 const studioRoot = resolve(testDirectory, "..");
 
-const [appSource, graphSource, htmlSource, stylesSource, viewStateSource, semanticWorldSource, investigationCoreSource, memoryOSSDKSource] = await Promise.all([
+const [appSource, graphSource, htmlSource, stylesSource, viewStateSource, semanticWorldSource, investigationCoreSource, memoryOSSDKSource, benchmarkSource] = await Promise.all([
   readFile(resolve(studioRoot, "web/js/app.js"), "utf8"),
   readFile(resolve(studioRoot, "web/js/graph.js"), "utf8"),
   readFile(resolve(studioRoot, "web/index.html"), "utf8"),
@@ -23,6 +23,7 @@ const [appSource, graphSource, htmlSource, stylesSource, viewStateSource, semant
   readFile(resolve(studioRoot, "web/js/semantic-world.js"), "utf8"),
   readFile(resolve(studioRoot, "web/js/investigation-core.js"), "utf8"),
   readFile(resolve(studioRoot, "web/js/memoryos-sdk.js"), "utf8"),
+  readFile(resolve(studioRoot, "web/benchmark.html"), "utf8"),
 ]);
 
 function functionSource(source, name, nextName) {
@@ -83,6 +84,41 @@ test("MO-1108 region isolation is deterministic, reversible, and presentation-on
   assert.doesNotMatch(isolationHandler, /buildGraph|resolveSnapshot|commandAdapter|acceptObservationFrame/);
   assert.match(stylesSource, /\.cognitive-region\[role="button"\]/);
   assert.match(stylesSource, /\.cognitive-region\.is-isolated/);
+});
+
+test("CSP-001 keeps graph and benchmark presentation in the production stylesheet", () => {
+  assert.doesNotMatch(
+    graphSource,
+    /\bstyle\s*:|\.style(?:\.|\[)/,
+    "the graph renderer must not create inline styles under the strict production CSP",
+  );
+  assert.doesNotMatch(
+    benchmarkSource,
+    /<style\b|\sstyle\s*=/i,
+    "the production benchmark route must not contain inline styles",
+  );
+  assert.match(benchmarkSource, /<link rel="icon" href="assets\/cca-mark\.svg" type="image\/svg\+xml">/);
+  assert.match(stylesSource, /\.cognitive-regions\s*\{[^}]*pointer-events:\s*visiblePainted/s);
+  assert.match(stylesSource, /\.knowledge-graph\.is-pan-mode \.cognitive-region\[role="button"\][^}]*cursor:\s*grab/s);
+  assert.match(stylesSource, /\.has-region-isolation \.cognitive-region:not\(\.is-isolated\)[^}]*opacity:\s*\.07/s);
+  assert.match(stylesSource, /\.benchmark-page\s*\{/);
+
+  for (const kind of [
+    "workspace",
+    "memory",
+    "working",
+    "consolidation",
+    "long-term",
+    "semantic",
+    "episodic",
+    "procedural",
+    "retrieval",
+    "reflection",
+    "providers",
+    "validation",
+  ]) {
+    assert.match(stylesSource, new RegExp(`\\.graph-kind-${kind}\\s*\\{[^}]*background:`));
+  }
 });
 
 test("MO-1108 calibrates the renderer viewport without changing semantic geography", () => {
