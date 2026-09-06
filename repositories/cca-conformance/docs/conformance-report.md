@@ -7,12 +7,13 @@ Conformance Report and its generated Markdown projection. It does not redefine
 the normative report contract in CCA-MEMORYOS-1.0 `conformance.md` and
 `certification.md`.
 
-## Bundled report
+## Generated report
 
-The suite publishes the MemoryOS 1.2.0 Reference Implementation assessment in:
-
-- [`reference-implementation-1.2.0.json`](../reports/reference-implementation-1.2.0.json)
-- [`reference-implementation-1.2.0.md`](../reports/reference-implementation-1.2.0.md)
+The suite generates the MemoryOS 1.2.0 Reference Implementation assessment as
+reports/reference-implementation-1.2.0.json and its deterministic Markdown
+projection as reports/reference-implementation-1.2.0.md. Assessment outputs
+are retained release evidence and are not checked into this source tree before
+an assessment is executed.
 
 The JSON document is the authoritative machine-readable result. The Markdown
 document is a deterministic human-readable projection of the same data.

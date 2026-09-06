@@ -3,7 +3,13 @@
 This changelog records MemoryOS product milestones. Foundation-era workspace
 history remains available in `ROADMAP.md`.
 
-## MemoryOS 1.2 — In development
+## MemoryOS 1.2 — v1.2.0
+
+Released. MemoryOS 1.2 turns the deterministic investigation experience into
+an implementation-independent platform with portable packages, runtime
+adapters, one Investigation Core, public SDK and CLI surfaces, regression
+analysis, direct evidence navigation, and an official Standard and Conformance
+Suite.
 
 ### MO-1208 — MemoryOS Standard
 
@@ -170,5 +176,5 @@ runtime truth, public APIs, or renderer responsibilities.
 
 ### Known limitation
 
-Observe-to-Trace discoverability is a low-impact first-time usability issue
-planned for MemoryOS 1.2. See [known issues](KNOWN_ISSUES.md).
+Observe-to-Trace discoverability remains a low-impact first-time usability
+issue in MemoryOS 1.2.0. See [known issues](KNOWN_ISSUES.md).

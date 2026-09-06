@@ -1,9 +1,9 @@
 # MemoryOS Studio documentation
 
-This index is the public entry point for the MemoryOS 1.0 Studio contract, the
-released MemoryOS 1.1 investigation experience, and the additive MemoryOS 1.2
-package, adapter, and Investigation Core boundaries. Read the product journey from top to bottom,
-or start with the engineering question you need to answer.
+This index is the public entry point for the released MemoryOS 1.2 platform,
+the MemoryOS 1.1 investigation foundation, and the frozen MemoryOS 1.0 Studio
+contract. Read the product journey from top to bottom, or start with the
+engineering question you need to answer.
 
 ## Start here
 
@@ -22,8 +22,8 @@ or start with the engineering question you need to answer.
 | Verify the frozen contract against tests | [Memory Studio conformance evidence](memory-studio-conformance-evidence.md) |
 | Understand the complete MemoryOS 1.1 investigation stack | [Engineering architecture review](memoryos-1.1-engineering-architecture-review.md) |
 | Follow the integrated MemoryOS 1.1 engineering workflow | [Integration & Workflow Unification](memoryos-1.1-integration-workflow.md) |
-| Review MemoryOS 1.1 release status | [Release notes](../../../RELEASE_NOTES.md) · [Known issues](../../../KNOWN_ISSUES.md) · [Changelog](../../../CHANGELOG.md) |
-| Watch the complete product workflow | [Official 73-second demonstration](media/memoryos-1.1-official-demo.gif) |
+| Review MemoryOS 1.2 release status | [Release notes](../../../RELEASE_NOTES.md) · [Known issues](../../../KNOWN_ISSUES.md) · [Changelog](../../../CHANGELOG.md) |
+| Watch the released product workflow | [Official MemoryOS 1.2 demonstration](media/memoryos-v1.2-demo.gif) · [Full-quality MP4](media/memoryos-v1.2-demo.mp4) |
 | Review measured engineering evidence | [Engineering benchmark](memoryos-1.1-engineering-benchmark.md) |
 | Review documentation and media integrity | [Documentation audit](memoryos-1.1-documentation-audit.md) |
 | Review repository publication integrity | [RC-001B repository audit](memoryos-1.1-rc-repository-audit.md) |
@@ -168,13 +168,15 @@ semantic activity.
 The following assets are repository-hosted captures of the running local application,
 not mockups or generated product images.
 
-The MO-1108 release row uses true PNG and GIF assets. Earlier milestone stills
-are retained as historical JPEG evidence with truthful `.jpg` extensions.
-Raw capture sequences are separated from release media and documented in the
-media manifest.
+The MemoryOS v1.2 row uses genuine JPEG frames plus the GIF and MP4 exported
+from the official production capture. The MO-1108 release row retains its true
+PNG and GIF assets; earlier milestone stills remain historical JPEG evidence
+with truthful `.jpg` extensions. Raw capture sequences are separated from
+release media and documented in the media manifest.
 
 | Capability | Screenshot evidence | Silent demonstration |
 |---|---|---|
+| **MemoryOS 1.2 · v1.2.0** | [Mission Control](screenshots/memoryos-v1.2-mission-control.jpg) · [Cognitive Replay](screenshots/memoryos-v1.2-cognitive-replay.jpg) · [Investigation Explorer](screenshots/memoryos-v1.2-investigation-explorer.jpg) | [Official demonstration](media/memoryos-v1.2-demo.gif) · [Full-quality MP4](media/memoryos-v1.2-demo.mp4) |
 | **MemoryOS 1.1 · v1.1.0** | [Mission Control](screenshots/memory-studio-mo1108-mission-control.png) · [Trace](screenshots/memory-studio-mo1108-trace.png) · [Replay](screenshots/memory-studio-mo1108-replay.png) · [Evolution](screenshots/memory-studio-mo1108-evolution.png) · [Comparative](screenshots/memory-studio-mo1108-comparative.png) · [Mobile](screenshots/memory-studio-mo1108-mobile.png) | [Official 73-second demonstration](media/memoryos-1.1-official-demo.gif) · [30-second Engineering Excellence cut](media/memory-studio-mo1108-engineering-excellence.gif) |
 | Living Connectome | [Before](screenshots/memory-studio-sprint3-before.jpg) · [After](screenshots/memory-studio-sprint3-after.jpg) | [Trace-led investigation](media/memory-studio-sprint3-living-connectome.gif) |
 | Cognitive Replay | [Before](screenshots/memory-studio-sprint4-before-replay.jpg) · [Mid replay](screenshots/memory-studio-sprint4-mid-replay.jpg) · [Complete](screenshots/memory-studio-sprint4-completed-replay.jpg) | [Deterministic replay](media/memory-studio-sprint4-cognitive-replay.gif) |
@@ -187,8 +189,8 @@ media manifest.
 - [MemoryOS 1.0 launch demonstration production package](memoryos-1.0-launch-demo-production-package.md)
 - [MemoryOS 1.0 GitHub screenshot specification](github-screenshot-specification.md)
 
-These documents remain available as release records. Current MemoryOS 1.1
-claims should use the milestone evidence indexed above.
+These documents remain available as release records. Current MemoryOS 1.2
+claims should use the v1.2 evidence indexed above.
 
 The [media manifest](media/README.md) defines the current release, milestone,
 source-frame, and archived-asset boundaries.

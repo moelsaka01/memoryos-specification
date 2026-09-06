@@ -9,7 +9,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 |---|---|---|
 | MemoryOS 1.0 | Released | Deterministic memory lifecycle, source-preserving knowledge, retrieval, reflection, provider-neutral handoff, and the frozen Memory Studio contract |
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
-| MemoryOS 1.2 | In development | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, its official conformance suite, and planned investigation onboarding refinements |
+| MemoryOS 1.2 | Released — v1.2.0 | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, and its official Conformance Suite |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -28,7 +28,7 @@ evidence closes MO-1108. RC-001 validated the production workflow, RC-001A
 completed the documentation freeze, and RC-001B completed the repository
 audit without changing the product architecture.
 
-MemoryOS 1.2 begins with MIP-001 and its MO-1201 implementation. MO-1202 adds
+MemoryOS 1.2 delivers MIP-001 and its MO-1201 implementation. MO-1202 adds
 provider-neutral interfaces that privately validate OpenAI Agents SDK,
 Anthropic SDK, and LangGraph event lifecycles and translate only settled
 source-authored cognition into verified, Observation-only MIPs. The reference

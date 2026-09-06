@@ -97,9 +97,9 @@ MO-1203 adds the renderer-independent
 authority for native Studio investigations and verified MIP-backed
 investigations. State is always derived from its immutable digest-linked
 transition log; checkpoints bind that log rather than storing alternate truth.
-Studio and future SDK, CLI, REST, and MCP clients consume immutable
-projections. The Core never creates a Studio projection or cognitive artifacts
-that are absent from an Observation-only adapter package.
+Studio, SDK, and CLI clients consume immutable projections; future clients
+must preserve the same boundary. The Core never creates a Studio projection or
+cognitive artifacts that are absent from an Observation-only adapter package.
 
 MO-1204 makes Studio a client of the public in-process JavaScript
 [MemoryOS SDK facade](../cca-sdk/README.md). `app.js` no longer imports the
@@ -215,9 +215,11 @@ observation paths, and explanation-chain boundaries.
 - [MemoryOS 1.1 documentation audit](docs/memoryos-1.1-documentation-audit.md)
 - [MemoryOS 1.1 RC documentation audit](docs/memoryos-1.1-rc-documentation-audit.md)
 - [MemoryOS 1.1 RC repository audit](docs/memoryos-1.1-rc-repository-audit.md)
-- [MemoryOS 1.1 release notes](../../RELEASE_NOTES.md)
-- [MemoryOS 1.1 known issues](../../KNOWN_ISSUES.md)
-- [Official MemoryOS 1.1 demonstration](docs/media/memoryos-1.1-official-demo.gif)
+- [MemoryOS 1.2 release notes](../../RELEASE_NOTES.md)
+- [MemoryOS 1.2 known issues](../../KNOWN_ISSUES.md)
+- [Official MemoryOS 1.2 demonstration](docs/media/memoryos-v1.2-demo.gif)
+- [Full-quality MemoryOS 1.2 demonstration](docs/media/memoryos-v1.2-demo.mp4)
+- [Historical MemoryOS 1.1 demonstration](docs/media/memoryos-1.1-official-demo.gif)
 - [MemoryOS 1.0 launch demo production package](docs/memoryos-1.0-launch-demo-production-package.md)
 - [GitHub screenshot specification](docs/github-screenshot-specification.md)
 - [C++ example](examples/memory_studio_usage.cpp)

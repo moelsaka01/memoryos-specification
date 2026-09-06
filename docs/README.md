@@ -5,7 +5,7 @@ scope and dependency direction.
 
 ## MemoryOS
 
-- [MemoryOS 1.1 product overview](../README.md)
+- [MemoryOS 1.2 product overview](../README.md)
 - [MemoryOS Standard and official conformance suite](../repositories/cca-conformance/README.md)
 - [MemoryOS 1.2.0 Reference Implementation guide](../repositories/cca-conformance/docs/reference-implementation-guide.md)
 - [MemoryOS compatibility guide](../repositories/cca-conformance/docs/compatibility-guide.md)
@@ -35,11 +35,11 @@ scope and dependency direction.
 - [MemoryOS CLI automation guide](../repositories/memoryos-cli/docs/automation-guide.md)
 - [MemoryOS CLI conformance report](../repositories/memoryos-cli/docs/conformance-report.md)
 - [MemoryOS CLI regression conformance report](../repositories/memoryos-cli/docs/regression-conformance-report.md)
-- [MemoryOS 1.1 release notes](../RELEASE_NOTES.md)
+- [MemoryOS 1.2 release notes](../RELEASE_NOTES.md)
 - [MemoryOS changelog](../CHANGELOG.md)
-- [MemoryOS 1.1 known issues](../KNOWN_ISSUES.md)
+- [MemoryOS 1.2 known issues](../KNOWN_ISSUES.md)
 - [RC-001B repository audit](../repositories/cca-studio/docs/memoryos-1.1-rc-repository-audit.md)
-- [MemoryOS 1.1 Studio documentation and evidence index](../repositories/cca-studio/docs/README.md)
+- [MemoryOS Studio documentation and evidence index](../repositories/cca-studio/docs/README.md)
 - [Memory Studio public API and behavior](../repositories/cca-studio/docs/memory-studio.md)
 - [Memory Studio conformance evidence](../repositories/cca-studio/docs/memory-studio-conformance-evidence.md)
 - [MemoryOS 1.1 engineering architecture review](../repositories/cca-studio/docs/memoryos-1.1-engineering-architecture-review.md)
@@ -49,7 +49,9 @@ scope and dependency direction.
 - [MemoryOS 1.1 UX audit](../repositories/cca-studio/docs/memoryos-1.1-ux-audit.md)
 - [MemoryOS 1.1 accessibility audit](../repositories/cca-studio/docs/memoryos-1.1-accessibility-audit.md)
 - [MemoryOS 1.1 documentation audit](../repositories/cca-studio/docs/memoryos-1.1-documentation-audit.md)
-- [Official MemoryOS 1.1 demonstration](../repositories/cca-studio/docs/media/memoryos-1.1-official-demo.gif)
+- [Official MemoryOS 1.2 demonstration](../repositories/cca-studio/docs/media/memoryos-v1.2-demo.gif)
+- [Full-quality MemoryOS 1.2 demonstration](../repositories/cca-studio/docs/media/memoryos-v1.2-demo.mp4)
+- [Historical MemoryOS 1.1 demonstration](../repositories/cca-studio/docs/media/memoryos-1.1-official-demo.gif)
 
 ## Standards Compiler
 

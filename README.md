@@ -1,332 +1,321 @@
 <!-- markdownlint-disable MD033 MD041 -->
 
 <div align="center">
-  <img src="repositories/cca-studio/web/assets/cca-mark.svg" alt="CCA mark" width="72" />
+  <img src="repositories/cca-studio/web/assets/cca-mark.svg" alt="MemoryOS" width="72" />
   <h1>MemoryOS</h1>
-  <p><strong>Deterministic memory infrastructure with a cognitive investigation environment engineers can inspect step by step.</strong></p>
+  <p><strong>The open standard and reference implementation for deterministic AI investigations.</strong></p>
+  <p>Observe what happened. Trace the evidence. Replay every step. Compare what changed.</p>
 </div>
 
 <p align="center">
-  <img src="repositories/cca-studio/docs/media/memoryos-1.1-official-demo.gif" alt="MemoryOS v1.1 Mission Control demonstrating Observe, Trace, Replay, Compare, and Return to World" width="100%" />
-</p>
-
-<p align="center">
-  <a href="https://github.com/moelsaka01/cca-workspace/actions/workflows/ci.yml"><img src="https://github.com/moelsaka01/cca-workspace/actions/workflows/ci.yml/badge.svg" alt="CCA CI" /></a>
-  <img src="https://img.shields.io/badge/MemoryOS-v1.1.0-7C4DFF?style=flat-square" alt="MemoryOS v1.1.0" />
+  <a href="https://github.com/moelsaka01/memoryos-specification/actions/workflows/ci.yml"><img src="https://github.com/moelsaka01/memoryos-specification/actions/workflows/ci.yml/badge.svg" alt="CI status" /></a>
+  <img src="https://img.shields.io/badge/MemoryOS-v1.2.0-7C4DFF?style=flat-square" alt="MemoryOS v1.2.0" />
   <img src="https://img.shields.io/badge/release-stable-00BFA5?style=flat-square" alt="Stable release" />
+  <img src="https://img.shields.io/badge/standard-CCA--MEMORYOS--1.0-00BFA5?style=flat-square" alt="CCA-MEMORYOS-1.0" />
+  <img src="https://img.shields.io/badge/MIP-1.0-1F8EED?style=flat-square" alt="Memory Investigation Package 1.0" />
   <img src="https://img.shields.io/badge/C%2B%2B-23-00599C?style=flat-square&amp;logo=cplusplus&amp;logoColor=white" alt="C++23" />
-  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-1F8EED?style=flat-square" alt="Windows, Linux, and macOS" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-pending-90A4AE?style=flat-square" alt="License pending" /></a>
 </p>
 
 <p align="center">
-  <a href="#overview">Overview</a> ·
-  <a href="#core-workflow">Workflow</a> ·
-  <a href="#memoryos-11-highlights">Highlights</a> ·
+  <a href="#why-memoryos">Why MemoryOS</a> ·
+  <a href="#platform">Platform</a> ·
+  <a href="#investigation-workflow">Workflow</a> ·
   <a href="#architecture">Architecture</a> ·
   <a href="#getting-started">Getting started</a> ·
-  <a href="#roadmap">Roadmap</a>
+  <a href="#documentation">Documentation</a>
 </p>
 
-## Overview
+<p align="center">
+  <a href="repositories/cca-studio/docs/media/memoryos-v1.2-demo.mp4">
+    <img src="repositories/cca-studio/docs/media/memoryos-v1.2-demo.gif" alt="MemoryOS v1.2 deterministic investigation workflow" width="100%" />
+  </a>
+</p>
 
-MemoryOS is a deterministic cognitive investigation environment built on a
-complete, Workspace-owned memory lifecycle. It moves task context into durable
-Long-Term Memory, derives semantic, episodic, and procedural knowledge without
-mutating the evidence, retrieves across those knowledge forms, and preserves
-complete provenance through Reflection.
+<p align="center">
+  <a href="repositories/cca-studio/docs/media/memoryos-v1.2-demo.mp4">Watch the full-quality MemoryOS v1.2 demonstration</a>
+</p>
 
-MemoryOS v1.1 makes that system observable. Engineers can:
+## Why MemoryOS
 
-- **Observe** an immutable cognitive state.
-- **Trace** a Reflection back to its originating evidence.
-- **Replay** the exact semantic steps that produced it.
-- **Compare** two observations without comparing layouts or pixels.
-- **Understand** where cognition remained stable and where it diverged.
+AI systems can produce an answer while hiding the exact evidence and
+transformations that led to it. MemoryOS makes those investigation facts
+portable, verifiable, and reproducible.
 
-Determinism is the difference between a visualization and an engineering tool.
-Given the same inputs and operation history, MemoryOS preserves the same
-identity, ordering, ownership, trace, replay, and comparison results. The
-renderer presents those results; it never invents them.
+MemoryOS records deterministic cognition rather than generating an explanation
+after the fact. Engineers can inspect origin evidence, semantic
+transformations, retrievals, reflections, transitions, and verification state
+without asking an AI model to interpret its own behavior.
 
-> [!NOTE]
-> MemoryOS is not an LLM wrapper, a vector database, or a chat-history store. It is an inspectable memory substrate and investigation system with explicit ownership, non-destructive derivation, atomic failure behavior, and evidence-preserving explanations.
+MemoryOS is not an LLM wrapper, vector database, or monitoring dashboard. It is
+an implementation-independent standard, a reference implementation, and a set
+of developer tools for evidence-based AI investigation.
 
-## Core Workflow
+## Platform
 
-```mermaid
+| Layer | Responsibility |
+|---|---|
+| **MemoryOS Standard** | Defines the implementation-independent contract for deterministic AI investigations. |
+| **Reference Implementation** | Implements the complete deterministic memory and investigation lifecycle. |
+| **Memory Investigation Package (MIP)** | Carries canonical, integrity-verified investigation state between tools and runtimes. |
+| **AI Runtime Adapters** | Translate settled OpenAI Agents SDK, Anthropic SDK, and LangGraph events without changing runtime truth. |
+| **Investigation Core** | Owns observation, trace, replay, comparison, regression, and evidence navigation. |
+| **MemoryOS SDK** | Exposes the Core consistently to JavaScript, Python, and C++. |
+| **MemoryOS CLI** | Brings the same SDK operations to terminals, scripts, and CI. |
+| **Memory Studio** | Presents the Living Connectome and the complete investigation workflow. |
+| **Conformance Suite** | Verifies compatibility with CCA-MEMORYOS-1.0 through deterministic evidence. |
+
+One authority computes investigation state. Every interface consumes that same
+state:
+
+~~~mermaid
 flowchart LR
-    Observe[Observe] -->|Select a Reflection| Trace[Trace]
-    Trace --> Replay[Replay]
-    Replay --> Compare[Compare]
-    Compare --> Return[Return to World]
-```
+    Runtime[AI Runtime] --> Adapter[Runtime Adapter]
+    Adapter --> MIP[Memory Investigation Package]
+    MIP --> Core[Investigation Core]
+    Core --> SDK[MemoryOS SDK]
+    SDK --> Studio[Memory Studio]
+    SDK --> CLI[MemoryOS CLI]
+    Standard[MemoryOS Standard] -. governs .-> MIP
+    Standard -. governs .-> Core
+    Standard -. governs .-> SDK
+    Conformance[Conformance Suite] -. verifies .-> Core
+~~~
 
-| Step | What the engineer sees |
-| :--- | :--- |
-| **Observe** | One stable semantic world built from an accepted immutable Observation Frame. |
-| **Trace** | The validated path from source evidence through semantic transformations and retrieval to a Reflection. |
-| **Replay** | Deterministic reconstruction of that path, one real trace element at a time. |
-| **Compare** | Semantic change between observations, followed by synchronized reconstruction of two traces when available. |
-| **Return** | The complete observed world, unchanged by the investigation. |
+## Investigation workflow
 
-Selecting a valid **Reflection** begins an investigation. Replay becomes
-available from its Trace; Compare becomes available after Replay completes and
-at least two observations exist.
+~~~mermaid
+flowchart LR
+    Observe --> Trace --> Replay --> Compare --> Investigate[Investigate evidence] --> Return[Return to world]
+~~~
 
-## MemoryOS 1.1 Highlights
+- **Observe** accepts a real Workspace observation and preserves its identity.
+- **Trace** reconstructs the immutable path from evidence to Reflection.
+- **Replay** reveals that path one semantic step at a time.
+- **Compare** reports deterministic differences between two observations.
+- **Investigate** navigates directly from a regression fact to its source
+  evidence without recomputing the investigation.
+- **Return** restores the stable semantic world and its spatial context.
 
-- **Stable Semantic World.** Immutable Observation Frames map to deterministic cognitive geography. Regions do not drift between observations, so engineers can build spatial memory and identify local change without losing orientation.
+Selecting a valid Reflection in Observe mode begins an investigation.
 
-- **Cognitive Trace.** Each trace is an immutable, validated, renderer-independent journey from evidence to the currently observed Reflection. Missing evidence and inconsistent relationships fail validation instead of being inferred.
+## MemoryOS v1.2 highlights
 
-- **Living Connectome.** The graph is the investigation surface. Stable cognitive regions provide context while an active Trace becomes the dominant visual story; unrelated topology remains visible but deliberately quiet.
+### Portable investigation truth
 
-- **Cognitive Replay.** Replay reconstructs an existing Trace in deterministic order. Every completed, current, and future step corresponds to a real trace element—there are no synthetic events or simulated cognition.
+The canonical [Memory Investigation Package](repositories/cca-studio/docs/memory-investigation-packages.md)
+defines stable identifiers, canonical ordering, validation, checksums, and
+compatibility rules. Exported investigations can be verified and imported
+without carrying UI state, generated explanations, or provider-specific
+semantics.
 
-- **Cognitive Evolution.** Evolution compares the semantic contents of two Observation Frames and reports only added, removed, or modified cognition. Layout, rendering, and pixels are never comparison inputs.
+### Provider-independent observation
 
-- **Comparative Reconstruction.** Two validated traces advance together in one semantic world. Shared cognition remains unified, while the exact semantic divergence becomes the focus of the investigation.
+[AI Runtime Adapters](repositories/cca-studio/docs/ai-runtime-adapters.md)
+translate completed OpenAI Agents SDK, Anthropic SDK, and LangGraph runs into
+the same deterministic package contract. Adapters translate; they never infer
+cognition.
+
+### One Investigation Core
+
+The renderer-independent [Investigation Core](repositories/cca-studio/docs/investigation-core.md)
+is the sole authority for lifecycle transitions, Cognitive Trace, Replay,
+Evolution, Comparative Reconstruction, Regression, and Explorer navigation.
+
+### SDK and CLI
+
+The [MemoryOS SDK](repositories/cca-sdk/README.md) provides JavaScript, Python,
+and C++ access. The [MemoryOS CLI](repositories/memoryos-cli/README.md) exposes
+the same behavior for local workflows and automation, with deterministic human
+and JSON output.
+
+### Cognitive Regression
+
+[Cognitive Regression Analysis](repositories/cca-studio/docs/cognitive-regression.md)
+compares two investigations and reports only observed differences in evidence,
+retrieval, reflection, replay, evolution, verification, transitions, and
+lifecycle state.
+
+### Investigation Explorer
+
+The [Cognitive Investigation Explorer](repositories/cca-studio/docs/cognitive-investigation-explorer.md)
+moves from a regression result to the exact deterministic evidence that caused
+it. It performs no replay, inference, ranking, or generated explanation.
+
+### Open standard and conformance
+
+[CCA-MEMORYOS-1.0](https://github.com/moelsaka01/memoryos-specification)
+defines the open MemoryOS Standard. The
+[official Conformance Suite](repositories/cca-conformance/README.md) binds its
+normative requirements to reproducible evidence and Reference Implementation
+assessment.
 
 ## Architecture
 
-MemoryOS separates cognitive truth from presentation. MemoryOS 1.0 cognitive
-state is supplied through a detached Studio snapshot; Runtime implementation
-state is explicitly excluded. Immutable investigation models are computed
-before the renderer receives them.
+MemoryOS separates cognition, investigation, programmability, automation, and
+presentation:
 
-```mermaid
+~~~mermaid
 flowchart TB
-    Runtime[MemoryOS 1.0 cognitive state]
-    Observation[Immutable Observation Frame]
-    Trace[Validated Cognitive Trace]
-    Replay[Deterministic Replay]
-    Evolution[Semantic Evolution]
-    Comparative[Comparative Reconstruction]
+    Runtime[MemoryOS Runtime<br/>owns cognition]
+    Observation[Immutable Observation]
+    Core[Investigation Core<br/>owns investigation execution]
+    Trace[Cognitive Trace]
+    Replay[Cognitive Replay]
+    Evolution[Cognitive Evolution]
     Regression[Cognitive Regression]
-    Explorer[Cognitive Investigation Explorer]
-    Core[Investigation Core]
-    SDK[MemoryOS SDK]
-    Renderer[Living Connectome renderer]
+    Explorer[Investigation Explorer]
+    SDK[MemoryOS SDK<br/>owns programmability]
+    CLI[MemoryOS CLI<br/>owns automation]
+    Studio[Memory Studio<br/>owns presentation]
 
-    Runtime --> Observation
-    Observation --> Core
-    Core --> Trace
-    Core --> Replay
-    Core --> Evolution
-    Core --> Comparative
-    Core --> Regression
-    Regression --> Explorer
-    Replay --> SDK
-    Evolution --> SDK
-    Comparative --> SDK
-    Regression --> SDK
-    Explorer --> SDK
-    SDK --> Renderer
-```
+    Runtime --> Observation --> Core
+    Core --> Trace --> Replay --> Evolution
+    Core --> Regression --> Explorer
+    Core --> SDK
+    SDK --> CLI
+    SDK --> Studio
+~~~
 
-The boundary is intentional:
+The renderer never computes cognition. Layout is stable and deterministic;
+Replay reconstructs actual trace elements; Regression compares semantic state,
+not pixels; and Explorer terminates at evidence already held by the Core.
 
-1. Memory Assets remain owned by exactly one Workspace.
-2. Long-Term Memory remains the authoritative evidence layer.
-3. Derived knowledge keeps its own identity and explicit source references.
-4. Observation never transfers ownership or mutates cognitive state.
-5. Trace, Replay, Evolution, Comparative Reconstruction, Cognitive Regression, and evidence navigation are deterministic engines—not renderer behavior.
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the complete platform boundary and
+dependency rules.
 
-MemoryOS is the product layer in the broader Cognitive Computing Architecture
-workspace. IM-001 through IM-006 provide its engineering, compiler, Runtime,
-Representation, Process, and Persistence foundations. See
-[ARCHITECTURE.md](ARCHITECTURE.md) for the governed boundaries and dependency
-direction, and the [Studio documentation](repositories/cca-studio/docs/README.md)
-for the investigation architecture.
+## Screenshots
 
-MemoryOS 1.2 exposes the frozen Investigation Core through a thin, versioned
-[SDK facade](repositories/cca-sdk/README.md). Studio imports that facade rather
-than the Core. Python and C++ retain one private Core binding per SDK instance;
-the binding transports explicit commands and immutable results but implements
-no investigation behavior. The official
-[MemoryOS CLI](repositories/memoryos-cli/README.md) is an independent SDK
-consumer for deterministic shell, CI, and JSON Lines automation. MO-1206 adds
-read-only Cognitive Regression Analysis to the same Core and exposes its exact
-reports through every SDK language and the CLI. MO-1207 adds the Cognitive
-Investigation Explorer, which follows canonical pointers already present in
-those reports without replay or inference.
+All images below were captured from the released production application.
 
-MO-1208 publishes **CCA-MEMORYOS-1.0**, the implementation-independent
-MemoryOS Standard, and activates the official
-[MemoryOS Conformance Suite](repositories/cca-conformance/README.md).
-MemoryOS 1.2.0 is the initial Reference Implementation of that Standard; the
-implementation is conformance evidence, not a normative definition of
-MemoryOS behavior. The authoritative publication is maintained separately at
-`cca-specifications/specifications/CCA-MEMORYOS-1.0/`.
+| Mission Control | Cognitive Replay |
+|---|---|
+| [![Mission Control](repositories/cca-studio/docs/screenshots/memoryos-v1.2-mission-control.jpg)](repositories/cca-studio/docs/screenshots/memoryos-v1.2-mission-control.jpg) | [![Cognitive Replay](repositories/cca-studio/docs/screenshots/memoryos-v1.2-cognitive-replay.jpg)](repositories/cca-studio/docs/screenshots/memoryos-v1.2-cognitive-replay.jpg) |
 
-## Getting Started
+### Investigation Explorer
 
-### 1. Run Mission Control
+[![Investigation Explorer](repositories/cca-studio/docs/screenshots/memoryos-v1.2-investigation-explorer.jpg)](repositories/cca-studio/docs/screenshots/memoryos-v1.2-investigation-explorer.jpg)
 
-Memory Studio has no npm dependencies. With Git and Node.js 20 or newer:
+## Getting started
 
-```bash
-git clone https://github.com/moelsaka01/cca-workspace.git
-cd cca-workspace
+### Prerequisites
+
+- Node.js 20 or newer for Studio, CLI, SDK, and conformance workflows.
+- CMake 3.28 or newer and a C++23 toolchain for the native workspace.
+- Python 3.12 or newer for Python SDK and complete conformance evidence.
+
+### Clone
+
+~~~console
+git clone https://github.com/moelsaka01/memoryos-specification.git
+cd memoryos-specification
+~~~
+
+### Run Memory Studio
+
+~~~console
 node repositories/cca-studio/scripts/serve.mjs
-```
+~~~
 
-Open [http://127.0.0.1:4173/](http://127.0.0.1:4173/). The included detached
-observation is deterministic and requires no backend.
+Open [http://127.0.0.1:4173](http://127.0.0.1:4173), choose **Observe**, and
+select a valid Reflection to begin Trace.
 
-### 2. Build and verify the complete workspace
+### Run the CLI
 
-The full C++ workspace requires a C++23 compiler, CMake 3.28 or newer, Ninja,
-Git, and Python 3.12 or newer. The first bootstrap uses the repository-pinned
-vcpkg checkout.
+~~~console
+node repositories/memoryos-cli/bin/memoryos.js version
+node repositories/memoryos-cli/bin/memoryos.js help
+~~~
 
-```bash
-bash scripts/bootstrap.sh
-cmake --build --preset default
-ctest --preset default
-```
+Continue with the [CLI quick start](repositories/memoryos-cli/docs/quick-start.md)
+or the [SDK developer guide](repositories/cca-sdk/docs/developer-guide.md).
 
-<details>
-  <summary><strong>Windows PowerShell</strong></summary>
+### Build and test the workspace
 
-```powershell
+~~~powershell
 pwsh -File scripts/bootstrap.ps1
 cmake --build --preset default
 ctest --preset default
-```
-
-</details>
-
-For the warnings-as-errors verification profile:
-
-```bash
-cmake --preset ci
-cmake --build --preset ci
-ctest --preset ci
 npm --prefix repositories/cca-studio test
 npm --prefix repositories/cca-conformance test
-```
+~~~
 
-See [developer setup](docs/developer-setup.md) and
-[build instructions](docs/build-instructions.md) for all supported presets and
-tooling.
+Linux and macOS users can run bash scripts/bootstrap.sh before using the same
+CMake and npm commands.
 
-### 3. Investigate cognition
+## Repository structure
 
-1. Start in **Observe** and inspect the stable semantic world.
-2. Select a valid **Reflection** to enter Trace.
-3. Choose **Reconstruct** to begin Replay; use Play, Pause, Previous, Next, or Restart.
-4. Accept another observation and complete Replay to enable **Compare**.
-5. Use **Compare traces** for synchronized Comparative Reconstruction.
-6. Choose **Return to World** to leave the investigation without changing cognition.
+~~~text
+.
+├── repositories/
+│   ├── cca-core/          # Deterministic runtime and MemoryOS capabilities
+│   ├── cca-studio/        # Investigation Core and production Studio
+│   ├── cca-sdk/           # JavaScript, Python, and C++ SDKs
+│   ├── memoryos-cli/      # SDK-backed command-line interface
+│   └── cca-conformance/   # MemoryOS Standard conformance suite
+├── specification/         # Canonical CCA specification format
+├── docs/                  # Workspace and release documentation
+├── examples/              # Executable reference examples
+├── tests/                 # Workspace-level verification
+└── tools/                 # Standards and conformance tooling
+~~~
 
-### 4. Automate through the SDK-backed CLI
+The wider CCA workspace remains the engineering foundation beneath MemoryOS.
+IM-001 through IM-006 are retained as its foundational architecture, runtime,
+representation, process, persistence, and integration milestones.
 
-The workspace executable requires Node.js 20 or newer and no external npm
-packages:
+## Documentation
 
-```bash
-node repositories/memoryos-cli/bin/memoryos.js help
-node repositories/memoryos-cli/bin/memoryos.js verify investigation.mip --json
-node repositories/memoryos-cli/bin/memoryos.js regression baseline.mip candidate.mip --json
-node repositories/memoryos-cli/bin/memoryos.js investigate regression.json --reflection reflection-17
-```
+- [Documentation index](docs/README.md)
+- [Architecture](ARCHITECTURE.md)
+- [MemoryOS Standard repository](https://github.com/moelsaka01/memoryos-specification)
+- [Conformance Suite](repositories/cca-conformance/README.md)
+- [Reference Implementation guide](repositories/cca-conformance/docs/reference-implementation-guide.md)
+- [Compatibility guide](repositories/cca-conformance/docs/compatibility-guide.md)
+- [Certification guide](repositories/cca-conformance/docs/certification-guide.md)
+- [MIP guide](repositories/cca-studio/docs/memory-investigation-packages.md)
+- [Investigation Core](repositories/cca-studio/docs/investigation-core.md)
+- [SDK reference](repositories/cca-sdk/docs/api-reference.md)
+- [CLI reference](repositories/memoryos-cli/docs/command-reference.md)
+- [Cognitive Regression](repositories/cca-studio/docs/cognitive-regression.md)
+- [Investigation Explorer](repositories/cca-studio/docs/cognitive-investigation-explorer.md)
+- [Release notes](RELEASE_NOTES.md)
+- [Changelog](CHANGELOG.md)
+- [Known issues](KNOWN_ISSUES.md)
+- [Roadmap](ROADMAP.md)
 
-Optionally link the `memoryos` command to this checkout with
-`cd repositories/memoryos-cli && npm link`. Replay and comparison require
-explicit package Trace selectors. Regression accepts two verified MIPs and
-reports only Core-observed differences; the CLI never infers cognition.
-
-## Repository Structure
-
-| Path | Purpose |
-| :--- | :--- |
-| [`repositories/cca-core`](repositories/cca-core) | MemoryOS capabilities plus the Runtime, Representation, Process, and Persistence foundations. |
-| [`repositories/cca-studio`](repositories/cca-studio) | The frozen Memory Studio contract, Mission Control UI, single Investigation Core—including Cognitive Regression and the MO-1207 Explorer—canonical MIP implementation, dependency-free AI runtime adapters, tests, media, and documentation. |
-| [`repositories/cca-sdk`](repositories/cca-sdk) | The JavaScript, Python, and native C++ SDK facades, private Core binding, regression and evidence-navigation APIs, examples, tests, and conformance evidence. |
-| [`repositories/memoryos-cli`](repositories/memoryos-cli) | The standalone, scriptable SDK client, including deterministic regression analysis, evidence navigation, and JSON automation. |
-| [`repositories/cca-conformance`](repositories/cca-conformance) | The official deterministic CCA-MEMORYOS-1.0 conformance suite, pinned requirement manifest, schemas, reports, and Reference Implementation guidance. |
-| [`docs`](docs) | Workspace engineering, compiler, build, and contributor documentation. |
-| [`specification`](specification) | Canonical specification format and schema used by the CCA Standards Compiler. |
-
-The implementation is intentionally split across `cca-core` and `cca-studio`.
-`repositories/memoryos` is a reserved boundary, not a second MemoryOS
-implementation.
-
-## Release History
+## Release history
 
 | Release | Summary |
-| :--- | :--- |
-| **MemoryOS 1.0** | Established the deterministic memory lifecycle: Working Memory, Consolidation, Long-Term Memory, semantic, episodic, and procedural derivation, Retrieval, Reflection, Providers, and the frozen Studio contract. |
-| **MemoryOS 1.1 · v1.1.0** | Added observable cognition without changing the MemoryOS 1.0 runtime or public memory contracts. MO-1101 through MO-1108 delivered the Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and the unified production workflow. |
-| **MemoryOS 1.2 · in development** | Adds the canonical Memory Investigation Package (MO-1201), dependency-free adapters (MO-1202), one renderer-independent Investigation Core (MO-1203), public SDK facades (MO-1204), the SDK-only automation CLI (MO-1205), deterministic Cognitive Regression Analysis (MO-1206), direct regression-evidence navigation (MO-1207), and the implementation-independent MemoryOS Standard with its official conformance suite (MO-1208). |
+|---|---|
+| **MemoryOS 1.0** | Completed the Workspace-owned memory lifecycle: Working, Long-Term, Semantic, Episodic, Procedural, Retrieval, Consolidation, Reflection, Providers, and Studio. |
+| **MemoryOS 1.1** | Added the Stable Semantic World, Cognitive Trace, Living Connectome, deterministic Replay, Cognitive Evolution, and Comparative Reconstruction. |
+| **MemoryOS 1.2** | Added MIP, runtime adapters, one Investigation Core, SDK, CLI, Cognitive Regression, Investigation Explorer, the MemoryOS Standard, and its Conformance Suite. |
 
-See [CHANGELOG.md](CHANGELOG.md) for milestone-level engineering records and
-[RELEASE_NOTES.md](RELEASE_NOTES.md) for compatibility and verification details.
-
-## Known Limitations
-
-The current product-facing limitation is first-time **Observe → Trace**
-discoverability: Trace begins only after the engineer selects a valid
-Reflection. This does not affect Runtime behavior, determinism, Trace
-correctness, Replay, Evolution, Comparative Reconstruction, public APIs, or
-architecture.
-
-See [KNOWN_ISSUES.md](KNOWN_ISSUES.md) for the documented workaround and
-repository publication notes.
+See [CHANGELOG.md](CHANGELOG.md) for milestone-level engineering history.
 
 ## Roadmap
 
-MemoryOS 1.2 begins with portable deterministic investigations: MIP-001 defines
-the canonical package, MO-1201 implements it, MO-1202 adds provider-neutral
-[AI runtime adapters](repositories/cca-studio/docs/ai-runtime-adapters.md), and
-MO-1203 establishes the single [Investigation Core](repositories/cca-studio/docs/investigation-core.md)
-used by all clients. MO-1204 adds the public
-[MemoryOS SDK](repositories/cca-sdk/README.md), migrates Studio to its
-JavaScript facade, and gives Python and C++ the same deterministic Core
-behavior through one private binding contract. MO-1205 adds the
-[MemoryOS CLI](repositories/memoryos-cli/README.md) as the first independent
-SDK consumer and keeps all automation downstream of the same execution
-authority. MO-1206 adds [Cognitive Regression Analysis](repositories/cca-sdk/docs/regression-guide.md):
-the Core compares two immutable investigations, while SDK and CLI consumers
-transport the same deterministic report without explanation, scoring, or
-inference.
-MO-1207 adds the
-[Cognitive Investigation Explorer](repositories/cca-studio/docs/cognitive-investigation-explorer.md),
-so engineers can move from that report to exact canonical evidence pointers
-through Studio, SDK, or `memoryos investigate` without rerunning Replay or
-duplicating investigation behavior.
-MO-1208 publishes CCA-MEMORYOS-1.0 and assesses MemoryOS 1.2.0 as its initial
-Reference Implementation through the
-[official conformance suite](repositories/cca-conformance/README.md). Standard,
-product, package, Core, SDK, CLI, and suite versions remain independently
-identified.
-Investigation onboarding and Reflection discoverability remain planned product
-refinements. None of this redesigns the MemoryOS 1.0 Runtime or the released
-MemoryOS 1.1 investigation architecture.
-
-See [ROADMAP.md](ROADMAP.md) for governed release themes and foundation history.
+MemoryOS 1.2 is the released platform baseline. Work after v1.2 focuses on
+adoption, interoperability, first-investigation onboarding, and conformance
+ecosystem maturity while preserving deterministic investigation architecture.
+See [ROADMAP.md](ROADMAP.md) for the maintained product direction.
 
 ## Contributing
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) and
-[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) before proposing a change. Contributions
-must preserve frozen public contracts, Workspace ownership, deterministic
-behavior, and dependency direction.
-
-External contribution intake remains paused until the project owner resolves
-the software license and inbound contribution terms.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing a change. Contributions
+must preserve frozen architecture, deterministic behavior, evidence provenance,
+and the single-authority Investigation Core.
 
 ## License
 
-No software license has been selected. [LICENSE](LICENSE) is a pending-decision
-notice, not an open-source license grant. Review it before using, copying,
-modifying, or distributing repository contents.
+The source license decision is pending. [LICENSE](LICENSE) is a notice, not an
+open-source grant. The MemoryOS Standard is published separately as an open
+technical standard; that does not change the source-code license.
 
 ---
 
 <div align="center">
-  <strong>MemoryOS v1.1.0</strong><br />
-  Observe. Trace. Replay. Compare. Understand.
+  <strong>MemoryOS v1.2.0</strong><br />
+  Deterministic AI investigations, from runtime truth to verifiable evidence.
 </div>
