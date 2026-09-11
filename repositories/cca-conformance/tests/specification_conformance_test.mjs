@@ -368,7 +368,7 @@ test("CCA-MOS-CONF-007: reports bind every required claim identity and assessmen
         reviewRecordId,
         implementationRevisionDigest: implementation.revision,
         result: "PASS",
-        durableEvidence: `evidence/reference-implementation-review-1.2.0.json#/attestations/${index}`,
+        durableEvidence: `evidence/reference-implementation-review-1.2.1.json#/attestations/${index}`,
       })),
   };
   validateReviewArtifact(review, manifest);
@@ -426,7 +426,7 @@ test("CCA-MOS-CONF-005: missing renamed skipped or duplicate selectors yield req
       requirementId: id,
       result: "PASS",
       observedOutcome: "Retained deterministic review outcome.",
-      durableEvidence: `evidence/reference-implementation-review-1.2.0.json#/attestations/${index}`,
+      durableEvidence: `evidence/reference-implementation-review-1.2.1.json#/attestations/${index}`,
     }));
   const executions = [...new Set(manifest.requirements.flatMap(({ executionReferences }) => executionReferences))]
     .sort()

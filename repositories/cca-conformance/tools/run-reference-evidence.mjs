@@ -30,7 +30,9 @@ import {
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const workspaceRoot = resolve(root, "../..");
-const publishedStandardRoot = resolve(workspaceRoot, "../cca-specifications/specifications/CCA-MEMORYOS-1.0");
+const publishedStandardRoot = process.env.MEMORYOS_STANDARD_ROOT
+  ? resolve(process.env.MEMORYOS_STANDARD_ROOT)
+  : resolve(workspaceRoot, "../cca-specifications/specifications/CCA-MEMORYOS-1.0");
 const compare = (left, right) => left < right ? -1 : left > right ? 1 : 0;
 
 function usage() {
@@ -85,6 +87,16 @@ function toolRecord(path, version) {
   const absolute = resolve(path);
   assert.equal(statSync(absolute).isFile(), true, `tool is not a file: ${absolute}`);
   return { path: absolute, sha256: sha256(readFileSync(absolute)), version };
+}
+
+function compilerEnvironment(source) {
+  try {
+    return JSON.parse(source);
+  } catch (jsonError) {
+    const libDirectory = /^\s*\.lib_dir = ("(?:\\.|[^"])*"),$/mu.exec(source)?.[1];
+    assert.ok(libDirectory, `compiler environment output is unrecognized: ${jsonError.message}`);
+    return { lib_dir: JSON.parse(libDirectory) };
+  }
 }
 
 function assertWrapperDelegates(wrapperPath, compilerPath, subcommand) {
@@ -374,8 +386,8 @@ async function createNativeBuildAttestation(selected, sourceRevision, buildInput
   const compilerEnvironmentProbe = spawnSync(compilerPath, ["env"], { encoding: "utf8", windowsHide: true });
   assert.ifError(compilerEnvironmentProbe.error);
   assert.equal(compilerEnvironmentProbe.status, 0, "compiler environment probe failed");
-  const compilerEnvironment = JSON.parse(compilerEnvironmentProbe.stdout);
-  const zigLibraryRoot = resolve(compilerEnvironment.lib_dir);
+  const compilerEnvironmentRecord = compilerEnvironment(compilerEnvironmentProbe.stdout);
+  const zigLibraryRoot = resolve(compilerEnvironmentRecord.lib_dir);
   assert.equal(statSync(zigLibraryRoot).isDirectory(), true, "compiler library root is unavailable");
   const cmakeSystemProbe = spawnSync(cmakePath, ["--system-information"], {
     encoding: "utf8",
@@ -500,7 +512,7 @@ await assert.rejects(access(REFERENCE_EVIDENCE_PATH), "retained evidence already
 const manifest = await readManifest(resolve(selected["--manifest"]));
 const sourceInventory = validateManifestInputsCurrent(manifest);
 const revision = sha256(Buffer.from(canonicalJson(sourceInventory), "utf8"));
-const implementation = Object.freeze({ name: "MemoryOS Reference Implementation", version: "1.2.0", revision });
+const implementation = Object.freeze({ name: "MemoryOS Reference Implementation", version: "1.2.1", revision });
 for (const group of manifest.evidenceGroups) assert.deepEqual(group.implementation, implementation);
 function executionBinding(id) {
   const attribution = [...new Map(
