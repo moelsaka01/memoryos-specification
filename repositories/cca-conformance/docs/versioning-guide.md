@@ -11,7 +11,7 @@ CCA-MEMORYOS-1.0 `versioning.md` and `compatibility.md`.
 | Concern | MO-1208 baseline |
 | --- | --- |
 | MemoryOS Standard | CCA-MEMORYOS-1.0 / Standard 1.0 |
-| Reference Implementation | MemoryOS 1.2.0 |
+| Reference Implementation | MemoryOS 1.2.1 |
 | Conformance specification | 1.0.0 |
 | Conformance Suite | 1.0.0 |
 | Investigation Core | 1.0.0 |
@@ -26,6 +26,10 @@ CCA-MEMORYOS-1.0 `versioning.md` and `compatibility.md`.
 These identifiers describe different contracts. They are not aliases and do
 not advance together. A conformance report records the complete assessed
 combination.
+
+MemoryOS v1.2.0 remains the immutable initial historical assessment. v1.2.1
+is a corrective implementation release against the same frozen Standard,
+component contracts, and wire-format identities.
 
 ## Change classification
 

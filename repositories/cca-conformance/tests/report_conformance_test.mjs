@@ -34,7 +34,7 @@ const evidencePath = process.env.MEMORYOS_CONFORMANCE_EVIDENCE
   : REFERENCE_EVIDENCE_PATH;
 const markdownPath = process.env.MEMORYOS_CONFORMANCE_MARKDOWN
   ? resolve(process.env.MEMORYOS_CONFORMANCE_MARKDOWN)
-  : new URL("../reports/reference-implementation-1.2.0.md", import.meta.url);
+  : new URL("../reports/reference-implementation-1.2.1.md", import.meta.url);
 
 function reproducibleProjection(execution) {
   const projection = structuredClone(execution);

@@ -35,7 +35,7 @@ async function main() {
   const [command, ...arguments_] = process.argv.slice(2);
   if (command === "validate") {
     assert.ok(arguments_.length <= 2, usage());
-    const reportPath = resolve(arguments_[0] ?? "reports/reference-implementation-1.2.0.json");
+    const reportPath = resolve(arguments_[0] ?? "reports/reference-implementation-1.2.1.json");
     assert.equal(reportPath, REFERENCE_REPORT_PATH, "bundled report validation requires the canonical report path");
     const report = await readCanonicalJson(reportPath);
     const retainedManifestPath = resolve(

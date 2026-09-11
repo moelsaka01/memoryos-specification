@@ -11,26 +11,26 @@ export const WORKSPACE_ROOT = resolve(CONFORMANCE_ROOT, "../..");
 export const MANIFEST_PATH = resolve(CONFORMANCE_ROOT, "requirements-manifest.json");
 export const REFERENCE_REPORT_PATH = resolve(
   CONFORMANCE_ROOT,
-  "reports/reference-implementation-1.2.0.json",
+  "reports/reference-implementation-1.2.1.json",
 );
 export const REFERENCE_EVIDENCE_PATH = resolve(
   CONFORMANCE_ROOT,
-  "evidence/reference-implementation-1.2.0.json",
+  "evidence/reference-implementation-1.2.1.json",
 );
-export const REFERENCE_EVIDENCE_URI = "evidence/reference-implementation-1.2.0.json";
+export const REFERENCE_EVIDENCE_URI = "evidence/reference-implementation-1.2.1.json";
 export function retainedEvidenceFilename(digest) {
   requireString(digest, "retained evidence digest", SHA256_PATTERN);
-  return `reference-implementation-1.2.0-${digest.replace(":", "-")}.json`;
+  return `reference-implementation-1.2.1-${digest.replace(":", "-")}.json`;
 }
 export const REFERENCE_REVIEW_PATH = resolve(
   CONFORMANCE_ROOT,
-  "evidence/reference-implementation-review-1.2.0.json",
+  "evidence/reference-implementation-review-1.2.1.json",
 );
-export const REFERENCE_REVIEW_URI = "evidence/reference-implementation-review-1.2.0.json";
-export const REFERENCE_REPORT_URI = "reports/reference-implementation-1.2.0.json";
+export const REFERENCE_REVIEW_URI = "evidence/reference-implementation-review-1.2.1.json";
+export const REFERENCE_REPORT_URI = "reports/reference-implementation-1.2.1.json";
 export const REFERENCE_MARKDOWN_PATH = resolve(
   CONFORMANCE_ROOT,
-  "reports/reference-implementation-1.2.0.md",
+  "reports/reference-implementation-1.2.1.md",
 );
 export const CLI_PATH = resolve(WORKSPACE_ROOT, "repositories/memoryos-cli/bin/memoryos.js");
 export const STUDIO_ROOT = resolve(WORKSPACE_ROOT, "repositories/cca-studio");
@@ -996,7 +996,7 @@ export function validateReviewAttestations(attestations, manifest, implementatio
     if (attestation.result === "FAIL") requireString(attestation.reason, `${requirement.id} review reason`);
     assert.equal(
       attestation.durableEvidence,
-      `evidence/reference-implementation-review-1.2.0.json#/attestations/${index}`,
+      `evidence/reference-implementation-review-1.2.1.json#/attestations/${index}`,
     );
   }
   return attestations;
