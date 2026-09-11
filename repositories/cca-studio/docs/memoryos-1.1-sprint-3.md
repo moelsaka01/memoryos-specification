@@ -38,12 +38,14 @@ Sprint 3 adds no force layout, randomness, clock, timer, polling, backend abstra
 
 ## Visual verification
 
-The captures below come from the local application at `http://127.0.0.1:4173/#reflection` using the injected deterministic reference observation.
+The captures came from the local application at `http://127.0.0.1:4173/#reflection` using the injected deterministic reference observation.
 
-- Before: [`screenshots/memory-studio-sprint3-before.png`](screenshots/memory-studio-sprint3-before.png)
-- After: [`screenshots/memory-studio-sprint3-after.png`](screenshots/memory-studio-sprint3-after.png)
-- Follow origin: [`screenshots/memory-studio-sprint3-follow-origin.png`](screenshots/memory-studio-sprint3-follow-origin.png)
-- Silent interaction demo: [`media/memory-studio-sprint3-living-connectome.gif`](media/memory-studio-sprint3-living-connectome.gif)
+The historical capture artifacts named below were reviewed during this milestone but are not retained in the v1.2.1 source archive. Their truthful filenames are preserved as provenance only, not as supported links.
+
+- Before: `screenshots/memory-studio-sprint3-before.jpg`
+- After: `screenshots/memory-studio-sprint3-after.jpg`
+- Follow origin: `screenshots/memory-studio-sprint3-follow-origin.jpg`
+- Silent interaction demo: `media/memory-studio-sprint3-living-connectome.gif`
 
 ## Verification contract
 

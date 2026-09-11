@@ -128,14 +128,16 @@ Automated web tests cover:
 
 ## Release evidence
 
-Every image below is a capture of the running local application. The changed observation was supplied through the existing six-operation injected-host boundary and the capture adapter was removed after verification.
+Every image was a capture of the running local application. The changed observation was supplied through the existing six-operation injected-host boundary and the capture adapter was removed after verification.
 
-- [Before comparison](screenshots/memory-studio-mo1107-before-comparison.png)
-- [Cognitive Evolution before explicit reconstruction](screenshots/memory-studio-mo1107-cognitive-evolution.png)
-- [Synchronized reconstruction ready](screenshots/memory-studio-mo1107-reconstruction-ready.png)
-- [Evidence divergence](screenshots/memory-studio-mo1107-evidence-divergence.png)
-- [Semantic Transformation divergence](screenshots/memory-studio-mo1107-semantic-divergence.png)
-- [Retrieval divergence](screenshots/memory-studio-mo1107-retrieval-divergence.png)
-- [Reflection divergence](screenshots/memory-studio-mo1107-reflection-divergence.png)
-- [Reconstruction complete](screenshots/memory-studio-mo1107-reconstruction-complete.png)
-- [30-second silent demo](media/memory-studio-mo1107-comparative-reconstruction.gif)
+The historical capture artifacts named below were reviewed during this milestone but are not retained in the v1.2.1 source archive. Their truthful filenames are preserved as provenance only, not as supported links.
+
+- Before comparison: `screenshots/memory-studio-mo1107-before-comparison.jpg`
+- Cognitive Evolution before explicit reconstruction: `screenshots/memory-studio-mo1107-cognitive-evolution.jpg`
+- Synchronized reconstruction ready: `screenshots/memory-studio-mo1107-reconstruction-ready.jpg`
+- Evidence divergence: `screenshots/memory-studio-mo1107-evidence-divergence.jpg`
+- Semantic Transformation divergence: `screenshots/memory-studio-mo1107-semantic-divergence.jpg`
+- Retrieval divergence: `screenshots/memory-studio-mo1107-retrieval-divergence.jpg`
+- Reflection divergence: `screenshots/memory-studio-mo1107-reflection-divergence.jpg`
+- Reconstruction complete: `screenshots/memory-studio-mo1107-reconstruction-complete.jpg`
+- 30-second silent demo: `media/memory-studio-mo1107-comparative-reconstruction.gif`

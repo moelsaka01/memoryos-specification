@@ -86,8 +86,10 @@ Automated tests verify in-place replay projection, renderer/controller separatio
 
 Release evidence:
 
-- [`screenshots/memory-studio-sprint5-semantic-world.png`](screenshots/memory-studio-sprint5-semantic-world.png)
-- [`screenshots/memory-studio-sprint5-investigation-ready.png`](screenshots/memory-studio-sprint5-investigation-ready.png)
-- [`screenshots/memory-studio-sprint5-reconstruction.png`](screenshots/memory-studio-sprint5-reconstruction.png)
-- [`screenshots/memory-studio-sprint5-reconstruction-complete.png`](screenshots/memory-studio-sprint5-reconstruction-complete.png)
-- [`media/memory-studio-sprint5-cognitive-polish.gif`](media/memory-studio-sprint5-cognitive-polish.gif)
+The historical capture artifacts named below were reviewed during this milestone but are not retained in the v1.2.1 source archive. Their truthful filenames are preserved as provenance only, not as supported links.
+
+- `screenshots/memory-studio-sprint5-semantic-world.jpg`
+- `screenshots/memory-studio-sprint5-investigation-ready.jpg`
+- `screenshots/memory-studio-sprint5-reconstruction.jpg`
+- `screenshots/memory-studio-sprint5-reconstruction-complete.jpg`
+- `media/memory-studio-sprint5-cognitive-polish.gif`

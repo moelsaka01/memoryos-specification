@@ -130,11 +130,13 @@ The unchanged native Studio and complete workspace suites remain the compatibili
 
 ## Release evidence
 
-All images are captures of the running local application. The changed-state captures use the documented injected-host boundary to submit two deterministic, valid observations; the capture adapter is not part of the product tree.
+All images were captures of the running local application. The changed-state captures used the documented injected-host boundary to submit two deterministic, valid observations; the capture adapter was not part of the product tree.
 
-- [Before comparison](screenshots/memory-studio-mo1106-before-compare.png)
-- [Cognitive Evolution](screenshots/memory-studio-mo1106-cognitive-evolution.png)
-- [Added Evidence inspection](screenshots/memory-studio-mo1106-added-evidence.png)
-- [Evolved Reflection inspection](screenshots/memory-studio-mo1106-evolved-reflection.png)
-- [Identical-observation verification](screenshots/memory-studio-mo1106-identical-observations.png)
-- [30-second silent demo](media/memory-studio-mo1106-cognitive-evolution.gif)
+The historical capture artifacts named below were reviewed during this milestone but are not retained in the v1.2.1 source archive. Their truthful filenames are preserved as provenance only, not as supported links.
+
+- Before comparison: `screenshots/memory-studio-mo1106-before-compare.jpg`
+- Cognitive Evolution: `screenshots/memory-studio-mo1106-cognitive-evolution.jpg`
+- Added Evidence inspection: `screenshots/memory-studio-mo1106-added-evidence.jpg`
+- Evolved Reflection inspection: `screenshots/memory-studio-mo1106-evolved-reflection.jpg`
+- Identical-observation verification: `screenshots/memory-studio-mo1106-identical-observations.jpg`
+- 30-second silent demo: `media/memory-studio-mo1106-cognitive-evolution.gif`

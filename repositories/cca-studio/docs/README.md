@@ -24,9 +24,7 @@ engineering question you need to answer.
 | Follow the integrated MemoryOS 1.1 engineering workflow | [Integration & Workflow Unification](memoryos-1.1-integration-workflow.md) |
 | Review MemoryOS 1.2 release status | [Release notes](../../../RELEASE_NOTES.md) · [Known issues](../../../KNOWN_ISSUES.md) · [Changelog](../../../CHANGELOG.md) |
 | Watch the released product workflow | [Official MemoryOS 1.2 demonstration](media/memoryos-v1.2-demo.gif) · [Full-quality MP4](media/memoryos-v1.2-demo.mp4) |
-| Review measured engineering evidence | [Engineering benchmark](memoryos-1.1-engineering-benchmark.md) |
-| Review documentation and media integrity | [Documentation audit](memoryos-1.1-documentation-audit.md) |
-| Review repository publication integrity | [RC-001B repository audit](memoryos-1.1-rc-repository-audit.md) |
+| Review historical MemoryOS 1.1 engineering and repository evidence | Historical benchmark and audit artifacts are not retained in the v1.2.1 source archive |
 | Capture the MemoryOS 1.0 product story | [GitHub screenshot specification](github-screenshot-specification.md) |
 
 ## MemoryOS 1.2 integration
@@ -106,10 +104,14 @@ The focused edge suites are:
 
 ## MemoryOS 1.1 milestone map
 
+The standalone MO-1101 and MO-1102 milestone records are not retained in the
+v1.2.1 source archive. Their released roles are preserved below and summarized
+by the [Engineering architecture review](memoryos-1.1-engineering-architecture-review.md).
+
 | Milestone | Responsibility | Renderer-independent truth |
 |---|---|---|
-| [MO-1101 — Stable Semantic World](memoryos-1.1-sprint-1.md) | Accept immutable observations into deterministic cognitive geography | Observation Frames, canonical identity, stable layout |
-| [MO-1102 — Cognitive Trace](memoryos-1.1-sprint-2.md) | Reconstruct one Reflection from exact evidence and relationships | Immutable trace membership, order, validation, serialization |
+| MO-1101 — Stable Semantic World | Accept immutable observations into deterministic cognitive geography | Observation Frames, canonical identity, stable layout |
+| MO-1102 — Cognitive Trace | Reconstruct one Reflection from exact evidence and relationships | Immutable trace membership, order, validation, serialization |
 | [MO-1103 — Living Connectome](memoryos-1.1-sprint-3.md) | Present the trace as the dominant investigation | Consumes the Stable Semantic World and Cognitive Trace |
 | [MO-1104 — Cognitive Replay](memoryos-1.1-sprint-4.md) | Reveal one real trace element at a time | Immutable replay state and reference-only projection |
 | [MO-1105 — Cognitive Polish](memoryos-1.1-sprint-5.md) | Preserve investigation continuity and calm hierarchy | Reuses the existing replay and trace models unchanged |
@@ -151,38 +153,23 @@ semantic activity.
 
 ## Engineering Excellence evidence
 
-| Review | Evidence |
-|---|---|
-| Performance | [Measured performance report](memoryos-1.1-performance-report.md) · [raw engine results](../benchmarks/memoryos-1.1-benchmark-results.json) · [raw browser results](../benchmarks/memoryos-1.1-browser-render-results.json) |
-| Scalability | [100–10,000-node validation report](memoryos-1.1-scalability-report.md) |
-| Reproducibility | [Engineering benchmark contract](memoryos-1.1-engineering-benchmark.md) |
-| Product consistency | [UX audit](memoryos-1.1-ux-audit.md) |
-| Inclusive operation | [Accessibility audit](memoryos-1.1-accessibility-audit.md) |
-| Public release integrity | [Documentation audit](memoryos-1.1-documentation-audit.md) |
-| Release Candidate documentation | [RC-001A documentation freeze audit](memoryos-1.1-rc-documentation-audit.md) |
-| Release Candidate repository | [RC-001B repository audit](memoryos-1.1-rc-repository-audit.md) |
-| Architecture boundaries | [Engineering architecture review](memoryos-1.1-engineering-architecture-review.md) |
+MemoryOS 1.1 performance, scalability, benchmark, UX, accessibility,
+documentation-freeze, and repository-audit artifacts are historical and are
+not retained in the v1.2.1 source archive. The supported architecture record
+is the [Engineering architecture review](memoryos-1.1-engineering-architecture-review.md).
 
 ## Genuine visual evidence
 
-The following assets are repository-hosted captures of the running local application,
-not mockups or generated product images.
-
-The MemoryOS v1.2 row uses genuine JPEG frames plus the GIF and MP4 exported
-from the official production capture. The MO-1108 release row retains its true
-PNG and GIF assets; earlier milestone stills remain historical JPEG evidence
-with truthful `.jpg` extensions. Raw capture sequences are separated from
-release media and documented in the media manifest.
+The MemoryOS v1.2 assets are repository-hosted captures of the running local
+application, not mockups or generated product images. The row below uses
+genuine JPEG frames plus the GIF and MP4 exported from the official production
+capture. Historical MemoryOS 1.1 milestone screenshots and demonstrations
+named by older milestone records are not retained in the v1.2.1 source archive;
+those filenames remain provenance-only text in the applicable records.
 
 | Capability | Screenshot evidence | Silent demonstration |
 |---|---|---|
 | **MemoryOS 1.2 · v1.2.0** | [Mission Control](screenshots/memoryos-v1.2-mission-control.jpg) · [Cognitive Replay](screenshots/memoryos-v1.2-cognitive-replay.jpg) · [Investigation Explorer](screenshots/memoryos-v1.2-investigation-explorer.jpg) | [Official demonstration](media/memoryos-v1.2-demo.gif) · [Full-quality MP4](media/memoryos-v1.2-demo.mp4) |
-| **MemoryOS 1.1 · v1.1.0** | [Mission Control](screenshots/memory-studio-mo1108-mission-control.png) · [Trace](screenshots/memory-studio-mo1108-trace.png) · [Replay](screenshots/memory-studio-mo1108-replay.png) · [Evolution](screenshots/memory-studio-mo1108-evolution.png) · [Comparative](screenshots/memory-studio-mo1108-comparative.png) · [Mobile](screenshots/memory-studio-mo1108-mobile.png) | [Official 73-second demonstration](media/memoryos-1.1-official-demo.gif) · [30-second Engineering Excellence cut](media/memory-studio-mo1108-engineering-excellence.gif) |
-| Living Connectome | [Before](screenshots/memory-studio-sprint3-before.jpg) · [After](screenshots/memory-studio-sprint3-after.jpg) | [Trace-led investigation](media/memory-studio-sprint3-living-connectome.gif) |
-| Cognitive Replay | [Before](screenshots/memory-studio-sprint4-before-replay.jpg) · [Mid replay](screenshots/memory-studio-sprint4-mid-replay.jpg) · [Complete](screenshots/memory-studio-sprint4-completed-replay.jpg) | [Deterministic replay](media/memory-studio-sprint4-cognitive-replay.gif) |
-| Cognitive Polish | [Semantic world](screenshots/memory-studio-sprint5-semantic-world.jpg) · [Investigation](screenshots/memory-studio-sprint5-reconstruction.jpg) | [Investigation continuity](media/memory-studio-sprint5-cognitive-polish.gif) |
-| Cognitive Evolution | [Before](screenshots/memory-studio-mo1106-before-compare.jpg) · [Differences](screenshots/memory-studio-mo1106-cognitive-evolution.jpg) | [Observation comparison](media/memory-studio-mo1106-cognitive-evolution.gif) |
-| Comparative Reconstruction | [Ready](screenshots/memory-studio-mo1107-reconstruction-ready.jpg) · [Evidence divergence](screenshots/memory-studio-mo1107-evidence-divergence.jpg) · [Reflection divergence](screenshots/memory-studio-mo1107-reflection-divergence.jpg) | [Synchronized reconstruction](media/memory-studio-mo1107-comparative-reconstruction.gif) |
 
 ## Historical release material
 

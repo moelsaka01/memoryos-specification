@@ -299,26 +299,20 @@ difference.
 
 ### Visual evidence
 
-Every image below is a direct capture of the local production server at
-`http://127.0.0.1:43117/`. The demo is assembled only from successive real UI
-states; it contains no mock frame, synthetic cognition, or inferred event.
+Every image was a direct capture of the local production server at
+`http://127.0.0.1:43117/`. The demo was assembled only from successive real UI
+states; it contained no mock frame, synthetic cognition, or inferred event.
 
-- [Observe — calibrated 100% semantic world](media/mo-1108/observe-workspace.png)
-- [Trace — exact evidence-to-Reflection investigation](media/mo-1108/cognitive-trace.png)
-- [Replay — active deterministic reconstruction](media/mo-1108/cognitive-replay.png)
-- [Evolution — exact frame comparison](media/mo-1108/.demo-frames/15-evolution.png)
-- [Comparative Reconstruction — one stable world](media/mo-1108/comparative-reconstruction.png)
-- [Restored Replay checkpoint](media/mo-1108/.demo-frames/22-restored-replay.png)
-- [Returned semantic world](media/mo-1108/.demo-frames/23-returned-world.png)
-- [30-second silent integration demo](media/mo-1108/integration-workflow-demo.gif)
+The historical capture artifacts named below were reviewed during this milestone but are not retained in the v1.2.1 source archive. Their truthful filenames are preserved as provenance only, not as supported links.
 
-![Observe workspace](media/mo-1108/observe-workspace.png)
-
-![Cognitive Trace](media/mo-1108/cognitive-trace.png)
-
-![Comparative Reconstruction](media/mo-1108/comparative-reconstruction.png)
-
-![Observe to Trace to Replay to Compare to Return](media/mo-1108/integration-workflow-demo.gif)
+- Observe — calibrated 100% semantic world: `media/mo-1108/observe-workspace.jpg`
+- Trace — exact evidence-to-Reflection investigation: `media/mo-1108/cognitive-trace.jpg`
+- Replay — active deterministic reconstruction: `media/mo-1108/cognitive-replay.jpg`
+- Evolution — exact frame comparison: `media/source-frames/mo-1108-integration/15-evolution.jpg`
+- Comparative Reconstruction — one stable world: `media/mo-1108/comparative-reconstruction.jpg`
+- Restored Replay checkpoint: `media/source-frames/mo-1108-integration/22-restored-replay.jpg`
+- Returned semantic world: `media/source-frames/mo-1108-integration/23-returned-world.jpg`
+- 30-second silent integration demo: `media/mo-1108/integration-workflow-demo.gif`
 
 ## Release assessment
 

@@ -68,10 +68,12 @@ There is no page-load autoplay and no timeline scrubber.
 
 All captures were taken from the running local application with the deterministic reference observation.
 
-- Before Replay: [`screenshots/memory-studio-sprint4-before-replay.png`](screenshots/memory-studio-sprint4-before-replay.png)
-- Mid Replay: [`screenshots/memory-studio-sprint4-mid-replay.png`](screenshots/memory-studio-sprint4-mid-replay.png)
-- Completed Replay: [`screenshots/memory-studio-sprint4-completed-replay.png`](screenshots/memory-studio-sprint4-completed-replay.png)
-- 20-second silent Replay: [`media/memory-studio-sprint4-cognitive-replay.gif`](media/memory-studio-sprint4-cognitive-replay.gif)
+The historical capture artifacts named below were reviewed during this milestone but are not retained in the v1.2.1 source archive. Their truthful filenames are preserved as provenance only, not as supported links.
+
+- Before Replay: `screenshots/memory-studio-sprint4-before-replay.jpg`
+- Mid Replay: `screenshots/memory-studio-sprint4-mid-replay.jpg`
+- Completed Replay: `screenshots/memory-studio-sprint4-completed-replay.jpg`
+- 20-second silent Replay: `media/memory-studio-sprint4-cognitive-replay.gif`
 
 The silent demo is assembled from real browser captures taken during an actual Play run. It contains no generated cognitive frames.
 
