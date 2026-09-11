@@ -12,7 +12,7 @@ This deterministic report evaluates MemoryOS Reference Implementation 1.2.1 agai
 - Scope: complete (AI Runtime Adapter, CLI, Cognitive Investigation Explorer, Cognitive Regression, Investigation Core, MIP Integration, Native Investigation Artifacts, Runtime Observation Boundary, SDK)
 - Native projection profile: cca-studio-native-observation 1.1.0
 - Evidence root: evidence/reference-implementation-1.2.1.json
-- Evidence digest: sha256:009019173582c699de626394d1cea3dc924bac3f8a146b7ac174a92f79b14c61
+- Evidence digest: sha256:d2c03068ccf0e3e4aab8d82c9cb1f831010630445605ee27e566b1a0ad3074ec
 - Assessor: MemoryOS v1.2.1 Restoration Review
 - Assessment date: 2026-09-11
 - Assessment level: C2
