@@ -277,6 +277,7 @@ set(
   ../cca-studio/web/js/cognitive-trace.js
   ../cca-studio/web/js/deterministic-sequence-alignment.js
   ../cca-studio/web/js/investigation-core.js
+  ../cca-studio/web/js/memoryos-sdk.js
   ../cca-studio/web/js/memory-investigation-package.js
   ../cca-studio/web/js/mip-canonical.js
   ../cca-studio/web/js/observation-timeline.js

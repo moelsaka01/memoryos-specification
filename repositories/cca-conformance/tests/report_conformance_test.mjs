@@ -346,6 +346,6 @@ test("FAIL and NOT APPLICABLE derive only from explicit evidence status", async 
       ...assessment,
       nativeProjectionProfile: null,
     }),
-    /native projection profile is required/u,
+    /native projection profile must be an object/u,
   );
 });

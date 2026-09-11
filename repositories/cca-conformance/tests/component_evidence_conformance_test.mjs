@@ -67,7 +67,7 @@ test("Investigation Core and native lifecycle/artifact evidence passes", () => {
     "repositories/cca-studio/tests/investigation_core_test.mjs",
     "repositories/cca-studio/tests/memory_studio_integration_test.mjs",
     "repositories/cca-studio/tests/memory_studio_web_test.mjs",
-  ], 99);
+  ], 100);
 });
 
 test("the complete deterministic CCA-MIP conformance evidence passes", () => {

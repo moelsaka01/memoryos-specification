@@ -848,7 +848,7 @@ test("portable C3 assessments bind exact evidence, identities, scope, and all re
       { artifact: assessment, bytes: assessmentBytes, path: assessmentPath },
       normativeManifest,
     ),
-    /exact canonical JSON bytes/u,
+    /exact canonical UTF-8 JSON bytes/u,
   );
   for (const [label, artifact, bytes, suppliedAssessment] of [
     ["report", report, Buffer.from(`${canonicalJson(report)}\n`, "utf8"), { artifact: assessment, bytes: assessmentBytes, path: assessmentPath }],
