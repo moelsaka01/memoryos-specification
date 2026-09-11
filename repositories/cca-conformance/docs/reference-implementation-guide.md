@@ -12,7 +12,7 @@ Standard 1.0. The normative publication is
 | Item | Identity |
 | --- | --- |
 | Product | MemoryOS Reference Implementation |
-| Product version | 1.2.0 |
+| Product version | 1.2.1 |
 | Standard target | CCA-MEMORYOS-1.0 |
 | Conformance Suite | 1.0.0 |
 | Runtime Foundation | CCA-RF-1.0 |
@@ -27,6 +27,10 @@ Standard 1.0. The normative publication is
 The product, Standard, package, SDK, CLI, and suite versions are independent.
 The matrix above is the assessed combination; matching version numbers do not
 imply shared release cadence.
+
+MemoryOS v1.2.0 remains the immutable initial historical assessment. v1.2.1
+is the corrected Reference Implementation baseline and changes only source,
+publication, and conformance provenance closure.
 
 ## Implementation map
 

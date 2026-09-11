@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { access, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { dirname, relative, resolve, sep } from "node:path";
@@ -15,12 +17,24 @@ import { retainAssessmentManifest } from "../tests/support/conformance-support.m
 
 const conformanceRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const workspaceRoot = resolve(conformanceRoot, "../..");
-const specificationsRoot = resolve(dirname(workspaceRoot), "cca-specifications/specifications");
-const standardRoot = resolve(specificationsRoot, "CCA-MEMORYOS-1.0");
+const standardRoot = process.env.MEMORYOS_STANDARD_ROOT
+  ? resolve(process.env.MEMORYOS_STANDARD_ROOT)
+  : resolve(dirname(workspaceRoot), "cca-specifications/specifications/CCA-MEMORYOS-1.0");
+const specificationsRoot = dirname(standardRoot);
+const specificationsRepositoryRoot = dirname(specificationsRoot);
 const implementationVersion = Object.freeze({
   name: "MemoryOS Reference Implementation",
-  version: "1.2.0",
+  version: "1.2.1",
 });
+const expectedImplementationRevision = "sha256:68457c49142f5f2a54159228a480ddc11dd3f57ec0ddcb3231bcc4266d7a1044";
+const expectedStandardPublicationDigest = "sha256:f77246da755e67c5e7e73706504c6d63641eeb711fbbe9c381b10d197a3dc716";
+const expectedMipPublicationDigest = "sha256:997fd40928ce52581dc932c1c3d888fd4d6a73208613ba1ab0a9f17b79c020ca";
+const expectedMipSourcePackageDigest = "sha256:a9a520f84b0ae4e6afcac0c1bc9400786997adfcbec81bfd80a93ef13a60e9ba";
+const expectedNormativeRegistryDigest = "sha256:68ef4fa3e5727acab071de6d84759ff2b15a2bbf3865d38a55475c399c690e7f";
+const expectedSpecificationsCommit = "bdf8fd465c1a402879911c1166179b41e72ca290";
+const historicalManifestPath = "repositories/cca-conformance/manifests/requirements-manifest-sha256-ccb957e57043d6c34542461bc7d50d034aac268da3d295c3387459db848f823a.json";
+const expectedHistoricalManifestBytesDigest = "sha256:9d22cec389778ed756184ceaf996f110d7172aa8f987cbf6caf7805954f7968e";
+const requiredAttributes = "* text=auto eol=lf\n*.mip binary\n";
 const referenceImplementationInputs = Object.freeze([
   "repositories/cca-core/CMakeLists.txt",
   "repositories/cca-core/cmake/version.hpp.in",
@@ -63,6 +77,104 @@ function canonicalJson(value) {
 
 function digest(value) {
   return `sha256:${createHash("sha256").update(value).digest("hex")}`;
+}
+
+function gitResult(repositoryRoot, arguments_, encoding = "utf8") {
+  const result = spawnSync("git", ["-C", repositoryRoot, ...arguments_], {
+    encoding,
+    maxBuffer: 128 * 1024 * 1024,
+    windowsHide: true,
+  });
+  if (result.error) throw result.error;
+  if (result.status !== 0) {
+    const stderr = Buffer.isBuffer(result.stderr)
+      ? result.stderr.toString("utf8")
+      : result.stderr;
+    throw new Error(`git ${arguments_.join(" ")} failed in ${repositoryRoot}: ${stderr.trim()}`);
+  }
+  return result.stdout;
+}
+
+function repositoryPath(repositoryRoot, absolute) {
+  const path = relative(repositoryRoot, absolute).split(sep).join("/");
+  if (path === ".." || path.startsWith("../")) {
+    throw new Error(`${absolute} is outside repository ${repositoryRoot}`);
+  }
+  return path;
+}
+
+async function assertCleanRepository(repositoryRoot, label) {
+  const topLevel = resolve(gitResult(repositoryRoot, ["rev-parse", "--show-toplevel"]).trim());
+  assert.equal(topLevel, resolve(repositoryRoot), `${label} repository root is not exact`);
+  const status = gitResult(repositoryRoot, ["status", "--porcelain=v1", "--untracked-files=all"]);
+  assert.equal(status, "", `${label} repository must be clean before manifest generation:\n${status}`);
+  assert.equal(
+    await readFile(resolve(repositoryRoot, ".gitattributes"), "utf8"),
+    requiredAttributes,
+    `${label} repository does not enforce the approved byte policy`,
+  );
+}
+
+const trackedInputChecks = new Map();
+async function assertTrackedInput(repositoryRoot, absolute) {
+  const path = repositoryPath(repositoryRoot, absolute);
+  const key = `${repositoryRoot}\0${path}`;
+  if (trackedInputChecks.has(key)) return trackedInputChecks.get(key);
+  const check = (async () => {
+    const metadata = await stat(absolute);
+    const tracked = gitResult(repositoryRoot, ["ls-files", "-z", "--", path])
+      .split("\0")
+      .filter(Boolean)
+      .sort(compareCodeUnits);
+    const files = metadata.isFile()
+      ? [path]
+      : (await filesBelow(absolute)).map((member) => `${path}/${member}`).sort(compareCodeUnits);
+    assert.deepEqual(
+      tracked,
+      files,
+      `${path} filesystem membership differs from the tracked inventory`,
+    );
+    const eolRecords = gitResult(repositoryRoot, ["ls-files", "--eol", "-z", "--", path])
+      .split("\0")
+      .filter(Boolean)
+      .map((record) => {
+        const match = /^i\/(\S+)\s+w\/(\S+)\s+attr\/([^\t]*)\t([\s\S]+)$/u.exec(record);
+        assert.ok(match, `cannot parse Git EOL inventory record: ${record}`);
+        return {
+          index: match[1],
+          worktree: match[2],
+          attributes: match[3].trim(),
+          path: match[4],
+        };
+      });
+    assert.deepEqual(
+      eolRecords.map(({ path: recordPath }) => recordPath).sort(compareCodeUnits),
+      files,
+      `${path} EOL inventory differs from the tracked inventory`,
+    );
+    for (const record of eolRecords) {
+      if (record.attributes === "-text") continue;
+      assert.ok(
+        record.index === "lf" || record.index === "none",
+        `${record.path} committed bytes are not LF text`,
+      );
+      assert.ok(
+        record.worktree === "lf" || record.worktree === "none",
+        `${record.path} checked-out bytes are not LF text`,
+      );
+    }
+    for (const file of files) {
+      const worktreeBytes = await readFile(resolve(repositoryRoot, file));
+      const committedBytes = gitResult(repositoryRoot, ["show", `HEAD:${file}`], null);
+      assert.equal(
+        worktreeBytes.equals(committedBytes),
+        true,
+        `${file} checked-out bytes differ from the committed bytes`,
+      );
+    }
+  })();
+  trackedInputChecks.set(key, check);
+  return check;
 }
 
 function normativeRequirementProjection(requirement) {
@@ -112,6 +224,7 @@ async function documentInventory(root, paths) {
 
 async function inputInventory(path) {
   const absolute = resolve(workspaceRoot, path);
+  await assertTrackedInput(workspaceRoot, absolute);
   const metadata = await stat(absolute);
   if (metadata.isFile()) return { path, kind: "file", sha256: digest(await readFile(absolute)) };
   if (!metadata.isDirectory()) throw new Error(`${path} is not a regular file or directory`);
@@ -284,6 +397,7 @@ const evidenceDefinitions = Object.freeze({
     description: "Conformance report integrity",
     command: "node --test tests/specification_conformance_test.mjs",
     inputs: [
+      ".gitattributes",
       "repositories/cca-conformance/tests/specification_conformance_test.mjs",
       "repositories/cca-conformance/tests/support/conformance-support.mjs",
       "repositories/cca-conformance/tools/build-pinned-manifest.mjs",
@@ -416,6 +530,21 @@ async function main() {
     }
     throw new Error("Usage: node tools/build-pinned-manifest.mjs");
   }
+  await assertCleanRepository(workspaceRoot, "workspace");
+  await assertCleanRepository(specificationsRepositoryRoot, "specifications");
+  assert.equal(
+    gitResult(specificationsRepositoryRoot, ["rev-parse", "HEAD"]).trim(),
+    expectedSpecificationsCommit,
+    "the specifications repository is not at the approved v1.2.1 publication commit",
+  );
+  const historicalManifest = resolve(workspaceRoot, historicalManifestPath);
+  await assertTrackedInput(workspaceRoot, historicalManifest);
+  assert.equal(
+    digest(await readFile(historicalManifest)),
+    expectedHistoricalManifestBytesDigest,
+    "the immutable v1.2.0 content-addressed manifest bytes changed",
+  );
+  await assertTrackedInput(specificationsRepositoryRoot, standardRoot);
   const standardDocuments = await documentInventory(standardRoot, await filesBelow(standardRoot));
   const incorporatedSources = [
     {
@@ -439,11 +568,20 @@ async function main() {
     },
   ];
   const incorporatedStandards = [];
+  const mipSourceRoot = resolve(specificationsRoot, "CCA-MIP-1.0");
+  await assertTrackedInput(specificationsRepositoryRoot, mipSourceRoot);
+  const mipSourceDocuments = await documentInventory(mipSourceRoot, await filesBelow(mipSourceRoot));
+  assert.equal(
+    digest(Buffer.from(canonicalJson(mipSourceDocuments), "utf8")),
+    expectedMipSourcePackageDigest,
+    "the reviewed 13-file CCA-MIP-1.0 source package changed",
+  );
   const standardRequirementsSource = await readFile(resolve(standardRoot, "requirements.yaml"), "utf8");
   const conformanceProfiles = parseConformanceProfiles(standardRequirementsSource);
   const requirements = parseRequirements(standardRequirementsSource, {});
   for (const source of incorporatedSources) {
     const root = resolve(specificationsRoot, source.identifier);
+    await assertTrackedInput(specificationsRepositoryRoot, root);
     const documents = await documentInventory(root, source.documentPaths);
     incorporatedStandards.push({
       identifier: source.identifier,
@@ -519,7 +657,7 @@ async function main() {
         method: "deterministic requirement-mapped conformance execution",
         inputs: [...new Set(inputs)].sort(),
         expectedOutcome: "Every mapped normative criterion is supported by its declared execution or retained review evidence.",
-        durableEvidence: `evidence/reference-implementation-1.2.0.json#/evidence/${index}`,
+        durableEvidence: `evidence/reference-implementation-1.2.1.json#/evidence/${index}`,
       };
     });
   for (const group of evidenceGroups) {
@@ -537,6 +675,11 @@ async function main() {
     ...implementationVersion,
     revision: digest(Buffer.from(canonicalJson(implementationInputs), "utf8")),
   });
+  assert.equal(
+    implementation.revision,
+    expectedImplementationRevision,
+    "the repaired implementation revision differs from the approved v1.2.1 revision",
+  );
   evidenceGroups.forEach((group) => { group.implementation = implementation; });
 
   const manifest = {
@@ -557,7 +700,22 @@ async function main() {
     evidenceGroups,
     requirements,
   };
+  assert.equal(
+    manifest.standard.publicationDigest,
+    expectedStandardPublicationDigest,
+    "CCA-MEMORYOS-1.0 publication bytes changed",
+  );
+  assert.equal(
+    manifest.incorporatedStandards.find(({ identifier }) => identifier === "CCA-MIP-1.0")?.publicationDigest,
+    expectedMipPublicationDigest,
+    "CCA-MIP-1.0 publication bytes changed",
+  );
   manifest.normativeRegistryDigest = registryDigest(manifest);
+  assert.equal(
+    manifest.normativeRegistryDigest,
+    expectedNormativeRegistryDigest,
+    "the normative registry changed during the v1.2.1 restoration",
+  );
   const manifestSource = `${canonicalJson(manifest)}\n`;
   const retainedPath = await retainAssessmentManifest(manifest);
   const manifestPath = resolve(conformanceRoot, "requirements-manifest.json");

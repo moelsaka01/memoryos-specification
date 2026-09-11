@@ -30,7 +30,9 @@ import {
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const workspaceRoot = resolve(root, "../..");
-const publishedStandardRoot = resolve(workspaceRoot, "../cca-specifications/specifications/CCA-MEMORYOS-1.0");
+const publishedStandardRoot = process.env.MEMORYOS_STANDARD_ROOT
+  ? resolve(process.env.MEMORYOS_STANDARD_ROOT)
+  : resolve(workspaceRoot, "../cca-specifications/specifications/CCA-MEMORYOS-1.0");
 const compare = (left, right) => left < right ? -1 : left > right ? 1 : 0;
 
 function usage() {
@@ -500,7 +502,7 @@ await assert.rejects(access(REFERENCE_EVIDENCE_PATH), "retained evidence already
 const manifest = await readManifest(resolve(selected["--manifest"]));
 const sourceInventory = validateManifestInputsCurrent(manifest);
 const revision = sha256(Buffer.from(canonicalJson(sourceInventory), "utf8"));
-const implementation = Object.freeze({ name: "MemoryOS Reference Implementation", version: "1.2.0", revision });
+const implementation = Object.freeze({ name: "MemoryOS Reference Implementation", version: "1.2.1", revision });
 for (const group of manifest.evidenceGroups) assert.deepEqual(group.implementation, implementation);
 function executionBinding(id) {
   const attribution = [...new Map(
