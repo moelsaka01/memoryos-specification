@@ -8,6 +8,7 @@ import {
   canonicalObservation,
   fingerprintObservation,
 } from "./semantic-world.js";
+import { alignDeterministicSequences } from "./deterministic-sequence-alignment.js";
 
 const states = Object.freeze(["shared", "a-only", "b-only", "modified"]);
 
@@ -77,46 +78,6 @@ function resolvedReplaySteps(frame, replay, label) {
       revisionFingerprint: fingerprintObservation(exactRevision),
     });
   });
-}
-
-function lcsTable(fromSteps, toSteps) {
-  const table = Array.from(
-    { length: fromSteps.length + 1 },
-    () => Array(toSteps.length + 1).fill(0),
-  );
-  for (let fromIndex = fromSteps.length - 1; fromIndex >= 0; fromIndex -= 1) {
-    for (let toIndex = toSteps.length - 1; toIndex >= 0; toIndex -= 1) {
-      table[fromIndex][toIndex] = fromSteps[fromIndex].identity === toSteps[toIndex].identity
-        ? table[fromIndex + 1][toIndex + 1] + 1
-        : Math.max(table[fromIndex + 1][toIndex], table[fromIndex][toIndex + 1]);
-    }
-  }
-  return table;
-}
-
-function alignSteps(fromSteps, toSteps) {
-  const table = lcsTable(fromSteps, toSteps);
-  const aligned = [];
-  let fromIndex = 0;
-  let toIndex = 0;
-  while (fromIndex < fromSteps.length || toIndex < toSteps.length) {
-    const from = fromSteps[fromIndex] ?? null;
-    const to = toSteps[toIndex] ?? null;
-    if (from && to && from.identity === to.identity) {
-      aligned.push({ from, to });
-      fromIndex += 1;
-      toIndex += 1;
-      continue;
-    }
-    if (from && (!to || table[fromIndex + 1][toIndex] >= table[fromIndex][toIndex + 1])) {
-      aligned.push({ from, to: null });
-      fromIndex += 1;
-      continue;
-    }
-    aligned.push({ from: null, to });
-    toIndex += 1;
-  }
-  return aligned;
 }
 
 function stepReference(step) {
@@ -242,7 +203,7 @@ export function buildComparativeReconstruction(fromFrame, fromTrace, toFrame, to
   const toReplay = buildCognitiveReplay(toTrace);
   const fromSteps = resolvedReplaySteps(fromFrame, fromReplay, "Observation A replay");
   const toSteps = resolvedReplaySteps(toFrame, toReplay, "Observation B replay");
-  const moments = alignSteps(fromSteps, toSteps)
+  const moments = alignDeterministicSequences(fromSteps, toSteps)
     .map((pair, index) => classifyMoment(pair, index));
   const divergenceIndices = moments.filter(({ divergent }) => divergent).map(({ index }) => index);
   const identityMaterial = {
@@ -329,4 +290,3 @@ export function validateComparativeReconstruction(reconstruction) {
   }
   return true;
 }
-

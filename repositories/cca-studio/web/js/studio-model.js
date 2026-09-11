@@ -1,4 +1,5 @@
 import { scopeDefinitions } from "../data/studio-snapshot.js";
+import { canonicalObservation } from "./semantic-world.js";
 
 export const operationCodes = Object.freeze({
   ok: { code: "OK", message: "" },
@@ -180,6 +181,20 @@ export function inspectSnapshot(snapshot, sessionState, query) {
 
 const indexPattern = "(0|[1-9][0-9]*)";
 const inspectionResolvers = Object.freeze([
+  [new RegExp(`^Reflection\\.values\\[${indexPattern}\\]\\.sources\\[${indexPattern}\\]\\.semanticConcept$`), "Semantic concept", (view, outer, inner) => view.reflections?.[outer]?.sources?.[inner]?.semanticConcept],
+  [new RegExp(`^Reflection\\.values\\[${indexPattern}\\]\\.sources\\[${indexPattern}\\]\\.semanticConcept\\.sourceEntries\\[${indexPattern}\\]$`), "Provenance snapshot", (view, outer, inner, evidence) => view.reflections?.[outer]?.sources?.[inner]?.semanticConcept?.sourceEntries?.[evidence]],
+  [new RegExp(`^Reflection\\.values\\[${indexPattern}\\]\\.sources\\[${indexPattern}\\]\\.episode$`), "Episode", (view, outer, inner) => view.reflections?.[outer]?.sources?.[inner]?.episode],
+  [new RegExp(`^Reflection\\.values\\[${indexPattern}\\]\\.sources\\[${indexPattern}\\]\\.episode\\.sourceEntries\\[${indexPattern}\\]$`), "Provenance snapshot", (view, outer, inner, evidence) => view.reflections?.[outer]?.sources?.[inner]?.episode?.sourceEntries?.[evidence]],
+  [new RegExp(`^Reflection\\.values\\[${indexPattern}\\]\\.sources\\[${indexPattern}\\]\\.procedure$`), "Procedure", (view, outer, inner) => view.reflections?.[outer]?.sources?.[inner]?.procedure],
+  [new RegExp(`^Reflection\\.values\\[${indexPattern}\\]\\.sources\\[${indexPattern}\\]\\.procedure\\.sourceEntries\\[${indexPattern}\\]$`), "Provenance snapshot", (view, outer, inner, evidence) => view.reflections?.[outer]?.sources?.[inner]?.procedure?.sourceEntries?.[evidence]],
+  [new RegExp(`^Reflection\\.sessions\\[${indexPattern}\\]\\.reflection$`), "Reflection", (view, outer) => view.reflectionSessions?.[outer]?.reflection],
+  [new RegExp(`^Reflection\\.sessions\\[${indexPattern}\\]\\.reflection\\.sources\\[${indexPattern}\\]$`), "Reflection source", (view, outer, inner) => view.reflectionSessions?.[outer]?.reflection?.sources?.[inner]],
+  [new RegExp(`^Reflection\\.sessions\\[${indexPattern}\\]\\.reflection\\.sources\\[${indexPattern}\\]\\.semanticConcept$`), "Semantic concept", (view, outer, inner) => view.reflectionSessions?.[outer]?.reflection?.sources?.[inner]?.semanticConcept],
+  [new RegExp(`^Reflection\\.sessions\\[${indexPattern}\\]\\.reflection\\.sources\\[${indexPattern}\\]\\.semanticConcept\\.sourceEntries\\[${indexPattern}\\]$`), "Provenance snapshot", (view, outer, inner, evidence) => view.reflectionSessions?.[outer]?.reflection?.sources?.[inner]?.semanticConcept?.sourceEntries?.[evidence]],
+  [new RegExp(`^Reflection\\.sessions\\[${indexPattern}\\]\\.reflection\\.sources\\[${indexPattern}\\]\\.episode$`), "Episode", (view, outer, inner) => view.reflectionSessions?.[outer]?.reflection?.sources?.[inner]?.episode],
+  [new RegExp(`^Reflection\\.sessions\\[${indexPattern}\\]\\.reflection\\.sources\\[${indexPattern}\\]\\.episode\\.sourceEntries\\[${indexPattern}\\]$`), "Provenance snapshot", (view, outer, inner, evidence) => view.reflectionSessions?.[outer]?.reflection?.sources?.[inner]?.episode?.sourceEntries?.[evidence]],
+  [new RegExp(`^Reflection\\.sessions\\[${indexPattern}\\]\\.reflection\\.sources\\[${indexPattern}\\]\\.procedure$`), "Procedure", (view, outer, inner) => view.reflectionSessions?.[outer]?.reflection?.sources?.[inner]?.procedure],
+  [new RegExp(`^Reflection\\.sessions\\[${indexPattern}\\]\\.reflection\\.sources\\[${indexPattern}\\]\\.procedure\\.sourceEntries\\[${indexPattern}\\]$`), "Provenance snapshot", (view, outer, inner, evidence) => view.reflectionSessions?.[outer]?.reflection?.sources?.[inner]?.procedure?.sourceEntries?.[evidence]],
   [/^Memory$/, "Memory", (view) => view.memory],
   [new RegExp(`^Memory\\.entries\\[${indexPattern}\\]$`), "Memory entry", (view, outer) => view.memory?.entries?.[outer]],
   [/^WorkingMemory$/, "WorkingMemory", (view) => view.workingMemory],
@@ -188,10 +203,12 @@ const inspectionResolvers = Object.freeze([
   [new RegExp(`^LongTermMemory\\.entries\\[${indexPattern}\\]$`), "Long-Term Memory entry", (view, outer) => view.longTermMemory?.entries?.[outer]],
   [/^SemanticMemory$/, "SemanticMemory", (view) => view.semanticMemory],
   [new RegExp(`^SemanticMemory\\.concepts\\[${indexPattern}\\]$`), "Semantic concept", (view, outer) => view.semanticMemory?.concepts?.[outer]],
+  [new RegExp(`^SemanticMemory\\.concepts\\[${indexPattern}\\]\\.categories\\[${indexPattern}\\]$`), "Semantic category", (view, outer, inner) => view.semanticMemory?.concepts?.[outer]?.categories?.[inner]],
   [/^EpisodicMemory$/, "EpisodicMemory", (view) => view.episodicMemory],
   [new RegExp(`^EpisodicMemory\\.episodes\\[${indexPattern}\\]$`), "Episode", (view, outer) => view.episodicMemory?.episodes?.[outer]],
   [/^ProceduralMemory$/, "ProceduralMemory", (view) => view.proceduralMemory],
   [new RegExp(`^ProceduralMemory\\.procedures\\[${indexPattern}\\]$`), "Procedure", (view, outer) => view.proceduralMemory?.procedures?.[outer]],
+  [new RegExp(`^ProceduralMemory\\.procedures\\[${indexPattern}\\]\\.steps\\[${indexPattern}\\]$`), "Procedure step", (view, outer, inner) => view.proceduralMemory?.procedures?.[outer]?.steps?.[inner]],
   [new RegExp(`^Retrieval\\.sessions\\[${indexPattern}\\]$`), "Retrieval session", (view, outer) => view.retrievalSessions?.[outer]],
   [new RegExp(`^Retrieval\\.sessions\\[${indexPattern}\\]\\.candidates\\[${indexPattern}\\]$`), "Retrieval candidate", (view, outer, inner) => view.retrievalSessions?.[outer]?.candidates?.[inner]],
   [new RegExp(`^Consolidation\\.sessions\\[${indexPattern}\\]$`), "Consolidation session", (view, outer) => view.consolidationSessions?.[outer]],
@@ -412,26 +429,72 @@ export function findObservation(snapshot, identifier) {
   return candidates.filter(({ value }) => value.identifier === identifier);
 }
 
+function encodedIdentity(value) {
+  return encodeURIComponent(String(value));
+}
+
+function stableKeys(kind, values, identityOf = (value) => value.identifier) {
+  const occurrences = new Map();
+  return values.map((value) => {
+    const identity = String(identityOf(value));
+    const occurrence = occurrences.get(identity) ?? 0;
+    occurrences.set(identity, occurrence + 1);
+    return `${kind}:${encodedIdentity(identity)}:${occurrence}`;
+  });
+}
+
+function keysByIdentifier(entries, keys) {
+  const index = new Map();
+  entries.forEach((entry, position) => {
+    const matches = index.get(entry.identifier) ?? [];
+    matches.push(keys[position]);
+    index.set(entry.identifier, matches);
+  });
+  return index;
+}
+
+function firstKey(index, identifier) {
+  return index.get(identifier)?.[0] ?? null;
+}
+
 export function buildGraph(snapshot) {
-  const workspaceKey = "workspace:0";
-  const nodes = [{ key: workspaceKey, identifier: snapshot.workspaceIdentifier, label: "Workspace", kind: "workspace", family: "Workspace", size: 21, aggregate: true }];
+  const workspaceKey = "workspace";
+  const nodes = [{
+    key: workspaceKey,
+    identifier: snapshot.workspaceIdentifier,
+    label: "Workspace",
+    kind: "workspace",
+    family: "Workspace",
+    size: 21,
+    aggregate: true,
+    revision: canonicalObservation({ workspaceIdentifier: snapshot.workspaceIdentifier }),
+  }];
   const edges = [];
   const aggregateDefinitions = [
-    ["memory", "Memory", "Memory aggregate"],
-    ["working", "Working", "WorkingMemory aggregate"],
-    ["consolidation", "Consolidation", "Consolidation aggregate"],
-    ["long-term", "Long-Term", "LongTermMemory aggregate"],
-    ["semantic", "Semantic", "SemanticMemory aggregate"],
-    ["episodic", "Episodic", "EpisodicMemory aggregate"],
-    ["procedural", "Procedural", "ProceduralMemory aggregate"],
-    ["retrieval", "Retrieval", "Retrieval aggregate"],
-    ["reflection", "Reflection", "Reflection aggregate"],
-    ["providers", "Providers", "Providers aggregate"],
-    ["validation", "Validation", "Validation aggregate"],
+    ["memory", "Memory", "Memory aggregate", snapshot.memory],
+    ["working", "Working", "WorkingMemory aggregate", snapshot.workingMemory],
+    ["consolidation", "Consolidation", "Consolidation aggregate", snapshot.consolidationSessions],
+    ["long-term", "Long-Term", "LongTermMemory aggregate", snapshot.longTermMemory],
+    ["semantic", "Semantic", "SemanticMemory aggregate", snapshot.semanticMemory],
+    ["episodic", "Episodic", "EpisodicMemory aggregate", snapshot.episodicMemory],
+    ["procedural", "Procedural", "ProceduralMemory aggregate", snapshot.proceduralMemory],
+    ["retrieval", "Retrieval", "Retrieval aggregate", snapshot.retrievalSessions],
+    ["reflection", "Reflection", "Reflection aggregate", [snapshot.reflections, snapshot.reflectionSessions]],
+    ["providers", "Providers", "Providers aggregate", snapshot.providerSessions],
+    ["validation", "Validation", "Validation aggregate", snapshot.validation],
   ];
-  const aggregateKeys = Object.fromEntries(aggregateDefinitions.map(([kind, label, family]) => {
+  const aggregateKeys = Object.fromEntries(aggregateDefinitions.map(([kind, label, family, value]) => {
     const key = `aggregate:${kind}`;
-    nodes.push({ key, identifier: `capability-${kind}`, label, kind, family, size: 14, aggregate: true });
+    nodes.push({
+      key,
+      identifier: `capability-${kind}`,
+      label,
+      kind,
+      family,
+      size: 14,
+      aggregate: true,
+      revision: canonicalObservation(value),
+    });
     edges.push({ from: workspaceKey, to: key, relation: "contains" });
     return [kind, key];
   }));
@@ -440,69 +503,311 @@ export function buildGraph(snapshot) {
     edges.push({ from: aggregateKeys[aggregateKind], to: member.key, relation: "contains" });
     return member.key;
   };
-  const memoryKeys = snapshot.memory.entries.map((entry, index) => addMember("memory", { key: `memory:${index}:${entry.identifier}`, identifier: entry.identifier, label: entry.identifier, kind: "memory", family: "Memory", size: 5.5 }));
-  const workingKeys = snapshot.workingMemory.entries.map((entry, index) => addMember("working", { key: `working:${index}:${entry.identifier}`, identifier: entry.identifier, label: entry.identifier, kind: "working", family: "WorkingMemory", size: 6 }));
-  if (snapshot.workingMemory.activeTaskIdentifier) addMember("working", { key: `working-task:${snapshot.workingMemory.activeTaskIdentifier}`, identifier: snapshot.workingMemory.activeTaskIdentifier, label: snapshot.workingMemory.activeTaskIdentifier, kind: "working", family: "Working task", size: 4, detail: true });
-  const consolidationKeys = snapshot.consolidationSessions.map((session, index) => addMember("consolidation", { key: `consolidation:${index}:${session.identifier}`, identifier: session.identifier, label: session.identifier, kind: "consolidation", family: "Consolidation session", size: 7 }));
-  const longTermKeys = snapshot.longTermMemory.entries.map((entry, index) => addMember("long-term", { key: `long-term:${index}:${entry.identifier}`, identifier: entry.identifier, label: entry.identifier, kind: "long-term", family: "LongTermMemory", size: 6 }));
-  const semanticKeys = snapshot.semanticMemory.concepts.map((concept, index) => addMember("semantic", { key: `semantic:${index}:${concept.identifier}`, identifier: concept.identifier, label: concept.identifier, kind: "semantic", family: "SemanticMemory", size: 8 }));
-  const episodicKeys = snapshot.episodicMemory.episodes.map((episode, index) => addMember("episodic", { key: `episodic:${index}:${episode.identifier}`, identifier: episode.identifier, label: episode.identifier, kind: "episodic", family: "EpisodicMemory", size: 8 }));
-  const proceduralKeys = snapshot.proceduralMemory.procedures.map((procedure, index) => addMember("procedural", { key: `procedural:${index}:${procedure.identifier}`, identifier: procedure.identifier, label: procedure.identifier, kind: "procedural", family: "ProceduralMemory", size: 8 }));
-  const retrievalKeys = snapshot.retrievalSessions.map((session, index) => addMember("retrieval", { key: `retrieval:${index}:${session.identifier}`, identifier: session.identifier, label: session.identifier, kind: "retrieval", family: "Retrieval session", size: 7 }));
-  const reflectionKeys = snapshot.reflections.map((reflection, index) => addMember("reflection", { key: `reflection:${index}:${reflection.identifier}`, identifier: reflection.identifier, label: reflection.identifier, kind: "reflection", family: "Reflection", size: 11 }));
-  const reflectionSessionKeys = snapshot.reflectionSessions.map((session, index) => addMember("reflection", { key: `reflection-session:${index}:${session.identifier}`, identifier: session.identifier, label: session.identifier, kind: "reflection", family: "Reflection session", size: 7 }));
-  const providerSessionKeys = snapshot.providerSessions.map((session, index) => addMember("providers", { key: `providers:${index}:${session.identifier}`, identifier: session.identifier, label: session.identifier, kind: "providers", family: "Provider session", size: 7 }));
-  snapshot.validation.forEach((check, index) => addMember("validation", { key: `validation:${index}:${check.identifier}`, identifier: check.identifier, label: check.label, kind: "validation", family: "Validation check", size: 5 }));
-
-  const keyByIdentifier = new Map();
-  [[snapshot.memory.entries, memoryKeys], [snapshot.workingMemory.entries, workingKeys], [snapshot.longTermMemory.entries, longTermKeys], [snapshot.semanticMemory.concepts, semanticKeys], [snapshot.episodicMemory.episodes, episodicKeys], [snapshot.proceduralMemory.procedures, proceduralKeys]]
-    .forEach(([entries, keys]) => entries.forEach((entry, index) => keyByIdentifier.set(entry.identifier, keys[index])));
-  snapshot.semanticMemory.concepts.forEach((concept, conceptIndex) => concept.categories.forEach((category, categoryIndex) => {
-    const key = addMember("semantic", { key: `semantic-category:${conceptIndex}:${categoryIndex}`, identifier: concept.identifier, label: category, kind: "semantic", family: "SemanticMemory", size: 3, detail: true });
-    edges.push({ from: semanticKeys[conceptIndex], to: key, relation: "contains" });
-  }));
-  snapshot.proceduralMemory.procedures.forEach((procedure, procedureIndex) => procedure.steps.forEach((step, stepIndex) => {
-    const key = addMember("procedural", { key: `procedural-step:${procedureIndex}:${stepIndex}`, identifier: procedure.identifier, label: step, kind: "procedural", family: "ProceduralMemory", size: 3, detail: true });
-    edges.push({ from: proceduralKeys[procedureIndex], to: key, relation: "contains" });
-  }));
-  snapshot.retrievalSessions.forEach((session, sessionIndex) => session.candidates.forEach((candidate, candidateIndex) => {
-    const key = addMember("retrieval", { key: `retrieval-candidate:${sessionIndex}:${candidateIndex}:${candidate.sourceIdentifier}`, identifier: candidate.sourceIdentifier, label: candidate.sourceIdentifier, kind: "retrieval", family: "Retrieval candidate", size: 4, detail: true });
-    edges.push({ from: retrievalKeys[sessionIndex], to: key, relation: "contains" });
-    const sourceKey = keyByIdentifier.get(candidate.sourceIdentifier);
-    if (sourceKey) edges.push({ from: key, to: sourceKey, relation: "links" });
-  }));
-  snapshot.providerSessions.forEach((session, sessionIndex) => session.descriptors.forEach((descriptor, descriptorIndex) => {
-    const key = addMember("providers", { key: `provider-descriptor:${sessionIndex}:${descriptorIndex}:${descriptor.identifier}`, identifier: descriptor.identifier, label: descriptor.identifier, kind: "providers", family: "Provider descriptor", size: 4, detail: true });
-    edges.push({ from: providerSessionKeys[sessionIndex], to: key, relation: "contains" });
+  const addReleasedMembers = (aggregateKind, values, keys, {
+    family,
+    size,
+    path,
+  }) => values.map((value, index) => addMember(aggregateKind, {
+    key: keys[index],
+    identifier: value.identifier,
+    label: value.identifier,
+    kind: aggregateKind,
+    family,
+    size,
+    observationPath: path(index),
+    revision: canonicalObservation(value),
   }));
 
-  const keysByIdentity = (entries, keys, identifier) => entries.flatMap((entry, index) => entry.identifier === identifier ? [keys[index]] : []);
+  const memorySemanticKeys = stableKeys("memory", snapshot.memory.entries);
+  const workingSemanticKeys = stableKeys("working", snapshot.workingMemory.entries);
+  const consolidationSemanticKeys = stableKeys("consolidation", snapshot.consolidationSessions);
+  const longTermSemanticKeys = stableKeys("long-term", snapshot.longTermMemory.entries);
+  const semanticSemanticKeys = stableKeys("semantic", snapshot.semanticMemory.concepts);
+  const episodicSemanticKeys = stableKeys("episodic", snapshot.episodicMemory.episodes);
+  const proceduralSemanticKeys = stableKeys("procedural", snapshot.proceduralMemory.procedures);
+  const retrievalSemanticKeys = stableKeys("retrieval", snapshot.retrievalSessions);
+  const reflectionSemanticKeys = stableKeys("reflection", snapshot.reflections);
+  const reflectionSessionSemanticKeys = stableKeys("reflection-session", snapshot.reflectionSessions);
+  const providerSessionSemanticKeys = stableKeys("providers", snapshot.providerSessions);
+
+  const memoryKeys = addReleasedMembers("memory", snapshot.memory.entries, memorySemanticKeys, { family: "Memory", size: 5.5, path: (index) => `Memory.entries[${index}]` });
+  const workingKeys = addReleasedMembers("working", snapshot.workingMemory.entries, workingSemanticKeys, { family: "WorkingMemory", size: 6, path: (index) => `WorkingMemory.entries[${index}]` });
+  const consolidationKeys = addReleasedMembers("consolidation", snapshot.consolidationSessions, consolidationSemanticKeys, { family: "Consolidation session", size: 7, path: (index) => `Consolidation.sessions[${index}]` });
+  const longTermKeys = addReleasedMembers("long-term", snapshot.longTermMemory.entries, longTermSemanticKeys, { family: "LongTermMemory", size: 6, path: (index) => `LongTermMemory.entries[${index}]` });
+  const semanticKeys = addReleasedMembers("semantic", snapshot.semanticMemory.concepts, semanticSemanticKeys, { family: "SemanticMemory", size: 8, path: (index) => `SemanticMemory.concepts[${index}]` });
+  const episodicKeys = addReleasedMembers("episodic", snapshot.episodicMemory.episodes, episodicSemanticKeys, { family: "EpisodicMemory", size: 8, path: (index) => `EpisodicMemory.episodes[${index}]` });
+  const proceduralKeys = addReleasedMembers("procedural", snapshot.proceduralMemory.procedures, proceduralSemanticKeys, { family: "ProceduralMemory", size: 8, path: (index) => `ProceduralMemory.procedures[${index}]` });
+  const retrievalKeys = addReleasedMembers("retrieval", snapshot.retrievalSessions, retrievalSemanticKeys, { family: "Retrieval session", size: 7, path: (index) => `Retrieval.sessions[${index}]` });
+  const reflectionKeys = addReleasedMembers("reflection", snapshot.reflections, reflectionSemanticKeys, { family: "Reflection", size: 11, path: (index) => `Reflection.values[${index}]` });
+  const reflectionSessionKeys = addReleasedMembers("reflection", snapshot.reflectionSessions, reflectionSessionSemanticKeys, { family: "Reflection session", size: 7, path: (index) => `Reflection.sessions[${index}]` });
+  const providerSessionKeys = addReleasedMembers("providers", snapshot.providerSessions, providerSessionSemanticKeys, { family: "Provider session", size: 7, path: (index) => `Providers.sessions[${index}]` });
+
+  if (snapshot.workingMemory.activeTaskIdentifier) {
+    addMember("working", {
+      key: `working-task:${encodedIdentity(snapshot.workingMemory.activeTaskIdentifier)}:0`,
+      identifier: snapshot.workingMemory.activeTaskIdentifier,
+      label: snapshot.workingMemory.activeTaskIdentifier,
+      kind: "working",
+      family: "Working task",
+      size: 4,
+      detail: true,
+      revision: canonicalObservation({
+        identifier: snapshot.workingMemory.activeTaskIdentifier,
+        active: snapshot.workingMemory.active,
+      }),
+    });
+  }
+  snapshot.validation.forEach((check, index) => addMember("validation", {
+    key: stableKeys("validation", snapshot.validation)[index],
+    identifier: check.identifier,
+    label: check.label,
+    kind: "validation",
+    family: "Validation check",
+    size: 5,
+    revision: canonicalObservation(check),
+  }));
+
+  const memoryByIdentifier = keysByIdentifier(snapshot.memory.entries, memoryKeys);
+  const workingByIdentifier = keysByIdentifier(snapshot.workingMemory.entries, workingKeys);
+  const longTermByIdentifier = keysByIdentifier(snapshot.longTermMemory.entries, longTermKeys);
+  const semanticByIdentifier = keysByIdentifier(snapshot.semanticMemory.concepts, semanticKeys);
+  const episodicByIdentifier = keysByIdentifier(snapshot.episodicMemory.episodes, episodicKeys);
+  const proceduralByIdentifier = keysByIdentifier(snapshot.proceduralMemory.procedures, proceduralKeys);
+  const sourceIndexes = {
+    Memory: memoryByIdentifier,
+    WorkingMemory: workingByIdentifier,
+    LongTermMemory: longTermByIdentifier,
+    Semantic: semanticByIdentifier,
+    Episodic: episodicByIdentifier,
+    Procedural: proceduralByIdentifier,
+  };
+  const sourceKey = (kind, identifier) => firstKey(sourceIndexes[kind] ?? new Map(), identifier);
+
+  snapshot.semanticMemory.concepts.forEach((concept, conceptIndex) => {
+    const categoryKeys = stableKeys(`${semanticKeys[conceptIndex]}:category`, concept.categories, (category) => category);
+    concept.categories.forEach((category, categoryIndex) => {
+      const key = addMember("semantic", {
+        key: categoryKeys[categoryIndex],
+        identifier: concept.identifier,
+        label: category,
+        kind: "semantic",
+        family: "SemanticMemory",
+        size: 3,
+        detail: true,
+        observationPath: `SemanticMemory.concepts[${conceptIndex}].categories[${categoryIndex}]`,
+        revision: canonicalObservation(category),
+      });
+      edges.push({ from: semanticKeys[conceptIndex], to: key, relation: "contains" });
+    });
+  });
+  snapshot.proceduralMemory.procedures.forEach((procedure, procedureIndex) => {
+    const stepKeys = stableKeys(`${proceduralKeys[procedureIndex]}:step`, procedure.steps, (step) => step);
+    procedure.steps.forEach((step, stepIndex) => {
+      const key = addMember("procedural", {
+        key: stepKeys[stepIndex],
+        identifier: procedure.identifier,
+        label: step,
+        kind: "procedural",
+        family: "ProceduralMemory",
+        size: 3,
+        detail: true,
+        observationPath: `ProceduralMemory.procedures[${procedureIndex}].steps[${stepIndex}]`,
+        revision: canonicalObservation(step),
+      });
+      edges.push({ from: proceduralKeys[procedureIndex], to: key, relation: "contains" });
+    });
+  });
+  snapshot.retrievalSessions.forEach((session, sessionIndex) => {
+    const candidateKeys = stableKeys(
+      `${retrievalKeys[sessionIndex]}:candidate`,
+      session.candidates,
+      (candidate) => canonicalObservation(candidate),
+    );
+    session.candidates.forEach((candidate, candidateIndex) => {
+      const key = addMember("retrieval", {
+        key: candidateKeys[candidateIndex],
+        identifier: candidate.sourceIdentifier,
+        label: candidate.sourceIdentifier,
+        kind: "retrieval",
+        family: "Retrieval candidate",
+        size: 4,
+        detail: true,
+        observationPath: `Retrieval.sessions[${sessionIndex}].candidates[${candidateIndex}]`,
+        revision: canonicalObservation(candidate),
+      });
+      edges.push({ from: retrievalKeys[sessionIndex], to: key, relation: "contains" });
+      const target = sourceKey(candidate.kind, candidate.sourceIdentifier);
+      if (target) edges.push({ from: key, to: target, relation: "links" });
+    });
+  });
+  snapshot.providerSessions.forEach((session, sessionIndex) => {
+    const descriptorKeys = stableKeys(
+      `${providerSessionKeys[sessionIndex]}:descriptor`,
+      session.descriptors,
+    );
+    session.descriptors.forEach((descriptor, descriptorIndex) => {
+      const key = addMember("providers", {
+        key: descriptorKeys[descriptorIndex],
+        identifier: descriptor.identifier,
+        label: descriptor.identifier,
+        kind: "providers",
+        family: "Provider descriptor",
+        size: 4,
+        detail: true,
+        observationPath: `Providers.sessions[${sessionIndex}].descriptors[${descriptorIndex}]`,
+        revision: canonicalObservation(descriptor),
+      });
+      edges.push({ from: providerSessionKeys[sessionIndex], to: key, relation: "contains" });
+    });
+  });
+
   snapshot.semanticMemory.concepts.forEach((concept, index) => {
-    concept.sourceEntries.forEach((sourceEntry) => { const sourceKey = keyByIdentifier.get(sourceEntry.identifier); if (sourceKey) edges.push({ from: sourceKey, to: semanticKeys[index], relation: "evidence" }); });
-    concept.linkedConceptIdentifiers.forEach((linked) => keysByIdentity(snapshot.semanticMemory.concepts, semanticKeys, linked).forEach((target) => edges.push({ from: semanticKeys[index], to: target, relation: "links" })));
+    concept.sourceEntries.forEach((sourceEntry) => {
+      const source = firstKey(longTermByIdentifier, sourceEntry.identifier);
+      if (source) edges.push({ from: source, to: semanticKeys[index], relation: "evidence" });
+    });
+    concept.linkedConceptIdentifiers.forEach((linked) => {
+      (semanticByIdentifier.get(linked) ?? []).forEach((target) => edges.push({ from: semanticKeys[index], to: target, relation: "links" }));
+    });
   });
   snapshot.episodicMemory.episodes.forEach((episode, index) => {
-    episode.sourceEntries.forEach((sourceEntry) => { const sourceKey = keyByIdentifier.get(sourceEntry.identifier); if (sourceKey) edges.push({ from: sourceKey, to: episodicKeys[index], relation: "evidence" }); });
-    episode.linkedEpisodeIdentifiers.forEach((linked) => keysByIdentity(snapshot.episodicMemory.episodes, episodicKeys, linked).forEach((target) => edges.push({ from: episodicKeys[index], to: target, relation: "links" })));
+    episode.sourceEntries.forEach((sourceEntry) => {
+      const source = firstKey(longTermByIdentifier, sourceEntry.identifier);
+      if (source) edges.push({ from: source, to: episodicKeys[index], relation: "evidence" });
+    });
+    episode.linkedEpisodeIdentifiers.forEach((linked) => {
+      (episodicByIdentifier.get(linked) ?? []).forEach((target) => edges.push({ from: episodicKeys[index], to: target, relation: "links" }));
+    });
   });
   snapshot.proceduralMemory.procedures.forEach((procedure, index) => {
-    procedure.sourceEntries.forEach((sourceEntry) => { const sourceKey = keyByIdentifier.get(sourceEntry.identifier); if (sourceKey) edges.push({ from: sourceKey, to: proceduralKeys[index], relation: "evidence" }); });
-    procedure.linkedProcedureIdentifiers.forEach((linked) => keysByIdentity(snapshot.proceduralMemory.procedures, proceduralKeys, linked).forEach((target) => edges.push({ from: proceduralKeys[index], to: target, relation: "links" })));
+    procedure.sourceEntries.forEach((sourceEntry) => {
+      const source = firstKey(longTermByIdentifier, sourceEntry.identifier);
+      if (source) edges.push({ from: source, to: proceduralKeys[index], relation: "evidence" });
+    });
+    procedure.linkedProcedureIdentifiers.forEach((linked) => {
+      (proceduralByIdentifier.get(linked) ?? []).forEach((target) => edges.push({ from: proceduralKeys[index], to: target, relation: "links" }));
+    });
   });
   snapshot.consolidationSessions.forEach((session, index) => {
-    const workingKey = session.request ? keyByIdentifier.get(session.request.entryIdentifier) : null;
-    if (workingKey) edges.push({ from: workingKey, to: consolidationKeys[index], relation: "contributes" });
-    const longTermKey = session.candidate ? keyByIdentifier.get(session.candidate.longTermMemoryIdentifier) : null;
-    if (longTermKey) edges.push({ from: consolidationKeys[index], to: longTermKey, relation: "links" });
+    const working = session.request
+      ? firstKey(workingByIdentifier, session.request.entryIdentifier)
+      : null;
+    if (working) edges.push({ from: working, to: consolidationKeys[index], relation: "contributes" });
+    const longTerm = session.candidate
+      ? firstKey(longTermByIdentifier, session.candidate.longTermMemoryIdentifier)
+      : null;
+    if (longTerm) edges.push({ from: consolidationKeys[index], to: longTerm, relation: "links" });
   });
-  snapshot.reflections.forEach((reflection, index) => reflection.sources.forEach((sourceEntry) => {
-    const sourceKey = keyByIdentifier.get(sourceEntry.sourceIdentifier);
-    if (sourceKey) edges.push({ from: sourceKey, to: reflectionKeys[index], relation: "contributes" });
-  }));
+
+  const reflectionSourceDefinitions = Object.freeze({
+    Semantic: Object.freeze({ property: "semanticConcept", kind: "semantic", family: "Semantic concept" }),
+    Episodic: Object.freeze({ property: "episode", kind: "episodic", family: "Episode" }),
+    Procedural: Object.freeze({ property: "procedure", kind: "procedural", family: "Procedure" }),
+  });
+  const addReflectionProjection = (reflection, targetKey, targetPath) => {
+    const sources = Array.isArray(reflection?.sources) ? reflection.sources : [];
+    const candidateKeys = stableKeys(
+      `${targetKey}:source-candidate`,
+      sources,
+      (candidate) => `${candidate.kind}:${candidate.sourceIdentifier}`,
+    );
+    sources.forEach((candidate, candidateIndex) => {
+      const candidatePath = `${targetPath}.sources[${candidateIndex}]`;
+      const candidateKey = addMember("reflection", {
+        key: candidateKeys[candidateIndex],
+        identifier: candidate.sourceIdentifier,
+        label: candidate.sourceIdentifier,
+        kind: "retrieval",
+        family: "Reflection source",
+        size: 4,
+        detail: true,
+        observationPath: candidatePath,
+        revision: canonicalObservation(candidate),
+      });
+      edges.push({
+        from: candidateKey,
+        to: targetKey,
+        relation: "contributes",
+        observationPath: candidatePath,
+      });
+
+      const definition = reflectionSourceDefinitions[candidate.kind];
+      const source = definition ? candidate[definition.property] : null;
+      if (!source || typeof source !== "object") return;
+
+      const sourcePath = `${candidatePath}.${definition.property}`;
+      const sourceNodeKey = addMember("reflection", {
+        key: stableKeys(`${candidateKey}:source`, [source])[0],
+        identifier: source.identifier,
+        label: source.identifier,
+        kind: definition.kind,
+        family: definition.family,
+        size: 7,
+        detail: true,
+        observationPath: sourcePath,
+        revision: canonicalObservation(source),
+      });
+      edges.push({
+        from: candidateKey,
+        to: sourceNodeKey,
+        relation: "links",
+        observationPath: sourcePath,
+      });
+
+      const evidenceEntries = Array.isArray(source.sourceEntries) ? source.sourceEntries : [];
+      const evidenceKeys = stableKeys(
+        `${sourceNodeKey}:evidence`,
+        evidenceEntries,
+        (evidence) => evidence.identifier,
+      );
+      evidenceEntries.forEach((evidence, evidenceIndex) => {
+        const evidencePath = `${sourcePath}.sourceEntries[${evidenceIndex}]`;
+        const evidenceKey = addMember("reflection", {
+          key: evidenceKeys[evidenceIndex],
+          identifier: evidence.identifier,
+          label: evidence.identifier,
+          kind: "long-term",
+          family: "Provenance snapshot",
+          size: 5,
+          detail: true,
+          observationPath: evidencePath,
+          revision: canonicalObservation(evidence),
+        });
+        edges.push({
+          from: evidenceKey,
+          to: sourceNodeKey,
+          relation: "evidence",
+          observationPath: evidencePath,
+        });
+      });
+    });
+  };
+
+  snapshot.reflections.forEach((reflection, index) => {
+    addReflectionProjection(reflection, reflectionKeys[index], `Reflection.values[${index}]`);
+  });
   snapshot.reflectionSessions.forEach((session, index) => {
-    const reflectionIndex = snapshot.reflections.findIndex((reflection) => reflection.identifier === session.reflection?.identifier);
-    if (reflectionIndex >= 0) edges.push({ from: reflectionSessionKeys[index], to: reflectionKeys[reflectionIndex], relation: "links" });
+    if (!session.reflection || typeof session.reflection !== "object") return;
+    const targetPath = `Reflection.sessions[${index}].reflection`;
+    const targetKey = addMember("reflection", {
+      key: stableKeys(`${reflectionSessionKeys[index]}:reflection`, [session.reflection])[0],
+      identifier: session.reflection.identifier,
+      label: session.reflection.identifier,
+      kind: "reflection",
+      family: "Reflection",
+      size: 11,
+      observationPath: targetPath,
+      revision: canonicalObservation(session.reflection),
+    });
+    edges.push({
+      from: reflectionSessionKeys[index],
+      to: targetKey,
+      relation: "contains",
+      observationPath: targetPath,
+    });
+    addReflectionProjection(session.reflection, targetKey, targetPath);
   });
+
   return {
     identity: "Memory intelligence graph",
     description: "One deterministic topology of MemoryOS state, provenance, retrieval, reflection, providers, and validation.",

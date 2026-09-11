@@ -10,6 +10,7 @@ const semanticTransformationFamilies = new Set([
   "EpisodicMemory",
   "ProceduralMemory",
 ]);
+const validatedObservationFrames = new WeakSet();
 
 function deepFreeze(value) {
   if (!value || typeof value !== "object" || Object.isFrozen(value)) return value;
@@ -17,14 +18,24 @@ function deepFreeze(value) {
   return Object.freeze(value);
 }
 
+function deeplyFrozen(value) {
+  if (!value || typeof value !== "object" || !Object.isFrozen(value)) return false;
+  return Object.values(value).every((member) => (
+    !member || typeof member !== "object" || deeplyFrozen(member)
+  ));
+}
+
 function compareText(left, right) {
-  return String(left).localeCompare(String(right), "en");
+  const a = String(left);
+  const b = String(right);
+  return a < b ? -1 : a > b ? 1 : 0;
 }
 
 function requireFrame(frame, label) {
   if (!frame || frame.kind !== "MemoryOSObservationFrame" || frame.version !== "1.1") {
     throw new TypeError(`${label} must be an immutable MemoryOS 1.1 Observation Frame.`);
   }
+  if (validatedObservationFrames.has(frame)) return;
   if (!Object.isFrozen(frame) || !Object.isFrozen(frame.snapshot) || !Object.isFrozen(frame.world)) {
     throw new TypeError(`${label} must be immutable.`);
   }
@@ -59,6 +70,7 @@ function requireFrame(frame, label) {
   if (canonicalObservation(projected) !== canonicalObservation(frame.world)) {
     throw new TypeError(`${label} semantic world is not the canonical projection of runtime truth.`);
   }
+  if (deeplyFrozen(frame)) validatedObservationFrames.add(frame);
 }
 
 function semanticCategory(node) {

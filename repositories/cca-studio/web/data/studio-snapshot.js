@@ -20,6 +20,55 @@ const source = (identifier, value, archived = false) => ({
   archived,
 });
 
+const semanticDeterminism = () => ({
+  identifier: "sem-determinism",
+  meaning: "Equivalent observations produce the same public order.",
+  categories: ["behavior", "determinism"],
+  linkedConceptIdentifiers: ["sem-provenance"],
+  sourceEntries: [source("ltm-002", "Equivalent inputs preserve deterministic order.")],
+});
+
+const releaseReviewProcedure = () => ({
+  identifier: "proc-release-review",
+  activity: "Perform a MemoryOS release review",
+  steps: ["Observe a coherent view", "Inspect each scope", "Trace evidence", "Verify validation state"],
+  linkedProcedureIdentifiers: ["proc-provider-check"],
+  sourceEntries: [
+    source("ltm-001", "Workspace ownership is invariant."),
+    source("ltm-002", "Equivalent inputs preserve deterministic order."),
+  ],
+});
+
+const releaseReflectionSources = () => [
+  {
+    kind: "Semantic",
+    workspaceIdentifier,
+    sourceIdentifier: "sem-determinism",
+    rankScore: 4,
+    semanticConcept: semanticDeterminism(),
+    episode: null,
+    procedure: null,
+    chain: ["ltm-002", "sem-determinism"],
+  },
+  {
+    kind: "Procedural",
+    workspaceIdentifier,
+    sourceIdentifier: "proc-release-review",
+    rankScore: 87,
+    semanticConcept: null,
+    episode: null,
+    procedure: releaseReviewProcedure(),
+    chain: ["ltm-001", "ltm-002", "proc-release-review"],
+  },
+];
+
+const releaseReflection = () => ({
+  identifier: "reflection-release-integrity",
+  workspaceIdentifier,
+  knowledge: "Release integrity depends on deterministic observation and preserved evidence.",
+  sources: releaseReflectionSources(),
+});
+
 export const referenceSnapshot = Object.freeze({
   contract: "CCA-STUDIO-1.0",
   source: "deterministic-reference-observation",
@@ -73,13 +122,7 @@ export const referenceSnapshot = Object.freeze({
         linkedConceptIdentifiers: ["sem-determinism"],
         sourceEntries: [source("ltm-001", "Workspace ownership is invariant.")],
       },
-      {
-        identifier: "sem-determinism",
-        meaning: "Equivalent observations produce the same public order.",
-        categories: ["behavior", "determinism"],
-        linkedConceptIdentifiers: ["sem-provenance"],
-        sourceEntries: [source("ltm-002", "Equivalent inputs preserve deterministic order.")],
-      },
+      semanticDeterminism(),
       {
         identifier: "sem-provenance",
         meaning: "Derived knowledge retains explicit evidence references.",
@@ -121,16 +164,7 @@ export const referenceSnapshot = Object.freeze({
   proceduralMemory: {
     workspaceIdentifier,
     procedures: [
-      {
-        identifier: "proc-release-review",
-        activity: "Perform a MemoryOS release review",
-        steps: ["Observe a coherent view", "Inspect each scope", "Trace evidence", "Verify validation state"],
-        linkedProcedureIdentifiers: ["proc-provider-check"],
-        sourceEntries: [
-          source("ltm-001", "Workspace ownership is invariant."),
-          source("ltm-002", "Equivalent inputs preserve deterministic order."),
-        ],
-      },
+      releaseReviewProcedure(),
       {
         identifier: "proc-provider-check",
         activity: "Verify provider-independent transport",
@@ -205,17 +239,7 @@ export const referenceSnapshot = Object.freeze({
       candidate: null,
     },
   ],
-  reflections: [
-    {
-      identifier: "reflection-release-integrity",
-      workspaceIdentifier,
-      knowledge: "Release integrity depends on deterministic observation and preserved evidence.",
-      sources: [
-        { kind: "Semantic", workspaceIdentifier, sourceIdentifier: "sem-determinism", chain: ["ltm-002", "sem-determinism"] },
-        { kind: "Procedural", workspaceIdentifier, sourceIdentifier: "proc-release-review", chain: ["ltm-001", "ltm-002", "proc-release-review"] },
-      ],
-    },
-  ],
+  reflections: [releaseReflection()],
   reflectionSessions: [
     {
       identifier: "reflection-session-001",
@@ -224,21 +248,10 @@ export const referenceSnapshot = Object.freeze({
       query: {
         workspaceIdentifier,
         identifier: "reflection-release-integrity",
-        knowledge: "Review the released MemoryOS evidence.",
-      },
-      sources: [
-        { kind: "Semantic", workspaceIdentifier, sourceIdentifier: "sem-determinism", chain: ["ltm-002", "sem-determinism"] },
-        { kind: "Procedural", workspaceIdentifier, sourceIdentifier: "proc-release-review", chain: ["ltm-001", "ltm-002", "proc-release-review"] },
-      ],
-      reflection: {
-        workspaceIdentifier,
-        identifier: "reflection-release-integrity",
         knowledge: "Release integrity depends on deterministic observation and preserved evidence.",
-        sources: [
-          { kind: "Semantic", workspaceIdentifier, sourceIdentifier: "sem-determinism", chain: ["ltm-002", "sem-determinism"] },
-          { kind: "Procedural", workspaceIdentifier, sourceIdentifier: "proc-release-review", chain: ["ltm-001", "ltm-002", "proc-release-review"] },
-        ],
       },
+      sources: releaseReflectionSources(),
+      reflection: releaseReflection(),
     },
   ],
   providerSessions: [

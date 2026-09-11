@@ -376,6 +376,43 @@ void RepresentationInternalAccess::replaceId(RepresentationEntity& entity,
     entity.id_ = std::move(id);
 }
 
+void RepresentationInternalAccess::replaceId(RepresentationProperty& property,
+                                             RepresentationId id) {
+    property.id_ = std::move(id);
+}
+
+void RepresentationInternalAccess::replaceId(
+    RepresentationRelationship& relationship,
+    RepresentationId id) {
+    relationship.id_ = std::move(id);
+}
+
+void RepresentationInternalAccess::setLifecycleState(
+    RepresentationDocument& document,
+    const RepresentationLifecycleState state) noexcept {
+    switch (state) {
+    case RepresentationLifecycleState::Mutable:
+        document.impl_->state->lifecycle = Lifecycle::Mutable;
+        break;
+    case RepresentationLifecycleState::Validated:
+        document.impl_->state->lifecycle = Lifecycle::Validated;
+        break;
+    case RepresentationLifecycleState::Frozen:
+        document.impl_->state->lifecycle = Lifecycle::Frozen;
+        break;
+    }
+}
+
+std::uint64_t RepresentationInternalAccess::nextIdentifierOrdinal(
+    const RepresentationDocument& document) noexcept {
+    return document.impl_->next_ordinal;
+}
+
+bool RepresentationInternalAccess::identifiersExhausted(
+    const RepresentationDocument& document) noexcept {
+    return document.impl_->identifiers_exhausted;
+}
+
 void RepresentationInternalAccess::renameProperty(
     RepresentationProperty& property,
     std::string name) {
