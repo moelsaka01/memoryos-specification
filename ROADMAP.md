@@ -10,6 +10,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 | MemoryOS 1.0 | Released | Deterministic memory lifecycle, source-preserving knowledge, retrieval, reflection, provider-neutral handoff, and the frozen Memory Studio contract |
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
 | MemoryOS 1.2 | Released — v1.2.0 | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, and its official Conformance Suite |
+| MemoryOS 1.2.1 | Corrective restoration | Restores omitted intended v1.2 source, registered tests, fixtures, examples, documentation, frozen Standard and MIP publication assets, and corrected conformance provenance while preserving all v1.2 semantics and CSP fixes |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -18,15 +19,11 @@ traces, replay order, evolution, or divergence.
 
 The complete milestone map and evidence index are maintained in the
 [MemoryOS 1.1 documentation index](repositories/cca-studio/docs/README.md).
-Measured [performance](repositories/cca-studio/docs/memoryos-1.1-performance-report.md),
-[scalability](repositories/cca-studio/docs/memoryos-1.1-scalability-report.md),
-[benchmark](repositories/cca-studio/docs/memoryos-1.1-engineering-benchmark.md),
-[UX](repositories/cca-studio/docs/memoryos-1.1-ux-audit.md),
-[accessibility](repositories/cca-studio/docs/memoryos-1.1-accessibility-audit.md),
-and [documentation](repositories/cca-studio/docs/memoryos-1.1-rc-documentation-audit.md)
-evidence closes MO-1108. RC-001 validated the production workflow, RC-001A
-completed the documentation freeze, and RC-001B completed the repository
-audit without changing the product architecture.
+Measured performance, scalability, benchmark, UX, accessibility, and
+documentation evidence closed MO-1108. Those historical supporting artifacts
+are not retained in the v1.2.1 source archive. RC-001 validated the production
+workflow, RC-001A completed the documentation freeze, and RC-001B completed the
+repository audit without changing the product architecture.
 
 MemoryOS 1.2 delivers MIP-001 and its MO-1201 implementation. MO-1202 adds
 provider-neutral interfaces that privately validate OpenAI Agents SDK,
@@ -78,6 +75,12 @@ defines lifecycle, adapter, Core, SDK, CLI, Regression, Explorer,
 compatibility, versioning, and certification obligations without changing
 platform behavior. MemoryOS 1.2.0 is the initial Reference Implementation, not
 the normative source of those obligations.
+
+MemoryOS v1.2.1 is the corrected Reference Implementation baseline. It repairs
+the v1.2.0 source and publication inventory without changing the Standard, MIP,
+Investigation Core, SDK, CLI, Regression, Explorer, lifecycle, or Studio
+semantics. The v1.2.0 commit, tag, manifest, and evidence remain immutable
+historical records.
 
 ## IM-001: engineering foundation
 

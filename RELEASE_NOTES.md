@@ -1,4 +1,4 @@
-# MemoryOS v1.2.0 Release Notes
+# MemoryOS v1.2.1 Release Notes
 
 ## Release status
 
@@ -7,10 +7,10 @@
 | Identity | Value |
 |---|---|
 | Product release | MemoryOS 1.2 |
-| Semantic version | 1.2.0 |
-| Release tag | v1.2.0 |
+| Semantic version | 1.2.1 |
+| Release tag | v1.2.1 |
 | Standard | CCA-MEMORYOS-1.0 |
-| Status | Stable Reference Implementation |
+| Status | Corrected Stable Reference Implementation |
 
 MemoryOS 1.2 turns the deterministic cognitive investigation experience
 introduced in v1.1 into a portable engineering platform. The release adds a
@@ -21,7 +21,21 @@ official Conformance Suite.
 
 The MemoryOS 1.0 runtime and v1.1 investigation architecture remain intact.
 
-## What is new
+## Corrective restoration
+
+The v1.2.0 Git source archive omitted already-intended source, registered tests,
+fixtures, examples, required documentation, and frozen Standard and MIP
+publication assets. v1.2.1 restores only those reviewed bytes, preserves the
+released CSP-safe Studio revisions, and publishes new conformance evidence for
+the repaired tracked tree.
+
+No CCA-MEMORYOS-1.0, CCA-MIP-1.0, Investigation Core, SDK, CLI, Cognitive
+Regression, Cognitive Investigation Explorer, lifecycle, or Studio semantics
+changed. The v1.2.0 commit, tag, manifest, and evidence remain immutable
+historical records. v1.2.1 is the corrected Reference Implementation baseline
+and introduces no MemoryOS 1.3 or Investigation Policies behavior.
+
+## MemoryOS 1.2 platform scope
 
 ### MO-1201 — Memory Investigation Packages
 
@@ -68,6 +82,8 @@ cognitive state.
 CCA-MEMORYOS-1.0 defines the implementation-independent platform contract.
 MemoryOS v1.2.0 is its initial Reference Implementation and is assessed through
 the official deterministic Conformance Suite.
+
+MemoryOS v1.2.1 is the corrected Reference Implementation baseline.
 
 ## Investigation workflow
 

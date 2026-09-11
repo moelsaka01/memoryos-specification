@@ -3,6 +3,21 @@
 This changelog records MemoryOS product milestones. Foundation-era workspace
 history remains available in `ROADMAP.md`.
 
+## MemoryOS 1.2 — v1.2.1
+
+Corrective restoration release. The v1.2.0 Git source archive omitted
+already-intended v1.2 source, registered tests, fixtures, examples, required
+documentation, and frozen CCA-MIP-1.0 and CCA-MEMORYOS-1.0 publication assets.
+v1.2.1 restores only the exact reviewed bytes and publishes a new v1.2.1
+conformance assessment.
+
+The released v1.2 CSP-safe Studio revisions remain authoritative.
+CCA-MEMORYOS-1.0, CCA-MIP-1.0, Investigation Core, SDK, CLI, Cognitive
+Regression, Cognitive Investigation Explorer, lifecycle, and Studio semantics
+are unchanged. The v1.2.0 commit, tag, content-addressed manifest, and evidence
+remain immutable historical records; v1.2.1 is the corrected Reference
+Implementation baseline.
+
 ## MemoryOS 1.2 — v1.2.0
 
 Released. MemoryOS 1.2 turns the deterministic investigation experience into

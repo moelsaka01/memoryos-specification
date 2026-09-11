@@ -9,7 +9,7 @@
 
 <p align="center">
   <a href="https://github.com/moelsaka01/memoryos-specification/actions/workflows/ci.yml"><img src="https://github.com/moelsaka01/memoryos-specification/actions/workflows/ci.yml/badge.svg" alt="CI status" /></a>
-  <img src="https://img.shields.io/badge/MemoryOS-v1.2.0-7C4DFF?style=flat-square" alt="MemoryOS v1.2.0" />
+  <img src="https://img.shields.io/badge/MemoryOS-v1.2.1-7C4DFF?style=flat-square" alt="MemoryOS v1.2.1" />
   <img src="https://img.shields.io/badge/release-stable-00BFA5?style=flat-square" alt="Stable release" />
   <img src="https://img.shields.io/badge/standard-CCA--MEMORYOS--1.0-00BFA5?style=flat-square" alt="CCA-MEMORYOS-1.0" />
   <img src="https://img.shields.io/badge/MIP-1.0-1F8EED?style=flat-square" alt="Memory Investigation Package 1.0" />
@@ -98,6 +98,19 @@ flowchart LR
 - **Return** restores the stable semantic world and its spatial context.
 
 Selecting a valid Reflection in Observe mode begins an investigation.
+
+## Corrective v1.2.1 baseline
+
+MemoryOS v1.2.1 is the corrected Reference Implementation baseline. The
+v1.2.0 Git source archive omitted already-intended source, registered tests,
+fixtures, examples, required documentation, and frozen Standard and MIP
+publication assets. v1.2.1 restores only the reviewed v1.2 bytes and publishes
+new conformance provenance bound to the repaired tracked tree.
+
+The released CSP-safe Studio revisions remain authoritative. CCA-MEMORYOS-1.0,
+CCA-MIP-1.0, Investigation Core, SDK, CLI, Cognitive Regression, Cognitive
+Investigation Explorer, lifecycle, and Studio semantics are unchanged. The
+v1.2.0 commit, tag, manifest, and evidence remain immutable historical records.
 
 ## MemoryOS v1.2 highlights
 
@@ -291,12 +304,13 @@ representation, process, persistence, and integration milestones.
 | **MemoryOS 1.0** | Completed the Workspace-owned memory lifecycle: Working, Long-Term, Semantic, Episodic, Procedural, Retrieval, Consolidation, Reflection, Providers, and Studio. |
 | **MemoryOS 1.1** | Added the Stable Semantic World, Cognitive Trace, Living Connectome, deterministic Replay, Cognitive Evolution, and Comparative Reconstruction. |
 | **MemoryOS 1.2** | Added MIP, runtime adapters, one Investigation Core, SDK, CLI, Cognitive Regression, Investigation Explorer, the MemoryOS Standard, and its Conformance Suite. |
+| **MemoryOS 1.2.1** | Corrected the v1.2 source and publication inventory and regenerated conformance provenance without changing MemoryOS semantics. |
 
 See [CHANGELOG.md](CHANGELOG.md) for milestone-level engineering history.
 
 ## Roadmap
 
-MemoryOS 1.2 is the released platform baseline. Work after v1.2 focuses on
+MemoryOS v1.2.1 is the corrected released platform baseline. Work after v1.2 focuses on
 adoption, interoperability, first-investigation onboarding, and conformance
 ecosystem maturity while preserving deterministic investigation architecture.
 See [ROADMAP.md](ROADMAP.md) for the maintained product direction.
@@ -316,6 +330,6 @@ technical standard; that does not change the source-code license.
 ---
 
 <div align="center">
-  <strong>MemoryOS v1.2.0</strong><br />
+  <strong>MemoryOS v1.2.1</strong><br />
   Deterministic AI investigations, from runtime truth to verifiable evidence.
 </div>
