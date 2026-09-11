@@ -26,7 +26,7 @@ not identify a Standard version.
 
 | Surface | Assessed version | Compatible Standard/profile |
 | --- | --- | --- |
-| MemoryOS Reference Implementation | 1.2.0 | CCA-MEMORYOS-1.0 full platform |
+| MemoryOS Reference Implementation | 1.2.1 | CCA-MEMORYOS-1.0 full platform |
 | Runtime Foundation | CCA-RF-1.0 | Incorporated Runtime profile |
 | MIP | 1.0.0 | CCA-MIP-1.0 Producer, Consumer, and Verifier |
 | Investigation Core | 1.0.0 | CCA-MEMORYOS-1.0 Core and lifecycle profiles |
@@ -36,6 +36,10 @@ not identify a Standard version.
 | Regression report | 1.0.0 | CCA-MEMORYOS-1.0 Regression profile |
 | Explorer result | 1.0.0 | CCA-MEMORYOS-1.0 Explorer profile |
 | Conformance Suite | 1.0.0 | CCA-MEMORYOS-1.0 evidence protocol |
+
+MemoryOS v1.2.0 remains the immutable initial historical assessment. v1.2.1
+corrects its source and publication inventory without changing any compatible
+input or observable outcome in this matrix.
 
 ## Backward compatibility
 
@@ -86,4 +90,3 @@ unexplained `NOT APPLICABLE` result does not establish compatibility.
 
 See [the versioning guide](versioning-guide.md) for change classification and
 [the certification guide](certification-guide.md) for claim rules.
-

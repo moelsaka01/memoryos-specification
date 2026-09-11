@@ -54,10 +54,10 @@ set(memoryos_conformance_sources_list
     tools/run-reference-evidence.mjs
 )
 foreach(generated_source IN ITEMS
-  evidence/reference-implementation-1.2.0.json
-  evidence/reference-implementation-review-1.2.0.json
-  reports/reference-implementation-1.2.0.json
-  reports/reference-implementation-1.2.0.md
+  evidence/reference-implementation-1.2.1.json
+  evidence/reference-implementation-review-1.2.1.json
+  reports/reference-implementation-1.2.1.json
+  reports/reference-implementation-1.2.1.md
 )
   if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${generated_source}")
     list(APPEND memoryos_conformance_sources_list "${generated_source}")

@@ -30,7 +30,9 @@ import {
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const workspaceRoot = resolve(root, "../..");
-const publishedStandardRoot = resolve(workspaceRoot, "../cca-specifications/specifications/CCA-MEMORYOS-1.0");
+const publishedStandardRoot = process.env.MEMORYOS_STANDARD_ROOT
+  ? resolve(process.env.MEMORYOS_STANDARD_ROOT)
+  : resolve(workspaceRoot, "../cca-specifications/specifications/CCA-MEMORYOS-1.0");
 const compare = (left, right) => left < right ? -1 : left > right ? 1 : 0;
 
 function usage() {
@@ -85,6 +87,16 @@ function toolRecord(path, version) {
   const absolute = resolve(path);
   assert.equal(statSync(absolute).isFile(), true, `tool is not a file: ${absolute}`);
   return { path: absolute, sha256: sha256(readFileSync(absolute)), version };
+}
+
+function compilerEnvironment(source) {
+  try {
+    return JSON.parse(source);
+  } catch (jsonError) {
+    const libDirectory = /^\s*\.lib_dir = ("(?:\\.|[^"])*"),$/mu.exec(source)?.[1];
+    assert.ok(libDirectory, `compiler environment output is unrecognized: ${jsonError.message}`);
+    return { lib_dir: JSON.parse(libDirectory) };
+  }
 }
 
 function assertWrapperDelegates(wrapperPath, compilerPath, subcommand) {
@@ -150,7 +162,7 @@ function assertSelectorDeclared({ source, selector }, arguments_, id) {
   } else if (source.endsWith(".py")) {
     const [suite, test] = selector.split(".");
     declarations = occurrenceCount(text, `class ${suite}`) === 1
-      ? [...text.matchAll(new RegExp(`^\\s+def ${test}\\(self\\):`, "gmu"))].length
+      ? [...text.matchAll(new RegExp(`^\\s+def ${test}\\(self\\)(?:\\s*->\\s*[^:]+)?\\s*:`, "gmu"))].length
       : 0;
   } else {
     declarations = occurrenceCount(text, selector);
@@ -198,6 +210,9 @@ function execute({ id, executable, arguments_, inputInventory, attribution, pars
   const executablePath = resolve(executable);
   const evidenceEnvironment = normalizedEvidenceEnvironment(env);
   const environment = { ...process.env, ...evidenceEnvironment };
+  for (const [name, value] of Object.entries(env)) {
+    if (value === null) delete environment[name];
+  }
   delete environment.NODE_TEST_CONTEXT;
   delete environment.NODE_TEST_NAME_PATTERN;
   delete environment.NODE_TEST_REPORTER;
@@ -374,8 +389,8 @@ async function createNativeBuildAttestation(selected, sourceRevision, buildInput
   const compilerEnvironmentProbe = spawnSync(compilerPath, ["env"], { encoding: "utf8", windowsHide: true });
   assert.ifError(compilerEnvironmentProbe.error);
   assert.equal(compilerEnvironmentProbe.status, 0, "compiler environment probe failed");
-  const compilerEnvironment = JSON.parse(compilerEnvironmentProbe.stdout);
-  const zigLibraryRoot = resolve(compilerEnvironment.lib_dir);
+  const compilerEnvironmentRecord = compilerEnvironment(compilerEnvironmentProbe.stdout);
+  const zigLibraryRoot = resolve(compilerEnvironmentRecord.lib_dir);
   assert.equal(statSync(zigLibraryRoot).isDirectory(), true, "compiler library root is unavailable");
   const cmakeSystemProbe = spawnSync(cmakePath, ["--system-information"], {
     encoding: "utf8",
@@ -500,7 +515,7 @@ await assert.rejects(access(REFERENCE_EVIDENCE_PATH), "retained evidence already
 const manifest = await readManifest(resolve(selected["--manifest"]));
 const sourceInventory = validateManifestInputsCurrent(manifest);
 const revision = sha256(Buffer.from(canonicalJson(sourceInventory), "utf8"));
-const implementation = Object.freeze({ name: "MemoryOS Reference Implementation", version: "1.2.0", revision });
+const implementation = Object.freeze({ name: "MemoryOS Reference Implementation", version: "1.2.1", revision });
 for (const group of manifest.evidenceGroups) assert.deepEqual(group.implementation, implementation);
 function executionBinding(id) {
   const attribution = [...new Map(
@@ -599,7 +614,7 @@ const runtimeArtifact = nativeArtifact("runtime-native");
 const sdkCppArtifact = nativeArtifact("sdk-cpp");
 const plans = [
   { id: "boundary-js", ...executionBinding("boundary-js"), executable: process.execPath, arguments_: tapArgs("boundary_contract_conformance_test.mjs"), parser: tapChecks, expectedTests: 2, cwd: root, env: { MEMORYOS_CONFORMANCE_PYTHON: resolve(selected["--python"]) } },
-  { id: "component-js", ...executionBinding("component-js"), executable: process.execPath, arguments_: componentArgs, parser: tapChecks, expectedTests: 257, allowedSkips: ["MO-1206 Regression remains deterministic under repeated bounded analysis", "MO-1207 Explorer is read-only and deterministic under bounded navigation", "investigate remains bounded for a complete deterministic Regression Report"], cwd: workspaceRoot, env: { MEMORYOS_DETERMINISTIC_CONFORMANCE: "1" } },
+  { id: "component-js", ...executionBinding("component-js"), executable: process.execPath, arguments_: componentArgs, parser: tapChecks, expectedTests: 258, allowedSkips: ["MO-1206 Regression remains deterministic under repeated bounded analysis", "MO-1207 Explorer is read-only and deterministic under bounded navigation", "investigate remains bounded for a complete deterministic Regression Report"], cwd: workspaceRoot, env: { MEMORYOS_DETERMINISTIC_CONFORMANCE: "1" } },
   { id: "compatibility-js", ...executionBinding("compatibility-js"), executable: process.execPath, arguments_: tapArgs("compatibility_conformance_test.mjs"), parser: tapChecks, expectedTests: 4, cwd: root },
   { id: "reference-js", ...executionBinding("reference-js"), executable: process.execPath, arguments_: tapArgs("reference_implementation_conformance_test.mjs"), parser: tapChecks, expectedTests: 5, cwd: root },
   { id: "normative-vectors-js", ...executionBinding("normative-vectors-js"), executable: process.execPath, arguments_: tapArgs("normative_vectors_conformance_test.mjs"), parser: tapChecks, expectedTests: 10, cwd: root },

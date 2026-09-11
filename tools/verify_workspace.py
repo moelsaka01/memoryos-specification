@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -15,6 +16,7 @@ REQUIRED_PATHS = (
     ".clang-format",
     ".clang-tidy",
     ".editorconfig",
+    ".gitattributes",
     ".gitignore",
     "ARCHITECTURE.md",
     "CMakeLists.txt",
@@ -41,15 +43,45 @@ REQUIRED_PATHS = (
     "docs/validation.md",
     "examples/specifications/reference-architecture.yaml",
     "repositories/cca-core/CMakeLists.txt",
+    "repositories/cca-core/docs/semantic-memory.md",
+    "repositories/cca-core/examples/process_runtime_usage.cpp",
+    "repositories/cca-core/examples/process_usage.cpp",
+    "repositories/cca-core/examples/semantic_memory_usage.cpp",
+    "repositories/cca-core/include/cca/memory/semantic_memory.hpp",
+    "repositories/cca-core/src/memory/long_term_memory_persistence.cpp",
+    "repositories/cca-core/src/memory/long_term_memory_persistence.hpp",
+    "repositories/cca-core/src/memory/procedural_memory_persistence.cpp",
+    "repositories/cca-core/src/memory/procedural_memory_persistence.hpp",
+    "repositories/cca-core/src/memory/semantic_memory.cpp",
+    "repositories/cca-core/src/memory/semantic_memory_persistence.cpp",
+    "repositories/cca-core/src/memory/semantic_memory_persistence.hpp",
+    "repositories/cca-core/tests/episodic_memory_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/knowledge_retrieval_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/long_term_memory_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/long_term_memory_architecture_test.cmake",
+    "repositories/cca-core/tests/memory_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/memory_architecture_test.cmake",
+    "repositories/cca-core/tests/memory_consolidation_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/memory_reflection_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/procedural_memory_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/procedural_memory_architecture_test.cmake",
+    "repositories/cca-core/tests/semantic_memory_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/semantic_memory_architecture_test.cmake",
+    "repositories/cca-core/tests/semantic_memory_test.cpp",
+    "repositories/cca-core/tests/working_memory_allocation_failure_test.cpp",
+    "repositories/cca-core/tests/working_memory_architecture_test.cmake",
     "repositories/cca-compiler/CMakeLists.txt",
     "repositories/cca-compiler/cmake/ccaCompilerConfig.cmake.in",
     "repositories/cca-studio/CMakeLists.txt",
+    "repositories/cca-studio/benchmarks/memoryos-scalability-fixture.mjs",
+    "repositories/cca-studio/benchmarks/memoryos-scalability.mjs",
     "repositories/cca-studio/include/cca/memory/memory_studio.hpp",
     "repositories/cca-studio/src/memory_studio.cpp",
     "repositories/cca-studio/tests/memory_studio_test.cpp",
     "repositories/cca-studio/tests/memory_studio_allocation_failure_test.cpp",
     "repositories/cca-studio/tests/memory_studio_architecture_test.cmake",
     "repositories/cca-studio/tests/memory_studio_web_test.mjs",
+    "repositories/cca-studio/tests/memory_studio_scalability_test.mjs",
     "repositories/cca-studio/examples/memory_studio_usage.cpp",
     "repositories/cca-studio/docs/memory-studio.md",
     "repositories/cca-studio/docs/memory-studio-conformance-evidence.md",
@@ -70,6 +102,10 @@ REQUIRED_PATHS = (
     "repositories/cca-studio/tests/mip_ordering_conformance_test.mjs",
     "repositories/cca-studio/tests/mip_derived_edge_conformance_test.mjs",
     "repositories/cca-studio/tests/mip_pipeline_conformance_test.mjs",
+    "repositories/cca-studio/tests/fixtures/mip/complete-investigation.mip.b64",
+    "repositories/cca-studio/tests/fixtures/mip/memory-investigation-package-1.0.schema.json.b64",
+    "repositories/cca-studio/tests/fixtures/mip/minimal-observation.mip.b64",
+    "repositories/cca-studio/tests/fixtures/mip/noncritical-extension.mip.b64",
     "repositories/cca-studio/tests/ai_runtime_adapter_test.mjs",
     "repositories/cca-studio/examples/ai_runtime_adapter_usage.mjs",
     "repositories/cca-studio/web/js/investigation-core.js",
@@ -107,6 +143,12 @@ REQUIRED_PATHS = (
     "repositories/cca-studio/web/index.html",
     "repositories/cca-studio/web/styles.css",
     "repositories/cca-studio/web/js/app.js",
+    "repositories/cca-studio/web/js/browser-render-benchmark.js",
+    "repositories/cca-studio/web/js/cognitive-trace.js",
+    "repositories/cca-studio/web/js/deterministic-sequence-alignment.js",
+    "repositories/cca-studio/web/js/graph-view-state.js",
+    "repositories/cca-studio/web/js/observation-timeline.js",
+    "repositories/cca-studio/web/js/semantic-world.js",
     "repositories/cca-sdk/CMakeLists.txt",
     "repositories/cca-sdk/README.md",
     "repositories/cca-sdk/bridge/investigation-core-host.mjs",
@@ -175,9 +217,10 @@ REQUIRED_PATHS = (
     "repositories/cca-conformance/docs/conformance-report.md",
     "repositories/cca-conformance/docs/reference-implementation-guide.md",
     "repositories/cca-conformance/docs/versioning-guide.md",
-    "repositories/cca-conformance/evidence/reference-implementation-1.2.0.json",
-    "repositories/cca-conformance/reports/reference-implementation-1.2.0.json",
-    "repositories/cca-conformance/reports/reference-implementation-1.2.0.md",
+    "repositories/cca-conformance/evidence/reference-implementation-1.2.1.json",
+    "repositories/cca-conformance/evidence/reference-implementation-review-1.2.1.json",
+    "repositories/cca-conformance/reports/reference-implementation-1.2.1.json",
+    "repositories/cca-conformance/reports/reference-implementation-1.2.1.md",
     "repositories/cca-conformance/schema/conformance-report-1.0.schema.json",
     "repositories/cca-conformance/schema/requirements-manifest-1.0.schema.json",
     "repositories/cca-conformance/tests/compatibility_conformance_test.mjs",
@@ -205,6 +248,26 @@ REQUIRED_PATHS = (
     "tools/vcpkg-version.txt",
     "vcpkg-configuration.json",
     "vcpkg.json",
+)
+
+EXPECTED_IMPLEMENTATION_REVISION = (
+    "sha256:68457c49142f5f2a54159228a480ddc11dd3f57ec0ddcb3231bcc4266d7a1044"
+)
+EXPECTED_STANDARD_PUBLICATION_DIGEST = (
+    "sha256:f77246da755e67c5e7e73706504c6d63641eeb711fbbe9c381b10d197a3dc716"
+)
+EXPECTED_MIP_PUBLICATION_DIGEST = (
+    "sha256:997fd40928ce52581dc932c1c3d888fd4d6a73208613ba1ab0a9f17b79c020ca"
+)
+EXPECTED_NORMATIVE_REGISTRY_DIGEST = (
+    "sha256:68ef4fa3e5727acab071de6d84759ff2b15a2bbf3865d38a55475c399c690e7f"
+)
+HISTORICAL_MANIFEST = (
+    "requirements-manifest-sha256-"
+    "ccb957e57043d6c34542461bc7d50d034aac268da3d295c3387459db848f823a.json"
+)
+EXPECTED_HISTORICAL_MANIFEST_BYTES = (
+    "9d22cec389778ed756184ceaf996f110d7172aa8f987cbf6caf7805954f7968e"
 )
 
 DEFERRED_REPOSITORIES = (
@@ -268,12 +331,94 @@ def load_json(path: Path) -> dict[str, object]:
     return value
 
 
+def sha256(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
+
+
+def validate_conformance_artifacts(root: Path, errors: list[str]) -> None:
+    conformance_root = root / "repositories" / "cca-conformance"
+    manifest_path = conformance_root / "requirements-manifest.json"
+    try:
+        manifest_bytes = manifest_path.read_bytes()
+        if not manifest_bytes.endswith(b"\n") or manifest_bytes.endswith(b"\n\n"):
+            errors.append("current conformance manifest must end with exactly one LF")
+            return
+        manifest = load_json(manifest_path)
+        implementation = manifest.get("implementation")
+        if not isinstance(implementation, dict):
+            errors.append("current conformance manifest lacks implementation identity")
+        else:
+            if implementation.get("version") != "1.2.1":
+                errors.append("current conformance manifest is not the v1.2.1 assessment")
+            if implementation.get("revision") != EXPECTED_IMPLEMENTATION_REVISION:
+                errors.append("current conformance implementation revision is not approved")
+        standard = manifest.get("standard")
+        if not isinstance(standard, dict) or standard.get(
+            "publicationDigest"
+        ) != EXPECTED_STANDARD_PUBLICATION_DIGEST:
+            errors.append("current conformance Standard publication digest changed")
+        incorporated = manifest.get("incorporatedStandards")
+        mip = None
+        if isinstance(incorporated, list):
+            mip = next(
+                (
+                    value
+                    for value in incorporated
+                    if isinstance(value, dict)
+                    and value.get("identifier") == "CCA-MIP-1.0"
+                ),
+                None,
+            )
+        if not isinstance(mip, dict) or mip.get(
+            "publicationDigest"
+        ) != EXPECTED_MIP_PUBLICATION_DIGEST:
+            errors.append("current conformance MIP publication digest changed")
+        if manifest.get("normativeRegistryDigest") != EXPECTED_NORMATIVE_REGISTRY_DIGEST:
+            errors.append("current conformance normative registry digest changed")
+        manifest_digest = sha256(manifest_bytes[:-1])
+        retained_manifest = (
+            conformance_root
+            / "manifests"
+            / f"requirements-manifest-sha256-{manifest_digest}.json"
+        )
+        if not retained_manifest.is_file():
+            errors.append("missing current content-addressed conformance manifest")
+        elif retained_manifest.read_bytes() != manifest_bytes:
+            errors.append("current manifest alias differs from its content-addressed copy")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid current conformance manifest: {exception}")
+
+    historical_path = conformance_root / "manifests" / HISTORICAL_MANIFEST
+    try:
+        if sha256(historical_path.read_bytes()) != EXPECTED_HISTORICAL_MANIFEST_BYTES:
+            errors.append("immutable v1.2.0 content-addressed manifest bytes changed")
+    except OSError as exception:
+        errors.append(f"missing immutable v1.2.0 content-addressed manifest: {exception}")
+
+    evidence_path = conformance_root / "evidence" / "reference-implementation-1.2.1.json"
+    try:
+        evidence_bytes = evidence_path.read_bytes()
+        evidence_digest = sha256(evidence_bytes)
+        retained_evidence = (
+            evidence_path.parent
+            / f"reference-implementation-1.2.1-sha256-{evidence_digest}.json"
+        )
+        if not retained_evidence.is_file():
+            errors.append("missing v1.2.1 content-addressed conformance evidence")
+        elif retained_evidence.read_bytes() != evidence_bytes:
+            errors.append("v1.2.1 evidence alias differs from its content-addressed copy")
+    except OSError as exception:
+        errors.append(f"invalid v1.2.1 conformance evidence: {exception}")
+
+
 def validate(root: Path) -> list[str]:
     errors: list[str] = []
 
     for relative_path in REQUIRED_PATHS:
         if not (root / relative_path).is_file():
             errors.append(f"missing required file: {relative_path}")
+
+    validate_conformance_artifacts(root, errors)
 
     for repository in DEFERRED_REPOSITORIES:
         directory = root / "repositories" / repository

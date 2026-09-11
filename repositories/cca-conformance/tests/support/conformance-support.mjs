@@ -11,26 +11,26 @@ export const WORKSPACE_ROOT = resolve(CONFORMANCE_ROOT, "../..");
 export const MANIFEST_PATH = resolve(CONFORMANCE_ROOT, "requirements-manifest.json");
 export const REFERENCE_REPORT_PATH = resolve(
   CONFORMANCE_ROOT,
-  "reports/reference-implementation-1.2.0.json",
+  "reports/reference-implementation-1.2.1.json",
 );
 export const REFERENCE_EVIDENCE_PATH = resolve(
   CONFORMANCE_ROOT,
-  "evidence/reference-implementation-1.2.0.json",
+  "evidence/reference-implementation-1.2.1.json",
 );
-export const REFERENCE_EVIDENCE_URI = "evidence/reference-implementation-1.2.0.json";
+export const REFERENCE_EVIDENCE_URI = "evidence/reference-implementation-1.2.1.json";
 export function retainedEvidenceFilename(digest) {
   requireString(digest, "retained evidence digest", SHA256_PATTERN);
-  return `reference-implementation-1.2.0-${digest.replace(":", "-")}.json`;
+  return `reference-implementation-1.2.1-${digest.replace(":", "-")}.json`;
 }
 export const REFERENCE_REVIEW_PATH = resolve(
   CONFORMANCE_ROOT,
-  "evidence/reference-implementation-review-1.2.0.json",
+  "evidence/reference-implementation-review-1.2.1.json",
 );
-export const REFERENCE_REVIEW_URI = "evidence/reference-implementation-review-1.2.0.json";
-export const REFERENCE_REPORT_URI = "reports/reference-implementation-1.2.0.json";
+export const REFERENCE_REVIEW_URI = "evidence/reference-implementation-review-1.2.1.json";
+export const REFERENCE_REPORT_URI = "reports/reference-implementation-1.2.1.json";
 export const REFERENCE_MARKDOWN_PATH = resolve(
   CONFORMANCE_ROOT,
-  "reports/reference-implementation-1.2.0.md",
+  "reports/reference-implementation-1.2.1.md",
 );
 export const CLI_PATH = resolve(WORKSPACE_ROOT, "repositories/memoryos-cli/bin/memoryos.js");
 export const STUDIO_ROOT = resolve(WORKSPACE_ROOT, "repositories/cca-studio");
@@ -109,7 +109,7 @@ export const EXECUTION_EXPECTATIONS = Object.freeze({
   "boundary-js": Object.freeze({ tests: 2, skips: Object.freeze([]) }),
   "compatibility-js": Object.freeze({ tests: 4, skips: Object.freeze([]) }),
   "component-js": Object.freeze({
-    tests: 257,
+    tests: 258,
     skips: Object.freeze([
       "MO-1206 Regression remains deterministic under repeated bounded analysis",
       "MO-1207 Explorer is read-only and deterministic under bounded navigation",
@@ -214,6 +214,7 @@ export function normalizeEvidenceOutput(value) {
     .replaceAll(WORKSPACE_ROOT, "<WORKSPACE>")
     .replaceAll(WORKSPACE_ROOT.replaceAll("\\", "/"), "<WORKSPACE>")
     .replace(/duration_ms: [0-9.]+/gu, "duration_ms: <elapsed>")
+    .replace(/# duration_ms [0-9.]+/gu, "# duration_ms <elapsed>")
     .replace(/\([0-9]+ ms(?: total)?\)/gu, "(<elapsed>)")
     .replace(/Ran ([0-9]+) tests? in [0-9.]+s/gu, "Ran $1 tests in <elapsed>");
 }
@@ -996,7 +997,7 @@ export function validateReviewAttestations(attestations, manifest, implementatio
     if (attestation.result === "FAIL") requireString(attestation.reason, `${requirement.id} review reason`);
     assert.equal(
       attestation.durableEvidence,
-      `evidence/reference-implementation-review-1.2.0.json#/attestations/${index}`,
+      `evidence/reference-implementation-review-1.2.1.json#/attestations/${index}`,
     );
   }
   return attestations;

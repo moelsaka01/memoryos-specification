@@ -143,7 +143,7 @@ function reviewAttestations(manifest, implementation) {
       reviewRecordId: "CCA-MOS-CONF-003-fixture",
       implementationRevisionDigest: implementation.revision,
       result: "PASS",
-      durableEvidence: `evidence/reference-implementation-review-1.2.0.json#/attestations/${index}`,
+      durableEvidence: `evidence/reference-implementation-review-1.2.1.json#/attestations/${index}`,
     }));
 }
 
@@ -167,7 +167,7 @@ async function generateFixtureProjection() {
   const report = buildReport(manifest, evidence, implementation, {
     assessor: "MemoryOS conformance reproducibility fixture",
     date: "2026-09-05",
-    evidenceRoot: "evidence/reference-implementation-1.2.0.json",
+    evidenceRoot: "evidence/reference-implementation-1.2.1.json",
     evidenceDigest: sha256(Buffer.from(canonicalJson({ executions, evidence, reviews, requirementEvidence }), "utf8")),
     nativeProjectionProfile: REFERENCE_NATIVE_PROFILE,
     requirementEvidence,
@@ -292,7 +292,7 @@ if (process.argv.includes(FIXTURE_FLAG)) {
     const pairs = (options) => options.flatMap((option) => [option, value(option)]);
     const canonicalReview = resolve(
       CONFORMANCE_ROOT,
-      "evidence/reference-implementation-review-1.2.0.json",
+      "evidence/reference-implementation-review-1.2.1.json",
     );
     const referenceArguments = pairs(referenceOptions);
     referenceArguments[referenceArguments.indexOf("--reviews") + 1] = canonicalReview;
@@ -326,7 +326,7 @@ if (process.argv.includes(FIXTURE_FLAG)) {
     );
     const reportGenerateArguments = [
       "absent-evidence.json", "absent-report.json", "absent-report.md",
-      "MemoryOS Reference Implementation", "1.2.0", "Assessor", "2026-09-05",
+      "MemoryOS Reference Implementation", "1.2.1", "Assessor", "2026-09-11",
       "evidence/absent.json", "cca-studio-native-observation", "1.1.0",
       "absent-manifest.json",
     ];
