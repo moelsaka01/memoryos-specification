@@ -26,7 +26,7 @@ const implementationVersion = Object.freeze({
   name: "MemoryOS Reference Implementation",
   version: "1.2.1",
 });
-const expectedImplementationRevision = "sha256:68457c49142f5f2a54159228a480ddc11dd3f57ec0ddcb3231bcc4266d7a1044";
+const expectedImplementationRevision = "sha256:308a03ae4f4e334e6ecfede0d28feaf36180b55402fa3ba8c0365482ec08ed64";
 const expectedStandardPublicationDigest = "sha256:f77246da755e67c5e7e73706504c6d63641eeb711fbbe9c381b10d197a3dc716";
 const expectedMipPublicationDigest = "sha256:997fd40928ce52581dc932c1c3d888fd4d6a73208613ba1ab0a9f17b79c020ca";
 const expectedMipSourcePackageDigest = "sha256:a9a520f84b0ae4e6afcac0c1bc9400786997adfcbec81bfd80a93ef13a60e9ba";
