@@ -9,11 +9,15 @@ the normative report contract in CCA-MEMORYOS-1.0 `conformance.md` and
 
 ## Generated report
 
-The suite generates the MemoryOS 1.2.0 Reference Implementation assessment as
-reports/reference-implementation-1.2.0.json and its deterministic Markdown
-projection as reports/reference-implementation-1.2.0.md. Assessment outputs
+The suite generates the MemoryOS 1.2.1 Reference Implementation assessment as
+reports/reference-implementation-1.2.1.json and its deterministic Markdown
+projection as reports/reference-implementation-1.2.1.md. Assessment outputs
 are retained release evidence and are not checked into this source tree before
 an assessment is executed.
+
+The v1.2.0 report and evidence remain immutable historical records. The v1.2.1
+assessment binds the corrected tracked source inventory and does not reinterpret
+or overwrite the earlier assessment.
 
 The JSON document is the authoritative machine-readable result. The Markdown
 document is a deterministic human-readable projection of the same data.

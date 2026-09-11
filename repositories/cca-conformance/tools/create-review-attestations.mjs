@@ -17,7 +17,10 @@ import {
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const workspaceRoot = resolve(root, "../..");
-const specificationsRoot = resolve(workspaceRoot, "../cca-specifications/specifications");
+const standardRoot = process.env.MEMORYOS_STANDARD_ROOT
+  ? resolve(process.env.MEMORYOS_STANDARD_ROOT)
+  : resolve(workspaceRoot, "../cca-specifications/specifications/CCA-MEMORYOS-1.0");
+const specificationsRoot = dirname(standardRoot);
 function usage() {
   return "Usage: node tools/create-review-attestations.mjs --manifest PATH --input COMPLETED-REVIEW.json --output PATH";
 }
@@ -94,7 +97,7 @@ function bindCompletedReview(source, manifest) {
       reviewRecordId: source.reviewRecordId,
       implementationRevisionDigest,
       result: outcome.result,
-      durableEvidence: `evidence/reference-implementation-review-1.2.0.json#/attestations/${index}`,
+      durableEvidence: `evidence/reference-implementation-review-1.2.1.json#/attestations/${index}`,
     };
     if (outcome.result === "FAIL") attestation.reason = outcome.reason;
     return attestation;

@@ -5,6 +5,10 @@ CCA-MEMORYOS-1.0. It turns versioned product inputs, executable checks, and
 explicit review decisions into attributable evidence and an immutable
 conformance report. The published MemoryOS Standard remains authoritative.
 
+MemoryOS v1.2.1 is the corrected Reference Implementation baseline. The
+v1.2.0 assessment artifacts remain immutable historical evidence and are not
+overwritten or relabeled by this assessment.
+
 The suite verifies observable behavior and compatibility. It does not define
 MemoryOS behavior and contains no Runtime, Investigation Core, MIP, adapter,
 SDK, CLI, Cognitive Regression, or Explorer implementation logic.
@@ -98,7 +102,10 @@ and replace placeholders with explicit local values.
 1. Rebuild the Reference Implementation assessment manifest from the authoritative
    publications and current versioned product inputs. This refreshes the current
    `requirements-manifest.json` alias and retains an immutable content-addressed
-   copy under `manifests/`.
+   copy under `manifests/`. The builder requires both repositories to be clean,
+   verifies the approved specifications commit, and rejects non-LF declared text
+   inputs. If the clean publication worktree is not at the default adjacent path,
+   set `MEMORYOS_STANDARD_ROOT` to its exact `CCA-MEMORYOS-1.0` directory.
 
    ```console
    npm --prefix repositories/cca-conformance run manifest:build
@@ -110,18 +117,18 @@ and replace placeholders with explicit local values.
    review artifact at its versioned path.
 
    ```console
-   node repositories/cca-conformance/tools/create-review-attestations.mjs --manifest /absolute/path/to/requirements-manifest-sha256-DIGEST.json --input repositories/cca-conformance/review-outcomes.input.json --output repositories/cca-conformance/evidence/reference-implementation-review-1.2.0.json
+   node repositories/cca-conformance/tools/create-review-attestations.mjs --manifest /absolute/path/to/requirements-manifest-sha256-DIGEST.json --input repositories/cca-conformance/review-outcomes.input.json --output repositories/cca-conformance/evidence/reference-implementation-review-1.2.1.json
    ```
 
 3. Execute the complete suite from a new native build directory and retain the
    resulting evidence artifact. The runner configures and builds the exact
    `cca_core_tests` and `memoryos_sdk_cpp_tests` targets itself. It publishes
    the canonical bytes at both the versioned alias shown below and an immutable
-   `reference-implementation-1.2.0-sha256-<64hex>.json` filename; the two files
+   `reference-implementation-1.2.1-sha256-<64hex>.json` filename; the two files
    must remain byte-identical.
 
    ```console
-   node repositories/cca-conformance/tools/run-reference-evidence.mjs --manifest /absolute/path/to/requirements-manifest-sha256-DIGEST.json --cmake /absolute/path/to/cmake --ninja /absolute/path/to/ninja --cxx /absolute/path/to/cxx-wrapper --ar /absolute/path/to/ar-wrapper --ranlib /absolute/path/to/ranlib-wrapper --compiler /absolute/path/to/compiler --gtest-root /absolute/path/to/gtest --build-dir /new/absolute/build/path --python /absolute/path/to/python --reviews repositories/cca-conformance/evidence/reference-implementation-review-1.2.0.json --assessor "ASSESSOR" --date YYYY-MM-DD
+   node repositories/cca-conformance/tools/run-reference-evidence.mjs --manifest /absolute/path/to/requirements-manifest-sha256-DIGEST.json --cmake /absolute/path/to/cmake --ninja /absolute/path/to/ninja --cxx /absolute/path/to/cxx-wrapper --ar /absolute/path/to/ar-wrapper --ranlib /absolute/path/to/ranlib-wrapper --compiler /absolute/path/to/compiler --gtest-root /absolute/path/to/gtest --build-dir /new/absolute/build/path --python /absolute/path/to/python --reviews repositories/cca-conformance/evidence/reference-implementation-review-1.2.1.json --assessor "ASSESSOR" --date YYYY-MM-DD
    ```
 
    The CMake, Ninja, compiler, compiler wrappers, and GoogleTest root are
@@ -132,13 +139,13 @@ and replace placeholders with explicit local values.
    retained evidence.
 
    ```console
-   node repositories/cca-conformance/tools/conformance-report.mjs generate repositories/cca-conformance/evidence/reference-implementation-1.2.0.json repositories/cca-conformance/reports/reference-implementation-1.2.0.json repositories/cca-conformance/reports/reference-implementation-1.2.0.md "MemoryOS Reference Implementation" 1.2.0 "ASSESSOR" YYYY-MM-DD evidence/reference-implementation-1.2.0.json cca-studio-native-observation 1.1.0 /absolute/path/to/requirements-manifest-sha256-DIGEST.json
+   node repositories/cca-conformance/tools/conformance-report.mjs generate repositories/cca-conformance/evidence/reference-implementation-1.2.1.json repositories/cca-conformance/reports/reference-implementation-1.2.1.json repositories/cca-conformance/reports/reference-implementation-1.2.1.md "MemoryOS Reference Implementation" 1.2.1 "ASSESSOR" YYYY-MM-DD evidence/reference-implementation-1.2.1.json cca-studio-native-observation 1.1.0 /absolute/path/to/requirements-manifest-sha256-DIGEST.json
    ```
 
 5. Validate the retained report and its exact evidence binding.
 
    ```console
-   node repositories/cca-conformance/tools/conformance-report.mjs validate repositories/cca-conformance/reports/reference-implementation-1.2.0.json /absolute/path/to/requirements-manifest-sha256-DIGEST.json
+   node repositories/cca-conformance/tools/conformance-report.mjs validate repositories/cca-conformance/reports/reference-implementation-1.2.1.json /absolute/path/to/requirements-manifest-sha256-DIGEST.json
    npm --prefix repositories/cca-conformance test
    ```
 
@@ -157,8 +164,8 @@ and replace placeholders with explicit local values.
    validated against that publication before any artifact is accepted.
 
    ```console
-   node repositories/cca-conformance/tools/independent-assessment.mjs create --manifest /exact/content-addressed/assessment-manifest.json --normative-manifest /authoritative/content-addressed/normative-manifest.json --source-report repositories/cca-conformance/reports/reference-implementation-1.2.0.json --evidence repositories/cca-conformance/evidence/reference-implementation-1.2.0.json --assessment-output /new/assessment.json --assessment-reference evidence/independent-assessment.json --report-output /new/c3-report.json --assessor "INDEPENDENT ASSESSOR" --date YYYY-MM-DD --method reviewed
-   node repositories/cca-conformance/tools/independent-assessment.mjs validate --manifest /exact/content-addressed/assessment-manifest.json --normative-manifest /authoritative/content-addressed/normative-manifest.json --report /new/c3-report.json --evidence repositories/cca-conformance/evidence/reference-implementation-1.2.0.json --assessment /new/assessment.json
+   node repositories/cca-conformance/tools/independent-assessment.mjs create --manifest /exact/content-addressed/assessment-manifest.json --normative-manifest /authoritative/content-addressed/normative-manifest.json --source-report repositories/cca-conformance/reports/reference-implementation-1.2.1.json --evidence repositories/cca-conformance/evidence/reference-implementation-1.2.1.json --assessment-output /new/assessment.json --assessment-reference evidence/independent-assessment.json --report-output /new/c3-report.json --assessor "INDEPENDENT ASSESSOR" --date YYYY-MM-DD --method reviewed
+   node repositories/cca-conformance/tools/independent-assessment.mjs validate --manifest /exact/content-addressed/assessment-manifest.json --normative-manifest /authoritative/content-addressed/normative-manifest.json --report /new/c3-report.json --evidence repositories/cca-conformance/evidence/reference-implementation-1.2.1.json --assessment /new/assessment.json
    ```
 
 The review, evidence, and report tools use exclusive creation for retained
@@ -223,8 +230,8 @@ published `CCA-MEMORYOS-1.0` directory and run the specification suite.
   review attestations.
 - `evidence/` contains immutable machine-readable review and execution
   evidence once materialized. Reference evidence is retained under a
-  content-addressed `reference-implementation-1.2.0-sha256-<64hex>.json`
-  filename, with `reference-implementation-1.2.0.json` as a byte-identical
+  content-addressed `reference-implementation-1.2.1-sha256-<64hex>.json`
+  filename, with `reference-implementation-1.2.1.json` as a byte-identical
   convenience alias. Reports bind the exact canonical evidence digest, so the
   alias cannot substitute different valid evidence.
 - `reports/` contains the immutable JSON conformance report and its generated
