@@ -5,6 +5,9 @@ scope and dependency direction.
 
 ## MemoryOS
 
+- [MemoryOS 1.3 Investigation Policies](investigation-policies.md)
+- [MO-1301 conformance and release readiness](../repositories/cca-conformance/docs/mo1301-conformance.md)
+- [MO-1302 handoff contract](../repositories/cca-conformance/docs/mo1302-handoff.md)
 - [MemoryOS 1.2 product overview](../README.md)
 - [MemoryOS Standard and official conformance suite](../repositories/cca-conformance/README.md)
 - [MemoryOS 1.2.0 Reference Implementation guide](../repositories/cca-conformance/docs/reference-implementation-guide.md)

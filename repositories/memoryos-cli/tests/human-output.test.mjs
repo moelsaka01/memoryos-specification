@@ -86,7 +86,7 @@ test("CCA-MOS-CLI-004: every command emits deterministic human output through th
   const fixture = await makeFixtures(t);
   const cases = [
     { command: "version", arguments: ["version"], prefix: "MemoryOS version\n" },
-    { command: "help", arguments: ["help"], prefix: "MemoryOS CLI 1.0.0\n" },
+    { command: "help", arguments: ["help"], prefix: "MemoryOS CLI 1.1.0\n" },
     {
       command: "observe",
       arguments: [

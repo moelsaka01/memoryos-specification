@@ -172,6 +172,13 @@ Json Client::invokeUnlocked(std::string_view method, Json::Object params) {
         message.empty() ? "The Investigation Core rejected the request."
                         : message,
         diagnosticsFrom(*error),
+        optionalString(*error, "phase"),
+        optionalString(*error, "artifactKind"),
+        optionalString(*error, "limitIdentifier"),
+        optionalString(*error, "failureClass"),
+        error->find("verificationFailure") != nullptr &&
+            error->find("verificationFailure")->isBool() &&
+            error->find("verificationFailure")->asBool(),
     };
 }
 

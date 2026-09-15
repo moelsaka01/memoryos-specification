@@ -23,6 +23,39 @@ memoryos inspect artifacts/investigation.mip --json > artifacts/investigation.js
 
 Treat any non-zero exit code as failure. Do not parse human-readable output in automation.
 
+## Investigation Policy gates
+
+MO-1302 automation uses the CLI as the semantic authority; it does not
+reimplement rules or parse human diagnostics. A gate should:
+
+1. Pin the evaluator/tool distribution to an immutable revision or digest.
+2. Compare `memoryos policy identities --json` against the frozen normative
+   evaluator, model, registry, profile, and outcome-contract identities.
+3. Validate the Policy/Set and compare its `semanticDigest` with the
+   workflow-controlled pin.
+4. Evaluate to files, retaining the evaluation exit status.
+5. Verify the identity, outcome, and both digest sidecars.
+6. Require decision/exit agreement: PASS/`0`, FAIL/`6`, CNE/`7`.
+7. Upload the verified generation and only then render a non-normative summary.
+
+Example acquisition and publication:
+
+```sh
+memoryos policy identities --json > policy-identities.json
+memoryos policy digest --policy policy.json --json > policy-digest.json
+memoryos policy evaluate --policy policy.json --package candidate.mip \
+  --outcome policy-outcome.json \
+  --identity-output policy-identity.json \
+  --evaluation-identity-digest-output policy-identity.sha256 \
+  --outcome-digest-output policy-outcome.sha256 --json
+evaluation_status=$?
+```
+
+Do not place that evaluation directly in a shell `if` that loses the distinct
+`6` and `7` statuses. Sidecars are valid only when they cross-verify against the
+committed outcome. Contract identity pinning and immutable software-distribution
+pinning are independent; neither can substitute for the other.
+
 ## Package pipelines
 
 On byte-preserving POSIX shells:

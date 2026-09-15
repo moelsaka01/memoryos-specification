@@ -26,10 +26,10 @@ belong to the repository that owns the behavior.
 | `cca-core` | Released foundations and MemoryOS capability implementation | Reusable engineering facilities; Runtime, Representation, Process, and Persistence foundations; and CP-001 through CP-010 MemoryOS behavior |
 | `cca-compiler` | IS-002 implementation target | Canonical source loading, parsing, validation, analysis, dependency resolution, model construction, deterministic generation, diagnostics, and CLI |
 | `memoryos` | Reserved only | Reserved product repository boundary; the released implementation currently remains in `cca-core` and `cca-studio` |
-| `cca-studio` | CP-011, MemoryOS 1.1, and MemoryOS 1.2 released | Frozen CCA-STUDIO-1.0 Contract, deterministic investigation presentation, single Investigation Core including MO-1206 regression and MO-1207 evidence navigation, canonical MIP implementation, and dependency-free AI runtime adapter interfaces |
-| `cca-sdk` | MO-1204, MO-1206, and MO-1207 implemented | Public JavaScript, Python, and native C++ facades over the frozen Investigation Core; one private versioned native binding |
-| `memoryos-cli` | MO-1205 through MO-1207 implemented | Official `memoryos` executable, deterministic terminal/JSON output, session-scoped automation, SDK-backed regression reporting, and evidence navigation |
-| `cca-conformance` | MO-1208 implemented | Official deterministic CCA-MEMORYOS-1.0 conformance suite, pinned requirement manifest, report schemas, compatibility checks, and Reference Implementation evidence |
+| `cca-studio` | MemoryOS 1.2 released; MO-1301 implementation | Frozen Studio and investigation contracts plus the single Core-owned fact projection and authoritative Investigation Policy Engine |
+| `cca-sdk` | SDK 1.1 integration | Public JavaScript, Python, and native C++ facades over the frozen Investigation Core and Policy Engine; one private versioned native binding |
+| `memoryos-cli` | CLI 1.1 integration | Official `memoryos` executable with additive, SDK-backed Investigation Policy commands and exact artifact transport |
+| `cca-conformance` | MO-1208 released; MO-1301 additive inventory | Immutable CCA-MEMORYOS-1.0 assessment plus separate Investigation Policy integration, parity, provenance, vector, and MO-1302 handoff checks |
 | `cca-atlas` | Reserved only | Future atlas boundary; responsibilities beyond the name are undecided |
 
 See [../repositories/README.md](../repositories/README.md) for the concise
@@ -126,6 +126,12 @@ their behavior. Its reports classify each normative requirement as `PASS`,
 `FAIL`, or `NOT APPLICABLE`; a passing suite is evidence, not authority to
 rewrite the Standard. MemoryOS 1.2.0 is the initial Reference Implementation.
 See the [conformance suite](../repositories/cca-conformance/README.md).
+
+MO-1301 adds a separate MemoryOS 1.3 conformance inventory without changing
+the v1.2.1 requirement manifest, evidence, or report. The suite verifies exact
+Policy identities and outcome bytes and consumes SDK/CLI surfaces; it owns no
+rule, selector, evidence, aggregation, or provenance semantics. See the
+[MO-1301 conformance guide](../repositories/cca-conformance/docs/mo1301-conformance.md).
 
 ## Reserved directories
 

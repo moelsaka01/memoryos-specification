@@ -60,6 +60,7 @@ of developer tools for evidence-based AI investigation.
 | **Memory Investigation Package (MIP)** | Carries canonical, integrity-verified investigation state between tools and runtimes. |
 | **AI Runtime Adapters** | Translate settled OpenAI Agents SDK, Anthropic SDK, and LangGraph events without changing runtime truth. |
 | **Investigation Core** | Owns observation, trace, replay, comparison, regression, and evidence navigation. |
+| **Investigation Policy Engine** | Evaluates closed deterministic Policies over one authoritative point-in-time fact context. |
 | **MemoryOS SDK** | Exposes the Core consistently to JavaScript, Python, and C++. |
 | **MemoryOS CLI** | Brings the same SDK operations to terminals, scripts, and CI. |
 | **Memory Studio** | Presents the Living Connectome and the complete investigation workflow. |
@@ -111,6 +112,20 @@ The released CSP-safe Studio revisions remain authoritative. CCA-MEMORYOS-1.0,
 CCA-MIP-1.0, Investigation Core, SDK, CLI, Cognitive Regression, Cognitive
 Investigation Explorer, lifecycle, and Studio semantics are unchanged. The
 v1.2.0 commit, tag, manifest, and evidence remain immutable historical records.
+
+## MemoryOS 1.3 development
+
+MO-1301 adds deterministic [Investigation Policies](docs/investigation-policies.md)
+for engineering operations. A closed Policy or Policy Set evaluates facts
+atomically projected by the Investigation Core, with optional trusted Cognitive
+Regression facts. Exact evidence, Evaluation Identity, Resource Profile,
+canonical outcome bytes, and stable PASS/FAIL/COULD_NOT_EVALUATE decisions are
+shared through SDK and CLI 1.1 surfaces.
+
+This work is unreleased. MemoryOS v1.2.1 remains the stable compatibility
+baseline and CCA-MEMORYOS-1.0 remains the published Standard. MO-1302 GitHub
+Actions integration and the candidate CCA-MEMORYOS-1.1 publication are separate
+later gates.
 
 ## MemoryOS v1.2 highlights
 
@@ -283,6 +298,9 @@ representation, process, persistence, and integration milestones.
 - [Architecture](ARCHITECTURE.md)
 - [MemoryOS Standard repository](https://github.com/moelsaka01/memoryos-specification)
 - [Conformance Suite](repositories/cca-conformance/README.md)
+- [Investigation Policies](docs/investigation-policies.md)
+- [MO-1301 conformance](repositories/cca-conformance/docs/mo1301-conformance.md)
+- [MO-1302 handoff](repositories/cca-conformance/docs/mo1302-handoff.md)
 - [Reference Implementation guide](repositories/cca-conformance/docs/reference-implementation-guide.md)
 - [Compatibility guide](repositories/cca-conformance/docs/compatibility-guide.md)
 - [Certification guide](repositories/cca-conformance/docs/certification-guide.md)
@@ -305,14 +323,16 @@ representation, process, persistence, and integration milestones.
 | **MemoryOS 1.1** | Added the Stable Semantic World, Cognitive Trace, Living Connectome, deterministic Replay, Cognitive Evolution, and Comparative Reconstruction. |
 | **MemoryOS 1.2** | Added MIP, runtime adapters, one Investigation Core, SDK, CLI, Cognitive Regression, Investigation Explorer, the MemoryOS Standard, and its Conformance Suite. |
 | **MemoryOS 1.2.1** | Corrected the v1.2 source and publication inventory and regenerated conformance provenance without changing MemoryOS semantics. |
+| **MemoryOS 1.3 (unreleased)** | Adds deterministic Investigation Policies through MO-1301; MO-1302 automation and final Standard 1.1 publication remain gated. |
 
 See [CHANGELOG.md](CHANGELOG.md) for milestone-level engineering history.
 
 ## Roadmap
 
-MemoryOS v1.2.1 is the corrected released platform baseline. Work after v1.2 focuses on
-adoption, interoperability, first-investigation onboarding, and conformance
-ecosystem maturity while preserving deterministic investigation architecture.
+MemoryOS v1.2.1 is the corrected released platform baseline. MemoryOS 1.3
+begins with MO-1301 Investigation Policies and continues with the separately
+scoped MO-1302 CI integration while preserving deterministic investigation
+architecture.
 See [ROADMAP.md](ROADMAP.md) for the maintained product direction.
 
 ## Contributing

@@ -15,7 +15,7 @@ test("version and help expose the deterministic supported command surface", () =
   assert.equal(humanVersion.stderr, "");
   assert.equal(
     humanVersion.stdout,
-    "MemoryOS version\ncliVersion: 1.0.0\nsdkVersion: 1.0.0\n",
+    "MemoryOS version\ncliVersion: 1.1.0\nsdkVersion: 1.1.0\n",
   );
 
   const jsonVersion = runCli(["version", "--json"]);
@@ -24,7 +24,7 @@ test("version and help expose the deterministic supported command surface", () =
   assert.deepEqual(parseJsonOutput(jsonVersion), {
     command: "version",
     ok: true,
-    result: { cliVersion: "1.0.0", sdkVersion: "1.0.0" },
+    result: { cliVersion: "1.1.0", sdkVersion: "1.1.0" },
     schemaVersion: "1.0",
   });
 

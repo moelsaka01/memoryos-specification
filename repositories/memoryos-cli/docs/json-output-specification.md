@@ -2,7 +2,7 @@
 
 ## Purpose
 
-`--json` provides stable, machine-readable CLI output without presentation-only state.
+`--json` provides stable, machine-readable CLI output without presentation-only state. Existing CLI commands retain envelope schema `1.0`; the additive `policy` namespace uses schema `1.1`.
 
 ## Encoding and framing
 
@@ -63,3 +63,37 @@ The Investigation result contains `kind`, `version`, `identifier`, `regressionId
 The CLI preserves SDK arrays and values; it only canonicalizes output object key order. It does not reorder cognitive data, recompute digests, infer selections, summarize content, or add presentation metadata. Equivalent inputs and SDK state therefore produce byte-identical JSON output.
 
 Raw package bytes from `export --output -` are not JSON and cannot be combined with `--json`.
+
+## Policy schema 1.1
+
+Policy success uses this closed envelope:
+
+```json
+{"command":"policy validate","ok":true,"result":{"artifactKind":"MemoryOSInvestigationPolicy","artifactVersion":"1.0.0","valid":true},"schemaVersion":"1.1"}
+```
+
+The error envelope may carry presentation diagnostics, but its normative
+semantic projection is exactly:
+
+```json
+{"command":"policy validate","error":{"artifactKind":null,"code":"INVALID_ARGUMENTS","exitCode":1,"failureClass":"usage","limitIdentifier":null,"phase":null},"ok":false,"schemaVersion":"1.1"}
+```
+
+The emitted full `error` object also contains `message` and `details`. Those two
+fields are excluded from semantic equality, cross-language byte parity, CI
+decisions, and digests. They never replace the stable machine fields.
+
+Policy envelope object members use restricted-JCS ordering and the full record
+is followed by exactly one LF. A successful envelope containing only normative
+fields is byte-identical across conforming implementations apart from that
+frozen LF transport framing.
+
+Policy result shapes are closed by command: validation returns kind/version and
+`valid`; digest returns kind/version and both digests; detached inspection
+returns `authority: "inspectionOnly"` plus the applicable identity; evaluation
+returns decision, `evaluationIdentityDigest`, and `outcomeDigest`; verification
+returns `verified`, scope, applicable digests, and applicable decision;
+`identities` returns the frozen `MemoryOSPolicyContractIdentities` object.
+
+`policy evaluate --outcome -` is not a JSON mode. It writes only the evaluator's
+exact canonical normative outcome bytes, with no envelope or trailing LF.

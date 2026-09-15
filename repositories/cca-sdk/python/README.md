@@ -1,4 +1,4 @@
-# MemoryOS Python SDK 1.0
+# MemoryOS Python SDK 1.1
 
 The Python SDK is a thin, typed client for the authoritative MemoryOS
 Investigation Core. It does not build traces, advance replay, compute regression,
@@ -39,6 +39,27 @@ memory = MemoryOS(
 ```
 
 The Python wheel deliberately does not vendor a second Investigation Core.
+
+## Investigation Policies
+
+SDK 1.1 adds synchronous, typed operations for Policy and Policy Set
+preparation, trusted fact capture, evaluation, artifact verification, and
+contract-identity inspection. Python transports exact Base64-encoded canonical
+bytes to the shared JavaScript evaluator; it does not implement Policy rules,
+digests, aggregation, or evidence semantics.
+
+```python
+with MemoryOS() as memory:
+    prepared = memory.prepare_policy(policy_bytes)
+    context = memory.capture_policy_fact_context(investigation)
+    evaluation = memory.evaluate_policy(prepared, context)
+    assert bytes(evaluation) == evaluation.canonical_outcome_bytes
+```
+
+`inspect_policy_fact_context()` and
+`inspect_regression_policy_fact_source()` return detached inspection values.
+Only capabilities returned by `capture_policy_fact_context()` or the atomic
+`capture_regression_policy_facts()` operation may be evaluated.
 
 ## Explicit investigation flow
 
@@ -140,6 +161,13 @@ immutable `diagnostics`. Local process/protocol failures raise
 `MemoryOSBindingError`. Invalid MIP verification is an ordinary
 `VerificationResult(valid=False)` rather than an exception.
 
+Policy preparation failures raise `MemoryOSPolicyPreparationError` with exact
+stable `code`, `phase`, `artifact_kind`, and `limit_identifier` fields. Policy
+verification/runtime/bridge/internal failures raise
+`MemoryOSPolicyOperationalError`; verification failures remain explicitly
+distinguishable. PASS, FAIL, and CNE return immutable evaluation values and are
+never exceptions. Diagnostic messages and details are non-normative.
+
 ## Executable examples
 
 - `observe.py`
@@ -151,5 +179,6 @@ immutable `diagnostics`. Local process/protocol failures raise
 - `export_package.py`
 - `import_package.py`
 - `batch_verification.py`
+- `policy.py`
 
 Every example is exercised by `python/tests/test_examples.py`.

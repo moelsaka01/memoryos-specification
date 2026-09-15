@@ -18,19 +18,22 @@ EXAMPLES = Path(__file__).resolve().parents[2] / "examples" / "python"
 class PythonExamplesTest(unittest.TestCase):
     def run_example(self, name: str, *arguments: str) -> dict[str, object]:
         environment = os.environ.copy()
-        result = subprocess.run(
-            [
-                sys.executable,
-                str(EXAMPLES / name),
-                *arguments,
-                "--node",
-                NODE,
-            ],
-            check=True,
-            capture_output=True,
-            text=True,
-            env=environment,
-        )
+        try:
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(EXAMPLES / name),
+                    *arguments,
+                    "--node",
+                    NODE,
+                ],
+                check=True,
+                capture_output=True,
+                text=True,
+                env=environment,
+            )
+        except subprocess.CalledProcessError as error:
+            self.fail(f"{name} failed: {error.stderr}")
         return json.loads(result.stdout)
 
     def test_all_published_examples_execute(self) -> None:
@@ -52,6 +55,19 @@ class PythonExamplesTest(unittest.TestCase):
                 encoding="utf-8",
             )
             package.write_bytes(complete_package())
+            policy = root / "policy.json"
+            policy.write_text(json.dumps({
+                "identifier": "p",
+                "kind": "MemoryOSInvestigationPolicy",
+                "policyVersion": "0.0.0",
+                "rules": [{
+                    "identifier": "r",
+                    "parameters": {"allowedStates": ["Observed"]},
+                    "type": "memoryos.require-lifecycle-state",
+                    "version": "1.0.0",
+                }],
+                "version": "1.0.0",
+            }, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
             observed = self.run_example(
                 "observe.py",
@@ -114,6 +130,40 @@ class PythonExamplesTest(unittest.TestCase):
                 str(exported),
             )
             self.assertTrue(batch["valid"])
+
+            policy_result = self.run_example(
+                "policy.py",
+                str(policy),
+                str(candidate_snapshot),
+                "--baseline-snapshot",
+                str(snapshot),
+            )
+            self.assertEqual(policy_result["decision"], "PASS")
+            self.assertEqual(policy_result["contextAuthorityAfterInspection"], "inspectionOnly")
+            self.assertEqual(policy_result["sourceAuthorityAfterInspection"], "inspectionOnly")
+            self.assertTrue(policy_result["identityArtifactVerified"])
+            self.assertTrue(policy_result["identityAuthoritativeVerified"])
+            self.assertTrue(policy_result["outcomeArtifactVerified"])
+            self.assertTrue(policy_result["outcomeAuthoritativeVerified"])
+
+            policy_set = root / "policy-set.json"
+            policy_set.write_text(json.dumps({
+                "identifier": "s",
+                "kind": "MemoryOSInvestigationPolicySet",
+                "policies": [{
+                    "expectedSemanticDigest": policy_result["semanticDigest"],
+                    "policy": json.loads(policy.read_text(encoding="utf-8")),
+                }],
+                "policySetVersion": "0.0.0",
+                "version": "1.0.0",
+            }, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+            policy_set_result = self.run_example(
+                "policy.py",
+                str(policy_set),
+                str(candidate_snapshot),
+                "--policy-set",
+            )
+            self.assertEqual(policy_set_result["decision"], "PASS")
 
 
 if __name__ == "__main__":

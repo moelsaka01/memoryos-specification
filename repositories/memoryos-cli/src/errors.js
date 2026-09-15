@@ -5,15 +5,21 @@ export const ExitCode = Object.freeze({
   verificationFailure: 3,
   packageError: 4,
   sdkFailure: 5,
+  policyFail: 6,
+  policyCouldNotEvaluate: 7,
 });
 
 export class CliError extends Error {
-  constructor(exitCode, code, message, details = []) {
+  constructor(exitCode, code, message, details = [], semantic = {}) {
     super(message);
     this.name = "CliError";
     this.exitCode = exitCode;
     this.code = code;
     this.details = Object.freeze([...details]);
+    this.failureClass = semantic.failureClass ?? null;
+    this.phase = semantic.phase ?? null;
+    this.artifactKind = semantic.artifactKind ?? null;
+    this.limitIdentifier = semantic.limitIdentifier ?? null;
   }
 }
 
@@ -22,15 +28,44 @@ export function argumentError(message) {
     ExitCode.invalidArguments,
     "INVALID_ARGUMENTS",
     message,
+    [],
+    { failureClass: "usage" },
   );
 }
 
 export function validationError(message, code = "VALIDATION_FAILURE") {
-  return new CliError(ExitCode.validationFailure, code, message);
+  return new CliError(
+    ExitCode.validationFailure,
+    code,
+    message,
+    [],
+    { failureClass: "preparation" },
+  );
 }
 
 export function packageError(message, code = "PACKAGE_ERROR") {
-  return new CliError(ExitCode.packageError, code, message);
+  return new CliError(
+    ExitCode.packageError,
+    code,
+    message,
+    [],
+    { failureClass: "operational" },
+  );
+}
+
+export function verificationError(message, code = "VERIFICATION_FAILED", semantic = {}) {
+  return new CliError(
+    ExitCode.verificationFailure,
+    code,
+    message,
+    semantic.details ?? [],
+    {
+      artifactKind: semantic.artifactKind ?? null,
+      failureClass: "operational",
+      limitIdentifier: semantic.limitIdentifier ?? null,
+      phase: semantic.phase ?? null,
+    },
+  );
 }
 
 function sdkDiagnostics(error) {
@@ -90,5 +125,65 @@ export function normalizeError(error, operation = "cli") {
     sdkCode,
     error?.message ?? "MemoryOS SDK operation failed.",
     sdkDiagnostics(error),
+  );
+}
+
+export function normalizePolicyError(error, operation = "policy") {
+  if (error instanceof CliError) return error;
+
+  const details = Array.isArray(error?.details) ? error.details : sdkDiagnostics(error);
+  const semantic = {
+    artifactKind: error?.artifactKind ?? null,
+    limitIdentifier: error?.limitIdentifier ?? null,
+    phase: error?.phase ?? null,
+  };
+  if (operation === "policy inspect" && error?.verificationFailure === true) {
+    return new CliError(
+      ExitCode.validationFailure,
+      typeof error?.code === "string" ? error.code : "POLICY_INSPECTION_FAILED",
+      error?.message ?? "MemoryOS Policy artifact inspection failed.",
+      details,
+      { ...semantic, failureClass: "preparation" },
+    );
+  }
+  if (operation.startsWith("policy verify-")
+      && ["evaluationIdentity", "evaluationOutcome"].includes(error?.phase)
+      && (error?.failureClass === "preparation"
+        || error?.name === "MemoryOSPolicyPreparationError")) {
+    return verificationError(
+      error?.message ?? "MemoryOS Policy verification failed.",
+      typeof error?.code === "string" ? error.code : "VERIFICATION_FAILED",
+      { ...semantic, details },
+    );
+  }
+  if (error?.failureClass === "preparation"
+      || error?.name === "MemoryOSPolicyPreparationError") {
+    return new CliError(
+      ExitCode.validationFailure,
+      typeof error?.code === "string" ? error.code : "POLICY_PREPARATION_FAILED",
+      error?.message ?? "MemoryOS Policy preparation failed.",
+      details,
+      { ...semantic, failureClass: "preparation" },
+    );
+  }
+  if (error?.verificationFailure === true) {
+    return verificationError(
+      error?.message ?? "MemoryOS Policy verification failed.",
+      typeof error?.code === "string" ? error.code : "VERIFICATION_FAILED",
+      { ...semantic, details },
+    );
+  }
+  if (["ENOENT", "EACCES", "EPERM", "EISDIR", "ENOTDIR", "ENOSPC", "EPIPE"].includes(error?.code)) {
+    return packageError(
+      `Unable to access the requested Policy artifact for ${operation}.`,
+      error.code,
+    );
+  }
+  return new CliError(
+    ExitCode.sdkFailure,
+    typeof error?.code === "string" ? error.code : "POLICY_OPERATIONAL_FAILURE",
+    error?.message ?? "MemoryOS Policy operation failed.",
+    details,
+    { ...semantic, failureClass: "operational" },
   );
 }

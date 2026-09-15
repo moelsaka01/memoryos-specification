@@ -1,12 +1,13 @@
 # MemoryOS SDK
 
-**SDK 1.0.0 · MemoryOS 1.2 · JavaScript · Python 3.12+ · C++23**
+**SDK 1.1.0 · MemoryOS 1.3 · JavaScript · Python 3.12+ · C++23**
 
 The MemoryOS SDK is the public, deterministic facade over the frozen MemoryOS Investigation Core. It gives browser JavaScript, Python, and native C++ consumers one investigation model without copying or reinterpreting cognition.
 
-CCA-MEMORYOS-1.0 standardizes this existing SDK boundary. SDK 1.0.0 is the
-baseline assessed as part of the MemoryOS 1.2.0 Reference Implementation; the
-SDK implementation and this guide are informative, not the normative Standard.
+SDK 1.1.0 additively exposes the frozen MO-1301 Investigation Policy boundary.
+CCA-MEMORYOS-1.0 and the released SDK 1.0 behavior remain the immutable
+MemoryOS v1.2.1 compatibility baseline; Standard 1.1 publication is deferred
+until the implementation and cross-language conformance evidence are frozen.
 
 ```text
 MemoryOS Runtime
@@ -33,6 +34,9 @@ The SDK does not build traces, advance replay independently, compute cognitive r
 - **MIP-owned verification.** Package verification is forwarded to the canonical MIP implementation.
 - **Isolated ownership.** Each SDK instance owns one Core instance. Handles and checkpoints cannot cross SDK instances.
 - **No presentation semantics.** Layout, animation, UI state, and renderer logic are absent from the SDK.
+- **One Policy authority.** JavaScript, Python, and C++ delegate Policy preparation, fact capture, evaluation, and verification to the same frozen evaluator.
+- **Capability provenance.** Serialized contexts and Regression sources remain inspectable but cannot regain production authority after serialization.
+- **Exact evaluation bytes.** Bindings retain evaluator-produced Evaluation Identity and outcome bytes without re-canonicalizing or reimplementing semantics.
 
 ## Supported consumers
 
@@ -161,6 +165,7 @@ Run the SDK-focused suites from the workspace root:
 
 ```powershell
 npm --prefix repositories/cca-studio run test:sdk
+npm --prefix repositories/cca-studio run test:policy-phase4
 
 $env:PYTHONPATH = "repositories/cca-sdk/python/src"
 python -m unittest discover -s repositories/cca-sdk/python/tests -v
@@ -192,6 +197,9 @@ The host performs framing, canonical transport serialization, Base64 byte transp
 - [Developer guide](docs/developer-guide.md)
 - [Cognitive Regression guide](docs/regression-guide.md)
 - [Cognitive Investigation Explorer guide](docs/explorer-guide.md)
+- [Investigation Policy guide](../cca-studio/docs/investigation-policies.md)
+- [JavaScript Policy example](../cca-studio/examples/investigation_policy_usage.mjs)
+- [Python and C++ Policy examples](examples/)
 - [MO-1207 Explorer conformance](docs/explorer-conformance-report.md)
 - [SDK conformance report](docs/conformance-report.md)
 - [Official MemoryOS Standard conformance suite](../cca-conformance/README.md)
@@ -200,4 +208,4 @@ The host performs framing, canonical transport serialization, Base64 byte transp
 
 ## Scope
 
-The SDK exposes only closed Cognitive Investigation navigation queries. It does not add general query execution, convenience inference, adapters, networking, REST, CLI behavior, or renderer behavior. Investigation Core remains the sole regression and evidence-navigation authority.
+The SDK exposes only closed Cognitive Investigation navigation queries and the closed SDK 1.1 Investigation Policy capabilities. It does not add general query execution, convenience inference, adapters, networking, REST, CLI behavior, renderer behavior, or Policy semantics outside the authoritative evaluator. Investigation Core remains the sole regression and evidence-navigation authority.

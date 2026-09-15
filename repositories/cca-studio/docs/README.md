@@ -13,6 +13,7 @@ engineering question you need to answer.
 | Import, export, or verify a Memory Investigation Package | [Memory Investigation Packages](memory-investigation-packages.md) |
 | Translate settled external AI runtime cognition into a verified MIP | [AI Runtime Adapters](ai-runtime-adapters.md) |
 | Execute or embed a deterministic investigation | [Investigation Core](investigation-core.md) |
+| Define and evaluate deterministic engineering gates | [Investigation Policies](investigation-policies.md) |
 | Detect deterministic differences between two investigations | [Cognitive Regression Analysis](cognitive-regression.md) |
 | Navigate directly to deterministic regression evidence | [Cognitive Investigation Explorer](cognitive-investigation-explorer.md) |
 | Consume MemoryOS from JavaScript, Python, or C++ | [MemoryOS SDK](../../cca-sdk/README.md) · [API reference](../../cca-sdk/docs/api-reference.md) · [Developer guide](../../cca-sdk/docs/developer-guide.md) |
@@ -76,6 +77,14 @@ MO-1208 publishes CCA-MEMORYOS-1.0 outside the implementation workspace and
 activates the [official conformance suite](../../cca-conformance/README.md).
 MemoryOS 1.2.0 is the initial Reference Implementation; Studio documentation
 and source remain informative evidence rather than normative platform text.
+
+MO-1301 begins MemoryOS 1.3 with
+[Investigation Policies](investigation-policies.md). The implementation
+evaluates closed, versioned Policy/Set artifacts against one atomically
+captured Core fact context and at most one trusted Cognitive Regression source.
+Evaluation Identity, evidence, resource behavior, outcomes, SDK/CLI transport,
+and the MO-1302 handoff are deterministic and versioned; Standard 1.1 remains
+deferred until independent conformance and publication review.
 
 The focused edge suites are:
 

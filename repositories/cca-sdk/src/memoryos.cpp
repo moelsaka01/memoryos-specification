@@ -311,17 +311,81 @@ VerificationResult verificationFrom(
 
 } // namespace detail
 
+PolicyPreparationFailure::PolicyPreparationFailure(
+    std::string code,
+    std::string phase,
+    std::optional<std::string> artifactKind,
+    std::optional<std::string> limitIdentifier)
+    : code_(std::move(code)), phase_(std::move(phase)),
+      artifact_kind_(std::move(artifactKind)),
+      limit_identifier_(std::move(limitIdentifier)) {}
+const std::string& PolicyPreparationFailure::code() const noexcept {
+    return code_;
+}
+const std::string& PolicyPreparationFailure::phase() const noexcept {
+    return phase_;
+}
+const std::optional<std::string>&
+PolicyPreparationFailure::artifactKind() const noexcept {
+    return artifact_kind_;
+}
+const std::optional<std::string>&
+PolicyPreparationFailure::limitIdentifier() const noexcept {
+    return limit_identifier_;
+}
+std::string_view PolicyPreparationFailure::failureClass() const noexcept {
+    return "preparation";
+}
+
 SdkError::SdkError(std::string code,
                    std::string operation,
                    std::string message,
-                   std::vector<Diagnostic> diagnostics)
+                   std::vector<Diagnostic> diagnostics,
+                   std::string phase,
+                   std::string artifactKind,
+                   std::string limitIdentifier,
+                   std::string failureClass,
+                   bool verificationFailure)
     : std::runtime_error(std::move(message)), code_(std::move(code)),
-      operation_(std::move(operation)), diagnostics_(std::move(diagnostics)) {}
+      operation_(std::move(operation)), diagnostics_(std::move(diagnostics)),
+      phase_(std::move(phase)), artifact_kind_(std::move(artifactKind)),
+      limit_identifier_(std::move(limitIdentifier)),
+      failure_class_(std::move(failureClass)),
+      verification_failure_(verificationFailure) {
+    if (failure_class_ == "preparation") {
+        preparation_failure_.emplace(
+            PolicyPreparationFailure{
+                code_, phase_,
+                artifact_kind_.empty()
+                    ? std::nullopt
+                    : std::optional<std::string>{artifact_kind_},
+                limit_identifier_.empty()
+                    ? std::nullopt
+                    : std::optional<std::string>{limit_identifier_}});
+    }
+}
 
 const std::string& SdkError::code() const noexcept { return code_; }
 const std::string& SdkError::operation() const noexcept { return operation_; }
 const std::vector<Diagnostic>& SdkError::diagnostics() const noexcept {
     return diagnostics_;
+}
+const std::string& SdkError::phase() const noexcept { return phase_; }
+const std::string& SdkError::artifactKind() const noexcept {
+    return artifact_kind_;
+}
+const std::string& SdkError::limitIdentifier() const noexcept {
+    return limit_identifier_;
+}
+const std::string& SdkError::failureClass() const noexcept {
+    return failure_class_;
+}
+bool SdkError::verificationFailure() const noexcept {
+    return verification_failure_;
+}
+const std::optional<PolicyPreparationFailure>&
+SdkError::preparationFailure() const noexcept {
+    return preparation_failure_;
 }
 
 Workspace::Workspace(std::string identifier,
@@ -709,6 +773,11 @@ MemoryOS::MemoryOS(SdkOptions options) {
 MemoryOS::~MemoryOS() = default;
 MemoryOS::MemoryOS(MemoryOS&&) noexcept = default;
 MemoryOS& MemoryOS::operator=(MemoryOS&&) noexcept = default;
+
+bool MemoryOS::ownsInvestigation(
+    const Investigation& investigation) const noexcept {
+    return investigation.impl_->client == client_;
+}
 
 Workspace MemoryOS::openWorkspace(std::string identifier) const {
     if (identifier.empty()) {

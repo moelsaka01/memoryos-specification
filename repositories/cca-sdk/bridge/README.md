@@ -28,9 +28,21 @@ Core investigation commands remain Core-owned. Checkpoint tokens refer to
 private live `Checkpoint` instances and are never accepted as caller-authored
 transition logs. Messages are limited to 64 MiB and are processed sequentially.
 
-The supported methods are `health`, `observe`, `load`, `trace`, `replay`,
+The supported Core methods are `health`, `observe`, `load`, `trace`, `replay`,
 `compare`, `regression`, `investigate`, `verifyInvestigation`, `checkpoint`, `restore`, `archive`,
 `returnToWorld`, `importPackage`, `exportPackage`, and `verifyPackage`.
+
+SDK 1.1 also uses closed Policy methods for preparation; detached context,
+source, and report inspection; trusted context/Regression capture; Policy and
+Policy Set evaluation; Evaluation Identity/outcome verification; and frozen
+contract-identity inspection. The private wire envelope remains version 1.0.0
+because SDK 1.1 extends only the closed method registry and does not alter the
+transport framing.
+
+Authoritative contexts and Regression sources are retained in process-local
+maps and referenced by opaque tokens. Tokens never appear in canonical
+artifacts or digests. Serializing then inspecting an artifact never recreates
+one of these tokens, and therefore never restores production authority.
 
 `observe` creates a native investigation when `investigationIdentifier` is
 absent and appends to that exact Core investigation when it is present. Both

@@ -4,10 +4,41 @@ import {
   projectInvestigation,
 } from "./investigation-core.js";
 import { verifyMemoryInvestigationPackage } from "./memory-investigation-package.js";
+import {
+  MemoryOSAuthoritativePolicyFactContext,
+  MemoryOSAuthoritativeRegressionPolicyFactSource,
+  MemoryOSAuthoritativeRegressionPolicyFacts,
+  MemoryOSPolicyArtifactVerification,
+  MemoryOSPolicyEvaluation,
+  MemoryOSPolicyFactContextInspection,
+  MemoryOSPolicyOperationalError,
+  MemoryOSPolicyPreparationError,
+  MemoryOSPreparedPolicy,
+  MemoryOSRegressionPolicyFactSourceInspection,
+  MemoryOSRegressionReportInspection,
+  createMemoryOSPolicyIntegration,
+} from "./investigation-policy-integration.js";
 
-export const MEMORYOS_SDK_VERSION = "1.0.0";
+export const MEMORYOS_SDK_VERSION = "1.1.0";
+
+export {
+  MemoryOSAuthoritativePolicyFactContext,
+  MemoryOSAuthoritativeRegressionPolicyFactSource,
+  MemoryOSAuthoritativeRegressionPolicyFacts,
+  MemoryOSPolicyArtifactVerification,
+  MemoryOSPolicyEvaluation,
+  MemoryOSPolicyFactContextInspection,
+  MemoryOSPolicyOperationalError,
+  MemoryOSPolicyPreparationError,
+  MemoryOSPreparedPolicy,
+  MemoryOSRegressionPolicyFactSourceInspection,
+  MemoryOSRegressionReportInspection,
+};
 
 const PRIVATE = Symbol("MemoryOS SDK private construction");
+const primordialReflectApply = Reflect.apply;
+const primordialWeakMapGet = WeakMap.prototype.get;
+const primordialWeakMapSet = WeakMap.prototype.set;
 const memoryBindings = new WeakMap();
 const workspaceBindings = new WeakMap();
 const workspaceIdentifiers = new WeakMap();
@@ -19,6 +50,14 @@ const comparisonBindings = new WeakMap();
 const checkpointBindings = new WeakMap();
 const checkpointValues = new WeakMap();
 const packageValues = new WeakMap();
+
+function weakMapGet(values, key) {
+  return primordialReflectApply(primordialWeakMapGet, values, [key]);
+}
+
+function weakMapSet(values, key, value) {
+  primordialReflectApply(primordialWeakMapSet, values, [key, value]);
+}
 
 const investigationQueryMembers = Object.freeze([
   "category",
@@ -45,19 +84,19 @@ function requireIdentifier(value, label) {
 }
 
 function bindingFor(value, values, type) {
-  const binding = values.get(value);
+  const binding = weakMapGet(values, value);
   if (!binding) throw new TypeError(`${type} must be an SDK-owned value.`);
   return binding;
 }
 
 function packageInput(value) {
-  const stored = packageValues.get(value);
+  const stored = weakMapGet(packageValues, value);
   return stored ? Uint8Array.from(stored.bytes) : value;
 }
 
 function packageOptions(value, options = {}) {
   requireObject(options, "Package options");
-  const stored = packageValues.get(value);
+  const stored = weakMapGet(packageValues, value);
   if (!stored || options.supportedExtensions !== undefined) return options;
   return { ...options, supportedExtensions: stored.supportedExtensions };
 }
@@ -93,6 +132,7 @@ function wrapPackage(verification, supportedExtensions = []) {
 class PrivateSdkBinding {
   constructor() {
     this.core = new InvestigationCore();
+    this.policy = createMemoryOSPolicyIntegration(this.core);
   }
 
   wrapInvestigation(value) {
@@ -108,14 +148,14 @@ class PrivateSdkBinding {
   }
 
   observeWorkspace(workspace, snapshot, options) {
-    if (workspaceBindings.get(workspace) !== this) {
+    if (weakMapGet(workspaceBindings, workspace) !== this) {
       throw new TypeError("Workspace belongs to a different MemoryOS instance.");
     }
     requireObject(options, "Observation options");
     const value = this.core.create({
       ...options,
       snapshot,
-      workspaceIdentifier: workspaceIdentifiers.get(workspace),
+      workspaceIdentifier: weakMapGet(workspaceIdentifiers, workspace),
     });
     return this.wrapInvestigation(value);
   }
@@ -133,10 +173,10 @@ class PrivateSdkBinding {
   }
 
   exportPackage(investigation, options) {
-    if (investigationBindings.get(investigation) !== this) {
+    if (weakMapGet(investigationBindings, investigation) !== this) {
       throw new TypeError("Investigation belongs to a different MemoryOS instance.");
     }
-    const identifier = investigationIdentifiers.get(investigation);
+    const identifier = weakMapGet(investigationIdentifiers, investigation);
     const coreInvestigation = this.load(identifier);
     const supportedExtensions = options.supportedExtensions
       ?? coreInvestigation.state.supportedExtensions;
@@ -146,13 +186,13 @@ class PrivateSdkBinding {
   }
 
   regression(baseline, candidate) {
-    if (investigationBindings.get(baseline) !== this
-      || investigationBindings.get(candidate) !== this) {
+    if (weakMapGet(investigationBindings, baseline) !== this
+      || weakMapGet(investigationBindings, candidate) !== this) {
       throw new TypeError("Regression investigations must belong to this MemoryOS instance.");
     }
     return new RegressionReport(PRIVATE, this.core.regression(
-      investigationIdentifiers.get(baseline),
-      investigationIdentifiers.get(candidate),
+      weakMapGet(investigationIdentifiers, baseline),
+      weakMapGet(investigationIdentifiers, candidate),
     ));
   }
 
@@ -166,9 +206,27 @@ class PrivateSdkBinding {
     );
   }
 
+  capturePolicyFactContext(investigation) {
+    if (weakMapGet(investigationBindings, investigation) !== this) {
+      throw new TypeError("Investigation belongs to a different MemoryOS instance.");
+    }
+    return this.policy.capturePolicyFactContext(weakMapGet(investigationIdentifiers, investigation));
+  }
+
+  captureRegressionPolicyFacts(baseline, candidate) {
+    if (weakMapGet(investigationBindings, baseline) !== this
+        || weakMapGet(investigationBindings, candidate) !== this) {
+      throw new TypeError("Regression investigations must belong to this MemoryOS instance.");
+    }
+    return this.policy.captureRegressionPolicyFacts(
+      weakMapGet(investigationIdentifiers, baseline),
+      weakMapGet(investigationIdentifiers, candidate),
+    );
+  }
+
   restore(checkpoint) {
-    const value = checkpointValues.get(checkpoint);
-    if (!value || checkpointBindings.get(checkpoint) !== this) {
+    const value = weakMapGet(checkpointValues, checkpoint);
+    if (!value || weakMapGet(checkpointBindings, checkpoint) !== this) {
       throw new TypeError("Checkpoint belongs to a different MemoryOS binding.");
     }
     return this.wrapInvestigation(this.core.restore(value));
@@ -178,13 +236,13 @@ class PrivateSdkBinding {
 export class Workspace {
   constructor(token, binding, identifier) {
     requirePrivate(token, "Workspace");
-    workspaceBindings.set(this, binding);
-    workspaceIdentifiers.set(this, requireIdentifier(identifier, "Workspace identifier"));
+    weakMapSet(workspaceBindings, this, binding);
+    weakMapSet(workspaceIdentifiers, this, requireIdentifier(identifier, "Workspace identifier"));
     Object.freeze(this);
   }
 
   get identifier() {
-    return workspaceIdentifiers.get(this);
+    return weakMapGet(workspaceIdentifiers, this);
   }
 }
 
@@ -193,7 +251,7 @@ export class MemoryInvestigationPackage {
     requirePrivate(token, "MemoryInvestigationPackage");
     const immutableBytes = Object.freeze(Array.from(bytes));
     const immutableExtensions = Object.freeze([...supportedExtensions].sort());
-    packageValues.set(this, {
+    weakMapSet(packageValues, this, {
       bytes: immutableBytes,
       packageValue,
       supportedExtensions: immutableExtensions,
@@ -207,11 +265,11 @@ export class MemoryInvestigationPackage {
   }
 
   get value() {
-    return packageValues.get(this).packageValue;
+    return weakMapGet(packageValues, this).packageValue;
   }
 
   toBytes() {
-    return Uint8Array.from(packageValues.get(this).bytes);
+    return Uint8Array.from(weakMapGet(packageValues, this).bytes);
   }
 }
 
@@ -266,8 +324,8 @@ export class InvestigationResult {
 export class Checkpoint {
   constructor(token, binding, value) {
     requirePrivate(token, "Checkpoint");
-    checkpointBindings.set(this, binding);
-    checkpointValues.set(this, value);
+    weakMapSet(checkpointBindings, this, binding);
+    weakMapSet(checkpointValues, this, value);
     this.kind = value.kind;
     this.version = value.version;
     this.identifier = value.identifier;
@@ -283,15 +341,15 @@ export class Checkpoint {
 export class ReplaySession {
   constructor(token, binding, investigationIdentifier, replayIdentifier) {
     requirePrivate(token, "ReplaySession");
-    replayBindings.set(this, { binding, investigationIdentifier });
-    replayIdentifiers.set(this, replayIdentifier);
+    weakMapSet(replayBindings, this, { binding, investigationIdentifier });
+    weakMapSet(replayIdentifiers, this, replayIdentifier);
     Object.freeze(this);
   }
 
   #current() {
     const { binding, investigationIdentifier } = bindingFor(this, replayBindings, "ReplaySession");
     const current = binding.load(investigationIdentifier);
-    if (current.state.activeReplay?.identifier !== replayIdentifiers.get(this)) {
+    if (current.state.activeReplay?.identifier !== weakMapGet(replayIdentifiers, this)) {
       throw new InvestigationCoreError(
         "SESSION_MISMATCH",
         "replay",
@@ -340,7 +398,7 @@ export class ReplaySession {
 export class ComparisonSession {
   constructor(token, binding, investigationIdentifier, evolutionIdentifier) {
     requirePrivate(token, "ComparisonSession");
-    comparisonBindings.set(this, {
+    weakMapSet(comparisonBindings, this, {
       active: false,
       binding,
       initialCommand: Object.freeze({ action: "enter", evolutionIdentifier }),
@@ -444,8 +502,8 @@ export class ComparisonSession {
 export class Investigation {
   constructor(token, binding, identifier) {
     requirePrivate(token, "Investigation");
-    investigationBindings.set(this, binding);
-    investigationIdentifiers.set(this, requireIdentifier(identifier, "Investigation identifier"));
+    weakMapSet(investigationBindings, this, binding);
+    weakMapSet(investigationIdentifiers, this, requireIdentifier(identifier, "Investigation identifier"));
     Object.freeze(this);
   }
 
@@ -454,7 +512,7 @@ export class Investigation {
   }
 
   get identifier() {
-    return investigationIdentifiers.get(this);
+    return weakMapGet(investigationIdentifiers, this);
   }
 
   get view() {
@@ -541,7 +599,7 @@ export class Investigation {
   }
 
   compare(comparisonSession) {
-    const value = comparisonBindings.get(comparisonSession);
+    const value = weakMapGet(comparisonBindings, comparisonSession);
     if (!value || value.binding !== this.#binding() || value.investigationIdentifier !== this.identifier) {
       throw new TypeError("compare() requires this Investigation's explicit ComparisonSession.");
     }
@@ -607,7 +665,7 @@ Object.freeze(InvestigationQuery);
 
 export class MemoryOS {
   constructor() {
-    memoryBindings.set(this, new PrivateSdkBinding());
+    weakMapSet(memoryBindings, this, new PrivateSdkBinding());
     Object.freeze(this);
   }
 
@@ -648,6 +706,75 @@ export class MemoryOS {
 
   investigate(report, query = {}) {
     return this.#binding().investigate(report, query);
+  }
+
+  preparePolicy(bytes) {
+    return this.#binding().policy.preparePolicy(bytes);
+  }
+
+  preparePolicySet(bytes) {
+    return this.#binding().policy.preparePolicySet(bytes);
+  }
+
+  inspectPolicyFactContext(bytes, options = {}) {
+    return this.#binding().policy.inspectPolicyFactContext(bytes, options);
+  }
+
+  inspectRegressionPolicyFactSource(bytes, options = {}) {
+    return this.#binding().policy.inspectRegressionPolicyFactSource(bytes, options);
+  }
+
+  inspectRegressionReport(bytes) {
+    return this.#binding().policy.inspectRegressionReport(bytes);
+  }
+
+  capturePolicyFactContext(investigation) {
+    return this.#binding().capturePolicyFactContext(investigation);
+  }
+
+  captureRegressionPolicyFacts(baseline, candidate) {
+    return this.#binding().captureRegressionPolicyFacts(baseline, candidate);
+  }
+
+  evaluatePolicy(policy, context, options = {}) {
+    return this.#binding().policy.evaluatePolicy(policy, context, options);
+  }
+
+  evaluatePolicySet(policySet, context, options = {}) {
+    return this.#binding().policy.evaluatePolicySet(policySet, context, options);
+  }
+
+  verifyEvaluationIdentityArtifact(bytes, expectedEvaluationIdentityDigest) {
+    return this.#binding().policy.verifyEvaluationIdentityArtifact(
+      bytes,
+      expectedEvaluationIdentityDigest,
+    );
+  }
+
+  verifyEvaluationIdentityForEvaluation(bytes, artifact, context, options = {}) {
+    return this.#binding().policy.verifyEvaluationIdentityForEvaluation(
+      bytes,
+      artifact,
+      context,
+      options,
+    );
+  }
+
+  verifyPolicyEvaluationOutcomeArtifact(bytes, options = {}) {
+    return this.#binding().policy.verifyPolicyEvaluationOutcomeArtifact(bytes, options);
+  }
+
+  verifyPolicyEvaluationOutcomeForEvaluation(bytes, artifact, context, options = {}) {
+    return this.#binding().policy.verifyPolicyEvaluationOutcomeForEvaluation(
+      bytes,
+      artifact,
+      context,
+      options,
+    );
+  }
+
+  policyContractIdentities() {
+    return this.#binding().policy.policyContractIdentities();
   }
 
   restore(checkpoint) {

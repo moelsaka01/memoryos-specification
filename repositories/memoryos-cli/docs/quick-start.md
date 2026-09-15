@@ -13,6 +13,26 @@ This guide runs the official MemoryOS CLI as a standalone consumer of the public
 
 No network access or third-party runtime package is required.
 
+## Evaluate an Investigation Policy
+
+CLI 1.1 accepts a frozen Policy or Policy Set plus a candidate MIP:
+
+```sh
+memoryos policy validate --policy policy.json --json
+memoryos policy digest --policy policy.json --json
+memoryos policy evaluate --policy policy.json --package investigation.mip \
+  --outcome policy-outcome.json \
+  --identity-output policy-identity.json \
+  --evaluation-identity-digest-output policy-identity.sha256 \
+  --outcome-digest-output policy-outcome.sha256 --json
+```
+
+The evaluation returns `0` for PASS, `6` for FAIL, or `7` for
+COULD_NOT_EVALUATE. All are completed outcomes. Add
+`--regression-baseline baseline.mip` only when the Policy requires the frozen
+Cognitive Regression fact source. See [Investigation Policy CLI
+Guide](policy-guide.md) for all seven commands and the authority boundary.
+
 ## Install the executable
 
 From the workspace root, use the production entry point directly:

@@ -13,6 +13,14 @@ The suite verifies observable behavior and compatibility. It does not define
 MemoryOS behavior and contains no Runtime, Investigation Core, MIP, adapter,
 SDK, CLI, Cognitive Regression, or Explorer implementation logic.
 
+The unreleased MemoryOS 1.3 MO-1301 addition has a separate
+[`mo1301-conformance-inventory.json`](mo1301-conformance-inventory.json). It
+attests Investigation Policy definitions, the frozen Resource Profile, existing
+golden/cache vectors, SDK/CLI 1.1 integration, provenance, and the MO-1302
+handoff without rewriting the v1.2.1 assessment or publishing
+CCA-MEMORYOS-1.1. See the [MO-1301 conformance guide](docs/mo1301-conformance.md)
+and [MO-1302 handoff contract](docs/mo1302-handoff.md).
+
 ## What the suite covers
 
 An assessment-specific manifest binds an implementation's evidence selectors
@@ -78,7 +86,7 @@ $env:MEMORYOS_CONFORMANCE_PYTHON = 'C:\absolute\path\to\python.exe'
 npm --prefix repositories/cca-conformance test
 ```
 
-The package runner inventories and executes these eleven `*_test.mjs` files in
+The package runner inventories and executes these twelve `*_test.mjs` files in
 lexical order with deterministic environment settings and no concurrency:
 
 - `boundary_contract_conformance_test.mjs`
@@ -86,12 +94,26 @@ lexical order with deterministic environment settings and no concurrency:
 - `component_evidence_conformance_test.mjs`
 - `coverage_gap_conformance_test.mjs`
 - `independent_assessment_conformance_test.mjs`
+- `mo1301_integration_conformance_test.mjs`
 - `normative_vectors_conformance_test.mjs`
 - `reference_implementation_conformance_test.mjs`
 - `report_conformance_test.mjs`
 - `requirement_selector_catalog_test.mjs`
 - `schema_validation_conformance_test.mjs`
 - `specification_conformance_test.mjs`
+
+Run only the additive MO-1301 assessment with:
+
+```console
+npm --prefix repositories/cca-conformance run test:mo1301
+```
+
+The focused suite authenticates all 16 final machine definitions, all 31
+resource limits, all 17 frozen Evaluation Identity/outcome records, all 10
+cache classifications, the SDK/CLI identity projection, and the MO-1302
+handoff mapping. It also runs one exact-byte MIP-backed Policy parity request
+through the JavaScript SDK, Python SDK, CLI, and raw private bridge. It
+references frozen vectors in place and never regenerates them.
 
 ## Reproduce the Reference Implementation assessment
 

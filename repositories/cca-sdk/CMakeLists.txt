@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-  project(memoryos_sdk VERSION 1.0.0 LANGUAGES CXX)
+  project(memoryos_sdk VERSION 1.1.0 LANGUAGES CXX)
   include(CTest)
   include(GNUInstallDirs)
   set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
@@ -39,6 +39,7 @@ add_library(
     src/client.cpp
     src/core_process.cpp
     src/memoryos.cpp
+    src/policy.cpp
 )
 add_library(memoryos::sdk ALIAS memoryos_sdk)
 add_library(cca::sdk ALIAS memoryos_sdk)
@@ -113,15 +114,22 @@ if(MEMORYOS_BUILD_CPP_EXAMPLES)
     memoryos_sdk_cpp_investigate
     examples/cpp_investigate.cpp
   )
+  add_executable(
+    memoryos_sdk_cpp_policy
+    examples/cpp_policy.cpp
+  )
   target_compile_features(memoryos_sdk_cpp_quickstart PRIVATE cxx_std_23)
   target_compile_features(memoryos_sdk_cpp_regression PRIVATE cxx_std_23)
   target_compile_features(memoryos_sdk_cpp_investigate PRIVATE cxx_std_23)
+  target_compile_features(memoryos_sdk_cpp_policy PRIVATE cxx_std_23)
   target_link_libraries(memoryos_sdk_cpp_quickstart PRIVATE memoryos::sdk)
   target_link_libraries(memoryos_sdk_cpp_regression PRIVATE memoryos::sdk)
   target_link_libraries(memoryos_sdk_cpp_investigate PRIVATE memoryos::sdk)
+  target_link_libraries(memoryos_sdk_cpp_policy PRIVATE memoryos::sdk)
   add_dependencies(memoryos_sdk_cpp_quickstart memoryos_sdk_test_fixture)
   add_dependencies(memoryos_sdk_cpp_regression memoryos_sdk_test_fixture)
   add_dependencies(memoryos_sdk_cpp_investigate memoryos_sdk_test_fixture)
+  add_dependencies(memoryos_sdk_cpp_policy memoryos_sdk_test_fixture)
   target_compile_definitions(
     memoryos_sdk_cpp_quickstart
     PRIVATE
@@ -139,10 +147,17 @@ if(MEMORYOS_BUILD_CPP_EXAMPLES)
       "MEMORYOS_SDK_REFERENCE_SNAPSHOT=\"${MEMORYOS_SDK_REFERENCE_SNAPSHOT}\""
       "MEMORYOS_SDK_CHANGED_SNAPSHOT=\"${MEMORYOS_SDK_CHANGED_SNAPSHOT}\""
   )
+  target_compile_definitions(
+    memoryos_sdk_cpp_policy
+    PRIVATE
+      "MEMORYOS_SDK_REFERENCE_SNAPSHOT=\"${MEMORYOS_SDK_REFERENCE_SNAPSHOT}\""
+      "MEMORYOS_SDK_CHANGED_SNAPSHOT=\"${MEMORYOS_SDK_CHANGED_SNAPSHOT}\""
+  )
   if(COMMAND cca_configure_target)
     cca_configure_target(memoryos_sdk_cpp_quickstart)
     cca_configure_target(memoryos_sdk_cpp_regression)
     cca_configure_target(memoryos_sdk_cpp_investigate)
+    cca_configure_target(memoryos_sdk_cpp_policy)
   elseif(MSVC)
     target_compile_options(
       memoryos_sdk_cpp_quickstart PRIVATE /W4 /WX /permissive-
@@ -152,6 +167,9 @@ if(MEMORYOS_BUILD_CPP_EXAMPLES)
     )
     target_compile_options(
       memoryos_sdk_cpp_investigate PRIVATE /W4 /WX /permissive-
+    )
+    target_compile_options(
+      memoryos_sdk_cpp_policy PRIVATE /W4 /WX /permissive-
     )
   else()
     target_compile_options(
@@ -166,15 +184,21 @@ if(MEMORYOS_BUILD_CPP_EXAMPLES)
       memoryos_sdk_cpp_investigate
       PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror
     )
+    target_compile_options(
+      memoryos_sdk_cpp_policy
+      PRIVATE -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Werror
+    )
   endif()
   if(BUILD_TESTING)
     add_test(NAME memoryos.sdk.cpp.example COMMAND memoryos_sdk_cpp_quickstart)
     add_test(NAME memoryos.sdk.cpp.regression.example COMMAND memoryos_sdk_cpp_regression)
     add_test(NAME memoryos.sdk.cpp.investigate.example COMMAND memoryos_sdk_cpp_investigate)
+    add_test(NAME memoryos.sdk.cpp.policy.example COMMAND memoryos_sdk_cpp_policy)
     set_tests_properties(
       memoryos.sdk.cpp.example
       memoryos.sdk.cpp.regression.example
       memoryos.sdk.cpp.investigate.example
+      memoryos.sdk.cpp.policy.example
       PROPERTIES LABELS "memoryos;sdk;cpp;example"
     )
   endif()
@@ -220,6 +244,28 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS)
       "MEMORYOS_SDK_CHANGED_SNAPSHOT=\"${MEMORYOS_SDK_CHANGED_SNAPSHOT}\""
       "MEMORYOS_SDK_COMPLETE_MIP_B64=\"${CMAKE_CURRENT_SOURCE_DIR}/../cca-studio/tests/fixtures/mip/complete-investigation.mip.b64\""
       "MEMORYOS_SDK_EXTENSION_MIP_B64=\"${CMAKE_CURRENT_SOURCE_DIR}/../cca-studio/tests/fixtures/mip/noncritical-extension.mip.b64\""
+      "MEMORYOS_SDK_POLICY_GOLDEN_VECTORS=\"${CMAKE_CURRENT_SOURCE_DIR}/../cca-studio/tests/fixtures/investigation-policy/1.0.0/final-evaluation-identity-outcome-golden-vectors.json\""
+  )
+  string(
+    CONCAT MEMORYOS_SDK_POLICY_TEST_FILTER
+      "MemoryOsSdk.ExposesVersionedImmutableValueHandles:"
+      "MemoryOsSdk.DelegatesPolicySemanticsAndRetainsExactBytes:"
+      "MemoryOsSdk.EvaluatesPolicySetAndCneAsNormalOutcomes:"
+      "MemoryOsSdk.PreservesMetadataIsolationAndExactCachedBytes:"
+      "MemoryOsSdk.EvaluatesAnAuthoritativeMipBackedContext:"
+      "MemoryOsSdk.CapturesAndVerifiesTrustedRegressionPolicyFacts:"
+      "MemoryOsSdk.VerifiesAllFrozenPolicyEvaluationArtifactsExactly:"
+      "MemoryOsSdk.PreservesStablePolicyErrorsAcrossTheBridge"
+  )
+  add_test(
+    NAME memoryos.sdk.cpp.policy.contract
+    COMMAND
+      memoryos_sdk_cpp_tests
+      "--gtest_filter=${MEMORYOS_SDK_POLICY_TEST_FILTER}"
+  )
+  set_tests_properties(
+    memoryos.sdk.cpp.policy.contract
+    PROPERTIES LABELS "memoryos;sdk;cpp;policy;contract"
   )
 
   find_package(Python3 3.12 COMPONENTS Interpreter QUIET)
@@ -236,9 +282,16 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS)
         "${Python3_EXECUTABLE}"
         "${CMAKE_CURRENT_SOURCE_DIR}/python/tests/test_examples.py"
     )
+    add_test(
+      NAME memoryos.sdk.python.policy
+      COMMAND
+        "${Python3_EXECUTABLE}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/python/tests/test_investigation_policy_sdk.py"
+    )
     set_tests_properties(
       memoryos.sdk.python.unit
       memoryos.sdk.python.examples
+      memoryos.sdk.python.policy
       PROPERTIES
         ENVIRONMENT
           "PYTHONPATH=${CMAKE_CURRENT_SOURCE_DIR}/python/src;MEMORYOS_NODE=${MEMORYOS_NODE_EXECUTABLE}"
@@ -277,6 +330,13 @@ set(
   ../cca-studio/web/js/cognitive-trace.js
   ../cca-studio/web/js/deterministic-sequence-alignment.js
   ../cca-studio/web/js/investigation-core.js
+  ../cca-studio/web/js/investigation-policy-contracts.js
+  ../cca-studio/web/js/investigation-policy-engine.js
+  ../cca-studio/web/js/investigation-policy-integration.js
+  ../cca-studio/web/js/investigation-policy.js
+  ../cca-studio/web/js/policy-canonical.js
+  ../cca-studio/web/js/policy-fact-context.js
+  ../cca-studio/web/js/regression-policy-fact-source.js
   ../cca-studio/web/js/memoryos-sdk.js
   ../cca-studio/web/js/memory-investigation-package.js
   ../cca-studio/web/js/mip-canonical.js

@@ -75,7 +75,7 @@ test("MO-1204 exposes immutable versioned SDK objects without exposing Core cons
   const workspace = memory.openWorkspace(referenceSnapshot.workspaceIdentifier);
   const investigation = memory.observe(workspace, referenceSnapshot, { identifier: "sdk-contract" });
 
-  assert.equal(MEMORYOS_SDK_VERSION, "1.0.0");
+  assert.equal(MEMORYOS_SDK_VERSION, "1.1.0");
   assert.ok(workspace instanceof Workspace);
   assert.ok(investigation instanceof Investigation);
   assert.equal(workspace.identifier, referenceSnapshot.workspaceIdentifier);

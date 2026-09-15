@@ -22,8 +22,11 @@ set(memoryos_conformance_sources_list
     docs/certification-guide.md
     docs/compatibility-guide.md
     docs/conformance-report.md
+    docs/mo1301-conformance.md
+    docs/mo1302-handoff.md
     docs/reference-implementation-guide.md
     docs/versioning-guide.md
+    mo1301-conformance-inventory.json
     requirements-manifest.json
     review-outcomes.input.json
     schema/conformance-evidence-1.0.schema.json
@@ -36,6 +39,7 @@ set(memoryos_conformance_sources_list
     tests/compatibility_conformance_test.mjs
     tests/coverage_gap_conformance_test.mjs
     tests/independent_assessment_conformance_test.mjs
+    tests/mo1301_integration_conformance_test.mjs
     tests/normative_vectors_conformance_test.mjs
     tests/reference_implementation_conformance_test.mjs
     tests/report_conformance_test.mjs
@@ -43,6 +47,8 @@ set(memoryos_conformance_sources_list
     tests/schema_validation_conformance_test.mjs
     tests/specification_conformance_test.mjs
     tests/support/conformance-support.mjs
+    tests/support/mo1301-conformance-support.mjs
+    tests/fixtures/investigation-policy/1.0.0/mo1302-handoff-vectors.json
     tools/conformance-report.mjs
     tools/create-review-attestations.mjs
     tools/independent-assessment.mjs
@@ -92,6 +98,7 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     components
     coverage-gap
     independent
+    mo1301
     normative
     reference
     report
@@ -109,6 +116,8 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
       set(conformance_source tests/coverage_gap_conformance_test.mjs)
     elseif(conformance_area STREQUAL "independent")
       set(conformance_source tests/independent_assessment_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1301")
+      set(conformance_source tests/mo1301_integration_conformance_test.mjs)
     elseif(conformance_area STREQUAL "normative")
       set(conformance_source tests/normative_vectors_conformance_test.mjs)
     elseif(conformance_area STREQUAL "reference")
@@ -123,7 +132,8 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
       set(conformance_source tests/specification_conformance_test.mjs)
     endif()
 
-    if(conformance_area STREQUAL "boundary" AND NOT Python3_Interpreter_FOUND)
+    if((conformance_area STREQUAL "boundary" OR conformance_area STREQUAL "mo1301")
+       AND NOT Python3_Interpreter_FOUND)
       message(STATUS
         "Python 3.12 is unavailable; the explicit C2 runner must supply Python for the SDK boundary test"
       )
@@ -141,11 +151,18 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
       PROPERTIES
         LABELS "memoryos-standard;memoryos;standard;conformance;${conformance_area}"
     )
+    if(conformance_area STREQUAL "mo1301")
+      set_tests_properties(
+        memoryos.standard.${conformance_area}
+        PROPERTIES LABELS
+          "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1301;release-readiness"
+      )
+    endif()
   endforeach()
 
   if(Python3_Interpreter_FOUND)
     set_tests_properties(
-      memoryos.standard.boundary
+      memoryos.standard.boundary memoryos.standard.mo1301
       PROPERTIES ENVIRONMENT "MEMORYOS_CONFORMANCE_PYTHON=${Python3_EXECUTABLE}"
     )
   endif()
@@ -199,6 +216,7 @@ endif()
 
 install(
   FILES README.md requirements-manifest.json review-outcomes.input.json package.json
+    mo1301-conformance-inventory.json
   DESTINATION "${CMAKE_INSTALL_DATADIR}/memoryos-conformance"
 )
 install(

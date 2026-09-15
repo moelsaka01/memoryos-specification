@@ -1,6 +1,15 @@
 import { MEMORYOS_CLI_VERSION } from "./version.js";
 
 const commandHelp = Object.freeze({
+  policy: `memoryos policy validate (--policy POLICY | --policy-set POLICY_SET) [--json]
+memoryos policy digest (--policy POLICY | --policy-set POLICY_SET) [--canonical-output FILE] [--json]
+memoryos policy inspect (--context CONTEXT | --regression-source SOURCE | --regression-report REPORT | --evaluation-identity IDENTITY | --outcome OUTCOME) [--json]
+memoryos policy evaluate (--policy POLICY | --policy-set POLICY_SET) --package CANDIDATE [--regression-baseline BASELINE] --outcome FILE|- [--identity-output FILE] [--evaluation-identity-digest-output FILE] [--outcome-digest-output FILE] [--json]
+memoryos policy verify-identity IDENTITY --mode artifact --expected-evaluation-identity-digest DIGEST [--json]
+memoryos policy verify-identity IDENTITY --mode evaluation (--policy POLICY | --policy-set POLICY_SET) --package CANDIDATE [--regression-baseline BASELINE] [--json]
+memoryos policy verify-outcome OUTCOME --mode artifact (--expected-identity IDENTITY | --expected-evaluation-identity-digest DIGEST) [--expected-outcome-digest DIGEST] [--json]
+memoryos policy verify-outcome OUTCOME --mode evaluation (--policy POLICY | --policy-set POLICY_SET) --package CANDIDATE [--regression-baseline BASELINE] [--expected-outcome-digest DIGEST] [--json]
+memoryos policy identities [--json]`,
   observe: "memoryos observe --workspace FILE --snapshot FILE [--id ID] [--json]",
   trace: "memoryos trace PACKAGE --reflection ID [--id ID] [--json]",
   replay: "memoryos replay PACKAGE --trace ID [--action ACTION ...] [--id ID] [--json]",
@@ -26,6 +35,7 @@ export function helpText(command = null) {
 Usage: memoryos COMMAND [OPTIONS]
 
 Commands:
+  policy   Validate, evaluate, inspect, and verify Investigation Policies
   version  Show CLI and SDK versions
   help     Show command help
   observe  Observe an explicit Workspace snapshot

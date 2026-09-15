@@ -12,8 +12,14 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
 
-from ._errors import Diagnostic, MemoryOSBindingError, MemoryOSError
-from ._immutable import thaw
+from ._errors import (
+    Diagnostic,
+    MemoryOSBindingError,
+    MemoryOSError,
+    MemoryOSPolicyPreparationError,
+    MemoryOSPolicyOperationalError,
+)
+from ._immutable import freeze, thaw
 
 
 PROTOCOL_VERSION = "1.0.0"
@@ -196,14 +202,35 @@ class BridgeClient:
             for item in diagnostics_value
             if isinstance(item, dict)
         ) if isinstance(diagnostics_value, list) else ()
-        error_type = (
-            MemoryOSBindingError
-            if str(value.get("operation", "binding")) == "binding"
-            else MemoryOSError
-        )
+        operation = str(value.get("operation", "binding"))
+        failure_class = value.get("failureClass")
+        if failure_class == "preparation":
+            error_type = MemoryOSPolicyPreparationError
+        elif failure_class == "operational":
+            error_type = MemoryOSPolicyOperationalError
+        else:
+            error_type = MemoryOSBindingError if operation == "binding" else MemoryOSError
+        details_value = value.get("details", [])
+        details = tuple(
+            freeze(item)
+            for item in details_value
+            if isinstance(item, dict)
+        ) if isinstance(details_value, list) else ()
+        keywords: dict[str, Any] = {
+            "phase": value.get("phase") if isinstance(value.get("phase"), str) else None,
+            "artifact_kind": value.get("artifactKind")
+            if isinstance(value.get("artifactKind"), str) else None,
+            "limit_identifier": value.get("limitIdentifier")
+            if isinstance(value.get("limitIdentifier"), str) else None,
+            "failure_class": failure_class if isinstance(failure_class, str) else None,
+            "details": details,
+        }
+        if error_type is MemoryOSPolicyOperationalError:
+            keywords["verification_failure"] = value.get("verificationFailure") is True
         raise error_type(
             str(value.get("code", "BINDING_FAILURE")),
-            str(value.get("operation", "binding")),
+            operation,
             str(value.get("message", "MemoryOS operation failed.")),
             diagnostics,
+            **keywords,
         )

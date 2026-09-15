@@ -79,6 +79,28 @@ export function errorEnvelope(command, error) {
   };
 }
 
+export function policySuccessEnvelope(command, result) {
+  return { command, ok: true, result, schemaVersion: "1.1" };
+}
+
+export function policyErrorEnvelope(command, error) {
+  return {
+    command,
+    error: {
+      artifactKind: error.artifactKind ?? null,
+      code: error.code,
+      details: error.details,
+      exitCode: error.exitCode,
+      failureClass: error.failureClass ?? "operational",
+      limitIdentifier: error.limitIdentifier ?? null,
+      message: error.message,
+      phase: error.phase ?? null,
+    },
+    ok: false,
+    schemaVersion: "1.1",
+  };
+}
+
 export function humanError(command, error) {
   return [
     `MemoryOS ${command ?? "cli"} failed`,

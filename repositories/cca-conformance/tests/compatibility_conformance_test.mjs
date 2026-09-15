@@ -32,12 +32,12 @@ test("Standard, package, Core, SDK, and CLI versions retain independent identiti
   );
   assert.equal(MIP_FORMAT_VERSION, "1.0.0");
   assert.equal(INVESTIGATION_CORE_VERSION, "1.0.0");
-  assert.equal(MEMORYOS_SDK_VERSION, "1.0.0");
+  assert.equal(MEMORYOS_SDK_VERSION, "1.1.0");
   const version = runCli(["version", "--json"]);
   assert.equal(version.status, 0);
   const output = parseCliJson(version);
-  assert.equal(output.result.cliVersion, "1.0.0");
-  assert.equal(output.result.sdkVersion, "1.0.0");
+  assert.equal(output.result.cliVersion, "1.1.0");
+  assert.equal(output.result.sdkVersion, "1.1.0");
 });
 
 test("MIP exact-version and same-major packages retain canonical compatibility", async () => {
@@ -72,13 +72,13 @@ test("unknown non-critical extensions survive MIP and SDK round trips byte-for-b
   assert.equal(memory.verifyPackage(exported).valid, true);
 });
 
-test("C++, Python, JavaScript, bridge, and CLI SDK surfaces declare one compatible SDK version", async () => {
+test("C++, Python, JavaScript, and CLI expose SDK 1.1 over the stable 1.0 bridge protocol", async () => {
   const files = [
-    ["../../cca-sdk/include/memoryos/memoryos.hpp", /sdkVersion\{"1\.0\.0"\}/u],
-    ["../../cca-sdk/python/pyproject.toml", /version = "1\.0\.0"/u],
-    ["../../cca-sdk/python/src/memoryos/_sdk.py", /SDK_VERSION = "1\.0\.0"/u],
+    ["../../cca-sdk/include/memoryos/memoryos.hpp", /sdkVersion\{"1\.1\.0"\}/u],
+    ["../../cca-sdk/python/pyproject.toml", /version = "1\.1\.0"/u],
+    ["../../cca-sdk/python/src/memoryos/_sdk.py", /SDK_VERSION = "1\.1\.0"/u],
     ["../../cca-sdk/bridge/investigation-core-host.mjs", /PROTOCOL_VERSION = "1\.0\.0"/u],
-    ["../../memoryos-cli/package.json", /"version": "1\.0\.0"/u],
+    ["../../memoryos-cli/package.json", /"version": "1\.1\.0"/u],
   ];
   for (const [path, expected] of files) {
     const source = await readFile(new URL(path, import.meta.url), "utf8");

@@ -1,8 +1,8 @@
 # MemoryOS SDK API Reference
 
-This reference describes the public SDK facade through the MO-1207 Cognitive Investigation Explorer. Investigation Core remains authoritative for lifecycle transitions, Trace, Replay, Evolution, Comparative Reconstruction, Cognitive Regression, evidence navigation, checkpoints, and investigation verification. MIP remains authoritative for package verification and canonical package bytes.
+This reference describes the public SDK facade through MO-1301 Investigation Policies. Investigation Core remains authoritative for investigation semantics; the Policy Engine remains authoritative for Policy semantics. MIP remains authoritative for package verification and canonical package bytes.
 
-The facade version is `1.0.0`, exposed as `MEMORYOS_SDK_VERSION` in JavaScript, `SDK_VERSION` / `memoryos.__version__` in Python, and `memoryos::sdkVersion` in C++. This is the SDK version shipped for MemoryOS 1.2; it is not the MIP format version.
+The facade version is `1.1.0`, exposed as `MEMORYOS_SDK_VERSION` in JavaScript, `SDK_VERSION` / `memoryos.__version__` in Python, and `memoryos::sdkVersion` in C++. This SDK version is independent of artifact, fact-model, evaluator, and MIP versions.
 
 ## Common object model
 
@@ -21,8 +21,56 @@ All state-bearing SDK values are immutable handles or immutable projections.
 | `RegressionReport` | Immutable factual report produced by Investigation Core | Detached result; inputs must share one `MemoryOS` instance |
 | `InvestigationQuery` | Closed optional category, Reflection, or transition selectors | Detached immutable value |
 | `InvestigationResult` | Ordered exact pointers into one Regression report | Detached immutable Core result |
+| `PreparedPolicy` | Validated Policy or Policy Set plus exact canonical bytes and both digests | Detached and freely transferable |
+| `AuthoritativePolicyFactContext` | Opaque trusted Core-capture capability plus inspectable exact bytes | One `MemoryOS` instance |
+| `AuthoritativeRegressionPolicyFacts` | Atomic candidate context and Regression source capability pair | One `MemoryOS` instance |
+| `PolicyEvaluation` | Exact Evaluation Identity and normative outcome bytes/digests | Detached immutable result |
+| `PolicyArtifactVerification` | Successful inspection-only or authoritative-reconstruction verification | Detached immutable result |
 
-Values created by one `MemoryOS` instance cannot be used to mutate another instance. A checkpoint additionally must match the Investigation from which it was captured.
+Owner-bound handles and authoritative capabilities created by one `MemoryOS` instance cannot be used to mutate or authorize another instance. Detached values, including a prepared Policy/Set, remain transferable. A checkpoint additionally must match the Investigation from which it was captured.
+
+## Investigation Policy operations
+
+All three languages expose the same synchronous operation set, using camel case
+in JavaScript/C++ and snake case in Python:
+
+`preparePolicy`, `preparePolicySet`, `inspectPolicyFactContext`,
+`inspectRegressionPolicyFactSource`, `inspectRegressionReport`,
+`capturePolicyFactContext`, `captureRegressionPolicyFacts`, `evaluatePolicy`,
+`evaluatePolicySet`, `verifyEvaluationIdentityArtifact`,
+`verifyEvaluationIdentityForEvaluation`,
+`verifyPolicyEvaluationOutcomeArtifact`,
+`verifyPolicyEvaluationOutcomeForEvaluation`, and `policyContractIdentities`.
+
+Evaluation accepts only a prepared Policy/Set, an authoritative context from
+the same SDK instance, and zero or one authoritative Regression source bound to
+that exact candidate context. Inspection parses detached artifacts but never
+mints authority. Evaluations expose exact evaluator-produced identity and
+outcome bytes; bindings must not reconstruct these bytes.
+
+### Policy request and result contracts
+
+| Operation | Input | Result |
+| --- | --- | --- |
+| Prepare | Policy or Policy Set bytes | Immutable `PreparedPolicy` carrying exact canonical bytes, artifact kind/version/identifier, `documentDigest`, and `semanticDigest` |
+| Inspect context/source/report | Exact serialized bytes and, where applicable, an optional expected digest | Immutable inspection-only value with exact bytes and the verified context/source/report identity |
+| Capture context | Owner-matched `Investigation` | Owner-bound `AuthoritativePolicyFactContext` |
+| Capture Regression facts | Owner-matched baseline and candidate `Investigation` handles | Atomic `AuthoritativeRegressionPolicyFacts` context/source pair |
+| Evaluate | Prepared Policy/Set, authoritative context, and optional authoritative Regression source | Immutable `PolicyEvaluation` with parsed outcome, exact outcome and Evaluation Identity bytes, both digests, decision, and cache disposition |
+| Verify serialized artifact | Exact identity/outcome bytes plus the frozen optional expected digest/identity inputs | `PolicyArtifactVerification` with `authority: inspectionOnly` |
+| Verify for evaluation | Exact identity/outcome bytes plus the same authoritative evaluation request | `PolicyArtifactVerification` with `authority: authoritativeReconstruction` |
+| Inspect identities | No input | Exact immutable `MemoryOSPolicyContractIdentities` projection |
+
+JavaScript and C++ use the camel-case names listed above. Python uses their
+one-to-one snake-case equivalents. Serialized SDK inputs are bytes, never paths,
+URLs, mappings, file-like values, or provider callbacks. Evaluation options are
+closed to the optional Regression source; profile, registry, evaluator, rule,
+selector, and resource-limit overrides do not exist.
+
+PASS, FAIL, rule CNE, and resource CNE are successful `PolicyEvaluation`
+values. They are not exceptions. Prepared Policy/Set values are detached and
+transferable; context/source authority is owner-bound, and serialization or
+digest verification never recreates it.
 
 ## Required explicit operations
 
@@ -373,8 +421,29 @@ For MIP-backed cognition, pass `std::optional<std::string>{evolutionId}` and cal
 
 Core rejections preserve stable error `code`, `operation`, message, and ordered diagnostics.
 
-- JavaScript forwards `InvestigationCoreError` for Core transitions and uses `TypeError` for facade ownership/input violations.
+- JavaScript forwards `InvestigationCoreError` for Core transitions and uses `TypeError` for non-Policy facade ownership/input violations.
 - Python raises `MemoryOSError` for Core failures and `MemoryOSBindingError` for local transport/protocol failures. Invalid package verification returns `VerificationResult(valid=False)`.
 - C++ throws `memoryos::SdkError`; access `code()`, `operation()`, and `diagnostics()`. Invalid package verification returns `VerificationResult::valid() == false`.
 
 Binding failures never trigger a retry that could duplicate a transition. Callers decide whether and how to recover.
+
+Policy artifact/input failures use the shared immutable semantic fields
+`code`, `phase`, `artifactKind`, and `limitIdentifier` (Python exposes the last
+two idiomatically as `artifact_kind` and `limit_identifier`). JavaScript raises
+`MemoryOSPolicyPreparationError`, Python raises
+`MemoryOSPolicyPreparationError`, and C++ exposes the same record through
+`SdkError::preparationFailure()`. Every frozen CF1-CF6 stable code passes
+through unchanged.
+
+Policy runtime, bridge, allocation, filesystem, verification, and internal
+invariant failures remain operational and never fabricate a Policy decision.
+JavaScript/Python expose `MemoryOSPolicyOperationalError`; C++ retains
+`SdkError` with `failureClass()` and `verificationFailure()`. Human messages and
+details are presentation-only. Source-language type/overload misuse remains a
+programmer error. A detached, missing-capability, or foreign-owner Policy fact
+context instead raises the preparation code
+`POLICY_FACT_CONTEXT_PROVENANCE_UNTRUSTED`; the corresponding Regression source
+condition raises `DETERMINISTIC_FACT_SOURCE_PROVENANCE_UNTRUSTED`. Context
+authority is checked before source authority. A same-owner source bound to a
+different same-owner context remains
+`REGRESSION_POLICY_FACT_SOURCE_CANDIDATE_BINDING_MISMATCH`.

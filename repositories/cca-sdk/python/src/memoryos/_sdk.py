@@ -8,7 +8,11 @@ from pathlib import Path
 from typing import Any
 
 from ._bridge import BridgeClient, default_host_path
-from ._errors import MemoryOSBindingError, MemoryOSError
+from ._errors import (
+    MemoryOSBindingError,
+    MemoryOSError,
+    MemoryOSPolicyPreparationError,
+)
 from ._immutable import FrozenMap, freeze, thaw
 from ._models import (
     Checkpoint,
@@ -22,9 +26,20 @@ from ._models import (
     VerificationResult,
     Workspace,
 )
+from ._policy_models import (
+    AuthoritativePolicyFactContext,
+    AuthoritativeRegressionPolicyFactSource,
+    AuthoritativeRegressionPolicyFacts,
+    PolicyArtifactVerification,
+    PolicyEvaluation,
+    PolicyFactContextInspection,
+    PreparedPolicy,
+    RegressionPolicyFactSourceInspection,
+    RegressionReportInspection,
+)
 
 
-SDK_VERSION = "1.0.0"
+SDK_VERSION = "1.1.0"
 
 
 class MemoryOS:
@@ -42,6 +57,8 @@ class MemoryOS:
         binding_host: str | Path | None = None,
     ) -> None:
         self._identity = object()
+        self._context_capabilities: dict[object, str] = {}
+        self._source_capabilities: dict[object, str] = {}
         self._bridge = BridgeClient(
             node_executable,
             Path(binding_host) if binding_host is not None else default_host_path(),
@@ -56,7 +73,230 @@ class MemoryOS:
     def close(self) -> None:
         """Release this SDK instance and its private local Core host."""
 
+        self._context_capabilities.clear()
+        self._source_capabilities.clear()
         self._bridge.close()
+
+    def prepare_policy(self, data: bytes | bytearray | memoryview) -> PreparedPolicy:
+        """Validate and retain one immutable Policy artifact."""
+
+        return self._prepared_policy_from_result(self._bridge.call(
+            "preparePolicy", {"bytesBase64": self._encode_bytes(data, "Policy")}
+        ))
+
+    def prepare_policy_set(self, data: bytes | bytearray | memoryview) -> PreparedPolicy:
+        """Validate and retain one immutable Policy Set artifact."""
+
+        return self._prepared_policy_from_result(self._bridge.call(
+            "preparePolicySet", {"bytesBase64": self._encode_bytes(data, "Policy Set")}
+        ))
+
+    def inspect_policy_fact_context(
+        self,
+        data: bytes | bytearray | memoryview,
+        *,
+        expected_context_digest: str | None = None,
+    ) -> PolicyFactContextInspection:
+        """Inspect serialized context bytes without granting production authority."""
+
+        params = {"bytesBase64": self._encode_bytes(data, "PolicyFactContext")}
+        if expected_context_digest is not None:
+            params["expectedContextDigest"] = expected_context_digest
+        return self._context_from_result(
+            self._bridge.call("inspectPolicyFactContext", params),
+            authoritative=False,
+        )
+
+    def inspect_regression_policy_fact_source(
+        self,
+        data: bytes | bytearray | memoryview,
+        *,
+        expected_source_digest: str | None = None,
+    ) -> RegressionPolicyFactSourceInspection:
+        """Inspect a detached Regression source without upgrading provenance."""
+
+        params = {"bytesBase64": self._encode_bytes(data, "RegressionPolicyFactSource")}
+        if expected_source_digest is not None:
+            params["expectedSourceDigest"] = expected_source_digest
+        return self._source_from_result(
+            self._bridge.call("inspectRegressionPolicyFactSource", params),
+            authoritative=False,
+        )
+
+    def inspect_regression_report(
+        self,
+        data: bytes | bytearray | memoryview,
+    ) -> RegressionReportInspection:
+        """Inspect a detached Cognitive Regression report."""
+
+        result = self._bridge.call("inspectRegressionReport", {
+            "bytesBase64": self._encode_bytes(data, "Regression report")
+        })
+        return RegressionReportInspection(
+            kind=self._required_text(result, "kind"),
+            version=self._required_text(result, "version"),
+            report_identifier=self._required_text(result, "reportIdentifier"),
+            artifact=freeze(self._required_mapping(result, "artifact")),
+            canonical_bytes=self._decode_bytes(result.get("bytesBase64")),
+        )
+
+    def capture_policy_fact_context(
+        self,
+        investigation: Investigation,
+    ) -> AuthoritativePolicyFactContext:
+        """Atomically capture one owner-bound authoritative context."""
+
+        self._require_investigation(investigation)
+        return self._context_from_result(self._bridge.call(
+            "capturePolicyFactContext",
+            {"investigationIdentifier": investigation.identifier},
+        ), authoritative=True)
+
+    def capture_regression_policy_facts(
+        self,
+        baseline: Investigation,
+        candidate: Investigation,
+    ) -> AuthoritativeRegressionPolicyFacts:
+        """Atomically derive the candidate context and trusted Regression source."""
+
+        self._require_investigation(baseline)
+        self._require_investigation(candidate)
+        result = self._bridge.call("captureRegressionPolicyFacts", {
+            "baselineInvestigationIdentifier": baseline.identifier,
+            "candidateInvestigationIdentifier": candidate.identifier,
+        })
+        context_value = self._required_mapping(result, "policyFactContext")
+        source_value = self._required_mapping(result, "regressionPolicyFactSource")
+        context = self._context_from_result(context_value, authoritative=True)
+        source = self._source_from_result(
+            source_value,
+            authoritative=True,
+            context=context,
+        )
+        return AuthoritativeRegressionPolicyFacts(context, source)
+
+    def evaluate_policy(
+        self,
+        prepared_policy: PreparedPolicy,
+        context: AuthoritativePolicyFactContext,
+        *,
+        regression_source: AuthoritativeRegressionPolicyFactSource | None = None,
+    ) -> PolicyEvaluation:
+        """Evaluate a prepared Policy through the authoritative engine."""
+
+        return self._evaluate_policy(
+            "evaluatePolicy", "MemoryOSInvestigationPolicy",
+            prepared_policy, context, regression_source,
+        )
+
+    def evaluate_policy_set(
+        self,
+        prepared_policy_set: PreparedPolicy,
+        context: AuthoritativePolicyFactContext,
+        *,
+        regression_source: AuthoritativeRegressionPolicyFactSource | None = None,
+    ) -> PolicyEvaluation:
+        """Evaluate a prepared Policy Set through the authoritative engine."""
+
+        return self._evaluate_policy(
+            "evaluatePolicySet", "MemoryOSInvestigationPolicySet",
+            prepared_policy_set, context, regression_source,
+        )
+
+    def verify_evaluation_identity_artifact(
+        self,
+        identity_bytes: bytes | bytearray | memoryview,
+        expected_evaluation_identity_digest: str | None = None,
+    ) -> PolicyArtifactVerification:
+        """Verify exact detached Evaluation Identity bytes and digest."""
+
+        params = {"bytesBase64": self._encode_bytes(identity_bytes, "Evaluation Identity")}
+        if expected_evaluation_identity_digest is not None:
+            params["expectedEvaluationIdentityDigest"] = expected_evaluation_identity_digest
+        return self._verification_from_result(self._bridge.call(
+            "verifyEvaluationIdentityArtifact", params
+        ))
+
+    def verify_evaluation_identity_for_evaluation(
+        self,
+        identity_bytes: bytes | bytearray | memoryview,
+        prepared_artifact: PreparedPolicy,
+        context: AuthoritativePolicyFactContext,
+        *,
+        regression_source: AuthoritativeRegressionPolicyFactSource | None = None,
+    ) -> PolicyArtifactVerification:
+        """Cross-check identity bytes against authoritative evaluation inputs."""
+
+        params = self._authoritative_policy_params(
+            "verifyEvaluationIdentityForEvaluation",
+            prepared_artifact,
+            context,
+            regression_source,
+        )
+        params["bytesBase64"] = self._encode_bytes(identity_bytes, "Evaluation Identity")
+        return self._verification_from_result(self._bridge.call(
+            "verifyEvaluationIdentityForEvaluation", params
+        ))
+
+    def verify_policy_evaluation_outcome_artifact(
+        self,
+        outcome_bytes: bytes | bytearray | memoryview,
+        *,
+        expected_identity: bytes | bytearray | memoryview | None = None,
+        expected_evaluation_identity_digest: str | None = None,
+        expected_outcome_digest: str | None = None,
+    ) -> PolicyArtifactVerification:
+        """Verify detached normative outcome bytes without a provenance claim."""
+
+        if expected_identity is not None and expected_evaluation_identity_digest is not None:
+            raise ValueError(
+                "expected_identity and expected_evaluation_identity_digest are mutually exclusive"
+            )
+
+        params: dict[str, Any] = {
+            "bytesBase64": self._encode_bytes(outcome_bytes, "Policy evaluation outcome")
+        }
+        if expected_identity is not None:
+            params["expectedEvaluationIdentityBytesBase64"] = self._encode_bytes(
+                expected_identity, "Expected Evaluation Identity"
+            )
+        if expected_evaluation_identity_digest is not None:
+            params["expectedEvaluationIdentityDigest"] = expected_evaluation_identity_digest
+        if expected_outcome_digest is not None:
+            params["expectedOutcomeDigest"] = expected_outcome_digest
+        return self._verification_from_result(self._bridge.call(
+            "verifyPolicyEvaluationOutcomeArtifact", params
+        ))
+
+    def verify_policy_evaluation_outcome_for_evaluation(
+        self,
+        outcome_bytes: bytes | bytearray | memoryview,
+        prepared_artifact: PreparedPolicy,
+        context: AuthoritativePolicyFactContext,
+        *,
+        regression_source: AuthoritativeRegressionPolicyFactSource | None = None,
+        expected_outcome_digest: str | None = None,
+    ) -> PolicyArtifactVerification:
+        """Require byte-identical authoritative re-evaluation of an outcome."""
+
+        params = self._authoritative_policy_params(
+            "verifyPolicyEvaluationOutcomeForEvaluation",
+            prepared_artifact,
+            context,
+            regression_source,
+        )
+        params["bytesBase64"] = self._encode_bytes(outcome_bytes, "Policy evaluation outcome")
+        if expected_outcome_digest is not None:
+            params["expectedOutcomeDigest"] = expected_outcome_digest
+        return self._verification_from_result(self._bridge.call(
+            "verifyPolicyEvaluationOutcomeForEvaluation", params
+        ))
+
+    def policy_contract_identities(self) -> FrozenMap:
+        """Return only the frozen normative Policy contract identities."""
+
+        result = self._bridge.call("policyContractIdentities", {})
+        return freeze(self._required_mapping(result, "identities"))
 
     def open_workspace(self, identifier: str) -> Workspace:
         """Create an immutable handle for an explicit Workspace identity."""
@@ -566,6 +806,156 @@ class MemoryOS:
             {"investigationIdentifier": investigation.identifier},
         ))
 
+    def _prepared_policy_from_result(self, result: Mapping[str, Any]) -> PreparedPolicy:
+        return PreparedPolicy(
+            kind=self._required_text(result, "kind"),
+            version=self._required_text(result, "version"),
+            identifier=self._required_text(result, "identifier"),
+            artifact=freeze(self._required_mapping(result, "artifact")),
+            semantic_projection=freeze(self._required_mapping(result, "semanticProjection")),
+            document_digest=self._required_text(result, "documentDigest"),
+            semantic_digest=self._required_text(result, "semanticDigest"),
+            canonical_bytes=self._decode_bytes(result.get("bytesBase64")),
+            _owner=self._identity,
+        )
+
+    def _context_from_result(
+        self,
+        result: Mapping[str, Any],
+        *,
+        authoritative: bool,
+    ) -> PolicyFactContextInspection | AuthoritativePolicyFactContext:
+        values = {
+            "kind": self._required_text(result, "kind"),
+            "version": self._required_text(result, "version"),
+            "fact_model_version": self._required_text(result, "factModelVersion"),
+            "context_digest": self._required_text(result, "contextDigest"),
+            "artifact": freeze(self._required_mapping(result, "artifact")),
+            "canonical_bytes": self._decode_bytes(result.get("bytesBase64")),
+        }
+        if not authoritative:
+            return PolicyFactContextInspection(**values)
+        capability = object()
+        self._context_capabilities[capability] = self._required_text(
+            result, "capabilityToken"
+        )
+        return AuthoritativePolicyFactContext(
+            **values,
+            _capability=capability,
+            _owner=self._identity,
+        )
+
+    def _source_from_result(
+        self,
+        result: Mapping[str, Any],
+        *,
+        authoritative: bool,
+        context: AuthoritativePolicyFactContext | None = None,
+    ) -> RegressionPolicyFactSourceInspection | AuthoritativeRegressionPolicyFactSource:
+        values = {
+            "kind": self._required_text(result, "kind"),
+            "version": self._required_text(result, "version"),
+            "domain": self._required_text(result, "domain"),
+            "source_model_version": self._required_text(result, "sourceModelVersion"),
+            "source_digest": self._required_text(result, "sourceDigest"),
+            "artifact": freeze(self._required_mapping(result, "artifact")),
+            "canonical_bytes": self._decode_bytes(result.get("bytesBase64")),
+        }
+        if not authoritative:
+            return RegressionPolicyFactSourceInspection(**values)
+        if context is None:
+            raise MemoryOSBindingError(
+                "INVALID_RESPONSE", "binding",
+                "An authoritative Regression source omitted its candidate context.",
+            )
+        capability = object()
+        self._source_capabilities[capability] = self._required_text(
+            result, "capabilityToken"
+        )
+        return AuthoritativeRegressionPolicyFactSource(
+            **values,
+            _capability=capability,
+            _context=context,
+            _owner=self._identity,
+        )
+
+    def _authoritative_policy_params(
+        self,
+        operation: str,
+        prepared_artifact: PreparedPolicy,
+        context: AuthoritativePolicyFactContext,
+        regression_source: AuthoritativeRegressionPolicyFactSource | None,
+    ) -> dict[str, Any]:
+        self._require_prepared_policy(prepared_artifact)
+        self._require_policy_context(context, operation)
+        params = {
+            "artifactBytesBase64": self._encode_bytes(
+                prepared_artifact.canonical_bytes, "Prepared Policy artifact"
+            ),
+            "artifactKind": prepared_artifact.kind,
+            "policyFactContextToken": self._context_capabilities[context._capability],
+        }
+        if regression_source is not None:
+            self._require_regression_source(regression_source, context, operation)
+            params["regressionPolicyFactSourceToken"] = self._source_capabilities[
+                regression_source._capability
+            ]
+        return params
+
+    def _evaluate_policy(
+        self,
+        method: str,
+        expected_kind: str,
+        prepared_artifact: PreparedPolicy,
+        context: AuthoritativePolicyFactContext,
+        regression_source: AuthoritativeRegressionPolicyFactSource | None,
+    ) -> PolicyEvaluation:
+        self._require_prepared_policy(prepared_artifact, expected_kind)
+        params = self._authoritative_policy_params(
+            method, prepared_artifact, context, regression_source
+        )
+        params.pop("artifactKind")
+        result = self._bridge.call(method, params)
+        return PolicyEvaluation(
+            decision=self._required_text(result, "decision"),
+            evaluation_identity=freeze(self._required_mapping(result, "evaluationIdentity")),
+            evaluation_identity_digest=self._required_text(
+                result, "evaluationIdentityDigest"
+            ),
+            evaluation_identity_bytes=self._decode_bytes(
+                result.get("evaluationIdentityBytesBase64")
+            ),
+            outcome=freeze(self._required_mapping(result, "outcome")),
+            outcome_digest=self._required_text(result, "outcomeDigest"),
+            canonical_outcome_bytes=self._decode_bytes(
+                result.get("canonicalOutcomeBytesBase64")
+            ),
+            cache_disposition=self._required_text(result, "cacheDisposition"),
+        )
+
+    def _verification_from_result(
+        self,
+        result: Mapping[str, Any],
+    ) -> PolicyArtifactVerification:
+        identity_value = result.get("evaluationIdentity")
+        outcome_value = result.get("outcome")
+        return PolicyArtifactVerification(
+            artifact_kind=self._required_text(result, "artifactKind"),
+            artifact_version=self._required_text(result, "artifactVersion"),
+            authority=self._required_text(result, "authority"),
+            verification_scope=self._required_text(result, "verificationScope"),
+            verified=result.get("verified") is True,
+            canonical_bytes=self._decode_bytes(result.get("bytesBase64")),
+            evaluation_identity=freeze(identity_value)
+            if isinstance(identity_value, Mapping) else None,
+            evaluation_identity_digest=result.get("evaluationIdentityDigest")
+            if isinstance(result.get("evaluationIdentityDigest"), str) else None,
+            outcome=freeze(outcome_value) if isinstance(outcome_value, Mapping) else None,
+            outcome_digest=result.get("outcomeDigest")
+            if isinstance(result.get("outcomeDigest"), str) else None,
+            decision=result.get("decision") if isinstance(result.get("decision"), str) else None,
+        )
+
     def _investigation_from_result(self, result: Mapping[str, Any]) -> Investigation:
         projection = result.get("investigation")
         transition_log = result.get("transitionLog")
@@ -603,6 +993,81 @@ class MemoryOS:
         if not isinstance(investigation, Investigation) or investigation._memory is not self:
             raise ValueError("Investigation belongs to a different MemoryOS instance.")
 
+    def _require_prepared_policy(
+        self,
+        value: PreparedPolicy,
+        expected_kind: str | None = None,
+    ) -> None:
+        if not isinstance(value, PreparedPolicy):
+            raise TypeError("value must be a PreparedPolicy")
+        if expected_kind is not None and value.kind != expected_kind:
+            raise ValueError(f"Expected prepared artifact kind {expected_kind}.")
+
+    def _require_policy_context(
+        self,
+        value: AuthoritativePolicyFactContext,
+        operation: str,
+    ) -> None:
+        if isinstance(value, PolicyFactContextInspection):
+            raise MemoryOSPolicyPreparationError(
+                "POLICY_FACT_CONTEXT_PROVENANCE_UNTRUSTED",
+                operation,
+                "PolicyFactContext inspection does not carry production authority.",
+                phase="policyFactContext",
+                artifact_kind="MemoryOSPolicyFactContext",
+                failure_class="preparation",
+            )
+        if not isinstance(value, AuthoritativePolicyFactContext):
+            raise TypeError("value must be an AuthoritativePolicyFactContext")
+        retained = False
+        if value._owner is self._identity:
+            try:
+                retained = value._capability in self._context_capabilities
+            except TypeError:
+                retained = False
+        if not retained:
+            raise MemoryOSPolicyPreparationError(
+                "POLICY_FACT_CONTEXT_PROVENANCE_UNTRUSTED",
+                operation,
+                "PolicyFactContext is not authoritative for this MemoryOS instance.",
+                phase="policyFactContext",
+                artifact_kind="MemoryOSPolicyFactContext",
+                failure_class="preparation",
+            )
+
+    def _require_regression_source(
+        self,
+        value: AuthoritativeRegressionPolicyFactSource,
+        context: AuthoritativePolicyFactContext,
+        operation: str,
+    ) -> None:
+        if isinstance(value, RegressionPolicyFactSourceInspection):
+            raise MemoryOSPolicyPreparationError(
+                "DETERMINISTIC_FACT_SOURCE_PROVENANCE_UNTRUSTED",
+                operation,
+                "Regression source inspection does not carry production authority.",
+                phase="regressionPolicyFactSource",
+                artifact_kind="MemoryOSRegressionPolicyFactSource",
+                failure_class="preparation",
+            )
+        if not isinstance(value, AuthoritativeRegressionPolicyFactSource):
+            raise TypeError("value must be an AuthoritativeRegressionPolicyFactSource")
+        retained = False
+        if value._owner is self._identity:
+            try:
+                retained = value._capability in self._source_capabilities
+            except TypeError:
+                retained = False
+        if not retained:
+            raise MemoryOSPolicyPreparationError(
+                "DETERMINISTIC_FACT_SOURCE_PROVENANCE_UNTRUSTED",
+                operation,
+                "Regression source is not authoritative for this MemoryOS instance.",
+                phase="regressionPolicyFactSource",
+                artifact_kind="MemoryOSRegressionPolicyFactSource",
+                failure_class="preparation",
+            )
+
     @staticmethod
     def _extensions(values: Sequence[str]) -> list[str]:
         if isinstance(values, (str, bytes)) or any(
@@ -634,3 +1099,29 @@ class MemoryOS:
                 "binding",
                 "The private binding returned invalid package bytes.",
             ) from error
+
+    @staticmethod
+    def _encode_bytes(value: bytes | bytearray | memoryview, label: str) -> str:
+        if not isinstance(value, (bytes, bytearray, memoryview)):
+            raise TypeError(f"{label} must be bytes-like")
+        return base64.b64encode(bytes(value)).decode("ascii")
+
+    @staticmethod
+    def _required_mapping(value: Mapping[str, Any], name: str) -> Mapping[str, Any]:
+        member = value.get(name)
+        if not isinstance(member, Mapping):
+            raise MemoryOSBindingError(
+                "INVALID_RESPONSE", "binding",
+                f"The private binding omitted object member '{name}'.",
+            )
+        return member
+
+    @staticmethod
+    def _required_text(value: Mapping[str, Any], name: str) -> str:
+        member = value.get(name)
+        if not isinstance(member, str) or not member:
+            raise MemoryOSBindingError(
+                "INVALID_RESPONSE", "binding",
+                f"The private binding omitted text member '{name}'.",
+            )
+        return member

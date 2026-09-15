@@ -79,6 +79,7 @@ add_custom_target(
     web/js/policy-fact-context.js
     web/js/regression-policy-fact-source.js
     web/js/investigation-policy-engine.js
+    web/js/investigation-policy-integration.js
     web/js/memory-investigation-package.js
     web/js/investigation-core.js
     web/js/memoryos-sdk.js
@@ -107,8 +108,10 @@ add_custom_target(
     scripts/generate-ai-runtime-adapter-fixtures.mjs
     examples/ai_runtime_adapter_usage.mjs
     examples/investigation_core_usage.mjs
+    examples/investigation_policy_usage.mjs
     examples/cognitive_investigation_explorer_usage.mjs
     docs/investigation-core.md
+    docs/investigation-policies.md
     docs/investigation-core-conformance-evidence.md
     docs/cognitive-regression.md
     docs/cognitive-regression-engineering-guide.md
@@ -129,6 +132,7 @@ add_custom_target(
     tests/policy_fact_context_test.mjs
     tests/regression_policy_fact_source_test.mjs
     tests/investigation_policy_engine_test.mjs
+    tests/memoryos_policy_sdk_test.mjs
     tests/fixtures/investigation-policy/1.0.0/boundary-carriers/0001-b01-nearest-reachable-below.json
     tests/fixtures/investigation-policy/1.0.0/boundary-carriers/0002-b01-exact-candidate.json
     tests/fixtures/investigation-policy/1.0.0/boundary-carriers/0003-b01-first-reachable-above.json
@@ -402,6 +406,16 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS)
       set_tests_properties(
         cca.memory_studio.investigation_policy_phase3
         PROPERTIES LABELS "studio;memory;policy;phase3;conformance"
+      )
+      add_test(
+        NAME cca.memory_studio.investigation_policy_phase4_sdk
+        COMMAND
+          "${CCA_NODE_EXECUTABLE}" --test
+          "${CMAKE_CURRENT_SOURCE_DIR}/tests/memoryos_policy_sdk_test.mjs"
+      )
+      set_tests_properties(
+        cca.memory_studio.investigation_policy_phase4_sdk
+        PROPERTIES LABELS "studio;memory;policy;phase4;sdk;conformance"
       )
       add_test(
         NAME cca.memory_studio.scalability

@@ -3,6 +3,23 @@
 This changelog records MemoryOS product milestones. Foundation-era workspace
 history remains available in `ROADMAP.md`.
 
+## MemoryOS 1.3 — Unreleased
+
+### MO-1301 — Investigation Policies
+
+Implemented a deterministic engineering-policy subsystem over the corrected
+v1.2.1 compatibility baseline. MO-1301 adds closed Policy and Policy Set
+artifacts, atomic Core-owned PolicyFactContext capture, trusted Cognitive
+Regression provenance, six registered rules, exact evidence, deterministic
+PASS/FAIL/COULD_NOT_EVALUATE aggregation, a measured 31-limit Resource Profile,
+Evaluation Identity, canonical outcomes, exact-byte caching, SDK/CLI 1.1
+integration, and an additive MemoryOS 1.3 conformance inventory.
+
+The frozen evaluator and normative artifacts remain version `1.0.0`; SDK and
+CLI product surfaces advance to `1.1.0`. No v1.2.1 contract or historical
+attestation is rewritten. MO-1302 GitHub Actions integration,
+CCA-MEMORYOS-1.1 publication, tagging, and release publication remain deferred.
+
 ## MemoryOS 1.2 — v1.2.1
 
 Corrective restoration release. The v1.2.0 Git source archive omitted

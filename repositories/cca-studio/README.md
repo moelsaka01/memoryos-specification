@@ -128,6 +128,13 @@ Implementation. The [official conformance suite](../cca-conformance/README.md)
 assesses the existing Studio, MIP, adapter, Core, Regression, and Explorer
 behavior; neither the Standard nor the suite adds Studio behavior.
 
+MO-1301 adds [Investigation Policies](docs/investigation-policies.md) as the
+first MemoryOS 1.3 Engineering Operations subsystem. A closed Fact Model,
+six registered rules, one optional deterministic Regression source, frozen
+resource profile, Evaluation Identity, and canonical outcome run downstream
+of the released v1.2.1 Core. SDK 1.1 and CLI 1.1 expose the same authoritative
+engine without making serialized context or source artifacts authoritative.
+
 ## Build and verify
 
 From the workspace root:
@@ -193,6 +200,7 @@ observation paths, and explanation-chain boundaries.
 - [Explorer architecture review](docs/cognitive-investigation-explorer-architecture-review.md)
 - [Explorer conformance report](docs/cognitive-investigation-explorer-conformance-report.md)
 - [MemoryOS Standard conformance suite](../cca-conformance/README.md)
+- [MemoryOS 1.3 Investigation Policies](docs/investigation-policies.md)
 - [MemoryOS 1.2.0 Reference Implementation guide](../cca-conformance/docs/reference-implementation-guide.md)
 - [MemoryOS SDK](../cca-sdk/README.md)
 - [MemoryOS SDK conformance report](../cca-sdk/docs/conformance-report.md)
@@ -225,4 +233,5 @@ observation paths, and explanation-chain boundaries.
 - [C++ example](examples/memory_studio_usage.cpp)
 - [AI runtime adapter example](examples/ai_runtime_adapter_usage.mjs)
 - [Investigation Core example](examples/investigation_core_usage.mjs)
+- [Investigation Policy SDK example](examples/investigation_policy_usage.mjs)
 - [Cognitive Investigation Explorer example](examples/cognitive_investigation_explorer_usage.mjs)

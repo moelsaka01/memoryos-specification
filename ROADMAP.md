@@ -11,6 +11,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
 | MemoryOS 1.2 | Released — v1.2.0 | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, and its official Conformance Suite |
 | MemoryOS 1.2.1 | Corrective restoration | Restores omitted intended v1.2 source, registered tests, fixtures, examples, documentation, frozen Standard and MIP publication assets, and corrected conformance provenance while preserving all v1.2 semantics and CSP fixes |
+| MemoryOS 1.3 | In development | Engineering Operations: MO-1301 deterministic Investigation Policies followed by separately scoped MO-1302 GitHub Actions/CI integration |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -81,6 +82,19 @@ the v1.2.0 source and publication inventory without changing the Standard, MIP,
 Investigation Core, SDK, CLI, Regression, Explorer, lifecycle, or Studio
 semantics. The v1.2.0 commit, tag, manifest, and evidence remain immutable
 historical records.
+
+MO-1301 implements closed Policy and Policy Set artifacts, an atomic
+PolicyFactContext projection, one registered optional Cognitive Regression fact
+source, six first-party rules, deterministic evidence and aggregation, a fixed
+Resource Profile, Evaluation Identity, canonical outcomes, SDK/CLI 1.1
+integration, and a separate MemoryOS 1.3 conformance inventory. It is additive
+over the v1.2.1 compatibility baseline. MO-1302 will consume these artifacts and
+stable exit codes; it is not implemented by MO-1301.
+
+CCA-MEMORYOS-1.1 remains the intended later normative target. Candidate
+materialization follows frozen implementation behavior, cross-language parity,
+conformance, and independent review; the Standard will codify that behavior
+rather than evolve as another Policy semantic authority.
 
 ## IM-001: engineering foundation
 

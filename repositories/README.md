@@ -7,10 +7,10 @@ The workspace coordinates these repository boundaries:
 | [`cca-core`](cca-core) | Released Runtime, Representation, Process, Persistence, and CP-001 through CP-010 MemoryOS implementation |
 | [`cca-compiler`](cca-compiler) | IS-002 Standards Compiler and CLI |
 | [`memoryos`](memoryos) | Reserved future product-repository boundary; current implementation remains in `cca-core` and `cca-studio` |
-| [`cca-studio`](cca-studio) | CP-011 Studio, MemoryOS 1.1 investigation presentation, and MemoryOS 1.2 headless MIP, adapter, Investigation Core, Cognitive Regression, and Explorer modules |
-| [`cca-sdk`](cca-sdk) | MO-1204 JavaScript, Python, and C++ SDK facades plus MO-1206 regression and MO-1207 evidence-navigation facades over one private Investigation Core binding |
-| [`memoryos-cli`](memoryos-cli) | MO-1205 standalone CLI and JSON Lines automation plus SDK-backed regression reporting and deterministic evidence navigation |
-| [`cca-conformance`](cca-conformance) | MO-1208 official CCA-MEMORYOS-1.0 conformance suite and Reference Implementation evidence |
+| [`cca-studio`](cca-studio) | Released investigation platform plus the MO-1301 authoritative Investigation Policy Engine and Core fact projection |
+| [`cca-sdk`](cca-sdk) | JavaScript, Python, and C++ SDK 1.1 facades over the one Investigation Core and Policy Engine authorities |
+| [`memoryos-cli`](memoryos-cli) | Additive CLI 1.1 Investigation Policy namespace plus released investigation automation |
+| [`cca-conformance`](cca-conformance) | Immutable CCA-MEMORYOS-1.0/v1.2.1 assessment and separate MO-1301 conformance inventory and handoff checks |
 | [`cca-atlas`](cca-atlas) | Reserved; no implementation |
 
 Directory presence does not authorize behavior. The current dependency
@@ -37,6 +37,10 @@ filters regression evidence or reruns an investigation independently.
 MO-1208 activates `cca-conformance` as a behavior-free assessment harness. It
 pins the published MemoryOS requirement inventory and verifies the existing
 implementation; it does not define or implement MemoryOS semantics.
+MO-1301 adds deterministic Investigation Policies and version 1.1 SDK/CLI
+transport surfaces. The Policy Engine remains the sole Policy semantic
+authority, while Core remains the sole investigation semantic authority. The
+new conformance inventory does not rewrite the released v1.2.1 attestation.
 No repository creates a reverse dependency into the compiler. Reserved
 repositories have no approved dependency relationships merely by directory
 presence.

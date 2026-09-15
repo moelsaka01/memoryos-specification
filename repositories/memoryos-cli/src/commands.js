@@ -19,6 +19,7 @@ import {
   replaySummary,
   verificationSummary,
 } from "./output.js";
+import { executePolicyCommand } from "./policy-commands.js";
 import { MEMORYOS_CLI_VERSION } from "./version.js";
 
 const replayActions = Object.freeze({
@@ -163,6 +164,7 @@ export function executeCommand(parsed, io = {}) {
 
   const memory = newMemoryOS();
   const stdin = io.stdin;
+  if (command === "policy") return executePolicyCommand(memory, parsed, io);
   if (command === "investigate") {
     const report = readJsonObject(positionals[0], "Regression report", stdin);
     const query = {};

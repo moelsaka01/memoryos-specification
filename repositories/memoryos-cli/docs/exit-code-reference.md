@@ -12,8 +12,20 @@ MemoryOS CLI assigns one deterministic process exit code to each outcome categor
 | `3` | Verification failure | SDK/MIP verification rejected package contents. | Checksum, schema, integrity, or conformance diagnostics. |
 | `4` | Package error | Package transport or package-backed capability failed. | Package read/write failure, import/export failure, unavailable authored package Trace, native export unavailable. |
 | `5` | SDK failure | An SDK failure does not belong to a caller-validation or package category. | Invalid lifecycle transition or unexpected SDK operation failure. |
+| `6` | Policy FAIL | A valid Policy evaluation completed with decision `FAIL`. | One or more frozen Policy rules were not satisfied. |
+| `7` | Policy CNE | A valid Policy evaluation completed with decision `COULD_NOT_EVALUATE`. | Required deterministic facts were unavailable or a normative evaluation resource limit produced CNE. |
 
 The same code is returned in human and JSON modes. JSON errors also include it as `error.exitCode`.
+
+Only `policy evaluate` returns `6` or `7`. PASS returns `0`. FAIL and CNE are
+completed normative results, so their outcome and requested sidecars are fully
+published before the decision exit is returned. A successful `verify-outcome`
+of a valid FAIL or CNE artifact returns `0` because verification succeeded.
+
+Within the `policy` namespace, `1` is usage, `2` deterministic preparation, `3`
+identity/outcome verification failure, `4` filesystem or stream transport, and
+`5` SDK/runtime/internal operational failure. Automation must preserve the
+evaluation exit and cross-check it against the verified outcome decision.
 
 `regressionDetected: true` is report data, not a command failure. A successful Regression command returns `0`; CI policy may independently decide how to act on the deterministic report.
 

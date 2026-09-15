@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "node scripts/serve.mjs",
-    "test": "node --test tests/memory_studio_web_test.mjs tests/memory_studio_integration_test.mjs tests/mip_canonical_test.mjs tests/memory_investigation_package_test.mjs tests/mip_schema_conformance_test.mjs tests/mip_adversarial_conformance_test.mjs tests/mip_ordering_conformance_test.mjs tests/mip_derived_edge_conformance_test.mjs tests/mip_pipeline_conformance_test.mjs tests/ai_runtime_adapter_test.mjs tests/investigation_core_test.mjs tests/memoryos_sdk_test.mjs tests/cognitive_regression_test.mjs tests/cognitive_investigation_explorer_test.mjs tests/policy_canonical_test.mjs tests/investigation_policy_contracts_test.mjs tests/investigation_policy_test.mjs tests/policy_fact_context_test.mjs tests/regression_policy_fact_source_test.mjs tests/investigation_policy_engine_test.mjs",
+    "test": "node --test tests/memory_studio_web_test.mjs tests/memory_studio_integration_test.mjs tests/mip_canonical_test.mjs tests/memory_investigation_package_test.mjs tests/mip_schema_conformance_test.mjs tests/mip_adversarial_conformance_test.mjs tests/mip_ordering_conformance_test.mjs tests/mip_derived_edge_conformance_test.mjs tests/mip_pipeline_conformance_test.mjs tests/ai_runtime_adapter_test.mjs tests/investigation_core_test.mjs tests/memoryos_sdk_test.mjs tests/cognitive_regression_test.mjs tests/cognitive_investigation_explorer_test.mjs tests/policy_canonical_test.mjs tests/investigation_policy_contracts_test.mjs tests/investigation_policy_test.mjs tests/policy_fact_context_test.mjs tests/regression_policy_fact_source_test.mjs tests/investigation_policy_engine_test.mjs tests/memoryos_policy_sdk_test.mjs",
     "test:adapters": "node --test tests/ai_runtime_adapter_test.mjs",
     "test:investigation-core": "node --test tests/investigation_core_test.mjs",
     "test:sdk": "node --test tests/memoryos_sdk_test.mjs",
@@ -13,6 +13,7 @@
     "test:policy-phase1": "node --test tests/policy_canonical_test.mjs tests/investigation_policy_contracts_test.mjs tests/investigation_policy_test.mjs",
     "test:policy-phase2": "node --test tests/policy_fact_context_test.mjs tests/regression_policy_fact_source_test.mjs",
     "test:policy-phase3": "node --test tests/investigation_policy_engine_test.mjs",
+    "test:policy-phase4": "node --test tests/memoryos_policy_sdk_test.mjs",
     "test:scalability": "node --test tests/memory_studio_scalability_test.mjs",
     "benchmark": "node --expose-gc benchmarks/memoryos-scalability.mjs"
   }

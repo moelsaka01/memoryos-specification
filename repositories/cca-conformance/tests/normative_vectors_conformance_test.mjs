@@ -505,7 +505,7 @@ test("adapter defaults, resource limits, and descriptor rejection use exact cont
 test("CLI aliases and closed JSON result member sets are exact", async (t) => {
   assert.deepEqual(commandNames, [
     "version", "help", "observe", "trace", "replay", "compare", "regression",
-    "investigate", "verify", "import", "export", "inspect", "session",
+    "investigate", "verify", "import", "export", "inspect", "session", "policy",
   ]);
   assert.deepEqual(parseArguments([]), { command: "help", options: {}, positionals: [] });
   assert.deepEqual(parseArguments(["--help"]), { command: "help", options: {}, positionals: [] });
@@ -541,8 +541,14 @@ test("CLI aliases and closed JSON result member sets are exact", async (t) => {
 
 test("SDK bindings expose the complete projection and common semantic operation families", async () => {
   assert.deepEqual(Object.getOwnPropertyNames(MemoryOS.prototype).sort(), [
-    "constructor", "exportPackage", "importPackage", "investigate", "observe",
-    "openWorkspace", "regression", "restore", "verifyPackage",
+    "capturePolicyFactContext", "captureRegressionPolicyFacts", "constructor",
+    "evaluatePolicy", "evaluatePolicySet", "exportPackage", "importPackage",
+    "inspectPolicyFactContext", "inspectRegressionPolicyFactSource",
+    "inspectRegressionReport", "investigate", "observe", "openWorkspace",
+    "policyContractIdentities", "preparePolicy", "preparePolicySet", "regression",
+    "restore", "verifyEvaluationIdentityArtifact", "verifyEvaluationIdentityForEvaluation",
+    "verifyPackage", "verifyPolicyEvaluationOutcomeArtifact",
+    "verifyPolicyEvaluationOutcomeForEvaluation",
   ]);
   const cpp = await readFile(new URL(
     "../../cca-sdk/include/memoryos/memoryos.hpp",
@@ -558,14 +564,25 @@ test("SDK bindings expose the complete projection and common semantic operation 
   ), "utf8");
   for (const operation of [
     "openWorkspace", "observe", "importPackage", "exportPackage", "verifyPackage",
-    "regression", "investigate", "restore",
+    "regression", "investigate", "restore", "preparePolicy", "preparePolicySet",
+    "inspectPolicyFactContext", "inspectRegressionPolicyFactSource", "inspectRegressionReport",
+    "capturePolicyFactContext", "captureRegressionPolicyFacts", "evaluatePolicy",
+    "evaluatePolicySet", "verifyEvaluationIdentityArtifact",
+    "verifyEvaluationIdentityForEvaluation", "verifyPolicyEvaluationOutcomeArtifact",
+    "verifyPolicyEvaluationOutcomeForEvaluation", "policyContractIdentities",
   ]) {
     assert.match(cpp, new RegExp(`\\b${operation}\\s*\\(`, "u"), operation);
   }
   assert.match(cpp, /const std::string& canonicalJson\(\) const noexcept/u);
   for (const operation of [
     "open_workspace", "observe", "import_package", "export_package", "verify_package",
-    "regression", "investigate", "restore",
+    "regression", "investigate", "restore", "prepare_policy", "prepare_policy_set",
+    "inspect_policy_fact_context", "inspect_regression_policy_fact_source",
+    "inspect_regression_report", "capture_policy_fact_context",
+    "capture_regression_policy_facts", "evaluate_policy", "evaluate_policy_set",
+    "verify_evaluation_identity_artifact", "verify_evaluation_identity_for_evaluation",
+    "verify_policy_evaluation_outcome_artifact",
+    "verify_policy_evaluation_outcome_for_evaluation", "policy_contract_identities",
   ]) {
     assert.match(python, new RegExp(`def ${operation}\\s*\\(`, "u"), operation);
   }

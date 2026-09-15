@@ -4,6 +4,48 @@
 
 These examples use explicit identifiers and files. They never inject controller state, derive a package, or infer a semantic selection. Assume `investigation.mip` contains Trace `trace-observation-b` and Evolution `evolution-observation-a-observation-b`.
 
+## Investigation Policy commands
+
+The exact CLI 1.1 examples for all seven Policy subcommands, PASS/FAIL/CNE
+status handling, raw outcomes, sidecars, inspection, verification, and frozen
+identity reporting are maintained in the [Investigation Policy CLI
+Guide](policy-guide.md). The compact command inventory is:
+
+```sh
+memoryos policy validate --policy policy.json --json
+memoryos policy digest --policy policy.json --canonical-output policy.canonical.json --json
+memoryos policy inspect --outcome outcome.json --json
+memoryos policy evaluate --policy policy.json --package candidate.mip --outcome outcome.json --json
+memoryos policy verify-identity identity.json --mode artifact --expected-evaluation-identity-digest "$IDENTITY_DIGEST" --json
+memoryos policy verify-outcome outcome.json --mode artifact --expected-identity identity.json --expected-outcome-digest "$OUTCOME_DIGEST" --json
+memoryos policy identities --json
+```
+
+The shell variables above are transport placeholders, not Policy environment
+interpolation. The CLI receives their resulting literal values and never
+resolves environment variables inside artifact content or paths.
+
+Completed Policy decisions remain successful evaluations with distinct gate
+statuses. A Policy requiring an absent lifecycle state produces a normative
+FAIL outcome and exit `6`:
+
+```sh
+memoryos policy evaluate --policy require-archived.json \
+  --package candidate.mip --outcome fail.outcome.json --json
+```
+
+A Policy that requires Cognitive Regression facts, when no trusted baseline is
+supplied, produces a normative COULD_NOT_EVALUATE outcome and exit `7`:
+
+```sh
+memoryos policy evaluate --policy require-regression-source.json \
+  --package candidate.mip --outcome cne.outcome.json --json
+```
+
+Both output files are complete canonical artifacts. Automation preserves the
+process status and reads the embedded `decision`; it never infers either
+decision from presentation text.
+
 ## Version and help
 
 ```sh

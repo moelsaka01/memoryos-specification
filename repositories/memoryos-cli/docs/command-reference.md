@@ -2,7 +2,35 @@
 
 ## Purpose
 
-This reference defines the complete MO-1205 command surface. Options appear after the command. Every command is non-interactive.
+This reference defines the released CLI 1.0 command surface plus the additive
+CLI 1.1 MO-1301 namespace. Options appear after the command. Every command is
+non-interactive.
+
+## `memoryos policy`
+
+The namespace contains exactly seven subcommands and no aliases:
+
+```text
+memoryos policy validate (--policy POLICY | --policy-set POLICY_SET) [--json]
+memoryos policy digest (--policy POLICY | --policy-set POLICY_SET) [--canonical-output FILE] [--json]
+memoryos policy inspect (--context CONTEXT | --regression-source SOURCE | --regression-report REPORT | --evaluation-identity IDENTITY | --outcome OUTCOME) [--json]
+memoryos policy evaluate (--policy POLICY | --policy-set POLICY_SET) --package CANDIDATE [--regression-baseline BASELINE] --outcome FILE|- [--identity-output FILE] [--evaluation-identity-digest-output FILE] [--outcome-digest-output FILE] [--json]
+memoryos policy verify-identity IDENTITY --mode artifact --expected-evaluation-identity-digest DIGEST [--json]
+memoryos policy verify-identity IDENTITY --mode evaluation (--policy POLICY | --policy-set POLICY_SET) --package CANDIDATE [--regression-baseline BASELINE] [--json]
+memoryos policy verify-outcome OUTCOME --mode artifact (--expected-identity IDENTITY | --expected-evaluation-identity-digest DIGEST) [--expected-outcome-digest DIGEST] [--json]
+memoryos policy verify-outcome OUTCOME --mode evaluation (--policy POLICY | --policy-set POLICY_SET) --package CANDIDATE [--regression-baseline BASELINE] [--expected-outcome-digest DIGEST] [--json]
+memoryos policy identities [--json]
+```
+
+Every artifact operand is one explicit local path or `-`; at most one input may
+use stdin. Only `--outcome` may use `-` for output. Output paths must be distinct
+from every input and one another. URL lookup, globbing, recursive discovery,
+environment interpolation, and policy-controlled paths are unsupported.
+
+`evaluate` is the only decision-producing subcommand. It accepts only MIP-backed
+authoritative acquisition, with an optional MIP Regression baseline. Detached
+contexts and sources are inspection-only. See [Investigation Policy CLI
+Guide](policy-guide.md) for result shapes, byte transport, and verification.
 
 ## `memoryos version`
 

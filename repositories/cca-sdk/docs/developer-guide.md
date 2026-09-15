@@ -2,7 +2,7 @@
 
 ## Purpose
 
-MO-1204 exposes MemoryOS through a thin SDK facade, MO-1206 adds Core-owned Cognitive Regression, and MO-1207 adds Core-owned evidence navigation. This guide explains how to consume and extend the facade without creating a second investigation, regression, or Explorer engine.
+MO-1204 exposes MemoryOS through a thin SDK facade, MO-1206 adds Core-owned Cognitive Regression, MO-1207 adds Core-owned evidence navigation, and MO-1301 adds the authoritative Investigation Policy Engine. This guide explains how to consume and extend the facade without creating a second investigation, regression, Explorer, or Policy engine.
 
 ## Architecture boundary
 
@@ -13,7 +13,11 @@ MemoryOS Runtime / adapters
         |
 frozen Investigation Core  <--- Trace, Replay, Evolution, Comparison, Regression, Explorer authority
         |
-private JavaScript boundary <--- transport and value conversion only
+atomic Policy fact capture
+        |
+Investigation Policy Engine <--- Policy rules, evidence, aggregation, identity, outcome authority
+        |
+private JavaScript boundary <--- ownership, transport, and value conversion only
         |
 SDK facade                  <--- ownership checks and typed immutable handles
         |
@@ -22,6 +26,8 @@ Studio | Python | C++
 
 The dependency direction is one way. The Core has no dependency on the SDK. The SDK must not:
 
+The diagram shows the MO-1301 Policy path. Existing non-Policy SDK operations continue to expose detached Core results through the private boundary without passing through, or granting authority to, the Policy Engine.
+
 - derive identifiers, Reflection selections, Trace steps, or comparison stages;
 - compute Replay or Evolution state;
 - compare investigation facts or derive regression categories;
@@ -29,6 +35,9 @@ The dependency direction is one way. The Core has no dependency on the SDK. The 
 - compare layouts, renderers, or pixels;
 - generate MIP content for a native observation;
 - reimplement MIP validation or compatibility policy;
+- implement Policy rules, selectors, evidence, aggregation, canonicalization, digests, or outcomes;
+- mint context/source authority from serialized bytes, digests, plugins, or callbacks;
+- expose Policy registry, evaluator, resource-profile, or limit overrides;
 - introduce automatic retry of state-changing calls.
 
 ## Repository map
@@ -299,6 +308,7 @@ JavaScript facade and Studio/Core parity:
 
 ```sh
 npm --prefix repositories/cca-studio run test:sdk
+npm --prefix repositories/cca-studio run test:policy-phase4
 ```
 
 Python binding, ownership, lifecycle, package, concurrency, and examples:
@@ -335,3 +345,33 @@ A new consumer must adapt to this boundary rather than import cognitive engines 
 8. Do not add public semantics to the private transport.
 
 See the [API reference](api-reference.md) for exact language members and the [conformance report](conformance-report.md) for the MO-1204 evidence map.
+
+## SDK 1.1 Policy parity matrix
+
+| Logical operation | JavaScript | Python | C++ |
+| --- | --- | --- | --- |
+| Prepare Policy / Set | `preparePolicy` / `preparePolicySet` | `prepare_policy` / `prepare_policy_set` | `preparePolicy` / `preparePolicySet` |
+| Inspect context / Regression source / report | `inspectPolicyFactContext` and peers | `inspect_policy_fact_context` and peers | `inspectPolicyFactContext` and peers |
+| Trusted context capture | `capturePolicyFactContext` | `capture_policy_fact_context` | `capturePolicyFactContext` |
+| Atomic trusted Regression pair | `captureRegressionPolicyFacts` | `capture_regression_policy_facts` | `captureRegressionPolicyFacts` |
+| Evaluate Policy / Set | `evaluatePolicy` / `evaluatePolicySet` | `evaluate_policy` / `evaluate_policy_set` | `evaluatePolicy` / `evaluatePolicySet` |
+| Verify Identity artifact / evaluation | `verifyEvaluationIdentityArtifact` / `verifyEvaluationIdentityForEvaluation` | matching snake-case methods | matching camel-case methods |
+| Verify outcome artifact / evaluation | `verifyPolicyEvaluationOutcomeArtifact` / `verifyPolicyEvaluationOutcomeForEvaluation` | matching snake-case methods | matching camel-case methods |
+| Frozen contract identities | `policyContractIdentities` | `policy_contract_identities` | `policyContractIdentities` |
+
+The JavaScript integration is the only Policy semantic implementation. The
+private host transports canonical bytes as RFC 4648 Base64 and retains opaque
+authority tokens. Python and C++ validate bridge shape, preserve stable machine
+codes, and expose immutable language values; they do not calculate Policy
+digests, fact identifiers, rule results, Evaluation Identity, or outcomes.
+
+Prepared Policies/Sets are detached validated artifacts and can be passed to a
+different SDK client, where the receiving evaluator revalidates their exact
+canonical bytes. PolicyFactContext and Regression-source capabilities cannot
+cross client ownership boundaries. Their exact bytes remain portable only for
+inspection, which never recreates authority.
+
+See [`examples/python/policy.py`](../examples/python/policy.py) and
+[`examples/cpp_policy.cpp`](../examples/cpp_policy.cpp) for complete preparation,
+digest, capture, detached-inspection, evaluation, verification, and identity
+introspection flows. The Python example also accepts `--policy-set`.
