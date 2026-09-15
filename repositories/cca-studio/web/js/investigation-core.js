@@ -1420,3 +1420,15 @@ export class InvestigationCore {
     return this.#commit(identifier, { kind: "RETURNED_TO_WORLD", payload: {} }, "returnToWorld");
   }
 }
+
+// Internal policy-boundary bridge. Its lexical reference to the released load
+// implementation is captured while this module is evaluated, before callers
+// can replace public prototype properties. It intentionally returns only the
+// same immutable Investigation already exposed by load(); authority is minted
+// later by the policy adapter after complete projection and validation.
+const policyCaptureLoad = InvestigationCore.prototype.load;
+const policyReflectApply = Reflect.apply;
+
+export function captureInvestigationCoreStateForPolicy(core, identifier) {
+  return policyReflectApply(policyCaptureLoad, core, [identifier]);
+}
