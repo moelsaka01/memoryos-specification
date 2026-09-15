@@ -22,6 +22,64 @@ const SHA256_ROUND = Object.freeze([
   0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
   0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
 ]);
+const IntrinsicUint8Array = Uint8Array;
+const IntrinsicUint32Array = Uint32Array;
+const IntrinsicDataView = DataView;
+const IntrinsicSet = Set;
+const IntrinsicString = String;
+const intrinsicReflectApply = Reflect.apply;
+const intrinsicReflectOwnKeys = Reflect.ownKeys;
+const intrinsicObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+const intrinsicObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
+const intrinsicObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
+const intrinsicObjectGetPrototypeOf = Object.getPrototypeOf;
+const intrinsicObjectIs = Object.is;
+const intrinsicObjectPrototype = Object.prototype;
+const intrinsicArrayIsArray = Array.isArray;
+const intrinsicArrayPrototype = Array.prototype;
+const intrinsicArraySort = Array.prototype.sort;
+const intrinsicSetAdd = Set.prototype.add;
+const intrinsicSetDelete = Set.prototype.delete;
+const intrinsicSetHas = Set.prototype.has;
+const intrinsicJsonStringify = JSON.stringify;
+const intrinsicArrayBufferIsView = ArrayBuffer.isView;
+const intrinsicArrayBufferByteLengthGetter = intrinsicObjectGetOwnPropertyDescriptor(
+  ArrayBuffer.prototype,
+  "byteLength",
+).get;
+const intrinsicSharedArrayBufferByteLengthGetter = typeof SharedArrayBuffer === "function"
+  ? intrinsicObjectGetOwnPropertyDescriptor(SharedArrayBuffer.prototype, "byteLength").get
+  : undefined;
+const intrinsicTypedArrayPrototype = intrinsicObjectGetPrototypeOf(Uint8Array.prototype);
+const intrinsicTypedArrayBufferGetter = intrinsicObjectGetOwnPropertyDescriptor(
+  intrinsicTypedArrayPrototype,
+  "buffer",
+).get;
+const intrinsicTypedArrayByteLengthGetter = intrinsicObjectGetOwnPropertyDescriptor(
+  intrinsicTypedArrayPrototype,
+  "byteLength",
+).get;
+const intrinsicTypedArrayByteOffsetGetter = intrinsicObjectGetOwnPropertyDescriptor(
+  intrinsicTypedArrayPrototype,
+  "byteOffset",
+).get;
+const intrinsicDataViewBufferGetter = intrinsicObjectGetOwnPropertyDescriptor(DataView.prototype, "buffer").get;
+const intrinsicDataViewByteLengthGetter = intrinsicObjectGetOwnPropertyDescriptor(DataView.prototype, "byteLength").get;
+const intrinsicDataViewByteOffsetGetter = intrinsicObjectGetOwnPropertyDescriptor(DataView.prototype, "byteOffset").get;
+const intrinsicUint8ArraySet = Uint8Array.prototype.set;
+const intrinsicDataViewGetUint32 = DataView.prototype.getUint32;
+const intrinsicDataViewSetUint32 = DataView.prototype.setUint32;
+const intrinsicStringCharCodeAt = String.prototype.charCodeAt;
+const intrinsicStringPadStart = String.prototype.padStart;
+const intrinsicNumberToString = Number.prototype.toString;
+const intrinsicTextEncoderEncode = TextEncoder.prototype.encode;
+const intrinsicMathCeil = Math.ceil;
+const intrinsicNumberIsFinite = Number.isFinite;
+const intrinsicNumberIsInteger = Number.isInteger;
+const intrinsicNumberIsSafeInteger = Number.isSafeInteger;
+const IntrinsicBigInt = BigInt;
+const IntrinsicNumber = Number;
+const textEncoder = new TextEncoder();
 
 export class MipCanonicalError extends Error {
   constructor(code, message, { path = "$", offset = null, text = null, cause = undefined } = {}) {
@@ -47,9 +105,9 @@ function canonicalError(code, message, path = "$") {
 
 function requireValidUnicode(value, path = "$") {
   for (let index = 0; index < value.length; index += 1) {
-    const codeUnit = value.charCodeAt(index);
+    const codeUnit = intrinsicReflectApply(intrinsicStringCharCodeAt, value, [index]);
     if (codeUnit >= 0xd800 && codeUnit <= 0xdbff) {
-      const next = value.charCodeAt(index + 1);
+      const next = intrinsicReflectApply(intrinsicStringCharCodeAt, value, [index + 1]);
       if (!(next >= 0xdc00 && next <= 0xdfff)) {
         throw canonicalError("INVALID_UNICODE", "A high surrogate must be followed by a low surrogate.", path);
       }
@@ -66,7 +124,7 @@ export function utf8Encode(text) {
     throw new TypeError("UTF-8 input must be a string.");
   }
   requireValidUnicode(text);
-  return new TextEncoder().encode(text);
+  return intrinsicReflectApply(intrinsicTextEncoderEncode, textEncoder, [text]);
 }
 
 export function decodeUtf8(bytes) {
@@ -85,7 +143,7 @@ export function decodeUtf8(bytes) {
 }
 
 function childPath(path, member) {
-  return `${path}[${JSON.stringify(member)}]`;
+  return `${path}[${intrinsicReflectApply(intrinsicJsonStringify, undefined, [member])}]`;
 }
 
 class StrictJsonParser {
@@ -345,13 +403,13 @@ export function parseStrictJson(text, limits = {}) {
 }
 
 function assertCanonicalNumber(value, path) {
-  if (!Number.isFinite(value)) {
+  if (!intrinsicNumberIsFinite(value)) {
     throw canonicalError("INVALID_NUMBER", "MIP numbers must be finite.", path);
   }
-  if (Object.is(value, -0)) {
+  if (intrinsicObjectIs(value, -0)) {
     throw canonicalError("INVALID_NUMBER", "Negative zero is not a valid MIP number.", path);
   }
-  if (Number.isInteger(value) && !Number.isSafeInteger(value)) {
+  if (intrinsicNumberIsInteger(value) && !intrinsicNumberIsSafeInteger(value)) {
     throw canonicalError("INVALID_NUMBER", "MIP integer numbers must be within the interoperable safe-integer range.", path);
   }
 }
@@ -366,70 +424,104 @@ function serializeCanonical(value, path, ancestors) {
   if (value === null) return "null";
   if (typeof value === "string") {
     requireValidUnicode(value, path);
-    return JSON.stringify(value);
+    return intrinsicReflectApply(intrinsicJsonStringify, undefined, [value]);
   }
   if (typeof value === "number") {
     assertCanonicalNumber(value, path);
-    return JSON.stringify(value);
+    return intrinsicReflectApply(intrinsicJsonStringify, undefined, [value]);
   }
   if (typeof value === "boolean") return value ? "true" : "false";
   if (typeof value !== "object") {
     throw canonicalError("INVALID_JSON_VALUE", `Unsupported JSON value type ${typeof value}.`, path);
   }
-  if (ancestors.has(value)) {
+  if (intrinsicReflectApply(intrinsicSetHas, ancestors, [value])) {
     throw canonicalError("CYCLIC_VALUE", "Canonical JSON values must be acyclic.", path);
   }
-  ancestors.add(value);
+  intrinsicReflectApply(intrinsicSetAdd, ancestors, [value]);
   try {
-    if (Array.isArray(value)) {
-      if (Object.getPrototypeOf(value) !== Array.prototype) {
+    if (intrinsicArrayIsArray(value)) {
+      if (intrinsicObjectGetPrototypeOf(value) !== intrinsicArrayPrototype) {
         throw canonicalError("INVALID_JSON_VALUE", "Array subclasses are not canonical JSON values.", path);
       }
-      const ownKeys = Reflect.ownKeys(value);
-      if (ownKeys.some((key) => typeof key === "symbol") || ownKeys.length !== value.length + 1) {
+      const ownKeys = intrinsicReflectOwnKeys(value);
+      let hasSymbol = false;
+      for (let index = 0; index < ownKeys.length; index += 1) {
+        if (typeof ownKeys[index] === "symbol") hasSymbol = true;
+      }
+      if (hasSymbol || ownKeys.length !== value.length + 1) {
         throw canonicalError("INVALID_JSON_VALUE", "Canonical arrays must be dense and have no custom properties.", path);
       }
-      const items = [];
+      let result = "[";
       for (let index = 0; index < value.length; index += 1) {
         const itemPath = `${path}[${index}]`;
-        const descriptor = Object.getOwnPropertyDescriptor(value, String(index));
+        const descriptor = intrinsicObjectGetOwnPropertyDescriptor(value, IntrinsicString(index));
         assertDataDescriptor(descriptor, itemPath);
-        items.push(serializeCanonical(descriptor.value, itemPath, ancestors));
+        if (index !== 0) result += ",";
+        result += serializeCanonical(descriptor.value, itemPath, ancestors);
       }
-      return `[${items.join(",")}]`;
+      return `${result}]`;
     }
 
-    const prototype = Object.getPrototypeOf(value);
-    if (prototype !== Object.prototype && prototype !== null) {
+    const prototype = intrinsicObjectGetPrototypeOf(value);
+    if (prototype !== intrinsicObjectPrototype && prototype !== null) {
       throw canonicalError("INVALID_JSON_VALUE", "Canonical JSON objects must have an Object or null prototype.", path);
     }
-    if (Object.getOwnPropertySymbols(value).length !== 0) {
+    if (intrinsicObjectGetOwnPropertySymbols(value).length !== 0) {
       throw canonicalError("INVALID_JSON_VALUE", "Canonical JSON objects cannot contain symbol properties.", path);
     }
-    const names = Object.getOwnPropertyNames(value);
-    names.forEach((name) => requireValidUnicode(name, childPath(path, name)));
-    names.sort();
-    const members = names.map((name) => {
+    const names = intrinsicObjectGetOwnPropertyNames(value);
+    for (let index = 0; index < names.length; index += 1) {
+      requireValidUnicode(names[index], childPath(path, names[index]));
+    }
+    intrinsicReflectApply(intrinsicArraySort, names, []);
+    let result = "{";
+    for (let index = 0; index < names.length; index += 1) {
+      const name = names[index];
       const memberPath = childPath(path, name);
-      const descriptor = Object.getOwnPropertyDescriptor(value, name);
+      const descriptor = intrinsicObjectGetOwnPropertyDescriptor(value, name);
       assertDataDescriptor(descriptor, memberPath);
-      return `${JSON.stringify(name)}:${serializeCanonical(descriptor.value, memberPath, ancestors)}`;
-    });
-    return `{${members.join(",")}}`;
+      if (index !== 0) result += ",";
+      result += `${intrinsicReflectApply(intrinsicJsonStringify, undefined, [name])}:`;
+      result += serializeCanonical(descriptor.value, memberPath, ancestors);
+    }
+    return `${result}}`;
   } finally {
-    ancestors.delete(value);
+    intrinsicReflectApply(intrinsicSetDelete, ancestors, [value]);
   }
 }
 
 export function canonicalize(value) {
-  return serializeCanonical(value, "$", new Set());
+  return serializeCanonical(value, "$", new IntrinsicSet());
 }
 
 function toUint8Array(value, label = "Byte input") {
-  if (value instanceof Uint8Array) return value;
-  if (value instanceof ArrayBuffer) return new Uint8Array(value);
-  if (ArrayBuffer.isView(value)) {
-    return new Uint8Array(value.buffer, value.byteOffset, value.byteLength);
+  if (intrinsicReflectApply(intrinsicArrayBufferIsView, ArrayBuffer, [value])) {
+    let storage;
+    let byteOffset;
+    let byteLength;
+    try {
+      storage = intrinsicReflectApply(intrinsicTypedArrayBufferGetter, value, []);
+      byteOffset = intrinsicReflectApply(intrinsicTypedArrayByteOffsetGetter, value, []);
+      byteLength = intrinsicReflectApply(intrinsicTypedArrayByteLengthGetter, value, []);
+    } catch {
+      storage = intrinsicReflectApply(intrinsicDataViewBufferGetter, value, []);
+      byteOffset = intrinsicReflectApply(intrinsicDataViewByteOffsetGetter, value, []);
+      byteLength = intrinsicReflectApply(intrinsicDataViewByteLengthGetter, value, []);
+    }
+    return new IntrinsicUint8Array(storage, byteOffset, byteLength);
+  }
+  try {
+    intrinsicReflectApply(intrinsicArrayBufferByteLengthGetter, value, []);
+    return new IntrinsicUint8Array(value);
+  } catch {
+    if (intrinsicSharedArrayBufferByteLengthGetter !== undefined) {
+      try {
+        intrinsicReflectApply(intrinsicSharedArrayBufferByteLengthGetter, value, []);
+        return new IntrinsicUint8Array(value);
+      } catch {
+        // Continue to the stable input classification below.
+      }
+    }
   }
   throw new TypeError(`${label} must be a string, ArrayBuffer, or typed-array view.`);
 }
@@ -440,21 +532,32 @@ function rotateRight(value, count) {
 
 export function sha256Hex(bytesOrString) {
   const input = typeof bytesOrString === "string" ? utf8Encode(bytesOrString) : toUint8Array(bytesOrString);
-  const paddedLength = Math.ceil((input.length + 9) / 64) * 64;
-  if (!Number.isSafeInteger(paddedLength)) throw new RangeError("SHA-256 input is too large.");
-  const padded = new Uint8Array(paddedLength);
-  padded.set(input);
-  padded[input.length] = 0x80;
-  const bitLength = BigInt(input.length) * 8n;
-  const view = new DataView(padded.buffer);
-  view.setUint32(paddedLength - 8, Number((bitLength >> 32n) & 0xffffffffn), false);
-  view.setUint32(paddedLength - 4, Number(bitLength & 0xffffffffn), false);
+  const inputLength = intrinsicReflectApply(intrinsicTypedArrayByteLengthGetter, input, []);
+  const paddedLength = intrinsicMathCeil((inputLength + 9) / 64) * 64;
+  if (!intrinsicNumberIsSafeInteger(paddedLength)) throw new RangeError("SHA-256 input is too large.");
+  const padded = new IntrinsicUint8Array(paddedLength);
+  intrinsicReflectApply(intrinsicUint8ArraySet, padded, [input, 0]);
+  padded[inputLength] = 0x80;
+  const bitLength = IntrinsicBigInt(inputLength) * 8n;
+  const paddedBuffer = intrinsicReflectApply(intrinsicTypedArrayBufferGetter, padded, []);
+  const view = new IntrinsicDataView(paddedBuffer);
+  intrinsicReflectApply(intrinsicDataViewSetUint32, view, [
+    paddedLength - 8,
+    IntrinsicNumber((bitLength >> 32n) & 0xffffffffn),
+    false,
+  ]);
+  intrinsicReflectApply(intrinsicDataViewSetUint32, view, [
+    paddedLength - 4,
+    IntrinsicNumber(bitLength & 0xffffffffn),
+    false,
+  ]);
 
-  const hash = SHA256_INITIAL.slice();
-  const words = new Uint32Array(64);
-  for (let offset = 0; offset < padded.length; offset += 64) {
+  const hash = [];
+  for (let index = 0; index < SHA256_INITIAL.length; index += 1) hash[index] = SHA256_INITIAL[index];
+  const words = new IntrinsicUint32Array(64);
+  for (let offset = 0; offset < paddedLength; offset += 64) {
     for (let index = 0; index < 16; index += 1) {
-      words[index] = view.getUint32(offset + (index * 4), false);
+      words[index] = intrinsicReflectApply(intrinsicDataViewGetUint32, view, [offset + (index * 4), false]);
     }
     for (let index = 16; index < 64; index += 1) {
       const s0 = rotateRight(words[index - 15], 7)
@@ -466,7 +569,14 @@ export function sha256Hex(bytesOrString) {
       words[index] = (words[index - 16] + s0 + words[index - 7] + s1) >>> 0;
     }
 
-    let [a, b, c, d, e, f, g, h] = hash;
+    let a = hash[0];
+    let b = hash[1];
+    let c = hash[2];
+    let d = hash[3];
+    let e = hash[4];
+    let f = hash[5];
+    let g = hash[6];
+    let h = hash[7];
     for (let index = 0; index < 64; index += 1) {
       const sigma1 = rotateRight(e, 6) ^ rotateRight(e, 11) ^ rotateRight(e, 25);
       const choice = (e & f) ^ (~e & g);
@@ -492,18 +602,27 @@ export function sha256Hex(bytesOrString) {
     hash[6] = (hash[6] + g) >>> 0;
     hash[7] = (hash[7] + h) >>> 0;
   }
-  return hash.map((word) => word.toString(16).padStart(8, "0")).join("");
+  let result = "";
+  for (let index = 0; index < hash.length; index += 1) {
+    const hex = intrinsicReflectApply(intrinsicNumberToString, hash[index], [16]);
+    result += intrinsicReflectApply(intrinsicStringPadStart, hex, [8, "0"]);
+  }
+  return result;
 }
 
 function concatenate(parts) {
-  const length = parts.reduce((sum, part) => sum + part.length, 0);
-  if (!Number.isSafeInteger(length)) throw new RangeError("Digest input is too large.");
-  const result = new Uint8Array(length);
+  let length = 0;
+  for (let index = 0; index < parts.length; index += 1) {
+    length += intrinsicReflectApply(intrinsicTypedArrayByteLengthGetter, parts[index], []);
+  }
+  if (!intrinsicNumberIsSafeInteger(length)) throw new RangeError("Digest input is too large.");
+  const result = new IntrinsicUint8Array(length);
   let offset = 0;
-  parts.forEach((part) => {
-    result.set(part, offset);
-    offset += part.length;
-  });
+  for (let index = 0; index < parts.length; index += 1) {
+    const part = parts[index];
+    intrinsicReflectApply(intrinsicUint8ArraySet, result, [part, offset]);
+    offset += intrinsicReflectApply(intrinsicTypedArrayByteLengthGetter, part, []);
+  }
   return result;
 }
 
@@ -512,10 +631,13 @@ export function mipDigest(domain, ...parts) {
     throw new TypeError("A non-empty MIP digest domain is required.");
   }
   const encoded = [utf8Encode("MIP-1"), NUL, utf8Encode(domain)];
-  parts.forEach((part) => {
-    encoded.push(NUL);
-    encoded.push(typeof part === "string" ? utf8Encode(part) : toUint8Array(part, "Digest part"));
-  });
+  for (let index = 0; index < parts.length; index += 1) {
+    encoded[encoded.length] = NUL;
+    const part = parts[index];
+    encoded[encoded.length] = typeof part === "string"
+      ? utf8Encode(part)
+      : toUint8Array(part, "Digest part");
+  }
   return `sha256:${sha256Hex(concatenate(encoded))}`;
 }
 

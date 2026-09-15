@@ -30,22 +30,89 @@ export const INVESTIGATION_POLICY_DIGEST_DOMAINS = Object.freeze({
 const DIGEST_PATTERN = /^sha256:[0-9a-f]{64}$/u;
 const LIMITS = MEMORYOS_POLICY_RESOURCE_PROFILE.limits;
 const preparedBytes = new WeakMap();
+const PREPARED_POLICY_ARTIFACT_TOKEN = Symbol("MemoryOS prepared Policy artifact");
+const intrinsicReflectApply = Reflect.apply;
+const intrinsicObjectDefineProperties = Object.defineProperties;
+const intrinsicObjectFreeze = Object.freeze;
+const intrinsicObjectCreate = Object.create;
+const intrinsicObjectEntries = Object.entries;
+const intrinsicObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+const intrinsicObjectHasOwn = Object.hasOwn;
+const intrinsicObjectKeys = Object.keys;
+const intrinsicObjectIs = Object.is;
+const intrinsicObjectValues = Object.values;
+const intrinsicArrayIsArray = Array.isArray;
+const intrinsicNumberIsSafeInteger = Number.isSafeInteger;
+const intrinsicRegExpTest = RegExp.prototype.test;
+const IntrinsicSet = Set;
+const intrinsicSetAdd = Set.prototype.add;
+const intrinsicSetHas = Set.prototype.has;
+const weakMapGet = WeakMap.prototype.get;
+const weakMapHas = WeakMap.prototype.has;
+const weakMapSet = WeakMap.prototype.set;
+const IntrinsicUint8Array = Uint8Array;
+const intrinsicTypedArrayPrototype = Object.getPrototypeOf(Uint8Array.prototype);
+const intrinsicTypedArrayByteLengthGetter = intrinsicObjectGetOwnPropertyDescriptor(
+  intrinsicTypedArrayPrototype,
+  "byteLength",
+).get;
+const intrinsicUint8ArraySet = Uint8Array.prototype.set;
 
-function deepFreeze(value, seen = new Set()) {
-  if (value === null || typeof value !== "object" || seen.has(value)) return value;
-  seen.add(value);
-  for (const child of Object.values(value)) deepFreeze(child, seen);
-  return Object.freeze(value);
+function privateGet(map, key) {
+  return intrinsicReflectApply(weakMapGet, map, [key]);
+}
+
+function privateHas(map, key) {
+  return intrinsicReflectApply(weakMapHas, map, [key]);
+}
+
+function privateSet(map, key, value) {
+  intrinsicReflectApply(weakMapSet, map, [key, value]);
+}
+
+function copyBytes(value) {
+  const byteLength = intrinsicReflectApply(intrinsicTypedArrayByteLengthGetter, value, []);
+  const result = new IntrinsicUint8Array(byteLength);
+  intrinsicReflectApply(intrinsicUint8ArraySet, result, [value, 0]);
+  return result;
+}
+
+function byteLength(value) {
+  return intrinsicReflectApply(intrinsicTypedArrayByteLengthGetter, value, []);
+}
+
+function deepFreeze(value, seen = new IntrinsicSet()) {
+  if (value === null || typeof value !== "object"
+      || intrinsicReflectApply(intrinsicSetHas, seen, [value])) return value;
+  intrinsicReflectApply(intrinsicSetAdd, seen, [value]);
+  const children = intrinsicObjectValues(value);
+  for (let index = 0; index < children.length; index += 1) deepFreeze(children[index], seen);
+  return intrinsicObjectFreeze(value);
 }
 
 function cloneJson(value) {
-  if (Array.isArray(value)) return value.map(cloneJson);
+  if (intrinsicArrayIsArray(value)) {
+    const result = [];
+    for (let index = 0; index < value.length; index += 1) result[index] = cloneJson(value[index]);
+    return result;
+  }
   if (value !== null && typeof value === "object") {
-    const result = Object.create(null);
-    for (const [name, child] of Object.entries(value)) result[name] = cloneJson(child);
+    const result = intrinsicObjectCreate(null);
+    const entries = intrinsicObjectEntries(value);
+    for (let index = 0; index < entries.length; index += 1) {
+      const entry = entries[index];
+      result[entry[0]] = cloneJson(entry[1]);
+    }
     return result;
   }
   return value;
+}
+
+function arrayIncludes(values, expected) {
+  for (let index = 0; index < values.length; index += 1) {
+    if (values[index] === expected) return true;
+  }
+  return false;
 }
 
 function fail(code, message, artifactKind, details = {}) {
@@ -76,15 +143,21 @@ function enforceLimit(limitIdentifier, observed, artifactKind, enforcementPhase)
 }
 
 function isObject(value) {
-  return value !== null && typeof value === "object" && !Array.isArray(value);
+  return value !== null && typeof value === "object" && !intrinsicArrayIsArray(value);
 }
 
 function assertClosedObject(value, allowed, required, code, artifactKind, label) {
   if (!isObject(value)) fail(code, `${label} must be an object.`, artifactKind);
-  const actual = Object.keys(value);
-  if (actual.some((name) => !allowed.includes(name))
-      || required.some((name) => !Object.hasOwn(value, name))) {
-    fail(code, `${label} does not have the frozen closed shape.`, artifactKind);
+  const actual = intrinsicObjectKeys(value);
+  for (let index = 0; index < actual.length; index += 1) {
+    if (!arrayIncludes(allowed, actual[index])) {
+      fail(code, `${label} does not have the frozen closed shape.`, artifactKind);
+    }
+  }
+  for (let index = 0; index < required.length; index += 1) {
+    if (!intrinsicObjectHasOwn(value, required[index])) {
+      fail(code, `${label} does not have the frozen closed shape.`, artifactKind);
+    }
   }
 }
 
@@ -123,9 +196,9 @@ function validateParameters(parameters, registration, artifactKind) {
       artifactKind,
       "rule.parameters",
     );
-    if (!contract.artifactClasses.includes(parameters.artifactClass)
-        || !Number.isSafeInteger(parameters.minimumCount)
-        || Object.is(parameters.minimumCount, -0)
+    if (!arrayIncludes(contract.artifactClasses, parameters.artifactClass)
+        || !intrinsicNumberIsSafeInteger(parameters.minimumCount)
+        || intrinsicObjectIs(parameters.minimumCount, -0)
         || parameters.minimumCount < contract.minimum
         || parameters.minimumCount > contract.maximum) {
       fail("POLICY_SCHEMA_INVALID", "Artifact-cardinality parameters are invalid.", artifactKind);
@@ -177,7 +250,7 @@ function validateRuleStructure(rule, artifactKind) {
 }
 
 function validateRegisteredRule(rule, artifactKind) {
-  if (!Object.hasOwn(REGISTERED_POLICY_RULES, rule.type)) {
+  if (!intrinsicObjectHasOwn(REGISTERED_POLICY_RULES, rule.type)) {
     fail("RULE_TYPE_UNSUPPORTED", `Unsupported rule type ${rule.type}.`, artifactKind);
   }
   const registration = REGISTERED_POLICY_RULES[rule.type];
@@ -208,83 +281,146 @@ function validatePolicySchema(policy, artifactKind = INVESTIGATION_POLICY_KIND) 
   if (typeof policy.policyVersion !== "string" || !isStableSemVer(policy.policyVersion)) {
     fail("POLICY_SCHEMA_INVALID", "policyVersion must use stable SemVer.", artifactKind);
   }
-  if (Object.hasOwn(policy, "metadata")) validateMetadata(policy.metadata, artifactKind);
-  if (!Array.isArray(policy.rules) || policy.rules.length === 0) {
+  if (intrinsicObjectHasOwn(policy, "metadata")) validateMetadata(policy.metadata, artifactKind);
+  if (!intrinsicArrayIsArray(policy.rules) || policy.rules.length === 0) {
     fail("POLICY_SCHEMA_INVALID", "Policy rules must be a non-empty sequence.", artifactKind);
   }
-  for (const rule of policy.rules) {
-    validateRuleStructure(rule, artifactKind);
+  for (let index = 0; index < policy.rules.length; index += 1) {
+    validateRuleStructure(policy.rules[index], artifactKind);
   }
-  for (const rule of policy.rules) {
-    validateRegisteredRule(rule, artifactKind);
+  for (let index = 0; index < policy.rules.length; index += 1) {
+    validateRegisteredRule(policy.rules[index], artifactKind);
   }
-  const ruleIdentifiers = new Set();
-  for (const rule of policy.rules) {
-    if (ruleIdentifiers.has(rule.identifier)) {
+  const ruleIdentifiers = new IntrinsicSet();
+  for (let index = 0; index < policy.rules.length; index += 1) {
+    const rule = policy.rules[index];
+    if (intrinsicReflectApply(intrinsicSetHas, ruleIdentifiers, [rule.identifier])) {
       fail("POLICY_SCHEMA_INVALID", "Rule identifiers must be unique within a Policy.", artifactKind);
     }
-    ruleIdentifiers.add(rule.identifier);
+    intrinsicReflectApply(intrinsicSetAdd, ruleIdentifiers, [rule.identifier]);
   }
 }
 
 function enforcePolicyLocalLimits(policy, artifactKind) {
-  enforceLimit("policy.identifier-utf8-bytes", utf8Encode(policy.identifier).length, artifactKind, "E");
-  enforceLimit("policy.authored-version-utf8-bytes", utf8Encode(policy.policyVersion).length, artifactKind, "E");
+  enforceLimit("policy.identifier-utf8-bytes", byteLength(utf8Encode(policy.identifier)), artifactKind, "E");
+  enforceLimit("policy.authored-version-utf8-bytes", byteLength(utf8Encode(policy.policyVersion)), artifactKind, "E");
   enforceLimit(
     "policy.description-utf8-bytes",
-    Object.hasOwn(policy, "metadata") ? utf8Encode(policy.metadata.description).length : 0,
+    intrinsicObjectHasOwn(policy, "metadata")
+      ? byteLength(utf8Encode(policy.metadata.description)) : 0,
     artifactKind,
     "E",
   );
-  for (const rule of policy.rules) {
-    enforceLimit("policy.rule-identifier-utf8-bytes", utf8Encode(rule.identifier).length, artifactKind, "E");
+  for (let index = 0; index < policy.rules.length; index += 1) {
+    enforceLimit(
+      "policy.rule-identifier-utf8-bytes",
+      byteLength(utf8Encode(policy.rules[index].identifier)),
+      artifactKind,
+      "E",
+    );
   }
   enforceLimit("policy.rule-count", policy.rules.length, artifactKind, "E");
 }
 
 export function policySemanticProjection(policy) {
+  const rules = [];
+  for (let index = 0; index < policy.rules.length; index += 1) {
+    const rule = policy.rules[index];
+    rules[index] = {
+      identifier: rule.identifier,
+      type: rule.type,
+      version: rule.version,
+      parameters: cloneJson(rule.parameters),
+    };
+  }
   return {
     kind: policy.kind,
     version: policy.version,
     identifier: policy.identifier,
     policyVersion: policy.policyVersion,
-    rules: policy.rules.map((rule) => ({
-      identifier: rule.identifier,
-      type: rule.type,
-      version: rule.version,
-      parameters: cloneJson(rule.parameters),
-    })),
+    rules,
   };
 }
 
 class PreparedPolicyArtifact {
-  constructor({ artifact, canonicalBytes, semanticBytes, semanticProjection, documentDigest, semanticDigest, policies = [] }) {
-    this.kind = artifact.kind;
-    this.version = artifact.version;
-    this.identifier = artifact.identifier;
-    this.documentDigest = documentDigest;
-    this.semanticDigest = semanticDigest;
-    this.artifact = deepFreeze(artifact);
-    this.semanticProjection = deepFreeze(semanticProjection);
-    preparedBytes.set(this, {
-      canonicalBytes: canonicalBytes.slice(),
-      policies: Object.freeze([...policies]),
-      semanticBytes: semanticBytes.slice(),
+  constructor(token, record) {
+    if (token !== PREPARED_POLICY_ARTIFACT_TOKEN) {
+      throw new TypeError("Prepared Policy artifact capabilities cannot be constructed by callers.");
+    }
+    const {
+      artifact,
+      canonicalBytes,
+      semanticBytes,
+      semanticProjection,
+      documentDigest,
+      semanticDigest,
+      policies = [],
+    } = record;
+    const retained = intrinsicObjectFreeze({
+      artifact: deepFreeze(artifact),
+      canonicalBytes: copyBytes(canonicalBytes),
+      documentDigest,
+      policies: intrinsicObjectFreeze(copyPolicyCapabilities(policies)),
+      semanticBytes: copyBytes(semanticBytes),
+      semanticDigest,
+      semanticProjection: deepFreeze(semanticProjection),
     });
-    Object.freeze(this);
+    privateSet(preparedBytes, this, retained);
+    intrinsicObjectDefineProperties(this, {
+      kind: { enumerable: true, value: retained.artifact.kind },
+      version: { enumerable: true, value: retained.artifact.version },
+      identifier: { enumerable: true, value: retained.artifact.identifier },
+      documentDigest: { enumerable: true, value: retained.documentDigest },
+      semanticDigest: { enumerable: true, value: retained.semanticDigest },
+      artifact: { enumerable: true, value: retained.artifact },
+      semanticProjection: { enumerable: true, value: retained.semanticProjection },
+    });
+    intrinsicObjectFreeze(this);
   }
 
   canonicalBytes() {
-    return preparedBytes.get(this).canonicalBytes.slice();
+    return copyBytes(privateGet(preparedBytes, this).canonicalBytes);
   }
 
   semanticBytes() {
-    return preparedBytes.get(this).semanticBytes.slice();
+    return copyBytes(privateGet(preparedBytes, this).semanticBytes);
   }
 
   preparedPolicies() {
-    return [...preparedBytes.get(this).policies];
+    return copyPolicyCapabilities(privateGet(preparedBytes, this).policies);
   }
+}
+intrinsicObjectFreeze(PreparedPolicyArtifact.prototype);
+
+export function isPreparedInvestigationPolicyArtifact(value) {
+  return privateHas(preparedBytes, value);
+}
+
+export function assertPreparedInvestigationPolicyArtifact(value) {
+  if (!privateHas(preparedBytes, value)) {
+    throw new TypeError("A trusted prepared Policy or Policy Set capability is required.");
+  }
+  return true;
+}
+
+function copyPolicyCapabilities(policies) {
+  const result = [];
+  for (let index = 0; index < policies.length; index += 1) result[index] = policies[index];
+  return result;
+}
+
+export function preparedInvestigationPolicyArtifactEvaluationView(value) {
+  assertPreparedInvestigationPolicyArtifact(value);
+  const retained = privateGet(preparedBytes, value);
+  return intrinsicObjectFreeze({
+    artifact: retained.artifact,
+    canonicalBytes: copyBytes(retained.canonicalBytes),
+    documentDigest: retained.documentDigest,
+    policies: intrinsicObjectFreeze(copyPolicyCapabilities(retained.policies)),
+    semanticBytes: copyBytes(retained.semanticBytes),
+    semanticDigest: retained.semanticDigest,
+    semanticProjection: retained.semanticProjection,
+  });
 }
 
 function finishPolicyPreparation(policy, artifactKind, enforceLocalLimits = true) {
@@ -293,7 +429,7 @@ function finishPolicyPreparation(policy, artifactKind, enforceLocalLimits = true
   enforceLimit("policy.canonical-document-bytes", canonicalBytes.length, artifactKind, "F");
   const semanticProjection = policySemanticProjection(policy);
   const semanticBytes = canonicalizeRestrictedJson(semanticProjection);
-  return new PreparedPolicyArtifact({
+  return new PreparedPolicyArtifact(PREPARED_POLICY_ARTIFACT_TOKEN, {
     artifact: policy,
     canonicalBytes,
     semanticBytes,
@@ -353,14 +489,15 @@ function validatePolicySetSchema(policySet) {
   if (typeof policySet.policySetVersion !== "string" || !isStableSemVer(policySet.policySetVersion)) {
     fail("POLICY_SCHEMA_INVALID", "policySetVersion must use stable SemVer.", artifactKind);
   }
-  if (Object.hasOwn(policySet, "metadata")) validateMetadata(policySet.metadata, artifactKind);
-  if (!Array.isArray(policySet.policies)) {
+  if (intrinsicObjectHasOwn(policySet, "metadata")) validateMetadata(policySet.metadata, artifactKind);
+  if (!intrinsicArrayIsArray(policySet.policies)) {
     fail("POLICY_SCHEMA_INVALID", "Policy Set policies must be a sequence.", artifactKind);
   }
   if (policySet.policies.length === 0) {
     fail("POLICY_SET_INVALID", "Policy Set policies must be a non-empty sequence.", artifactKind);
   }
-  for (const member of policySet.policies) {
+  for (let index = 0; index < policySet.policies.length; index += 1) {
+    const member = policySet.policies[index];
     assertClosedObject(
       member,
       ["policy", "expectedSemanticDigest"],
@@ -373,12 +510,13 @@ function validatePolicySetSchema(policySet) {
       fail("POLICY_SET_INVALID", "Nested Policy Sets are prohibited.", artifactKind);
     }
   }
-  for (const member of policySet.policies) {
-    validatePolicySchema(member.policy, artifactKind);
+  for (let index = 0; index < policySet.policies.length; index += 1) {
+    validatePolicySchema(policySet.policies[index].policy, artifactKind);
   }
-  for (const member of policySet.policies) {
+  for (let index = 0; index < policySet.policies.length; index += 1) {
+    const member = policySet.policies[index];
     if (typeof member.expectedSemanticDigest !== "string"
-        || !DIGEST_PATTERN.test(member.expectedSemanticDigest)) {
+        || !intrinsicReflectApply(intrinsicRegExpTest, DIGEST_PATTERN, [member.expectedSemanticDigest])) {
       fail("POLICY_SET_INVALID", "Policy Set semantic pin is malformed.", artifactKind);
     }
   }
@@ -386,33 +524,55 @@ function validatePolicySetSchema(policySet) {
 
 function enforcePolicySetLocalLimits(policySet) {
   const artifactKind = INVESTIGATION_POLICY_SET_KIND;
-  for (const { policy } of policySet.policies) {
-    enforceLimit("policy.identifier-utf8-bytes", utf8Encode(policy.identifier).length, artifactKind, "E");
+  for (let index = 0; index < policySet.policies.length; index += 1) {
+    const policy = policySet.policies[index].policy;
+    enforceLimit("policy.identifier-utf8-bytes", byteLength(utf8Encode(policy.identifier)), artifactKind, "E");
   }
-  for (const { policy } of policySet.policies) {
-    enforceLimit("policy.authored-version-utf8-bytes", utf8Encode(policy.policyVersion).length, artifactKind, "E");
-  }
-  for (const { policy } of policySet.policies) {
+  for (let index = 0; index < policySet.policies.length; index += 1) {
+    const policy = policySet.policies[index].policy;
     enforceLimit(
-      "policy.description-utf8-bytes",
-      Object.hasOwn(policy, "metadata") ? utf8Encode(policy.metadata.description).length : 0,
+      "policy.authored-version-utf8-bytes",
+      byteLength(utf8Encode(policy.policyVersion)),
       artifactKind,
       "E",
     );
   }
-  for (const { policy } of policySet.policies) {
-    for (const rule of policy.rules) {
-      enforceLimit("policy.rule-identifier-utf8-bytes", utf8Encode(rule.identifier).length, artifactKind, "E");
+  for (let index = 0; index < policySet.policies.length; index += 1) {
+    const policy = policySet.policies[index].policy;
+    enforceLimit(
+      "policy.description-utf8-bytes",
+      intrinsicObjectHasOwn(policy, "metadata")
+        ? byteLength(utf8Encode(policy.metadata.description)) : 0,
+      artifactKind,
+      "E",
+    );
+  }
+  for (let policyIndex = 0; policyIndex < policySet.policies.length; policyIndex += 1) {
+    const policy = policySet.policies[policyIndex].policy;
+    for (let ruleIndex = 0; ruleIndex < policy.rules.length; ruleIndex += 1) {
+      enforceLimit(
+        "policy.rule-identifier-utf8-bytes",
+        byteLength(utf8Encode(policy.rules[ruleIndex].identifier)),
+        artifactKind,
+        "E",
+      );
     }
   }
-  for (const { policy } of policySet.policies) {
+  for (let index = 0; index < policySet.policies.length; index += 1) {
+    const policy = policySet.policies[index].policy;
     enforceLimit("policy.rule-count", policy.rules.length, artifactKind, "E");
   }
-  enforceLimit("policy-set.identifier-utf8-bytes", utf8Encode(policySet.identifier).length, artifactKind, "E");
-  enforceLimit("policy-set.authored-version-utf8-bytes", utf8Encode(policySet.policySetVersion).length, artifactKind, "E");
+  enforceLimit("policy-set.identifier-utf8-bytes", byteLength(utf8Encode(policySet.identifier)), artifactKind, "E");
+  enforceLimit(
+    "policy-set.authored-version-utf8-bytes",
+    byteLength(utf8Encode(policySet.policySetVersion)),
+    artifactKind,
+    "E",
+  );
   enforceLimit(
     "policy-set.description-utf8-bytes",
-    Object.hasOwn(policySet, "metadata") ? utf8Encode(policySet.metadata.description).length : 0,
+    intrinsicObjectHasOwn(policySet, "metadata")
+      ? byteLength(utf8Encode(policySet.metadata.description)) : 0,
     artifactKind,
     "E",
   );
@@ -420,12 +580,16 @@ function enforcePolicySetLocalLimits(policySet) {
 }
 
 export function policySetSemanticProjection(policySet, preparedPolicies) {
+  const policies = [];
+  for (let index = 0; index < preparedPolicies.length; index += 1) {
+    policies[index] = { semanticDigest: preparedPolicies[index].semanticDigest };
+  }
   return {
     kind: policySet.kind,
     version: policySet.version,
     identifier: policySet.identifier,
     policySetVersion: policySet.policySetVersion,
-    policies: preparedPolicies.map((policy) => ({ semanticDigest: policy.semanticDigest })),
+    policies,
   };
 }
 
@@ -435,34 +599,37 @@ export function prepareInvestigationPolicySet(bytesLike) {
   validatePolicySetSchema(policySet);
   enforcePolicySetLocalLimits(policySet);
 
-  const policies = policySet.policies.map(
-    (member) => finishPolicyPreparation(member.policy, artifactKind, false),
-  );
+  const policies = [];
+  for (let index = 0; index < policySet.policies.length; index += 1) {
+    policies[index] = finishPolicyPreparation(policySet.policies[index].policy, artifactKind, false);
+  }
   for (let index = 0; index < policies.length; index += 1) {
     if (policySet.policies[index].expectedSemanticDigest !== policies[index].semanticDigest) {
       fail("POLICY_DIGEST_MISMATCH", "Policy Set child semantic pin does not match.", artifactKind);
     }
   }
-  const identifiers = new Set();
-  for (const policy of policies) {
-    if (identifiers.has(policy.identifier)) {
+  const identifiers = new IntrinsicSet();
+  for (let index = 0; index < policies.length; index += 1) {
+    const policy = policies[index];
+    if (intrinsicReflectApply(intrinsicSetHas, identifiers, [policy.identifier])) {
       fail("POLICY_SET_INVALID", "Policy Set child identifiers must be unique.", artifactKind);
     }
-    identifiers.add(policy.identifier);
+    intrinsicReflectApply(intrinsicSetAdd, identifiers, [policy.identifier]);
   }
-  const semanticDigests = new Set();
-  for (const policy of policies) {
-    if (semanticDigests.has(policy.semanticDigest)) {
+  const semanticDigests = new IntrinsicSet();
+  for (let index = 0; index < policies.length; index += 1) {
+    const policy = policies[index];
+    if (intrinsicReflectApply(intrinsicSetHas, semanticDigests, [policy.semanticDigest])) {
       fail("POLICY_SET_INVALID", "Policy Set child semantic digests must be unique.", artifactKind);
     }
-    semanticDigests.add(policy.semanticDigest);
+    intrinsicReflectApply(intrinsicSetAdd, semanticDigests, [policy.semanticDigest]);
   }
 
   const canonicalBytes = canonicalizeRestrictedJson(policySet);
   enforceLimit("policy-set.canonical-document-bytes", canonicalBytes.length, artifactKind, "F");
   const semanticProjection = policySetSemanticProjection(policySet, policies);
   const semanticBytes = canonicalizeRestrictedJson(semanticProjection);
-  const prepared = new PreparedPolicyArtifact({
+  const prepared = new PreparedPolicyArtifact(PREPARED_POLICY_ARTIFACT_TOKEN, {
     artifact: policySet,
     canonicalBytes,
     semanticBytes,

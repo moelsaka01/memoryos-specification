@@ -7,6 +7,7 @@ import {
   INVESTIGATION_CORE_VERSION,
   InvestigationCore,
 } from "../web/js/investigation-core.js";
+import { compareCognitiveRegression } from "../web/js/cognitive-regression.js";
 import {
   MACHINE_DEFINITION_IDENTITIES,
   MEMORYOS_POLICY_RESOURCE_PROFILE,
@@ -683,6 +684,169 @@ test("MO-1301 capability freezing and retained bytes resist post-import intrinsi
   } finally {
     Array.prototype.forEach = originalForEach;
   }
+});
+
+test("MO-1301 Regression projection and canonical identity resist post-import intrinsic poisoning", () => {
+  const baselineIdentifier = "policy-regression-canonical-intrinsics-baseline";
+  const candidateIdentifier = "policy-regression-canonical-intrinsics-candidate";
+  const core = new InvestigationCore();
+  core.create({ identifier: baselineIdentifier, snapshot: referenceSnapshot });
+  core.create({ identifier: candidateIdentifier, snapshot: changedSnapshot() });
+  const baseline = core.load(baselineIdentifier);
+  const candidate = core.load(candidateIdentifier);
+  const context = capturePolicyFactContext(core, candidateIdentifier);
+  const report = compareCognitiveRegression(baseline, candidate);
+  const expectedArtifact = projectRegressionPolicyFactSource(
+    report,
+    baseline,
+    candidate,
+    context.contextDigest,
+  );
+  const expectedDigest = regressionPolicyFactSourceDigest(expectedArtifact);
+
+  const originalArrayIsArray = Array.isArray;
+  const originalArrayForEach = Array.prototype.forEach;
+  const originalArrayIncludes = Array.prototype.includes;
+  const originalArrayIterator = Array.prototype[Symbol.iterator];
+  const originalArrayMap = Array.prototype.map;
+  const originalArrayFlatMap = Array.prototype.flatMap;
+  const originalArrayReduce = Array.prototype.reduce;
+  const originalArraySome = Array.prototype.some;
+  const originalArraySort = Array.prototype.sort;
+  const originalJsonStringify = JSON.stringify;
+  const originalMapGet = Map.prototype.get;
+  const originalMapSet = Map.prototype.set;
+  const originalMathMin = Math.min;
+  const originalNumberIsFinite = Number.isFinite;
+  const originalNumberIsInteger = Number.isInteger;
+  const originalNumberIsSafeInteger = Number.isSafeInteger;
+  const originalObjectFreeze = Object.freeze;
+  const originalObjectGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
+  const originalObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
+  const originalObjectGetOwnPropertySymbols = Object.getOwnPropertySymbols;
+  const originalObjectGetPrototypeOf = Object.getPrototypeOf;
+  const originalObjectHasOwn = Object.hasOwn;
+  const originalObjectIs = Object.is;
+  const originalObjectKeys = Object.keys;
+  const originalObjectValues = Object.values;
+  const originalReflectApply = Reflect.apply;
+  const originalReflectOwnKeys = Reflect.ownKeys;
+  const originalRegExpExec = RegExp.prototype.exec;
+  const originalRegExpTest = RegExp.prototype.test;
+  const originalSetAdd = Set.prototype.add;
+  const originalSetDelete = Set.prototype.delete;
+  const originalSetHas = Set.prototype.has;
+  const originalString = globalThis.String;
+  const originalStringCharCodeAt = String.prototype.charCodeAt;
+  const originalStringSlice = String.prototype.slice;
+  const originalUint8Array = globalThis.Uint8Array;
+  const originalUint8ArrayOf = Uint8Array.of;
+  const originalUint8ArraySet = Uint8Array.prototype.set;
+  const originalUint8ArraySlice = Uint8Array.prototype.slice;
+  const poison = () => { throw new Error("mutable intrinsic was consulted"); };
+
+  let actualArtifact;
+  let actualDigest;
+  let actualIdentifier;
+  let normalized;
+  try {
+    Array.isArray = poison;
+    Array.prototype.forEach = poison;
+    Array.prototype.includes = poison;
+    Array.prototype[Symbol.iterator] = poison;
+    Array.prototype.map = poison;
+    Array.prototype.flatMap = poison;
+    Array.prototype.reduce = poison;
+    Array.prototype.some = poison;
+    Array.prototype.sort = poison;
+    JSON.stringify = poison;
+    Map.prototype.get = poison;
+    Map.prototype.set = poison;
+    Math.min = poison;
+    Number.isFinite = poison;
+    Number.isInteger = poison;
+    Number.isSafeInteger = poison;
+    Object.freeze = poison;
+    Object.getOwnPropertyDescriptor = poison;
+    Object.getOwnPropertyNames = poison;
+    Object.getOwnPropertySymbols = poison;
+    Object.getPrototypeOf = poison;
+    Object.hasOwn = poison;
+    Object.is = poison;
+    Object.keys = poison;
+    Object.values = poison;
+    Reflect.apply = poison;
+    Reflect.ownKeys = poison;
+    RegExp.prototype.exec = poison;
+    RegExp.prototype.test = poison;
+    Set.prototype.add = poison;
+    Set.prototype.delete = poison;
+    Set.prototype.has = poison;
+    String.prototype.charCodeAt = poison;
+    String.prototype.slice = poison;
+    Uint8Array.of = poison;
+    Uint8Array.prototype.set = poison;
+    Uint8Array.prototype.slice = poison;
+    globalThis.String = poison;
+    globalThis.Uint8Array = poison;
+
+    actualArtifact = projectRegressionPolicyFactSource(
+      report,
+      baseline,
+      candidate,
+      context.contextDigest,
+    );
+    const preparedSource = prepareRegressionPolicyFactSourceValue(actualArtifact);
+    actualDigest = regressionPolicyFactSourceDigest(preparedSource);
+    actualIdentifier = cognitiveRegressionReportIdentifier(report);
+    normalized = normalizeDeterministicFactSources([preparedSource]);
+  } finally {
+    Array.isArray = originalArrayIsArray;
+    Array.prototype.forEach = originalArrayForEach;
+    Array.prototype.includes = originalArrayIncludes;
+    Array.prototype[Symbol.iterator] = originalArrayIterator;
+    Array.prototype.map = originalArrayMap;
+    Array.prototype.flatMap = originalArrayFlatMap;
+    Array.prototype.reduce = originalArrayReduce;
+    Array.prototype.some = originalArraySome;
+    Array.prototype.sort = originalArraySort;
+    JSON.stringify = originalJsonStringify;
+    Map.prototype.get = originalMapGet;
+    Map.prototype.set = originalMapSet;
+    Math.min = originalMathMin;
+    Number.isFinite = originalNumberIsFinite;
+    Number.isInteger = originalNumberIsInteger;
+    Number.isSafeInteger = originalNumberIsSafeInteger;
+    Object.freeze = originalObjectFreeze;
+    Object.getOwnPropertyDescriptor = originalObjectGetOwnPropertyDescriptor;
+    Object.getOwnPropertyNames = originalObjectGetOwnPropertyNames;
+    Object.getOwnPropertySymbols = originalObjectGetOwnPropertySymbols;
+    Object.getPrototypeOf = originalObjectGetPrototypeOf;
+    Object.hasOwn = originalObjectHasOwn;
+    Object.is = originalObjectIs;
+    Object.keys = originalObjectKeys;
+    Object.values = originalObjectValues;
+    Reflect.apply = originalReflectApply;
+    Reflect.ownKeys = originalReflectOwnKeys;
+    RegExp.prototype.exec = originalRegExpExec;
+    RegExp.prototype.test = originalRegExpTest;
+    Set.prototype.add = originalSetAdd;
+    Set.prototype.delete = originalSetDelete;
+    Set.prototype.has = originalSetHas;
+    globalThis.String = originalString;
+    String.prototype.charCodeAt = originalStringCharCodeAt;
+    String.prototype.slice = originalStringSlice;
+    globalThis.Uint8Array = originalUint8Array;
+    Uint8Array.of = originalUint8ArrayOf;
+    Uint8Array.prototype.set = originalUint8ArraySet;
+    Uint8Array.prototype.slice = originalUint8ArraySlice;
+  }
+
+  assert.deepEqual(actualArtifact, expectedArtifact);
+  assert.equal(actualDigest, expectedDigest);
+  assert.equal(actualIdentifier, report.identifier);
+  assert.equal(normalized.length, 1);
+  assert.equal(normalized[0].sourceDigest, expectedDigest);
 });
 
 test("MO-1301 trusted pair capture uses intrinsic Core state and rejects invalid ownership or pair binding", () => {

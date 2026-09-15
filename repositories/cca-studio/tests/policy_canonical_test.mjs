@@ -211,6 +211,7 @@ test("stable machine errors preserve exact non-localized codes and immutable det
     "REGRESSION_POLICY_FACT_SOURCE_BASELINE_BINDING_INVALID",
     "REGRESSION_POLICY_FACT_SOURCE_CANDIDATE_BINDING_MISMATCH",
     "DETERMINISTIC_FACT_SOURCE_PROVENANCE_UNTRUSTED",
+    "POLICY_EVALUATION_OUTCOME_IDENTITY_MISMATCH",
   ]);
   for (const code of POLICY_FAILURE_CODES) assert.match(code, /^[A-Z][A-Z0-9_]*$/u);
   assert.equal(new Set(POLICY_FAILURE_CODES).size, POLICY_FAILURE_CODES.length);

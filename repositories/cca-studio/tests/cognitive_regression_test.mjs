@@ -467,4 +467,103 @@ test("MO-1206 Regression engine remains renderer-independent and interpretation-
     [...source.matchAll(/from\s+["']([^"']+)["']/gu)].map((match) => match[1]),
     ["./mip-canonical.js"],
   );
+
+  const changed = snapshot((value) => {
+    value.longTermMemory.entries[0].value = "intrinsic-poisoning-regression";
+    value.semanticMemory.concepts[0].meaning = "intrinsic-poisoning-regression";
+    value.retrievalSessions[0].candidates[0].rankScore += 1;
+    value.reflections[0].knowledge = "intrinsic-poisoning-regression";
+  });
+  const expectedPair = nativePair(changed, "intrinsic-poisoning");
+  const actualPair = nativePair(changed, "intrinsic-poisoning");
+  const expected = canonicalize(compareCognitiveRegression(
+    expectedPair.baseline,
+    expectedPair.candidate,
+  ));
+
+  const original = {
+    arrayIsArray: Array.isArray,
+    arrayFilter: Array.prototype.filter,
+    arrayForEach: Array.prototype.forEach,
+    arrayMap: Array.prototype.map,
+    arraySome: Array.prototype.some,
+    arraySort: Array.prototype.sort,
+    mapGet: Map.prototype.get,
+    mapHas: Map.prototype.has,
+    mapSet: Map.prototype.set,
+    objectGetPrototypeOf: Object.getPrototypeOf,
+    objectIsFrozen: Object.isFrozen,
+    objectKeys: Object.keys,
+    objectValues: Object.values,
+    reflectApply: Reflect.apply,
+    regexpExec: RegExp.prototype.exec,
+    regexpTest: RegExp.prototype.test,
+    setAdd: Set.prototype.add,
+    setHas: Set.prototype.has,
+    stringSlice: String.prototype.slice,
+    weakSetAdd: WeakSet.prototype.add,
+    weakSetHas: WeakSet.prototype.has,
+  };
+  const poisoned = () => { throw new Error("post-import intrinsic was invoked"); };
+  let actualReport;
+  try {
+    Array.isArray = poisoned;
+    Array.prototype.filter = poisoned;
+    Array.prototype.forEach = poisoned;
+    Array.prototype.map = function poisonedMap(callback, thisArg) {
+      const result = original.reflectApply(original.arrayMap, this, [callback, thisArg]);
+      let isCategoryOrder = this.length === categoryOrder.length;
+      for (let index = 0; isCategoryOrder && index < categoryOrder.length; index += 1) {
+        if (this[index] !== categoryOrder[index]) isCategoryOrder = false;
+      }
+      if (isCategoryOrder) {
+        for (let index = 0; index < result.length; index += 1) {
+          result[index] = { category: result[index].category, differences: [], status: "identical" };
+        }
+      }
+      return result;
+    };
+    Array.prototype.some = poisoned;
+    Array.prototype.sort = poisoned;
+    Map.prototype.get = poisoned;
+    Map.prototype.has = poisoned;
+    Map.prototype.set = poisoned;
+    Object.getPrototypeOf = poisoned;
+    Object.isFrozen = poisoned;
+    Object.keys = poisoned;
+    Object.values = poisoned;
+    Reflect.apply = poisoned;
+    RegExp.prototype.exec = poisoned;
+    RegExp.prototype.test = poisoned;
+    Set.prototype.add = poisoned;
+    Set.prototype.has = poisoned;
+    String.prototype.slice = poisoned;
+    WeakSet.prototype.add = poisoned;
+    WeakSet.prototype.has = poisoned;
+    actualReport = compareCognitiveRegression(actualPair.baseline, actualPair.candidate);
+  } finally {
+    Array.isArray = original.arrayIsArray;
+    Array.prototype.filter = original.arrayFilter;
+    Array.prototype.forEach = original.arrayForEach;
+    Array.prototype.map = original.arrayMap;
+    Array.prototype.some = original.arraySome;
+    Array.prototype.sort = original.arraySort;
+    Map.prototype.get = original.mapGet;
+    Map.prototype.has = original.mapHas;
+    Map.prototype.set = original.mapSet;
+    Object.getPrototypeOf = original.objectGetPrototypeOf;
+    Object.isFrozen = original.objectIsFrozen;
+    Object.keys = original.objectKeys;
+    Object.values = original.objectValues;
+    Reflect.apply = original.reflectApply;
+    RegExp.prototype.exec = original.regexpExec;
+    RegExp.prototype.test = original.regexpTest;
+    Set.prototype.add = original.setAdd;
+    Set.prototype.has = original.setHas;
+    String.prototype.slice = original.stringSlice;
+    WeakSet.prototype.add = original.weakSetAdd;
+    WeakSet.prototype.has = original.weakSetHas;
+  }
+  assert.equal(canonicalize(actualReport), expected);
+  assert.equal(validateCognitiveRegression(actualReport), true);
 });

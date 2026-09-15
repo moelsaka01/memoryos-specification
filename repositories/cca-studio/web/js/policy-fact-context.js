@@ -45,6 +45,11 @@ const intrinsicObjectGetPrototypeOf = Object.getPrototypeOf;
 const intrinsicObjectIsFrozen = Object.isFrozen;
 const intrinsicObjectKeys = Object.keys;
 const intrinsicObjectValues = Object.values;
+const intrinsicArrayIsArray = Array.isArray;
+const intrinsicArrayPrototype = Array.prototype;
+const intrinsicNumberIsSafeInteger = Number.isSafeInteger;
+const intrinsicReflectOwnKeys = Reflect.ownKeys;
+const IntrinsicString = String;
 const IntrinsicSet = Set;
 const intrinsicSetAdd = Set.prototype.add;
 const intrinsicSetHas = Set.prototype.has;
@@ -169,6 +174,10 @@ function copyBytes(value) {
   const result = new IntrinsicUint8Array(byteLength);
   intrinsicReflectApply(intrinsicUint8ArraySet, result, [value, 0]);
   return result;
+}
+
+function byteLength(value) {
+  return intrinsicReflectApply(intrinsicTypedArrayByteLengthGetter, value, []);
 }
 
 function deepFreeze(value, seen = new IntrinsicSet()) {
@@ -468,7 +477,8 @@ function validateTransitionBindings(context) {
   transitions.items.forEach((item, index) => transitionBinding(item.value.index === index, "Transition indices must be contiguous from zero."));
   transitionBinding(transitions.items[0]?.value.kind === "CREATED", "The transition log must begin with CREATED.");
   transitionBinding(
-    transitions.items.at(-1)?.subject.identifier === context.transitionLog.headTransitionIdentifier,
+    transitions.items[transitions.items.length - 1]?.subject.identifier
+      === context.transitionLog.headTransitionIdentifier,
     "The head transition identifier does not equal the last transition fact subject.",
   );
   if (context.investigation.sourceKind === "native") {
@@ -594,7 +604,7 @@ function validateNormalizedContext(context, expectedContextDigest) {
   validateTransitionBindings(context);
   validateCompleteness(context);
   const bytes = canonicalizeRestrictedJson(context);
-  enforceLimit("policy-fact-context.canonical-document-bytes", bytes.length, "F");
+  enforceLimit("policy-fact-context.canonical-document-bytes", byteLength(bytes), "F");
   const contextDigest = domainSeparatedDigest(POLICY_FACT_CONTEXT_DIGEST_DOMAIN, bytes);
   if (expectedContextDigest !== undefined && contextDigest !== expectedContextDigest) {
     fail("POLICY_FACT_CONTEXT_DIGEST_MISMATCH", "PolicyFactContext digest does not match the expected digest.", {
@@ -923,7 +933,7 @@ function projectContext(investigation) {
     kind: POLICY_FACT_CONTEXT_KIND,
     transitionLog: {
       coreVersion: INVESTIGATION_CORE_VERSION,
-      headTransitionIdentifier: transitionLog.transitions.at(-1).identifier,
+      headTransitionIdentifier: transitionLog.transitions[transitionLog.transitions.length - 1].identifier,
       transitionCount: transitionLog.transitions.length,
       transitionLogDigest: transitionLog.digest,
     },
@@ -1136,9 +1146,43 @@ export function normalizeAuthoritativeDeterministicFactSources(
   candidateContext,
 ) {
   assertAuthoritativePolicyFactContext(candidateContext, ownerCore);
-  const normalized = normalizeDeterministicFactSources(sources);
-  for (let index = 0; index < normalized.length; index += 1) {
-    assertAuthoritativeRegressionPolicyFactSource(normalized[index], ownerCore, candidateContext);
+  if (!intrinsicArrayIsArray(sources)
+      || intrinsicObjectGetPrototypeOf(sources) !== intrinsicArrayPrototype) {
+    sourceFail(
+      "DETERMINISTIC_FACT_SOURCE_SCHEMA_INVALID",
+      "Sources must be an intrinsic dense sequence.",
+    );
   }
+  const lengthDescriptor = intrinsicObjectGetOwnPropertyDescriptor(sources, "length");
+  const length = lengthDescriptor?.value;
+  const ownKeys = intrinsicReflectOwnKeys(sources);
+  let invalidKeys = !lengthDescriptor || lengthDescriptor.get !== undefined
+    || lengthDescriptor.set !== undefined || !intrinsicNumberIsSafeInteger(length) || length < 0
+    || ownKeys.length !== length + 1;
+  for (let index = 0; index < ownKeys.length; index += 1) {
+    if (typeof ownKeys[index] === "symbol") invalidKeys = true;
+  }
+  if (invalidKeys) {
+    sourceFail(
+      "DETERMINISTIC_FACT_SOURCE_SCHEMA_INVALID",
+      "Sources must be a dense sequence without custom members.",
+    );
+  }
+  for (let index = 0; index < length; index += 1) {
+    const descriptor = intrinsicObjectGetOwnPropertyDescriptor(sources, IntrinsicString(index));
+    if (!descriptor || !("value" in descriptor) || descriptor.get !== undefined
+        || descriptor.set !== undefined) {
+      sourceFail(
+        "DETERMINISTIC_FACT_SOURCE_SCHEMA_INVALID",
+        "Source sequence members must be data values.",
+      );
+    }
+    assertAuthoritativeRegressionPolicyFactSource(
+      descriptor.value,
+      ownerCore,
+      candidateContext,
+    );
+  }
+  const normalized = normalizeDeterministicFactSources(sources);
   return normalized;
 }

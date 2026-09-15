@@ -8,8 +8,11 @@ import {
   INVESTIGATION_POLICY_DIGEST_DOMAINS,
   INVESTIGATION_POLICY_KIND,
   INVESTIGATION_POLICY_SET_KIND,
+  assertPreparedInvestigationPolicyArtifact,
   enforcePolicyJsonResourceLimits,
+  isPreparedInvestigationPolicyArtifact,
   policySemanticProjection,
+  preparedInvestigationPolicyArtifactEvaluationView,
   prepareInvestigationPolicy,
   prepareInvestigationPolicySet,
 } from "../web/js/investigation-policy.js";
@@ -102,6 +105,141 @@ test("minimal frozen Policy fixture has exact canonical bytes and identities", a
   const first = prepared.canonicalBytes();
   first[0] = 0;
   assert.deepEqual(prepared.canonicalBytes(), canonical);
+});
+
+test("prepared Policy authority is unforgeable and its evaluator view exposes only immutable data and byte copies", () => {
+  const prepared = preparePolicyValue(policy("p", [rule("e")]));
+  const view = preparedInvestigationPolicyArtifactEvaluationView(prepared);
+
+  assert.equal(isPreparedInvestigationPolicyArtifact(prepared), true);
+  assert.equal(assertPreparedInvestigationPolicyArtifact(prepared), true);
+  assert.equal(isPreparedInvestigationPolicyArtifact({ ...prepared }), false);
+  assert.throws(() => assertPreparedInvestigationPolicyArtifact({ ...prepared }), TypeError);
+  assert.throws(
+    () => new prepared.constructor({ artifact: prepared.artifact }),
+    TypeError,
+  );
+  assert.equal(Object.isFrozen(Object.getPrototypeOf(prepared)), true);
+  assert.equal(Object.isFrozen(view), true);
+  assert.equal(Object.isFrozen(view.artifact), true);
+  assert.equal(Object.isFrozen(view.semanticProjection), true);
+  assert.equal(Object.isFrozen(view.policies), true);
+
+  const canonical = view.canonicalBytes;
+  const semantic = view.semanticBytes;
+  canonical.fill(0);
+  semantic.fill(0);
+  assert.deepEqual(prepared.canonicalBytes(), canonicalizeRestrictedJson(prepared.artifact));
+  assert.deepEqual(
+    prepared.semanticBytes(),
+    canonicalizeRestrictedJson(prepared.semanticProjection),
+  );
+});
+
+test("Policy preparation and retained authority resist post-import intrinsic poisoning", () => {
+  const source = canonicalizeRestrictedJson(policy("p", [
+    rule("a", "memoryos.require-artifact-cardinality", {
+      artifactClass: "evidence",
+      minimumCount: 1,
+    }),
+  ]));
+  const expected = prepareInvestigationPolicy(source);
+  const expectedCanonical = expected.canonicalBytes();
+  const expectedSemantic = expected.semanticBytes();
+  const expectedDocumentDigest = expected.documentDigest;
+  const expectedSemanticDigest = expected.semanticDigest;
+
+  const originalArrayIsArray = Array.isArray;
+  const originalArrayIterator = Array.prototype[Symbol.iterator];
+  const originalArrayIncludes = Array.prototype.includes;
+  const originalArrayMap = Array.prototype.map;
+  const originalArraySome = Array.prototype.some;
+  const originalArraySort = Array.prototype.sort;
+  const originalJsonParse = JSON.parse;
+  const originalJsonStringify = JSON.stringify;
+  const originalNumberIsSafeInteger = Number.isSafeInteger;
+  const originalNumberToString = Number.prototype.toString;
+  const originalObjectEntries = Object.entries;
+  const originalObjectFreeze = Object.freeze;
+  const originalObjectGetOwnPropertyNames = Object.getOwnPropertyNames;
+  const originalObjectHasOwn = Object.hasOwn;
+  const originalObjectKeys = Object.keys;
+  const originalObjectValues = Object.values;
+  const originalReflectApply = Reflect.apply;
+  const originalRegExpTest = RegExp.prototype.test;
+  const originalSetAdd = Set.prototype.add;
+  const originalSetHas = Set.prototype.has;
+  const originalStringPadStart = String.prototype.padStart;
+  const originalTextEncoderEncode = TextEncoder.prototype.encode;
+  const originalUint8ArraySet = Uint8Array.prototype.set;
+  const originalUint8ArraySlice = Uint8Array.prototype.slice;
+  let actual;
+  let view;
+  try {
+    Array.isArray = () => false;
+    Array.prototype[Symbol.iterator] = function poisonedIterator() {
+      return originalReflectApply(originalArrayIterator, [], []);
+    };
+    Array.prototype.includes = () => true;
+    Array.prototype.map = () => [];
+    Array.prototype.some = () => false;
+    Array.prototype.sort = () => [];
+    JSON.parse = () => ({ attackerControlled: true });
+    JSON.stringify = () => "{}";
+    Number.isSafeInteger = () => false;
+    Number.prototype.toString = () => "0";
+    Object.entries = () => [];
+    Object.freeze = (value) => value;
+    Object.getOwnPropertyNames = () => [];
+    Object.hasOwn = () => false;
+    Object.keys = () => [];
+    Object.values = () => [];
+    Reflect.apply = () => { throw new Error("poisoned Reflect.apply"); };
+    RegExp.prototype.test = () => false;
+    Set.prototype.add = function poisonedAdd() { return this; };
+    Set.prototype.has = () => true;
+    String.prototype.padStart = () => "00000000";
+    TextEncoder.prototype.encode = () => new Uint8Array([0]);
+    Uint8Array.prototype.set = () => undefined;
+    Uint8Array.prototype.slice = function poisonedSlice() { return this; };
+
+    actual = prepareInvestigationPolicy(source);
+    view = preparedInvestigationPolicyArtifactEvaluationView(actual);
+  } finally {
+    Array.isArray = originalArrayIsArray;
+    Array.prototype[Symbol.iterator] = originalArrayIterator;
+    Array.prototype.includes = originalArrayIncludes;
+    Array.prototype.map = originalArrayMap;
+    Array.prototype.some = originalArraySome;
+    Array.prototype.sort = originalArraySort;
+    JSON.parse = originalJsonParse;
+    JSON.stringify = originalJsonStringify;
+    Number.isSafeInteger = originalNumberIsSafeInteger;
+    Number.prototype.toString = originalNumberToString;
+    Object.entries = originalObjectEntries;
+    Object.freeze = originalObjectFreeze;
+    Object.getOwnPropertyNames = originalObjectGetOwnPropertyNames;
+    Object.hasOwn = originalObjectHasOwn;
+    Object.keys = originalObjectKeys;
+    Object.values = originalObjectValues;
+    Reflect.apply = originalReflectApply;
+    RegExp.prototype.test = originalRegExpTest;
+    Set.prototype.add = originalSetAdd;
+    Set.prototype.has = originalSetHas;
+    String.prototype.padStart = originalStringPadStart;
+    TextEncoder.prototype.encode = originalTextEncoderEncode;
+    Uint8Array.prototype.set = originalUint8ArraySet;
+    Uint8Array.prototype.slice = originalUint8ArraySlice;
+  }
+
+  assert.deepEqual(actual.canonicalBytes(), expectedCanonical);
+  assert.deepEqual(actual.semanticBytes(), expectedSemantic);
+  assert.equal(actual.documentDigest, expectedDocumentDigest);
+  assert.equal(actual.semanticDigest, expectedSemanticDigest);
+  assert.deepEqual(view.canonicalBytes, expectedCanonical);
+  assert.deepEqual(view.semanticBytes, expectedSemantic);
+  assert.equal(Object.isFrozen(actual.artifact.rules[0].parameters), true);
+  assert.throws(() => { actual.artifact.rules[0].parameters.minimumCount = 2; }, TypeError);
 });
 
 test("Policy accepts surrounding whitespace but derives the exact canonical document", () => {

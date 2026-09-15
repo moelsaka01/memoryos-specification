@@ -1,12 +1,34 @@
 import {
   canonicalize,
-  deepFreeze,
   mipDigest,
 } from "./mip-canonical.js";
 
+const intrinsicReflectApply = Reflect.apply;
+const intrinsicObjectFreeze = Object.freeze;
+const intrinsicObjectGetPrototypeOf = Object.getPrototypeOf;
+const intrinsicObjectIsFrozen = Object.isFrozen;
+const intrinsicObjectKeys = Object.keys;
+const intrinsicObjectValues = Object.values;
+const intrinsicArrayIsArray = Array.isArray;
+const intrinsicArraySort = Array.prototype.sort;
+const intrinsicRegExpExec = RegExp.prototype.exec;
+const intrinsicStringSlice = String.prototype.slice;
+const intrinsicSetAdd = Set.prototype.add;
+const intrinsicSetHas = Set.prototype.has;
+const intrinsicMapGet = Map.prototype.get;
+const intrinsicMapHas = Map.prototype.has;
+const intrinsicMapSet = Map.prototype.set;
+const intrinsicWeakSetAdd = WeakSet.prototype.add;
+const intrinsicWeakSetHas = WeakSet.prototype.has;
+const IntrinsicMap = Map;
+const IntrinsicSet = Set;
+const IntrinsicWeakSet = WeakSet;
+const IntrinsicRangeError = RangeError;
+const IntrinsicTypeError = TypeError;
+
 export const COGNITIVE_REGRESSION_VERSION = "1.0.0";
 
-export const RegressionCategory = Object.freeze({
+export const RegressionCategory = intrinsicObjectFreeze({
   Replay: "replay",
   Reflection: "reflection",
   Evidence: "evidence",
@@ -17,37 +39,80 @@ export const RegressionCategory = Object.freeze({
   Lifecycle: "lifecycle",
 });
 
-const categoryOrder = Object.freeze(Object.values(RegressionCategory));
-const categoryStatus = new Set(["identical", "changed"]);
-const changeKinds = new Set(["added", "removed", "modified"]);
+const categoryOrder = intrinsicObjectFreeze(intrinsicObjectValues(RegressionCategory));
+const categoryStatus = new IntrinsicSet(["identical", "changed"]);
+const changeKinds = new IntrinsicSet(["added", "removed", "modified"]);
 const digestPattern = /^sha256:[0-9a-f]{64}$/u;
-const validatedInvestigations = new WeakSet();
-const semanticFamily = Object.freeze({
-  evidence: Object.freeze({ family: "LongTermMemory", kind: "long-term" }),
-  reflection: Object.freeze({ family: "Reflection", kind: "reflection" }),
-  retrieval: Object.freeze({ family: "Retrieval session", kind: "retrieval" }),
+const validatedInvestigations = new IntrinsicWeakSet();
+const semanticFamily = intrinsicObjectFreeze({
+  evidence: intrinsicObjectFreeze({ family: "LongTermMemory", kind: "long-term" }),
+  reflection: intrinsicObjectFreeze({ family: "Reflection", kind: "reflection" }),
+  retrieval: intrinsicObjectFreeze({ family: "Retrieval session", kind: "retrieval" }),
 });
-const semanticTransformationFamilies = new Set([
+const semanticTransformationFamilies = new IntrinsicSet([
   "SemanticMemory",
   "EpisodicMemory",
   "ProceduralMemory",
 ]);
+
+function setHas(set, value) {
+  return intrinsicReflectApply(intrinsicSetHas, set, [value]);
+}
+
+function matches(pattern, value) {
+  return intrinsicReflectApply(intrinsicRegExpExec, pattern, [value]) !== null;
+}
+
+function mapGet(map, key) {
+  return intrinsicReflectApply(intrinsicMapGet, map, [key]);
+}
+
+function mapHas(map, key) {
+  return intrinsicReflectApply(intrinsicMapHas, map, [key]);
+}
+
+function mapSet(map, key, value) {
+  intrinsicReflectApply(intrinsicMapSet, map, [key, value]);
+}
+
+function weakSetHas(set, value) {
+  return intrinsicReflectApply(intrinsicWeakSetHas, set, [value]);
+}
+
+function weakSetAdd(set, value) {
+  intrinsicReflectApply(intrinsicWeakSetAdd, set, [value]);
+}
+
+function deepFreeze(value, seen = new IntrinsicSet()) {
+  if (value === null || typeof value !== "object" || setHas(seen, value)) return value;
+  intrinsicReflectApply(intrinsicSetAdd, seen, [value]);
+  const children = intrinsicObjectValues(value);
+  for (let index = 0; index < children.length; index += 1) {
+    deepFreeze(children[index], seen);
+  }
+  return intrinsicObjectFreeze(value);
+}
 
 function compareText(left, right) {
   return left < right ? -1 : left > right ? 1 : 0;
 }
 
 function exactMembers(value, members) {
-  return value && typeof value === "object" && !Array.isArray(value)
-    && canonicalize(Object.keys(value).sort()) === canonicalize([...members].sort());
+  if (!value || typeof value !== "object" || intrinsicArrayIsArray(value)) return false;
+  const actual = intrinsicObjectKeys(value);
+  const expected = [];
+  for (let index = 0; index < members.length; index += 1) expected[index] = members[index];
+  intrinsicReflectApply(intrinsicArraySort, actual, []);
+  intrinsicReflectApply(intrinsicArraySort, expected, []);
+  return canonicalize(actual) === canonicalize(expected);
 }
 
 function hasExpectedPrototype(value, name) {
-  return Object.getPrototypeOf(value)?.constructor?.name === name;
+  return intrinsicObjectGetPrototypeOf(value)?.constructor?.name === name;
 }
 
 function requireInvestigation(value, label) {
-  if (value && validatedInvestigations.has(value)) return value;
+  if (value && weakSetHas(validatedInvestigations, value)) return value;
   if (!value || value.kind !== "MemoryOSInvestigation"
     || !exactMembers(value, ["identifier", "kind", "state", "transitionLog", "version"])
     || !hasExpectedPrototype(value, "Investigation")
@@ -63,33 +128,42 @@ function requireInvestigation(value, label) {
     || value.transitionLog.version !== value.version
     || value.state.investigationIdentifier !== value.identifier
     || value.transitionLog.investigationIdentifier !== value.identifier
-    || !digestPattern.test(value.transitionLog.digest)
+    || !matches(digestPattern, value.transitionLog.digest)
     || typeof value.state.workspaceIdentifier !== "string"
     || value.state.workspaceIdentifier.length === 0
-    || !["mip", "native"].includes(value.state.sourceKind)
-    || !Array.isArray(value.transitionLog.transitions)
-    || !Object.isFrozen(value)
-    || !Object.isFrozen(value.state)
-    || !Object.isFrozen(value.transitionLog)
-    || !Object.isFrozen(value.transitionLog.transitions)
-    || value.transitionLog.transitions.some((transition, index) => (
-      !transition || !Object.isFrozen(transition)
-      || !exactMembers(transition, [
-        "identifier", "index", "investigationIdentifier", "kind", "payload",
-        "previousLogDigest", "version",
-      ])
-      || !hasExpectedPrototype(transition, "Transition")
-      || transition.index !== index
-      || transition.investigationIdentifier !== value.identifier
-      || transition.version !== value.version
-      || !digestPattern.test(transition.identifier)
-      || !digestPattern.test(transition.previousLogDigest)
-    ))
+    || (value.state.sourceKind !== "mip" && value.state.sourceKind !== "native")
+    || !intrinsicArrayIsArray(value.transitionLog.transitions)
+    || !intrinsicObjectIsFrozen(value)
+    || !intrinsicObjectIsFrozen(value.state)
+    || !intrinsicObjectIsFrozen(value.transitionLog)
+    || !intrinsicObjectIsFrozen(value.transitionLog.transitions)
+    || !validTransitions(value)
     || !deeplyFrozen(value)) {
-    throw new TypeError(`${label} must be an immutable Investigation Core investigation.`);
+    throw new IntrinsicTypeError(`${label} must be an immutable Investigation Core investigation.`);
   }
-  validatedInvestigations.add(value);
+  weakSetAdd(validatedInvestigations, value);
   return value;
+}
+
+function validTransitions(investigation) {
+  const transitions = investigation.transitionLog.transitions;
+  for (let index = 0; index < transitions.length; index += 1) {
+    const transition = transitions[index];
+    if (!transition || !intrinsicObjectIsFrozen(transition)
+        || !exactMembers(transition, [
+          "identifier", "index", "investigationIdentifier", "kind", "payload",
+          "previousLogDigest", "version",
+        ])
+        || !hasExpectedPrototype(transition, "Transition")
+        || transition.index !== index
+        || transition.investigationIdentifier !== investigation.identifier
+        || transition.version !== investigation.version
+        || !matches(digestPattern, transition.identifier)
+        || !matches(digestPattern, transition.previousLogDigest)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function sourceDescriptor(investigation) {
@@ -109,32 +183,43 @@ function fact(subject, value) {
 
 function currentRecords(state, role) {
   if (state.sourceKind !== "mip") return [];
-  return (state.currentPackageObservation?.records ?? [])
-    .filter((record) => record.role === role)
-    .map((record) => fact(record.reference, record));
+  const records = state.currentPackageObservation?.records ?? [];
+  const result = [];
+  for (let index = 0; index < records.length; index += 1) {
+    if (records[index].role === role) {
+      result[result.length] = fact(records[index].reference, records[index]);
+    }
+  }
+  return result;
 }
 
 function currentNodes(state, category) {
   if (state.sourceKind !== "native") return [];
   const identity = semanticFamily[category];
-  return (state.currentFrame?.world.nodes ?? [])
-    .filter((node) => !node.aggregate && !node.detail
-      && node.family === identity.family && node.kind === identity.kind)
-    .map((node) => fact(
-      {
-        family: node.family,
-        identifier: node.identifier,
-        key: node.key,
-        kind: node.kind,
-      },
-      {
-        family: node.family,
-        identifier: node.identifier,
-        key: node.key,
-        kind: node.kind,
-        revision: node.revision ?? null,
-      },
-    ));
+  const nodes = state.currentFrame?.world.nodes ?? [];
+  const result = [];
+  for (let index = 0; index < nodes.length; index += 1) {
+    const node = nodes[index];
+    if (!node.aggregate && !node.detail
+        && node.family === identity.family && node.kind === identity.kind) {
+      result[result.length] = fact(
+        {
+          family: node.family,
+          identifier: node.identifier,
+          key: node.key,
+          kind: node.kind,
+        },
+        {
+          family: node.family,
+          identifier: node.identifier,
+          key: node.key,
+          kind: node.kind,
+          revision: node.revision ?? null,
+        },
+      );
+    }
+  }
+  return result;
 }
 
 function semanticFacts(state, category) {
@@ -152,13 +237,18 @@ function replayFacts(state) {
   const replays = state.sourceKind === "mip"
     ? state.package.replays
     : state.activeReplay ? [state.activeReplay] : [];
-  return replays.map((replay) => fact(
-    { identifier: replay.identifier },
-    {
-      artifact: replay,
-      state: state.activeReplay?.identifier === replay.identifier ? state.replayState : null,
-    },
-  ));
+  const result = [];
+  for (let index = 0; index < replays.length; index += 1) {
+    const replay = replays[index];
+    result[index] = fact(
+      { identifier: replay.identifier },
+      {
+        artifact: replay,
+        state: state.activeReplay?.identifier === replay.identifier ? state.replayState : null,
+      },
+    );
+  }
+  return result;
 }
 
 function nativeEvolutionValue(evolution) {
@@ -173,60 +263,89 @@ function nativeEvolutionValue(evolution) {
 }
 
 function semanticTransformationFacts(state) {
+  const result = [];
   if (state.sourceKind === "mip") {
-    return (state.currentPackageObservation?.records ?? [])
-      .filter(({ role }) => role === "semanticTransformation")
-      .map((record) => fact(
-        { artifact: "semanticTransformation", reference: record.reference },
-        record,
-      ));
+    const records = state.currentPackageObservation?.records ?? [];
+    for (let index = 0; index < records.length; index += 1) {
+      const record = records[index];
+      if (record.role === "semanticTransformation") {
+        result[result.length] = fact(
+          { artifact: "semanticTransformation", reference: record.reference },
+          record,
+        );
+      }
+    }
+    return result;
   }
-  return (state.currentFrame?.world.nodes ?? [])
-    .filter((node) => !node.aggregate && !node.detail
-      && semanticTransformationFamilies.has(node.family)
-      && ["semantic", "episodic", "procedural"].includes(node.kind))
-    .map((node) => fact(
-      { artifact: "semanticTransformation", key: node.key },
-      {
-        family: node.family,
-        identifier: node.identifier,
-        key: node.key,
-        kind: node.kind,
-        revision: node.revision ?? null,
-      },
-    ));
+  const nodes = state.currentFrame?.world.nodes ?? [];
+  for (let index = 0; index < nodes.length; index += 1) {
+    const node = nodes[index];
+    if (!node.aggregate && !node.detail
+        && setHas(semanticTransformationFamilies, node.family)
+        && (node.kind === "semantic" || node.kind === "episodic" || node.kind === "procedural")) {
+      result[result.length] = fact(
+        { artifact: "semanticTransformation", key: node.key },
+        {
+          family: node.family,
+          identifier: node.identifier,
+          key: node.key,
+          kind: node.kind,
+          revision: node.revision ?? null,
+        },
+      );
+    }
+  }
+  return result;
 }
 
 function relationshipFacts(state) {
+  const result = [];
   if (state.sourceKind === "mip") {
-    return (state.currentPackageObservation?.relationships ?? []).map((relationship) => fact(
-      { artifact: "relationship", reference: relationship.reference },
-      relationship,
-    ));
+    const relationships = state.currentPackageObservation?.relationships ?? [];
+    for (let index = 0; index < relationships.length; index += 1) {
+      const relationship = relationships[index];
+      result[index] = fact(
+        { artifact: "relationship", reference: relationship.reference },
+        relationship,
+      );
+    }
+    return result;
   }
-  return (state.currentFrame?.world.edges ?? [])
-    .filter(({ relation }) => relation !== "contains")
-    .map((edge) => {
+  const edges = state.currentFrame?.world.edges ?? [];
+  for (let index = 0; index < edges.length; index += 1) {
+    const edge = edges[index];
+    if (edge.relation !== "contains") {
       const { flowKind: ignoredFlowKind, key, ...semantic } = edge;
-      return fact({ artifact: "relationship", key }, semantic);
-    });
+      result[result.length] = fact({ artifact: "relationship", key }, semantic);
+    }
+  }
+  return result;
 }
 
 function evolutionFacts(state) {
   const evolutions = state.sourceKind === "mip"
     ? state.package.evolutions
     : state.evolution ? [state.evolution] : [];
-  return [
-    ...semanticTransformationFacts(state),
-    ...relationshipFacts(state),
-    ...evolutions.map((evolution) => fact(
+  const result = [];
+  const transformations = semanticTransformationFacts(state);
+  for (let index = 0; index < transformations.length; index += 1) {
+    result[result.length] = transformations[index];
+  }
+  const relationships = relationshipFacts(state);
+  for (let index = 0; index < relationships.length; index += 1) {
+    result[result.length] = relationships[index];
+  }
+  for (let index = 0; index < evolutions.length; index += 1) {
+    const evolution = evolutions[index];
+    result[result.length] = fact(
       { artifact: "evolution", identifier: evolution.identifier },
       {
         active: state.evolution?.identifier === evolution.identifier,
         artifact: state.sourceKind === "native" ? nativeEvolutionValue(evolution) : evolution,
       },
-    )),
-  ];
+    );
+  }
+  return result;
 }
 
 function verificationFacts(state) {
@@ -265,13 +384,19 @@ function normalizedTransitionPayload(transition) {
 }
 
 function transitionFacts(investigation) {
-  return investigation.transitionLog.transitions.map((transition) => fact(
-    { index: transition.index },
-    {
-      kind: transition.kind,
-      payload: normalizedTransitionPayload(transition),
-    },
-  ));
+  const transitions = investigation.transitionLog.transitions;
+  const result = [];
+  for (let index = 0; index < transitions.length; index += 1) {
+    const transition = transitions[index];
+    result[index] = fact(
+      { index: transition.index },
+      {
+        kind: transition.kind,
+        payload: normalizedTransitionPayload(transition),
+      },
+    );
+  }
+  return result;
 }
 
 function lifecycleFacts(state) {
@@ -281,8 +406,9 @@ function lifecycleFacts(state) {
 function factsFor(investigation, category) {
   const { state } = investigation;
   if (category === RegressionCategory.Replay) return replayFacts(state);
-  if ([RegressionCategory.Reflection, RegressionCategory.Evidence, RegressionCategory.Retrieval]
-    .includes(category)) return semanticFacts(state, category);
+  if (category === RegressionCategory.Reflection
+      || category === RegressionCategory.Evidence
+      || category === RegressionCategory.Retrieval) return semanticFacts(state, category);
   if (category === RegressionCategory.Evolution) return evolutionFacts(state);
   if (category === RegressionCategory.Verification) return verificationFacts(state);
   if (category === RegressionCategory.Transition) return transitionFacts(investigation);
@@ -290,13 +416,18 @@ function factsFor(investigation, category) {
 }
 
 function indexedFacts(values) {
-  const result = new Map();
-  values.forEach((entry) => {
+  const facts = new IntrinsicMap();
+  const keys = [];
+  for (let index = 0; index < values.length; index += 1) {
+    const entry = values[index];
     const key = canonicalize(entry.subject);
-    if (result.has(key)) throw new TypeError(`Regression facts contain duplicate subject ${key}.`);
-    result.set(key, entry);
-  });
-  return result;
+    if (mapHas(facts, key)) {
+      throw new IntrinsicTypeError(`Regression facts contain duplicate subject ${key}.`);
+    }
+    mapSet(facts, key, entry);
+    keys[keys.length] = key;
+  }
+  return { facts, keys };
 }
 
 function factDigest(category, value) {
@@ -310,14 +441,31 @@ function factDigest(category, value) {
 function compareFacts(category, beforeValues, afterValues) {
   const before = indexedFacts(beforeValues);
   const after = indexedFacts(afterValues);
-  const subjectKeys = [...new Set([...before.keys(), ...after.keys()])].sort(compareText);
+  const subjects = new IntrinsicSet();
+  const subjectKeys = [];
+  for (let index = 0; index < before.keys.length; index += 1) {
+    const key = before.keys[index];
+    if (!setHas(subjects, key)) {
+      intrinsicReflectApply(intrinsicSetAdd, subjects, [key]);
+      subjectKeys[subjectKeys.length] = key;
+    }
+  }
+  for (let index = 0; index < after.keys.length; index += 1) {
+    const key = after.keys[index];
+    if (!setHas(subjects, key)) {
+      intrinsicReflectApply(intrinsicSetAdd, subjects, [key]);
+      subjectKeys[subjectKeys.length] = key;
+    }
+  }
+  intrinsicReflectApply(intrinsicArraySort, subjectKeys, [compareText]);
   const differences = [];
-  subjectKeys.forEach((key) => {
-    const earlier = before.get(key);
-    const current = after.get(key);
+  for (let index = 0; index < subjectKeys.length; index += 1) {
+    const key = subjectKeys[index];
+    const earlier = mapGet(before.facts, key);
+    const current = mapGet(after.facts, key);
     const beforeDigest = earlier ? factDigest(category, earlier.value) : null;
     const afterDigest = current ? factDigest(category, current.value) : null;
-    if (beforeDigest === afterDigest) return;
+    if (beforeDigest === afterDigest) continue;
     let subject = earlier?.subject ?? current.subject;
     if (category === RegressionCategory.Transition) {
       subject = {
@@ -338,13 +486,13 @@ function compareFacts(category, beforeValues, afterValues) {
         },
       };
     }
-    differences.push({
+    differences[differences.length] = {
       change: earlier ? current ? "modified" : "removed" : "added",
       subject,
       beforeDigest,
       afterDigest,
-    });
-  });
+    };
+  }
   return {
     category,
     status: differences.length === 0 ? "identical" : "changed",
@@ -353,16 +501,21 @@ function compareFacts(category, beforeValues, afterValues) {
 }
 
 function reportIdentifier(material) {
-  return `regression:${mipDigest(
+  const digest = mipDigest(
     "INVESTIGATION-CORE-REGRESSION-1.0",
     canonicalize(material),
-  ).slice(7)}`;
+  );
+  return `regression:${intrinsicReflectApply(intrinsicStringSlice, digest, [7])}`;
 }
 
 function deeplyFrozen(value) {
   if (!value || typeof value !== "object") return true;
-  if (!Object.isFrozen(value)) return false;
-  return Object.values(value).every(deeplyFrozen);
+  if (!intrinsicObjectIsFrozen(value)) return false;
+  const children = intrinsicObjectValues(value);
+  for (let index = 0; index < children.length; index += 1) {
+    if (!deeplyFrozen(children[index])) return false;
+  }
+  return true;
 }
 
 export function validateCognitiveRegression(report) {
@@ -374,58 +527,65 @@ export function validateCognitiveRegression(report) {
     || !deeplyFrozen(report)
     || !exactMembers(report.baseline, ["sourceIdentifier", "sourceKind", "workspaceIdentifier"])
     || !exactMembers(report.candidate, ["sourceIdentifier", "sourceKind", "workspaceIdentifier"])
-    || !Array.isArray(report.categories)
+    || !intrinsicArrayIsArray(report.categories)
     || report.categories.length !== categoryOrder.length) {
-    throw new TypeError("A closed immutable MemoryOS Cognitive Regression Report is required.");
+    throw new IntrinsicTypeError("A closed immutable MemoryOS Cognitive Regression Report is required.");
   }
-  for (const descriptor of [report.baseline, report.candidate]) {
-    if (![descriptor.sourceIdentifier, descriptor.sourceKind, descriptor.workspaceIdentifier]
-      .every((value) => typeof value === "string" && value.length > 0)
-      || !["mip", "native"].includes(descriptor.sourceKind)) {
-      throw new TypeError("Regression source descriptors require stable non-empty identities.");
+  const descriptors = [report.baseline, report.candidate];
+  for (let index = 0; index < descriptors.length; index += 1) {
+    const descriptor = descriptors[index];
+    if (typeof descriptor.sourceIdentifier !== "string" || descriptor.sourceIdentifier.length === 0
+        || typeof descriptor.sourceKind !== "string" || descriptor.sourceKind.length === 0
+        || typeof descriptor.workspaceIdentifier !== "string" || descriptor.workspaceIdentifier.length === 0
+        || (descriptor.sourceKind !== "mip" && descriptor.sourceKind !== "native")) {
+      throw new IntrinsicTypeError("Regression source descriptors require stable non-empty identities.");
     }
   }
   if (report.baseline.workspaceIdentifier !== report.candidate.workspaceIdentifier
     || report.baseline.sourceKind !== report.candidate.sourceKind) {
-    throw new TypeError("Regression sources must share one Workspace and source kind.");
+    throw new IntrinsicTypeError("Regression sources must share one Workspace and source kind.");
   }
   let detected = false;
-  report.categories.forEach((category, categoryIndex) => {
+  for (let categoryIndex = 0; categoryIndex < report.categories.length; categoryIndex += 1) {
+    const category = report.categories[categoryIndex];
     if (!exactMembers(category, ["category", "differences", "status"])
       || category.category !== categoryOrder[categoryIndex]
-      || !categoryStatus.has(category.status)
-      || !Array.isArray(category.differences)
+      || !setHas(categoryStatus, category.status)
+      || !intrinsicArrayIsArray(category.differences)
       || category.status !== (category.differences.length === 0 ? "identical" : "changed")) {
-      throw new TypeError("Regression categories must use the fixed deterministic contract.");
+      throw new IntrinsicTypeError("Regression categories must use the fixed deterministic contract.");
     }
     detected ||= category.status === "changed";
     let previousSubject = null;
-    category.differences.forEach((difference) => {
+    for (let differenceIndex = 0; differenceIndex < category.differences.length; differenceIndex += 1) {
+      const difference = category.differences[differenceIndex];
       if (!exactMembers(difference, [
         "afterDigest", "beforeDigest", "change", "subject",
-      ]) || !changeKinds.has(difference.change)
+      ]) || !setHas(changeKinds, difference.change)
         || !difference.subject || typeof difference.subject !== "object"
-        || Array.isArray(difference.subject)) {
-        throw new TypeError("Regression differences must use the closed factual contract.");
+        || intrinsicArrayIsArray(difference.subject)) {
+        throw new IntrinsicTypeError("Regression differences must use the closed factual contract.");
       }
       const before = difference.beforeDigest;
       const after = difference.afterDigest;
       const valid = difference.change === "added"
-        ? before === null && digestPattern.test(after)
+        ? before === null && matches(digestPattern, after)
         : difference.change === "removed"
-          ? digestPattern.test(before) && after === null
-          : digestPattern.test(before) && digestPattern.test(after) && before !== after;
-      if (!valid) throw new TypeError("Regression difference digests do not match their change kind.");
+          ? matches(digestPattern, before) && after === null
+          : matches(digestPattern, before) && matches(digestPattern, after) && before !== after;
+      if (!valid) {
+        throw new IntrinsicTypeError("Regression difference digests do not match their change kind.");
+      }
       const subject = canonicalize(difference.subject);
       if (previousSubject !== null && compareText(previousSubject, subject) >= 0) {
-        throw new TypeError("Regression differences must be uniquely ordered by subject identity.");
+        throw new IntrinsicTypeError("Regression differences must be uniquely ordered by subject identity.");
       }
       previousSubject = subject;
-    });
-  });
+    }
+  }
   if (report.regressionDetected !== detected
     || report.overall !== (detected ? "regressionDetected" : "identical")) {
-    throw new TypeError("Regression overall status does not match its factual categories.");
+    throw new IntrinsicTypeError("Regression overall status does not match its factual categories.");
   }
   const material = {
     baseline: report.baseline,
@@ -435,7 +595,7 @@ export function validateCognitiveRegression(report) {
     regressionDetected: report.regressionDetected,
   };
   if (report.identifier !== reportIdentifier(material)) {
-    throw new TypeError("Regression report identity does not match its canonical content.");
+    throw new IntrinsicTypeError("Regression report identity does not match its canonical content.");
   }
   return true;
 }
@@ -446,17 +606,22 @@ export function compareCognitiveRegression(baselineValue, candidateValue) {
   const baseline = sourceDescriptor(baselineInvestigation);
   const candidate = sourceDescriptor(candidateInvestigation);
   if (baseline.workspaceIdentifier !== candidate.workspaceIdentifier) {
-    throw new RangeError("Cognitive Regression cannot cross a Workspace boundary.");
+    throw new IntrinsicRangeError("Cognitive Regression cannot cross a Workspace boundary.");
   }
   if (baseline.sourceKind !== candidate.sourceKind) {
-    throw new RangeError("Cognitive Regression requires investigations with the same source kind.");
+    throw new IntrinsicRangeError("Cognitive Regression requires investigations with the same source kind.");
   }
-  const categories = categoryOrder.map((category) => compareFacts(
-    category,
-    factsFor(baselineInvestigation, category),
-    factsFor(candidateInvestigation, category),
-  ));
-  const regressionDetected = categories.some(({ status }) => status === "changed");
+  const categories = [];
+  let regressionDetected = false;
+  for (let index = 0; index < categoryOrder.length; index += 1) {
+    const category = categoryOrder[index];
+    categories[index] = compareFacts(
+      category,
+      factsFor(baselineInvestigation, category),
+      factsFor(candidateInvestigation, category),
+    );
+    if (categories[index].status === "changed") regressionDetected = true;
+  }
   const material = {
     baseline,
     candidate,

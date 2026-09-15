@@ -297,6 +297,34 @@ test("point-in-time capture atomically binds one Core state and keeps earlier fa
   );
 });
 
+test("transition binding never consults a mutable Array.prototype.at", () => {
+  const identifier = "transition-head-intrinsic-hardening";
+  const core = new InvestigationCore();
+  core.create({ identifier, snapshot: clone(referenceSnapshot) });
+  core.observe(identifier, {
+    operation: "AdditionalObservation",
+    snapshot: clone(referenceSnapshot),
+  });
+  const retainedLog = core.load(identifier).transitionLog;
+  const expectedHead = retainedLog.transitions[retainedLog.transitions.length - 1].identifier;
+  const originalAt = Array.prototype.at;
+  let prepared;
+  try {
+    Array.prototype.at = function poisonedAt() { return this[0]; };
+    prepared = capturePolicyFactContext(core, identifier);
+  } finally {
+    Array.prototype.at = originalAt;
+  }
+  assert.equal(prepared.artifact.transitionLog.headTransitionIdentifier, expectedHead);
+  assert.equal(
+    prepared.artifact.facts.transitions.items[
+      prepared.artifact.facts.transitions.items.length - 1
+    ].subject.identifier,
+    expectedHead,
+  );
+  assert.equal(assertAuthoritativePolicyFactContext(prepared, core), true);
+});
+
 test("MIP inventory alone never manufactures local active-artifact state", async () => {
   const core = new InvestigationCore();
   const imported = core.import(await mipFixture(), { identifier: "investigation-context-mip-inventory" });
