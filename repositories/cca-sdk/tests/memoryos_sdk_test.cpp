@@ -202,6 +202,13 @@ void expectPolicyPreparationFailure(
 
 TEST(MemoryOsSdk, ExposesVersionedImmutableValueHandles) {
     static_assert(memoryos::sdkVersion == "1.1.0");
+    const auto portableNumber = memoryos::detail::Json::parse("0.125");
+    EXPECT_TRUE(portableNumber.isNumber());
+    EXPECT_EQ(portableNumber.serialize(), "0.125");
+    const auto portableExponent = memoryos::detail::Json::parse("-1.25e2");
+    EXPECT_EQ(portableExponent.serialize(), "-125");
+    EXPECT_THROW(static_cast<void>(memoryos::detail::Json::parse("1e9999")),
+                 std::invalid_argument);
     static_assert(std::is_copy_constructible_v<memoryos::Workspace>);
     static_assert(std::is_copy_constructible_v<memoryos::Investigation>);
     static_assert(std::is_copy_constructible_v<memoryos::ReplaySession>);

@@ -17,6 +17,11 @@
     "status": "bound",
     "revision": "a58db3e1c7b57ca077f31b6814c2514e7a9e51be"
   },
+  "hostedCorrectionCommitBinding": {
+    "strategy": "postCommitConformanceCommit",
+    "status": "mechanicallyPending",
+    "revision": "PENDING"
+  },
   "requiredCheckIdentity": {
     "callerJobIdentifier": "memoryos-policy-gate",
     "reusableJobName": "MemoryOS Policy Gate",
@@ -163,13 +168,17 @@
     ".github/workflows/memoryos-policy-gate-engineering.yml",
     ".github/workflows/memoryos-policy-gate-hosted.yml",
     ".github/workflows/memoryos-policy-gate.yml",
+    "repositories/cca-compiler/src/parser.cpp",
+    "repositories/cca-core/src/runtime/service_registry.cpp",
     "repositories/cca-conformance/tools/build-mo1302-action-distribution.mjs",
     "repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs",
     "repositories/cca-conformance/tools/mo1302-native-evidence.mjs",
+    "repositories/cca-sdk/src/json.hpp",
     "tools/verify_workspace.py",
     "vcpkg.json"
   ],
   "conformanceSurface": [
+    "repositories/cca-compiler/tests/parser_test.cpp",
     "repositories/cca-conformance/CMakeLists.txt",
     "repositories/cca-conformance/mo1302-conformance-inventory.json",
     "repositories/cca-conformance/package.json",

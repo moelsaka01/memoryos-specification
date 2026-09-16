@@ -16,6 +16,13 @@ TEST(ParserTest, ConvertsYamlToFormatIndependentDeterministicTree) {
 enabled: true
 count: 3
 ratio: 1.5
+scientific: -1.25e2
+leadingFraction: .5
+trailingPoint: 1.
+explicitPlusFraction: +1.5
+hexFloat: 0x1p0
+notFinite: .inf
+outOfRange: 1e9999
 nothing: null
 items:
   - first
@@ -31,6 +38,13 @@ items:
     EXPECT_TRUE(root.find("enabled")->as_boolean());
     EXPECT_EQ(root.find("count")->as_integer(), 3);
     EXPECT_DOUBLE_EQ(root.find("ratio")->as_number(), 1.5);
+    EXPECT_DOUBLE_EQ(root.find("scientific")->as_number(), -125.0);
+    EXPECT_DOUBLE_EQ(root.find("leadingFraction")->as_number(), 0.5);
+    EXPECT_DOUBLE_EQ(root.find("trailingPoint")->as_number(), 1.0);
+    EXPECT_EQ(root.find("explicitPlusFraction")->as_string(), "+1.5");
+    EXPECT_EQ(root.find("hexFloat")->as_string(), "0x1p0");
+    EXPECT_EQ(root.find("notFinite")->as_string(), ".inf");
+    EXPECT_EQ(root.find("outOfRange")->as_string(), "1e9999");
     EXPECT_TRUE(root.find("nothing")->is_null());
     ASSERT_EQ(root.find("items")->as_array().size(), 2U);
     EXPECT_EQ(root.find("enabled")->location().line, 2U);

@@ -49,9 +49,13 @@ const WORKFLOW_PATHS = Object.freeze([
   NATIVE_WORKFLOW,
   PRODUCTION_WORKFLOW,
 ]);
-const PHASE2_COMMIT = "fc83b496c67869c8a8ddfcee0b2ec3f2937f2db2";
+const PHASE3_COMMIT = "a58db3e1c7b57ca077f31b6814c2514e7a9e51be";
+const PHASE3_BINDING_COMMIT = "8949dc9191f5a32c3f6a466cbc067c4effbcc480";
 const PHASE3_SUBJECT = "feat(memoryos-1.3): MO-1302 phase 3 cross-platform closure";
 const CLOSURE_SUBJECT = "conformance(memoryos-1.3): bind MO-1302 phase 3 revision";
+const CORRECTION_SUBJECT = "fix(memoryos-1.3): close MO-1302 hosted release gates";
+const CORRECTION_BINDING_SUBJECT =
+  "conformance(memoryos-1.3): bind MO-1302 hosted correction revision";
 const FULL_SHA = /^[0-9a-f]{40}$/u;
 const PINS = Object.freeze([
   Object.freeze({
@@ -216,6 +220,15 @@ test("hosted validation composes the reusable workflow with the canonical check 
   assert.match(source, /if: always\(\)/u);
   assert.equal((source.match(/overwrite: false/gu) ?? []).length, 2);
   assert.match(source, /MO_DUPLICATE_UPLOAD_OUTCOME/u);
+  assert.match(
+    source,
+    /candidate-mip-path: \$\{\{ inputs\.scenario != 'artifact-pass' && 'repositories\/cca-studio\/examples\/ai-runtime-adapters\/reference-packages\/openai-agents-reference\.mip' \|\| '' \}\}/u,
+  );
+  assert.match(
+    source,
+    /candidate-mip-artifact-name: \$\{\{ inputs\.scenario == 'artifact-pass' && format\('mo1302-candidate-\{0\}-\{1\}', github\.run_id, github\.run_attempt\) \|\| '' \}\}/u,
+  );
+  assert.doesNotMatch(source, /inputs\.scenario == 'artifact-pass' && '' \|\|/u);
   assert.match(source, /artifact-ids: \$\{\{ steps\.resolve\.outputs\.artifact-id \}\}/u);
   const helper = await text("repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs");
   assert.match(helper, /actions\/runs\/\$\{runId\}\/attempts\/\$\{attempt\}\/jobs\?per_page=100/u);
@@ -463,6 +476,15 @@ test("the final additive inventory closes every Phase 3 implementation and evide
     ...record.conformanceSurface,
     ...record.documentationSurface,
   ]) await readFile(resolve(WORKSPACE_ROOT, ...path.split("/")));
+  for (const path of [
+    "repositories/cca-compiler/tests/parser_test.cpp",
+    "repositories/cca-sdk/tests/memoryos_sdk_test.cpp",
+  ]) assert.ok(record.conformanceSurface.includes(path));
+  for (const path of [
+    "repositories/cca-compiler/src/parser.cpp",
+    "repositories/cca-core/src/runtime/service_registry.cpp",
+    "repositories/cca-sdk/src/json.hpp",
+  ]) assert.ok(record.implementationSurface.includes(path));
 
   const bindings = [
     [record.handoffArtifacts.document, "repositories/cca-conformance/docs/mo1302-handoff.md"],
@@ -504,23 +526,45 @@ test("documentation provides immutable examples, local parity, security, limitat
   assert.match(joined, /uses:\s+moelsaka01\/memoryos-specification\/\.github\/workflows\/memoryos-policy-gate\.yml@[0-9a-f]{40}/u);
 });
 
-test("the Phase 3 commit binding uses the closed two-commit self-reference strategy", async () => {
+test("the Phase 3 commit binding remains historically immutable", async () => {
   const binding = (await inventory()).phase3CommitBinding;
+  assert.equal(binding.strategy, "postCommitConformanceCommit");
+  assert.equal(binding.status, "bound");
+  assert.equal(binding.revision, PHASE3_COMMIT);
+  assert.equal(git("rev-parse", `${PHASE3_BINDING_COMMIT}^`), PHASE3_COMMIT);
+  assert.equal(git("show", "-s", "--format=%s", PHASE3_COMMIT), PHASE3_SUBJECT);
+  assert.equal(git("show", "-s", "--format=%s", PHASE3_BINDING_COMMIT), CLOSURE_SUBJECT);
+  assert.deepEqual(git("diff", "--name-only", PHASE3_COMMIT, PHASE3_BINDING_COMMIT).split(/\r?\n/u), [
+    "repositories/cca-conformance/mo1302-conformance-inventory.json",
+    "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
+  ]);
+});
+
+test("the hosted correction uses a separate two-commit self-reference strategy", async () => {
+  const binding = (await inventory()).hostedCorrectionCommitBinding;
   assert.equal(binding.strategy, "postCommitConformanceCommit");
   const head = git("rev-parse", "HEAD");
   const subject = git("show", "-s", "--format=%s", "HEAD");
   if (binding.status === "mechanicallyPending") {
     assert.equal(binding.revision, "PENDING");
-    assert.ok(head === PHASE2_COMMIT || subject === PHASE3_SUBJECT);
+    assert.ok(head === PHASE3_BINDING_COMMIT || subject === CORRECTION_SUBJECT);
     return;
   }
   assert.equal(binding.status, "bound");
   assert.match(binding.revision, FULL_SHA);
-  assert.equal(subject, CLOSURE_SUBJECT);
-  assert.equal(git("rev-parse", "HEAD^"), binding.revision);
-  assert.equal(git("show", "-s", "--format=%s", binding.revision), PHASE3_SUBJECT);
-  assert.deepEqual(git("diff", "--name-only", binding.revision, "HEAD").split(/\r?\n/u), [
+  assert.equal(git("show", "-s", "--format=%s", binding.revision), CORRECTION_SUBJECT);
+  assert.equal(git("merge-base", "--is-ancestor", binding.revision, "HEAD"), "");
+  const descendants = git(
+    "rev-list",
+    "--first-parent",
+    "--reverse",
+    `${binding.revision}..HEAD`,
+  ).split(/\r?\n/u).filter(Boolean);
+  assert.ok(descendants.length >= 1);
+  const bindingCommit = descendants[0];
+  assert.equal(git("rev-parse", `${bindingCommit}^`), binding.revision);
+  assert.equal(git("show", "-s", "--format=%s", bindingCommit), CORRECTION_BINDING_SUBJECT);
+  assert.deepEqual(git("diff", "--name-only", binding.revision, bindingCommit).split(/\r?\n/u), [
     "repositories/cca-conformance/mo1302-conformance-inventory.json",
-    "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
   ]);
 });

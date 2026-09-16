@@ -6,6 +6,9 @@
 #include <cmath>
 #include <cstdint>
 #include <limits>
+#include <locale>
+#include <optional>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -74,17 +77,80 @@ namespace {
     return value;
 }
 
-[[nodiscard]] std::optional<double> parse_number(const std::string_view text) {
-    if (text.empty()) {
-        return std::nullopt;
+template <typename Floating>
+[[nodiscard]] std::optional<Floating> parse_floating(const std::string_view text) {
+    Floating value{};
+    // Xcode 15.4's libc++ exposes integer but not floating-point from_chars.
+    if constexpr (requires(const char* first, const char* last, Floating& candidate) {
+                      std::from_chars(first,
+                                      last,
+                                      candidate,
+                                      std::chars_format::general);
+                  }) {
+        const auto [end, error] = std::from_chars(
+            text.data(), text.data() + text.size(), value, std::chars_format::general);
+        if (error != std::errc{} || end != text.data() + text.size()) {
+            return std::nullopt;
+        }
+    } else {
+        // The classic locale and full-buffer check retain from_chars-style intake.
+        std::istringstream input{std::string{text}};
+        input.imbue(std::locale::classic());
+        input >> std::noskipws >> value;
+        if (input.fail() ||
+            input.rdbuf()->sgetc() != std::char_traits<char>::eof()) {
+            return std::nullopt;
+        }
     }
-    double value = 0.0;
-    const auto [end, error] =
-        std::from_chars(text.data(), text.data() + text.size(), value, std::chars_format::general);
-    if (error != std::errc{} || end != text.data() + text.size() || !std::isfinite(value)) {
+    if (!std::isfinite(value)) {
         return std::nullopt;
     }
     return value;
+}
+
+[[nodiscard]] bool has_decimal_number_grammar(const std::string_view text) noexcept {
+    std::size_t position = 0U;
+    if (position < text.size() && text[position] == '-') {
+        ++position;
+    }
+
+    bool mantissa_digit = false;
+    while (position < text.size() && text[position] >= '0' && text[position] <= '9') {
+        mantissa_digit = true;
+        ++position;
+    }
+    if (position < text.size() && text[position] == '.') {
+        ++position;
+        while (position < text.size() && text[position] >= '0' && text[position] <= '9') {
+            mantissa_digit = true;
+            ++position;
+        }
+    }
+    if (!mantissa_digit) {
+        return false;
+    }
+
+    if (position < text.size() && (text[position] == 'e' || text[position] == 'E')) {
+        ++position;
+        if (position < text.size() && (text[position] == '+' || text[position] == '-')) {
+            ++position;
+        }
+        const auto exponent_begin = position;
+        while (position < text.size() && text[position] >= '0' && text[position] <= '9') {
+            ++position;
+        }
+        if (position == exponent_begin) {
+            return false;
+        }
+    }
+    return position == text.size();
+}
+
+[[nodiscard]] std::optional<double> parse_number(const std::string_view text) {
+    if (!has_decimal_number_grammar(text)) {
+        return std::nullopt;
+    }
+    return parse_floating<double>(text);
 }
 
 class Converter final {

@@ -71,7 +71,7 @@ jobs:
       policy-kind: policy
       policy-path: ${{ (inputs.scenario == 'direct-pass' || inputs.scenario == 'artifact-pass') && 'repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/pass.memoryos-policy.json' || inputs.scenario == 'fail' && 'repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/fail.memoryos-policy.json' || 'repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/cne.memoryos-policy.json' }}
       expected-policy-semantic-digest: ${{ (inputs.scenario == 'direct-pass' || inputs.scenario == 'artifact-pass') && 'sha256:bc0cb0880beac6408c3a7890c028b2d0cd1544e55b5e79864c564e23c4955157' || inputs.scenario == 'fail' && 'sha256:c37ccdf0bc01029460683c6c3fb4b451a7b7382253f7fd16252837de66c957f8' || 'sha256:e65ba193705de3a82661ec7141bb173ae289e8ffe9c432f241613b4c184e1a57' }}
-      candidate-mip-path: ${{ inputs.scenario == 'artifact-pass' && '' || 'repositories/cca-studio/examples/ai-runtime-adapters/reference-packages/openai-agents-reference.mip' }}
+      candidate-mip-path: ${{ inputs.scenario != 'artifact-pass' && 'repositories/cca-studio/examples/ai-runtime-adapters/reference-packages/openai-agents-reference.mip' || '' }}
       candidate-mip-artifact-name: ${{ inputs.scenario == 'artifact-pass' && format('mo1302-candidate-{0}-{1}', github.run_id, github.run_attempt) || '' }}
       regression-baseline-mip-path: ${{ inputs.scenario == 'regression-pass' && 'repositories/cca-studio/examples/ai-runtime-adapters/reference-packages/openai-agents-reference.mip' || '' }}
       retention-days: 14

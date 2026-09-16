@@ -5,7 +5,10 @@
 #include <cstddef>
 #include <cstdint>
 #include <limits>
+#include <locale>
 #include <map>
+#include <optional>
+#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -103,6 +106,41 @@ class Json final {
     }
 
   private:
+    template <typename Floating>
+    [[nodiscard]] static std::optional<Floating>
+    parseFloating(std::string_view token) {
+        Floating value{};
+        // Xcode 15.4's libc++ exposes integer but not floating-point from_chars.
+        if constexpr (requires(const char* first,
+                               const char* last,
+                               Floating& candidate) {
+                          std::from_chars(first,
+                                          last,
+                                          candidate,
+                                          std::chars_format::general);
+                      }) {
+            const auto converted = std::from_chars(
+                token.data(), token.data() + token.size(), value, std::chars_format::general);
+            if (converted.ec != std::errc{} ||
+                converted.ptr != token.data() + token.size()) {
+                return std::nullopt;
+            }
+        } else {
+            // JSON tokenization already fixed the grammar; retain locale-free conversion.
+            std::istringstream input{std::string{token}};
+            input.imbue(std::locale::classic());
+            input >> std::noskipws >> value;
+            if (input.fail() ||
+                input.rdbuf()->sgetc() != std::char_traits<char>::eof()) {
+                return std::nullopt;
+            }
+        }
+        if (!std::isfinite(value)) {
+            return std::nullopt;
+        }
+        return value;
+    }
+
     class Parser final {
       public:
         explicit Parser(std::string_view source) : source_(source) {}
@@ -374,15 +412,11 @@ class Json final {
                     return Json{integer};
                 }
             }
-            double number = 0.0;
-            const auto converted = std::from_chars(
-                token.data(), token.data() + token.size(), number);
-            if (converted.ec != std::errc{} ||
-                converted.ptr != token.data() + token.size() ||
-                !std::isfinite(number)) {
+            const auto number = Json::parseFloating<double>(token);
+            if (!number.has_value()) {
                 throw std::invalid_argument{"Invalid JSON number"};
             }
-            return Json{number};
+            return Json{*number};
         }
 
         std::string_view source_;
