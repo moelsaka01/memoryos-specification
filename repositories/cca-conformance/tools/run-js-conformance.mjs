@@ -17,6 +17,7 @@ const expectedFiles = Object.freeze([
   "independent_assessment_conformance_test.mjs",
   "mo1301_integration_conformance_test.mjs",
   "mo1302_action_foundation_conformance_test.mjs",
+  "mo1302_github_product_conformance_test.mjs",
   "normative_vectors_conformance_test.mjs",
   "reference_implementation_conformance_test.mjs",
   "report_conformance_test.mjs",

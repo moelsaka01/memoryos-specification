@@ -21,6 +21,12 @@ handoff without rewriting the v1.2.1 assessment or publishing
 CCA-MEMORYOS-1.1. See the [MO-1301 conformance guide](docs/mo1301-conformance.md)
 and [MO-1302 handoff contract](docs/mo1302-handoff.md).
 
+MO-1302 adds a separate additive
+[`mo1302-conformance-inventory.json`](mo1302-conformance-inventory.json) for
+the GitHub Policy Gate distribution, reusable workflow, immutable third-party
+Action pins, and product/security conformance. See the
+[GitHub Policy Gate guide](docs/mo1302-github-policy-gate.md).
+
 ## What the suite covers
 
 An assessment-specific manifest binds an implementation's evidence selectors
@@ -86,7 +92,7 @@ $env:MEMORYOS_CONFORMANCE_PYTHON = 'C:\absolute\path\to\python.exe'
 npm --prefix repositories/cca-conformance test
 ```
 
-The package runner inventories and executes these twelve `*_test.mjs` files in
+The package runner inventories and executes these fourteen `*_test.mjs` files in
 lexical order with deterministic environment settings and no concurrency:
 
 - `boundary_contract_conformance_test.mjs`
@@ -95,6 +101,8 @@ lexical order with deterministic environment settings and no concurrency:
 - `coverage_gap_conformance_test.mjs`
 - `independent_assessment_conformance_test.mjs`
 - `mo1301_integration_conformance_test.mjs`
+- `mo1302_action_foundation_conformance_test.mjs`
+- `mo1302_github_product_conformance_test.mjs`
 - `normative_vectors_conformance_test.mjs`
 - `reference_implementation_conformance_test.mjs`
 - `report_conformance_test.mjs`
@@ -114,6 +122,19 @@ cache classifications, the SDK/CLI identity projection, and the MO-1302
 handoff mapping. It also runs one exact-byte MIP-backed Policy parity request
 through the JavaScript SDK, Python SDK, CLI, and raw private bridge. It
 references frozen vectors in place and never regenerates them.
+
+Run the MO-1302 Action foundation and GitHub product/security suites separately
+with:
+
+```console
+npm --prefix repositories/cca-conformance run test:mo1302-phase1
+npm --prefix repositories/cca-conformance run test:mo1302-phase2
+```
+
+Phase 2 exercises the reusable-workflow contract, immutable third-party pins,
+mocked same-run artifact protocol, hostile ZIP boundary, verified-only upload,
+outputs, final conclusion, and non-normative presentation without requiring a
+live GitHub workflow run.
 
 ## Reproduce the Reference Implementation assessment
 

@@ -1,0 +1,42 @@
+{
+  "kind": "MemoryOSMO1302ConformanceInventory",
+  "version": "1.0.0",
+  "thirdPartyActionPins": {
+    "scopedFiles": [
+      ".github/workflows/memoryos-policy-gate.yml"
+    ],
+    "pins": [
+      {
+        "role": "checkout",
+        "repository": "actions/checkout",
+        "revision": "3d3c42e5aac5ba805825da76410c181273ba90b1"
+      },
+      {
+        "role": "downloadArtifact",
+        "repository": "actions/download-artifact",
+        "revision": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c"
+      },
+      {
+        "role": "uploadArtifact",
+        "repository": "actions/upload-artifact",
+        "revision": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
+      }
+    ]
+  },
+  "implementationSurface": [
+    ".github/actions/memoryos-policy-gate-workflow-support/action.yml",
+    ".github/actions/memoryos-policy-gate-workflow-support/dist/archive.js",
+    ".github/actions/memoryos-policy-gate-workflow-support/dist/finalize.js",
+    ".github/actions/memoryos-policy-gate-workflow-support/dist/github.js",
+    ".github/actions/memoryos-policy-gate-workflow-support/dist/index.js",
+    ".github/actions/memoryos-policy-gate-workflow-support/dist/io.js",
+    ".github/workflows/memoryos-policy-gate.yml"
+  ],
+  "conformanceSurface": [
+    "repositories/cca-conformance/tests/mo1302_github_product_conformance_test.mjs",
+    "repositories/cca-conformance/tests/support/mo1302-github-product-support.mjs"
+  ],
+  "documentationSurface": [
+    "repositories/cca-conformance/docs/mo1302-github-policy-gate.md"
+  ]
+}

@@ -733,7 +733,7 @@ test("outputs are exactly nineteen safe scalars for verified and failed invocati
   await removeRetained(pass);
 });
 
-test("security closure uses no shell, PATH executable, package install, network, authority upgrade, or workflow phase-2 surface", async () => {
+test("Phase 1 distribution remains isolated from shell, network, authority upgrade, and Phase 2 workflow code", async () => {
   const runtime = await readFile(resolve(ACTION_ROOT, "dist/action-runtime.mjs"), "utf8");
   const bootstrap = await readFile(resolve(ACTION_ROOT, "dist/index.js"), "utf8");
   const driver = await readFile(resolve(ACTION_ROOT, "dist/cli-driver.mjs"), "utf8");
@@ -743,10 +743,6 @@ test("security closure uses no shell, PATH executable, package install, network,
   assert.doesNotMatch(runtime, /env\.PATH|environment\.PATH|\bPATH\b.*memoryos/iu);
   assert.doesNotMatch(complete, /npm install|npm ci|pnpm|yarn|child_process\.exec\(|\bfetch\s*\(|node:(?:http|https|net|dns)|\bundici\b/iu);
   assert.doesNotMatch(complete, /authoritative.*(?:fromJson|deserialize)|upgradeAuthority|providerRegistration/iu);
-  assert.equal(await import("node:fs/promises").then(({ access }) => access(resolve(
-    WORKSPACE_ROOT,
-    ".github/workflows/memoryos-policy-gate.yml",
-  )).then(() => true, () => false)), false);
   for (const phrase of ["actions/checkout", "actions/download-artifact", "actions/upload-artifact", "GITHUB_STEP_SUMMARY", "::warning", "::error"]) {
     assert.equal(complete.includes(phrase), false, phrase);
   }

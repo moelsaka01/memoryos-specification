@@ -24,9 +24,11 @@ set(memoryos_conformance_sources_list
     docs/conformance-report.md
     docs/mo1301-conformance.md
     docs/mo1302-handoff.md
+    docs/mo1302-github-policy-gate.md
     docs/reference-implementation-guide.md
     docs/versioning-guide.md
     mo1301-conformance-inventory.json
+    mo1302-conformance-inventory.json
     requirements-manifest.json
     review-outcomes.input.json
     schema/conformance-evidence-1.0.schema.json
@@ -45,6 +47,7 @@ set(memoryos_conformance_sources_list
     tests/independent_assessment_conformance_test.mjs
     tests/mo1301_integration_conformance_test.mjs
     tests/mo1302_action_foundation_conformance_test.mjs
+    tests/mo1302_github_product_conformance_test.mjs
     tests/normative_vectors_conformance_test.mjs
     tests/reference_implementation_conformance_test.mjs
     tests/report_conformance_test.mjs
@@ -54,6 +57,7 @@ set(memoryos_conformance_sources_list
     tests/support/conformance-support.mjs
     tests/support/mo1301-conformance-support.mjs
     tests/support/mo1302-action-foundation-support.mjs
+    tests/support/mo1302-github-product-support.mjs
     tests/fixtures/github-policy-gate/1.0.0/mo1302-action-foundation-vectors.json
     tests/fixtures/investigation-policy/1.0.0/mo1302-handoff-vectors.json
     tools/conformance-report.mjs
@@ -108,6 +112,7 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     independent
     mo1301
     mo1302-phase1
+    mo1302-phase2
     normative
     reference
     report
@@ -129,6 +134,8 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
       set(conformance_source tests/mo1301_integration_conformance_test.mjs)
     elseif(conformance_area STREQUAL "mo1302-phase1")
       set(conformance_source tests/mo1302_action_foundation_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1302-phase2")
+      set(conformance_source tests/mo1302_github_product_conformance_test.mjs)
     elseif(conformance_area STREQUAL "normative")
       set(conformance_source tests/normative_vectors_conformance_test.mjs)
     elseif(conformance_area STREQUAL "reference")
@@ -173,6 +180,12 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
         memoryos.standard.${conformance_area}
         PROPERTIES LABELS
           "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1302;phase1;action"
+      )
+    elseif(conformance_area STREQUAL "mo1302-phase2")
+      set_tests_properties(
+        memoryos.standard.${conformance_area}
+        PROPERTIES LABELS
+          "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1302;phase2;github-product;security"
       )
     endif()
   endforeach()
@@ -234,6 +247,7 @@ endif()
 install(
   FILES README.md requirements-manifest.json review-outcomes.input.json package.json
     mo1301-conformance-inventory.json
+    mo1302-conformance-inventory.json
   DESTINATION "${CMAKE_INSTALL_DATADIR}/memoryos-conformance"
 )
 install(
