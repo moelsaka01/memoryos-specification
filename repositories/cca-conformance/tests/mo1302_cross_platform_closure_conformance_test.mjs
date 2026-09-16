@@ -55,7 +55,7 @@ const PHASE3_SUBJECT = "feat(memoryos-1.3): MO-1302 phase 3 cross-platform closu
 const CLOSURE_SUBJECT = "conformance(memoryos-1.3): bind MO-1302 phase 3 revision";
 const CORRECTION_SUBJECT = "fix(memoryos-1.3): close MO-1302 hosted release gates";
 const CORRECTION_BINDING_SUBJECT =
-  "conformance(memoryos-1.3): bind MO-1302 hosted correction revision";
+  "conformance(memoryos-1.3): bind MO-1302 hosted correction";
 const FULL_SHA = /^[0-9a-f]{40}$/u;
 const PINS = Object.freeze([
   Object.freeze({
@@ -566,5 +566,6 @@ test("the hosted correction uses a separate two-commit self-reference strategy",
   assert.equal(git("show", "-s", "--format=%s", bindingCommit), CORRECTION_BINDING_SUBJECT);
   assert.deepEqual(git("diff", "--name-only", binding.revision, bindingCommit).split(/\r?\n/u), [
     "repositories/cca-conformance/mo1302-conformance-inventory.json",
+    "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
   ]);
 });
