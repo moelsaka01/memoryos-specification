@@ -31,7 +31,7 @@ memoryos::ObserveOptions observationOptions(std::string identifier) {
 int main() {
     try {
         memoryos::MemoryOS memory;
-        const auto workspace = memory.openWorkspace("workspace-memoryos-policy-example");
+        const auto workspace = memory.openWorkspace("workspace-memoryos-release");
         const auto baseline = memory.observe(
             workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
             observationOptions("cpp-policy-example-baseline"));

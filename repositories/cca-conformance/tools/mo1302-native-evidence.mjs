@@ -16,6 +16,7 @@ export const EXPECTED_NATIVE_POLICY_TESTS = Object.freeze([
 const POLICY_GTEST_FILTER = [
   "MemoryOsSdk.ExposesVersionedImmutableValueHandles",
   "MemoryOsSdk.DelegatesPolicySemanticsAndRetainsExactBytes",
+  "MemoryOsSdk.EnforcesObservationWorkspaceAuthorityAcrossTheBridge",
   "MemoryOsSdk.EvaluatesPolicySetAndCneAsNormalOutcomes",
   "MemoryOsSdk.PreservesMetadataIsolationAndExactCachedBytes",
   "MemoryOsSdk.EvaluatesAnAuthoritativeMipBackedContext",

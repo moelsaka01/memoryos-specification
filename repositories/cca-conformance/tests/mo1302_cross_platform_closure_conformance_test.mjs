@@ -60,6 +60,12 @@ const HOSTED_CORRECTION_BINDING_COMMIT = "b14fa0d1c165283a4f80cff8e9669ce2070dc7
 const NATIVE_CORRECTION_SUBJECT = "fix(memoryos-1.3): close MO-1302 native hosted build";
 const NATIVE_CORRECTION_BINDING_SUBJECT =
   "conformance(memoryos-1.3): bind MO-1302 native hosted correction";
+const NATIVE_HOSTED_CORRECTION_BINDING_COMMIT =
+  "cce5d8e3e2f90ab9a1bd9618ee783faea3858dc4";
+const NATIVE_EXECUTION_CORRECTION_SUBJECT =
+  "fix(memoryos-1.3): close MO-1302 native execution gate";
+const NATIVE_EXECUTION_CORRECTION_BINDING_SUBJECT =
+  "conformance(memoryos-1.3): bind MO-1302 native execution correction";
 const FULL_SHA = /^[0-9a-f]{40}$/u;
 const PINS = Object.freeze([
   Object.freeze({
@@ -86,6 +92,7 @@ const PINS = Object.freeze([
 const POLICY_GTEST_FILTER = [
   "MemoryOsSdk.ExposesVersionedImmutableValueHandles",
   "MemoryOsSdk.DelegatesPolicySemanticsAndRetainsExactBytes",
+  "MemoryOsSdk.EnforcesObservationWorkspaceAuthorityAcrossTheBridge",
   "MemoryOsSdk.EvaluatesPolicySetAndCneAsNormalOutcomes",
   "MemoryOsSdk.PreservesMetadataIsolationAndExactCachedBytes",
   "MemoryOsSdk.EvaluatesAnAuthoritativeMipBackedContext",
@@ -379,6 +386,34 @@ test("the native workflow proves registration before an anchored two-test execut
   assert.match(source, /node repositories\/cca-conformance\/tools\/mo1302-native-evidence\.mjs validate/u);
 });
 
+test("the native Windows configuration cannot mix MinGW with MSVC vcpkg binaries", async () => {
+  const source = await text(NATIVE_WORKFLOW);
+  const record = await inventory();
+  assert.deepEqual(record.nativeToolchain.windows, {
+    compiler: "C:/mingw64/bin/c++.exe",
+    compilerFamily: "MinGW",
+    vcpkgTriplet: "x64-mingw-dynamic",
+  });
+  const posixStart = source.indexOf(
+    "- name: Configure the supported CI preset (POSIX)",
+  );
+  const windowsStart = source.indexOf(
+    "- name: Configure the supported CI preset (Windows MinGW)",
+  );
+  const buildStart = source.indexOf("- name: Build the supported CI preset");
+  assert.ok(posixStart >= 0 && windowsStart > posixStart && buildStart > windowsStart);
+  const posixConfiguration = source.slice(posixStart, windowsStart);
+  const windowsConfiguration = source.slice(windowsStart, buildStart);
+  assert.equal(posixConfiguration.includes("if: runner.os != 'Windows'"), true);
+  assert.equal(posixConfiguration.includes("run: cmake --preset ci"), true);
+  assert.equal(windowsConfiguration.includes("if: runner.os == 'Windows'"), true);
+  assert.equal(windowsConfiguration.includes("shell: pwsh"), true);
+  assert.equal(windowsConfiguration.includes(
+    'run: cmake --preset ci "-DCMAKE_CXX_COMPILER=C:/mingw64/bin/c++.exe" "-DVCPKG_TARGET_TRIPLET=x64-mingw-dynamic"',
+  ), true);
+  assert.equal(source.includes("VCPKG_TARGET_TRIPLET=x64-windows"), false);
+});
+
 test("native registration, JUnit, and closed evidence validators accept exact PASS evidence", () => {
   const registration = validateRegistrationDocument(validRegistration());
   assert.deepEqual(registration.registeredTests, EXPECTED_NATIVE_POLICY_TESTS);
@@ -592,6 +627,49 @@ test("the hosted correction uses a separate two-commit self-reference strategy",
     "repositories/cca-conformance/mo1302-conformance-inventory.json",
     "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
   ]);
+});
+
+test("the native execution correction uses a distinct additive two-commit binding", async () => {
+  const binding = (await inventory()).nativeExecutionCorrectionCommitBinding;
+  assert.equal(binding.strategy, "postCommitConformanceCommit");
+  const head = git("rev-parse", "HEAD");
+  const subject = git("show", "-s", "--format=%s", "HEAD");
+  if (binding.status === "mechanicallyPending") {
+    assert.equal(binding.revision, "PENDING");
+    assert.ok(
+      head === NATIVE_HOSTED_CORRECTION_BINDING_COMMIT
+        || subject === NATIVE_EXECUTION_CORRECTION_SUBJECT,
+    );
+    return;
+  }
+  assert.equal(binding.status, "bound");
+  assert.match(binding.revision, FULL_SHA);
+  assert.equal(
+    git("show", "-s", "--format=%s", binding.revision),
+    NATIVE_EXECUTION_CORRECTION_SUBJECT,
+  );
+  assert.equal(git("merge-base", "--is-ancestor", binding.revision, "HEAD"), "");
+  const descendants = git(
+    "rev-list",
+    "--first-parent",
+    "--reverse",
+    binding.revision + "..HEAD",
+  ).split("\n").map((line) => line.trim()).filter(Boolean);
+  assert.ok(descendants.length >= 1);
+  const bindingCommit = descendants[0];
+  assert.equal(git("rev-parse", bindingCommit + "^"), binding.revision);
+  assert.equal(
+    git("show", "-s", "--format=%s", bindingCommit),
+    NATIVE_EXECUTION_CORRECTION_BINDING_SUBJECT,
+  );
+  assert.deepEqual(
+    git("diff", "--name-only", binding.revision, bindingCommit)
+      .split("\n").map((line) => line.trim()).filter(Boolean),
+    [
+      "repositories/cca-conformance/mo1302-conformance-inventory.json",
+      "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
+    ],
+  );
 });
 
 test("the native hosted correction uses a distinct two-commit self-reference strategy", async () => {

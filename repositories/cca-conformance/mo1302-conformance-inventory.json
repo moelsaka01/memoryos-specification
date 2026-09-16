@@ -27,6 +27,11 @@
     "status": "bound",
     "revision": "47c88899c1f936e489a766f07103f409c3c2d8af"
   },
+  "nativeExecutionCorrectionCommitBinding": {
+    "strategy": "postCommitConformanceCommit",
+    "status": "mechanicallyPending",
+    "revision": "PENDING"
+  },
   "requiredCheckIdentity": {
     "callerJobIdentifier": "memoryos-policy-gate",
     "reusableJobName": "MemoryOS Policy Gate",
@@ -157,6 +162,11 @@
     "vcpkgCommit": "cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3",
     "vcpkgBuiltinBaseline": "cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3",
     "googleTestPort": "gtest",
+    "windows": {
+      "compiler": "C:/mingw64/bin/c++.exe",
+      "compilerFamily": "MinGW",
+      "vcpkgTriplet": "x64-mingw-dynamic"
+    },
     "requiredTests": [
       "memoryos.sdk.cpp.policy.contract",
       "memoryos.sdk.cpp.policy.example"

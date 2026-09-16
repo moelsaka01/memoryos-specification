@@ -245,7 +245,7 @@ TEST(MemoryOsSdk, ExposesVersionedImmutableValueHandles) {
 TEST(MemoryOsSdk, DelegatesPolicySemanticsAndRetainsExactBytes) {
     memoryos::MemoryOS preparationMemory;
     memoryos::MemoryOS memory;
-    const auto workspace = memory.openWorkspace("workspace-memoryos-policy");
+    const auto workspace = memory.openWorkspace("workspace-memoryos-release");
     const auto investigation = memory.observe(
         workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
         observationOptions("cpp-policy-candidate"));
@@ -327,6 +327,26 @@ TEST(MemoryOsSdk, DelegatesPolicySemanticsAndRetainsExactBytes) {
 
     EXPECT_EQ(memory.policyContractIdentities(),
         R"({"deterministicFactSourceRegistry":{"registryDigest":"sha256:392d688acb866753c6ff85b7030131b38990b27d8a2a0ef6e8e052c8c4e048de","registryVersion":"1.0.0","sources":[{"domain":"cognitiveRegression","sourceModelDigest":"sha256:e7d1fdf24758f2a0ac9ad609df578f95c058bf3cbab9f02a650f9cc12dab1c0d","sourceModelVersion":"1.0.0","wireVersion":"1.0.0"}]},"evaluatorVersion":"1.0.0","factModel":{"factModelDigest":"sha256:b36b9488161cb67d8e971e802d15ad76d662d46f96e1304182de343ba69ef7a8","factModelVersion":"1.0.0"},"kind":"MemoryOSPolicyContractIdentities","outcomeContractVersion":"1.0.0","resourceProfile":{"identifier":"memoryos.policy.resource-profile.standard","resourceProfileDigest":"sha256:c091573dfd05481f5759ef077e15af16689382a7432fa546c6630c4caeaa5239","version":"1.0.0"},"ruleRegistry":{"ruleRegistryDigest":"sha256:aaa19116563d209f680b063cdccf49d899069683f9778271c4ca2c4559b94fd7","ruleRegistryVersion":"1.0.0"},"version":"1.0.0"})");
+}
+
+TEST(MemoryOsSdk, EnforcesObservationWorkspaceAuthorityAcrossTheBridge) {
+    memoryos::MemoryOS memory;
+    const auto workspace = memory.openWorkspace("workspace-memoryos-release");
+    const auto investigation = memory.observe(
+        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+        observationOptions("cpp-policy-workspace-authority"));
+    const auto context = memory.capturePolicyFactContext(investigation);
+
+    EXPECT_EQ(investigation.workspaceIdentifier(), workspace.identifier());
+    EXPECT_EQ(context.authority(), "authoritative");
+
+    const auto foreignWorkspace = memory.openWorkspace(
+        "workspace-memoryos-policy-foreign");
+    expectSdkError("WORKSPACE_MISMATCH", "observe", [&] {
+        static_cast<void>(memory.observe(
+            foreignWorkspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+            observationOptions("cpp-policy-workspace-boundary")));
+    });
 }
 
 TEST(MemoryOsSdk, EvaluatesPolicySetAndCneAsNormalOutcomes) {
@@ -531,7 +551,7 @@ TEST(MemoryOsSdk, CapturesAndVerifiesTrustedRegressionPolicyFacts) {
 
     memoryos::MemoryOS foreignMemory;
     const auto foreignWorkspace = foreignMemory.openWorkspace(
-        "workspace-memoryos-policy-foreign");
+        "workspace-memoryos-release");
     const auto foreignInvestigation = foreignMemory.observe(
         foreignWorkspace, readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
         observationOptions("cpp-policy-regression-foreign"));

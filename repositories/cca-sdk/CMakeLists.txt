@@ -250,6 +250,7 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS)
     CONCAT MEMORYOS_SDK_POLICY_TEST_FILTER
       "MemoryOsSdk.ExposesVersionedImmutableValueHandles:"
       "MemoryOsSdk.DelegatesPolicySemanticsAndRetainsExactBytes:"
+      "MemoryOsSdk.EnforcesObservationWorkspaceAuthorityAcrossTheBridge:"
       "MemoryOsSdk.EvaluatesPolicySetAndCneAsNormalOutcomes:"
       "MemoryOsSdk.PreservesMetadataIsolationAndExactCachedBytes:"
       "MemoryOsSdk.EvaluatesAnAuthoritativeMipBackedContext:"

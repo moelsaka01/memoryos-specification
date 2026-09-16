@@ -37,8 +37,14 @@ jobs:
         shell: pwsh
         run: ./scripts/bootstrap.ps1 -SkipConfigure
 
-      - name: Configure the supported CI preset
+      - name: Configure the supported CI preset (POSIX)
+        if: runner.os != 'Windows'
         run: cmake --preset ci
+
+      - name: Configure the supported CI preset (Windows MinGW)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: cmake --preset ci "-DCMAKE_CXX_COMPILER=C:/mingw64/bin/c++.exe" "-DVCPKG_TARGET_TRIPLET=x64-mingw-dynamic"
 
       - name: Build the supported CI preset
         run: cmake --build --preset ci
