@@ -1,0 +1,215 @@
+name: MemoryOS Policy Gate Engineering
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+env:
+  MO_EXPECTED_DISTRIBUTION_REVISION: ${{ github.sha }}
+
+jobs:
+  action-matrix:
+    name: Direct Action (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022, macos-14]
+    steps:
+      - name: Check out the frozen validation inputs
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Prepare a path-varying candidate fixture
+        id: prepare
+        run: node repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs prepare
+
+      - name: Evaluate PASS
+        id: pass
+        uses: $/.github/actions/memoryos-policy-gate
+        with:
+          policy-kind: policy
+          policy-path: repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/pass.memoryos-policy.json
+          expected-policy-semantic-digest: sha256:bc0cb0880beac6408c3a7890c028b2d0cd1544e55b5e79864c564e23c4955157
+          candidate-mip-path: ${{ steps.prepare.outputs.candidate-mip-path }}
+
+      - name: Verify and stage PASS evidence
+        env:
+          MO_ARTIFACT_DIRECTORY: ${{ steps.pass.outputs.artifact-directory }}
+          MO_ARTIFACT_KIND: ${{ steps.pass.outputs.artifact-kind }}
+          MO_CLI_EXIT_CODE: ${{ steps.pass.outputs.cli-exit-code }}
+          MO_DECISION: ${{ steps.pass.outputs.decision }}
+          MO_DISTRIBUTION_REPOSITORY: ${{ steps.pass.outputs.distribution-repository }}
+          MO_DISTRIBUTION_REVISION: ${{ steps.pass.outputs.distribution-revision }}
+          MO_EVALUATION_IDENTITY_DIGEST: ${{ steps.pass.outputs.evaluation-identity-digest }}
+          MO_GATE_CLASS: ${{ steps.pass.outputs.gate-class }}
+          MO_OUTCOME_DIGEST: ${{ steps.pass.outputs.outcome-digest }}
+          MO_POLICY_FACT_CONTEXT_DIGEST: ${{ steps.pass.outputs.policy-fact-context-digest }}
+          MO_POLICY_SEMANTIC_DIGEST: ${{ steps.pass.outputs.policy-semantic-digest }}
+          MO_PUBLICATION_VALID: ${{ steps.pass.outputs.publication-valid }}
+          MO_REGRESSION_SOURCE_DIGEST: ${{ steps.pass.outputs.regression-source-digest }}
+          MO_SCENARIO: pass
+          MO_STAGE_ROOT: ${{ github.workspace }}/out/mo1302-hosted-evidence/${{ matrix.os }}
+          MO_STEP_OUTCOME: ${{ steps.pass.outcome }}
+        run: node repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs verify-action
+
+      - name: Evaluate expected FAIL
+        id: fail
+        continue-on-error: true
+        uses: $/.github/actions/memoryos-policy-gate
+        with:
+          policy-kind: policy
+          policy-path: repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/fail.memoryos-policy.json
+          expected-policy-semantic-digest: sha256:c37ccdf0bc01029460683c6c3fb4b451a7b7382253f7fd16252837de66c957f8
+          candidate-mip-path: ${{ steps.prepare.outputs.candidate-mip-path }}
+
+      - name: Verify and stage expected FAIL evidence
+        env:
+          MO_ARTIFACT_DIRECTORY: ${{ steps.fail.outputs.artifact-directory }}
+          MO_ARTIFACT_KIND: ${{ steps.fail.outputs.artifact-kind }}
+          MO_CLI_EXIT_CODE: ${{ steps.fail.outputs.cli-exit-code }}
+          MO_DECISION: ${{ steps.fail.outputs.decision }}
+          MO_DISTRIBUTION_REPOSITORY: ${{ steps.fail.outputs.distribution-repository }}
+          MO_DISTRIBUTION_REVISION: ${{ steps.fail.outputs.distribution-revision }}
+          MO_EVALUATION_IDENTITY_DIGEST: ${{ steps.fail.outputs.evaluation-identity-digest }}
+          MO_GATE_CLASS: ${{ steps.fail.outputs.gate-class }}
+          MO_OUTCOME_DIGEST: ${{ steps.fail.outputs.outcome-digest }}
+          MO_POLICY_FACT_CONTEXT_DIGEST: ${{ steps.fail.outputs.policy-fact-context-digest }}
+          MO_POLICY_SEMANTIC_DIGEST: ${{ steps.fail.outputs.policy-semantic-digest }}
+          MO_PUBLICATION_VALID: ${{ steps.fail.outputs.publication-valid }}
+          MO_REGRESSION_SOURCE_DIGEST: ${{ steps.fail.outputs.regression-source-digest }}
+          MO_SCENARIO: fail
+          MO_STAGE_ROOT: ${{ github.workspace }}/out/mo1302-hosted-evidence/${{ matrix.os }}
+          MO_STEP_OUTCOME: ${{ steps.fail.outcome }}
+        run: node repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs verify-action
+
+      - name: Evaluate expected CNE
+        id: cne
+        continue-on-error: true
+        uses: $/.github/actions/memoryos-policy-gate
+        with:
+          policy-kind: policy
+          policy-path: repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/cne.memoryos-policy.json
+          expected-policy-semantic-digest: sha256:e65ba193705de3a82661ec7141bb173ae289e8ffe9c432f241613b4c184e1a57
+          candidate-mip-path: ${{ steps.prepare.outputs.candidate-mip-path }}
+
+      - name: Verify and stage expected CNE evidence
+        env:
+          MO_ARTIFACT_DIRECTORY: ${{ steps.cne.outputs.artifact-directory }}
+          MO_ARTIFACT_KIND: ${{ steps.cne.outputs.artifact-kind }}
+          MO_CLI_EXIT_CODE: ${{ steps.cne.outputs.cli-exit-code }}
+          MO_DECISION: ${{ steps.cne.outputs.decision }}
+          MO_DISTRIBUTION_REPOSITORY: ${{ steps.cne.outputs.distribution-repository }}
+          MO_DISTRIBUTION_REVISION: ${{ steps.cne.outputs.distribution-revision }}
+          MO_EVALUATION_IDENTITY_DIGEST: ${{ steps.cne.outputs.evaluation-identity-digest }}
+          MO_GATE_CLASS: ${{ steps.cne.outputs.gate-class }}
+          MO_OUTCOME_DIGEST: ${{ steps.cne.outputs.outcome-digest }}
+          MO_POLICY_FACT_CONTEXT_DIGEST: ${{ steps.cne.outputs.policy-fact-context-digest }}
+          MO_POLICY_SEMANTIC_DIGEST: ${{ steps.cne.outputs.policy-semantic-digest }}
+          MO_PUBLICATION_VALID: ${{ steps.cne.outputs.publication-valid }}
+          MO_REGRESSION_SOURCE_DIGEST: ${{ steps.cne.outputs.regression-source-digest }}
+          MO_SCENARIO: cne
+          MO_STAGE_ROOT: ${{ github.workspace }}/out/mo1302-hosted-evidence/${{ matrix.os }}
+          MO_STEP_OUTCOME: ${{ steps.cne.outcome }}
+        run: node repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs verify-action
+
+      - name: Evaluate trusted Regression PASS
+        id: regression
+        uses: $/.github/actions/memoryos-policy-gate
+        with:
+          policy-kind: policy
+          policy-path: repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/cne.memoryos-policy.json
+          expected-policy-semantic-digest: sha256:e65ba193705de3a82661ec7141bb173ae289e8ffe9c432f241613b4c184e1a57
+          candidate-mip-path: ${{ steps.prepare.outputs.candidate-mip-path }}
+          regression-baseline-mip-path: repositories/cca-studio/examples/ai-runtime-adapters/reference-packages/openai-agents-reference.mip
+
+      - name: Verify and stage Regression evidence
+        env:
+          MO_ARTIFACT_DIRECTORY: ${{ steps.regression.outputs.artifact-directory }}
+          MO_ARTIFACT_KIND: ${{ steps.regression.outputs.artifact-kind }}
+          MO_CLI_EXIT_CODE: ${{ steps.regression.outputs.cli-exit-code }}
+          MO_DECISION: ${{ steps.regression.outputs.decision }}
+          MO_DISTRIBUTION_REPOSITORY: ${{ steps.regression.outputs.distribution-repository }}
+          MO_DISTRIBUTION_REVISION: ${{ steps.regression.outputs.distribution-revision }}
+          MO_EVALUATION_IDENTITY_DIGEST: ${{ steps.regression.outputs.evaluation-identity-digest }}
+          MO_GATE_CLASS: ${{ steps.regression.outputs.gate-class }}
+          MO_OUTCOME_DIGEST: ${{ steps.regression.outputs.outcome-digest }}
+          MO_POLICY_FACT_CONTEXT_DIGEST: ${{ steps.regression.outputs.policy-fact-context-digest }}
+          MO_POLICY_SEMANTIC_DIGEST: ${{ steps.regression.outputs.policy-semantic-digest }}
+          MO_PUBLICATION_VALID: ${{ steps.regression.outputs.publication-valid }}
+          MO_REGRESSION_SOURCE_DIGEST: ${{ steps.regression.outputs.regression-source-digest }}
+          MO_SCENARIO: regression
+          MO_STAGE_ROOT: ${{ github.workspace }}/out/mo1302-hosted-evidence/${{ matrix.os }}
+          MO_STEP_OUTCOME: ${{ steps.regression.outcome }}
+        run: node repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs verify-action
+
+      - name: Reject a mismatched Policy semantic pin
+        id: pin-mismatch
+        continue-on-error: true
+        uses: $/.github/actions/memoryos-policy-gate
+        with:
+          policy-kind: policy
+          policy-path: repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/pass.memoryos-policy.json
+          expected-policy-semantic-digest: sha256:0000000000000000000000000000000000000000000000000000000000000000
+          candidate-mip-path: ${{ steps.prepare.outputs.candidate-mip-path }}
+
+      - name: Verify Policy pin rejection
+        env:
+          MO_ARTIFACT_DIRECTORY: ${{ steps.pin-mismatch.outputs.artifact-directory }}
+          MO_FAILURE_CLASS: ${{ steps.pin-mismatch.outputs.failure-class }}
+          MO_GATE_CLASS: ${{ steps.pin-mismatch.outputs.gate-class }}
+          MO_PHASE: ${{ steps.pin-mismatch.outputs.phase }}
+          MO_PUBLICATION_VALID: ${{ steps.pin-mismatch.outputs.publication-valid }}
+          MO_STABLE_CODE: ${{ steps.pin-mismatch.outputs.stable-code }}
+          MO_STEP_OUTCOME: ${{ steps.pin-mismatch.outcome }}
+        run: node repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs verify-pin-failure
+
+      - name: Upload per-platform parity evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: mo1302-action-parity-${{ matrix.os }}
+          path: out/mo1302-hosted-evidence/${{ matrix.os }}
+          if-no-files-found: error
+          retention-days: 14
+          overwrite: false
+          include-hidden-files: false
+
+  exact-byte-parity:
+    name: Exact-byte cross-platform parity
+    needs: action-matrix
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the frozen oracle
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download Ubuntu evidence by exact name
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: mo1302-action-parity-ubuntu-24.04
+          path: out/mo1302-parity/mo1302-action-parity-ubuntu-24.04
+          digest-mismatch: error
+
+      - name: Download Windows evidence by exact name
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: mo1302-action-parity-windows-2022
+          path: out/mo1302-parity/mo1302-action-parity-windows-2022
+          digest-mismatch: error
+
+      - name: Download macOS evidence by exact name
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: mo1302-action-parity-macos-14
+          path: out/mo1302-parity/mo1302-action-parity-macos-14
+          digest-mismatch: error
+
+      - name: Compare every retained byte and frozen identity
+        env:
+          MO_EVIDENCE_ROOT: ${{ github.workspace }}/out/mo1302-parity
+        run: node repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs compare-platforms

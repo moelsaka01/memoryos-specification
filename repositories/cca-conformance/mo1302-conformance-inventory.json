@@ -1,8 +1,70 @@
 {
   "kind": "MemoryOSMO1302ConformanceInventory",
   "version": "1.0.0",
+  "baseline": {
+    "compatibilityRelease": "v1.2.1",
+    "compatibilityCommit": "2c3a5491a9bdefd723fe47e79c9d9d59d08de4a5",
+    "mo1301Commit": "af6a405b3cd9097ce469b16a854a0568b8acee1f",
+    "mo1301Tag": {
+      "name": "memoryos-1.3-mo1301",
+      "peeledCommit": "af6a405b3cd9097ce469b16a854a0568b8acee1f"
+    },
+    "phase1Commit": "fefb50c87c3ac9fb1b03ccaeea285117598c52b2",
+    "phase2Commit": "fc83b496c67869c8a8ddfcee0b2ec3f2937f2db2"
+  },
+  "phase3CommitBinding": {
+    "strategy": "postCommitConformanceCommit",
+    "status": "mechanicallyPending",
+    "revision": "PENDING"
+  },
+  "requiredCheckIdentity": {
+    "callerJobIdentifier": "memoryos-policy-gate",
+    "reusableJobName": "MemoryOS Policy Gate",
+    "observableCheck": "memoryos-policy-gate / MemoryOS Policy Gate"
+  },
+  "hostedEvidence": {
+    "directAction": "pendingPublication",
+    "reusableWorkflow": "pendingPublication",
+    "artifactService": "pendingPublication",
+    "crossPlatformParity": "pendingPublication",
+    "nativeCpp": "pendingPublication",
+    "status": "requiresPush",
+    "fixtures": {
+      "cnePolicy": {
+        "path": "repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/cne.memoryos-policy.json",
+        "rawSha256": "sha256:6a77df2c945fd37a31fb902e27196807edc51b9e72a32ebb3c220f040b4e768e"
+      },
+      "failPolicy": {
+        "path": "repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/fail.memoryos-policy.json",
+        "rawSha256": "sha256:42a523640649cdad038d64f12c7a8090c6ededb259dccad4e93b48fb3ac890c0"
+      },
+      "oracle": {
+        "path": "repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/oracle.json",
+        "rawSha256": "sha256:e60e464a32bc1ccefc7f532d0feae97132447f0190c5568f236e956975794651"
+      },
+      "passPolicy": {
+        "path": "repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/pass.memoryos-policy.json",
+        "rawSha256": "sha256:e93598764c4429a1a5d7a9f3cda369be5122e3e1c59067953e1138b3ccaa743a"
+      }
+    }
+  },
+  "runnerMatrices": {
+    "hosted": [
+      "ubuntu-24.04",
+      "windows-2022",
+      "macos-14"
+    ],
+    "native": [
+      "ubuntu-24.04",
+      "windows-2022",
+      "macos-14"
+    ]
+  },
   "thirdPartyActionPins": {
     "scopedFiles": [
+      ".github/workflows/memoryos-policy-gate-engineering.yml",
+      ".github/workflows/memoryos-policy-gate-hosted.yml",
+      ".github/workflows/memoryos-native-policy-gate.yml",
       ".github/workflows/memoryos-policy-gate.yml"
     ],
     "pins": [
@@ -17,10 +79,77 @@
         "revision": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c"
       },
       {
+        "role": "setupPython",
+        "repository": "actions/setup-python",
+        "revision": "a26af69be951a213d495a4c3e4e4022e16d87065"
+      },
+      {
         "role": "uploadArtifact",
         "repository": "actions/upload-artifact",
         "revision": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
       }
+    ]
+  },
+  "handoffArtifacts": {
+    "document": {
+      "path": "repositories/cca-conformance/docs/mo1302-handoff.md",
+      "rawSha256": "sha256:b35f8c2bbce6660160aa52237ccec30c2e4d8d040cd0897217e79588058d1b9e"
+    },
+    "vector": {
+      "path": "repositories/cca-conformance/tests/fixtures/investigation-policy/1.0.0/mo1302-handoff-vectors.json",
+      "rawSha256": "sha256:85dc1ea416603e87d7a05b147c098661f68d756ccd078fbf31c7fa71866eb662"
+    },
+    "mo1301Inventory": {
+      "path": "repositories/cca-conformance/mo1301-conformance-inventory.json",
+      "rawSha256": "sha256:6c159f366825b96246beff244d0e0e4a41fb2c1a0abeb45592442908222862f9"
+    }
+  },
+  "actionDistribution": {
+    "metadata": {
+      "path": ".github/actions/memoryos-policy-gate/action.yml",
+      "rawSha256": "sha256:8b7d7cc33ea762af5aea9c24eceb3b6dacc2773ef91027388695c61e2848b549"
+    },
+    "manifest": {
+      "path": ".github/actions/memoryos-policy-gate/distribution-manifest.json",
+      "rawSha256": "sha256:2e116b6518934c797e9c562670f2292462be11ee982c778b43f1aaf45a8986f9"
+    },
+    "manifestRawSha256": "sha256:2e116b6518934c797e9c562670f2292462be11ee982c778b43f1aaf45a8986f9",
+    "fileCount": 42,
+    "builder": "repositories/cca-conformance/tools/build-mo1302-action-distribution.mjs"
+  },
+  "automationContracts": {
+    "failureSchema": {
+      "path": "repositories/cca-conformance/schema/github-policy-gate-automation-failure-1.0.schema.json",
+      "rawSha256": "sha256:db51398757a78520e656f8a46773cea6d7dc987ce7bc6256ded48bbd0bf95434"
+    },
+    "receiptSchema": {
+      "path": "repositories/cca-conformance/schema/github-policy-gate-receipt-1.0.schema.json",
+      "rawSha256": "sha256:71712abe9b2ce7bd2677bd26cb1f256d12d2f5dc0785db7277a25463e97081fe"
+    },
+    "testVectorSchema": {
+      "path": "repositories/cca-conformance/schema/github-policy-gate-test-vector-1.0.schema.json",
+      "rawSha256": "sha256:17f50c65340402ed3f64ff84b5bfb0e4f84b3bdda6bf8c8ea152a1f92e9dfb9c"
+    },
+    "phase1Vector": {
+      "path": "repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/mo1302-action-foundation-vectors.json",
+      "rawSha256": "sha256:4f4fbae8dc0893e9388fa6edec2dc61c5c76e8cebfe6ab7a820a74b13a6f1c71"
+    }
+  },
+  "nativeToolchain": {
+    "cmakePreset": "ci",
+    "cmakePresetsPath": "CMakePresets.json",
+    "bootstrapPaths": [
+      "scripts/bootstrap.sh",
+      "scripts/bootstrap.ps1"
+    ],
+    "vcpkgManifestPath": "vcpkg.json",
+    "vcpkgRelease": "2026.06.24",
+    "vcpkgCommit": "cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3",
+    "vcpkgBuiltinBaseline": "cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3",
+    "googleTestPort": "gtest",
+    "requiredTests": [
+      "memoryos.sdk.cpp.policy.contract",
+      "memoryos.sdk.cpp.policy.example"
     ]
   },
   "implementationSurface": [
@@ -30,13 +159,51 @@
     ".github/actions/memoryos-policy-gate-workflow-support/dist/github.js",
     ".github/actions/memoryos-policy-gate-workflow-support/dist/index.js",
     ".github/actions/memoryos-policy-gate-workflow-support/dist/io.js",
-    ".github/workflows/memoryos-policy-gate.yml"
+    ".github/workflows/memoryos-native-policy-gate.yml",
+    ".github/workflows/memoryos-policy-gate-engineering.yml",
+    ".github/workflows/memoryos-policy-gate-hosted.yml",
+    ".github/workflows/memoryos-policy-gate.yml",
+    "repositories/cca-conformance/tools/build-mo1302-action-distribution.mjs",
+    "repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs",
+    "repositories/cca-conformance/tools/mo1302-native-evidence.mjs",
+    "tools/verify_workspace.py",
+    "vcpkg.json"
   ],
   "conformanceSurface": [
+    "repositories/cca-conformance/CMakeLists.txt",
+    "repositories/cca-conformance/mo1302-conformance-inventory.json",
+    "repositories/cca-conformance/package.json",
+    "repositories/cca-conformance/schema/github-policy-gate-automation-failure-1.0.schema.json",
+    "repositories/cca-conformance/schema/github-policy-gate-distribution-manifest-1.0.schema.json",
+    "repositories/cca-conformance/schema/github-policy-gate-receipt-1.0.schema.json",
+    "repositories/cca-conformance/schema/github-policy-gate-test-vector-1.0.schema.json",
+    "repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/mo1302-action-foundation-vectors.json",
+    "repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/cne.memoryos-policy.json",
+    "repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/fail.memoryos-policy.json",
+    "repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/oracle.json",
+    "repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/pass.memoryos-policy.json",
+    "repositories/cca-conformance/tests/mo1302_action_foundation_conformance_test.mjs",
+    "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
     "repositories/cca-conformance/tests/mo1302_github_product_conformance_test.mjs",
-    "repositories/cca-conformance/tests/support/mo1302-github-product-support.mjs"
+    "repositories/cca-conformance/tests/support/mo1302-action-foundation-support.mjs",
+    "repositories/cca-conformance/tests/support/mo1302-github-product-support.mjs",
+    "repositories/cca-conformance/tools/run-js-conformance.mjs",
+    "repositories/cca-sdk/CMakeLists.txt",
+    "repositories/cca-sdk/examples/cpp_policy.cpp",
+    "repositories/cca-sdk/tests/memoryos_sdk_test.cpp"
   ],
   "documentationSurface": [
+    "repositories/cca-conformance/README.md",
+    "repositories/cca-conformance/docs/mo1302-engineering-conformance.md",
     "repositories/cca-conformance/docs/mo1302-github-policy-gate.md"
-  ]
+  ],
+  "roadmapBoundary": {
+    "target": "GitHub.com",
+    "githubEnterpriseServerSupported": false,
+    "excludedMilestones": [
+      "MO-1303",
+      "MO-1306",
+      "MO-1307"
+    ]
+  }
 }
