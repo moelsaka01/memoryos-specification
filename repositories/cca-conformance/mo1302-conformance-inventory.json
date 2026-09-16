@@ -22,6 +22,11 @@
     "status": "bound",
     "revision": "c24f68bd9625d5ece718f410c82ad34e98dfcda5"
   },
+  "nativeHostedCorrectionCommitBinding": {
+    "strategy": "postCommitConformanceCommit",
+    "status": "mechanicallyPending",
+    "revision": "PENDING"
+  },
   "requiredCheckIdentity": {
     "callerJobIdentifier": "memoryos-policy-gate",
     "reusableJobName": "MemoryOS Policy Gate",
@@ -173,12 +178,14 @@
     "repositories/cca-conformance/tools/build-mo1302-action-distribution.mjs",
     "repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs",
     "repositories/cca-conformance/tools/mo1302-native-evidence.mjs",
+    "repositories/cca-sdk/src/core_process.cpp",
     "repositories/cca-sdk/src/json.hpp",
     "tools/verify_workspace.py",
     "vcpkg.json"
   ],
   "conformanceSurface": [
     "repositories/cca-compiler/tests/parser_test.cpp",
+    "repositories/cca-core/tests/observability_test.cpp",
     "repositories/cca-conformance/CMakeLists.txt",
     "repositories/cca-conformance/mo1302-conformance-inventory.json",
     "repositories/cca-conformance/package.json",
@@ -199,7 +206,8 @@
     "repositories/cca-conformance/tools/run-js-conformance.mjs",
     "repositories/cca-sdk/CMakeLists.txt",
     "repositories/cca-sdk/examples/cpp_policy.cpp",
-    "repositories/cca-sdk/tests/memoryos_sdk_test.cpp"
+    "repositories/cca-sdk/tests/memoryos_sdk_test.cpp",
+    "repositories/cca-studio/tests/memory_studio_test.cpp"
   ],
   "documentationSurface": [
     "repositories/cca-conformance/README.md",

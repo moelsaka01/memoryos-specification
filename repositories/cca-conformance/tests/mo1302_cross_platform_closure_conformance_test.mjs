@@ -56,6 +56,10 @@ const CLOSURE_SUBJECT = "conformance(memoryos-1.3): bind MO-1302 phase 3 revisio
 const CORRECTION_SUBJECT = "fix(memoryos-1.3): close MO-1302 hosted release gates";
 const CORRECTION_BINDING_SUBJECT =
   "conformance(memoryos-1.3): bind MO-1302 hosted correction";
+const HOSTED_CORRECTION_BINDING_COMMIT = "b14fa0d1c165283a4f80cff8e9669ce2070dc7fc";
+const NATIVE_CORRECTION_SUBJECT = "fix(memoryos-1.3): close MO-1302 native hosted build";
+const NATIVE_CORRECTION_BINDING_SUBJECT =
+  "conformance(memoryos-1.3): bind MO-1302 native hosted correction";
 const FULL_SHA = /^[0-9a-f]{40}$/u;
 const PINS = Object.freeze([
   Object.freeze({
@@ -450,6 +454,23 @@ test("the native dependency manifest uses the pinned repository-supported Google
   for (const name of EXPECTED_NATIVE_POLICY_TESTS) assert.match(cmake, new RegExp(name.replaceAll(".", "\\."), "u"));
 });
 
+test("native corrective sources remain portable under the frozen strict warning profile", async () => {
+  const [studioTest, observabilityTest, coreProcess] = await Promise.all([
+    text("repositories/cca-studio/tests/memory_studio_test.cpp"),
+    text("repositories/cca-core/tests/observability_test.cpp"),
+    text("repositories/cca-sdk/src/core_process.cpp"),
+  ]);
+  assert.match(studioTest, /explicit Fixture\(std::string workspace_identifier_value\s*=/u);
+  assert.doesNotMatch(studioTest, /explicit Fixture\(std::string workspace_identifier\s*=/u);
+  assert.match(observabilityTest, /std::vector<std::thread> threads;/u);
+  assert.match(observabilityTest, /for \(auto& worker : threads\) \{\s*worker\.join\(\);\s*\}/u);
+  assert.doesNotMatch(observabilityTest, /std::jthread/u);
+  assert.match(
+    coreProcess,
+    /#if defined\(_WIN32\)\s*#ifndef NOMINMAX\s*#define NOMINMAX\s*#endif\s*#include <Windows\.h>/u,
+  );
+});
+
 test("the final additive inventory closes every Phase 3 implementation and evidence surface", async () => {
   const record = await inventory();
   assert.equal(record.kind, "MemoryOSMO1302ConformanceInventory");
@@ -478,11 +499,14 @@ test("the final additive inventory closes every Phase 3 implementation and evide
   ]) await readFile(resolve(WORKSPACE_ROOT, ...path.split("/")));
   for (const path of [
     "repositories/cca-compiler/tests/parser_test.cpp",
+    "repositories/cca-core/tests/observability_test.cpp",
     "repositories/cca-sdk/tests/memoryos_sdk_test.cpp",
+    "repositories/cca-studio/tests/memory_studio_test.cpp",
   ]) assert.ok(record.conformanceSurface.includes(path));
   for (const path of [
     "repositories/cca-compiler/src/parser.cpp",
     "repositories/cca-core/src/runtime/service_registry.cpp",
+    "repositories/cca-sdk/src/core_process.cpp",
     "repositories/cca-sdk/src/json.hpp",
   ]) assert.ok(record.implementationSurface.includes(path));
 
@@ -567,5 +591,34 @@ test("the hosted correction uses a separate two-commit self-reference strategy",
   assert.deepEqual(git("diff", "--name-only", binding.revision, bindingCommit).split(/\r?\n/u), [
     "repositories/cca-conformance/mo1302-conformance-inventory.json",
     "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
+  ]);
+});
+
+test("the native hosted correction uses a distinct two-commit self-reference strategy", async () => {
+  const binding = (await inventory()).nativeHostedCorrectionCommitBinding;
+  assert.equal(binding.strategy, "postCommitConformanceCommit");
+  const head = git("rev-parse", "HEAD");
+  const subject = git("show", "-s", "--format=%s", "HEAD");
+  if (binding.status === "mechanicallyPending") {
+    assert.equal(binding.revision, "PENDING");
+    assert.ok(head === HOSTED_CORRECTION_BINDING_COMMIT || subject === NATIVE_CORRECTION_SUBJECT);
+    return;
+  }
+  assert.equal(binding.status, "bound");
+  assert.match(binding.revision, FULL_SHA);
+  assert.equal(git("show", "-s", "--format=%s", binding.revision), NATIVE_CORRECTION_SUBJECT);
+  assert.equal(git("merge-base", "--is-ancestor", binding.revision, "HEAD"), "");
+  const descendants = git(
+    "rev-list",
+    "--first-parent",
+    "--reverse",
+    `${binding.revision}..HEAD`,
+  ).split(/\r?\n/u).filter(Boolean);
+  assert.ok(descendants.length >= 1);
+  const bindingCommit = descendants[0];
+  assert.equal(git("rev-parse", `${bindingCommit}^`), binding.revision);
+  assert.equal(git("show", "-s", "--format=%s", bindingCommit), NATIVE_CORRECTION_BINDING_SUBJECT);
+  assert.deepEqual(git("diff", "--name-only", binding.revision, bindingCommit).split(/\r?\n/u), [
+    "repositories/cca-conformance/mo1302-conformance-inventory.json",
   ]);
 });

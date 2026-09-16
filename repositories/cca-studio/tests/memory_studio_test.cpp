@@ -541,8 +541,8 @@ void expect_success(const StudioResult& result,
 }
 
 struct Fixture final {
-    explicit Fixture(std::string workspace_identifier = std::string{workspace})
-        : workspace_identifier{std::move(workspace_identifier)},
+    explicit Fixture(std::string workspace_identifier_value = std::string{workspace})
+        : workspace_identifier{std::move(workspace_identifier_value)},
           memory{this->workspace_identifier},
           working{this->workspace_identifier},
           long_term{this->workspace_identifier},

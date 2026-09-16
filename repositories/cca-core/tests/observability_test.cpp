@@ -187,7 +187,7 @@ TEST(ObservabilityTest, ConcurrentAuthenticRecordingIsSafeAndSequenceSorted) {
     constexpr std::size_t thread_count = 8U;
     constexpr std::size_t records_per_thread = 50U;
 
-    std::vector<std::jthread> threads;
+    std::vector<std::thread> threads;
     threads.reserve(thread_count);
     for (std::size_t thread = 0; thread < thread_count; ++thread) {
         threads.emplace_back([&fixture] {
@@ -200,7 +200,9 @@ TEST(ObservabilityTest, ConcurrentAuthenticRecordingIsSafeAndSequenceSorted) {
             }
         });
     }
-    threads.clear();
+    for (auto& worker : threads) {
+        worker.join();
+    }
 
     const auto diagnostics = fixture.observability.diagnostics();
     ASSERT_EQ(diagnostics.size(), thread_count * records_per_thread);

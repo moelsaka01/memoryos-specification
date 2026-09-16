@@ -7,7 +7,9 @@
 #include <utility>
 
 #if defined(_WIN32)
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 #include <Windows.h>
 #else
 #include <cerrno>
