@@ -72,6 +72,8 @@ const NATIVE_EXECUTION_CORRECTION_BINDING_COMMIT =
   "059a46ec744bcf456f026cb98766e48edcf1630f";
 const NATIVE_EVIDENCE_CORRECTION_SUBJECT =
   "fix(memoryos-1.3): close MO-1302 native evidence gate";
+const NATIVE_EVIDENCE_CORRECTION_COMMIT =
+  "1f34dc2edb980da19613a2eaf22587cc1651d8ed";
 const NATIVE_EVIDENCE_CORRECTION_BINDING_SUBJECT =
   "conformance(memoryos-1.3): bind MO-1302 native evidence correction";
 const NATIVE_JUNIT_RELATIVE_PATH = "out/native-policy-evidence/ctest-results.xml";
@@ -800,11 +802,22 @@ test("the native evidence correction uses a distinct additive two-commit binding
   }
   assert.equal(binding.status, "bound");
   assert.match(binding.revision, FULL_SHA);
+  assert.equal(binding.revision, NATIVE_EVIDENCE_CORRECTION_COMMIT);
   assert.equal(
     git("show", "-s", "--format=%s", binding.revision),
     NATIVE_EVIDENCE_CORRECTION_SUBJECT,
   );
   assert.equal(git("merge-base", "--is-ancestor", binding.revision, "HEAD"), "");
+  if (head === binding.revision) {
+    assert.deepEqual(
+      git("diff", "--name-only", "HEAD").split(/\r?\n/u).filter(Boolean),
+      [
+        "repositories/cca-conformance/mo1302-conformance-inventory.json",
+        "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
+      ],
+    );
+    return;
+  }
   const descendants = git(
     "rev-list",
     "--first-parent",
