@@ -608,6 +608,13 @@ test("the native hosted correction uses a distinct two-commit self-reference str
   assert.match(binding.revision, FULL_SHA);
   assert.equal(git("show", "-s", "--format=%s", binding.revision), NATIVE_CORRECTION_SUBJECT);
   assert.equal(git("merge-base", "--is-ancestor", binding.revision, "HEAD"), "");
+  if (head === binding.revision) {
+    assert.deepEqual(git("diff", "--name-only", "HEAD").split(/\r?\n/u), [
+      "repositories/cca-conformance/mo1302-conformance-inventory.json",
+      "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
+    ]);
+    return;
+  }
   const descendants = git(
     "rev-list",
     "--first-parent",
@@ -620,5 +627,6 @@ test("the native hosted correction uses a distinct two-commit self-reference str
   assert.equal(git("show", "-s", "--format=%s", bindingCommit), NATIVE_CORRECTION_BINDING_SUBJECT);
   assert.deepEqual(git("diff", "--name-only", binding.revision, bindingCommit).split(/\r?\n/u), [
     "repositories/cca-conformance/mo1302-conformance-inventory.json",
+    "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
   ]);
 });
