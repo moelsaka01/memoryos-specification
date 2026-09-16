@@ -82,6 +82,8 @@ const NATIVE_EVIDENCE_CORRECTION_BINDING_COMMIT =
   "a9436e618d7348b84b794256b8eead798e7abfc0";
 const WINDOWS_NATIVE_EVIDENCE_CORRECTION_SUBJECT =
   "fix(memoryos-1.3): close MO-1302 Windows native evidence";
+const WINDOWS_NATIVE_EVIDENCE_CORRECTION_COMMIT =
+  "898261c16dcdb8e8d5b2f261f9ddcbc4fee75c19";
 const WINDOWS_NATIVE_EVIDENCE_CORRECTION_BINDING_SUBJECT =
   "conformance(memoryos-1.3): bind MO-1302 Windows native evidence correction";
 const NATIVE_JUNIT_RELATIVE_PATH = "out/native-policy-evidence/ctest-results.xml";
@@ -956,11 +958,22 @@ test("the Windows native evidence correction uses a distinct additive two-commit
   }
   assert.equal(binding.status, "bound");
   assert.match(binding.revision, FULL_SHA);
+  assert.equal(binding.revision, WINDOWS_NATIVE_EVIDENCE_CORRECTION_COMMIT);
   assert.equal(
     git("show", "-s", "--format=%s", binding.revision),
     WINDOWS_NATIVE_EVIDENCE_CORRECTION_SUBJECT,
   );
   assert.equal(git("merge-base", "--is-ancestor", binding.revision, "HEAD"), "");
+  if (head === binding.revision) {
+    assert.deepEqual(
+      git("diff", "--name-only", "HEAD").split(/\r?\n/u).filter(Boolean),
+      [
+        "repositories/cca-conformance/mo1302-conformance-inventory.json",
+        "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
+      ],
+    );
+    return;
+  }
   const descendants = git(
     "rev-list",
     "--first-parent",
