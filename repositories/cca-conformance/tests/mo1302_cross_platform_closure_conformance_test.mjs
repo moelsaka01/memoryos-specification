@@ -51,7 +51,7 @@ const WORKFLOW_PATHS = Object.freeze([
 ]);
 const PHASE2_COMMIT = "fc83b496c67869c8a8ddfcee0b2ec3f2937f2db2";
 const PHASE3_SUBJECT = "feat(memoryos-1.3): MO-1302 phase 3 cross-platform closure";
-const CLOSURE_SUBJECT = "chore(memoryos-1.3): bind MO-1302 phase 3 conformance revision";
+const CLOSURE_SUBJECT = "conformance(memoryos-1.3): bind MO-1302 phase 3 revision";
 const FULL_SHA = /^[0-9a-f]{40}$/u;
 const PINS = Object.freeze([
   Object.freeze({
@@ -521,5 +521,6 @@ test("the Phase 3 commit binding uses the closed two-commit self-reference strat
   assert.equal(git("show", "-s", "--format=%s", binding.revision), PHASE3_SUBJECT);
   assert.deepEqual(git("diff", "--name-only", binding.revision, "HEAD").split(/\r?\n/u), [
     "repositories/cca-conformance/mo1302-conformance-inventory.json",
+    "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
   ]);
 });
