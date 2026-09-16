@@ -31,6 +31,10 @@ set(memoryos_conformance_sources_list
     review-outcomes.input.json
     schema/conformance-evidence-1.0.schema.json
     schema/conformance-report-1.0.schema.json
+    schema/github-policy-gate-automation-failure-1.0.schema.json
+    schema/github-policy-gate-distribution-manifest-1.0.schema.json
+    schema/github-policy-gate-receipt-1.0.schema.json
+    schema/github-policy-gate-test-vector-1.0.schema.json
     schema/independent-assessment-1.0.schema.json
     schema/requirements-manifest-1.0.schema.json
     schema/review-attestations-1.0.schema.json
@@ -40,6 +44,7 @@ set(memoryos_conformance_sources_list
     tests/coverage_gap_conformance_test.mjs
     tests/independent_assessment_conformance_test.mjs
     tests/mo1301_integration_conformance_test.mjs
+    tests/mo1302_action_foundation_conformance_test.mjs
     tests/normative_vectors_conformance_test.mjs
     tests/reference_implementation_conformance_test.mjs
     tests/report_conformance_test.mjs
@@ -48,12 +53,15 @@ set(memoryos_conformance_sources_list
     tests/specification_conformance_test.mjs
     tests/support/conformance-support.mjs
     tests/support/mo1301-conformance-support.mjs
+    tests/support/mo1302-action-foundation-support.mjs
+    tests/fixtures/github-policy-gate/1.0.0/mo1302-action-foundation-vectors.json
     tests/fixtures/investigation-policy/1.0.0/mo1302-handoff-vectors.json
     tools/conformance-report.mjs
     tools/create-review-attestations.mjs
     tools/independent-assessment.mjs
     tools/json-schema-validator.mjs
     tools/build-pinned-manifest.mjs
+    tools/build-mo1302-action-distribution.mjs
     tools/portable-report.mjs
     tools/requirement-selector-catalog.mjs
     tools/run-js-conformance.mjs
@@ -99,6 +107,7 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     coverage-gap
     independent
     mo1301
+    mo1302-phase1
     normative
     reference
     report
@@ -118,6 +127,8 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
       set(conformance_source tests/independent_assessment_conformance_test.mjs)
     elseif(conformance_area STREQUAL "mo1301")
       set(conformance_source tests/mo1301_integration_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1302-phase1")
+      set(conformance_source tests/mo1302_action_foundation_conformance_test.mjs)
     elseif(conformance_area STREQUAL "normative")
       set(conformance_source tests/normative_vectors_conformance_test.mjs)
     elseif(conformance_area STREQUAL "reference")
@@ -156,6 +167,12 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
         memoryos.standard.${conformance_area}
         PROPERTIES LABELS
           "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1301;release-readiness"
+      )
+    elseif(conformance_area STREQUAL "mo1302-phase1")
+      set_tests_properties(
+        memoryos.standard.${conformance_area}
+        PROPERTIES LABELS
+          "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1302;phase1;action"
       )
     endif()
   endforeach()

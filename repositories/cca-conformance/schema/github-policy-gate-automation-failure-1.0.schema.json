@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cca://schemas/memoryos/github-policy-gate/automation-failure/1.0",
+  "title": "MemoryOS GitHub Policy Gate Automation Failure",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "version",
+    "code",
+    "phase"
+  ],
+  "properties": {
+    "kind": {
+      "const": "MemoryOSGitHubPolicyGateAutomationFailure"
+    },
+    "version": {
+      "const": "1.0.0"
+    },
+    "code": {
+      "enum": [
+        "MEMORYOS_CI_DISTRIBUTION_UNTRUSTED",
+        "MEMORYOS_CI_CONTRACT_IDENTITY_MISMATCH",
+        "MEMORYOS_CI_POLICY_PIN_MISMATCH",
+        "MEMORYOS_CI_INPUT_PATH_INVALID",
+        "MEMORYOS_CI_CLI_PROTOCOL_INVALID",
+        "MEMORYOS_CI_PUBLICATION_GENERATION_INVALID",
+        "MEMORYOS_CI_AUTHORITATIVE_RECONSTRUCTION_FAILED",
+        "MEMORYOS_CI_DECISION_EXIT_MISMATCH",
+        "MEMORYOS_CI_ARTIFACT_PUBLICATION_FAILED",
+        "MEMORYOS_CI_INTERNAL_FAILURE"
+      ]
+    },
+    "phase": {
+      "enum": [
+        "distribution",
+        "actionInput",
+        "contractIdentityPreflight",
+        "policyPreparation",
+        "evaluationInput",
+        "evaluation",
+        "publicationGeneration",
+        "artifactVerification",
+        "authoritativeReconstruction",
+        "postEvaluationIdentityRecheck",
+        "decisionExitCrossCheck",
+        "artifactPublication",
+        "internal"
+      ]
+    }
+  }
+}

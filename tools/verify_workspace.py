@@ -6,12 +6,21 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import re
+import stat
 import sys
 from pathlib import Path
 
 
 REQUIRED_PATHS = (
     ".github/dependabot.yml",
+    ".github/actions/memoryos-policy-gate/action.yml",
+    ".github/actions/memoryos-policy-gate/distribution-manifest.json",
+    ".github/actions/memoryos-policy-gate/dist/action-runtime.mjs",
+    ".github/actions/memoryos-policy-gate/dist/cli-driver.mjs",
+    ".github/actions/memoryos-policy-gate/dist/contracts/policy-contract-identities-1.0.0.json",
+    ".github/actions/memoryos-policy-gate/dist/index.js",
     ".github/workflows/ci.yml",
     ".clang-format",
     ".clang-tidy",
@@ -241,16 +250,24 @@ REQUIRED_PATHS = (
     "repositories/cca-conformance/reports/reference-implementation-1.2.1.md",
     "repositories/cca-conformance/mo1301-conformance-inventory.json",
     "repositories/cca-conformance/schema/conformance-report-1.0.schema.json",
+    "repositories/cca-conformance/schema/github-policy-gate-automation-failure-1.0.schema.json",
+    "repositories/cca-conformance/schema/github-policy-gate-distribution-manifest-1.0.schema.json",
+    "repositories/cca-conformance/schema/github-policy-gate-receipt-1.0.schema.json",
+    "repositories/cca-conformance/schema/github-policy-gate-test-vector-1.0.schema.json",
     "repositories/cca-conformance/schema/requirements-manifest-1.0.schema.json",
     "repositories/cca-conformance/tests/compatibility_conformance_test.mjs",
     "repositories/cca-conformance/tests/component_evidence_conformance_test.mjs",
     "repositories/cca-conformance/tests/reference_implementation_conformance_test.mjs",
     "repositories/cca-conformance/tests/mo1301_integration_conformance_test.mjs",
+    "repositories/cca-conformance/tests/mo1302_action_foundation_conformance_test.mjs",
     "repositories/cca-conformance/tests/report_conformance_test.mjs",
     "repositories/cca-conformance/tests/specification_conformance_test.mjs",
     "repositories/cca-conformance/tests/support/conformance-support.mjs",
     "repositories/cca-conformance/tests/support/mo1301-conformance-support.mjs",
+    "repositories/cca-conformance/tests/support/mo1302-action-foundation-support.mjs",
+    "repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/mo1302-action-foundation-vectors.json",
     "repositories/cca-conformance/tests/fixtures/investigation-policy/1.0.0/mo1302-handoff-vectors.json",
+    "repositories/cca-conformance/tools/build-mo1302-action-distribution.mjs",
     "repositories/cca-conformance/tools/build-pinned-manifest.mjs",
     "repositories/cca-conformance/tools/conformance-report.mjs",
     "scripts/bootstrap.ps1",
@@ -338,6 +355,138 @@ INVALID_SPECIFICATION_FIXTURES = (
     "unresolved-reference.yaml",
 )
 
+MO1302_ACTION_ROOT = Path(".github/actions/memoryos-policy-gate")
+MO1302_ACTION_INPUTS = (
+    "policy-kind",
+    "policy-path",
+    "expected-policy-semantic-digest",
+    "candidate-mip-path",
+    "regression-baseline-mip-path",
+)
+MO1302_ACTION_OUTPUTS = (
+    "gate-class",
+    "decision",
+    "cli-exit-code",
+    "publication-valid",
+    "policy-semantic-digest",
+    "evaluation-identity-digest",
+    "outcome-digest",
+    "policy-fact-context-digest",
+    "regression-source-digest",
+    "evaluation-identity-path",
+    "outcome-path",
+    "artifact-directory",
+    "stable-code",
+    "failure-class",
+    "phase",
+    "artifact-kind",
+    "limit-identifier",
+    "distribution-repository",
+    "distribution-revision",
+)
+MO1302_SCHEMA_IDENTIFIERS = {
+    "github-policy-gate-automation-failure-1.0.schema.json": (
+        "cca://schemas/memoryos/github-policy-gate/automation-failure/1.0"
+    ),
+    "github-policy-gate-distribution-manifest-1.0.schema.json": (
+        "cca://schemas/memoryos/github-policy-gate/distribution-manifest/1.0"
+    ),
+    "github-policy-gate-receipt-1.0.schema.json": (
+        "cca://schemas/memoryos/github-policy-gate/receipt/1.0"
+    ),
+    "github-policy-gate-test-vector-1.0.schema.json": (
+        "cca://schemas/memoryos/github-policy-gate/test-vector/1.0"
+    ),
+}
+MO1302_VENDOR_SOURCES = (
+    "repositories/cca-studio/package.json",
+    "repositories/cca-studio/web/data/studio-snapshot.js",
+    "repositories/cca-studio/web/js/cognitive-comparative-reconstruction.js",
+    "repositories/cca-studio/web/js/cognitive-comparative-replay.js",
+    "repositories/cca-studio/web/js/cognitive-evolution-controller.js",
+    "repositories/cca-studio/web/js/cognitive-evolution.js",
+    "repositories/cca-studio/web/js/cognitive-investigation-explorer.js",
+    "repositories/cca-studio/web/js/cognitive-regression.js",
+    "repositories/cca-studio/web/js/cognitive-replay.js",
+    "repositories/cca-studio/web/js/cognitive-trace.js",
+    "repositories/cca-studio/web/js/deterministic-sequence-alignment.js",
+    "repositories/cca-studio/web/js/investigation-core.js",
+    "repositories/cca-studio/web/js/investigation-policy-contracts.js",
+    "repositories/cca-studio/web/js/investigation-policy-engine.js",
+    "repositories/cca-studio/web/js/investigation-policy-integration.js",
+    "repositories/cca-studio/web/js/investigation-policy.js",
+    "repositories/cca-studio/web/js/memory-investigation-package.js",
+    "repositories/cca-studio/web/js/memoryos-sdk.js",
+    "repositories/cca-studio/web/js/mip-canonical.js",
+    "repositories/cca-studio/web/js/observation-timeline.js",
+    "repositories/cca-studio/web/js/policy-canonical.js",
+    "repositories/cca-studio/web/js/policy-fact-context.js",
+    "repositories/cca-studio/web/js/regression-policy-fact-source.js",
+    "repositories/cca-studio/web/js/semantic-world.js",
+    "repositories/cca-studio/web/js/studio-model.js",
+    "repositories/memoryos-cli/package.json",
+    "repositories/memoryos-cli/src/arguments.js",
+    "repositories/memoryos-cli/src/commands.js",
+    "repositories/memoryos-cli/src/errors.js",
+    "repositories/memoryos-cli/src/help.js",
+    "repositories/memoryos-cli/src/main.js",
+    "repositories/memoryos-cli/src/output.js",
+    "repositories/memoryos-cli/src/policy-arguments.js",
+    "repositories/memoryos-cli/src/policy-commands.js",
+    "repositories/memoryos-cli/src/policy-publication.js",
+    "repositories/memoryos-cli/src/session.js",
+    "repositories/memoryos-cli/src/version.js",
+)
+MO1302_CONTRACT_IDENTITIES = {
+    "deterministicFactSourceRegistry": {
+        "registryDigest": (
+            "sha256:392d688acb866753c6ff85b7030131b38990b27d8a2a0ef6e8e052c8c4e048de"
+        ),
+        "registryVersion": "1.0.0",
+        "sources": [
+            {
+                "domain": "cognitiveRegression",
+                "sourceModelDigest": (
+                    "sha256:e7d1fdf24758f2a0ac9ad609df578f95c058bf3cbab9f02a650f9cc12dab1c0d"
+                ),
+                "sourceModelVersion": "1.0.0",
+                "wireVersion": "1.0.0",
+            }
+        ],
+    },
+    "evaluatorVersion": "1.0.0",
+    "factModel": {
+        "factModelDigest": (
+            "sha256:b36b9488161cb67d8e971e802d15ad76d662d46f96e1304182de343ba69ef7a8"
+        ),
+        "factModelVersion": "1.0.0",
+    },
+    "kind": "MemoryOSPolicyContractIdentities",
+    "outcomeContractVersion": "1.0.0",
+    "resourceProfile": {
+        "identifier": "memoryos.policy.resource-profile.standard",
+        "resourceProfileDigest": (
+            "sha256:c091573dfd05481f5759ef077e15af16689382a7432fa546c6630c4caeaa5239"
+        ),
+        "version": "1.0.0",
+    },
+    "ruleRegistry": {
+        "ruleRegistryDigest": (
+            "sha256:aaa19116563d209f680b063cdccf49d899069683f9778271c4ca2c4559b94fd7"
+        ),
+        "ruleRegistryVersion": "1.0.0",
+    },
+    "version": "1.0.0",
+}
+MO1302_MANIFEST_ROLES = {
+    "actionMetadata",
+    "contractData",
+    "entrypoint",
+    "runtimeModule",
+}
+MO1302_PORTABLE_MANIFEST_PATH = re.compile(r"^[a-z0-9][a-z0-9._/-]*$")
+SHA256_IDENTITY = re.compile(r"^sha256:[0-9a-f]{64}$")
+
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
@@ -355,6 +504,374 @@ def load_json(path: Path) -> dict[str, object]:
 
 def sha256(value: bytes) -> str:
     return hashlib.sha256(value).hexdigest()
+
+
+def canonical_json_bytes(value: object) -> bytes:
+    return json.dumps(
+        value,
+        allow_nan=False,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+
+
+def load_simple_action_metadata(path: Path) -> dict[str, object]:
+    """Parse the deliberately simple mapping-only Action metadata subset."""
+    text = path.read_text(encoding="utf-8")
+    if text.startswith("\ufeff"):
+        raise ValueError("Action metadata must not contain a UTF-8 BOM")
+    if "\t" in text:
+        raise ValueError("Action metadata must not contain tabs")
+    if not text.endswith("\n") or text.endswith("\n\n"):
+        raise ValueError("Action metadata must end with exactly one LF")
+
+    root: dict[str, object] = {}
+    stack: list[tuple[int, dict[str, object]]] = [(-2, root)]
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        if not line:
+            raise ValueError(f"blank line at {line_number} is not permitted")
+        indentation = len(line) - len(line.lstrip(" "))
+        if indentation % 2 != 0:
+            raise ValueError(f"indentation at line {line_number} is not two-space aligned")
+        body = line[indentation:]
+        if body.startswith("#") or ":" not in body:
+            raise ValueError(f"line {line_number} is not a simple mapping member")
+        key, separator, raw_value = body.partition(":")
+        if separator != ":" or not re.fullmatch(r"[a-z][a-z0-9-]*", key):
+            raise ValueError(f"line {line_number} has an invalid mapping key")
+
+        while stack[-1][0] >= indentation:
+            stack.pop()
+        parent_indentation, parent = stack[-1]
+        if indentation != parent_indentation + 2:
+            raise ValueError(f"line {line_number} skips a mapping level")
+        if key in parent:
+            raise ValueError(f"line {line_number} duplicates mapping key '{key}'")
+
+        value = raw_value.strip()
+        if value == "":
+            child: dict[str, object] = {}
+            parent[key] = child
+            stack.append((indentation, child))
+        else:
+            parent[key] = value
+    return root
+
+
+def validate_mo1302_action_metadata(root: Path, errors: list[str]) -> None:
+    metadata_path = root / MO1302_ACTION_ROOT / "action.yml"
+    try:
+        metadata = load_simple_action_metadata(metadata_path)
+    except (OSError, UnicodeError, ValueError) as exception:
+        errors.append(f"invalid MO-1302 Action metadata: {exception}")
+        return
+
+    if set(metadata) != {"name", "description", "inputs", "outputs", "runs"}:
+        errors.append("MO-1302 Action metadata root does not contain exactly the frozen members")
+    if metadata.get("name") != "MemoryOS Deterministic Policy Gate":
+        errors.append("MO-1302 Action name differs from the frozen name")
+    if metadata.get("description") != (
+        "Evaluate and verify a pinned MemoryOS Investigation Policy or Policy Set "
+        "against authoritative Memory Investigation Package input."
+    ):
+        errors.append("MO-1302 Action description differs from the frozen description")
+
+    inputs = metadata.get("inputs")
+    if not isinstance(inputs, dict) or set(inputs) != set(MO1302_ACTION_INPUTS):
+        errors.append("MO-1302 Action inputs differ from the frozen five-input contract")
+    else:
+        for input_name in MO1302_ACTION_INPUTS:
+            input_contract = inputs.get(input_name)
+            expected_members = {"description", "required"}
+            expected_required = "true"
+            if input_name == "regression-baseline-mip-path":
+                expected_members.add("default")
+                expected_required = "false"
+            if not isinstance(input_contract, dict) or set(input_contract) != expected_members:
+                errors.append(f"MO-1302 Action input '{input_name}' has invalid members")
+                continue
+            if not isinstance(input_contract.get("description"), str):
+                errors.append(f"MO-1302 Action input '{input_name}' lacks a description")
+            if input_contract.get("required") != expected_required:
+                errors.append(f"MO-1302 Action input '{input_name}' has invalid required behavior")
+            if input_name == "regression-baseline-mip-path" and input_contract.get(
+                "default"
+            ) != '""':
+                errors.append("MO-1302 optional baseline input must default to the empty string")
+
+    outputs = metadata.get("outputs")
+    if not isinstance(outputs, dict) or set(outputs) != set(MO1302_ACTION_OUTPUTS):
+        errors.append("MO-1302 Action outputs differ from the frozen nineteen-output contract")
+    else:
+        for output_name in MO1302_ACTION_OUTPUTS:
+            output_contract = outputs.get(output_name)
+            if not isinstance(output_contract, dict) or set(output_contract) != {"description"}:
+                errors.append(f"MO-1302 Action output '{output_name}' has invalid members")
+            elif not isinstance(output_contract.get("description"), str):
+                errors.append(f"MO-1302 Action output '{output_name}' lacks a description")
+
+    runs = metadata.get("runs")
+    if runs != {"using": "node24", "main": "dist/index.js"}:
+        errors.append("MO-1302 Action runs contract must be exactly node24/dist/index.js")
+
+
+def is_reparse_or_symlink(path: Path) -> bool:
+    status = path.lstat()
+    reparse_flag = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)
+    return path.is_symlink() or bool(getattr(status, "st_file_attributes", 0) & reparse_flag)
+
+
+def enumerate_action_tree(action_root: Path, errors: list[str]) -> set[str]:
+    members: set[str] = set()
+    try:
+        if is_reparse_or_symlink(action_root) or not action_root.is_dir():
+            errors.append("MO-1302 Action root must be a non-reparse directory")
+            return members
+    except OSError as exception:
+        errors.append(f"invalid MO-1302 Action root: {exception}")
+        return members
+
+    for directory, directory_names, file_names in os.walk(action_root, followlinks=False):
+        directory_path = Path(directory)
+        for name in list(directory_names):
+            child = directory_path / name
+            try:
+                if is_reparse_or_symlink(child) or not child.is_dir():
+                    errors.append(
+                        "MO-1302 Action tree contains a reparse or non-directory member: "
+                        + child.relative_to(action_root).as_posix()
+                    )
+                    directory_names.remove(name)
+            except OSError as exception:
+                errors.append(f"invalid MO-1302 Action tree member {child}: {exception}")
+                directory_names.remove(name)
+        for name in file_names:
+            child = directory_path / name
+            relative_path = child.relative_to(action_root).as_posix()
+            try:
+                status = child.lstat()
+                if is_reparse_or_symlink(child) or not stat.S_ISREG(status.st_mode):
+                    errors.append(
+                        "MO-1302 Action tree contains a reparse or non-regular file: "
+                        + relative_path
+                    )
+                    continue
+            except OSError as exception:
+                errors.append(f"invalid MO-1302 Action tree member {relative_path}: {exception}")
+                continue
+            members.add(relative_path)
+    return members
+
+
+def validate_mo1302_distribution(root: Path, errors: list[str]) -> None:
+    action_root = root / MO1302_ACTION_ROOT
+    manifest_path = action_root / "distribution-manifest.json"
+    try:
+        manifest_bytes = manifest_path.read_bytes()
+        if manifest_bytes.startswith(b"\xef\xbb\xbf"):
+            raise ValueError("distribution manifest must not contain a UTF-8 BOM")
+        manifest = json.loads(manifest_bytes.decode("utf-8"))
+        if not isinstance(manifest, dict):
+            raise ValueError("distribution manifest root must be an object")
+        if canonical_json_bytes(manifest) != manifest_bytes:
+            raise ValueError("distribution manifest bytes are not canonical JSON without framing")
+    except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid MO-1302 distribution manifest: {exception}")
+        return
+
+    if set(manifest) != {"files", "kind", "version"}:
+        errors.append("MO-1302 distribution manifest root is not closed")
+    if manifest.get("kind") != "MemoryOSGitHubPolicyGateDistributionManifest":
+        errors.append("MO-1302 distribution manifest kind is incorrect")
+    if manifest.get("version") != "1.0.0":
+        errors.append("MO-1302 distribution manifest version is incorrect")
+
+    direct_roles = {
+        "action.yml": "actionMetadata",
+        "dist/action-runtime.mjs": "runtimeModule",
+        "dist/cli-driver.mjs": "runtimeModule",
+        "dist/contracts/policy-contract-identities-1.0.0.json": "contractData",
+        "dist/index.js": "entrypoint",
+    }
+    expected_roles = dict(direct_roles)
+    expected_roles.update(
+        {f"dist/vendor/{source}": "runtimeModule" for source in MO1302_VENDOR_SOURCES}
+    )
+
+    entries = manifest.get("files")
+    actual_paths: list[str] = []
+    actual_roles: dict[str, str] = {}
+    if not isinstance(entries, list):
+        errors.append("MO-1302 distribution manifest files must be an array")
+        entries = []
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict) or set(entry) != {
+            "byteCount",
+            "path",
+            "rawSha256",
+            "role",
+        }:
+            errors.append(f"MO-1302 distribution entry {index} is not closed")
+            continue
+        relative_path = entry.get("path")
+        byte_count = entry.get("byteCount")
+        raw_digest = entry.get("rawSha256")
+        role = entry.get("role")
+        if (
+            not isinstance(relative_path, str)
+            or not MO1302_PORTABLE_MANIFEST_PATH.fullmatch(relative_path)
+            or "//" in relative_path
+            or any(part in {".", ".."} for part in relative_path.split("/"))
+        ):
+            errors.append(f"MO-1302 distribution entry {index} has an invalid path")
+            continue
+        actual_paths.append(relative_path)
+        if type(byte_count) is not int or not 1 <= byte_count <= 9_007_199_254_740_991:
+            errors.append(f"MO-1302 distribution entry '{relative_path}' has invalid byteCount")
+        if not isinstance(raw_digest, str) or not SHA256_IDENTITY.fullmatch(raw_digest):
+            errors.append(f"MO-1302 distribution entry '{relative_path}' has invalid rawSha256")
+        if not isinstance(role, str) or role not in MO1302_MANIFEST_ROLES:
+            errors.append(f"MO-1302 distribution entry '{relative_path}' has invalid role")
+        else:
+            actual_roles[relative_path] = role
+
+        member = action_root.joinpath(*relative_path.split("/"))
+        try:
+            member_bytes = member.read_bytes()
+            if len(member_bytes) != byte_count:
+                errors.append(f"MO-1302 distribution member '{relative_path}' byte count changed")
+            if f"sha256:{sha256(member_bytes)}" != raw_digest:
+                errors.append(f"MO-1302 distribution member '{relative_path}' digest changed")
+        except OSError as exception:
+            errors.append(f"missing MO-1302 distribution member '{relative_path}': {exception}")
+
+    if actual_paths != sorted(actual_paths):
+        errors.append("MO-1302 distribution entries are not ASCII path ordered")
+    if len(actual_paths) != len(set(actual_paths)):
+        errors.append("MO-1302 distribution entries contain duplicate paths")
+    if set(actual_paths) != set(expected_roles):
+        missing = sorted(set(expected_roles) - set(actual_paths))
+        unexpected = sorted(set(actual_paths) - set(expected_roles))
+        if missing:
+            errors.append("MO-1302 distribution manifest lacks reviewed members: " + ", ".join(missing))
+        if unexpected:
+            errors.append(
+                "MO-1302 distribution manifest has unreviewed members: "
+                + ", ".join(unexpected)
+            )
+    for relative_path, expected_role in expected_roles.items():
+        if actual_roles.get(relative_path) != expected_role:
+            errors.append(
+                f"MO-1302 distribution member '{relative_path}' must use role '{expected_role}'"
+            )
+    if list(actual_roles.values()).count("actionMetadata") != 1:
+        errors.append("MO-1302 distribution must have exactly one actionMetadata member")
+    if list(actual_roles.values()).count("entrypoint") != 1:
+        errors.append("MO-1302 distribution must have exactly one entrypoint member")
+
+    tree_members = enumerate_action_tree(action_root, errors)
+    expected_tree_members = set(actual_paths) | {"distribution-manifest.json"}
+    if tree_members != expected_tree_members:
+        unlisted = sorted(tree_members - expected_tree_members)
+        absent = sorted(expected_tree_members - tree_members)
+        if unlisted:
+            errors.append("MO-1302 Action root contains unlisted production files: " + ", ".join(unlisted))
+        if absent:
+            errors.append("MO-1302 Action root lacks listed production files: " + ", ".join(absent))
+
+    for source in MO1302_VENDOR_SOURCES:
+        original = root.joinpath(*source.split("/"))
+        vendored = action_root.joinpath("dist", "vendor", *source.split("/"))
+        try:
+            if original.read_bytes() != vendored.read_bytes():
+                errors.append(f"MO-1302 vendored runtime source differs from '{source}'")
+        except OSError as exception:
+            errors.append(f"invalid MO-1302 vendored runtime source '{source}': {exception}")
+
+
+def validate_mo1302_contracts_and_registration(root: Path, errors: list[str]) -> None:
+    schema_root = root / "repositories" / "cca-conformance" / "schema"
+    for filename, expected_identifier in MO1302_SCHEMA_IDENTIFIERS.items():
+        try:
+            schema = load_json(schema_root / filename)
+            if schema.get("$schema") != "https://json-schema.org/draft/2020-12/schema":
+                errors.append(f"MO-1302 schema '{filename}' must use JSON Schema Draft 2020-12")
+            if schema.get("$id") != expected_identifier:
+                errors.append(f"MO-1302 schema '{filename}' has an incorrect identifier")
+            if schema.get("type") != "object" or schema.get("additionalProperties") is not False:
+                errors.append(f"MO-1302 schema '{filename}' must define a closed object root")
+        except (OSError, ValueError, json.JSONDecodeError) as exception:
+            errors.append(f"invalid MO-1302 schema '{filename}': {exception}")
+
+    identities_path = (
+        root
+        / MO1302_ACTION_ROOT
+        / "dist"
+        / "contracts"
+        / "policy-contract-identities-1.0.0.json"
+    )
+    try:
+        identity_bytes = identities_path.read_bytes()
+        identities = json.loads(identity_bytes.decode("utf-8"))
+        if identities != MO1302_CONTRACT_IDENTITIES:
+            errors.append("MO-1302 bundled Policy contract identities changed")
+        if canonical_json_bytes(identities) != identity_bytes:
+            errors.append("MO-1302 bundled Policy contract identities are not canonical JSON")
+    except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid MO-1302 bundled Policy contract identities: {exception}")
+
+    conformance_root = root / "repositories" / "cca-conformance"
+    try:
+        package = load_json(conformance_root / "package.json")
+        scripts = package.get("scripts")
+        if not isinstance(scripts, dict) or scripts.get("test:mo1302-phase1") != (
+            "node --test tests/mo1302_action_foundation_conformance_test.mjs"
+        ):
+            errors.append("MO-1302 Phase-1 npm conformance registration is missing or changed")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid MO-1302 npm conformance registration: {exception}")
+
+    registration_anchors = {
+        conformance_root / "CMakeLists.txt": (
+            ("tests/mo1302_action_foundation_conformance_test.mjs", 2),
+            ("tests/support/mo1302-action-foundation-support.mjs", 1),
+            (
+                "tests/fixtures/github-policy-gate/1.0.0/"
+                "mo1302-action-foundation-vectors.json",
+                1,
+            ),
+            ("tools/build-mo1302-action-distribution.mjs", 1),
+            ('conformance_area STREQUAL "mo1302-phase1"', 2),
+        ),
+        conformance_root / "tools" / "run-js-conformance.mjs": (
+            ('"mo1302_action_foundation_conformance_test.mjs"', 1),
+        ),
+        root / ".gitattributes": (
+            (".github/actions/memoryos-policy-gate/**/*.json -text", 1),
+            (
+                "repositories/cca-conformance/tests/fixtures/"
+                "github-policy-gate/**/*.json -text",
+                1,
+            ),
+            (
+                "repositories/cca-conformance/tests/fixtures/"
+                "github-policy-gate/**/*.sha256 -text",
+                1,
+            ),
+        ),
+    }
+    for path, anchors in registration_anchors.items():
+        try:
+            text = path.read_text(encoding="utf-8")
+            for anchor, expected_count in anchors:
+                if text.count(anchor) != expected_count:
+                    errors.append(
+                        f"MO-1302 Phase-1 registration anchor '{anchor}' must occur "
+                        f"{expected_count} time(s) in {path.relative_to(root).as_posix()}"
+                    )
+        except (OSError, UnicodeError) as exception:
+            errors.append(f"invalid MO-1302 Phase-1 registration file {path}: {exception}")
 
 
 def validate_conformance_artifacts(root: Path, errors: list[str]) -> None:
@@ -440,6 +957,9 @@ def validate(root: Path) -> list[str]:
         if not (root / relative_path).is_file():
             errors.append(f"missing required file: {relative_path}")
 
+    validate_mo1302_action_metadata(root, errors)
+    validate_mo1302_distribution(root, errors)
+    validate_mo1302_contracts_and_registration(root, errors)
     validate_conformance_artifacts(root, errors)
 
     for repository in DEFERRED_REPOSITORIES:

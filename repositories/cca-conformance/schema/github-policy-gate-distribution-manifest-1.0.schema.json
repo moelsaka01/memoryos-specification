@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cca://schemas/memoryos/github-policy-gate/distribution-manifest/1.0",
+  "title": "MemoryOS GitHub Policy Gate Distribution Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "version", "files"],
+  "properties": {
+    "kind": { "const": "MemoryOSGitHubPolicyGateDistributionManifest" },
+    "version": { "const": "1.0.0" },
+    "files": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/file" },
+      "allOf": [
+        {
+          "contains": {
+            "allOf": [
+              { "$ref": "#/$defs/file" },
+              {
+                "required": ["path", "role"],
+                "properties": {
+                  "path": { "const": "action.yml" },
+                  "role": { "const": "actionMetadata" }
+                }
+              }
+            ]
+          },
+          "minContains": 1,
+          "maxContains": 1
+        },
+        {
+          "contains": {
+            "allOf": [
+              { "$ref": "#/$defs/file" },
+              {
+                "required": ["path", "role"],
+                "properties": {
+                  "path": { "const": "dist/index.js" },
+                  "role": { "const": "entrypoint" }
+                }
+              }
+            ]
+          },
+          "minContains": 1,
+          "maxContains": 1
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^(?!.*(?:^|/)(?:\\.|\\.\\.)(?:/|$))(?:[a-z0-9._-]+)(?:/[a-z0-9._-]+)*$"
+    },
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "not": {
+        "required": ["path"],
+        "properties": { "path": { "const": "distribution-manifest.json" } }
+      },
+      "required": ["path", "rawSha256", "byteCount", "role"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "rawSha256": { "$ref": "#/$defs/digest" },
+        "byteCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "role": {
+          "enum": ["actionMetadata", "entrypoint", "runtimeModule", "contractData"]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["path"],
+            "properties": { "path": { "const": "action.yml" } }
+          },
+          "then": {
+            "properties": { "role": { "const": "actionMetadata" } }
+          },
+          "else": {
+            "properties": { "role": { "not": { "const": "actionMetadata" } } }
+          }
+        },
+        {
+          "if": {
+            "required": ["path"],
+            "properties": { "path": { "const": "dist/index.js" } }
+          },
+          "then": {
+            "properties": { "role": { "const": "entrypoint" } }
+          },
+          "else": {
+            "properties": { "role": { "not": { "const": "entrypoint" } } }
+          }
+        }
+      ]
+    }
+  }
+}
