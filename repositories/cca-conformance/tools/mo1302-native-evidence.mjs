@@ -60,6 +60,12 @@ const NODE_ARCHITECTURE_BY_RUNNER_ARCH = Object.freeze({
   X86: "ia32",
 });
 
+const STATIC_LIBRARY_BY_PLATFORM_TOOLCHAIN = Object.freeze({
+  "Linux|GNU": "lib/libmemoryos-sdk.a",
+  "macOS|AppleClang": "lib/libmemoryos-sdk.a",
+  "Windows|GNU": "lib/libmemoryos-sdk.a",
+});
+
 const REGISTRATION_KIND = "MemoryOSMO1302NativePolicyRegistration";
 const EVIDENCE_KIND = "MemoryOSMO1302NativePolicyEvidence";
 const CONTRACT_VERSION = "1.0.0";
@@ -391,10 +397,13 @@ function workspaceCommit() {
   return lines[0];
 }
 
-function installedFilesFor(operatingSystem) {
-  const library = operatingSystem === "Windows"
-    ? "lib/memoryos-sdk.lib"
-    : "lib/libmemoryos-sdk.a";
+export function installedFilesFor(operatingSystem, compilerIdentifier) {
+  const library = STATIC_LIBRARY_BY_PLATFORM_TOOLCHAIN[
+    `${operatingSystem}|${compilerIdentifier}`
+  ];
+  if (library === undefined) {
+    fail(`unsupported native platform/toolchain: ${operatingSystem}/${compilerIdentifier}`);
+  }
   return [
     "include/memoryos/memoryos.hpp",
     library,
@@ -403,8 +412,8 @@ function installedFilesFor(operatingSystem) {
   ];
 }
 
-async function verifyInstall(prefix, operatingSystem) {
-  const files = installedFilesFor(operatingSystem);
+export async function verifyInstall(prefix, operatingSystem, compilerIdentifier) {
+  const files = installedFilesFor(operatingSystem, compilerIdentifier);
   for (const relativePath of files) {
     const metadata = await stat(resolve(prefix, ...relativePath.split("/")));
     if (!metadata.isFile()) fail(`installed file is not regular: ${relativePath}`);
@@ -481,7 +490,7 @@ export function validateNativeEvidence(evidence) {
 
   requireExactKeys(evidence.install, ["installedFiles", "result"], "install result");
   if (evidence.install.result !== "PASS") fail("native evidence install did not pass");
-  const expectedFiles = installedFilesFor(operatingSystem);
+  const expectedFiles = installedFilesFor(operatingSystem, evidence.compiler.identifier);
   if (!Array.isArray(evidence.install.installedFiles) ||
       evidence.install.installedFiles.length !== expectedFiles.length ||
       evidence.install.installedFiles.some((path, index) => path !== expectedFiles[index])) {
@@ -562,7 +571,11 @@ async function runEvidence(options) {
   );
   const runner = runnerIdentity();
   const compiler = await compilerIdentity(resolve(options["build-dir"]));
-  const installedFiles = await verifyInstall(resolve(options["install-prefix"]), runner.operatingSystem);
+  const installedFiles = await verifyInstall(
+    resolve(options["install-prefix"]),
+    runner.operatingSystem,
+    compiler.identifier,
+  );
   const evidence = createNativeEvidence({
     commit: workspaceCommit(),
     compiler,

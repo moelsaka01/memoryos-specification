@@ -32,9 +32,11 @@ import {
   EXPECTED_NATIVE_POLICY_TESTS,
   NATIVE_POLICY_TEST_REGEX,
   createNativeEvidence,
+  installedFilesFor,
   validateCTestJUnit,
   validateNativeEvidence,
   validateRegistrationDocument,
+  verifyInstall,
 } from "../tools/mo1302-native-evidence.mjs";
 
 const CONFORMANCE_ROOT = resolve(WORKSPACE_ROOT, "repositories/cca-conformance");
@@ -76,6 +78,12 @@ const NATIVE_EVIDENCE_CORRECTION_COMMIT =
   "1f34dc2edb980da19613a2eaf22587cc1651d8ed";
 const NATIVE_EVIDENCE_CORRECTION_BINDING_SUBJECT =
   "conformance(memoryos-1.3): bind MO-1302 native evidence correction";
+const NATIVE_EVIDENCE_CORRECTION_BINDING_COMMIT =
+  "a9436e618d7348b84b794256b8eead798e7abfc0";
+const WINDOWS_NATIVE_EVIDENCE_CORRECTION_SUBJECT =
+  "fix(memoryos-1.3): close MO-1302 Windows native evidence";
+const WINDOWS_NATIVE_EVIDENCE_CORRECTION_BINDING_SUBJECT =
+  "conformance(memoryos-1.3): bind MO-1302 Windows native evidence correction";
 const NATIVE_JUNIT_RELATIVE_PATH = "out/native-policy-evidence/ctest-results.xml";
 const NATIVE_JUNIT_WORKSPACE_PATH =
   '"${{ github.workspace }}/out/native-policy-evidence/ctest-results.xml"';
@@ -450,6 +458,7 @@ test("the native workflow uses one workspace-anchored JUnit path across the comp
 
 test("the native Windows configuration cannot mix MinGW with MSVC vcpkg binaries", async () => {
   const source = await text(NATIVE_WORKFLOW);
+  const cmake = await text("repositories/cca-sdk/CMakeLists.txt");
   const record = await inventory();
   assert.deepEqual(record.nativeToolchain.windows, {
     compiler: "C:/mingw64/bin/c++.exe",
@@ -474,28 +483,120 @@ test("the native Windows configuration cannot mix MinGW with MSVC vcpkg binaries
     'run: cmake --preset ci "-DCMAKE_CXX_COMPILER=C:/mingw64/bin/c++.exe" "-DVCPKG_TARGET_TRIPLET=x64-mingw-dynamic"',
   ), true);
   assert.equal(source.includes("VCPKG_TARGET_TRIPLET=x64-windows"), false);
+  assert.match(cmake, /add_library\(\s*memoryos_sdk\s+STATIC\b/su);
+  assert.match(
+    cmake,
+    /set_target_properties\(memoryos_sdk PROPERTIES OUTPUT_NAME "memoryos-sdk"\)/u,
+  );
+  assert.match(
+    cmake,
+    /install\(\s*TARGETS memoryos_sdk\s*ARCHIVE DESTINATION "\$\{CMAKE_INSTALL_LIBDIR\}"/su,
+  );
 });
 
-test("native registration, JUnit, and closed evidence validators accept exact PASS evidence", () => {
+test("native registration, JUnit, and closed evidence validators accept each supported platform/toolchain", () => {
   const registration = validateRegistrationDocument(validRegistration());
   assert.deepEqual(registration.registeredTests, EXPECTED_NATIVE_POLICY_TESTS);
   const results = validateCTestJUnit(validJunit());
   assert.deepEqual(results, EXPECTED_NATIVE_POLICY_TESTS.map((name) => ({ name, result: "PASS" })));
-  const evidence = createNativeEvidence({
-    commit: "a".repeat(40),
-    compiler: { identifier: "GNU", version: "14.2.0" },
-    installedFiles: [
+  const supported = [
+    {
+      compiler: { identifier: "GNU", version: "14.2.0" },
+      runner: { label: "ubuntu-24.04", operatingSystem: "Linux", architecture: "X64" },
+    },
+    {
+      compiler: { identifier: "AppleClang", version: "15.0.0" },
+      runner: { label: "macos-14", operatingSystem: "macOS", architecture: "ARM64" },
+    },
+    {
+      compiler: { identifier: "GNU", version: "14.2.0" },
+      runner: { label: "windows-2022", operatingSystem: "Windows", architecture: "X64" },
+    },
+  ];
+  for (const { compiler, runner } of supported) {
+    const installedFiles = installedFilesFor(runner.operatingSystem, compiler.identifier);
+    assert.deepEqual(installedFiles, [
       "include/memoryos/memoryos.hpp",
       "lib/libmemoryos-sdk.a",
       "share/cca-studio/web/js/investigation-policy-engine.js",
       "share/memoryos-sdk/bridge/investigation-core-host.mjs",
-    ],
-    registration,
-    runner: { label: "ubuntu-24.04", operatingSystem: "Linux", architecture: "X64" },
-    testResults: results,
-  });
-  assert.equal(validateNativeEvidence(evidence), evidence);
-  assert.equal(evidence.authority, "nonNormativeEngineeringEvidence");
+    ]);
+    const evidence = createNativeEvidence({
+      commit: "a".repeat(40),
+      compiler,
+      installedFiles,
+      registration,
+      runner,
+      testResults: results,
+    });
+    assert.equal(validateNativeEvidence(evidence), evidence);
+    assert.equal(evidence.authority, "nonNormativeEngineeringEvidence");
+  }
+});
+
+test("native evidence rejects MSVC naming and arbitrary archives for the supported Windows MinGW build", () => {
+  const registration = validateRegistrationDocument(validRegistration());
+  const testResults = validateCTestJUnit(validJunit());
+  const runner = { label: "windows-2022", operatingSystem: "Windows", architecture: "X64" };
+  const compiler = { identifier: "GNU", version: "14.2.0" };
+  const expected = installedFilesFor(runner.operatingSystem, compiler.identifier);
+  for (const replacement of [
+    "lib/memoryos-sdk.lib",
+    "lib/libmemoryos-sdk.dll.a",
+    "lib/libmemoryos-sdk-copy.a",
+  ]) {
+    const installedFiles = expected.map((path) =>
+      path === "lib/libmemoryos-sdk.a" ? replacement : path
+    );
+    assert.throws(
+      () => createNativeEvidence({
+        commit: "a".repeat(40),
+        compiler,
+        installedFiles,
+        registration,
+        runner,
+        testResults,
+      }),
+      /install inventory is incomplete/u,
+    );
+  }
+  assert.throws(
+    () => installedFilesFor("Windows", "MSVC"),
+    /unsupported native platform\/toolchain: Windows\/MSVC/u,
+  );
+});
+
+test("native install verification hard-fails without the exact MinGW archive despite decoys", async (t) => {
+  const prefix = await mkdtemp(join(tmpdir(), "memoryos-mo1302-windows-install-"));
+  t.after(() => rm(prefix, { force: true, recursive: true }));
+  const expected = installedFilesFor("Windows", "GNU");
+  const exactArchive = "lib/libmemoryos-sdk.a";
+  const present = [
+    ...expected.filter((path) => path !== exactArchive),
+    "lib/memoryos-sdk.lib",
+    "lib/libmemoryos-sdk.dll.a",
+    "lib/libmemoryos-sdk-copy.a",
+  ];
+  for (const relativePath of present) {
+    const path = resolve(prefix, ...relativePath.split("/"));
+    await mkdir(dirname(path), { recursive: true });
+    await writeFile(path, "fixture");
+  }
+  await assert.rejects(
+    verifyInstall(prefix, "Windows", "GNU"),
+    (error) => error?.code === "ENOENT" && /libmemoryos-sdk[.]a/u.test(error.message),
+  );
+
+  const archivePath = resolve(prefix, ...exactArchive.split("/"));
+  await writeFile(archivePath, "fixture");
+  assert.deepEqual(await verifyInstall(prefix, "Windows", "GNU"), expected);
+
+  await rm(archivePath);
+  await mkdir(archivePath);
+  await assert.rejects(
+    verifyInstall(prefix, "Windows", "GNU"),
+    /installed file is not regular: lib\/libmemoryos-sdk[.]a/u,
+  );
 });
 
 test("native validators reject missing, duplicate, disabled, failed, skipped, and open evidence", () => {
@@ -830,6 +931,48 @@ test("the native evidence correction uses a distinct additive two-commit binding
   assert.equal(
     git("show", "-s", "--format=%s", bindingCommit),
     NATIVE_EVIDENCE_CORRECTION_BINDING_SUBJECT,
+  );
+  assert.deepEqual(
+    git("diff", "--name-only", binding.revision, bindingCommit).split(/\r?\n/u),
+    [
+      "repositories/cca-conformance/mo1302-conformance-inventory.json",
+      "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
+    ],
+  );
+});
+
+test("the Windows native evidence correction uses a distinct additive two-commit binding", async () => {
+  const binding = (await inventory()).windowsNativeEvidenceCorrectionCommitBinding;
+  assert.equal(binding.strategy, "postCommitConformanceCommit");
+  const head = git("rev-parse", "HEAD");
+  const subject = git("show", "-s", "--format=%s", "HEAD");
+  if (binding.status === "mechanicallyPending") {
+    assert.equal(binding.revision, "PENDING");
+    assert.ok(
+      head === NATIVE_EVIDENCE_CORRECTION_BINDING_COMMIT
+        || subject === WINDOWS_NATIVE_EVIDENCE_CORRECTION_SUBJECT,
+    );
+    return;
+  }
+  assert.equal(binding.status, "bound");
+  assert.match(binding.revision, FULL_SHA);
+  assert.equal(
+    git("show", "-s", "--format=%s", binding.revision),
+    WINDOWS_NATIVE_EVIDENCE_CORRECTION_SUBJECT,
+  );
+  assert.equal(git("merge-base", "--is-ancestor", binding.revision, "HEAD"), "");
+  const descendants = git(
+    "rev-list",
+    "--first-parent",
+    "--reverse",
+    `${binding.revision}..HEAD`,
+  ).split(/\r?\n/u).filter(Boolean);
+  assert.ok(descendants.length >= 1);
+  const bindingCommit = descendants[0];
+  assert.equal(git("rev-parse", `${bindingCommit}^`), binding.revision);
+  assert.equal(
+    git("show", "-s", "--format=%s", bindingCommit),
+    WINDOWS_NATIVE_EVIDENCE_CORRECTION_BINDING_SUBJECT,
   );
   assert.deepEqual(
     git("diff", "--name-only", binding.revision, bindingCommit).split(/\r?\n/u),
