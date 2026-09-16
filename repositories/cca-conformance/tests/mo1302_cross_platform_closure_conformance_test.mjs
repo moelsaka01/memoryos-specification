@@ -10,7 +10,7 @@ import {
   writeFile,
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, posix, resolve, win32 } from "node:path";
 import test from "node:test";
 
 import {
@@ -68,6 +68,19 @@ const NATIVE_EXECUTION_CORRECTION_COMMIT =
   "a5666e8197b04a21a9a57a17e2331088a40d2dc9";
 const NATIVE_EXECUTION_CORRECTION_BINDING_SUBJECT =
   "conformance(memoryos-1.3): bind MO-1302 native execution correction";
+const NATIVE_EXECUTION_CORRECTION_BINDING_COMMIT =
+  "059a46ec744bcf456f026cb98766e48edcf1630f";
+const NATIVE_EVIDENCE_CORRECTION_SUBJECT =
+  "fix(memoryos-1.3): close MO-1302 native evidence gate";
+const NATIVE_EVIDENCE_CORRECTION_BINDING_SUBJECT =
+  "conformance(memoryos-1.3): bind MO-1302 native evidence correction";
+const NATIVE_JUNIT_RELATIVE_PATH = "out/native-policy-evidence/ctest-results.xml";
+const NATIVE_JUNIT_WORKSPACE_PATH =
+  '"${{ github.workspace }}/out/native-policy-evidence/ctest-results.xml"';
+const NATIVE_EVIDENCE_TOOL = resolve(
+  CONFORMANCE_ROOT,
+  "tools/mo1302-native-evidence.mjs",
+);
 const FULL_SHA = /^[0-9a-f]{40}$/u;
 const PINS = Object.freeze([
   Object.freeze({
@@ -264,7 +277,12 @@ test("workflow static security rejects mutable, privileged, or shell-injected co
     assert.doesNotMatch(source, /pull_request_target|self-hosted|actions\/cache@|secrets\.|secrets:\s*inherit/u);
     assert.doesNotMatch(source, /^\s*[A-Za-z][A-Za-z0-9-]*:\s*write\s*$/mu);
     assert.doesNotMatch(source, /(?:npm|pnpm|yarn)\s+(?:ci|install)|\b(?:curl|wget)\b/iu);
-    for (const block of runBlocks(source)) assert.doesNotMatch(block, /\$\{\{/u);
+    for (const block of runBlocks(source)) {
+      const inspected = path === NATIVE_WORKFLOW
+        ? block.replaceAll(NATIVE_JUNIT_WORKSPACE_PATH, "")
+        : block;
+      assert.doesNotMatch(inspected, /\$\{\{/u);
+    }
     for (const reference of workflowUses(source)) {
       assert.doesNotMatch(reference, /\$\{\{/u);
       if (reference.startsWith("$/")) continue;
@@ -373,18 +391,58 @@ test("the real bundled Action reproduces every oracle generation and detects byt
   }
 });
 
-test("the native workflow proves registration before an anchored two-test execution and install", async () => {
+test("the native workflow uses one workspace-anchored JUnit path across the complete gate", async () => {
   const source = await text(NATIVE_WORKFLOW);
+  const configurePosix = source.indexOf("- name: Configure the supported CI preset (POSIX)");
+  const configureWindows = source.indexOf(
+    "- name: Configure the supported CI preset (Windows MinGW)",
+  );
+  const build = source.indexOf("- name: Build the supported CI preset");
   const registration = source.indexOf("ctest --test-dir out/build/ci --show-only=json-v1");
   const execution = source.indexOf(
     'ctest --test-dir out/build/ci -R "^memoryos\\.sdk\\.cpp\\.(policy\\.contract|policy\\.example)$"',
   );
   const install = source.indexOf("cmake --install out/build/ci --prefix out/stage");
-  assert.ok(registration >= 0 && execution > registration && install > execution);
+  const evidence = source.indexOf("- name: Produce bounded non-normative native evidence");
+  const revalidation = source.indexOf("- name: Revalidate native evidence");
+  const upload = source.indexOf("- name: Upload native engineering evidence");
+  assert.ok(
+    configurePosix >= 0 &&
+      configureWindows > configurePosix &&
+      build > configureWindows &&
+      registration > build &&
+      execution > registration &&
+      install > execution &&
+      evidence > install &&
+      revalidation > evidence &&
+      upload > revalidation,
+  );
   assert.match(source, /cmake --preset ci/u);
   assert.match(source, /cmake --build --preset ci/u);
   assert.match(source, /--no-tests=error/u);
-  assert.match(source, /--output-junit out\/native-policy-evidence\/ctest-results\.xml/u);
+  assert.equal(
+    source.includes(`--output-junit ${NATIVE_JUNIT_WORKSPACE_PATH}`),
+    true,
+  );
+  assert.equal(
+    source.includes(`--junit ${NATIVE_JUNIT_WORKSPACE_PATH}`),
+    true,
+  );
+  assert.equal(source.split(NATIVE_JUNIT_WORKSPACE_PATH).length - 1, 2);
+  assert.equal(source.includes(`--output-junit ${NATIVE_JUNIT_RELATIVE_PATH}`), false);
+  assert.equal(source.includes(`--junit ${NATIVE_JUNIT_RELATIVE_PATH}`), false);
+  assert.equal(
+    posix.normalize(`/home/runner/work/memoryos-specification/memoryos-specification/${NATIVE_JUNIT_RELATIVE_PATH}`),
+    "/home/runner/work/memoryos-specification/memoryos-specification/out/native-policy-evidence/ctest-results.xml",
+  );
+  assert.equal(
+    posix.normalize(`/Users/runner/work/memoryos-specification/memoryos-specification/${NATIVE_JUNIT_RELATIVE_PATH}`),
+    "/Users/runner/work/memoryos-specification/memoryos-specification/out/native-policy-evidence/ctest-results.xml",
+  );
+  assert.equal(
+    win32.normalize(`D:\\a\\memoryos-specification\\memoryos-specification/${NATIVE_JUNIT_RELATIVE_PATH}`),
+    "D:\\a\\memoryos-specification\\memoryos-specification\\out\\native-policy-evidence\\ctest-results.xml",
+  );
   assert.match(source, /node repositories\/cca-conformance\/tools\/mo1302-native-evidence\.mjs validate/u);
 });
 
@@ -476,6 +534,47 @@ test("native validators reject missing, duplicate, disabled, failed, skipped, an
     testResults: results,
   });
   assert.throws(() => validateNativeEvidence({ ...evidence, extra: true }), /members must be exactly/u);
+});
+
+test("native evidence generation hard-fails when the real CTest JUnit file is missing", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "memoryos-mo1302-missing-native-junit-"));
+  t.after(() => rm(directory, { force: true, recursive: true }));
+  const registrationPath = join(directory, "registration.json");
+  const missingJunitPath = join(directory, "ctest-results.xml");
+  const outputPath = join(directory, "native-policy-evidence.json");
+  await writeFile(
+    registrationPath,
+    `${JSON.stringify(validateRegistrationDocument(validRegistration()))}\n`,
+  );
+  const result = spawnSync(
+    process.execPath,
+    [
+      NATIVE_EVIDENCE_TOOL,
+      "evidence",
+      "--registration",
+      registrationPath,
+      "--junit",
+      missingJunitPath,
+      "--build-dir",
+      directory,
+      "--install-prefix",
+      directory,
+      "--output",
+      outputPath,
+    ],
+    {
+      cwd: WORKSPACE_ROOT,
+      encoding: "utf8",
+      windowsHide: true,
+    },
+  );
+  assert.equal(result.error, undefined);
+  assert.equal(result.status, 1, result.stderr);
+  assert.match(result.stderr, /ENOENT|ctest-results\.xml/u);
+  await assert.rejects(
+    readFile(outputPath),
+    (error) => error?.code === "ENOENT",
+  );
 });
 
 test("the native dependency manifest uses the pinned repository-supported GoogleTest port", async () => {
@@ -679,6 +778,48 @@ test("the native execution correction uses a distinct additive two-commit bindin
   assert.deepEqual(
     git("diff", "--name-only", binding.revision, bindingCommit)
       .split("\n").map((line) => line.trim()).filter(Boolean),
+    [
+      "repositories/cca-conformance/mo1302-conformance-inventory.json",
+      "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",
+    ],
+  );
+});
+
+test("the native evidence correction uses a distinct additive two-commit binding", async () => {
+  const binding = (await inventory()).nativeEvidenceCorrectionCommitBinding;
+  assert.equal(binding.strategy, "postCommitConformanceCommit");
+  const head = git("rev-parse", "HEAD");
+  const subject = git("show", "-s", "--format=%s", "HEAD");
+  if (binding.status === "mechanicallyPending") {
+    assert.equal(binding.revision, "PENDING");
+    assert.ok(
+      head === NATIVE_EXECUTION_CORRECTION_BINDING_COMMIT
+        || subject === NATIVE_EVIDENCE_CORRECTION_SUBJECT,
+    );
+    return;
+  }
+  assert.equal(binding.status, "bound");
+  assert.match(binding.revision, FULL_SHA);
+  assert.equal(
+    git("show", "-s", "--format=%s", binding.revision),
+    NATIVE_EVIDENCE_CORRECTION_SUBJECT,
+  );
+  assert.equal(git("merge-base", "--is-ancestor", binding.revision, "HEAD"), "");
+  const descendants = git(
+    "rev-list",
+    "--first-parent",
+    "--reverse",
+    `${binding.revision}..HEAD`,
+  ).split(/\r?\n/u).filter(Boolean);
+  assert.ok(descendants.length >= 1);
+  const bindingCommit = descendants[0];
+  assert.equal(git("rev-parse", `${bindingCommit}^`), binding.revision);
+  assert.equal(
+    git("show", "-s", "--format=%s", bindingCommit),
+    NATIVE_EVIDENCE_CORRECTION_BINDING_SUBJECT,
+  );
+  assert.deepEqual(
+    git("diff", "--name-only", binding.revision, bindingCommit).split(/\r?\n/u),
     [
       "repositories/cca-conformance/mo1302-conformance-inventory.json",
       "repositories/cca-conformance/tests/mo1302_cross_platform_closure_conformance_test.mjs",

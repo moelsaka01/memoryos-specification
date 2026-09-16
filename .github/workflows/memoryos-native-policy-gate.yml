@@ -55,7 +55,7 @@ jobs:
           ctest --test-dir out/build/ci --show-only=json-v1 | node repositories/cca-conformance/tools/mo1302-native-evidence.mjs registration --output out/native-policy-evidence/registration.json
 
       - name: Execute the focused native Policy tests
-        run: ctest --test-dir out/build/ci -R "^memoryos\.sdk\.cpp\.(policy\.contract|policy\.example)$" --output-on-failure --no-tests=error --output-junit out/native-policy-evidence/ctest-results.xml
+        run: ctest --test-dir out/build/ci -R "^memoryos\.sdk\.cpp\.(policy\.contract|policy\.example)$" --output-on-failure --no-tests=error --output-junit "${{ github.workspace }}/out/native-policy-evidence/ctest-results.xml"
 
       - name: Install smoke test
         run: cmake --install out/build/ci --prefix out/stage
@@ -65,7 +65,7 @@ jobs:
           MEMORYOS_NATIVE_RUNNER_LABEL: ${{ matrix.os }}
           MEMORYOS_NATIVE_RUNNER_OS: ${{ runner.os }}
           MEMORYOS_NATIVE_RUNNER_ARCH: ${{ runner.arch }}
-        run: node repositories/cca-conformance/tools/mo1302-native-evidence.mjs evidence --registration out/native-policy-evidence/registration.json --junit out/native-policy-evidence/ctest-results.xml --build-dir out/build/ci --install-prefix out/stage --output out/native-policy-evidence/native-policy-evidence.json
+        run: node repositories/cca-conformance/tools/mo1302-native-evidence.mjs evidence --registration out/native-policy-evidence/registration.json --junit "${{ github.workspace }}/out/native-policy-evidence/ctest-results.xml" --build-dir out/build/ci --install-prefix out/stage --output out/native-policy-evidence/native-policy-evidence.json
 
       - name: Revalidate native evidence
         run: node repositories/cca-conformance/tools/mo1302-native-evidence.mjs validate --input out/native-policy-evidence/native-policy-evidence.json
