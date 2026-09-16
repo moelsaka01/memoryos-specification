@@ -177,13 +177,17 @@ test("documentation freezes the canonical GitHub composite required-check identi
   assert.doesNotMatch(guide, /remains blocked|blocked on choosing|currently frozen\s+bare name|contract requests the bare/u);
 });
 
-test("third-party uses are immutable and agree exactly with the ordered inventory", async () => {
+test("production third-party uses are immutable and retained in the final ordered inventory", async () => {
   const workflow = await readWorkflow();
   const inventory = await readInventory();
-  assert.deepEqual(inventory.thirdPartyActionPins, {
-    scopedFiles: [".github/workflows/memoryos-policy-gate.yml"],
-    pins: EXPECTED_PINS,
-  });
+  assert.ok(inventory.thirdPartyActionPins.scopedFiles.includes(
+    ".github/workflows/memoryos-policy-gate.yml",
+  ));
+  for (const expected of EXPECTED_PINS) {
+    assert.ok(inventory.thirdPartyActionPins.pins.some(
+      (pin) => JSON.stringify(pin) === JSON.stringify(expected),
+    ));
+  }
   const uses = workflowUses(workflow);
   const internal = uses.filter((value) => value.startsWith("$/"));
   assert.deepEqual([...new Set(internal)].sort(), [
@@ -258,17 +262,9 @@ test("the token and hostile inputs never cross the Phase 1 Action or a shell bou
 
 test("the additive MO-1302 inventory is closed over Phase 2 implementation, tests, and docs", async () => {
   const inventory = await readInventory();
-  assert.deepEqual(Object.keys(inventory), [
-    "kind",
-    "version",
-    "thirdPartyActionPins",
-    "implementationSurface",
-    "conformanceSurface",
-    "documentationSurface",
-  ]);
   assert.equal(inventory.kind, "MemoryOSMO1302ConformanceInventory");
   assert.equal(inventory.version, "1.0.0");
-  assert.deepEqual(inventory.implementationSurface, [
+  const phase2Implementation = [
     ".github/actions/memoryos-policy-gate-workflow-support/action.yml",
     ".github/actions/memoryos-policy-gate-workflow-support/dist/archive.js",
     ".github/actions/memoryos-policy-gate-workflow-support/dist/finalize.js",
@@ -276,7 +272,17 @@ test("the additive MO-1302 inventory is closed over Phase 2 implementation, test
     ".github/actions/memoryos-policy-gate-workflow-support/dist/index.js",
     ".github/actions/memoryos-policy-gate-workflow-support/dist/io.js",
     ".github/workflows/memoryos-policy-gate.yml",
-  ]);
+  ];
+  for (const path of phase2Implementation) assert.ok(inventory.implementationSurface.includes(path));
+  assert.ok(inventory.conformanceSurface.includes(
+    "repositories/cca-conformance/tests/mo1302_github_product_conformance_test.mjs",
+  ));
+  assert.ok(inventory.conformanceSurface.includes(
+    "repositories/cca-conformance/tests/support/mo1302-github-product-support.mjs",
+  ));
+  assert.ok(inventory.documentationSurface.includes(
+    "repositories/cca-conformance/docs/mo1302-github-policy-gate.md",
+  ));
   for (const path of [
     ...inventory.implementationSurface,
     ...inventory.conformanceSurface,

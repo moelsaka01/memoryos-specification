@@ -35,7 +35,7 @@ jobs:
     permissions:
       actions: read
       contents: read
-    uses: moelsaka01/memoryos-specification/.github/workflows/memoryos-policy-gate.yml@<FULL_40_HEX_REVIEWED_SHA>
+    uses: moelsaka01/memoryos-specification/.github/workflows/memoryos-policy-gate.yml@fc83b496c67869c8a8ddfcee0b2ec3f2937f2db2
     with:
       policy-kind: policy
       policy-path: policies/release.memoryos-policy.json
@@ -76,7 +76,7 @@ steps:
   - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     with:
       persist-credentials: false
-  - uses: moelsaka01/memoryos-specification/.github/actions/memoryos-policy-gate@<FULL_40_HEX_REVIEWED_SHA>
+  - uses: moelsaka01/memoryos-specification/.github/actions/memoryos-policy-gate@fc83b496c67869c8a8ddfcee0b2ec3f2937f2db2
     with:
       policy-kind: policy
       policy-path: policies/release.memoryos-policy.json
@@ -89,11 +89,90 @@ Direct Action users are responsible for retention and for reasserting the
 Action's `gate-class` as a job conclusion. The reusable workflow supplies those
 GitHub product behaviors.
 
+## Same-run candidate artifact
+
+Use artifact mode when a preceding job has produced the candidate MIP. The
+producer must upload one exact artifact containing exactly one regular-file
+leaf. Pin the uploader, use a literal artifact name, and do not overwrite an
+existing artifact:
+
+```yaml
+- uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+  with:
+    name: memoryos-candidate-mip
+    path: artifacts/candidate.mip
+    if-no-files-found: error
+    retention-days: 14
+    overwrite: false
+    include-hidden-files: false
+```
+
+The canonical caller then selects that exact same-run artifact by name. The
+candidate path input is deliberately omitted because the two acquisition forms
+are mutually exclusive:
+
+```yaml
+jobs:
+  memoryos-policy-gate:
+    needs: produce-candidate
+    permissions:
+      actions: read
+      contents: read
+    uses: moelsaka01/memoryos-specification/.github/workflows/memoryos-policy-gate.yml@fc83b496c67869c8a8ddfcee0b2ec3f2937f2db2
+    with:
+      policy-kind: policy
+      policy-path: policies/release.memoryos-policy.json
+      expected-policy-semantic-digest: sha256:<64-lowercase-hex>
+      candidate-mip-artifact-name: memoryos-candidate-mip
+      retention-days: 14
+```
+
+The reusable workflow enumerates artifacts from the current repository and
+current run, requires exactly one exact-name match, binds the download to its
+artifact ID, and rechecks the ID immediately before validated extraction.
+
+## Optional Regression baseline
+
+Regression is optional and has cardinality zero or one. Supply a baseline only
+when the selected Policy needs Cognitive Regression facts. This path-mode
+example keeps both MIPs as hostile workspace data:
+
+```yaml
+jobs:
+  memoryos-policy-gate:
+    permissions:
+      actions: read
+      contents: read
+    uses: moelsaka01/memoryos-specification/.github/workflows/memoryos-policy-gate.yml@fc83b496c67869c8a8ddfcee0b2ec3f2937f2db2
+    with:
+      policy-kind: policy
+      policy-path: policies/regression.memoryos-policy.json
+      expected-policy-semantic-digest: sha256:<64-lowercase-hex>
+      candidate-mip-path: artifacts/candidate.mip
+      regression-baseline-mip-path: artifacts/baseline.mip
+      retention-days: 14
+```
+
+Artifact mode may instead use
+`regression-baseline-mip-artifact-name`. A baseline path and baseline artifact
+name must never be supplied together. The workflow does not run Regression on
+detached caller-authored facts; the authoritative evaluator reconstructs the
+trusted baseline/candidate provenance.
+
 ## Decisions and retained artifacts
 
 Verified PASS, FAIL, and COULD_NOT_EVALUATE generations are uploaded before the
-final job conclusion is enforced. PASS succeeds. FAIL and CNE fail the job
-after evidence retention. The uploaded artifact contains exactly:
+final job conclusion is enforced. The decision contract is:
+
+| CLI result | Exit | Gate class | GitHub conclusion | Verified evidence |
+|---|---:|---|---|---|
+| `PASS` | 0 | `pass` | success | uploaded |
+| `FAIL` | 6 | `policy-fail` | failure after upload | uploaded |
+| `COULD_NOT_EVALUATE` | 7 | `policy-cne` | failure after upload | uploaded |
+| tool or automation failure | 1-5 or invalid protocol | `tool-failure` | failure | never represented as a Policy decision |
+
+No Policy state maps to a neutral or skipped result. The uploaded artifact is a
+closed allowlist containing exactly:
 
 - `evaluation-identity.json`
 - `evaluation-identity.sha256`
@@ -107,6 +186,28 @@ and remains subject to the repository retention ceiling. Partial or unverified
 generations are never uploaded. A late upload failure preserves the complete
 local generation and verified digests, but the job becomes a tool failure with
 `MEMORYOS_CI_ARTIFACT_PUBLICATION_FAILED`.
+
+These six files are operational evidence, not a container for investigation
+bodies. PolicyFactContext, MIP, and Regression report bodies are not uploaded by
+default. The canonical outcome is the publication generation's final commit
+marker; every sidecar must cross-verify against its embedded Evaluation
+Identity and digests before the set is accepted or re-uploaded.
+
+## Two independent identity layers
+
+Layer A is the immutable software-distribution revision. It proves which
+reviewed Action/workflow distribution was selected. Layer B is the complete
+MemoryOS normative contract identity returned by `memoryos policy identities`
+and cross-bound by the emitted Evaluation Identity. Layer B includes the
+evaluator, Fact Model, Rule Registry, Deterministic Fact Source Registry and
+Regression source-model entry, Resource Profile, and outcome contract
+identities.
+
+Both layers are mandatory. A correctly pinned distribution reporting different
+contract identities is rejected. Correct contract identities reported by an
+unapproved distribution are also rejected. The workflow-controlled Policy or
+Policy Set `semanticDigest` is a separate content pin and cannot override either
+layer.
 
 Step Summary and annotations are bounded, escaped, non-normative projections
 of verified machine fields. They expose no fact values, human CLI diagnostics,
@@ -140,7 +241,60 @@ deployment controls and are not modified by MO-1302.
 
 ## Local reproduction
 
-The workflow adapter and hostile-archive boundary have deterministic mocked
+GitHub contains no hidden Policy semantics. The equivalent local sequence uses
+the same CLI and preserves the completed evaluation exit before running
+verification:
+
+```sh
+memoryos policy identities --json > policy-identities.pre.json
+memoryos policy digest --policy policy.memoryos-policy.json --json > policy-digest.json
+
+set +e
+memoryos policy evaluate \
+  --policy policy.memoryos-policy.json \
+  --package candidate.mip \
+  --outcome evaluation-outcome.json \
+  --identity-output evaluation-identity.json \
+  --evaluation-identity-digest-output evaluation-identity.sha256 \
+  --outcome-digest-output evaluation-outcome.sha256 \
+  --json
+evaluation_status=$?
+set -e
+
+identity_digest="$(cat evaluation-identity.sha256)"
+outcome_digest="$(cat evaluation-outcome.sha256)"
+
+memoryos policy verify-identity evaluation-identity.json \
+  --mode artifact \
+  --expected-evaluation-identity-digest "$identity_digest" \
+  --json
+memoryos policy verify-identity evaluation-identity.json \
+  --mode evaluation \
+  --policy policy.memoryos-policy.json \
+  --package candidate.mip \
+  --json
+memoryos policy verify-outcome evaluation-outcome.json \
+  --mode artifact \
+  --expected-identity evaluation-identity.json \
+  --expected-outcome-digest "$outcome_digest" \
+  --json
+memoryos policy verify-outcome evaluation-outcome.json \
+  --mode evaluation \
+  --policy policy.memoryos-policy.json \
+  --package candidate.mip \
+  --expected-outcome-digest "$outcome_digest" \
+  --json
+
+memoryos policy identities --json > policy-identities.post.json
+cmp policy-identities.pre.json policy-identities.post.json
+```
+
+When Regression is required, add the same
+`--regression-baseline baseline.mip` input to evaluation-mode commands. Finally,
+cross-check the canonical outcome decision against the retained status: only
+`PASS`/0, `FAIL`/6, and `COULD_NOT_EVALUATE`/7 are valid completed pairs.
+
+The workflow adapter and hostile-archive boundary also have deterministic local
 protocol coverage:
 
 ```console
@@ -149,4 +303,50 @@ npm --prefix repositories/cca-conformance run test:mo1302-phase2
 
 Run the Phase 1 Action suite independently with
 `npm --prefix repositories/cca-conformance run test:mo1302-phase1`. GitHub
-transport is mocked locally; Phase 3 will add hosted cross-platform closure.
+transport is mocked by the Phase 2 suite; real hosted artifact behavior cannot
+be claimed from those tests.
+
+## Cross-platform and native evidence
+
+MO-1302 engineering validation targets fixed GitHub-hosted runners
+`ubuntu-24.04`, `windows-2022`, and `macos-14`. For identical frozen inputs, the
+three jobs must produce byte-identical Evaluation Identity and normative outcome
+files and equal Policy semantic, identity, outcome, PolicyFactContext, and any
+Regression source digests. Runner paths, operating-system metadata, run IDs,
+job IDs, artifact IDs, and check IDs remain non-normative.
+
+A separate native C++ matrix must prove that
+`memoryos.sdk.cpp.policy.contract` and `memoryos.sdk.cpp.policy.example` are
+registered, executed, and passing on all three runners, followed by a successful
+install. Compiler, OS, architecture, registration, execution, and install
+records are retained only as non-normative engineering evidence. See the
+[MO-1302 engineering conformance guide](mo1302-engineering-conformance.md).
+
+The workflow definitions and local deterministic tests can be completed before
+publication, but this checkout has not been pushed for Phase 3 hosted execution.
+Until run links and artifacts from all required GitHub-hosted jobs are verified,
+the MO-1302 hosted release gate remains pending and no cross-platform success is
+claimed.
+
+## Supply-chain boundary
+
+Every third-party Action reference in the production and MO-1302 engineering
+workflows is a reviewed full 40-hex revision recorded in the conformance
+inventory. Mutable tags, branches, shortened revisions, dynamic `uses`, runtime
+`npm install`, `actions/cache`, shell-piped downloads, evaluator downloads, and
+PATH substitution for the evaluator are rejected. The production Action's
+42-member distribution manifest remains byte-reproducible with raw digest
+`sha256:2e116b6518934c797e9c562670f2292462be11ee982c778b43f1aaf45a8986f9`.
+
+## Platform and roadmap limitations
+
+MO-1302 interface 1.0 targets GitHub.com. GitHub Enterprise Server support has
+not been validated and is not claimed. The initial production reusable workflow
+uses the GitHub-hosted `ubuntu-24.04` runner; the three-platform workflows are
+engineering and release-readiness validation rather than alternate Policy
+semantic authorities.
+
+MO-1302 does not implement a VS Code Extension (MO-1303), a provider-neutral
+GitLab CI, Jenkins, Azure DevOps, or generic CI abstraction (MO-1306), or
+higher-level Release Policies (MO-1307). Those later milestones cannot be
+inferred from these workflows, documentation, or evidence.

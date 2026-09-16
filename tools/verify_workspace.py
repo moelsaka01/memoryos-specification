@@ -1021,8 +1021,8 @@ def validate(root: Path) -> list[str]:
         if manifest.get("builtin-baseline") != pinned_commit:
             errors.append("vcpkg manifest baseline differs from tools/vcpkg-commit.txt")
         dependencies = manifest.get("dependencies", [])
-        if "googletest" not in dependencies:
-            errors.append("vcpkg manifest must provide googletest")
+        if "gtest" not in dependencies:
+            errors.append("vcpkg manifest must provide gtest")
         if "yaml-cpp" not in dependencies:
             errors.append("vcpkg manifest must provide yaml-cpp")
     except (OSError, ValueError, json.JSONDecodeError) as exception:

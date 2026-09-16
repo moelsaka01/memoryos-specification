@@ -1,0 +1,129 @@
+name: MemoryOS Policy Gate Hosted Validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      scenario:
+        description: Closed hosted validation scenario.
+        required: true
+        type: choice
+        default: direct-pass
+        options:
+          - direct-pass
+          - artifact-pass
+          - regression-pass
+          - fail
+          - cne
+
+permissions:
+  actions: read
+  contents: read
+
+env:
+  MO_EXPECTED_DISTRIBUTION_REVISION: ${{ github.sha }}
+
+jobs:
+  candidate-artifact:
+    name: Produce immutable candidate artifact
+    if: inputs.scenario == 'artifact-pass'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the frozen candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Upload the exact one-file candidate
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: mo1302-candidate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: repositories/cca-studio/examples/ai-runtime-adapters/reference-packages/openai-agents-reference.mip
+          if-no-files-found: error
+          retention-days: 14
+          overwrite: false
+          include-hidden-files: false
+
+      - name: Prove the artifact name is immutable
+        id: duplicate-upload
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: mo1302-candidate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: repositories/cca-studio/examples/ai-runtime-adapters/reference-packages/openai-agents-reference.mip
+          if-no-files-found: error
+          retention-days: 14
+          overwrite: false
+          include-hidden-files: false
+
+      - name: Verify immutable upload rejection
+        env:
+          MO_DUPLICATE_UPLOAD_OUTCOME: ${{ steps.duplicate-upload.outcome }}
+        run: node repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs verify-duplicate-upload
+
+  memoryos-policy-gate:
+    needs: candidate-artifact
+    if: always() && (needs.candidate-artifact.result == 'success' || needs.candidate-artifact.result == 'skipped')
+    permissions:
+      actions: read
+      contents: read
+    uses: $/.github/workflows/memoryos-policy-gate.yml
+    with:
+      policy-kind: policy
+      policy-path: ${{ (inputs.scenario == 'direct-pass' || inputs.scenario == 'artifact-pass') && 'repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/pass.memoryos-policy.json' || inputs.scenario == 'fail' && 'repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/fail.memoryos-policy.json' || 'repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/hosted/cne.memoryos-policy.json' }}
+      expected-policy-semantic-digest: ${{ (inputs.scenario == 'direct-pass' || inputs.scenario == 'artifact-pass') && 'sha256:bc0cb0880beac6408c3a7890c028b2d0cd1544e55b5e79864c564e23c4955157' || inputs.scenario == 'fail' && 'sha256:c37ccdf0bc01029460683c6c3fb4b451a7b7382253f7fd16252837de66c957f8' || 'sha256:e65ba193705de3a82661ec7141bb173ae289e8ffe9c432f241613b4c184e1a57' }}
+      candidate-mip-path: ${{ inputs.scenario == 'artifact-pass' && '' || 'repositories/cca-studio/examples/ai-runtime-adapters/reference-packages/openai-agents-reference.mip' }}
+      candidate-mip-artifact-name: ${{ inputs.scenario == 'artifact-pass' && format('mo1302-candidate-{0}-{1}', github.run_id, github.run_attempt) || '' }}
+      regression-baseline-mip-path: ${{ inputs.scenario == 'regression-pass' && 'repositories/cca-studio/examples/ai-runtime-adapters/reference-packages/openai-agents-reference.mip' || '' }}
+      retention-days: 14
+
+  audit:
+    name: Audit retained hosted evidence
+    needs: [candidate-artifact, memoryos-policy-gate]
+    if: always() && (needs.candidate-artifact.result == 'success' || needs.candidate-artifact.result == 'skipped')
+    runs-on: ubuntu-24.04
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: Check out the frozen hosted oracle
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Resolve the exact result artifact and canonical check
+        id: resolve
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MO_CALLER_ARTIFACT_ID: ${{ needs.memoryos-policy-gate.outputs.artifact-id }}
+          MO_CALLER_ARTIFACT_NAME: ${{ needs.memoryos-policy-gate.outputs.artifact-name }}
+        run: node repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs resolve-hosted-artifact
+
+      - name: Download the exact result artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          artifact-ids: ${{ steps.resolve.outputs.artifact-id }}
+          path: out/mo1302-hosted-result
+          digest-mismatch: error
+
+      - name: Verify retained bytes and final conclusion
+        env:
+          MO_CALLER_ARTIFACT_KIND: ${{ needs.memoryos-policy-gate.outputs.artifact-kind }}
+          MO_CALLER_CLI_EXIT_CODE: ${{ needs.memoryos-policy-gate.outputs.cli-exit-code }}
+          MO_CALLER_DECISION: ${{ needs.memoryos-policy-gate.outputs.decision }}
+          MO_CALLER_DISTRIBUTION_REPOSITORY: ${{ needs.memoryos-policy-gate.outputs.distribution-repository }}
+          MO_CALLER_DISTRIBUTION_REVISION: ${{ needs.memoryos-policy-gate.outputs.distribution-revision }}
+          MO_CALLER_EVALUATION_IDENTITY_DIGEST: ${{ needs.memoryos-policy-gate.outputs.evaluation-identity-digest }}
+          MO_CALLER_FAILURE_CLASS: ${{ needs.memoryos-policy-gate.outputs.failure-class }}
+          MO_CALLER_GATE_CLASS: ${{ needs.memoryos-policy-gate.outputs.gate-class }}
+          MO_CALLER_LIMIT_IDENTIFIER: ${{ needs.memoryos-policy-gate.outputs.limit-identifier }}
+          MO_CALLER_OUTCOME_DIGEST: ${{ needs.memoryos-policy-gate.outputs.outcome-digest }}
+          MO_CALLER_PHASE: ${{ needs.memoryos-policy-gate.outputs.phase }}
+          MO_CALLER_POLICY_FACT_CONTEXT_DIGEST: ${{ needs.memoryos-policy-gate.outputs.policy-fact-context-digest }}
+          MO_CALLER_POLICY_SEMANTIC_DIGEST: ${{ needs.memoryos-policy-gate.outputs.policy-semantic-digest }}
+          MO_CALLER_PUBLICATION_VALID: ${{ needs.memoryos-policy-gate.outputs.publication-valid }}
+          MO_CALLER_REGRESSION_SOURCE_DIGEST: ${{ needs.memoryos-policy-gate.outputs.regression-source-digest }}
+          MO_CALLER_RESULT: ${{ needs.memoryos-policy-gate.result }}
+          MO_CALLER_STABLE_CODE: ${{ needs.memoryos-policy-gate.outputs.stable-code }}
+          MO_DOWNLOADED_ARTIFACT: ${{ github.workspace }}/out/mo1302-hosted-result
+          MO_HOSTED_SCENARIO: ${{ inputs.scenario }}
+        run: node repositories/cca-conformance/tools/mo1302-hosted-evidence.mjs verify-hosted

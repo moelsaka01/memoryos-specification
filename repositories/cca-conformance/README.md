@@ -25,7 +25,8 @@ MO-1302 adds a separate additive
 [`mo1302-conformance-inventory.json`](mo1302-conformance-inventory.json) for
 the GitHub Policy Gate distribution, reusable workflow, immutable third-party
 Action pins, and product/security conformance. See the
-[GitHub Policy Gate guide](docs/mo1302-github-policy-gate.md).
+[GitHub Policy Gate guide](docs/mo1302-github-policy-gate.md) and the
+[MO-1302 engineering conformance guide](docs/mo1302-engineering-conformance.md).
 
 ## What the suite covers
 
@@ -92,7 +93,7 @@ $env:MEMORYOS_CONFORMANCE_PYTHON = 'C:\absolute\path\to\python.exe'
 npm --prefix repositories/cca-conformance test
 ```
 
-The package runner inventories and executes these fourteen `*_test.mjs` files in
+The package runner inventories and executes these fifteen `*_test.mjs` files in
 lexical order with deterministic environment settings and no concurrency:
 
 - `boundary_contract_conformance_test.mjs`
@@ -102,6 +103,7 @@ lexical order with deterministic environment settings and no concurrency:
 - `independent_assessment_conformance_test.mjs`
 - `mo1301_integration_conformance_test.mjs`
 - `mo1302_action_foundation_conformance_test.mjs`
+- `mo1302_cross_platform_closure_conformance_test.mjs`
 - `mo1302_github_product_conformance_test.mjs`
 - `normative_vectors_conformance_test.mjs`
 - `reference_implementation_conformance_test.mjs`
@@ -123,18 +125,25 @@ handoff mapping. It also runs one exact-byte MIP-backed Policy parity request
 through the JavaScript SDK, Python SDK, CLI, and raw private bridge. It
 references frozen vectors in place and never regenerates them.
 
-Run the MO-1302 Action foundation and GitHub product/security suites separately
-with:
+Run the three additive MO-1302 suites separately with:
 
 ```console
 npm --prefix repositories/cca-conformance run test:mo1302-phase1
 npm --prefix repositories/cca-conformance run test:mo1302-phase2
+npm --prefix repositories/cca-conformance run test:mo1302-phase3
 ```
 
 Phase 2 exercises the reusable-workflow contract, immutable third-party pins,
 mocked same-run artifact protocol, hostile ZIP boundary, verified-only upload,
 outputs, final conclusion, and non-normative presentation without requiring a
 live GitHub workflow run.
+
+Phase 3 locally verifies the fixed cross-platform matrices, security and supply-
+chain closure, parity, native parser registration, documentation, and inventory
+bindings. Passing these local checks does not prove the GitHub-hosted Ubuntu,
+Windows, macOS, reusable-workflow, artifact-service, or native execution paths.
+The hosted release gate remains pending until an authorized publication run
+retains that evidence.
 
 ## Reproduce the Reference Implementation assessment
 
