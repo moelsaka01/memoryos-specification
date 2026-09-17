@@ -54,6 +54,7 @@ cca_add_workspace_repository(memoryos)
 cca_add_workspace_repository(cca-studio)
 cca_add_workspace_repository(cca-sdk)
 cca_add_workspace_repository(memoryos-cli)
+cca_add_workspace_repository(memoryos-vscode)
 cca_add_workspace_repository(cca-conformance)
 cca_add_workspace_repository(cca-atlas)
 

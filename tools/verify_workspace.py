@@ -233,6 +233,34 @@ REQUIRED_PATHS = (
     "repositories/memoryos-cli/tests/investigate.test.mjs",
     "repositories/memoryos-cli/tests/session.test.mjs",
     "repositories/memoryos-cli/tests/test-helpers.mjs",
+    "repositories/memoryos-vscode/CMakeLists.txt",
+    "repositories/memoryos-vscode/package.json",
+    "repositories/memoryos-vscode/package-lock.json",
+    "repositories/memoryos-vscode/README.md",
+    "repositories/memoryos-vscode/CHANGELOG.md",
+    "repositories/memoryos-vscode/esbuild.mjs",
+    "repositories/memoryos-vscode/tsconfig.json",
+    "repositories/memoryos-vscode/.vscodeignore",
+    "repositories/memoryos-vscode/contracts/policy-contract-identities-1.0.0.json",
+    "repositories/memoryos-vscode/measurements/runtime-closure-identity-receipt-1.0.0.json",
+    "repositories/memoryos-vscode/measurements/transport-corpus-inventory-1.0.0.json",
+    "repositories/memoryos-vscode/measurements/transport-host-observation-1.0.0.json",
+    "repositories/memoryos-vscode/measurements/transport-limit-selection-receipt-1.0.0.json",
+    "repositories/memoryos-vscode/measurements/transport-measurement-results-1.0.0.json",
+    "repositories/memoryos-vscode/runtime/runtime-closure-manifest.json",
+    "repositories/memoryos-vscode/scripts/build-runtime-distribution.mjs",
+    "repositories/memoryos-vscode/scripts/measure-transport-limits.mjs",
+    "repositories/memoryos-vscode/src/commands.ts",
+    "repositories/memoryos-vscode/src/errors.ts",
+    "repositories/memoryos-vscode/src/extension.ts",
+    "repositories/memoryos-vscode/src/runtime/canonical-json.ts",
+    "repositories/memoryos-vscode/src/runtime/cli-adapter.ts",
+    "repositories/memoryos-vscode/src/runtime/cli-worker.ts",
+    "repositories/memoryos-vscode/src/runtime/input-snapshot.ts",
+    "repositories/memoryos-vscode/src/runtime/runtime-contract.ts",
+    "repositories/memoryos-vscode/src/runtime/runtime-distribution.ts",
+    "repositories/memoryos-vscode/tests/extension_shell_contract.test.mjs",
+    "repositories/memoryos-vscode/tests/runtime_foundation.test.mjs",
     "repositories/cca-conformance/CMakeLists.txt",
     "repositories/cca-conformance/package.json",
     "repositories/cca-conformance/README.md",
@@ -249,6 +277,7 @@ REQUIRED_PATHS = (
     "repositories/cca-conformance/reports/reference-implementation-1.2.1.json",
     "repositories/cca-conformance/reports/reference-implementation-1.2.1.md",
     "repositories/cca-conformance/mo1301-conformance-inventory.json",
+    "repositories/cca-conformance/mo1303-conformance-inventory.json",
     "repositories/cca-conformance/schema/conformance-report-1.0.schema.json",
     "repositories/cca-conformance/schema/github-policy-gate-automation-failure-1.0.schema.json",
     "repositories/cca-conformance/schema/github-policy-gate-distribution-manifest-1.0.schema.json",
@@ -260,11 +289,13 @@ REQUIRED_PATHS = (
     "repositories/cca-conformance/tests/reference_implementation_conformance_test.mjs",
     "repositories/cca-conformance/tests/mo1301_integration_conformance_test.mjs",
     "repositories/cca-conformance/tests/mo1302_action_foundation_conformance_test.mjs",
+    "repositories/cca-conformance/tests/mo1303_phase1_conformance_test.mjs",
     "repositories/cca-conformance/tests/report_conformance_test.mjs",
     "repositories/cca-conformance/tests/specification_conformance_test.mjs",
     "repositories/cca-conformance/tests/support/conformance-support.mjs",
     "repositories/cca-conformance/tests/support/mo1301-conformance-support.mjs",
     "repositories/cca-conformance/tests/support/mo1302-action-foundation-support.mjs",
+    "repositories/cca-conformance/tests/support/mo1303-conformance-support.mjs",
     "repositories/cca-conformance/tests/fixtures/github-policy-gate/1.0.0/mo1302-action-foundation-vectors.json",
     "repositories/cca-conformance/tests/fixtures/investigation-policy/1.0.0/mo1302-handoff-vectors.json",
     "repositories/cca-conformance/tools/build-mo1302-action-distribution.mjs",
@@ -874,6 +905,68 @@ def validate_mo1302_contracts_and_registration(root: Path, errors: list[str]) ->
             errors.append(f"invalid MO-1302 Phase-1 registration file {path}: {exception}")
 
 
+def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
+    conformance_root = root / "repositories" / "cca-conformance"
+    extension_root = root / "repositories" / "memoryos-vscode"
+    try:
+        package = load_json(conformance_root / "package.json")
+        scripts = package.get("scripts")
+        if not isinstance(scripts, dict) or scripts.get("test:mo1303-phase1") != (
+            "node --test tests/mo1303_phase1_conformance_test.mjs"
+        ):
+            errors.append("MO-1303 Phase-1 npm conformance registration is missing or changed")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid MO-1303 npm conformance registration: {exception}")
+
+    try:
+        inventory = load_json(conformance_root / "mo1303-conformance-inventory.json")
+        if inventory.get("kind") != "MemoryOSMO1303ConformanceInventory":
+            errors.append("MO-1303 conformance inventory kind is missing or changed")
+        if inventory.get("version") != "1.0.0":
+            errors.append("MO-1303 conformance inventory version is missing or changed")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid MO-1303 conformance inventory: {exception}")
+
+    registration_anchors = {
+        root / "CMakeLists.txt": (
+            ("cca_add_workspace_repository(memoryos-vscode)", 1),
+        ),
+        conformance_root / "CMakeLists.txt": (
+            ("mo1303-conformance-inventory.json", 2),
+            ("tests/mo1303_phase1_conformance_test.mjs", 2),
+            ("tests/support/mo1303-conformance-support.mjs", 1),
+            ('conformance_area STREQUAL "mo1303-phase1"', 2),
+        ),
+        conformance_root / "tools" / "run-js-conformance.mjs": (
+            ('"mo1303_phase1_conformance_test.mjs"', 1),
+        ),
+        extension_root / "package.json": (
+            ('"memoryos.showContractIdentities"', 1),
+            ('"memoryos.preparePolicyArtifact"', 1),
+            ('"memoryos.evaluatePolicyArtifact"', 1),
+            ('"memoryos.verifyEvaluationIdentity"', 1),
+            ('"memoryos.verifyPolicyOutcome"', 1),
+        ),
+        extension_root / "CMakeLists.txt": (
+            ('"${MEMORYOS_VSCODE_NPM_EXECUTABLE}" test -- --test-concurrency=1', 1),
+            ("tests/extension_shell_contract.test.mjs", 1),
+            ("tests/runtime_foundation.test.mjs", 1),
+            ("NAME memoryos.vscode.runtime", 1),
+        ),
+    }
+    for path, anchors in registration_anchors.items():
+        try:
+            text = path.read_text(encoding="utf-8")
+            for anchor, expected_count in anchors:
+                if text.count(anchor) != expected_count:
+                    errors.append(
+                        f"MO-1303 Phase-1 registration anchor '{anchor}' must occur "
+                        f"{expected_count} time(s) in {path.relative_to(root).as_posix()}"
+                    )
+        except (OSError, UnicodeError) as exception:
+            errors.append(f"invalid MO-1303 Phase-1 registration file {path}: {exception}")
+
+
 def validate_conformance_artifacts(root: Path, errors: list[str]) -> None:
     conformance_root = root / "repositories" / "cca-conformance"
     manifest_path = conformance_root / "requirements-manifest.json"
@@ -960,6 +1053,7 @@ def validate(root: Path) -> list[str]:
     validate_mo1302_action_metadata(root, errors)
     validate_mo1302_distribution(root, errors)
     validate_mo1302_contracts_and_registration(root, errors)
+    validate_mo1303_registration(root, errors)
     validate_conformance_artifacts(root, errors)
 
     for repository in DEFERRED_REPOSITORIES:

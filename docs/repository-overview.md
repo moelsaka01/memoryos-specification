@@ -29,7 +29,8 @@ belong to the repository that owns the behavior.
 | `cca-studio` | MemoryOS 1.2 released; MO-1301 implementation | Frozen Studio and investigation contracts plus the single Core-owned fact projection and authoritative Investigation Policy Engine |
 | `cca-sdk` | SDK 1.1 integration | Public JavaScript, Python, and native C++ facades over the frozen Investigation Core and Policy Engine; one private versioned native binding |
 | `memoryos-cli` | CLI 1.1 integration | Official `memoryos` executable with additive, SDK-backed Investigation Policy commands and exact artifact transport |
-| `cca-conformance` | MO-1208 released; MO-1301 additive inventory | Immutable CCA-MEMORYOS-1.0 assessment plus separate Investigation Policy integration, parity, provenance, vector, and MO-1302 handoff checks |
+| `memoryos-vscode` | MO-1303 Phase 1 foundation | Desktop VS Code adapter, isolated worker transport, and verified byte-preserved CLI/SDK runtime closure; no independent MemoryOS semantics |
+| `cca-conformance` | MO-1208 released; MO-1301/MO-1302/MO-1303 additive inventories | Immutable CCA-MEMORYOS-1.0 assessment plus milestone-specific integration and distribution checks |
 | `cca-atlas` | Reserved only | Future atlas boundary; responsibilities beyond the name are undecided |
 
 See [../repositories/README.md](../repositories/README.md) for the concise
@@ -117,6 +118,16 @@ The live session retains real SDK handles so checkpoint restoration cannot be
 forged or made portable. No checkpoint token or object is serialized. See the
 [CLI documentation](../repositories/memoryos-cli/README.md).
 
+## `memoryos-vscode`
+
+`memoryos-vscode` is the MO-1303 desktop adapter boundary. Its Phase 1 shell
+uses explicit commands, Workspace Trust enforcement, bounded local-file and
+worker transport, and a verified private snapshot of the byte-preserved CLI
+1.1 product-contract closure. The extension invokes the CLI in-process in an
+extension-owned `worker_threads` worker and does not spawn an operating-system
+CLI process or reimplement Policy, identity, canonicalization, or outcome
+semantics. See the [extension foundation](../repositories/memoryos-vscode/README.md).
+
 ## `cca-conformance`
 
 `cca-conformance` is the MO-1208 assessment boundary. It consumes the
@@ -159,6 +170,9 @@ the reserved-directory check.
   imported MIP.
 - `memoryos-cli` is downstream of `cca-sdk`; it owns automation and output
   formatting only and has no direct Core, MIP, Runtime, or renderer dependency.
+- `memoryos-vscode` is downstream of the reviewed CLI 1.1 product-contract
+  closure; it owns desktop adapter transport and presentation only and has no
+  independent MemoryOS semantic authority.
 - Studio and native consumers use the MemoryOS SDK facade. The SDK may forward
   Core or MIP operations but must not implement investigation semantics.
 - A new cross-repository dependency is an architecture change.

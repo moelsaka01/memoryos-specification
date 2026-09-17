@@ -10,7 +10,8 @@ The workspace coordinates these repository boundaries:
 | [`cca-studio`](cca-studio) | Released investigation platform plus the MO-1301 authoritative Investigation Policy Engine and Core fact projection |
 | [`cca-sdk`](cca-sdk) | JavaScript, Python, and C++ SDK 1.1 facades over the one Investigation Core and Policy Engine authorities |
 | [`memoryos-cli`](memoryos-cli) | Additive CLI 1.1 Investigation Policy namespace plus released investigation automation |
-| [`cca-conformance`](cca-conformance) | Immutable CCA-MEMORYOS-1.0/v1.2.1 assessment and separate MO-1301 conformance inventory and handoff checks |
+| [`memoryos-vscode`](memoryos-vscode) | MO-1303 Phase 1 desktop VS Code adapter foundation over the verified byte-preserved CLI/SDK runtime closure |
+| [`cca-conformance`](cca-conformance) | Immutable CCA-MEMORYOS-1.0/v1.2.1 assessment and separate MO-1301, MO-1302, and MO-1303 conformance inventories |
 | [`cca-atlas`](cca-atlas) | Reserved; no implementation |
 
 Directory presence does not authorize behavior. The current dependency
@@ -41,6 +42,9 @@ MO-1301 adds deterministic Investigation Policies and version 1.1 SDK/CLI
 transport surfaces. The Policy Engine remains the sole Policy semantic
 authority, while Core remains the sole investigation semantic authority. The
 new conformance inventory does not rewrite the released v1.2.1 attestation.
+MO-1303 adds the desktop VS Code adapter downstream of the byte-preserved CLI
+1.1 product-contract closure. The extension owns transport and presentation
+only; it does not own or reimplement MemoryOS semantics.
 No repository creates a reverse dependency into the compiler. Reserved
 repositories have no approved dependency relationships merely by directory
 presence.
