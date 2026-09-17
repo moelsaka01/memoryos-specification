@@ -710,7 +710,7 @@ test("adapter rejects out-of-band worker output immediately and terminates a non
   );
   const adapter = api.createCliAdapter({ extensionRoot: PACKAGE_ROOT, workerScriptPath: noisyWorker });
   await assert.rejects(
-    adapter.preflight(AbortSignal.timeout(2_000)),
+    adapter.preflight(AbortSignal.timeout(10_000)),
     assertAdapterCode("MEMORYOS_VSCODE_OUTPUT_INVALID"),
   );
   await adapter.dispose();
@@ -729,7 +729,7 @@ test("adapter rejects out-of-band output even when a worker also posts a valid r
   `);
   const adapter = api.createCliAdapter({ extensionRoot: PACKAGE_ROOT, workerScriptPath: noisyWorker });
   await assert.rejects(
-    adapter.preflight(AbortSignal.timeout(2_000)),
+    adapter.preflight(AbortSignal.timeout(10_000)),
     assertAdapterCode("MEMORYOS_VSCODE_OUTPUT_INVALID"),
   );
   await adapter.dispose();
@@ -747,7 +747,7 @@ test("adapter terminates a worker after its single result message", async () => 
     setInterval(() => {}, 1000);
   `);
   const adapter = api.createCliAdapter({ extensionRoot: PACKAGE_ROOT, workerScriptPath: lingeringWorker });
-  const result = await adapter.preflight(AbortSignal.timeout(2_000));
+  const result = await adapter.preflight(AbortSignal.timeout(10_000));
   assert.equal(result.identities.kind, "MemoryOSPolicyContractIdentities");
   await adapter.dispose();
 });

@@ -47,4 +47,14 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS)
     memoryos.vscode.runtime
     PROPERTIES LABELS "memoryos;vscode;automation;runtime;security"
   )
+  add_test(
+    NAME memoryos.vscode.product
+    COMMAND "${MEMORYOS_VSCODE_NODE_EXECUTABLE}" --test
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/phase2_product_ux.test.mjs"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+  )
+  set_tests_properties(
+    memoryos.vscode.product
+    PROPERTIES LABELS "memoryos;vscode;automation;product;security;phase2"
+  )
 endif()

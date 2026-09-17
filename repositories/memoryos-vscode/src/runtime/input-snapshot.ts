@@ -30,8 +30,8 @@ const FIXED_OUTPUT_NAMES = Object.freeze({
   canonicalArtifact: "canonical-artifact.json",
   evaluationIdentity: "evaluation-identity.json",
   evaluationIdentityDigest: "evaluation-identity.sha256",
-  outcome: "policy-outcome.json",
-  outcomeDigest: "policy-outcome.sha256",
+  outcome: "evaluation-outcome.json",
+  outcomeDigest: "evaluation-outcome.sha256",
 });
 
 const OPERATION_CAPABILITY = Symbol("MemoryOSOperationCapability");

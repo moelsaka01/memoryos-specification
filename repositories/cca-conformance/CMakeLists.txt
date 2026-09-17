@@ -52,6 +52,7 @@ set(memoryos_conformance_sources_list
     tests/mo1302_cross_platform_closure_conformance_test.mjs
     tests/mo1302_github_product_conformance_test.mjs
     tests/mo1303_phase1_conformance_test.mjs
+    tests/mo1303_phase2_conformance_test.mjs
     tests/normative_vectors_conformance_test.mjs
     tests/reference_implementation_conformance_test.mjs
     tests/report_conformance_test.mjs
@@ -126,6 +127,7 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     mo1302-phase2
     mo1302-phase3
     mo1303-phase1
+    mo1303-phase2
     normative
     reference
     report
@@ -153,6 +155,8 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
       set(conformance_source tests/mo1302_cross_platform_closure_conformance_test.mjs)
     elseif(conformance_area STREQUAL "mo1303-phase1")
       set(conformance_source tests/mo1303_phase1_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1303-phase2")
+      set(conformance_source tests/mo1303_phase2_conformance_test.mjs)
     elseif(conformance_area STREQUAL "normative")
       set(conformance_source tests/normative_vectors_conformance_test.mjs)
     elseif(conformance_area STREQUAL "reference")
@@ -215,6 +219,12 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
         memoryos.standard.${conformance_area}
         PROPERTIES LABELS
           "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1303;phase1;vscode;adapter"
+      )
+    elseif(conformance_area STREQUAL "mo1303-phase2")
+      set_tests_properties(
+        memoryos.standard.${conformance_area}
+        PROPERTIES LABELS
+          "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1303;phase2;vscode;product;security"
       )
     endif()
   endforeach()

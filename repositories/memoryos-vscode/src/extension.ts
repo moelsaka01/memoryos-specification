@@ -3,34 +3,34 @@ import { join } from "node:path";
 import type * as vscode from "vscode";
 
 import {
-  type ExtensionCommandAdapter,
   registerMemoryOSCommands,
 } from "./commands.js";
-import { createCliAdapter, type MemoryOSCliAdapter } from "./runtime/cli-adapter.js";
+import { createCliAdapter } from "./runtime/cli-adapter.js";
+import {
+  createMemoryOSVSCodeProduct,
+  type MemoryOSVSCodeProduct,
+} from "./vscode-product.js";
 
-let cliAdapter: MemoryOSCliAdapter | undefined;
+let product: MemoryOSVSCodeProduct | undefined;
 
 export function activate(context: vscode.ExtensionContext): void {
-  cliAdapter = createCliAdapter({
+  const cliAdapter = createCliAdapter({
     extensionRoot: context.extensionPath,
     workerScriptPath: join(context.extensionPath, "out", "cli-worker.cjs"),
   });
-  const commandAdapter: ExtensionCommandAdapter = Object.freeze({
-    async showContractIdentities(): Promise<unknown> {
-      return cliAdapter?.preflight();
-    },
-  });
+  product = createMemoryOSVSCodeProduct(cliAdapter);
   context.subscriptions.push({
     dispose(): void {
-      void cliAdapter?.dispose();
-      cliAdapter = undefined;
+      const activeProduct = product;
+      product = undefined;
+      void activeProduct?.dispose();
     },
   });
-  registerMemoryOSCommands(context, commandAdapter);
+  registerMemoryOSCommands(context, product);
 }
 
 export async function deactivate(): Promise<void> {
-  const adapter = cliAdapter;
-  cliAdapter = undefined;
-  await adapter?.dispose();
+  const activeProduct = product;
+  product = undefined;
+  await activeProduct?.dispose();
 }

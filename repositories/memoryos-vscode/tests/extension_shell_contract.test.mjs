@@ -89,8 +89,13 @@ test("manifest contributes exactly the five frozen public commands and labels", 
     manifest.contributes.commands.map((command) => command.category + ": " + command.title),
     expectedRenderedTitles,
   );
-  const publicIds = JSON.stringify(manifest).match(/memoryos\.[A-Za-z][A-Za-z0-9]*/gu) ?? [];
-  assert.deepEqual([...new Set(publicIds)].sort(), expectedCommands.map(({ command }) => command).sort());
+  assert.deepEqual(
+    manifest.contributes.commands.map(({ command }) => command),
+    expectedCommands.map(({ command }) => command),
+  );
+  assert.deepEqual(manifest.contributes.views, {
+    explorer: [{ id: "memoryos.results", name: "MemoryOS Results" }],
+  });
 });
 
 test("activation is contribution-driven and has no eager trigger", async () => {
@@ -111,18 +116,26 @@ test("Workspace Trust and virtual workspace capabilities are frozen", async () =
   }
 });
 
-test("all commands register lazily and trusted handlers enforce trust before Phase 2 input", async () => {
+test("all commands register lazily and trusted handlers enforce trust before product input", async () => {
   const source = await text("src/commands.ts");
   const catalogIds = [...source.matchAll(/id: "(memoryos\.[A-Za-z][A-Za-z0-9]*)"/gu)]
     .map((match) => match[1]);
   assert.deepEqual(catalogIds, expectedCommands.map(({ command }) => command));
-  assert.match(source, /vscode\.commands\.registerCommand\(command\.id/u);
+  assert.match(source, /vscode\.commands\.registerCommand\(\s*command\.id/u);
   const trustCheck = source.indexOf("if (command.requiresWorkspaceTrust) enforceWorkspaceTrust(command.id)");
   const commandSwitch = source.indexOf("switch (command.id)");
   assert.ok(trustCheck >= 0 && trustCheck < commandSwitch);
   assert.match(source, /vscode\.workspace\.isTrusted/u);
   assert.match(source, /MEMORYOS_VSCODE_ADAPTER_ERROR_CODES\.WORKSPACE_UNTRUSTED/u);
-  assert.match(source, /MEMORYOS_VSCODE_ADAPTER_ERROR_CODES\.INPUT_REQUIRED/u);
+  for (const method of [
+    "showContractIdentities",
+    "preparePolicyArtifact",
+    "evaluatePolicyArtifact",
+    "verifyEvaluationIdentity",
+    "verifyPolicyOutcome",
+  ]) {
+    assert.match(source, new RegExp(`adapter\\.${method}\\(`, "u"));
+  }
 });
 
 test("adapter error namespace is closed and CLI codes are preserved, not remapped", async () => {
@@ -143,7 +156,6 @@ test("Phase 1 shell excludes prohibited product surfaces", async () => {
     "debuggers",
     "languages",
     "taskDefinitions",
-    "views",
     "viewsContainers",
   ]) {
     assert.equal(Object.hasOwn(manifest.contributes, key), false, "unexpected contribution: " + key);

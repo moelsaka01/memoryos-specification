@@ -1,7 +1,7 @@
 {
   "kind": "MemoryOSMO1303ConformanceInventory",
   "version": "1.0.0",
-  "phase": "implementationPhase1Of3",
+  "phase": "implementationPhase2Of3",
   "baseline": {
     "mo1301Tag": {
       "name": "memoryos-1.3-mo1301",
@@ -256,7 +256,271 @@
       "RESTGateway"
     ]
   },
+  "phase2Product": {
+    "commandImplementations": [
+      {
+        "id": "memoryos.showContractIdentities",
+        "implementation": "showContractIdentities",
+        "requiresWorkspaceTrust": false
+      },
+      {
+        "id": "memoryos.preparePolicyArtifact",
+        "implementation": "preparePolicyArtifact",
+        "requiresWorkspaceTrust": true
+      },
+      {
+        "id": "memoryos.evaluatePolicyArtifact",
+        "implementation": "evaluatePolicyArtifact",
+        "requiresWorkspaceTrust": true
+      },
+      {
+        "id": "memoryos.verifyEvaluationIdentity",
+        "implementation": "verifyEvaluationIdentity",
+        "requiresWorkspaceTrust": true
+      },
+      {
+        "id": "memoryos.verifyPolicyOutcome",
+        "implementation": "verifyPolicyOutcome",
+        "requiresWorkspaceTrust": true
+      }
+    ],
+    "trustBehavior": {
+      "manifestEnablement": true,
+      "handlerEnforcement": true,
+      "untrustedCommandAllowlist": [
+        "memoryos.showContractIdentities"
+      ],
+      "workerBeginsBeforeTrustEnforcement": false
+    },
+    "resultsTree": {
+      "container": "explorer",
+      "viewId": "memoryos.results",
+      "name": "MemoryOS Results",
+      "provider": "TreeDataProvider",
+      "atomicReplacement": true,
+      "preservesPolicyOrder": true,
+      "preservesRuleOrder": true,
+      "preservesEvidenceOrder": true,
+      "retainsNonPassRules": true,
+      "groups": [
+        "Contracts",
+        "Prepared Artifact",
+        "Evaluation Summary",
+        "Policies",
+        "Rules",
+        "Evidence",
+        "Verification"
+      ]
+    },
+    "virtualDocuments": {
+      "scheme": "memoryos",
+      "provider": "TextDocumentContentProvider",
+      "kinds": [
+        "contractIdentities",
+        "evaluationIdentity",
+        "evaluationOutcome"
+      ],
+      "byteLimits": {
+        "contractIdentities": 65536,
+        "evaluationIdentity": 65536,
+        "evaluationOutcome": 4060
+      },
+      "canonicalBytesUnchanged": true,
+      "digestKeyed": true,
+      "readOnly": true,
+      "evaluationGenerationAtomicReplacement": true
+    },
+    "statusAndProgress": {
+      "outputChannel": "MemoryOS",
+      "outputChannelKind": "LogOutputChannel",
+      "outputEntryMaxBytes": 4096,
+      "outputRetainedMaxBytes": 262144,
+      "statusInitiallyHidden": true,
+      "publishedStates": [
+        "Prepared",
+        "Verified",
+        "PASS",
+        "FAIL",
+        "COULD_NOT_EVALUATE",
+        "Tool Error"
+      ],
+      "cancellableProgress": true,
+      "cancellationTerminatesWorker": true,
+      "noWallClockSemanticTimeout": true
+    },
+    "decisionPresentation": {
+      "normativeStates": [
+        "PASS",
+        "FAIL",
+        "COULD_NOT_EVALUATE"
+      ],
+      "failIsToolError": false,
+      "cneIsFail": false,
+      "toolErrorIsCne": false,
+      "cancellationIsDecision": false
+    },
+    "evidencePresentation": {
+      "variants": [
+        "MemoryOSPolicyFactReference",
+        "MemoryOSPolicyFactSelection",
+        "MemoryOSPolicyFactDomainState",
+        "MemoryOSDeterministicFactSourceAbsence"
+      ],
+      "sourceKinds": [
+        "policyFactContext",
+        "deterministicFactSource"
+      ],
+      "preservesOrder": true,
+      "externalFactDomainDisplayed": true,
+      "externalEvidenceRequiresFactDomain": true,
+      "selectionMatchCountBoundToIdentifierCardinality": true,
+      "sourceDigestDisplayed": true,
+      "wholeArtifactNavigationOnly": true
+    },
+    "verificationModes": {
+      "evaluationIdentity": [
+        "artifact",
+        "evaluation"
+      ],
+      "policyOutcome": [
+        "artifact",
+        "evaluation"
+      ]
+    },
+    "verificationScopeByMode": {
+      "artifact": "serializedArtifact",
+      "evaluation": "authoritativeReconstruction"
+    },
+    "artifactOutcomeIdentityAuthority": "exactlyOneOfArtifactOrDigest",
+    "artifactAcquisition": {
+      "selection": "explicitPerArtifact",
+      "acceptedScheme": "file",
+      "savedCleanRegularFilesOnly": true,
+      "symlinkOrReparseLeavesRejected": true,
+      "roleBoundPrivateSnapshots": true,
+      "multiRootInference": false,
+      "externalLocalFilesAllowed": true,
+      "automaticDiscovery": false
+    },
+    "evaluationGeneration": {
+      "privateFixedNames": [
+        "evaluation-identity.json",
+        "evaluation-identity.sha256",
+        "evaluation-outcome.sha256",
+        "evaluation-outcome.json"
+      ],
+      "outcomeIsFinalCommitMarker": true,
+      "sidecarBytes": 71,
+      "preflightPostflightIdentityAgreement": true,
+      "embeddedStandaloneIdentityEquality": true,
+      "sidecarDigestVerification": true,
+      "outcomeVersionCrossBinding": true,
+      "selectedSemanticDigestCrossBinding": true,
+      "artifactAndEvaluationModeVerification": true,
+      "verificationPasses": [
+        {
+          "target": "evaluationIdentity",
+          "mode": "artifact"
+        },
+        {
+          "target": "policyOutcome",
+          "mode": "artifact"
+        },
+        {
+          "target": "evaluationIdentity",
+          "mode": "evaluation"
+        },
+        {
+          "target": "policyOutcome",
+          "mode": "evaluation"
+        }
+      ],
+      "privateInputsReacquiredByRawSha256": true,
+      "publicationAfterVerification": true,
+      "mixedGenerationPublication": false
+    },
+    "prohibitedSurfaces": [
+      "DiagnosticCollection",
+      "webview",
+      "customEditor",
+      "languageServer",
+      "TaskProvider",
+      "automaticArtifactDiscovery",
+      "filesystemWatcher",
+      "automaticEvaluation",
+      "contributes.configuration",
+      "dirtyOrUntitledEvaluation",
+      "remoteVirtualOrWebWorkspaceSupportClaim",
+      "MarketplacePublication",
+      "telemetry",
+      "MCP",
+      "RESTGateway",
+      "network",
+      "shellOrChildProcess"
+    ],
+    "securityAndAdversarialCoverage": [
+      "workspaceTrustBypass",
+      "dirtyAndUntitledInputs",
+      "nonFileAndVirtualWorkspaceInputs",
+      "multiRootNeutrality",
+      "symlinkAndReparseLeaves",
+      "roleSwapping",
+      "transportLimitBoundaries",
+      "mixedGenerationAndDigestMismatch",
+      "malformedCliOutputAndWorkerFailure",
+      "operationConcurrencyAndStaleCompletion",
+      "hostileLabelsControlCharactersAndCommandLinks",
+      "offlineNoNetworkNoShell",
+      "noConfigurationDiagnosticsWebviewsOrTelemetry"
+    ]
+  },
+  "phase2Surface": {
+    "sources": [
+      "repositories/memoryos-vscode/package.json",
+      "repositories/memoryos-vscode/src/commands.ts",
+      "repositories/memoryos-vscode/src/extension.ts",
+      "repositories/memoryos-vscode/src/presentation/index.ts",
+      "repositories/memoryos-vscode/src/presentation/navigation.ts",
+      "repositories/memoryos-vscode/src/presentation/output.ts",
+      "repositories/memoryos-vscode/src/presentation/results-tree.ts",
+      "repositories/memoryos-vscode/src/presentation/sanitize.ts",
+      "repositories/memoryos-vscode/src/presentation/status.ts",
+      "repositories/memoryos-vscode/src/presentation/types.ts",
+      "repositories/memoryos-vscode/src/presentation/virtual-documents.ts",
+      "repositories/memoryos-vscode/src/product/contracts.ts",
+      "repositories/memoryos-vscode/src/product/index.ts",
+      "repositories/memoryos-vscode/src/product/operation-coordinator.ts",
+      "repositories/memoryos-vscode/src/product/product-controller.ts",
+      "repositories/memoryos-vscode/src/runtime/input-snapshot.ts",
+      "repositories/memoryos-vscode/src/vscode-input.ts",
+      "repositories/memoryos-vscode/src/vscode-product.ts"
+    ],
+    "tests": [
+      "repositories/cca-conformance/tests/mo1303_phase2_conformance_test.mjs",
+      "repositories/memoryos-vscode/tests/extension_shell_contract.test.mjs",
+      "repositories/memoryos-vscode/tests/phase2_product_ux.test.mjs",
+      "repositories/memoryos-vscode/tests/runtime_foundation.test.mjs",
+      "repositories/memoryos-vscode/tests/support/mock-vscode.mjs"
+    ],
+    "registration": [
+      "repositories/cca-conformance/CMakeLists.txt",
+      "repositories/cca-conformance/mo1303-conformance-inventory.json",
+      "repositories/cca-conformance/package.json",
+      "repositories/cca-conformance/tools/run-js-conformance.mjs",
+      "repositories/memoryos-vscode/CMakeLists.txt",
+      "tools/verify_workspace.py"
+    ],
+    "documentation": [
+      "repositories/memoryos-vscode/CHANGELOG.md",
+      "repositories/memoryos-vscode/README.md"
+    ]
+  },
   "phase1CommitBinding": {
+    "strategy": "postCommitConformanceCommit",
+    "status": "bound",
+    "revision": "6f99038fd5669ece2af4b1671a8e5f267822d2dd"
+  },
+  "phase2CommitBinding": {
     "strategy": "postCommitConformanceCommit",
     "status": "pendingCommit",
     "revision": null

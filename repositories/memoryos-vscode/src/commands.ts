@@ -36,9 +36,13 @@ export const MEMORYOS_PUBLIC_COMMANDS = Object.freeze([
 export type MemoryOSPublicCommand = (typeof MEMORYOS_PUBLIC_COMMANDS)[number];
 export type MemoryOSPublicCommandId = MemoryOSPublicCommand["id"];
 
-/** Phase 1 boundary; the verified runtime implementation is injected here. */
+/** Product boundary; every implementation delegates semantics to Phase 1. */
 export interface ExtensionCommandAdapter {
   showContractIdentities(): Promise<unknown>;
+  preparePolicyArtifact(uri?: vscode.Uri): Promise<unknown>;
+  evaluatePolicyArtifact(uri?: vscode.Uri): Promise<unknown>;
+  verifyEvaluationIdentity(uri?: vscode.Uri): Promise<unknown>;
+  verifyPolicyOutcome(uri?: vscode.Uri): Promise<unknown>;
 }
 
 function enforceWorkspaceTrust(commandId: MemoryOSPublicCommandId): void {
@@ -49,16 +53,10 @@ function enforceWorkspaceTrust(commandId: MemoryOSPublicCommandId): void {
   );
 }
 
-function deferredInput(commandId: MemoryOSPublicCommandId): never {
-  throw new MemoryOSAdapterError(
-    MEMORYOS_VSCODE_ADAPTER_ERROR_CODES.INPUT_REQUIRED,
-    `${commandId} requires explicit saved local-file input selection.`,
-  );
-}
-
-async function invokeCommand(
+export async function invokeMemoryOSCommand(
   command: MemoryOSPublicCommand,
   adapter: ExtensionCommandAdapter,
+  uri?: vscode.Uri,
 ): Promise<unknown> {
   // Handler-level enforcement is mandatory even when manifest enablement hides
   // or disables a command, because extensions can invoke commands directly.
@@ -68,10 +66,13 @@ async function invokeCommand(
     case "memoryos.showContractIdentities":
       return adapter.showContractIdentities();
     case "memoryos.preparePolicyArtifact":
+      return adapter.preparePolicyArtifact(uri);
     case "memoryos.evaluatePolicyArtifact":
+      return adapter.evaluatePolicyArtifact(uri);
     case "memoryos.verifyEvaluationIdentity":
+      return adapter.verifyEvaluationIdentity(uri);
     case "memoryos.verifyPolicyOutcome":
-      return deferredInput(command.id);
+      return adapter.verifyPolicyOutcome(uri);
   }
 }
 
@@ -80,7 +81,10 @@ export function registerMemoryOSCommands(
   adapter: ExtensionCommandAdapter,
 ): readonly vscode.Disposable[] {
   const registrations = MEMORYOS_PUBLIC_COMMANDS.map((command) =>
-    vscode.commands.registerCommand(command.id, () => invokeCommand(command, adapter)));
+    vscode.commands.registerCommand(
+      command.id,
+      (uri?: vscode.Uri) => invokeMemoryOSCommand(command, adapter, uri),
+    ));
   context.subscriptions.push(...registrations);
   return Object.freeze(registrations);
 }

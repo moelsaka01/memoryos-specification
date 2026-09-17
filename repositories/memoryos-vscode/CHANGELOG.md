@@ -8,6 +8,13 @@
 - Add the closed extension adapter error-code catalog.
 - Add deterministic TypeScript, esbuild, test, and future VSIX allowlist
   foundations.
+- Complete all five local product command flows through the verified Phase 1
+  adapter without duplicating MemoryOS semantics.
+- Add the native MemoryOS Results tree, exact read-only virtual documents,
+  bounded log output, ephemeral status, progress, and hard cancellation UX.
+- Add complete-generation verification, trusted local artifact acquisition,
+  verification modes, hostile-presentation defenses, and deterministic mocked
+  VS Code product coverage.
 
-Complete Phase 2 command UX and Phase 3 Extension Host/hosted certification
+Phase 3 Extension Host, cross-platform hosted, and final VSIX certification
 remain intentionally deferred.

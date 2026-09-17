@@ -290,6 +290,7 @@ REQUIRED_PATHS = (
     "repositories/cca-conformance/tests/mo1301_integration_conformance_test.mjs",
     "repositories/cca-conformance/tests/mo1302_action_foundation_conformance_test.mjs",
     "repositories/cca-conformance/tests/mo1303_phase1_conformance_test.mjs",
+    "repositories/cca-conformance/tests/mo1303_phase2_conformance_test.mjs",
     "repositories/cca-conformance/tests/report_conformance_test.mjs",
     "repositories/cca-conformance/tests/specification_conformance_test.mjs",
     "repositories/cca-conformance/tests/support/conformance-support.mjs",
@@ -915,6 +916,10 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
             "node --test tests/mo1303_phase1_conformance_test.mjs"
         ):
             errors.append("MO-1303 Phase-1 npm conformance registration is missing or changed")
+        if not isinstance(scripts, dict) or scripts.get("test:mo1303-phase2") != (
+            "node --test tests/mo1303_phase2_conformance_test.mjs"
+        ):
+            errors.append("MO-1303 Phase-2 npm conformance registration is missing or changed")
     except (OSError, ValueError, json.JSONDecodeError) as exception:
         errors.append(f"invalid MO-1303 npm conformance registration: {exception}")
 
@@ -924,6 +929,20 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
             errors.append("MO-1303 conformance inventory kind is missing or changed")
         if inventory.get("version") != "1.0.0":
             errors.append("MO-1303 conformance inventory version is missing or changed")
+        if inventory.get("phase") != "implementationPhase2Of3":
+            errors.append("MO-1303 conformance inventory phase is missing or changed")
+        if inventory.get("phase1CommitBinding") != {
+            "strategy": "postCommitConformanceCommit",
+            "status": "bound",
+            "revision": "6f99038fd5669ece2af4b1671a8e5f267822d2dd",
+        }:
+            errors.append("MO-1303 Phase-1 implementation binding is missing or changed")
+        if inventory.get("phase2CommitBinding") != {
+            "strategy": "postCommitConformanceCommit",
+            "status": "pendingCommit",
+            "revision": None,
+        }:
+            errors.append("MO-1303 Phase-2 pending commit binding is missing or changed")
     except (OSError, ValueError, json.JSONDecodeError) as exception:
         errors.append(f"invalid MO-1303 conformance inventory: {exception}")
 
@@ -934,11 +953,14 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
         conformance_root / "CMakeLists.txt": (
             ("mo1303-conformance-inventory.json", 2),
             ("tests/mo1303_phase1_conformance_test.mjs", 2),
+            ("tests/mo1303_phase2_conformance_test.mjs", 2),
             ("tests/support/mo1303-conformance-support.mjs", 1),
             ('conformance_area STREQUAL "mo1303-phase1"', 2),
+            ('conformance_area STREQUAL "mo1303-phase2"', 2),
         ),
         conformance_root / "tools" / "run-js-conformance.mjs": (
             ('"mo1303_phase1_conformance_test.mjs"', 1),
+            ('"mo1303_phase2_conformance_test.mjs"', 1),
         ),
         extension_root / "package.json": (
             ('"memoryos.showContractIdentities"', 1),
@@ -951,7 +973,9 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
             ('"${MEMORYOS_VSCODE_NPM_EXECUTABLE}" test -- --test-concurrency=1', 1),
             ("tests/extension_shell_contract.test.mjs", 1),
             ("tests/runtime_foundation.test.mjs", 1),
+            ("tests/phase2_product_ux.test.mjs", 1),
             ("NAME memoryos.vscode.runtime", 1),
+            ("NAME memoryos.vscode.product", 1),
         ),
     }
     for path, anchors in registration_anchors.items():
@@ -960,11 +984,11 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
             for anchor, expected_count in anchors:
                 if text.count(anchor) != expected_count:
                     errors.append(
-                        f"MO-1303 Phase-1 registration anchor '{anchor}' must occur "
+                        f"MO-1303 registration anchor '{anchor}' must occur "
                         f"{expected_count} time(s) in {path.relative_to(root).as_posix()}"
                     )
         except (OSError, UnicodeError) as exception:
-            errors.append(f"invalid MO-1303 Phase-1 registration file {path}: {exception}")
+            errors.append(f"invalid MO-1303 registration file {path}: {exception}")
 
 
 def validate_conformance_artifacts(root: Path, errors: list[str]) -> None:
