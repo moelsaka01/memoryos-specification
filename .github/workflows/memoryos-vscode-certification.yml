@@ -1,4 +1,4 @@
-name: MemoryOS VS Code certification
+name: MemoryOS VS Code Certification
 
 on:
   workflow_dispatch:
@@ -25,13 +25,17 @@ jobs:
       CERT_PLATFORM: ${{ matrix.platform }}
       CERT_REVISION: ${{ github.sha }}
       CI: "true"
-      MEMORYOS_VSCODE_TEST_CACHE: ${{ runner.temp }}/memoryos-vscode-1.137.0
-      CERT_ARTIFACT_STAGE: ${{ runner.temp }}/mo1303-certification-artifact
       NPM_CONFIG_IGNORE_SCRIPTS: "true"
       NO_COLOR: "1"
       SOURCE_DATE_EPOCH: "315532800"
       TZ: UTC
     steps:
+      - name: Initialize runner-local certification paths
+        shell: pwsh
+        run: |
+          "MEMORYOS_VSCODE_TEST_CACHE=${{ runner.temp }}/memoryos-vscode-1.137.0" >> $env:GITHUB_ENV
+          "CERT_ARTIFACT_STAGE=${{ runner.temp }}/mo1303-certification-artifact" >> $env:GITHUB_ENV
+
       - name: Check out the implementation revision
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:

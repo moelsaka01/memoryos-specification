@@ -196,6 +196,63 @@ test("hosted workflow is manual, least privilege, immutable, complete, and bound
     assert.equal(bytes.byteLength, member.byteLength);
     assert.equal(sha256(bytes), member.rawSha256);
   }
+  assert.equal(workflow.split(/\r?\n/u, 1)[0], "name: MemoryOS VS Code Certification");
+  const workflowLines = workflow.split(/\r?\n/u);
+  const jobEnvironmentBlocks = [];
+  for (let index = 0; index < workflowLines.length; index += 1) {
+    if (workflowLines[index] !== "    env:") continue;
+    const environmentLines = [];
+    for (index += 1; index < workflowLines.length; index += 1) {
+      if (workflowLines[index] !== "" && !workflowLines[index].startsWith("      ")) break;
+      environmentLines.push(workflowLines[index]);
+    }
+    index -= 1;
+    jobEnvironmentBlocks.push(environmentLines.join("\n"));
+  }
+  assert.equal(jobEnvironmentBlocks.length, 2);
+  for (const environmentBlock of jobEnvironmentBlocks) {
+    assert.doesNotMatch(
+      environmentBlock,
+      /\$\{\{\s*runner(?:\.|\[)/u,
+      "runner context is unavailable in jobs.<job_id>.env",
+    );
+  }
+  const runnerPathInitialization = /^    steps:\r?\n      - name: Initialize runner-local certification paths\r?\n        shell: pwsh\r?\n        run: \|\r?\n          "MEMORYOS_VSCODE_TEST_CACHE=\$\{\{ runner\.temp \}\}\/memoryos-vscode-1\.137\.0" >> \$env:GITHUB_ENV\r?\n          "CERT_ARTIFACT_STAGE=\$\{\{ runner\.temp \}\}\/mo1303-certification-artifact" >> \$env:GITHUB_ENV\r?$/mu;
+  assert.match(workflow, runnerPathInitialization);
+  assert.equal(workflow.match(/\$\{\{\s*runner\.temp\s*\}\}/gu)?.length, 2);
+  const initializationIndex = workflow.indexOf("      - name: Initialize runner-local certification paths");
+  const acquisitionIndex = workflow.indexOf("      - name: Acquire exact VS Code Desktop 1.137.0");
+  const stagingIndex = workflow.indexOf("      - name: Generate and validate platform evidence");
+  const uploadIndex = workflow.indexOf("      - name: Upload bounded certification evidence");
+  assert.ok(initializationIndex >= 0 && initializationIndex < acquisitionIndex);
+  assert.ok(initializationIndex < stagingIndex && stagingIndex < uploadIndex);
+  assert.equal(workflow.match(/--output-root \$env:CERT_ARTIFACT_STAGE\b/gu)?.length, 1);
+  assert.equal(workflow.match(/path: \$\{\{ env\.CERT_ARTIFACT_STAGE \}\}/gu)?.length, 1);
+  assert.deepEqual(
+    [...workflow.matchAll(/^          - platform: ([^\r\n]+)\r?\n            runner: ([^\r\n]+)\r?$/gmu)]
+      .map(([, platform, runner]) => ({ platform, runner })),
+    [
+      { platform: "ubuntu-24.04", runner: "ubuntu-24.04" },
+      { platform: "windows-2022", runner: "windows-2022" },
+      { platform: "macos-14", runner: "macos-14-large" },
+    ],
+  );
+  assert.equal(workflow.match(/^      fail-fast: false\r?$/gmu)?.length, 1);
+  assert.match(
+    workflow,
+    /^  parity:\r?\n    name: Three-platform evidence and byte parity\r?\n    needs: certify\r?$/mu,
+  );
+  assert.deepEqual(
+    [...workflow.matchAll(/^          name: (mo1303-(?:ubuntu-24\.04|windows-2022|macos-14)-x64)\r?$/gmu)]
+      .map(([, artifactName]) => artifactName),
+    [
+      "mo1303-ubuntu-24.04-x64",
+      "mo1303-windows-2022-x64",
+      "mo1303-macos-14-x64",
+    ],
+  );
+  assert.match(workflow, /^permissions:\r?\n  contents: read\r?$/mu);
+  assert.equal(workflow.match(/^          persist-credentials: false\r?$/gmu)?.length, 2);
   assert.match(workflow, /workflow_dispatch:/u);
   assert.doesNotMatch(workflow, /pull_request_target|self-hosted|continue-on-error|secrets\./u);
   assert.match(workflow, /fail-fast: false/u);
