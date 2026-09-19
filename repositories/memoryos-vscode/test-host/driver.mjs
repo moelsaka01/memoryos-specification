@@ -279,8 +279,7 @@ async function finalizeReceipt(receiptPath, mode, extensionsPath) {
   }
   receipt.assertions = {
     ...receipt.assertions,
-    developmentSource,
-    installedFromVsix,
+    ...(developmentSource ? { developmentSource } : { installedFromVsix }),
     isolatedDirectories: true,
     shutdownCleanup: true,
   };

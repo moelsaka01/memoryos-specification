@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { chmodSync, unlinkSync, writeFileSync } from "node:fs";
+import { chmodSync, realpathSync, unlinkSync, writeFileSync } from "node:fs";
 import {
   cp,
   mkdir,
@@ -546,13 +546,14 @@ test("generation verifier rejects every incomplete, malformed, extra, and mixed 
     evaluationIdentityDigest: result.outputs["evaluation-identity-digest"],
     outcomeDigest: result.outputs["outcome-digest"],
   };
-  const baseline = join(fixture.root, "generation-baseline");
+  const generationFixtureRoot = realpathSync.native(fixture.root);
+  const baseline = join(generationFixtureRoot, "generation-baseline");
   await copyGeneration(result, baseline);
   assert.doesNotThrow(() => actionRuntime.verifyGeneration(baseline, evaluation));
 
   let ordinal = 0;
   async function reject(mutate) {
-    const root = join(fixture.root, `generation-invalid-${ordinal += 1}`);
+    const root = join(generationFixtureRoot, `generation-invalid-${ordinal += 1}`);
     await cp(baseline, root, { recursive: true });
     await mutate(root);
     assertGenerationFailure(() => actionRuntime.verifyGeneration(root, evaluation));
@@ -565,7 +566,7 @@ test("generation verifier rejects every incomplete, malformed, extra, and mixed 
     const path = join(root, "evaluation-identity.sha256");
     await writeFile(path, Buffer.concat([await readFile(path), Buffer.from("\n")]));
   });
-  const symlinkRoot = join(fixture.root, "generation-invalid-symlink");
+  const symlinkRoot = join(generationFixtureRoot, "generation-invalid-symlink");
   await cp(baseline, symlinkRoot, { recursive: true });
   try {
     const identity = join(symlinkRoot, "evaluation-identity.json");

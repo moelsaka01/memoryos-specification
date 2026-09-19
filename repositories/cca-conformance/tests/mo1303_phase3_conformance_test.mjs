@@ -5,7 +5,10 @@ import { lstat, readFile, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import test from "node:test";
 
-import { validateHostedEvidence } from "../tools/mo1303-hosted-evidence.mjs";
+import {
+  validateHostAssertionCompleteness,
+  validateHostedEvidence,
+} from "../tools/mo1303-hosted-evidence.mjs";
 import { SUITE_COMMANDS, SUITE_NAMES } from "../tools/mo1303-hosted-suite.mjs";
 import {
   canonicalJson,
@@ -179,6 +182,68 @@ test("real-host sources form a bounded identity and require isolated development
   assert.equal(inventory.phase3Product.isolatedState, true);
   assert.equal(inventory.phase3Product.installedVsixRequired, true);
   assert.equal(inventory.phase3Product.offlineRuntimeRequired, true);
+});
+
+test("host receipt provenance is mode scoped and failed assertions remain rejected", async () => {
+  const driver = await readFile(resolve(extensionRoot, "test-host/driver.mjs"), "utf8");
+  assert.match(
+    driver,
+    /\.\.\.\(developmentSource \? \{ developmentSource \} : \{ installedFromVsix \}\),/u,
+  );
+  assert.doesNotMatch(driver, /\n    developmentSource,\r?\n    installedFromVsix,/u);
+
+  const common = {
+    activation: true,
+    contractIdentities: true,
+    exactCommands: true,
+    isolatedDirectories: true,
+    resultsView: true,
+    shutdownCleanup: true,
+  };
+  const trusted = {
+    cancellation: true,
+    realEditorInputs: true,
+    semanticDecisions: true,
+    verificationCommands: true,
+    verificationVirtualDocuments: true,
+    virtualDocuments: true,
+  };
+  const byMode = {
+    development: { ...common, ...trusted, developmentSource: true },
+    installed: { ...common, ...trusted, installedFromVsix: true },
+    restricted: {
+      ...common,
+      installedFromVsix: true,
+      restrictedPrecondition: true,
+      restrictedRejections: true,
+    },
+  };
+  for (const [mode, assertions] of Object.entries(byMode)) {
+    assert.equal(validateHostAssertionCompleteness(assertions, mode), assertions);
+    assert.equal(Object.values(assertions).every((value) => value === true), true);
+  }
+  assert.equal(Object.keys(byMode.development).length, 13);
+  assert.equal(Object.hasOwn(byMode.development, "installedFromVsix"), false);
+  assert.equal(Object.keys(byMode.installed).length, 13);
+  assert.equal(Object.hasOwn(byMode.installed, "developmentSource"), false);
+  assert.equal(Object.keys(byMode.restricted).length, 9);
+  assert.equal(Object.hasOwn(byMode.restricted, "developmentSource"), false);
+
+  assert.throws(() => validateHostAssertionCompleteness({
+    ...byMode.development,
+    installedFromVsix: false,
+  }, "development"), /development assertions are incomplete or failed/u);
+  assert.throws(() => validateHostAssertionCompleteness({
+    ...byMode.installed,
+    developmentSource: false,
+  }, "installed"), /installed assertions are incomplete or failed/u);
+  assert.throws(() => validateHostAssertionCompleteness({
+    ...byMode.restricted,
+    restrictedRejections: false,
+  }, "restricted"), /restricted assertions are incomplete or failed/u);
+  const { shutdownCleanup: _shutdownCleanup, ...incomplete } = byMode.development;
+  assert.throws(() => validateHostAssertionCompleteness(incomplete, "development"),
+    /development core host assertions are incomplete/u);
 });
 
 test("hosted workflow is manual, least privilege, immutable, complete, and bounded", async () => {

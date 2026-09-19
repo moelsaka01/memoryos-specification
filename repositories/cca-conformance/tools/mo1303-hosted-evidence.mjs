@@ -602,6 +602,18 @@ function vectorMap(receipt, label) {
   return vectors;
 }
 
+export function validateHostAssertionCompleteness(value, mode) {
+  const assertions = object(value, `${mode} assertions`);
+  invariant(Object.keys(assertions).length > 0
+    && Object.values(assertions).every((assertion) => assertion === true),
+  `${mode} assertions are incomplete or failed.`);
+  invariant(assertions.activation === true && assertions.contractIdentities === true
+    && assertions.exactCommands === true && assertions.resultsView === true
+    && assertions.isolatedDirectories === true && assertions.shutdownCleanup === true,
+  `${mode} core host assertions are incomplete.`);
+  return assertions;
+}
+
 function validateHostReceipt(receipt, mode, platformIdentifier, options = {}) {
   const expectedPlatform = PLATFORM[platformIdentifier];
   invariant(expectedPlatform !== undefined, `${mode} expected platform is invalid.`);
@@ -636,14 +648,7 @@ function validateHostReceipt(receipt, mode, platformIdentifier, options = {}) {
   exactKeys(receipt.offline, ["networkRequired", "result"], `${mode} offline proof`);
   invariant(receipt.offline.networkRequired === false && receipt.offline.result === "PASS",
     `${mode} offline proof differs.`);
-  const assertions = object(receipt.assertions, `${mode} assertions`);
-  invariant(Object.keys(assertions).length > 0
-    && Object.values(assertions).every((value) => value === true),
-  `${mode} assertions are incomplete or failed.`);
-  invariant(assertions.activation === true && assertions.contractIdentities === true
-    && assertions.exactCommands === true && assertions.resultsView === true
-    && assertions.isolatedDirectories === true && assertions.shutdownCleanup === true,
-  `${mode} core host assertions are incomplete.`);
+  const assertions = validateHostAssertionCompleteness(receipt.assertions, mode);
   if (mode === "development") {
     invariant(receipt.trusted === true && assertions.developmentSource === true,
       "development host did not prove source execution.");
