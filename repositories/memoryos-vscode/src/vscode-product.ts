@@ -2,7 +2,10 @@ import { basename } from "node:path";
 
 import * as vscode from "vscode";
 
-import type { ExtensionCommandAdapter } from "./commands.js";
+import {
+  enforceWorkspaceTrust,
+  type ExtensionCommandAdapter,
+} from "./commands.js";
 import {
   asMemoryOSAdapterError,
   MEMORYOS_VSCODE_ADAPTER_ERROR_CODES,
@@ -598,9 +601,9 @@ class VSCodeCommands implements ExtensionCommandAdapter {
     return this.#execute("Prepare Policy Artifact", async (signal) => {
       assertSupportedVSCodeHost();
       const policy = await this.#selectPolicy(uri, signal);
-      return policy === undefined
-        ? undefined
-        : this.controller.preparePolicyArtifact({ policy: revalidatePolicySelection(policy) }, signal);
+      if (policy === undefined) return undefined;
+      enforceWorkspaceTrust("memoryos.preparePolicyArtifact");
+      return this.controller.preparePolicyArtifact({ policy: revalidatePolicySelection(policy) }, signal);
     });
   }
 
@@ -608,9 +611,9 @@ class VSCodeCommands implements ExtensionCommandAdapter {
     return this.#execute("Evaluate Policy Artifact", async (signal) => {
       assertSupportedVSCodeHost();
       const evaluation = await this.#selectEvaluation(uri, signal);
-      return evaluation === undefined
-        ? undefined
-        : this.controller.evaluatePolicyArtifact(revalidateEvaluationSelection(evaluation), signal);
+      if (evaluation === undefined) return undefined;
+      enforceWorkspaceTrust("memoryos.evaluatePolicyArtifact");
+      return this.controller.evaluatePolicyArtifact(revalidateEvaluationSelection(evaluation), signal);
     });
   }
 
@@ -630,6 +633,7 @@ class VSCodeCommands implements ExtensionCommandAdapter {
           signal,
         );
         if (expectedEvaluationIdentityDigest === undefined) return undefined;
+        enforceWorkspaceTrust("memoryos.verifyEvaluationIdentity");
         return this.controller.verifyEvaluationIdentity({
           expectedEvaluationIdentityDigest,
           identity: revalidateProductArtifact(identity),
@@ -638,6 +642,7 @@ class VSCodeCommands implements ExtensionCommandAdapter {
       }
       const evaluation = await this.#selectEvaluation(undefined, signal);
       if (evaluation === undefined) return undefined;
+      enforceWorkspaceTrust("memoryos.verifyEvaluationIdentity");
       return this.controller.verifyEvaluationIdentity({
         evaluation: revalidateEvaluationSelection(evaluation),
         identity: revalidateProductArtifact(identity),
@@ -683,6 +688,7 @@ class VSCodeCommands implements ExtensionCommandAdapter {
         }
         const expectedOutcomeDigest = await this.#optionalOutcomeDigest(signal);
         if (expectedOutcomeDigest.cancelled) return undefined;
+        enforceWorkspaceTrust("memoryos.verifyPolicyOutcome");
         return this.controller.verifyPolicyOutcome({
           ...(expectedEvaluationIdentityDigest === undefined
             ? {} : { expectedEvaluationIdentityDigest }),
@@ -698,6 +704,7 @@ class VSCodeCommands implements ExtensionCommandAdapter {
       if (evaluation === undefined) return undefined;
       const expectedOutcomeDigest = await this.#optionalOutcomeDigest(signal);
       if (expectedOutcomeDigest.cancelled) return undefined;
+      enforceWorkspaceTrust("memoryos.verifyPolicyOutcome");
       return this.controller.verifyPolicyOutcome({
         evaluation: revalidateEvaluationSelection(evaluation),
         ...(expectedOutcomeDigest.value === undefined

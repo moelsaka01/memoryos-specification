@@ -72,15 +72,25 @@
   "scripts": {
     "build:runtime": "node scripts/build-runtime-distribution.mjs",
     "build:shell": "node esbuild.mjs",
+    "build:test-host": "node test-host/build.mjs",
     "build": "npm run build:runtime && npm run typecheck && npm run build:shell",
+    "package:vsix": "node scripts/package-vsix.mjs",
     "typecheck": "tsc --noEmit",
     "test": "node --test tests/*.test.mjs",
-    "test:shell": "node --test tests/extension_shell_contract.test.mjs"
+    "test:host": "node test-host/driver.mjs --mode all --vsix out/vsix/memoryos-0.1.0.vsix --receipt-dir out/host-results",
+    "test:host:acquire": "node test-host/acquire.mjs",
+    "test:host:offline": "node test-host/driver.mjs --mode all --offline --vsix out/vsix/memoryos-0.1.0.vsix --receipt-dir out/host-results",
+    "test:package": "node --test tests/vsix_package_validation.test.mjs",
+    "test:shell": "node --test tests/extension_shell_contract.test.mjs",
+    "verify:vsix": "node scripts/verify-vsix.mjs --vsix out/vsix/memoryos-0.1.0.vsix --receipt out/vsix/memoryos-0.1.0.identity.json"
   },
   "devDependencies": {
     "@types/node": "22.20.3",
     "@types/vscode": "1.137.0",
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "4.0.0",
     "esbuild": "0.28.2",
-    "typescript": "7.0.2"
+    "typescript": "7.0.2",
+    "yauzl": "3.4.0"
   }
 }

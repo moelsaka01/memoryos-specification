@@ -394,6 +394,9 @@ class ProductController implements MemoryOSProductController {
           POLICY_VERIFICATION_ARTIFACT_MAX_BYTES,
           "Verified Evaluation Identity",
         );
+        if (rawSha256(identityBytes) !== identity.sha256) {
+          throw outputInvalid("The verified Evaluation Identity changed after authoritative verification.");
+        }
         parseCanonicalArtifact(identityBytes, "Verified Evaluation Identity");
         return Object.freeze({
           ...verification,
@@ -446,6 +449,9 @@ class ProductController implements MemoryOSProductController {
           POLICY_VERIFICATION_ARTIFACT_MAX_BYTES,
           "Verified Policy outcome",
         );
+        if (rawSha256(outcomeBytes) !== outcome.sha256) {
+          throw outputInvalid("The verified Policy outcome changed after authoritative verification.");
+        }
         parseCanonicalArtifact(outcomeBytes, "Verified Policy outcome");
         return Object.freeze({
           ...verification,

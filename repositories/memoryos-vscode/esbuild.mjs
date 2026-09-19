@@ -2,7 +2,13 @@ import { build } from "esbuild";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import {
+  CLOSED_SOURCE_ENTRY,
+  createClosedSourceResolver,
+} from "./scripts/esbuild-closed-source.mjs";
+
 const packageRoot = dirname(fileURLToPath(import.meta.url));
+const sourceRoot = resolve(packageRoot, "src");
 
 const shared = Object.freeze({
   bundle: true,
@@ -19,15 +25,18 @@ await Promise.all([
   build({
     ...shared,
     absWorkingDir: packageRoot,
-    entryPoints: ["./src/extension.ts"],
+    entryPoints: [CLOSED_SOURCE_ENTRY],
     outfile: resolve(packageRoot, "out", "extension.cjs"),
-    external: ["vscode"],
+    plugins: [await createClosedSourceResolver({ entryPath: "extension.ts", sourceRoot })],
   }),
   build({
     ...shared,
     absWorkingDir: packageRoot,
-    entryPoints: ["./src/runtime/cli-worker.ts"],
+    entryPoints: [CLOSED_SOURCE_ENTRY],
     outfile: resolve(packageRoot, "out", "cli-worker.cjs"),
-    packages: "external",
+    plugins: [await createClosedSourceResolver({
+      entryPath: "runtime/cli-worker.ts",
+      sourceRoot,
+    })],
   }),
 ]);

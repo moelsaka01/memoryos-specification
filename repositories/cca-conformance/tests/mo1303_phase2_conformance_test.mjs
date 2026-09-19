@@ -36,7 +36,7 @@ async function source(path) {
 }
 
 test("MO-1303 Phase 2 preserves every frozen Phase 1 and predecessor identity", async () => {
-  assert.equal(inventory.phase, "implementationPhase2Of3");
+  assert.equal(inventory.phase, "implementationPhase3Of3LocalClosure");
   assert.deepEqual(inventory.baseline, {
     immediateReleasedPredecessor: "memoryos-1.3-mo1302",
     mo1301Tag: {
@@ -66,7 +66,7 @@ test("MO-1303 Phase 2 preserves every frozen Phase 1 and predecessor identity", 
     "sha256:2876d692d77b6ab369ca2933a4fb37fe25a1008818680a91396f66411f4580d7",
   );
   assert.equal(
-    inventory.distribution.packageLock.rawSha256,
+    inventory.distribution.historicalPhase1And2PackageLock.rawSha256,
     "sha256:6e51d295d4110ce857a79540bae87a630333c0127a3ed5837ac660aca09a28ac",
   );
   assert.deepEqual({
@@ -178,7 +178,11 @@ test("trust, acquisition, concurrency, cancellation, and deactivation contracts 
   assert.match(productSource, /MEMORYOS_VSCODE_ADAPTER_ERROR_CODES\.OPERATION_IN_PROGRESS/u);
   assert.match(coordinatorSource, /this\.#active !== active/u);
   assert.match(coordinatorSource, /cancelActive\(\): void/u);
-  assert.match(extensionSource, /await activeProduct\?\.dispose\(\)/u);
+  assert.match(extensionSource, /let productDisposal: Promise<void> \| undefined/u);
+  assert.match(extensionSource, /if \(productDisposal !== undefined\) return productDisposal/u);
+  assert.match(extensionSource,
+    /productDisposal = activeProduct\?\.dispose\(\) \?\? Promise\.resolve\(\)/u);
+  assert.match(extensionSource, /await disposeActiveProduct\(\)/u);
 });
 
 test("Phase 2 delegates all semantics through the verified Phase 1 adapter", async () => {
@@ -304,7 +308,7 @@ test("Phase 2 source stays offline and excludes forbidden product surfaces", asy
   assert.equal(inventory.distribution.externalSemanticExecutable, false);
 });
 
-test("Phase 2 inventory names sorted concrete files and defers only Phase 3 identities", async () => {
+test("Phase 2 inventory names sorted concrete files and preserves the bound Phase 2 revision", async () => {
   for (const field of ["sources", "tests", "registration", "documentation"]) {
     const paths = inventory.phase2Surface[field];
     assert.deepEqual(paths, paths.toSorted());
@@ -316,13 +320,13 @@ test("Phase 2 inventory names sorted concrete files and defers only Phase 3 iden
     }
   }
   assert.deepEqual(inventory.phase2CommitBinding, {
-    revision: null,
-    status: "pendingCommit",
+    revision: "2919dd9056bc595bddde3d18f09f8efaaafb010b",
+    status: "bound",
     strategy: "postCommitConformanceCommit",
   });
-  assert.equal(inventory.distribution.vsixIdentity.status, "pendingPhase3");
-  assert.equal(inventory.distribution.vsixIdentity.sha256, null);
-  assert.equal(inventory.futureMilestoneTag.status, "pendingPhase3Closure");
+  assert.equal(inventory.distribution.vsixIdentity.status, "locallyFrozen");
+  assert.match(inventory.distribution.vsixIdentity.sha256, /^sha256:[0-9a-f]{64}$/u);
+  assert.equal(inventory.futureMilestoneTag.status, "pendingHostedCertificationAndFinalBinding");
 });
 
 test("Phase 2 product inventory is a closed description of the implemented UX contract", () => {

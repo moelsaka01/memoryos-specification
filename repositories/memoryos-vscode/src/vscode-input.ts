@@ -63,8 +63,11 @@ function selectedInput(uri: vscode.Uri): SelectedLocalArtifact {
   if (dirty) {
     throw unsupported("Save the selected document before using it as authoritative MemoryOS input.");
   }
-  if (uri.scheme !== "file") {
-    throw unsupported("Only explicitly selected local file: artifacts are supported.");
+  if (uri.scheme !== "file"
+      || uri.authority !== ""
+      || uri.query !== ""
+      || uri.fragment !== "") {
+    throw unsupported("Only explicitly selected closed local file: artifacts are supported.");
   }
   return Object.freeze({
     input: Object.freeze({

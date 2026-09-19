@@ -179,24 +179,29 @@ test("build and VSIX foundations retain only reviewed product members", async ()
   const manifest = await json("package.json");
   const ignore = (await text(".vscodeignore")).trim().split(/\r?\n/u);
   const buildSource = await text("esbuild.mjs");
+  const resolverSource = await text("scripts/esbuild-closed-source.mjs");
   assert.equal(Object.hasOwn(manifest, "files"), false, "VSCE cannot combine package files with .vscodeignore");
   assert.deepEqual(ignore, [
     "**",
-    "!out/",
+    "out/**",
     "!out/extension.cjs",
     "!out/cli-worker.cjs",
-    "!runtime/",
+    "out/host-results/**",
+    "out/test-host/**",
+    "out/vsix/**",
+    "runtime/**",
     "!runtime/runtime-closure-manifest.json",
-    "!runtime/vendor/",
     "!runtime/vendor/**",
-    "!contracts/",
+    "contracts/**",
     "!contracts/policy-contract-identities-1.0.0.json",
     "!package.json",
     "!README.md",
     "!CHANGELOG.md",
   ]);
-  assert.match(buildSource, /external:\s*\["vscode"\]/u);
-  assert.match(buildSource, /packages:\s*"external"/u);
+  assert.match(buildSource, /createClosedSourceResolver/u);
+  assert.match(resolverSource, /arguments_\.path === "vscode"/u);
+  assert.match(resolverSource, /arguments_\.path\.startsWith\("node:"\)/u);
+  assert.match(resolverSource, /unexpected (?:package )?import/u);
   assert.match(buildSource, /minify:\s*false/u);
   assert.match(buildSource, /sourcemap:\s*false/u);
 });
@@ -206,8 +211,11 @@ test("direct development dependencies are exactly pinned", async () => {
   assert.deepEqual(manifest.devDependencies, {
     "@types/node": "22.20.3",
     "@types/vscode": "1.137.0",
+    "@vscode/test-electron": "3.1.0",
+    "@vscode/vsce": "4.0.0",
     esbuild: "0.28.2",
     typescript: "7.0.2",
+    yauzl: "3.4.0",
   });
   for (const version of Object.values(manifest.devDependencies)) {
     assert.doesNotMatch(version, /^[~^]/u);

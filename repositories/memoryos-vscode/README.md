@@ -1,10 +1,10 @@
 # MemoryOS for VS Code
 
 `moelsaka01.memoryos` is the workspace-scoped desktop VS Code adapter for the
-MemoryOS Policy product contract. Version `0.1.0` provides the complete local
-MO-1303 Phase 2 product experience. It is not a Policy implementation: every
-semantic result comes from the verified bundled MemoryOS CLI 1.1 and public
-JavaScript SDK 1.1 closure.
+MemoryOS Policy product contract. Version `0.1.0` is packaged as a VSIX and is
+tested against VS Code Desktop `1.137.0`. It is not a Policy implementation:
+every semantic result comes from the verified bundled MemoryOS CLI 1.1 and
+public JavaScript SDK 1.1 closure.
 
 ## Host and trust contract
 
@@ -20,6 +20,19 @@ JavaScript SDK 1.1 closure.
 The extension has no settings, telemetry, diagnostics, webviews, custom
 editors, language server, task provider, automatic discovery, file-system
 watcher, or automatic evaluation.
+
+## Install from the VSIX
+
+The reviewed local package is `memoryos-0.1.0.vsix`. Install that file through
+**Extensions: Install from VSIX...** or with the VS Code CLI:
+
+```sh
+code --install-extension memoryos-0.1.0.vsix
+```
+
+The package is not published to the VS Code Marketplace. The VSIX identity
+receipt records the package SHA-256 separately from the bundled runtime-closure
+identity and the normative MemoryOS contract identity.
 
 ## Commands
 
@@ -141,30 +154,54 @@ semantic executable. stdout and stderr are independently bounded to 1 MiB;
 direct process output fails closed. Only one semantic operation runs at a time,
 and VS Code cancellation hard-terminates its worker and invalidates publication.
 
+After the VSIX and the pinned test host have been acquired, activation,
+preparation, evaluation, verification, results presentation, and virtual
+documents require no network service. Network access used by the development
+harness to acquire VS Code `1.137.0` is test-host acquisition, not extension
+runtime behavior.
+
 Artifact-controlled text is treated as hostile. Tree labels, notifications,
 Quick Picks, status text, and log fields are bounded and control-sanitized. The
 extension creates no trusted Markdown or arbitrary command URI.
 
-## Current limitations
+## Certification status and limitations
 
-Phase 2 uses a deterministic mocked VS Code boundary for local product tests.
-Real Extension Development Host execution, the Windows/Linux/macOS hosted
-matrix, final VSIX inventory and SHA-256, install/uninstall certification, and
-Marketplace publication are intentionally deferred to Phase 3. Snapshot
-permissions enforce the extension trust boundary but do not claim isolation
-from a hostile process running as the same operating-system user.
+Deterministic mocked product tests remain supporting evidence. The Phase 3
+harness separately runs the development extension, a restricted workspace, and
+an installed VSIX in isolated user-data, extensions, and workspace directories
+against exactly VS Code Desktop `1.137.0`. It also validates the closed VSIX
+allowlist and the runtime closure extracted from packaged bytes.
+
+Cross-platform certification is not yet claimed. The checked-in manual hosted
+workflow must still produce and validate exactly one matching evidence record
+on `ubuntu-24.04` x64, `windows-2022` x64, and `macos-14` x64 before final
+MO-1303 conformance binding and tagging. Windows reparse-point proof belongs to
+that hosted Windows run when it cannot be reproduced locally.
+
+Worker threads provide fresh-operation lifecycle and bounded-output isolation;
+they are not an operating-system security sandbox. Snapshot permissions enforce
+the extension trust boundary but do not claim isolation from a hostile process
+running as the same operating-system user. Marketplace publication remains out
+of scope.
 
 ## Development
 
 Node.js 22 or later is required. Direct development dependencies are exactly
-pinned and installed with `npm ci`.
+pinned: `@types/node` `22.20.3`, `@types/vscode` `1.137.0`,
+`@vscode/test-electron` `3.1.0`, `@vscode/vsce` `4.0.0`, `esbuild` `0.28.2`,
+`typescript` `7.0.2`, and `yauzl` `3.4.0`. Install them without dependency
+lifecycle scripts:
 
 ```sh
-npm ci
+npm ci --ignore-scripts
 npm run build
 npm test
+npm run package:vsix
+npm run verify:vsix
+npm run test:host
+npm run test:host:offline
 ```
 
 `npm run typecheck` runs `tsc --noEmit`. The TypeScript/esbuild shell is kept
 separate from the inspectable byte-preserved semantic runtime closure. This
-package is not published to npm or the VS Code Marketplace during Phase 2.
+package is not published to npm or the VS Code Marketplace.

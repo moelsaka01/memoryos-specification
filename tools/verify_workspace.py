@@ -22,6 +22,7 @@ REQUIRED_PATHS = (
     ".github/actions/memoryos-policy-gate/dist/contracts/policy-contract-identities-1.0.0.json",
     ".github/actions/memoryos-policy-gate/dist/index.js",
     ".github/workflows/ci.yml",
+    ".github/workflows/memoryos-vscode-certification.yml",
     ".clang-format",
     ".clang-tidy",
     ".editorconfig",
@@ -249,7 +250,10 @@ REQUIRED_PATHS = (
     "repositories/memoryos-vscode/measurements/transport-measurement-results-1.0.0.json",
     "repositories/memoryos-vscode/runtime/runtime-closure-manifest.json",
     "repositories/memoryos-vscode/scripts/build-runtime-distribution.mjs",
+    "repositories/memoryos-vscode/scripts/esbuild-closed-source.mjs",
     "repositories/memoryos-vscode/scripts/measure-transport-limits.mjs",
+    "repositories/memoryos-vscode/scripts/package-vsix.mjs",
+    "repositories/memoryos-vscode/scripts/verify-vsix.mjs",
     "repositories/memoryos-vscode/src/commands.ts",
     "repositories/memoryos-vscode/src/errors.ts",
     "repositories/memoryos-vscode/src/extension.ts",
@@ -261,6 +265,15 @@ REQUIRED_PATHS = (
     "repositories/memoryos-vscode/src/runtime/runtime-distribution.ts",
     "repositories/memoryos-vscode/tests/extension_shell_contract.test.mjs",
     "repositories/memoryos-vscode/tests/runtime_foundation.test.mjs",
+    "repositories/memoryos-vscode/tests/support/runtime-test-api.ts",
+    "repositories/memoryos-vscode/tests/vsix_package_validation.test.mjs",
+    "repositories/memoryos-vscode/test-host/README.md",
+    "repositories/memoryos-vscode/test-host/acquire.mjs",
+    "repositories/memoryos-vscode/test-host/build.mjs",
+    "repositories/memoryos-vscode/test-host/driver.mjs",
+    "repositories/memoryos-vscode/test-host/runner.ts",
+    "repositories/memoryos-vscode/test-host/runner-extension/extension.cjs",
+    "repositories/memoryos-vscode/test-host/runner-extension/package.json",
     "repositories/cca-conformance/CMakeLists.txt",
     "repositories/cca-conformance/package.json",
     "repositories/cca-conformance/README.md",
@@ -274,6 +287,7 @@ REQUIRED_PATHS = (
     "repositories/cca-conformance/docs/versioning-guide.md",
     "repositories/cca-conformance/evidence/reference-implementation-1.2.1.json",
     "repositories/cca-conformance/evidence/reference-implementation-review-1.2.1.json",
+    "repositories/cca-conformance/evidence/mo1303-vsix-package-identity-0.1.0.json",
     "repositories/cca-conformance/reports/reference-implementation-1.2.1.json",
     "repositories/cca-conformance/reports/reference-implementation-1.2.1.md",
     "repositories/cca-conformance/mo1301-conformance-inventory.json",
@@ -284,6 +298,7 @@ REQUIRED_PATHS = (
     "repositories/cca-conformance/schema/github-policy-gate-receipt-1.0.schema.json",
     "repositories/cca-conformance/schema/github-policy-gate-test-vector-1.0.schema.json",
     "repositories/cca-conformance/schema/requirements-manifest-1.0.schema.json",
+    "repositories/cca-conformance/schema/mo1303-hosted-evidence-1.0.schema.json",
     "repositories/cca-conformance/tests/compatibility_conformance_test.mjs",
     "repositories/cca-conformance/tests/component_evidence_conformance_test.mjs",
     "repositories/cca-conformance/tests/reference_implementation_conformance_test.mjs",
@@ -291,6 +306,7 @@ REQUIRED_PATHS = (
     "repositories/cca-conformance/tests/mo1302_action_foundation_conformance_test.mjs",
     "repositories/cca-conformance/tests/mo1303_phase1_conformance_test.mjs",
     "repositories/cca-conformance/tests/mo1303_phase2_conformance_test.mjs",
+    "repositories/cca-conformance/tests/mo1303_phase3_conformance_test.mjs",
     "repositories/cca-conformance/tests/report_conformance_test.mjs",
     "repositories/cca-conformance/tests/specification_conformance_test.mjs",
     "repositories/cca-conformance/tests/support/conformance-support.mjs",
@@ -302,6 +318,8 @@ REQUIRED_PATHS = (
     "repositories/cca-conformance/tools/build-mo1302-action-distribution.mjs",
     "repositories/cca-conformance/tools/build-pinned-manifest.mjs",
     "repositories/cca-conformance/tools/conformance-report.mjs",
+    "repositories/cca-conformance/tools/mo1303-hosted-evidence.mjs",
+    "repositories/cca-conformance/tools/mo1303-hosted-suite.mjs",
     "scripts/bootstrap.ps1",
     "scripts/bootstrap.sh",
     "scripts/build.ps1",
@@ -920,6 +938,10 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
             "node --test tests/mo1303_phase2_conformance_test.mjs"
         ):
             errors.append("MO-1303 Phase-2 npm conformance registration is missing or changed")
+        if not isinstance(scripts, dict) or scripts.get("test:mo1303-phase3") != (
+            "node --test tests/mo1303_phase3_conformance_test.mjs"
+        ):
+            errors.append("MO-1303 Phase-3 npm conformance registration is missing or changed")
     except (OSError, ValueError, json.JSONDecodeError) as exception:
         errors.append(f"invalid MO-1303 npm conformance registration: {exception}")
 
@@ -929,7 +951,7 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
             errors.append("MO-1303 conformance inventory kind is missing or changed")
         if inventory.get("version") != "1.0.0":
             errors.append("MO-1303 conformance inventory version is missing or changed")
-        if inventory.get("phase") != "implementationPhase2Of3":
+        if inventory.get("phase") != "implementationPhase3Of3LocalClosure":
             errors.append("MO-1303 conformance inventory phase is missing or changed")
         if inventory.get("phase1CommitBinding") != {
             "strategy": "postCommitConformanceCommit",
@@ -939,10 +961,22 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
             errors.append("MO-1303 Phase-1 implementation binding is missing or changed")
         if inventory.get("phase2CommitBinding") != {
             "strategy": "postCommitConformanceCommit",
+            "status": "bound",
+            "revision": "2919dd9056bc595bddde3d18f09f8efaaafb010b",
+        }:
+            errors.append("MO-1303 Phase-2 implementation binding is missing or changed")
+        if inventory.get("phase3CommitBinding") != {
+            "strategy": "laterConformanceBindingCommit",
             "status": "pendingCommit",
             "revision": None,
         }:
-            errors.append("MO-1303 Phase-2 pending commit binding is missing or changed")
+            errors.append("MO-1303 Phase-3 pending implementation binding is missing or changed")
+        if inventory.get("finalConformanceBinding") != {
+            "strategy": "postHostedConformanceBindingCommit",
+            "status": "pendingHostedEvidence",
+            "revision": None,
+        }:
+            errors.append("MO-1303 final hosted binding state is missing or changed")
     except (OSError, ValueError, json.JSONDecodeError) as exception:
         errors.append(f"invalid MO-1303 conformance inventory: {exception}")
 
@@ -954,13 +988,16 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
             ("mo1303-conformance-inventory.json", 2),
             ("tests/mo1303_phase1_conformance_test.mjs", 2),
             ("tests/mo1303_phase2_conformance_test.mjs", 2),
+            ("tests/mo1303_phase3_conformance_test.mjs", 2),
             ("tests/support/mo1303-conformance-support.mjs", 1),
             ('conformance_area STREQUAL "mo1303-phase1"', 2),
             ('conformance_area STREQUAL "mo1303-phase2"', 2),
+            ('conformance_area STREQUAL "mo1303-phase3"', 2),
         ),
         conformance_root / "tools" / "run-js-conformance.mjs": (
             ('"mo1303_phase1_conformance_test.mjs"', 1),
             ('"mo1303_phase2_conformance_test.mjs"', 1),
+            ('"mo1303_phase3_conformance_test.mjs"', 1),
         ),
         extension_root / "package.json": (
             ('"memoryos.showContractIdentities"', 1),
@@ -976,6 +1013,17 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
             ("tests/phase2_product_ux.test.mjs", 1),
             ("NAME memoryos.vscode.runtime", 1),
             ("NAME memoryos.vscode.product", 1),
+            ("NAME memoryos.vscode.package.validation", 1),
+            ("NAME memoryos.vscode.extension-host", 2),
+        ),
+        root / ".github" / "workflows" / "memoryos-vscode-certification.yml": (
+            ("fail-fast: false", 1),
+            ("runner: ubuntu-24.04", 1),
+            ("runner: windows-2022", 1),
+            ("runner: macos-14-large", 1),
+            ("permissions:", 1),
+            ("contents: read", 1),
+            ("persist-credentials: false", 2),
         ),
     }
     for path, anchors in registration_anchors.items():

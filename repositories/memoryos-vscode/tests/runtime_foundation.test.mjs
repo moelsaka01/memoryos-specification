@@ -20,6 +20,11 @@ import { after, before, test } from "node:test";
 
 import { build } from "esbuild";
 
+import {
+  CLOSED_SOURCE_ENTRY,
+  createClosedSourceResolver,
+} from "../scripts/esbuild-closed-source.mjs";
+
 const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORKSPACE_ROOT = resolve(PACKAGE_ROOT, "..", "..");
 const RUNTIME_ROOT = join(PACKAGE_ROOT, "runtime");
@@ -70,18 +75,11 @@ async function bundleRuntimeTestApi() {
     logLevel: "silent",
     platform: "node",
     sourcemap: false,
-    stdin: {
-      contents: [
-        'export * from "./src/errors.ts";',
-        'export * from "./src/runtime/cli-adapter.ts";',
-        'export * from "./src/runtime/input-snapshot.ts";',
-        'export * from "./src/runtime/runtime-contract.ts";',
-        'export * from "./src/runtime/runtime-distribution.ts";',
-      ].join("\n"),
-      loader: "ts",
-      resolveDir: PACKAGE_ROOT,
-      sourcefile: "runtime-test-api.ts",
-    },
+    entryPoints: [CLOSED_SOURCE_ENTRY],
+    plugins: [await createClosedSourceResolver({
+      entryPath: "tests/support/runtime-test-api.ts",
+      sourceRoot: PACKAGE_ROOT,
+    })],
     target: "node22",
     write: false,
   });
@@ -92,15 +90,13 @@ async function bundleRuntimeTestApi() {
     bundle: true,
     format: "cjs",
     logLevel: "silent",
-    packages: "external",
     platform: "node",
+    plugins: [await createClosedSourceResolver({
+      entryPath: "runtime/cli-worker.ts",
+      sourceRoot: resolve(PACKAGE_ROOT, "src"),
+    })],
     sourcemap: false,
-    stdin: {
-      contents: 'import "./src/runtime/cli-worker.ts";',
-      loader: "ts",
-      resolveDir: PACKAGE_ROOT,
-      sourcefile: "cli-worker-test-entry.ts",
-    },
+    entryPoints: [CLOSED_SOURCE_ENTRY],
     target: "node22",
     write: false,
   });

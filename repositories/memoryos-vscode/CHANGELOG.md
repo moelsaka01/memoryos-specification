@@ -15,6 +15,17 @@
 - Add complete-generation verification, trusted local artifact acquisition,
   verification modes, hostile-presentation defenses, and deterministic mocked
   VS Code product coverage.
+- Add the pinned VS Code Desktop `1.137.0` Extension Host harness with isolated
+  development, restricted-workspace, installed-VSIX, cancellation, and offline
+  execution modes while preserving the mocked product suite.
+- Add deterministic `@vscode/vsce` packaging, a closed VSIX allowlist, packaged
+  runtime-closure verification, and a canonical package identity receipt.
+- Add the manual, least-privilege three-platform hosted certification workflow,
+  bounded evidence schema, deterministic validator, and canonical-byte parity
+  gate.
+- Harden final artifact reacquisition, file-URI closure, trust rechecks, and
+  asynchronous Extension Host disposal.
 
-Phase 3 Extension Host, cross-platform hosted, and final VSIX certification
-remain intentionally deferred.
+Cross-platform hosted certification, the final conformance-binding commit, and
+the `memoryos-1.3-mo1303` tag remain pending publication and hosted execution.
+The extension is not published to the VS Code Marketplace.

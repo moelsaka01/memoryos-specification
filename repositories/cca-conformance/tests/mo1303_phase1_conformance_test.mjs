@@ -99,9 +99,10 @@ test("manifest exposes exactly five commands and the frozen trust/activation sur
   assert.deepEqual(extensionPackage.extensionKind, ["workspace"]);
   assert.equal(Object.hasOwn(extensionPackage, "files"), false);
   assert.deepEqual((await readFile(resolve(extensionRoot, ".vscodeignore"), "utf8")).trim().split(/\r?\n/u), [
-    "**", "!out/", "!out/extension.cjs", "!out/cli-worker.cjs",
-    "!runtime/", "!runtime/runtime-closure-manifest.json", "!runtime/vendor/", "!runtime/vendor/**",
-    "!contracts/", "!contracts/policy-contract-identities-1.0.0.json",
+    "**", "out/**", "!out/extension.cjs", "!out/cli-worker.cjs",
+    "out/host-results/**", "out/test-host/**", "out/vsix/**",
+    "runtime/**", "!runtime/runtime-closure-manifest.json", "!runtime/vendor/**",
+    "contracts/**", "!contracts/policy-contract-identities-1.0.0.json",
     "!package.json", "!README.md", "!CHANGELOG.md",
   ]);
 });
@@ -170,7 +171,12 @@ test("contract identity and bounded-output identities are exact and distinct", a
     inventory.runtimeClosure.runtimeClosureDigest,
     inventory.contractIdentityArtifact.rawSha256,
   );
-  assert.equal(inventory.distribution.vsixIdentity.status, "pendingPhase3");
+  assert.equal(inventory.distribution.vsixIdentity.status, "locallyFrozen");
+  assert.deepEqual(inventory.distribution.historicalPhase1And2PackageLock, {
+    byteLength: 27893,
+    lockfileVersion: 3,
+    rawSha256: "sha256:6e51d295d4110ce857a79540bae87a630333c0127a3ed5837ac660aca09a28ac",
+  });
   const lockBytes = await readFile(resolve(workspaceRoot, inventory.distribution.packageLock.path));
   const lock = JSON.parse(lockBytes.toString("utf8"));
   assert.equal(lock.lockfileVersion, 3);

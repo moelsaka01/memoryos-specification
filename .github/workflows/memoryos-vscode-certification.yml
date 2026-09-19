@@ -1,0 +1,218 @@
+name: MemoryOS VS Code certification
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  certify:
+    name: ${{ matrix.platform }} x64
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ubuntu-24.04
+            runner: ubuntu-24.04
+          - platform: windows-2022
+            runner: windows-2022
+          - platform: macos-14
+            runner: macos-14-large
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 60
+    env:
+      CERT_PLATFORM: ${{ matrix.platform }}
+      CERT_REVISION: ${{ github.sha }}
+      CI: "true"
+      MEMORYOS_VSCODE_TEST_CACHE: ${{ runner.temp }}/memoryos-vscode-1.137.0
+      CERT_ARTIFACT_STAGE: ${{ runner.temp }}/mo1303-certification-artifact
+      NPM_CONFIG_IGNORE_SCRIPTS: "true"
+      NO_COLOR: "1"
+      SOURCE_DATE_EPOCH: "315532800"
+      TZ: UTC
+    steps:
+      - name: Check out the implementation revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up exact Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24.14.0
+          cache: npm
+          cache-dependency-path: repositories/memoryos-vscode/package-lock.json
+
+      - name: Set up exact Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: 3.12.10
+
+      - name: Install exact extension dependencies
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite npmCi --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Typecheck the extension
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite typecheck --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Build the production extension
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite productionBuild --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Run deterministic mock and adapter tests
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite mockTests --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Build and validate the deterministic VSIX
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite packageValidation --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Run MO-1303 Phase 1 conformance
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite phase1Conformance --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Run MO-1303 Phase 2 conformance
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite phase2Conformance --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Run MO-1303 Phase 3 conformance
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite phase3Conformance --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Run MO-1301 integration regression
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite mo1301Regression --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Run MO-1302 Phase 1 regression
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite mo1302Phase1Regression --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Run MO-1302 Phase 2 regression
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite mo1302Phase2Regression --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Run MO-1302 Phase 3 regression
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite mo1302Phase3Regression --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Run Policy Phase 1 regression
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite policyPhase1Regression --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Run Policy Phase 2 regression
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite policyPhase2Regression --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Run Policy Phase 3 regression
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite policyPhase3Regression --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Run Policy Phase 4 regression
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite policyPhase4Regression --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Run CLI regression
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite cliRegression --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Verify the workspace contract
+        run: node repositories/cca-conformance/tools/mo1303-hosted-suite.mjs run --suite workspaceVerification --receipt-dir repositories/memoryos-vscode/out/suite-results
+
+      - name: Acquire exact VS Code Desktop 1.137.0
+        working-directory: repositories/memoryos-vscode
+        run: npm run test:host:acquire
+
+      - name: Build the Extension Host runner
+        working-directory: repositories/memoryos-vscode
+        run: npm run build:test-host
+
+      - name: Run isolated offline Extension Host certification on Ubuntu
+        if: matrix.platform == 'ubuntu-24.04'
+        working-directory: repositories/memoryos-vscode
+        run: xvfb-run --auto-servernum npm run test:host:offline
+
+      - name: Run isolated offline Extension Host certification on Windows or macOS
+        if: matrix.platform != 'ubuntu-24.04'
+        working-directory: repositories/memoryos-vscode
+        run: npm run test:host:offline
+
+      - name: Assemble bounded hosted facts
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path repositories/memoryos-vscode/out/hosted-evidence | Out-Null
+          node repositories/cca-conformance/tools/mo1303-hosted-evidence.mjs assemble `
+            --host-facts repositories/memoryos-vscode/out/host-results/hosted-facts.json `
+            --host-receipt-dir repositories/memoryos-vscode/out/host-results `
+            --suite-receipt-dir repositories/memoryos-vscode/out/suite-results `
+            --vsix repositories/memoryos-vscode/out/vsix/memoryos-0.1.0.vsix `
+            --vsix-receipt repositories/memoryos-vscode/out/vsix/memoryos-0.1.0.identity.json `
+            --expected-vsix-identity repositories/cca-conformance/evidence/mo1303-vsix-package-identity-0.1.0.json `
+            --expected-platform $env:CERT_PLATFORM `
+            --expected-revision $env:CERT_REVISION `
+            --output repositories/memoryos-vscode/out/hosted-evidence/hosted-facts.json
+
+      - name: Generate and validate platform evidence
+        shell: pwsh
+        run: |
+          node repositories/cca-conformance/tools/mo1303-hosted-evidence.mjs generate `
+            --facts repositories/memoryos-vscode/out/hosted-evidence/hosted-facts.json `
+            --output repositories/memoryos-vscode/out/hosted-evidence/mo1303-hosted-evidence.json
+          node repositories/cca-conformance/tools/mo1303-hosted-evidence.mjs validate `
+            --input repositories/memoryos-vscode/out/hosted-evidence/mo1303-hosted-evidence.json `
+            --expected-platform $env:CERT_PLATFORM `
+            --expected-revision $env:CERT_REVISION `
+            --expected-vsix-identity repositories/cca-conformance/evidence/mo1303-vsix-package-identity-0.1.0.json
+          node repositories/cca-conformance/tools/mo1303-hosted-evidence.mjs stage-upload `
+            --source-root repositories/memoryos-vscode/out `
+            --output-root $env:CERT_ARTIFACT_STAGE `
+            --expected-platform $env:CERT_PLATFORM `
+            --expected-revision $env:CERT_REVISION `
+            --expected-vsix-identity repositories/cca-conformance/evidence/mo1303-vsix-package-identity-0.1.0.json
+
+      - name: Upload bounded certification evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: mo1303-${{ matrix.platform }}-x64
+          if-no-files-found: error
+          retention-days: 14
+          path: ${{ env.CERT_ARTIFACT_STAGE }}
+
+  parity:
+    name: Three-platform evidence and byte parity
+    needs: certify
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      CERT_REVISION: ${{ github.sha }}
+      NPM_CONFIG_IGNORE_SCRIPTS: "true"
+      NO_COLOR: "1"
+      TZ: UTC
+    steps:
+      - name: Check out the implementation revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Set up exact Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 24.14.0
+
+      - name: Install exact verifier dependencies
+        working-directory: repositories/memoryos-vscode
+        run: npm ci --ignore-scripts
+
+      - name: Download Ubuntu evidence by exact name
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: mo1303-ubuntu-24.04-x64
+          path: hosted-evidence/mo1303-ubuntu-24.04-x64
+          digest-mismatch: error
+
+      - name: Download Windows evidence by exact name
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: mo1303-windows-2022-x64
+          path: hosted-evidence/mo1303-windows-2022-x64
+          digest-mismatch: error
+
+      - name: Download macOS evidence by exact name
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: mo1303-macos-14-x64
+          path: hosted-evidence/mo1303-macos-14-x64
+          digest-mismatch: error
+
+      - name: Validate exactly three records and cross-platform parity
+        run: |
+          node repositories/cca-conformance/tools/mo1303-hosted-evidence.mjs compare-platforms \
+            --root hosted-evidence \
+            --expected-revision "$CERT_REVISION" \
+            --expected-vsix-identity repositories/cca-conformance/evidence/mo1303-vsix-package-identity-0.1.0.json

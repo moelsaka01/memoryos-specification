@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
+import { statSync } from "node:fs";
 import {
+  chmod,
   mkdtemp,
   readFile,
   rm,
@@ -18,6 +20,7 @@ const WORKSPACE_ROOT = resolve(PACKAGE_ROOT, "..", "..");
 const MOCK_VSCODE = join(PACKAGE_ROOT, "tests", "support", "mock-vscode.mjs");
 const TEMP_ROOT = await mkdtemp(join(tmpdir(), "memoryos-vscode-phase2-tests-"));
 const API_BUNDLE = join(TEMP_ROOT, "phase2-api.mjs");
+const LIFECYCLE_BUNDLE = join(TEMP_ROOT, "extension-lifecycle-api.mjs");
 const WORKER_BUNDLE = join(TEMP_ROOT, "cli-worker.cjs");
 const HOSTED_ROOT = join(
   WORKSPACE_ROOT,
@@ -36,12 +39,93 @@ const POLICY_SET = join(
 );
 
 let api;
+let lifecycleApi;
+
+function localSourcePlugin() {
+  return {
+    name: "memoryos-local-source",
+    setup(esbuild) {
+      esbuild.onResolve({ filter: /^\.\.?\// }, (args) => {
+        const exactPath = resolve(args.resolveDir, args.path);
+        try {
+          if (statSync(exactPath).isFile()) {
+            return { path: exactPath };
+          }
+        } catch {
+          // TypeScript source imports use their emitted .js specifiers.
+        }
+
+        if (exactPath.endsWith(".js")) {
+          const sourcePath = `${exactPath.slice(0, -3)}.ts`;
+          try {
+            if (statSync(sourcePath).isFile()) {
+              return { path: sourcePath };
+            }
+          } catch {
+            // Let esbuild report the unresolved import.
+          }
+        }
+        return undefined;
+      });
+    },
+  };
+}
 
 function mockPlugin() {
   return {
     name: "memoryos-test-vscode",
     setup(esbuild) {
       esbuild.onResolve({ filter: /^vscode$/ }, () => ({ path: MOCK_VSCODE }));
+    },
+  };
+}
+
+function lifecyclePlugin() {
+  return {
+    name: "memoryos-extension-lifecycle-test",
+    setup(esbuild) {
+      esbuild.onResolve({ filter: /^\.\/runtime\/cli-adapter\.js$/ }, () => ({
+        namespace: "memoryos-lifecycle",
+        path: "cli-adapter",
+      }));
+      esbuild.onResolve({ filter: /^\.\/commands\.js$/ }, () => ({
+        namespace: "memoryos-lifecycle",
+        path: "commands",
+      }));
+      esbuild.onResolve({ filter: /^\.\/vscode-product\.js$/ }, () => ({
+        namespace: "memoryos-lifecycle",
+        path: "product",
+      }));
+      esbuild.onResolve({ filter: /^memoryos-lifecycle-control$/ }, () => ({
+        namespace: "memoryos-lifecycle",
+        path: "product",
+      }));
+      esbuild.onLoad({ filter: /^cli-adapter$/, namespace: "memoryos-lifecycle" }, () => ({
+        contents: "export function createCliAdapter() { return Object.freeze({}); }",
+        loader: "js",
+      }));
+      esbuild.onLoad({ filter: /^commands$/, namespace: "memoryos-lifecycle" }, () => ({
+        contents: "export function registerMemoryOSCommands() {}",
+        loader: "js",
+      }));
+      esbuild.onLoad({ filter: /^product$/, namespace: "memoryos-lifecycle" }, () => ({
+        contents: `
+          let releaseDisposal;
+          let started = 0;
+          const disposal = new Promise((resolveDisposal) => { releaseDisposal = resolveDisposal; });
+          export function createMemoryOSVSCodeProduct() {
+            return Object.freeze({
+              dispose() {
+                started += 1;
+                return disposal;
+              },
+            });
+          }
+          export function disposalStarted() { return started; }
+          export function releaseProductDisposal() { releaseDisposal(); }
+        `,
+        loader: "js",
+      }));
     },
   };
 }
@@ -53,7 +137,7 @@ async function bundlePhase2Api() {
     format: "esm",
     logLevel: "silent",
     platform: "node",
-    plugins: [mockPlugin()],
+    plugins: [mockPlugin(), localSourcePlugin()],
     sourcemap: false,
     stdin: {
       contents: [
@@ -74,6 +158,28 @@ async function bundlePhase2Api() {
   });
   await writeFile(API_BUNDLE, apiBuild.outputFiles[0].contents);
 
+  const lifecycleBuild = await build({
+    absWorkingDir: PACKAGE_ROOT,
+    bundle: true,
+    format: "esm",
+    logLevel: "silent",
+    platform: "node",
+    plugins: [lifecyclePlugin(), localSourcePlugin()],
+    sourcemap: false,
+    stdin: {
+      contents: [
+        'export * from "./src/extension.ts";',
+        'export { disposalStarted, releaseProductDisposal } from "memoryos-lifecycle-control";',
+      ].join("\n"),
+      loader: "ts",
+      resolveDir: PACKAGE_ROOT,
+      sourcefile: "extension-lifecycle-test-api.ts",
+    },
+    target: "node22",
+    write: false,
+  });
+  await writeFile(LIFECYCLE_BUNDLE, lifecycleBuild.outputFiles[0].contents);
+
   const workerBuild = await build({
     absWorkingDir: PACKAGE_ROOT,
     bundle: true,
@@ -81,6 +187,7 @@ async function bundlePhase2Api() {
     logLevel: "silent",
     packages: "external",
     platform: "node",
+    plugins: [localSourcePlugin()],
     sourcemap: false,
     stdin: {
       contents: 'import "./src/runtime/cli-worker.ts";',
@@ -97,6 +204,7 @@ async function bundlePhase2Api() {
 before(async () => {
   await bundlePhase2Api();
   api = await import(`${pathToFileURL(API_BUNDLE).href}?phase2=${Date.now()}`);
+  lifecycleApi = await import(`${pathToFileURL(LIFECYCLE_BUNDLE).href}?lifecycle=${Date.now()}`);
 });
 
 after(async () => {
@@ -176,6 +284,24 @@ test("mocked VS Code boundary registers exactly five commands and enforces progr
   await disposeContext(context);
 });
 
+test("extension deactivation awaits disposal already started by its context subscription", async () => {
+  const context = api.createMockExtensionContext(PACKAGE_ROOT);
+  lifecycleApi.activate(context);
+  assert.equal(context.subscriptions.length, 1);
+
+  context.subscriptions[0].dispose();
+  assert.equal(lifecycleApi.disposalStarted(), 1);
+  let deactivated = false;
+  const deactivation = lifecycleApi.deactivate().then(() => { deactivated = true; });
+  await new Promise((resolvePromise) => setImmediate(resolvePromise));
+  assert.equal(deactivated, false);
+
+  lifecycleApi.releaseProductDisposal();
+  await deactivation;
+  assert.equal(deactivated, true);
+  assert.equal(lifecycleApi.disposalStarted(), 1);
+});
+
 test("mock boundary deterministically models dialogs, QuickPick, progress, documents, and disposables", async () => {
   api.resetMockVSCode();
   const first = api.Uri.file(join(TEMP_ROOT, "first.json"));
@@ -225,6 +351,16 @@ test("VS Code input acquisition is explicit, multi-root neutral, local-only, and
     api.selectLocalArtifact("policy", api.Uri.parse("https://example.test/policy.json")),
     assertCode("MEMORYOS_VSCODE_INPUT_UNSUPPORTED"),
   );
+  for (const uri of [
+    external.with({ query: "revision=untrusted" }),
+    external.with({ fragment: "untrusted" }),
+    external.with({ authority: "remote-share" }),
+  ]) {
+    await assert.rejects(
+      api.selectLocalArtifact("policy", uri),
+      assertCode("MEMORYOS_VSCODE_INPUT_UNSUPPORTED"),
+    );
+  }
   const dirty = api.Uri.file(join(TEMP_ROOT, "dirty.json"));
   api.registerMockDocument(dirty, { isDirty: true });
   await assert.rejects(api.selectLocalArtifact("policy", dirty), assertCode("MEMORYOS_VSCODE_INPUT_UNSUPPORTED"));
@@ -291,6 +427,85 @@ test("artifact editor state is revalidated after later prompts and before semant
   assert.equal(preflightCalls, 0);
   assert.equal(executeCalls, 0);
   await product.dispose();
+});
+
+test("semantic commands recheck Workspace Trust after prompts and before controller dispatch", async (t) => {
+  const policyUri = api.Uri.file(join(TEMP_ROOT, "trust-policy.json"));
+  const candidateUri = api.Uri.file(join(TEMP_ROOT, "trust-candidate.mip"));
+  const identityUri = api.Uri.file(join(TEMP_ROOT, "trust-identity.json"));
+  const outcomeUri = api.Uri.file(join(TEMP_ROOT, "trust-outcome.json"));
+  const cases = [
+    {
+      name: "prepare",
+      arrange(state) {
+        api.queueQuickPick((items) => {
+          state.isTrusted = false;
+          return items.find(({ label }) => label === "Policy");
+        });
+      },
+      invoke(product) { return product.preparePolicyArtifact(policyUri); },
+    },
+    {
+      name: "evaluate",
+      arrange(state) {
+        api.queueQuickPick("Policy");
+        api.queueQuickPick("Choose a local file…");
+        api.queueOpenDialog([candidateUri]);
+        api.queueQuickPick((items) => {
+          state.isTrusted = false;
+          return items.find(({ label }) => label === "No baseline");
+        });
+      },
+      invoke(product) { return product.evaluatePolicyArtifact(policyUri); },
+    },
+    {
+      name: "verify identity",
+      arrange(state) {
+        api.queueQuickPick("Artifact");
+        api.queueInputBox(() => {
+          state.isTrusted = false;
+          return digest("1");
+        });
+      },
+      invoke(product) { return product.verifyEvaluationIdentity(identityUri); },
+    },
+    {
+      name: "verify outcome",
+      arrange(state) {
+        api.queueQuickPick("Artifact");
+        api.queueQuickPick("Expected Evaluation Identity digest");
+        api.queueInputBox(() => {
+          state.isTrusted = false;
+          return digest("2");
+        });
+        api.queueQuickPick("Do not supply an expected Outcome digest");
+      },
+      invoke(product) { return product.verifyPolicyOutcome(outcomeUri); },
+    },
+  ];
+
+  for (const value of cases) {
+    await t.test(value.name, async () => {
+      const state = api.resetMockVSCode({ isTrusted: true });
+      let semanticCalls = 0;
+      const adapter = Object.freeze({
+        async preflight() { semanticCalls += 1; throw new Error("must not begin"); },
+        async execute() { semanticCalls += 1; throw new Error("must not begin"); },
+        async dispose() {},
+      });
+      const product = api.createMemoryOSVSCodeProduct(adapter);
+      value.arrange(state);
+      try {
+        await assert.rejects(
+          value.invoke(product),
+          assertCode("MEMORYOS_VSCODE_WORKSPACE_UNTRUSTED"),
+        );
+        assert.equal(semanticCalls, 0);
+      } finally {
+        await product.dispose();
+      }
+    });
+  }
 });
 
 test("stable machine codes stay exact while hostile notification projection is bounded", async () => {
@@ -776,6 +991,81 @@ test("real runtime failures remain tool errors and a tampered generation is neve
     assert.equal(tamperedPublications.length, 0);
   } finally {
     await tampered.controller.dispose();
+  }
+});
+
+test("post-CLI verification rereads remain bound to the acquired private bytes", async (t) => {
+  const cases = [
+    {
+      name: "Evaluation Identity",
+      pathFromRequest: (request) => request.identityPath,
+      result: Object.freeze({
+        evaluationIdentityDigest: digest("1"),
+        verificationScope: "serializedArtifact",
+        verified: true,
+      }),
+      invoke(controller, sourcePath) {
+        return controller.verifyEvaluationIdentity({
+          expectedEvaluationIdentityDigest: digest("1"),
+          identity: selected(sourcePath),
+          mode: "artifact",
+        });
+      },
+    },
+    {
+      name: "Policy Outcome",
+      pathFromRequest: (request) => request.outcomePath,
+      result: Object.freeze({
+        decision: "PASS",
+        evaluationIdentityDigest: digest("2"),
+        outcomeDigest: digest("3"),
+        verificationScope: "serializedArtifact",
+        verified: true,
+      }),
+      invoke(controller, sourcePath) {
+        return controller.verifyPolicyOutcome({
+          expectedEvaluationIdentityDigest: digest("2"),
+          mode: "artifact",
+          outcome: selected(sourcePath),
+        });
+      },
+    },
+  ];
+
+  for (const value of cases) {
+    await t.test(value.name, async () => {
+      const sourcePath = join(TEMP_ROOT, `${value.name.replaceAll(" ", "-").toLowerCase()}-source.json`);
+      await writeFile(sourcePath, '{"state":"verified"}', "utf8");
+      const publications = [];
+      const adapter = Object.freeze({
+        async preflight() { throw new Error("not used"); },
+        async execute(request) {
+          const privatePath = value.pathFromRequest(request);
+          await chmod(privatePath, 0o600);
+          await writeFile(privatePath, '{"state":"substituted"}', "utf8");
+          return Object.freeze({
+            envelope: Object.freeze({ ok: true, result: value.result }),
+            exitCode: 0,
+            stderr: "",
+            stdout: "",
+          });
+        },
+        async dispose() {},
+      });
+      const controller = api.createMemoryOSProductController({
+        cliAdapter: adapter,
+        publicationSink: Object.freeze({ publish(publication) { publications.push(publication); } }),
+      });
+      try {
+        await assert.rejects(
+          value.invoke(controller, sourcePath),
+          assertCode("MEMORYOS_VSCODE_OUTPUT_INVALID"),
+        );
+        assert.equal(publications.length, 0);
+      } finally {
+        await controller.dispose();
+      }
+    });
   }
 });
 

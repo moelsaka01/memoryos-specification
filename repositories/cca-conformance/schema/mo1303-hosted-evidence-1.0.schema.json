@@ -1,0 +1,267 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "cca://schemas/memoryos/mo1303-hosted-evidence/1.0",
+  "title": "MemoryOS MO-1303 hosted certification evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "version", "platform", "implementationRevision", "vscodeVersion", "extension", "vsix", "runtimeClosure", "contractIdentityArtifact", "contractIdentities", "hostReceipts", "suites", "preparation", "vectors", "verification", "offline"],
+  "properties": {
+    "kind": { "const": "MemoryOSMO1303HostedEvidence" },
+    "version": { "const": "1.0.0" },
+    "platform": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["identifier", "runnerImage", "os", "arch"],
+          "properties": {
+            "identifier": { "const": "ubuntu-24.04" },
+            "runnerImage": { "const": "ubuntu-24.04" },
+            "os": { "const": "Linux" },
+            "arch": { "const": "X64" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["identifier", "runnerImage", "os", "arch"],
+          "properties": {
+            "identifier": { "const": "windows-2022" },
+            "runnerImage": { "const": "windows-2022" },
+            "os": { "const": "Windows" },
+            "arch": { "const": "X64" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["identifier", "runnerImage", "os", "arch"],
+          "properties": {
+            "identifier": { "const": "macos-14" },
+            "runnerImage": { "const": "macos-14-large" },
+            "os": { "const": "macOS" },
+            "arch": { "const": "X64" }
+          }
+        }
+      ]
+    },
+    "implementationRevision": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "vscodeVersion": { "const": "1.137.0" },
+    "extension": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identifier", "version"],
+      "properties": {
+        "identifier": { "const": "moelsaka01.memoryos" },
+        "version": { "const": "0.1.0" }
+      }
+    },
+    "vsix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fileName", "byteLength", "sha256", "internalFileCount", "inventoryDigest"],
+      "properties": {
+        "fileName": { "const": "memoryos-0.1.0.vsix" },
+        "byteLength": { "type": "integer", "minimum": 1, "maximum": 8388608 },
+        "sha256": { "$ref": "#/$defs/digest" },
+        "internalFileCount": { "const": 46 },
+        "inventoryDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "runtimeClosure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entryCount", "inventoryDigest", "closureDigest"],
+      "properties": {
+        "entryCount": { "const": 37 },
+        "inventoryDigest": { "const": "sha256:2aed4a65a3697345c3da71a4716565e2eb5275021db7628a09b2103c78203542" },
+        "closureDigest": { "const": "sha256:41b01d85836e98e40577bdb63ae419b405f90ced84ee720c87a23ac7cf69fae3" }
+      }
+    },
+    "contractIdentityArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sha256"],
+      "properties": {
+        "sha256": { "const": "sha256:2876d692d77b6ab369ca2933a4fb37fe25a1008818680a91396f66411f4580d7" }
+      }
+    },
+    "contractIdentities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["canonicalBase64", "rawSha256", "contractArtifactSha256", "runtimeClosureDigest"],
+      "properties": {
+        "canonicalBase64": { "type": "string", "minLength": 4, "maxLength": 131072, "pattern": "^[A-Za-z0-9+/]+={0,2}$" },
+        "rawSha256": { "$ref": "#/$defs/digest" },
+        "contractArtifactSha256": { "const": "sha256:2876d692d77b6ab369ca2933a4fb37fe25a1008818680a91396f66411f4580d7" },
+        "runtimeClosureDigest": { "const": "sha256:41b01d85836e98e40577bdb63ae419b405f90ced84ee720c87a23ac7cf69fae3" }
+      }
+    },
+    "hostReceipts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["development", "restricted", "installed"],
+      "properties": {
+        "development": { "$ref": "#/$defs/hostReceipt" },
+        "restricted": { "$ref": "#/$defs/hostReceipt" },
+        "installed": { "$ref": "#/$defs/hostReceipt" }
+      }
+    },
+    "suites": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["npmCi", "typecheck", "productionBuild", "mockTests", "phase1Conformance", "phase2Conformance", "phase3Conformance", "extensionHost", "installedVsix", "restrictedWorkspace", "cancellation", "offlineSmoke", "packageValidation", "mo1301Regression", "mo1302Phase1Regression", "mo1302Phase2Regression", "mo1302Phase3Regression", "policyPhase1Regression", "policyPhase2Regression", "policyPhase3Regression", "policyPhase4Regression", "cliRegression", "workspaceVerification"],
+      "properties": {
+        "npmCi": { "$ref": "#/$defs/commandSuiteResult" },
+        "typecheck": { "$ref": "#/$defs/commandSuiteResult" },
+        "productionBuild": { "$ref": "#/$defs/commandSuiteResult" },
+        "mockTests": { "$ref": "#/$defs/commandSuiteResult" },
+        "phase1Conformance": { "$ref": "#/$defs/commandSuiteResult" },
+        "phase2Conformance": { "$ref": "#/$defs/commandSuiteResult" },
+        "phase3Conformance": { "$ref": "#/$defs/commandSuiteResult" },
+        "extensionHost": { "$ref": "#/$defs/suiteResult" },
+        "installedVsix": { "$ref": "#/$defs/suiteResult" },
+        "restrictedWorkspace": { "$ref": "#/$defs/suiteResult" },
+        "cancellation": { "$ref": "#/$defs/suiteResult" },
+        "offlineSmoke": { "$ref": "#/$defs/suiteResult" },
+        "packageValidation": { "$ref": "#/$defs/commandSuiteResult" },
+        "mo1301Regression": { "$ref": "#/$defs/commandSuiteResult" },
+        "mo1302Phase1Regression": { "$ref": "#/$defs/commandSuiteResult" },
+        "mo1302Phase2Regression": { "$ref": "#/$defs/commandSuiteResult" },
+        "mo1302Phase3Regression": { "$ref": "#/$defs/commandSuiteResult" },
+        "policyPhase1Regression": { "$ref": "#/$defs/commandSuiteResult" },
+        "policyPhase2Regression": { "$ref": "#/$defs/commandSuiteResult" },
+        "policyPhase3Regression": { "$ref": "#/$defs/commandSuiteResult" },
+        "policyPhase4Regression": { "$ref": "#/$defs/commandSuiteResult" },
+        "cliRegression": { "$ref": "#/$defs/commandSuiteResult" },
+        "workspaceVerification": { "$ref": "#/$defs/commandSuiteResult" }
+      }
+    },
+    "preparation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "policySet"],
+      "properties": {
+        "policy": { "$ref": "#/$defs/preparation" },
+        "policySet": { "$ref": "#/$defs/preparation" }
+      }
+    },
+    "vectors": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pass", "fail", "cne"],
+      "properties": {
+        "pass": { "$ref": "#/$defs/passVector" },
+        "fail": { "$ref": "#/$defs/failVector" },
+        "cne": { "$ref": "#/$defs/cneVector" }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evaluationIdentity", "policyOutcome"],
+      "properties": {
+        "evaluationIdentity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["canonicalBase64", "evaluationIdentityDigest", "mode", "sourceFilename", "state", "target", "verificationScope", "virtualDocumentExactBytes"],
+          "properties": {
+            "canonicalBase64": { "$ref": "#/$defs/canonicalBase64" },
+            "evaluationIdentityDigest": { "$ref": "#/$defs/digest" },
+            "mode": { "const": "evaluation" },
+            "sourceFilename": { "const": "verified-evaluation-identity.json" },
+            "state": { "const": "Verified" },
+            "target": { "const": "evaluationIdentity" },
+            "verificationScope": { "const": "authoritativeReconstruction" },
+            "virtualDocumentExactBytes": { "const": true }
+          }
+        },
+        "policyOutcome": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["canonicalBase64", "decision", "evaluationIdentityDigest", "mode", "outcomeDigest", "sourceFilename", "state", "target", "verificationScope", "virtualDocumentExactBytes"],
+          "properties": {
+            "canonicalBase64": { "$ref": "#/$defs/canonicalBase64" },
+            "decision": { "const": "PASS" },
+            "evaluationIdentityDigest": { "$ref": "#/$defs/digest" },
+            "mode": { "const": "artifact" },
+            "outcomeDigest": { "$ref": "#/$defs/digest" },
+            "sourceFilename": { "const": "verified-policy-outcome.json" },
+            "state": { "const": "Verified" },
+            "target": { "const": "policyOutcome" },
+            "verificationScope": { "const": "serializedArtifact" },
+            "virtualDocumentExactBytes": { "const": true }
+          }
+        }
+      }
+    },
+    "offline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["networkRequired", "result"],
+      "properties": {
+        "networkRequired": { "const": false },
+        "result": { "$ref": "#/$defs/pass" }
+      }
+    }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "canonicalBase64": { "type": "string", "minLength": 4, "maxLength": 131072, "pattern": "^[A-Za-z0-9+/]+={0,2}$" },
+    "pass": { "const": "PASS" },
+    "suiteResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity", "result"],
+      "properties": {
+        "identity": { "$ref": "#/$defs/digest" },
+        "result": { "$ref": "#/$defs/pass" }
+      }
+    },
+    "commandSuiteResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity", "result", "receiptByteLength", "receiptSha256"],
+      "properties": {
+        "identity": { "$ref": "#/$defs/digest" },
+        "result": { "$ref": "#/$defs/pass" },
+        "receiptByteLength": { "type": "integer", "minimum": 1, "maximum": 65536 },
+        "receiptSha256": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "hostReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["byteLength", "sha256"],
+      "properties": {
+        "byteLength": { "type": "integer", "minimum": 1, "maximum": 262144 },
+        "sha256": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "preparation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["documentDigest", "semanticDigest"],
+      "properties": {
+        "documentDigest": { "$ref": "#/$defs/digest" },
+        "semanticDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "vectorBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "evaluationIdentityDigest", "outcomeDigest", "evaluationIdentityCanonicalBase64", "outcomeCanonicalBase64", "stableCodes"],
+      "properties": {
+        "decision": { "enum": ["PASS", "FAIL", "COULD_NOT_EVALUATE"] },
+        "evaluationIdentityDigest": { "$ref": "#/$defs/digest" },
+        "outcomeDigest": { "$ref": "#/$defs/digest" },
+        "evaluationIdentityCanonicalBase64": { "type": "string", "minLength": 4, "maxLength": 131072, "pattern": "^[A-Za-z0-9+/]+={0,2}$" },
+        "outcomeCanonicalBase64": { "type": "string", "minLength": 4, "maxLength": 131072, "pattern": "^[A-Za-z0-9+/]+={0,2}$" },
+        "stableCodes": { "type": "array", "maxItems": 128, "items": { "type": "string", "minLength": 1, "maxLength": 160 } }
+      }
+    },
+    "passVector": { "allOf": [{ "$ref": "#/$defs/vectorBase" }, { "properties": { "decision": { "const": "PASS" } } }] },
+    "failVector": { "allOf": [{ "$ref": "#/$defs/vectorBase" }, { "properties": { "decision": { "const": "FAIL" } } }] },
+    "cneVector": { "allOf": [{ "$ref": "#/$defs/vectorBase" }, { "properties": { "decision": { "const": "COULD_NOT_EVALUATE" } } }] }
+  }
+}

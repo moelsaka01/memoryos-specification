@@ -45,7 +45,7 @@ export interface ExtensionCommandAdapter {
   verifyPolicyOutcome(uri?: vscode.Uri): Promise<unknown>;
 }
 
-function enforceWorkspaceTrust(commandId: MemoryOSPublicCommandId): void {
+export function enforceWorkspaceTrust(commandId: MemoryOSPublicCommandId): void {
   if (vscode.workspace.isTrusted) return;
   throw new MemoryOSAdapterError(
     MEMORYOS_VSCODE_ADAPTER_ERROR_CODES.WORKSPACE_UNTRUSTED,

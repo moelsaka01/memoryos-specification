@@ -42,6 +42,7 @@ set(memoryos_conformance_sources_list
     schema/independent-assessment-1.0.schema.json
     schema/requirements-manifest-1.0.schema.json
     schema/review-attestations-1.0.schema.json
+    schema/mo1303-hosted-evidence-1.0.schema.json
     tests/boundary_contract_conformance_test.mjs
     tests/component_evidence_conformance_test.mjs
     tests/compatibility_conformance_test.mjs
@@ -53,6 +54,7 @@ set(memoryos_conformance_sources_list
     tests/mo1302_github_product_conformance_test.mjs
     tests/mo1303_phase1_conformance_test.mjs
     tests/mo1303_phase2_conformance_test.mjs
+    tests/mo1303_phase3_conformance_test.mjs
     tests/normative_vectors_conformance_test.mjs
     tests/reference_implementation_conformance_test.mjs
     tests/report_conformance_test.mjs
@@ -78,6 +80,8 @@ set(memoryos_conformance_sources_list
     tools/build-mo1302-action-distribution.mjs
     tools/mo1302-hosted-evidence.mjs
     tools/mo1302-native-evidence.mjs
+    tools/mo1303-hosted-evidence.mjs
+    tools/mo1303-hosted-suite.mjs
     tools/portable-report.mjs
     tools/requirement-selector-catalog.mjs
     tools/run-js-conformance.mjs
@@ -128,6 +132,7 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     mo1302-phase3
     mo1303-phase1
     mo1303-phase2
+    mo1303-phase3
     normative
     reference
     report
@@ -157,6 +162,8 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
       set(conformance_source tests/mo1303_phase1_conformance_test.mjs)
     elseif(conformance_area STREQUAL "mo1303-phase2")
       set(conformance_source tests/mo1303_phase2_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1303-phase3")
+      set(conformance_source tests/mo1303_phase3_conformance_test.mjs)
     elseif(conformance_area STREQUAL "normative")
       set(conformance_source tests/normative_vectors_conformance_test.mjs)
     elseif(conformance_area STREQUAL "reference")
@@ -225,6 +232,12 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
         memoryos.standard.${conformance_area}
         PROPERTIES LABELS
           "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1303;phase2;vscode;product;security"
+      )
+    elseif(conformance_area STREQUAL "mo1303-phase3")
+      set_tests_properties(
+        memoryos.standard.${conformance_area}
+        PROPERTIES LABELS
+          "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1303;phase3;vscode;extension-host;vsix;cross-platform"
       )
     endif()
   endforeach()
