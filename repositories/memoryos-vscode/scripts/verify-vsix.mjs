@@ -37,7 +37,7 @@ export const EXPECTED_RUNTIME = Object.freeze({
 
 export const EXPECTED_CONTRACT = Object.freeze({
   path: "extension/contracts/policy-contract-identities-1.0.0.json",
-  rawSha256: "sha256:2876d692d77b6ab369ca2933a4fb37fe25a1008818680a91396f66411f4580d7",
+  rawSha256: "sha256:d81c0b8aece4a106324131d4d356c7d0aac0e8618fac080c6b8b5e3a2381ee65",
 });
 
 export const VSIX_LIMITS = Object.freeze({

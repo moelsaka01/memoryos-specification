@@ -192,7 +192,7 @@ test("package builder emits reproducible validated VSIX bytes and a canonical ex
     runtimeClosureDigest: EXPECTED_RUNTIME.closureDigest,
   });
   assert.deepEqual(first.receipt.contractIdentityArtifact, {
-    byteLength: 932,
+    byteLength: 933,
     path: EXPECTED_CONTRACT.path,
     rawSha256: EXPECTED_CONTRACT.rawSha256,
   });

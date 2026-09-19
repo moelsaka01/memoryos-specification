@@ -450,7 +450,7 @@ async function buildContractIdentities() {
       || envelope?.result?.kind !== "MemoryOSPolicyContractIdentities") {
     throw new Error("The authoritative CLI identity envelope has an unexpected shape.");
   }
-  const bytes = Buffer.from(canonicalJson(envelope.result), "utf8");
+  const bytes = Buffer.from(`${canonicalJson(envelope.result)}\n`, "utf8");
   await ensureDirectory(dirname(CONTRACT_PATH), "Contract artifact directory");
   await writeFile(CONTRACT_PATH, bytes, { mode: 0o600 });
   return { byteLength: bytes.length, rawSha256: rawSha256(bytes) };

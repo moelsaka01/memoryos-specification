@@ -23,6 +23,7 @@ const contractPath = resolve(
   extensionRoot,
   "contracts/policy-contract-identities-1.0.0.json",
 );
+const runtimeBuilderPath = resolve(extensionRoot, "scripts/build-runtime-distribution.mjs");
 
 const inventory = await readJson(inventoryPath);
 const extensionPackage = await readJson(packagePath);
@@ -163,8 +164,22 @@ test("runtime closure inventory and identities reproduce from exact bytes", asyn
 
 test("contract identity and bounded-output identities are exact and distinct", async () => {
   const contractBytes = await readFile(contractPath);
+  const contractText = contractBytes.toString("utf8");
+  const contractValue = JSON.parse(contractText);
   assert.equal(contractBytes.byteLength, inventory.contractIdentityArtifact.byteLength);
   assert.equal(sha256(contractBytes), inventory.contractIdentityArtifact.rawSha256);
+  assert.equal(contractText, `${canonicalJson(contractValue)}\n`);
+  assert.equal(contractText.includes("\r"), false);
+  assert.equal([...contractBytes].filter((byte) => byte === 0x0a).length, 1);
+  assert.equal(contractBytes.at(-1), 0x0a);
+  assert.equal(
+    sha256(contractBytes.subarray(0, -1)),
+    "sha256:2876d692d77b6ab369ca2933a4fb37fe25a1008818680a91396f66411f4580d7",
+  );
+  assert.match(
+    await readFile(runtimeBuilderPath, "utf8"),
+    /Buffer\.from\(`\$\{canonicalJson\(envelope\.result\)\}\\n`, "utf8"\)/u,
+  );
   assert.equal(inventory.boundedIO.stdoutBytes, 1_048_576);
   assert.equal(inventory.boundedIO.stderrBytes, 1_048_576);
   assert.notEqual(

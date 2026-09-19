@@ -63,7 +63,7 @@ test("MO-1303 Phase 2 preserves every frozen Phase 1 and predecessor identity", 
   );
   assert.equal(
     inventory.contractIdentityArtifact.rawSha256,
-    "sha256:2876d692d77b6ab369ca2933a4fb37fe25a1008818680a91396f66411f4580d7",
+    "sha256:d81c0b8aece4a106324131d4d356c7d0aac0e8618fac080c6b8b5e3a2381ee65",
   );
   assert.equal(
     inventory.distribution.historicalPhase1And2PackageLock.rawSha256,

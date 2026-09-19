@@ -21,6 +21,7 @@ import {
 } from "@vscode/test-electron";
 
 import { buildHostRunner, HOST_RUNNER_BUNDLE } from "./build.mjs";
+import { withHostProfileCleanup } from "./cleanup.mjs";
 
 const TEST_HOST_ROOT = dirname(fileURLToPath(import.meta.url));
 const PACKAGE_ROOT = resolve(TEST_HOST_ROOT, "..");
@@ -196,7 +197,7 @@ function runProcess(command, args, environment, timeoutMs, { shell = false } = {
       clearTimeout(timer);
       rejectRun(error);
     });
-    child.once("exit", (code, signal) => {
+    child.once("close", (code, signal) => {
       clearTimeout(timer);
       if (errorSeen) return;
       if (timedOut) {
@@ -296,7 +297,7 @@ async function runMode(options, mode, vscodeExecutablePath) {
   const workspacePath = join(stateRoot, "workspace");
   const receiptPath = resolve(options.receiptDir, `${mode}.json`);
   const rootsBefore = await privateRoots();
-  try {
+  return withHostProfileCleanup(stateRoot, async () => {
     await Promise.all([
       mkdir(extensionsPath, { recursive: true }),
       mkdir(options.receiptDir, { recursive: true }),
@@ -344,9 +345,7 @@ async function runMode(options, mode, vscodeExecutablePath) {
     const receipt = await finalizeReceipt(receiptPath, mode, extensionsPath);
     process.stdout.write(`Validated ${mode} receipt for VS Code ${receipt.vscodeVersion}.\n`);
     return receipt;
-  } finally {
-    await rm(stateRoot, { force: true, recursive: true });
-  }
+  });
 }
 
 function requireParity(left, right, label) {

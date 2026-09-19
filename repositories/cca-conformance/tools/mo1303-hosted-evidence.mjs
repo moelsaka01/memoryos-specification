@@ -286,7 +286,7 @@ function validateContractIdentities(value, label) {
   invariant(value.rawSha256 === sha256(canonical.bytes),
     `${label}.rawSha256 is not bound to canonical bytes.`);
   invariant(value.contractArtifactSha256
-    === "sha256:2876d692d77b6ab369ca2933a4fb37fe25a1008818680a91396f66411f4580d7",
+    === "sha256:d81c0b8aece4a106324131d4d356c7d0aac0e8618fac080c6b8b5e3a2381ee65",
   `${label}.contractArtifactSha256 differs.`);
   invariant(value.runtimeClosureDigest
     === "sha256:41b01d85836e98e40577bdb63ae419b405f90ced84ee720c87a23ac7cf69fae3",
@@ -365,7 +365,7 @@ export function validateHostedEvidence(value, expectations) {
 
   exactKeys(value.contractIdentityArtifact, ["sha256"], "contractIdentityArtifact");
   invariant(value.contractIdentityArtifact.sha256
-    === "sha256:2876d692d77b6ab369ca2933a4fb37fe25a1008818680a91396f66411f4580d7",
+    === "sha256:d81c0b8aece4a106324131d4d356c7d0aac0e8618fac080c6b8b5e3a2381ee65",
   "contract identity artifact differs.");
   validateContractIdentities(value.contractIdentities, "contractIdentities");
 
@@ -418,7 +418,7 @@ function required(options, name) {
   return value;
 }
 
-async function loadCanonicalFile(path, maximumBytes, label) {
+export async function loadCanonicalFile(path, maximumBytes, label) {
   let metadata;
   try {
     metadata = await lstat(path);
@@ -526,7 +526,7 @@ function validateVSIXReceiptShape(receipt, label) {
   exactKeys(receipt.contractIdentityArtifact, ["path", "byteLength", "rawSha256"],
     `${label}.contractIdentityArtifact`);
   invariant(receipt.contractIdentityArtifact.rawSha256
-    === "sha256:2876d692d77b6ab369ca2933a4fb37fe25a1008818680a91396f66411f4580d7",
+    === "sha256:d81c0b8aece4a106324131d4d356c7d0aac0e8618fac080c6b8b5e3a2381ee65",
   `${label} contract identity differs.`);
   return receipt;
 }
@@ -585,7 +585,7 @@ function validateHostContractIdentities(value, label) {
   invariant(canonicalJson(parsed) === value.canonicalText,
     `${label} canonical text is not canonical JSON.`);
   invariant(value.contractArtifactSha256
-    === "sha256:2876d692d77b6ab369ca2933a4fb37fe25a1008818680a91396f66411f4580d7",
+    === "sha256:d81c0b8aece4a106324131d4d356c7d0aac0e8618fac080c6b8b5e3a2381ee65",
   `${label} artifact digest differs.`);
   invariant(value.runtimeClosureDigest
     === "sha256:41b01d85836e98e40577bdb63ae419b405f90ced84ee720c87a23ac7cf69fae3",

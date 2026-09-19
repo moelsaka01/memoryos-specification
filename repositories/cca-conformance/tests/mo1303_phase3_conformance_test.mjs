@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { lstat, readFile, readdir } from "node:fs/promises";
-import { resolve } from "node:path";
+import { lstat, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 import test from "node:test";
 
 import {
+  loadCanonicalFile,
   validateHostAssertionCompleteness,
   validateHostedEvidence,
 } from "../tools/mo1303-hosted-evidence.mjs";
@@ -154,7 +156,7 @@ test("the frozen VSIX receipt is canonical, closed, and independently identified
   assert.equal(receipt.runtimeClosure.runtimeClosureDigest,
     "sha256:41b01d85836e98e40577bdb63ae419b405f90ced84ee720c87a23ac7cf69fae3");
   assert.equal(receipt.contractIdentityArtifact.rawSha256,
-    "sha256:2876d692d77b6ab369ca2933a4fb37fe25a1008818680a91396f66411f4580d7");
+    "sha256:d81c0b8aece4a106324131d4d356c7d0aac0e8618fac080c6b8b5e3a2381ee65");
   assert.notEqual(receipt.vsix.sha256, receipt.runtimeClosure.runtimeClosureDigest);
   assert.notEqual(receipt.vsix.sha256, receipt.contractIdentityArtifact.rawSha256);
 });
@@ -186,6 +188,9 @@ test("real-host sources form a bounded identity and require isolated development
 
 test("host receipt provenance is mode scoped and failed assertions remain rejected", async () => {
   const driver = await readFile(resolve(extensionRoot, "test-host/driver.mjs"), "utf8");
+  assert.match(driver, /child\.once\("close", \(code, signal\) => \{/u);
+  assert.doesNotMatch(driver, /child\.once\("exit",/u);
+  assert.match(driver, /return withHostProfileCleanup\(stateRoot, async \(\) => \{/u);
   assert.match(
     driver,
     /\.\.\.\(developmentSource \? \{ developmentSource \} : \{ installedFromVsix \}\),/u,
@@ -482,6 +487,31 @@ test("hosted evidence validator binds canonical bytes and rejects external-ident
     ...evidence,
     platform: { ...evidence.platform, runnerImage: "windows-2022", os: "Windows" },
   }, expected), /runner image differs/u);
+});
+
+test("hosted evidence loader enforces canonical JSON with exactly one trailing LF", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "memoryos-mo1303-canonical-"));
+  t.after(() => rm(directory, { force: true, recursive: true }));
+  const validPath = join(directory, "valid.json");
+  await writeFile(validPath, '{"a":1,"b":2}\n', "utf8");
+  const loaded = await loadCanonicalFile(validPath, 1024, "test artifact");
+  assert.deepEqual(loaded.value, { a: 1, b: 2 });
+
+  const invalid = new Map([
+    ["crlf", '{"a":1,"b":2}\r\n'],
+    ["missing-lf", '{"a":1,"b":2}'],
+    ["extra-lf", '{"a":1,"b":2}\n\n'],
+    ["pretty", '{\n  "a": 1,\n  "b": 2\n}\n'],
+    ["reordered", '{"b":2,"a":1}\n'],
+  ]);
+  for (const [name, contents] of invalid) {
+    const path = join(directory, `${name}.json`);
+    await writeFile(path, contents, "utf8");
+    await assert.rejects(
+      loadCanonicalFile(path, 1024, `${name} artifact`),
+      /is not canonical JSON with exactly one trailing LF\./u,
+    );
+  }
 });
 
 test("hosted certification remains explicitly pending with no fabricated platform evidence", async () => {

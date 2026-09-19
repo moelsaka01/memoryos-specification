@@ -725,7 +725,7 @@ async function loadContractArtifact(extensionRoot: string): Promise<Readonly<Rec
     );
   }
   if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)
-      || canonicalJson(parsed) !== bytes.toString("utf8")) {
+      || `${canonicalJson(parsed)}\n` !== bytes.toString("utf8")) {
     throw adapterError(
       MEMORYOS_VSCODE_ADAPTER_ERROR_CODES.DISTRIBUTION_INTEGRITY_MISMATCH,
       "The packaged normative contract identity artifact is not canonical.",

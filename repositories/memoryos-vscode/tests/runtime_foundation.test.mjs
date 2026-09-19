@@ -195,7 +195,12 @@ test("runtime closure manifest and identities reproduce the frozen independent d
     ])),
     api.RUNTIME_CLOSURE_DIGEST,
   );
-  assert.equal(sha256(await readFile(CONTRACT_PATH)), api.POLICY_CONTRACT_IDENTITIES_RAW_SHA256);
+  const contractBytes = await readFile(CONTRACT_PATH);
+  const contractText = contractBytes.toString("utf8");
+  assert.equal(sha256(contractBytes), api.POLICY_CONTRACT_IDENTITIES_RAW_SHA256);
+  assert.equal(contractBytes.byteLength, api.POLICY_CONTRACT_IDENTITIES_BYTE_LENGTH);
+  assert.equal(contractText, `${canonicalJson(JSON.parse(contractText))}\n`);
+  assert.equal(contractText.includes("\r"), false);
   assert.notEqual(api.RUNTIME_CLOSURE_DIGEST, "sha256:2e116b6518934c797e9c562670f2292462be11ee982c778b43f1aaf45a8986f9");
   for (const member of manifest.files) {
     assert.ok(member.path.startsWith("vendor/"));
