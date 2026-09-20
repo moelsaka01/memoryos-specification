@@ -289,6 +289,9 @@ REQUIRED_PATHS = (
     "repositories/cca-conformance/docs/versioning-guide.md",
     "repositories/cca-conformance/evidence/reference-implementation-1.2.1.json",
     "repositories/cca-conformance/evidence/reference-implementation-review-1.2.1.json",
+    "repositories/cca-conformance/evidence/mo1303-final-conformance-binding-run-35474897159.json",
+    "repositories/cca-conformance/evidence/mo1303-hosted-evidence-run-35474897159-ubuntu-24.04-x64.json",
+    "repositories/cca-conformance/evidence/mo1303-hosted-evidence-run-35474897159-windows-2022-x64.json",
     "repositories/cca-conformance/evidence/mo1303-vsix-package-identity-0.1.0.json",
     "repositories/cca-conformance/reports/reference-implementation-1.2.1.json",
     "repositories/cca-conformance/reports/reference-implementation-1.2.1.md",
@@ -299,6 +302,7 @@ REQUIRED_PATHS = (
     "repositories/cca-conformance/schema/github-policy-gate-distribution-manifest-1.0.schema.json",
     "repositories/cca-conformance/schema/github-policy-gate-receipt-1.0.schema.json",
     "repositories/cca-conformance/schema/github-policy-gate-test-vector-1.0.schema.json",
+    "repositories/cca-conformance/schema/mo1303-final-conformance-binding-1.0.schema.json",
     "repositories/cca-conformance/schema/requirements-manifest-1.0.schema.json",
     "repositories/cca-conformance/schema/mo1303-hosted-evidence-1.0.schema.json",
     "repositories/cca-conformance/tests/compatibility_conformance_test.mjs",
@@ -953,7 +957,9 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
             errors.append("MO-1303 conformance inventory kind is missing or changed")
         if inventory.get("version") != "1.0.0":
             errors.append("MO-1303 conformance inventory version is missing or changed")
-        if inventory.get("phase") != "implementationPhase3Of3LocalClosure":
+        if inventory.get("phase") != (
+            "finalConformanceClosureWithExternalInfrastructureException"
+        ):
             errors.append("MO-1303 conformance inventory phase is missing or changed")
         if inventory.get("phase1CommitBinding") != {
             "strategy": "postCommitConformanceCommit",
@@ -969,16 +975,67 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
             errors.append("MO-1303 Phase-2 implementation binding is missing or changed")
         if inventory.get("phase3CommitBinding") != {
             "strategy": "laterConformanceBindingCommit",
-            "status": "pendingCommit",
-            "revision": None,
+            "status": "bound",
+            "revision": "92ab1e7b8fe64715b01e430a9c9079d41cc2f679",
         }:
-            errors.append("MO-1303 Phase-3 pending implementation binding is missing or changed")
+            errors.append("MO-1303 Phase-3 implementation binding is missing or changed")
         if inventory.get("finalConformanceBinding") != {
             "strategy": "postHostedConformanceBindingCommit",
-            "status": "pendingHostedEvidence",
-            "revision": None,
+            "status": "bound",
+            "revision": "f856455e900c549bb2ec8e1d72f03fefec3be2e1",
         }:
             errors.append("MO-1303 final hosted binding state is missing or changed")
+        if inventory.get("releaseClosure") != {
+            "releaseStatus": "releasedWithExternalInfrastructureException",
+            "hostedCertificationStatus": "partial",
+            "macosStatus": "notExecutedExternalInfrastructure",
+            "crossPlatformParityStatus": "notExecuted",
+            "bindingSchema": {
+                "path": (
+                    "repositories/cca-conformance/schema/"
+                    "mo1303-final-conformance-binding-1.0.schema.json"
+                ),
+                "byteLength": 13506,
+                "rawSha256": (
+                    "sha256:6cb376eca1eb93d672e061c1f89f5fec"
+                    "b2ac84112484601ed890cf186307d5e5"
+                ),
+            },
+            "bindingArtifact": {
+                "path": (
+                    "repositories/cca-conformance/evidence/"
+                    "mo1303-final-conformance-binding-run-35474897159.json"
+                ),
+                "byteLength": 5156,
+                "rawSha256": (
+                    "sha256:db739f32c55fa8ce1089c83c680f43cd"
+                    "0e4b5fa1a80d5973f7b474ae2790f8fb"
+                ),
+            },
+        }:
+            errors.append("MO-1303 external-infrastructure release closure is missing or changed")
+        hosted = inventory.get("hostedCertification")
+        if not isinstance(hosted, dict) or hosted.get("status") != "partial":
+            errors.append("MO-1303 hosted certification must remain partial")
+        elif hosted.get("run") != {
+            "number": 5,
+            "id": 35474897159,
+            "revision": "f856455e900c549bb2ec8e1d72f03fefec3be2e1",
+        }:
+            errors.append("MO-1303 hosted run binding is missing or changed")
+        elif hosted.get("platforms") != {
+            "macos-14": "notExecutedExternalInfrastructure",
+            "ubuntu-24.04": "PASS",
+            "windows-2022": "PASS",
+        }:
+            errors.append("MO-1303 hosted platform states are missing or changed")
+        elif hosted.get("crossPlatformParity") != "notExecuted":
+            errors.append("MO-1303 cross-platform parity must remain unexecuted")
+        if inventory.get("futureMilestoneTag") != {
+            "name": "memoryos-1.3-mo1303",
+            "status": "pendingManualReleaseTagReview",
+        }:
+            errors.append("MO-1303 future tag must remain pending manual review")
     except (OSError, ValueError, json.JSONDecodeError) as exception:
         errors.append(f"invalid MO-1303 conformance inventory: {exception}")
 
@@ -992,6 +1049,10 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
             ("tests/mo1303_phase2_conformance_test.mjs", 2),
             ("tests/mo1303_phase3_conformance_test.mjs", 2),
             ("tests/support/mo1303-conformance-support.mjs", 1),
+            ("evidence/mo1303-final-conformance-binding-run-35474897159.json", 1),
+            ("evidence/mo1303-hosted-evidence-run-35474897159-ubuntu-24.04-x64.json", 1),
+            ("evidence/mo1303-hosted-evidence-run-35474897159-windows-2022-x64.json", 1),
+            ("schema/mo1303-final-conformance-binding-1.0.schema.json", 1),
             ('conformance_area STREQUAL "mo1303-phase1"', 2),
             ('conformance_area STREQUAL "mo1303-phase2"', 2),
             ('conformance_area STREQUAL "mo1303-phase3"', 2),

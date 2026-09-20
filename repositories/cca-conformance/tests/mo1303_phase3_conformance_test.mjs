@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { lstat, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { lstat, mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import test from "node:test";
@@ -11,6 +11,7 @@ import {
   validateHostAssertionCompleteness,
   validateHostedEvidence,
 } from "../tools/mo1303-hosted-evidence.mjs";
+import { validateJsonSchema } from "../tools/json-schema-validator.mjs";
 import { SUITE_COMMANDS, SUITE_NAMES } from "../tools/mo1303-hosted-suite.mjs";
 import {
   canonicalJson,
@@ -30,6 +31,23 @@ const receiptPath = resolve(
 const receipt = await readJson(receiptPath);
 const phase2Revision = "2919dd9056bc595bddde3d18f09f8efaaafb010b";
 const phase1Revision = "6f99038fd5669ece2af4b1671a8e5f267822d2dd";
+const phase3Revision = "92ab1e7b8fe64715b01e430a9c9079d41cc2f679";
+const workflowCorrectionRevision = "e677dc70c0de3e70a557c4e30a425f9c897a9b88";
+const certificationCorrectionRevision = "0c4f3327403987de4dac6e0016c72c36ee7e72f1";
+const releaseCandidateRevision = "f856455e900c549bb2ec8e1d72f03fefec3be2e1";
+const bindingPath = resolve(
+  conformanceRoot,
+  "evidence/mo1303-final-conformance-binding-run-35474897159.json",
+);
+const binding = await readJson(bindingPath);
+const bindingSchema = new URL(
+  "../schema/mo1303-final-conformance-binding-1.0.schema.json",
+  import.meta.url,
+);
+const hostedEvidenceSchema = new URL(
+  "../schema/mo1303-hosted-evidence-1.0.schema.json",
+  import.meta.url,
+);
 
 const commands = [
   "memoryos.showContractIdentities",
@@ -46,6 +64,15 @@ function git(...arguments_) {
     maxBuffer: 16 * 1024 * 1024,
     windowsHide: true,
   }).trim();
+}
+
+function gitRaw(...arguments_) {
+  return execFileSync("git", arguments_, {
+    cwd: workspaceRoot,
+    encoding: "utf8",
+    maxBuffer: 16 * 1024 * 1024,
+    windowsHide: true,
+  }).trimEnd();
 }
 
 function domainDigest(domain, bytes) {
@@ -80,10 +107,36 @@ function vector(decision) {
   };
 }
 
-test("Phase 3 preserves the exact predecessor chain and historical lock identity", () => {
+test("Phase 3 preserves the exact implementation and corrective revision chain", () => {
   assert.equal(git("rev-parse", `${phase2Revision}^`), phase1Revision);
+  assert.equal(git("rev-parse", `${phase3Revision}^`), phase2Revision);
+  assert.equal(git("rev-parse", `${workflowCorrectionRevision}^`), phase3Revision);
+  assert.equal(
+    git("rev-parse", `${certificationCorrectionRevision}^`),
+    workflowCorrectionRevision,
+  );
+  assert.equal(
+    git("rev-parse", `${releaseCandidateRevision}^`),
+    certificationCorrectionRevision,
+  );
   assert.equal(git("log", "-1", "--format=%s", phase2Revision),
     "feat(memoryos-1.3): MO-1303 phase 2 VS Code product UX");
+  assert.equal(git("log", "-1", "--format=%s", phase3Revision),
+    "feat(memoryos-1.3): MO-1303 phase 3 Extension Host and VSIX conformance");
+  assert.equal(git("log", "-1", "--format=%s", workflowCorrectionRevision),
+    "fix(memoryos-1.3): repair MO-1303 hosted certification workflow");
+  assert.equal(git("log", "-1", "--format=%s", certificationCorrectionRevision),
+    "fix(memoryos-1.3): close MO-1303 hosted certification defects");
+  assert.equal(git("log", "-1", "--format=%s", releaseCandidateRevision),
+    "fix(memoryos-1.3): close MO-1303 hosted portability defects");
+  assert.deepEqual(inventory.historicalRevisions, {
+    hostedCertificationCorrection: certificationCorrectionRevision,
+    hostedPortabilityCorrectionReleaseCandidate: releaseCandidateRevision,
+    hostedWorkflowCorrection: workflowCorrectionRevision,
+    phase1: phase1Revision,
+    phase2: phase2Revision,
+    phase3Implementation: phase3Revision,
+  });
   assert.equal(git("rev-parse", "memoryos-1.3-mo1302^{}"),
     "7e07bd0db9ab10146f2e0e0bbd67a4c5850cf41d");
   assert.equal(git("rev-parse", "memoryos-1.3-mo1301^{}"),
@@ -100,7 +153,7 @@ test("Phase 3 preserves the exact predecessor chain and historical lock identity
 });
 
 test("Phase 3 freezes the exact host and supply-chain contract without expanding commands", async () => {
-  assert.equal(inventory.phase, "implementationPhase3Of3LocalClosure");
+  assert.equal(inventory.phase, "finalConformanceClosureWithExternalInfrastructureException");
   assert.deepEqual(extensionPackage.contributes.commands.map(({ command }) => command), commands);
   assert.deepEqual(inventory.commands.map(({ id }) => id), commands);
   assert.deepEqual(extensionPackage.devDependencies, inventory.distribution.directDevDependencies);
@@ -485,6 +538,10 @@ test("hosted evidence validator binds canonical bytes and rejects external-ident
   }, expected), /open or incomplete key set/u);
   assert.throws(() => validateHostedEvidence({
     ...evidence,
+    releaseStatus: "releasedWithExternalInfrastructureException",
+  }, expected), /open or incomplete key set/u);
+  assert.throws(() => validateHostedEvidence({
+    ...evidence,
     platform: { ...evidence.platform, runnerImage: "windows-2022", os: "Windows" },
   }, expected), /runner image differs/u);
 });
@@ -514,30 +571,307 @@ test("hosted evidence loader enforces canonical JSON with exactly one trailing L
   }
 });
 
-test("hosted certification remains explicitly pending with no fabricated platform evidence", async () => {
-  assert.equal(inventory.hostedCertification.status, "pendingPublication");
-  assert.deepEqual(inventory.hostedCertification.platforms, {
-    "macos-14": "pendingPublication",
-    "ubuntu-24.04": "pendingPublication",
-    "windows-2022": "pendingPublication",
+test("final binding is canonical, schema-valid, and encodes the exact external exception", async () => {
+  const bindingBytes = await readFile(bindingPath);
+  const schemaBytes = await readFile(resolve(
+    workspaceRoot,
+    inventory.releaseClosure.bindingSchema.path,
+  ));
+  assert.equal(bindingBytes.byteLength, inventory.releaseClosure.bindingArtifact.byteLength);
+  assert.equal(sha256(bindingBytes), inventory.releaseClosure.bindingArtifact.rawSha256);
+  assert.equal(schemaBytes.byteLength, inventory.releaseClosure.bindingSchema.byteLength);
+  assert.equal(sha256(schemaBytes), inventory.releaseClosure.bindingSchema.rawSha256);
+  assert.equal(bindingBytes.toString("utf8"), `${canonicalJson(binding)}\n`);
+  await validateJsonSchema(binding, bindingSchema);
+
+  assert.equal(binding.kind, "MemoryOSMO1303FinalConformanceBinding");
+  assert.equal(binding.version, "1.0.0");
+  assert.equal(binding.implementationStatus, "complete");
+  assert.equal(binding.implementationRevision, releaseCandidateRevision);
+  assert.equal(binding.releaseStatus, "releasedWithExternalInfrastructureException");
+  assert.equal(binding.hostedCertificationStatus, "partial");
+  assert.equal(binding.macosStatus, "notExecutedExternalInfrastructure");
+  assert.equal(binding.crossPlatformParityStatus, "notExecuted");
+  assert.deepEqual(binding.localCertification, {
+    modes: {
+      development: "PASS",
+      installed: "PASS",
+      restricted: "PASS",
+    },
+    result: "PASS",
+    vscodeVersion: "1.137.0",
   });
-  assert.equal(inventory.hostedCertification.crossPlatformParity, "pendingHostedEvidence");
-  assert.equal(inventory.hostedCertification.offlineCertification, "pendingHostedEvidence");
-  const localEvidence = (await readdir(resolve(conformanceRoot, "evidence")))
-    .filter((name) => /^mo1303-hosted-evidence/u.test(name));
-  assert.deepEqual(localEvidence, []);
+  assert.deepEqual(binding.productIdentities, {
+    contractIdentity: {
+      artifactByteLength: 933,
+      artifactRawSha256:
+        "sha256:d81c0b8aece4a106324131d4d356c7d0aac0e8618fac080c6b8b5e3a2381ee65",
+      canonicalSha256:
+        "sha256:2876d692d77b6ab369ca2933a4fb37fe25a1008818680a91396f66411f4580d7",
+    },
+    extension: {
+      identifier: "moelsaka01.memoryos",
+      version: "0.1.0",
+    },
+    runtime: {
+      closureDigest:
+        "sha256:41b01d85836e98e40577bdb63ae419b405f90ced84ee720c87a23ac7cf69fae3",
+      entryCount: 37,
+      inventoryDigest:
+        "sha256:2aed4a65a3697345c3da71a4716565e2eb5275021db7628a09b2103c78203542",
+    },
+    transportLimits: {
+      mipBytes: 524288,
+      policyBytes: 2048,
+      policySetBytes: 4096,
+    },
+    vsix: {
+      byteLength: 200154,
+      inventoryDigest:
+        "sha256:e3664d848974546facdb011ea6d4fa8459f931f854a00641fc7a2290066c388b",
+      sha256: "sha256:f5cd33f9cb73fe5ef5cd960c685d0598b0ae31156ae7e9afd4c09c555943c8ae",
+    },
+  });
+  assert.deepEqual(binding.predecessors, {
+    mo1301: {
+      peeledCommit: "af6a405b3cd9097ce469b16a854a0568b8acee1f",
+      tag: "memoryos-1.3-mo1301",
+    },
+    mo1302: {
+      distributionFileCount: 42,
+      distributionManifestRawSha256:
+        "sha256:2e116b6518934c797e9c562670f2292462be11ee982c778b43f1aaf45a8986f9",
+      peeledCommit: "7e07bd0db9ab10146f2e0e0bbd67a4c5850cf41d",
+      tag: "memoryos-1.3-mo1302",
+    },
+  });
+  assert.equal(binding.marketplacePublicationStatus, "notPublished");
+  assert.deepEqual(binding.tag, {
+    name: "memoryos-1.3-mo1303",
+    status: "pendingManualReleaseTagReview",
+  });
+});
+
+test("run 5 retains two distinct validated platform records and no macOS evidence", async () => {
+  assert.equal(binding.hostedRun.id, 35474897159);
+  assert.equal(binding.hostedRun.number, 5);
+  assert.equal(binding.hostedRun.revision, releaseCandidateRevision);
+  assert.equal(binding.hostedRun.workflow, "MemoryOS VS Code Certification");
+  assert.equal(binding.hostedRun.overallConclusion, "failure");
+  assert.equal(
+    binding.hostedRun.strictArtifactValidator,
+    "repositories/cca-conformance/tools/mo1303-hosted-evidence.mjs",
+  );
+
+  const expected = {
+    "ubuntu-24.04": {
+      artifact: {
+        archiveByteLength: 223785,
+        archiveSha256:
+          "sha256:883c9d7b84e10dc6f3bc1c40318cf459a6b37f745178ab65c3eec6adc3daa466",
+        id: 10594008935,
+        name: "mo1303-ubuntu-24.04-x64",
+      },
+      evidence: {
+        byteLength: 25693,
+        kind: "MemoryOSMO1303HostedEvidence",
+        path:
+          "repositories/cca-conformance/evidence/mo1303-hosted-evidence-run-35474897159-ubuntu-24.04-x64.json",
+        rawSha256:
+          "sha256:1bfa211ba433774262ca01fc18f9eb36cb538cecdc9fb3ac1cbde51bffd60410",
+        version: "1.0.0",
+      },
+      jobId: 105982352744,
+    },
+    "windows-2022": {
+      artifact: {
+        archiveByteLength: 223842,
+        archiveSha256:
+          "sha256:b0122c4d956e17c472e9c2d4cdff40491bb0fccb373ba680a492e167c64e1477",
+        id: 10593313185,
+        name: "mo1303-windows-2022-x64",
+      },
+      evidence: {
+        byteLength: 25695,
+        kind: "MemoryOSMO1303HostedEvidence",
+        path:
+          "repositories/cca-conformance/evidence/mo1303-hosted-evidence-run-35474897159-windows-2022-x64.json",
+        rawSha256:
+          "sha256:8276d74264c5af198e350c1278acc7ca272a7c7a314f97520dc144b9b0beb6ba",
+        version: "1.0.0",
+      },
+      jobId: 105982352719,
+    },
+  };
+  const verifiedRecords = [];
+  for (const platform of ["ubuntu-24.04", "windows-2022"]) {
+    const record = binding.hostedRun.platforms[platform];
+    assert.equal(record.platform, platform);
+    assert.equal(record.revision, releaseCandidateRevision);
+    assert.equal(record.runnerExecutionStarted, true);
+    assert.equal(record.workflowConclusion, "success");
+    assert.equal(record.status, "PASS");
+    assert.equal(record.validationResult, "PASS");
+    assert.equal(record.jobId, expected[platform].jobId);
+    assert.deepEqual(record.artifact, expected[platform].artifact);
+    assert.deepEqual(record.evidence, expected[platform].evidence);
+    const bytes = await readFile(resolve(workspaceRoot, record.evidence.path));
+    assert.equal(bytes.byteLength, record.evidence.byteLength);
+    assert.equal(sha256(bytes), record.evidence.rawSha256);
+    const evidence = JSON.parse(bytes.toString("utf8"));
+    assert.equal(bytes.toString("utf8"), `${canonicalJson(evidence)}\n`);
+    await validateJsonSchema(evidence, hostedEvidenceSchema);
+    assert.equal(validateHostedEvidence(evidence, {
+      platform,
+      revision: releaseCandidateRevision,
+      vsixSha256: receipt.vsix.sha256,
+    }), evidence);
+    verifiedRecords.push(record);
+  }
+  assert.equal(verifiedRecords.length, 2);
+  assert.equal(new Set(verifiedRecords.map(({ jobId }) => jobId)).size, 2);
+  assert.equal(new Set(verifiedRecords.map(({ artifact }) => artifact.id)).size, 2);
+  assert.equal(new Set(verifiedRecords.map(({ artifact }) => artifact.archiveSha256)).size, 2);
+  assert.equal(new Set(verifiedRecords.map(({ evidence }) => evidence.rawSha256)).size, 2);
+
+  const macos = binding.hostedRun.platforms["macos-14"];
+  assert.equal(macos.jobId, 105982352780);
+  assert.equal(macos.revision, releaseCandidateRevision);
+  assert.equal(macos.runnerExecutionStarted, false);
+  assert.equal(macos.workflowConclusion, "failure");
+  assert.equal(macos.status, "notExecutedExternalInfrastructure");
+  assert.equal(macos.validationResult, "notExecuted");
+  assert.equal(macos.artifact, null);
+  assert.equal(macos.evidence, null);
+  assert.equal(
+    macos.externalBlock,
+    "The job was not started because recent account payments have failed or your spending limit needs to be increased. Please check the 'Billing & plans' section in your settings",
+  );
+  assert.deepEqual(binding.crossPlatformParity, {
+    certified: false,
+    evidence: null,
+    jobId: 105982801819,
+    reason: "certifyDependencyDidNotSucceedBecauseMacosDidNotExecute",
+    status: "notExecuted",
+    workflowConclusion: "skipped",
+  });
+  assert.deepEqual(binding.releaseException, {
+    authority: "projectOwner",
+    decision: "releaseWithoutWaitingForMacosHostedExecution",
+    fullHostedCertification: false,
+    futureMacosEvidenceMayCloseGapWithoutRewritingHistoricalEvidence: true,
+    kind: "externalInfrastructure",
+    macosCertified: false,
+    strictThreePlatformValidatorPreserved: true,
+    threePlatformParityCertified: false,
+    threeValidHostedPlatformEvidenceRecords: false,
+    twoOfThreeEquivalentToThreeOfThree: false,
+    verifiedHostedPlatformEvidenceRecordCount: 2,
+  });
+});
+
+test("binding schema rejects every prohibited full-certification claim", async () => {
+  const mutations = [
+    (value) => { value.hostedRun.platforms["macos-14"].status = "PASS"; },
+    (value) => { value.hostedRun.platforms["macos-14"].evidence = structuredClone(
+      value.hostedRun.platforms["ubuntu-24.04"].evidence,
+    ); },
+    (value) => { value.crossPlatformParity.status = "PASS"; },
+    (value) => { value.hostedCertificationStatus = "complete"; },
+    (value) => { value.releaseException.fullHostedCertification = true; },
+    (value) => { value.releaseException.threeValidHostedPlatformEvidenceRecords = true; },
+    (value) => { value.releaseException.verifiedHostedPlatformEvidenceRecordCount = 3; },
+    (value) => {
+      value.hostedRun.platforms["fabricated-third-platform"] = structuredClone(
+        value.hostedRun.platforms["ubuntu-24.04"],
+      );
+    },
+  ];
+  for (const [index, mutate] of mutations.entries()) {
+    const changed = structuredClone(binding);
+    mutate(changed);
+    await assert.rejects(
+      validateJsonSchema(changed, bindingSchema),
+      undefined,
+      `prohibited binding mutation ${index}`,
+    );
+  }
+});
+
+test("strict full-certification validator still rejects two-of-three evidence", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "memoryos-mo1303-two-of-three-"));
+  t.after(() => rm(directory, { force: true, recursive: true }));
+  await mkdir(join(directory, "mo1303-ubuntu-24.04-x64"));
+  await mkdir(join(directory, "mo1303-windows-2022-x64"));
+  const result = spawnSync(process.execPath, [
+    resolve(conformanceRoot, "tools/mo1303-hosted-evidence.mjs"),
+    "compare-platforms",
+    "--root",
+    directory,
+    "--expected-revision",
+    releaseCandidateRevision,
+    "--expected-vsix-sha256",
+    receipt.vsix.sha256,
+  ], {
+    cwd: workspaceRoot,
+    encoding: "utf8",
+    maxBuffer: 16 * 1024 * 1024,
+    windowsHide: true,
+  });
+  assert.ifError(result.error);
+  assert.equal(result.status, 1);
+  assert.equal(result.stdout, "");
+  assert.match(
+    result.stderr,
+    /cross-platform artifact root must contain exactly the three platform directories/u,
+  );
+});
+
+test("inventory binds the release candidate, partial hosted state, and manual tag review", () => {
+  assert.equal(inventory.hostedCertification.status, "partial");
+  assert.deepEqual(inventory.hostedCertification.run, {
+    id: 35474897159,
+    number: 5,
+    revision: releaseCandidateRevision,
+  });
+  assert.deepEqual(inventory.hostedCertification.platforms, {
+    "macos-14": "notExecutedExternalInfrastructure",
+    "ubuntu-24.04": "PASS",
+    "windows-2022": "PASS",
+  });
+  assert.equal(inventory.hostedCertification.crossPlatformParity, "notExecuted");
+  assert.equal(inventory.hostedCertification.offlineCertification, "partial");
   assert.deepEqual(inventory.phase3CommitBinding, {
     strategy: "laterConformanceBindingCommit",
-    status: "pendingCommit",
-    revision: null,
+    status: "bound",
+    revision: phase3Revision,
   });
   assert.deepEqual(inventory.finalConformanceBinding, {
     strategy: "postHostedConformanceBindingCommit",
-    status: "pendingHostedEvidence",
-    revision: null,
+    status: "bound",
+    revision: releaseCandidateRevision,
   });
-  assert.equal(inventory.futureMilestoneTag.status,
-    "pendingHostedCertificationAndFinalBinding");
+  assert.deepEqual(inventory.releaseClosure, {
+    bindingArtifact: {
+      byteLength: 5156,
+      path:
+        "repositories/cca-conformance/evidence/mo1303-final-conformance-binding-run-35474897159.json",
+      rawSha256:
+        "sha256:db739f32c55fa8ce1089c83c680f43cd0e4b5fa1a80d5973f7b474ae2790f8fb",
+    },
+    bindingSchema: {
+      byteLength: 13506,
+      path:
+        "repositories/cca-conformance/schema/mo1303-final-conformance-binding-1.0.schema.json",
+      rawSha256:
+        "sha256:6cb376eca1eb93d672e061c1f89f5fecb2ac84112484601ed890cf186307d5e5",
+    },
+    crossPlatformParityStatus: "notExecuted",
+    hostedCertificationStatus: "partial",
+    macosStatus: "notExecutedExternalInfrastructure",
+    releaseStatus: "releasedWithExternalInfrastructureException",
+  });
+  assert.equal(inventory.futureMilestoneTag.status, "pendingManualReleaseTagReview");
 });
 
 test("Phase 3 inventory names only sorted concrete files", async () => {
@@ -551,4 +885,72 @@ test("Phase 3 inventory names only sorted concrete files", async () => {
       assert.equal(metadata.isSymbolicLink(), false, `${path} is a symbolic link`);
     }
   }
+});
+
+test("final conformance surface is closed and the binding commit scope is exact", async () => {
+  const expectedSurface = {
+    evidence: [
+      "repositories/cca-conformance/evidence/mo1303-final-conformance-binding-run-35474897159.json",
+      "repositories/cca-conformance/evidence/mo1303-hosted-evidence-run-35474897159-ubuntu-24.04-x64.json",
+      "repositories/cca-conformance/evidence/mo1303-hosted-evidence-run-35474897159-windows-2022-x64.json",
+    ],
+    inventory: [
+      "repositories/cca-conformance/mo1303-conformance-inventory.json",
+    ],
+    registration: [
+      "repositories/cca-conformance/CMakeLists.txt",
+      "tools/verify_workspace.py",
+    ],
+    schema: [
+      "repositories/cca-conformance/schema/mo1303-final-conformance-binding-1.0.schema.json",
+    ],
+    tests: [
+      "repositories/cca-conformance/tests/mo1303_phase2_conformance_test.mjs",
+      "repositories/cca-conformance/tests/mo1303_phase3_conformance_test.mjs",
+    ],
+  };
+  assert.deepEqual(inventory.finalConformanceSurface, expectedSurface);
+  const expectedPaths = [];
+  for (const field of ["evidence", "inventory", "registration", "schema", "tests"]) {
+    const paths = expectedSurface[field];
+    assert.deepEqual(paths, paths.toSorted());
+    assert.equal(new Set(paths).size, paths.length);
+    for (const path of paths) {
+      const metadata = await lstat(resolve(workspaceRoot, path));
+      assert.equal(metadata.isFile(), true, `${path} is not a regular file`);
+      assert.equal(metadata.isSymbolicLink(), false, `${path} is a symbolic link`);
+      expectedPaths.push(path);
+    }
+  }
+  expectedPaths.sort();
+  assert.equal(new Set(expectedPaths).size, expectedPaths.length);
+
+  const head = git("rev-parse", "HEAD");
+  if (head === releaseCandidateRevision) {
+    const status = gitRaw("status", "--porcelain=v1", "-uall");
+    const actualPaths = status === ""
+      ? []
+      : status.split(/\r?\n/u).map((line) => line.slice(3).replaceAll("\\", "/")).sort();
+    assert.deepEqual(actualPaths, expectedPaths);
+    return;
+  }
+  const bindingCommit = git(
+    "rev-list",
+    "--first-parent",
+    "--reverse",
+    `${releaseCandidateRevision}..HEAD`,
+  ).split(/\r?\n/u).filter(Boolean)[0];
+  assert.notEqual(bindingCommit, undefined);
+  assert.equal(git("rev-parse", `${bindingCommit}^`), releaseCandidateRevision);
+  assert.equal(
+    git("log", "-1", "--format=%s", bindingCommit),
+    "conformance(memoryos-1.3): close MO-1303 with macOS infrastructure exception",
+  );
+  const committedPaths = git(
+    "diff",
+    "--name-only",
+    releaseCandidateRevision,
+    bindingCommit,
+  ).split(/\r?\n/u).filter(Boolean).sort();
+  assert.deepEqual(committedPaths, expectedPaths);
 });

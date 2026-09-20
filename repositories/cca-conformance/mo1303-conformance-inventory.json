@@ -1,7 +1,7 @@
 {
   "kind": "MemoryOSMO1303ConformanceInventory",
   "version": "1.0.0",
-  "phase": "implementationPhase3Of3LocalClosure",
+  "phase": "finalConformanceClosureWithExternalInfrastructureException",
   "baseline": {
     "mo1301Tag": {
       "name": "memoryos-1.3-mo1301",
@@ -819,9 +819,17 @@
     "status": "bound",
     "revision": "2919dd9056bc595bddde3d18f09f8efaaafb010b"
   },
+  "historicalRevisions": {
+    "phase1": "6f99038fd5669ece2af4b1671a8e5f267822d2dd",
+    "phase2": "2919dd9056bc595bddde3d18f09f8efaaafb010b",
+    "phase3Implementation": "92ab1e7b8fe64715b01e430a9c9079d41cc2f679",
+    "hostedWorkflowCorrection": "e677dc70c0de3e70a557c4e30a425f9c897a9b88",
+    "hostedCertificationCorrection": "0c4f3327403987de4dac6e0016c72c36ee7e72f1",
+    "hostedPortabilityCorrectionReleaseCandidate": "f856455e900c549bb2ec8e1d72f03fefec3be2e1"
+  },
   "futureMilestoneTag": {
     "name": "memoryos-1.3-mo1303",
-    "status": "pendingHostedCertificationAndFinalBinding"
+    "status": "pendingManualReleaseTagReview"
   },
   "phase3Product": {
     "referenceHost": {
@@ -896,7 +904,7 @@
     }
   },
   "hostedCertification": {
-    "status": "pendingPublication",
+    "status": "partial",
     "trigger": "workflow_dispatch",
     "permissions": {
       "contents": "read"
@@ -929,13 +937,18 @@
       "rawSha256": "sha256:9f53f1668fdbd695a107a8b3baf737ac31c3e4a6ede749ad98aed994472e1969"
     },
     "artifactRetentionDays": 14,
-    "platforms": {
-      "macos-14": "pendingPublication",
-      "ubuntu-24.04": "pendingPublication",
-      "windows-2022": "pendingPublication"
+    "run": {
+      "number": 5,
+      "id": 35474897159,
+      "revision": "f856455e900c549bb2ec8e1d72f03fefec3be2e1"
     },
-    "crossPlatformParity": "pendingHostedEvidence",
-    "offlineCertification": "pendingHostedEvidence"
+    "platforms": {
+      "macos-14": "notExecutedExternalInfrastructure",
+      "ubuntu-24.04": "PASS",
+      "windows-2022": "PASS"
+    },
+    "crossPlatformParity": "notExecuted",
+    "offlineCertification": "partial"
   },
   "phase3Surface": {
     "sources": [
@@ -995,12 +1008,49 @@
   },
   "phase3CommitBinding": {
     "strategy": "laterConformanceBindingCommit",
-    "status": "pendingCommit",
-    "revision": null
+    "status": "bound",
+    "revision": "92ab1e7b8fe64715b01e430a9c9079d41cc2f679"
   },
   "finalConformanceBinding": {
     "strategy": "postHostedConformanceBindingCommit",
-    "status": "pendingHostedEvidence",
-    "revision": null
+    "status": "bound",
+    "revision": "f856455e900c549bb2ec8e1d72f03fefec3be2e1"
+  },
+  "releaseClosure": {
+    "releaseStatus": "releasedWithExternalInfrastructureException",
+    "hostedCertificationStatus": "partial",
+    "macosStatus": "notExecutedExternalInfrastructure",
+    "crossPlatformParityStatus": "notExecuted",
+    "bindingSchema": {
+      "path": "repositories/cca-conformance/schema/mo1303-final-conformance-binding-1.0.schema.json",
+      "byteLength": 13506,
+      "rawSha256": "sha256:6cb376eca1eb93d672e061c1f89f5fecb2ac84112484601ed890cf186307d5e5"
+    },
+    "bindingArtifact": {
+      "path": "repositories/cca-conformance/evidence/mo1303-final-conformance-binding-run-35474897159.json",
+      "byteLength": 5156,
+      "rawSha256": "sha256:db739f32c55fa8ce1089c83c680f43cd0e4b5fa1a80d5973f7b474ae2790f8fb"
+    }
+  },
+  "finalConformanceSurface": {
+    "evidence": [
+      "repositories/cca-conformance/evidence/mo1303-final-conformance-binding-run-35474897159.json",
+      "repositories/cca-conformance/evidence/mo1303-hosted-evidence-run-35474897159-ubuntu-24.04-x64.json",
+      "repositories/cca-conformance/evidence/mo1303-hosted-evidence-run-35474897159-windows-2022-x64.json"
+    ],
+    "inventory": [
+      "repositories/cca-conformance/mo1303-conformance-inventory.json"
+    ],
+    "registration": [
+      "repositories/cca-conformance/CMakeLists.txt",
+      "tools/verify_workspace.py"
+    ],
+    "schema": [
+      "repositories/cca-conformance/schema/mo1303-final-conformance-binding-1.0.schema.json"
+    ],
+    "tests": [
+      "repositories/cca-conformance/tests/mo1303_phase2_conformance_test.mjs",
+      "repositories/cca-conformance/tests/mo1303_phase3_conformance_test.mjs"
+    ]
   }
 }

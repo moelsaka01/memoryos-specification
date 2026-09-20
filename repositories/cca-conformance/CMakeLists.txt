@@ -28,6 +28,9 @@ set(memoryos_conformance_sources_list
     docs/mo1302-github-policy-gate.md
     docs/reference-implementation-guide.md
     docs/versioning-guide.md
+    evidence/mo1303-final-conformance-binding-run-35474897159.json
+    evidence/mo1303-hosted-evidence-run-35474897159-ubuntu-24.04-x64.json
+    evidence/mo1303-hosted-evidence-run-35474897159-windows-2022-x64.json
     mo1301-conformance-inventory.json
     mo1302-conformance-inventory.json
     mo1303-conformance-inventory.json
@@ -40,6 +43,7 @@ set(memoryos_conformance_sources_list
     schema/github-policy-gate-receipt-1.0.schema.json
     schema/github-policy-gate-test-vector-1.0.schema.json
     schema/independent-assessment-1.0.schema.json
+    schema/mo1303-final-conformance-binding-1.0.schema.json
     schema/requirements-manifest-1.0.schema.json
     schema/review-attestations-1.0.schema.json
     schema/mo1303-hosted-evidence-1.0.schema.json

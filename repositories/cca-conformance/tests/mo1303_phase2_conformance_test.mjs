@@ -36,7 +36,7 @@ async function source(path) {
 }
 
 test("MO-1303 Phase 2 preserves every frozen Phase 1 and predecessor identity", async () => {
-  assert.equal(inventory.phase, "implementationPhase3Of3LocalClosure");
+  assert.equal(inventory.phase, "finalConformanceClosureWithExternalInfrastructureException");
   assert.deepEqual(inventory.baseline, {
     immediateReleasedPredecessor: "memoryos-1.3-mo1302",
     mo1301Tag: {
@@ -326,7 +326,7 @@ test("Phase 2 inventory names sorted concrete files and preserves the bound Phas
   });
   assert.equal(inventory.distribution.vsixIdentity.status, "locallyFrozen");
   assert.match(inventory.distribution.vsixIdentity.sha256, /^sha256:[0-9a-f]{64}$/u);
-  assert.equal(inventory.futureMilestoneTag.status, "pendingHostedCertificationAndFinalBinding");
+  assert.equal(inventory.futureMilestoneTag.status, "pendingManualReleaseTagReview");
 });
 
 test("Phase 2 product inventory is a closed description of the implemented UX contract", () => {
