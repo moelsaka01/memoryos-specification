@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.1.0 - Unreleased
+## 0.1.0 - Released with explicit external-infrastructure exception
 
 - Add the MO-1303 Phase 1 desktop workspace-extension package foundation.
 - Freeze the five-command public surface and contribution-driven activation.
@@ -26,6 +26,24 @@
 - Harden final artifact reacquisition, file-URI closure, trust rechecks, and
   asynchronous Extension Host disposal.
 
-Cross-platform hosted certification, the final conformance-binding commit, and
-the `memoryos-1.3-mo1303` tag remain pending publication and hosted execution.
+Released under the annotated tag `memoryos-1.3-mo1303`, targeting final
+conformance binding `49aa80fa76bffc03e36335be8ab805bb5dc38f9c`.
+
+| Hosted certification | Actual final status |
+|---|---|
+| Ubuntu | PASS |
+| Windows | PASS |
+| macOS | NOT EXECUTED due external GitHub runner-allocation/billing restriction |
+| Three-platform parity | NOT EXECUTED |
+
+The planned requirement for matching hosted evidence on all three platforms
+and strict three-platform validation remains intact. The actual final release
+uses the explicit external-infrastructure exception and does not claim full
+three-platform certification. Two-of-three is not three-of-three. The historical
+binding record at repository path
+`repositories/cca-conformance/evidence/mo1303-final-conformance-binding-run-35474897159.json`
+and its pre-tag status are preserved; they do not mean the final binding or tag
+is still pending. Future MO-1304 macOS evidence is MO-1304 evidence and must not
+retroactively rewrite MO-1303 history.
+
 The extension is not published to the VS Code Marketplace.

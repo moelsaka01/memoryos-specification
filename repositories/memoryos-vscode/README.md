@@ -172,11 +172,28 @@ an installed VSIX in isolated user-data, extensions, and workspace directories
 against exactly VS Code Desktop `1.137.0`. It also validates the closed VSIX
 allowlist and the runtime closure extracted from packaged bytes.
 
-Cross-platform certification is not yet claimed. The checked-in manual hosted
-workflow must still produce and validate exactly one matching evidence record
-on `ubuntu-24.04` x64, `windows-2022` x64, and `macos-14` x64 before final
-MO-1303 conformance binding and tagging. Windows reparse-point proof belongs to
-that hosted Windows run when it cannot be reproduced locally.
+MO-1303 version `0.1.0` is released with explicit external-infrastructure
+exception under the annotated tag `memoryos-1.3-mo1303`. Its final conformance
+binding is `49aa80fa76bffc03e36335be8ab805bb5dc38f9c`. The historical binding
+record at repository path
+`repositories/cca-conformance/evidence/mo1303-final-conformance-binding-run-35474897159.json`
+retains the evidence and exception decision; its pre-tag status is historical,
+not a statement that release tagging is still pending.
+
+| Hosted certification | Actual final status |
+|---|---|
+| Ubuntu (`ubuntu-24.04` x64) | PASS |
+| Windows (`windows-2022` x64) | PASS |
+| macOS (`macos-14` x64) | NOT EXECUTED due external GitHub runner-allocation/billing restriction |
+| Three-platform parity | NOT EXECUTED |
+
+The planned certification requirement remains exactly one matching validated
+evidence record on each of those three platforms and strict three-platform
+validation. The final exception release does not claim full cross-platform
+certification. Two-of-three is not three-of-three; the strict validator remains
+intact. Windows reparse-point proof belongs to the hosted Windows evidence when
+it cannot be reproduced locally. Future MO-1304 macOS evidence is MO-1304
+evidence and must not retroactively rewrite MO-1303 history.
 
 Worker threads provide fresh-operation lifecycle and bounded-output isolation;
 they are not an operating-system security sandbox. Snapshot permissions enforce

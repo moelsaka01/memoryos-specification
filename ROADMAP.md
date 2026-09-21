@@ -11,7 +11,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
 | MemoryOS 1.2 | Released — v1.2.0 | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, and its official Conformance Suite |
 | MemoryOS 1.2.1 | Corrective restoration | Restores omitted intended v1.2 source, registered tests, fixtures, examples, documentation, frozen Standard and MIP publication assets, and corrected conformance provenance while preserving all v1.2 semantics and CSP fixes |
-| MemoryOS 1.3 | In development | Engineering Operations: MO-1301 deterministic Investigation Policies followed by separately scoped MO-1302 GitHub Actions/CI integration |
+| MemoryOS 1.3 | In development | Engineering Operations: closed MO-1301 Investigation Policies, MO-1302 GitHub Policy Gate, and MO-1303 VS Code integration (released with an external-infrastructure exception); MO-1304 MCP Server and Agent Integration roadmap authority established, pending Contract Freeze 1 |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -88,13 +88,41 @@ PolicyFactContext projection, one registered optional Cognitive Regression fact
 source, six first-party rules, deterministic evidence and aggregation, a fixed
 Resource Profile, Evaluation Identity, canonical outcomes, SDK/CLI 1.1
 integration, and a separate MemoryOS 1.3 conformance inventory. It is additive
-over the v1.2.1 compatibility baseline. MO-1302 will consume these artifacts and
-stable exit codes; it is not implemented by MO-1301.
+over the v1.2.1 compatibility baseline. MO-1302 consumes these artifacts and
+stable exit codes as a separate milestone; it was not implemented by MO-1301.
 
 CCA-MEMORYOS-1.1 remains the intended later normative target. Candidate
 materialization follows frozen implementation behavior, cross-language parity,
 conformance, and independent review; the Standard will codify that behavior
 rather than evolve as another Policy semantic authority.
+
+## MemoryOS 1.3 MO-1304: MCP Server and Agent Integration
+
+Status: authorized by the project owner after architecture and scope review;
+roadmap/specification authority only. Contract Freeze 1 is the next task, and
+implementation has not begun.
+
+The focused authoritative specification is
+[MCP Server and Agent Integration](docs/mo1304-mcp-server-agent-integration.md).
+It authorizes secure, deterministic, bounded MCP access to selected existing
+MemoryOS Policy capabilities for authorized AI agents and MCP-capable clients.
+The adapter delegates to the existing authoritative MemoryOS SDK/CLI/runtime
+closure and adds no semantic authority. Exact tools, schemas, transport,
+security contracts, distribution, and implementation phases remain for
+Contract Freeze 1.
+
+MO-1301, MO-1302, and MO-1303 are closed predecessors. MO-1303 is released at
+`memoryos-1.3-mo1303`, with final conformance binding
+`49aa80fa76bffc03e36335be8ab805bb5dc38f9c`, under an explicit
+external-infrastructure exception: Ubuntu and Windows hosted certification
+PASS; macOS hosted certification NOT EXECUTED due external GitHub
+runner-allocation/billing restriction; three-platform parity NOT EXECUTED.
+Strict three-platform validation and predecessor history remain intact.
+
+MO-1305 remains currently undefined. MO-1306 owns provider-neutral CI
+integrations including GitLab, Jenkins, Azure DevOps, and generic CI. MO-1307
+owns higher-level Release Policies. None of these scopes is absorbed into
+MO-1304, and unrelated proposals below remain proposals.
 
 ## IM-001: engineering foundation
 
