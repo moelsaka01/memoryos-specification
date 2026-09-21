@@ -1,0 +1,12 @@
+import { parentPort } from 'node:worker_threads';
+import { syncBuiltinESMExports } from 'node:module';
+import net from 'node:net';import http from 'node:http';import https from 'node:https';import tls from 'node:tls';import dns from 'node:dns';import dgram from 'node:dgram';import child from 'node:child_process';
+import { fixtures,b64 } from './corpus.mjs';
+let attempts=0;const forbidden=()=>{attempts++;throw Error('FORBIDDEN_SIDE_EFFECT');};
+for(const [object,keys] of [[net,['connect','createConnection','createServer']],[http,['request','get','createServer']],[https,['request','get','createServer']],[tls,['connect','createServer']],[dns,['lookup','resolve']],[dns.promises,['lookup','resolve']],[dgram,['createSocket']],[child,['spawn','exec','execFile','fork','spawnSync','execSync','execFileSync']]])for(const key of keys)object[key]=forbidden;
+globalThis.fetch=forbidden;globalThis.WebSocket=class{constructor(){forbidden();}};syncBuiltinESMExports();
+const {execute}=await import('../src/delegation.mjs');
+const f=await fixtures(),g=f.golden[0];
+const cases=[['memoryos_contract_identities',{}],['memoryos_prepare_policy',{policyBase64:b64(f.pass)}],['memoryos_prepare_policy_set',{policySetBase64:b64(f.set)}],['memoryos_evaluate_policy',{artifactKind:'policy',artifactBase64:b64(f.pass),candidateMipBase64:b64(f.mip)}],['memoryos_evaluate_policy',{artifactKind:'policySet',artifactBase64:b64(f.set),candidateMipBase64:b64(f.mip)}],['memoryos_verify_evaluation_identity',{evaluationIdentityBase64:b64(g.canonicalIdentityBytes),expectedEvaluationIdentityDigest:g.evaluationIdentityDigest}],['memoryos_verify_policy_outcome',{outcomeBase64:b64(g.canonicalOutcomeBytes),expectedEvaluationIdentityDigest:g.evaluationIdentityDigest,expectedOutcomeDigest:g.outcomeDigest}]];
+const statuses=[];for(const [name,args] of cases)statuses.push((await execute(name,args)).status);
+parentPort.postMessage({attempts,statuses});parentPort.close();

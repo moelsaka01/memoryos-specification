@@ -11,6 +11,7 @@ The workspace coordinates these repository boundaries:
 | [`cca-sdk`](cca-sdk) | JavaScript, Python, and C++ SDK 1.1 facades over the one Investigation Core and Policy Engine authorities |
 | [`memoryos-cli`](memoryos-cli) | Additive CLI 1.1 Investigation Policy namespace plus released investigation automation |
 | [`memoryos-vscode`](memoryos-vscode) | MO-1303 Phase 1 desktop VS Code adapter foundation over the verified byte-preserved CLI/SDK runtime closure |
+| [`memoryos-mcp`](memoryos-mcp) | MO-1304 Phase 1 local stdio MCP protocol and authoritative SDK delegation foundation |
 | [`cca-conformance`](cca-conformance) | Immutable CCA-MEMORYOS-1.0/v1.2.1 assessment and separate MO-1301, MO-1302, and MO-1303 conformance inventories |
 | [`cca-atlas`](cca-atlas) | Reserved; no implementation |
 

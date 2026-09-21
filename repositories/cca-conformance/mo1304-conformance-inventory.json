@@ -1,0 +1,160 @@
+{
+  "kind": "MemoryOSMO1304ConformanceInventory",
+  "version": "1.0.0",
+  "phase": "phase1Foundation",
+  "authority": {
+    "baseline": "ed4632fc81a6e90835233a848a9a3a118184c02e",
+    "cacheCorrection": "9d12ea46c6971efd01619bcfdba804431b4149f3",
+    "correctionDocument": "docs/mo1304-contract-freeze-1-cache-correction.md"
+  },
+  "frozenContract": {
+    "protocol": "2026-07-28",
+    "serverInfo": {
+      "name": "memoryos-mcp",
+      "version": "0.1.0"
+    },
+    "cache": {
+      "methods": [
+        "server/discover",
+        "tools/list"
+      ],
+      "placement": "result",
+      "ttlMs": 0,
+      "cacheScope": "private"
+    },
+    "tools": [
+      "memoryos_contract_identities",
+      "memoryos_evaluate_policy",
+      "memoryos_prepare_policy",
+      "memoryos_prepare_policy_set",
+      "memoryos_verify_evaluation_identity",
+      "memoryos_verify_policy_outcome"
+    ],
+    "semanticOperations": 1,
+    "semanticQueue": 0,
+    "subscriptions": 1,
+    "controlSlots": 1,
+    "outputFrames": 2,
+    "semanticCache": false,
+    "clientFilesystem": false,
+    "network": false,
+    "credentials": false
+  },
+  "implementedPhase1": {
+    "transport": "official modern stdio SDK plus bounded transport interface",
+    "delegation": "fresh worker -> public MemoryOS SDK -> authoritative runtime",
+    "runtimeFiles": 25,
+    "testFiles": [
+      "repositories/memoryos-mcp/tests/contracts.test.mjs",
+      "repositories/memoryos-mcp/tests/delegation.test.mjs",
+      "repositories/memoryos-mcp/tests/dispatcher.test.mjs",
+      "repositories/memoryos-mcp/tests/integrity.test.mjs",
+      "repositories/memoryos-mcp/tests/json-limits.test.mjs",
+      "repositories/memoryos-mcp/tests/process.test.mjs",
+      "repositories/memoryos-mcp/tests/protocol.test.mjs",
+      "repositories/memoryos-mcp/tests/security.test.mjs"
+    ],
+    "evidence": {
+      "status": "PASS",
+      "path": "repositories/memoryos-mcp/measurements/phase1-validation.json",
+      "sha256": "e681f083220d9f48c390c984adbfeac293b6c2cae01921b909008a381c273b63"
+    }
+  },
+  "measured": {
+    "resourceReview": "repositories/memoryos-mcp/measurements/resource-review.json",
+    "operationSamples": 420,
+    "transportSamples": 60
+  },
+  "identities": [
+    {
+      "path": "repositories/memoryos-mcp/package-lock.json",
+      "byteLength": 6643,
+      "sha256": "bc5fe0dbbad8cd46f3562420c39b721fde59500294c3f55fd39f585a733181df"
+    },
+    {
+      "path": "repositories/memoryos-mcp/contracts/limits.json",
+      "byteLength": 613,
+      "sha256": "7dfff1ae4563a0a76f8b4fc1b3f4832a2b503a653f119f178246a117b0674dc3"
+    },
+    {
+      "path": "repositories/memoryos-mcp/contracts/policy-contract-identities-1.0.0.json",
+      "byteLength": 933,
+      "sha256": "d81c0b8aece4a106324131d4d356c7d0aac0e8618fac080c6b8b5e3a2381ee65"
+    },
+    {
+      "path": "repositories/memoryos-mcp/runtime/runtime-closure-manifest.json",
+      "byteLength": 5566,
+      "sha256": "0b910e64f40b562d62c9a053c98833b439f78abd195d9604386e74e0d20d961d"
+    },
+    {
+      "path": "repositories/memoryos-mcp/distribution/dependency-closure.json",
+      "byteLength": 141146,
+      "sha256": "b28ac72ecbb9c49f10e44af6c0403307d11c6699115240265a89b94b47902d6e"
+    },
+    {
+      "path": "repositories/memoryos-mcp/distribution/dependency-lock.json",
+      "byteLength": 6643,
+      "sha256": "bc5fe0dbbad8cd46f3562420c39b721fde59500294c3f55fd39f585a733181df"
+    },
+    {
+      "path": "repositories/memoryos-mcp/distribution/foundation-inventory.json",
+      "byteLength": 7571,
+      "sha256": "1a8bfd74d6528ae08b15f78b408d8c170df1956cf15fe7ffec4bf45cc245226a"
+    },
+    {
+      "path": "repositories/memoryos-mcp/measurements/dependency-review.json",
+      "byteLength": 8704,
+      "sha256": "b201691315e5a5db37002f5607e659b8b7aaadb5bbd5f369fe0141f5fe6f2dd4"
+    },
+    {
+      "path": "repositories/memoryos-mcp/measurements/advisory-disposition.json",
+      "byteLength": 4162,
+      "sha256": "65fb8cc268a6aa0c70adab590b329c496d1fb87f97fe163d84c0fd3b74e38c3a"
+    },
+    {
+      "path": "repositories/memoryos-mcp/measurements/advisory-source-review.json",
+      "byteLength": 27934,
+      "sha256": "5a5799b614333bacad3b6bd02e33857de86ffb94775e80ff73ae3e7eb55d87b1"
+    },
+    {
+      "path": "repositories/memoryos-mcp/measurements/resource-measurement.json",
+      "byteLength": 332036,
+      "sha256": "32059252f5232b26bd186d3cbc4e09b6671855612ceea958173fb073a69dc437"
+    },
+    {
+      "path": "repositories/memoryos-mcp/measurements/resource-review.json",
+      "byteLength": 5271,
+      "sha256": "8da95cc9198092042cad6a3aca7cc75cd56f482c3d17f80bea87162babe5c0c2"
+    }
+  ],
+  "implementationBinding": {
+    "strategy": "postCommitConformanceCommit",
+    "status": "PENDING",
+    "revision": null,
+    "parent": "9d12ea46c6971efd01619bcfdba804431b4149f3"
+  },
+  "phase2": {
+    "status": "PENDING",
+    "archiveSha256": null,
+    "archiveByteLength": null,
+    "operationalCertification": null,
+    "clientInterop": null
+  },
+  "phase3": {
+    "status": "PENDING",
+    "windows11_24H2_x64": null,
+    "ubuntu24_04_x64": null,
+    "node": "24.21.0",
+    "macos": "UNSUPPORTED",
+    "platformParity": null
+  },
+  "releaseBinding": {
+    "status": "PENDING",
+    "revision": null
+  },
+  "tagState": {
+    "status": "PENDING",
+    "name": "memoryos-1.3-mo1304",
+    "object": null
+  }
+}

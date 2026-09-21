@@ -30,6 +30,7 @@ belong to the repository that owns the behavior.
 | `cca-sdk` | SDK 1.1 integration | Public JavaScript, Python, and native C++ facades over the frozen Investigation Core and Policy Engine; one private versioned native binding |
 | `memoryos-cli` | CLI 1.1 integration | Official `memoryos` executable with additive, SDK-backed Investigation Policy commands and exact artifact transport |
 | `memoryos-vscode` | MO-1303 Phase 1 foundation | Desktop VS Code adapter, isolated worker transport, and verified byte-preserved CLI/SDK runtime closure; no independent MemoryOS semantics |
+| `memoryos-mcp` | MO-1304 Phase 1 foundation | Bounded local MCP stdio adapter over the public MemoryOS SDK; no independent MemoryOS semantics |
 | `cca-conformance` | MO-1208 released; MO-1301/MO-1302/MO-1303 additive inventories | Immutable CCA-MEMORYOS-1.0 assessment plus milestone-specific integration and distribution checks |
 | `cca-atlas` | Reserved only | Future atlas boundary; responsibilities beyond the name are undecided |
 

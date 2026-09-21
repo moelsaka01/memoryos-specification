@@ -1102,6 +1102,60 @@ def validate_mo1303_registration(root: Path, errors: list[str]) -> None:
             errors.append(f"invalid MO-1303 registration file {path}: {exception}")
 
 
+def validate_mo1304_registration(root: Path, errors: list[str]) -> None:
+    conformance = root / "repositories" / "cca-conformance"
+    mcp = root / "repositories" / "memoryos-mcp"
+    try:
+        package = load_json(mcp / "package.json")
+        if package.get("name") != "memoryos-mcp" or package.get("private") is not True:
+            errors.append("MO-1304 must remain a private memoryos-mcp package")
+        if package.get("engines") != {"node": "24.21.0"}:
+            errors.append("MO-1304 Node runtime pin changed")
+        if package.get("dependencies") != {
+            "@modelcontextprotocol/core": "2.0.0",
+            "@modelcontextprotocol/server": "2.0.0", "zod": "4.6.5",
+        }:
+            errors.append("MO-1304 reviewed production dependency pins changed")
+        if any(key in package.get("scripts", {}) for key in ("preinstall", "install", "postinstall")):
+            errors.append("MO-1304 must not introduce install lifecycle hooks")
+        registration = load_json(conformance / "package.json")
+        if registration.get("scripts", {}).get("test:mo1304-phase1") != (
+            "node --test tests/mo1304_phase1_conformance_test.mjs"
+        ):
+            errors.append("MO-1304 Phase-1 conformance registration changed")
+        inventory = load_json(conformance / "mo1304-conformance-inventory.json")
+        if (inventory.get("kind") != "MemoryOSMO1304ConformanceInventory"
+                or inventory.get("version") != "1.0.0" or inventory.get("phase") != "phase1Foundation"):
+            errors.append("MO-1304 conformance inventory identity changed")
+        for phase in ("phase2", "phase3", "releaseBinding", "tagState"):
+            if inventory.get(phase, {}).get("status") != "PENDING":
+                errors.append(f"MO-1304 {phase} must remain mechanically pending in Phase 1")
+        limits = load_json(mcp / "contracts" / "limits.json")
+        if limits.get("status") != "measured" or not all(
+                isinstance(value, int) and value > 0 for value in limits.get("values", {}).values()):
+            errors.append("MO-1304 finite measured limits missing")
+        for relative in ("CMakeLists.txt", "README.md", "NOTICE.md", "package-lock.json",
+                         "scripts/verify.mjs", "scripts/inventory.mjs", "src/server.mjs",
+                         "runtime/runtime-closure-manifest.json", "distribution/foundation-inventory.json",
+                         "measurements/resource-review.json", "measurements/advisory-disposition.json"):
+            if not (mcp / relative).is_file():
+                errors.append(f"MO-1304 required foundation artifact missing: {relative}")
+        anchors = {
+            root / "CMakeLists.txt": {"cca_add_workspace_repository(memoryos-mcp)": 1},
+            conformance / "CMakeLists.txt": {"mo1304-conformance-inventory.json": 2,
+                "tests/mo1304_phase1_conformance_test.mjs": 2,
+                'conformance_area STREQUAL "mo1304-phase1"': 2},
+            conformance / "tools" / "run-js-conformance.mjs": {'"mo1304_phase1_conformance_test.mjs"': 1},
+        }
+        for path, expected in anchors.items():
+            content = path.read_text(encoding="utf-8")
+            for anchor, count in expected.items():
+                if content.count(anchor) != count:
+                    errors.append(f"MO-1304 registration anchor changed: {anchor}")
+    except (OSError, ValueError, json.JSONDecodeError) as exception:
+        errors.append(f"invalid MO-1304 foundation registration: {exception}")
+
+
 def validate_conformance_artifacts(root: Path, errors: list[str]) -> None:
     conformance_root = root / "repositories" / "cca-conformance"
     manifest_path = conformance_root / "requirements-manifest.json"
@@ -1189,6 +1243,7 @@ def validate(root: Path) -> list[str]:
     validate_mo1302_distribution(root, errors)
     validate_mo1302_contracts_and_registration(root, errors)
     validate_mo1303_registration(root, errors)
+    validate_mo1304_registration(root, errors)
     validate_conformance_artifacts(root, errors)
 
     for repository in DEFERRED_REPOSITORIES:
