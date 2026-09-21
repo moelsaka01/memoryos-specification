@@ -1,16 +1,19 @@
 # Notices
 
-MemoryOS repository code remains subject to the root LICENSE decision notice.
-No new license grant is made by this private Phase 1 foundation.
+MemoryOS repository code remains subject to the included LICENSE decision notice.
+This private local package makes no new license grant. Public distribution still
+requires the project's licensing decision; no publication is performed here.
 
-The installed production packages retain their published license files:
-@modelcontextprotocol/core 2.0.0 (MIT), @modelcontextprotocol/server 2.0.0
-(MIT), and zod 4.6.5 (MIT). The SDK bundles additional components, enumerated
-in measurements/dependency-review.json. In particular its AJV 8.18.0 code
-is MIT licensed and fast-uri 3.1.0 is BSD-3-Clause licensed. Their upstream
-notices must accompany the final archive; final archive notice/contents
-certification remains a Phase 2 deliverable.
+The exact published production packages are @modelcontextprotocol/core 2.0.0,
+@modelcontextprotocol/server 2.0.0 and zod 4.6.5, all MIT licensed. Their published
+license files remain in their dependency directories. THIRD_PARTY_NOTICES.txt
+contains notices for the seven embedded components, including fast-uri 3.1.0
+under BSD-3-Clause. Sources and integrity are recorded outside the archive.
+Exactly 198 published Zod development test files are excluded from the production
+closure. All retained dependency files remain byte-identical to the reviewed
+published packages; no SDK fork, patch or dependency version substitution is used.
 
-The seven fast-uri advisories remain present in the published SDK bytes.
-The applicability review is measurements/advisory-disposition.json and its
-source snapshot, not a claim that the component has been patched.
+Embedded fast-uri remains affected. The Phase 1 seven-high review is preserved;
+the Phase 2 upstream review records eight high and one moderate affected findings.
+The scoped applicability evidence is external conformance evidence, not a claim
+that the embedded component is patched or vulnerability-free.

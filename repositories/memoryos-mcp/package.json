@@ -4,15 +4,22 @@
   "private": true,
   "type": "module",
   "description": "Bounded local MCP adapter over authoritative MemoryOS Policy capabilities",
-  "engines": { "node": "24.21.0" },
-  "bin": { "memoryos-mcp": "bin/memoryos-mcp.mjs" },
+  "engines": {
+    "node": "24.21.0"
+  },
+  "bin": {
+    "memoryos-mcp": "bin/memoryos-mcp.mjs"
+  },
   "scripts": {
     "test": "node --test --test-concurrency=1 tests/*.test.mjs",
     "measure": "node scripts/measure.mjs",
     "assemble": "node scripts/assemble.mjs",
     "verify": "node scripts/verify.mjs",
     "inventory": "node scripts/inventory.mjs",
-    "inspect:dependencies": "node scripts/inspect-dependencies.mjs"
+    "inspect:dependencies": "node scripts/inspect-dependencies.mjs",
+    "pack:verified": "node scripts/distribution.mjs",
+    "test:phase2": "node scripts/phase2-validation.mjs",
+    "assemble:dependencies": "node scripts/assemble-dependencies.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/core": "2.0.0",
@@ -22,6 +29,19 @@
   "devDependencies": {
     "@modelcontextprotocol/client": "2.0.0"
   },
-  "bundledDependencies": ["@modelcontextprotocol/core", "@modelcontextprotocol/server", "zod"],
-  "files": ["bin", "src", "contracts", "runtime", "distribution", "README.md", "NOTICE.md"]
+  "bundledDependencies": [
+    "@modelcontextprotocol/core",
+    "@modelcontextprotocol/server",
+    "zod"
+  ],
+  "files": [
+    "bin",
+    "src",
+    "contracts",
+    "runtime",
+    "distribution",
+    "README.md",
+    "NOTICE.md",
+    "THIRD_PARTY_NOTICES.txt"
+  ]
 }

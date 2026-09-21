@@ -155,5 +155,23 @@ test('a second outstanding control request cannot consume a second control slot'
   h.input.write(JSON.stringify(request('first','server/discover'))+'\n');await delay(20);
   assert.equal(h.dispatched.length,1);
   h.input.write(JSON.stringify(request('second','tools/list'))+'\n');await delay(20);
-  assert.equal(h.dispatched.length,1);assert.equal(h.fatals(),1);await h.close();
+  assert.equal(h.dispatched.length,1);assert.equal(h.fatals(),0);
+  await h.transport.send({jsonrpc:'2.0',id:'first',result:{}});
+  await until(()=>h.dispatched.length===2);assert.equal(h.fatals(),0);await h.close();
+});
+
+test('busy semantic work permits discovery, listing and subscription cancellation without another worker',async()=>{
+ const h=await harness();try{
+  h.send(request('subscription','subscriptions/listen',{notifications:{}}));await h.next(0);
+  h.send(request('work','tools/call',{name:names[0],arguments:{}}));
+  h.send(request('busy','tools/call',{name:names[0],arguments:{}}));
+  const busy=await h.next(1);assert.equal(busy.id,'busy');assert.equal(busy.result.structuredContent.error.code,'MO1304_BUSY');
+  h.send({jsonrpc:'2.0',method:'notifications/cancelled',params:{requestId:'subscription'}});
+  h.send(request('discover','server/discover'));await until(()=>h.messages.some(x=>x.id==='discover'));
+  h.send(request('list','tools/list'));await until(()=>h.messages.some(x=>x.id==='list'));
+  h.send({jsonrpc:'2.0',method:'notifications/cancelled',params:{requestId:'work'}});
+  h.send(request('subscription','subscriptions/listen',{notifications:{}}));
+  await until(()=>h.messages.filter(x=>x.method==='notifications/subscriptions/acknowledged').length===2);
+  assert.equal(h.fatals(),0);
+ }finally{await h.close();}
 });

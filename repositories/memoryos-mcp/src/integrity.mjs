@@ -47,7 +47,7 @@ export async function regularBytes(root, member) {
   }
   if (resolve(await realpath(target)).toLowerCase() !== target.toLowerCase()) throw new IntegrityError();
   const before = await lstat(target);
-  if (!before.isFile() || before.size > 16 * 1024 * 1024) throw new IntegrityError();
+  if (!before.isFile() || before.nlink !== 1 || before.size > 16 * 1024 * 1024) throw new IntegrityError();
   const handle = await open(target, 'r');
   try {
     const opened = await handle.stat();
@@ -75,7 +75,7 @@ export async function exactFiles(root) {
       const status = await lstat(path);
       if (status.isSymbolicLink()) throw new IntegrityError();
       if (status.isDirectory()) await walk(path, `${name}/`, depth + 1);
-      else if (status.isFile()) files.push(name);
+      else if (status.isFile() && status.nlink === 1) files.push(name);
       else throw new IntegrityError();
     }
   }

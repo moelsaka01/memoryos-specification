@@ -4,6 +4,7 @@ import { strictJson } from './json.mjs';
 import { J } from './deterministic.mjs';
 import { PROTOCOL, names, validateInput, toolResult, exactCacheDirectives } from './contracts.mjs';
 import { adapterError } from './errors.mjs';
+import { PUBLICATION_TOKEN } from './dispatcher.mjs';
 
 const messages = new Map([[-32700, 'Parse error'], [-32600, 'Invalid Request'], [-32601, 'Method not found'],
   [-32602, 'Invalid params'], [-32603, 'Internal error'], [-32022, 'Unsupported protocol version']]);
@@ -14,6 +15,8 @@ export class BoundedStdioTransport {
   #input; #output; #limits; #dispatcher; #fatal;
   #buffer = Buffer.alloc(0); #closed = false; #started = false; #pumping = false; #eof = false;
   #control; #partialTimer; #pending = new Map(); #subscription; #writes = 0; #tail = Promise.resolve();
+  #controlDone = Promise.resolve(); #releaseControl; #abortWrite; #closing;
+  #capacityWaiting = false; #ending = false;
   #window = 0; #requests = 0; #controls = 0;
   constructor(input, output, limits, dispatcher, fatal = () => {}) {
     this.#input = input; this.#output = output; this.#limits = limits;
@@ -30,15 +33,41 @@ export class BoundedStdioTransport {
     this.#output.on('error', this.#ioError);
     void this.#pump();
   }
-  #readable = () => { void this.#pump(); };
-  #ended = () => { this.#eof = true; void this.#pump(); };
+  #readable = () => {
+    if ((this.#capacityWaiting || this.#abortWrite) && !this.#input.readableLength) this.#input.read(0);
+    void this.#pump();
+  };
+  #ended = () => {
+    this.#eof = true;
+    if (this.#capacityWaiting || this.#abortWrite) void this.#finishInput();
+    else void this.#pump();
+  };
+  async #finishInput() {
+    if (this.#ending || this.#closed) return;
+    this.#ending = true;
+    // EOF can arrive while admission waits for a control or writer slot.
+    // Complete, unadmitted frames are discarded; an incomplete tail is fatal.
+    if (this.#buffer.length && this.#buffer.at(-1) !== 10) {
+      await this.fail('MO1304_TRANSPORT_FAILURE'); return;
+    }
+    this.#abortWrite?.(); this.#freeControl();
+    try { if (this.onend) await this.onend(); else await this.close(); }
+    catch { await this.fail('MO1304_TRANSPORT_FAILURE'); }
+  }
+  async #capacity(pending) {
+    this.#capacityWaiting = true;
+    try {
+      if (this.#eof) { await this.#finishInput(); return; }
+      this.#input.read(0);
+      await pending;
+    } finally { this.#capacityWaiting = false; }
+  }
   #ioError = () => { void this.fail('MO1304_TRANSPORT_FAILURE'); };
   async #pump() {
-    if (this.#closed || this.#pumping) return;
+    if (this.#closed || this.#ending || this.#pumping) return;
     this.#pumping = true;
     try {
-      while (!this.#closed) {
-        if (this.#writes >= 2) await this.#tail;
+      while (!this.#closed && !this.#ending) {
         const newline = this.#buffer.indexOf(10);
         if (newline >= 0) {
           const frame = this.#buffer.subarray(0, newline);
@@ -51,11 +80,11 @@ export class BoundedStdioTransport {
         }
         if (this.#eof) {
           if (this.#buffer.length) throw 0;
-          if (this.onend) await this.onend(); else await this.close();
+          await this.#finishInput();
           return;
         }
         const available = this.#input.readableLength;
-        if (!available) break;
+        if (!available) { this.#input.read(0); break; }
         const chunk = this.#input.read(Math.min(available, this.#limits.inputChunkBytes));
         if (!chunk) break;
         if (!Buffer.isBuffer(chunk) || chunk.length > this.#limits.inputChunkBytes
@@ -98,15 +127,21 @@ export class BoundedStdioTransport {
       await this.#dispatcher.cancel(message.params.requestId);
       await turn(); // Let the SDK abort its handler before an ID can be admitted again.
       if (this.#pending.get(message.params.requestId) === state) this.#pending.delete(message.params.requestId);
-      if (this.#control === message.params.requestId) this.#control = undefined;
+      if (this.#control === message.params.requestId) this.#freeControl();
       return;
     }
     if (!this.#idValid(message.id)) { await this.#error(undefined, -32600); return; }
+    if (this.#writes >= 2) await this.#capacity(this.#tail);
+    if (this.#closed || this.#ending) return;
     if (this.#pending.has(message.id)) throw 0; // Ambiguous correlation: terminate rather than send a duplicate-ID response.
     if (this.#pending.size >= 3) throw 0;
-    if (!['tools/call', 'subscriptions/listen'].includes(message.method)) {
-      if (this.#control !== undefined) throw 0;
+    const control = message.method !== 'subscriptions/listen'
+      && (message.method !== 'tools/call' || this.#dispatcher.active);
+    if (control) {
+      if (this.#control !== undefined) await this.#capacity(this.#controlDone);
+      if (this.#closed || this.#ending) return;
       this.#control = message.id;
+      this.#controlDone = new Promise(resolve => { this.#releaseControl = resolve; });
     }
     this.#pending.set(message.id, { sent: false, cancelled: false });
     if (!methods.has(message.method)) { await this.#error(message.id, -32601); return; }
@@ -136,14 +171,27 @@ export class BoundedStdioTransport {
     }
     this.onmessage?.(message);
   }
+  #freeControl() {
+    this.#control = undefined; this.#releaseControl?.(); this.#releaseControl = undefined;
+  }
   #error(id, code, data) {
     return this.send({ jsonrpc: '2.0', ...(id === undefined ? {} : { id }),
       error: { code, message: messages.get(code), ...(data ? { data } : {}) } });
   }
   async send(original) {
-    if (this.#closed) return;
-    if (this.#writes >= 2) { await this.fail('MO1304_OUTPUT_LIMIT'); return; }
+    if (this.#closed || this.#ending) return;
+    const generation = original.result?._meta?.[PUBLICATION_TOKEN];
+    if (generation !== undefined && !this.#dispatcher.canPublish(original.id, generation)) return;
+    if (this.#writes >= 2) {
+      if (generation === undefined) { await this.fail('MO1304_OUTPUT_LIMIT'); return; }
+      await this.#capacity(this.#tail);
+      if (this.#closed || this.#ending || !this.#dispatcher.canPublish(original.id, generation)) return;
+    }
     let message = original;
+    if (generation !== undefined) {
+      const { [PUBLICATION_TOKEN]: _generation, ...meta } = original.result._meta;
+      message = { ...original, result: { ...original.result, _meta: meta } };
+    }
     if (message.result && (Object.hasOwn(message.result, 'tools') || Object.hasOwn(message.result, 'supportedVersions'))
       && !exactCacheDirectives(message.result)) { await this.fail('MO1304_OUTPUT_LIMIT'); return; }
     if (message.error) {
@@ -168,20 +216,41 @@ export class BoundedStdioTransport {
       } };
     }
     const state = this.#pending.get(message.id ?? ackId ?? subscriptionId);
-    if (state?.cancelled) return;
+    if (state?.cancelled || state?.sent) return;
     const frame = Buffer.from(`${J(message)}\n`);
     if (frame.length > this.#limits.responseFrameBytes) { await this.fail('MO1304_OUTPUT_LIMIT'); return; }
+    // Projection is synchronous; yield once so an already-arriving cancellation
+    // can win before the writer handoff, without changing the publication boundary.
+    await turn();
+    if (this.#closed || this.#ending || state?.cancelled || state?.sent) return;
+    if (this.#writes >= 2) { await this.fail('MO1304_OUTPUT_LIMIT'); return; }
     this.#writes++;
     const write = this.#tail.then(async () => {
-      if (this.#closed || state?.cancelled) return;
+      if (this.#closed || this.#ending || state?.cancelled || state?.sent) return;
+      if (generation !== undefined && !this.#dispatcher.handoff(message.id, generation)) return;
       if (state && ackId === undefined) state.sent = true;
-      await new Promise((resolve, reject) => {
-        const timer = setTimeout(() => reject(new Error('OUTPUT_TIMEOUT')), this.#limits.outputDrainMs);
-        this.#output.write(frame, (error) => { clearTimeout(timer); error ? reject(error) : resolve(); });
+      const drained = await new Promise((resolve, reject) => {
+        let done = false, callbackDone = false, drained = false, accepted;
+        const finish = (error, completed = true) => {
+          if (done) return; done = true; clearTimeout(timer); this.#abortWrite = undefined;
+          this.#output.off('drain', onDrain);
+          error ? reject(error) : resolve(completed);
+        };
+        const complete = () => { if (callbackDone && (accepted === true || drained)) finish(); };
+        const onDrain = () => { drained = true; complete(); };
+        const timer = setTimeout(() => finish(new Error('OUTPUT_TIMEOUT')), this.#limits.outputDrainMs);
+        this.#abortWrite = () => finish(undefined, false);
+        this.#output.on('drain', onDrain);
+        try {
+          accepted = this.#output.write(frame, error => { callbackDone = true; error ? finish(error) : complete(); });
+          complete();
+          if (this.#eof) finish(undefined, false);
+        } catch (error) { finish(error); }
       });
+      if (!drained) return;
       if (message.id !== undefined) {
-        this.#dispatcher.publish(message.id);
-        if (this.#control === message.id) this.#control = undefined;
+        if (generation !== undefined) this.#dispatcher.publish(message.id, generation);
+        if (this.#control === message.id) this.#freeControl();
         if (this.#pending.get(message.id) === state) this.#pending.delete(message.id);
       }
       if (subscriptionId !== undefined) this.#pending.delete(subscriptionId);
@@ -195,14 +264,23 @@ export class BoundedStdioTransport {
     await this.close();
   }
   async close() {
-    if (this.#closed) return;
+    if (this.#closing) return this.#closing;
     this.#closed = true;
+    this.#closing = this.#shutdown();
+    return this.#closing;
+  }
+  async #shutdown() {
     clearTimeout(this.#partialTimer);
     this.#input.off('readable', this.#readable); this.#input.off('end', this.#ended);
     this.#input.off('error', this.#ioError); this.#output.off('error', this.#ioError);
     this.#input.pause(); this.#buffer = Buffer.alloc(0);
-    await this.#dispatcher.close();
-    this.#pending.clear(); this.#subscription = undefined; this.#control = undefined;
+    for (const state of this.#pending.values()) if (!state.sent) state.cancelled = true;
+    this.#freeControl();
+    // EOF owns teardown: abandon unfinished writes and clear their timers.
+    // Bytes already handed to the OS are not retractable or a cancellation reply.
+    this.#abortWrite?.();
+    await Promise.all([this.#dispatcher.close(), this.#tail]);
+    this.#pending.clear(); this.#subscription = undefined;
     this.onclose?.();
   }
 }

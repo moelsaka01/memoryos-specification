@@ -12,8 +12,12 @@ import { catalog,names,discoveryResult,listingResult } from '../../memoryos-mcp/
 const workspace=fileURLToPath(new URL('../../../',import.meta.url));
 const read=async path=>JSON.parse(await readFile(resolve(workspace,path)));
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
-const inventory=await read('repositories/cca-conformance/mo1304-conformance-inventory.json');
+const currentInventory=await read('repositories/cca-conformance/mo1304-conformance-inventory.json');
 const git=(...args)=>execFileSync('git',args,{cwd:workspace,encoding:'utf8',windowsHide:true,env:{...process.env,GIT_OPTIONAL_LOCKS:'0'}}).trim();
+const phase1Binding='0c8b8a35ff0f92a28fe4be85d60ee460208443de';
+const historical=Boolean(currentInventory.phase2.implementationScope);
+const historicalBytes=path=>execFileSync('git',['show',`${phase1Binding}:${path}`],{cwd:workspace,windowsHide:true,maxBuffer:16*1024*1024,env:{...process.env,GIT_OPTIONAL_LOCKS:'0'}});
+const inventory=historical?JSON.parse(historicalBytes('repositories/cca-conformance/mo1304-conformance-inventory.json')):currentInventory;
 test('MO-1304 correction is a documentation-only child of the original authority',()=>{
  const authority=inventory.authority;assert.equal(authority.baseline,'ed4632fc81a6e90835233a848a9a3a118184c02e');
  assert.equal(git('rev-parse',`${authority.cacheCorrection}^`),authority.baseline);
@@ -33,7 +37,7 @@ test('MO-1304 frozen catalog, mandatory cache fields and authority boundaries re
 test('MO-1304 runtime, contract and distribution foundations bind actual bytes',async()=>{
  assert.equal((await verifyRuntime()).files.length,25);assert.equal((await verifyDependencies()).packages.length,3);
  await verifyFoundation();
- for(const entry of inventory.identities){const bytes=await readFile(resolve(workspace,entry.path));assert.equal(bytes.length,entry.byteLength,entry.path);assert.equal(hash(bytes),entry.sha256,entry.path);}
+ for(const entry of inventory.identities){const bytes=historical?historicalBytes(entry.path):await readFile(resolve(workspace,entry.path));assert.equal(bytes.length,entry.byteLength,entry.path);assert.equal(hash(bytes),entry.sha256,entry.path);}
 });
 test('MO-1304 resource constants are reviewed against all 420 operation and 60 transport samples',async()=>{
  const review=await read(inventory.measured.resourceReview);const measurement=await read('repositories/memoryos-mcp/measurements/resource-measurement.json');
@@ -59,9 +63,9 @@ test('MO-1304 binding is non-self-referential and Phase 2/3/release/tag values r
  if(binding.status==='BOUND') {
   assert.match(binding.revision,/^[0-9a-f]{40}$/u);assert.equal(git('rev-parse',`${binding.revision}^`),binding.parent);
   assert.equal(git('show','-s','--format=%s',binding.revision),'feat(memoryos-1.3): implement MO-1304 protocol and delegation foundation');
-  assert.equal(git('diff',binding.revision,'--','repositories/memoryos-mcp/bin','repositories/memoryos-mcp/src','repositories/memoryos-mcp/runtime','repositories/memoryos-mcp/contracts','repositories/memoryos-mcp/distribution'),'');
+  assert.equal(git('diff',binding.revision,...(historical?[phase1Binding]:[]),'--','repositories/memoryos-mcp/bin','repositories/memoryos-mcp/src','repositories/memoryos-mcp/runtime','repositories/memoryos-mcp/contracts','repositories/memoryos-mcp/distribution'),'');
   const evidence=inventory.implementedPhase1.evidence;assert.equal(evidence.status,'PASS');
-  const bytes=await readFile(resolve(workspace,evidence.path));assert.equal(hash(bytes),evidence.sha256);
+  const bytes=historical?historicalBytes(evidence.path):await readFile(resolve(workspace,evidence.path));assert.equal(hash(bytes),evidence.sha256);
   assert.ok(JSON.parse(bytes).runs.every(x=>x.exitCode===0));
  } else {assert.equal(binding.status,'PENDING');assert.equal(binding.revision,null);}
  for(const key of ['phase2','phase3','releaseBinding','tagState'])assert.equal(inventory[key].status,'PENDING');

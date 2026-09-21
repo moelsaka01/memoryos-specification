@@ -4,6 +4,9 @@ import { adapterError } from './errors.mjs';
 import { catalog, matches, names, validateInput } from './contracts.mjs';
 
 export const CANCELLED = Symbol('cancelled');
+// SDK codecs copy result metadata; the owned transport removes this private
+// correlation field before any serialization or publication. It is never wire metadata.
+export const PUBLICATION_TOKEN = 'org.memoryos/stdio-generation';
 /** One request owner. A ready result still occupies its slot until published/cancelled. */
 export class Dispatcher {
   #active;
@@ -18,6 +21,14 @@ export class Dispatcher {
   }
   get active() { return this.#active !== undefined; }
   get generation() { return this.#generation; }
+  get state() { return this.#active ? { id: this.#active.id, generation: this.#active.generation,
+    phase: this.#active.phase } : undefined; }
+  token(id) { return this.#active?.id === id ? this.#active.generation : undefined; }
+  canPublish(id, generation) {
+    const state = this.#active;
+    return Boolean(state && state.id === id && state.generation === generation
+      && state.phase === 'publication-ready' && !state.cancelled && !this.#poisoned);
+  }
   async call(name, args, id, signal) {
     if (!validateInput(name, args) || Buffer.byteLength(J(args)) > this.#limits.argumentsBytes) {
       return adapterError('MO1304_INVALID_TOOL_INPUT', 'input');
@@ -27,7 +38,7 @@ export class Dispatcher {
     const generation = ++this.#generation;
     let settle;
     const completion = new Promise((resolve) => { settle = resolve; });
-    const state = { id, generation, settle, cancelled: false, ready: false, settled: false,
+    const state = { id, generation, settle, phase: 'admitted', cancelled: false, ready: false, settled: false,
       worker: undefined, timer: undefined, signal, abort: undefined, reaping: undefined, monitor: undefined };
     this.#active = state;
     state.abort = () => { void this.cancel(id); };
@@ -40,12 +51,19 @@ export class Dispatcher {
           maxYoungGenerationSizeMb: this.#limits.workerYoungMiB, stackSizeMb: this.#limits.workerStackMiB },
       });
       state.worker = worker;
+      if (state.cancelled) { await this.#reap(state); return completion; }
+      state.phase = 'running';
       const finish = async (product) => {
         if (this.#active !== state || state.cancelled || state.ready) return;
         state.ready = true;
+        state.phase = 'worker-settled';
         clearTimeout(state.timer); clearInterval(state.monitor);
         await this.#reap(state);
         if (state.cancelled || this.#active !== state) return;
+        if (this.#poisoned) {
+          state.phase = 'failed'; state.settled = true; state.settle(CANCELLED); return;
+        }
+        state.phase = 'publication-ready';
         state.settled = true;
         state.settle(product);
       };
@@ -88,6 +106,7 @@ export class Dispatcher {
     } catch {
       clearTimeout(state.timer); clearInterval(state.monitor);
       state.ready = true; state.settled = true;
+      state.phase = 'publication-ready';
       state.settle(adapterError('MO1304_INTERNAL_FAILURE', 'worker'));
     }
     return completion;
@@ -103,26 +122,56 @@ export class Dispatcher {
       } catch {
         this.#poisoned = true;
         this.#fatal();
-      } finally { clearTimeout(timer); }
+      } finally {
+        clearTimeout(timer);
+        state.worker.removeAllListeners();
+        for (const stream of [state.worker.stdout, state.worker.stderr]) {
+          stream?.removeAllListeners('data'); stream?.destroy();
+        }
+        state.worker = undefined;
+      }
     })();
   }
   async cancel(id) {
     const state = this.#active;
-    if (!state || state.id !== id) return false;
+    if (!state || state.id !== id || state.phase === 'publication-handed-off') return false;
     state.cancelled = true;
+    state.phase = 'cancel-requested';
     clearTimeout(state.timer); clearInterval(state.monitor);
+    // A synchronous factory/abort race must attach its worker before cleanup settles.
+    await Promise.resolve();
     await this.#reap(state);
     state.signal?.removeEventListener('abort', state.abort);
     if (!state.settled) { state.settled = true; state.settle(CANCELLED); }
+    state.phase = this.#poisoned ? 'failed' : 'cancelled';
+    state.signal = undefined; state.abort = undefined; state.settle = undefined;
     if (this.#active === state) this.#active = undefined;
     return true;
   }
-  publish(id) {
+  handoff(id, generation = this.token(id)) {
+    if (!this.canPublish(id, generation)) return false;
+    this.#active.phase = 'publication-handed-off';
+    return true;
+  }
+  publish(id, generation = this.token(id)) {
     const state = this.#active;
-    if (!state || state.id !== id) return;
+    if (!state || state.id !== id || state.generation !== generation) return;
     if (!state.ready || state.cancelled) throw new Error('PUBLICATION_STATE');
+    if (state.phase === 'publication-ready') this.handoff(id, generation);
+    if (state.phase !== 'publication-handed-off') throw new Error('PUBLICATION_STATE');
     state.signal?.removeEventListener('abort', state.abort);
+    state.phase = 'completed';
+    state.signal = undefined; state.abort = undefined; state.settle = undefined;
     this.#active = undefined;
   }
-  async close() { if (this.#active) await this.cancel(this.#active.id); }
+  async close() {
+    const state = this.#active;
+    if (!state) return;
+    if (state.phase === 'publication-handed-off') {
+      // Transport has already settled or abandoned its bounded writer on shutdown.
+      state.signal?.removeEventListener('abort', state.abort);
+      state.phase = 'failed'; this.#active = undefined; return;
+    }
+    await this.cancel(state.id);
+  }
 }

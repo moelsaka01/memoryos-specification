@@ -1123,13 +1123,19 @@ def validate_mo1304_registration(root: Path, errors: list[str]) -> None:
             "node --test tests/mo1304_phase1_conformance_test.mjs"
         ):
             errors.append("MO-1304 Phase-1 conformance registration changed")
+        if registration.get("scripts", {}).get("test:mo1304-phase2") != (
+            "node --test tests/mo1304_phase2_conformance_test.mjs"
+        ):
+            errors.append("MO-1304 Phase-2 conformance registration missing")
         inventory = load_json(conformance / "mo1304-conformance-inventory.json")
         if (inventory.get("kind") != "MemoryOSMO1304ConformanceInventory"
-                or inventory.get("version") != "1.0.0" or inventory.get("phase") != "phase1Foundation"):
+                or inventory.get("version") != "1.0.0" or inventory.get("phase") != "phase2Integration"):
             errors.append("MO-1304 conformance inventory identity changed")
-        for phase in ("phase2", "phase3", "releaseBinding", "tagState"):
+        if inventory.get("phase2", {}).get("status") != "IMPLEMENTED":
+            errors.append("MO-1304 Phase 2 implementation inventory missing")
+        for phase in ("phase3", "releaseBinding", "tagState"):
             if inventory.get(phase, {}).get("status") != "PENDING":
-                errors.append(f"MO-1304 {phase} must remain mechanically pending in Phase 1")
+                errors.append(f"MO-1304 {phase} must remain mechanically pending in Phase 2")
         limits = load_json(mcp / "contracts" / "limits.json")
         if limits.get("status") != "measured" or not all(
                 isinstance(value, int) and value > 0 for value in limits.get("values", {}).values()):
@@ -1137,15 +1143,22 @@ def validate_mo1304_registration(root: Path, errors: list[str]) -> None:
         for relative in ("CMakeLists.txt", "README.md", "NOTICE.md", "package-lock.json",
                          "scripts/verify.mjs", "scripts/inventory.mjs", "src/server.mjs",
                          "runtime/runtime-closure-manifest.json", "distribution/foundation-inventory.json",
-                         "measurements/resource-review.json", "measurements/advisory-disposition.json"):
+                         "measurements/resource-review.json", "measurements/advisory-disposition.json",
+                         "LICENSE", "THIRD_PARTY_NOTICES.txt", "scripts/distribution.mjs",
+                         "scripts/phase2-validation.mjs", "scripts/phase2-inventory.mjs",
+                         "measurements/phase2-package-receipt.json", "measurements/phase2-advisory-review.json",
+                         "measurements/phase2-integration.json", "measurements/phase2-offline.json"):
             if not (mcp / relative).is_file():
                 errors.append(f"MO-1304 required foundation artifact missing: {relative}")
         anchors = {
             root / "CMakeLists.txt": {"cca_add_workspace_repository(memoryos-mcp)": 1},
             conformance / "CMakeLists.txt": {"mo1304-conformance-inventory.json": 2,
                 "tests/mo1304_phase1_conformance_test.mjs": 2,
-                'conformance_area STREQUAL "mo1304-phase1"': 2},
-            conformance / "tools" / "run-js-conformance.mjs": {'"mo1304_phase1_conformance_test.mjs"': 1},
+                'conformance_area STREQUAL "mo1304-phase1"': 2,
+                "tests/mo1304_phase2_conformance_test.mjs": 2,
+                'conformance_area STREQUAL "mo1304-phase2"': 2},
+            conformance / "tools" / "run-js-conformance.mjs": {'"mo1304_phase1_conformance_test.mjs"': 1,
+                '"mo1304_phase2_conformance_test.mjs"': 1},
         }
         for path, expected in anchors.items():
             content = path.read_text(encoding="utf-8")

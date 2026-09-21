@@ -13,5 +13,5 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS)
     COMMAND "${MEMORYOS_MCP_NODE_EXECUTABLE}" --test --test-concurrency=1 "tests/*.test.mjs")
   set_tests_properties(memoryos.mcp.foundation PROPERTIES
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-    LABELS "memoryos;memoryos-1.3;mo1304;phase1;mcp;adapter")
+    LABELS "memoryos;memoryos-1.3;mo1304;phase1;phase2;mcp;adapter")
 endif()
