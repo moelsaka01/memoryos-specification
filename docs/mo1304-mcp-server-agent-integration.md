@@ -11,6 +11,10 @@ This document establishes roadmap/specification authority only. Requirements
 identified below as roadmap-authorized are binding direction for Contract
 Freeze 1; they are not a frozen MCP implementation contract. The open questions
 in section 8 must be resolved by that later contract, without guessing here.
+The subsequent [Contract Freeze 1 cache-directive correction](mo1304-contract-freeze-1-cache-correction.md)
+records a narrowly scoped implementation-contract correction separately from
+this original roadmap authority.
+
 The existing [architecture](../ARCHITECTURE.md) and authoritative MemoryOS
 contracts retain their semantic authority.
 
