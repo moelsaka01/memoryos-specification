@@ -124,8 +124,13 @@ no receipt contains its own future commit hash. The commit subject is exactly
 `test(memoryos-1.3): add MO-1304 supported-platform certification harness`,
 with B2 as its parent. Graph-aware conformance checks inspect the actual first
 descendant of B2 and verify the committed receipt and fourteen harness blobs.
-This design requires no second evidence-binding commit. It does not create a
-full-platform certification, final release binding, push, or tag.
+The post-commit Phase 2 regression exposed a positional assumption that HEAD
+was still B2. The evidence-binding follow-up records the now-existing harness
+revision and makes the graph checks inspect the exact historical I2/B2 edge
+and actual harness ancestry. It changes only inventory and graph-aware
+conformance checks, preserving all historical edge/file-scope assertions. It
+does not create full-platform certification, a final release binding, push,
+or tag.
 
 The remaining task after successful Ubuntu certification is:
 
@@ -174,8 +179,11 @@ non-normative installation path is provenance, not an input to validation.
 
 The finalization procedure exports the relevant blobs from the actual Git
 commit into a local isolated directory, validates that committed receipt and
-its supporting artifacts, rechecks the committed frozen archive, and compares
-the committed inventory binding. It requires no SSH, Ubuntu process, source
+its supporting artifacts, rechecks the committed archive identity, and compares
+the committed inventory binding. The unchanged frozen archive remains a local
+build artifact (Git-ignored); its bytes are reverified separately. The archive
+payload is not required to validate the committed receipt or compare semantic
+vectors for later parity. It requires no SSH, Ubuntu process, source
 mount, Ubuntu installation tree, or remote tooling cache. Re-executing Ubuntu
 certification would need the VM again; validating the existing Ubuntu evidence
 and comparing it with later Windows evidence does not.
@@ -258,3 +266,12 @@ E = Phase 3 conformance; F = documentation; G = registration or inventory.
 | `tools/mo1304-phase3/validate_receipt.py` | B |
 | `tools/mo1304-phase3/validator_tests.py` | B |
 | `tools/run-js-conformance.mjs` | G |
+
+
+The harness/evidence commit is
+`b95822625f8e7be2cd353b42a8fd185264e9a8bf`, parent B2. The mechanically
+required evidence-binding commit is
+`d0ebb113a0e333e3956fb4adce6bd798c85a5d50`, parent the harness commit; its
+scope is the inventory and two graph-aware conformance tests already listed
+above. The user separately authorized a documentation-only correction for the
+archive-storage wording. Neither existing commit is amended or rewritten.
