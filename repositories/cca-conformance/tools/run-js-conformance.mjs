@@ -24,6 +24,7 @@ const expectedFiles = Object.freeze([
   "mo1303_phase3_conformance_test.mjs",
   "mo1304_phase1_conformance_test.mjs",
   "mo1304_phase2_conformance_test.mjs",
+  "mo1304_phase3_ubuntu_conformance_test.mjs",
   "normative_vectors_conformance_test.mjs",
   "reference_implementation_conformance_test.mjs",
   "report_conformance_test.mjs",

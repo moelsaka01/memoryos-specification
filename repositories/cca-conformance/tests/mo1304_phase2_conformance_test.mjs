@@ -108,8 +108,11 @@ test('I2/B2 binding permits only an actual existing implementation revision and 
  assert.equal(git('diff',binding.revision,'--','repositories/memoryos-mcp','tools/verify_workspace.py'),'');
 });
 test('Phase 3, release binding, tag and unsupported macOS state remain mechanically pending',async()=>{
- assert.deepEqual(inventory.phase3,old.phase3);assert.equal(inventory.phase3.status,'PENDING');assert.equal(inventory.phase3.macos,'UNSUPPORTED');
- for(const key of ['windows11_24H2_x64','ubuntu24_04_x64','platformParity'])assert.equal(inventory.phase3[key],null);
+ // B2's historical Phase 3 state remains immutable. A later Ubuntu-only receipt
+ // may be attached while the overall phase, Windows, parity and release remain pending.
+ assert.deepEqual({...inventory.phase3,ubuntu24_04_x64:null},old.phase3);assert.equal(inventory.phase3.status,'PENDING');assert.equal(inventory.phase3.macos,'UNSUPPORTED');
+ for(const key of ['windows11_24H2_x64','platformParity'])assert.equal(inventory.phase3[key],null);
+ if(inventory.phase3.ubuntu24_04_x64!==null){const entry=inventory.phase3.ubuntu24_04_x64;assert.equal(entry.status,'PASS');const value=JSON.parse(await identity(entry.receipt));assert.equal(value.platform,'ubuntu-24.04');assert.equal(value.overall,'PASS');assert.equal(value.phase2Binding,'461a67f3dbb7a32132f9c76e0ea40358e6776583');}
  assert.deepEqual(inventory.releaseBinding,{status:'PENDING',revision:null});assert.deepEqual(inventory.tagState,{status:'PENDING',name:'memoryos-1.3-mo1304',object:null});
  assert.equal(git('tag','--list','memoryos-1.3-mo1304'),'');
  for(const [tag,object,target] of [['mo1301','2cda15d8ab056ac8f2971c5cd9a22cb89fc4821e','af6a405b3cd9097ce469b16a854a0568b8acee1f'],['mo1302','773dd03829dd6b3632bf43a45578925b1498515d','7e07bd0db9ab10146f2e0e0bbd67a4c5850cf41d'],['mo1303','f3891cbac8a6ab804887a3d95a595c7bd1523af9','49aa80fa76bffc03e36335be8ab805bb5dc38f9c']]){assert.equal(git('rev-parse',`memoryos-1.3-${tag}`),object);assert.equal(git('rev-parse',`memoryos-1.3-${tag}^{commit}`),target);}

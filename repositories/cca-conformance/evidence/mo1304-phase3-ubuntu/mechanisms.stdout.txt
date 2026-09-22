@@ -1,0 +1,172 @@
+TAP version 13
+# Subtest: supervisor cancellation at pre-aborted has one winner and bounded cleanup
+ok 1 - supervisor cancellation at pre-aborted has one winner and bounded cleanup
+  ---
+  duration_ms: 5.927658
+  type: 'test'
+  ...
+# Subtest: supervisor cancellation at running has one winner and bounded cleanup
+ok 2 - supervisor cancellation at running has one winner and bounded cleanup
+  ---
+  duration_ms: 2.335292
+  type: 'test'
+  ...
+# Subtest: supervisor cancellation at worker-settled has one winner and bounded cleanup
+ok 3 - supervisor cancellation at worker-settled has one winner and bounded cleanup
+  ---
+  duration_ms: 2.1249
+  type: 'test'
+  ...
+# Subtest: supervisor cancellation at publication-ready has one winner and bounded cleanup
+ok 4 - supervisor cancellation at publication-ready has one winner and bounded cleanup
+  ---
+  duration_ms: 2.951347
+  type: 'test'
+  ...
+# Subtest: supervisor cancellation at publication-handed-off has one winner and bounded cleanup
+ok 5 - supervisor cancellation at publication-handed-off has one winner and bounded cleanup
+  ---
+  duration_ms: 1.063749
+  type: 'test'
+  ...
+# Subtest: termination must finish before ID reuse; stale generation and duplicate publication cannot win
+ok 6 - termination must finish before ID reuse; stale generation and duplicate publication cannot win
+  ---
+  duration_ms: 30.038788
+  type: 'test'
+  ...
+# Subtest: cleanup race: timeout-before-cancel
+ok 7 - cleanup race: timeout-before-cancel
+  ---
+  duration_ms: 20.218759
+  type: 'test'
+  ...
+# Subtest: cleanup race: cancel-before-timeout
+ok 8 - cleanup race: cancel-before-timeout
+  ---
+  duration_ms: 28.304855
+  type: 'test'
+  ...
+# Subtest: cleanup race: exit-before-cancel
+ok 9 - cleanup race: exit-before-cancel
+  ---
+  duration_ms: 4.578387
+  type: 'test'
+  ...
+# Subtest: cleanup race: shutdown-before-result
+ok 10 - cleanup race: shutdown-before-result
+  ---
+  duration_ms: 3.365449
+  type: 'test'
+  ...
+# Subtest: cleanup race: factory-abort
+ok 11 - cleanup race: factory-abort
+  ---
+  duration_ms: 1.531545
+  type: 'test'
+  ...
+# Subtest: wire publication cancellation: projection-turn
+ok 12 - wire publication cancellation: projection-turn
+  ---
+  duration_ms: 19.209763
+  type: 'test'
+  ...
+# Subtest: wire publication cancellation: waiting-writer
+ok 13 - wire publication cancellation: waiting-writer
+  ---
+  duration_ms: 29.468506
+  type: 'test'
+  ...
+# Subtest: wire publication cancellation: after-handoff
+ok 14 - wire publication cancellation: after-handoff
+  ---
+  duration_ms: 13.489062
+  type: 'test'
+  ...
+# Subtest: EOF abandons blocked writer timers, cancels ready work, and settles without fatal or retained slot
+ok 15 - EOF abandons blocked writer timers, cancels ready work, and settles without fatal or retained slot
+  ---
+  duration_ms: 22.927702
+  type: 'test'
+  ...
+# Subtest: writer requires both callback and drain before releasing publication ownership
+ok 16 - writer requires both callback and drain before releasing publication ownership
+  ---
+  duration_ms: 6.801979
+  type: 'test'
+  ...
+# Subtest: cancellation raised during synchronous projection suppresses the complete frame before handoff
+ok 17 - cancellation raised during synchronous projection suppresses the complete frame before handoff
+  ---
+  duration_ms: 4.958443
+  type: 'test'
+  ...
+# Subtest: EOF interrupts control admission behind blocked stdout; partial tail=false
+ok 18 - EOF interrupts control admission behind blocked stdout; partial tail=false
+  ---
+  duration_ms: 590.211168
+  type: 'test'
+  ...
+# Subtest: EOF interrupts control admission behind blocked stdout; partial tail=true
+ok 19 - EOF interrupts control admission behind blocked stdout; partial tail=true
+  ---
+  duration_ms: 584.342767
+  type: 'test'
+  ...
+# Subtest: frozen response frame and worker product bytes enforce actual N-1/N/N+1
+ok 20 - frozen response frame and worker product bytes enforce actual N-1/N/N+1
+  ---
+  duration_ms: 8.834594
+  type: 'test'
+  ...
+# Subtest: frozen worker options and external-memory N-1/N/N+1 are enforced by installed supervisor
+ok 21 - frozen worker options and external-memory N-1/N/N+1 are enforced by installed supervisor
+  ---
+  duration_ms: 124.452461
+  type: 'test'
+  ...
+# Subtest: frozen parent-attributable memory N-1/N/N+1 is enforced by installed supervisor
+ok 22 - frozen parent-attributable memory N-1/N/N+1 is enforced by installed supervisor
+  ---
+  duration_ms: 125.566966
+  type: 'test'
+  ...
+# Subtest: frozen request and control rate N-1/N/N+1 with deterministic time window
+ok 23 - frozen request and control rate N-1/N/N+1 with deterministic time window
+  ---
+  duration_ms: 492.90634
+  type: 'test'
+  ...
+# Subtest: frozen operation deadline reaps a real live worker
+ok 24 - frozen operation deadline reaps a real live worker
+  ---
+  duration_ms: 20013.238249
+  type: 'test'
+  ...
+# Subtest: frozen shutdown deadline poisons a non-reaping supervisor
+ok 25 - frozen shutdown deadline poisons a non-reaping supervisor
+  ---
+  duration_ms: 20012.599958
+  type: 'test'
+  ...
+# Subtest: real V8 worker exhausts the frozen heap budget and is reaped
+ok 26 - real V8 worker exhausts the frozen heap budget and is reaped
+  ---
+  duration_ms: 1092.068724
+  type: 'test'
+  ...
+# Subtest: real external-memory excess is detected by the installed frozen supervisor
+ok 27 - real external-memory excess is detected by the installed frozen supervisor
+  ---
+  duration_ms: 127.194251
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 43977.640778

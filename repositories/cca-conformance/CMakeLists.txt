@@ -62,6 +62,14 @@ set(memoryos_conformance_sources_list
     tests/mo1303_phase3_conformance_test.mjs
     tests/mo1304_phase1_conformance_test.mjs
     tests/mo1304_phase2_conformance_test.mjs
+    tests/mo1304_phase3_ubuntu_conformance_test.mjs
+    tools/mo1304-phase3/certify_ubuntu.py
+    tools/mo1304-phase3/validate_receipt.py
+    tools/mo1304-phase3/receipt.schema.json
+    tools/mo1304-phase3/test-catalog.json
+    tools/mo1304-phase3/harness-manifest.json
+    evidence/mo1304-phase3-ubuntu/ubuntu-receipt.json
+    docs/mo1304-phase3-ubuntu-certification.md
     tests/normative_vectors_conformance_test.mjs
     tests/reference_implementation_conformance_test.mjs
     tests/report_conformance_test.mjs
@@ -142,6 +150,7 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     mo1303-phase3
     mo1304-phase1
     mo1304-phase2
+    mo1304-phase3-ubuntu
     normative
     reference
     report
@@ -177,6 +186,8 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
       set(conformance_source tests/mo1304_phase1_conformance_test.mjs)
     elseif(conformance_area STREQUAL "mo1304-phase2")
       set(conformance_source tests/mo1304_phase2_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1304-phase3-ubuntu")
+      set(conformance_source tests/mo1304_phase3_ubuntu_conformance_test.mjs)
     elseif(conformance_area STREQUAL "normative")
       set(conformance_source tests/normative_vectors_conformance_test.mjs)
     elseif(conformance_area STREQUAL "reference")
@@ -258,6 +269,9 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     elseif(conformance_area STREQUAL "mo1304-phase2")
       set_tests_properties(memoryos.standard.${conformance_area} PROPERTIES LABELS
         "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1304;phase2;mcp;adapter")
+    elseif(conformance_area STREQUAL "mo1304-phase3-ubuntu")
+      set_tests_properties(memoryos.standard.${conformance_area} PROPERTIES LABELS
+        "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1304;phase3;ubuntu;mcp;installed-package")
     endif()
   endforeach()
 
