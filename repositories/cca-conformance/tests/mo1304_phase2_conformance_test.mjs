@@ -103,8 +103,19 @@ test('I2/B2 binding permits only an actual existing implementation revision and 
  if(binding.status==='PENDING'){assert.equal(binding.revision,null);if(head!==B1){assert.equal(git('rev-parse','HEAD^'),B1);assert.equal(git('show','-s','--format=%s'),subject);}return;}
  assert.equal(binding.status,'BOUND');assert.match(binding.revision,/^[a-f0-9]{40}$/u);assert.equal(git('rev-parse',`${binding.revision}^`),B1);assert.equal(git('show','-s','--format=%s',binding.revision),subject);
  if(binding.validationReceipt){const bytes=await identity(binding.validationReceipt),evidence=JSON.parse(bytes);assert.equal(evidence.implementationRevision,binding.revision);assert.equal(evidence.parent,B1);assert.equal(evidence.status,'PASS');assert.equal(evidence.archiveSha256,receipt.archive.sha256);assert.ok(evidence.runs.every(x=>x.exitCode===0));}
- if(head!==binding.revision){assert.equal(git('rev-parse','HEAD^'),binding.revision);assert.equal(git('show','-s','--format=%s'),'conformance(memoryos-1.3): bind MO-1304 phase 2 integration');assert.ok(binding.validationReceipt);
-  assert.deepEqual(git('diff','--name-only',binding.revision,head).split('\n'),['repositories/cca-conformance/evidence/mo1304-phase2-binding-validation.json','repositories/cca-conformance/mo1304-conformance-inventory.json']);}
+ if(head!==binding.revision){
+  // Preserve the exact historical evidence-only I2 -> B2 edge after later phases.
+  const phase2Binding='461a67f3dbb7a32132f9c76e0ea40358e6776583';
+  assert.equal(git('rev-parse',phase2Binding+'^'),binding.revision);assert.equal(git('show','-s','--format=%s',phase2Binding),'conformance(memoryos-1.3): bind MO-1304 phase 2 integration');assert.ok(binding.validationReceipt);
+  assert.deepEqual(git('diff','--name-only',binding.revision,phase2Binding).split('\n'),['repositories/cca-conformance/evidence/mo1304-phase2-binding-validation.json','repositories/cca-conformance/mo1304-conformance-inventory.json']);
+  git('merge-base','--is-ancestor',phase2Binding,head);
+  if(head!==phase2Binding){
+   const ubuntuBinding=inventory.phase3.ubuntu24_04_x64?.harnessBinding;
+   assert.equal(ubuntuBinding?.status,'BOUND');assert.equal(ubuntuBinding.strategy,'postCommitConformanceCommit');assert.equal(ubuntuBinding.parent,phase2Binding);
+   assert.equal(git('rev-parse',ubuntuBinding.revision+'^'),phase2Binding);assert.equal(ubuntuBinding.subject,'test(memoryos-1.3): add MO-1304 supported-platform certification harness');assert.equal(git('show','-s','--format=%s',ubuntuBinding.revision),ubuntuBinding.subject);
+   git('merge-base','--is-ancestor',ubuntuBinding.revision,head);
+  }
+ }
  assert.equal(git('diff',binding.revision,'--','repositories/memoryos-mcp','tools/verify_workspace.py'),'');
 });
 test('Phase 3, release binding, tag and unsupported macOS state remain mechanically pending',async()=>{
