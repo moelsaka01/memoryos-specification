@@ -14,6 +14,9 @@ in section 8 must be resolved by that later contract, without guessing here.
 The subsequent [Contract Freeze 1 cache-directive correction](mo1304-contract-freeze-1-cache-correction.md)
 records a narrowly scoped implementation-contract correction separately from
 this original roadmap authority.
+The subsequent [Windows support correction](mo1304-contract-freeze-windows-support-correction.md)
+distinguishes the supported Windows 11 x64 family from each certified host's
+actual release/build, preserving the frozen implementation and Ubuntu evidence.
 
 The existing [architecture](../ARCHITECTURE.md) and authoritative MemoryOS
 contracts retain their semantic authority.

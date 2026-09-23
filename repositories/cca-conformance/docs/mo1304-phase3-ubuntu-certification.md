@@ -114,7 +114,7 @@ explicitly accepted only under that scoped policy; this is not a claim of
 zero vulnerabilities or a patched dependency.
 
 The overall Phase 3 inventory remains PENDING even when its Ubuntu receipt is
-PASS. Windows 11 24H2 certification, Windows receipt, cross-platform parity,
+PASS. Windows 11 x64 certification, Windows receipt, cross-platform parity,
 parity receipt and final binding remain pending/null. The MO-1304 tag remains
 absent and macOS remains UNSUPPORTED.
 
@@ -132,7 +132,11 @@ conformance checks, preserving all historical edge/file-scope assertions. It
 does not create full-platform certification, a final release binding, push,
 or tag.
 
-The remaining task after successful Ubuntu certification is:
+The original remaining task title below records the previous freeze. Current
+Windows support is **Windows 11 x64**, with the actual release/build required
+in its receipt; see the [Windows support correction](../../../docs/mo1304-contract-freeze-windows-support-correction.md).
+
+Historical task title:
 
 MEMORYOS 1.3 MO-1304 MCP SERVER AND AGENT INTEGRATION WINDOWS 11 24H2 CERTIFICATION AND RELEASE CLOSURE
 

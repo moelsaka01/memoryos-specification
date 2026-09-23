@@ -44,7 +44,7 @@ test('Ubuntu evidence binds B2 and the actual descendant harness commit without 
 });
 test('inventory binds only actual Ubuntu evidence while Windows, parity, release and tag remain pending',()=>{
  const entry=inventory.phase3.ubuntu24_04_x64;assert.deepEqual(entry.harnessBinding,{status:'BOUND',strategy:'postCommitConformanceCommit',revision:'b95822625f8e7be2cd353b42a8fd185264e9a8bf',parent:B2,subject:'test(memoryos-1.3): add MO-1304 supported-platform certification harness'});assert.equal(entry.status,'PASS');assert.deepEqual(entry.receipt,{path:'repositories/cca-conformance/evidence/mo1304-phase3-ubuntu/ubuntu-receipt.json',byteLength:raw.length,sha256:sha(raw)});
- assert.deepEqual({...inventory.phase3,ubuntu24_04_x64:null},{status:'PENDING',windows11_24H2_x64:null,ubuntu24_04_x64:null,node:'24.21.0',macos:'UNSUPPORTED',platformParity:null});
+ assert.deepEqual({...inventory.phase3,ubuntu24_04_x64:null},{status:'PENDING',windows11_x64:null,ubuntu24_04_x64:null,node:'24.21.0',macos:'UNSUPPORTED',platformParity:null});
  assert.deepEqual(inventory.releaseBinding,{status:'PENDING',revision:null});assert.deepEqual(inventory.tagState,{status:'PENDING',name:'memoryos-1.3-mo1304',object:null});assert.equal(git('tag','--list','memoryos-1.3-mo1304'),'');
 });
 test('Ubuntu actual environment and residual risk are preserved without Windows or zero-vulnerability claims',()=>{

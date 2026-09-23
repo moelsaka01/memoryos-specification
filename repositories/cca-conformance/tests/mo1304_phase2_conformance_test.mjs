@@ -121,8 +121,8 @@ test('I2/B2 binding permits only an actual existing implementation revision and 
 test('Phase 3, release binding, tag and unsupported macOS state remain mechanically pending',async()=>{
  // B2's historical Phase 3 state remains immutable. A later Ubuntu-only receipt
  // may be attached while the overall phase, Windows, parity and release remain pending.
- assert.deepEqual({...inventory.phase3,ubuntu24_04_x64:null},old.phase3);assert.equal(inventory.phase3.status,'PENDING');assert.equal(inventory.phase3.macos,'UNSUPPORTED');
- for(const key of ['windows11_24H2_x64','platformParity'])assert.equal(inventory.phase3[key],null);
+ const {windows11_x64,...historicalProjection}=inventory.phase3;assert.deepEqual({...historicalProjection,windows11_24H2_x64:windows11_x64,ubuntu24_04_x64:null},old.phase3);assert.equal(inventory.phase3.status,'PENDING');assert.equal(inventory.phase3.macos,'UNSUPPORTED');
+ for(const key of ['windows11_x64','platformParity'])assert.equal(inventory.phase3[key],null);
  if(inventory.phase3.ubuntu24_04_x64!==null){const entry=inventory.phase3.ubuntu24_04_x64;assert.equal(entry.status,'PASS');const value=JSON.parse(await identity(entry.receipt));assert.equal(value.platform,'ubuntu-24.04');assert.equal(value.overall,'PASS');assert.equal(value.phase2Binding,'461a67f3dbb7a32132f9c76e0ea40358e6776583');}
  assert.deepEqual(inventory.releaseBinding,{status:'PENDING',revision:null});assert.deepEqual(inventory.tagState,{status:'PENDING',name:'memoryos-1.3-mo1304',object:null});
  assert.equal(git('tag','--list','memoryos-1.3-mo1304'),'');
