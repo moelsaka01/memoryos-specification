@@ -66,6 +66,11 @@ set(memoryos_conformance_sources_list
     tools/mo1304-platforms/support-policy.json
     tools/mo1304-platforms/support_contract.py
     tools/mo1304-platforms/support_contract_test.py
+    tests/mo1304_phase3_windows_conformance_test.mjs
+    tools/mo1304-windows/certify_windows.py
+    tools/mo1304-windows/validate_windows.py
+    tools/mo1304-windows/receipt.schema.json
+    tools/mo1304-platforms/validate_parity.py
     tests/mo1304_phase3_ubuntu_conformance_test.mjs
     tools/mo1304-phase3/certify_ubuntu.py
     tools/mo1304-phase3/validate_receipt.py
@@ -155,6 +160,7 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     mo1304-phase1
     mo1304-phase2
     mo1304-phase3-ubuntu
+    mo1304-phase3-windows
     mo1304-platform-support
     normative
     reference
@@ -193,6 +199,8 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
       set(conformance_source tests/mo1304_phase2_conformance_test.mjs)
     elseif(conformance_area STREQUAL "mo1304-platform-support")
       set(conformance_source tests/mo1304_platform_support_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1304-phase3-windows")
+      set(conformance_source tests/mo1304_phase3_windows_conformance_test.mjs)
     elseif(conformance_area STREQUAL "mo1304-phase3-ubuntu")
       set(conformance_source tests/mo1304_phase3_ubuntu_conformance_test.mjs)
     elseif(conformance_area STREQUAL "normative")
@@ -279,6 +287,9 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     elseif(conformance_area STREQUAL "mo1304-platform-support")
       set_tests_properties(memoryos.standard.${conformance_area} PROPERTIES LABELS
         "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1304;phase3;platform-support")
+    elseif(conformance_area STREQUAL "mo1304-phase3-windows")
+      set_tests_properties(memoryos.standard.${conformance_area} PROPERTIES LABELS
+        "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1304;phase3;windows;parity;installed-package")
     elseif(conformance_area STREQUAL "mo1304-phase3-ubuntu")
       set_tests_properties(memoryos.standard.${conformance_area} PROPERTIES LABELS
         "memoryos-standard;memoryos;standard;conformance;memoryos-1.3;mo1304;phase3;ubuntu;mcp;installed-package")

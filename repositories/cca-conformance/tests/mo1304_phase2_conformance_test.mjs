@@ -22,7 +22,7 @@ const archive=await readFile(resolve(PACKAGE_ROOT,'out/phase2',ARCHIVE));
 const checked=verifyArchive(archive,receipt);
 async function identity(entry){const bytes=await raw(entry.path);assert.equal(bytes.length,entry.byteLength,entry.path);assert.equal(sha256(bytes),entry.sha256,entry.path);return bytes;}
 test('Phase 2 binds the exact roadmap, correction, I1 and immutable B1 graph',()=>{
- assert.equal(inventory.phase,'phase2Integration');assert.equal(phase.status,'IMPLEMENTED');
+ assert.equal(inventory.phase,inventory.releaseBinding.status==='BOUND'?'finalConformanceClosure':inventory.phase3.windows11_x64?'phase3Certification':'phase2Integration');assert.equal(phase.status,'IMPLEMENTED');
  const graph=['ed4632fc81a6e90835233a848a9a3a118184c02e','9d12ea46c6971efd01619bcfdba804431b4149f3',I1,B1];
  for(let i=1;i<graph.length;i++)assert.equal(git('rev-parse',`${graph[i]}^`),graph[i-1]);
  assert.equal(git('show','-s','--format=%s',B1),'conformance(memoryos-1.3): bind MO-1304 phase 1 foundation');
@@ -116,15 +116,21 @@ test('I2/B2 binding permits only an actual existing implementation revision and 
    git('merge-base','--is-ancestor',ubuntuBinding.revision,head);
   }
  }
- assert.equal(git('diff',binding.revision,'--','repositories/memoryos-mcp','tools/verify_workspace.py'),'');
+ assert.equal(git('diff',binding.revision,'--','repositories/memoryos-mcp'),'');
+ assert.equal(git('diff',binding.revision,'461a67f3dbb7a32132f9c76e0ea40358e6776583','--','tools/verify_workspace.py'),'');
+ // Later certification may update only this milestone's workspace gate. Every
+ // predecessor check and all other workspace-verifier bytes stay unchanged.
+ const previous=gitBytes('show',binding.revision+':tools/verify_workspace.py').toString(),current=(await raw('tools/verify_workspace.py')).toString();
+ const start='def validate_mo1304_registration(',end='def validate_conformance_artifacts(';
+ assert.equal(current.split(start)[0],previous.split(start)[0]);assert.equal(current.split(end)[1],previous.split(end)[1]);
 });
-test('Phase 3, release binding, tag and unsupported macOS state remain mechanically pending',async()=>{
+test('historical pending state is preserved while later platform evidence and final binding require real identities',async()=>{
  // B2's historical Phase 3 state remains immutable. A later Ubuntu-only receipt
  // may be attached while the overall phase, Windows, parity and release remain pending.
- const {windows11_x64,...historicalProjection}=inventory.phase3;assert.deepEqual({...historicalProjection,windows11_24H2_x64:windows11_x64,ubuntu24_04_x64:null},old.phase3);assert.equal(inventory.phase3.status,'PENDING');assert.equal(inventory.phase3.macos,'UNSUPPORTED');
- for(const key of ['windows11_x64','platformParity'])assert.equal(inventory.phase3[key],null);
+ const {windows11_x64,...historicalProjection}=inventory.phase3;assert.deepEqual({...historicalProjection,status:'PENDING',windows11_24H2_x64:null,ubuntu24_04_x64:null,platformParity:null},old.phase3);assert.equal(inventory.phase3.status,inventory.releaseBinding.status==='BOUND'?'PASS':'PENDING');assert.equal(inventory.phase3.macos,'UNSUPPORTED');
+ for(const key of ['windows11_x64','platformParity'])if(inventory.phase3[key]!==null){const entry=inventory.phase3[key];assert.equal(entry.status,'PASS');const value=JSON.parse(await identity(entry.receipt));if(key==='windows11_x64'){assert.equal(value.platform,'windows-11');assert.equal(value.overall,'PASS');}else{assert.equal(value.kind,'MemoryOSMO1304CrossPlatformParity');assert.equal(value.status,'PASS');}}
  if(inventory.phase3.ubuntu24_04_x64!==null){const entry=inventory.phase3.ubuntu24_04_x64;assert.equal(entry.status,'PASS');const value=JSON.parse(await identity(entry.receipt));assert.equal(value.platform,'ubuntu-24.04');assert.equal(value.overall,'PASS');assert.equal(value.phase2Binding,'461a67f3dbb7a32132f9c76e0ea40358e6776583');}
- assert.deepEqual(inventory.releaseBinding,{status:'PENDING',revision:null});assert.deepEqual(inventory.tagState,{status:'PENDING',name:'memoryos-1.3-mo1304',object:null});
+ if(inventory.releaseBinding.status==='PENDING')assert.deepEqual(inventory.releaseBinding,{status:'PENDING',revision:null});else{assert.equal(inventory.releaseBinding.status,'BOUND');assert.equal(inventory.releaseBinding.strategy,'postEvidenceConformanceCommit');const proof=JSON.parse(await identity(inventory.releaseBinding.validationReceipt));assert.equal(proof.status,'PASS');assert.equal(proof.evidenceRevision,inventory.releaseBinding.revision);}assert.deepEqual(inventory.tagState,{status:'PENDING',name:'memoryos-1.3-mo1304',object:null});
  assert.equal(git('tag','--list','memoryos-1.3-mo1304'),'');
  for(const [tag,object,target] of [['mo1301','2cda15d8ab056ac8f2971c5cd9a22cb89fc4821e','af6a405b3cd9097ce469b16a854a0568b8acee1f'],['mo1302','773dd03829dd6b3632bf43a45578925b1498515d','7e07bd0db9ab10146f2e0e0bbd67a4c5850cf41d'],['mo1303','f3891cbac8a6ab804887a3d95a595c7bd1523af9','49aa80fa76bffc03e36335be8ab805bb5dc38f9c']]){assert.equal(git('rev-parse',`memoryos-1.3-${tag}`),object);assert.equal(git('rev-parse',`memoryos-1.3-${tag}^{commit}`),target);}
  const pkg=await read('repositories/cca-conformance/package.json');assert.equal(pkg.scripts['test:mo1304-phase2'],'node --test tests/mo1304_phase2_conformance_test.mjs');

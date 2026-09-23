@@ -279,3 +279,12 @@ required evidence-binding commit is
 scope is the inventory and two graph-aware conformance tests already listed
 above. The user separately authorized a documentation-only correction for the
 archive-storage wording. Neither existing commit is amended or rewritten.
+
+## Subsequent Windows evidence
+
+The [Windows certification and parity record](mo1304-phase3-windows-certification.md)
+records the later Windows 11 x64 execution on the actual 25H2 host and strict
+two-platform comparison. Pending Windows/parity statements earlier in this
+Ubuntu-only record describe its original finalization state. The Ubuntu receipt,
+its fourteen evidence files and bound harness remain unchanged and validate
+locally; the Ubuntu VM was not rerun for this later work.

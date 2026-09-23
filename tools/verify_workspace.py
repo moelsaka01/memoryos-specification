@@ -1128,14 +1128,71 @@ def validate_mo1304_registration(root: Path, errors: list[str]) -> None:
         ):
             errors.append("MO-1304 Phase-2 conformance registration missing")
         inventory = load_json(conformance / "mo1304-conformance-inventory.json")
+        # Preserve Phase 2 identity while validating genuine later-stage evidence.
+        import subprocess
+        phase3 = inventory.get("phase3", {})
+        binding = inventory.get("releaseBinding", {})
+        windows = phase3.get("windows11_x64")
+        parity = phase3.get("platformParity")
+        bound = binding.get("status") == "BOUND"
+        expected_phase = ("finalConformanceClosure" if bound else
+                          "phase3Certification" if windows else "phase2Integration")
         if (inventory.get("kind") != "MemoryOSMO1304ConformanceInventory"
-                or inventory.get("version") != "1.0.0" or inventory.get("phase") != "phase2Integration"):
+                or inventory.get("version") != "1.0.0"
+                or inventory.get("phase") != expected_phase):
             errors.append("MO-1304 conformance inventory identity changed")
         if inventory.get("phase2", {}).get("status") != "IMPLEMENTED":
             errors.append("MO-1304 Phase 2 implementation inventory missing")
-        for phase in ("phase3", "releaseBinding", "tagState"):
-            if inventory.get(phase, {}).get("status") != "PENDING":
-                errors.append(f"MO-1304 {phase} must remain mechanically pending in Phase 2")
+        if (phase3.get("status") != ("PASS" if bound else "PENDING")
+                or phase3.get("node") != "24.21.0" or phase3.get("macos") != "UNSUPPORTED"):
+            errors.append("MO-1304 Phase 3 state or support policy invalid")
+        if inventory.get("tagState") != {"status": "PENDING", "name": "memoryos-1.3-mo1304", "object": None}:
+            errors.append("MO-1304 release tag must remain pending manual review")
+
+        def evidence(entry: dict, expected_path: str) -> Path:
+            if entry.get("status") != "PASS":
+                raise ValueError("MO-1304 platform/parity evidence is not PASS")
+            value = entry.get("receipt", {})
+            if value.get("path") != expected_path:
+                raise ValueError("MO-1304 evidence path changed")
+            path = root / expected_path
+            data = path.read_bytes()
+            if (len(data) > 4 * 1024 * 1024 or len(data) != value.get("byteLength")
+                    or hashlib.sha256(data).hexdigest() != value.get("sha256")):
+                raise ValueError("MO-1304 evidence identity mismatch")
+            return path
+
+        if windows is not None or parity is not None:
+            if not windows or not parity or not phase3.get("ubuntu24_04_x64"):
+                raise ValueError("MO-1304 requires both platforms and parity")
+            win = evidence(windows, "repositories/cca-conformance/evidence/mo1304-phase3-windows/windows-receipt.json")
+            ubuntu = evidence(phase3["ubuntu24_04_x64"], "repositories/cca-conformance/evidence/mo1304-phase3-ubuntu/ubuntu-receipt.json")
+            pair = evidence(parity, "repositories/cca-conformance/evidence/mo1304-phase3-parity.json")
+            # This offline command independently validates both receipts before
+            # checking every canonical parity byte; no VM or runtime execution.
+            result = subprocess.run(
+                [sys.executable, "-B", str(conformance / "tools/mo1304-platforms/validate_parity.py"),
+                 "validate", str(win), str(ubuntu), str(pair)],
+                capture_output=True, timeout=60, check=False,
+            )
+            if result.returncode != 0:
+                errors.append("MO-1304 independent platform/parity validation failed")
+        if bound:
+            if not windows or not parity or binding.get("strategy") != "postEvidenceConformanceCommit":
+                raise ValueError("MO-1304 final binding requires genuine two-platform evidence")
+            revision = binding.get("revision", "")
+            if (re.fullmatch(r"[0-9a-f]{40}", revision) is None
+                    or windows.get("harnessBinding", {}).get("revision") != revision
+                    or windows.get("harnessBinding", {}).get("status") != "BOUND"):
+                raise ValueError("MO-1304 evidence revision binding invalid")
+            proof_path = evidence({"status": "PASS", "receipt": binding.get("validationReceipt", {})},
+                                  "repositories/cca-conformance/evidence/mo1304-final-binding-validation.json")
+            proof = load_json(proof_path)
+            if (proof.get("status") != "PASS" or proof.get("evidenceRevision") != revision
+                    or not proof.get("runs") or any(r.get("exitCode") != 0 for r in proof["runs"])):
+                errors.append("MO-1304 final validation proof invalid")
+        elif binding != {"status": "PENDING", "revision": None}:
+            errors.append("MO-1304 unbound release state must remain pending")
         limits = load_json(mcp / "contracts" / "limits.json")
         if limits.get("status") != "measured" or not all(
                 isinstance(value, int) and value > 0 for value in limits.get("values", {}).values()):
