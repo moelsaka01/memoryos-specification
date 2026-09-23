@@ -3,6 +3,11 @@
 Status: **CONTRACT FROZEN / PHASE 1 NEXT**. Contract identifier:
 `memoryos.rest.contract-freeze-1`, version `1.0.0`. Reviewed 2026-09-23.
 
+The [platform correction](mo1305-contract-freeze-1-platform-correction.md)
+prospectively selects Windows 11 x64 only for MO-1305 v1. Its scope is platform
+count, measurement targets, certification and cross-platform parity; all other
+frozen requirements remain binding. The original freeze revision is preserved.
+
 ## 1. Authority and boundary
 
 This is the implementation contract delegated by the complete
@@ -620,10 +625,11 @@ down. No claim to contain an attacker-controlled executable or native allocator.
 ### 8.1 Frozen measurement procedure
 
 Phase 1 owns measurement and `contracts/limits.json` before B1. It must run on
-**both** certification targets using the same candidate source tree and fixture
-hashes; if a target is unavailable, B1 waits. These are resource measurements,
+the **existing physical Windows 11 x64 host only**, with a fixed candidate
+source tree and fixture hashes; if required Windows measurements cannot be
+established, B1 waits. These are resource measurements,
 not Phase 3 release certification. Phase 3 remeasures the frozen installed I2
-archive on both targets as confirmation, without changing limits or archive.
+archive on Windows 11 x64 as confirmation, without changing limits or archive.
 
 For every endpoint and error projection, construct a bounded fixture catalog
 from schema maxima and the released Policy/Policy Set/Resource Profile/MIP
@@ -637,7 +643,7 @@ encoding**; where SDK constraints make combined maxima impossible, document
 the proof and the largest attainable semantic fixture. Padding/whitespace is
 separately swept to the wire limit and does not enlarge artifact authority.
 
-For each catalog case, each platform: **30 cold** samples (new installed server
+For each catalog case, on Windows: **30 cold** samples (new installed server
 process per sample) and **100 warm** samples (same server, fresh worker per
 semantic call). Do not discard outliers. Record input/output lengths, each
 encoded product length, header lengths/counts, parse/buffer/validation time,
@@ -646,7 +652,7 @@ heap/external deltas, worker heap/external maxima, process baseline and peak RSS
 Record OS peak counters as well as the 20 ms series maximum. Hash fixtures;
 record complete sample arrays as bounded numeric records, never request secrets.
 
-Run separate **60-second**, three-repetition scenarios on both platforms for
+Run separate **60-second**, three-repetition scenarios on Windows 11 x64 for
 32 idle/handshaking/slow-header sockets, four maximum body buffers, one maximal
 worker plus three operational requests, request/connection floods, slow body,
 four blocked response writers, and cancellation/shutdown during each lifecycle
@@ -654,7 +660,7 @@ state. Compare baseline, peak, and post-cleanup memory/handle counts. Verify
 that semantic count never exceeds one and no semantic queue appears. Measure
 parser/gate retention separately from body buffer copies and parsed strings.
 
-Derive limits from the maximum over all samples, scenarios, and both platforms:
+Derive limits from the maximum over all samples and scenarios on Windows:
 
 1. POST body limit for operation o is `ceilKiB(1.25 * max(S[o], M[o]))`, where
    S is the analytical compact schema maximum and M the measured largest
@@ -691,7 +697,7 @@ toolchain, samples, maxima, formulas, derived limits, and all boundary results.
 Every measured field must be a finite positive integer in the limits artifact;
 no null, placeholder, `measured:false`, or provisional value can pass B1 or
 final certification. If I2 changes code that affects costs, rerun this same
-procedure on both targets before B2; keep the same limits if they still pass.
+procedure on Windows 11 x64 before B2; keep the same limits if they still pass.
 A needed limit change requires a reviewed contract/limits revision and fresh
 measurements, package, binding, and affected evidence before Phase 3.
 
@@ -721,7 +727,7 @@ or HTTP admin endpoint exists. Exit code 0 for completed requested shutdown,
 2 for invalid startup configuration/integrity, 1 for fatal runtime failure or
 forced deadline exit. Close the listener before destroying tracked sockets.
 There are no upgraded sockets to escape that registry. Test graceful and forced
-shutdown on both platforms and prove the port can be rebound afterward.
+shutdown on Windows 11 x64 and prove the port can be rebound afterward.
 
 ### 8.3 Constant-space rate limits
 
@@ -795,7 +801,7 @@ stream controls, and supported x64 OS baseline; its parser/TLS components includ
 the reviewed fixes. Prior MCP certification is useful provenance, not REST
 certification. The [Node 24.21.0 release](https://nodejs.org/en/blog/release/v24.21.0)
 and [pinned build platform policy](https://raw.githubusercontent.com/nodejs/node/v24.21.0/BUILDING.md)
-support this selection. Windows 11 and Ubuntu 24.04 meet those runtime baselines.
+support this selection. Windows 11 meets the selected runtime baseline.
 
 The selected production npm closure is **0 direct + 0 transitive external
 packages**, with **0 development npm dependencies**, 0 optional packages,
@@ -814,7 +820,6 @@ again for every platform receipt:
 | Platform | Node executable SHA-256 |
 |---|---|
 | Windows x64 | `ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32` |
-| Linux x64 | `7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c` |
 
 These byte identities are also present in released MO-1304 toolchain receipts;
 reuse of the binaries does not reuse their certification claim. Verify each
@@ -823,9 +828,9 @@ and record archive name/length/hash, SHASUMS/signature identity, verification
 result, executable identity, npm identity, and process.versions in I1 evidence.
 The Windows archive is `node-v24.21.0-win-x64.zip`, SHA-256
 `158f7685b44de51f6c0df1d153526cbcd3e1bc739a8dfc607721cef75de9e541`.
-For Linux use `node-v24.21.0-linux-x64.tar.xz`; its archive identity is captured
-from the verified official bytes, with the executable hash above as an
-additional fixed check. Archive measurement is not freedom to select a runtime.
+No Linux runtime archive is required for MO-1305 v1. The original Linux
+selection remains historical in F, not an active requirement. Archive
+measurement is not freedom to select a runtime.
 
 Observed Windows process.versions: llhttp 9.4.3, OpenSSL 3.5.8, undici 7.29.1,
 V8 13.6.233.17-node.53, libuv 1.52.1, nghttp2 1.70.0, c-ares 1.34.8,
@@ -1025,14 +1030,19 @@ control plane, distributed scheduling, autoscaling, or load-balancing contract.
 Container packaging is **deferred and excluded from the v1 deliverables**:
 no Dockerfile, OCI image, or container certification is required or implied.
 
-Release-supported and release-certified target families are **Windows 11 x64**
-and **Ubuntu 24.04 LTS x64**, each running the pinned native Node executable.
-Do not pin Windows to a feature release or require another milestone's build.
-Record actual edition, release/build/patch, kernel where applicable,
-architecture, Node/npm/client executable versions and hashes in each receipt.
-WSL/Linux does not certify native Windows; containers and compatibility layers
-do not certify a different host family. macOS, ARM, other distributions, IPv6,
-and other Node versions have no v1 support claim. Node's broader upstream
+The sole release-supported and release-certified target family is **Windows 11
+x64**, using the existing physical host and the pinned native Node executable.
+Required development, Phase 1 measurements, Phase 2, Phase 3 and release closure
+use this host only. Record actual Windows edition, release, full build/patch,
+architecture and Node/npm/client executable versions and hashes. Do not pin
+support to 25H2 or any other feature release; actual-build evidence is required.
+Ubuntu/Linux, WSL, and every VM (including an additional Windows VM) are
+**NOT_REQUIRED** for MO-1305 v1. Cross-platform parity is **NOT_REQUIRED**.
+These platforms are outside this v1 supported/certified contract, not permanently
+unsupported by MemoryOS. Additional platforms need separate future authority.
+macOS, ARM, IPv6 and other Node versions retain no v1 support claim.
+Semantic SDK parity, real HTTP certification, both required clients, and every
+security/resource/package gate remain mandatory. Node's broader upstream
 platform support is not automatically MemoryOS REST certification.
 
 ## 12. Conformance catalog, parity, and regressions
@@ -1044,10 +1054,13 @@ all installed bytes before and after execution. Real listener, parser, socket,
 timeout, cancellation, and shutdown behavior is mandatory. In-process handlers,
 mock sockets, framework injection, and unit tests are supplemental only.
 No network access beyond the test LAN/loopback is needed. Test local mode and
-remote mode on an actual non-loopback interface; remote success requires a
-separate client host or VM, its route/address provenance, normal TLS trust, and
-failure of direct insecure/missing-credential access. Reusing a loopback socket
-with a forged Host does not prove remote mode.
+remote mode on an actual non-loopback interface; remote success requires
+separate client processes on the existing Windows host, connected through its
+actual assigned RFC1918 address, with route/interface/address provenance, normal
+TLS trust, and failure of direct insecure/missing-credential access. Do not
+change the operator network configuration or require a second host or VM.
+Loopback success or a forged Host does not prove remote mode; real private-
+interface execution is still required when remote mode is enabled in Phase 2.
 
 Required independent success clients: Node **24.21.0 built-in fetch** (bundled
 undici, no imported npm client), and **curl** with actual version, build/TLS
@@ -1068,7 +1081,7 @@ that high-level clients refuse to transmit. This harness is not a product SDK.
 
 Give every case a stable ASCII ID, fixed expected status/code or close action,
 bounded input fixture, and expected SDK-dispatch count. All applicable cases
-must execute on both targets against the frozen installed archive. The required
+must execute on Windows 11 x64 against the frozen installed archive. The required
 families below are closed minimum obligations; additional discovered defects
 add tests without enlarging product scope.
 
@@ -1116,7 +1129,7 @@ Include Policy and Policy Set, PASS/FAIL/COULD_NOT_EVALUATE, invalid/tampered
 artifacts, expected-digest mismatch, identity pin, all registered rule families,
 and unavailable Regression behavior. Repeat identical vectors across fresh
 processes, reordered permitted request JSON, different correlation IDs,
-local/remote mode, client implementations, and both OS targets. Ignore only
+local/remote mode, client implementations, and the required Windows host. Ignore only
 HTTP/TLS/correlation metadata, never normalize normative artifacts. The same
 vector set also compares to released MCP products as a sibling regression,
 and CLI SDK-backed projections where applicable. MCP/CLI are secondary
@@ -1152,22 +1165,27 @@ reviewed tree, exact scoped staging, workspace verification, diff checks, its
 required tests, and an independently validated receipt/inventory update. No
 amend, squash, invented future hash, or post-receipt archive rebuild. The
 conceptual letters identify roles; this document does not assign future hashes.
+C is the authorized exception to an initially clean tree: audit and preserve
+the existing uncommitted Phase 1 files, exclude them from scoped C staging, and
+verify their bytes unchanged after the correction commit. I1/B1 exit gates
+remain unchanged.
 
 | Role | Parent / scope | Required exit gate |
 |---|---|---|
 | F — this freeze | Authority `d15b578dd757e928273d4548348b085e58ed5df5`; exactly one documentation commit | This contract and roadmap links; no implementation artifacts |
-| I1 — Phase 1 implementation | F | Package foundation; strict JSON/schema/OpenAPI source; native TLS/auth in local mode; raw gate/parser; all six SDK operations and three operational routes; limits/deadlines/admission; integrity; unit and core raw-socket adversarial tests; resource measurements on both targets; independently built closure; notices/runtime/advisory review |
+| C — platform correction | F (`ce1780e2dac0afe31aeb947f0a7f78b953e17f6b`) | Windows-only v1 policy; correction documentation and contract tests only; preserve uncommitted Phase 1 files |
+| I1 — Phase 1 implementation | C | Package foundation; strict JSON/schema/OpenAPI source; native TLS/auth in local mode; raw gate/parser; all six SDK operations and three operational routes; limits/deadlines/admission; integrity; unit and core raw-socket adversarial tests; resource measurements on Windows 11 x64; independently built closure; notices/runtime/advisory review |
 | B1 — Phase 1 binding | I1 | Bind actual I1 hash, executed source-tree/harness identities, measured limits and artifacts; validate Phase 1 inventory. Remote configuration remains refused until Phase 2; do not claim full v1 certification |
 | I2 — Phase 2 implementation | B1 | Enable and test explicit remote mode; complete lifecycle/security/interoperability catalog; deterministic distribution; offline installed-package harness; freeze the final candidate archive and all runtime/schema/limit/dependency identities; remeasure any changed costs |
 | B2 — Phase 2 binding | I2 | Bind actual I2 hash and frozen archive identity; repeat package/installed checks; no production/archive modification in this binding commit |
-| I3 — Phase 3 platform evidence | B2 | Execute full installed-archive catalog on actual Windows and Ubuntu, both generic clients, actual remote clients, resource confirmation and exact two-platform/SDK/MCP parity; commit harness/receipts/evidence; record actual executed harness manifest, never a nonexistent I3 hash |
+| I3 — Phase 3 platform evidence | B2 | Execute full installed-archive catalog on actual Windows, both generic clients, actual private-interface client processes, resource confirmation and exact SDK parity with MCP sibling witnesses; commit harness/receipts/evidence; record actual executed harness manifest, never a nonexistent I3 hash |
 | BF — final conformance binding | I3 | Revalidate the committed I3 evidence/harness and unchanged I2 archive identity; bind I1/B1/I2/B2/I3 hashes, inventory, validation and graph data; no production, limits, package, or receipt-byte mutation |
 | Release tag (later authorized task) | BF | Annotated `memoryos-1.3-mo1305` targeting BF after all gates PASS; tag operation verified externally |
 
 Phase 1 implements authentication/TLS early because even a local prototype
 must not expose unauthenticated semantics. Phase 2 adds remote admission and
 completes packaging/lifecycle certification; it does not retrofit a different
-security architecture. Both-target resource runs in Phase 1 are deliberately
+security architecture. Windows resource runs in Phase 1 are deliberately
 earlier than full release certification so no release-critical limit remains
 unknown when Phase 2 builds the frozen package.
 
@@ -1200,14 +1218,15 @@ Create it in I1, not now. It is J, at most 256 KiB, closed schema, kind
 | `state` | `PHASE1_PENDING`, `PHASE1_BOUND`, `PHASE2_PENDING`, `PHASE2_BOUND`, `CERTIFICATION_PENDING`, `CERTIFIED_READY_TO_TAG`, or `BLOCKED` |
 | `authorityRevision` | Exact d15b578... authority hash |
 | `contractFreezeRevision` | Actual existing F hash, 40 lowercase hex |
+| `platformCorrectionRevision` | Actual existing C hash, 40 lowercase hex; never a future hash |
 | `implementations` | Closed `{I1,B1,I2,B2,I3}`, each null until it exists, then 40 lowercase hex; no future/self hashes |
 | `package` | Null until built, then `{name,version,archive,distributionManifest,sourceTreeSha256}`; name/version fixed; artifact references defined below |
 | `contracts` | Closed `{apiSchema,openapi,limits,policyIdentities}`, each null until produced, then artifact reference |
-| `runtime` | Null until assembled, then `{closure, sdkVersion, nodeVersion, nodeExecutables}`; exact SDK/Node strings; nodeExecutables sorted platform/hash records for both targets |
+| `runtime` | Null until assembled, then `{closure, sdkVersion, nodeVersion, nodeExecutables}`; exact SDK/Node strings; nodeExecutables sorted platform/hash records for Windows only |
 | `dependencies` | Null until reviewed, then `{directCount:0,transitiveCount:0,developmentCount:0,lockfile,manifest,sbom,notices,review}`; last five are artifact references |
-| `receipts` | Closed `{resource,package,http,security,platform,parity}`, each array of artifact references, sorted by relative path; at most 64 total |
-| `platforms` | Exactly two sorted records `{target,state,receipt}`, target `ubuntu-24.04-x64` or `windows-11-x64`, state `NOT_EXECUTED`, `PASS`, `FAIL`, or `BLOCKED`, receipt null or artifact reference |
-| `parity` | `{state,receipt}`, state `NOT_EXECUTED`, `PASS`, `FAIL`, or `BLOCKED` |
+| `receipts` | Closed `{resource,package,http,security,platform}`, each array of artifact references, sorted by relative path; at most 64 total |
+| `platforms` | Exactly one record `{target,state,receipt}`, target `windows-11-x64`, state `NOT_EXECUTED`, `PASS`, `FAIL`, or `BLOCKED`, receipt null or artifact reference |
+| `platformPolicy` | Closed `{supported:["windows-11-x64"],measurement:["windows-11-x64"],ubuntu:"NOT_REQUIRED",linux:"NOT_REQUIRED",vm:"NOT_REQUIRED",crossPlatformParity:"NOT_REQUIRED",semanticParity:"REQUIRED"}`; no Ubuntu or cross-platform parity receipt |
 | `finalBinding` | `{state,validatedEvidenceRevision,receipt}`, state `PENDING` or `VALIDATED`, revision/receipt null until BF validates existing I3 |
 | `releaseTag` | `{name:"memoryos-1.3-mo1305",state:"NOT_READY"\|"READY_TO_TAG",targetRole:"finalConformanceBinding"}`; never a future hash |
 | `blockers` | Sorted unique fixed issue IDs, at most 64, each ASCII `[A-Z0-9_-]{1,96}`; no secret/prose dump |
@@ -1223,10 +1242,10 @@ enum-only PASS. Current-role self-reference fields are the explicit exception
 below and are resolved by the external Git-aware binding verifier.
 
 State transitions are justified by referenced validator results, not manual
-status edits. PHASE1_BOUND requires I1, all measured limits, and both-target
+status edits. PHASE1_BOUND requires I1, all measured limits, and Windows
 resource receipts; PHASE2_BOUND requires I1/B1/I2 and the package/security/HTTP
 foundation, with the current B2 identity supplied externally;
-CERTIFIED_READY_TO_TAG requires both platform PASS, parity PASS, all mandatory
+CERTIFIED_READY_TO_TAG requires Windows platform PASS, SDK semantic parity PASS, all mandatory
 catalog cases, no blockers, and finalBinding VALIDATED. Missing execution stays
 NOT_EXECUTED or BLOCKED, never PASS by inference from another milestone. In a
 B1 or B2 commit, its own implementations field remains null; the verifier binds
@@ -1244,11 +1263,12 @@ of at most 2 MiB when necessary; a receipt has at most 256 artifact references.
 Raw optional process logs are separate bounded secret-free artifacts, not an
 escape hatch for unknown receipt members. All receipt types share exactly:
 `kind`, `version`, `type`, `state`, `authorityRevision`, `contractFreezeRevision`,
+`platformCorrectionRevision`,
 `implementationRevision`, `bindingRevision`, `sourceTreeSha256`, `harness`,
 `artifacts`, `platform`, `toolchain`, `catalog`, `results`, `payload`.
 
 `kind` is `MemoryOSRESTReceipt`, version `1.0.0`; type is one of `resource`,
-`package`, `http`, `security`, `platform`, `parity`, `finalBinding`; state is
+`package`, `http`, `security`, `platform`, `finalBinding`; state is
 PASS/FAIL/BLOCKED/NOT_EXECUTED. Revisions name existing commits or explicitly
 null where the later binding role supplies them; harness is a manifest artifact
 reference, artifacts a path-sorted reference array, sourceTreeSha256 a 64-hex
@@ -1257,9 +1277,12 @@ contract, build-tool, fixture, and harness inputs actually used, excluding
 receipts, inventories, output archives, generated provenance/SBOM metadata,
 and manifests that contain the tree digest. Those outputs are separately bound
 as artifacts, keeping this input-tree hash independent of its consumers.
-`platform` is null only for cross-platform aggregation;
-otherwise `{target,osName,osVersion,osBuild,kernel,architecture}`, strings at most
-128 characters, actual measured values (kernel may be null on Windows).
+`platform` is `{target,osName,osEdition,osRelease,osVersion,osBuild,kernel,architecture}`:
+required target `windows-11-x64`, actual Windows edition/release/full build and
+x64 architecture, strings at most 128 characters, kernel null on Windows.
+No Ubuntu, Linux or cross-platform parity receipt is produced. Independent SDK
+semantic equalities remain required in hash-bound vector results referenced by
+HTTP/platform receipts; removal of cross-platform receipts does not remove them.
 `toolchain` is a sorted array of `{name,version,sha256}` (each name/version at
 most 128 ASCII characters), including executable identities actually used.
 `catalog` is a schema-valid manifest reference listing required case IDs and
@@ -1269,12 +1292,11 @@ projections, no human exception strings. Type-specific payload fields are:
 
 | Type | Closed payload and required checks |
 |---|---|
-| resource | `{samples,maxima,derivation,limits,boundaries}`: sample chunk refs, numeric maximum map keyed by the limits/measurement schema, formula-version `1.0.0`, limits ref, boundary-case refs; both platforms and sample counts mandatory |
+| resource | `{samples,maxima,derivation,limits,boundaries}`: sample chunk refs, numeric maximum map keyed by the limits/measurement schema, formula-version `1.0.0`, limits ref, boundary-case refs; Windows and unchanged sample counts mandatory |
 | package | `{archive,distributionManifest,builds,installation,dependencyReview}`: artifact refs; exactly two independent build records `{treeSha256,archiveSha256}`; installation receipt ref and supply-chain review ref |
 | http | `{clients,local,remote,framing}`: client toolchain names and case-result artifact refs; actual process/TCP/TLS executions, peer provenance secret-free |
 | security | `{adversarial,networkDenial,advisories}`: case refs, mechanism/coverage records, dated advisory dispositions; no unsupported isolation claims |
 | platform | `{resource,package,http,security,semanticVectors}`: references to validated receipts/vector file for one actual target, all same archive/implementation |
-| parity | `{platformReceipts,oracle,vectorCatalog,equalities}`: exactly two platform refs, SDK oracle manifest ref, vector catalog ref, per-vector byte/digest/error equality records |
 | finalBinding | `{validatedEvidenceRevision,inventory,receipts,graph,validation}`: existing I3 hash and refs to prior inventory/receipts, acyclic commit graph, final validation artifact; no own hash or tag-created claim |
 
 All nested payloads must have type-specific closed schemas and bounds in I1;
@@ -1313,7 +1335,7 @@ runtime replacement, alternate TLS/proxy model, or dependency addition as an
 ordinary implementation detail.
 
 Release requires: measured limits resolved before B1; complete package/identity
-and advisory review before B2; exact installed archive tested on both targets;
+and advisory review before B2; exact installed archive tested on Windows 11 x64;
 both clients and actual remote mode executed; mandatory adversarial and parity
 catalogs PASS; bounded resource/deadline/cancellation behavior verified; schemas,
 OpenAPI, manifests/notices/SBOM and runtime pins agree; relevant predecessor
@@ -1344,23 +1366,23 @@ implementation/certification phases in section 13.
 | D Authentication | One 32-byte entropy bearer token, all endpoints, parent-only file (§5) | Same simple credential boundary locally/remotely | P1/P2 | Auth syntax/comparison/rotation/secrecy, TLS prerequisite tests | None | No listener before prerequisites; P3 security |
 | E Authorization | Credential grants only frozen catalog; forbidden header/acquisition rules (§5–7) | No role/ACL subsystem needed | P1/P2 | Forbidden paths/proxy/browser/authority tests | None | B2 complete authorization tests |
 | F Trust/security | Trusted immutable launcher/package, exact products, no client file/URL/Regression authority (§2, §5–7) | Keep transport untrusted and authority owned | P1/P2 | Substitution, acquisition, bootstrap denial, threat-boundary evidence | Observed OS denial coverage, not design | B2 mandatory denial/integrity; P3 honest coverage |
-| G Determinism | J transport projection and exact SDK bytes; no new semantic digest (§3) | Preserve reproducible semantics | P1/P3 | Independent vectors across IDs/JSON order/clients/OS | Derived vector identities | P3 exact parity |
+| G Determinism | J transport projection and exact SDK bytes; no new semantic digest (§3) | Preserve reproducible semantics | P1/P3 | Independent vectors across IDs/JSON order/clients on Windows | Derived vector identities | P3 exact parity |
 | H Errors | Closed 23-code catalog/status map, SDK record, no human text (§4) | Stable machine behavior | P1/P2 | Each code/preference/no-response/HEAD behavior | Largest error bytes | B1 error limit; P3 full catalog |
-| I Resources | Absolute caps, fixed counts, both-target 30/100 samples and formulas (§8) | No unbounded prototype or guessed final limits | P1, confirm P3 | Measurement/chunk receipts, N−1/N/N+1 | Per-route bytes, memory, semantic deadline | B1 refuses provisional values; P3 reconfirms |
+| I Resources | Absolute caps, fixed counts, Windows-only 30/100 samples and formulas (§8) | No unbounded prototype or guessed final limits | P1, confirm P3 | Measurement/chunk receipts, N−1/N/N+1 | Per-route bytes, memory, semantic deadline | B1 refuses provisional values; P3 reconfirms |
 | J Concurrency/cancellation | One semantic owner, zero queue, four request/write slots, publication boundary (§7–8) | Bound CPU/memory while serving control requests | P1/P2 | Generation/race/reap/slow-reader/shutdown cases | Resource costs only; counts fixed | B2 lifecycle; P3 installed races |
 | K Filesystem | Inline HTTP content only; operator startup files and installed closure (§5, §7) | No path acquisition authority | P1/P2 | UNC/device/traversal/link/ACL/foreign-cwd cases | None | B2 and P3 acquisition/integrity |
 | L Network | Literal inbound IPv4/TLS; zero outbound/DNS; no proxy (§5–7) | Enable bounded remote API without SSRF | P1/P2 | Real remote client, denied worker network entries | Actual interface/OS mechanism provenance | P3 remote + outbound evidence |
 | M Secrets | Fixed token/key source, owner ACL, no worker/log exposure, restart rotation (§5) | Small auditable secret lifetime | P1/P2 | Startup refusal, ACL launcher, redaction/exposure checks | None | B2 security; P3 secret-free receipts |
 | N Observability | Bounded four-field stderr JSONL; no metrics/tracing/body logs (§11) | Avoid data leakage and logging backpressure | P1/P2 | Injection, size, dropped logs, stdout-empty | Observed overhead in resource runs | B2 log tests |
-| O Framework/runtime | Built-in Node TLS/HTTP/workers, ESM, Node 24.21.0 (§9) | Minimum selected dependency/adapter layers | P1 | Parser handoff, exact executable and version checks | Official archive inventory identity | B1 runtime/provenance; P3 both binaries |
+| O Framework/runtime | Built-in Node TLS/HTTP/workers, ESM, Node 24.21.0 (§9) | Minimum selected dependency/adapter layers | P1 | Parser handoff, exact executable and version checks | Official archive inventory identity | B1 runtime/provenance; P3 Windows executable |
 | P Supply chain | Zero external npm graph; npm 11.19.0, lock v3, scripts disabled, offline install (§9) | Tractable complete closure | P1/P2/P3 | Empty-graph substitution, advisory/notices/SBOM review | Build artifact identities and dated review | B2 supply chain; P3 advisory recheck |
 | Q Packaging | memoryos-rest 0.1.0, explicit files/roles, deterministic tar, verified archive (§10) | Install independently of checkout | P1/P2 | Two builds, fresh offline installs, package adversarial | Archive and manifest hashes/counts | B2 archive freeze; P3 unchanged bytes |
 | R Deployment | Direct local or explicit single-host remote native TLS; no proxy; container deferred (§5, §11) | Meets HTTP objective without platform sprawl | P2/P3 | Local/remote startup, supervisor/shutdown | Actual test network provenance | P3 both deployment modes |
-| S Platforms | Windows 11 x64 + Ubuntu 24.04 LTS x64; actual builds recorded (§11) | Fits selected native Node support; two independently tested targets | P1 resource/P3 certification | Native installed runs, OS/runtime checks | Actual builds and execution measurements | Both required; no inferred PASS |
+| S Platforms | Windows 11 x64 only; actual edition/release/build recorded (§11) | Existing physical Windows host; no additional platform or VM | P1 resource/P3 certification | Native installed runs, OS/runtime checks | Actual builds and execution measurements | Windows required; no inferred PASS |
 | T Testing | Real process/TLS/TCP, Node fetch + curl + raw TLS, full catalog (§12) | Observe actual parser and installed behavior | P1–P3 | Catalog/case/fixture/harness manifests and negative witnesses | Actual counts/client provenance | P3 complete validated catalog |
-| U Evidence | Closed inventory/receipts and I1/B1/I2/B2/I3/BF graph; annotated tag later (§13) | No self-reference or fabricated certification | P1–P3 | Schema/canonical/artifact/ancestry validators | Existing hashes assigned at binding | BF all receipts validated; tag only BF |
+| U Evidence | Closed inventory/receipts and C/I1/B1/I2/B2/I3/BF graph; annotated tag later (§13) | No self-reference or fabricated certification | P1–P3 | Schema/canonical/artifact/ancestry validators | Existing hashes assigned at binding | BF all receipts validated; tag only BF |
 | V Version/OpenAPI | /v1, API 1.0.0, package 0.1.0; release-bound derived OpenAPI 3.1.1 (§3, §10) | Explicit HTTP contract with one schema source | P1/P2 | Regeneration byte equality and runtime schema parity | Schema/OpenAPI identities | B1 schema closure; B2 package identity |
-| W Clients/browser | Generic fetch/curl; no official SDK, CORS, browser session (§5, §12) | Small v1 scope, future browser authority preserved | P2/P3 | Real client success/errors and Origin/preflight rejection | curl build/hash | P3 both clients on both targets |
+| W Clients/browser | Generic fetch/curl; no official SDK, CORS, browser session (§5, §12) | Small v1 scope, future browser authority preserved | P2/P3 | Real client success/errors and Origin/preflight rejection | curl build/hash | P3 both clients on Windows 11 x64 |
 
 The exact next task is:
 

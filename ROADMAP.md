@@ -169,8 +169,10 @@ The focused authoritative specification is
 the objective, delegation and trust boundaries, predecessor preservation,
 exclusions, and required Contract Freeze 1 decisions. The implementation contract
 is now [Contract Freeze 1](docs/mo1305-contract-freeze-1.md), which resolves all
-A–W categories and gates measurement-dependent values. Implementation has not
-begun.
+A–W categories and gates measurement-dependent values. The
+[platform correction](docs/mo1305-contract-freeze-1-platform-correction.md)
+removes Ubuntu/Linux, VM and cross-platform parity requirements for v1;
+independent SDK semantic parity remains required. Phase 1 completion is pending.
 
 Expose selected existing MemoryOS capabilities through a bounded HTTP/API
 surface while delegating semantic authority to existing MemoryOS implementation
@@ -178,7 +180,7 @@ layers. The frozen v1 contract selects six SDK-backed semantic operations and
 three operational endpoints under `/v1`, native TLS over HTTP/1.1, bearer
 authentication, explicit remote mode, bounded execution, and a dependency-free
 Node adapter. It defines measured resource gates, release-bound OpenAPI,
-installed-package certification on Windows 11 x64 and Ubuntu 24.04 LTS x64,
+installed-package certification on the existing physical Windows 11 x64 host only,
 and non-self-referential implementation/evidence binding. No production package
 or certification evidence has been created by the freeze.
 

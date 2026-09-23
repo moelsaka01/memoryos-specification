@@ -5,6 +5,12 @@ resolves the A–W decisions below. Current status is **CONTRACT FROZEN / PHASE 
 NEXT**. The original specification and its then-current status/next-task text
 remain below as historical roadmap authority.
 
+Subsequent [platform correction](mo1305-contract-freeze-1-platform-correction.md)
+selects the existing physical Windows 11 x64 host only for MO-1305 v1
+measurements and certification. Ubuntu/Linux, VMs and cross-platform parity
+are NOT_REQUIRED; SDK semantic parity and all other gates remain required.
+The original questions and predecessor platform history below are preserved.
+
 ## 1. Authority, status, and reviewed baseline
 
 Status: **AUTHORIZED / CONTRACT FREEZE 1 NEXT**.
