@@ -1,7 +1,7 @@
 {
   "kind": "MemoryOSMO1304ConformanceInventory",
   "version": "1.0.0",
-  "phase": "phase3Certification",
+  "phase": "finalConformanceClosure",
   "authority": {
     "baseline": "ed4632fc81a6e90835233a848a9a3a118184c02e",
     "cacheCorrection": "9d12ea46c6971efd01619bcfdba804431b4149f3",
@@ -232,7 +232,7 @@
     }
   },
   "phase3": {
-    "status": "PENDING",
+    "status": "PASS",
     "windows11_x64": {
       "status": "PASS",
       "receipt": {
@@ -241,9 +241,9 @@
         "sha256": "96c5703f46eb39de771d4f1cca81821bfe64af1541f64808f64efdffb36baab5"
       },
       "harnessBinding": {
-        "status": "PENDING",
+        "status": "BOUND",
         "strategy": "postCommitConformanceCommit",
-        "revision": null,
+        "revision": "da1a71bdd46a0d763493a987e29b586127b51586",
         "parent": "c29f527f29ec8e267367b3894099bb351c7873f4",
         "subject": "test(memoryos-1.3): certify MO-1304 Windows and platform parity"
       }
@@ -275,8 +275,15 @@
     }
   },
   "releaseBinding": {
-    "status": "PENDING",
-    "revision": null
+    "status": "BOUND",
+    "strategy": "postEvidenceConformanceCommit",
+    "revision": "da1a71bdd46a0d763493a987e29b586127b51586",
+    "parent": "c29f527f29ec8e267367b3894099bb351c7873f4",
+    "validationReceipt": {
+      "path": "repositories/cca-conformance/evidence/mo1304-final-binding-validation.json",
+      "byteLength": 3970,
+      "sha256": "c11f7441ce6ab8b82d0b5928f515c75ca849c8368781e1e0763c39c9643595aa"
+    }
   },
   "tagState": {
     "status": "PENDING",
