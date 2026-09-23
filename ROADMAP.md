@@ -11,7 +11,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
 | MemoryOS 1.2 | Released — v1.2.0 | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, and its official Conformance Suite |
 | MemoryOS 1.2.1 | Corrective restoration | Restores omitted intended v1.2 source, registered tests, fixtures, examples, documentation, frozen Standard and MIP publication assets, and corrected conformance provenance while preserving all v1.2 semantics and CSP fixes |
-| MemoryOS 1.3 | In development | Engineering Operations: closed MO-1301 Investigation Policies, MO-1302 GitHub Policy Gate, and MO-1303 VS Code integration (released with an external-infrastructure exception); MO-1304 MCP Server and Agent Integration roadmap authority established, pending Contract Freeze 1 |
+| MemoryOS 1.3 | In development; MO-1301 through MO-1304 released | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), and certified MCP Server and Agent Integration; next: MO-1305 REST Gateway, authority pending |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -96,22 +96,41 @@ materialization follows frozen implementation behavior, cross-language parity,
 conformance, and independent review; the Standard will codify that behavior
 rather than evolve as another Policy semantic authority.
 
-## MemoryOS 1.3 MO-1304: MCP Server and Agent Integration
+## MemoryOS 1.3: reconciled roadmap after MO-1304
 
-Status: authorized by the project owner after architecture and scope review;
-roadmap/specification authority only. Contract Freeze 1 is the next task, and
-implementation has not begun.
+This is the current prospective roadmap, reconciled after the MO-1304 release.
+It combines the earlier integration/product and standards/product directions
+without renumbering the released milestones. MO-1301 through MO-1304 retain
+their existing scope, commits, contracts, conformance history, evidence, and
+tags. The remaining product sequence begins with MO-1305; its implementation
+requires separate authority and Contract Freeze.
 
-The focused authoritative specification is
-[MCP Server and Agent Integration](docs/mo1304-mcp-server-agent-integration.md).
-It authorizes secure, deterministic, bounded MCP access to selected existing
-MemoryOS Policy capabilities for authorized AI agents and MCP-capable clients.
-The adapter delegates to the existing authoritative MemoryOS SDK/CLI/runtime
-closure and adds no semantic authority. Exact tools, schemas, transport,
-security contracts, distribution, and implementation phases remain for
-Contract Freeze 1.
+| Milestone | Title | Status | Architectural layer |
+|---|---|---|---|
+| MO-1301 | Policy / Core Foundation | CLOSED / RELEASED | Existing semantic and Policy foundation, including Investigation Policies and SDK/CLI integration |
+| MO-1302 | GitHub Actions / GitHub Policy Gate | CLOSED / RELEASED | GitHub-specific CI integration over the existing Policy authority |
+| MO-1303 | VS Code Extension | CLOSED / RELEASED WITH EXTERNAL-INFRASTRUCTURE EXCEPTION | VS Code developer integration |
+| MO-1304 | MCP Server and Agent Integration | CERTIFIED / RELEASED | MCP / agent integration over existing MemoryOS capabilities |
+| MO-1305 | REST Gateway | NEXT / AUTHORITY PENDING | Bounded REST/API integration |
+| MO-1306 | Provider-Neutral CI/CD Integration | PLANNED / AUTHORITY PENDING | Provider-neutral CI/CD integration |
+| MO-1307 | Release Policies / Release Readiness | PLANNED / AUTHORITY PENDING | Higher-level release policy and readiness |
+| MO-1308 | Investigation History | PLANNED / AUTHORITY PENDING | Durable investigation/evaluation history and traceability |
+| MO-1309 | Cloud Dashboard | PLANNED / AUTHORITY PENDING | Cloud-facing dashboard experience |
 
-MO-1301, MO-1302, and MO-1303 are closed predecessors. MO-1303 is released at
+Later milestones must delegate to existing semantic authority rather than
+silently reimplementing MemoryOS semantics. This roadmap assigns high-level
+direction only; it neither starts implementation nor freezes future contracts.
+Unrelated proposals elsewhere in this document remain proposals.
+
+### Released history and authority
+
+MO-1301 retains the [Policy specification](docs/investigation-policies.md) and
+release tag `memoryos-1.3-mo1301`. MO-1302 retains the
+[GitHub Policy Gate contract](repositories/cca-conformance/docs/mo1302-github-policy-gate.md)
+and release tag `memoryos-1.3-mo1302`. Its GitHub-specific implementation and
+history are not reassigned to MO-1306.
+
+MO-1303 is released at
 `memoryos-1.3-mo1303`, with final conformance binding
 `49aa80fa76bffc03e36335be8ab805bb5dc38f9c`, under an explicit
 external-infrastructure exception: Ubuntu and Windows hosted certification
@@ -119,10 +138,81 @@ PASS; macOS hosted certification NOT EXECUTED due external GitHub
 runner-allocation/billing restriction; three-platform parity NOT EXECUTED.
 Strict three-platform validation and predecessor history remain intact.
 
-MO-1305 remains currently undefined. MO-1306 owns provider-neutral CI
-integrations including GitLab, Jenkins, Azure DevOps, and generic CI. MO-1307
-owns higher-level Release Policies. None of these scopes is absorbed into
-MO-1304, and unrelated proposals below remain proposals.
+MO-1304 is certified and released at annotated tag `memoryos-1.3-mo1304`,
+targeting final conformance binding
+`ce7b001d911239fa50d904f5f336bb1bd7858ba3`. The
+[original MCP roadmap authority](docs/mo1304-mcp-server-agent-integration.md),
+subsequent frozen contracts and corrections, production implementation,
+package, receipts, evidence, and final binding remain unchanged. The
+[Windows support correction](docs/mo1304-contract-freeze-windows-support-correction.md)
+and [Windows certification and parity record](repositories/cca-conformance/docs/mo1304-phase3-windows-certification.md)
+remain released history: Windows 11 x64 support, actual Windows 11 Home 25H2
+build 26200.9457 x64 execution, Ubuntu 24.04 LTS x64 certification, and
+two-platform parity PASS. Their recorded evidence limits and risk dispositions
+remain intact; macOS remains unsupported for MO-1304.
+
+Earlier development-stage status text in the product overview, changelog,
+repository indexes, predecessor guides, and frozen MCP package describes the
+stage when it was written. The original MO-1304 authority's section 16 records
+the then-undefined MO-1305 and the then-next Contract Freeze 1 task. Those
+statements, and pre-tag pending fields in inventories and receipts, remain
+historical records. This section supplies current milestone status and
+prospective assignments without changing their semantic contracts or evidence.
+The MO-1302 exclusions of MO-1306/MO-1307 remain valid frozen scope boundaries.
+
+### MO-1305: REST Gateway
+
+Status: **NEXT / AUTHORITY PENDING**.
+
+Expose selected existing MemoryOS capabilities through a bounded HTTP/API
+surface while delegating semantic authority to existing MemoryOS implementation
+layers. MO-1305 authority and Contract Freeze must decide the framework, HTTP
+server library, endpoint names, HTTP methods, URL paths, request/response
+schemas, authentication, authorization, network binding, TLS, deployment and
+container models, rate limits, timeouts, resource limits, OpenAPI details,
+package structure, and distribution model. This reconciliation freezes none
+of those choices and preserves any already-authoritative constraints.
+
+### MO-1306: Provider-Neutral CI/CD Integration
+
+Status: **PLANNED / AUTHORITY PENDING**.
+
+Cover GitLab, Jenkins, Azure DevOps, generic CI/CD environments, and other
+provider-neutral integration surfaces mechanically justified by future
+authority. Preserve MO-1302's GitHub-specific history and delegate MemoryOS
+semantics to the existing authoritative implementation.
+
+### MO-1307: Release Policies / Release Readiness
+
+Status: **PLANNED / AUTHORITY PENDING**.
+
+Own higher-level release-governance policy semantics and release-readiness
+composition, subject to future authority and Contract Freeze. This assignment
+does not implement or freeze those semantics or replace the existing Policy
+foundation.
+
+### MO-1308: Investigation History
+
+Status: **PLANNED / AUTHORITY PENDING**.
+
+Provide durable investigation/evaluation history, traceability, historical
+evidence, and query/review surfaces, subject to future authority and Contract
+Freeze. Persistence and database architecture remain undecided here; existing
+Investigation Core history semantics retain their authority.
+
+### MO-1309: Cloud Dashboard
+
+Status: **PLANNED / AUTHORITY PENDING**.
+
+Provide a cloud-facing product/dashboard experience built on the authoritative
+MemoryOS capabilities established by earlier milestones. Cloud provider,
+frontend framework, database, multi-tenancy, billing, hosting, authentication,
+and deployment architecture remain decisions for future authority and Contract
+Freeze.
+
+The exact next task is:
+
+**MEMORYOS 1.3 MO-1305 REST GATEWAY ROADMAP AUTHORITY**
 
 ## IM-001: engineering foundation
 
