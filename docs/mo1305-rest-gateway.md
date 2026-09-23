@@ -1,5 +1,10 @@
 # MemoryOS 1.3 MO-1305 — REST Gateway
 
+Subsequent implementation authority: [Contract Freeze 1](mo1305-contract-freeze-1.md)
+resolves the A–W decisions below. Current status is **CONTRACT FROZEN / PHASE 1
+NEXT**. The original specification and its then-current status/next-task text
+remain below as historical roadmap authority.
+
 ## 1. Authority, status, and reviewed baseline
 
 Status: **AUTHORIZED / CONTRACT FREEZE 1 NEXT**.
