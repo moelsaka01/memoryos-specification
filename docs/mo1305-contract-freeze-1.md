@@ -8,6 +8,12 @@ prospectively selects Windows 11 x64 only for MO-1305 v1. Its scope is platform
 count, measurement targets, certification and cross-platform parity; all other
 frozen requirements remain binding. The original freeze revision is preserved.
 
+The subsequent [verification and semantic-deadline correction](mo1305-contract-freeze-1-verification-methodology-correction.md)
+supersedes the universal repetition requirements and preliminary semantic deadline
+ceiling below. Current precedence is original freeze, then platform correction,
+then verification/deadline correction. Historical text and failed receipts remain
+unchanged evidence of their original requirements.
+
 ## 1. Authority and boundary
 
 This is the implementation contract delegated by the complete

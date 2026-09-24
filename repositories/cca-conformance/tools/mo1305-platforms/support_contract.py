@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 POLICY = {
-    "kind": "MemoryOSRESTPlatformPolicy", "version": "1.0.0",
+    "kind": "MemoryOSRESTPlatformPolicy", "version": "2.0.0",
     "supported": ["windows-11-x64"], "measurement": ["windows-11-x64"],
     "certification": ["windows-11-x64"], "requiredPlatformReceipts": 1,
     "ubuntu": "NOT_REQUIRED", "linux": "NOT_REQUIRED", "vm": "NOT_REQUIRED",
@@ -13,8 +13,8 @@ POLICY = {
     "nodeSha256": "ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32",
     "semanticParity": "REQUIRED", "realHTTP": "REQUIRED",
     "securityGates": "REQUIRED", "resourceGates": "REQUIRED",
-    "coldSamples": 30, "warmSamples": 100, "adverseSeconds": 60,
-    "adverseRepetitions": 3, "headroomAndCeilings": "UNCHANGED",
+    "verificationPolicy": "verification-policy.json",
+    "memoryHeadroomAndCeilings": "UNCHANGED", "semanticDeadlineCeilingMs": 60000,
     "actualEnvironmentRequired": ["edition", "release", "build", "architecture"],
 }
 

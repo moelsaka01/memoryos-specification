@@ -52,8 +52,7 @@ for forbidden in ("on both targets", "on both platforms", "both OS targets", "bo
                   "Exactly two sorted records", "two-platform/SDK/MCP parity",
                   "requires both platform PASS", "| parity |", "| Linux x64 |"):
     assert forbidden not in freeze, forbidden
-for required in ("platformCorrectionRevision", "30 cold", "100 warm", "60-second",
-                 "three-repetition", "1.5 * observedPeak", "Node.js 24.21.0",
+for required in ("platformCorrectionRevision", "verification-methodology-correction", "1.5 * observedPeak", "Node.js 24.21.0",
                  "12.2 Independent semantic parity", "raw TLS", "TLS 1.3",
                  "security/resource/package gate", "existing physical Windows 11 x64"):
     assert required in freeze, required
