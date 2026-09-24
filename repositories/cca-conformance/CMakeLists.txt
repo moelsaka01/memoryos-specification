@@ -35,6 +35,7 @@ set(memoryos_conformance_sources_list
     mo1302-conformance-inventory.json
     mo1303-conformance-inventory.json
     mo1304-conformance-inventory.json
+    mo1305-conformance-inventory.json
     requirements-manifest.json
     review-outcomes.input.json
     schema/conformance-evidence-1.0.schema.json
@@ -79,6 +80,47 @@ set(memoryos_conformance_sources_list
     tools/mo1304-phase3/harness-manifest.json
     evidence/mo1304-phase3-ubuntu/ubuntu-receipt.json
     docs/mo1304-phase3-ubuntu-certification.md
+    tests/mo1305_phase1_conformance_test.mjs
+    tools/mo1305-evidence.mjs
+    tools/mo1305-bounded-evidence.mjs
+    tools/mo1305-host-events.ps1
+    tools/mo1305-host-guard-policy.json
+    tools/mo1305-host-guard.mjs
+    tools/mo1305-modular-resource.mjs
+    tools/mo1305-host-resource-resume.mjs
+    tools/mo1305-host-resource-aggregate.mjs
+    tools/mo1305-host-adverse.mjs
+    tools/mo1305-host-functional.mjs
+    tools/mo1305-host-proof.mjs
+    tools/mo1305-host-complete.mjs
+    tools/mo1305-host-report.py
+    tools/mo1305-host-revalidate.mjs
+    tests/mo1305_host_guard_test.mjs
+    tools/mo1305-bounded-run.py
+    tools/mo1305-phase1/bounded-proof.mjs
+    tools/mo1305-platforms/verification-policy.json
+    tools/mo1305-platforms/verification_policy_test.py
+    tools/mo1305-schemas.py
+    tools/mo1305-finalize.py
+    tools/mo1305-final-validation.py
+    tools/mo1305-boundary-matrix.mjs
+    tools/mo1305-receipts.py
+    tools/mo1305-bind.mjs
+    tools/mo1305-report.py
+    tools/mo1305-monitor-tests.mjs
+    tools/mo1305-validate-measurements.mjs
+    tools/mo1305-clock-audit.py
+    tools/mo1305-phase1/preflight_r5.py
+    tools/mo1305-phase1/failure-schema-2.0.0.json
+    tools/mo1305-phase1/clock.mjs
+    tools/mo1305-phase1/clock-fixture.json
+    tools/mo1305-phase1/measurement-protocol-2.0.0.json
+    tools/mo1305-phase1/sample-proof.mjs
+    tools/mo1305-phase1/validate-campaign.mjs
+    schema/mo1305-receipt-1.0.0.json
+    schema/mo1305-inventory-1.0.0.json
+    schema/mo1305-receipt-2.0.0.json
+    schema/mo1305-inventory-2.0.0.json
     tests/normative_vectors_conformance_test.mjs
     tests/reference_implementation_conformance_test.mjs
     tests/report_conformance_test.mjs
@@ -160,6 +202,7 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     mo1304-phase1
     mo1304-phase2
     mo1304-phase3-ubuntu
+    mo1305-phase1
     mo1304-phase3-windows
     mo1304-platform-support
     normative
@@ -169,6 +212,9 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     schema
     specification
   )
+    if(conformance_area STREQUAL "mo1305-phase1" AND NOT WIN32)
+      continue()
+    endif()
     if(conformance_area STREQUAL "boundary")
       set(conformance_source tests/boundary_contract_conformance_test.mjs)
     elseif(conformance_area STREQUAL "compatibility")
@@ -203,6 +249,8 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
       set(conformance_source tests/mo1304_phase3_windows_conformance_test.mjs)
     elseif(conformance_area STREQUAL "mo1304-phase3-ubuntu")
       set(conformance_source tests/mo1304_phase3_ubuntu_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1305-phase1")
+      set(conformance_source tests/mo1305_phase1_conformance_test.mjs)
     elseif(conformance_area STREQUAL "normative")
       set(conformance_source tests/normative_vectors_conformance_test.mjs)
     elseif(conformance_area STREQUAL "reference")
@@ -356,10 +404,11 @@ install(
     mo1302-conformance-inventory.json
     mo1303-conformance-inventory.json
     mo1304-conformance-inventory.json
+    mo1305-conformance-inventory.json
   DESTINATION "${CMAKE_INSTALL_DATADIR}/memoryos-conformance"
 )
 install(
-  DIRECTORY docs schema tests tools
+  DIRECTORY docs schema tests tools fixtures
   DESTINATION "${CMAKE_INSTALL_DATADIR}/memoryos-conformance"
 )
 install(

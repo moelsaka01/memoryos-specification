@@ -1,0 +1,178 @@
+TAP version 13
+# Subtest: wall adjustment -1 ms preserves monotonic request/capture order
+ok 1 - wall adjustment -1 ms preserves monotonic request/capture order
+  ---
+  duration_ms: 5.0476
+  type: 'test'
+  ...
+# Subtest: wall adjustment -2000 ms preserves monotonic request/capture order
+ok 2 - wall adjustment -2000 ms preserves monotonic request/capture order
+  ---
+  duration_ms: 1.0009
+  type: 'test'
+  ...
+# Subtest: wall adjustment 5000 ms preserves monotonic request/capture order
+ok 3 - wall adjustment 5000 ms preserves monotonic request/capture order
+  ---
+  duration_ms: 0.5805
+  type: 'test'
+  ...
+# Subtest: wall adjustment 3600000 ms preserves monotonic request/capture order
+ok 4 - wall adjustment 3600000 ms preserves monotonic request/capture order
+  ---
+  duration_ms: 0.5446
+  type: 'test'
+  ...
+# Subtest: R4 condition fixture keeps duration, causality and descriptive wall backstep
+ok 5 - R4 condition fixture keeps duration, causality and descriptive wall backstep
+  ---
+  duration_ms: 2.1924
+  type: 'test'
+  ...
+# Subtest: delayed collector readiness requires a persisted numeric capture
+ok 6 - delayed collector readiness requires a persisted numeric capture
+  ---
+  duration_ms: 6.226
+  type: 'test'
+  ...
+# Subtest: stale ticket cannot satisfy a new capture
+ok 7 - stale ticket cannot satisfy a new capture
+  ---
+  duration_ms: 0.7785
+  type: 'test'
+  ...
+# Subtest: duplicate sequence rejects with explicit operands
+ok 8 - duplicate sequence rejects with explicit operands
+  ---
+  duration_ms: 1.0223
+  type: 'test'
+  ...
+# Subtest: out-of-order sequence rejects with explicit operands
+ok 9 - out-of-order sequence rejects with explicit operands
+  ---
+  duration_ms: 0.429
+  type: 'test'
+  ...
+# Subtest: future sequence rejects with explicit operands
+ok 10 - future sequence rejects with explicit operands
+  ---
+  duration_ms: 0.5306
+  type: 'test'
+  ...
+# Subtest: wrong capture ticket rejects with explicit operands
+ok 11 - wrong capture ticket rejects with explicit operands
+  ---
+  duration_ms: 0.38
+  type: 'test'
+  ...
+# Subtest: wrong process rejects with explicit operands
+ok 12 - wrong process rejects with explicit operands
+  ---
+  duration_ms: 0.4068
+  type: 'test'
+  ...
+# Subtest: wrong candidate rejects with explicit operands
+ok 13 - wrong candidate rejects with explicit operands
+  ---
+  duration_ms: 0.4026
+  type: 'test'
+  ...
+# Subtest: wrong run rejects with explicit operands
+ok 14 - wrong run rejects with explicit operands
+  ---
+  duration_ms: 0.3154
+  type: 'test'
+  ...
+# Subtest: wrong campaign rejects with explicit operands
+ok 15 - wrong campaign rejects with explicit operands
+  ---
+  duration_ms: 0.4568
+  type: 'test'
+  ...
+# Subtest: unpersisted sample rejects with explicit operands
+ok 16 - unpersisted sample rejects with explicit operands
+  ---
+  duration_ms: 0.4992
+  type: 'test'
+  ...
+# Subtest: malformed sample rejects with explicit operands
+ok 17 - malformed sample rejects with explicit operands
+  ---
+  duration_ms: 0.4313
+  type: 'test'
+  ...
+# Subtest: incompatible collector epoch rejects with explicit operands
+ok 18 - incompatible collector epoch rejects with explicit operands
+  ---
+  duration_ms: 0.2704
+  type: 'test'
+  ...
+# Subtest: malformed JSON rejects without an empty successful sample
+ok 19 - malformed JSON rejects without an empty successful sample
+  ---
+  duration_ms: 0.2356
+  type: 'test'
+  ...
+# Subtest: collector readiness timeout uses injected monotonic deadline despite wall jump
+ok 20 - collector readiness timeout uses injected monotonic deadline despite wall jump
+  ---
+  duration_ms: 0.2323
+  type: 'test'
+  ...
+# Subtest: collector exit before readiness rejects
+ok 21 - collector exit before readiness rejects
+  ---
+  duration_ms: 0.1696
+  type: 'test'
+  ...
+# Subtest: missing post-sample times out with complete timing operands and context
+ok 22 - missing post-sample times out with complete timing operands and context
+  ---
+  duration_ms: 1.3361
+  type: 'test'
+  ...
+# Subtest: measured process/collector exit before post-sample rejects
+ok 23 - measured process/collector exit before post-sample rejects
+  ---
+  duration_ms: 0.2772
+  type: 'test'
+  ...
+# Subtest: OPERATION_TIMEOUT uses monotonic deadline under both wall jumps
+ok 24 - OPERATION_TIMEOUT uses monotonic deadline under both wall jumps
+  ---
+  duration_ms: 4.7202
+  type: 'test'
+  ...
+# Subtest: SHUTDOWN_TIMEOUT uses monotonic deadline under both wall jumps
+ok 25 - SHUTDOWN_TIMEOUT uses monotonic deadline under both wall jumps
+  ---
+  duration_ms: 0.549
+  type: 'test'
+  ...
+# Subtest: PROCESS_STARTUP_TIMEOUT uses monotonic deadline under both wall jumps
+ok 26 - PROCESS_STARTUP_TIMEOUT uses monotonic deadline under both wall jumps
+  ---
+  duration_ms: 0.6432
+  type: 'test'
+  ...
+# Subtest: independent monotonic epochs cannot be directly compared
+ok 27 - independent monotonic epochs cannot be directly compared
+  ---
+  duration_ms: 0.2153
+  type: 'test'
+  ...
+# Subtest: actual monotonic reversal remains a failure
+ok 28 - actual monotonic reversal remains a failure
+  ---
+  duration_ms: 0.1185
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1075.5305

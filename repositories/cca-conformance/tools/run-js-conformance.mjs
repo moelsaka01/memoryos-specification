@@ -27,6 +27,8 @@ const expectedFiles = Object.freeze([
   "mo1304_phase3_ubuntu_conformance_test.mjs",
   "mo1304_phase3_windows_conformance_test.mjs",
   "mo1304_platform_support_conformance_test.mjs",
+  "mo1305_host_guard_test.mjs",
+  "mo1305_phase1_conformance_test.mjs",
   "normative_vectors_conformance_test.mjs",
   "reference_implementation_conformance_test.mjs",
   "report_conformance_test.mjs",
@@ -74,6 +76,10 @@ const actualFiles = (await readdir(testsRoot))
   .sort();
 assert.deepEqual(actualFiles, expectedFiles, "conformance test inventory changed without registration");
 
+// The MO-1305 installed-artifact gate has a Windows-only support contract.
+const selectedFiles = actualFiles.filter((path) =>
+  !["mo1305_host_guard_test.mjs", "mo1305_phase1_conformance_test.mjs"].includes(path) || process.platform === "win32");
+
 const python = locatePython();
 const environment = {
   ...process.env,
@@ -101,7 +107,7 @@ const result = spawnSync(
     "--test",
     "--test-concurrency=1",
     "--test-reporter=tap",
-    ...actualFiles.map((path) => resolve(testsRoot, path)),
+    ...selectedFiles.map((path) => resolve(testsRoot, path)),
   ],
   {
     cwd: root,
