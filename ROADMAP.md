@@ -11,7 +11,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
 | MemoryOS 1.2 | Released — v1.2.0 | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, and its official Conformance Suite |
 | MemoryOS 1.2.1 | Corrective restoration | Restores omitted intended v1.2 source, registered tests, fixtures, examples, documentation, frozen Standard and MIP publication assets, and corrected conformance provenance while preserving all v1.2 semantics and CSP fixes |
-| MemoryOS 1.3 | In development; MO-1301 through MO-1305 released | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, and certified REST Gateway; MO-1306 Provider-Neutral CI/CD Integration authorized, Contract Freeze 1 next |
+| MemoryOS 1.3 | In development; MO-1301 through MO-1305 released | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, and certified REST Gateway; MO-1306 Provider-Neutral CI/CD Integration Contract Freeze 1 established, Phase 1 next |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -102,8 +102,8 @@ This is the current prospective roadmap, reconciled after the MO-1305 release.
 It combines the earlier integration/product and standards/product directions
 without renumbering the released milestones. MO-1301 through MO-1305 retain
 their existing scope, commits, contracts, conformance history, evidence, and
-tags. MO-1306 is the next milestone. Its authority-pending position is now
-advanced to AUTHORIZED / CONTRACT FREEZE 1 NEXT by the focused authority below.
+tags. MO-1306 is the next milestone. Its roadmap authority and the focused
+freeze below now establish CONTRACT FREEZE 1 ESTABLISHED / PHASE 1 NEXT.
 
 | Milestone | Title | Status | Architectural layer |
 |---|---|---|---|
@@ -112,15 +112,16 @@ advanced to AUTHORIZED / CONTRACT FREEZE 1 NEXT by the focused authority below.
 | MO-1303 | VS Code Extension | CLOSED / RELEASED WITH EXTERNAL-INFRASTRUCTURE EXCEPTION | VS Code developer integration |
 | MO-1304 | MCP Server and Agent Integration | CLOSED / CERTIFIED / RELEASED | MCP / agent integration over existing MemoryOS capabilities |
 | MO-1305 | REST Gateway | CLOSED / CERTIFIED / RELEASED | Bounded REST/API integration |
-| MO-1306 | Provider-Neutral CI/CD Integration | AUTHORIZED / CONTRACT FREEZE 1 NEXT | Provider-neutral CI/CD integration |
+| MO-1306 | Provider-Neutral CI/CD Integration | CONTRACT FREEZE 1 ESTABLISHED / PHASE 1 NEXT | Provider-neutral CI/CD integration |
 | MO-1307 | Release Policies / Release Readiness | PLANNED / AUTHORITY PENDING | Higher-level release policy and readiness |
 | MO-1308 | Investigation History | PLANNED / AUTHORITY PENDING | Durable investigation/evaluation history and traceability |
 | MO-1309 | Cloud Dashboard | PLANNED / AUTHORITY PENDING | Cloud-facing dashboard experience |
 
 Later milestones must delegate to existing semantic authority rather than
-silently reimplementing MemoryOS semantics. This roadmap assigns high-level
-direction only; it neither starts implementation nor freezes future contracts.
-Unrelated proposals elsewhere in this document remain proposals.
+silently reimplementing MemoryOS semantics. The linked MO-1306 freeze specifies
+that milestone's contract without starting implementation. Later milestones
+still require their own authority and freeze; unrelated proposals elsewhere
+in this document remain proposals.
 
 ### Released history and authority
 
@@ -195,23 +196,27 @@ reconciliation changes no package, contract, receipt, evidence, or release tag.
 
 ### MO-1306: Provider-Neutral CI/CD Integration
 
-Status: **AUTHORIZED / CONTRACT FREEZE 1 NEXT**.
+Status: **CONTRACT FREEZE 1 ESTABLISHED / PHASE 1 NEXT**.
 
-The focused authority is
+The focused roadmap authority is
 [MemoryOS 1.3 MO-1306 — Provider-Neutral CI/CD Integration](docs/mo1306-provider-neutral-cicd.md).
-It establishes one provider-neutral CI/CD core consuming existing MemoryOS
-policy evaluation and gating semantics, with a first-class generic runner,
-GitHub Actions integration preserving MO-1302, and actual usable GitLab,
-Jenkins, and Azure DevOps adapters/configuration artifacts. Exact invocation,
-schemas, mappings, package boundaries and generated filenames remain Contract
-Freeze 1 decisions. Implementation has not begun.
+Its decisions A–AF are resolved by
+[Contract Freeze 1](docs/mo1306-contract-freeze-1.md). The freeze selects one
+SDK-backed provider-neutral core, a first-class native Windows generic runner,
+one closed configuration/result/evidence contract, deterministic GitLab,
+Jenkins, Azure and GitHub provider files, uniform exit mapping, and a single
+offline package. Regression uses the existing SDK/CLI acquisition path.
+The earlier authority's status/open register describes its authorization stage;
+its hard constraints remain binding. Implementation has not begun.
 
-Native Windows 11 x64 generic execution is required. GitHub Actions is the
-available real hosted witness where appropriate. Implemented,
-contract-validated, and live-provider certified adapters are distinct claims.
-GitLab/Jenkins/Azure implementation and strong local contract validation are
-required; live-provider certification is not required and must never be
-fabricated. Documentation alone does not constitute their adapter support.
+Native Windows 11 x64 generic execution is required. A separate Windows
+`windows-2022` GitHub Actions integration preserves released MO-1302 behavior;
+real hosted certification is required where safely feasible using existing
+access, with an explicit disposition required if unavailable. Implemented,
+contract-validated, and actually executed integrations retain distinct labels.
+GitLab/Jenkins/Azure require usable adapters and strong offline schema/grammar,
+security and generic-equivalence validation; live-provider certification is not
+required. Documentation alone does not constitute implementation or PASS.
 
 Every MO-1306 v1 phase must be implementable, testable, certifiable and
 releasable without Linux, Ubuntu, WSL, VirtualBox, VMware, Hyper-V VM or any
@@ -225,8 +230,11 @@ available; no additional paid service is a release prerequisite.
 MO-1307 retains release-governance semantics, MO-1308 durable Investigation
 History, and MO-1309 Cloud Dashboard. MO-1306 adds none of those products and
 does not expand VS Code, MCP, or REST. MCP and REST are not automatically
-required semantic transports. This is roadmap authority only, with no adapters,
-CI files, production code, dependencies or certification evidence created.
+required semantic transports. The freeze defines bounded Windows processes,
+filesystem/network/secret boundaries, resource and task budgets, package and
+supply-chain review, phased implementation and acyclic conformance binding.
+This is documentation/contract authority only, with no adapters, CI files,
+production code, dependencies or certification evidence created.
 
 ### MO-1307: Release Policies / Release Readiness
 
@@ -258,7 +266,7 @@ Freeze.
 
 The exact next task is:
 
-**MEMORYOS 1.3 MO-1306 PROVIDER-NEUTRAL CI/CD INTEGRATION CONTRACT FREEZE 1**
+**MEMORYOS 1.3 MO-1306 PROVIDER-NEUTRAL CI/CD INTEGRATION PHASE 1 IMPLEMENTATION**
 
 ## IM-001: engineering foundation
 
