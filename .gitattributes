@@ -19,3 +19,9 @@ docs/mo1305-phase1-resource-review.md -text whitespace=trailing-space,space-befo
 
 # Preserve the historical report's intentional Markdown hard break.
 docs/mo1305-r6-root-cause-diagnostic.md whitespace=blank-at-eof,space-before-tab,-blank-at-eol
+
+# Preserve the exact Phase 2B executed harness bytes bound by source-tree receipts.
+repositories/cca-conformance/tools/mo1305-phase2b/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+# Retain the exact executed transport-harness bytes bound by Phase 2C receipts.
+repositories/cca-conformance/tools/mo1305-phase2c/transport.mjs whitespace=-blank-at-eof

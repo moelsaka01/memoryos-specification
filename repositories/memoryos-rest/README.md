@@ -3,8 +3,9 @@
 A bounded HTTP/1.1 adapter over the released MemoryOS Policy SDK. Package
 memoryos-rest 0.1.0 requires native Windows 11 x64, Node 24.21.0 and npm 11.19.0.
 It has no external production or development npm dependencies. Contract and
-implementation status are governed by [Contract Freeze 1](../../docs/mo1305-contract-freeze-1.md)
-and the separately bound Phase 1 evidence; this README is not a certification.
+implementation status are governed by the repository MO-1305 Contract Freeze 1
+and its corrections and separately bound phase evidence. This README is not
+a certification; the installed contracts contain the operational data.
 
 The nine /v1 routes prepare Policy/Policy Set artifacts, evaluate a Policy or
 Policy Set against inline MIP bytes, verify Evaluation Identity/Policy Outcome
@@ -14,12 +15,14 @@ and headers. Normative bytes are canonical padded Base64; digests and decisions
 come from the SDK. Evaluation supplies no Regression source. Health and readiness
 require the same bearer credential as semantic operations.
 
-## Trusted local launch
+## Trusted launch
 
 An operator supplies an absolute local configuration file containing version
 1.0.0, tokenFile, certificateFile and privateKeyFile. Optional port defaults to
-13050. Phase 1 accepts local mode on 127.0.0.1; remote configuration is validated
-but remote startup is refused until Phase 2. No wildcard or DNS binding occurs.
+13050. Local mode binds 127.0.0.1. Remote mode requires explicit `mode: "remote"`
+and a canonical RFC1918 `bindAddress` assigned to a non-loopback interface, with
+a matching certificate IP SAN. Invalid remote configuration creates no fallback
+listener. No wildcard, public-address, DNS or IPv6 binding occurs.
 
 Run the pinned executable with the installed bin/memoryos-rest.mjs and
 `--config <absolute-local-path>`. The token file contains exactly 64 lowercase
@@ -52,12 +55,35 @@ service stdout is empty. No body, token, key or credential path is logged.
 
 ## Installation and verification
 
-The deterministic archive contains only the explicit distribution manifest.
-Materialize it in a private directory and run `npm ci --offline --ignore-scripts
---no-audit --no-fund --cache <initially-empty-cache>` with the pinned toolchain.
-Verify every installed file against distribution-manifest.json before launch.
-`node scripts/verify-distribution.mjs` and `node scripts/verify-contracts.mjs`
-provide the installed integrity and complete runtime/OpenAPI checks.
+The deterministic `memoryos-rest-0.1.0.tgz` has exactly the 58 allowlisted files,
+including the distribution manifest. Obtain its SHA-256 from a trusted external
+integrated Phase 2 archive receipt. Before extracting or running package code, use the
+trusted engineering verifier `mo1305-phase2d/distribution.py verify --archive
+<archive> --sha256 <receipt-sha256>`. That verifier is distributed with the
+engineering checkout, outside this service package; protect it and the receipt
+as launcher trust inputs. A manifest stored beside mutable code is not its own
+trust anchor. The verifier rejects unsafe or extra archive members and binds
+all package bytes, including the installed verification scripts.
+
+Two offline installation forms are supported with absolute pinned Node and
+npm-cli.js paths. For a verified extracted package, run `npm ci --offline
+--ignore-scripts --no-audit --no-fund --cache <initially-empty-cache>` in its
+package directory. Alternatively, in a fresh empty external project run `npm
+install --offline --ignore-scripts --no-audit --no-fund --cache
+<initially-empty-cache> <absolute-verified-archive>`; the service is then in
+`node_modules/memoryos-rest`. The outer project's lock and bin shims belong to
+the npm installation, not the gateway's 58-file distribution. No registry data,
+lifecycle downloader or previously populated cache is required.
+
+Check the exact installed file set and hashes against the externally verified
+archive after either form of installation and before launch. With the pinned
+Node, run the installed `scripts/verify-distribution.mjs` and
+`scripts/verify-contracts.mjs` for runtime and complete OpenAPI consistency.
+Launch the absolute installed `bin/memoryos-rest.mjs` from any empty working
+directory with a sanitized environment and the trusted-launch preconditions
+above. No checkout, Git directory, sibling repository, developer node_modules,
+NODE_PATH or environment-selected semantic runtime is required. Source tests,
+fixtures, builders, receipts, caches and credentials are not package members.
 
 The independently copied 25-file semantic closure and 933-byte identity pin are
 unchanged authoritative artifacts. The package contains no MCP adapter dependency.
@@ -69,4 +95,7 @@ Worker resourceLimits constrain V8 heap/stack, while memory watchdogs sample
 commitment, external memory and RSS. These are not instantaneous OS containment.
 The young allocation control is 24 MiB on the pinned V8, separate from the
 measurement-derived commitment budget; no runtime adaptation raises budgets.
-All final limits must be bound by successful Phase 1 evidence before B1.
+The shipped FINAL limits, schemas and OpenAPI retain their successful B1 byte
+identities. The Phase 2 integration binds remote/lifecycle, security and
+distribution acceptance to one candidate. Windows release certification and
+final release binding remain separate Phase 3 gates.

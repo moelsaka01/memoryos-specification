@@ -7,6 +7,7 @@ import { api, validate } from './contracts.mjs';
 import { reject } from './errors.mjs';
 
 export function validateBinding(mode, address, interfaces = networkInterfaces()) {
+  if (mode !== 'local' && mode !== 'remote') reject('REQUEST_SCHEMA');
   if (!isIPv4(address)) reject('REQUEST_SCHEMA');
   if (mode === 'local') { if (address !== '127.0.0.1') reject('FORBIDDEN'); return; }
   const octets = address.split('.').map(Number);
@@ -26,8 +27,6 @@ export function loadConfig(path) {
   const mode = value.mode ?? 'local', bindAddress = value.bindAddress ?? '127.0.0.1', port = value.port ?? 13050;
   if (mode === 'remote' && !Object.hasOwn(value,'bindAddress')) reject('REQUEST_SCHEMA');
   validateBinding(mode, bindAddress);
-  // Phase 1 deliberately refuses remote listening after validating its configuration foundation.
-  if (mode === 'remote') reject('UNAVAILABLE');
   const tokenText = readChecked(value.tokenFile, 64);
   if (tokenText.length !== 64 || !/^[0-9a-f]{64}$/u.test(tokenText.toString('ascii')) || tokenText.some(b => b > 127)) reject('UNAUTHENTICATED');
   const cert = readChecked(value.certificateFile, 16384), key = readChecked(value.privateKeyFile, 4096);

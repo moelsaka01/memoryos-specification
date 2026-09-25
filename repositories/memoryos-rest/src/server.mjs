@@ -15,16 +15,21 @@ import { Logger } from './logging.mjs';
 /** Same installed implementation for normal entry point and isolated measurement launcher.
  * observe receives bounded numeric timing/memory records, never input/products/secrets.
  * The normal service supplies no observer and exposes no metrics protocol. */
-export async function startGateway(config, manifest, {logger=new Logger(), observe=null, observeState=null}={}) {
+export async function startGateway(config, manifest, {logger=new Logger(), observe=null, observeState=null, observeLifecycle=null, signal=null}={}) {
   const fixed=limits.fixed, connections=new Map(), requests=new Slots(fixed.requestSlots), writes=new Slots(fixed.writeSlots), semantic=new Ownership();
   const connectionBucket=new TokenBucket(fixed.connectionRate,fixed.connectionBurst), requestBucket=new TokenBucket(fixed.requestRate,fixed.requestBurst);
-  let draining=false,poisoned=false,exitCode=0,shutdownPromise=null,resolveClosed;
+  let draining=false,poisoned=false,exitCode=0,shutdownPromise=null,resolveClosed,watchdog=null;
+  let state='INITIALIZING';
+  function transition(next){state=next;if(observeLifecycle)observeLifecycle(next);}
+  transition(state);
   const closed=new Promise(resolve=>{resolveClosed=resolve;});
-  const httpServer=http.createServer({insecureHTTPParser:false,maxHeaderSize:fixed.headerBytes,highWaterMark:fixed.streamHighWaterMark,headersTimeout:0,requestTimeout:0,keepAliveTimeout:0,connectionsCheckingInterval:1000},handle);
+  // Keep missing-Host errors inside the authenticated frozen header policy.
+  const httpServer=http.createServer({requireHostHeader:false,insecureHTTPParser:false,maxHeaderSize:fixed.headerBytes,highWaterMark:fixed.streamHighWaterMark,headersTimeout:0,requestTimeout:0,keepAliveTimeout:0,connectionsCheckingInterval:1000},handle);
   httpServer.maxHeadersCount=0;httpServer.maxRequestsPerSocket=1;httpServer.timeout=0;httpServer.keepAliveTimeoutBuffer=0;
-  const server=tls.createServer({key:config.key,cert:config.cert,minVersion:'TLSv1.3',maxVersion:'TLSv1.3',
+  let server;
+  try { server=tls.createServer({key:config.key,cert:config.cert,minVersion:'TLSv1.3',maxVersion:'TLSv1.3',
     ciphers:'TLS_AES_256_GCM_SHA384:TLS_AES_128_GCM_SHA256',ALPNProtocols:['http/1.1'],requestCert:false,
-    rejectUnauthorized:false,handshakeTimeout:fixed.handshakeMs,highWaterMark:fixed.streamHighWaterMark,allowHalfOpen:true},secure);
+    rejectUnauthorized:false,handshakeTimeout:fixed.handshakeMs,highWaterMark:fixed.streamHighWaterMark,allowHalfOpen:true},secure); } catch(error){transition('FAILED');throw error;}
   const key=socket=>socket.remoteAddress+':'+socket.remotePort;
   function captureMemory(context) {
     const memory=process.memoryUsage();
@@ -44,7 +49,7 @@ export async function startGateway(config, manifest, {logger=new Logger(), obser
     if(!context.owner||context.owner.reaped)report(context);
   }
   function failedCode(error){return Object.hasOwn(api.errors,error?.code)?error.code:'MO1305_INTERNAL_FAILURE';}
-  function poison(code){if(!poisoned){poisoned=true;exitCode=1;logger.emit('fatal',code);}}
+  function poison(code){if(!poisoned){poisoned=true;exitCode=Math.max(exitCode,1);transition('FAILED');logger.emit('fatal',code);}}
   function fatal(code){poison(code);void shutdown(1);}
   function send(context,product,status=null,extra={}) {
     if(context.published||context.socket.destroyed||!context.socket.writable||context.cancelled)return;
@@ -108,15 +113,15 @@ export async function startGateway(config, manifest, {logger=new Logger(), obser
     context.key=key(socket);connections.set(context.key,context);captureMemory(context);
     context.timer=atDeadline(context.created+ms(fixed.handshakeMs),()=>socket.destroy());
     socket.on('error',()=>socket.destroy());
-    socket.once('close',()=>{connections.delete(context.key);cancel(context);});
+    socket.once('close',()=>{if(connections.get(context.key)===context)connections.delete(context.key);cancel(context);});
   });
   server.on('tlsClientError',(_error,socket)=>socket.destroy());
-  server.on('error',()=>{if(!draining)fatal('MO1305_UNAVAILABLE');});
+  server.on('error',()=>{if(state==='INITIALIZING')return;fatal('MO1305_UNAVAILABLE');});
   function secure(socket) {
     const context=connections.get(key(socket));
     if(!context||draining||deadlineReached(context.created+ms(fixed.handshakeMs))||socket.getProtocol()!=='TLSv1.3'||(socket.alpnProtocol&&socket.alpnProtocol!=='http/1.1')){socket.destroy();return;}
     context.socket=socket;socket.pause();socket.setNoDelay(true);
-    socket.on('error',()=>socket.destroy());socket.once('close',()=>{connections.delete(context.key);cancel(context);});
+    socket.on('error',()=>socket.destroy());socket.once('close',()=>{if(connections.get(context.key)===context)connections.delete(context.key);cancel(context);});
     timeout(context,now()+ms(fixed.headerMs),'MO1305_REQUEST_TIMEOUT');
     let retained=Buffer.alloc(0);
     function gate(chunk){
@@ -197,11 +202,14 @@ export async function startGateway(config, manifest, {logger=new Logger(), obser
       }
       let product;
       if(route.category==='semantic'){
-        context.owner=semantic.reserve(request.socket);
+        try{context.owner=semantic.reserve(request.socket);}catch(error){
+          if(error?.code!=='MO1305_UNAVAILABLE')throw error;
+          fail(context,error.code);void shutdown(0);return;
+        }
         const result=await runSemantic(context.owner,route.operationId,input,manifest,poison);Object.assign(context.metrics,result.metrics);
         if(context.pendingError){context.owner.cancelled=false;product=errorProduct(context.pendingError);}
         else product=result.product;
-        if(context.cancelled){context.owner.responseDone=true;semantic.release(context.owner);report(context);return;}
+        if(context.cancelled){context.owner.responseDone=true;semantic.release(context.owner);report(context);if(poisoned)void shutdown(1);return;}
       }else if(route.operationId==='getHealth')product={status:'ok',live:true};
       else if(route.operationId==='getReadiness')product=semantic.owner?errorProduct('MO1305_BUSY'):{status:'ok',ready:true};
       else product=versionProduct;
@@ -210,32 +218,53 @@ export async function startGateway(config, manifest, {logger=new Logger(), obser
     }catch(error){fail(context,failedCode(error));}
   }
   function reportState(){if(observeState)observeState({utcMs:Date.now(),memory:process.memoryUsage(),connections:connections.size,requestSlots:requests.active.size,writeSlots:writes.active.size,workers:semantic.owner?.worker?1:0,bodyBuffers:Array.from(connections.values()).filter(c=>c.bodyBufferBytes).length,bodyBufferBytes:Array.from(connections.values()).reduce((sum,c)=>sum+(c.bodyBufferBytes??0),0),published:Array.from(connections.values()).filter(c=>c.published).length,semanticOwners:semantic.owner?1:0,draining:draining?1:0});}
-  const watchdog=setInterval(()=>{
+  function sample(){
     reportState();
     const memory=process.memoryUsage(),heap=memory.heapTotal,external=memory.external;
     for(const context of connections.values()){
       context.metrics.parentHeapBytes=Math.max(context.metrics.parentHeapBytes,heap);context.metrics.parentExternalBytes=Math.max(context.metrics.parentExternalBytes,external);context.metrics.processRssBytes=Math.max(context.metrics.processRssBytes,memory.rss);
     }
     if(memoryExceeded({parentHeapMiB:heap,parentExternalMiB:external,processRssMiB:memory.rss}))fatal('MO1305_OUTPUT_LIMIT');
-  },fixed.sampleMs);
+  }
   function shutdown(code=0) {
+    // A later fatal trigger must upgrade an already running requested drain.
+    exitCode=Math.max(exitCode,code);
+    if(code!==0&&state!=='FAILED')transition('FAILED');
     if(shutdownPromise)return shutdownPromise;
-    draining=true;exitCode=Math.max(exitCode,code);logger.emit('shutdown');
-    shutdownPromise=(async()=>{
-      const deadline=now()+ms(fixed.shutdownMs);
+    draining=true;if(state!=='FAILED')transition('DRAINING');logger.emit('shutdown');
+    const deadline=now()+ms(fixed.shutdownMs);
+    shutdownPromise=Promise.resolve().then(async()=>{
+      // This bound also covers a close callback that never arrives. It cannot
+      // leave a successful closed promise with live listener/process handles.
+      const force=atDeadline(deadline,()=>{exitCode=1;transition('FAILED');for(const context of connections.values()){context.socket.destroy();context.rawSocket.destroy();}process.exit(1);});
       const stopped=new Promise(resolve=>server.close(resolve));
       for(const context of connections.values())if(!context.published){cancel(context);context.socket.destroy();context.rawSocket.destroy();}
-      while((semantic.owner||connections.size) && !deadlineReached(deadline)){
+      while(semantic.owner||connections.size){
         if(semantic.owner)semantic.release(semantic.owner);
         if(semantic.owner||connections.size)await new Promise(resolve=>setTimeout(resolve,10));
       }
-      if(semantic.owner||connections.size){exitCode=1;for(const context of connections.values()){context.socket.destroy();context.rawSocket.destroy();}}
-      if(semantic.owner?.worker)process.exit(1);
-      await Promise.race([stopped,new Promise(resolve=>{const timer=setTimeout(()=>{exitCode=1;resolve();},Math.max(0,Number((deadline-now())/1000000n)));timer.unref();})]);
-      reportState();clearInterval(watchdog);resolveClosed(exitCode);return exitCode;
-    })();return shutdownPromise;
+      await stopped;
+      cancelDeadline(force);clearInterval(watchdog);
+      signal?.removeEventListener('abort',abort);
+      if(state!=='FAILED')transition(exitCode===0?'STOPPED':'FAILED');
+      reportState();resolveClosed(exitCode);return exitCode;
+    });return shutdownPromise;
   }
-  await new Promise((resolve,rejectListen)=>{server.once('error',rejectListen);server.listen({host:config.bindAddress,port:config.port,exclusive:true},()=>{server.off('error',rejectListen);resolve();});});
-  reportState();logger.emit('startup');
-  return {closed,shutdown,address:()=>server.address()};
+  function abort(){void shutdown(signal.reason===1?1:0);}
+  const gateway={closed,shutdown,address:()=>server.address(),get state(){return state;}};
+  if(signal?.aborted){await shutdown(signal.reason===1?1:0);return gateway;}
+  signal?.addEventListener('abort',abort,{once:true});
+  try {
+    await new Promise((resolve,rejectListen)=>{
+      const failed=error=>{server.off('listening',listening);rejectListen(error);};
+      const listening=()=>{server.off('error',failed);resolve();};
+      server.once('error',failed);server.once('listening',listening);
+      closed.then(()=>{server.off('error',failed);server.off('listening',listening);resolve();});
+      server.listen({host:config.bindAddress,port:config.port,exclusive:true,...(signal?{signal}:{})});
+    });
+  } catch(error){transition('FAILED');await shutdown(2);throw error;}
+  if(draining){await shutdownPromise;return gateway;}
+  watchdog=setInterval(sample,fixed.sampleMs);
+  transition('READY');reportState();logger.emit('startup');
+  return gateway;
 }

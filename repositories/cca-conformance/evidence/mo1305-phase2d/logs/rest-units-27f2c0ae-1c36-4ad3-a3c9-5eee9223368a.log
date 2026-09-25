@@ -1,0 +1,172 @@
+TAP version 13
+# Subtest: token bucket burst, N-1/N/N+1 refill and backward time preserve fixed state
+ok 1 - token bucket burst, N-1/N/N+1 refill and backward time preserve fixed state
+  ---
+  duration_ms: 0.9503
+  type: 'test'
+  ...
+# Subtest: request/write slots never queue and semantic ownership requires both reap and response completion
+ok 2 - request/write slots never queue and semantic ownership requires both reap and response completion
+  ---
+  duration_ms: 0.5365
+  type: 'test'
+  ...
+# Subtest: raw grammar rejects ambiguous names, duplicate framing, controls and non-origin targets
+ok 3 - raw grammar rejects ambiguous names, duplicate framing, controls and non-origin targets
+  ---
+  duration_ms: 1.0615
+  type: 'test'
+  ...
+# Subtest: header count, target and value boundaries include syntactic witnesses that may later fail allowlists
+ok 4 - header count, target and value boundaries include syntactic witnesses that may later fail allowlists
+  ---
+  duration_ms: 0.7436
+  type: 'test'
+  ...
+# Subtest: authentication is closed and host/proxy/media/schema precedence is explicit
+ok 5 - authentication is closed and host/proxy/media/schema precedence is explicit
+  ---
+  duration_ms: 1.2667
+  type: 'test'
+  ...
+# Subtest: remote binding checks actual private interface and rejects network/broadcast and /31
+ok 6 - remote binding checks actual private interface and rejects network/broadcast and /31
+  ---
+  duration_ms: 0.8161
+  type: 'test'
+  ...
+# Subtest: serialization rejects sparse arrays even if extra enumerable properties mask length
+ok 7 - serialization rejects sparse arrays even if extra enumerable properties mask length
+  ---
+  duration_ms: 0.1779
+  type: 'test'
+  ...
+# Subtest: all fixed decoded byte envelopes enforce N-1/N/N+1 independently
+ok 8 - all fixed decoded byte envelopes enforce N-1/N/N+1 independently
+  ---
+  duration_ms: 11.1326
+  type: 'test'
+  ...
+# Subtest: closed catalog has six semantic and three operational operations with unique methods/paths/IDs
+ok 9 - closed catalog has six semantic and three operational operations with unique methods/paths/IDs
+  ---
+  duration_ms: 1.5761
+  type: 'test'
+  ...
+# Subtest: strict JSON preserves safe values and creates null-prototype objects
+ok 10 - strict JSON preserves safe values and creates null-prototype objects
+  ---
+  duration_ms: 1.1838
+  type: 'test'
+  ...
+# Subtest: JSON rejects duplicate decoded keys before assignment
+ok 11 - JSON rejects duplicate decoded keys before assignment
+  ---
+  duration_ms: 0.5969
+  type: 'test'
+  ...
+# Subtest: JSON rejects malformed UTF-8, BOM, invalid strings and trailing tokens
+ok 12 - JSON rejects malformed UTF-8, BOM, invalid strings and trailing tokens
+  ---
+  duration_ms: 0.4989
+  type: 'test'
+  ...
+# Subtest: JSON rejects unsupported number lexical forms and unsafe integers
+ok 13 - JSON rejects unsupported number lexical forms and unsafe integers
+  ---
+  duration_ms: 0.3571
+  type: 'test'
+  ...
+# Subtest: JSON exact depth, members, nodes, strings and byte boundaries
+ok 14 - JSON exact depth, members, nodes, strings and byte boundaries
+  ---
+  duration_ms: 0.4205
+  type: 'test'
+  ...
+# Subtest: transport serialization sorts recursively without changing byte products
+ok 15 - transport serialization sorts recursively without changing byte products
+  ---
+  duration_ms: 0.3917
+  type: 'test'
+  ...
+# Subtest: canonical Base64 distinguishes malformed syntax from decoded byte overflow
+ok 16 - canonical Base64 distinguishes malformed syntax from decoded byte overflow
+  ---
+  duration_ms: 6.6193
+  type: 'test'
+  ...
+# Subtest: request schemas are closed, typed and have no coercion or prototype grants
+ok 17 - request schemas are closed, typed and have no coercion or prototype grants
+  ---
+  duration_ms: 0.7109
+  type: 'test'
+  ...
+# Subtest: schema compiler rejects unsupported keywords, external/cyclic refs and open objects
+ok 18 - schema compiler rejects unsupported keywords, external/cyclic refs and open objects
+  ---
+  duration_ms: 0.5085
+  type: 'test'
+  ...
+# Subtest: checked reads reject a real file growth race between descriptor reads
+ok 19 - checked reads reject a real file growth race between descriptor reads
+  ---
+  duration_ms: 5.362
+  type: 'test'
+  ...
+# Subtest: full OpenAPI projection rejects drift in routes, fields, headers, errors, media, security and budgets
+ok 20 - full OpenAPI projection rejects drift in routes, fields, headers, errors, media, security and budgets
+  ---
+  duration_ms: 126.6316
+  type: 'test'
+  ...
+# Subtest: logger backpressure bounds retained bytes and safely coalesces dropped records
+ok 21 - logger backpressure bounds retained bytes and safely coalesces dropped records
+  ---
+  duration_ms: 49.0195
+  type: 'test'
+  ...
+# Subtest: schema compiler rejects malformed maps, enums, references and impossible bounds
+ok 22 - schema compiler rejects malformed maps, enums, references and impossible bounds
+  ---
+  duration_ms: 0.6768
+  type: 'test'
+  ...
+# Subtest: exact header bytes and JSON parser budgets use N-1/N/N+1 fixtures
+ok 23 - exact header bytes and JSON parser budgets use N-1/N/N+1 fixtures
+  ---
+  duration_ms: 26.6568
+  type: 'test'
+  ...
+# Subtest: all fixed and measured deadlines expire at N using a controlled monotonic clock
+ok 24 - all fixed and measured deadlines expire at N using a controlled monotonic clock
+  ---
+  duration_ms: 0.2708
+  type: 'test'
+  ...
+# Subtest: runtime memory watchdog and response publication boundaries use exact bytes
+ok 25 - runtime memory watchdog and response publication boundaries use exact bytes
+  ---
+  duration_ms: 1.7071
+  type: 'test'
+  ...
+# Subtest: early timer wakeups rearm against the actual monotonic deadline and cancellation suppresses stale callbacks
+ok 26 - early timer wakeups rearm against the actual monotonic deadline and cancellation suppresses stale callbacks
+  ---
+  duration_ms: 0.5899
+  type: 'test'
+  ...
+# Subtest: isolated worker denies network/DNS, process creation, nested workers, native addons and file writes
+ok 27 - isolated worker denies network/DNS, process creation, nested workers, native addons and file writes
+  ---
+  duration_ms: 98.057
+  type: 'test'
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6463.7616

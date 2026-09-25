@@ -1,0 +1,184 @@
+TAP version 13
+# Subtest: valid complete canonical unit specimen passes
+ok 1 - valid complete canonical unit specimen passes
+  ---
+  duration_ms: 124.4559
+  type: 'test'
+  ...
+# Subtest: missing result module is rejected
+ok 2 - missing result module is rejected
+  ---
+  duration_ms: 83.2044
+  type: 'test'
+  ...
+# Subtest: missing required case is rejected even after resealing
+ok 3 - missing required case is rejected even after resealing
+  ---
+  duration_ms: 92.448
+  type: 'test'
+  ...
+# Subtest: duplicate case identifier is rejected
+ok 4 - duplicate case identifier is rejected
+  ---
+  duration_ms: 98.8822
+  type: 'test'
+  ...
+# Subtest: module PASS cannot hide a failed case
+ok 5 - module PASS cannot hide a failed case
+  ---
+  duration_ms: 63.0412
+  type: 'test'
+  ...
+# Subtest: case PASS cannot hide a failure payload
+ok 6 - case PASS cannot hide a failure payload
+  ---
+  duration_ms: 68.2267
+  type: 'test'
+  ...
+# Subtest: changed source bytes invalidate identity
+ok 7 - changed source bytes invalidate identity
+  ---
+  duration_ms: 82.8266
+  type: 'test'
+  ...
+# Subtest: unknown result field is rejected
+ok 8 - unknown result field is rejected
+  ---
+  duration_ms: 62.8668
+  type: 'test'
+  ...
+# Subtest: noncanonical module bytes are rejected
+ok 9 - noncanonical module bytes are rejected
+  ---
+  duration_ms: 71.2816
+  type: 'test'
+  ...
+# Subtest: changed frozen limits are rejected
+ok 10 - changed frozen limits are rejected
+  ---
+  duration_ms: 76.045
+  type: 'test'
+  ...
+# Subtest: changed baseline is rejected
+ok 11 - changed baseline is rejected
+  ---
+  duration_ms: 65.1901
+  type: 'test'
+  ...
+# Subtest: prior execution cannot be rebound to later source
+ok 12 - prior execution cannot be rebound to later source
+  ---
+  duration_ms: 67.6172
+  type: 'test'
+  ...
+# Subtest: false regression aggregate is rejected
+ok 13 - false regression aggregate is rejected
+  ---
+  duration_ms: 69.8599
+  type: 'test'
+  ...
+# Subtest: modified TAP result cannot retain old result counts
+ok 14 - modified TAP result cannot retain old result counts
+  ---
+  duration_ms: 73.6204
+  type: 'test'
+  ...
+# Subtest: unknown evidence file is rejected
+ok 15 - unknown evidence file is rejected
+  ---
+  duration_ms: 71.397
+  type: 'test'
+  ...
+# Subtest: split case coverage preserves failed process and verifies exact five TAP cases
+ok 16 - split case coverage preserves failed process and verifies exact five TAP cases
+  ---
+  duration_ms: 78.9488
+  type: 'test'
+  ...
+# Subtest: split coverage duplicate case identity is rejected
+ok 17 - split coverage duplicate case identity is rejected
+  ---
+  duration_ms: 73.9482
+  type: 'test'
+  ...
+# Subtest: split coverage cannot invent completed TAP case
+ok 18 - split coverage cannot invent completed TAP case
+  ---
+  duration_ms: 92.0398
+  type: 'test'
+  ...
+# Subtest: remote reuse retains original failed attempt and exact completed rows
+ok 19 - remote reuse retains original failed attempt and exact completed rows
+  ---
+  duration_ms: 66.7633
+  type: 'test'
+  ...
+# Subtest: remote reused row mutation is rejected
+ok 20 - remote reused row mutation is rejected
+  ---
+  duration_ms: 68.5411
+  type: 'test'
+  ...
+# Subtest: PASS with empty remote observation is rejected
+ok 21 - PASS with empty remote observation is rejected
+  ---
+  duration_ms: 70.0627
+  type: 'test'
+  ...
+# Subtest: PASS with false bounded deadline observation is rejected
+ok 22 - PASS with false bounded deadline observation is rejected
+  ---
+  duration_ms: 73.8141
+  type: 'test'
+  ...
+# Subtest: recursive lifecycle reuse preserves the earlier FAIL receipt
+ok 23 - recursive lifecycle reuse preserves the earlier FAIL receipt
+  ---
+  duration_ms: 64.6676
+  type: 'test'
+  ...
+# Subtest: missing earlier lifecycle lineage is rejected
+ok 24 - missing earlier lifecycle lineage is rejected
+  ---
+  duration_ms: 71.8783
+  type: 'test'
+  ...
+# Subtest: mutated earlier lifecycle receipt cannot be rehashed silently
+ok 25 - mutated earlier lifecycle receipt cannot be rehashed silently
+  ---
+  duration_ms: 66.7698
+  type: 'test'
+  ...
+# Subtest: collection verifies actual relocated prerequisite bytes
+ok 26 - collection verifies actual relocated prerequisite bytes
+  ---
+  duration_ms: 76.7408
+  type: 'test'
+  ...
+# Subtest: portable verification needs committed locks but no ignored prerequisite bytes
+ok 27 - portable verification needs committed locks but no ignored prerequisite bytes
+  ---
+  duration_ms: 90.2843
+  type: 'test'
+  ...
+# Subtest: altered relocated prerequisite bytes fail collection
+ok 28 - altered relocated prerequisite bytes fail collection
+  ---
+  duration_ms: 71.992
+  type: 'test'
+  ...
+# Subtest: runner normalization preserves executed bytes and rejects semantic source changes
+ok 29 - runner normalization preserves executed bytes and rejects semantic source changes
+  ---
+  duration_ms: 97.4574
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4892.6982
