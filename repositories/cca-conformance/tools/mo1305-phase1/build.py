@@ -8,8 +8,8 @@ def j(value):return json.dumps(value,ensure_ascii=False,sort_keys=True,separator
 def digest(value):return hashlib.sha256(value).hexdigest()
 def ref(path,relative):
  b=path.read_bytes();return {'path':relative,'byteLength':len(b),'sha256':digest(b)}
-def make_openapi():
- api=json.loads((PKG/'contracts/api-contract.json').read_bytes())
+def make_openapi(api=None,limits=None):
+ if api is None:api=json.loads((PKG/'contracts/api-contract.json').read_bytes())
  def projection(value):
   if isinstance(value,list):return [projection(x) for x in value]
   if isinstance(value,dict):return {k:('#/components/schemas/'+v[8:] if k=='$ref' else projection(v)) for k,v in value.items()}
@@ -31,7 +31,7 @@ def make_openapi():
   operation={'operationId':route['operationId'],'security':[{'bearerToken':[]}],'responses':responses,'parameters':[{'in':'header','name':'X-Request-ID','required':False,'schema':{'type':'string','pattern':api['headers']['requestIdPattern']}}]}
   if route['input']:operation['requestBody']={'required':True,'content':{'application/json':{'schema':{'$ref':'#/components/schemas/'+route['input']}}}}
   paths[route['path']]={route['method'].lower():operation}
- return {'openapi':'3.1.1','jsonSchemaDialect':'https://json-schema.org/draft/2020-12/schema','info':{'title':'MemoryOS REST Gateway','version':api['apiVersion']},'security':[{'bearerToken':[]}],'paths':paths,'x-memoryos-http':{'behavior':{'headErrorBody': 'A rejected HEAD sends the selected error headers and content-length but no body.', 'noResponseCodes': ['MO1305_CLIENT_CANCELLED'], 'successStatus': 200, 'evaluationDecisions': ['PASS', 'FAIL', 'COULD_NOT_EVALUATE'], 'remoteMode': 'PHASE_2_PENDING'},'headers':api['headers'],'errors':api['errors'],'limits':json.loads((PKG/'contracts/limits.json').read_bytes())},'components':{'securitySchemes':{'bearerToken':{'type':'http','scheme':'bearer','bearerFormat':'64 lowercase hexadecimal characters'}},'schemas':schemas}}
+ return {'openapi':'3.1.1','jsonSchemaDialect':'https://json-schema.org/draft/2020-12/schema','info':{'title':'MemoryOS REST Gateway','version':api['apiVersion']},'security':[{'bearerToken':[]}],'paths':paths,'x-memoryos-http':{'behavior':{'headErrorBody': 'A rejected HEAD sends the selected error headers and content-length but no body.', 'noResponseCodes': ['MO1305_CLIENT_CANCELLED'], 'successStatus': 200, 'evaluationDecisions': ['PASS', 'FAIL', 'COULD_NOT_EVALUATE'], 'remoteMode': api['deployment']['remoteMode']},'headers':api['headers'],'errors':api['errors'],'limits':limits if limits is not None else json.loads((PKG/'contracts/limits.json').read_bytes())},'components':{'securitySchemes':{'bearerToken':{'type':'http','scheme':'bearer','bearerFormat':'64 lowercase hexadecimal characters'}},'schemas':schemas}}
 def shipped():
  names=['package.json','package-lock.json','README.md','NOTICES.md','LICENSE-NOTICE.md','dependency-manifest.json','sbom.spdx.json']
  for directory in ['bin','src','runtime','contracts','notices']:names.extend(p.relative_to(PKG).as_posix() for p in (PKG/directory).rglob('*') if p.is_file())

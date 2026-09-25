@@ -30,6 +30,7 @@ const expectedFiles = Object.freeze([
   "mo1305_host_guard_test.mjs",
   "mo1305_phase1_conformance_test.mjs",
   "mo1305_phase2_conformance_test.mjs",
+  "mo1305_release_metadata_correction_test.mjs",
   "normative_vectors_conformance_test.mjs",
   "reference_implementation_conformance_test.mjs",
   "report_conformance_test.mjs",
@@ -79,12 +80,14 @@ assert.deepEqual(actualFiles, expectedFiles, "conformance test inventory changed
 
 // MO-1305 gates the current bound phase. Phase 2 validates the preserved Phase 1
 // binding through B1; the Phase 1 gate remains runnable at its original revision.
+const mo1305Correction = JSON.parse(readFileSync(resolve(root, "mo1305-conformance-inventory.json"))).state === "CERTIFICATION_PENDING";
 const mo1305Phase2Bound = JSON.parse(readFileSync(resolve(root, "mo1305-conformance-inventory.json"))).state === "PHASE2_BOUND";
 // The MO-1305 installed-artifact gate has a Windows-only support contract.
 const selectedFiles = actualFiles.filter((path) =>
-  (!["mo1305_host_guard_test.mjs", "mo1305_phase1_conformance_test.mjs", "mo1305_phase2_conformance_test.mjs"].includes(path) || process.platform === "win32")
-  && (path !== "mo1305_phase1_conformance_test.mjs" || !mo1305Phase2Bound)
-  && (path !== "mo1305_phase2_conformance_test.mjs" || mo1305Phase2Bound));
+  (!["mo1305_host_guard_test.mjs", "mo1305_phase1_conformance_test.mjs", "mo1305_phase2_conformance_test.mjs", "mo1305_release_metadata_correction_test.mjs"].includes(path) || process.platform === "win32")
+  && (path !== "mo1305_phase1_conformance_test.mjs" || (!mo1305Phase2Bound && !mo1305Correction))
+  && (path !== "mo1305_phase2_conformance_test.mjs" || (mo1305Phase2Bound && !mo1305Correction))
+  && (path !== "mo1305_release_metadata_correction_test.mjs" || mo1305Correction));
 
 const python = locatePython();
 const environment = {
