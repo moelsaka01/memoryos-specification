@@ -81,6 +81,10 @@ set(memoryos_conformance_sources_list
     evidence/mo1304-phase3-ubuntu/ubuntu-receipt.json
     docs/mo1304-phase3-ubuntu-certification.md
     tests/mo1305_phase1_conformance_test.mjs
+    tests/mo1305_phase2_conformance_test.mjs
+    tools/mo1305-phase2d/evidence.mjs
+    tools/mo1305-phase2d/graph.mjs
+    tools/mo1305-phase2d/verify-package.py
     tools/mo1305-evidence.mjs
     tools/mo1305-bounded-evidence.mjs
     tools/mo1305-host-events.ps1
@@ -186,6 +190,8 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
   find_program(MEMORYOS_CONFORMANCE_NODE_EXECUTABLE NAMES node node.exe REQUIRED)
   find_package(Python3 3.12 COMPONENTS Interpreter QUIET)
 
+  file(READ "${CMAKE_CURRENT_SOURCE_DIR}/mo1305-conformance-inventory.json" MO1305_INVENTORY_JSON)
+  string(JSON MO1305_INVENTORY_STATE GET "${MO1305_INVENTORY_JSON}" state)
   foreach(conformance_area IN ITEMS
     boundary
     compatibility
@@ -203,6 +209,7 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     mo1304-phase2
     mo1304-phase3-ubuntu
     mo1305-phase1
+    mo1305-phase2
     mo1304-phase3-windows
     mo1304-platform-support
     normative
@@ -212,7 +219,12 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     schema
     specification
   )
-    if(conformance_area STREQUAL "mo1305-phase1" AND NOT WIN32)
+    if((conformance_area STREQUAL "mo1305-phase1" OR conformance_area STREQUAL "mo1305-phase2") AND NOT WIN32)
+      continue()
+    endif()
+    if(conformance_area STREQUAL "mo1305-phase1" AND MO1305_INVENTORY_STATE STREQUAL "PHASE2_BOUND")
+      continue()
+    elseif(conformance_area STREQUAL "mo1305-phase2" AND NOT MO1305_INVENTORY_STATE STREQUAL "PHASE2_BOUND")
       continue()
     endif()
     if(conformance_area STREQUAL "boundary")
@@ -251,6 +263,8 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
       set(conformance_source tests/mo1304_phase3_ubuntu_conformance_test.mjs)
     elseif(conformance_area STREQUAL "mo1305-phase1")
       set(conformance_source tests/mo1305_phase1_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1305-phase2")
+      set(conformance_source tests/mo1305_phase2_conformance_test.mjs)
     elseif(conformance_area STREQUAL "normative")
       set(conformance_source tests/normative_vectors_conformance_test.mjs)
     elseif(conformance_area STREQUAL "reference")
