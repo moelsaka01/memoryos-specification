@@ -82,6 +82,15 @@ set(memoryos_conformance_sources_list
     docs/mo1304-phase3-ubuntu-certification.md
     tests/mo1305_phase1_conformance_test.mjs
     tests/mo1305_phase2_conformance_test.mjs
+    tests/mo1305_phase3_conformance_test.mjs
+    tools/mo1305-phase3d/common.py
+    tools/mo1305-phase3d/correction.py
+    tools/mo1305-phase3d/generate.py
+    tools/mo1305-phase3d/record.py
+    tools/mo1305-phase3d/models.py
+    tools/mo1305-phase3d/source_validation.py
+    tools/mo1305-phase3d/validate.py
+    tools/mo1305-phase3d/README.md
     tests/mo1305_release_metadata_correction_test.mjs
     tools/mo1305-phase3-correction/README.md
     tools/mo1305-phase3-correction/check.py
@@ -225,6 +234,7 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     mo1304-phase3-ubuntu
     mo1305-phase1
     mo1305-phase2
+    mo1305-phase3
     mo1305-release-metadata-correction
     mo1304-phase3-windows
     mo1304-platform-support
@@ -235,10 +245,10 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     schema
     specification
   )
-    if((conformance_area STREQUAL "mo1305-phase1" OR conformance_area STREQUAL "mo1305-phase2" OR conformance_area STREQUAL "mo1305-release-metadata-correction") AND NOT WIN32)
+    if((conformance_area STREQUAL "mo1305-phase1" OR conformance_area STREQUAL "mo1305-phase2" OR conformance_area STREQUAL "mo1305-release-metadata-correction" OR conformance_area STREQUAL "mo1305-phase3") AND NOT WIN32)
       continue()
     endif()
-    if(conformance_area STREQUAL "mo1305-phase1" AND (MO1305_INVENTORY_STATE STREQUAL "PHASE2_BOUND" OR MO1305_INVENTORY_STATE STREQUAL "CERTIFICATION_PENDING"))
+    if(conformance_area STREQUAL "mo1305-phase1" AND (MO1305_INVENTORY_STATE STREQUAL "PHASE2_BOUND" OR MO1305_INVENTORY_STATE STREQUAL "CERTIFICATION_PENDING" OR MO1305_INVENTORY_STATE STREQUAL "CERTIFIED_READY_TO_TAG"))
       continue()
     elseif(conformance_area STREQUAL "mo1305-phase2" AND NOT MO1305_INVENTORY_STATE STREQUAL "PHASE2_BOUND")
       continue()
@@ -281,8 +291,13 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
       set(conformance_source tests/mo1305_phase1_conformance_test.mjs)
     elseif(conformance_area STREQUAL "mo1305-phase2")
       set(conformance_source tests/mo1305_phase2_conformance_test.mjs)
+    elseif(conformance_area STREQUAL "mo1305-phase3")
+      if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/evidence/mo1305-phase3d/phase3-receipt.json")
+        continue()
+      endif()
+      set(conformance_source tests/mo1305_phase3_conformance_test.mjs)
     elseif(conformance_area STREQUAL "mo1305-release-metadata-correction")
-      if(NOT MO1305_INVENTORY_STATE STREQUAL "CERTIFICATION_PENDING")
+      if(NOT MO1305_INVENTORY_STATE STREQUAL "CERTIFICATION_PENDING" OR EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/evidence/mo1305-phase3d/phase3-receipt.json")
         continue()
       endif()
       set(conformance_source tests/mo1305_release_metadata_correction_test.mjs)
