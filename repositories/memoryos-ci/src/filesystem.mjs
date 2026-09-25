@@ -1,0 +1,115 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { performance } from 'node:perf_hooks';
+import { J } from './serialization.mjs';
+import { parseJSON } from './json.mjs';
+import { reject, CIError } from './errors.mjs';
+import { relativeFile } from './contracts.mjs';
+
+export const packageRoot = path.resolve(fileURLToPath(new URL('../',import.meta.url)));
+const reserved = /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i;
+export function absolutePath(value, code='FILESYSTEM_BOUNDARY') {
+  if (typeof value !== 'string' || value.length > 240 || !/^[A-Za-z]:[\\/]/.test(value) || /[:\x00-\x1f\x7f"'\x60$;|&<>{}\[\]()!*?]/.test(value.slice(2))) reject(code);
+  const ordinary = value.replaceAll('/','\\');
+  const root = path.parse(ordinary).root;
+  const parts = ordinary.slice(root.length).split('\\');
+  if (ordinary !== root && parts.some(p => !p || p === '.' || p === '..' || /^[ ]|[ .]$/.test(p) || reserved.test(p))) reject(code);
+  const resolved = path.resolve(ordinary);
+  if (resolved.toLowerCase() !== ordinary.toLowerCase()) reject(code);
+  return resolved;
+}
+export function contained(root, relative) {
+  relativeFile(relative);
+  const full = absolutePath(path.resolve(root,relative));
+  const child = path.relative(root,full);
+  if (!child || child.startsWith('..') || path.isAbsolute(child)) reject('FILESYSTEM_BOUNDARY');
+  return full;
+}
+export function childEnvironment() {
+  const systemRoot = absolutePath(process.env.SystemRoot ?? '', 'RUNTIME_INTEGRITY');
+  const windir = absolutePath(process.env.WINDIR ?? '', 'RUNTIME_INTEGRITY');
+  if (systemRoot.toLowerCase() !== windir.toLowerCase()) reject('RUNTIME_INTEGRITY');
+  // libuv injects these fixed Windows variables from its parent if omitted.
+  // Delete by fixed name without reading or enumerating ambient values.
+  for (const name of ['HOMEDRIVE','HOMEPATH','LOGONSERVER','PATH','SYSTEMDRIVE','TEMP','USERDOMAIN','USERNAME','USERPROFILE']) {
+    // Windows can inherit multiple differently cased entries for the same name.
+    // One deletion can expose the next entry. Inspect presence only, never values.
+    for (let attempts=0; attempts<8 && Object.hasOwn(process.env,name); attempts++) delete process.env[name];
+    if (Object.hasOwn(process.env,name)) reject('RUNTIME_INTEGRITY');
+  }
+  return {SystemRoot:systemRoot,WINDIR:windir};
+}
+export const sameFile = (a,b) => a.ino === b.ino && a.dev === b.dev && a.size === b.size && a.mtimeNs === b.mtimeNs && a.ctimeNs === b.ctimeNs;
+export function nodePathCheck(value, allowMissingLeaf=false) {
+  const full = absolutePath(value);
+  const parsed = path.parse(full); const parts = full.slice(parsed.root.length).split(path.sep).filter(Boolean);
+  let current = parsed.root;
+  for (const [i,part] of parts.entries()) {
+    current = path.join(current,part);
+    let stat;
+    try { stat = fs.lstatSync(current); }
+    catch(e) { if (e.code === 'ENOENT' && allowMissingLeaf && i === parts.length-1) return full; throw e; }
+    if (stat.isSymbolicLink() || (i < parts.length-1 && !stat.isDirectory())) reject('FILESYSTEM_BOUNDARY');
+  }
+  if (fs.realpathSync(full).toLowerCase() !== full.toLowerCase()) reject('FILESYSTEM_BOUNDARY');
+  return full;
+}
+export function readChecked(value, maximum, {readCode='INPUT_READ',limitCode='INPUT_LIMIT',changeCode='INPUT_CHANGED'}={}) {
+  const full = absolutePath(value);
+  let before,fd;
+  try {
+    nodePathCheck(full); before = fs.lstatSync(full,{bigint:true});
+    if (!before.isFile() || before.nlink !== 1n) reject('FILESYSTEM_BOUNDARY');
+    if (before.size > BigInt(maximum)) reject(limitCode);
+    fd = fs.openSync(full,'r');
+    if (!sameFile(before,fs.fstatSync(fd,{bigint:true}))) reject(changeCode);
+    const bytes = Buffer.alloc(Number(before.size)+1); let length=0,count;
+    while (length < bytes.length && (count=fs.readSync(fd,bytes,length,bytes.length-length,length)) > 0) length+=count;
+    if (length !== Number(before.size) || !sameFile(before,fs.fstatSync(fd,{bigint:true})) || !sameFile(before,fs.lstatSync(full,{bigint:true}))) reject(changeCode);
+    return bytes.subarray(0,length);
+  } catch(error) { if (error instanceof CIError) throw error; reject(readCode); }
+  finally { if (fd !== undefined) fs.closeSync(fd); }
+}
+/** One fixed helper, never overlapping the semantic process. */
+export async function checkPaths(paths, {deadline=Infinity,signal}={}) {
+  for (const entry of paths) absolutePath(entry.path);
+  for (let start=0;start<paths.length;start+=48) {
+    if (signal?.aborted) reject('CANCELLED');
+    const remaining = deadline-performance.now();
+    if (remaining <= 0) reject('OVERALL_TIMEOUT');
+    const request = J({kind:'MemoryOSCICDPathCheckRequest',version:'1.0.0',paths:paths.slice(start,start+48)});
+    if (Buffer.byteLength(request)>16384) reject('FILESYSTEM_BOUNDARY');
+    const env=childEnvironment();
+    const helper=readChecked(path.join(packageRoot,'scripts/check-paths.ps1'),32768,{readCode:'RUNTIME_INTEGRITY'});
+    const exe=nodePathCheck(path.join(env.SystemRoot,'System32/WindowsPowerShell/v1.0/powershell.exe'));
+    await new Promise((resolve,rejectPromise) => {
+      let output=Buffer.alloc(0), terminal=null, timer, reap;
+      const child=spawn(exe,['-NoProfile','-NonInteractive','-EncodedCommand',helper.toString('utf8') && Buffer.from(helper.toString('utf8'),'utf16le').toString('base64')],{env,cwd:packageRoot,shell:false,windowsHide:true,stdio:['pipe','pipe','pipe']});
+      const stop=code=>{ if(terminal)return;terminal=new CIError(code);child.stdin.destroy();child.kill();reap=setTimeout(()=>rejectPromise(new CIError('CLEANUP_FAILED')),2000); };
+      const cancel=()=>stop('CANCELLED');
+      signal?.addEventListener('abort',cancel,{once:true});
+      timer=setTimeout(()=>stop(remaining<=2000?'OVERALL_TIMEOUT':'FILESYSTEM_BOUNDARY'),Math.min(2000,remaining));
+      child.on('error',()=>stop('FILESYSTEM_BOUNDARY'));
+      child.stdout.on('data',data=>{if(terminal)return;if(output.length+data.length>1024)stop('FILESYSTEM_BOUNDARY');else output=Buffer.concat([output,data]);});
+      child.stderr.on('data',()=>stop('FILESYSTEM_BOUNDARY'));
+      child.stdin.on('error',()=>{});
+      child.on('close',code=>{
+        clearTimeout(timer);clearTimeout(reap);signal?.removeEventListener('abort',cancel);
+        if(terminal)return rejectPromise(terminal);
+        try {
+          const response=parseJSON(output,1024,'FILESYSTEM_BOUNDARY');
+          if(code!==0 || J(response)!==output.toString('utf8') || Object.keys(response).sort().join(',')!=='kind,safe,version' || response.kind!=='MemoryOSCICDPathCheck' || response.version!=='1.0.0' || response.safe!==true)reject('FILESYSTEM_BOUNDARY');
+          resolve();
+        } catch(e) { rejectPromise(e); }
+      });
+      child.stdin.end(request);
+    });
+  }
+}
+export async function createDirectory(full, options) {
+  await checkPaths([{path:absolutePath(full),allowMissingLeaf:true}],options);
+  fs.mkdirSync(full); // No recursive mkdir, reuse or replacement.
+  await checkPaths([{path:full,allowMissingLeaf:false}],options);
+}

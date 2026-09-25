@@ -1,0 +1,124 @@
+"""Bounded real native Windows witnesses, SDK/CLI parity and external RSS samples."""
+import json,os,shutil,subprocess,sys,time
+from pathlib import Path
+from materialize import ROOT,PKG,j,sha
+sys.path.insert(0,str(Path(__file__).resolve().parent.parent/'mo1306-correction-a'))
+from observe import execute
+from topology import validate as topology_validate
+from structural import main as structural
+NODE=ROOT/'.cache/mo1305-phase3br/toolchain/node-v24.21.0-win-x64/node.exe'
+TOOLS=Path(__file__).parent
+FIX=ROOT/'repositories/cca-conformance/fixtures/mo1306'
+EVIDENCE=ROOT/'repositories/cca-conformance/evidence/mo1306/phase1-resume'
+CACHE=ROOT/'.cache/mo1306'
+ENV={'SystemRoot':os.environ['SystemRoot'],'WINDIR':os.environ['WINDIR']}
+EXIT={'PASS':0,'FAIL':6,'COULD_NOT_EVALUATE':7}
+cases=[]
+def record(name,result,expected):
+ target=EVIDENCE/(name+'.json');target.parent.mkdir(parents=True,exist_ok=True)
+ result['id']=name;result['expectedExitCode']=expected;result['status']='PASS' if result['exitCode']==expected else 'FAIL'
+ result['executionTimeHead']=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+ result['harnessSha256']=sha(Path(__file__).read_bytes())
+ result['distributionSha256']=sha((PKG/'distribution-manifest.json').read_bytes())
+ target.write_bytes(j(result))
+ cases.append(dict(id=name,status=result['status'],command=result['command'],exitCode=result['exitCode'],elapsedMs=result['elapsedMs'],evidencePaths=[target.relative_to(ROOT).as_posix()]))
+ (EVIDENCE/'cases.json').write_bytes(j(cases))
+ assert result['exitCode']==expected,(name,result['exitCode'],result['stdout'],result['stderr'])
+ return result
+def command(name,args,expected=0,env=ENV):
+ return record(name,execute([str(NODE),'--max-old-space-size=128',*map(str,args)],str(ROOT),env=env),expected)
+def workspace(name,vector,change=None):
+ dest=CACHE/'work'/'phase1-resume'/name
+ dest.mkdir(parents=True,exist_ok=False)
+ src=FIX/vector
+ for filename in ['policy.json','candidate.mip','memoryos-ci.json']:
+  shutil.copyfile(src/filename,dest/filename)
+ config=json.loads((dest/'memoryos-ci.json').read_bytes())
+ if change:change(config,dest)
+ (dest/'memoryos-ci.json').write_bytes(j(config))
+ return dest,config
+def product(name,work,expected,extra=(),env=ENV):
+ result=command(name,[PKG/'bin/memoryos-ci.mjs','run','--workspace',work,'--config',work/'memoryos-ci.json',*extra],expected,env)
+ summary=json.loads(result['stdout']);assert summary['exitCode']==expected
+ try:
+  assert result['observation']['peakProcessCount']<=3,'FOURTH_ATTRIBUTABLE_PROCESS'
+  assert result['observation']['peakAggregateRssBytes']<=768*1024*1024,'RSS_LIMIT'
+  assert not result['cleanup']['remainingPids'],'ORPHAN_PROCESS'
+  identities={'node':str(NODE),'powershell':str(Path(ENV['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'),'conhost':str(Path(ENV['SystemRoot'])/'System32/conhost.exe')}
+  for sample in result['observation']['samples']:
+   rows=sample['processes']
+   if not any(r['pid']==result['rootPid'] for r in rows):continue
+   direct=[r for r in rows if r['parent']==result['rootPid']]
+   phase='helper' if direct and direct[0]['executable'].lower().endswith('powershell.exe') else 'semantic'
+   topology_validate(rows,result['rootPid'],identities,phase)
+ except Exception as error:
+  result['status']='FAIL';result['validationError']=str(error)
+  (EVIDENCE/(name+'.json')).write_bytes(j(result));cases[-1]['status']='FAIL';(EVIDENCE/'cases.json').write_bytes(j(cases))
+  raise
+ if summary['publication']=='COMPLETE':
+  bundle=work/'.memoryos-ci/out'/summary['runId']
+  target=EVIDENCE/'bundles'/name/summary['runId'];target.parent.mkdir(parents=True,exist_ok=True)
+  shutil.copytree(bundle,target)
+  command(name+'-verify',[PKG/'bin/memoryos-ci.mjs','verify','--bundle',bundle])
+  return bundle
+ return None
+def parity(name,work,config,bundle,decision,golden=None):
+ oracle=command(name+'-sdk',[TOOLS/'oracle.mjs',work])
+ assert json.loads(oracle['stdout'])['decision']==decision
+ for source,target in [('oracle-identity.json','evaluation-identity.json'),('oracle-outcome.json','policy-outcome.json')]:
+  assert (work/source).read_bytes()==(bundle/target).read_bytes()
+  if golden:assert (bundle/target).read_bytes()==(FIX/golden/target).read_bytes()
+ args=[ROOT/'repositories/memoryos-cli/bin/memoryos.js','policy','evaluate','--policy-set' if config['operation']=='evaluatePolicySet' else '--policy',work/'policy.json','--package',work/'candidate.mip','--outcome',work/'cli-outcome.json','--identity-output',work/'cli-identity.json']
+ if config['context'].get('baselineMip'):args+=['--regression-baseline',work/'baseline.mip']
+ command(name+'-cli',args,EXIT[decision])
+ assert (work/'cli-identity.json').read_bytes()==(bundle/'evaluation-identity.json').read_bytes()
+ assert (work/'cli-outcome.json').read_bytes()==(bundle/'policy-outcome.json').read_bytes()
+def main():
+ structural()
+ EVIDENCE.mkdir(parents=True,exist_ok=True)
+ started=time.perf_counter()
+ # Six outcome vectors, with independent byte oracles and public installed-compatible argv.
+ for vector in ['evaluate-policy-pass','evaluate-policy-fail','evaluate-policy-cne','evaluate-policySet-pass','evaluate-policySet-fail','evaluate-policySet-cne']:
+  name='real-'+vector;work,config=workspace(name,vector)
+  decision={'pass':'PASS','fail':'FAIL','cne':'COULD_NOT_EVALUATE'}[vector.split('-')[-1]]
+  bundle=product(name,work,EXIT[decision]);assert bundle
+  parity(name,work,config,bundle,decision,vector)
+  print(name,'PASS',flush=True)
+ # Owner-bound Regression uses two distinct files with identical MIP content.
+ def regression(c,w):shutil.copyfile(w/'candidate.mip',w/'baseline.mip');c['context']['baselineMip']='baseline.mip'
+ work,config=workspace('real-regression','evaluate-policy-pass',regression)
+ bundle=product('real-regression',work,0);parity('real-regression',work,config,bundle,'PASS')
+ print('real-regression PASS',flush=True)
+ work,config=workspace('real-maximum','max-four-policy-mip-evaluation')
+ # Fill raw Policy Set transport envelope with JSON whitespace; no semantic changes.
+ data=(work/'policy.json').read_bytes();(work/'policy.json').write_bytes(data+b' '*(4096-len(data)))
+ shutil.copyfile(work/'candidate.mip',work/'baseline.mip')
+ config['context']['baselineMip']='baseline.mip';(work/'memoryos-ci.json').write_bytes(j(config))
+ # Existing max vector requests Regression facts; supplying baseline can change the decision.
+ oracle=command('real-maximum-expected-sdk',[TOOLS/'oracle.mjs',work]);decision=json.loads(oracle['stdout'])['decision']
+ bundle=product('real-maximum',work,EXIT[decision]);assert bundle
+ assert (bundle/'evaluation-identity.json').read_bytes()==(work/'oracle-identity.json').read_bytes()
+ assert (bundle/'policy-outcome.json').read_bytes()==(work/'oracle-outcome.json').read_bytes()
+ print('real-maximum PASS',flush=True)
+ negatives=[
+  ('unknown-config',lambda c,w:c.update(unrecognized=True),10),
+  ('missing-input',lambda c,w:(w/'candidate.mip').unlink(),11),
+  ('pin-mismatch',lambda c,w:c['policy'].update(expectedSemanticDigest='sha256:'+'0'*64),15),
+  ('invalid-semantic',lambda c,w:(w/'policy.json').write_bytes(b'{}'),12),
+  ('oversized-input',lambda c,w:(w/'candidate.mip').write_bytes(b' '*(524288+1)),11),
+  ('traversal',lambda c,w:c['context'].update(candidateMip='../candidate.mip'),11),
+ ]
+ for suffix,change,expected in negatives:
+  name='negative-'+suffix;work,config=workspace(name,'evaluate-policy-pass',change);product(name,work,expected);print(name,'PASS',flush=True)
+ for suffix,extra in [('node-options',{'NODE_OPTIONS':'--no-warnings'}),('node-path',{'NODE_PATH':'SECRET-SENTINEL'})]:
+  name='negative-'+suffix;work,config=workspace(name,'evaluate-policy-pass');assert product(name,work,15,env={**ENV,**extra}) is None
+  print(name,'PASS',flush=True)
+ work,config=workspace('operational-metadata','evaluate-policy-pass')
+ env={**ENV,'GITHUB_SHA':'A'*40,'GITHUB_RUN_ID':'9999','GITHUB_ACTOR':'SECRET-SENTINEL','GITHUB_REF':'SECRET-SENTINEL','HTTP_PROXY':'http://127.0.0.1:1','GITHUB_TOKEN':'SECRET-SENTINEL','HOME':'SECRET-SENTINEL','TEMP':'SECRET-SENTINEL','PATH':'SECRET-SENTINEL'}
+ bundle=product('operational-metadata',work,0,env=env);assert bundle
+ assert (bundle/'evaluation-identity.json').read_bytes()==(FIX/'evaluate-policy-pass/evaluation-identity.json').read_bytes()
+ assert (bundle/'policy-outcome.json').read_bytes()==(FIX/'evaluate-policy-pass/policy-outcome.json').read_bytes()
+ assert all(b'SECRET-SENTINEL' not in p.read_bytes() for p in bundle.iterdir())
+ (EVIDENCE/'execution-summary.json').write_bytes(j(dict(status='PASS',elapsedMs=round((time.perf_counter()-started)*1000),caseCount=len(cases),caseIds=[c['id'] for c in cases],ordinaryValidationTargetMs=1200000)))
+ print('Execution cases',len(cases),'PASS',flush=True)
+if __name__=='__main__':main()
