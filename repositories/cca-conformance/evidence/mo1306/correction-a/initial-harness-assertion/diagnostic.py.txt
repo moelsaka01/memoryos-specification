@@ -1,0 +1,30 @@
+from pathlib import Path
+import hashlib,json,os,subprocess
+from observe import execute
+from topology import validate
+ROOT=Path(__file__).resolve().parents[4]
+HERE=Path(__file__).resolve().parent
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/correction-a'
+OUT.mkdir(parents=True,exist_ok=True)
+NODE=ROOT/'.cache/mo1305-phase3br/toolchain/node-v24.21.0-win-x64/node.exe'
+identities={'node':str(NODE),'powershell':str(Path(os.environ['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'),'conhost':str(Path(os.environ['SystemRoot'])/'System32/conhost.exe')}
+summary={'identities':{k:{'path':v,'sha256':hashlib.sha256(Path(v).read_bytes()).hexdigest(),'byteLength':Path(v).stat().st_size} for k,v in identities.items()},'cases':[]}
+for mode in ['attached','detached']:
+ result=execute([str(NODE),str(HERE/'probe.mjs'),mode],ROOT,timeout=10)
+ protocol=json.loads(result['stdout'])
+ result['protocol']=protocol
+ result['helperFixtureSha256']=hashlib.sha256((HERE/'check-paths.ps1.txt').read_bytes()).hexdigest()
+ errors=[]
+ for sample in result['observation']['samples']:
+  rows=sample['processes']
+  if not any(r['pid']==result['rootPid'] for r in rows):continue
+  try:validate(rows,result['rootPid'],identities,expected_command=subprocess.list2cmdline([protocol['executable'],*protocol['args']]))
+  except ValueError as e:errors.append(str(e))
+ result['topologyErrors']=sorted(set(errors))
+ result['status']='PASS' if result['exitCode']==0 and not errors and not result['cleanup']['remainingPids'] and ((mode=='attached' and protocol['helperStdout']=='{"safe":true}\n' and protocol['helperExit']==0 and result['observation']['peakProcessCount']==3) or (mode=='detached' and protocol['helperStdout']=='' and protocol['helperExit']==0)) else 'FAIL'
+ (OUT/(mode+'.json')).write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
+ summary['cases'].append({'id':mode,'status':result['status'],'peakProcessCount':result['observation']['peakProcessCount'],'protocol':protocol['helperStdout'],'cleanup':result['cleanup'],'topologyErrors':result['topologyErrors'],'lifetimes':result['lifetimes']})
+ print(mode,result['status'],result['observation']['peakProcessCount'],repr(protocol['helperStdout']),result['cleanup'],result['topologyErrors'],flush=True)
+summary['status']='PASS' if all(c['status']=='PASS' for c in summary['cases']) else 'FAIL'
+(OUT/'diagnostic-summary.json').write_text(json.dumps(summary,indent=2)+'\n',encoding='utf-8')
+assert summary['status']=='PASS'
