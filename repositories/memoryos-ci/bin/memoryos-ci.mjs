@@ -16,8 +16,9 @@ const diagnostic=diagnosticWriter(text=>process.stderr.write(text));
 const controller=new AbortController();
 const cancel=()=>controller.abort();process.once('SIGINT',cancel);process.once('SIGTERM',cancel);
 function argv(args) {
-  const command=args[0],allowed={run:['workspace','config','provider'],generate:['config','deployment','output'],verify:['bundle']}[command];
-  if(!allowed)reject('USAGE');
+  const command=args[0],commands={run:['workspace','config','provider'],generate:['config','deployment','output'],verify:['bundle']};
+  if(!Object.hasOwn(commands,command))reject('USAGE');
+  const allowed=commands[command];
   const result={command};
   for(let i=1;i<args.length;i+=2) {
     const flag=args[i];if(!flag.startsWith('--')||!allowed.includes(flag.slice(2))||Object.hasOwn(result,flag.slice(2))||i+1>=args.length)reject('USAGE');
