@@ -9,6 +9,7 @@ import { catalog,projections,project,diagnosticWriter,CIError } from '../../../m
 import { absolutePath,childEnvironment } from '../../../memoryos-ci/src/filesystem.mjs';
 import { generate } from '../../../memoryos-ci/src/generator.mjs';
 import { workerArguments } from '../../../memoryos-ci/src/supervisor.mjs';
+const capabilities=JSON.parse(fs.readFileSync(new URL('../../mo1306-phase2-capabilities.json',import.meta.url)));
 const raw=fs.readFileSync(new URL('../../fixtures/mo1306/evaluate-policy-pass/memoryos-ci.json',import.meta.url)),config=configuration(raw),pin='sha256:'+'0'.repeat(64);
 const rejects=(fn,code)=>assert.throws(fn,e=>e instanceof CIError && (!code||e.code==='MO1306_'+code));
 test('CF-CONFIG defaults and canonical golden',()=>{
@@ -43,7 +44,16 @@ test('CF-GENERATION golden and deterministic ordering',()=>{
   const deploy={kind:'MemoryOSCICDDeployment',version:'1.0.0',provider:'generic',distributionDigest:pin,options:{}};
   const first=generate(config,deploy,pin),second=generate(Object.fromEntries(Object.entries(config).reverse()),deploy,pin);
   assert.equal(first.length,2);assert.equal(first[0].path,'memoryos-ci.json');assert.equal(first[0].bytes.toString(),J(config));assert.deepEqual(first,second);assert.equal(JSON.parse(first[1].bytes).files[0].path,'memoryos-ci.json');
-  for(const provider of ['github','gitlab','jenkins','azure']) {const options={github:{repository:'a/b',toolRevision:'a'.repeat(40),configPath:'memoryos-ci.json'},gitlab:{runnerTag:'windows'},jenkins:{agentLabel:'windows'},azure:{pool:'windows'}}[provider];rejects(()=>generate(config,{...deploy,provider,options},pin),'PROVIDER_UNSUPPORTED');}
+  assert.equal(capabilities.phase,'2D');
+  assert.deepEqual(Object.keys(capabilities.providers).sort(),['azure','generic','github','gitlab','jenkins']);
+  for(const provider of ['gitlab','jenkins','azure','github']) {
+    const options={gitlab:{runnerTag:'windows'},jenkins:{agentLabel:'windows'},azure:{pool:'windows'},github:{repository:'a/b',toolRevision:'a'.repeat(40),configPath:'memoryos-ci.json'}}[provider];
+    const selected={...deploy,provider,options},files=generate(config,selected,pin);
+    assert.equal(capabilities.providers[provider].implementation,'IMPLEMENTED');
+    assert.equal(files.length,3);assert.ok(files.some(f=>f.path===capabilities.providers[provider].artifact));
+    assert.deepEqual(files,generate(Object.fromEntries(Object.entries(config).reverse()),Object.fromEntries(Object.entries(selected).reverse()),pin));
+  }
+  for(const provider of ['unknown','GitLab','__proto__','constructor'])rejects(()=>generate(config,{...deploy,provider},pin),'GENERATION_INVALID');
 });
 for(const value of ['a\nb','a\rb','a\u0000b','a\u001bb',"a'b",'a"b','a\x60b','a;b','a|b','a$()','a'+'$'+'{{x}}','a$[x]','a'+String.fromCharCode(36,123)+'x}','a b'])test('CF-INJECTION label '+JSON.stringify(value),()=>rejects(()=>deployment(Buffer.from(J({kind:'MemoryOSCICDDeployment',version:'1.0.0',provider:'gitlab',distributionDigest:pin,options:{runnerTag:value}}))),'GENERATION_INVALID'));
 test('CF-RESOURCE envelope math',()=>{assert.equal(limits.fixed.semanticInputBytes,524288*2+4096);assert.ok(4*Math.ceil(524288/3)*2+4*Math.ceil(4096/3)+1024<=limits.fixed.workerRequestBytes);assert.equal(limits.fixed.semanticMaxMs+limits.fixed.overallAllowanceMs,75000);assert.equal(limits.fixed.processCount,3);assert.equal(limits.fixed.semanticQueue,0);});

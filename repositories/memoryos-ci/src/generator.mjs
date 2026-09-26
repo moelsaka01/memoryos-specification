@@ -1,14 +1,16 @@
-import { configuration,validate,digest } from './contracts.mjs';
+import { configuration,deployment as normalizeDeployment,validate,digest } from './contracts.mjs';
 import { J } from './serialization.mjs';
 import { reject } from './errors.mjs';
-import * as generic from './providers/generic.mjs';
+import { providerIR } from './provider-ir.mjs';
+import { validateGeneratedStructure } from './generated-structure.mjs';
 
-/** Pure IR: fixed paths and byte sequences. Provider expansion belongs to Phase 2. */
+/** Pure, closed provider generation from one normalized common configuration. */
 export function generate(config,deployment,generatorDigest) {
   const normalized=configuration(Buffer.from(J(config)));
-  validate('Deployment',deployment,'GENERATION_INVALID');
-  if(deployment.provider!=='generic')reject('PROVIDER_UNSUPPORTED');
-  const files=generic.generate(normalized,deployment);
+  deployment=normalizeDeployment(Buffer.from(J(deployment)));
+  const adapter=providerIR(deployment.provider);
+  const files=adapter.generate(normalized,deployment);
+  validateGeneratedStructure(normalized,deployment,files);
   files.push({path:'memoryos-ci.json',bytes:Buffer.from(J(normalized))});
   files.sort((a,b)=>a.path<b.path?-1:1);
   const manifest={kind:'MemoryOSCICDGeneration',version:'1.0.0',generator:{id:'memoryos.cicd.generator',version:'1.0.0',sha256:generatorDigest},configurationSha256:digest(J(normalized)),deploymentSha256:digest(J(deployment)),provider:deployment.provider,files:files.map(f=>({path:f.path,byteLength:f.bytes.length,sha256:digest(f.bytes)}))};

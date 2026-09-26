@@ -1,0 +1,605 @@
+{
+  "actions": {
+    "actions": [
+      {
+        "repository": "actions/checkout",
+        "revision": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+        "steps": [
+          "tools",
+          "data"
+        ]
+      },
+      {
+        "repository": "actions/upload-artifact",
+        "revision": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+        "steps": [
+          "upload"
+        ]
+      }
+    ],
+    "authority": "docs/mo1306-contract-freeze-1.md section 16.5",
+    "bootstrapAction": null,
+    "bootstrapArchitecture": "fixed PowerShell download and verify exact Node win-x64 ZIP; no setup-node/cache action",
+    "hostedCertification": "HOSTED_EXECUTION_CERTIFICATION_PENDING",
+    "kind": "MemoryOSPhase2CGitHubActionInventory",
+    "reviewScope": "Frozen immutable identity revalidation, not fresh Phase 3B source/advisory or hosted runtime certification",
+    "version": "1.0.0"
+  },
+  "astNegativeCount": 3,
+  "astNegatives": [
+    {
+      "diagnostic": "PowerShell AST/argv rejected: Forbidden PowerShell AST: evaluate-mutated\nAt C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-2c\\repositories\\cca-conformance\\tools\\mo1306-phase2c\\check-github-powershe\nll.ps1:16 char:71\n+ ... dKinds -join \"`n\")) { throw \"Forbidden PowerShell AST: $($pair.id)\" }\n+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    + CategoryInfo          : OperationStopped: (Forbidden Power...valuate-mutated:String) [], RuntimeException\n    + FullyQualifiedErrorId : Forbidden PowerShell AST: evaluate-mutated",
+      "status": "REJECTED",
+      "suffix": "; Write-Output 'injected'"
+    },
+    {
+      "diagnostic": "PowerShell AST/argv rejected: Forbidden PowerShell AST: evaluate-mutated\nAt C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-2c\\repositories\\cca-conformance\\tools\\mo1306-phase2c\\check-github-powershe\nll.ps1:16 char:71\n+ ... dKinds -join \"`n\")) { throw \"Forbidden PowerShell AST: $($pair.id)\" }\n+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    + CategoryInfo          : OperationStopped: (Forbidden Power...valuate-mutated:String) [], RuntimeException\n    + FullyQualifiedErrorId : Forbidden PowerShell AST: evaluate-mutated",
+      "status": "REJECTED",
+      "suffix": "\nWrite-Output 'injected'"
+    },
+    {
+      "diagnostic": "PowerShell AST/argv rejected: Forbidden PowerShell AST: evaluate-mutated\nAt C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-2c\\repositories\\cca-conformance\\tools\\mo1306-phase2c\\check-github-powershe\nll.ps1:16 char:71\n+ ... dKinds -join \"`n\")) { throw \"Forbidden PowerShell AST: $($pair.id)\" }\n+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n    + CategoryInfo          : OperationStopped: (Forbidden Power...valuate-mutated:String) [], RuntimeException\n    + FullyQualifiedErrorId : Forbidden PowerShell AST: evaluate-mutated",
+      "status": "REJECTED",
+      "suffix": " | Out-Null"
+    }
+  ],
+  "contract": {
+    "actions": [
+      "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+      "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a"
+    ],
+    "artifactBasenames": [
+      "evaluation-identity.json",
+      "memoryos-ci-artifacts.json",
+      "memoryos-ci-complete.json",
+      "memoryos-ci-evidence.json",
+      "memoryos-ci-result.json",
+      "policy-outcome.json"
+    ],
+    "ast": {
+      "kind": "MemoryOSPhase2CGitHubPowerShellAST",
+      "parser": "5.1.26100.9444",
+      "scripts": [
+        {
+          "commands": [
+            {
+              "elements": [
+                {
+                  "kind": "ParenExpressionAst",
+                  "text": "([IO.Path]::Combine($env:MEMORYOS_CI_HOME, 'scripts\\Initialize-GitHubCI.ps1'))"
+                },
+                {
+                  "kind": "CommandParameterAst",
+                  "text": "-WorkspaceRoot"
+                },
+                {
+                  "kind": "VariableExpressionAst",
+                  "text": "$env:GITHUB_WORKSPACE"
+                },
+                {
+                  "kind": "CommandParameterAst",
+                  "text": "-ConfigurationDigest"
+                },
+                {
+                  "kind": "StringConstantExpressionAst",
+                  "text": "'sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb'"
+                },
+                {
+                  "kind": "CommandParameterAst",
+                  "text": "-DistributionDigest"
+                },
+                {
+                  "kind": "StringConstantExpressionAst",
+                  "text": "'sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'"
+                }
+              ],
+              "name": null,
+              "operator": "Ampersand"
+            }
+          ],
+          "id": "bootstrap",
+          "nodes": 42,
+          "statements": 5,
+          "status": "PASS"
+        },
+        {
+          "commands": [
+            {
+              "elements": [
+                {
+                  "kind": "ParenExpressionAst",
+                  "text": "([IO.Path]::Combine($env:MEMORYOS_CI_HOME, 'scripts\\Invoke-GitHubCI.ps1'))"
+                },
+                {
+                  "kind": "CommandParameterAst",
+                  "text": "-Mode"
+                },
+                {
+                  "kind": "StringConstantExpressionAst",
+                  "text": "'Evaluate'"
+                },
+                {
+                  "kind": "CommandParameterAst",
+                  "text": "-WorkspaceRoot"
+                },
+                {
+                  "kind": "VariableExpressionAst",
+                  "text": "$env:GITHUB_WORKSPACE"
+                },
+                {
+                  "kind": "CommandParameterAst",
+                  "text": "-ConfigurationDigest"
+                },
+                {
+                  "kind": "StringConstantExpressionAst",
+                  "text": "'sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb'"
+                },
+                {
+                  "kind": "CommandParameterAst",
+                  "text": "-DistributionDigest"
+                },
+                {
+                  "kind": "StringConstantExpressionAst",
+                  "text": "'sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'"
+                }
+              ],
+              "name": null,
+              "operator": "Ampersand"
+            }
+          ],
+          "id": "evaluate",
+          "nodes": 44,
+          "statements": 5,
+          "status": "PASS"
+        },
+        {
+          "commands": [
+            {
+              "elements": [
+                {
+                  "kind": "ParenExpressionAst",
+                  "text": "([IO.Path]::Combine($env:MEMORYOS_CI_HOME, 'scripts\\Invoke-GitHubCI.ps1'))"
+                },
+                {
+                  "kind": "CommandParameterAst",
+                  "text": "-Mode"
+                },
+                {
+                  "kind": "StringConstantExpressionAst",
+                  "text": "'Gate'"
+                },
+                {
+                  "kind": "CommandParameterAst",
+                  "text": "-WorkspaceRoot"
+                },
+                {
+                  "kind": "VariableExpressionAst",
+                  "text": "$env:GITHUB_WORKSPACE"
+                },
+                {
+                  "kind": "CommandParameterAst",
+                  "text": "-ConfigurationDigest"
+                },
+                {
+                  "kind": "StringConstantExpressionAst",
+                  "text": "'sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb'"
+                },
+                {
+                  "kind": "CommandParameterAst",
+                  "text": "-DistributionDigest"
+                },
+                {
+                  "kind": "StringConstantExpressionAst",
+                  "text": "'sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'"
+                }
+              ],
+              "name": null,
+              "operator": "Ampersand"
+            }
+          ],
+          "id": "gate",
+          "nodes": 44,
+          "statements": 5,
+          "status": "PASS"
+        }
+      ],
+      "status": "PASS",
+      "version": "1.0.0"
+    },
+    "projection": {
+      "configurationDigest": "sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb",
+      "configurationPath": "_memoryos/tool/configs/memoryos-ci.json",
+      "distributionDigest": "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+      "provider": "github",
+      "result": "verified complete bundle; original common exit projected by final gate",
+      "runId": "core-generated verified UUID; provider GITHUB_RUN_ID is metadata.runId only",
+      "timeoutMinutes": 10,
+      "trustedLauncher": "Invoke-GitHubCI.ps1 -> Invoke-MemoryOSCI.ps1",
+      "workspaceCapability": "GITHUB_WORKSPACE/_memoryos/data"
+    },
+    "runner": "windows-2022",
+    "status": "PASS",
+    "workflow": "MemoryOS Provider-Neutral CI"
+  },
+  "determinism": {
+    "goldenByteEquality": true,
+    "keyOrderPermutation": true,
+    "normalizedDefaults": true,
+    "repetitions": 12,
+    "spacedConfigEscaping": true
+  },
+  "hostedCertification": "HOSTED_EXECUTION_CERTIFICATION_PENDING",
+  "kind": "MemoryOSPhase2CGitHubContractValidation",
+  "metadata": {
+    "mapping": "GITHUB_RUN_ID -> metadata.runId; core RunId remains core-generated",
+    "rejected": 5,
+    "varyRunId": true
+  },
+  "negativeCount": 50,
+  "negatives": [
+    {
+      "diagnostic": "exact six steps required",
+      "id": "missing-node-bootstrap",
+      "sha256": "33a5190f379dc18c78b453867682cf4f058ad99ab8fdd405bdd6f248ac5b801d",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "bootstrap fixed script and pinned invocation: unexpected scalar kind or value",
+      "id": "wrong-node-bootstrap",
+      "sha256": "07df22ef4d9e5a12cd8ae71fb572fcdc5db113055714cd1f16905b7153bb16d2",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "tools checkout pin: unexpected scalar kind or value",
+      "id": "floating-action-revision",
+      "sha256": "802b2f23aa034876710c3d8b1f8f6343c382b9d7b83a2548ae9e396c22ab0147",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "runner OS: unexpected scalar kind or value",
+      "id": "wrong-runner-os",
+      "sha256": "54bb3b1203dfc6f79060837ea62fe55c37e2ddf4f8e0c31c0a543672707b8fb5",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "permissions: closed ordered keys differ",
+      "id": "extra-permission",
+      "sha256": "a200568e1c31fa7e80ea28a5bc66e573ed1a058e86961144855ebdbd6063dbc4",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "triggers: closed ordered keys differ",
+      "id": "unsafe-trigger",
+      "sha256": "98be683f7bf8b2c3d090928f6fe249be62fc1ab4fcfb14ae6854ec90bfd62efe",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "gate env: closed ordered keys differ",
+      "id": "missing-run-id",
+      "sha256": "50a81cacabc7fa925a87b839ebddc4a3c80b2f86b26e2a286c056fef53a1e5c3",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "bootstrap fixed script and pinned invocation: unexpected scalar kind or value",
+      "id": "semantic-use-of-run-id",
+      "sha256": "ac7d05d433d1d0f7d514cd0ac59ebe5e4af7f283e4cc898b1bf0f41af6be0083",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "gate COMPLETE: unexpected scalar kind or value",
+      "id": "hard-coded-incorrect-complete",
+      "sha256": "cff2344285a71ba4e160d19c57fda6936bfc5021cbd355d83e63ae02921a5fc2",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML ordinary string must be single quoted",
+      "id": "directory-wide-artifact-upload",
+      "sha256": "ec43d7a0b53000f0e495792a8d19973a2cc81249013e18359ebddb4b4f9aaa5a",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "artifact basename allowlist: unexpected scalar kind or value",
+      "id": "extra-artifact-basename",
+      "sha256": "e4aed4a2b83873fa6e7f5fa2b6988c42a8b31a130ed460b5b89be004d055ebcb",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "artifact basename allowlist: unexpected scalar kind or value",
+      "id": "path-traversal",
+      "sha256": "4369d2e75f624eec6c0374b1ede9d828f3bcd241cc11a72baa8747783cdadc8a",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "artifact basename allowlist: unexpected scalar kind or value",
+      "id": "nested-artifact-path",
+      "sha256": "8080b4b0741aee600d269810f1974f79a1e7c3931c24b9a1b49173875994cc67",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "exact six steps required",
+      "id": "unexpected-workflow-step",
+      "sha256": "3272ec5f747664a4e5ce6b8723f240ef1d5ae40e3f9b064e32b4c77fc05f4fbb",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "tool repository: unexpected scalar kind or value",
+      "id": "expression-injection",
+      "sha256": "4fde1c7aef7bf6240a136205d5afb038174765e347a48cc7a9a5dc9cef60a8c8",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "bootstrap fixed script and pinned invocation: unexpected scalar kind or value",
+      "id": "powershell-injection",
+      "sha256": "bd7e37147688caf045de76fbed7a6c5acd4b05bdf103e27384bd9ecb0ec129fb",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML control character",
+      "id": "control-characters",
+      "sha256": "c05ad55dd963e0b108a15021ebec18e8b49334c299bf78952f0bba24fca4f61f",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "bootstrap fixed script and pinned invocation: unexpected scalar kind or value",
+      "id": "configuration-digest-substitution",
+      "sha256": "1602af53d9ba3c10440b94132798f32a21af30e2513a7244f50512ec182ddb25",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "bootstrap fixed script and pinned invocation: unexpected scalar kind or value",
+      "id": "distribution-digest-substitution",
+      "sha256": "8edd66a396cbc54257251862748003e8ba1f7faebcacb868208447e2baecc656",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "evaluate fixed script and pinned invocation: unexpected scalar kind or value",
+      "id": "runner-substitution",
+      "sha256": "cae1d506c66ccb275f692b39dccdb07e14bef199b4bf503619e2df34354d756c",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML duplicate/merge key",
+      "id": "duplicate-root-key",
+      "sha256": "fa0fe921858827be1712c0396c29ef61d1ae15772aa87708255107342000d5f0",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML duplicate/merge key",
+      "id": "duplicate-trigger-key",
+      "sha256": "3e89c48eb6fd7b296d62e4ae9b7927291f44e49f2a165dda768e31d13f8c6ec3",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML duplicate/merge key",
+      "id": "duplicate-permission-key",
+      "sha256": "bacc623d259965e0a871c0b38d02ae389017cd6da68b9d3677def249636af541",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML duplicate/merge key",
+      "id": "duplicate-job-key",
+      "sha256": "de32885ea4b92b8071c2725c86531d4341fab1d1e709851da63e25f7d3376956",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML duplicate/merge key",
+      "id": "duplicate-step-key",
+      "sha256": "020f638d2de568908b0520e7328f2e9fceac684b5129e9cd38ba6a4e4000ed31",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML duplicate/merge key",
+      "id": "duplicate-checkout-key",
+      "sha256": "cee046294b032bd36e09bc90094ea99c4a87c832faf430e9c5cd532fa5eb90eb",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML duplicate/merge key",
+      "id": "duplicate-env-key",
+      "sha256": "4e739ae880957413e37bbd6658d3cbc3fdb4ddc98d3856e7b698b17165156660",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML forbidden token",
+      "id": "yaml-anchor-alias",
+      "sha256": "946ac377f6f77f2702dc4c86ef22dc12d5dfff8c4d76e5ab821ad7e160b9b1c5",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML forbidden token",
+      "id": "yaml-tag",
+      "sha256": "4e876b866b9929c69dd0b17ffe299e723485f0d5acd5bcb538c49dfc1cbdaeb1",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML duplicate/merge key",
+      "id": "yaml-merge-key",
+      "sha256": "712ccd9284c1dc20410e39fb993e099406bbfeced2246e71d6e9a7bb260c74b7",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "while scanning for the next token\nfound character '|' that cannot start any token\n  in \"<unicode string>\", line 31, column 14:\n            run: |\n                 ^",
+      "id": "malformed-yaml",
+      "sha256": "6a0ceb703129ac6131d3c5a8d287fd89f4345e4e5d038f31a53b41ed40ae728c",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "timeout: unexpected scalar kind or value",
+      "id": "boolean-scalar-confusion",
+      "sha256": "2ada33e9dcdc91626c194ce421e079d8434b91148598dfaec43c84a42f0e8620",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "tools persist-credentials: unexpected scalar kind or value",
+      "id": "checkout-credentials-enabled",
+      "sha256": "253d623375615b0e159458296064ecbf84d6c9a7a8860ccd613c46d59e950645",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML ordinary string must be single quoted",
+      "id": "secret-environment",
+      "sha256": "37854ffb7718d66d29e726e6b082d6dee11f61fe02d3dceb6f330250af172ca2",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "artifact basename allowlist: unexpected scalar kind or value",
+      "id": "artifact-case-confusion",
+      "sha256": "36e634bc99d893c3af25a34dba9369ac62d15f25366559acfa0b8abe5491e685",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "artifact basename allowlist: unexpected scalar kind or value",
+      "id": "artifact-basename-collision",
+      "sha256": "c4ae0bdfffa9b46a280301cc8a64475749c9f8d9a143e4f86897b6071f1ecef4",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "artifact basename allowlist: unexpected scalar kind or value",
+      "id": "artifact-recursive-wildcard",
+      "sha256": "655b9fb5d6d763f409f36ac9897aa07679ad46c12a5c03664dddd4eb8aa547d8",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "upload immutable pin: unexpected scalar kind or value",
+      "id": "wrong-upload-pin",
+      "sha256": "703e2c60eee37769a10b264edc56a61a79859894af6e08187325be05b5a379f7",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "bootstrap fixed script and pinned invocation: unexpected scalar kind or value",
+      "id": "powershell-backtick",
+      "sha256": "ea0fe0826615a03f5a1282713656d3951b6da91ba83731b81e239d0564ae7a02",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "bootstrap fixed script and pinned invocation: unexpected scalar kind or value",
+      "id": "powershell-subexpression",
+      "sha256": "d0ec253931c6e38244992a2acdfc8028869bbb16400cdfbc7ce041556cff2cb5",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "bootstrap fixed script and pinned invocation: unexpected scalar kind or value",
+      "id": "powershell-pipeline",
+      "sha256": "db7817b6f47bee5ea79041416babdf08ce530b607f48325f926f579110f14682",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "bootstrap fixed script and pinned invocation: unexpected scalar kind or value",
+      "id": "powershell-newline-command",
+      "sha256": "9ad26c1e4df53955e34d6f8eff14415a19d913e92b6422c8a3d44fcc3f65f97a",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "bootstrap fixed script and pinned invocation: unexpected scalar kind or value",
+      "id": "unsafe-config-path",
+      "sha256": "37b85750bccf48fd368cf8163ffaea3bb72e9af68d2bd271f51f259a539fce1e",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML ordinary string must be single quoted",
+      "id": "core-run-id-provider-substitution",
+      "sha256": "458ba8fa0215cd942a8b752fa74b8ce85c2262593fbd137a6ac779287888f8f0",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "workflow identity: unexpected scalar kind or value",
+      "id": "log-command-injection",
+      "sha256": "7786fcddb18a1d80faa176a49f313c37be7e008ea2aa35e0fb96a0b261bfa396",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML control character",
+      "id": "ansi-control-injection",
+      "sha256": "474e821c3148494a7dd11578249a38e68c61d6d121ebd285a9b0e74256bd6a39",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML control character",
+      "id": "crlf-input",
+      "sha256": "2c5ad356011b2d9853448a17135ce0a69d04281a1bf7d67f5cf45a999d2007e6",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML encoding/final LF",
+      "id": "utf8-bom",
+      "sha256": "a122213c0ccea2a5029ac2e21025611c5924e7ead7b0125257106eb5cdcd3555",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "'utf-8' codec can't decode byte 0xed in position 7: invalid continuation byte",
+      "id": "malformed-unicode",
+      "sha256": "ded174eacc9cb5db61ff36eb50a7352ad56c3986e6d0789cdee327dc4c482c9f",
+      "status": "REJECTED"
+    },
+    {
+      "diagnostic": "YAML encoding/final LF",
+      "id": "double-final-newline",
+      "sha256": "bba46d8a8b6c742f5698017c42267cd6eb8eb8f701b1fd57e4024b82a2900c33",
+      "status": "REJECTED"
+    }
+  ],
+  "originalDiagnostic": {
+    "confirmedDeficiencies": {
+      "complete-success-output": true,
+      "pinned-node-bootstrap": true,
+      "run-id-output": true,
+      "upload-basename-allowlist": true
+    },
+    "diagnostic": "YAML ordinary string must be single quoted",
+    "revision": "e1c990bf65d0c7925a68eea8222cd304f8ce6db6",
+    "sourceSha256": "sha256:73c0c5907ca6bf587a5028d32c03a4a5acd0c15c05d2f6c4fa4c3c0775569a0b",
+    "validator": "REJECTED",
+    "workflowBase64": "bmFtZTogJ01lbW9yeU9TIFByb3ZpZGVyLU5ldXRyYWwgQ0knCidvbic6CiAgd29ya2Zsb3dfZGlzcGF0Y2g6IHt9CnBlcm1pc3Npb25zOgogIGNvbnRlbnRzOiByZWFkCmpvYnM6CiAgbWVtb3J5b3NfY2k6CiAgICBuYW1lOiAnTWVtb3J5T1MgQ0knCiAgICBydW5zLW9uOiB3aW5kb3dzLTIwMjIKICAgIHRpbWVvdXQtbWludXRlczogMTAKICAgIHN0ZXBzOgogICAgICAtIGlkOiB0b29scwogICAgICAgIHVzZXM6ICdhY3Rpb25zL2NoZWNrb3V0QDNkM2M0MmU1YWFjNWJhODA1ODI1ZGE3NjQxMGMxODEyNzNiYTkwYjEnCiAgICAgICAgd2l0aDoKICAgICAgICAgIHJlcG9zaXRvcnk6ICdtZW1vcnlvcy9jaS10b29scycKICAgICAgICAgIHJlZjogJzAxMjM0NTY3ODlhYmNkZWYwMTIzNDU2Nzg5YWJjZGVmMDEyMzQ1NjcnCiAgICAgICAgICBwYXRoOiBfbWVtb3J5b3MvdG9vbAogICAgICAgICAgcGVyc2lzdC1jcmVkZW50aWFsczogZmFsc2UKICAgICAgICAgIHN1Ym1vZHVsZXM6IGZhbHNlCiAgICAgICAgICBsZnM6IGZhbHNlCiAgICAgIC0gaWQ6IGRhdGEKICAgICAgICB1c2VzOiAnYWN0aW9ucy9jaGVja291dEAzZDNjNDJlNWFhYzViYTgwNTgyNWRhNzY0MTBjMTgxMjczYmE5MGIxJwogICAgICAgIHdpdGg6CiAgICAgICAgICByZWY6ICR7eyBnaXRodWIuc2hhIH19CiAgICAgICAgICBwYXRoOiBfbWVtb3J5b3MvZGF0YQogICAgICAgICAgcGVyc2lzdC1jcmVkZW50aWFsczogZmFsc2UKICAgICAgICAgIHN1Ym1vZHVsZXM6IGZhbHNlCiAgICAgICAgICBsZnM6IGZhbHNlCiAgICAgIC0gaWQ6IGJvb3RzdHJhcAogICAgICAgIHNoZWxsOiBwb3dlcnNoZWxsCiAgICAgICAgcnVuOiB8CiAgICAgICAgICAkRXJyb3JBY3Rpb25QcmVmZXJlbmNlID0gJ1N0b3AnCiAgICAgICAgICBpZiAoLW5vdCAoVGVzdC1QYXRoIC1MaXRlcmFsUGF0aCAkZW52OkdJVEhVQl9XT1JLU1BBQ0UpKSB7IHRocm93ICd3b3Jrc3BhY2UgdW5hdmFpbGFibGUnIH0KICAgICAgICAgICRlbnY6TUVNT1JZT1NfQ0lfSE9NRSA9IEpvaW4tUGF0aCAkZW52OkdJVEhVQl9XT1JLU1BBQ0UgJ19tZW1vcnlvc1x0b29sXHJlcG9zaXRvcmllc1xtZW1vcnlvcy1jaScKICAgICAgICAgICRlbnY6TUVNT1JZT1NfQ0lfQ09ORklHID0gSm9pbi1QYXRoICRlbnY6R0lUSFVCX1dPUktTUEFDRSAnX21lbW9yeW9zXHRvb2xcY29uZmlnc1xtZW1vcnlvcy1jaS5qc29uJwogICAgICAtIGlkOiBldmFsdWF0ZQogICAgICAgIHNoZWxsOiBwb3dlcnNoZWxsCiAgICAgICAgcnVuOiB8CiAgICAgICAgICAkRXJyb3JBY3Rpb25QcmVmZXJlbmNlID0gJ0NvbnRpbnVlJwogICAgICAgICAgJiAoSm9pbi1QYXRoICRlbnY6TUVNT1JZT1NfQ0lfSE9NRSAnc2NyaXB0c1xJbnZva2UtTWVtb3J5T1NDSS5wczEnKSAtUHJvdmlkZXIgJ2dpdGh1YicgLVdvcmtzcGFjZSAoSm9pbi1QYXRoICRlbnY6R0lUSFVCX1dPUktTUEFDRSAnX21lbW9yeW9zXGRhdGEnKSAtQ29uZmlndXJhdGlvbkRpZ2VzdCAnc2hhMjU2OjEyZGRlZmU2YWYyNGUzMzY0ZGZlZTBjMDgxYWQ0YTQxMDYxYmNmOGFhNDgwNDcxNmJiNmVlNjVhYTU0ODNhZmInIC1EaXN0cmlidXRpb25EaWdlc3QgJ3NoYTI1NjowMTIzNDU2Nzg5YWJjZGVmMDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWYwMTIzNDU2Nzg5YWJjZGVmJwogICAgICAgICAgJGNvZGUgPSAkTEFTVEVYSVRDT0RFCiAgICAgICAgICAnY29tcGxldGU9ZmFsc2UnIHwgT3V0LUZpbGUgLUZpbGVQYXRoICRlbnY6R0lUSFVCX09VVFBVVCAtQXBwZW5kIC1FbmNvZGluZyB1dGY4CiAgICAgICAgICAnZXhpdC1jb2RlPScgKyAkY29kZSB8IE91dC1GaWxlIC1GaWxlUGF0aCAkZW52OkdJVEhVQl9PVVRQVVQgLUFwcGVuZCAtRW5jb2RpbmcgdXRmOAogICAgICAtIGlkOiB1cGxvYWQKICAgICAgICBpZjogYWx3YXlzKCkgJiYgc3RlcHMuZXZhbHVhdGUub3V0cHV0cy5jb21wbGV0ZSA9PSAndHJ1ZScKICAgICAgICB1c2VzOiAnYWN0aW9ucy91cGxvYWQtYXJ0aWZhY3RAMDQzZmI0NmQxYTkzYzc3YWFlNjU2ZTdjMWM2NGE4NzVkMWZjNmEwYScKICAgICAgICB3aXRoOgogICAgICAgICAgbmFtZTogbWVtb3J5b3MtY2ktJHt7IGdpdGh1Yi5ydW5faWQgfX0tJHt7IGdpdGh1Yi5ydW5fYXR0ZW1wdCB9fQogICAgICAgICAgcGF0aDogX21lbW9yeW9zL2RhdGEvLm1lbW9yeW9zLWNpL291dC8ke3sgc3RlcHMuZXZhbHVhdGUub3V0cHV0cy5ydW4taWQgfX0KICAgICAgICAgIGlmLW5vLWZpbGVzLWZvdW5kOiBlcnJvcgogICAgICAgICAgaW5jbHVkZS1oaWRkZW4tZmlsZXM6IHRydWUKICAgICAgICAgIHJldGVudGlvbi1kYXlzOiA3CiAgICAgIC0gaWQ6IGdhdGUKICAgICAgICBpZjogYWx3YXlzKCkKICAgICAgICBzaGVsbDogcG93ZXJzaGVsbAogICAgICAgIGVudjoKICAgICAgICAgIENPTVBMRVRFOiAke3sgc3RlcHMuZXZhbHVhdGUub3V0cHV0cy5jb21wbGV0ZSB9fQogICAgICAgICAgRVhJVF9DT0RFOiAke3sgc3RlcHMuZXZhbHVhdGUub3V0cHV0cy5leGl0LWNvZGUgfX0KICAgICAgICAgIEVWQUxVQVRFX09VVENPTUU6ICR7eyBzdGVwcy5ldmFsdWF0ZS5vdXRjb21lIH19CiAgICAgICAgICBVUExPQURfT1VUQ09NRTogJHt7IHN0ZXBzLnVwbG9hZC5vdXRjb21lIH19CiAgICAgICAgcnVuOiB8CiAgICAgICAgICAkRXJyb3JBY3Rpb25QcmVmZXJlbmNlID0gJ1N0b3AnCiAgICAgICAgICBpZiAoJGVudjpDT01QTEVURSAtbmUgJ3RydWUnIC1vciAkZW52OkVWQUxVQVRFX09VVENPTUUgLW5lICdzdWNjZXNzJyAtb3IgJGVudjpVUExPQURfT1VUQ09NRSAtbmUgJ3N1Y2Nlc3MnKSB7IGV4aXQgMTcgfQogICAgICAgICAgJGV4aXRDb2RlID0gW2ludF0kZW52OkVYSVRfQ09ERQogICAgICAgICAgaWYgKCRleGl0Q29kZSAtbm90aW4gQCgwLDYsNywxMCwxMSwxMiwxMywxNCwxNSwxNiwxNykpIHsgZXhpdCAxNiB9CiAgICAgICAgICBleGl0ICRleGl0Q29kZQo=",
+    "workflowSha256": "77ad48e93877f33cf84413af09750cfbd4ecb02366c9f742be04cacade076a01"
+  },
+  "parser": {
+    "name": "PyYAML",
+    "version": "6.0.3"
+  },
+  "providerStatus": "IMPLEMENTED",
+  "scope": "offline structure/AST/determinism, no hosted execution",
+  "sourceBindings": [
+    {
+      "byteLength": 1420,
+      "path": "repositories/memoryos-ci/src/providers/github.mjs",
+      "sha256": "76090f97c87db437757c052d15c1ed2d3f129378a023e5937259d45fe2cb76b8"
+    },
+    {
+      "byteLength": 3890,
+      "path": "repositories/memoryos-ci/templates/github.yml.tpl",
+      "sha256": "69c2b2268d20a2f79569a83bc5674588d18e89aa61b6f7914b9c439df45e5adc"
+    },
+    {
+      "byteLength": 6442,
+      "path": "repositories/memoryos-ci/scripts/Initialize-GitHubCI.ps1",
+      "sha256": "1fbc7419fa82f0943da5efa1114c9510b18ee59ffb14f6e06c4bf8829f9daa25"
+    },
+    {
+      "byteLength": 4948,
+      "path": "repositories/memoryos-ci/scripts/Invoke-GitHubCI.ps1",
+      "sha256": "a9a62d24e4c324b4dfd5bbc2a3ccc7c7ab8c629331e22c05c56fd224bac6d3fc"
+    },
+    {
+      "byteLength": 2522,
+      "path": "repositories/memoryos-ci/scripts/github-transport.mjs",
+      "sha256": "0b4b87f6ece08808eb34a369edc8d5ee62846e696d440a24c7da7c29ad322367"
+    },
+    {
+      "byteLength": 4106,
+      "path": "repositories/memoryos-ci/src/github-transport.mjs",
+      "sha256": "867335a89cb25b69fdc838b7210a48334c5b5d34b55984f4bbf689c9bc8309bc"
+    },
+    {
+      "byteLength": 4217,
+      "path": "repositories/cca-conformance/fixtures/mo1306/engineering-validator-lock.json",
+      "sha256": "bac0215dd7a6776b9e87451fa75b19fe0ca07adfe2fcf4eb65eb148c9478ebed"
+    }
+  ],
+  "status": "PASS",
+  "version": "1.0.0",
+  "workflow": {
+    "byteLength": 4228,
+    "path": ".github/workflows/memoryos-ci.yml",
+    "sha256": "f15fb2320cbc282b077537efeeb827a78e9c178d0dbbdafe97cf08c12986125f"
+  }
+}

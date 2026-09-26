@@ -1,0 +1,17 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
+const root=path.resolve(fileURLToPath(new URL('../../../..',import.meta.url)));
+const output=process.argv[2];
+if(!output||fs.existsSync(output))throw new Error('explicit exclusive receipt path required');
+const testPath='repositories/cca-conformance/tools/mo1306-phase2c/github-transport.test.mjs';
+const command=[process.execPath,'--test','--test-reporter=tap',testPath];
+const executed=spawnSync(command[0],command.slice(1),{cwd:root,encoding:'utf8',timeout:30000,maxBuffer:262144,windowsHide:true});
+const paths=[testPath,'repositories/cca-conformance/tools/mo1306-phase2c/record-github-transport.mjs','repositories/memoryos-ci/src/github-transport.mjs','repositories/memoryos-ci/src/verification.mjs','repositories/memoryos-ci/src/contracts.mjs','repositories/memoryos-ci/src/errors.mjs','repositories/memoryos-ci/src/metadata.mjs','repositories/memoryos-ci/src/serialization.mjs','repositories/memoryos-ci/src/json.mjs','repositories/memoryos-ci/src/schema.mjs','repositories/memoryos-ci/schemas/summary-1.0.0.schema.json'];
+const sources=paths.sort().map(p=>{const bytes=fs.readFileSync(path.join(root,p));return {path:p,byteLength:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};});
+const passed=Number(executed.stdout.match(/^# pass (\d+)$/m)?.[1]),failed=Number(executed.stdout.match(/^# fail (\d+)$/m)?.[1]);
+const report={kind:'MemoryOSCICDGitHubTransportUnitReceipt',version:'1.0.0',status:executed.status===0&&passed===33&&failed===0?'PASS':'FAIL',command,nodeVersion:process.version,exitCode:executed.status,passed,failed,sources,stdout:executed.stdout,stderr:executed.stderr,scope:'Pure summary/completion/run binding and gate projection; native bundle verification is covered by the separate wrapper receipt.',networkExecuted:false,hostedExecuted:false};
+fs.writeFileSync(output,JSON.stringify(report,null,2)+'\n',{flag:'wx'});process.stdout.write(JSON.stringify({status:report.status,passed,failed,output})+'\n');
+process.exitCode=report.status==='PASS'?0:1;

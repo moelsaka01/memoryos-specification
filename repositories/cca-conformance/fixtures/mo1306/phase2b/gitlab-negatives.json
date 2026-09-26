@@ -1,0 +1,473 @@
+{
+  "kind": "MemoryOSCICDGitLabNegativeCorpus",
+  "version": "1.0.0",
+  "base": "gitlab-golden.yml",
+  "expected": "REJECT",
+  "cases": [
+    {
+      "id": "unsupported-job-key",
+      "category": "unsupported keys",
+      "replace": "  retry: 0",
+      "with": "  retry: 0\n  image: 'untrusted:latest'"
+    },
+    {
+      "id": "unsupported-top-key",
+      "category": "unsupported keys",
+      "replace": "stages:",
+      "with": "include: 'evil.yml'\nstages:"
+    },
+    {
+      "id": "extra-job",
+      "category": "unexpected executable content",
+      "replace": "memoryos_policy:",
+      "with": "evil:\n  script:\n    - 'whoami'\nmemoryos_policy:"
+    },
+    {
+      "id": "malformed-unclosed-string",
+      "category": "malformed YAML",
+      "replace": "'windows_2022'",
+      "with": "'windows_2022"
+    },
+    {
+      "id": "malformed-mapping",
+      "category": "malformed YAML",
+      "replace": "  stage: 'test'",
+      "with": "  stage 'test'"
+    },
+    {
+      "id": "yaml-key-injection",
+      "category": "YAML injection",
+      "replace": "'windows_2022'",
+      "with": "'windows_2022'\n  before_script:\n    - 'whoami'"
+    },
+    {
+      "id": "yaml-sequence-injection",
+      "category": "YAML injection",
+      "replace": "'windows_2022'",
+      "with": "'windows_2022'\n    - 'other-runner'"
+    },
+    {
+      "id": "duplicate-root",
+      "category": "duplicate keys",
+      "replace": "stages:",
+      "with": "stages:\n  - 'evil'\nstages:"
+    },
+    {
+      "id": "duplicate-job",
+      "category": "duplicate keys",
+      "replace": "  stage: 'test'",
+      "with": "  stage: 'test'\n  stage: 'test'"
+    },
+    {
+      "id": "anchor",
+      "category": "anchors aliases tags merge",
+      "replace": "  tags:",
+      "with": "  tags: &runner"
+    },
+    {
+      "id": "alias",
+      "category": "anchors aliases tags merge",
+      "replace": "    - 'windows_2022'",
+      "with": "    - *runner"
+    },
+    {
+      "id": "merge",
+      "category": "anchors aliases tags merge",
+      "replace": "  stage: 'test'",
+      "with": "  <<: 'source'\n  stage: 'test'"
+    },
+    {
+      "id": "tag",
+      "category": "anchors aliases tags merge",
+      "replace": "'windows_2022'",
+      "with": "!!str 'windows_2022'"
+    },
+    {
+      "id": "unsafe-python-tag",
+      "category": "anchors aliases tags merge",
+      "replace": "'windows_2022'",
+      "with": "!!python/object/apply:os.system 'whoami'"
+    },
+    {
+      "id": "flow-sequence",
+      "category": "flow collections",
+      "replace": "  tags:\n    - 'windows_2022'",
+      "with": "  tags: ['windows_2022']"
+    },
+    {
+      "id": "flow-map",
+      "category": "flow collections",
+      "replace": "  retry: 0",
+      "with": "  retry: {max: 0}"
+    },
+    {
+      "id": "multi-document",
+      "category": "malformed YAML",
+      "replace": "stages:",
+      "with": "---\nstages:"
+    },
+    {
+      "id": "directive",
+      "category": "malformed YAML",
+      "replace": "stages:",
+      "with": "%YAML 1.2\n---\nstages:"
+    },
+    {
+      "id": "label-newline",
+      "category": "multiline injection",
+      "replace": "'windows_2022'",
+      "with": "'windows_\n      2022'"
+    },
+    {
+      "id": "script-newline",
+      "category": "multiline injection",
+      "replace": "      } finally {",
+      "with": "      }\n      whoami\n      try {"
+    },
+    {
+      "id": "github-expression",
+      "category": "expression injection",
+      "replace": "windows_2022",
+      "with": "${{ secrets.TOKEN }}"
+    },
+    {
+      "id": "azure-expression",
+      "category": "expression injection",
+      "replace": "windows_2022",
+      "with": "$[variables.token]"
+    },
+    {
+      "id": "command-substitution",
+      "category": "expression injection",
+      "replace": "windows_2022",
+      "with": "$(whoami)"
+    },
+    {
+      "id": "gitlab-variable",
+      "category": "expression injection",
+      "replace": "windows_2022",
+      "with": "$CI_PROJECT_DIR"
+    },
+    {
+      "id": "groovy-expression",
+      "category": "expression injection",
+      "replace": "windows_2022",
+      "with": "${System.exit(0)}"
+    },
+    {
+      "id": "unsafe-variable",
+      "category": "unsafe variables",
+      "replace": "  retry: 0",
+      "with": "  retry: 0\n  variables:\n    MEMORYOS_CI_HOME: 'C:/evil'"
+    },
+    {
+      "id": "metadata-authority",
+      "category": "metadata abuse",
+      "replace": "  retry: 0",
+      "with": "  retry: 0\n  variables:\n    CI_COMMIT_SHA: 'authority'"
+    },
+    {
+      "id": "metadata-url",
+      "category": "metadata abuse",
+      "replace": "windows_2022",
+      "with": "https://example.invalid/runner"
+    },
+    {
+      "id": "secret-placeholder",
+      "category": "secret placeholders",
+      "replace": "windows_2022",
+      "with": "${SECRET_TOKEN}"
+    },
+    {
+      "id": "secret-template",
+      "category": "secret placeholders",
+      "replace": "  retry: 0",
+      "with": "  retry: 0\n  secrets:\n    TOKEN: 'SECRET_SENTINEL'"
+    },
+    {
+      "id": "path-traversal",
+      "category": "unsafe paths",
+      "replace": "scripts/Invoke-MemoryOSCI.ps1",
+      "with": "../Invoke-MemoryOSCI.ps1"
+    },
+    {
+      "id": "path-ads",
+      "category": "unsafe paths",
+      "replace": "scripts/Invoke-MemoryOSCI.ps1",
+      "with": "scripts/Invoke-MemoryOSCI.ps1:evil"
+    },
+    {
+      "id": "path-unc",
+      "category": "unsafe paths",
+      "replace": "scripts/Invoke-MemoryOSCI.ps1",
+      "with": "\\\\evil\\share\\runner.ps1"
+    },
+    {
+      "id": "path-device",
+      "category": "unsafe paths",
+      "replace": "scripts/Invoke-MemoryOSCI.ps1",
+      "with": "\\\\.\\NUL"
+    },
+    {
+      "id": "runner-substitution",
+      "category": "runner substitution",
+      "replace": "scripts/Invoke-MemoryOSCI.ps1",
+      "with": "scripts/Run-Evil.ps1"
+    },
+    {
+      "id": "home-substitution",
+      "category": "runner substitution",
+      "replace": "$env:MEMORYOS_CI_HOME",
+      "with": "$env:CI_PROJECT_DIR"
+    },
+    {
+      "id": "workspace-substitution",
+      "category": "configuration substitution",
+      "replace": "-Workspace $env:CI_PROJECT_DIR",
+      "with": "-Workspace $env:UNTRUSTED"
+    },
+    {
+      "id": "config-substitution",
+      "category": "configuration substitution",
+      "replace": "-ConfigurationDigest",
+      "with": "-Config 'attacker.json' -ConfigurationDigest"
+    },
+    {
+      "id": "provider-substitution",
+      "category": "runner substitution",
+      "replace": "-Provider 'gitlab'",
+      "with": "-Provider 'generic'"
+    },
+    {
+      "id": "configuration-digest",
+      "category": "digest substitution",
+      "replace": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "with": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    {
+      "id": "distribution-digest",
+      "category": "digest substitution",
+      "replace": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "with": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    {
+      "id": "digest-uppercase",
+      "category": "digest substitution",
+      "replace": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "with": "SHA256:1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    {
+      "id": "script-semicolon",
+      "category": "unexpected executable content",
+      "replace": "$status = 16",
+      "with": "$status = 16; whoami"
+    },
+    {
+      "id": "script-pipeline",
+      "category": "unexpected executable content",
+      "replace": "$status = 16",
+      "with": "$status = 16 | Out-Host"
+    },
+    {
+      "id": "script-backtick",
+      "category": "unexpected executable content",
+      "replace": "$status = 16",
+      "with": "$status = `16"
+    },
+    {
+      "id": "script-exit-bypass",
+      "category": "unexpected executable content",
+      "replace": "exit $status",
+      "with": "exit 0"
+    },
+    {
+      "id": "script-capture-delay",
+      "category": "unexpected executable content",
+      "replace": "$status = $LASTEXITCODE",
+      "with": "Write-Host 'delay'\n        $status = $LASTEXITCODE"
+    },
+    {
+      "id": "argv-smuggling",
+      "category": "unexpected executable content",
+      "replace": "-Provider 'gitlab'",
+      "with": "-Provider 'gitlab' --eval 'evil'"
+    },
+    {
+      "id": "extra-step",
+      "category": "unexpected executable content",
+      "replace": "  script:",
+      "with": "  script:\n    - 'whoami'"
+    },
+    {
+      "id": "plain-string",
+      "category": "scalar types",
+      "replace": "  stage: 'test'",
+      "with": "  stage: test"
+    },
+    {
+      "id": "double-string",
+      "category": "scalar types",
+      "replace": "  stage: 'test'",
+      "with": "  stage: \"test\""
+    },
+    {
+      "id": "boolean-string",
+      "category": "scalar types",
+      "replace": "allow_failure: false",
+      "with": "allow_failure: 'false'"
+    },
+    {
+      "id": "retry-string",
+      "category": "scalar types",
+      "replace": "retry: 0",
+      "with": "retry: '0'"
+    },
+    {
+      "id": "retry-hex",
+      "category": "scalar types",
+      "replace": "retry: 0",
+      "with": "retry: 0x0"
+    },
+    {
+      "id": "timeout-type",
+      "category": "official schema",
+      "replace": "timeout: '5m'",
+      "with": "timeout: false"
+    },
+    {
+      "id": "stage-type",
+      "category": "official schema",
+      "replace": "stage: 'test'",
+      "with": "stage: 0"
+    },
+    {
+      "id": "folded-script",
+      "category": "scalar types",
+      "replace": "    - |",
+      "with": "    - >"
+    },
+    {
+      "id": "literal-stage",
+      "category": "scalar types",
+      "replace": "  stage: 'test'",
+      "with": "  stage: |-\n    test"
+    },
+    {
+      "id": "key-order",
+      "category": "fixed ordering",
+      "replace": "  when: 'manual'\n  allow_failure: false",
+      "with": "  allow_failure: false\n  when: 'manual'"
+    },
+    {
+      "id": "indentation",
+      "category": "fixed ordering",
+      "replace": "  stage: 'test'",
+      "with": "   stage: 'test'"
+    },
+    {
+      "id": "label-single-quote",
+      "category": "PowerShell quotes",
+      "replace": "windows_2022",
+      "with": "windows'';whoami;''"
+    },
+    {
+      "id": "gitlab-log-command",
+      "category": "provider log commands",
+      "replace": "windows_2022",
+      "with": "section_start:0:injected"
+    },
+    {
+      "id": "github-log-command",
+      "category": "provider log commands",
+      "replace": "windows_2022",
+      "with": "::error::injected"
+    },
+    {
+      "id": "azure-log-command",
+      "category": "provider log commands",
+      "replace": "windows_2022",
+      "with": "##vso[task.complete]injected"
+    },
+    {
+      "id": "cr",
+      "category": "control characters",
+      "prefixHex": "0d"
+    },
+    {
+      "id": "nul",
+      "category": "control characters",
+      "prefixHex": "00"
+    },
+    {
+      "id": "ansi",
+      "category": "control characters",
+      "prefixHex": "1b"
+    },
+    {
+      "id": "tab",
+      "category": "control characters",
+      "prefixHex": "09"
+    },
+    {
+      "id": "invalid-utf8",
+      "category": "malformed Unicode",
+      "prefixHex": "ff"
+    },
+    {
+      "id": "surrogate-utf8",
+      "category": "malformed Unicode",
+      "prefixHex": "eda080"
+    },
+    {
+      "id": "bom",
+      "category": "malformed Unicode",
+      "prefixHex": "efbbbf"
+    },
+    {
+      "id": "missing-final-lf",
+      "category": "encoding",
+      "trimFinalLf": true
+    },
+    {
+      "id": "double-final-lf",
+      "category": "encoding",
+      "suffixHex": "0a"
+    },
+    {
+      "id": "oversized",
+      "category": "bounds",
+      "prefixRepeat": "x",
+      "count": 32769
+    },
+    {
+      "id": "blank-line",
+      "category": "fixed syntax",
+      "replace": "stages:\n",
+      "with": "stages:\n\n"
+    },
+    {
+      "id": "block-chomping",
+      "category": "fixed syntax",
+      "replace": "    - |",
+      "with": "    - |+"
+    },
+    {
+      "id": "block-explicit-indentation",
+      "category": "fixed syntax",
+      "replace": "    - |",
+      "with": "    - |2"
+    },
+    {
+      "id": "uppercase-boolean",
+      "category": "scalar types",
+      "replace": "allow_failure: false",
+      "with": "allow_failure: FALSE"
+    },
+    {
+      "id": "comment",
+      "category": "fixed syntax",
+      "replace": "  retry: 0",
+      "with": "  retry: 0 # unexplained authority"
+    }
+  ]
+}

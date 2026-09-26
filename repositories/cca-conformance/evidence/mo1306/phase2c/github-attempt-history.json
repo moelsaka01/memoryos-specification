@@ -1,0 +1,47 @@
+{
+  "kind": "MemoryOSCICDPhase2CTestAttemptHistory",
+  "version": "1.0.0",
+  "scope": "GitHub correction focused engineering harness attempts; these failed attempts are not PASS evidence.",
+  "attempts": [
+    {
+      "id": "github-wrapper-final-interrupted",
+      "status": "INCOMPLETE",
+      "classification": "ENGINEERING_INTERRUPTION",
+      "productionDigest": "sha256:07b7489aa2983a9c0ecfc2fd8ed9d2634e9176cab3e6136aa906469d98374887",
+      "retainedAttemptDirectory": ".cache/mo1306-phase2c/github-wrapper-final",
+      "reason": "Independent review found an NBSP indentation parser defect while this wrapper run was starting. The final production distribution was being corrected, so the exact owned test harness process tree was stopped before repeating final certification.",
+      "termination": "Matched exactly one owned Node harness command and unique attempt path, then terminated PID 20028 and its descendants; command confirmed all six scoped processes terminated and the exec session closed with exit1.",
+      "limitations": "This is not a product cancellation/cleanup witness, PASS, or product failure. Attempt files were preserved. A fresh final attempt uses the corrected parser distribution."
+    },
+    {
+      "id": "github-transport-initial",
+      "status": "FAIL",
+      "classification": "TEST_HARNESS_DEFECT",
+      "command": ["node", "--test", "repositories/cca-conformance/tools/mo1306-phase2c/github-transport.test.mjs"],
+      "observed": {"tests": 33, "passed": 25, "failed": 8},
+      "diagnostic": "deepStrictEqual rejected parsed null-prototype Summary objects against ordinary object fixtures; values were identical.",
+      "correction": "Compare canonical JSON values instead of object prototypes. Subsequent 33/33 passed; no production change was needed.",
+      "sourceBinding": "Execution-time uncommitted source; the exact initial harness hash was not retained. No source-bound PASS claim is made for this attempt."
+    },
+    {
+      "id": "github-bootstrap-attempt1",
+      "status": "FAIL",
+      "classification": "TEST_HARNESS_DEFECT",
+      "command": ["Test-GitHubBootstrap.ps1", "-OutputRoot", ".cache/mo1306-phase2c/github-bootstrap-attempt1", "-ArchivePath", "read-only retained frozen Node ZIP"],
+      "diagnostic": "Cannot convert value 2684354560 to System.Int32 while constructing the synthetic symlink ZIP fixture; pinned archive extraction and runtime identity had already succeeded.",
+      "correction": "Use the signed Int32 representation for ZIP ExternalAttributes. Attempt2 subsequently passed all 14 cases with network and hosted execution false.",
+      "retainedAttemptDirectory": ".cache/mo1306-phase2c/github-bootstrap-attempt1",
+      "sourceBinding": "Execution-time uncommitted engineering harness; initial exact harness hash was not retained. No source-bound PASS claim is made for this attempt."
+    },
+    {
+      "id": "github-wrapper-attempt1",
+      "status": "FAIL",
+      "classification": "TEST_HOST_ENVIRONMENT_DEFECT",
+      "diagnostic": "Synthetic outer PowerShell environment omitted PATHEXT. Native executable invocation returned null LASTEXITCODE; wrapper failed closed with exit15 before output publication.",
+      "correction": "Supply the fixed ordinary Windows PATHEXT only to the engineering host. Production shared launcher also hardened null exit/summary handling; isolated semantic child environment remains unchanged.",
+      "retainedAttemptDirectory": ".cache/mo1306-phase2c/github-wrapper-attempt1",
+      "debugObservation": "An independently invoked diagnostic rerun with the ordinary host environment completed PASS and published a six-file bundle. The original failed stdout/stderr remain; the diagnostic run is not the retained final wrapper suite.",
+      "sourceBinding": "Execution-time uncommitted engineering harness; no current-source PASS claim made for this attempt."
+    }
+  ]
+}

@@ -39,7 +39,8 @@ export async function verifyBundle(directory,installation,options={}) {
   }
   const result=checkResult(json('memoryos-ci-result.json','Result'));
   const evidence=json('memoryos-ci-evidence.json','Evidence'),manifest=json('memoryos-ci-artifacts.json','Artifacts'),marker=json('memoryos-ci-complete.json','Complete');
-  const runId=result.runId,ids=installation.identities;
+  if(!Object.hasOwn(installation.adapterDigests,result.provider))reject('BUNDLE_INTEGRITY');
+  const runId=result.runId,ids={...installation.identities,adapterDigest:installation.adapterDigests[result.provider]};
   if(path.basename(directory)!==runId||[evidence,manifest,marker].some(v=>v.runId!==runId)||marker.manifestSha256!==digest(contents.get('memoryos-ci-artifacts.json')))reject('BUNDLE_INTEGRITY');
   const members=names.filter(n=>n!=='memoryos-ci-artifacts.json'&&n!=='memoryos-ci-complete.json');
   if(J(manifest.files.map(r=>r.path))!==J(members))reject('BUNDLE_INTEGRITY');

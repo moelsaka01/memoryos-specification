@@ -45,17 +45,25 @@ try {
       if(fs.existsSync(output))reject('OUTPUT_EXISTS');
       await createDirectory(output,options);
       const pending=path.join(output,'.pending');await createDirectory(pending,options);
+      // Only generated, fixed relative paths; reserve each nested directory.
+      const parents=[...new Set(files.map(f=>path.posix.dirname(f.path)).filter(p=>p!=='.').flatMap(p=>p.split('/').map((_,i,parts)=>parts.slice(0,i+1).join('/'))))].sort((a,b)=>a.split('/').length-b.split('/').length||a.localeCompare(b));
+      for(const parent of parents)await createDirectory(path.join(pending,parent),options);
       for(const file of files) {
         const target=path.join(pending,file.path);
         await checkPaths([{path:target,allowMissingLeaf:true}],options);
         fs.writeFileSync(target,file.bytes,{flag:'wx'});
         if(!readChecked(target,file.bytes.length).equals(file.bytes))reject('ARTIFACT_WRITE');
       }
+      for(const parent of parents)await createDirectory(path.join(output,parent),options);
       for(const file of files) {
         const target=path.join(output,file.path);
         await checkPaths([{path:target,allowMissingLeaf:true},{path:path.join(pending,file.path),allowMissingLeaf:false}],options);
         if(fs.existsSync(target))reject('OUTPUT_EXISTS');
         fs.renameSync(path.join(pending,file.path),target);
+      }
+      for(const parent of [...parents].reverse()) {
+        const directory=path.join(pending,parent);
+        await checkPaths([{path:directory,allowMissingLeaf:false}],options);fs.rmdirSync(directory);
       }
       await checkPaths([{path:pending,allowMissingLeaf:false}],options);fs.rmdirSync(pending);
     }

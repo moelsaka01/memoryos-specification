@@ -1,0 +1,23 @@
+trigger: 'none'
+pr: 'none'
+pool:
+  name: 'MemoryOS_Windows'
+  demands:
+    - 'Agent.OS -equals Windows_NT'
+jobs:
+  - job: 'memoryos_policy'
+    timeoutInMinutes: 5
+    cancelTimeoutInMinutes: 1
+    steps:
+      - checkout: 'self'
+        persistCredentials: false
+        submodules: false
+        lfs: false
+      - powershell: |
+          $ErrorActionPreference = 'Stop'
+          & (Join-Path $env:MEMORYOS_CI_HOME 'scripts\Invoke-MemoryOSCI.ps1') -Provider 'azure' -Workspace $env:BUILD_SOURCESDIRECTORY -ConfigurationDigest 'sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb' -DistributionDigest 'sha256:bd154a7a972395b801b3cb0189a728b7e9870eb05f90558346eb7fee7055fe77'
+          $gateExit = $LASTEXITCODE
+          exit $gateExit
+        displayName: 'MemoryOS Policy'
+        failOnStderr: false
+        ignoreLASTEXITCODE: false

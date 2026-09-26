@@ -1,0 +1,62 @@
+"""Role validation across a sampled lifetime, including bounded console teardown."""
+import sys,subprocess,base64
+from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parent.parent/'mo1306-correction-a'))
+from topology import validate,normalized
+def validate_trace(result,identities,package=None):
+ if 'traceEncoding' in result:
+  import copy,hashlib
+  result=copy.deepcopy(result);encoding=result.pop('traceEncoding')
+  for row in result['lifetimes']+[row for sample in result['observation']['samples'] for row in sample['processes']]:
+   if isinstance(row.get('commandLine'),dict):
+    key=row['commandLine']['sha256'];value=encoding['commandLines'][key]
+    assert 'sha256:'+hashlib.sha256(value.encode()).hexdigest()==key,'COMMAND_DICTIONARY_DRIFT'
+    row['commandLine']=value
+ root=result['rootPid'];observed=result['lifetimes'];tails=0
+ assert result['observation']['peakProcessCount']<=3,'FOURTH_ATTRIBUTABLE_PROCESS'
+ assert result['observation']['peakAggregateRssBytes']<=768*1024*1024,'RSS_LIMIT'
+ assert not result['cleanup']['remainingPids'],'ORPHAN_PROCESS'
+ for sample in result['observation']['samples']:
+  rows=[dict(row) for row in sample['processes']];pids={r['pid'] for r in rows}
+  for row in rows:
+   if row['commandLine'] is None:
+    previous=[r for r in observed if r['pid']==row['pid'] and r['creationTime100ns']==row['creationTime100ns'] and r['firstObservedMs']<sample['elapsedMs'] and r['commandLine'] is not None]
+    assert len(previous)==1,'COMMAND_IDENTITY_UNOBSERVED'
+    row['commandLine']=previous[0]['commandLine']
+
+  # Snapshot enumeration and process handle reads are not atomic. A known
+  # console host may outlive its observed direct owner during bounded teardown.
+  checked=[]
+  for row in rows:
+   if row['pid']==root or row['parent']==root:checked.append(row);continue
+   if row['parent'] in pids:checked.append(row);continue
+   assert normalized(row['executable'])==normalized(identities['conhost']),'UNEXPECTED_TAIL'
+   owner=[r for r in observed if r['pid']==row['parent'] and r['parent']==root and r['creationTime100ns']<=row['creationTime100ns']]
+   if len(owner)>1:
+    # A PID may be reused within one run. Bind the owner by an actually
+    # co-observed console/owner pair, including both process birth identities.
+    owner=[candidate for candidate in owner if any(
+     any(p['pid']==row['pid'] and p['creationTime100ns']==row['creationTime100ns'] and p['parent']==candidate['pid'] for p in prior['processes']) and
+     any(p['pid']==candidate['pid'] and p['creationTime100ns']==candidate['creationTime100ns'] and p['parent']==root for p in prior['processes'])
+     for prior in result['observation']['samples'] if prior['elapsedMs']<=sample['elapsedMs'])]
+   assert len(owner)==1,'UNBOUND_CONSOLE_OWNER'
+   owner=owner[0]
+   assert normalized(owner['executable']) in [normalized(identities['node']),normalized(identities['powershell'])],'OWNER_SUBSTITUTION'
+   assert 0<=sample['elapsedMs']-owner['lastObservedMs']<=2000,'CLEANUP_ALLOWANCE'
+   # A successor active child cannot overlap the old owner's console teardown.
+   assert not any(r['parent']==root and r['pid']!=root for r in rows),'PHASE_OVERLAP'
+   tails+=1
+  if not any(r['pid']==root for r in checked):
+   assert not checked,'ROOT_EXIT_WITH_ACTIVE_CHILD'
+   continue
+  direct=[r for r in checked if r['parent']==root and r['pid']!=root]
+  phase='helper' if direct and normalized(direct[0]['executable'])==normalized(identities['powershell']) else 'semantic'
+  expected=None
+  if package and direct:
+   if phase=='helper':
+    helper=(Path(package)/'scripts/check-paths.ps1').read_bytes()
+    args=[identities['powershell'],'-NoProfile','-NonInteractive','-EncodedCommand',base64.b64encode(helper.decode().encode('utf-16le')).decode()]
+   else:args=[identities['node'],'--permission','--allow-fs-read='+str(package),'--max-old-space-size=256','--max-semi-space-size=16',str(Path(package)/'src/worker.mjs')]
+   expected=subprocess.list2cmdline(args)
+  validate(checked,root,identities,phase,expected)
+ return {'status':'PASS','boundedConsoleTeardownSamples':tails}

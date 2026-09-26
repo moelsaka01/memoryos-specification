@@ -31,7 +31,8 @@ function inventory(bytes,kind) {
   }
   return value;
 }
-function readDistribution(root=packageRoot) {
+function readDistribution(root=packageRoot,provider='generic') {
+  if(!['generic','gitlab','jenkins','azure','github'].includes(provider))failure();
   const manifestBytes=readChecked(path.join(root,'distribution-manifest.json'),262144);
   const manifest=inventory(manifestBytes,'MemoryOSCICDDistributionManifest');
   if(Object.keys(manifest).sort().join(',')!=='files,kind,package,packageVersion,version'||manifest.package!=='memoryos-ci'||manifest.packageVersion!=='0.1.0')failure();
@@ -71,18 +72,24 @@ function readDistribution(root=packageRoot) {
     }
     return seen;
   }
-  const adapterPaths=[...moduleClosure('src/providers/generic.mjs')].sort();
-  const generatorPaths=[...moduleClosure('src/generator.mjs')].sort();
-  const identities={contractDigest:digest(contractBytes),limitsDigest:digest(contents.get('contracts/limits.json')),distributionDigest:digest(manifestBytes),adapterDigest:digest(J(closureRows(adapterPaths))),runtimeClosureDigest:digest(closureBytes),nodeDigest};
-  return {manifest,identities,generatorDigest:digest(J(closureRows(generatorPaths))),contents};
+  const templates={gitlab:'templates/gitlab.yml.tpl',jenkins:'templates/jenkins.groovy.tpl',azure:'templates/azure.yml.tpl',github:'templates/github.yml.tpl'};
+  if(J([...contents.keys()].filter(p=>p.startsWith('templates/')).sort())!==J(Object.values(templates).sort()))failure();
+  const adapterDigests=Object.fromEntries(['generic','gitlab','jenkins','azure','github'].map(name=>{
+    const members=[...new Set([...moduleClosure('src/providers/'+name+'.mjs'),...(Object.hasOwn(templates,name)?[templates[name]]:[])])].sort();
+    if(members.some(p=>!contents.has(p)))failure();
+    return [name,digest(J(closureRows(members)))];
+  }));
+  const generatorPaths=[...new Set([...moduleClosure('src/generator.mjs'),...Object.values(templates)])].sort();
+  const identities={contractDigest:digest(contractBytes),limitsDigest:digest(contents.get('contracts/limits.json')),distributionDigest:digest(manifestBytes),adapterDigest:adapterDigests[provider],runtimeClosureDigest:digest(closureBytes),nodeDigest};
+  return {manifest,identities,adapterDigests,generatorDigest:digest(J(closureRows(generatorPaths))),contents};
 }
-export function verifyDistribution(root=packageRoot) {
-  try { return readDistribution(root); }
+export function verifyDistribution(root=packageRoot,provider='generic') {
+  try { return readDistribution(root,provider); }
   catch { failure(); } // Every trusted installation defect maps to integrity exit 15.
 }
-export async function verifyInstallation(options) {
+export async function verifyInstallation(options,provider='generic') {
   verifyNode();
-  const verified=verifyDistribution();
+  const verified=verifyDistribution(packageRoot,provider);
   await checkPaths([{path:process.execPath,allowMissingLeaf:false},{path:packageRoot,allowMissingLeaf:false},...verified.manifest.files.map(row=>({path:path.join(packageRoot,row.path),allowMissingLeaf:false}))],options);
   return verified;
 }

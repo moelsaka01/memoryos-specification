@@ -18,7 +18,7 @@ export function errorObject(error) {
 }
 export function classification(error) { return catalog.errors[errorObject(error).code][0]; }
 export function project(value) {
-  if (!Object.hasOwn(projections, value)) reject('INTERNAL_FAILURE');
+  if (typeof value !== 'string' || !Object.hasOwn(projections, value)) reject('INTERNAL_FAILURE');
   return structuredClone(projections[value].projection);
 }
 // Fixed prose only; never interpolate exception messages, inputs or environment.

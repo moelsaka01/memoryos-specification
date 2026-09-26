@@ -1,0 +1,118 @@
+"""Phase 2D native observer: PID edges also require possible creation chronology.
+Derived from the unchanged Correction A observer; no product import.
+"""
+import ctypes as C
+from ctypes import wintypes as W
+import time,subprocess,threading
+K=C.WinDLL('kernel32',use_last_error=True);P=C.WinDLL('psapi',use_last_error=True);N=C.WinDLL('ntdll')
+class Entry(C.Structure):
+ _fields_=[('size',W.DWORD),('usage',W.DWORD),('pid',W.DWORD),('heap',C.c_size_t),('module',W.DWORD),('threads',W.DWORD),('parent',W.DWORD),('priority',W.LONG),('flags',W.DWORD),('name',W.WCHAR*260)]
+class Memory(C.Structure):
+ _fields_=[('cb',W.DWORD),('faults',W.DWORD),('peak',C.c_size_t),('working',C.c_size_t),('pagedPeak',C.c_size_t),('paged',C.c_size_t),('nonPagedPeak',C.c_size_t),('nonPaged',C.c_size_t),('pagefile',C.c_size_t),('pagefilePeak',C.c_size_t)]
+class Unicode(C.Structure):
+ _fields_=[('length',W.USHORT),('maximum',W.USHORT),('buffer',C.c_void_p)]
+K.CreateToolhelp32Snapshot.argtypes=[W.DWORD,W.DWORD];K.CreateToolhelp32Snapshot.restype=W.HANDLE
+K.Process32FirstW.argtypes=[W.HANDLE,C.POINTER(Entry)];K.Process32NextW.argtypes=[W.HANDLE,C.POINTER(Entry)]
+K.OpenProcess.argtypes=[W.DWORD,W.BOOL,W.DWORD];K.OpenProcess.restype=W.HANDLE
+K.CloseHandle.argtypes=[W.HANDLE];P.GetProcessMemoryInfo.argtypes=[W.HANDLE,C.POINTER(Memory),W.DWORD]
+K.QueryFullProcessImageNameW.argtypes=[W.HANDLE,W.DWORD,W.LPWSTR,C.POINTER(W.DWORD)]
+K.GetProcessTimes.argtypes=[W.HANDLE,C.POINTER(W.FILETIME),C.POINTER(W.FILETIME),C.POINTER(W.FILETIME),C.POINTER(W.FILETIME)]
+N.NtQueryInformationProcess.argtypes=[W.HANDLE,W.ULONG,C.c_void_p,W.ULONG,C.POINTER(W.ULONG)]
+def details(pid):
+ handle=K.OpenProcess(0x0400|0x0010|0x1000,False,pid)
+ if not handle:return None
+ try:
+  info=Memory();info.cb=C.sizeof(info)
+  if not P.GetProcessMemoryInfo(handle,C.byref(info),C.sizeof(info)):return None
+  length=W.DWORD(32768);image=C.create_unicode_buffer(length.value)
+  if not K.QueryFullProcessImageNameW(handle,0,image,C.byref(length)):return None
+  created,ended,kernel,user=[W.FILETIME() for _ in range(4)]
+  if not K.GetProcessTimes(handle,*[C.byref(x) for x in [created,ended,kernel,user]]):return None
+  needed=W.ULONG();N.NtQueryInformationProcess(handle,60,None,0,C.byref(needed))
+  command=None
+  if 0<needed.value<=65536:
+   buffer=C.create_string_buffer(needed.value)
+   if N.NtQueryInformationProcess(handle,60,buffer,needed.value,C.byref(needed))==0:
+    value=Unicode.from_buffer(buffer);base=C.addressof(buffer)
+    if value.buffer and base<=value.buffer and value.buffer+value.length<=base+C.sizeof(buffer):
+     command=C.wstring_at(value.buffer,value.length//2)
+  return dict(executable=image.value,commandLine=command,creationTime100ns=(created.dwHighDateTime<<32)|created.dwLowDateTime,rssBytes=info.working)
+ finally:K.CloseHandle(handle)
+def attributable(rows,parents,root,root_created,known=None):
+ """Exclude only ancestry disproved by process birth times, never by image name.
+
+ Missing/racing process details remain visible to the strict topology validator.
+ A Windows parent PID is historical and may name an unrelated later process.
+ """
+ identities=dict(known or {});identities.update({r['pid']:r for r in rows})
+ result=[]
+ for row in rows:
+  pid=row['pid'];child_created=row['creationTime100ns'];seen=set();stale=child_created<root_created
+  if pid==root and child_created!=root_created:stale=True
+  while not stale and pid!=root and pid in parents:
+   if pid in seen:raise AssertionError('PROCESS_ANCESTRY_CYCLE')
+   seen.add(pid);parent=parents[pid][0]
+   if parent==root:parent_created=root_created
+   elif parent in identities:parent_created=identities[parent]['creationTime100ns']
+   else:break  # Unknown chronology cannot justify excluding a process.
+   if child_created<parent_created:stale=True;break
+   pid=parent;child_created=parent_created
+  if not stale:result.append(row)
+ return result
+
+def snapshot(root,root_created,known):
+ handle=K.CreateToolhelp32Snapshot(2,0)
+ if handle==C.c_void_p(-1).value:raise C.WinError(C.get_last_error())
+ entries={};entry=Entry();entry.size=C.sizeof(entry)
+ try:
+  valid=K.Process32FirstW(handle,C.byref(entry))
+  while valid:
+   entries[entry.pid]=(entry.parent,entry.name);valid=K.Process32NextW(handle,C.byref(entry))
+ finally:K.CloseHandle(handle)
+ selected={root}
+ while True:
+  extended=selected|{pid for pid,(parent,name) in entries.items() if parent in selected}
+  if extended==selected:break
+  selected=extended
+ rows=[]
+ for pid in sorted(selected):
+  value=details(pid)
+  if value is not None:rows.append(dict(pid=pid,parent=entries.get(pid,(0,''))[0],name=entries.get(pid,(0,''))[1],**value))
+ return attributable(rows,entries,root,root_created,known)
+def execute(argv,cwd,env=None,timeout=80,interval=.1):
+ start=time.perf_counter_ns()
+ process=subprocess.Popen(argv,cwd=cwd,env=env,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,creationflags=subprocess.DETACHED_PROCESS|subprocess.CREATE_NEW_PROCESS_GROUP)
+ created,ended,kernel,user=[W.FILETIME() for _ in range(4)]
+ if not K.GetProcessTimes(int(process._handle),*[C.byref(x) for x in [created,ended,kernel,user]]):raise C.WinError(C.get_last_error())
+ root_created=(created.dwHighDateTime<<32)|created.dwLowDateTime
+ result={}
+ def reader():
+  out,err=process.communicate();result.update(stdout=out.decode('utf-8'),stderr=err.decode('utf-8'),exitCode=process.returncode)
+ thread=threading.Thread(target=reader);thread.start()
+ samples=[];overhead=0;seen={}
+ while thread.is_alive():
+  before=time.perf_counter_ns()
+  if (before-start)/1e9>timeout:
+   process.kill();thread.join(3);raise TimeoutError('Bounded diagnostic deadline')
+  known={p['pid']:p for p in seen.values()}
+  rows=snapshot(process.pid,root_created,known);after=time.perf_counter_ns();overhead+=after-before
+  elapsed=(before-start)//1000000
+  for row in rows:
+   key=(row['pid'],row['creationTime100ns'])
+   if key not in seen:seen[key]={**row,'firstObservedMs':elapsed}
+   seen[key]['lastObservedMs']=elapsed
+  samples.append(dict(elapsedMs=elapsed,processes=rows,totalRssBytes=sum(r['rssBytes'] for r in rows)))
+  time.sleep(interval)
+ thread.join()
+ cleanupStart=time.perf_counter_ns();orphans=[]
+ while True:
+  orphans=[]
+  for (pid,created),row in seen.items():
+   current=details(pid)
+   if current and current['creationTime100ns']==created:orphans.append(pid)
+  if not orphans or time.perf_counter_ns()-cleanupStart>=2000000000:break
+  time.sleep(.02)
+ elapsed=(time.perf_counter_ns()-start)//1000000
+ gaps=[b['elapsedMs']-a['elapsedMs'] for a,b in zip(samples,samples[1:])]
+ result.update(rootPid=process.pid,elapsedMs=elapsed,command=argv,cleanup={'remainingPids':orphans,'elapsedMs':(time.perf_counter_ns()-cleanupStart)//1000000},lifetimes=list(seen.values()),observation=dict(clock='perf_counter_ns, external Windows Toolhelp32/GetProcessTimes/GetProcessMemoryInfo',sampleIntervalMs=round(interval*1000),sampleCount=len(samples),maximumGapMs=max(gaps,default=0),observerOverheadMs=overhead//1000000,peakAggregateRssBytes=max((s['totalRssBytes'] for s in samples),default=0),peakProcessCount=max((len(s['processes']) for s in samples),default=0),samples=samples))
+ return result

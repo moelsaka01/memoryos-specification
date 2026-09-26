@@ -40,3 +40,13 @@ repositories/cca-conformance/evidence/mo1306/** -text whitespace=trailing-space,
 repositories/cca-conformance/fixtures/mo1306/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
 docs/mo1306-phase1-contract-blocker.md -text whitespace=trailing-space,space-before-tab,cr-at-eol
 repositories/memoryos-ci/notices/node-LICENSE.txt -text -diff
+repositories/cca-conformance/fixtures/mo1306-phase2c/azure/upstream/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/fixtures/mo1306-phase2c/actions/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+# Immutable upstream action prose includes trailing spaces; retain its exact hash.
+repositories/cca-conformance/fixtures/mo1306-phase2c/actions/upload-artifact-action.yml whitespace=blank-at-eof,space-before-tab,-blank-at-eol
+
+# Preserve exact Phase 2D engineering harness bytes used by recorded executions.
+repositories/cca-conformance/tools/mo1306-phase2d/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+# Preserve the exact captured Azure fixture stdout, including its second final LF.
+repositories/cca-conformance/evidence/mo1306/phase2d/commands/azure-generation.stdout.txt whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof

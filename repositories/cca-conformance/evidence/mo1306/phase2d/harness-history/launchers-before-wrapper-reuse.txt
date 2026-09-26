@@ -1,0 +1,40 @@
+"""All-five PowerShell launcher handoff and corrected GitHub wrapper acceptance."""
+from common import *
+import base64,shutil
+FIX=ROOT/'repositories/cca-conformance/fixtures/mo1306'
+batch=CACHE/('launch-'+uuid.uuid4().hex[:6]);batch.mkdir();cases=[]
+PS=Path(ENV['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'
+distribution=sha((PKG/'distribution-manifest.json').read_bytes())
+for provider in ('generic','gitlab','jenkins','azure','github'):
+ for name,expected in [('pass',0),('fail',6),('cne',7)]:
+  vector=FIX/('evaluate-policy-'+name);work=batch/(provider+'-'+name);work.mkdir()
+  for filename in ('policy.json','candidate.mip','memoryos-ci.json'):shutil.copyfile(vector/filename,work/filename)
+  config=json.loads((work/'memoryos-ci.json').read_bytes());config.update(timeoutMs=config.get('timeoutMs',60000),providerExtensions=config.get('providerExtensions',{}));pin=sha(j(config))
+  env={**ENV,'MEMORYOS_CI_NODE':str(NODE),'MEMORYOS_CI_HOME':str(PKG),'MEMORYOS_CI_CONFIG':str(work/'memoryos-ci.json'),'NODE_OPTIONS':'--require C:\\UNTRUSTED_SENTINEL.cjs','NODE_PATH':'C:\\UNTRUSTED_SENTINEL','NODE_INSPECT_RESUME_ON_START':'1','NODE_REPL_EXTERNAL_MODULE':'C:\\UNTRUSTED_SENTINEL','PATH':'NO-PATH-TOOLS'}
+  argv=[PS,'-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',PKG/'scripts/Invoke-MemoryOSCI.ps1','-Provider',provider,'-Workspace',work,'-ConfigurationDigest',pin,'-DistributionDigest',distribution]
+  record,stdout=command('launcher-'+provider+'-'+name,argv,expected,env=env,timeout=90)
+  summary=json.loads(stdout);assert stdout==j(summary) and summary['exitCode']==expected and summary['publication']=='COMPLETE'
+  bundle=work/'.memoryos-ci/out'/summary['runId']
+  result=json.loads((bundle/'memoryos-ci-result.json').read_bytes());assert result['provider']==provider
+  for filename in ('evaluation-identity.json','policy-outcome.json'):assert (bundle/filename).read_bytes()==(vector/filename).read_bytes()
+  target=OUT/'launcher-bundles'/(provider+'-'+name)/summary['runId'];target.parent.mkdir(parents=True,exist_ok=True);shutil.copytree(bundle,target)
+  cases.append({'id':provider+'-'+name,'status':'PASS','exitCode':expected,'summary':summary,'bundle':target.relative_to(ROOT).as_posix(),'canonicalUtf8Lf':True,'poisonedNodeVariablesScrubbed':True})
+  print('launcher',provider,name,'PASS',flush=True)
+# Keep the source 2B compatibility verifier regression intact in an isolated stage.
+cache=ROOT/'.cache/mo1306/phase2b';cache.mkdir(parents=True,exist_ok=True)
+stage=cache/('integrated-'+uuid.uuid4().hex[:6]);shutil.copytree(PKG,stage)
+node=cache/'node.exe'
+if not node.exists():shutil.copyfile(NODE,node)
+assert node.read_bytes()==NODE.read_bytes()
+(cache/'active-stage.json').write_bytes(j({'stage':str(stage),'nodePath':str(node),'distributionDigest':distribution}))
+command('legacy-launcher-verifier',[NODE,'--test','--test-reporter=tap',TOOLS.parent/'mo1306-phase2b/launcher.test.mjs'],tests=67,env={**os.environ,**ENV},timeout=120)
+wrapper=CACHE/('github-wrapper-'+uuid.uuid4().hex[:6])
+command('github-wrapper',[NODE,TOOLS.parent/'mo1306-phase2c/github-wrapper.test.mjs',wrapper,NODE],timeout=360)
+report=json.loads((wrapper/'report.json').read_bytes());assert report['passed']>=20 and all(x['status']=='PASS' for x in report['cases'])
+for case in report['cases']:
+ if 'bundle' in case:
+  source=wrapper/case['bundle'];target=OUT/'github-wrapper-bundles'/case['id']/source.name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copytree(source,target)
+  case['bundle']=target.relative_to(ROOT).as_posix()
+  outputs=wrapper/case['id']/'outputs.txt';(target.parent/'outputs.txt').write_bytes(outputs.read_bytes())
+put('github-wrapper.json',{'status':'PASS',**report,'scope':'Fresh offline execution against integrated launcher; no hosted or network execution'})
+put('launchers.json',{'status':'PASS','distributionDigest':distribution,'cases':cases,'caseCount':len(cases),'engineeringHost':'Fixed PowerShell 5.1 scripts under process-only Bypass; no machine policy change; no Bypass flag in generated provider definitions','legacyVerifierCases':67,'githubWrapperCases':report['passed'],'consoleCapture':'Common launcher writes canonical LF to Console.Out; GitHub wrapper captures and restores that writer in-process without a new attributable child.'})

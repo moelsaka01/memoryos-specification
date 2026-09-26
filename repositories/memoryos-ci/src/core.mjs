@@ -11,18 +11,19 @@ import { absolutePath,contained,checkPaths,readChecked,nodePathCheck,packageRoot
 import { verifyInstallation,semanticContractDigest } from './integrity.mjs';
 import { supervise } from './supervisor.mjs';
 import { prepareOutput,publish } from './publication.mjs';
-import * as generic from './providers/generic.mjs';
+import { providerIR } from './provider-ir.mjs';
+import { readMetadataEnvironment } from './metadata.mjs';
 
 installNetworkBoundary();
 export async function run({workspace,config,provider='generic',signal}) {
   const started=performance.now(),runId=randomUUID();
-  let deadline=started+73000,installation,normalized=null,configurationDigest=null,inputDigest=null,inputs=[],normative=null,error=null,metadata=generic.normalizeMetadata({}),runDirectory=null;
-  let providerTrusted=provider==='generic';
+  let deadline=started+73000,installation,normalized=null,configurationDigest=null,inputDigest=null,inputs=[],normative=null,error=null,metadata=null,runDirectory=null,adapter=null;
+  let providerTrusted=false;
   const options=()=>({deadline,signal});
   try {
+    adapter=providerIR(provider);providerTrusted=true;metadata=adapter.normalizeMetadata(readMetadataEnvironment(provider));
     workspace=absolutePath(workspace);config=absolutePath(config);
-    installation=await verifyInstallation(options());
-    if(!providerTrusted)reject('PROVIDER_UNSUPPORTED');
+    installation=await verifyInstallation(options(),provider);
     if(!fs.lstatSync(workspace).isDirectory())reject('FILESYSTEM_BOUNDARY');
     const output=path.join(workspace,'.memoryos-ci','out').toLowerCase();
     for(const capability of [config,packageRoot,process.execPath]) {
@@ -63,7 +64,7 @@ export async function run({workspace,config,provider='generic',signal}) {
     const ids=installation.identities;
     const termination=['TIMEOUT','CANCELLED'].includes(value)?value:['MO1306_WORKER_EXIT','MO1306_INTERNAL_FAILURE'].includes(error?.code)?'ABNORMAL':'NORMAL';
     const result=checkResult({kind:'MemoryOSCICDResult',version:'1.0.0',runId,provider,classification:value,semantic:error?null:normative.semantic,error:error?errorObject(error):null,process:{exitCode:projections[value].exitCode,termination},projection:project(value),configurationDigest,inputDigest,contractDigest:ids.contractDigest,limitsDigest:ids.limitsDigest,adapterDigest:ids.adapterDigest});
-    const evidence=validate('Evidence',{kind:'MemoryOSCICDEvidence',version:'1.0.0',runId,contract:{id:'memoryos.cicd',version:'1.0.0',sha256:ids.contractDigest,limitsSha256:ids.limitsDigest},configurationSha256:configurationDigest,adapter:{id:generic.id,version:generic.version,sha256:ids.adapterDigest},distributionSha256:ids.distributionDigest,runtimeClosureSha256:ids.runtimeClosureDigest,semanticContractSha256:semanticContractDigest,inputs,runtime:{nodeVersion:process.versions.node,nodeSha256:ids.nodeDigest,platform:process.platform,architecture:process.arch,osRelease:os.release()},metadata,resultSha256:digest(J(result)),projectionSha256:digest(J(result.projection))});
+    const evidence=validate('Evidence',{kind:'MemoryOSCICDEvidence',version:'1.0.0',runId,contract:{id:'memoryos.cicd',version:'1.0.0',sha256:ids.contractDigest,limitsSha256:ids.limitsDigest},configurationSha256:configurationDigest,adapter:{id:adapter.id,version:adapter.version,sha256:ids.adapterDigest},distributionSha256:ids.distributionDigest,runtimeClosureSha256:ids.runtimeClosureDigest,semanticContractSha256:semanticContractDigest,inputs,runtime:{nodeVersion:process.versions.node,nodeSha256:ids.nodeDigest,platform:process.platform,architecture:process.arch,osRelease:os.release()},metadata,resultSha256:digest(J(result)),projectionSha256:digest(J(result.projection))});
     try {
       // A terminal timeout/cancel has no further work budget; never manufacture completion.
       if(signal?.aborted || performance.now()>=deadline)throw error ?? new CIError(signal?.aborted?'CANCELLED':'OVERALL_TIMEOUT');

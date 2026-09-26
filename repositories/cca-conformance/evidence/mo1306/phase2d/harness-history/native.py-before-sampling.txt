@@ -1,0 +1,85 @@
+"""Focused native Windows integration; no Phase 1 resource campaign."""
+from common import *
+import base64,shutil,copy
+sys.path[:0]=[str(TOOLS.parent/'mo1306-correction-a'),str(TOOLS.parent/'mo1306')]
+from observer import execute
+from trace import validate_trace
+FIX=ROOT/'repositories/cca-conformance/fixtures/mo1306'
+IDS={'node':str(NODE),'powershell':str(Path(ENV['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'),'conhost':str(Path(ENV['SystemRoot'])/'System32/conhost.exe')}
+DISTRIBUTION=sha((PKG/'distribution-manifest.json').read_bytes())
+STATE=CACHE/'native-state.json'
+if STATE.exists():state=json.loads(STATE.read_bytes());assert state['distributionDigest']==DISTRIBUTION
+else:
+ state={'distributionDigest':DISTRIBUTION,'batch':str(CACHE/('native-'+uuid.uuid4().hex[:6]))};STATE.write_bytes(j(state));Path(state['batch']).mkdir()
+BATCH=Path(state['batch'])
+MAP={'generic':[],'github':['GITHUB_REPOSITORY','GITHUB_SHA','GITHUB_RUN_ID','GITHUB_JOB','GITHUB_RUN_ATTEMPT','GITHUB_EVENT_NAME',None],'gitlab':['CI_PROJECT_PATH','CI_COMMIT_SHA','CI_PIPELINE_ID','CI_JOB_ID',None,'CI_PIPELINE_SOURCE','CI_MERGE_REQUEST_IID'],'jenkins':['JOB_NAME','GIT_COMMIT','BUILD_NUMBER','BUILD_TAG',None,None,'CHANGE_ID'],'azure':['BUILD_REPOSITORY_NAME','BUILD_SOURCEVERSION','BUILD_BUILDID','SYSTEM_JOBID','SYSTEM_JOBATTEMPT','BUILD_REASON','SYSTEM_PULLREQUEST_PULLREQUESTID']}
+FIELDS=['repository','revision','runId','jobId','attempt','event','changeRequest']
+def metadata(provider,varied=False):
+ values=['other/repo' if varied else 'owner/repo',('b' if varied else 'a')*40,'202' if varied else '101','review_job','2' if varied else '1','manual','7']
+ env={key:value for key,value in zip(MAP[provider],values) if key}
+ expected={'provider':provider,**{field:(int(values[i]) if field=='attempt' else values[i]) if i<len(MAP[provider]) and MAP[provider][i] else None for i,field in enumerate(FIELDS)}}
+ return env,expected
+def observed(name,args,expected=0,env=None,package=PKG,timeout=80):
+ record=execute(list(map(str,args)),ROOT,env=env or ENV,timeout=timeout)
+ record.update(id=name,expectedExitCode=expected,distributionDigest=DISTRIBUTION,harnessSha256=sha(Path(__file__).read_bytes()),status='FAIL')
+ try:
+  assert record['exitCode']==expected,(name,record['stdout'],record['stderr'])
+  assert record['lifetimes'] and any(p['pid']==record['rootPid'] for p in record['lifetimes']),'observer saw no supervisor'
+  record['topologyValidation']=validate_trace(record,IDS,package)
+  record['status']='PASS'
+ finally:
+  # Dictionary encoding is lossless and keeps bounded records below 2 MiB.
+  original=copy.deepcopy(record);dictionary={}
+  for p in record['lifetimes']+[p for sample in record['observation']['samples'] for p in sample['processes']]:
+   if p.get('commandLine') is not None:
+    text=p['commandLine'];key=sha(text.encode());dictionary[key]=text;p['commandLine']={'sha256':key}
+  record['traceEncoding']={'kind':'LosslessCommandLineDictionary','version':'1.0.0','commandLines':dictionary}
+  expanded=copy.deepcopy(record);encoding=expanded.pop('traceEncoding')
+  for p in expanded['lifetimes']+[p for sample in expanded['observation']['samples'] for p in sample['processes']]:
+   if isinstance(p.get('commandLine'),dict):p['commandLine']=encoding['commandLines'][p['commandLine']['sha256']]
+  assert expanded==original
+  put('native/'+name+'.json',record)
+ return record
+
+def native():
+ cases=[]
+ vectors=[('pass','evaluate-policy-pass',0),('fail','evaluate-policy-fail',6),('cne','evaluate-policy-cne',7),('set','evaluate-policySet-pass',0),('regression','evaluate-policy-pass',0),('metadata','evaluate-policy-pass',0),('configuration','evaluate-policy-pass',10),('input','evaluate-policy-pass',11),('integrity','evaluate-policy-pass',15)]
+ for provider in ('generic','gitlab','jenkins','azure','github'):
+  for name,vector,expected in vectors:
+   identity=provider+'-'+name;saved=OUT/'native-cases'/(identity+'.json')
+   if saved.exists():
+    prior=json.loads(saved.read_bytes())
+    if prior['status']=='PASS' and prior['distributionDigest']==DISTRIBUTION:cases.append(prior);continue
+   work=BATCH/(identity+'-'+uuid.uuid4().hex[:4]);work.mkdir()
+   for filename in ('policy.json','candidate.mip','memoryos-ci.json'):shutil.copyfile(FIX/vector/filename,work/filename)
+   config=json.loads((work/'memoryos-ci.json').read_bytes())
+   if name=='regression':shutil.copyfile(work/'candidate.mip',work/'baseline.mip');config['context']['baselineMip']='baseline.mip'
+   if name=='configuration':config['unexpected']=True
+   if name=='input':config['context']['candidateMip']='missing.mip'
+   if name=='integrity':config['policy']['expectedSemanticDigest']='sha256:'+'0'*64
+   (work/'memoryos-ci.json').write_bytes(j(config))
+   meta,expected_meta=metadata(provider,name=='metadata')
+   env={**ENV,**meta,'GITHUB_TOKEN':'SECRET-SENTINEL','HTTP_PROXY':'http://127.0.0.1:1','PATH':'NO-PATH-TOOLS'}
+   result=observed(identity,[NODE,'--max-old-space-size=128',PKG/'bin/memoryos-ci.mjs','run','--workspace',work,'--config',work/'memoryos-ci.json','--provider',provider],expected,env)
+   summary=json.loads(result['stdout']);assert summary['exitCode']==expected and summary['publication']=='COMPLETE'
+   assert result['stdout'].encode()==j(summary),'canonical summary bytes'
+   bundle=work/'.memoryos-ci/out'/summary['runId']
+   command('verify-'+identity,[NODE,'--max-old-space-size=128',PKG/'bin/memoryos-ci.mjs','verify','--bundle',bundle])
+   common_result=json.loads((bundle/'memoryos-ci-result.json').read_bytes());evidence=json.loads((bundle/'memoryos-ci-evidence.json').read_bytes())
+   assert common_result['provider']==provider and evidence['metadata']==expected_meta
+   assert all(b'SECRET-SENTINEL' not in p.read_bytes() for p in bundle.iterdir())
+   parity=expected in (0,6,7);oracle=None
+   if parity:
+    if name=='regression':
+     command('oracle-'+identity,[NODE,'--max-old-space-size=128',TOOLS.parent/'mo1306/oracle.mjs',work])
+     oracle=OUT/'oracles'/identity;oracle.mkdir(parents=True,exist_ok=True)
+     for target,source in [('evaluation-identity.json','oracle-identity.json'),('policy-outcome.json','oracle-outcome.json')]:shutil.copyfile(work/source,oracle/target)
+    else:oracle=FIX/vector
+    for filename in ('evaluation-identity.json','policy-outcome.json'):assert (bundle/filename).read_bytes()==(oracle/filename).read_bytes()
+   target=OUT/'bundles'/identity/summary['runId'];target.parent.mkdir(parents=True,exist_ok=True);shutil.copytree(bundle,target)
+   case={'id':identity,'status':'PASS','provider':provider,'classification':common_result['classification'],'exitCode':expected,'distributionDigest':DISTRIBUTION,'runId':summary['runId'],'semanticByteParity':parity,'oracle':oracle.relative_to(ROOT).as_posix() if oracle else None,'bundle':target.relative_to(ROOT).as_posix(),'trace':row(OUT/'native'/(identity+'.json')),'expectedMetadata':expected_meta}
+   put('native-cases/'+identity+'.json',case);cases.append(case)
+   put('native-execution.json',{'status':'PASS' if len(cases)==45 else 'IN_PROGRESS','caseCount':len(cases),'distributionDigest':DISTRIBUTION,'cases':cases,'scope':'Actual Windows child processes, exact SDK bytes, bounded topology/cleanup checks; no Phase 1 resource characterization rerun'})
+   print(identity,'PASS',flush=True)
+ return cases
+if __name__=='__main__':native()
