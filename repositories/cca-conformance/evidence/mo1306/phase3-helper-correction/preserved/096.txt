@@ -1,0 +1,21 @@
+from pathlib import Path
+import base64, datetime, hashlib, json, os, subprocess, time
+root=Path(r'C:\Users\melsa\Documents\Codex\cca-mo1306-3a-refresh')
+pkg=root/'.cache/mo1306-phase3ar/install/node_modules/memoryos-ci'
+helper=pkg/'scripts/check-paths.ps1'
+ps=Path(os.environ['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'
+target=root/'repositories/cca-conformance/fixtures/mo1306/evaluate-policy-pass/memoryos-ci.json'
+request=(json.dumps({'kind':'MemoryOSCICDPathCheckRequest','version':'1.0.0','paths':[{'path':str(target),'allowMissingLeaf':False}]},sort_keys=True,separators=(',',':'))+'\n').encode()
+argv=[str(ps),'-NoProfile','-NonInteractive','-EncodedCommand',base64.b64encode(helper.read_text(encoding='utf-8').encode('utf-16le')).decode()]
+started=datetime.datetime.now(datetime.timezone.utc).isoformat();tick=time.monotonic();failure=None
+try:
+ r=subprocess.run(argv,cwd=pkg,env={k:os.environ[k] for k in ['SystemRoot','WINDIR']},input=request,capture_output=True,timeout=5,creationflags=subprocess.CREATE_NO_WINDOW)
+ code=r.returncode;stdout=r.stdout;stderr=r.stderr
+except subprocess.TimeoutExpired as e:
+ code=None;stdout=e.stdout or b'';stderr=e.stderr or b'';failure='ENGINEERING_OBSERVATION_TIMEOUT'
+elapsed=(time.monotonic()-tick)*1000;ended=datetime.datetime.now(datetime.timezone.utc).isoformat()
+record={'kind':'MemoryOSPhase3ARRawHelperTimingDiagnostic','version':'1.0.0','startedAt':started,'endedAt':ended,'elapsedMs':elapsed,'exitCode':code,'stdout':stdout.decode('utf-8','replace'),'stderr':stderr.decode('utf-8','replace'),'failure':failure,'request':json.loads(request),'helper':{'path':str(helper.relative_to(root)).replace('\\','/'),'byteLength':len(helper.read_bytes()),'sha256':'sha256:'+hashlib.sha256(helper.read_bytes()).hexdigest()},'command':{'executable':str(ps),'arguments':['-NoProfile','-NonInteractive','-EncodedCommand','exact helper source encoded UTF-16LE']},'frozenProductDeadlineMs':2000,'engineeringObservationCapMs':5000,'productDeadlineUnchanged':True,'sequentialSlot':True,'safeForOneDiagnosedRetry':code==0 and not stderr and elapsed<1800}
+out=root/'repositories/cca-conformance/evidence/mo1306/phase3ar/github/raw-helper-timing.json'
+assert not out.exists();out.write_text(json.dumps(record,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
+print(json.dumps(record))
+

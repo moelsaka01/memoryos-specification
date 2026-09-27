@@ -86,11 +86,15 @@ export async function checkPaths(paths, {deadline=Infinity,signal}={}) {
     const exe=nodePathCheck(path.join(env.SystemRoot,'System32/WindowsPowerShell/v1.0/powershell.exe'));
     await new Promise((resolve,rejectPromise) => {
       let output=Buffer.alloc(0), terminal=null, timer, reap;
+      const helperDeadline=performance.now()+2000;
+      const effectiveDeadline=Math.min(deadline,helperDeadline);
+      const timeoutCode=deadline<=helperDeadline?'OVERALL_TIMEOUT':'FILESYSTEM_BOUNDARY';
+      if(performance.now()>=effectiveDeadline)reject(timeoutCode);
       const child=spawn(exe,['-NoProfile','-NonInteractive','-EncodedCommand',helper.toString('utf8') && Buffer.from(helper.toString('utf8'),'utf16le').toString('base64')],{env,cwd:packageRoot,shell:false,windowsHide:true,stdio:['pipe','pipe','pipe']});
       const stop=code=>{ if(terminal)return;terminal=new CIError(code);child.stdin.destroy();child.kill();reap=setTimeout(()=>rejectPromise(new CIError('CLEANUP_FAILED')),2000); };
       const cancel=()=>stop('CANCELLED');
       signal?.addEventListener('abort',cancel,{once:true});
-      timer=setTimeout(()=>stop(remaining<=2000?'OVERALL_TIMEOUT':'FILESYSTEM_BOUNDARY'),Math.min(2000,remaining));
+      timer=setTimeout(()=>stop(timeoutCode),Math.max(0,effectiveDeadline-performance.now()));
       child.on('error',()=>stop('FILESYSTEM_BOUNDARY'));
       child.stdout.on('data',data=>{if(terminal)return;if(output.length+data.length>1024)stop('FILESYSTEM_BOUNDARY');else output=Buffer.concat([output,data]);});
       child.stderr.on('data',()=>stop('FILESYSTEM_BOUNDARY'));
@@ -99,8 +103,12 @@ export async function checkPaths(paths, {deadline=Infinity,signal}={}) {
         clearTimeout(timer);clearTimeout(reap);signal?.removeEventListener('abort',cancel);
         if(terminal)return rejectPromise(terminal);
         try {
+          // Timer delivery can lag real close delivery. Cleanup is never success grace.
+          if(performance.now()>=effectiveDeadline)reject(timeoutCode);
           const response=parseJSON(output,1024,'FILESYSTEM_BOUNDARY');
           if(code!==0 || J(response)!==output.toString('utf8') || Object.keys(response).sort().join(',')!=='kind,safe,version' || response.kind!=='MemoryOSCICDPathCheck' || response.version!=='1.0.0' || response.safe!==true)reject('FILESYSTEM_BOUNDARY');
+          if(signal?.aborted)reject('CANCELLED');
+          if(performance.now()>=effectiveDeadline)reject(timeoutCode);
           resolve();
         } catch(e) { rejectPromise(e); }
       });
