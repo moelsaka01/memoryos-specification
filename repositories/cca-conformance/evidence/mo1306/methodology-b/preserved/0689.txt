@@ -1,0 +1,46 @@
+param([Parameter(Mandatory=$true)][string]$StartUtc,[Parameter(Mandatory=$true)][string]$EndUtc)
+$ErrorActionPreference='Stop'
+$taskRoot='C:\Users\melsa\Documents\Codex\cca-mo1306-3a-refresh'
+$taskOut=Join-Path $taskRoot 'repositories\cca-conformance\evidence\mo1306\phase3a-environment-capture'
+$taskStart=[DateTimeOffset]::Parse($StartUtc).UtcDateTime
+$taskEnd=[DateTimeOffset]::Parse($EndUtc).UtcDateTime
+if($taskEnd -lt $taskStart -or ($taskEnd-$taskStart).TotalMinutes -gt 10){throw 'Window must be actual capture, chronological and <=10 minutes'}
+if($taskEnd -gt [DateTime]::UtcNow){throw 'Actual capture must have completed before query'}
+$taskQueryStart=$taskStart.AddSeconds(-10)
+$taskQueryEnd=$taskEnd.AddSeconds(10)
+$taskRows=@()
+foreach($taskLog in @('System','Application','Microsoft-Windows-Windows Defender/Operational','Microsoft-Windows-Kernel-Power/Thermal-Operational','Microsoft-Windows-CodeIntegrity/Operational','Security')) {
+ $taskMetadata=$null;$taskMetadataError=$null
+ try {
+  $taskInfo=Get-WinEvent -ListLog $taskLog -ErrorAction Stop
+  $taskMetadata=[ordered]@{enabled=$taskInfo.IsEnabled;recordCount=$taskInfo.RecordCount;oldestRecordNumber=$taskInfo.OldestRecordNumber;logMode=[string]$taskInfo.LogMode;fileSize=$taskInfo.FileSize;maximumSizeBytes=$taskInfo.MaximumSizeInBytes;lastWriteTime=$taskInfo.LastWriteTime}
+ } catch {$taskMetadataError=[ordered]@{type=$_.Exception.GetType().FullName;message=$_.Exception.Message;errorId=$_.FullyQualifiedErrorId}}
+ $taskFilter=@{LogName=$taskLog;StartTime=$taskQueryStart;EndTime=$taskQueryEnd}
+ $taskScope='all levels; bounded current retained records'
+ if($taskLog -eq 'Application'){$taskFilter.Level=@(1,2,3);$taskScope='critical/error/warning'}
+ if($taskLog -eq 'Security'){$taskFilter.Id=@(5038,6281,6410);$taskScope='IDs5038/6281/6410 code-integrity security events only; not comprehensive security audit'}
+ $taskLimit=128;if($taskLog -eq 'System'){$taskLimit=512}
+ $taskEvents=@();$taskError=$null;$taskStatus='OBSERVED'
+ try {$taskEvents=@(Get-WinEvent -FilterHashtable $taskFilter -MaxEvents ($taskLimit+1) -ErrorAction Stop)}
+ catch {
+  if($_.FullyQualifiedErrorId -like 'NoMatchingEventsFound*'){$taskStatus='NO_MATCHING_EVENTS'}
+  else{$taskStatus='UNAVAILABLE';$taskError=[ordered]@{type=$_.Exception.GetType().FullName;message=$_.Exception.Message;errorId=$_.FullyQualifiedErrorId}}
+ }
+ $taskSelected=@($taskEvents | Select-Object -First $taskLimit | ForEach-Object {
+  $taskMessage=$null;$taskMessageError=$null
+  try {$taskMessage=$_.Message}catch{$taskMessageError=$_.Exception.Message}
+  [ordered]@{timeUtc=$_.TimeCreated.ToUniversalTime().ToString('o');provider=$_.ProviderName;id=$_.Id;level=$_.LevelDisplayName;recordId=$_.RecordId;message=$taskMessage;messageError=$taskMessageError;powerStorageOrResourceProvider=($_.ProviderName -match 'Power|Kernel-General|EventLog|Disk|Ntfs|Stor|volmgr|Resource-Exhaustion|WHEA')}
+ })
+ $taskRows += [ordered]@{logName=$taskLog;status=$taskStatus;scope=$taskScope;metadata=$taskMetadata;metadataError=$taskMetadataError;eventCount=$taskSelected.Count;limit=$taskLimit;truncated=($taskEvents.Count -gt $taskLimit);events=$taskSelected;error=$taskError}
+}
+$taskFacilities=@()
+foreach($taskName in @('Get-WinEvent','Get-CimInstance','wpr.exe','logman.exe','openfiles.exe','handle.exe','handle64.exe')) {
+ $taskCommand=Get-Command $taskName -ErrorAction SilentlyContinue | Select-Object -First 1
+ $taskFacilities += [ordered]@{name=$taskName;found=($null -ne $taskCommand);source=if($taskCommand){$taskCommand.Source}else{$null};path=if($taskCommand){$taskCommand.Path}else{$null}}
+}
+$taskValue=[ordered]@{kind='MemoryOSPhase3AEnvironmentCaptureEventObservation';status='READ_ONLY_OBSERVATION';observedUtc=[DateTime]::UtcNow.ToString('o');captureStartUtc=$taskStart.ToString('o');captureEndUtc=$taskEnd.ToString('o');queryStartUtc=$taskQueryStart.ToString('o');queryEndUtc=$taskQueryEnd.ToString('o');marginSeconds=10;logs=$taskRows;facilities=$taskFacilities;restartManagerDllAvailable=(Test-Path -LiteralPath 'C:\Windows\System32\Rstrtmgr.dll');limitations=@('UTC correlation only; no causal ordering inferred from UTC against monotonic events.','System all-level query includes informational sleep/resume/ModernStandby/storage/resource providers when present.','No matching records is not proof of no interruption, external lock or security-software interference; unlogged, unavailable or overwritten events remain unknown.','Availability is command lookup, not an exhaustive software inventory; no installs, tracing sessions, openfiles tracking, security changes or product executions.','Process handle counts and shared directory watch are not system-wide file-handle attribution.');tool=[ordered]@{path='repositories/cca-conformance/tools/mo1306-phase3a-environment-capture/windows-eventlog.ps1';byteLength=(Get-Item -LiteralPath $PSCommandPath).Length;sha256=('sha256:'+(Get-FileHash -LiteralPath $PSCommandPath -Algorithm SHA256).Hash.ToLowerInvariant())}}
+$taskPath=Join-Path $taskOut 'windows-eventlog.json'
+if(Test-Path -LiteralPath $taskPath){throw 'Refuse evidence overwrite'}
+[IO.File]::WriteAllText($taskPath,($taskValue | ConvertTo-Json -Depth 10 -Compress)+[char]10,(New-Object Text.UTF8Encoding($false)))
+[ordered]@{path=$taskPath;logs=@($taskRows | ForEach-Object {@{name=$_.logName;status=$_.status;count=$_.eventCount;truncated=$_.truncated}});byteLength=(Get-Item -LiteralPath $taskPath).Length;sha256=('sha256:'+(Get-FileHash -LiteralPath $taskPath -Algorithm SHA256).Hash.ToLowerInvariant())}|ConvertTo-Json -Depth 5 -Compress
+

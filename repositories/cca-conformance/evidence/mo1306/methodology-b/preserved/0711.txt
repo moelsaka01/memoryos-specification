@@ -1,0 +1,98 @@
+"""Seal publication-diagnostic evidence only; never execute product code or mutate remote refs."""
+import argparse,datetime,hashlib,json,os,re,subprocess,sys,uuid
+from pathlib import Path
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4];HERE=Path(__file__).resolve().parent
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic'
+END='MO-1306 PHASE 3A PUBLICATION ENVIRONMENT BLOCKED'
+AUTH='701d48ee2012675966360dda775ab13013c09ab9';HEAD='f236c4a2f94d8cd8e763aaa4bd6c52d703429692'
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def read(name):return json.loads((OUT/name).read_bytes())
+def put(name,v):
+ p=OUT/name;assert not p.exists(),name;p.write_text(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8',newline='\n')
+def run(args,env=None):
+ p=subprocess.run(args,cwd=ROOT,env=env,capture_output=True,timeout=120)
+ return {'argv':list(map(str,args)),'exitCode':p.returncode,'stdout':p.stdout.decode('utf-8','replace'),'stderr':p.stderr.decode('utf-8','replace')}
+def git(*args):
+ r=run(['git',*args]);assert r['exitCode']==0,r;return r['stdout'].strip()
+def gitcheck():
+ p=Path(git('rev-parse','--git-path','index'));p=p if p.is_absolute() else ROOT/p
+ before=sha(p.read_bytes());assert before==read('preservation-before.json')['realIndexSha256']
+ folder=ROOT/'.cache/mo1306-phase3a-publication-diagnostic';folder.mkdir(exist_ok=True)
+ temp=folder/('review-index-'+uuid.uuid4().hex);env={**os.environ,'GIT_INDEX_FILE':str(temp)}
+ results=[]
+ for args in [['git','read-tree','HEAD'],['git','add','--',OUT.relative_to(ROOT).as_posix(),HERE.relative_to(ROOT).as_posix()],['git','diff','--cached','--check','HEAD'],['git','diff','--check','HEAD']]:
+  r=run(args,env);results.append(r)
+  if r['exitCode']:
+   put('git-failed-check-'+uuid.uuid4().hex[:8]+'.json',{'commands':results,'realIndexUnchanged':sha(p.read_bytes())==before});raise AssertionError(r)
+ names=run(['git','diff','--cached','--name-only','HEAD'],env);assert names['exitCode']==0
+ prefixes=[base.relative_to(ROOT).as_posix()+'/' for base in [OUT,HERE]]
+ assert all(any(name.startswith(prefix) for prefix in prefixes) for name in names['stdout'].splitlines())
+ assert sha(p.read_bytes())==before and git('rev-parse','HEAD')==HEAD
+ assert git('diff','--name-only','HEAD')=='' and git('diff','--cached','--name-only')==''
+ assert git('for-each-ref','--format=%(refname) %(objectname)')==read('preservation-before.json')['protectedRefs']
+ return {'kind':'MemoryOSPublicationDiagnosticGitValidation','status':'PASS','commands':results,'temporaryIndex':str(temp),'realIndexSha256':before,'realIndexUnchanged':True,'trackedPathsUnchanged':True,'refsUnchanged':True,'head':HEAD,'newDiagnosticPaths':len(names['stdout'].splitlines()),'postCommitCheck':'NOT_APPLICABLE_NO_COMMIT'}
+def validate(check=False):
+ args=[sys.executable,'-B',str(HERE/'validate.py')]+(['--check','--final'] if check else [])
+ r=run(args);assert r['exitCode']==0,r;return r
+
+def check():
+ receipt=read('execution-receipt.json');assert receipt['status']=='ENVIRONMENT_BLOCKED'
+ index=read('evidence-index.json');actual={p.relative_to(ROOT).as_posix() for base in [OUT,HERE] for p in base.rglob('*') if p.is_file() and p!=OUT/'evidence-index.json'}
+ assert len(index['files'])==len(actual) and {r['path'] for r in index['files']}==actual
+ for r in index['files']:assert row(ROOT/r['path'])==r,r['path']
+ v=validate(True);g=gitcheck()
+ print(json.dumps({'status':'PASS','disposition':END,'indexFiles':len(actual),'independentValidation':v['stdout'].strip(),'git':g['status'],'head':HEAD,'statusPorcelain':git('status','--porcelain'),'finalCommit':None}))
+
+def close():
+ assert git('rev-parse','HEAD')==HEAD
+ attempts=[json.loads(p.read_bytes()) for p in sorted((OUT/'reproductions').glob('*/summary.json'))]
+ assert len(attempts)==3 and all(a['actual']['classification']=='INPUT_ERROR' and a['exitCode']==11 and a['actual']['publication']=='COMPLETE' and len(a['bundleFiles'])==4 for a in attempts)
+ assert (OUT/'reproduction-summary.json').exists() and (HERE/'validate.py').exists()
+ report=OUT/'REPORT.md';text=report.read_text(encoding='utf-8').rstrip()+'\n'
+ text=text.replace('\u00e2\u20ac\u201c','-').replace('\u00e2\u20ac\u201d','-')
+ text=re.sub(r'PENDING ROOT FINALIZATION[^\n]*',END,text)
+ if not text.rstrip().endswith(END):text=text.rstrip()+'\n\n'+END+'\n'
+ text=text.replace('The original publication failure is localized to the manifest pre-rename helper, but its delay cause remains unresolved.','The original failure is localized to manifest finalization. The pre-rename helper is the leading source/trace inference; its original error and delay cause remain unresolved.')
+ for before,after in [('INPUT_ERROR11','INPUT_ERROR / exit 11'),('NONE17','NONE / exit 17'),('exit11','exit 11'),('exit17','exit 17'),('exit6','exit 6'),('exit7','exit 7'),('installed94','installed 94'),('retained94','retained 94'),('exact4/6','exact 4/6'),('helper18','helper 18'),('cleanup19','cleanup 19')]:text=text.replace(before,after)
+ report.write_text(text,encoding='utf-8',newline='\n')
+ exceptions=[]
+ for base in [OUT,HERE]:
+  attr=base/'.gitattributes';value=attr.read_text(encoding='utf-8')
+  for p in sorted(base.rglob('*')):
+   if not p.is_file() or p.suffix.lower() not in ['.json','.txt','.md','.py','.mjs','.ps1','.yml']:continue
+   if p.read_bytes().replace(b'\r\n',b'\n').endswith(b'\n\n'):
+    name=p.relative_to(base).as_posix();assert ' ' not in name and '[' not in name
+    line=name+' whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof\n'
+    if line not in value:value+=line
+    exceptions.append(row(p))
+  attr.write_text(value,encoding='utf-8',newline='\n')
+ put('byte-preservation-attributes.json',{'kind':'MemoryOSPublicationDiagnosticExactByteAttributes','status':'PASS','scope':'Exact-path EOF-only whitespace exceptions preserve captured/executed bytes. No source bytes changed.','files':exceptions})
+ g=gitcheck();put('git-validation.json',g)
+ start=datetime.datetime.fromisoformat('2026-09-27T20:50:50+00:00');now=datetime.datetime.now(datetime.timezone.utc);elapsed=(now-start).total_seconds();assert elapsed<5400
+ updates={12:'The exact original failing API and native error were not captured. Evidence localizes the failure to manifest finalization: checkPaths on the pending/final manifest or the following renameSync. Helper 18 is the leading source/trace inference; its original payload, timer callback and errno are unavailable.',30:'ENVIRONMENT_BLOCKED / ORIGINAL_PUBLICATION_CAUSE_UNRESOLVED. Manifest finalization is localized; delayed helper 18 is a lead, not a proven root cause. Three instrumented passes do not establish harness fault, stale expectation, deterministic product defect or environment transient.',33:'NOT PROVEN. Three unchanged installed-C3CB reproductions completed publication. Original long helper residence is evidence for investigation, not a captured internal timeout or late-success acceptance. No deterministic production-contract violation or product correction is established.',65:'Next task: focused attribution of the manifest-finalization failure, correlating Windows native process-start/scheduling/file-I/O observations with the existing helper/API instrumentation during a separately authorized affected-case capture. Establish a concrete cause before any remedy and gate closure. Preserve accepted groups and deadlines; no further reproduction or hosted work in this task because the three-run cap is reached.',1:'Branch mo1306/phase3a-refresh; historical HEAD f236c4a2f94d8cd8e763aaa4bd6c52d703429692. HEAD, branch, tracked files, actual index and protected refs are unchanged.',3:'All 624 historical files match their preserved bytes, including the original report, blocked receipt and native/publication evidence. Historical disposition remains MO-1306 PHASE 3A NATIVE CERTIFICATION BLOCKED.',52:'New execution-receipt.json records ENVIRONMENT_BLOCKED with original cause unresolved. Native/hosted certification, resolved gate, label promotion, final commit and Phase 3D readiness flags are false. Historical blocked receipts remain immutable.',55:'NONE. All 94 installed package files remain unchanged; 624 historical files and the tracked checkout/index match their preserved state.',58:'Historical branch and HEAD unchanged; no staged or tracked changes. Six untracked directories retain prior resolution/final evidence and tools plus the new diagnostic evidence and tools. No diagnostic or certification commit was created.',57:'PASS for tracked checkout and all new diagnostic paths through a temporary Git index; actual index, HEAD and refs unchanged. No post-commit check applies because no commit was created.',64:f'{elapsed/60:.2f} minutes from {start.isoformat()} through evidence closure {now.isoformat()}; diagnostic target <=30 minutes; no hosted extension used.'}
+ lines=text.splitlines()
+ for i,line in enumerate(lines):
+  match=re.match(r'^\|\s*(\d+)\s*\|\s*(.*?)\s*\|\s*(.*?)\s*\|$',line)
+  if match and int(match.group(1)) in updates:lines[i]=f'| {match.group(1)} | {match.group(2)} | {updates[int(match.group(1))]} |'
+ text='\n'.join(lines)+'\n';assert text.rstrip().endswith(END)
+ fields=[]
+ for line in lines:
+  m=re.match(r'^\|\s*(\d+)\s*\|\s*(.*?)\s*\|\s*(.*?)\s*\|$',line)
+  if m:fields.append({'number':int(m.group(1)),'name':m.group(2),'result':m.group(3)})
+ assert [f['number'] for f in fields]==list(range(1,66))
+ report.write_text(text,encoding='utf-8',newline='\n')
+ bindings={key:row(OUT/name) for key,name in [('preservationBefore','preservation-before.json'),('expectationAudit','expectation-audit.json'),('historicalWitnesses','historical-witnesses.json'),('harnessAudit','harness-audit.json'),('reproductionSummary','reproduction-summary.json'),('reproductionBundleValidation','reproduction-bundle-validation.json'),('originalHelperResidence','original-helper-residence.json'),('windowsNow','windows-now.json'),('windowsEventLog','windows-eventlog.json'),('remoteState','remote-state.json'),('workspaceVerification','workspace-verification.json'),('gitValidation','git-validation.json')]}
+ old=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final/final/execution-receipt.json'
+ old_receipt=json.loads(old.read_bytes())
+ receipt={'kind':'MemoryOSPhase3APublicationDiagnosticReceipt','version':'1.0.0','status':'ENVIRONMENT_BLOCKED','classification':'ORIGINAL_PUBLICATION_CAUSE_UNRESOLVED','disposition':END,'authority':AUTH,'correction':'39d83316f7c72d6cb49f8b6cde36c1bfa833112a','head':HEAD,'branch':'mo1306/phase3a-refresh','historicalBlockedReceipt':row(old),'historicalDisposition':'MO-1306 PHASE 3A NATIVE CERTIFICATION BLOCKED','labels':old_receipt['labels'],'allCertificationGatesPassed':False,'nativeCertified':False,'githubHostedCertified':False,'completionCommitCreated':False,'labelsPromoted':False,'phase3DReady':False,'resolvedMissingInputGate':False,'productChanged':False,'productionChanges':False,'acceptedGroupsRerun':False,'remoteMutated':False,'rootCauseProven':False,'harnessDefectProven':False,'staleExpectation':False,'productDefectProven':False,'environmentTransientProven':False,'reproductionCount':3,'reproductionsAllObservedComplete':True,'additionalProductExecutionsPermittedInThisTask':False,'finalCommit':None,'finalParent':None,'hosted':{'attempted':False,'runs':[],'artifacts':[],'parity':None},'remote':read('remote-state.json'),'bindings':bindings,'reproductionSummary':bindings['reproductionSummary'],'preservationBefore':bindings['preservationBefore'],'expectationAudit':bindings['expectationAudit'],'historicalWitnesses':bindings['historicalWitnesses'],'harnessAudit':bindings['harnessAudit'],'retention':'All accepted prior groups remain unchanged and dependency-valid; no prior blocked receipt is rewritten or promoted. Three subsequent passes do not resolve the original cause.','causeEvidence':{'firstUnexpectedOperation':None,'inferredFailureRegion':'Manifest checkPaths pre-rename guard or following renameSync; original helper18/path binding is source-order inference, not a captured API error.','originalNativeError':'NOT_CAPTURED','originalUnderlyingError':'NOT_CAPTURED','confirmedNewPublicationErrors':0,'originalHelperResidenceLowerBoundMs':3294,'delayCause':'UNRESOLVED','originalVsFresh':'Same94 installed bytes, Node, input/config bytes, path lengths, environment-name construction, cwd and observer; fresh roots and diagnostic wrapper are recorded deviations. Original ACL/handle/timer/helper-response records are unavailable.'},'recommendation':fields[64]['result'],'requestedReportFields':fields,'elapsedSecondsAtClosure':elapsed,'within30MinuteDiagnosticTarget':elapsed<=1800,'gitDiffCheck':'PASS','localStatus':git('status','--porcelain')}
+ put('execution-receipt.json',receipt)
+ v=validate()
+ put('final-validation.json',{'kind':'MemoryOSPublicationDiagnosticClosure','status':'PASS','meaning':'Evidence consistency and truthful blocked disposition only; no native/hosted certification.','receipt':row(OUT/'execution-receipt.json'),'report':row(report),'independentValidation':row(OUT/'validation.json'),'negativeControls':row(OUT/'validation-negatives.json'),'tool':row(Path(__file__)),'validationCommand':v,'git':row(OUT/'git-validation.json'),'closureUtc':now.isoformat(),'elapsedSeconds':elapsed})
+ files=sorted((p for base in [OUT,HERE] for p in base.rglob('*') if p.is_file() and p!=OUT/'evidence-index.json'),key=lambda p:p.relative_to(ROOT).as_posix())
+ put('evidence-index.json',{'kind':'MemoryOSPublicationDiagnosticClosedIndex','status':'ENVIRONMENT_BLOCKED','scope':'New diagnostic files only; index excludes itself. Old624 files retain independent immutable inventories.','files':[row(p) for p in files]})
+ check()
+if __name__=='__main__':
+ parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');args=parser.parse_args();check() if args.check else close()

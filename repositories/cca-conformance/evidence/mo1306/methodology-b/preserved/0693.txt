@@ -1,0 +1,97 @@
+"""Close stopped C3CB certification evidence without product execution, commits, or remote writes."""
+import argparse,datetime,hashlib,json,os,re,subprocess,sys,uuid
+from pathlib import Path
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4];HERE=Path(__file__).resolve().parent
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final'
+HEAD='f236c4a2f94d8cd8e763aaa4bd6c52d703429692'
+END='MO-1306 PHASE 3A NATIVE CERTIFICATION BLOCKED'
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def read(name):return json.loads((OUT/name).read_bytes())
+def put(name,v):
+ p=OUT/name;b=(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode();assert not p.exists(),name;p.write_bytes(b)
+def run(args,env=None):
+ p=subprocess.run(args,cwd=ROOT,env=env,capture_output=True,timeout=120)
+ return {'argv':list(map(str,args)),'exitCode':p.returncode,'stdout':p.stdout.decode('utf-8','replace'),'stderr':p.stderr.decode('utf-8','replace')}
+def git(*args):
+ r=run(['git',*args]);assert r['exitCode']==0,r;return r['stdout'].strip()
+def gitcheck():
+ index=Path(git('rev-parse','--git-path','index'));index=index if index.is_absolute() else ROOT/index;before=sha(index.read_bytes())
+ temporary=ROOT/'.cache/mo1306-phase3a-final'/('review-index-'+uuid.uuid4().hex);env={**os.environ,'GIT_INDEX_FILE':str(temporary)}
+ commands=[]
+ for args in [['git','read-tree','HEAD'],['git','add','--',OUT.relative_to(ROOT).as_posix(),HERE.relative_to(ROOT).as_posix()],['git','diff','--cached','--check','HEAD'],['git','diff','--check','HEAD']]:
+  r=run(args,env);commands.append(r)
+  if r['exitCode']!=0:
+   name='git-failed-check-'+uuid.uuid4().hex[:8]+'.json';put(name,{'commands':commands,'realIndexUnchanged':sha(index.read_bytes())==before});raise AssertionError(r)
+ names=run(['git','diff','--cached','--name-only','HEAD'],env);assert names['exitCode']==0
+ prefixes=[OUT.relative_to(ROOT).as_posix()+'/',HERE.relative_to(ROOT).as_posix()+'/']
+ assert all(any(p.startswith(x) for x in prefixes) for p in names['stdout'].splitlines())
+ assert sha(index.read_bytes())==before and git('rev-parse','HEAD')==HEAD
+ return {'kind':'MemoryOSPhase3AFinalGitValidation','status':'PASS','commands':commands,'temporaryIndex':str(temporary),'realIndexUnchanged':True,'realIndexSha256':before,'newFinalPathCount':len(names['stdout'].splitlines()),'onlyNewFinalEvidenceAndTools':True,'head':HEAD,'postCommitDiff':'NOT_APPLICABLE_NO_FINAL_CERTIFICATION_COMMIT'}
+def validate(mode='evidence'):
+ r=run([sys.executable,'-B',str(HERE/'validate.py'),'--mode',mode,'--check']);assert r['exitCode']==0,r;return r
+def check():
+ assert read('final/execution-receipt.json')['status']=='NATIVE_CERTIFICATION_BLOCKED'
+ assert read('native-summary.json')['status']=='NATIVE_CERTIFICATION_BLOCKED'
+ remote=read('github/final-state.json');assert remote['defaultBranch']=='main' and remote['certificationCommit']=='3096139e0108be22528859e4f462356dddf6ef29' and not remote['remoteMutations'] and not remote['dispatches']
+ index=read('evidence-index.json');expected={p.relative_to(ROOT).as_posix() for base in [OUT,HERE] for p in base.rglob('*') if p.is_file() and p!=OUT/'evidence-index.json'}
+ assert len(index['files'])==len(expected) and {r['path'] for r in index['files']}==expected
+ for r in index['files']:assert row(ROOT/r['path'])==r
+ result=validate('precommit');g=gitcheck()
+ assert git('diff','--name-only','HEAD')=='' and git('diff','--cached','--name-only')==''
+ print(json.dumps({'status':'PASS','disposition':END,'closedIndexFiles':len(expected),'independentValidation':result['stdout'].strip(),'gitDiffCheck':g['status'],'realIndexUnchanged':True,'head':git('rev-parse','HEAD'),'localStatus':git('status','--porcelain'),'finalCertificationCommit':None}))
+def close():
+ assert read('native-summary.json')['status']=='NATIVE_CERTIFICATION_BLOCKED'
+ assert read('validation.json')['status']=='PASS'
+ receipt=read('final/execution-receipt.json');assert receipt['status']=='NATIVE_CERTIFICATION_BLOCKED'
+ for key in ['allCertificationGatesPassed','nativeCertified','githubHostedCertified','labelsPromoted','completionCommitCreated','phase3DReady']:assert receipt[key] is False,key
+ assert git('rev-parse','HEAD')==HEAD
+ report=OUT/'final/REPORT.md'
+ report.write_text(report.read_text(encoding='utf-8').rstrip()+'\n',encoding='utf-8',newline='\n')
+ receipt_path=OUT/'final/execution-receipt.json'
+ receipt_path.write_text(json.dumps(receipt,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8',newline='\n')
+ exceptions=[]
+ for base in [OUT,HERE]:
+  p=base/'.gitattributes';text=p.read_text(encoding='utf-8')
+  for source in sorted(base.rglob('*')):
+   if not source.is_file() or source.suffix.lower() not in ['.py','.mjs','.txt','.md','.json','.yml']:continue
+   b=source.read_bytes()
+   if b.replace(b'\r\n',b'\n').endswith(b'\n\n'):
+    name=source.relative_to(base).as_posix();assert ' ' not in name and '[' not in name
+    line=name+' whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof\n'
+    if line not in text:text+=line
+    exceptions.append(row(source))
+  p.write_text(text,encoding='utf-8',newline='\n')
+ put('byte-preservation-attributes.json',{'kind':'MemoryOSPhase3AFinalExactByteAttributes','status':'PASS','scope':'Exact-path blank-at-EOF exceptions only for already captured/executed source bytes; other whitespace checks stay enabled. No source bytes changed.','files':exceptions})
+ g=gitcheck();put('git-validation.json',g)
+ report=OUT/'final/REPORT.md';text=report.read_text(encoding='utf-8')
+ lines=text.splitlines();found=False
+ for i,line in enumerate(lines):
+  if re.match(r'^\|\s*54\s*\|',line):
+   lines[i]='| 54 | git diff --check | PASS for tracked changes and all new final evidence/tools through a temporary Git index. The real index is unchanged. HEAD^..HEAD post-commit check is not applicable because no final certification commit was created. |';found=True
+ assert found,'REPORT_FIELD54_NOT_FOUND'
+ start=datetime.datetime.fromisoformat('2026-09-27T11:54:15+00:00');now=datetime.datetime.now(datetime.timezone.utc);elapsed=(now-start).total_seconds();assert elapsed<5400
+ for i,line in enumerate(lines):
+  if re.match(r'^\|\s*61\s*\|',line):lines[i]=f'| 61 | Duration | {elapsed/60:.2f} minutes from first explicit clock {start.isoformat()} to evidence closure {now.isoformat()}. |'
+ text='\n'.join(lines)+'\n';assert text.rstrip().endswith(END)
+ text=text.replace('the native gate failed before authorization to execute it.','the native gate failed before execution was permitted.').replace('only read-only evidence finalization followed.','only evidence finalization followed.')
+ report.write_text(text,encoding='utf-8',newline='\n')
+ fields=[]
+ for line in text.splitlines():
+  match=re.match(r'^\|\s*(\d+)\s*\|\s*(.*?)\s*\|\s*(.*?)\s*\|$',line)
+  if match:fields.append({'number':int(match.group(1)),'name':match.group(2),'result':match.group(3)})
+ assert len(fields)==65
+ receipt['gitDiffCheck']='PASS; tracked checkout and new final paths checked; real index unchanged; no final certification commit'
+ receipt['requestedReportFields']=fields
+ receipt['timing'].update({'startedUtc':start.isoformat(),'recordedUtc':now.isoformat(),'elapsedMinutesThroughRecord':round(elapsed/60,3),'over90Minutes':elapsed>5400,'within180Minutes':elapsed<10800})
+ receipt_path.write_text(json.dumps(receipt,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8',newline='\n')
+ ids=[int(m.group(1)) for line in lines if (m:=re.match(r'^\|\s*(\d+)\s*\|',line))];assert ids==list(range(1,66)),ids
+ result=validate()
+ put('final-validation.json',{'kind':'MemoryOSPhase3AFinalClosureValidation','status':'PASS','meaning':'Truthful native-certification-blocked evidence verified; not certification.','disposition':END,'receipt':row(OUT/'final/execution-receipt.json'),'report':row(report),'independent':row(OUT/'validation.json'),'negativeControls':row(OUT/'validation-negatives.json'),'git':row(OUT/'git-validation.json'),'closureTool':row(Path(__file__)),'readOnlyRecheck':result,'closureUtc':now.isoformat(),'elapsedSecondsAtClosure':elapsed,'within60MinuteTarget':elapsed<=3600,'within3HourHardStop':elapsed<10800,'validators':{'native':'BLOCKED_PUBLICATION_FAILURE','hosted':'NOT_RUN_NATIVE_STOP','artifact':'NATIVE_THREE_SIX_FILE_BUNDLES_PASS_OPERATIONAL_FOUR_FILE_PUBLICATION_BLOCKED','nativeSdkParity':'PASS_THREE_CASES','nativeHostedParity':'NOT_RUN_NATIVE_STOP','receipt':'PASS_TRUTHFUL_BLOCKED_DISPOSITION','remoteState':'PASS_UNCHANGED','workspace':'PASS_HISTORICAL_CHECKOUT','gitDiffCheck':'PASS'}})
+ files=sorted((p for base in [OUT,HERE] for p in base.rglob('*') if p.is_file() and p!=OUT/'evidence-index.json'),key=lambda p:p.relative_to(ROOT).as_posix())
+ put('evidence-index.json',{'kind':'MemoryOSPhase3AFinalClosedEvidenceIndex','version':'1.0.0','status':'NATIVE_CERTIFICATION_BLOCKED','scope':'New final-task evidence/tools only, excluding this index. Prior checkpoint and resolution preserve their own immutable inventories.','files':[row(p) for p in files]})
+ check()
+if __name__=='__main__':
+ parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');args=parser.parse_args();check() if args.check else close()

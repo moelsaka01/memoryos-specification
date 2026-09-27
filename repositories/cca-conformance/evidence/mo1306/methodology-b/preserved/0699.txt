@@ -1,0 +1,42 @@
+"""Construct operational workflows on C3CB; preserve current HEAD, index and tracked files."""
+import hashlib,json,os,subprocess,uuid
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[4]
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final/github'
+CACHE=ROOT/'.cache/mo1306-phase3a-final'
+C3CB='701d48ee2012675966360dda775ab13013c09ab9'
+OLD='f236c4a2f94d8cd8e763aaa4bd6c52d703429692'
+C3AB='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+OLD_DIST='311927a980bd397ab70b95da77d546e4b212968d05973ecf998817764431d773'
+NEW_DIST='b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'
+def git(*args,input=None,env=None):return subprocess.check_output(['git',*args],cwd=ROOT,input=input,env=env).decode().strip()
+def raw(*args):return subprocess.check_output(['git',*args],cwd=ROOT)
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def put(name,v):
+ p=OUT/name;p.parent.mkdir(parents=True,exist_ok=True);b=(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode();assert not p.exists();p.write_bytes(b)
+assert git('rev-parse','HEAD')==OLD and not git('diff','--name-only','HEAD')
+index=Path(git('rev-parse','--git-path','index'));index=index if index.is_absolute() else ROOT/index;index_before=sha(index.read_bytes())
+CACHE.mkdir(parents=True,exist_ok=True);env={**os.environ,'GIT_INDEX_FILE':str(CACHE/('candidate-index-'+uuid.uuid4().hex))}
+git('read-tree',C3CB,env=env)
+rows=[];paths=[]
+for case in ['pass','fail','cne']:
+ path=f'.github/workflows/mo1306-certification-{case}.yml';old=raw('show',OLD+':'+path)
+ assert old==(ROOT/path).read_bytes() and old.count(C3AB.encode())==1 and old.count(OLD_DIST.encode())==3
+ new=old.replace(C3AB.encode(),C3CB.encode()).replace(OLD_DIST.encode(),NEW_DIST.encode())
+ assert new.count(C3CB.encode())==1 and new.count(NEW_DIST.encode())==3
+ assert b'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' in new and b'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a' in new
+ p=OUT/'workflows'/Path(path).name;p.parent.mkdir(parents=True,exist_ok=True);assert not p.exists();p.write_bytes(new)
+ blob=git('hash-object','-w','--stdin',input=new);git('update-index','--add','--cacheinfo','100644',blob,path,env=env)
+ rows.append({**row(p),'workflowPath':path,'case':case,'gitBlob':blob,'historicalSource':{'commit':OLD,'path':path,'byteLength':len(old),'sha256':sha(old)}});paths.append(path)
+tree=git('write-tree',env=env)
+subject='cert(memoryos-1.3): stage corrected C3CB hosted certification'
+commit=git('commit-tree',tree,'-p',C3CB,input=(subject+'\n\nOperational fixed-case scaffolding only. C3CB remains product authority.\n').encode())
+assert git('show','-s','--format=%P',commit)==C3CB
+assert git('diff','--name-only',C3CB,commit).splitlines()==sorted(paths)
+assert raw('diff',C3CB,commit,'--','repositories/memoryos-ci')==b''
+assert sha(index.read_bytes())==index_before and git('rev-parse','HEAD')==OLD
+put('workflow-review.json',{'kind':'MemoryOSPhase3AFinalWorkflowReview','status':'PASS','candidateRevision':C3CB,'distributionDigest':'sha256:'+NEW_DIST,'workflows':rows,'comparison':'Exact prior reviewed bytes with only one product authority ref and three distribution digest replacements per workflow. All other workflow bytes unchanged.','actionPinsUnchanged':True,'bootstrapUnchanged':True,'runner':'windows-2022','workflow':'MemoryOS Provider-Neutral CI','job':'memoryos_ci','permissions':{'contents':'read'},'trigger':'workflow_dispatch','tool':row(Path(__file__))})
+put('remote-candidate.json',{'kind':'MemoryOSPhase3AFinalRemoteCandidate','status':'PASS','commit':commit,'parent':C3CB,'tree':tree,'paths':sorted(paths),'subject':subject,'productAuthority':C3CB,'operationalScaffoldingOnly':True,'productionChanges':False,'workflows':rows,'localHistoricalHead':OLD,'realIndexUnchanged':True,'pushPerformed':False})
+print(json.dumps({'status':'PASS','commit':commit,'parent':C3CB,'tree':tree,'paths':sorted(paths),'headUnchanged':True,'realIndexUnchanged':True}))

@@ -1,0 +1,102 @@
+name: 'MemoryOS Provider-Neutral CI'
+'on':
+  workflow_dispatch: {}
+permissions:
+  contents: 'read'
+jobs:
+  memoryos_ci:
+    name: 'MemoryOS CI'
+    runs-on: 'windows-2022'
+    timeout-minutes: 10
+    steps:
+      - id: 'tools'
+        uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+        with:
+          repository: 'moelsaka01/memoryos-specification'
+          ref: '701d48ee2012675966360dda775ab13013c09ab9'
+          path: '_memoryos/tool'
+          persist-credentials: false
+          submodules: false
+          lfs: false
+      - id: 'data'
+        uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+        with:
+          ref: ${{ github.sha }}
+          path: '_memoryos/data'
+          persist-credentials: false
+          submodules: false
+          lfs: false
+      - id: 'prepare_fixture'
+        shell: 'powershell'
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $dataRoot = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\data')
+          $fixtureRoot = [IO.Path]::Combine($dataRoot, 'repositories\cca-conformance\fixtures\mo1306\evaluate-policy-pass')
+          $source = [IO.Path]::Combine($fixtureRoot, 'candidate.mip')
+          $target = [IO.Path]::Combine($dataRoot, 'candidate.mip')
+          $cursor = $source
+          while ($cursor) {
+            $item = Get-Item -LiteralPath $cursor -Force
+            if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw 'Fixture reparse point' }
+            $cursor = [IO.Path]::GetDirectoryName($cursor)
+          }
+          if ((Get-Item -LiteralPath $source).PSIsContainer -or (Get-Item -LiteralPath $source).Length -ne 2518) { throw 'Fixture kind/length' }
+          if ((Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLowerInvariant() -cne '36cdf11919c58727cc3b5ec0293ffbb1716b57c35899cf06e1a92b130b6b9483') { throw 'Fixture digest' }
+          [IO.File]::Copy($source, $target, $false)
+          $source = [IO.Path]::Combine($fixtureRoot, 'policy.json')
+          $target = [IO.Path]::Combine($dataRoot, 'policy.json')
+          $cursor = $source
+          while ($cursor) {
+            $item = Get-Item -LiteralPath $cursor -Force
+            if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw 'Fixture reparse point' }
+            $cursor = [IO.Path]::GetDirectoryName($cursor)
+          }
+          if ((Get-Item -LiteralPath $source).PSIsContainer -or (Get-Item -LiteralPath $source).Length -ne 202) { throw 'Fixture kind/length' }
+          if ((Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLowerInvariant() -cne 'e93598764c4429a1a5d7a9f3cda369be5122e3e1c59067953e1138b3ccaa743a') { throw 'Fixture digest' }
+          [IO.File]::Copy($source, $target, $false)
+      - id: 'bootstrap'
+        shell: 'powershell'
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $env:MEMORYOS_CI_HOME = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\tool\repositories\memoryos-ci')
+          $env:MEMORYOS_CI_CONFIG = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\tool\repositories\cca-conformance\fixtures\mo1306\evaluate-policy-pass\memoryos-ci.json')
+          & ([IO.Path]::Combine($env:MEMORYOS_CI_HOME, 'scripts\Initialize-GitHubCI.ps1')) -WorkspaceRoot $env:GITHUB_WORKSPACE -ConfigurationDigest 'sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb' -DistributionDigest 'sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'
+          exit $LASTEXITCODE
+      - id: 'evaluate'
+        shell: 'powershell'
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $env:MEMORYOS_CI_HOME = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\tool\repositories\memoryos-ci')
+          $env:MEMORYOS_CI_CONFIG = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\tool\repositories\cca-conformance\fixtures\mo1306\evaluate-policy-pass\memoryos-ci.json')
+          & ([IO.Path]::Combine($env:MEMORYOS_CI_HOME, 'scripts\Invoke-GitHubCI.ps1')) -Mode 'Evaluate' -WorkspaceRoot $env:GITHUB_WORKSPACE -ConfigurationDigest 'sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb' -DistributionDigest 'sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'
+          exit $LASTEXITCODE
+      - id: 'upload'
+        if: always() && steps.evaluate.outputs.complete == 'true'
+        uses: 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'
+        with:
+          name: 'memoryos-ci-${{ github.run_id }}-${{ github.run_attempt }}'
+          path: |
+            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/evaluation-identity.json
+            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-artifacts.json
+            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-complete.json
+            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-evidence.json
+            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-result.json
+            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/policy-outcome.json
+          if-no-files-found: 'error'
+          include-hidden-files: true
+          retention-days: 7
+      - id: 'gate'
+        if: always()
+        shell: 'powershell'
+        env:
+          COMPLETE: ${{ steps.evaluate.outputs.complete }}
+          EXIT_CODE: ${{ steps.evaluate.outputs.exit-code }}
+          RUN_ID: ${{ steps.evaluate.outputs.run-id }}
+          EVALUATE_OUTCOME: ${{ steps.evaluate.outcome }}
+          UPLOAD_OUTCOME: ${{ steps.upload.outcome }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $env:MEMORYOS_CI_HOME = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\tool\repositories\memoryos-ci')
+          $env:MEMORYOS_CI_CONFIG = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\tool\repositories\cca-conformance\fixtures\mo1306\evaluate-policy-pass\memoryos-ci.json')
+          & ([IO.Path]::Combine($env:MEMORYOS_CI_HOME, 'scripts\Invoke-GitHubCI.ps1')) -Mode 'Gate' -WorkspaceRoot $env:GITHUB_WORKSPACE -ConfigurationDigest 'sha256:12ddefe6af24e3364dfee0c081ad4a41061bcf8aa4804716bb6ee65aa5483afb' -DistributionDigest 'sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'
+          exit $LASTEXITCODE

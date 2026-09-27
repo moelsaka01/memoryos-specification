@@ -1,0 +1,307 @@
+"""Prepare corrected C3AB GitHub workflows; never push or dispatch.
+
+Run with pinned engineering Python/PYTHONPATH and --package pointing to the
+verified installed package. Every output stays inside the Phase 3A worktree.
+"""
+import argparse
+import base64
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+import uuid
+
+ROOT = Path(__file__).resolve().parents[4]
+BASE = ROOT / 'repositories/cca-conformance'
+OUT = BASE / 'evidence/mo1306/phase3ar/github'
+CACHE = ROOT / '.cache/mo1306-phase3ar'
+C3AB = '9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+C3A = '90b9ac914e477fb90fe317d0de9ba310aae37f60'
+REPOSITORY = 'moelsaka01/memoryos-specification'
+NODE_SHA = 'ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+DIST = 'sha256:311927a980bd397ab70b95da77d546e4b212968d05973ecf998817764431d773'
+CHECKOUT = 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+UPLOAD = 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'
+CASES = [('pass', 'PASS', 0), ('fail', 'FAIL', 6), ('cne', 'COULD_NOT_EVALUATE', 7)]
+
+
+def j(value):
+    return (json.dumps(value, sort_keys=True, separators=(',', ':')) + '\n').encode()
+
+
+def sha(data):
+    return 'sha256:' + hashlib.sha256(data).hexdigest()
+
+
+def row(path):
+    raw = path.read_bytes()
+    return {'path': path.relative_to(ROOT).as_posix(), 'byteLength': len(raw), 'sha256': sha(raw)}
+
+
+def save(path, data):
+    data = j(data) if not isinstance(data, bytes) else data
+    path.resolve().relative_to(ROOT)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        assert path.read_bytes() == data, 'Refuse changed prior evidence: ' + str(path)
+    else:
+        path.write_bytes(data)
+    return row(path)
+
+
+def preparation(case, fixture):
+    lines = ["$ErrorActionPreference = 'Stop'",
+             "$dataRoot = [IO.Path]::Combine($env:GITHUB_WORKSPACE, '_memoryos\\data')",
+             "$fixtureRoot = [IO.Path]::Combine($dataRoot, 'repositories\\cca-conformance\\fixtures\\mo1306\\evaluate-policy-" + case + "')"]
+    for name in ('candidate.mip', 'policy.json'):
+        raw = (fixture / name).read_bytes()
+        lines += ["$source = [IO.Path]::Combine($fixtureRoot, '" + name + "')",
+                  "$target = [IO.Path]::Combine($dataRoot, '" + name + "')",
+                  '$cursor = $source',
+                  'while ($cursor) {',
+                  '  $item = Get-Item -LiteralPath $cursor -Force',
+                  "  if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw 'Fixture reparse point' }",
+                  '  $cursor = [IO.Path]::GetDirectoryName($cursor)',
+                  '}',
+                  "if ((Get-Item -LiteralPath $source).PSIsContainer -or (Get-Item -LiteralPath $source).Length -ne " + str(len(raw)) + ") { throw 'Fixture kind/length' }",
+                  "if ((Get-FileHash -LiteralPath $source -Algorithm SHA256).Hash.ToLowerInvariant() -cne '" + hashlib.sha256(raw).hexdigest() + "') { throw 'Fixture digest' }",
+                  '[IO.File]::Copy($source, $target, $false)']
+    return '\n'.join(lines) + '\n'
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--package', type=Path, required=True)
+    parser.add_argument('--node', type=Path, default=CACHE / 'node-v24.21.0-win-x64/node.exe')
+    args = parser.parse_args()
+    package = args.package.resolve()
+    node = args.node.resolve()
+    assert sha(node.read_bytes()) == 'sha256:' + NODE_SHA
+    assert sha((package / 'distribution-manifest.json').read_bytes()) == DIST
+    assert subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT).decode().strip() == C3AB
+    assert subprocess.check_output(['git', 'rev-parse', C3AB + '^'], cwd=ROOT).decode().strip() == C3A
+    assert subprocess.check_output(['git', 'rev-parse', C3A + '^'], cwd=ROOT).decode().strip() == '0e35ffe70919d77b1db530929093826410b805f9'
+    assert subprocess.check_output(['git', 'branch', '--show-current'], cwd=ROOT).decode().strip() == 'mo1306/phase3a-refresh'
+    package_receipt = json.loads((OUT.parent / 'package.json').read_bytes())
+    archive = ROOT / package_receipt['archive']['path']
+    assert len(archive.read_bytes()) == 197172 and sha(archive.read_bytes()) == 'sha256:2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d'
+
+    sys.path.insert(0, str(BASE / 'tools/mo1306-phase2c'))
+    from github_validator import validate_workflow
+    from safe_yaml import parse_yaml, powershell_ast
+    original_root = ROOT.parent / 'cca-mo1306-3a'
+    original_github = original_root / 'repositories/cca-conformance/evidence/mo1306/phase3a/github'
+    original_composition = parse_yaml((original_github / 'mo1306-ci-certification.yml').read_bytes())
+
+    env = {key: os.environ[key] for key in ('SystemRoot', 'WINDIR')}
+    env['PATHEXT'] = '.COM;.EXE;.BAT;.CMD'
+    commands = []
+    generated = []
+    controls = []
+    records = []
+    jobs = []
+    vectors = json.loads((BASE / 'fixtures/mo1306/vectors.json').read_bytes())['vectors']
+    scratch = CACHE / ('github-generation-' + uuid.uuid4().hex[:8])
+    scratch.mkdir(parents=True)
+    for case, decision, exit_code in CASES:
+        fixture = BASE / ('fixtures/mo1306/evaluate-policy-' + case)
+        config_path = fixture / 'memoryos-ci.json'
+        deployment = {'kind': 'MemoryOSCICDDeployment', 'version': '1.0.0', 'provider': 'github',
+                      'distributionDigest': DIST, 'options': {'repository': REPOSITORY, 'toolRevision': C3AB,
+                      'configPath': config_path.relative_to(ROOT).as_posix()}}
+        deployment_path = OUT / 'deployments' / (case + '.json')
+        save(deployment_path, deployment)
+        first = None
+        for attempt in (1, 2):
+            target = scratch / (case + '-' + str(attempt))
+            argv = [str(node), '--max-old-space-size=128', str(Path(__file__).with_name('github-generator-bridge.mjs')),
+                    str(package), str(config_path), str(deployment_path)]
+            result = subprocess.run(argv, cwd=ROOT, env=env, stdin=subprocess.DEVNULL, capture_output=True,
+                                    timeout=90, creationflags=subprocess.CREATE_NO_WINDOW)
+            command = {'id': case + '-' + str(attempt), 'argv': argv, 'exitCode': result.returncode,
+                       'stdoutSha256': sha(result.stdout), 'stderrSha256': sha(result.stderr)}
+            commands.append(command)
+            if result.returncode != 0:
+                save(OUT / ('generation-failure-' + scratch.name + '-' + case + '-' + str(attempt) + '.json'), {'status': 'FAIL', 'command': command,
+                     'stdout': result.stdout.decode('utf-8', 'replace'), 'stderr': result.stderr.decode('utf-8', 'replace')})
+                raise AssertionError('Product generation failed: ' + str(command))
+            generated_api = json.loads(result.stdout)
+            assert generated_api['mode'] == 'INSTALLED_PURE_GENERATOR_API' and generated_api['distributionDigest'] == DIST
+            files = {entry['path']: base64.b64decode(entry['base64'], validate=True) for entry in generated_api['files']}
+            assert set(files) == {'.github/workflows/memoryos-ci.yml', 'memoryos-ci.json', 'memoryos-ci-generation.json'}
+            if first is None:
+                first = files
+            else:
+                assert first == files, 'Non-deterministic product generation'
+        config = first['memoryos-ci.json']
+        binding = {'configurationDigest': sha(config), 'deployment': deployment}
+        raw = first['.github/workflows/memoryos-ci.yml']
+        validation = validate_workflow(raw, binding)
+        original_workflow = original_github / 'generated' / case / '.github/workflows/memoryos-ci.yml'
+        assert raw == original_workflow.read_bytes().replace(b'0e35ffe70919d77b1db530929093826410b805f9', C3AB.encode()).replace(b'sha256:bd154a7a972395b801b3cb0189a728b7e9870eb05f90558346eb7fee7055fe77', DIST.encode()), 'Unexpected correction delta'
+
+        for name, data in sorted(first.items()):
+            generated.append(save(OUT / 'generated' / case / name, data))
+        save(OUT / 'bindings' / (case + '.json'), binding)
+        mutations = {
+            'old-B2-tool-ref': raw.replace(C3AB.encode(), b'0e35ffe70919d77b1db530929093826410b805f9'),
+            'old-B2-distribution': raw.replace(DIST.encode(), b'sha256:bd154a7a972395b801b3cb0189a728b7e9870eb05f90558346eb7fee7055fe77'),
+            'wrong-workflow-identity': raw.replace(b'MemoryOS Provider-Neutral CI', b'Unreviewed Workflow'),
+            'wrong-job-identity': raw.replace(b'  memoryos_ci:', b'  unreviewed:'),
+            'wrong-checkout-pin': raw.replace(CHECKOUT.encode(), ('actions/checkout@' + '1' * 40).encode()),
+            'wrong-upload-pin': raw.replace(UPLOAD.encode(), ('actions/upload-artifact@' + '2' * 40).encode()),
+            'write-permission': raw.replace(b"contents: 'read'", b"contents: 'write'"),
+            'unsafe-trigger': raw.replace(b'workflow_dispatch: {}', b'pull_request_target: {}'),
+            'wrong-runner': raw.replace(b"runs-on: 'windows-2022'", b"runs-on: 'windows-2019'"),
+            'floating-tool-ref': raw.replace(C3AB.encode(), b'main'),
+            'wrong-distribution': raw.replace(DIST.encode(), ('sha256:' + '3' * 64).encode()),
+            'hardcoded-completion': raw.replace(b"steps.evaluate.outputs.complete == 'true'", b'true'),
+            'broad-publication': raw.replace(b'/${{ steps.evaluate.outputs.run-id }}/evaluation-identity.json', b'/**'),
+            'wrong-run-id': raw.replace(b'${{ steps.evaluate.outputs.run-id }}', b'${{ github.run_id }}'),
+            'masked-common-exit': raw.replace(b'exit $LASTEXITCODE', b'exit 0'),
+            'persistent-credentials': raw.replace(b'persist-credentials: false', b'persist-credentials: true'),
+        }
+        for name, mutant in mutations.items():
+            assert mutant != raw
+            rejected = False
+            try:
+                validate_workflow(mutant, binding, check_ast=False)
+            except (ValueError, AssertionError):
+                rejected = True
+            assert rejected, 'Accepted mutation ' + name
+            controls.append({'id': case + '-' + name, 'status': 'PASS', 'mutantSha256': sha(mutant), 'rejected': True})
+        expectation = next(value for value in vectors if value['id'] == 'evaluate-policy-' + case)
+        assert expectation['decision'] == decision
+        prep = preparation(case, fixture)
+        assert prep == original_composition['jobs']['memoryos_ci_' + case]['steps'][2]['run'], 'Reviewed fixture staging changed'
+        prep_yaml = "      - id: 'prepare_fixture'\n        shell: 'powershell'\n        run: |\n" + ''.join('          ' + line + '\n' for line in prep.splitlines())
+        materialized = raw.replace(b"      - id: 'bootstrap'\n", prep_yaml.encode() + b"      - id: 'bootstrap'\n", 1)
+        jobs.append(materialized)
+        records.append({'id': case, 'expectedDecision': decision, 'expectedExitCode': exit_code,
+                        'expectedJobConclusion': 'success' if exit_code == 0 else 'failure',
+                        'expectedFileCount': 6, 'fixtureInputs': [row(fixture / name) for name in ('candidate.mip', 'policy.json')],
+                        'expectation': expectation, 'binding': binding, 'validation': validation,
+                        'preparationSha256': sha(prep.encode()), 'hostedStatus': 'NOT_EXECUTED'})
+    certification_rows = []
+    preparation_reviews = []
+    for record, materialized in zip(records, jobs):
+        case = record['id']
+        prep = preparation(case, BASE / ('fixtures/mo1306/evaluate-policy-' + case))
+        prep_yaml = "      - id: 'prepare_fixture'\n        shell: 'powershell'\n        run: |\n" + ''.join('          ' + line + '\n' for line in prep.splitlines())
+
+        def validate_materialized(candidate):
+            document = parse_yaml(candidate)
+            assert list(document) == ['name', 'on', 'permissions', 'jobs']
+            assert document['name'] == 'MemoryOS Provider-Neutral CI'
+            assert document['on'] == {'workflow_dispatch': {}} and document['permissions'] == {'contents': 'read'}
+            assert list(document['jobs']) == ['memoryos_ci']
+            job = document['jobs']['memoryos_ci']
+            assert job['name'] == 'MemoryOS CI'
+            assert job['runs-on'] == 'windows-2022' and job['timeout-minutes'] == 10
+            assert [step['id'] for step in job['steps']] == ['tools', 'data', 'prepare_fixture', 'bootstrap', 'evaluate', 'upload', 'gate']
+            assert job['steps'][2] == {'id': 'prepare_fixture', 'shell': 'powershell', 'run': prep}
+            assert candidate.count(prep_yaml.encode()) == 1
+            original = candidate.replace(prep_yaml.encode(), b'', 1)
+            assert original == (OUT / 'generated' / case / '.github/workflows/memoryos-ci.yml').read_bytes()
+            return validate_workflow(original, record['binding'], check_ast=False)
+
+        review = validate_materialized(materialized)
+        review['preparationASTNodes'] = len(powershell_ast(prep))
+        review['preparationSha256'] = sha(prep.encode())
+        preparation_reviews.append({'case': case, 'review': review})
+        for name, mutant in {
+            'unchecked-copy': materialized.replace(b'[IO.File]::Copy($source, $target, $false)', b'[IO.File]::Copy($source, $target, $true)'),
+            'wrong-fixture-length': materialized.replace(b'.Length -ne 2518', b'.Length -ne 2519'),
+            'injected-fixture-script': materialized.replace(b"          $dataRoot =", b"          Write-Output injected\n          $dataRoot =", 1),
+        }.items():
+            assert mutant != materialized
+            try:
+                validate_materialized(mutant)
+            except (ValueError, AssertionError, KeyError):
+                controls.append({'id': case + '-' + name, 'status': 'PASS', 'mutantSha256': sha(mutant), 'rejected': True})
+            else:
+                raise AssertionError('Accepted composition mutation ' + name)
+        relative = '.github/workflows/mo1306-certification-' + case + '.yml'
+        workflow_row = save(ROOT / relative, materialized)
+        evidence_copy = save(OUT / ('mo1306-certification-' + case + '.yml'), materialized)
+        record['workflow'] = workflow_row
+        record['workflowEvidenceCopy'] = evidence_copy
+        certification_rows.append(workflow_row)
+    audited = ['templates/github.yml.tpl', 'scripts/Initialize-GitHubCI.ps1', 'scripts/Invoke-GitHubCI.ps1',
+               'scripts/Invoke-MemoryOSCI.ps1', 'scripts/github-transport.mjs', 'src/github-transport.mjs',
+               'src/verification.mjs', 'src/metadata.mjs', 'src/providers/github.mjs']
+    source_rows = []
+    for relative in audited:
+        local = ROOT / 'repositories/memoryos-ci' / relative
+        original = subprocess.check_output(['git', 'show', C3AB + ':repositories/memoryos-ci/' + relative], cwd=ROOT)
+        historical = subprocess.check_output(['git', 'show', '0e35ffe70919d77b1db530929093826410b805f9:repositories/memoryos-ci/' + relative], cwd=ROOT)
+        assert original == historical, 'Reviewed transport/bootstrap changed'
+
+        assert local.read_bytes() == original == (package / relative).read_bytes()
+        source_rows.append(row(local))
+    actions = []
+    for name, pin in [('checkout', CHECKOUT), ('upload-artifact', UPLOAD)]:
+        path = BASE / ('fixtures/mo1306-phase2c/actions/' + name + '-action.yml')
+        actions.append({'pin': pin, 'retainedActionMetadata': row(path), 'runtime': 'node24',
+                        'scope': 'Retained immutable metadata only; fresh supply-chain review belongs to Phase 3B'})
+    audit = {'kind': 'MemoryOSCICDPhase3ARCorrectedGitHubPreparation', 'version': '1.0.0', 'status': 'PASS',
+             'scope': 'Deterministic installed pure-generator API and static review; no CLI execution or hosted certification claim',
+             'generationMode': 'INSTALLED_PURE_GENERATOR_API',
+             'cliGeneration': {'status': 'ENVIRONMENT_BLOCKED', 'failure': row(OUT / 'generation-failure.json'),
+                 'diagnostic': row(OUT / 'raw-helper-timing.json'), 'reason': 'Frozen 2000ms helper budget exceeded in measured quiet slot; no deadline change or blind retry.'},
+             'generatorBridge': row(Path(__file__).with_name('github-generator-bridge.mjs')),
+             'candidateRevision': C3AB, 'correctionRevision': C3A, 'historicalB2': '0e35ffe70919d77b1db530929093826410b805f9', 'distributionDigest': DIST,
+             'correctedArchive': row(archive), 'packageReceipt': row(OUT.parent / 'package.json'),
+             'preparationReviews': preparation_reviews,
+             'materialization': 'Three fixed product workflows preserve exact workflow name and job identity; only the reviewed fixture staging is added. No production changes.',
+             'harness': row(Path(__file__)),
+             'repository': REPOSITORY, 'historicalOriginAlias': 'moelsaka01/cca-workspace',
+             'runtime': {'path': str(node), 'sha256': 'sha256:' + NODE_SHA, 'version': '24.21.0'},
+             'generationPackage': str(package), 'hostedStatus': 'NOT_EXECUTED', 'hostedRun': None,
+             'caseCount': 3, 'deterministicFreshRootsPerCase': 2, 'cases': records,
+             'commands': commands, 'generatedFiles': generated, 'certificationWorkflows': certification_rows,
+             'negativeControlCount': len(controls), 'negativeControls': controls,
+             'sourceBindings': source_rows, 'actions': actions,
+             'staticFindings': {'permissions': {'contents': 'read'}, 'runner': 'windows-2022',
+                 'trigger': 'workflow_dispatch with no inputs', 'trustedToolsRevision': C3AB,
+                 'separateDataCheckout': '${{ github.sha }}', 'credentialsPersisted': False,
+                 'artifactSet': 'Exactly six semantic or four operational basenames; no directory-wide publication',
+                 'completion': 'Derived by verified bundle binding, never a constant successful result',
+                 'runBinding': 'Core UUID plus provider run/attempt/job/revision metadata revalidated at final gate',
+                 'metadataAuthority': 'Operational only; no semantic input', 'productDefectDemonstrated': False},
+             'limits': {'perJobMinutes': 10, 'campaignMinutes': 30, 'maximumDiagnosedTargetedReruns': 1},
+             'limitations': ['Materialized workflows are prepared for the separately authorized dedicated certification branch.',
+                 'This preparation does not push, dispatch, access a provider, or establish hosted execution.',
+                 'Hosted evidence must retain actual run/attempt/numeric job IDs and runner OS metadata, artifacts and logs.',
+                 'Bundle metadata.jobId is GITHUB_JOB memoryos_ci; the service numeric job ID is a separate operational binding.',
+                 'Corrected native/hosted normative parity remains pending until actual downloaded artifacts are validated.',
+                 'Historical B2 evidence is preserved read-only; no product or historical receipt was modified.']}
+    save(OUT / 'static-audit.json', audit)
+    save(OUT / 'workflow-review.json', {
+        'kind': 'MemoryOSPhase3ARWorkflowReview', 'version': '1.0.0', 'status': 'PASS',
+        'candidateRevision': C3AB, 'distributionDigest': DIST, 'archive': row(archive),
+        'workflows': certification_rows, 'cases': records,
+        'review': row(OUT / 'static-audit.json'), 'negativeControlCount': len(controls),
+        'sourceBindings': source_rows, 'actions': actions,
+        'workflowName': 'MemoryOS Provider-Neutral CI', 'jobId': 'memoryos_ci',
+        'runner': 'windows-2022', 'permissions': {'contents': 'read'},
+        'trigger': 'workflow_dispatch', 'hostedStatus': 'NOT_EXECUTED',
+        'generationMode': 'INSTALLED_PURE_GENERATOR_API', 'cliGenerationStatus': 'ENVIRONMENT_BLOCKED',
+        'noRemoteOperations': True, 'harness': row(Path(__file__)),
+    })
+
+    save(OUT / 'README.md', (
+        '# Phase 3A-R corrected GitHub preparation\n\n'
+        'Three fixed manually dispatched workflows retain the required name MemoryOS Provider-Neutral CI and job memoryos_ci on windows-2022. Each is generated twice by the corrected installed pure generator API. The exact reviewed original fixture staging is inserted without any production change.\n\n'
+        'The source checkout is C3AB ' + C3AB + ' and the distribution digest is ' + DIST + '. The archive is independently checked as 197172 bytes with corrected SHA-256. Action pins, frozen Node bootstrap, read-only permission and separated tool/data checkouts are preserved.\n\n'
+        'static-audit.json records independent YAML/PowerShell validation, deterministic generation, negative controls and source dependency equality. Hosted runs are NOT_EXECUTED by this tool and must be proven by separate real service evidence. PASS projects exit 0/success; FAIL and CNE project exits 6 and 7/failed jobs after verified artifact publication.\n\n'
+        'The original B2 Phase 3A worktree is read-only historical evidence. This tool performs no remote operation.\n'
+    ).encode())
+    print(json.dumps({'status': 'PASS', 'hostedStatus': 'NOT_EXECUTED', 'audit': row(OUT / 'static-audit.json'),
+                      'generatedProductWorkflows': 3, 'negativeControls': len(controls), 'certificationWorkflows': certification_rows}))
+
+
+if __name__ == '__main__':
+    main()

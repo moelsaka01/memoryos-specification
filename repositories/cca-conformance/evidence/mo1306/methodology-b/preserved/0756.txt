@@ -1,0 +1,72 @@
+"""Exact installed semantic-worker versus independent SDK source parity.
+
+This helper-independent stage is not substituted for end-to-end CLI execution.
+"""
+import base64,json,shutil,subprocess,sys,time
+from pathlib import Path
+sys.dont_write_bytecode=True
+from native import Campaign,put,ref,inventory,INSTALLED,NODE,FIX,j,sha
+c=Campaign()
+c.bindings['semanticDriver']=ref(Path(__file__))
+status='FAIL';failure=None;cases=[]
+vectors=[(kind+'-'+suffix,'evaluate-'+kind+'-'+suffix,code,False) for kind in ('policy','policySet') for suffix,code in [('pass',0),('fail',6),('cne',7)]]
+vectors.extend([('regression-pass','evaluate-policy-cne',0,True),('regression-fail','evaluate-policy-fail',6,True),('regression-cne','evaluate-policy-cne',7,False)])
+try:
+    c.preflight()
+    for name,vector,expected,regression in vectors:
+        case={'id':name,'status':'FAIL','sourceFixture':vector,'regressionContext':regression,'scope':'Actual installed permission-limited semantic worker, no CLI or PowerShell helper'}
+        work=c.work/name;work.mkdir()
+        for filename in ('policy.json','candidate.mip','memoryos-ci.json'):shutil.copyfile(FIX/vector/filename,work/filename)
+        config=json.loads((work/'memoryos-ci.json').read_bytes())
+        if regression:
+            shutil.copyfile(work/'candidate.mip',work/'baseline.mip');config['context']['baselineMip']='baseline.mip'
+        (work/'memoryos-ci.json').write_bytes(j(config))
+        case['inputFiles']=[ref(p) for p in sorted(work.iterdir())]
+        record={'id':'worker-'+name,'status':'FAIL'}
+        started=time.monotonic()
+        try:
+            c.oracle(name,work,expected)
+            is_set=config['operation']=='evaluatePolicySet'
+            selected=config['policySet' if is_set else 'policy']
+            request={'kind':'MemoryOSCICDWorkerRequest','version':'1.0.0','runId':'12345678-1234-4123-8123-123456789abc','operation':config['operation'],'expectedSemanticDigest':selected['expectedSemanticDigest'],'policyBase64':None if is_set else base64.b64encode((work/'policy.json').read_bytes()).decode(),'policySetBase64':base64.b64encode((work/'policy.json').read_bytes()).decode() if is_set else None,'candidateMipBase64':base64.b64encode((work/'candidate.mip').read_bytes()).decode(),'baselineMipBase64':base64.b64encode((work/'baseline.mip').read_bytes()).decode() if regression else None}
+            argv=list(map(str,[NODE,'--permission','--allow-fs-read='+str(INSTALLED),'--max-old-space-size=256','--max-semi-space-size=16',INSTALLED/'src/worker.mjs']))
+            record['command']=argv;record['requestSha256']=sha(j(request))
+            result=subprocess.run(argv,cwd=INSTALLED,env=c.env,input=j(request),capture_output=True,timeout=15,creationflags=subprocess.DETACHED_PROCESS|subprocess.CREATE_NEW_PROCESS_GROUP)
+            record.update(exitCode=result.returncode,stdout=result.stdout.decode(),stderr=result.stderr.decode())
+            assert result.returncode==0 and result.stderr==b'', 'INSTALLED_WORKER_FAILURE'
+            response=json.loads(result.stdout)
+            assert result.stdout==j(response),'NONCANONICAL_WORKER_RESPONSE'
+            assert response['runId']==request['runId'] and response['error'] is None
+            semantic=response['semantic'];oracle=json.loads((c.output/'logs'/('sdk-'+name+'.stdout.txt')).read_bytes())
+            assert semantic['decision']=={0:'PASS',6:'FAIL',7:'COULD_NOT_EVALUATE'}[expected]
+            for key in ['decision','documentDigest','semanticDigest','evaluationIdentityDigest','outcomeDigest']:assert semantic[key]==oracle[key],('SDK_DIGEST_PARITY',name,key)
+            retained=c.output/'normative'/name;retained.mkdir(parents=True)
+            normative=[]
+            for key,oracle_name,basename in [('evaluationIdentityBase64','oracle-identity.json','evaluation-identity.json'),('outcomeBase64','oracle-outcome.json','policy-outcome.json')]:
+                actual=base64.b64decode(semantic[key],validate=True)
+                assert actual==(work/oracle_name).read_bytes(),('SDK_BYTE_PARITY',name,basename)
+                if not regression:assert actual==(FIX/vector/basename).read_bytes(),('GOLDEN_BYTE_PARITY',name,basename)
+                target=retained/basename;target.write_bytes(actual);normative.append(ref(target))
+            case.update(status='PASS',decision=semantic['decision'],normativeBytes=normative,digests={key:semantic[key] for key in ['documentDigest','semanticDigest','evaluationIdentityDigest','outcomeDigest']},sourceOracle=ref(c.output/'oracles'/(name+'.json')),workerRecord='workers/'+name+'.json')
+            if name=='regression-cne':case['qualification']='Regression-specific rule without baseline fact context; exact authoritative SDK CNE.'
+            if name=='regression-fail':case['qualification']='Actual baseline/candidate fact context; FAIL originates from require-verification-completed.'
+            record['status']='PASS'
+        except BaseException as error:
+            case['failure']=type(error).__name__+': '+str(error);record['failure']=case['failure'];raise
+        finally:
+            record['elapsedMs']=round((time.monotonic()-started)*1000)
+            record['rawLogs']=c.raw_logs('worker-'+name,record)
+            record.pop('stdout',None);record.pop('stderr',None)
+            put(c.output/'workers'/(name+'.json'),record)
+            put(c.output/'cases'/(name+'.json'),case);cases.append(case)
+            print(name,case['status'],flush=True)
+    after=inventory(INSTALLED);assert after==c.before,'INSTALLED_CANDIDATE_CHANGED'
+    put(c.output/'installed-integrity-after.json',{'status':'PASS','members':after,'count':len(after),'before':ref(c.output/'preflight.json')})
+    assert len(cases)==9 and all(x['status']=='PASS' for x in cases)
+    status='PASS'
+except BaseException as error:
+    failure=type(error).__name__+': '+str(error);raise
+finally:
+    record={'kind':'MemoryOSPhase3ARInstalledWorkerSemanticParity','version':'1.0.0','status':status,'failure':failure,'run':c.id,'bindings':c.bindings,'caseCount':len(cases),'cases':cases,'scope':'Installed permission-limited semantic worker versus SDK 1.1.0 source oracle: exact normative bytes and digest fields. This report does not certify full native CLI acquisition, helper lifecycle, or publication.'}
+    put(c.output/'semantic-summary.json',record)
+    print({'status':status,'semanticSummary':str(c.output/'semantic-summary.json'),'failure':failure},flush=True)

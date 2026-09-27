@@ -1,0 +1,270 @@
+"""Independent final-targeted evidence validator. No product or network execution.
+
+PASS validates the truthful stopped record. It never certifies the failed
+native attempt. Negative controls mutate memory copies only.
+"""
+import argparse,base64,copy,hashlib,importlib.util,json,math,os,subprocess,sys,tarfile
+from pathlib import Path
+sys.dont_write_bytecode=True
+HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE));import preservation as keep
+ROOT=keep.ROOT;MAIN=keep.MAIN;OUT=keep.OUT;C3CB=keep.C3CB;C3C=keep.C3C
+PKG=ROOT/'.cache/mo1306-phase3a-final/install/node_modules/memoryos-ci'
+NODE=ROOT/'.cache/mo1306-phase3a-final/node-v24.21.0-win-x64/node.exe'
+ARCHIVE='sha256:7649f6df77c3f6163eb94b343974abaeccebbd5bcb8a2208cc889128904ce45d'
+DIST='sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'
+NODE_SHA='sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+REMOTE_MAIN='5955af062152a84c10de17860ba0bcabe8b3555f';OLD_REMOTE='3096139e0108be22528859e4f462356dddf6ef29'
+spec=importlib.util.spec_from_file_location('historical_bundle_validator',HERE.parent/'mo1306-phase3ar/validate.py');bundle=importlib.util.module_from_spec(spec);spec.loader.exec_module(bundle)
+bundle.DIST=DIST;bundle.SOURCE=MAIN/'repositories/memoryos-ci'
+sys.path.insert(0,str(HERE.parent/'mo1306-phase2d'));from trace_phase2d import validate_trace
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def enc(v):return (json.dumps(v,sort_keys=True,separators=(',',':'),ensure_ascii=False)+'\n').encode()
+def need(value,code):
+ if not value:raise AssertionError(code)
+def near(a,b):return math.isclose(a,b,rel_tol=0,abs_tol=1e-7)
+def blocked_claims(value):
+ need(value['status']=='NATIVE_CERTIFICATION_BLOCKED','FALSE_CERTIFICATION_STATUS')
+ for key in ['releaseReady','nativeCertified','githubHostedCertified','completionCommitCreated','allCertificationGatesPassed','labelsPromoted','phase3DReady']:
+  if key in value:need(value[key] is False,'FALSE_SUCCESS_CLAIM: '+key)
+ if 'hosted' in value:
+  hosted=value['hosted'];need(hosted.get('runs',[])==[] and hosted.get('artifacts',[])==[],'FABRICATED_HOSTED_EVIDENCE')
+  for key in ['runCount','artifactCount']:
+   if key in hosted:need(hosted[key]==0,'FABRICATED_HOSTED_COUNT')
+  for key in ['passRun','failRun','cneRun','workflowId','artifactValidation','completionValidation','nativeHostedParity']:
+   if key in hosted:need(hosted[key] is None,'FALSE_HOSTED_VALIDATION: '+key)
+  if 'status' in hosted:need(hosted['status']=='NOT_EXECUTED_NATIVE_STOP','FALSE_HOSTED_STATUS')
+ if 'parity' in value:need(value['parity'] not in ['PASS','CERTIFIED'],'FALSE_HOSTED_PARITY')
+ for key in ['completionCommit','commit','parent','finalCommit','finalParent']:
+  if key in value:need(value[key] is None,'COMPLETION_COMMIT_ON_FAILURE')
+class Audit:
+ def __init__(self):self.checked={};self.cache={};self.semantic={}
+ def target(self,name,base=ROOT):
+  p=Path(name);p=p if p.is_absolute() else base/p
+  resolved=p.resolve();need(resolved==ROOT or ROOT in resolved.parents or resolved==MAIN or MAIN in resolved.parents,'REFERENCE_OUTSIDE_AUTHORIZED_ROOTS')
+  need(p.is_file() and not p.is_symlink(),'REFERENCE_NOT_REGULAR_FILE: '+str(p));return p
+ def raw(self,name,base=ROOT):
+  p=self.target(name,base);key=str(p)
+  if key not in self.cache:self.cache[key]=p.read_bytes()
+  return self.cache[key]
+ def ref(self,row,base=ROOT):
+  p=self.target(row['path'],base);key=str(p);identity=(row['byteLength'],row['sha256'])
+  if key in self.checked:need(self.checked[key]==identity,'CONFLICTING_REFERENCE: '+key);return self.raw(p)
+  raw=self.raw(p);need((len(raw),sha(raw))==identity,'STALE_OR_CHANGED_FILE: '+key);self.checked[key]=identity;return raw
+ def row(self,p):return keep.row(p)
+ def json(self,name,base=ROOT):return json.loads(self.raw(name,base))
+ def load(self,name):return self.json(OUT/name)
+ def value(self,row,base=ROOT):return json.loads(self.ref(row,base))
+ def walk(self,value,base=ROOT):
+  if isinstance(value,dict):
+   if {'path','byteLength','sha256'}<=value.keys():self.ref(value,base)
+   else:
+    for x in value.values():self.walk(x,base)
+  elif isinstance(value,list):
+   for x in value:self.walk(x,base)
+ def candidate(self,native):
+  reuse=self.load('reuse-analysis.json')
+  need(reuse['status']=='PASS' and reuse['authority']==C3CB and reuse['correction']==C3C,'OLD_CANDIDATE')
+  need(native['authority']==C3CB and native['correctionC3C']==C3C and native['distributionDigest']==DIST,'NATIVE_OLD_CANDIDATE')
+  need(reuse['memberCount']==94 and reuse['unchangedMemberCount']==92 and reuse['sdkClosureFileCount']==25 and reuse['productionDependencies']==0,'CANDIDATE_COUNTS')
+  need(native['archive']['byteLength']==197290 and native['archive']['sha256']==ARCHIVE,'ARCHIVE_PIN')
+  self.ref(native['archive']);self.ref(reuse['archive'],MAIN);self.ref(reuse['secondAssembly'],MAIN)
+  self.ref(reuse['binding'],MAIN);inventory=self.value(reuse['inventory'],MAIN)
+  need(len(inventory['artifacts'])==444,'CORRECTION_INVENTORY_COUNT')
+  for row in inventory['artifacts']:self.ref(row,MAIN)
+  manifest=self.json(PKG/'distribution-manifest.json');need(sha(self.raw(PKG/'distribution-manifest.json'))==DIST,'DISTRIBUTION_PIN')
+  names={r['path'] for r in manifest['files']}|{'distribution-manifest.json'}
+  need(len(names)==94 and {p.relative_to(PKG).as_posix() for p in PKG.rglob('*') if p.is_file()}==names,'INSTALLED_MEMBER_SET')
+  for row in reuse['members']:
+   raw=self.raw(PKG/row['path']);need(len(raw)==row['byteLength'] and sha(raw)==row['sha256'],'INSTALLED_CANDIDATE_HASH')
+   need(raw==self.raw(MAIN/'repositories/memoryos-ci'/row['path']),'INSTALLED_C3CB_SOURCE')
+  with tarfile.open(ROOT/native['archive']['path']) as archive:
+   members=archive.getmembers();need(len(members)==94 and {m.name for m in members}=={'package/'+name for name in names},'ARCHIVE_MEMBERS')
+   for m in members:need(m.isfile() and archive.extractfile(m).read()==self.raw(PKG/m.name[8:]),'ARCHIVE_INSTALLED_BYTES')
+  need(sha(self.raw(NODE))==NODE_SHA,'NODE_PIN')
+  limits=self.json(PKG/'contracts/limits.json')['fixed'];need(limits['helperMs']==limits['terminationMs']==2000,'FROZEN_DEADLINE_CHANGED')
+  return reuse,manifest
+ def trace(self,row):
+  trace=self.value(row);self.walk(trace)
+  identities={'node':str(NODE),'powershell':str(Path(os.environ['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'),'conhost':str(Path(os.environ['SystemRoot'])/'System32/conhost.exe')}
+  validation=validate_trace(trace,identities,PKG);need(validation['status']=='PASS','TRACE_TOPOLOGY')
+  return trace,validation
+ def timing(self,value,case):
+  need(value['clock']['observation']=='Node performance.now milliseconds; values only comparable within this process','CLOCK_DOMAIN_MIX')
+  events=value['events'];need(all(math.isfinite(e['atMs']) for e in events) and all(a['atMs']<=b['atMs'] for a,b in zip(events,events[1:])),'TIMING_ORDER')
+  def one(name):
+   matches=[e for e in events if e['event']==name];need(len(matches)==1,'EVENT_COUNT '+name);return matches[0]
+  arm=one('timerArmed');need(0<arm['requestedDelayMs']<=2000 and arm['callbackSource']=='()=>stop(timeoutCode)','FROZEN_TIMER_SEMANTICS')
+  need(near(arm['dueUpperMs'],arm['registrationAfterMs']+arm['requestedDelayMs']) and near(arm['dueLowerMs'],arm['registrationBeforeMs']+arm['requestedDelayMs']),'ARM_DUE')
+  spawn=one('spawnBefore');need(base64.b64decode(spawn['args'][-1]).decode('utf-16le')==self.raw(PKG/'scripts/check-paths.ps1').decode(),'EXACT_HELPER_SOURCE')
+  need(spawn['args'][:3]==['-NoProfile','-NonInteractive','-EncodedCommand'] and spawn['options']['shell'] is False and set(spawn['options']['env'])=={'SystemRoot','WINDIR'},'EXACT_HELPER_ARGV')
+  need(case['frozenHelperMs']==2000 and case['noGrace'] is True and case['lateSuccessAccepted'] is False,'TIMING_CASE_CLAIM')
+  accepted=value['result']['accepted'];terminal=one('checkPathsResolved' if accepted else 'checkPathsRejected')
+  need(value['terminalAtMs']==terminal['atMs'] and not value['lateAccepted'],'TIMING_TERMINAL')
+  need(value['filesystem']['unchanged'] and value['filesystem']['initialNames']==value['filesystem']['settledNames']==[] and not value['filesystem']['completeMarkerPresent'],'HELPER_PUBLICATION')
+  if case['id']=='timely-helper':need(accepted and terminal['atMs']<arm['dueLowerMs'],'TIMELY_HELPER_NOT_TIMELY')
+  else:
+   forwarded=one('boundaryCloseForwardedToProduct');arrived=one('boundaryActualCloseArrived')
+   need(arrived['atMs']<arm['dueLowerMs']<arm['dueUpperMs']<forwarded['atMs']<=terminal['atMs'],'CONTROLLED_LATE_CLOSE_ORDER')
+   need(arrived['actualArgs']==forwarded['actualArgs']==[0,None],'CONTROLLED_CLOSE_ARGS')
+   need(not accepted and value['result']['code']=='MO1306_FILESYSTEM_BOUNDARY','LATE_SUCCESS_NOT_REJECTED')
+   need(not any(e['event']=='timerFire' for e in events),'LATE_REJECTION_NOT_ACCEPTANCE_GUARD')
+   if case['id']=='late-terminal':
+    core=one('coreResult')['summary'];need(core['classification']=='INPUT_ERROR' and core['exitCode']==11 and core['publication']=='NONE' and core['resultSha256'] is None,'TERMINAL_PUBLICATION')
+  return {'id':case['id'],'accepted':accepted,'requestedInterruptionDelayMs':arm['requestedDelayMs'],'settledAfterDueUpperMs':terminal['atMs']-arm['dueUpperMs'],'lateSuccessAccepted':False}
+ def native(self,native,manifest):
+  blocked_claims(native);self.walk(native)
+  need(native['requiredGateCompletion'] is False and native['passedCaseCount']==8 and native['failedCaseCount']==1,'NATIVE_GATE_RESTAMP')
+  run=self.value(native['nativeSummary']);need(run['status']=='FAIL' and run['installedIntegrity'] is None and run['caseCount']==9,'FAILED_ATTEMPT_RESTAMP')
+  binding=run['bindings'];need(binding['authority']==C3CB and binding['distributionDigest']==DIST and binding['archiveSha256']==ARCHIVE,'ATTEMPT_CANDIDATE')
+  self.walk(binding)
+  sources=binding['sourceBindings'];committed=keep.blobs(C3CB,[r['source'] for r in sources])
+  for row in sources:
+   blob=committed[row['source']];need(blob['gitBlob']==row['gitBlob'] and sha(blob['bytes'])==row['sha256'] and len(blob['bytes'])==row['byteLength'],'C3CB_SOURCE_BINDING')
+  cases={self.value(row)['id']:self.value(row) for row in native['cases']};need(len(cases)==9,'NATIVE_CASE_COUNT')
+  required={'timely-helper','late-helper','late-terminal','policy-pass','policy-fail','policy-cne','valid-generate','corrected-cli-dispatch','error-input'}
+  need(set(cases)==required and {k for k,v in cases.items() if v['status']=='FAIL'}=={'error-input'},'NATIVE_CASE_DISPOSITION')
+  traces={}
+  for command in run['commands']:
+   trace,check=self.trace(command['trace']);need(trace['id']==command['id'],'TRACE_ID')
+   traces[command['id']]=(trace,check)
+   need(trace['exitCode']==(17 if command['id']=='error-input' else trace['expectedExitCode']),'ACTUAL_EXIT_MISMATCH')
+  need(len(traces)==14 and list(traces)[-1]=='error-input' and 'verify-error-input' not in traces,'STOP_NOT_APPLIED')
+  timings=[self.timing(self.value(cases[key]['report']),cases[key]) for key in ['timely-helper','late-helper','late-terminal']]
+  normative={}
+  for item in native['semanticParity']:
+   case=cases[item['id']];oracle=self.value(item['oracle']);self.walk(oracle);need(oracle['status']=='PASS' and oracle['exitCode']==0,'SDK_ORACLE_STATUS')
+   expected=[('evaluation-identity.json',item['oracleFiles'][0]),('policy-outcome.json',item['oracleFiles'][1])]
+   oracle_bytes={name:self.ref(row) for name,row in expected}
+   contents=bundle.contents_for(ROOT/case['bundle']);self.walk(case)
+   checked=bundle.bundle_valid(contents,case['runId'],'generic',case['expectedExitCode'],oracle=oracle_bytes)
+   need(checked['normativeDigests']==case['normativeDigests']==item['normativeDigests'],'SDK_NORMATIVE_DIGEST')
+   logs={Path(row['path']).name:row for row in oracle['rawLogs']}
+   stdout=next(row for name,row in logs.items() if name.endswith('.stdout.txt'));sdk=json.loads(self.ref(stdout))
+   result=json.loads(contents['memoryos-ci-result.json'])
+   need(all(result['semantic'][k]==v for k,v in sdk.items()),'SDK_RESULT_SEMANTIC_DIGESTS')
+   normative[item['id']]={'case':case,'contents':contents,'oracle':oracle_bytes,'checked':checked}
+  need(set(normative)=={'policy-pass','policy-fail','policy-cne'},'SEMANTIC_CASE_SET');self.semantic=normative
+  generated=cases['valid-generate'];self.walk(generated);files={Path(r['path']).name:self.ref(r) for r in generated['files']}
+  need(set(files)=={'memoryos-ci.json','memoryos-ci-generation.json'},'GENERATION_MEMBERS')
+  g=json.loads(files['memoryos-ci-generation.json']);need(g['provider']=='generic' and g['configurationSha256']==sha(files['memoryos-ci.json']),'GENERATION_BINDING')
+  for row in g['files']:need(row['path'] in files and row['byteLength']==len(files[row['path']]) and row['sha256']==sha(files[row['path']]),'GENERATION_MEMBER_HASH')
+  tiny=cases['corrected-cli-dispatch']['results'];need({r['command'] for r in tiny}=={'constructor','toString','__proto__'},'TINY_CLI_SET')
+  for row in tiny:
+   trace=traces['dispatch-'+row['command']][0]
+   need(row['exitCode']==trace['exitCode']==10 and row['code']=='MO1306_USAGE' and trace['observation']['peakProcessCount']==1,'TINY_CLI_EXIT')
+   diagnostic=json.loads(trace['stderr']);need(diagnostic['code']=='MO1306_USAGE','TINY_CLI_DIAGNOSTIC')
+  integrity=self.value(native['installedIntegrity']);need(integrity['status']=='PASS' and integrity['count']==len(integrity['members'])==94,'FINAL_INSTALLED_COUNT')
+  self.ref(integrity['before'])
+  for row in integrity['members']:
+   raw=self.raw(PKG/row['path']);need(len(raw)==row['byteLength'] and sha(raw)==row['sha256'],'FINAL_INSTALLED_CHANGED')
+  failure=self.value(native['failureEvidence'][0]);self.walk(failure);failed=traces['error-input'][0]
+  actual=json.loads(failed['stdout']);diagnostic=json.loads(failed['stderr'])
+  need(actual==failure['actual'] and diagnostic==failure['diagnostic'],'FAILURE_LOG_BINDING')
+  need(actual['classification']=='ARTIFACT_ERROR' and actual['exitCode']==17 and actual['publication']=='NONE' and actual['resultSha256'] is None,'FAILURE_RESTAMP')
+  need(diagnostic['code']=='MO1306_ARTIFACT_WRITE' and diagnostic['stage']=='PUBLICATION','FAILURE_STAGE')
+  need(failure['expected']=={'classification':'INPUT_ERROR','exitCode':11,'files':4,'publication':'COMPLETE'},'EXPECTED_RESULT_RESTAMP')
+  partial_dir=ROOT/failure['retainedIncompleteBundle']
+  need(not partial_dir.is_symlink(),'PARTIAL_DIRECTORY_KIND')
+  partial={entry.name:entry.read_bytes() for entry in partial_dir.iterdir() if entry.is_file() and not entry.is_symlink()}
+  partial_dirs=[entry for entry in partial_dir.iterdir() if entry.is_dir()]
+  need(len(partial_dirs)==1 and partial_dirs[0].name.startswith('.pending') and not partial_dirs[0].is_symlink() and list(partial_dirs[0].iterdir())==[] and failure['pendingEmpty'],'PENDING_DIRECTORY_NOT_EMPTY')
+  need(len(list(partial_dir.iterdir()))==3,'PARTIAL_EXTRA_ENTRY')
+  need(set(partial)=={'memoryos-ci-evidence.json','memoryos-ci-result.json'} and failure['completeMarkerPresent'] is False,'INCOMPLETE_BUNDLE_RESTAMP')
+  partial_result=json.loads(partial['memoryos-ci-result.json']);partial_evidence=json.loads(partial['memoryos-ci-evidence.json'])
+  need(partial_result['classification']=='INPUT_ERROR' and partial_result['process']['exitCode']==11 and partial_result['error']['code']=='MO1306_INPUT_READ','INPUT_CLASSIFICATION_NOT_PRESERVED')
+  need(partial_result['runId']==actual['runId']==partial_evidence['runId'] and partial_evidence['resultSha256']==sha(partial['memoryos-ci-result.json']),'PARTIAL_RESULT_HASH')
+  need(partial_evidence['distributionSha256']==DIST,'PARTIAL_CANDIDATE')
+  for row in failure['retainedFiles']:need(partial[Path(row['path']).name]==self.ref(row),'PARTIAL_BYTES')
+  need('No specific helper timeout, OS interruption, filesystem failure, or source defect is inferred.' in failure['cause'],'UNSUPPORTED_FAILURE_CAUSE')
+  return {'status':'NATIVE_CERTIFICATION_BLOCKED','passedGroups':8,'failedGroups':1,'observedCommands':14,'timing':timings,'normativeParityCases':{k:v['checked'] for k,v in normative.items()},'traceCount':len(traces),'peakRoles':max(t[0]['observation']['peakProcessCount'] for t in traces.values()),'remainingOwnedProcesses':0,'installedMemberCount':94,'publicationFailure':{'actual':actual,'diagnostic':diagnostic,'partialInputClassification':partial_result['classification'],'retainedFileCount':2,'completeMarkerPresent':False,'cause':'UNRESOLVED'}}
+ def remote(self,value):
+  self.walk(value);need(value['candidateProductionAuthority']==C3CB and value['observedRemoteCandidateAuthority']==keep.C3AB,'REMOTE_CANDIDATE_SCOPE')
+  need(value['defaultBranch']=='main' and value['remoteMain']==REMOTE_MAIN and value['certificationCommit']==OLD_REMOTE,'REMOTE_REF_STATE')
+  for key in ['defaultBranchChanged','mainModifiedByTask','campaignExecuted']:need(value[key] is False,'REMOTE_MUTATION_CLAIM')
+  for key in ['dispatches','newPushes','remoteMutations','releasesCreated','tagsCreated','campaignDirectories']:need(value[key]==[],'REMOTE_MUTATION_OCCURRED')
+  responses={}
+  for key,row in value['responses'].items():
+   response=self.value(row);need(response['method']=='GET' and str(response['status'])=='200','REMOTE_READ_EVIDENCE');responses[key]=response['body']
+  need(responses['repository']['default_branch']=='main','REMOTE_DEFAULT_NOT_MAIN')
+  need(responses['main-ref']['object']['sha']==REMOTE_MAIN and responses['certification-ref']['object']['sha']==OLD_REMOTE,'REMOTE_ACTUAL_REF')
+  need(responses['certification-runs']['total_count']==0 and responses['certification-runs']['workflow_runs']==[] and value['certificationRunCount']==0,'HOSTED_RUNS_NOT_EMPTY')
+  artifact_pages=[v for k,v in responses.items() if k.startswith('repository-artifacts-')]
+  artifacts=[a for page in artifact_pages for a in page['artifacts']]
+  need(len(artifacts)==responses['repository-artifacts-1']['total_count']==value['repositoryArtifactCount'],'ARTIFACT_PAGINATION_INCOMPLETE')
+  selected=[a for a in artifacts if (a.get('workflow_run') or {}).get('head_branch')=='mo1306-certification' or (a.get('workflow_run') or {}).get('head_sha')==OLD_REMOTE]
+  need(selected==[] and value['artifactCount']==0,'FALSE_HOSTED_ARTIFACT_ABSENCE')
+  for row in value['workflows']:
+   body=responses[Path(row['path']).stem];need(base64.b64decode(body['content'])==self.ref(row),'REMOTE_OLD_WORKFLOW_DRIFT')
+  return {'status':'PASS','scope':'Read-only unchanged remote state; no hosted execution certification','defaultBranch':'main','main':REMOTE_MAIN,'certificationBranch':OLD_REMOTE,'hostedRunCount':0,'certificationArtifactCount':0,'mutations':0}
+ def optional_final(self,mode):
+  receipt=OUT/'final/execution-receipt.json'
+  if receipt.exists():
+   value=self.json(receipt);self.walk(value);blocked_claims(value)
+   need(value['kind']=='MemoryOSPhase3AFinalExecutionReceipt','FINAL_RECEIPT_KIND')
+   for key in ['nativeCertified','githubHostedCertified','completionCommitCreated','allCertificationGatesPassed','labelsPromoted','phase3DReady']:need(value[key] is False,'REQUIRED_BLOCKED_FLAG: '+key)
+   need(value['finalCommit'] is None and value['finalParent'] is None,'FINAL_COMPLETION_COMMIT_ON_FAILURE')
+   need(value['historicalHead']==keep.CHECKPOINT and value['distributionDigest']==DIST,'FINAL_RECEIPT_BINDING')
+   actual=value['native'];need(actual['passedGroups']==8 and actual['failedGroups']==1 and actual['actualExitCode']==17 and actual['actualPublication']=='NONE' and actual['cause']=='UNRESOLVED' and actual['newDeadlineViolationClaimed'] is False,'FINAL_FAILURE_MISREPRESENTED')
+   remote=value['remote'];need(remote['initialDefaultBranch']==remote['finalDefaultBranch']=='main' and remote['initialMain']==remote['finalMain']==REMOTE_MAIN and remote['initialCertification']==remote['finalCertification']==OLD_REMOTE,'FINAL_REMOTE_MISREPRESENTED')
+   need(remote['mutations']==remote['pushes']==[] and remote['switchPerformed'] is False,'FINAL_REMOTE_MUTATION_CLAIM')
+   for key in ['productionAuthority','authority']:
+    if key in value:need(value[key]==C3CB,'RECEIPT_OLD_CANDIDATE')
+   if 'labels' in value:
+    old=self.json(ROOT/'repositories/cca-conformance/evidence/mo1306/phase3ar/execution-receipt.json')
+    need(value['labels']==old['labels'],'LABEL_PROMOTION_ON_FAILURE')
+  index=OUT/'evidence-index.json'
+  if index.exists():
+   value=self.json(index);rows=value.get('files',value.get('entries'));need(isinstance(rows,list),'INDEX_SCHEMA');self.walk(rows)
+   names=[r['path'] for r in rows];need(len(names)==len(set(names)),'INDEX_DUPLICATE')
+   required={p.relative_to(ROOT).as_posix() for base in [OUT,HERE] for p in base.rglob('*') if p.is_file() and p!=index}
+   need(required<=set(names),'INDEX_MISSING_FINAL_FILE')
+   preservation=self.load('preservation/before.json')
+   historical={r['path'] for k in ['checkpointFiles','resolutionFiles'] for r in preservation[k]}
+   extra=set(names)-required-historical
+   need(all(name.startswith('docs/mo1306-phase3a-final') and name.endswith('.md') for name in extra),'INDEX_UNRELATED_FILE')
+  if mode=='precommit':need(receipt.exists() and index.exists(),'FINAL_ARTIFACTS_REQUIRED')
+  if mode=='postcommit':raise AssertionError('FAILED_NATIVE_CANNOT_HAVE_CERTIFICATION_COMMIT')
+ def run(self,mode):
+  inputs_path=OUT/'validation-inputs.json'
+  if inputs_path.exists():
+   inputs=self.json(inputs_path);self.walk(inputs);need(inputs['authority']==C3CB,'INPUT_MAP_AUTHORITY')
+   for key,name in [('candidate','reuse-analysis.json'),('native','native-summary.json'),('remote','github/final-state.json')]:
+    need(inputs[key]==keep.row(OUT/name),'INPUT_MAP_SUBSTITUTION')
+  native=self.load('native-summary.json');candidate,manifest=self.candidate(native)
+  native_result=self.native(native,manifest);remote=self.remote(self.load('github/final-state.json'))
+  self.optional_final(mode)
+  need(keep.txt(ROOT,'rev-parse','HEAD')==keep.CHECKPOINT,'UNAUTHORIZED_COMPLETION_COMMIT')
+  proc=subprocess.run([sys.executable,'-B',str(HERE/'preservation.py'),'--check'],capture_output=True,check=True,timeout=60,env={**os.environ,'PYTHONDONTWRITEBYTECODE':'1'})
+  preserved=json.loads(proc.stdout)
+  sources=[keep.row(OUT/name) for name in ['reuse-analysis.json','native-summary.json','github/final-state.json','preservation/before.json']]
+  return {'kind':'MemoryOSPhase3AFinalIndependentValidation','version':'1.0.0','status':'PASS','scope':'Truthful blocked evidence validated; no native or hosted certification. No product/network execution by this validator.','resolutionStatus':'NATIVE_CERTIFICATION_BLOCKED','authority':C3CB,'correction':C3C,'candidate':{'archiveSha256':ARCHIVE,'distributionSha256':DIST,'members':94,'sdkFiles':25,'productionDependencies':0},'native':native_result,'remote':remote,'preservation':preserved,'nativeCertified':False,'githubHostedCertified':False,'completionCommitPermitted':False,'sources':sources,'validator':keep.row(Path(__file__)),'bundleValidator':keep.row(HERE.parent/'mo1306-phase3ar/validate.py'),'checkedFileCount':len(self.checked)}
+def negatives(audit):
+ results=[]
+ def reject(name,fn):
+  try:fn()
+  except (AssertionError,ValueError,KeyError) as error:results.append({'id':name,'status':'REJECTED','reason':str(error)});return
+  raise AssertionError('NEGATIVE_ACCEPTED '+name)
+ bad={'status':'PASS','nativeCertified':True};reject('false-certification-after-native-failure',lambda:blocked_claims(bad))
+ fake={'status':'NATIVE_CERTIFICATION_BLOCKED','hosted':{'nativeHostedParity':'PASS'}};reject('false-hosted-parity-with-no-runs',lambda:blocked_claims(fake))
+ commit={'status':'NATIVE_CERTIFICATION_BLOCKED','finalCommit':C3CB};reject('false-final-completion-commit',lambda:blocked_claims(commit))
+ stale=keep.row(OUT/'native-summary.json');stale['sha256']='sha256:'+'0'*64;reject('stale-evidence-reference',lambda:audit.ref(stale))
+ native=audit.load('native-summary.json');native['authority']=keep.C3AB;reject('old-candidate-authority',lambda:audit.candidate(native))
+ remote=audit.load('github/final-state.json');remote['defaultBranch']='mo1306-certification';reject('unrestored-remote-default',lambda:audit.remote(remote))
+ sample=audit.semantic['policy-pass'];case=sample['case'];original=sample['contents'];oracle=sample['oracle']
+ extra=dict(original);extra['unexpected.txt']=b'x';reject('extra-bundle-artifact',lambda:bundle.bundle_valid(extra,case['runId'],'generic',0,oracle=oracle))
+ changed=dict(original);changed['memoryos-ci-complete.json']=changed['memoryos-ci-complete.json'].replace(case['runId'].encode(),b'00000000-0000-4000-8000-000000000000');reject('tampered-bundle-run-id',lambda:bundle.bundle_valid(changed,case['runId'],'generic',0,oracle=oracle))
+ wrong=dict(oracle);wrong['policy-outcome.json']=wrong['policy-outcome.json']+b' ';reject('normative-parity-mismatch',lambda:bundle.bundle_valid(original,case['runId'],'generic',0,oracle=wrong))
+ old=dict(original);parsed=json.loads(old['memoryos-ci-evidence.json']);parsed['distributionSha256']='sha256:311927a980bd397ab70b95da77d546e4b212968d05973ecf998817764431d773';old['memoryos-ci-evidence.json']=enc(parsed);reject('old-distribution-in-bundle',lambda:bundle.bundle_valid(old,case['runId'],'generic',0,oracle=oracle))
+ thin=audit.load('native-summary.json');case=audit.value(thin['cases'][1]);value=audit.value(case['report']);value['result']['accepted']=True;reject('late-helper-restated-as-success',lambda:audit.timing(value,case))
+ return {'kind':'MemoryOSPhase3AFinalValidationNegatives','status':'PASS','count':len(results),'controls':results,'method':'Mutated copies in memory only; no historical/evidence/product bytes or process behavior changed.'}
+def main():
+ parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');parser.add_argument('--mode',choices=['evidence','precommit','postcommit'],default='evidence');args=parser.parse_args()
+ audit=Audit();report=audit.run(args.mode);controls=negatives(audit)
+ if not args.check:
+  for name,value in [('validation.json',report),('validation-negatives.json',controls)]:
+   p=OUT/name;b=enc(value)
+   if p.exists():need(p.read_bytes()==b,'IMMUTABLE_OUTPUT_EXISTS '+name)
+   else:p.write_bytes(b)
+ print(json.dumps({'status':'PASS','resolutionStatus':report['resolutionStatus'],'checkedFiles':report['checkedFileCount'],'nativePassedGroups':8,'nativeFailedGroups':1,'negativeControls':controls['count'],'mode':args.mode,'readOnlyCheck':args.check}))
+if __name__=='__main__':main()
+

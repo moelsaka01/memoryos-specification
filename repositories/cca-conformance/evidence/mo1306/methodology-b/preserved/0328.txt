@@ -1,0 +1,93 @@
+"""Read-only, bounded Windows event-log correlation for helper observations.
+
+No event log is enabled, cleared, or edited. UTC locates historical events;
+product enforcement is never evaluated using these wall-clock timestamps.
+"""
+import argparse,base64,datetime,hashlib,json,os,re,subprocess,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4]
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3ar-resolution/host-events'
+POWERSHELL=Path(os.environ['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'
+def j(v):return (json.dumps(v,sort_keys=True,separators=(',',':'),ensure_ascii=False)+'\n').encode()
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def stamp(v):
+ t=datetime.datetime.fromisoformat(v.replace('Z','+00:00'));assert t.tzinfo is not None
+ return t.astimezone(datetime.timezone.utc)
+def row(p):
+ raw=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(raw),'sha256':sha(raw)}
+def put(name,v):
+ p=OUT/name;raw=j(v);p.parent.mkdir(parents=True,exist_ok=True)
+ if p.exists():assert p.read_bytes()==raw,'Immutable host-event evidence exists: '+name
+ else:p.write_bytes(raw)
+ return row(p)
+PS=r'''
+$ErrorActionPreference='Stop'
+[Console]::OutputEncoding=[Text.UTF8Encoding]::new($false)
+$request=[Console]::In.ReadToEnd()|ConvertFrom-Json
+$start=[DateTime]::Parse($request.queryStartUtc,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind)
+$end=[DateTime]::Parse($request.queryEndUtc,[Globalization.CultureInfo]::InvariantCulture,[Globalization.DateTimeStyles]::RoundtripKind)
+$logs=@('System','Microsoft-Windows-Time-Service/Operational','Microsoft-Windows-Kernel-Power/Thermal-Operational','Microsoft-Windows-Kernel-Power/Diagnostic','Microsoft-Windows-SleepStudy/Diagnostic')
+$providerNames=@('Microsoft-Windows-Kernel-Power','Microsoft-Windows-Power-Troubleshooter','Microsoft-Windows-Kernel-General','Microsoft-Windows-Kernel-Boot','Microsoft-Windows-Kernel-Processor-Power','Microsoft-Windows-UserModePowerService','Microsoft-Windows-Time-Service','Microsoft-Windows-WHEA-Logger','EventLog','USER32','Microsoft-Windows-Kernel-EventTracing')
+$results=@()
+foreach($logName in $logs) {
+ $result=[ordered]@{log=$logName;status='UNAVAILABLE';enabled=$null;oldestUtc=$null;newestUtc=$null;examinedCount=0;eventCount=0;limit=4096;truncated=$false;events=@();error=$null}
+ try {
+  $info=Get-WinEvent -ListLog $logName -ErrorAction Stop
+  $result.enabled=[bool]$info.IsEnabled
+  $result.recordCount=$info.RecordCount
+  $result.logMode=[string]$info.LogMode
+  if(-not $info.IsEnabled) {$result.status='DISABLED_NOT_ENABLED_BY_AUDIT';$results+=,[pscustomobject]$result;continue}
+  try {$oldest=Get-WinEvent -LogName $logName -Oldest -MaxEvents 1 -ErrorAction Stop;$result.oldestUtc=$oldest.TimeCreated.ToUniversalTime().ToString('o')} catch {$result.oldestReadError=$_.FullyQualifiedErrorId}
+  try {$newest=Get-WinEvent -LogName $logName -MaxEvents 1 -ErrorAction Stop;$result.newestUtc=$newest.TimeCreated.ToUniversalTime().ToString('o')} catch {$result.newestReadError=$_.FullyQualifiedErrorId}
+  try {$records=@(Get-WinEvent -FilterHashtable @{LogName=$logName;StartTime=$start;EndTime=$end} -MaxEvents 4096 -ErrorAction Stop)}
+  catch {
+   if($_.FullyQualifiedErrorId -like 'NoMatchingEventsFound*') {$records=@()}
+   else {throw}
+  }
+  $result.examinedCount=$records.Count;$result.truncated=($records.Count -ge 4096)
+  $events=@()
+  foreach($event in $records) {
+   if($logName -eq 'System' -and $providerNames -notcontains $event.ProviderName -and $event.Level -gt 2) {continue}
+   [xml]$xml=$event.ToXml();$data=@()
+   foreach($field in @($xml.Event.EventData.Data)) {
+    if($null -eq $field) {continue}
+    $data+=,[ordered]@{name=[string]$field.Name;value=[string]$field.'#text'}
+   }
+   $message=$null
+   try {$message=$event.FormatDescription()} catch {$message='Provider description unavailable'}
+   if($null -ne $message -and $message.Length -gt 16000) {$message=$message.Substring(0,16000)+' [description truncated]'}
+   $events+=,[ordered]@{provider=$event.ProviderName;eventId=$event.Id;recordId=$event.RecordId;utc=$event.TimeCreated.ToUniversalTime().ToString('o');level=$event.Level;task=$event.Task;opcode=$event.Opcode;message=$message;eventData=$data;executionProcessId=[string]$xml.Event.System.Execution.ProcessID;executionThreadId=[string]$xml.Event.System.Execution.ThreadID}
+  }
+  $result.events=$events;$result.eventCount=$events.Count;$result.status='READ'
+ } catch {$result.status='UNAVAILABLE';$result.error=[ordered]@{id=$_.FullyQualifiedErrorId;message=$_.Exception.Message}}
+ $results+=,[pscustomobject]$result
+}
+[ordered]@{kind='WindowsReadOnlyEventWindow';queryStartUtc=$request.queryStartUtc;queryEndUtc=$request.queryEndUtc;collectedUtc=[DateTime]::UtcNow.ToString('o');systemProviderSelection=$providerNames;alsoIncludesAllSystemCriticalAndErrorEvents=$true;logs=$results;computerNameCollected=$false;eventLogsModified=$false}|ConvertTo-Json -Depth 12 -Compress
+'''
+
+def main():
+ parser=argparse.ArgumentParser();parser.add_argument('--id',required=True);parser.add_argument('--start',required=True);parser.add_argument('--end',required=True);parser.add_argument('--padding-seconds',type=int,default=120);parser.add_argument('--observation',action='append',default=[]);args=parser.parse_args()
+ assert re.fullmatch('[a-z0-9][a-z0-9-]{0,79}',args.id)
+ start=stamp(args.start);end=stamp(args.end);assert start<=end and (end-start).total_seconds()<=3600 and 0<=args.padding_seconds<=600
+ query_start=start-datetime.timedelta(seconds=args.padding_seconds);query_end=end+datetime.timedelta(seconds=args.padding_seconds)
+ request={'queryStartUtc':query_start.isoformat(),'queryEndUtc':query_end.isoformat()}
+ input_refs=[]
+ for name in args.observation:
+  path=ROOT/name;path.resolve().relative_to(ROOT.resolve());input_refs.append(row(path))
+ encoded=base64.b64encode(PS.encode('utf-16le')).decode()
+ proc=subprocess.run([str(POWERSHELL),'-NoLogo','-NoProfile','-NonInteractive','-EncodedCommand',encoded],input=j(request),capture_output=True,timeout=55,creationflags=subprocess.CREATE_NO_WINDOW)
+ assert proc.returncode==0,('EVENT_QUERY_FAILED',proc.returncode,proc.stderr.decode('utf8','replace'))
+ raw=json.loads(proc.stdout.decode('utf-8-sig'));assert raw['eventLogsModified'] is False
+ rawref=put(args.id+'-records.json',raw)
+ system=next(log for log in raw['logs'] if log['log']=='System')
+ events=[event for log in raw['logs'] if log['status']=='READ' for event in log['events']]
+ transition_providers={'Microsoft-Windows-Kernel-Power','Microsoft-Windows-Power-Troubleshooter','Microsoft-Windows-Kernel-Boot','Microsoft-Windows-Time-Service'}
+ candidates=[e for e in events if e['provider'] in transition_providers or (e['provider']=='Microsoft-Windows-Kernel-General' and e['eventId'] in [1,12,13,22]) or (e['provider']=='EventLog' and e['eventId'] in [6005,6006,6008]) or e['provider']=='USER32']
+ inner=[e for e in candidates if start<=stamp(e['utc'])<=end]
+ oldest=stamp(system['oldestUtc']) if system.get('oldestUtc') else None
+ coverage=system['status']=='READ' and not system['truncated'] and oldest is not None and oldest<=query_start
+ report={'kind':'MemoryOSPhase3ARResolutionHostInterruptionReview','version':'1.0.0','status':'REVIEWED' if coverage else 'LIMITED_LOG_COVERAGE','observationId':args.id,'observationStartUtc':start.isoformat(),'observationEndUtc':end.isoformat(),'queryPaddingSeconds':args.padding_seconds,'query':request,'source':rawref,'sourceObservations':input_refs,'queryScriptSha256':sha(PS.encode()),'powershell':{'path':str(POWERSHELL),'sha256':sha(POWERSHELL.read_bytes())},'queryExitCode':proc.returncode,'queryStderr':proc.stderr.decode('utf8','replace'),'systemWindowRetained':coverage,'availableLogs':[r['log'] for r in raw['logs'] if r['status']=='READ'],'unavailableOrDisabledLogs':[{'log':r['log'],'status':r['status'],'error':r.get('error')} for r in raw['logs'] if r['status']!='READ'],'transitionOrClockCandidateCount':len(candidates),'candidatesInsideObservation':inner,'candidateEventsIncludingPadding':candidates,'allSelectedEventCount':len(events),'interpretation':'No recorded transition/time-change candidate in the accessible retained window; this does not exclude CPU scheduling stalls or unlogged interruptions.' if not candidates and coverage else 'Review provider event descriptions and event data for exact relationship; event presence alone does not prove helper causation.','windowsSchedulingTransientProven':False,'enforcementClockClaim':'UTC correlates event records only. No product monotonic deadline is judged using UTC duration.','limitations':['Event-log absence is not proof of no host interruption or scheduler delay.','Disabled diagnostic/analytic channels were not enabled; their absence is reported.','System provider events and all System critical/error events are retained with event-record IDs; computer name is omitted.','A transition within padding may be unrelated to the observation; no Windows cause is assigned by proximity alone.']}
+ put(args.id+'.json',report)
+ print(json.dumps({'status':report['status'],'id':args.id,'systemWindowRetained':coverage,'transitionCandidates':len(candidates),'insideObservation':len(inner),'allSelectedEvents':len(events),'report':str((OUT/(args.id+'.json')).relative_to(ROOT))}))
+if __name__=='__main__':main()

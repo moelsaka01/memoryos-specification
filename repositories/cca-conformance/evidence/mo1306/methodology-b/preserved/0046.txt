@@ -1,0 +1,935 @@
+MemoryOS 1.3
+MO-1306 PROVIDER-NEUTRAL CI/CD INTEGRATION
+
+PHASE 3A PUBLICATION ENVIRONMENT ROOT-CAUSE CAPTURE
+WINDOWS PROCESS / SCHEDULING / FILE-I/O OBSERVATION
+MANIFEST FINALIZATION DIAGNOSTIC
+
+==================================================
+0. PRIMARY DIRECTIVE
+==================================================
+
+THIS IS NOT A PHASE 3A RESTART.
+
+Do NOT rerun:
+
+the eight already accepted native groups
+
+the three successful missing-input reproductions
+
+Phase 1
+
+Phase 2
+
+3B-R2
+
+3C-R
+
+the full filesystem campaign
+
+the full semantic campaign.
+
+Do NOT modify production.
+
+Do NOT perform hosted GitHub certification until the native publication gate
+is resolved.
+
+The sole purpose is to establish the cause of the preserved manifest-
+finalization failure using additional Windows/process/file-I/O observations.
+
+==================================================
+1. WORKSPACE
+==================================================
+
+Continue exclusively in:
+
+C:\Users\melsa\Documents\Codex\cca-mo1306-3a-refresh
+
+Branch:
+
+mo1306/phase3a-refresh
+
+Expected HEAD:
+
+f236c4a2f94d8cd8e763aaa4bd6c52d703429692
+
+Production authority remains:
+
+C3CB:
+701d48ee2012675966360dda775ab13013c09ab9
+
+Treat main and all other worktrees as READ ONLY.
+
+No reset.
+
+No clean.
+
+No rebase.
+
+No merge.
+
+No production edits.
+
+No push.
+
+No tag.
+
+==================================================
+2. PRESERVE ALL PRIOR EVIDENCE
+==================================================
+
+Preserve unchanged:
+
+historical 3A evidence
+
+3A-R blocked checkpoint
+
+deadline-blocker evidence
+
+final native blocked evidence
+
+publication diagnostic evidence
+
+all three successful reproductions.
+
+Read completely:
+
+repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic/REPORT.md
+
+and:
+
+repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic/execution-receipt.json
+
+Do not rewrite prior dispositions.
+
+==================================================
+3. CURRENT FACTS
+==================================================
+
+Treat these as established only after verifying retained evidence:
+
+A. frozen missing-input expectation is valid;
+
+B. expected result:
+   INPUT_ERROR / exit 11;
+
+C. expected publication:
+   four complete operational files;
+
+D. original failure:
+   initial INPUT_ERROR was correct;
+
+E. publication then became:
+   ARTIFACT_ERROR / exit 17;
+
+F. two partial files remained;
+
+G. no artifacts manifest;
+
+H. no completion marker;
+
+I. failure was narrowed to manifest finalization;
+
+J. all three permitted faithful reproductions subsequently passed;
+
+K. deterministic product defect was NOT proven;
+
+L. harness defect was NOT proven;
+
+M. environmental transient was NOT proven;
+
+N. original partial bundle remains safely incomplete.
+
+==================================================
+4. DO NOT INFER PASS FROM REPRODUCTIONS
+==================================================
+
+Three subsequent successful reproductions do NOT erase the original failure.
+
+Do not classify:
+
+TRANSIENT
+
+ANTIVIRUS
+
+WINDOWS SCHEDULING
+
+FILE LOCK
+
+RACE
+
+or any other cause merely because reproduction now passes.
+
+The task requires direct or strongly bounded causal evidence.
+
+==================================================
+5. EXACT FAILURE SITE
+==================================================
+
+Identify the exact manifest-finalization operation involved in the original
+failure.
+
+Record:
+
+production source file
+
+function
+
+call chain
+
+temporary manifest path
+
+final manifest path
+
+rename/move/write operation
+
+expected parent directory
+
+relevant cleanup behavior.
+
+Determine the exact Windows filesystem primitive used by Node.
+
+==================================================
+6. PRE-RENAME HELPER HYPOTHESIS
+==================================================
+
+The prior diagnostic reports the original pre-rename helper as the leading
+inference.
+
+Treat this as a hypothesis, NOT a conclusion.
+
+Determine exactly:
+
+what helper/process exists immediately before manifest finalization;
+
+what it does;
+
+what files/directories it can access;
+
+whether it can retain handles;
+
+whether it exits before rename;
+
+whether process exit and handle release are necessarily simultaneous;
+
+whether its timing can influence manifest finalization.
+
+==================================================
+7. OBSERVABILITY PLAN FIRST
+==================================================
+
+Before executing another missing-input case, write a bounded observation plan.
+
+Capture only what is necessary to determine:
+
+process lifecycle
+
+monotonic timing
+
+file operations
+
+handle/lock state where available
+
+rename/finalization result
+
+Windows error information
+
+output directory state.
+
+Do not begin with repeated execution.
+
+==================================================
+8. PRODUCT BYTES MUST REMAIN UNCHANGED
+==================================================
+
+Do not instrument production source.
+
+Observation must be external or engineering-only.
+
+Permitted approaches include, where already available and safe:
+
+existing helper instrumentation
+
+engineering wrapper
+
+Node diagnostic wrapper
+
+PowerShell process observation
+
+Windows event/process queries
+
+bounded filesystem polling
+
+handle/open-file observations through available Windows facilities
+
+Python engineering observer.
+
+Do not install unrelated system-wide monitoring software.
+
+Do not disable antivirus/security controls.
+
+==================================================
+9. CLOCK MODEL
+==================================================
+
+Use monotonic timing for causal sequencing where possible.
+
+Record a common observer timeline for:
+
+helper start
+
+helper response
+
+helper exit
+
+process disappearance
+
+manifest temporary-file creation
+
+manifest finalization attempt
+
+manifest finalization success/failure
+
+completion-marker creation
+
+parent process terminalization.
+
+UTC may be retained only as descriptive correlation metadata.
+
+==================================================
+10. PROCESS OBSERVATION
+==================================================
+
+Observe relevant owned processes at high enough bounded resolution to establish
+ordering without turning this into a resource campaign.
+
+Capture:
+
+PID
+
+parent PID
+
+creation
+
+exit observation
+
+command identity
+
+owned-process relationship
+
+relevant helper/worker role.
+
+Do not claim exact kernel exit time from polling alone.
+
+State observation precision.
+
+==================================================
+11. FILE-I/O OBSERVATION
+==================================================
+
+For the publication output directory observe:
+
+file creation
+
+temporary files
+
+rename/finalization
+
+deletion
+
+replacement
+
+completion marker.
+
+Where possible capture the actual error returned by the manifest finalization
+operation.
+
+At minimum preserve:
+
+Node error code
+
+errno
+
+syscall
+
+path
+
+destination path
+
+Windows-derived error if exposed.
+
+==================================================
+12. HANDLE / LOCK INVESTIGATION
+==================================================
+
+Determine whether the pre-rename helper or another owned process can retain an
+open handle relevant to manifest finalization.
+
+If available through existing Windows tooling, observe relevant handles.
+
+Do not install Sysinternals or another package solely for this task unless it
+is already present and trusted.
+
+If direct handle enumeration is unavailable, use bounded indirect evidence and
+state the limitation.
+
+==================================================
+13. DIRECTORY STATE
+==================================================
+
+Immediately around manifest finalization record:
+
+directory existence
+
+ACL
+
+attributes
+
+reparse state
+
+file names
+
+file types
+
+sizes
+
+temporary/final manifest existence
+
+pending files
+
+completion marker
+
+unexpected files.
+
+==================================================
+14. WINDOWS EVENTS
+==================================================
+
+Query bounded relevant Windows event sources around the diagnostic window for:
+
+sleep/resume
+
+Modern Standby
+
+filesystem/storage errors
+
+process/application failures
+
+security/AV events if accessible
+
+system interruption.
+
+Do not perform broad historical event scraping.
+
+Absence of an event is not proof of absence unless the source is authoritative
+for that condition.
+
+==================================================
+15. SECURITY SOFTWARE
+==================================================
+
+Do not disable or reconfigure security software.
+
+If Windows Security/Defender or another component produces an explicit event
+correlated with the operation, record it.
+
+Otherwise do not blame antivirus.
+
+==================================================
+16. CONTROLLED EXECUTION LIMIT
+==================================================
+
+After observation instrumentation is ready, execute the exact missing-input
+case.
+
+Start with ONE observed run.
+
+If it reproduces the failure:
+
+STOP repeated execution immediately and analyze the captured failure.
+
+If it passes:
+
+run at most TWO additional observed cases only if they materially improve
+causal evidence.
+
+Maximum new executions:
+
+3.
+
+No more.
+
+==================================================
+17. NO ARTIFICIAL FAILURE INJECTION FIRST
+==================================================
+
+Do not initially inject:
+
+file locks
+
+permission failures
+
+delays
+
+process suspension
+
+rename failures.
+
+First observe the genuine case.
+
+Only after genuine observations, a small controlled local hypothesis witness
+may be used to determine whether a specific mechanism reproduces the exact
+failure signature.
+
+==================================================
+18. HYPOTHESIS WITNESS
+==================================================
+
+If evidence identifies a plausible specific mechanism, for example a retained
+handle or rename contention, create at most one bounded engineering-only
+hypothesis witness.
+
+It must answer:
+
+can this mechanism produce the same:
+
+MO1306_ARTIFACT_WRITE
+
+ARTIFACT_ERROR / 17
+
+two-file partial state
+
+missing manifest
+
+missing completion marker?
+
+Do not use the witness as proof that the historical failure had that cause
+unless independent evidence links the historical observation to it.
+
+==================================================
+19. ROOT-CAUSE CLASSIFICATIONS
+==================================================
+
+At task end choose exactly one:
+
+HARNESS_DEFECT_PROVEN
+
+PRODUCT_DEFECT_PROVEN
+
+WINDOWS_FILE_LOCK_PROVEN
+
+OWNED_PROCESS_HANDLE_RACE_PROVEN
+
+SECURITY_SOFTWARE_INTERFERENCE_PROVEN
+
+HOST_INTERRUPTION_PROVEN
+
+OTHER_ENVIRONMENT_CAUSE_PROVEN
+
+HISTORICAL_CAUSE_UNRECOVERABLE_CURRENT_BEHAVIOR_STABLE
+
+UNRESOLVED.
+
+Do not invent a cause to close certification.
+
+==================================================
+20. HISTORICAL CAUSE UNRECOVERABLE STANDARD
+==================================================
+
+Use:
+
+HISTORICAL_CAUSE_UNRECOVERABLE_CURRENT_BEHAVIOR_STABLE
+
+only if all of the following hold:
+
+1. original failure evidence is valid;
+2. exact underlying OS error was not captured and cannot now be recovered;
+3. no deterministic product/harness defect is found;
+4. all three previous faithful reproductions passed;
+5. all new observed faithful runs pass;
+6. publication contract is currently satisfied;
+7. installed bytes are unchanged;
+8. partial-bundle safety remains fail-closed;
+9. no evidence suggests recurrence under identical current conditions;
+10. the certification methodology permits bounded fresh evidence to supersede
+    an unrecoverable isolated environmental observation without rewriting it.
+
+If methodology does NOT permit this:
+
+do not use this classification.
+
+==================================================
+21. PRODUCT DEFECT
+==================================================
+
+If a deterministic product defect is proven:
+
+do not fix it here.
+
+STOP:
+
+MO-1306 PHASE 3A PUBLICATION PRODUCT BLOCKER
+
+Provide the exact source site and minimal correction surface.
+
+==================================================
+22. HARNESS DEFECT
+==================================================
+
+If an engineering harness defect is proven:
+
+fix only engineering tooling.
+
+Add regression.
+
+Rerun only the missing-input gate.
+
+No production changes.
+
+==================================================
+23. ENVIRONMENT CAUSE
+==================================================
+
+If a specific environment cause is proven and does not require product change:
+
+document it
+
+prove the current certification environment is normal
+
+rerun only the missing-input gate once
+
+validate the four-file bundle.
+
+Do not silently exclude failed evidence.
+
+==================================================
+24. UNRESOLVED
+==================================================
+
+If after bounded observation the cause remains unresolved and methodology does
+not permit closure from stable fresh evidence:
+
+STOP.
+
+Do not perform hosted certification.
+
+End:
+
+MO-1306 PHASE 3A PUBLICATION ENVIRONMENT BLOCKED
+
+==================================================
+25. MISSING-INPUT ACCEPTANCE
+==================================================
+
+If methodology permits native closure after the diagnostic:
+
+require one final accepted missing-input witness:
+
+INPUT_ERROR
+
+exit 11
+
+exact four-file complete bundle
+
+valid result
+
+valid evidence
+
+valid artifacts manifest
+
+valid completion marker
+
+no unexpected files
+
+installed package unchanged.
+
+==================================================
+26. NATIVE CERTIFICATION
+==================================================
+
+Combine ONLY mechanically compatible evidence:
+
+eight previously accepted native groups
+
+Correction B evidence
+
+final accepted missing-input witness
+
+installed integrity
+
+CLI correction
+
+semantic parity
+
+Correction A.
+
+Produce a new native receipt.
+
+Do not rerun accepted groups.
+
+==================================================
+27. HOSTED CERTIFICATION
+==================================================
+
+ONLY after native certification is PASS:
+
+continue immediately to the already-authorized hosted GitHub closure.
+
+Do not ask for another authorization.
+
+You are authorized to:
+
+update only:
+
+mo1306-certification
+
+to the prepared C3CB-based certification scaffold;
+
+use narrow ref-specific force update if required;
+
+temporarily switch GitHub default branch from main to mo1306-certification if
+required for workflow registration;
+
+verify workflow registration;
+
+dispatch bounded PASS/FAIL/CNE;
+
+download artifacts;
+
+restore default branch to main.
+
+Remote main's commit must never change.
+
+==================================================
+28. CERTIFICATION SCAFFOLD
+==================================================
+
+Prepared local operational workflow scaffold:
+
+451599e7b95a537ebc2daac627b061fd88791dea
+
+Parent:
+
+701d48ee2012675966360dda775ab13013c09ab9
+
+Verify it contains only the three certification workflow files before use.
+
+Do not treat it as product authority.
+
+==================================================
+29. HOSTED ACTION PINS
+==================================================
+
+Keep:
+
+checkout:
+3d3c42e5aac5ba805825da76410c181273ba90b1
+
+upload-artifact:
+043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+
+No Action changes.
+
+==================================================
+30. HOSTED CASES
+==================================================
+
+Run actual GitHub Actions:
+
+PASS
+
+FAIL
+
+COULD_NOT_EVALUATE
+
+on:
+
+windows-2022.
+
+Verify actual Node 24.21.0 bootstrap.
+
+No simulation.
+
+==================================================
+31. HOSTED ARTIFACTS
+==================================================
+
+Download and validate actual artifacts.
+
+Require exact expected bounded basenames and four/six-file sets.
+
+Verify completion and run-id.
+
+==================================================
+32. NATIVE / HOSTED PARITY
+==================================================
+
+Require exact semantic parity for:
+
+PASS
+
+FAIL
+
+CNE.
+
+Operational metadata may differ.
+
+==================================================
+33. REMOTE RESTORATION
+==================================================
+
+If default branch changes:
+
+restore to:
+
+main
+
+before successful completion.
+
+Verify:
+
+default branch main
+
+remote main SHA unchanged
+
+certification branch retained
+
+no tag
+
+no release
+
+no unrelated settings changes.
+
+==================================================
+34. FINAL 3A CERTIFICATION COMMIT
+==================================================
+
+Only if native and hosted certification both PASS:
+
+create one authoritative certification commit parented DIRECTLY to C3CB:
+
+701d48ee2012675966360dda775ab13013c09ab9
+
+Subject exactly:
+
+cert(memoryos-1.3): certify final MO-1306 Windows and GitHub execution
+
+Evidence/tooling only.
+
+No production changes.
+
+Do not push this final certification commit to main.
+
+Do not tag.
+
+==================================================
+35. TIME BUDGET
+==================================================
+
+Diagnostic target:
+
+<=30 minutes.
+
+If native closure succeeds:
+
+continue directly to hosted certification.
+
+Total target:
+
+<=60 minutes.
+
+Normal ceiling:
+
+90 minutes.
+
+Absolute hard stop:
+
+3 hours only for active bounded hosted execution.
+
+No broad reruns.
+
+==================================================
+36. FINAL REPORT
+==================================================
+
+Return exactly these areas:
+
+1. Starting state
+2. C3CB
+3. Historical failure preservation
+4. Frozen four-file contract
+5. Manifest finalization source site
+6. Pre-rename helper role
+7. Observation architecture
+8. Observation precision
+9. Process timeline
+10. File-I/O timeline
+11. Actual OS/Node error if captured
+12. Handle/lock evidence
+13. Directory state
+14. Windows event evidence
+15. Security-software evidence
+16. New observed run 1
+17. New observed run 2 if used
+18. New observed run 3 if used
+19. Hypothesis witness if used
+20. Root-cause classification
+21. Product defect disposition
+22. Harness defect disposition
+23. Environment disposition
+24. Historical-cause recoverability
+25. Partial-bundle safety
+26. Failure atomicity
+27. Final missing-input witness
+28. Native receipt
+29. Native certification state
+30. Certification scaffold verification
+31. Certification branch update
+32. Default-branch registration step
+33. Workflow registration
+34. Hosted PASS
+35. Hosted FAIL
+36. Hosted CNE
+37. Hosted runner metadata
+38. Hosted artifacts
+39. Hosted completion/run-id
+40. Native/hosted parity
+41. Default-branch restoration
+42. Final default branch
+43. Final remote main SHA
+44. Final certification branch SHA
+45. Final 3A receipt
+46. Final certification commit
+47. Commit parent
+48. Production changes
+49. Workspace verification
+50. git diff --check
+51. Final Git status
+52. Pushes
+53. Tags
+54. Linux/Ubuntu/WSL
+55. VM
+56. Other provider accounts
+57. Duration
+58. Exact Phase 3D recommendation
+
+If diagnostic closure + native + hosted all pass:
+
+MO-1306 PHASE 3A CERTIFICATION COMPLETE
+READY FOR PHASE 3D INTEGRATION
+
+If deterministic product defect proven:
+
+MO-1306 PHASE 3A PUBLICATION PRODUCT BLOCKER
+
+If bounded evidence remains insufficient:
+
+MO-1306 PHASE 3A PUBLICATION ENVIRONMENT BLOCKED
+
+If native passes but hosted registration fails:
+
+MO-1306 PHASE 3A HOSTED REGISTRATION BLOCKED
+
+If hosted candidate behavior fails:
+
+MO-1306 PHASE 3A HOSTED CERTIFICATION BLOCKED

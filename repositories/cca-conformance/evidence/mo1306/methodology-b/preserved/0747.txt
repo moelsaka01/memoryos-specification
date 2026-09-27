@@ -1,0 +1,84 @@
+"""Bounded GitHub certification only; never moves main, tags or other remote refs."""
+from pathlib import Path
+from datetime import datetime,timezone
+import hashlib,json,os,subprocess,sys,urllib.request,urllib.error
+ROOT=Path(__file__).resolve().parents[4];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3ar';CACHE=ROOT/'.cache/mo1306-phase3ar'
+C3AB='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44';BRANCH='mo1306-certification';REPO='moelsaka01/memoryos-specification'
+ENV={**os.environ,'GIT_TERMINAL_PROMPT':'0','GCM_INTERACTIVE':'Never','GIT_OPTIONAL_LOCKS':'0'}
+def now():return datetime.now(timezone.utc).isoformat()
+def git(*args,env=None,input=None,check=True):
+ r=subprocess.run(['git',*args],cwd=ROOT,env=env or ENV,input=input,capture_output=True,timeout=180,creationflags=subprocess.CREATE_NO_WINDOW)
+ if check:assert r.returncode==0,(args,r.returncode,r.stderr.decode('utf8','replace'))
+ return r
+
+def put(name,obj):
+ p=OUT/name;p.parent.mkdir(parents=True,exist_ok=True);assert not p.exists(),p;p.write_text(json.dumps(obj,sort_keys=True,separators=(',',':'))+'\n',encoding='utf8')
+def refs():return git('ls-remote','--heads','--tags','origin').stdout.decode()
+def api(path,method='GET',data=None,auth=False):
+ headers={'User-Agent':'MO1306-Phase3AR-Certification','Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}
+ if auth:
+  r=git('credential','fill',input=b'protocol=https\nhost=github.com\n\n',check=False)
+  assert r.returncode==0,'Git credential helper unavailable; no secret output retained'
+  credential=dict(line.split('=',1) for line in r.stdout.decode().splitlines() if '=' in line)
+  assert credential.get('password'),'GitHub credential unavailable';headers['Authorization']='Bearer '+credential['password']
+ body=None if data is None else json.dumps(data).encode();req=urllib.request.Request('https://api.github.com/'+path,data=body,headers=headers,method=method);start=now()
+ try:
+  with urllib.request.urlopen(req,timeout=35) as r:status=r.status;raw=r.read(4*1024*1024);url=r.url
+ except urllib.error.HTTPError as e:status=e.code;raw=e.read(4*1024*1024);url=e.url
+ try:value=json.loads(raw)
+ except ValueError:value=raw.decode('utf8','replace')
+ return dict(method=method,path=path,url=url,status=status,startedUtc=start,endedUtc=now(),body=value)
+mode=sys.argv[1] if __name__ == '__main__' else 'import'
+if mode=='baseline':
+ remote=refs();repo=api('repos/'+REPO);workflows=api('repos/'+REPO+'/actions/workflows');profile=api('user',auth=True)
+ put('remote-before.json',dict(observedUtc=now(),configuredOrigin=git('remote','get-url','origin').stdout.decode().strip(),canonicalRepository=REPO,refs=remote,repository=repo,workflows=workflows,authenticatedUser={'status':profile['status'],'login':profile['body'].get('login') if isinstance(profile['body'],dict) else None}))
+ assert repo['status']==200 and profile['status']==200
+ assert '\trefs/heads/'+BRANCH+'\n' not in remote
+ print('Remote identities/authentication recorded; main and all tags retained.')
+elif mode=='publish':
+ assert git('rev-parse','HEAD').stdout.decode().strip()==C3AB
+ baseline=json.loads((OUT/'remote-before.json').read_bytes());assert refs()==baseline['refs'],'Remote refs changed since preflight'
+ review=json.loads((OUT/'github/workflow-review.json').read_bytes());assert review['status']=='PASS'
+ assert baseline['repository']['body']['full_name']==REPO
+ assert git('remote','get-url','origin').stdout.decode().strip()==baseline['configuredOrigin']
+ current_repo=api('repos/moelsaka01/cca-workspace');assert current_repo['status']==200 and current_repo['body']['id']==baseline['repository']['body']['id'] and current_repo['body']['full_name']==REPO
+ assert baseline['configuredOrigin'] in ['https://github.com/moelsaka01/cca-workspace.git','https://github.com/moelsaka01/memoryos-specification.git']
+ paths=['.github/workflows/mo1306-certification-'+case+'.yml' for case in ['pass','fail','cne']]
+ reviewed={r['path']:r for r in review['workflows']};assert set(reviewed)==set(paths)
+ for path in paths:
+  raw=(ROOT/path).read_bytes();assert reviewed[path]['byteLength']==len(raw) and reviewed[path]['sha256']=='sha256:'+hashlib.sha256(raw).hexdigest(),'Workflow review is stale: '+path
+ index=CACHE/'remote-certification.index';assert not index.exists();env={**ENV,'GIT_INDEX_FILE':str(index)}
+ git('read-tree',C3AB,env=env)
+ for p in paths:
+  blob=git('hash-object','-w','--',p).stdout.decode().strip();git('update-index','--add','--cacheinfo','100644,'+blob+','+p,env=env)
+ tree=git('write-tree',env=env).stdout.decode().strip()
+ message=b'cert-only(memoryos-1.3): materialize corrected MO-1306 hosted workflows\n\nTemporary certification-only child of C3AB; no product authority. Three fixed manual workflows preserve required workflow/job identity for PASS, FAIL and CNE.\n'
+ commit=git('commit-tree',tree,'-p',C3AB,input=message).stdout.decode().strip()
+ changed=git('diff-tree','--no-commit-id','--name-only','-r',commit).stdout.decode().splitlines();assert sorted(changed)==sorted(paths),changed
+ assert git('rev-parse',commit+'^').stdout.decode().strip()==C3AB
+ put('remote-certification-candidate.json',dict(commit=commit,parent=C3AB,tree=tree,paths=paths,certificationOnly=True,productAuthority=False,remoteBranch=BRANCH,review='github/workflow-review.json'))
+ start=now();pushed=git('-c','push.followTags=false','push','--porcelain','origin',commit+':refs/heads/'+BRANCH,check=False)
+ put('remote-push.json',dict(startedUtc=start,endedUtc=now(),argv=['git','-c','push.followTags=false','push','--porcelain','origin',commit+':refs/heads/'+BRANCH],exitCode=pushed.returncode,stdout=pushed.stdout.decode('utf8','replace'),stderr=pushed.stderr.decode('utf8','replace')))
+ assert pushed.returncode==0,'Certification branch push failed; see retained remote-push receipt'
+ after=refs();assert commit+'\trefs/heads/'+BRANCH+'\n' in after
+ assert ''.join(line+'\n' for line in after.splitlines() if not line.endswith('\trefs/heads/'+BRANCH))==baseline['refs']
+ put('remote-published.json',dict(status='PASS',refs=after,commit=commit,parent=C3AB,tree=tree,mainAndTagsUnchanged=True,pushScope=['refs/heads/'+BRANCH],remoteUrl=baseline['configuredOrigin']))
+ print('Published only',BRANCH,commit)
+elif mode=='dispatch':
+ pub=json.loads((OUT/'remote-published.json').read_bytes());assert pub['status']=='PASS';attempts=[]
+ for case in ['pass','fail','cne']:
+  workflow='mo1306-certification-'+case+'.yml'
+  response=api('repos/'+REPO+'/actions/workflows/'+workflow+'/dispatches','POST',{'ref':BRANCH},True);response['case']=case;attempts.append(response);put('github/dispatch-'+case+'.json',response)
+  print('dispatch',case,response['status'])
+  if response['status']!=204:break
+ put('github/dispatch-summary.json',dict(attempts=attempts,retries=0,requestedRef=BRANCH,expectedCommit=pub['commit']))
+ print('Dispatch results retained; no blind retries.')
+elif mode=='inspect':
+ response=api('repos/'+REPO+'/actions/runs?branch='+BRANCH+'&event=workflow_dispatch&per_page=20',auth=True);put('github/runs-initial.json',response);print(json.dumps(response['body']))
+elif mode=='final':
+ before=json.loads((OUT/'remote-before.json').read_bytes());published=json.loads((OUT/'remote-published.json').read_bytes());after=refs()
+ assert published['commit']+'\trefs/heads/'+BRANCH+'\n' in after
+ assert ''.join(line+'\n' for line in after.splitlines() if not line.endswith('\trefs/heads/'+BRANCH))==before['refs']
+ put('remote-final.json',dict(status='PASS',observedUtc=now(),refs=after,branch=BRANCH,commit=published['commit'],mainAndTagsUnchanged=True,remoteBranchDeleted=False,pushScope=['refs/heads/'+BRANCH]));print('Remote final branch/main/tags verified.')
+elif mode=='import':pass
+else:raise AssertionError('Unknown bounded operation')

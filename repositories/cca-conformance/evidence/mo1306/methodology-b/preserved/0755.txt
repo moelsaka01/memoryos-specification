@@ -1,0 +1,100 @@
+/** Targeted terminal publication witnesses on the corrected installed C3AB package. */
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {performance} from 'node:perf_hooks';
+import {fileURLToPath,pathToFileURL} from 'node:url';
+const ROOT=fileURLToPath(new URL('../../../../',import.meta.url));
+const PKG=path.join(ROOT,'.cache/mo1306-phase3ar/install/node_modules/memoryos-ci');
+const NODE=path.join(ROOT,'.cache/mo1306-phase3ar/node-v24.21.0-win-x64/node.exe');
+const [workspaceRoot,reportPath,sourceBundle,...extra]=process.argv.slice(2);
+const started=performance.now(),cases=[],campaignLimitMs=115000;
+const hash=bytes=>'sha256:'+createHash('sha256').update(bytes).digest('hex');
+const rel=full=>path.relative(ROOT,full).replaceAll('\\','/');
+const row=full=>{const bytes=fs.readFileSync(full);return {path:rel(full),byteLength:bytes.length,sha256:hash(bytes)};};
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const inside=(root,p)=>{const r=path.relative(root,p);return r&&!r.startsWith('..')&&!path.isAbsolute(r);};
+assert.equal(extra.length,0);assert.ok(workspaceRoot&&reportPath&&sourceBundle);
+assert.ok(inside(path.join(ROOT,'.cache/mo1306-phase3ar'),workspaceRoot));
+assert.ok(inside(path.join(ROOT,'repositories/cca-conformance/evidence/mo1306/phase3ar'),reportPath));
+assert.equal(process.execPath.toLowerCase(),NODE.toLowerCase());
+assert.deepEqual(process.execArgv,['--max-old-space-size=128']);
+assert.equal(process.platform,'win32');assert.equal(process.arch,'x64');assert.equal(process.versions.node,'24.21.0');
+assert.equal(hash(fs.readFileSync(NODE)),'sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32');
+assert.equal(fs.existsSync(workspaceRoot),false);fs.mkdirSync(workspaceRoot);
+const {verifyNode,verifyDistribution}=await import(pathToFileURL(path.join(PKG,'src/integrity.mjs')));
+const {prepareOutput,publish}=await import(pathToFileURL(path.join(PKG,'src/publication.mjs')));
+const {verifyBundle}=await import(pathToFileURL(path.join(PKG,'src/verification.mjs')));
+verifyNode();const installation=verifyDistribution();
+assert.equal(installation.identities.distributionDigest,'sha256:311927a980bd397ab70b95da77d546e4b212968d05973ecf998817764431d773');
+const payload={result:JSON.parse(fs.readFileSync(path.join(sourceBundle,'memoryos-ci-result.json'))),evidence:JSON.parse(fs.readFileSync(path.join(sourceBundle,'memoryos-ci-evidence.json'))),normative:{identity:fs.readFileSync(path.join(sourceBundle,'evaluation-identity.json')),outcome:fs.readFileSync(path.join(sourceBundle,'policy-outcome.json'))}};
+assert.equal(payload.result.classification,'PASS');
+const recordsBefore=installation.manifest.files.map(item=>({path:item.path,sha256:hash(fs.readFileSync(path.join(PKG,item.path)))}));
+let failure=null;
+function snapshot(directory) {
+ if(!fs.existsSync(directory))return [];
+ return fs.readdirSync(directory,{withFileTypes:true}).flatMap(entry=>{const full=path.join(directory,entry.name);return entry.isDirectory()?[{path:rel(full),directory:true},...snapshot(full)]:[row(full)];}).sort((a,b)=>a.path.localeCompare(b.path));
+}
+function assertNoMarker(directory) {assert.equal(snapshot(directory).some(entry=>entry.path.endsWith('/memoryos-ci-complete.json')),false,'Late completion marker');}
+async function observedAbsent(directory) {
+ const first=snapshot(directory);assertNoMarker(directory);await sleep(300);assertNoMarker(directory);assert.deepEqual(snapshot(directory),first,'Post-terminal artifact drift');return {settleMs:300,completionMarkerAbsent:true,filesAfterSettle:first};
+}
+async function check(id,body) {
+ const start=performance.now();assert.ok(start-started<campaignLimitMs,'Campaign bound');
+ let item={id,status:'FAIL'};
+ try {Object.assign(item,await body());item.status='PASS';}
+ catch(error){item.error={name:error.name,code:error.code??null,message:error.message};throw error;}
+ finally {item.elapsedMs=Math.round(performance.now()-start);cases.push(item);fs.writeFileSync(path.join(workspaceRoot,id+'.json'),JSON.stringify(item)+'\n',{flag:'wx'});process.stdout.write(JSON.stringify(item)+'\n');}
+}
+async function fresh(id) {
+ const workspace=path.join(workspaceRoot,id);fs.mkdirSync(workspace);
+ const options={deadline:performance.now()+60000};
+ const directory=await prepareOutput(workspace,payload.result.runId,options);
+ return {workspace,directory,deadline:options.deadline};
+}
+async function rejectsPublication(directory,options,expected) {
+ let seen;await assert.rejects(()=>publish(directory,payload.result,payload.evidence,payload.normative,installation,options),error=>{seen=error;return error.code===expected;});
+ return {rejectionCode:seen.code};
+}
+function watchStaged(out,controller) {
+ let observation=null;
+ const timer=setInterval(()=>{
+  if(observation||!fs.existsSync(out))return;
+  for(const entry of fs.readdirSync(out,{withFileTypes:true})) {
+   if(!entry.isDirectory())continue;
+   const directory=path.join(out,entry.name),pending=path.join(directory,'.pending');
+   if(!fs.existsSync(pending))continue;
+   const files=fs.readdirSync(pending).filter(name=>fs.lstatSync(path.join(pending,name)).isFile());
+   if(files.length) {
+    observation={runId:entry.name,directory:rel(directory),stagedFiles:files.sort(),observedElapsedMs:Math.round(performance.now()-started),markerAbsentAtAbort:!fs.existsSync(path.join(directory,'memoryos-ci-complete.json'))};
+    clearInterval(timer);controller.abort();return;
+   }
+  }
+ },5);
+ return {stop:()=>clearInterval(timer),read:()=>observation};
+}
+try {
+ await check('mid-publication-cancellation',async()=>{
+  const {directory,deadline}=await fresh('mid-publication');const controller=new AbortController();const watch=watchStaged(path.dirname(directory),controller);
+  let rejected;try {rejected=await rejectsPublication(directory,{deadline,signal:controller.signal},'MO1306_CANCELLED');}finally{watch.stop();}
+  assert.ok(watch.read(),'No staged file observation');assert.equal(watch.read().markerAbsentAtAbort,true);
+  assert.deepEqual(fs.readdirSync(path.join(directory,'.pending')),[],'Known staged files not cleaned');
+  return {...rejected,trigger:'Abort only after observing an actual staged regular file',observation:watch.read(),stagedFilesCleaned:true,incompleteAttemptDirectoryRetained:true,...await observedAbsent(directory)};
+ });
+ await check('completed-publication-stable-after-abort',async()=>{
+  const {directory,deadline}=await fresh('completed');const controller=new AbortController();
+  const digest=await publish(directory,payload.result,payload.evidence,payload.normative,installation,{deadline,signal:controller.signal});
+  assert.equal(fs.existsSync(path.join(directory,'memoryos-ci-complete.json')),true);assert.equal(fs.existsSync(path.join(directory,'.pending')),false);
+  const before=snapshot(directory);controller.abort();await sleep(300);assert.deepEqual(snapshot(directory),before);
+  const verified=await verifyBundle(directory,installation,{deadline:performance.now()+15000});assert.equal(verified.result.classification,'PASS');assert.equal(verified.result.runId,payload.result.runId);
+  return {trigger:'Abort only after successful publish and marker observation',resultSha256:digest,runId:payload.result.runId,settleMs:300,completeBundleUnchanged:true,files:before,scope:'Republishes exact verified native payload to a separate engineering attempt; not a second semantic evaluation'};
+ });
+ verifyNode();assert.equal(verifyDistribution().identities.distributionDigest,installation.identities.distributionDigest);
+ assert.deepEqual(installation.manifest.files.map(item=>({path:item.path,sha256:hash(fs.readFileSync(path.join(PKG,item.path)))})),recordsBefore);
+ assert.ok(performance.now()-started<campaignLimitMs,'Campaign bound');
+} catch(error) {failure={name:error.name,code:error.code??null,message:error.message};process.exitCode=1;}
+finally {
+ const report={kind:'MemoryOSPhase3ARTerminalPublicationEvidence',version:'1.0.0',status:failure?'FAIL':'PASS',baseline:'9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44',distributionDigest:installation.identities.distributionDigest,node:row(NODE),harness:row(fileURLToPath(import.meta.url)),sourceBindings:['src/publication.mjs','src/core.mjs','src/filesystem.mjs','src/supervisor.mjs'].map(member=>row(path.join(PKG,member))),sourceBundleFiles:fs.readdirSync(sourceBundle).sort().map(name=>row(path.join(sourceBundle,name))),caseCount:cases.length,cases,elapsedMs:Math.round(performance.now()-started),campaignLimitMs,failure,candidateUnmodified:failure===null,limitations:['Two bounded installed publication API witnesses: cancellation after actual staging and stable verified completion after abort; no package mutation or injected worker.', 'Five-millisecond observer detects actual staged regular files; it does not alter production I/O or timing limits.', 'Incomplete attempt directories are retained for diagnosis; known staged files must be cleaned.', 'Three-hundred-millisecond postterminal settling verifies the retained observations, not unbounded future behavior.']};
+ fs.mkdirSync(path.dirname(reportPath),{recursive:true});fs.writeFileSync(reportPath,JSON.stringify(report)+'\n',{flag:'wx'});process.stdout.write(JSON.stringify({status:report.status,report:rel(reportPath),caseCount:cases.length,elapsedMs:report.elapsedMs})+'\n');
+}

@@ -1,0 +1,22 @@
+"""Run only terminal publication and invalid bundle member-set checks."""
+import json,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+from native import Campaign,put,ref,inventory,INSTALLED,NODE,ROOT
+c=Campaign();c.bindings['negativeDriver']=ref(Path(__file__));c.bindings['negativeProgram']=ref(Path(__file__).with_suffix('.mjs'))
+status='FAIL';failure=None;report=c.output/'publication-negatives-report.json'
+try:
+    c.preflight()
+    source_case=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3ar/native/20260926T192607-4deff8/cases/policy-pass.json'
+    source=ROOT/json.loads(source_case.read_bytes())['bundle']
+    c.bindings['verifiedPartialSourceCase']=ref(source_case)
+    c.observed('publication-and-bundle-negatives',[NODE,'--max-old-space-size=128',Path(__file__).with_suffix('.mjs'),INSTALLED,c.work/'publication-negatives',source,report],timeout=20)
+    result=json.loads(report.read_bytes());assert result['status']=='PASS' and result['caseCount']==5
+    after=inventory(INSTALLED);assert after==c.before,'INSTALLED_CANDIDATE_CHANGED'
+    put(c.output/'installed-integrity-after.json',{'status':'PASS','members':after,'count':len(after),'before':ref(c.output/'preflight.json')})
+    status='PASS'
+except BaseException as error:
+    failure=type(error).__name__+': '+str(error);raise
+finally:
+    put(c.output/'publication-negatives-summary.json',{'kind':'MemoryOSPhase3ARPublicationNegativeCampaign','version':'1.0.0','status':status,'failure':failure,'bindings':c.bindings,'report':ref(report) if report.exists() else None,'commands':c.commands,'scope':'Negative guard confirmation only; required successful native full campaign remains blocked.'})
+    print({'status':status,'summary':str(c.output/'publication-negatives-summary.json'),'failure':failure},flush=True)

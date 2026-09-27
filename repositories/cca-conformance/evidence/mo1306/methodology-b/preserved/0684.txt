@@ -1,0 +1,47 @@
+"""Read-only authority and immutable-history audit; writes only two NEW audit receipts."""
+from pathlib import Path
+import hashlib,json,subprocess,sys,os,importlib.util,datetime,re
+sys.dont_write_bytecode=True
+R=Path(__file__).resolve().parents[4];M=Path(r'C:\Users\melsa\Documents\Codex\cca-workspace');O=R/'repositories/cca-conformance/evidence/mo1306/phase3a-environment-capture';P=R/'repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic'
+C='701d48ee2012675966360dda775ab13013c09ab9';H='f236c4a2f94d8cd8e763aaa4bd6c52d703429692'
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(R).as_posix() if R in p.parents else str(p),'byteLength':len(b),'sha256':sha(b)}
+def j(p):return json.loads(p.read_bytes())
+def git(root,*args):return subprocess.run(['git','-C',str(root),*args],capture_output=True,check=True,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'}).stdout
+
+def source(n,start,end):
+ p=M/n;b=p.read_bytes();assert git(M,'show',C+':'+n)==b
+ return {**row(p),'revision':C,'lines':[start,end],'excerpt':'\n'.join(b.decode().splitlines()[start-1:end])}
+def put(n,v):
+ p=O/n;assert not p.exists();p.write_bytes((json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode())
+def main():
+ O.mkdir(parents=True,exist_ok=True)
+ spec=importlib.util.spec_from_file_location('prior_publication_offline_validation',R/'repositories/cca-conformance/tools/mo1306-phase3a-publication-diagnostic/validate.py');mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod);verified=mod.Audit().run(True)
+ assert verified['status']=='PASS' and len(verified['reproductions'])==3 and all(x['actual']['exitCode']==11 and x['actual']['publication']=='COMPLETE' for x in verified['reproductions'])
+ receipt=j(P/'execution-receipt.json');assert receipt['status']=='ENVIRONMENT_BLOCKED' and receipt['classification']=='ORIGINAL_PUBLICATION_CAUSE_UNRESOLVED' and receipt['resolvedMissingInputGate'] is False
+ cites=[source('docs/mo1306-provider-neutral-cicd.md',353,370),source('docs/mo1306-contract-freeze-1.md',1368,1377),source('docs/mo1306-contract-freeze-1.md',1397,1428),source('docs/mo1306-contract-freeze-1.md',1430,1437),source('docs/mo1306-contract-freeze-1.md',1294,1303),source('docs/mo1306-contract-freeze-1.md',1489,1498),source('docs/mo1305-host-interruption-validity.md',3,17),source('docs/mo1305-contract-freeze-1-verification-methodology-correction.md',113,140),source('docs/mo1306-contract-freeze-1.md',407,462)]
+ scanned=sorted((M/'docs').glob('mo1306*.md'))+[M/'docs/mo1305-host-interruption-validity.md',M/'docs/mo1305-contract-freeze-1-verification-methodology-correction.md',M/'repositories/cca-conformance/tools/mo1305-platforms/verification-policy.json',M/'repositories/cca-conformance/tools/mo1306/conformance.py',M/'repositories/cca-conformance/tools/mo1306-phase2d/conformance.py',M/'repositories/cca-conformance/mo1306-phase3-interfaces.json']
+ pattern=re.compile(r'unrecoverable|supersed.{0,100}evidence|evidence.{0,100}supersed|isolated.{0,100}(?:failure|observation)|diagnose before|unknown evidence|independently proven|fresh.{0,100}evidence',re.I);hits=[]
+ for p in scanned:
+  for i,line in enumerate(p.read_text(encoding='utf-8-sig').splitlines(),1):
+   if pattern.search(line):hits.append({'path':str(p),'line':i,'text':line[:1500]})
+ request=Path(r'C:\Users\melsa\.codex\attachments\d75d43f5-61ec-451d-ae99-17c873f0063c\Pasted text.txt');rb=request.read_bytes()
+ method={'kind':'MemoryOSPhase3AEnvironmentCaptureMethodologyAudit','version':'1.0.0','status':'PASS','authority':C,'methodologyCriterion10':'NOT_ESTABLISHED','boundedFreshSupersessionPermitted':False,'unrecoverableStableClassificationPermitted':False,'permissionFinding':'No applicable authoritative rule located that permits stable fresh successes alone to supersede a valid unresolved isolated failure for native certification. Latest user section20 requires that permission as an additional condition; it does not grant the exception unconditionally.','notACategoricalPermanentBan':'The method permits diagnosed separately identified attempts and unchanged-source reuse. A proven specific cause/remedy with required acceptance, or explicit reviewed methodological authority, can support later closure without changing historical dispositions. This audit does not forbid those routes.','scopeDistinctions':[{'rule':'MO1306 authority13/freeze22','interpretation':'Bounds reruns, preserves first failure and requires diagnosis/reason/new attempt; supplies no unknown-cause exclusion/supersession rule.'},{'rule':'MO1306 freeze23','interpretation':'PASS needs actual case/artifact/source/run evidence. Data schema capability to store another attempt does not authorize dismissal of the old failure.'},{'rule':'MO1305 host-interruption validity','interpretation':'Specifically authorized resource replacement needs independently proven OS overlap; unknown evidence remains subject to ordinary assertions. Different release scope, not a MO1306 unexplained-transient exception.'},{'rule':'MO1305 fresh-resource correction','interpretation':'Fresh final data under explicitly corrected resource methodology retains old failures; no unspecified MO1306 failed-functional-gate waiver.'},{'rule':'Current user19/20/24/25','interpretation':'Stable-unrecoverable classification and acceptance are conditional on methodology permission. Unresolved cause plus absent permission requires blocked stop.'}],'authoritativeCitations':cites,'search':{'scope':'MO1306 documentation, bound conformance validators/Phase3 interfaces, cited predecessor methodology and host-interruption validity; no invented external policy.','sources':[row(p) for p in scanned],'pattern':pattern.pattern,'matches':hits,'explicitUnknownCauseSupersessionRuleFound':False},'requestAuthority':{'attachment':str(request),'byteLength':len(rb),'sha256':sha(rb),'sections':[4,19,20,24,25]},'priorRecordsReadCompletely':[row(P/'REPORT.md'),row(P/'execution-receipt.json')],'retainedVerification':{'validator':row(R/'repositories/cca-conformance/tools/mo1306-phase3a-publication-diagnostic/validate.py'),'mode':'Audit.run(final=True), offline artifact verification; no product/network execution','status':verified['status'],'boundFiles':verified['boundFiles'],'historicalFiles':verified['preservation']['files'],'originalCauseStillUnproven':True,'priorReproductionCount':3,'priorReproductionOutcomes':[x['actual'] for x in verified['reproductions']],'retainedAcceptedGroups':verified['retainedAcceptedGates']['passedGroupsRetained'],'candidate':verified['candidate'],'partialBundleRejected':verified['expectation']['partialRejected']},'decisionImplication':'Continue authorized bounded causal observation. Do not use HISTORICAL_CAUSE_UNRECOVERABLE_CURRENT_BEHAVIOR_STABLE or close native/hosted certification solely from new passes. A separately proven cause may support another disposition; none assumed.','auditTool':row(Path(__file__))}
+ put('methodology-audit.json',method)
+ old=j(P/'preservation-before.json');index=j(P/'evidence-index.json');paths={x['path']:x for x in old['files']}
+ for x in index['files']:
+  assert x['path'] not in paths;paths[x['path']]=x
+ paths[(P/'evidence-index.json').relative_to(R).as_posix()]=row(P/'evidence-index.json')
+ assert len(old['files'])==624 and len(index['files'])==73 and len(paths)==698
+ for n,x in paths.items():
+  b=(R/n).read_bytes();assert len(b)==x['byteLength'] and sha(b)==x['sha256']
+ assert git(R,'rev-parse','HEAD').decode().strip()==H
+ idx=Path(git(R,'rev-parse','--git-path','index').decode().strip());idx=idx if idx.is_absolute() else R/idx
+ refs=git(R,'for-each-ref','--format=%(refname) %(objectname)').decode().strip();assert refs==old['protectedRefs'].strip();assert sha(idx.read_bytes())==old['realIndexSha256']
+ mainidx=Path(git(M,'rev-parse','--git-path','index').decode().strip());mainidx=mainidx if mainidx.is_absolute() else M/mainidx
+ assert git(M,'rev-parse','HEAD').decode().strip()==C and git(M,'status','--porcelain=v1','--untracked-files=all')==b''
+ preserve={'kind':'MemoryOSPhase3AEnvironmentCapturePreservationAudit','version':'1.0.0','status':'PASS','observedUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'head':H,'branch':git(R,'branch','--show-current').decode().strip(),'protectedRefs':refs,'realIndexSha256':sha(idx.read_bytes()),'historicalFileCount':698,'groups':{'priorHistorical':624,'publicationDiagnosticIndexMembers':73,'publicationDiagnosticIndex':1},'files':[paths[n] for n in sorted(paths)],'priorPreservation':row(P/'preservation-before.json'),'priorClosedIndex':row(P/'evidence-index.json'),'mainReadOnly':{'head':C,'indexSha256':sha(mainidx.read_bytes()),'statusPorcelain':git(M,'status','--porcelain=v1','--untracked-files=all').decode()},'oldDispositions':['MO-1306 PHASE 3A NATIVE CERTIFICATION BLOCKED','MO-1306 PHASE 3A PUBLICATION ENVIRONMENT BLOCKED'],'priorCompleteReproductionCount':3,'productOrRemoteExecutedByAudit':False,'auditTool':row(Path(__file__))}
+ put('preservation-audit.json',preserve)
+ print(json.dumps({'status':'PASS','criterion10':'NOT_ESTABLISHED','preservedFiles':698,'outputs':[row(O/'methodology-audit.json'),row(O/'preservation-audit.json')]}))
+if __name__=='__main__':main()

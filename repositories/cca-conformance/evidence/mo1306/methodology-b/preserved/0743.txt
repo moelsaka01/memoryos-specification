@@ -1,0 +1,43 @@
+"""Aggregate retained native achievements without certifying incomplete gates."""
+import json,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+from native import ROOT,OUT,INSTALLED,inventory,ref,put
+native=OUT/'native'
+first=native/'20260926T192607-4deff8'
+second=native/'20260926T192747-a09e20'
+dispatch=native/'20260926T193231-78d581'
+semantic=native/'20260926T193440-58750c'
+lifecycle=native/'20260926T193602-f3889c'
+negative=native/'20260926T193752-181a6f'
+read=lambda p:json.loads(p.read_bytes())
+assert read(first/'summary.json')['status']=='FAIL'
+assert read(second/'summary.json')['status']=='FAIL'
+assert read(first/'cases/policy-pass.json')['status']=='PASS'
+for directory,filename in [(dispatch,'dispatch-summary.json'),(semantic,'semantic-summary.json'),(lifecycle,'lifecycle-summary.json'),(negative,'publication-negatives-summary.json')]:assert read(directory/filename)['status']=='PASS'
+assert read(dispatch/'dispatch-parser.json')['counts']=={'tests':191,'pass':191,'fail':0}
+assert len(read(dispatch/'cases/corrected-cli-dispatch.json')['actualInstalledCommands'])==21
+assert read(semantic/'semantic-summary.json')['caseCount']==9
+assert len(read(lifecycle/'lifecycle-summary.json')['cases'])==2
+assert read(negative/'publication-negatives-report.json')['caseCount']==5
+before=read(negative/'preflight.json')['installedMembers'];after=inventory(INSTALLED)
+assert before==after and len(after)==94
+installed=put(OUT/'native-installed-integrity-final.json',{'kind':'MemoryOSPhase3ARFinalInstalledIntegrity','version':'1.0.0','status':'PASS','memberCount':94,'members':after,'before':ref(negative/'preflight.json'),'afterLastNativeOperation':ref(negative/'installed-integrity-after.json')})
+trace_paths=[first/'traces/policy-pass.json',first/'traces/verify-policy-pass.json',lifecycle/'traces/lifecycle-semantic-failure.json',lifecycle/'traces/lifecycle-helper-cancel.json']
+traces=[read(p) for p in trace_paths]
+assert all(x['status']=='PASS' and x['topologyValidation']['status']=='PASS' and not x['cleanup']['remainingPids'] for x in traces)
+peak=max(x['observation']['peakProcessCount'] for x in traces);assert peak<=3
+summary={
+ 'kind':'MemoryOSPhase3ARNativeRefreshDisposition','version':'1.0.0','status':'CERTIFICATION_BLOCKED','requiredGateCompletion':False,
+ 'baseline':'9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44','correction':'90b9ac914e477fb90fe317d0de9ba310aae37f60','archiveSha256':'sha256:2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d','distributionSha256':'sha256:311927a980bd397ab70b95da77d546e4b212968d05973ecf998817764431d773',
+ 'reason':'A real native corrected CLI acquisition failed with MO1306_FILESYSTEM_BOUNDARY/11 before semantic execution. Separate quiet-slot raw helper completed safely in2032ms, above the unchanged frozen2000ms helper ceiling. No full native retry or product/timing change followed that diagnosis.',
+ 'failureEvidence':[ref(first/'summary.json'),ref(first/'harness-failure-disposition.json'),ref(second/'summary.json'),ref(second/'attempt-disposition.json'),ref(OUT/'github/raw-helper-timing.json')],
+ 'dispatch':ref(dispatch/'dispatch-summary.json'),'semanticParity':ref(semantic/'semantic-summary.json'),'lifecycle':ref(lifecycle/'lifecycle-summary.json'),'publicationNegatives':ref(negative/'publication-negatives-summary.json'),
+ 'partialBundles':[ref(first/'cases/policy-pass.json')],'installedIntegrity':installed,'integrityAfter':installed,
+ 'achieved':{'correctedInstalledCliPolicyPassAndVerify':True,'correctedInstalledInvalidCommandCount':21,'parserProviderProjectionErrorWitnessCount':191,'independentInstalledWorkerSdkParityCases':9,'representativeLifecycleCases':2,'publicationAndBundleNegativeCases':5,'installedMembersUnchanged':94,'exactSixFileSemanticPublication':True},
+ 'correctionA':{'status':'PASS','scope':'Bounded sampled confirmation on one installed corrected end-to-end Policy PASS and verification plus representative lifecycle. No full characterization repeated.','maximumObservedAttributableRoles':peak,'maximumAllowedRoles':3,'helperWorkerOverlapObserved':False,'remainingPids':[],'traces':[ref(p) for p in trace_paths],'limitation':'External sampled Windows process observer; does not claim kernel process containment.'},
+ 'unexecutedGates':['corrected full CLI FAIL and COULD_NOT_EVALUATE runs','corrected full CLI Policy Set and Regression nine-case execution campaign completion','corrected installed CLI generate success','corrected four-file nonsemantic native publication and verification','complete successful publication lifecycle campaign'],
+ 'limitations':['Nine exact semantic byte/digest comparisons execute the actual installed permission-limited worker, independently of source SDK invocation; they do not replace blocked full CLI acquisition/publication.','Lifecycle includes semantic validation failure and intentional helper cancellation after150ms; it does not establish successful helper completion on the overloaded current host.','Publication negatives cover pre-aborted and expired-deadline terminal guards plus extra/missing artifact member sets; successful Policy PASS six-file publication is retained separately.','The first attempt failed in engineering oracle logging after its Policy PASS/run/verify had succeeded; exact attempted tooling and both actual failed campaign summaries remain immutable.'],
+ 'harness':ref(Path(__file__))}
+put(OUT/'native-summary.json',summary)
+print(json.dumps({'status':summary['status'],'summary':str(OUT/'native-summary.json'),'achieved':summary['achieved'],'peakRoles':peak}))

@@ -1,0 +1,128 @@
+"""Read retained failed harness and current path observations; never execute product."""
+from pathlib import Path
+import base64, hashlib, json, re, subprocess
+from datetime import datetime,timezone
+ROOT=Path.cwd()
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic'
+OLD=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final/native/20260927T120240-b3df86'
+AUTH='701d48ee2012675966360dda775ab13013c09ab9'
+INSTALL=ROOT/'.cache/mo1306-phase3a-final/install/node_modules/memoryos-ci'
+def digest(raw):return 'sha256:'+hashlib.sha256(raw).hexdigest()
+def row(path):
+ raw=path.read_bytes();return {'path':path.relative_to(ROOT).as_posix(),'byteLength':len(raw),'sha256':digest(raw)}
+def load(path):return json.loads(path.read_bytes())
+def write(path,value):
+ raw=(json.dumps(value,sort_keys=True,separators=(',',':'))+'\n').encode()
+ with path.open('xb') as stream:stream.write(raw)
+ return row(path)
+trace=load(OLD/'traces/error-input.json')
+failed=load(OLD/'cases/error-input.json')
+review=load(OLD/'failure-review.json')
+config=load(OLD/'error-input-configuration.json')
+windows=load(OUT/'windows-now.json')
+work=Path(trace['command'][5]);run=work/'.memoryos-ci/out'/json.loads(trace['stdout'])['runId']
+helpers=sorted([p for p in trace['lifetimes'] if p['name'].lower()=='powershell.exe'],key=lambda p:p['creationTime100ns'])
+assert len(helpers)==19
+stages=[
+'installation paths batch 1','installation paths batch 2','workspace and config','acquired policy',
+'create .memoryos-ci precheck','create .memoryos-ci postcheck','create out precheck','create out postcheck',
+'create run precheck','create run postcheck','create .pending precheck','create .pending postcheck',
+'pending evidence write precheck','pending result write precheck','pending manifest write precheck',
+'evidence rename precheck','result rename precheck','manifest rename precheck','cleanup pending manifest precheck']
+ordinal=[]
+for i,(helper,stage) in enumerate(zip(helpers,stages),1):
+ ordinal.append({'ordinal':i,'inferredOperation':stage,'pid':helper['pid'],'creationTime100ns':helper['creationTime100ns'],
+  'firstObservedMs':helper['firstObservedMs'],'lastObservedMs':helper['lastObservedMs'],
+  'sampledSpanMs':helper['lastObservedMs']-helper['firstObservedMs'],
+  'bindingQualification':'Inferred from frozen deterministic control flow and fresh-directory harness; helper stdin and native exceptions were not retained.'})
+sources=[]
+for relative in ['src/core.mjs','src/publication.mjs','src/filesystem.mjs']:
+ data=(INSTALL/relative).read_bytes()
+ authority=subprocess.check_output(['git','show',AUTH+':repositories/memoryos-ci/'+relative],cwd=ROOT)
+ assert data==authority
+ sources.append({'installed':row(INSTALL/relative),'authority':AUTH+':repositories/memoryos-ci/'+relative,'byteIdentical':True})
+comparisons=[]
+for case in ['policy-pass','policy-fail','policy-cne','late-terminal','valid-generate']:
+ value=load(OLD/'cases'/(case+'.json'))
+ t=load(OLD/'traces'/(case+'.json'))
+ comparisons.append({'case':case,'caseReceipt':row(OLD/'cases'/(case+'.json')),'trace':row(OLD/'traces'/(case+'.json')),
+  'status':value['status'],'command':t['command'],'exitCode':t['exitCode'],
+  'stdout':t['stdout'],'cleanup':t['cleanup'],'elapsedMs':t['elapsedMs'],
+  'powerShellHelperCount':len([p for p in t['lifetimes'] if p['name'].lower()=='powershell.exe']),
+  'files':value.get('bundleFiles',value.get('files',[]))})
+originalEvidence={
+ 'campaign':'20260927T120240-b3df86','runId':json.loads(trace['stdout'])['runId'],
+ 'argv':trace['command'],'cwd':str(INSTALL.parent),
+ 'cwdProvenance':'Snapshot Campaign.observed invokes observer.execute(argv, INSTALLED.parent, env=self.env); observer passes this cwd to subprocess.Popen.',
+ 'environment':{'namesExplicitlyPassed':['SystemRoot','WINDIR'],'construction':"{k: os.environ[k] for k in ('SystemRoot', 'WINDIR')}",
+  'originalExactValues':'Not retained as a standalone environment record. Observed helper executable resolves C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe; this does not recover exact original environment value casing.',
+  'ambientInheritedByHarnessChild':False,'productChildEnvironment':'Product childEnvironment validates both roots then returns only SystemRoot/WINDIR; libuv fixed-variable handling is product-controlled.'},
+ 'processCreation':{'flags':['DETACHED_PROCESS','CREATE_NEW_PROCESS_GROUP'],'stdin':'DEVNULL','stdout':'PIPE','stderr':'PIPE','observerTimeoutSeconds':80,'observerIntervalMs':100},
+ 'configuration':config,'configurationRow':row(OLD/'error-input-configuration.json'),
+ 'missingInputPath':str(work/'missing.mip'),'unusedPresentCandidate':str(work/'candidate.mip'),
+ 'outputRoot':str(work/'.memoryos-ci/out'),'runDirectory':str(run),'pendingDirectory':str(run/'.pending'),
+ 'installedPackage':str(INSTALL),'nodePath':trace['command'][0],
+ 'stdout':trace['stdout'],'stderr':trace['stderr'],'exitCode':trace['exitCode'],'elapsedMs':trace['elapsedMs'],
+ 'machineError':'MO1306_ARTIFACT_WRITE','stage':'PUBLICATION','publication':'NONE',
+ 'partialInitialResult':review['partialResult'],'originalACL':'Not recorded','originalOpenHandles':'Not recorded',
+ 'actualFinalFiles':review['retainedFiles'],'actualPendingStateAtPostStopReview':'Existing directory, empty',
+ 'expectedOperationalFiles':['memoryos-ci-result.json','memoryos-ci-evidence.json','memoryos-ci-artifacts.json','memoryos-ci-complete.json']}
+harness={
+ 'campaignRootCreation':'Campaign.__init__: mkdir(parents=True,exist_ok=False), UUID-suffixed name',
+ 'caseRootCreation':'functional: work=self.work/name; work.mkdir() without reuse',
+ 'setupOrder':['Create distinct error-input case directory','Copy policy.json, candidate.mip, memoryos-ci.json','Parse config','Set context.candidateMip to missing.mip','Write canonical configuration and close file','Capture input file rows','Start observed CLI synchronously'],
+ 'beforeProductOutputState':'No .memoryos-ci/out or .pending creation in harness; fresh case setup creates only three input files. No separate pre-execution recursive filesystem snapshot was captured.',
+ 'caseParallelism':'Sequential run() calls; each observed waits reader completion and owned-process cleanup before return',
+ 'pathReuse':'No other planned case uses error-input workspace; each has distinct self.work/name',
+ 'cleanupOrdering':'Harness has no delete/rename of case files during this execution. finally blocks restore observer.snapshot and write logs/trace/case/summary only.',
+ 'postProcessCollection':'Exit17 assertion fails before verify-error-input or bundle copy. Post-stop native-finalize separately retained the incomplete files.',
+ 'observerHandles':'Observer opens process handles for identity/RSS and closes each in finally; reads child stdout/stderr pipes. No input/output-bundle file handle is opened by observer.',
+ 'harnessMadePublicationImpossible':'No evidence of a caller-precondition/setup violation or publication-path collision in inspected harness and retained data.',
+ 'missingInputIntent':'Configuration references absent missing.mip while copied candidate.mip remains unused; this is a deliberate acquisition-error control.'}
+paths=[]
+for name,ownership,requirement in [
+ ('workspace','CALLER_REQUIRED','Existing directory; harness creates error-input before CLI'),
+ ('configuration','CALLER_REQUIRED','Explicit existing config file; harness supplies valid canonical fixture with missing input reference'),
+ ('policy.json','CALLER_REQUIRED','Harness copies expected policy file'),
+ ('missing.mip','CALLER_REQUIRED','Absent deliberately to exercise input error; operational publication must remain possible while identities and budget are valid'),
+ ('installed package and Node','PREEXISTING_PACKAGE','Existing validated pinned installation/runtime'),
+ ('.memoryos-ci','PRODUCT_REQUIRED','prepareOutput creates if absent'),
+ ('.memoryos-ci/out','PRODUCT_REQUIRED','prepareOutput creates if absent'),
+ ('.memoryos-ci/out/<runId>','PRODUCT_REQUIRED','prepareOutput creates a new directory'),
+ ('.memoryos-ci/out/<runId>/.pending','TEMPORARY_INTERNAL','prepareOutput creates; publication removes on successful completion'),
+ ('pending JSON files','TEMPORARY_INTERNAL','publish writes exclusively, verifies and renames; failure cleanup removes only known pending files'),
+ ('final result/evidence/manifest/marker','PRODUCT_REQUIRED','publish owns creation and marker linearization'),
+ ('native evidence copies, logs, traces','HARNESS_ONLY','Collected after product exits')]:
+ paths.append({'pathRole':name,'ownership':ownership,'requirement':requirement})
+currentRows=windows['paths'];reparse=[p['path'] for p in currentRows if p.get('exists') and 'ReparsePoint' in p.get('attributes','')]
+assert not reparse
+value={'kind':'MemoryOSPhase3APublicationHarnessAudit','version':'1.0.0','status':'READ_ONLY_AUDIT_COMPLETE',
+ 'observedUtc':datetime.now(timezone.utc).isoformat(),'authority':AUTH,
+ 'preservedAttempt':{'harnessSnapshot':row(OLD/'attempted-native.py'),'trace':row(OLD/'traces/error-input.json'),
+  'case':row(OLD/'cases/error-input.json'),'failureReview':row(OLD/'failure-review.json')},
+ 'originalExecution':originalEvidence,'sourceBindings':sources,'harnessAudit':harness,'pathOwnership':paths,
+ 'helperOrdinalInference':ordinal,'inferredFirstFailure':{
+  'operation':'checkPaths before manifest rename, await publication.mjs rename-loop safety check',
+  'sourcePath':str(run/'.pending/memoryos-ci-artifacts.json'),'targetPath':str(run/'memoryos-ci-artifacts.json'),
+  'sourceLength':len(str(run/'.pending/memoryos-ci-artifacts.json')),'targetLength':len(str(run/'memoryos-ci-artifacts.json')),
+  'underlyingErrorCode':'Not captured','errno':'Not captured','nativeWindowsError':'Not captured',
+  'qualification':'Strong ordinal/source/partial-state inference, not direct original per-operation instrumentation. Could be helper terminal rejection; sampled lifetime is not the product monotonic deadline event.'},
+ 'retainedPassingComparisons':comparisons,
+ 'minimalControlFlowDifference':{'semanticCases':'Acquire all inputs, launch semantic worker, write six-file bundle (four pending data files plus manifest and final marker).',
+  'missingInput':'Acquire policy then nodePathCheck missing.mip fails before semantic worker; write four-file operational bundle (two pending data files plus manifest and final marker), using same prepareOutput/publish functions.',
+  'lateTerminal':'Terminal deadline path returns publication NONE before output preparation; does not validate an operational complete bundle.',
+  'generate':'Separate generator publisher emits config and generation manifest; not the same publish() control.'},
+ 'currentWindowsObservation':row(OUT/'windows-now.json'),
+ 'currentFacts':{'reparsePaths':reparse,'driveFormat':windows['fileSystem'],'originalPidMatchesNow':windows['preservedPidsNow'],
+  'pendingChildrenNow':[p.name for p in (run/'.pending').iterdir()],
+  'pathLengthsWithin240':all(p['length']<=240 for p in currentRows),
+  'currentACLComparison':'Case and product-created output directories have inherited ACLs including owner FullControl; no read-only flag on case/output files. Current facts cannot establish historical ACL immutability.',
+  'processQualification':'Bounded Win32_Process lookup found no currently running process with original root4292, helper19232/helper12660, or harness13184 PID. No original open-handle inventory exists.',
+  'securityInterference':'No security-product event or historical file-lock evidence captured; none inferred.'},
+ 'unsupportedConclusions':['Exact original helper terminal code/deadline event is unknown','Original native filesystem errno is unknown',
+  'Current ACL/attributes cannot prove historical values','No historical arbitrary-process handle inventory',
+  'Environment transient and deterministic product defect are not established by this audit alone'],
+ 'productExecutions':[],'remoteOperations':[],'productionChanges':[],'oldEvidenceChanges':[],
+ 'acquisitionTools':[row(Path(__file__)),row(ROOT/'repositories/cca-conformance/tools/mo1306-phase3a-publication-diagnostic/path-audit.ps1')]}
+print(json.dumps(write(OUT/'harness-audit.json',value)))
+

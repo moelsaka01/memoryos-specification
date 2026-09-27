@@ -1,0 +1,89 @@
+"""Verify Correction B and exact byte/dependency reuse without rerunning campaigns."""
+import json,hashlib,tarfile,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+HERE=Path(__file__).resolve().parent;sys.path.insert(0,str(HERE))
+import preservation as p
+ROOT=p.ROOT;MAIN=p.MAIN;OUT=p.OUT;SOURCE=MAIN/'repositories/memoryos-ci'
+EVIDENCE='repositories/cca-conformance/evidence/mo1306/phase3-helper-correction'
+ARCHIVE='sha256:7649f6df77c3f6163eb94b343974abaeccebbd5bcb8a2208cc889128904ce45d'
+DISTRIBUTION='sha256:b41d024d8ec1c588ca3fc919f8e3ac59a622aebc7cff3377f6a20ce7fc2ca4f3'
+def read(name):return json.loads((MAIN/name).read_bytes())
+def check(row):
+ actual=p.row(MAIN/row['path'],MAIN);assert actual=={k:row[k] for k in actual},'AUTHORITATIVE_BYTES_CHANGED '+row['path']
+ return actual
+def member_row(name,raw):return {'path':name,'byteLength':len(raw),'sha256':p.sha(raw)}
+def main():
+ binding_path='repositories/cca-conformance/mo1306-phase3-helper-correction-binding.json'
+ binding=read(binding_path);assert binding['correctionCommit']==p.C3C and binding['correctionParent']==p.C3AB and binding['baseline']==p.C3AB
+ assert p.txt(MAIN,'diff-tree','--no-commit-id','--name-only','-r',p.C3CB)==binding_path
+ assert (MAIN/binding_path).read_bytes()==p.git(MAIN,'show',p.C3CB+':'+binding_path)
+ check(binding['inventory']);inventory=read(binding['inventory']['path'])
+ artifacts=inventory['artifacts'];assert len(artifacts)==444
+ for row in artifacts:check(row)
+ # Verify retained correction evidence against committed C3C blobs in one read-only batch.
+ committed=p.blobs(p.C3C,[row['path'] for row in artifacts])
+ for row in artifacts:assert committed[row['path']]['bytes']==(MAIN/row['path']).read_bytes(),'C3C_ARTIFACT_DRIFT '+row['path']
+ for row in binding['regressions'].values():check(row)
+ assert sorted(inventory['productionChanges'])==['distribution-manifest.json','src/filesystem.mjs']
+ assert p.txt(MAIN,'diff','--name-only',p.C3AB,p.C3CB,'--','repositories/memoryos-ci').splitlines()==['repositories/memoryos-ci/distribution-manifest.json','repositories/memoryos-ci/src/filesystem.mjs']
+ package=read(EVIDENCE+'/package.json');provenance=read(EVIDENCE+'/candidate-provenance.json')
+ assert package['archive']==binding['package'] and package['status']==provenance['status']=='PASS'
+ assert package['archive']['byteLength']==197290 and package['archive']['sha256']==ARCHIVE and package['distribution']['sha256']==DISTRIBUTION
+ manifest_raw=(SOURCE/'distribution-manifest.json').read_bytes();assert p.sha(manifest_raw)==DISTRIBUTION
+ manifest=json.loads(manifest_raw);names=sorted({row['path'] for row in manifest['files']}|{'distribution-manifest.json'});assert len(names)==94
+ source_paths=['repositories/memoryos-ci/'+name for name in names]
+ current=p.blobs(p.C3CB,source_paths);baseline=p.blobs(p.C3AB,source_paths);members=[];changed=[]
+ for name,relative in zip(names,source_paths):
+  raw=(SOURCE/name).read_bytes();assert raw==current[relative]['bytes']
+  members.append(member_row(name,raw))
+  if raw!=baseline[relative]['bytes']:changed.append({'path':name,'before':member_row(name,baseline[relative]['bytes']),'after':member_row(name,raw)})
+ assert [r['path'] for r in changed]==['distribution-manifest.json','src/filesystem.mjs']
+ for row in manifest['files']:assert member_row(row['path'],(SOURCE/row['path']).read_bytes())==row
+ for assembly in package['assemblies']:
+  check(assembly['archive']);assert assembly['archive']['sha256']==ARCHIVE and assembly['command']['exitCode']==0
+  assert assembly['inputFiles']==members
+  with tarfile.open(MAIN/assembly['archive']['path']) as archive:
+   entries=archive.getmembers();assert len(entries)==94 and len({e.name.casefold() for e in entries})==94
+   assert {e.name for e in entries}=={'package/'+name for name in names}
+   for entry in entries:assert entry.isfile() and archive.extractfile(entry).read()==(SOURCE/entry.name[8:]).read_bytes()
+ assert package['byteIdentical'] is True
+ closure=read('repositories/memoryos-ci/runtime/runtime-closure-manifest.json');assert len(closure['files'])==25
+ for row in closure['files']:
+  b=(SOURCE/'runtime'/row['path']).read_bytes();assert len(b)==row['byteLength'] and p.sha(b)=='sha256:'+row['sha256']
+ metadata=read('repositories/memoryos-ci/package.json');assert metadata['name']=='memoryos-ci' and metadata['version']=='0.1.0' and not metadata.get('dependencies')
+ assert provenance['productionDependencies']=={} and provenance['baseline']==p.C3AB
+ for row in provenance['sourceFiles']:assert member_row(row['path'],(SOURCE/row['path']).read_bytes())==row
+ frozen=read('repositories/memoryos-ci/contracts/limits.json')['fixed'];assert frozen['helperMs']==frozen['terminationMs']==2000
+ gates=read(EVIDENCE+'/final-gates.json');assert gates['status']=='PASS' and not gates['phase3RecertificationPerformed']
+ gate_counts={}
+ for name in ['source-focused','installed-focused','semantic-native','semantic-smoke']:
+  value=read(EVIDENCE+'/'+name+'.json');assert value['status']=='PASS';gate_counts[name]=value['count']
+ assert gate_counts=={'source-focused':10,'installed-focused':7,'semantic-native':9,'semantic-smoke':9}
+ boundary=read(EVIDENCE+'/boundary-corrected.json');assert boundary['exitCode']==0
+ boundary_value=json.loads(boundary['stdout']);assert boundary_value['status']=='PASS'
+ installed=read(EVIDENCE+'/installed-regression.json');assert installed['status']=='PASS' and installed['integrityUnchanged'] is True
+ check(installed['before']);check(installed['after'])
+ before=read(installed['before']['path']);after=read(installed['after']['path']);assert before==after
+ semantic=read(EVIDENCE+'/semantic-native.json');assert semantic['normativeBytesEqualIndependentSourceSDK'] is True
+ providers=read(EVIDENCE+'/provider-preservation.json');assert providers['status']=='PASS' and providers['workflowSemanticsUnchanged'] is True
+ for provider in providers['providers']:assert provider['status']=='PASS' and provider['sameInputBytesUnchanged'] and provider['projectionsUnchanged']
+ impact=read(EVIDENCE+'/recertification-impact.json');assert impact['status']=='PASS' and not impact['recertificationStarted']
+ assert impact['advisories']=={'Undici':'NOT_REACHABLE_IN_FROZEN_USAGE','fast-xml-parser':'REACHABLE_NOT_ATTACKER_CONTROLLED','actionUpdateRequired':False}
+ assert not p.txt(MAIN,'diff','--name-only',p.C3AB,p.C3CB,'--','.github/actions','repositories/cca-studio','repositories/memoryos-ci/runtime','repositories/memoryos-ci/templates','repositories/memoryos-ci/src/providers','repositories/memoryos-ci/bin','repositories/memoryos-ci/contracts')
+ preserved=json.loads((OUT/'preservation/before.json').read_bytes())
+ peer_report={}
+ for key,(folder,head,receipt) in p.PEERS.items():
+  peer=ROOT.parent/folder;assert p.state(peer)==preserved['readOnlyPeers'][key]['state']
+  old_manifest=json.loads((peer/'repositories/memoryos-ci/distribution-manifest.json').read_bytes())
+  peer_members=sorted({r['path'] for r in old_manifest['files']}|{'distribution-manifest.json'});assert peer_members==names
+  for name,relative in zip(names,source_paths):assert (peer/'repositories/memoryos-ci'/name).read_bytes()==baseline[relative]['bytes']
+  peer_report[key]={'head':head,'receipt':preserved['readOnlyPeers'][key]['receipt'],'entire94MemberPackageEqualsC3AB':True,'C3CBChanges':[r['path'] for r in changed],'rerun':False}
+ basis={'kind':'MemoryOSPhase3AFinalExactDependencyReuse','version':'1.0.0','status':'PASS','authority':p.C3CB,'correction':p.C3C,'baseline':p.C3AB,'authoritativeReadOnlyRoot':str(MAIN),'binding':p.row(MAIN/binding_path,MAIN),'inventory':binding['inventory'],'committedCorrectionArtifactCount':444,'artifactHashesAndC3CBlobsVerified':True,'archive':package['archive'],'secondAssembly':package['assemblies'][1]['archive'],'distribution':package['distribution'],'members':members,'memberCount':94,'unchangedMemberCount':92,'changedMembers':changed,'sdkClosureFileCount':25,'productionDependencies':0,'correctionEvidence':binding['regressions'],'counts':gate_counts,'nativeSourceControls':10,'nativeInstalledCorrectionControls':7,'boundaryEvidence':p.row(MAIN/(EVIDENCE+'/boundary-corrected.json'),MAIN),'deadlineSemantics':'Success iff monotonic now < effectiveDeadline; equality and later reject; helper and cleanup limits both remain2000ms with separate purposes.','reused':{'CorrectionB':'Exact C3CB binding to C3C inventory444 plus corrected94 package members validates reuse of deadline/cancellation/overall/terminal/filesystem/topology/CLI/semantic/provider/package correction evidence; no correction campaign rerun.','SDK':'All25 authoritative SDK closure files and semantic worker/delegate/contracts bytes unchanged; nine-case corrected installed SDK parity reused, compact final PASS/FAIL/CNE still required.','CLI':'CLI dispatcher and command/projection maps unchanged; existing191/44 correction evidence reusable; tiny installed constructor/toString/__proto__ plus run/generate/verify controls still required.','provider':'Provider adapters/templates/generator/launchers/Action source and pins unchanged; corrected distribution identity requires mechanically rebound final workflows. No other provider account or full provider audit needed.','3B-R2':'Unchanged Action/advisory dependency bytes retain only the historical supply conclusions; old archive/provenance identities are not restamped as C3CB. New final candidate evidence refreshes this task artifact identity.','3C-R':'Unchanged semantic, CLI, provider/parser/schema/label/Action evidence reusable; affected generic filesystem/helper deadline/overall/cancellation surfaces covered by authoritative CorrectionB correction evidence, with final targeted execution still required.','MO1302':'SDK/action/contract product closure unchanged; no historical certification rerun.'},'requiredFresh':['installed timely helper','installed controlled late-success rejection','full CLI FAIL','full CLI COULD_NOT_EVALUATE','successful generate','publication/terminal','cleanup and no owned process','CorrectionA at most3 roles','installed integrity','tiny CLI control','compact SDK parity PASS/FAIL/CNE','actual hosted PASS/FAIL/CNE plus exact bundles/run-id','native-hosted normative parity','remote default restoration and remote state'],'notReusedAsSuccess':['Historical f236 CERTIFICATION_BLOCKED receipt','Historical resolution NATIVE_DEADLINE_BLOCKED receipt','Old2032 outer MEASUREMENT_DEFECT','Old controlled late-success PRODUCT_DEADLINE_VIOLATION','Old remote certification commit3096139','Historical peer artifact identities as current C3CB certification'],'peers':peer_report,'advisories':impact['advisories'],'rerunCampaigns':False}
+ p.put('reuse-analysis.json',basis)
+ remote_refs=p.txt(ROOT,'for-each-ref','--format=%(refname) %(objectname)','refs/remotes').splitlines()
+ protected=[line for line in remote_refs if not line.startswith('refs/remotes/origin/mo1306-certification ')]
+ p.put('preservation/unrelated-remote-refs.json',{'kind':'MemoryOSPhase3AFinalProtectedRemoteTrackingRefs','refs':protected,'allowedToChangeOnly':'refs/remotes/origin/mo1306-certification'})
+ print(json.dumps({'status':'PASS','correctionArtifacts':444,'packageMembers':94,'unchangedMembers':92,'changed':[row['path'] for row in changed],'SDK':25,'prodDeps':0,'noCampaignRerun':True}))
+if __name__=='__main__':main()
+

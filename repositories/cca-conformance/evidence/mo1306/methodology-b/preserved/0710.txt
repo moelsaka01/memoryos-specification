@@ -1,0 +1,81 @@
+from pathlib import Path
+import json
+root=Path.cwd()
+out=root/'repositories/cca-conformance/evidence/mo1306/phase3a-publication-diagnostic'
+audit=json.loads((out/'harness-audit.json').read_bytes())
+data="""Starting state|||Branch mo1306/phase3a-refresh; historical HEAD f236c4a2f94d8cd8e763aaa4bd6c52d703429692. Initial preservation inventory retained; final check PENDING.
+C3CB|||701d48ee2012675966360dda775ab13013c09ab9; C3C 39d83316f7c72d6cb49f8b6cde36c1bfa833112a. Installed core/publication/filesystem bytes independently match C3CB.
+Historical failed publication preserved|||Historical phase3a-final/final/REPORT.md and execution-receipt.json remain MO-1306 PHASE 3A NATIVE CERTIFICATION BLOCKED. Final preservation comparison PENDING.
+Failed argv|||Exact ten-element original argument vector is reproduced below and bound in harness-audit.json. Pinned Node and installed CLI run --workspace .../error-input --config .../memoryos-ci.json --provider generic.
+Failed environment|||Harness explicitly passes only SystemRoot and WINDIR. Original exact values/casing were not separately captured; observed helper resolves under C:/Windows. Cwd: installed package parent node_modules. stdin DEVNULL, stdout/stderr pipes; DETACHED_PROCESS and CREATE_NEW_PROCESS_GROUP. No invented full environment.
+Failed output root|||C:/Users/melsa/Documents/Codex/cca-mo1306-3a-refresh/.cache/mo1306-phase3a-final/n-20260927T120240-b3df86/error-input/.memoryos-ci/out; run e89b8e91-c3c5-402d-9e6f-000bd2a102ba.
+Frozen expected publication contract|||FROZEN_EXPECTATION_VALID. Missing input maps to INPUT_ERROR11; safely publishable handled operational errors require four files while identities/budget remain valid. Subsequent publication failure supersedes classification. Contract freeze lines378–462 and548–564; expectation-audit.json.
+Expected files|||memoryos-ci-result.json; memoryos-ci-evidence.json; memoryos-ci-artifacts.json; memoryos-ci-complete.json. No normative artifacts; semantic/inputDigest null, checked input prefix retained.
+Actual files|||Final result737 bytes and evidence1500 bytes. Empty .pending remains. Manifest and completion marker absent. Actual raw logs and partial bytes preserved.
+Initial INPUT_ERROR|||Retained result: INPUT_ERROR / MO1306_INPUT_READ / ACQUISITION / exit11. Configuration references absent missing.mip; copied candidate.mip remains unused.
+Subsequent ARTIFACT_ERROR|||Actual summary ARTIFACT_ERROR / exit17 / publication NONE / resultSha256 null; stderr MO1306_ARTIFACT_WRITE at PUBLICATION. Original elapsed20777ms.
+First failing filesystem operation|||Original per-operation error unavailable. Source/helper-order/partial-state inference narrows failure to checkPaths before manifest rename, helper18, followed by pending-manifest cleanup helper19. Direct reproduction evidence PENDING final binding.
+Native/Windows error code|||Original errno/native Windows error and helper terminal code not captured. MO1306_ARTIFACT_WRITE is mapped product diagnostic, not OS errno. Reproduction result PENDING.
+Failing path|||Inferred source: original run/.pending/memoryos-ci-artifacts.json; target: original run/memoryos-ci-artifacts.json. Exact absolute operands in harness-audit.json; original helper stdin not recorded.
+Parent path state|||Fresh caller workspace; product creates .memoryos-ci, out, run and pending. Partial final files and empty pending establish existence during publication. No complete pre-execution filesystem snapshot was retained; current parents exist.
+ACL/permissions|||Current output paths have inherited ACLs including owner FullControl and no read-only output files. Original ACLs were not captured. Current facts do not prove historical ACL immutability; windows-now.json.
+Reparse/link state|||Current inspected ancestors and case/output paths have no ReparsePoint flag, linkType or link target. Product guards these paths; original per-call helper replies were not retained.
+Path length/type|||Current C: NTFS; workspace117 chars, run171, pending180, pending-manifest207 and target198; all within240. Ordinary absolute names, no ADS/reserved-name syntax or current file-directory collision.
+Publication source trace|||prepareOutput creates/checks directories. publish stages sorted evidence/result then manifest using wx, verifies bytes, checks/renames each, removes pending, rechecks runtime/distribution, writes marker last. Failure cleans known pending files only, retains partial final files. Core maps non-whitelisted publication errors to ARTIFACT_WRITE.
+Difference from PASS publication|||Same prepareOutput/publish. PASS acquires inputs and launches semantic worker, publishing six files. Missing input fails before worker, requests four operational files. Retained PASS not rerun.
+Difference from FAIL publication|||Same six-file semantic publisher; expected exit6 with complete bundle and verified normative bytes. Missing input omits worker and normative files. Retained FAIL not rerun.
+Difference from CNE publication|||Same six-file publisher; expected exit7. Late-terminal prevents publication before output preparation; generate uses a separate two-file publisher. Retained CNE/late/generate not rerun.
+Historical equivalent witnesses|||Phase1 run fce52e4e-5af6-4d92-acfb-9676e3f9cd79 and Phase2D generic-input3b8472f3-fdfe-4c96-b02d-b249db564a8f have verified complete INPUT_ERROR11 bundles. publication.mjs byte-identical; corrected helper/CLI and distributions differ. Phase2D matches logical current missing.mip setup and core/verifier bytes. Neither replaces C3CB gate; exact identities in historical-witnesses.json.
+Harness setup audit|||Unique campaign root exist_ok=False; fresh case mkdir; copy three files; mutate candidate path only; close config; synchronous observed CLI. No shared output, parallel cases, output precreation, early deletion or harness cleanup race. Failure finally blocks write evidence only. No setup defect demonstrated.
+Path ownership classification|||CALLER_REQUIRED workspace/config/input capabilities; PREEXISTING_PACKAGE install/helper/Node; PRODUCT_REQUIRED output directories/run/final files; TEMPORARY_INTERNAL pending/staged files; HARNESS_ONLY isolated case/evidence/logs. Output directory absence is not omitted caller setup.
+Handle/process findings|||Original observer records no remaining owned processes and opens process identity/RSS handles, not bundle files. Current bounded query found no original root4292/helper19232/helper12660/harness13184. Original arbitrary-process file handles unknown. Helper18 conservative external residence lower bound3294ms, no captured product callback/error. Narrow System/Application/Defender window has no matching retained events; absence proves no cause.
+Controlled reproduction 1|||PENDING final native receipt. Parent preliminary report: unchanged installed C3CB returned COMPLETE INPUT_ERROR11 with four files; helper18 closed before deadline and rename succeeded. This alone does not establish transient or resolve original cause.
+Reproduction 2 if needed|||PENDING. Parent authorized a bounded same-instrumentation run to seek captured recurrence; no blind retries or gate promotion.
+Reproduction 3 if needed|||PENDING. Total faithful reproductions capped at3; stop on new failure.
+Root-cause classification|||PENDING. Original evidence localizes delayed manifest pre-rename helper; reason for delay and original direct terminal error remain unknown.
+Harness defect yes/no|||Not demonstrated by read-only audit; final classification PENDING.
+Stale expectation yes/no|||NO. Independent contract/source/historical audit validates conditional complete four-file operational publication.
+Product defect yes/no|||NOT PROVEN. Long original process residence is compatible with rejection/cleanup, not late success acceptance or deterministic publication defect. Final classification PENDING.
+Environment transient yes/no|||NOT ESTABLISHED. No concrete lock/security/resource/interruption evidence; subsequent PASS alone is insufficient.
+Partial-bundle safety|||PASS by source and independent offline predicates: actual three directory entries or two files fail exact4/6-member verifier; no marker means unpublished. CLI/provider/GitHub cannot promote completeness; upload requires complete=true. Truthful NONE17 remains operational failure. No dynamic verifier execution claimed by this audit.
+Failure atomicity requirement|||Full rollback not required. Frozen contract permits incomplete diagnostic final files, mandates marker absence and known-temporary cleanup. Empty pending may remain. This does not close publication certification.
+Engineering changes if any|||New diagnostic-only evidence, audit/acquisition tooling and bounded reproduction instrumentation; exact final inventory PENDING. No product changes.
+Regression added if any|||PENDING classification; no harness correction or new product regression claimed.
+Resolved missing-input result|||PENDING final reproduction/validator receipts; original failed attempt remains blocked regardless of later result.
+Native certification result|||NOT PROMOTED. Eight successful groups plus CLI controls/semantic parity retained; affected publication resolution and native closure PENDING.
+Hosted certification attempted yes/no|||NO. Four GET-only remote observations; no campaign, push, default switch or dispatch.
+Certification branch state|||Latest snapshot retains mo1306-certification at3096139e0108be22528859e4f462356dddf6ef29. Prepared local C3CB scaffold451599e7b95a537ebc2daac627b061fd88791dea not pushed.
+Default-branch switch state|||NOT USED. GET reports main; no settings mutation.
+Hosted PASS|||NOT EXECUTED; native certification not closed.
+Hosted FAIL|||NOT EXECUTED; native certification not closed.
+Hosted CNE|||NOT EXECUTED; native certification not closed.
+Hosted artifacts|||None from this diagnostic; branch run count0. Repository artifact listing not repeated in bounded four-GET snapshot.
+Native/hosted parity|||NOT EXECUTED; no hosted bundles. Retained native normative parity remains separate.
+Final default branch|||Latest observed main. Final report binding PENDING; remote-state.json.
+Final remote main|||Latest observed5955af062152a84c10de17860ba0bcabe8b3555f unchanged; final binding PENDING.
+Final certification branch|||Latest observed3096139e0108be22528859e4f462356dddf6ef29 unchanged; final binding PENDING.
+Final 3A receipt|||PENDING diagnostic conclusion and final bindings. Historical blocked receipt immutable.
+Final certification commit if successful|||NONE. Successful final certification commit remains gated on native, hosted, artifacts, parity and restoration.
+Commit parent|||N/A. Required successful certification direct parent C3CB701d48ee2012675966360dda775ab13013c09ab9.
+Production changes|||NONE authorized/performed. Final preservation and installed-byte verification PENDING.
+Workspace verification|||PENDING root finalization; no broad accepted-group reruns.
+git diff --check|||PENDING root finalization.
+Final Git status|||PENDING root finalization; historical branch/HEAD/index must remain unchanged.
+Pushes|||ZERO in diagnostic; no main/certification ref update.
+Tags|||No tags/releases created.
+Linux/Ubuntu/WSL|||NOT USED.
+VM|||NOT USED.
+Other provider accounts|||NOT USED. No GitLab/Jenkins/Azure account activity.
+Duration|||PENDING final timestamp. Started2026-09-27T20:50:50Z; diagnostic target<=30min.
+Exact next task|||PENDING final classification after faithful reproductions. This draft does not promote native or hosted certification."""
+rows=[line.split('|||',1) for line in data.splitlines()]
+assert len(rows)==65,len(rows)
+def link(path,label=None):return '['+(label or path.name)+']('+path.as_posix()+')'
+intro="Diagnostic draft: frozen missing-input publication expectation is valid. Historical failed publication remains blocked; final cause classification is pending. No product changes or hosted certification have occurred.\n\nEvidence: "+', '.join(link(out/name) for name in ['expectation-audit.json','harness-audit.json','historical-witnesses.json','original-helper-residence.json','windows-now.json','windows-eventlog.json','remote-state.json'])+".\n\nHistorical records: "+link(root/'repositories/cca-conformance/evidence/mo1306/phase3a-final/final/REPORT.md','blocked report')+" and "+link(root/'repositories/cca-conformance/evidence/mo1306/phase3a-final/final/execution-receipt.json','blocked receipt')+".\n\n"
+table="| Number | Requested field | Recorded result |\n| --- | --- | --- |\n"+'\n'.join('| '+str(i)+' | '+name+' | '+value+' |' for i,(name,value) in enumerate(rows,1))+'\n'
+fence=chr(96)*3
+tail="\nExact original argument vector:\n\n"+fence+"json\n"+json.dumps(audit['originalExecution']['argv'],indent=2)+"\n"+fence+"\n\nOriginal parsed configuration (canonical bytes bound in historical receipt):\n\n"+fence+"json\n"+json.dumps(audit['originalExecution']['configuration'],sort_keys=True,indent=2)+"\n"+fence+"\n\nPENDING ROOT FINALIZATION — no final disposition is asserted by this draft.\n"
+target=out/'REPORT.md'
+with target.open('x',encoding='utf-8',newline='\n') as stream:stream.write(intro+table+tail)
+print(str(target))
+

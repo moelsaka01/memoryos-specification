@@ -1,0 +1,164 @@
+"""Read-only registration preflight for Phase 3A-R blocker resolution.
+
+Final-target current-state preflight. This tool accepts no mutation mode. It only performs authenticated GET requests,
+checks exact frozen workflows, and retains new evidence without modifying history.
+"""
+from pathlib import Path
+from datetime import datetime, timezone
+import argparse, base64, hashlib, json, os, subprocess, urllib.request, urllib.error, urllib.parse
+
+ROOT=Path(__file__).resolve().parents[4]
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final/github'
+OLD=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3ar'
+REPO='moelsaka01/memoryos-specification'
+BRANCH='mo1306-certification'
+CANDIDATE='3096139e0108be22528859e4f462356dddf6ef29'
+C3AB='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+CHECKPOINT='f236c4a2f94d8cd8e763aaa4bd6c52d703429692'
+MAIN='5955af062152a84c10de17860ba0bcabe8b3555f'
+API_VERSION='2026-03-10'
+SETTINGS=['default_branch','visibility','private','archived','disabled','is_template','allow_forking',
+'allow_squash_merge','allow_merge_commit','allow_rebase_merge','allow_auto_merge','delete_branch_on_merge',
+'allow_update_branch','use_squash_pr_title_as_default','squash_merge_commit_title','squash_merge_commit_message',
+'merge_commit_title','merge_commit_message','web_commit_signoff_required','has_issues','has_projects',
+'has_wiki','has_pages','has_discussions','has_downloads','security_and_analysis']
+DOCS=[
+{'url':'https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow',
+ 'finding':'The manual workflow_dispatch trigger requires the workflow file on the default branch; a ref selects the execution branch after registration.'},
+{'url':'https://docs.github.com/en/rest/actions/workflows',
+ 'finding':'Documented workflow endpoints list/get, dispatch, enable and disable existing workflows; no separate register endpoint is documented. Version 2026-03-10 dispatch returns HTTP 200 with workflow_run_id.'},
+{'url':'https://docs.github.com/en/rest/repos/repos#update-a-repository',
+ 'finding':'PATCH /repos/{owner}/{repo} accepts default_branch. Fine-grained token permission required is Administration(write).'},
+{'url':'https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-branches-in-your-repository/changing-the-default-branch',
+ 'finding':'Changing the default branch requires more than one branch and repository admin access.'}
+]
+
+def now():return datetime.now(timezone.utc).isoformat()
+def sha(data):return 'sha256:'+hashlib.sha256(data).hexdigest()
+def row(path):
+ data=path.read_bytes()
+ return {'path':path.relative_to(ROOT).as_posix(),'byteLength':len(data),'sha256':sha(data)}
+def put(path,value):
+ path.parent.mkdir(parents=True,exist_ok=True)
+ assert not path.exists(),str(path)
+ path.write_text(json.dumps(value,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
+ return row(path)
+
+class SameGitHubAPI(urllib.request.HTTPRedirectHandler):
+ def redirect_request(self,req,fp,code,msg,headers,newurl):
+  parsed=urllib.parse.urlsplit(newurl)
+  if parsed.scheme!='https' or parsed.netloc!='api.github.com':
+   raise RuntimeError('Unexpected API redirect')
+  return super().redirect_request(req,fp,code,msg,headers,newurl)
+
+def credential():
+ env={**os.environ,'GIT_TERMINAL_PROMPT':'0','GCM_INTERACTIVE':'Never','GIT_OPTIONAL_LOCKS':'0'}
+ result=subprocess.run(['git','credential','fill'],cwd=ROOT,env=env,
+  input=b'protocol=https\nhost=github.com\n\n',capture_output=True,timeout=30,creationflags=subprocess.CREATE_NO_WINDOW)
+ assert result.returncode==0,'Credential helper unavailable; secret output not retained'
+ values=dict(line.split('=',1) for line in result.stdout.decode().splitlines() if '=' in line)
+ assert values.get('password'),'Credential unavailable'
+ return values['password']
+
+def get(path,token):
+ assert not path.startswith('/') and '..' not in path.split('/')
+ headers={'User-Agent':'MO1306-Phase3AR-Resolution-ReadOnly','Accept':'application/vnd.github+json',
+          'X-GitHub-Api-Version':API_VERSION,'Authorization':'Bearer '+token}
+ request=urllib.request.Request('https://api.github.com/'+path,headers=headers,method='GET')
+ start=now();opener=urllib.request.build_opener(SameGitHubAPI())
+ try:
+  with opener.open(request,timeout=30) as response:
+   status=response.status;raw=response.read(4194305);url=response.url;received=response.headers
+ except urllib.error.HTTPError as error:
+  status=error.code;raw=error.read(4194305);url=error.url;received=error.headers
+ assert len(raw)<=4194304,'API response too large'
+ body=json.loads(raw) if raw else None
+ if isinstance(body,dict) and 'temp_clone_token' in body:body['temp_clone_token']=None
+ selected={name:received.get(name) for name in ['date','x-github-request-id','x-oauth-scopes',
+  'x-accepted-oauth-scopes','x-accepted-github-permissions','github-authentication-token-expiration'] if received.get(name)}
+ return {'method':'GET','path':path,'status':status,'url':url,'startedUtc':start,'endedUtc':now(),
+         'apiVersion':API_VERSION,'responseHeaders':selected,'body':body}
+
+def main():
+ parser=argparse.ArgumentParser(description=__doc__)
+ parser.add_argument('--preflight',action='store_true',required=True)
+ args=parser.parse_args()
+ assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip()==CHECKPOINT
+ assert subprocess.check_output(['git','branch','--show-current'],cwd=ROOT).decode().strip()=='mo1306/phase3a-refresh'
+ stamp=datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
+ folder=OUT/('preflight-'+stamp)
+ token=credential();responses={};rows={}
+ def observe(name,path):
+  result=get(path,token);responses[name]=result;rows[name]=put(folder/(name+'.json'),result);return result
+ user=observe('authenticated-user','user')
+ assert user['status']==200,'Authenticated user lookup failed'
+ repo=observe('repository','repos/'+REPO)
+ assert repo['status']==200 and repo['body']['full_name']==REPO
+ alias=observe('origin-alias','repos/moelsaka01/cca-workspace')
+ assert alias['status']==200 and alias['body']['id']==repo['body']['id'] and alias['body']['full_name']==REPO
+ main=observe('main-ref','repos/'+REPO+'/git/ref/heads/main')
+ cert=observe('certification-ref','repos/'+REPO+'/git/ref/heads/'+BRANCH)
+ assert main['status']==200 and main['body']['object']['sha']==MAIN,'Main changed; STOP'
+ assert cert['status']==200 and cert['body']['object']['sha']==CANDIDATE,'Certification branch changed; STOP'
+ commit=observe('certification-commit','repos/'+REPO+'/git/commits/'+CANDIDATE)
+ assert commit['status']==200 and [p['sha'] for p in commit['body']['parents']]==[C3AB]
+ registry=observe('workflow-registry','repos/'+REPO+'/actions/workflows?per_page=100')
+ assert registry['status']==200 and registry['body']['total_count']<=100,'Registry pagination requires explicit follow-up'
+ reviewed=json.loads((OLD/'github/workflow-review.json').read_bytes())
+ expected={v['path']:v for v in reviewed['workflows']}
+ assert set(expected)=={'.github/workflows/mo1306-certification-'+case+'.yml' for case in ['pass','fail','cne']}
+ workflow_checks=[]
+ for case in ['pass','fail','cne']:
+  path='.github/workflows/mo1306-certification-'+case+'.yml'
+  response=observe('workflow-bytes-'+case,'repos/'+REPO+'/contents/'+path+'?ref='+CANDIDATE)
+  assert response['status']==200 and response['body']['type']=='file' and response['body']['encoding']=='base64'
+  data=base64.b64decode(response['body']['content'],validate=False)
+  assert len(data)==expected[path]['byteLength'] and sha(data)==expected[path]['sha256']
+  assert (ROOT/path).read_bytes()==data
+  registry_matches=[w for w in registry['body']['workflows'] if w['path']==path]
+  individual=observe('workflow-lookup-'+case,'repos/'+REPO+'/actions/workflows/mo1306-certification-'+case+'.yml')
+  default=observe('default-workflow-'+case,'repos/'+REPO+'/contents/'+path+'?ref=main')
+  workflow_checks.append({'case':case,'workflow':expected[path],'registryMatches':registry_matches,
+      'workflowLookupStatus':individual['status'],'defaultBranchFileStatus':default['status']})
+ branchmain=observe('main-branch','repos/'+REPO+'/branches/main')
+ branchcert=observe('certification-branch','repos/'+REPO+'/branches/'+BRANCH)
+ protectionmain=observe('main-protection','repos/'+REPO+'/branches/main/protection')
+ protectioncert=observe('certification-protection','repos/'+REPO+'/branches/'+BRANCH+'/protection')
+ rules=observe('rulesets','repos/'+REPO+'/rulesets?includes_parents=true&per_page=100')
+ actions=observe('actions-permissions','repos/'+REPO+'/actions/permissions')
+ runs=observe('certification-runs','repos/'+REPO+'/actions/runs?branch='+BRANCH+'&event=workflow_dispatch&per_page=100')
+ old_dispatch=json.loads((OLD/'github/dispatch-pass.json').read_bytes())
+ old_summary=json.loads((OLD/'github/dispatch-summary.json').read_bytes())
+ assert old_dispatch['status']==404 and old_dispatch['method']=='POST'
+ assert old_dispatch['path']=='repos/'+REPO+'/actions/workflows/mo1306-certification-pass.yml/dispatches'
+ assert old_summary['requestedRef']==BRANCH and old_summary['expectedCommit']==CANDIDATE and old_summary['retries']==0
+ permissions=repo['body'].get('permissions',{})
+ scopes=user['responseHeaders'].get('x-oauth-scopes','')
+ capability='CLASSIC_REPO_SCOPE_CONFIRMED' if 'repo' in [x.strip() for x in scopes.split(',')] else 'NO_TOKEN_WRITE_CAPABILITY_INTROSPECTION'
+ missing=all(not c['registryMatches'] and c['workflowLookupStatus']==404 and c['defaultBranchFileStatus']==404 for c in workflow_checks)
+ safe=repo['body'].get('default_branch')=='main' and permissions.get('admin') is True and not repo['body'].get('archived') and not repo['body'].get('disabled')
+ conclusion={
+  'kind':'MemoryOSPhase3AFinalRegistrationReadOnlyPreflight','version':'1.0.0','status':'PASS',
+  'observedUtc':now(),'checkpoint':CHECKPOINT,'candidateProductionAuthority':'701d48ee2012675966360dda775ab13013c09ab9','observedRemoteCandidateAuthority':C3AB,
+  'repository':{'id':repo['body']['id'],'full_name':REPO,'default_branch':repo['body']['default_branch'],
+     'permissions':permissions,'settings':{k:repo['body'][k] for k in SETTINGS if k in repo['body']}},
+  'remoteMain':MAIN,'certificationBranch':BRANCH,'certificationCommit':CANDIDATE,
+  'certificationParent':C3AB,'certificationTree':commit['body']['tree']['sha'],
+  'authenticatedUser':{'login':user['body'].get('login'),'status':user['status'],'tokenCapability':capability,
+    'scopes':scopes,'limitations':'Authenticated public GET and user identity alone do not prove Actions(write) or Administration(write). Classic repo scope plus repository admin role supplies stronger prerequisite evidence; actual PATCH/dispatch may still be refused.'},
+  'workflows':workflow_checks,'registrationAbsent':missing,'nativeStopGateRequired':True,
+  'temporarySwitchPrerequisitesCurrentlyMet':False,'oldBranchMustBeUpdatedToC3CB':True,'adminAndRegistryPrerequisites':safe and missing,
+  'prior404':{'response':row(OLD/'github/dispatch-pass.json'),'summary':row(OLD/'github/dispatch-summary.json'),
+    'endpointAndRefCorrect':True,'interpretation':'Consistent with missing workflow registration, supported independently by default-branch documentation and current registry/content checks. HTTP404 alone cannot distinguish authorization failure.'},
+  'supportedMechanism':'After root replaces only the old certification branch with a reviewed direct C3CB child, temporarily PATCH only default_branch to mo1306-certification after native gate; verify registry and exact bytes; bounded dispatch/retrieval; restore only default_branch to main in finally and independently GET/ref-verify.',
+  'alternatives':'No documented standalone registration endpoint. Enable operates on an existing workflow. repository_dispatch also needs a default-branch workflow and would redesign the frozen trigger. No changes to main or new repository.',
+  'documentation':DOCS,'responses':rows,'remoteMutations':[],'settingChanges':[],
+  'defaultBranchChanged':False,'dispatches':[],'harness':row(Path(__file__)),
+  'restorationLimit':'GitHub has no atomic temporary-default-branch lease. Preflight plus try/finally and independent readback handles controlled errors; service outage or abrupt host loss remains a restoration risk. Do not switch if permissions, original main ref, independent recovery path or connectivity is unresolved.'
+ }
+ receipt=put(folder/'preflight.json',conclusion)
+ print(json.dumps({'status':'PASS','receipt':receipt,'defaultBranch':repo['body']['default_branch'],
+  'main':MAIN,'certification':CANDIDATE,'registrationAbsent':missing,'admin':permissions.get('admin'),
+  'tokenCapability':capability,'remoteMutations':0}))
+if __name__=='__main__':main()
+

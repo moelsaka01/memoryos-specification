@@ -1,0 +1,71 @@
+"""Finalize the truthful blocked certification checkpoint without claiming unrun gates."""
+from pathlib import Path
+from datetime import datetime,timezone
+import hashlib,json,subprocess
+ROOT=Path(__file__).resolve().parents[4];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3ar';TOOLS=Path(__file__).parent
+C3A='90b9ac914e477fb90fe317d0de9ba310aae37f60';C3AB='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44';B2='0e35ffe70919d77b1db530929093826410b805f9'
+def read(n):return json.loads((OUT/n).read_bytes())
+def row(p):
+ b=p.read_bytes();return dict(path=p.relative_to(ROOT).as_posix(),byteLength=len(b),sha256='sha256:'+hashlib.sha256(b).hexdigest())
+def put(n,v):
+ p=OUT/n;raw=(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode();assert not p.exists();p.write_bytes(raw)
+validation=read('validation.json');assert validation['status']=='PASS' and validation['allCertificationGatesPassed'] is False
+native=read('native-summary.json');hosted=read('github/hosted-summary.json');remote=read('remote-final.json');candidate=read('remote-certification-candidate.json');env=read('environment.json');package=read('package.json');review=read('github/workflow-review.json')
+assert hosted['disposition']=='ENVIRONMENT_BLOCKED'
+assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip()==C3AB
+interfaces=json.loads((ROOT/'repositories/cca-conformance/mo1306-phase3-interfaces.json').read_bytes())
+ended=datetime.now(timezone.utc);start=datetime(2026,9,26,19,18,51,tzinfo=timezone.utc);elapsed=(ended-start).total_seconds()
+inputs=['package.json','environment.json','preservation-before.json','preservation-validation.json','reuse-analysis.json','native-summary.json','action-pins.json','github/workflow-review.json','github/static-audit.json','github/hosted-summary.json','remote-before.json','remote-certification-candidate.json','remote-push.json','remote-published.json','remote-final.json','check-mo1302.json','check-workspace.json','validation.json','validation-negatives.json']
+receipt=dict(kind='MemoryOSPhase3ARExecutionReceipt',version='1.0.0',status='CERTIFICATION_BLOCKED',baseline=C3AB,correction=C3A,baselineParent=C3A,correctionParent=B2,archive=package['archive'],nativeStatus=native.get('status'),hostedStatus=hosted['disposition'],allCertificationGatesPassed=False,labels=interfaces['providers'],labelsPromoted=False,validation=row(OUT/'validation.json'),inputs={name:row(OUT/name) for name in inputs},remoteBranch='mo1306-certification',remoteCommit=candidate['commit'],remoteParent=C3AB,remoteTree=candidate['tree'],mainAndTagsUnchanged=True,localCheckpoint=dict(subject='cert(memoryos-1.3): certify corrected MO-1306 Windows and GitHub execution',requiredParent=C3AB,branch='mo1306/phase3a-refresh',purpose='User-requested evidence-only checkpoint with CERTIFICATION_BLOCKED disposition; the requested subject does not assert that unpassed gates succeeded.',pushAuthorized=False,actualCommitIdentity='Resolved from branch HEAD after this receipt is committed; no future/self-referential SHA recorded.'),incompleteGates=['Corrected installed full CLI FAIL and COULD_NOT_EVALUATE cases','Complete corrected CLI Policy, Policy Set and Regression matrix','Successful installed CLI generate with frozen helper deadline','Full successful native publication/lifecycle/topology certification','All actual hosted PASS/FAIL/CNE runs, artifacts, completion/run-id verification and native/hosted parity'],constraints=dict(productionChanges=False,mainModified=False,merge=False,rebase=False,cherryPick=False,forcePush=False,remoteBranchDeleted=False,tagsCreated=False,releasesCreated=False,unrelatedWorkflowsModified=False,repositorySettingsModified=False,linuxUbuntuWslUsed=False,localVmUsed=False,gitlabUsed=False,jenkinsUsed=False,azureDevOpsUsed=False),timeBudget=dict(firstExplicitClockUtc=start.isoformat(),receiptUtc=ended.isoformat(),secondsSinceFirstClock=round(elapsed),normalTargetMinutes=90,hardStopMinutes=180,withinNormalTarget=elapsed<5400,withinHardStop=elapsed<10800,hostedWaitSeconds=0,blindHostedRetries=0),phase3D='Not ready for integration. Preserve remote branch and original B2 evidence. Resolve native helper timing without changing frozen production contracts in this task; obtain separately authorized GitHub workflow registration/bootstrap within allowed policy, then targeted remaining native and actual hosted checks. Phase 3B-R retains Action advisory disposition; an Action correction may require another refresh.')
+put('execution-receipt.json',receipt)
+text=f'''MO-1306 Phase 3A-R evidence checkpoint — CERTIFICATION_BLOCKED
+
+The corrected archive and independent CLI dispatch correction checks passed. Certification is incomplete for two independently evidenced reasons. Native Windows filesystem helpers reached the frozen two-second deadline; the quiet engineering observation returned safe:true after 2032 ms, so the deadline was preserved and no full campaign was blindly retried. GitHub accepted the authorized certification branch but rejected the first manual workflow dispatch with HTTP 404. Exact remote workflow bytes were verified, the workflows are absent from default main and the Actions registry, and the branch has zero manual runs. No hosted results or artifacts were fabricated or replaced by local simulation.
+
+| Requested item | Verified result |
+| --- | --- |
+| Initial workspace | Clean `mo1306/phase3a-refresh`, expected C3AB subject and HEAD |
+| Graph | B2 `{B2}` → C3A `{C3A}` → C3AB `{C3AB}`; exact single parents |
+| Archive | `memoryos-ci@0.1.0`, `memoryos-ci-0.1.0.tgz`, 197172 bytes, SHA-256 `2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d`; independently rebuilt twice, 94 members, 25 SDK files, zero production dependencies |
+| Corrected distribution | `sha256:311927a980bd397ab70b95da77d546e4b212968d05973ecf998817764431d773` |
+| Original 3A | All 391 original paths byte-identical; B2 native certification / hosted ENVIRONMENT_BLOCKED / no original certification commit preserved |
+| Exact reuse analysis | 92/94 package members unchanged; only CLI and distribution differ. Original source-mechanism receipts remain historical; they do not certify corrected archive execution |
+| Windows | {env['actualEdition']}, {env['windows']['DisplayVersion']}, build {env['windows']['CurrentBuild']}.{env['windows']['UBR']}, x64; registry legacy ProductName retained in environment receipt |
+| Toolchain | Node 24.21.0 x64, executable SHA-256 `ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32`; npm {env['npmVersion']}; Windows PowerShell {env['windowsPowerShellVersion']}; Python 3.12.14 native engineering runtime |
+| CLI correction | 21 installed actual invalid-command cases (20 prototype-sensitive names plus ordinary invalid), exact MO1306_USAGE / exit10, empty stdout; 191 installed parser checks pass with no handler bypass |
+| Native PASS | Corrected installed Policy PASS and CLI verify succeeded with six-file bundle and exact independent SDK normative bytes before retained harness log-name failure |
+| Native FAIL / CNE | Required full installed CLI refresh incomplete due frozen helper timeout; not certified |
+| Semantic parity | Nine direct installed permission-worker Policy / Policy Set / Regression PASS / FAIL / CNE comparisons match independent source SDK1.1.0 normative bytes/digests; this does not replace full CLI refresh |
+| Valid CLI commands | run and verify demonstrated in partial native evidence; generate dispatch reaches acquisition but successful generation is blocked by helper timing |
+| Correction A / publication | See native-summary.json for exact bounded observations and independent controls; incomplete overall native campaign is not certified |
+| Remote | Existing origin `https://github.com/moelsaka01/cca-workspace.git` resolves to `moelsaka01/memoryos-specification` |
+| Remote branch | `mo1306-certification`, left available for Phase3D verification |
+| Remote commit | `{candidate['commit']}`, parent `{C3AB}`, tree `{candidate['tree']}`; certification-only, adds only three workflow files, no product authority |
+| Workflow identity | Three fixed-case files retain `MemoryOS Provider-Neutral CI`, job `memoryos_ci`, runner `windows-2022`, 10-minute job bounds |
+| Immutable Action pins | checkout `3d3c42e5aac5ba805825da76410c181273ba90b1`; upload-artifact `043fb46d1a93c77aae656e7c1c64a875d1fc6a0a`; exact GitHub commits verified |
+| Frozen Node bootstrap | Fixed Node24.21.0 x64 ZIP URL, 37618919 bytes, ZIP SHA-256 `158f7685b44de51f6c0df1d153526cbcd3e1bc739a8dfc607721cef75de9e541`; production bootstrap unchanged |
+| Permissions / trust | contents:read, manual workflow_dispatch only, persist-credentials:false, no pull_request_target, immutable trusted tool checkout separated from data checkout |
+| Workflow validation | Deterministic installed pure-generator API bytes twice per case; reviewed fixture staging preserved; 57 negative controls pass. CLI generation remains explicitly blocked |
+| Hosted run IDs / attempts / jobs | No runs created; one authenticated PASS dispatch attempt returned404, no blind retries or alternate triggers; FAIL/CNE not dispatched after shared registration blocker |
+| Hosted PASS / FAIL / CNE | NOT_EXECUTED; actual runner OS and run start/end/conclusion unavailable. windows-2022 is configured only |
+| Hosted artifacts | None produced/downloaded. Frozen four/six-file validators and negative controls exist; actual hosted artifact validation remains pending |
+| Completion / run-id | Partial native verified bundle binds core run ID; actual hosted completion/run-id and operational metadata binding remain pending |
+| Native/hosted parity | NOT_EXECUTED because no actual hosted bundles |
+| MO-1302 | Four targeted regression checks pass; released Action bytes unchanged |
+| Evidence / receipt validation | validation.json validates achieved claims and truthful blocked disposition; allCertificationGatesPassed=false; mutation controls reject forged success |
+| Labels | Generic and GitHub success labels not promoted; GitLab/Jenkins/Azure labels unchanged |
+| Workspace verification | PASS; final staged git diff --check and postcommit status are recorded by final checkpoint verification |
+| Local checkpoint | Exactly one requested evidence-only commit is to be made on `mo1306/phase3a-refresh`, exact requested subject, parent C3AB. Its body explicitly states CERTIFICATION_BLOCKED. Actual SHA/status are reported after commit; no self-reference |
+| Push scope / main / tags | Only temporary remote certification commit pushed to refs/heads/mo1306-certification. Local final evidence checkpoint is not pushed. Remote main remains `5955af062152a84c10de17860ba0bcabe8b3555f`; local main remains C3AB; all observed tags unchanged; no tags/releases/merges/rebases/cherry-picks |
+| Linux/Ubuntu / VM / other providers | No Linux, Ubuntu, WSL, local VM, GitLab, Jenkins or Azure DevOps execution/account operations |
+| Duration / budget | {round(elapsed/60,1)} minutes since first explicit clock observation at receipt creation; within90-minute target and180-minute hard stop. No hosted waiting or retries |
+| Phase3D | Not ready. Retain branch and historical evidence. Resolve both blockers through separately authorized targeted work; Action advisory disposition remains Phase3B-R responsibility |
+
+The local checkpoint preserves all failed native/harness attempts and all remote request evidence. Its required subject is a task label; the receipt, validation and this report explicitly withhold certification.
+
+MO-1306 PHASE 3A CERTIFICATION BLOCKED
+'''
+p=OUT/'REPORT.md';assert not p.exists();p.write_text(text,encoding='utf8',newline='\n')
+files=[p for p in OUT.rglob('*') if p.is_file()]+[p for p in TOOLS.rglob('*') if p.is_file() and '__pycache__' not in p.parts]+[ROOT/e['path'] for e in review['workflows']]
+put('evidence-index.json',dict(kind='MemoryOSPhase3ARClosedEvidenceIndex',version='1.0.0',files=sorted([row(p) for p in files],key=lambda r:r['path']),excluded=[(OUT/'evidence-index.json').relative_to(ROOT).as_posix()]))
+print('Blocked execution receipt, report and closed evidence index written:',len(files),'files')
