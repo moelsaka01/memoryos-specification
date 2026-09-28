@@ -1,0 +1,20 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+const root=fileURLToPath(new URL('../../../../',import.meta.url));
+const node='C:/Users/melsa/Documents/Codex/cca-workspace/.cache/mo1304-phase3-toolchain/node-v24.21.0-win-x64/node.exe';
+const directory=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase2c-final/surfaces-attempt1');
+fs.mkdirSync(directory,{recursive:false});
+const tests=['correction','surfaces','supplement','api_bootstrap','launch_policy'].map(n=>'repositories/cca-conformance/tests/mo1307_phase2c_'+n+'_test.mjs');
+function walk(relative){return fs.readdirSync(path.join(root,relative),{withFileTypes:true}).sort((a,b)=>a.name.localeCompare(b.name)).flatMap(e=>e.isDirectory()?walk(relative+'/'+e.name):[relative+'/'+e.name]);}
+const paths=[...walk('repositories/memoryos-readiness').filter(p=>!/(?:sbom\.spdx|distribution-manifest)\.json$/.test(p)),...tests,...walk('repositories/cca-conformance/tools/mo1307-phase2c-resumed'),...walk('repositories/cca-conformance/tools/mo1307-phase2c-correction'),fileURLToPath(import.meta.url).slice(root.length).replaceAll('\\','/')].sort();
+const sources=[...new Set(paths)].map(p=>{const b=fs.readFileSync(path.join(root,p));return{path:p,byteLength:b.length,sha256:createHash('sha256').update(b).digest('hex')};});
+fs.writeFileSync(path.join(directory,'inputs.json'),JSON.stringify({kind:'MO1307FinalSurfaceInputBinding',createdUtc:new Date().toISOString(),sources},null,2)+'\n');
+const args=['repositories/cca-conformance/tools/mo1307-phase2c-resumed/run-command.mjs',path.join(directory,'command'),node,'--test','--test-concurrency=1',...tests];
+const answer=spawnSync(node,args,{cwd:root,windowsHide:true,encoding:'utf8',timeout:60000,maxBuffer:1024*1024});
+const unchanged=sources.every(r=>createHash('sha256').update(fs.readFileSync(path.join(root,r.path))).digest('hex')===r.sha256);
+const receipt={kind:'MO1307FinalSurfaceCampaign',result:answer.status===0&&unchanged?'PASS':'FAIL',sourcesUnchanged:unchanged,exit:answer.status,tests,command:JSON.parse(fs.readFileSync(path.join(directory,'command/receipt.json'),'utf8'))};
+fs.writeFileSync(path.join(directory,'receipt.json'),JSON.stringify(receipt,null,2)+'\n');
+process.stdout.write(JSON.stringify(receipt)+'\n');process.exitCode=receipt.result==='PASS'?0:1;

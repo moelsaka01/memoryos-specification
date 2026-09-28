@@ -1,0 +1,675 @@
+TAP version 13
+# Subtest: C01 frozen public exports contain exactly two async functions
+ok 1 - C01 frozen public exports contain exactly two async functions
+  ---
+  duration_ms: 1.8479
+  type: 'test'
+  ...
+# Subtest: C02 closed counts and every frozen exit
+ok 2 - C02 closed counts and every frozen exit
+  ---
+  duration_ms: 0.9128
+  type: 'test'
+  ...
+# Subtest: C03 deterministic key order includes numeric-looking ASCII keys
+ok 3 - C03 deterministic key order includes numeric-looking ASCII keys
+  ---
+  duration_ms: 0.5852
+  type: 'test'
+  ...
+# Subtest: C04 Unicode scalars are not normalized or escaped unnecessarily
+ok 4 - C04 Unicode scalars are not normalized or escaped unnecessarily
+  ---
+  duration_ms: 1.1955
+  type: 'test'
+  ...
+# Subtest: C05 parser duplicate-key
+ok 5 - C05 parser duplicate-key
+  ---
+  duration_ms: 0.2619
+  type: 'test'
+  ...
+# Subtest: C05 parser escaped-duplicate-key
+ok 6 - C05 parser escaped-duplicate-key
+  ---
+  duration_ms: 0.2005
+  type: 'test'
+  ...
+# Subtest: C05 parser unknown-token
+ok 7 - C05 parser unknown-token
+  ---
+  duration_ms: 0.1396
+  type: 'test'
+  ...
+# Subtest: C05 parser negative-zero
+ok 8 - C05 parser negative-zero
+  ---
+  duration_ms: 0.1773
+  type: 'test'
+  ...
+# Subtest: C05 parser negative-integer
+ok 9 - C05 parser negative-integer
+  ---
+  duration_ms: 0.1536
+  type: 'test'
+  ...
+# Subtest: C05 parser fraction
+ok 10 - C05 parser fraction
+  ---
+  duration_ms: 0.193
+  type: 'test'
+  ...
+# Subtest: C05 parser exponent
+ok 11 - C05 parser exponent
+  ---
+  duration_ms: 0.1242
+  type: 'test'
+  ...
+# Subtest: C05 parser unsafe-integer
+ok 12 - C05 parser unsafe-integer
+  ---
+  duration_ms: 0.0999
+  type: 'test'
+  ...
+# Subtest: C05 parser leading-zero
+ok 13 - C05 parser leading-zero
+  ---
+  duration_ms: 0.0976
+  type: 'test'
+  ...
+# Subtest: C05 parser unpaired-surrogate
+ok 14 - C05 parser unpaired-surrogate
+  ---
+  duration_ms: 0.0876
+  type: 'test'
+  ...
+# Subtest: C05 parser control-string
+ok 15 - C05 parser control-string
+  ---
+  duration_ms: 0.0949
+  type: 'test'
+  ...
+# Subtest: C05 parser del-string
+ok 16 - C05 parser del-string
+  ---
+  duration_ms: 0.0755
+  type: 'test'
+  ...
+# Subtest: C05 parser non-ascii-key
+ok 17 - C05 parser non-ascii-key
+  ---
+  duration_ms: 0.064
+  type: 'test'
+  ...
+# Subtest: C05 parser trailing-garbage
+ok 18 - C05 parser trailing-garbage
+  ---
+  duration_ms: 0.0605
+  type: 'test'
+  ...
+# Subtest: C05 parser trailing-comma
+ok 19 - C05 parser trailing-comma
+  ---
+  duration_ms: 0.0639
+  type: 'test'
+  ...
+# Subtest: C05 parser empty-document
+ok 20 - C05 parser empty-document
+  ---
+  duration_ms: 0.0832
+  type: 'test'
+  ...
+# Subtest: C05 parser noncanonical-spaces
+ok 21 - C05 parser noncanonical-spaces
+  ---
+  duration_ms: 0.0957
+  type: 'test'
+  ...
+# Subtest: C05 parser missing-lf
+ok 22 - C05 parser missing-lf
+  ---
+  duration_ms: 0.0673
+  type: 'test'
+  ...
+# Subtest: C05 parser double-lf
+ok 23 - C05 parser double-lf
+  ---
+  duration_ms: 0.0693
+  type: 'test'
+  ...
+# Subtest: C05 parser key-order
+ok 24 - C05 parser key-order
+  ---
+  duration_ms: 0.0909
+  type: 'test'
+  ...
+# Subtest: C05 parser unnecessary-escape
+ok 25 - C05 parser unnecessary-escape
+  ---
+  duration_ms: 0.0693
+  type: 'test'
+  ...
+# Subtest: C05 parser escaped-solidus
+ok 26 - C05 parser escaped-solidus
+  ---
+  duration_ms: 0.0654
+  type: 'test'
+  ...
+# Subtest: C05 parser crlf
+ok 27 - C05 parser crlf
+  ---
+  duration_ms: 0.071
+  type: 'test'
+  ...
+# Subtest: C06 invalid UTF-8 and BOM reject
+ok 28 - C06 invalid UTF-8 and BOM reject
+  ---
+  duration_ms: 0.185
+  type: 'test'
+  ...
+# Subtest: C07 depth limit admits16 and rejects17
+ok 29 - C07 depth limit admits16 and rejects17
+  ---
+  duration_ms: 0.2916
+  type: 'test'
+  ...
+# Subtest: C08 members/key/string exact boundaries
+ok 30 - C08 members/key/string exact boundaries
+  ---
+  duration_ms: 0.8813
+  type: 'test'
+  ...
+# Subtest: C09 total values boundary and bounded copy
+ok 31 - C09 total values boundary and bounded copy
+  ---
+  duration_ms: 147.9489
+  type: 'test'
+  ...
+# Subtest: C10 shared buffers/accessors/sparse arrays/cycles/undefined reject
+ok 32 - C10 shared buffers/accessors/sparse arrays/cycles/undefined reject
+  ---
+  duration_ms: 0.4206
+  type: 'test'
+  ...
+# Subtest: C11 SHA256 raw/claim/candidate identity and independent proof layer
+ok 33 - C11 SHA256 raw/claim/candidate identity and independent proof layer
+  ---
+  duration_ms: 0.3108
+  type: 'test'
+  ...
+# Subtest: C12 every error has immutable fields and fixed safe diagnostic
+ok 34 - C12 every error has immutable fields and fixed safe diagnostic
+  ---
+  duration_ms: 1.8044
+  type: 'test'
+  ...
+# Subtest: C13 errors select numeric exit then ASCII reference within a phase
+ok 35 - C13 errors select numeric exit then ASCII reference within a phase
+  ---
+  duration_ms: 0.273
+  type: 'test'
+  ...
+# Subtest: C14 exact configuration accepted and unknown fields/profiles/versions rejected
+ok 36 - C14 exact configuration accepted and unknown fields/profiles/versions rejected
+  ---
+  duration_ms: 1.646
+  type: 'test'
+  ...
+# Subtest: C15 no discovery or output/trust fields in configuration
+ok 37 - C15 no discovery or output/trust fields in configuration
+  ---
+  duration_ms: 0.6284
+  type: 'test'
+  ...
+# Subtest: C16 deterministic blocker ID excludes mutable claim provenance
+ok 38 - C16 deterministic blocker ID excludes mutable claim provenance
+  ---
+  duration_ms: 0.3853
+  type: 'test'
+  ...
+# Subtest: C17 error schema is closed and operational outcomes are not readiness states
+ok 39 - C17 error schema is closed and operational outcomes are not readiness states
+  ---
+  duration_ms: 0.3073
+  type: 'test'
+  ...
+# Subtest: C18 public entry points reject malformed input and prior cancellation
+ok 40 - C18 public entry points reject malformed input and prior cancellation
+  ---
+  duration_ms: 2.368
+  type: 'test'
+  ...
+# Subtest: C19 shared definitions are deeply immutable
+ok 41 - C19 shared definitions are deeply immutable
+  ---
+  duration_ms: 0.1522
+  type: 'test'
+  ...
+# Subtest: C20 generated definitions equal source canonical bytes
+ok 42 - C20 generated definitions equal source canonical bytes
+  ---
+  duration_ms: 1.566
+  type: 'test'
+  ...
+# Subtest: C21 serializer stops at byte budget before expansive allocation
+ok 43 - C21 serializer stops at byte budget before expansive allocation
+  ---
+  duration_ms: 19.6373
+  type: 'test'
+  ...
+# Subtest: C22 arrays reject hidden properties without reading getters
+ok 44 - C22 arrays reject hidden properties without reading getters
+  ---
+  duration_ms: 0.2011
+  type: 'test'
+  ...
+# Subtest: C23 admission errors precede restrictive schema predicates
+ok 45 - C23 admission errors precede restrictive schema predicates
+  ---
+  duration_ms: 11.822
+  type: 'test'
+  ...
+# Subtest: C24 nested evidence version and coverage mappings
+ok 46 - C24 nested evidence version and coverage mappings
+  ---
+  duration_ms: 1.1261
+  type: 'test'
+  ...
+# Subtest: C25 profile product mismatch precedes schema INPUT
+ok 47 - C25 profile product mismatch precedes schema INPUT
+  ---
+  duration_ms: 0.6156
+  type: 'test'
+  ...
+# Subtest: C26 defensive internal cycle has GRAPH_CYCLE and bound has GRAPH_LIMIT
+ok 48 - C26 defensive internal cycle has GRAPH_CYCLE and bound has GRAPH_LIMIT
+  ---
+  duration_ms: 30.3333
+  type: 'test'
+  ...
+# Subtest: C27 configuration errors precede evidence acquisition errors
+ok 49 - C27 configuration errors precede evidence acquisition errors
+  ---
+  duration_ms: 15.795
+  type: 'test'
+  ...
+# Subtest: C28 API holder shape rejects getters/symbols/hidden fields safely
+ok 50 - C28 API holder shape rejects getters/symbols/hidden fields safely
+  ---
+  duration_ms: 8.7233
+  type: 'test'
+  ...
+# Subtest: C29 well formed bundle traverses integrated verifier and readiness worker
+ok 51 - C29 well formed bundle traverses integrated verifier and readiness worker
+  ---
+  duration_ms: 279.14
+  type: 'test'
+  ...
+# Subtest: C30 malformed verification versions use their own mismatch categories
+ok 52 - C30 malformed verification versions use their own mismatch categories
+  ---
+  duration_ms: 5.1738
+  type: 'test'
+  ...
+# Subtest: C31 reference aggregation rejects empty vectors and dangling CNE
+ok 53 - C31 reference aggregation rejects empty vectors and dangling CNE
+  ---
+  duration_ms: 4.5009
+  type: 'test'
+  ...
+# Subtest: C32 provider representation cannot assert hosted certificate without vectors
+ok 54 - C32 provider representation cannot assert hosted certificate without vectors
+  ---
+  duration_ms: 0.4113
+  type: 'test'
+  ...
+# Subtest: C33 malformed nested verification records preserve mismatch code and reference
+ok 55 - C33 malformed nested verification records preserve mismatch code and reference
+  ---
+  duration_ms: 10.8192
+  type: 'test'
+  ...
+# Subtest: C34 nested authority profile errors use PROFILE_MISMATCH during bootstrap
+ok 56 - C34 nested authority profile errors use PROFILE_MISMATCH during bootstrap
+  ---
+  duration_ms: 22.337
+  type: 'test'
+  ...
+# Subtest: C35 verification shape remapping does not hide admission limits
+ok 57 - C35 verification shape remapping does not hide admission limits
+  ---
+  duration_ms: 12.8484
+  type: 'test'
+  ...
+# Subtest: C36 known lower GitHub minimum remains valid without fabricated hosted cases
+ok 58 - C36 known lower GitHub minimum remains valid without fabricated hosted cases
+  ---
+  duration_ms: 0.4006
+  type: 'test'
+  ...
+# Subtest: fixture catalog is finite, complete and matches independent exact-byte SHA-256
+ok 59 - fixture catalog is finite, complete and matches independent exact-byte SHA-256
+  ---
+  duration_ms: 61.825
+  type: 'test'
+  ...
+# Subtest: 476 non-parser fixture records match closed schema and local foundation classifications
+ok 60 - 476 non-parser fixture records match closed schema and local foundation classifications
+  ---
+  duration_ms: 1959.1408
+  type: 'test'
+  ...
+# Subtest: nine malformed byte/parser vectors reject with exact operational codes
+ok 61 - nine malformed byte/parser vectors reject with exact operational codes
+  ---
+  duration_ms: 1.9612
+  type: 'test'
+  ...
+# Subtest: focused Phase 1 negative fixtures use the appropriate foundation seam
+ok 62 - focused Phase 1 negative fixtures use the appropriate foundation seam
+  ---
+  duration_ms: 17.5951
+  type: 'test'
+  ...
+# Subtest: all sixteen complete bundles pass snapshot, pin and byte-integrity foundations
+ok 63 - all sixteen complete bundles pass snapshot, pin and byte-integrity foundations
+  ---
+  duration_ms: 411.3207
+  type: 'test'
+  ...
+# Subtest: reference aggregation retains all records and realizes all four readiness states
+ok 64 - reference aggregation retains all records and realizes all four readiness states
+  ---
+  duration_ms: 33.6179
+  type: 'test'
+  ...
+# Subtest: canonical result identities and summaries match exact independently constructed fixture bytes
+ok 65 - canonical result identities and summaries match exact independently constructed fixture bytes
+  ---
+  duration_ms: 292.4677
+  type: 'test'
+  ...
+# Subtest: all fourteen evidence types and six graph node / five edge types have canonical positives
+ok 66 - all fourteen evidence types and six graph node / five edge types have canonical positives
+  ---
+  duration_ms: 6.839
+  type: 'test'
+  ...
+# Subtest: MO-1306 preserves actual production, BF, tag, package and all nineteen source history rows
+ok 67 - MO-1306 preserves actual production, BF, tag, package and all nineteen source history rows
+  ---
+  duration_ms: 11.1525
+  type: 'test'
+  ...
+# Subtest: MO-1306 provider limitations and ten disclosures cannot silently become hosted certification
+ok 68 - MO-1306 provider limitations and ten disclosures cannot silently become hosted certification
+  ---
+  duration_ms: 2.4401
+  type: 'test'
+  ...
+# Subtest: metadata-only proof changes and selective dependency reuse keep separate identities
+ok 69 - metadata-only proof changes and selective dependency reuse keep separate identities
+  ---
+  duration_ms: 2.5725
+  type: 'test'
+  ...
+# Subtest: human decision bindings leave all readiness and proof bytes unchanged
+ok 70 - human decision bindings leave all readiness and proof bytes unchanged
+  ---
+  duration_ms: 43.6622
+  type: 'test'
+  ...
+# Subtest: tag fixtures distinguish pre/post stage predicates from operational tampering
+ok 71 - tag fixtures distinguish pre/post stage predicates from operational tampering
+  ---
+  duration_ms: 5.3145
+  type: 'test'
+  ...
+# Subtest: future semantic negatives are classified without claiming a Phase 2 verifier exists
+ok 72 - future semantic negatives are classified without claiming a Phase 2 verifier exists
+  ---
+  duration_ms: 12.9907
+  type: 'test'
+  ...
+# Subtest: N01 pinned native runtime and fixed PowerShell installation
+ok 73 - N01 pinned native runtime and fixed PowerShell installation
+  ---
+  duration_ms: 4.9738
+  type: 'test'
+  ...
+# Subtest: N02 closed CLI commands and defaults
+ok 74 - N02 closed CLI commands and defaults
+  ---
+  duration_ms: 1.2955
+  type: 'test'
+  ...
+# Subtest: N03 prototype-sensitive and invented commands reject as usage
+ok 75 - N03 prototype-sensitive and invented commands reject as usage
+  ---
+  duration_ms: 0.6506
+  type: 'test'
+  ...
+# Subtest: N04 duplicate unknown missing extra flags reject
+ok 76 - N04 duplicate unknown missing extra flags reject
+  ---
+  duration_ms: 0.3926
+  type: 'test'
+  ...
+# Subtest: N05 forbidden runtime environment and Node options reject before I/O
+ok 77 - N05 forbidden runtime environment and Node options reject before I/O
+  ---
+  duration_ms: 0.3111
+  type: 'test'
+  ...
+# Subtest: N04b inspectable configuration path failures select lowest logical ID
+ok 78 - N04b inspectable configuration path failures select lowest logical ID
+  ---
+  duration_ms: 0.373
+  type: 'test'
+  ...
+# Subtest: N06 relative lexical boundaries and hostile spellings
+ok 79 - N06 relative lexical boundaries and hostile spellings
+  ---
+  duration_ms: 0.3315
+  type: 'test'
+  ...
+# Subtest: N07 absolute roots full paths overlap and case aliases
+ok 80 - N07 absolute roots full paths overlap and case aliases
+  ---
+  duration_ms: 0.4261
+  type: 'test'
+  ...
+# Subtest: N08 identity policy rejects any reparse flag hardlink wrong type and changes
+ok 81 - N08 identity policy rejects any reparse flag hardlink wrong type and changes
+  ---
+  duration_ms: 0.7195
+  type: 'test'
+  ...
+# Subtest: N09 helper canonical round-trip and closed operation fields
+ok 82 - N09 helper canonical round-trip and closed operation fields
+  ---
+  duration_ms: 3.4605
+  type: 'test'
+  ...
+# Subtest: N10 helper frame prefix truncation trailing data and caps
+ok 83 - N10 helper frame prefix truncation trailing data and caps
+  ---
+  duration_ms: 0.4729
+  type: 'test'
+  ...
+# Subtest: N11 helper sorted explicit allowlist path and per-file boundaries
+ok 84 - N11 helper sorted explicit allowlist path and per-file boundaries
+  ---
+  duration_ms: 1.7431
+  type: 'test'
+  ...
+# Subtest: N12 acquisition needs four serial exits and invalid overlap or retry is terminal
+ok 85 - N12 acquisition needs four serial exits and invalid overlap or retry is terminal
+  ---
+  duration_ms: 4.8224
+  type: 'test'
+  ...
+# Subtest: N13 helper response exact snapshot identity and base64 validation
+ok 86 - N13 helper response exact snapshot identity and base64 validation
+  ---
+  duration_ms: 0.7997
+  type: 'test'
+  ...
+# Subtest: N14 helper decoded aggregate boundary and +1
+ok 87 - N14 helper decoded aggregate boundary and +1
+  ---
+  duration_ms: 258.8829
+  type: 'test'
+  ...
+# Subtest: N15 native fixed PowerShell snapshots and checked inspection sanitization
+not ok 88 - N15 native fixed PowerShell snapshots and checked inspection sanitization
+  ---
+  duration_ms: 2393.5964
+  type: 'test'
+  location: 'C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\tests\\mo1307_phase1_native_test.mjs:196:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'MO1307_FILESYSTEM_BOUNDARY'
+    - null
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ~
+  actual: 'MO1307_FILESYSTEM_BOUNDARY'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:204:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: N16 native helper rejects hostile operation extra fields and oversized frame
+ok 89 - N16 native helper rejects hostile operation extra fields and oversized frame
+  ---
+  duration_ms: 5509.5814
+  type: 'test'
+  ...
+# Subtest: N17 native CLI evaluates and publishes exact integrated result
+not ok 90 - N17 native CLI evaluates and publishes exact integrated result
+  ---
+  duration_ms: 2245.2354
+  type: 'test'
+  location: 'C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\tests\\mo1307_phase1_native_test.mjs:234:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"code":"MO1307_FILESYSTEM_BOUNDARY","kind":"MemoryOSReadinessError","reference":null,"stage":"CONFIGURATION","version":"1.0.0"}
+    
+    
+    20 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 20
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:241:39)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: N18 publication exclusive create exact pending and single-file commit
+ok 91 - N18 publication exclusive create exact pending and single-file commit
+  ---
+  duration_ms: 74.0818
+  type: 'test'
+  ...
+# Subtest: N19 existing final destination never replaced and pending retained
+ok 92 - N19 existing final destination never replaced and pending retained
+  ---
+  duration_ms: 36.18
+  type: 'test'
+  ...
+# Subtest: N20 pending collision and mutation fail closed without cleanup
+ok 93 - N20 pending collision and mutation fail closed without cleanup
+  ---
+  duration_ms: 62.7682
+  type: 'test'
+  ...
+# Subtest: N21 publication byte ceiling boundary and +1 before write
+ok 94 - N21 publication byte ceiling boundary and +1 before write
+  ---
+  duration_ms: 86.1108
+  type: 'test'
+  ...
+# Subtest: N22 branded framed inspection required and identity change rejects
+ok 95 - N22 branded framed inspection required and identity change rejects
+  ---
+  duration_ms: 18.7215
+  type: 'test'
+  ...
+# Subtest: N23 primitive late checkpoint prevents rename and retains pending
+ok 96 - N23 primitive late checkpoint prevents rename and retains pending
+  ---
+  duration_ms: 25.0479
+  type: 'test'
+  ...
+# Subtest: N24 foundation retains no-network and fixed orchestration boundaries
+ok 97 - N24 foundation retains no-network and fixed orchestration boundaries
+  ---
+  duration_ms: 9.5264
+  type: 'test'
+  ...
+# Subtest: package metadata and deterministic nonrecursive bindings
+ok 98 - package metadata and deterministic nonrecursive bindings
+  ---
+  duration_ms: 345.9902
+  type: 'test'
+  ...
+# Subtest: unexpected member is rejected without refreshing the binding
+ok 99 - unexpected member is rejected without refreshing the binding
+  ---
+  duration_ms: 186.9514
+  type: 'test'
+  ...
+# Subtest: changed shipped source fails exact distribution binding
+ok 100 - changed shipped source fails exact distribution binding
+  ---
+  duration_ms: 223.0786
+  type: 'test'
+  ...
+# Subtest: schema drift cannot be hidden by rebuilding manifests
+ok 101 - schema drift cannot be hidden by rebuilding manifests
+  ---
+  duration_ms: 221.3391
+  type: 'test'
+  ...
+# Subtest: constants drift cannot be hidden by rebuilding manifests
+ok 102 - constants drift cannot be hidden by rebuilding manifests
+  ---
+  duration_ms: 274.4015
+  type: 'test'
+  ...
+# Subtest: dependencies, lifecycle hooks, extra exports and traversal allowlist are rejected
+ok 103 - dependencies, lifecycle hooks, extra exports and traversal allowlist are rejected
+  ---
+  duration_ms: 1007.6991
+  type: 'test'
+  ...
+# Subtest: network and external imports are rejected before manifest regeneration
+ok 104 - network and external imports are rejected before manifest regeneration
+  ---
+  duration_ms: 1016.2882
+  type: 'test'
+  ...
+# Subtest: missing fixed helper and mutated manifest rows are rejected
+ok 105 - missing fixed helper and mutated manifest rows are rejected
+  ---
+  duration_ms: 990.49
+  type: 'test'
+  ...
+1..105
+# tests 105
+# suites 0
+# pass 103
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18911.0676

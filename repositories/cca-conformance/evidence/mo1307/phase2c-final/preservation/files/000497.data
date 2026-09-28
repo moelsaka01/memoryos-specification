@@ -1,0 +1,4 @@
+const fs = require('node:fs'); const path = require('node:path'); const { spawnSync } = require('node:child_process');
+const base = process.argv[2];
+const r = spawnSync('C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe', ['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(base,'diagnostic7-helper.ps1')],{ input:fs.readFileSync(path.join(base,'001.request.bin')),env:{SystemRoot:'C:\\Windows',WINDIR:'C:\\Windows'},windowsHide:true,timeout:5000,maxBuffer:16777216});
+fs.writeFileSync(path.join(base,'diagnostic7.stdout'),r.stdout,{flag:'wx'}); fs.writeFileSync(path.join(base,'diagnostic7.stderr'),r.stderr,{flag:'wx'}); console.log(r.stderr.toString());

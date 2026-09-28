@@ -1,0 +1,53 @@
+{
+  "runtime": "v24.21.0",
+  "platform": "win32",
+  "case": "NRT01",
+  "elapsedMs": 10012.875,
+  "errorCode": "MO1307_TIMEOUT",
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 30048.135,
+    "helpers": 0,
+    "workers": 1,
+    "helperUsedMs": 0,
+    "activeRole": null,
+    "cleanupConfirmed": true,
+    "terminalCode": "MO1307_TIMEOUT",
+    "terminalAt": 10052.7572,
+    "cleanupDeadline": 12052.7572,
+    "events": [
+      {
+        "type": "start",
+        "at": 48.5593,
+        "role": "worker",
+        "deadline": 10048.4923,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 50.5762,
+        "role": "worker",
+        "threadId": 1,
+        "resourceLimits": {
+          "maxYoungGenerationSizeMb": 16,
+          "maxOldGenerationSizeMb": 128,
+          "codeRangeSizeMb": -1,
+          "stackSizeMb": 4
+        }
+      },
+      {
+        "type": "terminal",
+        "at": 10052.7762,
+        "code": "MO1307_TIMEOUT",
+        "stage": "EVALUATION"
+      },
+      {
+        "type": "cleanup",
+        "at": 10060.5631,
+        "role": "worker",
+        "confirmed": true
+      }
+    ]
+  },
+  "witness": "Actual Node worker thread executing an infinite CPU loop; production supervisor external timer and Worker.terminate; fixed 10000ms sub-budget."
+}

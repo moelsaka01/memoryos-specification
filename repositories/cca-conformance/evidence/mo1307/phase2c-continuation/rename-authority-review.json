@@ -1,0 +1,89 @@
+{
+  "kind": "MO1307SubmittedRenameAuthorityReview",
+  "classification": "CONTRACT_DEFECT",
+  "scope": "Gap between non-abortable submitted asynchronous rename and mandatory terminal precommit deadline/publication guarantees; not universal implementation impossibility.",
+  "diagnostic": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2c-continuation/rename-boundary-diagnostic/receipt.json",
+    "byteLength": 2042,
+    "sha256": "sha256:91a6362dc7878e2d4fa618fd121b79215843a10cf462c955df89f0c99c0039d3"
+  },
+  "observation": {
+    "mechanism": "Actual fs.promises.rename queued behind four bounded engineering PBKDF2 jobs on existing libuv threads.",
+    "remainingCliBudgetMs": 50,
+    "submittedAt": 2.890899999999995,
+    "atFailure": 62.83689999999999,
+    "code": "MO1307_TIMEOUT",
+    "finalAtFailure": false,
+    "pendingAtFailure": true,
+    "nativeCompletedAtFailure": false,
+    "afterNativeRename": 805.8029,
+    "finalAfter": true,
+    "pendingAfter": false
+  },
+  "scopeLimitations": [
+    "Four finite engineering PBKDF2 jobs supply controlled libuv queue contention. They are not normal production CLI workload or shipped product functionality.",
+    "The actual submitted filesystem rename and native path absence/presence were observed on pinned Windows Node. This is not merely a callback delayed after an already committed rename.",
+    "The diagnostic is a single classification witness, not a completed production nine-request lifecycle or proof that every alternative implementation is impossible."
+  ],
+  "clauses": [
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "startLine": 1234,
+      "endLine": 1252,
+      "quote": "Deadlines use an operational monotonic clock outside the pure evaluation\nfunction. A supervisor timer plus worker isolation prevents a same-thread timer\nfrom falsely claiming preemption of synchronous parsing. Success is accepted\nonly strictly before the deadline; equality/later is TIMEOUT. Cancellation\nobserved before success is CANCELLED. Late worker/helper output is ignored;\nno success grace. Cleanup may continue within its separate allowance but cannot\npublish. If abort and deadline are first observed at the same checkpoint,\nTIMEOUT wins when now >= deadline; an abort observed strictly earlier wins\nCANCELLED. After final rename, the result is committed: later abort/deadline\ncannot retract it. The remaining overall deadline still bounds stdout transport.\nBefore rename (or for verify), timeout/abort returns TIMEOUT/CANCELLED; after\nrename, timeout/abort during stdout is OUTPUT with the committed file retained.\nA failed transport may have emitted a partial line; only one fully written\nsummary ending LF is a complete success summary. Cancel pending writes and\nterminate within the cleanup allowance; stdout backpressure cannot wait forever.\nThe 2-second cleanup allowance extends total elapsed time only for failed\ninvocations, never the success deadline; maximum cleanup completion is 32 seconds for CLI or\n12 seconds for API. Worker termination failure is operational failure with no completed\nresult, not a promise of instantaneous OS termination."
+    },
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "startLine": 1324,
+      "endLine": 1336,
+      "quote": "There is no multi-file assessment bundle, duplicate graph file, receipt or\ncompletion marker. The single result already includes graph and audit manifest\nprojection. Exclusively create output-root (existing directory is OUTPUT), write\nonly `memoryos-readiness-result.json.pending`, close and verify complete bytes,\nthen atomically rename without replacement to the fixed final basename. The\nfinal rename is the sole publication commit point. A pending file or malformed\nfinal file is never complete. Result verification checks exact recomputation,\nnot mere filename presence. No overwrite, cross-volume move or partial-result\npublication. On failure retain owned pending bytes for diagnosis; no recursive\ncleanup or failed-attempt deletion. Later manual retention management is outside\nthe evaluator. A publication failure after computation returns OUTPUT and no\nsuccess summary. A subsequent stdout failure also returns OUTPUT; if a complete\nfile was already committed, retain it and never mislabel it partial or delete it."
+    },
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "startLine": 1376,
+      "endLine": 1376,
+      "quote": "| V16 publication | Pending/truncated file cannot verify; rename is commit point; existing output never overwritten; late completion cannot publish. |"
+    },
+    {
+      "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+      "startLine": 119,
+      "endLine": 123,
+      "quote": "The required evaluate order is: acquire slots 1–4 and terminate each helper; run and terminate the sole evaluation worker; perform slot 5; exclusively create the new output directory; perform slot 6; perform slot 7; exclusively create the fixed pending file; write bounded detached result bytes, flush, verify exact complete bytes and close; perform slot 8; reread and verify exact pending bytes and close; perform slot 9; checkpoint; rename pending to final exactly once.\n\nThe checkpoint runs before and after each inspection and before filesystem mutations, including mkdir, pending creation/write and final rename. Cancellation/deadline observed after creation or staging terminates further work and retains any owned directory/pending bytes. No retry, recursive cleanup, partial normative result, completion marker, second file, overwrite or alternate output basename is allowed. A failed finalization consumes the token. Before rename, cancellation/deadline suppresses publication; no late helper response can revive it.\n\nFinal rename remains the sole commit point. A successful rename commits the complete file. Later abort, deadline or stdout failure returns OUTPUT with the committed file retained; it cannot retract or delete that file. Only a fully written summary ending LF is success. Verify has no publication capability, output directory, pending file or rename: after its four acquisition requests and worker it compares exact recomputation, optionally checks the external decision and writes only stdout."
+    },
+    {
+      "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+      "startLine": 131,
+      "endLine": 135,
+      "quote": "Let `S` be invocation start, `used` the accumulated duration of fully terminated prior helpers, and `D` the absolute CLI deadline. Its effective absolute deadline is `min(D, S+5000, S+(20000-used))`. Require positive remaining budget before launch and completion strictly before every applicable deadline; equality is TIMEOUT. The active timer starts before child launch and settles only at confirmed quiescence. No slot or new phase resets accumulated use. A per-helper or aggregate expiry is terminal TIMEOUT even if CLI time remains; pending cleanup cannot admit a response or publish.\n\nThe supervisor uses monotonic clocks and external timer enforcement; pure evaluation remains clock-free. TIMEOUT wins when abort and expiration are first observed at the same checkpoint with now at/after deadline; an abort already observed strictly earlier remains CANCELLED. Cleanup may last at most 2,000 ms after failure and never permits another helper, worker or publication; overall failed elapsed time remains bounded by CLI 32,000 / API 12,000 ms. Late output is ignored.\n\nAt any instant there is one supervisor and at most one active fixed helper plus its possible console host: at most three attributable OS roles. Evaluation is one worker **thread**, never another process. No helper or helper console host overlaps the worker or another helper invocation. New launches wait for confirmed quiescence; receiving a frame or only an early child-exit event is insufficient. Engineering observers are excluded from product-role counts and are not product dependencies."
+    },
+    {
+      "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+      "startLine": 170,
+      "endLine": 170,
+      "quote": "| Cancellation / deadline race | Mandatory checkpoints and absolute per-call/per-helper/aggregate deadlines, equality rejection, terminal abort; reject late responses and precommit publication after expiry/abort, retain committed output on postcommit transport failure. |"
+    }
+  ],
+  "rejectedInterpretations": [
+    {
+      "proposal": "Treat rename submission as the commit point",
+      "reason": "The authorities define successful final rename as sole commit. The final path was still absent when TIMEOUT was observed."
+    },
+    {
+      "proposal": "Suppress returned success but allow the submitted rename to publish during cleanup",
+      "reason": "Freeze says cleanup cannot publish; correction requires rejection of precommit publication after expiry/abort and forbids publication during cleanup."
+    },
+    {
+      "proposal": "Await a possibly indefinitely stalled rename, then return OUTPUT after eventual commit",
+      "reason": "Direct waiting does not establish the absolute failed-call bound. The already observed terminal timeout cannot revive the sequence, and eventual commit does not retroactively authorize publication during cleanup."
+    },
+    {
+      "proposal": "Assume excluded namespace attackers exclude all queue delay",
+      "reason": "The immutable-root qualification limits adversarial namespace mutation and kernel nonreplacement claims; it does not create an execution-time or libuv scheduling guarantee."
+    }
+  ],
+  "compatibleBoundary": "A contract-compatible implementation must preserve the actual rename commit point, prevent precommit mutation after terminal expiry/cancellation, and meet bounded cleanup/topology simultaneously. No demonstrated compatible implementation for the submitted unabortable rename boundary was established here.",
+  "nextAction": "STOP before dependent acceptance or completion commit for explicit authority resolving the in-flight publication/cancellation boundary or an independently demonstrated compatible implementation; do not silently change commit semantics or time limits.",
+  "noProductMutationByThisReview": true,
+  "noAdditionalDiagnosticExecution": true,
+  "noTestExecution": true
+}

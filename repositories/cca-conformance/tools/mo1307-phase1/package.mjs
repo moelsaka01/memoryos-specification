@@ -7,7 +7,7 @@ import { isBuiltin } from 'node:module';
 
 export const defaultRoot=fileURLToPath(new URL('../../../memoryos-readiness/',import.meta.url));
 const schemaNames=['assessment','assumption','audit','authority','authority-source','blocker','candidate','claim','cne-reason','code','component','configuration','contract-manifest','decision-projection','dependency','derived-qualification','digest','distribution-manifest','error','evidence','file-member','gate-definition','gate-result','grant','graph','history','history-projection','human-decision','id','identity','integer','manifest','manifest-entry','normalized-authority','normalized-authority-source','normalized-grant','normalized-slot','product-version','proof-binding','provider-detail','qualification','relative-file','result','revision','semantic-contract','shared','slot','string','summary','tag-name','tag-observation','timestamp'];
-const sourceNames=['canonical','cli-args','constants','errors','foundation','helper-protocol','index','projections','publication','schema-data','schema','windows-paths'];
+const sourceNames=['acquisition','api-input','canonical','cli-args','cli','constants','errors','evidence-graph','evidence-history','evidence-verifier','foundation','helper-protocol','helper-transport','index','integration','output','projections','publication','readiness-core','readiness-result','runtime','schema-data','schema','windows-paths','worker-entry','worker-policy'];
 export const packageFiles=Object.freeze([
   'LICENSE-NOTICE.md','NOTICES.md','README.md','bin/memoryos-readiness.mjs',
   'contracts/contract.json','contracts/definitions.json','distribution-manifest.json',
@@ -18,7 +18,7 @@ const generatedFiles=new Set(['contracts/contract.json','sbom.spdx.json','distri
 const contractFiles=packageFiles.filter(p=>p.startsWith('schemas/')||p==='contracts/definitions.json');
 export const packageMetadata=Object.freeze({
   name:'memoryos-readiness',version:'0.1.0',private:true,type:'module',
-  description:'Offline MemoryOS release-readiness foundation; assessment implementation pending',
+  description:'Offline MemoryOS release-readiness evaluation and independent verification',
   license:'UNLICENSED',engines:{node:'24.21.0'},packageManager:'npm@11.19.0',
   bin:{'memoryos-readiness':'bin/memoryos-readiness.mjs'},exports:{'.':'./src/index.mjs'},
   files:packageFiles,dependencies:{},

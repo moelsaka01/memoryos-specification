@@ -1,0 +1,18 @@
+{
+  "kind": "MO1307FinalAuthorityAuditFailure",
+  "classification": "HARNESS_DEFECT",
+  "exit": 1,
+  "completedChecks": [
+    "2A UNCHANGED_REUSABLE",
+    "2B UNCHANGED_REUSABLE",
+    "original blocked 2C five artifacts unchanged",
+    "C2FB graph and184bound source blobs",
+    "official read-only sealed correction evidence",
+    "C2FB correction evidence JSON"
+  ],
+  "failure": "Historical engineering JSON contains a BOM; strict UTF-8 JSON.parse rejects its U+FEFF before the first object.",
+  "scope": "Read-only historical evidence decoder, not normative product JSON parser.",
+  "correction": "Decode preserved engineering text according to BOM and remove only the decoded leading BOM for JSON parsing; preserve exact raw bytes/hashes. Existing successful audit outputs verified byte-identical rather than overwritten.",
+  "historicalBytesChanged": false,
+  "productOrTestsExecuted": false
+}

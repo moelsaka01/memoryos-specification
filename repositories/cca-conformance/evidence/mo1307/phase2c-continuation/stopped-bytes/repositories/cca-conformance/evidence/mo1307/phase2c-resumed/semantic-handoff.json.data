@@ -1,0 +1,92 @@
+{
+  "kind": "MO1307ResumedPhase2DSemanticHandoff",
+  "version": "1.0.0",
+  "phase2DStarted": false,
+  "phase2A": "b628349b4e678a8f71086b1b5c807ffe2edf9a5d",
+  "phase2B": "b2877ab32c317bb67896414ba9cec64f6f436ca5",
+  "packageOverlaps": [
+    "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+    "repositories/memoryos-readiness/package.json",
+    "repositories/memoryos-readiness/sbom.spdx.json",
+    "repositories/memoryos-readiness/distribution-manifest.json"
+  ],
+  "semanticAdditions2A": [
+    "repositories/memoryos-readiness/src/readiness-core.mjs",
+    "repositories/memoryos-readiness/src/readiness-result.mjs"
+  ],
+  "semanticAdditions2B": [
+    "repositories/memoryos-readiness/src/evidence-verifier.mjs",
+    "repositories/memoryos-readiness/src/evidence-graph.mjs",
+    "repositories/memoryos-readiness/src/evidence-history.mjs"
+  ],
+  "phase2BOwnedFoundation": "repositories/memoryos-readiness/src/foundation.mjs",
+  "acceptedRawLineagePaths": [
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/authority.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/envelopes/history.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/envelopes/provider.azure.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/envelopes/provider.generic.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/envelopes/provider.github.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/envelopes/provider.gitlab.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/envelopes/provider.jenkins.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/envelopes/resources.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/envelopes/scope.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/envelopes/security.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/envelopes/semantic.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/envelopes/windows.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/expected-result.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/expected-summary.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/manifest.json",
+    "repositories/cca-conformance/fixtures/mo1307/bundles/mo1306-qualified/pins.json",
+    "repositories/cca-conformance/fixtures/mo1307/catalog.json",
+    "repositories/cca-conformance/fixtures/mo1307/negative/history-omission.json",
+    "repositories/cca-conformance/tools/mo1307-phase1/generate-fixtures.mjs"
+  ],
+  "rawLineageRule": "Retain accepted 2B correction for eight formerly unconsumed configuration sources, 11 envelope source bindings, raw manifest/authority pins and expected audit/proof/summary. Candidate, normalized claims, graph, normalized authority, readiness, original raw sources and history/provider facts remain unchanged. Historical B1 receipts are not rewritten.",
+  "adapter": {
+    "call": "verifyEvidence(originalCopiedInputs)",
+    "verifyCall": "verifyResultEvidence(originalCopiedInputs,suppliedResultBytes)",
+    "returnedFields": [
+      "projection",
+      "audit",
+      "diagnostics"
+    ],
+    "selectProjectionFields": [
+      "candidate",
+      "candidateDigest",
+      "profile",
+      "stage",
+      "authorityIdentityDigest",
+      "claims",
+      "graph",
+      "graphDigest"
+    ],
+    "scopeId": "projection.normalizedAuthority.scopeId",
+    "slots": "projection.normalizedAuthority.slots",
+    "audit": "returned audit",
+    "coreCall": "computeReadiness(verified)",
+    "verifyCoreCall": "compareReadinessResult(verified,suppliedResultBytes)",
+    "readinessReturn": [
+      "result",
+      "resultBytes",
+      "readinessDigest",
+      "proofBindingDigest",
+      "proofInput",
+      "exitCode"
+    ],
+    "projectionCall": "projectReadinessResult(result,format)",
+    "decision": "Check optional decision only after independent source verification and complete exact result recomputation; actor remains NOT_VERIFIED_BY_MEMORYOS."
+  },
+  "integrationSteps": [
+    "Integrate exact accepted 2A/2B sources and their owned foundation/fixture corrections only during Phase2D.",
+    "Retain resumed 2C operational implementation and exact corrected wire2.0 nine/four invocation lifecycles.",
+    "Replace integration-pending guards only with the exact verifier/core adapter; never use engineering fixture projection or unverified authority.",
+    "Union package members once and regenerate package metadata, SBOM and distribution from reconciled bytes.",
+    "Execute integrated API/CLI vectors, source/authority negatives, deterministic exact bytes, corrected MO1306 vector, native offline installed execution, all operational boundaries, then bind B2 to existing parent artifacts."
+  ],
+  "publicationEvidence": "repositories/cca-conformance/evidence/mo1307/phase2c-resumed/publication/receipt-v2.json",
+  "publicationGroups": 57,
+  "publicationNegativeGroups": 55,
+  "publicationPositiveGroups": 2,
+  "correctionGroups": 24,
+  "sourceReview": "publication.mjs now consumes invalid stage/finalize lifecycle attempts and checks invalidation before mutation and slot8/9. helper-protocol.mjs retained corrected branded/session/deadline/slot checks unchanged."
+}

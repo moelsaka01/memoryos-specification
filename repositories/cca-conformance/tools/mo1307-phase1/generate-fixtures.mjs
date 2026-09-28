@@ -234,6 +234,12 @@ function buildBundle(name, options = {}) {
     const unevaluable = options.unevaluableGate === gateId ? [coverage[type].at(-1)] : [];
     const q = qualifications.filter(x => x.gateIds.includes(gateId) || type === 'HISTORICAL_DISPOSITION' && x.conditionIds.length > 0);
     const sourceIds = options.released ? type === 'HISTORICAL_DISPOSITION' ? unique(['released.history', ...history.flatMap(x => x.sourceIds), ...material.historySource.records.map(x => 'history-source.' + x.id)]) : sourceRecords.filter(x => x.id.startsWith('released.')).map(x => x.id).sort() : options.bindAllSourcesToArtifact && gateId === 'artifact' ? sourceRecords.map(x => x.id).sort() : ['fixture.source'];
+    // Bind the preserved raw configuration receipts to each claim that depends
+    // on their reviewed CONFIGURATION inventory; source lineage is audit-only.
+    if (options.released && dependencies.some(d => d.role === 'CONFIGURATION')) {
+      sourceIds.push(...sourceRecords.filter(s => s.id.startsWith('configuration-source.')).map(s => s.id));
+      sourceIds.sort();
+    }
     const claim = { type, version: V, originCandidate: options.reusedGate === gateId ? options.originCandidate : candidateDigest, binding: whole ? 'WHOLE_CANDIDATE' : 'DEPENDENCY_SET', dependencies, scopeId, assumptions,
       passed: coverage[type].filter(x => !failed.includes(x) && !unevaluable.includes(x)).sort(), failed: sort(failed), unevaluable: sort(unevaluable), verdict: failed.length ? 'FAIL' : unevaluable.length ? 'UNEVALUABLE' : 'PASS', detail, qualifications: q };
     const envelope = record('Evidence', { claim, sources: sourceIds, metadata: { observedAt: null, runId: options.metadata ?? null, locator: options.locatorByGate?.[gateId] ?? null } });
@@ -471,6 +477,6 @@ emit('catalog.json', { kind: 'MO1307Phase1FixtureCatalog', version: V, fixtureOn
 for (const [path, bytes] of written) {
   const full = resolve(out, path);
   if (check) { if (!existsSync(full) || !readFileSync(full).equals(bytes)) throw Error('Fixture differs: ' + path); }
-  else { mkdirSync(dirname(full), { recursive: true }); writeFileSync(full, bytes); }
+  else if (!existsSync(full) || !readFileSync(full).equals(bytes)) { mkdirSync(dirname(full), { recursive: true }); writeFileSync(full, bytes); }
 }
 console.log(JSON.stringify({ mode: check ? 'CHECK' : 'GENERATE', files: written.size, catalogEntries: catalog.length, bytes: [...written.values()].reduce((n, x) => n + x.length, 0), released: { candidateDigest: released.result.assessment.candidateDigest, readiness: released.result.assessment.readiness, history: released.history.length, graphNodes: released.graph.nodes.length, graphEdges: released.graph.edges.length } }));

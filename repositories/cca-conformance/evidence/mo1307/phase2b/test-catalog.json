@@ -1,0 +1,368 @@
+{
+  "kind": "MemoryOSReadinessPhase2BTestCatalog",
+  "version": "1.0.0",
+  "phase2B": {
+    "tests": 172,
+    "pass": 172,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "phase1": {
+    "tests": 105,
+    "pass": 105,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "categories": [
+    {
+      "category": "trustRoot",
+      "tests": [
+        "A02 operator authority pin is separate and rejects an independently wrong trust root",
+        "A03 an evidence-controlled authority mutation cannot select its own new pin"
+      ]
+    },
+    {
+      "category": "grants",
+      "tests": [
+        "A06 exact canonical claim digest is recomputed under an intact reviewed envelope grant",
+        "A07 ungranted external evidence cannot satisfy a gate",
+        "A09 granting the wrong existing claim for a compiled gate is rejected",
+        "A10 exact grant source IDs cannot substitute or omit the envelope lineage",
+        "A11 source bytes cannot appoint themselves as authority provenance",
+        "A12 authority source Git fields, classification, length, hash and released target bind exactly",
+        "A25 duplicate IDs, copied normalized grants and unconsumed evidence fail closed",
+        "A26 explicit unavailable slots omit evidence safely and optional provider slots mirror the parent"
+      ]
+    },
+    {
+      "category": "externalEvidence",
+      "tests": [
+        "A07 ungranted external evidence cannot satisfy a gate",
+        "A08 unknown evidence type and evidence version fail closed",
+        "A25 duplicate IDs, copied normalized grants and unconsumed evidence fail closed"
+      ]
+    },
+    {
+      "category": "sourceIdentity",
+      "tests": [
+        "A04 raw source bytes and raw length are verified independently of intact claim identity",
+        "A05 raw manifest identity and envelope hash cannot be repaired by a self-consistent claim hash",
+        "A10 exact grant source IDs cannot substitute or omit the envelope lineage",
+        "A12 authority source Git fields, classification, length, hash and released target bind exactly",
+        "P2B independently reverified source mutation cannot hide behind result self-hashes"
+      ]
+    },
+    {
+      "category": "claimIdentity",
+      "tests": [
+        "A06 exact canonical claim digest is recomputed under an intact reviewed envelope grant"
+      ]
+    },
+    {
+      "category": "candidateBinding",
+      "tests": [
+        "A13 candidate, manifest and independently reviewed component/contract closures cannot be substituted",
+        "A14 whole-candidate claims cannot use an earlier candidate root",
+        "A15 a manifest cannot relabel a claim origin or dependency identity",
+        "A22 REUSED cannot conceal a whole-candidate claim",
+        "A32 raw integrity failure wins over later root candidate mismatch",
+        "G06 wrong edge direction, endpoint type, root and candidate identity reject",
+        "G09 dependency claims cannot mix current candidate and dependency edges",
+        "G14 claimed identity, dependency identity and candidate root mismatches reject",
+        "HB07 immutable granted history rejects wrong candidate provenance",
+        "IB06: independently pinned source bytes and candidate context bind historical claims",
+        "P2B result evidence tamper: candidate",
+        "R03 independent source corruption precedes current-candidate authority mismatch"
+      ]
+    },
+    {
+      "category": "dependencyClosure",
+      "tests": [
+        "A15 a manifest cannot relabel a claim origin or dependency identity",
+        "A16 declared dependency role, length and content are checked against the current inventory",
+        "A17 minimum dependency closure cannot omit any relevant current component",
+        "A18 changed declared grant closure and dangling dependency IDs reject rather than first-win",
+        "G04 missing normative claim, dependency, authority, grant and edge endpoints reject",
+        "G09 dependency claims cannot mix current candidate and dependency edges",
+        "G14 claimed identity, dependency identity and candidate root mismatches reject",
+        "L05 claim dependencies and every explicit dependency reference list admit 1024 and reject 1025",
+        "P2B explicit reuse dispositions preserve unrelated dependency closure"
+      ]
+    },
+    {
+      "category": "selectiveInvalidation",
+      "tests": [
+        "A21 selective reuse is explicit and unchanged dependencies retain their exact claims",
+        "G01 exact frozen graph, authority and audit bindings: selective-reuse",
+        "P2B projection and independent result evidence: selective-reuse",
+        "P2B explicit reuse dispositions preserve unrelated dependency closure"
+      ]
+    },
+    {
+      "category": "staleness",
+      "tests": [
+        "A19 scope escalation and unapproved/changed assumptions are stale",
+        "A20 unrelated root assumptions do not stale an approved claim subset",
+        "A21 selective reuse is explicit and unchanged dependencies retain their exact claims",
+        "A22 REUSED cannot conceal a whole-candidate claim"
+      ]
+    },
+    {
+      "category": "reuse",
+      "tests": [
+        "A21 selective reuse is explicit and unchanged dependencies retain their exact claims",
+        "A22 REUSED cannot conceal a whole-candidate claim",
+        "P2B explicit reuse dispositions preserve unrelated dependency closure"
+      ]
+    },
+    {
+      "category": "history",
+      "tests": [
+        "G01 exact frozen graph, authority and audit bindings: history-blocker-unavailable",
+        "HB01: all sixteen Phase 1 bundles preserve exact history, qualifications and independent provider projections",
+        "HB02: MO-1306 binds nineteen immutable raw rows and exact twelve negative history projections",
+        "HB03: MO-1306 preserves all independent provider axes and ten disclosures",
+        "HB04: known recurrence links only active mandatory gates, including an unavailable current gate",
+        "HB05: observed recurrence preserves historical outcome while excluding optional and inactive links",
+        "HB06: current-applicable history cannot erase an unavailable gate condition",
+        "HB07 immutable granted history rejects FAIL to PASS rewrite",
+        "HB07 immutable granted history rejects BLOCKED removal",
+        "HB07 immutable granted history rejects changed historical disposition",
+        "HB07 immutable granted history rejects wrong historical source",
+        "HB07 immutable granted history rejects wrong candidate provenance",
+        "HB07 immutable granted history rejects omitted required unresolved history",
+        "HB07 immutable granted history rejects fabricated resolution",
+        "HB07 immutable granted history rejects duplicate conflicting history",
+        "HB08: malformed PASS history and duplicate conflicting rows remain invalid with fixture-owned updated pins",
+        "HB09: reviewed history must resolve nested source and authority lineage",
+        "HB10: supplied scope and history inventories reject omissions and unknown condition references",
+        "QB06: unavailable scope retains known qualified history without inventing completeness",
+        "QB07: unavailable history retains known disclosures but still validates supplied scope condition inventory",
+        "DB02: semantic history and qualification set order remains frozen and rejects reordered arrays",
+        "LB01: history record count accepts 128 and rejects 129 without truncation",
+        "IB01: complete independently pinned MO-1306 verifier retains exact history, provider state and qualifications",
+        "IB02: complete verifier rejects schema-valid rewritten or removed history despite fresh raw pins",
+        "IB03: complete verifier rejects all four MO-1306 execution promotions with unchanged reviewed grants",
+        "IB04: complete verifier uses dedicated qualification mismatch classification",
+        "IB05: complete verifier uses dedicated history mismatch classification for PASS rewriting",
+        "IB06: independently pinned source bytes and candidate context bind historical claims",
+        "L07 history representation admits 128 immutable rows and rejects 129",
+        "P2B projection and independent result evidence: history-blocker-unavailable",
+        "P2B result evidence tamper: history"
+      ]
+    },
+    {
+      "category": "qualifications",
+      "tests": [
+        "HB01: all sixteen Phase 1 bundles preserve exact history, qualifications and independent provider projections",
+        "QB01: qualifications reject omission",
+        "QB01: qualifications reject impact downgrade",
+        "QB01: qualifications reject wrong provider",
+        "QB01: qualifications reject wrong gate",
+        "QB01: qualifications reject unknown code",
+        "QB01: qualifications reject wrong scope authority",
+        "QB01: qualifications reject disclosure removal",
+        "QB01: qualifications reject fabricated authority member",
+        "QB02: scope qualification inventory rejects extra, omitted and conflicting records",
+        "QB03: an identical qualification shared by granted claims merges exact claim/grant identities",
+        "QB04: historical disclosures require exact preserved condition and gate set",
+        "QB05: bounded advisory and REST scope require their exact disclosures",
+        "QB06: unavailable scope retains known qualified history without inventing completeness",
+        "QB07: unavailable history retains known disclosures but still validates supplied scope condition inventory",
+        "QB08: both unavailable inventories retain locally valid known qualifications and defer missing inventory references",
+        "DB02: semantic history and qualification set order remains frozen and rejects reordered arrays",
+        "LB02: assessment qualification union accepts 128 and rejects 129 across individually bounded claims",
+        "IB01: complete independently pinned MO-1306 verifier retains exact history, provider state and qualifications",
+        "IB04: complete verifier uses dedicated qualification mismatch classification",
+        "L08 qualification representation admits 128 and rejects 129 without truncation",
+        "L09 scope qualification/condition reference sets each enforce their exact 128 cap",
+        "P2B result evidence tamper: qualification"
+      ]
+    },
+    {
+      "category": "providers",
+      "tests": [
+        "A26 explicit unavailable slots omit evidence safely and optional provider slots mirror the parent",
+        "A33 an authority failure wins over a later structurally valid provider contradiction",
+        "HB01: all sixteen Phase 1 bundles preserve exact history, qualifications and independent provider projections",
+        "HB03: MO-1306 preserves all independent provider axes and ten disclosures",
+        "QB01: qualifications reject wrong provider",
+        "PB01 immutable MO-1306 authority rejects false github execution promotion",
+        "PB01 immutable MO-1306 authority rejects false gitlab execution promotion",
+        "PB01 immutable MO-1306 authority rejects false jenkins execution promotion",
+        "PB01 immutable MO-1306 authority rejects false azure execution promotion",
+        "PB02: full GitHub hosted certification requires all four exact case facts",
+        "PB03: provider labels cannot alias, substitute provider identity, or remove Generic certification unnoticed",
+        "PB04: contract-only providers cannot claim SUPPORTED while not live certified",
+        "PB05: known lower-minimum unsupported facts are retained for 2A blockers with no fabricated certification",
+        "PB06: unavailable provider parents produce no fabricated provider observation",
+        "PB07: independently reviewed validation and execution facts do not imply a universal certification ranking",
+        "IB01: complete independently pinned MO-1306 verifier retains exact history, provider state and qualifications",
+        "P2B result evidence tamper: provider"
+      ]
+    },
+    {
+      "category": "dag",
+      "tests": [
+        "A01 all sixteen frozen bundles produce only verified claims and exact independent graph/audit identities",
+        "G01 exact frozen graph, authority and audit bindings: could-not-evaluate",
+        "G01 exact frozen graph, authority and audit bindings: history-blocker-unavailable",
+        "G01 exact frozen graph, authority and audit bindings: informational-ready",
+        "G01 exact frozen graph, authority and audit bindings: metadata-only",
+        "G01 exact frozen graph, authority and audit bindings: mixed-precedence",
+        "G01 exact frozen graph, authority and audit bindings: mo1306-qualified",
+        "G01 exact frozen graph, authority and audit bindings: not-ready",
+        "G01 exact frozen graph, authority and audit bindings: post-tag-absent",
+        "G01 exact frozen graph, authority and audit bindings: post-tag-lightweight",
+        "G01 exact frozen graph, authority and audit bindings: post-tag-ready",
+        "G01 exact frozen graph, authority and audit bindings: post-tag-wrong-target",
+        "G01 exact frozen graph, authority and audit bindings: pre-tag-present",
+        "G01 exact frozen graph, authority and audit bindings: qualified",
+        "G01 exact frozen graph, authority and audit bindings: ready",
+        "G01 exact frozen graph, authority and audit bindings: rest-qualified",
+        "G01 exact frozen graph, authority and audit bindings: selective-reuse",
+        "G10 graph nodes exactly 2048 pass and 2049 fail before expansion",
+        "G11 graph edges exactly 8192 pass and 8193 fail before expansion",
+        "G18 arbitrary object property insertion order preserves exact graph and authority bytes",
+        "P2B result evidence tamper: graph"
+      ]
+    },
+    {
+      "category": "cycles",
+      "tests": [
+        "G03 metadata and opaque historical cross-links cannot add normative authority or cycles",
+        "G08 internal normative cycles and self references retain exact GRAPH_CYCLE classification"
+      ]
+    },
+    {
+      "category": "dangling",
+      "tests": [
+        "A18 changed declared grant closure and dangling dependency IDs reject rather than first-win"
+      ]
+    },
+    {
+      "category": "limits",
+      "tests": [
+        "A28 raw source byte ceiling admits exact boundary and rejects plus one",
+        "A34 manifest file ceiling admits exactly 128 consumed files and rejects 129",
+        "A35 aggregate raw source admission accepts 8 MiB exactly and rejects one additional byte",
+        "A36 authority source ceiling admits 32 explicit provenance records and rejects 33",
+        "G17 derivation enforces the edge ceiling while expanding verified claim dependencies",
+        "L01 authority byte admission includes the exact ceiling and rejects plus one before parse/copy",
+        "L02 envelope byte ceiling is enforced in acquisition before snapshot copying",
+        "L03 manifest claim admission is 64 envelopes, independent of the finite gate authority limit",
+        "L04 grant representation admits 64 and rejects 65 without claiming all grants fit the closed profile",
+        "L05 claim dependencies and every explicit dependency reference list admit 1024 and reject 1025",
+        "L06 root, grant and claim assumption sets admit 32 and reject 33",
+        "L07 history representation admits 128 immutable rows and rejects 129",
+        "L08 qualification representation admits 128 and rejects 129 without truncation",
+        "L09 scope qualification/condition reference sets each enforce their exact 128 cap",
+        "L10 source references admit 128 and authority source references admit 32 at their declared schemas",
+        "L11 normalized authority and audit digest reference capacities are explicit, not generic INPUT errors",
+        "L12 independent cap failures never fabricate a partial verified projection"
+      ]
+    },
+    {
+      "category": "tamper",
+      "tests": [
+        "A03 an evidence-controlled authority mutation cannot select its own new pin",
+        "A27 all admitted bytes are snapshots independent of subsequent caller mutations",
+        "HB07 immutable granted history rejects FAIL to PASS rewrite",
+        "PB01 immutable MO-1306 authority rejects false github execution promotion",
+        "PB01 immutable MO-1306 authority rejects false gitlab execution promotion",
+        "PB01 immutable MO-1306 authority rejects false jenkins execution promotion",
+        "PB01 immutable MO-1306 authority rejects false azure execution promotion",
+        "IB02: complete verifier rejects schema-valid rewritten or removed history despite fresh raw pins",
+        "IB03: complete verifier rejects all four MO-1306 execution promotions with unchanged reviewed grants",
+        "IB05: complete verifier uses dedicated history mismatch classification for PASS rewriting",
+        "P2B Freeze-mandated set ordering rejects permutations instead of normalizing signed identity",
+        "P2B independently reverified source mutation cannot hide behind result self-hashes",
+        "P2B result evidence tamper: candidate",
+        "P2B result evidence tamper: authorityIdentityDigest",
+        "P2B result evidence tamper: qualification",
+        "P2B result evidence tamper: history",
+        "P2B result evidence tamper: provider",
+        "P2B result evidence tamper: graph",
+        "P2B result evidence tamper: audit",
+        "P2B result evidence tamper: gateBinding"
+      ]
+    },
+    {
+      "category": "determinism",
+      "tests": [
+        "A30 canonical set orders remain normative and are never silently sorted by the verifier",
+        "A31 input map insertion and object member order do not affect verified canonical projection",
+        "G16 noncanonical normative array order rejects instead of silently changing identity",
+        "G18 arbitrary object property insertion order preserves exact graph and authority bytes",
+        "DB01: selection order does not affect projection bytes or mutate input, and outputs are detached",
+        "DB02: semantic history and qualification set order remains frozen and rejects reordered arrays",
+        "P2B deterministic internal projection uses canonical records, not object insertion order",
+        "P2B Freeze-mandated set ordering rejects permutations instead of normalizing signed identity"
+      ]
+    },
+    {
+      "category": "verifiedProjection",
+      "tests": [
+        "A24 permitted fresh raw metadata pins change proof audit but preserve normative projection",
+        "A31 input map insertion and object member order do not affect verified canonical projection",
+        "HB01: all sixteen Phase 1 bundles preserve exact history, qualifications and independent provider projections",
+        "HB02: MO-1306 binds nineteen immutable raw rows and exact twelve negative history projections",
+        "DB01: selection order does not affect projection bytes or mutate input, and outputs are detached",
+        "L12 independent cap failures never fabricate a partial verified projection",
+        "P2B projection and independent result evidence: could-not-evaluate",
+        "P2B projection and independent result evidence: history-blocker-unavailable",
+        "P2B projection and independent result evidence: informational-ready",
+        "P2B projection and independent result evidence: metadata-only",
+        "P2B projection and independent result evidence: mixed-precedence",
+        "P2B projection and independent result evidence: mo1306-qualified",
+        "P2B projection and independent result evidence: not-ready",
+        "P2B projection and independent result evidence: post-tag-absent",
+        "P2B projection and independent result evidence: post-tag-lightweight",
+        "P2B projection and independent result evidence: post-tag-ready",
+        "P2B projection and independent result evidence: post-tag-wrong-target",
+        "P2B projection and independent result evidence: pre-tag-present",
+        "P2B projection and independent result evidence: qualified",
+        "P2B projection and independent result evidence: ready",
+        "P2B projection and independent result evidence: rest-qualified",
+        "P2B projection and independent result evidence: selective-reuse",
+        "P2B deterministic internal projection uses canonical records, not object insertion order"
+      ]
+    },
+    {
+      "category": "resultVerification",
+      "tests": [
+        "P2B projection and independent result evidence: could-not-evaluate",
+        "P2B projection and independent result evidence: history-blocker-unavailable",
+        "P2B projection and independent result evidence: informational-ready",
+        "P2B projection and independent result evidence: metadata-only",
+        "P2B projection and independent result evidence: mixed-precedence",
+        "P2B projection and independent result evidence: mo1306-qualified",
+        "P2B projection and independent result evidence: not-ready",
+        "P2B projection and independent result evidence: post-tag-absent",
+        "P2B projection and independent result evidence: post-tag-lightweight",
+        "P2B projection and independent result evidence: post-tag-ready",
+        "P2B projection and independent result evidence: post-tag-wrong-target",
+        "P2B projection and independent result evidence: pre-tag-present",
+        "P2B projection and independent result evidence: qualified",
+        "P2B projection and independent result evidence: ready",
+        "P2B projection and independent result evidence: rest-qualified",
+        "P2B projection and independent result evidence: selective-reuse",
+        "P2B result evidence tamper: candidate",
+        "P2B result evidence tamper: authorityIdentityDigest",
+        "P2B result evidence tamper: qualification",
+        "P2B result evidence tamper: history",
+        "P2B result evidence tamper: provider",
+        "P2B result evidence tamper: graph",
+        "P2B result evidence tamper: audit",
+        "P2B result evidence tamper: gateBinding",
+        "P2B proof material is exact frozen audit, independent of final readiness calculation"
+      ]
+    }
+  ],
+  "parserRegression": "Phase1 C05-C10/C21, exact shared serializer, unchanged frozen limits",
+  "scope": "Tests include end-to-end authority, internal defensive graph, and isolated count/byte admission. Boundary admission does not assert authority validity at mutually unattainable maxima."
+}

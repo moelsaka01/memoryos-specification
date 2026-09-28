@@ -1,0 +1,194 @@
+// Actual fixed native helpers and actual Node threads. Engineering controls may
+// withhold stdin EOF or delay shutdown, but never substitute executable, argv,
+// script, environment, native response, operation, clock or authoritative bytes.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { spawn } from 'node:child_process';
+import { createHash, randomBytes } from 'node:crypto';
+import { performance } from 'node:perf_hooks';
+import { Worker } from 'node:worker_threads';
+import { createSupervisor, createSupervisorForTesting } from '../../../memoryos-readiness/src/runtime.mjs';
+import { createHelperTransport, createHelperTransportForTesting, helperLaunchSpecification } from '../../../memoryos-readiness/src/helper-transport.mjs';
+import { encodeHelperRequest, decodeHelperRequest, decodeHelperResponse, createHelperSequence } from '../../../memoryos-readiness/src/helper-protocol.mjs';
+const root = fileURLToPath(new URL('../../../../', import.meta.url));
+const [receiptRoot] = process.argv.slice(2);
+assert.ok(receiptRoot && path.isAbsolute(receiptRoot));
+assert.ok(receiptRoot.startsWith(path.join(root, 'repositories/cca-conformance/evidence/mo1307/phase2c-final/')));
+fs.mkdirSync(receiptRoot, { recursive: false });
+const scratch = path.join(root, '.cache', 'mo1307-final-native', 'deadlines-' + process.pid);
+fs.mkdirSync(scratch, { recursive: true });
+const inputRoot = path.join(scratch, 'input'); fs.mkdirSync(inputRoot);
+for (const name of ['authority', 'config', 'candidate', 'manifest', 'small']) fs.writeFileSync(path.join(inputRoot, name + '.bin'), '{}\n');
+const outputRoot = path.join(scratch, 'absent-output');
+const workerURL = new URL('./timed-worker.mjs', import.meta.url);
+const specification = helperLaunchSpecification(), cases = [], invocations = [], workerObservations = [];
+const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+const write = (leaf, bytes) => fs.writeFileSync(path.join(receiptRoot, leaf), bytes, { flag: 'wx' });
+const dependencies = ['src/runtime.mjs', 'src/helper-transport.mjs', 'src/helper-protocol.mjs', 'src/constants.mjs', 'helpers/windows-inspect.ps1'];
+const pins = () => dependencies.map(file => ({ file, sha256: hash(fs.readFileSync(path.join(root, 'repositories/memoryos-readiness', file))) }));
+const before = pins();
+write('campaign.json', JSON.stringify({ kind: 'MO1307FinalNativeDeadlineCampaign', dependencies: before,
+  launch: specification, cases: ['timely-helper', 'cancel-before-helper', 'helper-5000ms-timeout', 'late-native-helper-success-rejected',
+    'cancel-during-helper', 'cancel-between-helper-worker', 'aggregate-20000ms-excludes-worker', 'worker-10000ms-timeout',
+    'cancel-during-worker', 'late-real-worker-completion-rejected', 'cancel-after-worker-before-publication'],
+  controls: 'Real monotonic clock and fixed budgets; fixed native helper only. Narrow engineering stdin EOF/shutdown delays. Actual worker threads with canned nonsemantic bytes.',
+  policy: 'Finite ordered campaign; stop on first unexpected result; no retry; external observer owns process sampling.' }, null, 2) + '\n');
+function req(sequence = 3, session = randomBytes(32).toString('hex')) {
+  const file = (id, maxBytes) => ({ id, maxBytes, path: id + '.bin', root: 'input' });
+  return { kind: 'MemoryOSReadinessHelperRequest', version: '2.0.0', session, sequence,
+    operation: sequence >= 4 ? 'CHECK_OUTPUT' : 'READ_SET',
+    roots: [{ id: sequence >= 4 ? 'output' : 'input', path: sequence >= 4 ? outputRoot : inputRoot }],
+    files: sequence === 1 ? [file('authority', 1048576), file('config', 16384)]
+      : sequence === 2 ? [file('candidate', 524288), file('manifest', 262144)]
+        : sequence === 3 ? [file('small', 2097152)] : [] };
+}
+function realControlledSpawn(name, { eofDelayMs = 0, lateCleanup = false } = {}) {
+  return (executable, args, options) => {
+    assert.equal(executable, specification.executable); assert.deepEqual(args, [...specification.args]);
+    assert.deepEqual(options.env, { ...specification.options.env }); assert.equal(options.shell, false);
+    const child = spawn(executable, args, options);
+    const ordinal = String(invocations.length + 1).padStart(3, '0');
+    const row = { name, ordinal, pid: child.pid, startedAt: performance.now(), eofDelayMs, lateCleanup,
+      stdoutBytes: 0, stderrBytes: 0, killRequestedAt: null, responseAt: null, closedAt: null, exitCode: null };
+    invocations.push(row);
+    const stdout = [], stderr = []; let eofTimer, fallbackTimer;
+    const originalEnd = child.stdin.end.bind(child.stdin), originalKill = child.kill.bind(child);
+    child.stdin.end = (frame, ...argsAfterFrame) => {
+      write(ordinal + '.request.bin', frame);
+      if (eofDelayMs) {
+        child.stdin.write(frame);
+        eofTimer = setTimeout(() => { if (!child.stdin.destroyed) originalEnd(...argsAfterFrame); }, eofDelayMs);
+        return child.stdin;
+      }
+      return originalEnd(frame, ...argsAfterFrame);
+    };
+    if (lateCleanup) {
+      for (const stream of [child.stdin, child.stdout, child.stderr]) {
+        const originalDestroy = stream.destroy.bind(stream); let delayed = false;
+        stream.destroy = (...args) => {
+          if (!delayed) { delayed = true; return stream; }
+          return originalDestroy(...args);
+        };
+      }
+      child.kill = () => { row.killRequestedAt = performance.now(); return true; };
+      fallbackTimer = setTimeout(() => originalKill(), 6500);
+    }
+    child.stdout.on('data', data => { row.stdoutBytes += data.length; if (row.stdoutBytes <= 16777216) stdout.push(Buffer.from(data)); row.responseAt ??= performance.now(); });
+    child.stderr.on('data', data => { row.stderrBytes += data.length; if (row.stderrBytes <= 4096) stderr.push(Buffer.from(data)); });
+    child.once('close', code => {
+      clearTimeout(eofTimer); clearTimeout(fallbackTimer); row.closedAt = performance.now(); row.exitCode = code;
+      write(ordinal + '.stdout.bin', Buffer.concat(stdout)); write(ordinal + '.stderr.txt', Buffer.concat(stderr));
+    });
+    return child;
+  };
+}
+async function run(name, options, action) {
+  const started = performance.now();
+  const controller = new AbortController();
+  const supervisor = createSupervisorForTesting({ kind: 'cli', signal: controller.signal }, { workerURL, ...(options.WorkerClass ? { WorkerClass: options.WorkerClass } : {}) });
+  const transport = options.exact ? createHelperTransport(supervisor)
+    : createHelperTransportForTesting(supervisor, realControlledSpawn(name, options));
+  let error = null, detail = null, outcome = 'PASS';
+  try { detail = await action({ supervisor, controller, transport }); }
+  catch (caught) { error = { code: caught.code ?? null, message: String(caught.message) }; if (!options.error || caught.code !== options.error) { outcome = 'FAIL'; throw caught; } }
+  finally {
+    await supervisor.dispose();
+    const row = { name, outcome, elapsedMs: performance.now() - started, error, detail, snapshot: supervisor.snapshot() };
+    cases.push(row); write(name + '.json', JSON.stringify(row, null, 2) + '\n');
+  }
+  const row = cases.at(-1);
+  if (options.error) assert.equal(row.error?.code, options.error);
+  if (options.minMs) assert.ok(row.elapsedMs >= options.minMs, name + ' elapsed=' + row.elapsedMs);
+  if (options.maxMs) assert.ok(row.elapsedMs < options.maxMs, name + ' elapsed=' + row.elapsedMs);
+  return row;
+}
+class LateNativeWorker extends Worker {
+  constructor(url, options) {
+    super(url, options); this.started = performance.now();
+    this.on('message', () => workerObservations.push({ type: 'late-message', at: performance.now(), elapsedMs: performance.now() - this.started }));
+    this.once('exit', code => { clearTimeout(this.fallback); workerObservations.push({ type: 'late-exit', at: performance.now(), code }); });
+  }
+  terminate() {
+    workerObservations.push({ type: 'termination-request', at: performance.now() });
+    this.fallback = setTimeout(() => super.terminate(), 1500);
+    return Promise.resolve();
+  }
+}
+let failure = null;
+try {
+  await run('timely-helper', { exact: true, maxMs: 5000 }, async ({ transport }) => {
+    const request = req(); const answer = await transport.exchange(encodeHelperRequest(request));
+    const response = decodeHelperResponse(answer.responseBytes, request);
+    assert.equal(response.status, 'OK'); assert.equal(answer.exitConfirmed, true);
+    write('timely-helper.request.bin', encodeHelperRequest(request)); write('timely-helper.response.bin', answer.responseBytes);
+    return { status: response.status, identity: response.files[0].identity };
+  });
+  const beforeHelper = await run('cancel-before-helper', { error: 'MO1307_CANCELLED', maxMs: 1000 }, async ({ controller, transport }) => {
+    controller.abort(); await transport.exchange(encodeHelperRequest(req()));
+  });
+  assert.equal(beforeHelper.snapshot.helpers, 0);
+  await run('helper-5000ms-timeout', { eofDelayMs: 6000, error: 'MO1307_TIMEOUT', minMs: 5000, maxMs: 7000 }, async ({ transport }) => {
+    await transport.exchange(encodeHelperRequest(req()));
+  });
+  const late = await run('late-native-helper-success-rejected', { eofDelayMs: 5250, lateCleanup: true, error: 'MO1307_TIMEOUT', minMs: 5000, maxMs: 7000 }, async ({ transport }) => {
+    await transport.exchange(encodeHelperRequest(req()));
+  });
+  const lateInvocation = invocations.find(row => row.name === late.name);
+  const lateRequest = decodeHelperRequest(fs.readFileSync(path.join(receiptRoot, lateInvocation.ordinal + '.request.bin')));
+  const lateResponse = decodeHelperResponse(fs.readFileSync(path.join(receiptRoot, lateInvocation.ordinal + '.stdout.bin')), lateRequest);
+  assert.equal(lateResponse.status, 'OK'); assert.ok(lateInvocation.responseAt >= late.snapshot.terminalAt);
+  assert.equal(late.snapshot.terminalCode, 'MO1307_TIMEOUT');
+  await run('cancel-during-helper', { eofDelayMs: 6000, error: 'MO1307_CANCELLED', minMs: 1400, maxMs: 3500 }, async ({ controller, transport }) => {
+    const timer = setTimeout(() => controller.abort(), 1500);
+    try { await transport.exchange(encodeHelperRequest(req())); } finally { clearTimeout(timer); }
+  });
+  const between = await run('cancel-between-helper-worker', { error: 'MO1307_CANCELLED', maxMs: 5000 }, async ({ supervisor, controller, transport }) => {
+    await transport.exchange(encodeHelperRequest(req())); controller.abort(); await supervisor.runWorker({ mode: 'wait', delayMs: 0 });
+  });
+  assert.equal(between.snapshot.helpers, 1); assert.equal(between.snapshot.workers, 0);
+  const aggregate = await run('aggregate-20000ms-excludes-worker', { eofDelayMs: 4200, error: 'MO1307_TIMEOUT', minMs: 20000, maxMs: 23000 }, async ({ supervisor, transport }) => {
+    const sequence = createHelperSequence('evaluate');
+    for (let slot = 1; slot <= 4; slot++) {
+      const request = req(slot, sequence.session); const answer = await transport.exchange(sequence.begin(request));
+      assert.equal(sequence.complete(answer.responseBytes).code, null); sequence.helperExited();
+    }
+    sequence.beginWorker(); await supervisor.runWorker({ mode: 'wait', delayMs: 250 }); sequence.endWorker();
+    try { await transport.exchange(sequence.begin(req(5, sequence.session))); } catch (error) { sequence.abort(); throw error; }
+  });
+  assert.equal(aggregate.snapshot.helpers, 5); assert.equal(aggregate.snapshot.workers, 1);
+  const starts = aggregate.snapshot.events.filter(row => row.type === 'start' && row.role === 'helper');
+  assert.ok(starts[4].deadline - starts[4].at < 5000);
+  const helperAtTimeout = aggregate.snapshot.helperUsedMs + aggregate.snapshot.terminalAt - starts[4].at;
+  assert.ok(Math.abs(helperAtTimeout - 20000) < 100, String(helperAtTimeout));
+  const workerStart = aggregate.snapshot.events.find(row => row.type === 'start' && row.role === 'worker');
+  const workerEnd = aggregate.snapshot.events.find(row => row.type === 'quiescent' && row.role === 'worker');
+  assert.ok(workerEnd.at - workerStart.at >= 250);
+  assert.ok(aggregate.elapsedMs - helperAtTimeout >= 250);
+  await run('worker-10000ms-timeout', { error: 'MO1307_TIMEOUT', minMs: 10000, maxMs: 12000 }, async ({ supervisor }) => {
+    await supervisor.runWorker({ mode: 'spin' });
+  });
+  await run('cancel-during-worker', { error: 'MO1307_CANCELLED', minMs: 100, maxMs: 2100 }, async ({ supervisor, controller }) => {
+    const timer = setTimeout(() => controller.abort(), 100);
+    try { await supervisor.runWorker({ mode: 'wait', delayMs: 5000 }); } finally { clearTimeout(timer); }
+  });
+  const lateWorker = await run('late-real-worker-completion-rejected', { WorkerClass: LateNativeWorker, error: 'MO1307_TIMEOUT', minMs: 10000, maxMs: 12000 }, async ({ supervisor }) => {
+    await supervisor.runWorker({ mode: 'wait', delayMs: 10500 });
+  });
+  assert.ok(workerObservations.some(row => row.type === 'late-message' && row.at >= lateWorker.snapshot.terminalAt));
+  assert.equal(lateWorker.snapshot.terminalCode, 'MO1307_TIMEOUT');
+  const after = await run('cancel-after-worker-before-publication', { error: 'MO1307_CANCELLED', maxMs: 1500 }, async ({ supervisor, controller }) => {
+    await supervisor.runWorker({ mode: 'wait', delayMs: 0 }); controller.abort(); supervisor.checkpoint('PUBLICATION');
+  });
+  assert.equal(after.snapshot.workers, 1); assert.equal(after.snapshot.helpers, 0);
+  assert.deepEqual(pins(), before, 'Final dependency bytes changed during native campaign');
+} catch (error) { failure = { code: error.code ?? null, message: String(error.message), stack: String(error.stack) }; process.exitCode = 1; }
+finally {
+  write('receipt.json', JSON.stringify({ kind: 'MO1307FinalNativeDeadlines', result: failure ? 'FAIL' : 'PASS', failure,
+    runtime: { node: process.version, platform: process.platform, arch: process.arch }, dependencies: before,
+    cases, invocations, workerObservations, limitations: ['Delay controls are engineering-only lifecycle seams; all helper response frames and Windows identities are real native observations.',
+      'Timed-out or cancelled helpers lacking a valid frame remain conservatively unconfirmed in product state; the external observer separately checks no remaining owned process.',
+      'This timing campaign supplies canned worker bytes and does not certify 2A/2B semantics.'] }, null, 2) + '\n');
+  process.stdout.write(JSON.stringify({ result: failure ? 'FAIL' : 'PASS', cases: cases.length, invocations: invocations.length, receiptRoot }) + '\n');
+}

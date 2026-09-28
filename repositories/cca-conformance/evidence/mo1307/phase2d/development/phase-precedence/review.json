@@ -1,0 +1,64 @@
+{
+  "kind": "MO1307IntegratedPrecedenceSecurityReview",
+  "version": "1.0.0",
+  "result": "RESOLVED",
+  "finding": "The old orchestration preflight could emit a later semantic failure before actual2B selected an earlier authority failure.",
+  "originalClassification": "INTEGRATION_DEFECT_REPRODUCED",
+  "originalEvidence": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2d/development/phase-precedence/before.json",
+    "byteLength": 1151,
+    "sha256": "sha256:6914301a6e8ed09f28b9b0033bb4c19c81b3c713a61076f9703533e3b78b9a78"
+  },
+  "correctedEvidence": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2d/development/phase-precedence/after.json",
+    "byteLength": 1123,
+    "sha256": "sha256:8e62866962751e0aa634bf7d01261a0cb9e37a7e1e1201c40eedceb493996b63"
+  },
+  "originalSource": {
+    "path": "repositories/memoryos-readiness/src/integration.mjs",
+    "byteLength": 2448,
+    "sha256": "sha256:5e2a6a3189d196dd5a87317d99bc37f78ad4a1a6fb13d95f9c51d9ab72fcd601",
+    "retained": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/development/phase-precedence/before-integration.mjs.data",
+      "byteLength": 2448,
+      "sha256": "sha256:5e2a6a3189d196dd5a87317d99bc37f78ad4a1a6fb13d95f9c51d9ab72fcd601"
+    },
+    "recovery": "Exact original bytes reconstructed by reversing the narrowly reviewed patch, then matched against the retained original length and SHA-256 before preservation."
+  },
+  "reviewedProduction": [
+    {
+      "path": "repositories/memoryos-readiness/src/integration.mjs",
+      "byteLength": 2959,
+      "sha256": "sha256:c73e278db2b2cdd5b38e3e9a6046ba529aafe92af5abfee4e0ced8b0ec02c64e"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/evidence-verifier.mjs",
+      "byteLength": 17846,
+      "sha256": "sha256:684d088b6578f463a7ed1b6e40cde63ec5de2bf039458050b9ebce4494ded3a0"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/foundation.mjs",
+      "byteLength": 22098,
+      "sha256": "sha256:19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d"
+    }
+  ],
+  "regression": {
+    "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+    "byteLength": 21419,
+    "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e"
+  },
+  "regressionName": "D24 integrated preflight preserves accepted authority-before-semantic error priority",
+  "regressionExecution": "PENDING_ORDERED_SEMANTIC_CAMPAIGN",
+  "review": {
+    "closedInputAndByteAdmissionRetained": true,
+    "resultAndDecisionCapsRetained": true,
+    "onlyTypedEvaluationFailureDeferred": true,
+    "earlierOperationalPhasesStillThrow": true,
+    "actual2BReverificationMandatory": true,
+    "unexpectedVerifierSuccessStillRejects": true,
+    "noSchemaLimitOrErrorChange": true,
+    "noNewAuthority": true,
+    "oldFailureNotRelabeled": true
+  },
+  "scope": "Contract-compatible integration reconciliation; accepted2B A33 remains normative. Actual before/after probe is retained; this is not merely a static finding."
+}

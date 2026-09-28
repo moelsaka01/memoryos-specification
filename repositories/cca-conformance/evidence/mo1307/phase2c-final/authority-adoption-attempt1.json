@@ -1,0 +1,8 @@
+{
+  "classification": "HARNESS_DEFECT",
+  "failure": "git show ref:path attempted stat of an evidence ref:path longer than Windows path limit.",
+  "productionDefect": false,
+  "partialExactAdoptionsVerified": 64,
+  "correction": "Resolve paths with ls-tree; read authoritative blobs by object ID through cat-file --batch. No filesystem-path parsing of ref:path and no persistent Git setting change.",
+  "result": "RESOLVED_ONCE"
+}

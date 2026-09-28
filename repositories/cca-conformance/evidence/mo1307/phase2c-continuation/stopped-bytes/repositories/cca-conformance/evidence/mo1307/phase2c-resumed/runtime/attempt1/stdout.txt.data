@@ -1,0 +1,39 @@
+✔ R01 api exact absolute deadline and equality (3.2015ms)
+✔ R01 cli exact absolute deadline and equality (0.4224ms)
+✔ R02 earlier cancellation stays terminal after deadline (0.571ms)
+✔ R03 timeout wins simultaneous first cancellation observation (0.4647ms)
+✔ R04 preaborted signal prevents any launch (1.084ms)
+✔ R05 monotonic decreasing clock rejects (0.5303ms)
+✔ R06 API cannot launch helper (0.7597ms)
+✔ R07 helper deadline includes all active time; equality rejects (1.4143ms)
+✔ R08 aggregate deadline does not reset across helpers (1.6683ms)
+✔ R09 worker time is excluded from helper aggregate but inside overall (1.4546ms)
+✔ R10 helper overlap is terminal and cleans prior owned role (1.0809ms)
+✔ R11 helper and worker cannot overlap (1.2979ms)
+✔ R12 frame alone cannot advance before actual close (60.3841ms)
+✔ R13 launch uses only fixed executable/script/environment and no shell (1.2962ms)
+✔ R14 helper trailing byte fails closed (2.2644ms)
+✔ R14 helper extra frame fails closed (12.587ms)
+✔ R14 helper debug stdout fails closed (2.1861ms)
+✔ R14 helper truncated frame fails closed (1.6741ms)
+✔ R14 helper oversized prefix fails closed (1.9606ms)
+✔ R14 helper stderr overflow fails closed (1.6395ms)
+✔ R14 helper nonzero exit fails closed (9.5966ms)
+✔ R15 cancellation in launch terminates and ignores later valid frame (1.9ms)
+✔ R16 cancellation during transport cleans child (14.0004ms)
+✔ R17 fixed actual worker has empty environment and exact heap intent (50.6623ms)
+✔ R18 successful worker result waits for termination (149.5621ms)
+✔ R19 actual worker crash fails closed (37.0649ms)
+✔ R19 actual worker duplicate fails closed (36.7905ms)
+✔ R19 actual worker stdout fails closed (35.3966ms)
+✔ R20 cancellation actually terminates CPU-bound worker thread (57.4201ms)
+✔ R21 production worker remains fail-closed without 2A/2B (126.3442ms)
+✔ R22 adapter matches closed 2A handoff; operational/session fields excluded (0.2932ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 759.3451

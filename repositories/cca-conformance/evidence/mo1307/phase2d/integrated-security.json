@@ -1,0 +1,1663 @@
+{
+  "kind": "MO1307Phase2DIntegratedSecurity",
+  "version": "1.0.0",
+  "result": "PASS",
+  "requestSection": 52,
+  "categoryCount": 21,
+  "categories": [
+    {
+      "id": "candidate-substitution",
+      "requestedControl": "candidate substitution",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 178
+          },
+          "testNames": [
+            "D12 integrated operational failure remains an error: candidate substitution"
+          ],
+          "observedBehavior": "Wrong externally pinned candidate digest rejects with MO1307_CANDIDATE_MISMATCH.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "raw-source-tamper",
+      "requestedControl": "raw-source tamper",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 180
+          },
+          "testNames": [
+            "D12 integrated operational failure remains an error: raw-source tamper",
+            "D13 result verification independently rechecks original raw bytes before trusting a valid result"
+          ],
+          "observedBehavior": "Changed consumed SOURCE bytes reject INTEGRITY, including independent verification with an otherwise valid result.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper."
+          ]
+        },
+        {
+          "scope": "ACTUAL_PACKAGED_CLI_NATIVE_WINDOWS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/receipt.json",
+            "byteLength": 32313,
+            "sha256": "sha256:013df6f2292312d9b628954af06703eb34de8c167aa9e605f150484640fadb05"
+          },
+          "caseReceipts": [
+            {
+              "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/raw-source-tamper/receipt.json",
+              "byteLength": 895,
+              "sha256": "sha256:b09411b07a285f37b5710a22b104c4b012944f71618d8bf19f31ece4f7c2e7ba"
+            }
+          ],
+          "testSource": {
+            "path": "repositories/cca-conformance/tools/mo1307-phase2d/native-security.mjs",
+            "byteLength": 6043,
+            "sha256": "sha256:f70be296a2cc242f5ffd32fe85264f0847266a1726fe670c2c42971802935df2",
+            "line": 17
+          },
+          "nativeCaseIds": [
+            "raw-source-tamper"
+          ],
+          "observedBehavior": "Actual native-acquired tampered source rejects with exit13/MO1307_INTEGRITY and no readiness publication.",
+          "limitations": [
+            "Engineering-owned scratch inputs on this native Windows host; no installed-package, other-host or provider certification."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "claim-tamper",
+      "requestedControl": "claim tamper",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 181
+          },
+          "testNames": [
+            "D12 integrated operational failure remains an error: claim tamper under an old grant"
+          ],
+          "observedBehavior": "A shape-valid changed security claim with intact old grant rejects MO1307_EVIDENCE_AUTHORITY.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "grant-tamper",
+      "requestedControl": "grant tamper",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 182
+          },
+          "testNames": [
+            "D12 integrated operational failure remains an error: grant substitution",
+            "D24 integrated preflight preserves accepted authority-before-semantic error priority"
+          ],
+          "observedBehavior": "Substituted grant rejects EVIDENCE_AUTHORITY; combined authority/semantic error preserves authority-before-evaluation priority.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "trust-root-mismatch",
+      "requestedControl": "trust-root mismatch",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 179
+          },
+          "testNames": [
+            "D12 integrated operational failure remains an error: trust-root mismatch"
+          ],
+          "observedBehavior": "Wrong externally supplied authority pin rejects MO1307_EVIDENCE_AUTHORITY.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dependency-stale",
+      "requestedControl": "dependency stale",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 183
+          },
+          "testNames": [
+            "D12 integrated operational failure remains an error: stale dependency",
+            "D22 selective reuse stays explicit and relevant changes fail before readiness computation"
+          ],
+          "observedBehavior": "Relevant changed dependency rejects STALE_EVIDENCE; dependency-set reuse across different candidate roots succeeds only for unchanged declared dependencies.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "history-rewrite",
+      "requestedControl": "history rewrite",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 184
+          },
+          "testNames": [
+            "D12 integrated operational failure remains an error: history rewrite with intact grant",
+            "D12 integrated operational failure remains an error: history PASS fabrication",
+            "D16 self-consistent result history or qualification omission cannot hide behind repaired hashes"
+          ],
+          "observedBehavior": "Old-grant rewrite rejects EVIDENCE_AUTHORITY; fabricated historical PASS rejects HISTORY_MISMATCH; omitted result history still rejects RESULT_MISMATCH after digest repair.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "qualification-omission",
+      "requestedControl": "qualification omission",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 186
+          },
+          "testNames": [
+            "D12 integrated operational failure remains an error: qualification omission",
+            "D16 self-consistent result history or qualification omission cannot hide behind repaired hashes"
+          ],
+          "observedBehavior": "Removing required provider qualification rejects QUALIFICATION_MISMATCH; self-consistent result omission rejects RESULT_MISMATCH.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "provider-false-promotion",
+      "requestedControl": "provider false promotion",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 187
+          },
+          "testNames": [
+            "D12 integrated operational failure remains an error: provider false hosted promotion",
+            "D05 MO1306 provider axes and ten disclosures retain their exact released limitations"
+          ],
+          "observedBehavior": "False hosted certification with incomplete hosted cases rejects QUALIFICATION_MISMATCH; released provider dimensions and all ten disclosures remain exact.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper.",
+            "No hosted provider was contacted or newly certified."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "graph-cycle",
+      "requestedControl": "graph cycle",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 233
+          },
+          "testNames": [
+            "D18 no supplied cyclic or dangling graph can replace independently derived evidence"
+          ],
+          "observedBehavior": "Internal cyclic graph rejects GRAPH_CYCLE; raw graph supplied as an extra public semantic input rejects INPUT; a self-consistent forged result graph rejects RESULT_MISMATCH.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper.",
+            "Normative graphs are derived internally, not accepted from arbitrary graph JSON."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dangling-reference",
+      "requestedControl": "dangling reference",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 188
+          },
+          "testNames": [
+            "D12 integrated operational failure remains an error: dangling authority reference",
+            "D18 no supplied cyclic or dangling graph can replace independently derived evidence"
+          ],
+          "observedBehavior": "Missing authority provenance reference and dangling internal graph edge reject INPUT before readiness evaluation.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "profile-substitution",
+      "requestedControl": "profile substitution",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 189
+          },
+          "testNames": [
+            "D12 integrated operational failure remains an error: profile substitution"
+          ],
+          "observedBehavior": "Configured REST profile substituted against the CICD authority rejects PROFILE_MISMATCH.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "result-digest-tamper",
+      "requestedControl": "result digest tamper",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 199
+          },
+          "testNames": [
+            "D15 supplied result digest tamper rejects: readinessDigest",
+            "D15 supplied result digest tamper rejects: proofBindingDigest",
+            "D14 self-consistent changed readiness passes evidence-only support but fails integrated recomputation"
+          ],
+          "observedBehavior": "Readiness or proof digest tamper rejects RESULT_MISMATCH; even self-consistent altered readiness accepted by evidence-only support rejects against independent 2A recomputation.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "decision-mismatch",
+      "requestedControl": "decision mismatch",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 158
+          },
+          "testNames": [
+            "D10 mismatched human decision rejects: candidateDigest",
+            "D10 mismatched human decision rejects: readinessDigest",
+            "D10 mismatched human decision rejects: proofBindingDigest"
+          ],
+          "observedBehavior": "Candidate, readiness and proof mismatches each reject DECISION_MISMATCH; no human decision changes the normative result.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tag-mismatch",
+      "requestedControl": "tag mismatch",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 163
+          },
+          "testNames": [
+            "D11 tag-stage facts yield exact mandatory blockers and never execute Git"
+          ],
+          "observedBehavior": "Authorized wrong tag name/target, absent post-tag, lightweight tag and present pre-tag produce frozen mandatory blockers; correct post-tag is READY.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper.",
+            "Authorized tag mismatch is normative NOT_READY, not an operational error. No Git subprocess, fetch or tag mutation occurs."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "path-traversal",
+      "requestedControl": "path traversal",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_INTEGRATED_PURE_SEMANTICS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+            "byteLength": 161953,
+            "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+            "byteLength": 13368,
+            "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+            "byteLength": 21419,
+            "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e",
+            "line": 190
+          },
+          "testNames": [
+            "D12 integrated operational failure remains an error: path traversal rejected by the frozen manifest schema"
+          ],
+          "observedBehavior": "Unsafe manifest relative path rejects INPUT at frozen shape validation.",
+          "limitations": [
+            "Runs the fixed production assessInWorker function with actual 2B and 2A; does not itself launch the public API worker or native helper."
+          ]
+        },
+        {
+          "scope": "ACTUAL_PACKAGED_CLI_NATIVE_WINDOWS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/receipt.json",
+            "byteLength": 32313,
+            "sha256": "sha256:013df6f2292312d9b628954af06703eb34de8c167aa9e605f150484640fadb05"
+          },
+          "caseReceipts": [
+            {
+              "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/traversal/receipt.json",
+              "byteLength": 887,
+              "sha256": "sha256:9f8effe3f10bbd63c232266147fd2b2034c5b5f3f87bac0545842edf053c80ee"
+            }
+          ],
+          "testSource": {
+            "path": "repositories/cca-conformance/tools/mo1307-phase2d/native-security.mjs",
+            "byteLength": 6043,
+            "sha256": "sha256:f70be296a2cc242f5ffd32fe85264f0847266a1726fe670c2c42971802935df2",
+            "line": 17
+          },
+          "nativeCaseIds": [
+            "traversal"
+          ],
+          "observedBehavior": "Actual CLI unsafe configuration relative path rejects exit20/FILESYSTEM_BOUNDARY before publication.",
+          "limitations": [
+            "Engineering-owned scratch inputs on this native Windows host; no installed-package, other-host or provider certification."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reparse-hardlink",
+      "requestedControl": "reparse/hardlink",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "ACTUAL_PACKAGED_CLI_NATIVE_WINDOWS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/receipt.json",
+            "byteLength": 32313,
+            "sha256": "sha256:013df6f2292312d9b628954af06703eb34de8c167aa9e605f150484640fadb05"
+          },
+          "caseReceipts": [
+            {
+              "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/hardlink/receipt.json",
+              "byteLength": 880,
+              "sha256": "sha256:53b197dcae824f09a3d9325a4a1d0f4bb5ae75bb2156fbec5067ebf606304091"
+            },
+            {
+              "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/junction/receipt.json",
+              "byteLength": 871,
+              "sha256": "sha256:084111d07d4d1e3619923df5fa142585a960d7f7a2b0de7a8640f6ec9b03b7f7"
+            }
+          ],
+          "testSource": {
+            "path": "repositories/cca-conformance/tools/mo1307-phase2d/native-security.mjs",
+            "byteLength": 6043,
+            "sha256": "sha256:f70be296a2cc242f5ffd32fe85264f0847266a1726fe670c2c42971802935df2",
+            "line": 17
+          },
+          "nativeCaseIds": [
+            "hardlink",
+            "junction"
+          ],
+          "observedBehavior": "Actual hardlinked authority file and actual input-root junction each reject exit20/FILESYSTEM_BOUNDARY; neither creates output.",
+          "limitations": [
+            "Engineering-owned scratch inputs on this native Windows host; no installed-package, other-host or provider certification."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "powershell-launch-substitution",
+      "requestedControl": "PowerShell launch substitution",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "CURRENT_SOURCE_ACCEPTED_2C_ENGINEERING_REGRESSION",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/regressions/phase2c-attempt1/receipt.json",
+            "byteLength": 19387,
+            "sha256": "sha256:bccb54930a1ecb6017e58edfb829f63b79ba6528cb0050f4af48c4e8b0af7519"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/regressions/phase2c-attempt1/tests.stdout.txt",
+            "byteLength": 51583,
+            "sha256": "sha256:a03d4a06e9b2e3737541d85479202a65daf092e26574872feb790eeb74e971bb"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs",
+            "byteLength": 4624,
+            "sha256": "sha256:8fdbf1dc83592b1d83e0aad5342598217536ba4b8bad2aef2fa0d766eb821613",
+            "line": 17
+          },
+          "testNames": [
+            "LP05 caller object cannot supply executable, script or policy",
+            "LP06 launch specification and nested authority are immutable",
+            "LP07 ambient PATH, system-root, policy and script poisons cannot select launch",
+            "LP08 actual transport calls spawn with fixed array and sanitized environment",
+            "LP09 CLI cannot select --script",
+            "LP09 CLI cannot select --execution-policy",
+            "LP09 CLI cannot select --powershell"
+          ],
+          "observedBehavior": "Caller object/environment poisons and script/policy/executable flags cannot substitute the immutable fixed launch; transport spawn receives only fixed arguments and sanitized environment.",
+          "limitations": [
+            "LP08 intercepts spawn to inspect arguments; LP05-LP09 do not execute a hostile substituted process. Actual successful helper launch is separately witnessed by the native lifecycle."
+          ]
+        },
+        {
+          "scope": "ACTUAL_PACKAGED_CLI_NATIVE_WINDOWS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/receipt.json",
+            "byteLength": 32313,
+            "sha256": "sha256:013df6f2292312d9b628954af06703eb34de8c167aa9e605f150484640fadb05"
+          },
+          "caseReceipts": [
+            {
+              "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/launch-override/receipt.json",
+              "byteLength": 866,
+              "sha256": "sha256:bb834084a27a4a038a12a36ce14cc9b5f38ed7f5d44dac57038a8f671f0ef9ad"
+            }
+          ],
+          "testSource": {
+            "path": "repositories/cca-conformance/tools/mo1307-phase2d/native-security.mjs",
+            "byteLength": 6043,
+            "sha256": "sha256:f70be296a2cc242f5ffd32fe85264f0847266a1726fe670c2c42971802935df2",
+            "line": 17
+          },
+          "nativeCaseIds": [
+            "launch-override"
+          ],
+          "observedBehavior": "Actual packaged CLI with even an empty ambient NODE_OPTIONS override fails closed with exit10/USAGE; this case does not execute an attacker-selected PowerShell binary.",
+          "limitations": [
+            "Engineering-owned scratch inputs on this native Windows host; no installed-package, other-host or provider certification."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prototype-command-names",
+      "requestedControl": "prototype command names",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "CURRENT_SOURCE_ACCEPTED_2C_ENGINEERING_REGRESSION",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/regressions/phase2c-attempt1/receipt.json",
+            "byteLength": 19387,
+            "sha256": "sha256:bccb54930a1ecb6017e58edfb829f63b79ba6528cb0050f4af48c4e8b0af7519"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/regressions/phase2c-attempt1/tests.stdout.txt",
+            "byteLength": 51583,
+            "sha256": "sha256:a03d4a06e9b2e3737541d85479202a65daf092e26574872feb790eeb74e971bb"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2c_surfaces_test.mjs",
+            "byteLength": 11988,
+            "sha256": "sha256:51d20c049f9d81a861aab602c8f9e134d51a21061cd34474a1356bc35268adea",
+            "line": 159
+          },
+          "testNames": [
+            "CLI dispatch \"constructor\"",
+            "CLI dispatch \"toString\"",
+            "CLI dispatch \"__proto__\""
+          ],
+          "observedBehavior": "Own-property-safe parser rejects prototype command names with USAGE.",
+          "limitations": [
+            "These parser regressions execute actual command admission without native acquisition."
+          ]
+        },
+        {
+          "scope": "ACTUAL_PACKAGED_CLI_NATIVE_WINDOWS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/receipt.json",
+            "byteLength": 32313,
+            "sha256": "sha256:013df6f2292312d9b628954af06703eb34de8c167aa9e605f150484640fadb05"
+          },
+          "caseReceipts": [
+            {
+              "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/prototype-command/receipt.json",
+              "byteLength": 872,
+              "sha256": "sha256:cca77e02b9fe442d0f516ae8cf123c00abcdc4f653198afc70529c90007e9041"
+            }
+          ],
+          "testSource": {
+            "path": "repositories/cca-conformance/tools/mo1307-phase2d/native-security.mjs",
+            "byteLength": 6043,
+            "sha256": "sha256:f70be296a2cc242f5ffd32fe85264f0847266a1726fe670c2c42971802935df2",
+            "line": 17
+          },
+          "nativeCaseIds": [
+            "prototype-command"
+          ],
+          "observedBehavior": "Actual packaged CLI __proto__ command rejects exit10/USAGE and creates no output.",
+          "limitations": [
+            "Engineering-owned scratch inputs on this native Windows host; no installed-package, other-host or provider certification."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "publication-token-capability-substitution",
+      "requestedControl": "publication token/capability substitution",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "CURRENT_SOURCE_ACCEPTED_2C_ENGINEERING_REGRESSION",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/regressions/phase2c-attempt1/receipt.json",
+            "byteLength": 19387,
+            "sha256": "sha256:bccb54930a1ecb6017e58edfb829f63b79ba6528cb0050f4af48c4e8b0af7519"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/regressions/phase2c-attempt1/tests.stdout.txt",
+            "byteLength": 51583,
+            "sha256": "sha256:a03d4a06e9b2e3737541d85479202a65daf092e26574872feb790eeb74e971bb"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2c_publication_test.mjs",
+            "byteLength": 13727,
+            "sha256": "sha256:2e8ca8e7f801e08c0c52c6b3cebb14bb0c1a2f3781ceadcc1eb8dd738b09405c",
+            "line": 55
+          },
+          "testNames": [
+            "PNEG02 wrong root branded capability cannot mutate either destination",
+            "PNEG03 foreign capability and legacy callback cannot create a directory",
+            "PNEG04 foreign token never authorizes staging or finalization",
+            "PNEG05 second capability claim terminates original token",
+            "F13 wrong interruption code and foreign token cannot create publication authority"
+          ],
+          "observedBehavior": "Wrong-root/foreign capability, foreign token and reuse cannot authorize staging/finalization or mutate another destination.",
+          "limitations": [
+            "Engineering publication tests use synthetic identity frames/capabilities around actual production capability/token code; they are not substituted native identity certification."
+          ],
+          "additionalTestSources": [
+            {
+              "path": "repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs",
+              "byteLength": 17108,
+              "sha256": "sha256:63bebd85b33ce9d23442c347b6e322ec0f8b47733152d2da680fd2d8de8ad420",
+              "line": 140
+            }
+          ]
+        },
+        {
+          "scope": "ACTUAL_PACKAGED_CLI_NATIVE_WINDOWS",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/receipt.json",
+            "byteLength": 32313,
+            "sha256": "sha256:013df6f2292312d9b628954af06703eb34de8c167aa9e605f150484640fadb05"
+          },
+          "caseReceipts": [
+            {
+              "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/existing-output/receipt.json",
+              "byteLength": 864,
+              "sha256": "sha256:9201a83240dcf6f631f1d85b98233615adf2b00b2a6c2f349e8817c7c45224c0"
+            }
+          ],
+          "testSource": {
+            "path": "repositories/cca-conformance/tools/mo1307-phase2d/native-security.mjs",
+            "byteLength": 6043,
+            "sha256": "sha256:f70be296a2cc242f5ffd32fe85264f0847266a1726fe670c2c42971802935df2",
+            "line": 17
+          },
+          "nativeCaseIds": [
+            "existing-output"
+          ],
+          "observedBehavior": "Actual native existing-output boundary fails exit21/OUTPUT and preserves the pre-existing owner file.",
+          "limitations": [
+            "Engineering-owned scratch inputs on this native Windows host; no installed-package, other-host or provider certification."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "post-admission-false-timeout",
+      "requestedControl": "post-admission false timeout",
+      "result": "PASS",
+      "observations": [
+        {
+          "scope": "CURRENT_SOURCE_ACCEPTED_2C_ENGINEERING_REGRESSION",
+          "receipt": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/regressions/phase2c-attempt1/receipt.json",
+            "byteLength": 19387,
+            "sha256": "sha256:bccb54930a1ecb6017e58edfb829f63b79ba6528cb0050f4af48c4e8b0af7519"
+          },
+          "log": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase2d/regressions/phase2c-attempt1/tests.stdout.txt",
+            "byteLength": 51583,
+            "sha256": "sha256:a03d4a06e9b2e3737541d85479202a65daf092e26574872feb790eeb74e971bb"
+          },
+          "testSource": {
+            "path": "repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs",
+            "byteLength": 17108,
+            "sha256": "sha256:63bebd85b33ce9d23442c347b6e322ec0f8b47733152d2da680fd2d8de8ad420",
+            "line": 70
+          },
+          "testNames": [
+            "F05 admitted delayed success remains unresolved at post-submission deadline",
+            "F06 cancellation after submission is recorded without early cancellation or namespace cleanup",
+            "F07 admitted failure after deadline resolves OUTPUT only after exact submitted operation settles",
+            "FCLI actual queued rename awaits settlement after deadline",
+            "FCLI actual queued rename awaits settlement after cancellation"
+          ],
+          "observedBehavior": "Admitted mutation remains unsettled when deadline/cancellation arrives; no false terminal TIMEOUT/CANCELLED is emitted while rename is outstanding. Exact submitted rename settles once; subsequent disposition may return OUTPUT while preserving committed bytes.",
+          "limitations": [
+            "F05-F07 use bounded engineering delay/identity fixtures. FCLI executes an actual queued filesystem rename and CLI with synthetic identity frames, fixed engineering result worker, and a monotonic deadline offset in the deadline case. This is not a second all-native delayed-settlement certification."
+          ],
+          "additionalTestSources": [
+            {
+              "path": "repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs",
+              "byteLength": 10000,
+              "sha256": "sha256:23fadc6cfb598ae12cf8b9b3d43fdf357edd3ff4cea0b9bad45e0c09a0f25dfa",
+              "line": 23
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "evidenceBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/development/phase-precedence/regression-validation.json",
+      "byteLength": 1820,
+      "sha256": "sha256:70712795147507b857099ce174e2185a92dca815fd06b39b690ee847ebabb039"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/development/phase-precedence/review.json",
+      "byteLength": 3054,
+      "sha256": "sha256:b0b66b350a0d95f44a67f9778ea6df8f07d625d867150db5f575066ca01d995e"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/diagnostic-analysis.json",
+      "byteLength": 7772,
+      "sha256": "sha256:72a82560ba9b618bc1b3e5d96dd58323b6e10da155903fac3683ed620144ad31"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/cne-attempt1/could-not-evaluate/receipt.json",
+      "byteLength": 2300,
+      "sha256": "sha256:1fae8362271d9d25a2eff48203c9fe975345b7bba20db643d47032453e566e4c"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/cne-attempt1/receipt.json",
+      "byteLength": 160506,
+      "sha256": "sha256:2fa450bb23ddbd3a3572c3741f7c9e8c991d90b6cc46a9206e1cf485f52f1425"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/integration-attempt1/receipt.json",
+      "byteLength": 164680,
+      "sha256": "sha256:9d1c9ea68fe12ee1d710710a7c3368efd39801c6a48fdcb5a373d0c82aaf491a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/integration-attempt2/not-ready/receipt.json",
+      "byteLength": 2291,
+      "sha256": "sha256:a2060c8b068f303c0a788f374d6b265daeaad529c9a8519fc1a6b749231c8354"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/integration-attempt2/qualified/receipt.json",
+      "byteLength": 2303,
+      "sha256": "sha256:7638994f7d80f3e5a498ca18b9025fee50dd68f01e65a26a42986dd4550f64d8"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/integration-attempt2/ready/receipt.json",
+      "byteLength": 3060,
+      "sha256": "sha256:1e4ed82cdb2c21675f0105641a3f5a4ecb14a07fd2cfdeecb6f7df12ffdebe33"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/integration-attempt2/receipt.json",
+      "byteLength": 167214,
+      "sha256": "sha256:8ce4f59a5463cb2e72009f787880c67b7cb3f02dd39e50761c874b0bc8ca9c76"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/lifecycle-attempt1/receipt.json",
+      "byteLength": 49188,
+      "sha256": "sha256:338fc085addc540265b7eeae93a90fb9aa994c9e791658e60f7a2bc3eb082e76"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/mo1306-attempt1/receipt.json",
+      "byteLength": 158716,
+      "sha256": "sha256:2872bbc76216f9b387bcf32816638817a8972cfd3f99cb26bc3d1f69170b495e"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/mo1306-attempt2/receipt.json",
+      "byteLength": 158716,
+      "sha256": "sha256:e9c70502eb7c469276994b36dfb4f919db9ed8ab1f8b77166f59eaba22b0ce14"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/mo1306-diagnostic-attempt1/pid-observation.json",
+      "byteLength": 360,
+      "sha256": "sha256:6f559ca14580e00148029727c973a259ce7258be8c5ae1d994f55c53c697f526"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/mo1306-diagnostic-attempt1/receipt.json",
+      "byteLength": 57301,
+      "sha256": "sha256:9dcd0b0b6db50bcb049bac92ed54014d54971279d99ca831de34c661d4965107"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-cne-attempt1/receipt.json",
+      "byteLength": 1865,
+      "sha256": "sha256:3c986a81bef5d6894b29a667dcbc36a4a70a356184fbaec73dee332c558bb74f"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-integration-attempt1/receipt.json",
+      "byteLength": 2177,
+      "sha256": "sha256:8aa6391a6a51c46ba03cd8b25dd7a317e8e559d34858a494a12f8052e0f0c1bc"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-integration-attempt2/receipt.json",
+      "byteLength": 2179,
+      "sha256": "sha256:f230045fc94c5b35c1fdc1c8484bfbd975b0023b1a293d0bae6739bbc9cb2956"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-lifecycle-attempt1/receipt.json",
+      "byteLength": 1883,
+      "sha256": "sha256:9c842de1bd629ea2cc8490b1d26fa9ceef27478743c07849363842d8522208e9"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-mo1306-attempt1/receipt.json",
+      "byteLength": 2163,
+      "sha256": "sha256:17db8724668811d790f8040fc8c2285f82eab0f951bda90f8494b4cb985499a0"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-mo1306-attempt2/receipt.json",
+      "byteLength": 2163,
+      "sha256": "sha256:65a1b0b66cf4fdb677cb0e6a2252dd86f035ffabd1ee8e2b16ec4fd8c5fcb101"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-mo1306-diagnostic-attempt1/receipt.json",
+      "byteLength": 2209,
+      "sha256": "sha256:cb79e1395b041175b84403d2586855df2f127bfbe1354b4c85bb8ad992dbf9b9"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-rest-attempt1/receipt.json",
+      "byteLength": 1868,
+      "sha256": "sha256:1ca696e52fdfd8c5bff868eda87861342ef32b50595cf9601804f9499cd037c6"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-security-attempt1/receipt.json",
+      "byteLength": 1877,
+      "sha256": "sha256:311c8bb487e21c958e7955f74f485f1b309eafa70f84a0a966b0f3166e6d9be5"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/rest-attempt1/receipt.json",
+      "byteLength": 160372,
+      "sha256": "sha256:49dbe8418988dd5d3d1347217714fa91d03092370579a77a0352dd28a0007cde"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/rest-attempt1/rest-qualified/receipt.json",
+      "byteLength": 2174,
+      "sha256": "sha256:a1399bc2785a86c474fe2352a3da8225ef9f92674bd178a70db9ffb57990f263"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/existing-output/receipt.json",
+      "byteLength": 864,
+      "sha256": "sha256:9201a83240dcf6f631f1d85b98233615adf2b00b2a6c2f349e8817c7c45224c0"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/hardlink/receipt.json",
+      "byteLength": 880,
+      "sha256": "sha256:53b197dcae824f09a3d9325a4a1d0f4bb5ae75bb2156fbec5067ebf606304091"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/junction/receipt.json",
+      "byteLength": 871,
+      "sha256": "sha256:084111d07d4d1e3619923df5fa142585a960d7f7a2b0de7a8640f6ec9b03b7f7"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/launch-override/receipt.json",
+      "byteLength": 866,
+      "sha256": "sha256:bb834084a27a4a038a12a36ce14cc9b5f38ed7f5d44dac57038a8f671f0ef9ad"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/prototype-command/receipt.json",
+      "byteLength": 872,
+      "sha256": "sha256:cca77e02b9fe442d0f516ae8cf123c00abcdc4f653198afc70529c90007e9041"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/raw-source-tamper/receipt.json",
+      "byteLength": 895,
+      "sha256": "sha256:b09411b07a285f37b5710a22b104c4b012944f71618d8bf19f31ece4f7c2e7ba"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/receipt.json",
+      "byteLength": 32313,
+      "sha256": "sha256:013df6f2292312d9b628954af06703eb34de8c167aa9e605f150484640fadb05"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/security-attempt1/traversal/receipt.json",
+      "byteLength": 887,
+      "sha256": "sha256:9f8effe3f10bbd63c232266147fd2b2034c5b5f3f87bac0545842edf053c80ee"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/summary.json",
+      "byteLength": 12208,
+      "sha256": "sha256:ad06706a37b2baca81de983be4a83ee7cc100aa1f90226dbe1ddabe0ea383c8e"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/regressions/phase2c-attempt1/receipt.json",
+      "byteLength": 19387,
+      "sha256": "sha256:bccb54930a1ecb6017e58edfb829f63b79ba6528cb0050f4af48c4e8b0af7519"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/regressions/phase2c-attempt1/tests.stdout.txt",
+      "byteLength": 51583,
+      "sha256": "sha256:a03d4a06e9b2e3737541d85479202a65daf092e26574872feb790eeb74e971bb"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/regressions/summary.json",
+      "byteLength": 16144,
+      "sha256": "sha256:139fcbd32bdf680dabb0749b526dd232e31fc09e654b5d442d6dbc6917feb6a9"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/security-pure-review.json",
+      "byteLength": 9567,
+      "sha256": "sha256:931422acebdccc8e19d4930ad1a7c7afc8818893c431cb322fc5152d6dcbb655"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/decisionMatrix.json",
+      "byteLength": 3629,
+      "sha256": "sha256:b08a4ae8522c114fbc1336f8fa56e77a0b36d1ef50520a03bb69e47a9e6b24c5"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/determinismMatrix.json",
+      "byteLength": 1852,
+      "sha256": "sha256:1035b8f8bdacf244d7d1b478ff574ec8397b811cf276486b304861019813ccd7"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/graphMatrix.json",
+      "byteLength": 886764,
+      "sha256": "sha256:43c16a772ff3c9e4c6e569a2f977f3f6eb319d4659248aca0eaa9f24ed8ab7eb"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/preservationMatrix.json",
+      "byteLength": 19057,
+      "sha256": "sha256:9473f4c05265150e9650bb8fcf120f66a41a20ab48a0ba6dfa437ea772ca0efd"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+      "byteLength": 161953,
+      "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/securityMatrix.json",
+      "byteLength": 5842,
+      "sha256": "sha256:39903e2ee5e9dcfee2bd52a0e38bdfc4840a9f7af8ce9c8eab72b62d4cac0c37"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/stdout.txt",
+      "byteLength": 13368,
+      "sha256": "sha256:06060444f563ec316c42f2759cb29decb53b923c9174c9dca08e59826719b702"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/vectorMatrix.json",
+      "byteLength": 26247,
+      "sha256": "sha256:7caac8f3af57e99c87c93eb4ebedc663040129e839a926e322e5173098bc1c56"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2d/source-gate-2b.json",
+      "byteLength": 41000,
+      "sha256": "sha256:949dd5b55e8365054a3d8b8ed1845e7cda8a2eda693150e8fd08ffaa8e976e1c"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs",
+      "byteLength": 17108,
+      "sha256": "sha256:63bebd85b33ce9d23442c347b6e322ec0f8b47733152d2da680fd2d8de8ad420"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs",
+      "byteLength": 4624,
+      "sha256": "sha256:8fdbf1dc83592b1d83e0aad5342598217536ba4b8bad2aef2fa0d766eb821613"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_publication_test.mjs",
+      "byteLength": 13727,
+      "sha256": "sha256:2e8ca8e7f801e08c0c52c6b3cebb14bb0c1a2f3781ceadcc1eb8dd738b09405c"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs",
+      "byteLength": 10000,
+      "sha256": "sha256:23fadc6cfb598ae12cf8b9b3d43fdf357edd3ff4cea0b9bad45e0c09a0f25dfa"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_surfaces_test.mjs",
+      "byteLength": 11988,
+      "sha256": "sha256:51d20c049f9d81a861aab602c8f9e134d51a21061cd34474a1356bc35268adea"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+      "byteLength": 21419,
+      "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2d/native-security.mjs",
+      "byteLength": 6043,
+      "sha256": "sha256:f70be296a2cc242f5ffd32fe85264f0847266a1726fe670c2c42971802935df2"
+    }
+  ],
+  "suiteCounts": {
+    "phase1": 105,
+    "phase2A": 84,
+    "phase2B": 172,
+    "phase2CRuntimePublication": 124,
+    "phase2CSurface": 94,
+    "phase2CTimerTopLevel": 1,
+    "phase2CTotal": 219,
+    "integratedPure": 58,
+    "pureSecuritySubset": 26,
+    "nativeSecurityCases": 7,
+    "nativeIntegratedVectors": 5,
+    "nativeLifecycleCases": 3
+  },
+  "countPolicy": "Twenty-one requested categories map to overlapping assertions. Twenty-six pure security assertions are a subset of58; Phase2C57publication/24finalization/24inspection/7wait/13launch are subsets of124/94, not additional counts. Five native vectors, seven negative cases and three lifecycle cases are reported separately; no unique aggregate total is claimed.",
+  "actualNativeContext": {
+    "securityResult": "PASS",
+    "integrationAcceptance": "FIVE_EXPLICIT_PASS_CASES_WITH_MO1306_NATIVE_NOT_ESTABLISHED",
+    "selectedCases": [
+      {
+        "receipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/integration-attempt2/ready/receipt.json",
+          "byteLength": 3060,
+          "sha256": "sha256:1e4ed82cdb2c21675f0105641a3f5a4ecb14a07fd2cfdeecb6f7df12ffdebe33"
+        },
+        "campaignReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/integration-attempt2/receipt.json",
+          "byteLength": 167214,
+          "sha256": "sha256:8ce4f59a5463cb2e72009f787880c67b7cb3f02dd39e50761c874b0bc8ca9c76"
+        },
+        "outerReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-integration-attempt2/receipt.json",
+          "byteLength": 2179,
+          "sha256": "sha256:f230045fc94c5b35c1fdc1c8484bfbd975b0023b1a293d0bae6739bbc9cb2956"
+        }
+      },
+      {
+        "receipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/integration-attempt2/qualified/receipt.json",
+          "byteLength": 2303,
+          "sha256": "sha256:7638994f7d80f3e5a498ca18b9025fee50dd68f01e65a26a42986dd4550f64d8"
+        },
+        "campaignReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/integration-attempt2/receipt.json",
+          "byteLength": 167214,
+          "sha256": "sha256:8ce4f59a5463cb2e72009f787880c67b7cb3f02dd39e50761c874b0bc8ca9c76"
+        },
+        "outerReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-integration-attempt2/receipt.json",
+          "byteLength": 2179,
+          "sha256": "sha256:f230045fc94c5b35c1fdc1c8484bfbd975b0023b1a293d0bae6739bbc9cb2956"
+        }
+      },
+      {
+        "receipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/integration-attempt2/not-ready/receipt.json",
+          "byteLength": 2291,
+          "sha256": "sha256:a2060c8b068f303c0a788f374d6b265daeaad529c9a8519fc1a6b749231c8354"
+        },
+        "campaignReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/integration-attempt2/receipt.json",
+          "byteLength": 167214,
+          "sha256": "sha256:8ce4f59a5463cb2e72009f787880c67b7cb3f02dd39e50761c874b0bc8ca9c76"
+        },
+        "outerReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-integration-attempt2/receipt.json",
+          "byteLength": 2179,
+          "sha256": "sha256:f230045fc94c5b35c1fdc1c8484bfbd975b0023b1a293d0bae6739bbc9cb2956"
+        }
+      },
+      {
+        "receipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/cne-attempt1/could-not-evaluate/receipt.json",
+          "byteLength": 2300,
+          "sha256": "sha256:1fae8362271d9d25a2eff48203c9fe975345b7bba20db643d47032453e566e4c"
+        },
+        "campaignReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/cne-attempt1/receipt.json",
+          "byteLength": 160506,
+          "sha256": "sha256:2fa450bb23ddbd3a3572c3741f7c9e8c991d90b6cc46a9206e1cf485f52f1425"
+        },
+        "outerReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-cne-attempt1/receipt.json",
+          "byteLength": 1865,
+          "sha256": "sha256:3c986a81bef5d6894b29a667dcbc36a4a70a356184fbaec73dee332c558bb74f"
+        }
+      },
+      {
+        "receipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/rest-attempt1/rest-qualified/receipt.json",
+          "byteLength": 2174,
+          "sha256": "sha256:a1399bc2785a86c474fe2352a3da8225ef9f92674bd178a70db9ffb57990f263"
+        },
+        "campaignReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/rest-attempt1/receipt.json",
+          "byteLength": 160372,
+          "sha256": "sha256:49dbe8418988dd5d3d1347217714fa91d03092370579a77a0352dd28a0007cde"
+        },
+        "outerReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-rest-attempt1/receipt.json",
+          "byteLength": 1868,
+          "sha256": "sha256:1ca696e52fdfd8c5bff868eda87861342ef32b50595cf9601804f9499cd037c6"
+        }
+      }
+    ],
+    "retainedNativeFailures": [
+      {
+        "receipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/integration-attempt1/receipt.json",
+          "byteLength": 164680,
+          "sha256": "sha256:9d1c9ea68fe12ee1d710710a7c3368efd39801c6a48fdcb5a373d0c82aaf491a"
+        },
+        "outerReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-integration-attempt1/receipt.json",
+          "byteLength": 2177,
+          "sha256": "sha256:8aa6391a6a51c46ba03cd8b25dd7a317e8e559d34858a494a12f8052e0f0c1bc"
+        },
+        "disposition": "RETAINED_FAIL: actual acquisition TIMEOUT; completed passing cases remain individually valid, parent campaign remains FAIL; no product source or deadline change.",
+        "originalResult": "FAIL",
+        "originalFailure": {
+          "code": "ERR_ASSERTION",
+          "message": "{\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n115 !== 0\n",
+          "stack": "AssertionError [ERR_ASSERTION]: {\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n115 !== 0\n\n    at cliRun (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase2d/native-integration.mjs:53:38)\n    at file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase2d/native-integration.mjs:61:19\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+        },
+        "successfulCasesMayBeSelectedIndividually": true,
+        "notRelabeledPass": true
+      },
+      {
+        "receipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/integration-attempt2/receipt.json",
+          "byteLength": 167214,
+          "sha256": "sha256:8ce4f59a5463cb2e72009f787880c67b7cb3f02dd39e50761c874b0bc8ca9c76"
+        },
+        "outerReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-integration-attempt2/receipt.json",
+          "byteLength": 2179,
+          "sha256": "sha256:f230045fc94c5b35c1fdc1c8484bfbd975b0023b1a293d0bae6739bbc9cb2956"
+        },
+        "disposition": "RETAINED_FAIL: actual acquisition TIMEOUT; completed passing cases remain individually valid, parent campaign remains FAIL; no product source or deadline change.",
+        "originalResult": "FAIL",
+        "originalFailure": {
+          "code": "ERR_ASSERTION",
+          "message": "{\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n115 !== 0\n",
+          "stack": "AssertionError [ERR_ASSERTION]: {\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n115 !== 0\n\n    at cliRun (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase2d/native-integration.mjs:53:38)\n    at file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase2d/native-integration.mjs:61:19\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+        },
+        "successfulCasesMayBeSelectedIndividually": true,
+        "notRelabeledPass": true
+      },
+      {
+        "receipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/mo1306-attempt1/receipt.json",
+          "byteLength": 158716,
+          "sha256": "sha256:2872bbc76216f9b387bcf32816638817a8972cfd3f99cb26bc3d1f69170b495e"
+        },
+        "outerReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-mo1306-attempt1/receipt.json",
+          "byteLength": 2163,
+          "sha256": "sha256:17db8724668811d790f8040fc8c2285f82eab0f951bda90f8494b4cb985499a0"
+        },
+        "disposition": "RETAINED_FAIL: actual acquisition TIMEOUT; completed passing cases remain individually valid, parent campaign remains FAIL; no product source or deadline change.",
+        "originalResult": "FAIL",
+        "originalFailure": {
+          "code": "ERR_ASSERTION",
+          "message": "{\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n115 !== 0\n",
+          "stack": "AssertionError [ERR_ASSERTION]: {\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n115 !== 0\n\n    at cliRun (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase2d/native-selected.mjs:53:38)\n    at file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase2d/native-selected.mjs:61:19\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+        },
+        "successfulCasesMayBeSelectedIndividually": true,
+        "notRelabeledPass": true
+      },
+      {
+        "receipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/mo1306-attempt2/receipt.json",
+          "byteLength": 158716,
+          "sha256": "sha256:e9c70502eb7c469276994b36dfb4f919db9ed8ab1f8b77166f59eaba22b0ce14"
+        },
+        "outerReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-mo1306-attempt2/receipt.json",
+          "byteLength": 2163,
+          "sha256": "sha256:65a1b0b66cf4fdb677cb0e6a2252dd86f035ffabd1ee8e2b16ec4fd8c5fcb101"
+        },
+        "disposition": "RETAINED_FAIL: actual acquisition TIMEOUT; completed passing cases remain individually valid, parent campaign remains FAIL; no product source or deadline change.",
+        "originalResult": "FAIL",
+        "originalFailure": {
+          "code": "ERR_ASSERTION",
+          "message": "{\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n115 !== 0\n",
+          "stack": "AssertionError [ERR_ASSERTION]: {\"code\":\"MO1307_TIMEOUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n115 !== 0\n\n    at cliRun (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase2d/native-selected.mjs:53:38)\n    at file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase2d/native-selected.mjs:61:19\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+        },
+        "successfulCasesMayBeSelectedIndividually": true,
+        "notRelabeledPass": true
+      },
+      {
+        "receipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/mo1306-diagnostic-attempt1/receipt.json",
+          "byteLength": 57301,
+          "sha256": "sha256:9dcd0b0b6db50bcb049bac92ed54014d54971279d99ca831de34c661d4965107"
+        },
+        "outerReceipt": {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/outer-mo1306-diagnostic-attempt1/receipt.json",
+          "byteLength": 2209,
+          "sha256": "sha256:cb79e1395b041175b84403d2586855df2f127bfbe1354b4c85bb8ad992dbf9b9"
+        },
+        "disposition": "RETAINED_FAIL: actual slot3 READ_SET per-helper5s TIMEOUT; no worker or output, cleanup not confirmed by receipt. Investigation required in Phase3A.",
+        "originalResult": "FAIL",
+        "originalFailure": {
+          "code": "MO1307_TIMEOUT",
+          "stage": "ACQUISITION",
+          "reference": null,
+          "message": "MO1307_TIMEOUT"
+        },
+        "successfulCasesMayBeSelectedIndividually": true,
+        "notRelabeledPass": true
+      }
+    ],
+    "integratedFourStates": true,
+    "exactApiCliParity": true,
+    "verifyNoPublicationMutation": true,
+    "mo1306Native": {
+      "status": "NOT_ESTABLISHED",
+      "semanticReceipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/receipt.json",
+        "byteLength": 161953,
+        "sha256": "sha256:1fb823e38cf1322474df20b87f96dfe7856fdbe7db03bea5c74251a94cd88657"
+      },
+      "focusedFailureReceipts": [
+        {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/mo1306-attempt1/receipt.json",
+          "byteLength": 158716,
+          "sha256": "sha256:2872bbc76216f9b387bcf32816638817a8972cfd3f99cb26bc3d1f69170b495e"
+        },
+        {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/mo1306-attempt2/receipt.json",
+          "byteLength": 158716,
+          "sha256": "sha256:e9c70502eb7c469276994b36dfb4f919db9ed8ab1f8b77166f59eaba22b0ce14"
+        }
+      ],
+      "diagnosticReceipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/mo1306-diagnostic-attempt1/receipt.json",
+        "byteLength": 57301,
+        "sha256": "sha256:9dcd0b0b6db50bcb049bac92ed54014d54971279d99ca831de34c661d4965107"
+      },
+      "pidObservation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2d/native/mo1306-diagnostic-attempt1/pid-observation.json",
+        "byteLength": 360,
+        "sha256": "sha256:6f559ca14580e00148029727c973a259ce7258be8c5ae1d994f55c53c697f526"
+      },
+      "limitingSlot": 3,
+      "operation": "READ_SET",
+      "files": 65,
+      "manifestBytes": 2004208,
+      "perHelperDeadlineMs": 5000,
+      "workersStarted": 0,
+      "outputPublished": false,
+      "cleanupConfirmedByDiagnostic": false,
+      "quiescence": "NOT_CONFIRMED_BY_THIS_RECEIPT",
+      "specificInnerCause": "UNDETERMINED",
+      "requiredFollowUp": "Phase3A must investigate native capacity and cleanup proof under unchanged frozen budgets before any installed-runtime or release certification."
+    },
+    "helperRequests": {
+      "evaluate": 9,
+      "verify": 4
+    },
+    "lifecycleRequestsTotal": 22,
+    "oneFixedWorkerPerCase": true,
+    "noHelperWorkerOverlap": true,
+    "differentSessionsSameNormativeBytes": true,
+    "scope": "Actual fixed native helper/native identities/production worker/2B/2A/publication. No synthetic helper frames or semantic doubles in selected native cases. Acceptance selects five completed PASS cases covering all four states plus REST; original full and MO1306 focused campaign failures remain FAIL and are separately bound. MO1306 native execution is explicitly NOT_ESTABLISHED; its semantic integration evidence is separate."
+  },
+  "graphAndPreservationReview": {
+    "kind": "MO1307IndependentGraphPreservationReview",
+    "version": "1.0.0",
+    "result": "PASS",
+    "method": "Read-only retained-matrix review: independently rebuild every expected typed edge from exact accepted fixture grants, claims, dependencies and candidate; Kahn acyclicity, root reachability, exact node/edge closure, SHA-256 pins and history-source comparison. No new semantic or native campaign.",
+    "sourceBindings": [
+      {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/graphMatrix.json",
+        "byteLength": 886764,
+        "sha256": "sha256:43c16a772ff3c9e4c6e569a2f977f3f6eb319d4659248aca0eaa9f24ed8ab7eb"
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/preservationMatrix.json",
+        "byteLength": 19057,
+        "sha256": "sha256:9473f4c05265150e9650bb8fcf120f66a41a20ab48a0ba6dfa437ea772ca0efd"
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2d/semantics/attempt-1/vectorMatrix.json",
+        "byteLength": 26247,
+        "sha256": "sha256:7caac8f3af57e99c87c93eb4ebedc663040129e839a926e322e5173098bc1c56"
+      }
+    ],
+    "graphs": [
+      {
+        "name": "could-not-evaluate",
+        "nodes": 52,
+        "edges": 107,
+        "claims": 16,
+        "grants": 16,
+        "sourceInputs": 18,
+        "result": "PASS"
+      },
+      {
+        "name": "history-blocker-unavailable",
+        "nodes": 52,
+        "edges": 107,
+        "claims": 16,
+        "grants": 16,
+        "sourceInputs": 18,
+        "result": "PASS"
+      },
+      {
+        "name": "informational-ready",
+        "nodes": 54,
+        "edges": 114,
+        "claims": 17,
+        "grants": 17,
+        "sourceInputs": 19,
+        "result": "PASS"
+      },
+      {
+        "name": "metadata-only",
+        "nodes": 54,
+        "edges": 114,
+        "claims": 17,
+        "grants": 17,
+        "sourceInputs": 19,
+        "result": "PASS"
+      },
+      {
+        "name": "mixed-precedence",
+        "nodes": 52,
+        "edges": 107,
+        "claims": 16,
+        "grants": 16,
+        "sourceInputs": 18,
+        "result": "PASS"
+      },
+      {
+        "name": "mo1306-qualified",
+        "nodes": 164,
+        "edges": 832,
+        "claims": 17,
+        "grants": 17,
+        "sourceInputs": 65,
+        "result": "PASS"
+      },
+      {
+        "name": "not-ready",
+        "nodes": 54,
+        "edges": 114,
+        "claims": 17,
+        "grants": 17,
+        "sourceInputs": 19,
+        "result": "PASS"
+      },
+      {
+        "name": "post-tag-absent",
+        "nodes": 54,
+        "edges": 114,
+        "claims": 17,
+        "grants": 17,
+        "sourceInputs": 19,
+        "result": "PASS"
+      },
+      {
+        "name": "post-tag-lightweight",
+        "nodes": 54,
+        "edges": 114,
+        "claims": 17,
+        "grants": 17,
+        "sourceInputs": 19,
+        "result": "PASS"
+      },
+      {
+        "name": "post-tag-ready",
+        "nodes": 54,
+        "edges": 114,
+        "claims": 17,
+        "grants": 17,
+        "sourceInputs": 19,
+        "result": "PASS"
+      },
+      {
+        "name": "post-tag-wrong-target",
+        "nodes": 54,
+        "edges": 114,
+        "claims": 17,
+        "grants": 17,
+        "sourceInputs": 19,
+        "result": "PASS"
+      },
+      {
+        "name": "pre-tag-present",
+        "nodes": 54,
+        "edges": 114,
+        "claims": 17,
+        "grants": 17,
+        "sourceInputs": 19,
+        "result": "PASS"
+      },
+      {
+        "name": "qualified",
+        "nodes": 54,
+        "edges": 114,
+        "claims": 17,
+        "grants": 17,
+        "sourceInputs": 19,
+        "result": "PASS"
+      },
+      {
+        "name": "ready",
+        "nodes": 54,
+        "edges": 114,
+        "claims": 17,
+        "grants": 17,
+        "sourceInputs": 19,
+        "result": "PASS"
+      },
+      {
+        "name": "rest-qualified",
+        "nodes": 41,
+        "edges": 86,
+        "claims": 13,
+        "grants": 13,
+        "sourceInputs": 15,
+        "result": "PASS"
+      },
+      {
+        "name": "selective-reuse",
+        "nodes": 54,
+        "edges": 114,
+        "claims": 17,
+        "grants": 17,
+        "sourceInputs": 19,
+        "result": "PASS"
+      }
+    ],
+    "totalAcrossSeparateGraphs": {
+      "nodes": 955,
+      "edges": 2493,
+      "rawManifestFilesChecked": 343
+    },
+    "mo1306": {
+      "rawHistoryRows": 19,
+      "negativeOrUnclosedRows": 12,
+      "projections": 12,
+      "originalDispositionPreserved": true,
+      "qualifications": 10,
+      "qualificationClasses": {
+        "BOUNDED_ADVISORY_REVIEW": 1,
+        "HISTORICAL_UNRESOLVED_PRESERVED": 5,
+        "PROVIDER_NOT_LIVE_CERTIFIED": 3,
+        "HOSTED_NOT_CERTIFIED": 1
+      },
+      "providerCount": 5,
+      "historyDispositions": {
+        "SUPERSEDED": 7,
+        "PRESERVED_WITH_QUALIFICATION": 5
+      },
+      "claims": 17,
+      "grants": 17,
+      "sourceInputs": 65,
+      "graphNodes": 164,
+      "graphEdges": 832,
+      "auditInputTypes": {
+        "SOURCE": 45,
+        "ENVELOPE": 17,
+        "AUTHORITY_SOURCE": 3
+      }
+    },
+    "notes": [
+      "Graph nodes are the frozen six types; SOURCE bytes are proof-audit inputs, not added arbitrary normative node types. The MO1306 graph has 127 distinct dependency nodes.",
+      "The graph authority root is normalized authority class/scope/assumptions; raw trust-root provenance and consumed SOURCE bytes remain separately bound in audit, never promoted by graph shape alone.",
+      "MO1306 accepted 2B raw-lineage correction changes audit/proof/result bytes versus accepted 2A while all sixteen readiness digests remain unchanged; other fifteen vectors preserve full accepted 2A result bytes.",
+      "Source records with positive historical outcome remain among nineteen raw bound rows; only twelve negative or unclosed rows become history projections. Historical unresolved causes are not relabeled PASS.",
+      "Counts across graphs are observations of separate fixtures, not unique evidence objects or new release certificates.",
+      "MO1306 audit inputs65 comprises45 SOURCE,17 ENVELOPE and3 AUTHORITY_SOURCE records; sourceInputs is the audit-input count and must not be misreported as65 raw SOURCE records."
+    ]
+  },
+  "scopeLimitations": [
+    "Finite adversarial controls on reviewed integrated source; not a general security certification or proof against every race.",
+    "Private immutable-root precondition and same-host native limits remain; Linux/Ubuntu/WSL, VM, other hosts, installed archive and provider accounts are not exercised.",
+    "MO1306 native readiness is NOT_ESTABLISHED. Its diagnostic slot3 READ_SET65files hits the unchanged5s per-helper budget before a worker or output exists; that receipt does not confirm helper quiescence (cleanupConfirmed=false, activeRole=helper). Successful smaller native cases do not close this Phase3 acquisition/cleanup question.",
+    "Post-admission delay/timeout controls retain their exact engineering scope. Native lifecycle proves ordinary real helper/worker/publication sequencing; it does not promote synthetic queued-rename identities to native authority.",
+    "Human decision authenticity remains NOT_VERIFIED_BY_MEMORYOS. Generic provider certification is preserved predecessor authority; no hosted or live provider certification is newly granted.",
+    "Graph/preservation reinspection consumes retained artifacts and exact fixture bytes without rerunning semantic or predecessor campaigns."
+  ],
+  "noNewNormativeDecision": true,
+  "noSourceWorktreeMutation": true,
+  "noNetwork": true,
+  "phase3Certification": false
+}

@@ -90,7 +90,7 @@ test('C17 error schema is closed and operational outcomes are not readiness stat
   code(()=>validateSchema('Readiness','MO1307_INPUT'),'INPUT');
   code(()=>validateRecord('Error',{...P(serializeError(new ReadinessError('INPUT','INTEGRITY'))),message:'secret'}),'INPUT');
 });
-test('C18 no future runtime result from foundation public entry points',async()=>{
+test('C18 public entry points reject malformed input and prior cancellation',async()=>{
   await assert.rejects(api.evaluateReadiness({}),e=>e.code==='MO1307_INPUT');
   await assert.rejects(api.verifyReadiness({}),e=>e.code==='MO1307_INPUT');
   const controller=new AbortController();controller.abort();
@@ -142,9 +142,11 @@ test('C28 API holder shape rejects getters/symbols/hidden fields safely',()=>{
   const other=readyInput();other[Symbol('secret')]=1;code(()=>inspectFoundationInputs(other),'INPUT');
   const getter=readyInput();Object.defineProperty(getter,'expectedCandidateDigest',{get(){throw Error('secret');}});code(()=>inspectFoundationInputs(getter),'INPUT');
 });
-test('C29 well formed bundle reaches explicit foundation guard, never READY',async()=>{
+test('C29 well formed bundle traverses integrated verifier and readiness worker',async()=>{
   const input=readyInput();assert.ok(inspectFoundationInputs(input).parsed.candidate);
-  await assert.rejects(api.evaluateReadiness(input),e=>e.code==='MO1307_INTERNAL'&&e.stage==='EVALUATION');
+  const actual=await api.evaluateReadiness(input),expected=readFileSync(new URL('bundles/ready/expected-result.json',fixtureRoot));
+  assert.deepEqual(Buffer.from(actual.resultBytes),expected);
+  assert.equal(P(actual.resultBytes).assessment.readiness,'READY');
 });
 test('C30 malformed verification versions use their own mismatch categories',()=>{
   const r=fixture('bundles/ready/expected-result.json');const bad=structuredClone(r);bad.version='2.0.0';code(()=>validateResultIdentity(bad),'RESULT_MISMATCH');

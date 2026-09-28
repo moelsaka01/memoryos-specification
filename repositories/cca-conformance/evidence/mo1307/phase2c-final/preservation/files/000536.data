@@ -1,0 +1,43 @@
+✔ NRT01 native CPU-bound worker is terminated at fixed 10000ms CLI evaluation deadline (10021.4187ms)
+✔ R01 api exact absolute deadline and equality (3.6718ms)
+✔ R01 cli exact absolute deadline and equality (0.2211ms)
+✔ R02 earlier cancellation stays terminal after deadline (0.3291ms)
+✔ R03 timeout wins simultaneous first cancellation observation (0.2559ms)
+✔ R04 preaborted signal prevents any launch (0.7342ms)
+✔ R05 monotonic decreasing clock rejects (0.3216ms)
+✔ R06 API cannot launch helper (0.5431ms)
+✔ R07 helper deadline includes all active time; equality rejects (0.83ms)
+✔ R08 aggregate deadline does not reset across helpers (0.7238ms)
+✔ R09 worker time is excluded from helper aggregate but inside overall (0.4671ms)
+✔ R10 helper overlap is terminal and cleans prior owned role (0.4711ms)
+✔ R11 helper and worker cannot overlap (0.4058ms)
+✔ R12 frame alone cannot advance before actual close (57.3793ms)
+✔ R13 launch uses only fixed executable/script/environment and no shell (1.1935ms)
+✔ R14 helper trailing byte fails closed (13.069ms)
+✔ R14 helper extra frame fails closed (1.4802ms)
+✔ R14 helper debug stdout fails closed (1.6126ms)
+✔ R14 helper truncated frame fails closed (12.82ms)
+✔ R14 helper oversized prefix fails closed (3.4814ms)
+✔ R14 helper stderr overflow fails closed (1.904ms)
+✔ R14 helper nonzero exit fails closed (12.506ms)
+✔ R15 cancellation in launch terminates and ignores later valid frame (1.9876ms)
+✔ R16 cancellation during transport cleans child (13.4569ms)
+✔ R17 fixed actual worker has empty environment and exact heap intent (41.3791ms)
+✔ R18 successful worker result waits for termination (143.9702ms)
+✔ R19 actual worker crash fails closed (38.7139ms)
+✔ R19 actual worker duplicate fails closed (37.155ms)
+✔ R19 actual worker stdout fails closed (36.4983ms)
+✔ R20 cancellation actually terminates CPU-bound worker thread (52.0087ms)
+✔ R21 production worker remains fail-closed without 2A/2B (127.5266ms)
+✔ R22 adapter matches closed 2A handoff; operational/session fields excluded (0.3197ms)
+✔ R23 verify evidence seam excludes result and decision bytes (0.2255ms)
+✔ R24 malformed decision uses dedicated mismatch, cap uses resource (0.364ms)
+✔ R25 actual worker policy denies filesystem/network/process/module escape imports (70.2449ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10122.5387

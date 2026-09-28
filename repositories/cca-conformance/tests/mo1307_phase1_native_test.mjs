@@ -193,13 +193,33 @@ test('N14 helper decoded aggregate boundary and +1', () => {
   response.files[4].bytes = ['AA==']; response.files[4].identity.byteLength = 1;
   code(() => encodeHelperResponse(response, req), 'RESOURCE_LIMIT');
 });
-test('N15 native fixed PowerShell protocol guard and sanitization', () => {
-  const slashRoot = request(1); slashRoot.roots[0].path = 'C:/Input';
-  for (const req of [slashRoot, request(2), request(3), request(4), request(4, 'verify'),
-    ...Array.from({ length: 5 }, (_, i) => fixtureRequest(i + 5))]) {
+test('N15 native fixed PowerShell snapshots and checked inspection sanitization', async () => {
+  const input = path.join(attempt, 'native-input'), result = path.join(attempt, 'native-result'), output = path.join(attempt, 'native-output');
+  await fs.mkdir(input, { recursive: true }); await fs.mkdir(result, { recursive: true });
+  for (const leaf of ['authority', 'config', 'candidate', 'manifest', 'evidence']) await fs.writeFile(path.join(input, leaf + '.json'), '{}\n');
+  await fs.writeFile(path.join(result, 'result.json'), '{}\n');
+  for (const req of [request(1), request(2), request(3), request(4, 'verify')]) {
+    req.roots[0].path = req.sequence === 4 ? result : input;
     const response = decodeHelperResponse(runHelper(encodeHelperRequest(req)), req);
-    assert.equal(response.code, 'MO1307_INTERNAL'); assert.equal(response.status, 'ERROR');
-    assert.deepEqual(response.files, []); assert.deepEqual(response.roots, []);
+    assert.equal(response.code, null); assert.equal(response.status, 'OK');
+    for (const entry of response.files) assert.equal(Buffer.from(entry.bytes.join(''), 'base64').toString(), '{}\n');
+  }
+  for (const slot of [4, 5]) {
+    const req = fixtureRequest(slot, 'evaluate', output);
+    const response = decodeHelperResponse(runHelper(encodeHelperRequest(req)), req);
+    assert.equal(response.status, 'ABSENT'); assert.ok(response.roots[0].chain.length > 1);
+  }
+  await fs.mkdir(output);
+  for (const slot of [6, 7]) {
+    const req = fixtureRequest(slot, 'evaluate', output);
+    assert.equal(decodeHelperResponse(runHelper(encodeHelperRequest(req)), req).status, 'OK');
+  }
+  await fs.writeFile(path.join(output, D.filenames.pendingResult), '{}\n');
+  for (const slot of [8, 9]) {
+    const req = fixtureRequest(slot, 'evaluate', output);
+    const response = decodeHelperResponse(runHelper(encodeHelperRequest(req)), req);
+    assert.equal(response.status, slot === 8 ? 'OK' : 'FINAL_ABSENT');
+    assert.equal(response.roots[0].chain.at(-1).byteLength, 3);
   }
 });
 test('N16 native helper rejects hostile operation extra fields and oversized frame', () => {
@@ -211,14 +231,21 @@ test('N16 native helper rejects hostile operation extra fields and oversized fra
   const header = Buffer.alloc(4); header.writeUInt32BE(65533);
   assert.equal(JSON.parse(runHelper(header).subarray(4)).code, 'MO1307_RESOURCE_LIMIT');
 });
-test('N17 native CLI emits only operational guard and no files', async () => {
-  const child = spawnSync(process.execPath, [cli, ...args()], { env: cleanEnv, encoding: 'utf8', timeout: 5000, windowsHide: true });
-  assert.ifError(child.error); assert.equal(child.status, 22); assert.equal(child.stdout, '');
-  assert.deepEqual(JSON.parse(child.stderr), { kind: 'MemoryOSReadinessError', version: '1.0.0', code: 'MO1307_INTERNAL', stage: 'ACQUISITION', reference: null });
+test('N17 native CLI evaluates and publishes exact integrated result', async () => {
+  const input = path.join(cwd, 'repositories/cca-conformance/fixtures/mo1307/bundles/ready');
+  const pins = JSON.parse(await fs.readFile(path.join(input, 'pins.json')));
+  const out = path.join(attempt, 'cli-integrated-ready');
+  const argv = ['evaluate', '--input-root', input, '--config', 'configuration.json', '--authority', 'authority.json',
+    '--authority-sha256', pins.trustedAuthorityDigest, '--candidate-sha256', pins.expectedCandidateDigest, '--output-root', out];
+  const child = spawnSync(process.execPath, [cli, ...argv], { env: cleanEnv, encoding: 'utf8', timeout: 32000, windowsHide: true });
+  assert.ifError(child.error); assert.equal(child.status, 0, child.stderr); assert.equal(child.stderr, '');
+  assert.deepEqual(Buffer.from(child.stdout), await fs.readFile(path.join(input, 'expected-summary.json')));
+  const finalName = 'memoryos-readiness-result.json';
+  assert.deepEqual(await fs.readdir(out), [finalName]);
+  assert.deepEqual(await fs.readFile(path.join(out, finalName)), await fs.readFile(path.join(input, 'expected-result.json')));
   const rejected = spawnSync(process.execPath, [cli, ...args('__proto__')], { env: cleanEnv, encoding: 'utf8', timeout: 5000, windowsHide: true });
   assert.equal(rejected.status, 10); assert.equal(JSON.parse(rejected.stderr).code, 'MO1307_USAGE');
 });
-
 async function outputRoot(name) {
   await fs.mkdir(attempt, { recursive: true });
   return path.join(attempt, name);
@@ -280,7 +307,7 @@ test('N23 primitive late checkpoint prevents rename and retains pending', async 
   await stagePublication(token, Buffer.from('{}\n')); late = true;
   await rejects(() => finalizePublication(token), 'TIMEOUT'); assert.deepEqual(await fs.readdir(root), ['memoryos-readiness-result.json.pending']);
 });
-test('N24 foundation has no network imports server watcher or process orchestration', async () => {
+test('N24 foundation retains no-network and fixed orchestration boundaries', async () => {
   for (const relative of ['src/windows-paths.mjs', 'src/helper-protocol.mjs', 'src/publication.mjs', 'src/cli-args.mjs', 'bin/memoryos-readiness.mjs']) {
     const source = await fs.readFile(path.join(packageRoot, relative), 'utf8');
     assert.doesNotMatch(source, /(?:node:)?(?:https?|net|tls|dns|dgram|child_process)['"]/);

@@ -1,0 +1,2766 @@
+{
+  "kind": "MO1307FinalNativeSurfaces",
+  "result": "FAIL",
+  "failure": {
+    "code": "ENOENT",
+    "message": "ENOENT: no such file or directory, open 'C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\stdout-failure\\memoryos-readiness-result.json'",
+    "stack": "Error: ENOENT: no such file or directory, open 'C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\stdout-failure\\memoryos-readiness-result.json'\n    at async open (node:internal/fs/promises:1345:25)\n    at async Object.readFile (node:internal/fs/promises:1996:14)\n    at async witness (file:///C:/Users/melsa/Documents/Codex/cca-mo1307-2c-resumed/repositories/cca-conformance/tools/mo1307-phase2c-final/native-surfaces.mjs:56:42)\n    at async file:///C:/Users/melsa/Documents/Codex/cca-mo1307-2c-resumed/repositories/cca-conformance/tools/mo1307-phase2c-final/native-surfaces.mjs:80:2"
+  },
+  "pid": 23492,
+  "elapsedMs": 56179.716400000005,
+  "runtime": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "launch": {
+    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+    ],
+    "options": {
+      "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\memoryos-readiness\\",
+      "env": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true,
+      "detached": false,
+      "shell": false,
+      "stdio": [
+        "pipe",
+        "pipe",
+        "pipe"
+      ]
+    }
+  },
+  "results": [
+    {
+      "name": "evaluate-a",
+      "command": "evaluate",
+      "elapsedMs": 14230.678,
+      "requests": [
+        {
+          "session": "ca9ec46fae909a77de0ee98f89b30562a3092ac7e609c65808fd681047863bd3",
+          "sequence": 1,
+          "operation": "READ_SET",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "id": "input",
+              "identity": {
+                "attributes": 16,
+                "byteLength": 4096,
+                "fileId": "000900000012d565",
+                "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\cca-conformance\\fixtures\\mo1307\\bundles\\ready",
+                "isDirectory": true,
+                "linkCount": 1,
+                "volumeSerial": "bec58120"
+              }
+            }
+          ],
+          "responseSha256": "018f77a06b981ea85a94d16a5f1f84238720b81bb6e1dcae0c29501a1e9f9560"
+        },
+        {
+          "session": "ca9ec46fae909a77de0ee98f89b30562a3092ac7e609c65808fd681047863bd3",
+          "sequence": 2,
+          "operation": "READ_SET",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "id": "input",
+              "identity": {
+                "attributes": 16,
+                "byteLength": 4096,
+                "fileId": "000900000012d565",
+                "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\cca-conformance\\fixtures\\mo1307\\bundles\\ready",
+                "isDirectory": true,
+                "linkCount": 1,
+                "volumeSerial": "bec58120"
+              }
+            }
+          ],
+          "responseSha256": "d0c18313206286caa27ed44959efc2ba0da84b2e782d59c20997c0aacfb0cb2c"
+        },
+        {
+          "session": "ca9ec46fae909a77de0ee98f89b30562a3092ac7e609c65808fd681047863bd3",
+          "sequence": 3,
+          "operation": "READ_SET",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "id": "input",
+              "identity": {
+                "attributes": 16,
+                "byteLength": 4096,
+                "fileId": "000900000012d565",
+                "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\cca-conformance\\fixtures\\mo1307\\bundles\\ready",
+                "isDirectory": true,
+                "linkCount": 1,
+                "volumeSerial": "bec58120"
+              }
+            }
+          ],
+          "responseSha256": "df6fc22663c14c4a4408b9c1c46b8f66e6975339ca8855719d4f576cd38136bd"
+        },
+        {
+          "session": "ca9ec46fae909a77de0ee98f89b30562a3092ac7e609c65808fd681047863bd3",
+          "sequence": 4,
+          "operation": "CHECK_OUTPUT",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "ABSENT",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "output-parent"
+            }
+          ],
+          "responseSha256": "c90c80094df6e3ff5a37b4dda03020c15cbdacf20d5d416c8d89a8c4a21a9ea7"
+        },
+        {
+          "session": "ca9ec46fae909a77de0ee98f89b30562a3092ac7e609c65808fd681047863bd3",
+          "sequence": 5,
+          "operation": "CHECK_OUTPUT",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "ABSENT",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "output-parent"
+            }
+          ],
+          "responseSha256": "2bf9602b8da0b6d3af7babd6c51d5b8ff1adfc6a6606ad2874dd8e05fa19689b"
+        },
+        {
+          "session": "ca9ec46fae909a77de0ee98f89b30562a3092ac7e609c65808fd681047863bd3",
+          "sequence": 6,
+          "operation": "INSPECT_OUTPUT_ROOT",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000c000000139152",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\evaluate-a",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "output"
+            }
+          ],
+          "responseSha256": "f4dabfd85bc2c80e0951f7a78eda829b723c2ca28b53dabc90ed20cd60c2ad70"
+        },
+        {
+          "session": "ca9ec46fae909a77de0ee98f89b30562a3092ac7e609c65808fd681047863bd3",
+          "sequence": 7,
+          "operation": "CHECK_STAGE_ROOT",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000c000000139152",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\evaluate-a",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "output"
+            }
+          ],
+          "responseSha256": "9b1d9c30c7dba57d28feadf0ffe4290e05dd2f60799f66d3457c3f48fba2c209"
+        },
+        {
+          "session": "ca9ec46fae909a77de0ee98f89b30562a3092ac7e609c65808fd681047863bd3",
+          "sequence": 8,
+          "operation": "INSPECT_PENDING",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000c000000139152",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\evaluate-a",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 32,
+                  "byteLength": 59987,
+                  "fileId": "000b000000139162",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\evaluate-a\\memoryos-readiness-result.json.pending",
+                  "isDirectory": false,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "pending"
+            }
+          ],
+          "responseSha256": "e8970bbfd0bc60e84b6bab956b17f51186e0b43afdf01ec8bf64b34ea72307be"
+        },
+        {
+          "session": "ca9ec46fae909a77de0ee98f89b30562a3092ac7e609c65808fd681047863bd3",
+          "sequence": 9,
+          "operation": "CHECK_FINALIZATION",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "FINAL_ABSENT",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000c000000139152",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\evaluate-a",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 32,
+                  "byteLength": 59987,
+                  "fileId": "000b000000139162",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\evaluate-a\\memoryos-readiness-result.json.pending",
+                  "isDirectory": false,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "pending"
+            }
+          ],
+          "responseSha256": "74aa77b84692fcc614dcae6597309944aa1c9e8f943914906627ad6220fd74aa"
+        }
+      ],
+      "outcome": {
+        "exitCode": 0,
+        "committed": true
+      },
+      "failure": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 30094.3451,
+        "helpers": 9,
+        "workers": 1,
+        "helperUsedMs": 14025.702500000001,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": {
+          "phase": "COMMITTED",
+          "admitted": true,
+          "deadlineExpiredAfterAdmission": false,
+          "cancelledAfterAdmission": false,
+          "namespaceVerified": true,
+          "dispositionDeadline": 16320.1804
+        },
+        "terminalCode": null,
+        "terminalAt": null,
+        "cleanupDeadline": null,
+        "events": [
+          {
+            "type": "start",
+            "at": 103.6996,
+            "role": "helper",
+            "deadline": 5103.6042,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 117.5352,
+            "role": "helper",
+            "pid": 21524,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 1650.2639,
+            "role": "helper",
+            "ordinal": 1
+          },
+          {
+            "type": "start",
+            "at": 1671.4077,
+            "role": "helper",
+            "deadline": 6671.3788,
+            "ordinal": 2
+          },
+          {
+            "type": "observation",
+            "at": 1682.9402,
+            "role": "helper",
+            "pid": 26536,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 3194.741,
+            "role": "helper",
+            "ordinal": 2
+          },
+          {
+            "type": "start",
+            "at": 3210.9958,
+            "role": "helper",
+            "deadline": 8210.9796,
+            "ordinal": 3
+          },
+          {
+            "type": "observation",
+            "at": 3221.8934,
+            "role": "helper",
+            "pid": 11168,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 5674.4457,
+            "role": "helper",
+            "ordinal": 3
+          },
+          {
+            "type": "start",
+            "at": 5681.5854,
+            "role": "helper",
+            "deadline": 10681.5519,
+            "ordinal": 4
+          },
+          {
+            "type": "observation",
+            "at": 5694.1274,
+            "role": "helper",
+            "pid": 7360,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 7006.0844,
+            "role": "helper",
+            "ordinal": 4
+          },
+          {
+            "type": "start",
+            "at": 7008.6163,
+            "role": "worker",
+            "deadline": 17008.599000000002,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 7010.3681,
+            "role": "worker",
+            "threadId": 1,
+            "resourceLimits": {
+              "maxYoungGenerationSizeMb": 16,
+              "maxOldGenerationSizeMb": 128,
+              "codeRangeSizeMb": -1,
+              "stackSizeMb": 4
+            }
+          },
+          {
+            "type": "quiescent",
+            "at": 7117.4229,
+            "role": "worker",
+            "ordinal": 1
+          },
+          {
+            "type": "start",
+            "at": 7125.023,
+            "role": "helper",
+            "deadline": 12125.0105,
+            "ordinal": 5
+          },
+          {
+            "type": "observation",
+            "at": 7132.4016,
+            "role": "helper",
+            "pid": 18832,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 8388.3603,
+            "role": "helper",
+            "ordinal": 5
+          },
+          {
+            "type": "start",
+            "at": 8393.206,
+            "role": "helper",
+            "deadline": 13393.1843,
+            "ordinal": 6
+          },
+          {
+            "type": "observation",
+            "at": 8402.6723,
+            "role": "helper",
+            "pid": 1072,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 9664.1361,
+            "role": "helper",
+            "ordinal": 6
+          },
+          {
+            "type": "start",
+            "at": 9668.3662,
+            "role": "helper",
+            "deadline": 14668.3468,
+            "ordinal": 7
+          },
+          {
+            "type": "observation",
+            "at": 9679.023,
+            "role": "helper",
+            "pid": 14436,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 11195.8397,
+            "role": "helper",
+            "ordinal": 7
+          },
+          {
+            "type": "start",
+            "at": 11205.0483,
+            "role": "helper",
+            "deadline": 16205.0128,
+            "ordinal": 8
+          },
+          {
+            "type": "observation",
+            "at": 11215.7337,
+            "role": "helper",
+            "pid": 27596,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 12830.2924,
+            "role": "helper",
+            "ordinal": 8
+          },
+          {
+            "type": "start",
+            "at": 12835.1177,
+            "role": "helper",
+            "deadline": 17835.0958,
+            "ordinal": 9
+          },
+          {
+            "type": "observation",
+            "at": 12848.2779,
+            "role": "helper",
+            "pid": 13168,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 14315.7571,
+            "role": "helper",
+            "ordinal": 9
+          },
+          {
+            "type": "publication-transport",
+            "at": 14322.0553
+          }
+        ]
+      },
+      "outputBytes": 353,
+      "noOverlap": true,
+      "ownedRoleRemaining": null,
+      "verifiedInputSource": "ACTUAL_FIXED_PRODUCTION_POWERSHELL",
+      "nativeFrames": true,
+      "semanticIntegration": "REVIEWED_FIXED_WORKER_ONLY_NOT_2A_2B_CERTIFICATION"
+    },
+    {
+      "name": "verify",
+      "command": "verify",
+      "elapsedMs": 7696.214500000002,
+      "requests": [
+        {
+          "session": "05a49bca780b8bf1d05f4baae2e4857d3c9b615eac2542bd2f9911d4aa3d4f26",
+          "sequence": 1,
+          "operation": "READ_SET",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "id": "input",
+              "identity": {
+                "attributes": 16,
+                "byteLength": 4096,
+                "fileId": "000900000012d565",
+                "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\cca-conformance\\fixtures\\mo1307\\bundles\\ready",
+                "isDirectory": true,
+                "linkCount": 1,
+                "volumeSerial": "bec58120"
+              }
+            }
+          ],
+          "responseSha256": "380ac1b9da870c0685a0716e118fe14a0d03000f995a2a7d8e408b0122005470"
+        },
+        {
+          "session": "05a49bca780b8bf1d05f4baae2e4857d3c9b615eac2542bd2f9911d4aa3d4f26",
+          "sequence": 2,
+          "operation": "READ_SET",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "id": "input",
+              "identity": {
+                "attributes": 16,
+                "byteLength": 4096,
+                "fileId": "000900000012d565",
+                "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\cca-conformance\\fixtures\\mo1307\\bundles\\ready",
+                "isDirectory": true,
+                "linkCount": 1,
+                "volumeSerial": "bec58120"
+              }
+            }
+          ],
+          "responseSha256": "3a1bd49cb483cac190b1f68faa30703795a3a1f2e5b2a78445443dc330bb5b9b"
+        },
+        {
+          "session": "05a49bca780b8bf1d05f4baae2e4857d3c9b615eac2542bd2f9911d4aa3d4f26",
+          "sequence": 3,
+          "operation": "READ_SET",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "id": "input",
+              "identity": {
+                "attributes": 16,
+                "byteLength": 4096,
+                "fileId": "000900000012d565",
+                "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\cca-conformance\\fixtures\\mo1307\\bundles\\ready",
+                "isDirectory": true,
+                "linkCount": 1,
+                "volumeSerial": "bec58120"
+              }
+            }
+          ],
+          "responseSha256": "d5a2596705ce89de1b20b1b6200ec1f3abc2282fcfafe70be3f0178d5dc9b14a"
+        },
+        {
+          "session": "05a49bca780b8bf1d05f4baae2e4857d3c9b615eac2542bd2f9911d4aa3d4f26",
+          "sequence": 4,
+          "operation": "READ_SET",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "id": "result",
+              "identity": {
+                "attributes": 16,
+                "byteLength": 0,
+                "fileId": "000c000000139152",
+                "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\evaluate-a",
+                "isDirectory": true,
+                "linkCount": 1,
+                "volumeSerial": "bec58120"
+              }
+            }
+          ],
+          "responseSha256": "d3f1c072dc998e9c3fb67256e8fbb52e6a9d0402018c897642cbf2c35a2e01cd"
+        }
+      ],
+      "outcome": {
+        "exitCode": 0,
+        "committed": false
+      },
+      "failure": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 44327.0816,
+        "helpers": 4,
+        "workers": 1,
+        "helperUsedMs": 7506.356599999999,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": null,
+        "terminalAt": null,
+        "cleanupDeadline": null,
+        "events": [
+          {
+            "type": "start",
+            "at": 14329.2086,
+            "role": "helper",
+            "deadline": 19329.1982,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 14340.7772,
+            "role": "helper",
+            "pid": 5052,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 15979.2802,
+            "role": "helper",
+            "ordinal": 1
+          },
+          {
+            "type": "start",
+            "at": 15991.0227,
+            "role": "helper",
+            "deadline": 20991.017,
+            "ordinal": 2
+          },
+          {
+            "type": "observation",
+            "at": 16000.0922,
+            "role": "helper",
+            "pid": 25620,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 17578.3165,
+            "role": "helper",
+            "ordinal": 2
+          },
+          {
+            "type": "start",
+            "at": 17594.1723,
+            "role": "helper",
+            "deadline": 22594.1673,
+            "ordinal": 3
+          },
+          {
+            "type": "observation",
+            "at": 17606.3451,
+            "role": "helper",
+            "pid": 22148,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 20356.587,
+            "role": "helper",
+            "ordinal": 3
+          },
+          {
+            "type": "start",
+            "at": 20364.878,
+            "role": "helper",
+            "deadline": 25364.8723,
+            "ordinal": 4
+          },
+          {
+            "type": "observation",
+            "at": 20374.7687,
+            "role": "helper",
+            "pid": 23920,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 21871.4396,
+            "role": "helper",
+            "ordinal": 4
+          },
+          {
+            "type": "start",
+            "at": 21877.806,
+            "role": "worker",
+            "deadline": 31877.7599,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 21878.6088,
+            "role": "worker",
+            "threadId": 2,
+            "resourceLimits": {
+              "maxYoungGenerationSizeMb": 16,
+              "maxOldGenerationSizeMb": 128,
+              "codeRangeSizeMb": -1,
+              "stackSizeMb": 4
+            }
+          },
+          {
+            "type": "quiescent",
+            "at": 22012.7424,
+            "role": "worker",
+            "ordinal": 1
+          }
+        ]
+      },
+      "outputBytes": 351,
+      "noOverlap": true,
+      "ownedRoleRemaining": null,
+      "verifiedInputSource": "ACTUAL_FIXED_PRODUCTION_POWERSHELL",
+      "nativeFrames": true,
+      "semanticIntegration": "REVIEWED_FIXED_WORKER_ONLY_NOT_2A_2B_CERTIFICATION"
+    },
+    {
+      "name": "evaluate-b",
+      "command": "evaluate",
+      "elapsedMs": 19916.6284,
+      "requests": [
+        {
+          "session": "501b760c3d1f5ffa9515651275657a303257bfff58b13355b184df31e66489d8",
+          "sequence": 1,
+          "operation": "READ_SET",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "id": "input",
+              "identity": {
+                "attributes": 16,
+                "byteLength": 4096,
+                "fileId": "000900000012d565",
+                "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\cca-conformance\\fixtures\\mo1307\\bundles\\ready",
+                "isDirectory": true,
+                "linkCount": 1,
+                "volumeSerial": "bec58120"
+              }
+            }
+          ],
+          "responseSha256": "a7d9acec7bb7c1b86d817a32d957854e118025a2f449d665098b211f9dfba8bf"
+        },
+        {
+          "session": "501b760c3d1f5ffa9515651275657a303257bfff58b13355b184df31e66489d8",
+          "sequence": 2,
+          "operation": "READ_SET",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "id": "input",
+              "identity": {
+                "attributes": 16,
+                "byteLength": 4096,
+                "fileId": "000900000012d565",
+                "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\cca-conformance\\fixtures\\mo1307\\bundles\\ready",
+                "isDirectory": true,
+                "linkCount": 1,
+                "volumeSerial": "bec58120"
+              }
+            }
+          ],
+          "responseSha256": "078e3ddf1d4fd0c478e547c6e36f5c6fa42deefe7c7a8ca7152d94347dfa50c5"
+        },
+        {
+          "session": "501b760c3d1f5ffa9515651275657a303257bfff58b13355b184df31e66489d8",
+          "sequence": 3,
+          "operation": "READ_SET",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "id": "input",
+              "identity": {
+                "attributes": 16,
+                "byteLength": 4096,
+                "fileId": "000900000012d565",
+                "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\cca-conformance\\fixtures\\mo1307\\bundles\\ready",
+                "isDirectory": true,
+                "linkCount": 1,
+                "volumeSerial": "bec58120"
+              }
+            }
+          ],
+          "responseSha256": "6dcab67eaf3c5e360396c1606068d9a9650daa46d33b9f2721bb1074246bb708"
+        },
+        {
+          "session": "501b760c3d1f5ffa9515651275657a303257bfff58b13355b184df31e66489d8",
+          "sequence": 4,
+          "operation": "CHECK_OUTPUT",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "ABSENT",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "output-parent"
+            }
+          ],
+          "responseSha256": "0862466b7c38824d7887a138ae34856ebdac71cbac2a857332efa001d23f3467"
+        },
+        {
+          "session": "501b760c3d1f5ffa9515651275657a303257bfff58b13355b184df31e66489d8",
+          "sequence": 5,
+          "operation": "CHECK_OUTPUT",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "ABSENT",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "output-parent"
+            }
+          ],
+          "responseSha256": "2d2bb2d3bcafc474af0eb03cfa2ce36aacd9be84e7d5250c0b943411addddc07"
+        },
+        {
+          "session": "501b760c3d1f5ffa9515651275657a303257bfff58b13355b184df31e66489d8",
+          "sequence": 6,
+          "operation": "INSPECT_OUTPUT_ROOT",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "00150000001391a5",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\evaluate-b",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "output"
+            }
+          ],
+          "responseSha256": "ea2f9cb9cd0cc7d78f787283d3c90fe60853cb32146385f5ce3d7192c1eaa617"
+        },
+        {
+          "session": "501b760c3d1f5ffa9515651275657a303257bfff58b13355b184df31e66489d8",
+          "sequence": 7,
+          "operation": "CHECK_STAGE_ROOT",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "00150000001391a5",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\evaluate-b",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "output"
+            }
+          ],
+          "responseSha256": "a6a8f3be199cf94f558fd6321ba1ac436daff9cc75cf3efcb34c52ba2d32cd76"
+        },
+        {
+          "session": "501b760c3d1f5ffa9515651275657a303257bfff58b13355b184df31e66489d8",
+          "sequence": 8,
+          "operation": "INSPECT_PENDING",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "00150000001391a5",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\evaluate-b",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 32,
+                  "byteLength": 59987,
+                  "fileId": "000c0000001391ae",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\evaluate-b\\memoryos-readiness-result.json.pending",
+                  "isDirectory": false,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "pending"
+            }
+          ],
+          "responseSha256": "780de6a7e9bbe36c3acc2f700ac28ce7963ffa995874ce8dfe1e50a4cbb61179"
+        },
+        {
+          "session": "501b760c3d1f5ffa9515651275657a303257bfff58b13355b184df31e66489d8",
+          "sequence": 9,
+          "operation": "CHECK_FINALIZATION",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "FINAL_ABSENT",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "00150000001391a5",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\evaluate-b",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 32,
+                  "byteLength": 59987,
+                  "fileId": "000c0000001391ae",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\evaluate-b\\memoryos-readiness-result.json.pending",
+                  "isDirectory": false,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "pending"
+            }
+          ],
+          "responseSha256": "2d4a7232564f51017a8626ce68f506ada8a3eb1927d62e8d3bf78b8b02b12093"
+        }
+      ],
+      "outcome": {
+        "exitCode": 0,
+        "committed": true
+      },
+      "failure": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 52025.642,
+        "helpers": 9,
+        "workers": 1,
+        "helperUsedMs": 19594.186800000007,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": {
+          "phase": "COMMITTED",
+          "admitted": true,
+          "deadlineExpiredAfterAdmission": false,
+          "cancelledAfterAdmission": false,
+          "namespaceVerified": true,
+          "dispositionDeadline": 43940.1659
+        },
+        "terminalCode": null,
+        "terminalAt": null,
+        "cleanupDeadline": null,
+        "events": [
+          {
+            "type": "start",
+            "at": 22031.0675,
+            "role": "helper",
+            "deadline": 27031.0622,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 22046.5007,
+            "role": "helper",
+            "pid": 27540,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 24260.7039,
+            "role": "helper",
+            "ordinal": 1
+          },
+          {
+            "type": "start",
+            "at": 24278.3758,
+            "role": "helper",
+            "deadline": 29278.368,
+            "ordinal": 2
+          },
+          {
+            "type": "observation",
+            "at": 24295.1891,
+            "role": "helper",
+            "pid": 26816,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 26821.582,
+            "role": "helper",
+            "ordinal": 2
+          },
+          {
+            "type": "start",
+            "at": 26841.9094,
+            "role": "helper",
+            "deadline": 31841.9011,
+            "ordinal": 3
+          },
+          {
+            "type": "observation",
+            "at": 26861.1527,
+            "role": "helper",
+            "pid": 4708,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 30788.06,
+            "role": "helper",
+            "ordinal": 3
+          },
+          {
+            "type": "start",
+            "at": 30796.9738,
+            "role": "helper",
+            "deadline": 35796.9654,
+            "ordinal": 4
+          },
+          {
+            "type": "observation",
+            "at": 30811.4028,
+            "role": "helper",
+            "pid": 26696,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 33280.5542,
+            "role": "helper",
+            "ordinal": 4
+          },
+          {
+            "type": "start",
+            "at": 33283.9068,
+            "role": "worker",
+            "deadline": 43283.8994,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 33284.7406,
+            "role": "worker",
+            "threadId": 3,
+            "resourceLimits": {
+              "maxYoungGenerationSizeMb": 16,
+              "maxOldGenerationSizeMb": 128,
+              "codeRangeSizeMb": -1,
+              "stackSizeMb": 4
+            }
+          },
+          {
+            "type": "quiescent",
+            "at": 33505.8529,
+            "role": "worker",
+            "ordinal": 1
+          },
+          {
+            "type": "start",
+            "at": 33515.844,
+            "role": "helper",
+            "deadline": 38515.8335,
+            "ordinal": 5
+          },
+          {
+            "type": "observation",
+            "at": 33535.877,
+            "role": "helper",
+            "pid": 11656,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 35458.8366,
+            "role": "helper",
+            "ordinal": 5
+          },
+          {
+            "type": "start",
+            "at": 35463.5952,
+            "role": "helper",
+            "deadline": 40463.5876,
+            "ordinal": 6
+          },
+          {
+            "type": "observation",
+            "at": 35478.32,
+            "role": "helper",
+            "pid": 3068,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 37062.9418,
+            "role": "helper",
+            "ordinal": 6
+          },
+          {
+            "type": "start",
+            "at": 37070.3529,
+            "role": "helper",
+            "deadline": 42070.3482,
+            "ordinal": 7
+          },
+          {
+            "type": "observation",
+            "at": 37080.4118,
+            "role": "helper",
+            "pid": 21968,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 38591.0727,
+            "role": "helper",
+            "ordinal": 7
+          },
+          {
+            "type": "start",
+            "at": 38597.6994,
+            "role": "helper",
+            "deadline": 42332.02559999999,
+            "ordinal": 8
+          },
+          {
+            "type": "observation",
+            "at": 38609.6603,
+            "role": "helper",
+            "pid": 15164,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 40173.4872,
+            "role": "helper",
+            "ordinal": 8
+          },
+          {
+            "type": "start",
+            "at": 40178.198,
+            "role": "helper",
+            "deadline": 42336.73299999999,
+            "ordinal": 9
+          },
+          {
+            "type": "observation",
+            "at": 40191.1296,
+            "role": "helper",
+            "pid": 6908,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 41930.9221,
+            "role": "helper",
+            "ordinal": 9
+          },
+          {
+            "type": "publication-transport",
+            "at": 41941.2616
+          }
+        ]
+      },
+      "outputBytes": 353,
+      "noOverlap": true,
+      "ownedRoleRemaining": null,
+      "verifiedInputSource": "ACTUAL_FIXED_PRODUCTION_POWERSHELL",
+      "nativeFrames": true,
+      "semanticIntegration": "REVIEWED_FIXED_WORKER_ONLY_NOT_2A_2B_CERTIFICATION"
+    },
+    {
+      "name": "stdout-failure",
+      "command": "evaluate",
+      "elapsedMs": 14326.187400000003,
+      "requests": [
+        {
+          "session": "3db79414d27051779e53f8d779cf8a1868c6c82000d2522621fb32b983a1df4b",
+          "sequence": 1,
+          "operation": "READ_SET",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "id": "input",
+              "identity": {
+                "attributes": 16,
+                "byteLength": 4096,
+                "fileId": "000900000012d565",
+                "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\cca-conformance\\fixtures\\mo1307\\bundles\\ready",
+                "isDirectory": true,
+                "linkCount": 1,
+                "volumeSerial": "bec58120"
+              }
+            }
+          ],
+          "responseSha256": "e2114f37116544bd4813b0786d90ca48a7fba95a4f04bdfb7cb5b4c7dcb27ce1"
+        },
+        {
+          "session": "3db79414d27051779e53f8d779cf8a1868c6c82000d2522621fb32b983a1df4b",
+          "sequence": 2,
+          "operation": "READ_SET",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "id": "input",
+              "identity": {
+                "attributes": 16,
+                "byteLength": 4096,
+                "fileId": "000900000012d565",
+                "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\cca-conformance\\fixtures\\mo1307\\bundles\\ready",
+                "isDirectory": true,
+                "linkCount": 1,
+                "volumeSerial": "bec58120"
+              }
+            }
+          ],
+          "responseSha256": "203f74f92c4c048120dda594fbf35b03e2c5eca37049da24de4cb8647ba3f90d"
+        },
+        {
+          "session": "3db79414d27051779e53f8d779cf8a1868c6c82000d2522621fb32b983a1df4b",
+          "sequence": 3,
+          "operation": "READ_SET",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "id": "input",
+              "identity": {
+                "attributes": 16,
+                "byteLength": 4096,
+                "fileId": "000900000012d565",
+                "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\cca-conformance\\fixtures\\mo1307\\bundles\\ready",
+                "isDirectory": true,
+                "linkCount": 1,
+                "volumeSerial": "bec58120"
+              }
+            }
+          ],
+          "responseSha256": "c620c7fb9c89607c41a456bb60d2dd25f416db5bda0daafa534b3db220e03e4a"
+        },
+        {
+          "session": "3db79414d27051779e53f8d779cf8a1868c6c82000d2522621fb32b983a1df4b",
+          "sequence": 4,
+          "operation": "CHECK_OUTPUT",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "ABSENT",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "output-parent"
+            }
+          ],
+          "responseSha256": "137d148221342e465a958258e06f0aa62990cf1a2f78426b708c89c512986e34"
+        },
+        {
+          "session": "3db79414d27051779e53f8d779cf8a1868c6c82000d2522621fb32b983a1df4b",
+          "sequence": 5,
+          "operation": "CHECK_OUTPUT",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "ABSENT",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "output-parent"
+            }
+          ],
+          "responseSha256": "3086a13d27846d5b135dcb11313cd97c364e5b57d52df585ab8f4f9c672b2a02"
+        },
+        {
+          "session": "3db79414d27051779e53f8d779cf8a1868c6c82000d2522621fb32b983a1df4b",
+          "sequence": 6,
+          "operation": "INSPECT_OUTPUT_ROOT",
+          "launched": true,
+          "responseValidated": true,
+          "exitConfirmed": true,
+          "status": "OK",
+          "roots": [
+            {
+              "chain": [
+                {
+                  "attributes": 22,
+                  "byteLength": 12288,
+                  "fileId": "0005000000000005",
+                  "finalPath": "C:\\",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 17,
+                  "byteLength": 4096,
+                  "fileId": "004600000003046f",
+                  "finalPath": "C:\\Users",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 16384,
+                  "fileId": "002e000000059963",
+                  "finalPath": "C:\\Users\\melsa",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "0003000000001490",
+                  "finalPath": "C:\\Users\\melsa\\Documents",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 12288,
+                  "fileId": "000c00000009ebf2",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 8192,
+                  "fileId": "002000000011bbbc",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "00340000000988ee",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "000d000000139142",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 4096,
+                  "fileId": "000b000000139143",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                },
+                {
+                  "attributes": 16,
+                  "byteLength": 0,
+                  "fileId": "003a00000013898b",
+                  "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-phase2c-final\\native-surfaces-23492\\stdout-failure",
+                  "isDirectory": true,
+                  "linkCount": 1,
+                  "volumeSerial": "bec58120"
+                }
+              ],
+              "id": "output"
+            }
+          ],
+          "responseSha256": "b04add47f6a26553cef457d4b3ae981c7534265e4bd9a60bf464a170d62b1846"
+        }
+      ],
+      "outcome": null,
+      "failure": {
+        "code": "MO1307_OUTPUT",
+        "message": "MO1307_OUTPUT"
+      },
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 71944.3157,
+        "helpers": 6,
+        "workers": 1,
+        "helperUsedMs": 14043.9346,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_OUTPUT",
+        "terminalAt": 56269.7387,
+        "cleanupDeadline": 58269.7387,
+        "events": [
+          {
+            "type": "start",
+            "at": 41947.225,
+            "role": "helper",
+            "deadline": 46947.2177,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 41960.1908,
+            "role": "helper",
+            "pid": 4784,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 44716.9934,
+            "role": "helper",
+            "ordinal": 1
+          },
+          {
+            "type": "start",
+            "at": 44736.8629,
+            "role": "helper",
+            "deadline": 49736.8526,
+            "ordinal": 2
+          },
+          {
+            "type": "observation",
+            "at": 44758.2033,
+            "role": "helper",
+            "pid": 26872,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 47373.1254,
+            "role": "helper",
+            "ordinal": 2
+          },
+          {
+            "type": "start",
+            "at": 47395.2967,
+            "role": "helper",
+            "deadline": 52395.2885,
+            "ordinal": 3
+          },
+          {
+            "type": "observation",
+            "at": 47411.3279,
+            "role": "helper",
+            "pid": 6032,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 50746.2284,
+            "role": "helper",
+            "ordinal": 3
+          },
+          {
+            "type": "start",
+            "at": 50752.1008,
+            "role": "helper",
+            "deadline": 55752.0958,
+            "ordinal": 4
+          },
+          {
+            "type": "observation",
+            "at": 50767.7935,
+            "role": "helper",
+            "pid": 28104,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 52481.5933,
+            "role": "helper",
+            "ordinal": 4
+          },
+          {
+            "type": "start",
+            "at": 52484.0978,
+            "role": "worker",
+            "deadline": 62484.0893,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 52484.8463,
+            "role": "worker",
+            "threadId": 4,
+            "resourceLimits": {
+              "maxYoungGenerationSizeMb": 16,
+              "maxOldGenerationSizeMb": 128,
+              "codeRangeSizeMb": -1,
+              "stackSizeMb": 4
+            }
+          },
+          {
+            "type": "quiescent",
+            "at": 52647.1109,
+            "role": "worker",
+            "ordinal": 1
+          },
+          {
+            "type": "start",
+            "at": 52655.6176,
+            "role": "helper",
+            "deadline": 57655.6106,
+            "ordinal": 5
+          },
+          {
+            "type": "observation",
+            "at": 52669.8272,
+            "role": "helper",
+            "pid": 14800,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 54652.7066,
+            "role": "helper",
+            "ordinal": 5
+          },
+          {
+            "type": "start",
+            "at": 54706.7011,
+            "role": "helper",
+            "deadline": 59706.695,
+            "ordinal": 6
+          },
+          {
+            "type": "observation",
+            "at": 54726.0249,
+            "role": "helper",
+            "pid": 28560,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 56267.0601,
+            "role": "helper",
+            "ordinal": 6
+          },
+          {
+            "type": "terminal",
+            "at": 56269.7674,
+            "code": "MO1307_OUTPUT",
+            "stage": "PUBLICATION"
+          }
+        ]
+      },
+      "outputBytes": 0,
+      "noOverlap": true,
+      "ownedRoleRemaining": null,
+      "verifiedInputSource": "ACTUAL_FIXED_PRODUCTION_POWERSHELL",
+      "nativeFrames": true,
+      "semanticIntegration": "REVIEWED_FIXED_WORKER_ONLY_NOT_2A_2B_CERTIFICATION"
+    }
+  ],
+  "syntheticInspectionFrames": false,
+  "semanticIntegration": "REVIEWED_FIXED_ENGINEERING_WORKER_NOT_2A_2B_CERTIFICATION"
+}

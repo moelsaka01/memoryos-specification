@@ -1,0 +1,118 @@
+# Non-destructive accepted-tree construction for the explicitly authorized final 2C commit.
+# No worktree reset, checkout, cleaning, history rewrite, merge, push or tag.
+import hashlib,json,os,subprocess,sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[4]
+MAIN=Path(r'C:\Users\melsa\Documents\Codex\cca-workspace')
+BASE='0d68ac211b3b204635e7af252cd693dce5bd70b1'
+PARENT='08de262d1ef3149b6e540bcaea0cf910e02732bd'
+BRANCH='refs/heads/codex/mo1307-phase2c-resumed'
+SUBJECT='feat(memoryos-1.3): implement corrected MO-1307 acquisition and publication'
+SCOPE=ROOT/'repositories/cca-conformance/evidence/mo1307/phase2c-final'
+CACHE=ROOT/'.cache/mo1307-phase2c-final'
+INDEX=CACHE/'accepted.index'
+def bytes_at(p):return Path('\\\\?\\'+str(p)).read_bytes()
+def git(*args,cwd=ROOT,env=None,data=None):
+ p=subprocess.run(['git','-c','core.longpaths=true',*args],cwd=cwd,env=env,input=data,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+ if p.returncode: raise RuntimeError(p.stderr.decode('utf-8','replace'))
+ return p.stdout
+
+def tree(ref,env=None):
+ out={}
+ for record in git('ls-tree','-r','-z',ref,env=env).split(b'\0'):
+  if not record:continue
+  head,p=record.split(b'\t',1);mode,kind,oid=head.decode().split()
+  assert kind=='blob',('non-blob',p)
+  out[p.decode()]={'mode':mode,'gitBlob':oid}
+ return out
+
+def blobs(ids):
+ ordered=sorted(set(ids));raw=git('cat-file','--batch',data=('\n'.join(ordered)+'\n').encode());out={};at=0
+ for oid in ordered:
+  end=raw.index(b'\n',at);found,kind,size=raw[at:end].decode().split();assert found==oid and kind=='blob'
+  at=end+1;size=int(size);out[oid]=raw[at:at+size];at+=size;assert raw[at:at+1]==b'\n';at+=1
+ assert at==len(raw)
+ return out
+
+def write(path,data):
+ path.write_text(json.dumps(data,indent=2)+'\n',encoding='utf-8')
+
+def identities():
+ assert git('rev-parse','HEAD').decode().strip()==BASE
+ assert git('symbolic-ref','HEAD').decode().strip()==BRANCH
+ assert git('rev-parse','HEAD',cwd=MAIN).decode().strip()==PARENT
+ assert git('status','--porcelain=v1','--untracked-files=all',cwd=MAIN)==b''
+
+def prepare():
+ identities()
+ acceptance=json.loads((SCOPE/'acceptance.json').read_text(encoding='utf-8-sig'))
+ assert acceptance['result']=='PASS' and all(v=='PASS' for v in acceptance['gates'].values())
+ CACHE.mkdir(parents=True,exist_ok=True)
+ assert not INDEX.exists(),'temporary index must be exclusive'
+ env=os.environ.copy();env['GIT_INDEX_FILE']=str(INDEX)
+ git('read-tree',PARENT,env=env)
+ git('add','-A',env=env)
+ first=git('write-tree',env=env).decode().strip()
+ base=tree(PARENT);candidate=tree(first)
+ assert all(p in candidate for p in base),'no authority/history deletion is authorized'
+ changed=[p for p in candidate if candidate[p]!=base.get(p)]
+ allowed=lambda p:p=='.gitattributes' or p.startswith(('docs/mo1307-','repositories/memoryos-readiness/','repositories/cca-conformance/evidence/mo1307/','repositories/cca-conformance/tests/mo1307_','repositories/cca-conformance/tools/mo1307-','repositories/cca-conformance/fixtures/mo1307/'))
+ assert all(allowed(p) for p in changed),'out-of-scope staged path'
+ contents=blobs(candidate[p]['gitBlob'] for p in changed)
+ rows=[]
+ for p in sorted(changed):
+  raw=bytes_at(ROOT/p);content=contents[candidate[p]['gitBlob']]
+  assert raw==content,('Git filter changed accepted bytes',p)
+  rows.append({'path':p,**candidate[p],'byteLength':len(raw),'sha256':hashlib.sha256(raw).hexdigest()})
+ inv=SCOPE/'accepted-content-inventory.json'
+ assert not inv.exists()
+ write(inv,{'kind':'MO1307AcceptedContentInventory','parent':PARENT,'result':'PASS','changedFiles':len(rows),'rows':rows,'selfExclusion':'This inventory is excluded only from its own hash list. The final complete temporary tree inventory binds it separately. All C2FB unchanged blobs are retained exactly.'})
+ git('add','-A',env=env)
+ accepted=git('write-tree',env=env).decode().strip();full=tree(accepted)
+ assert all(full.get(p)==row for p,row in candidate.items()),'content changed during seal'
+ assert len(full)==len(candidate)+1 and inv.relative_to(ROOT).as_posix() in full
+ inventoryBytes=bytes_at(inv);assert blobs([full[inv.relative_to(ROOT).as_posix()]['gitBlob']])[full[inv.relative_to(ROOT).as_posix()]['gitBlob']]==inventoryBytes
+ # The immutable Git object store now preserves every accepted byte before branch movement.
+ seal={'kind':'MO1307AcceptedTreeSeal','result':'PASS','tree':accepted,'parent':PARENT,'oldHead':BASE,'subject':SUBJECT,'branch':BRANCH,'files':len(full),'changedContentInventorySha256':hashlib.sha256(inventoryBytes).hexdigest(),'treeInventory':[{'path':p,**row} for p,row in sorted(full.items())]}
+ write(CACHE/'accepted-tree.json',seal)
+ print(json.dumps({k:v for k,v in seal.items() if k!='treeInventory'}))
+
+def commit():
+ identities()
+ seal=json.loads((CACHE/'accepted-tree.json').read_text())
+ assert (seal['parent'],seal['oldHead'],seal['branch'],seal['subject'])==(PARENT,BASE,BRANCH,SUBJECT)
+ inventoryRaw=bytes_at(SCOPE/'accepted-content-inventory.json')
+ assert hashlib.sha256(inventoryRaw).hexdigest()==seal['changedContentInventorySha256']
+ inventory=json.loads(inventoryRaw);assert inventory['parent']==PARENT and inventory['result']=='PASS'
+ sealedBlobs=blobs(r['gitBlob'] for r in inventory['rows'])
+ for row in inventory['rows']:
+  raw=bytes_at(ROOT/row['path'])
+  assert len(raw)==row['byteLength'] and hashlib.sha256(raw).hexdigest()==row['sha256'],('raw bytes changed after seal',row['path'])
+  assert raw==sealedBlobs[row['gitBlob']],('raw/blob equality changed',row['path'])
+ inventoryPath=(SCOPE/'accepted-content-inventory.json').relative_to(ROOT).as_posix()
+ inventoryBlob=next(r['gitBlob'] for r in seal['treeInventory'] if r['path']==inventoryPath)
+ assert blobs([inventoryBlob])[inventoryBlob]==inventoryRaw
+ env=os.environ.copy();env['GIT_INDEX_FILE']=str(INDEX)
+ # Re-adding catches any change after the inventory was sealed; nothing is discarded.
+ git('add','-A',env=env)
+ assert git('write-tree',env=env).decode().strip()==seal['tree'],'working bytes changed after accepted seal'
+ git('diff','--check',PARENT,seal['tree'])
+ oid=git('commit-tree',seal['tree'],'-p',PARENT,data=(SUBJECT+'\n').encode()).decode().strip()
+ assert git('show','-s','--format=%P',oid).decode().strip()==PARENT
+ assert git('show','-s','--format=%s',oid).decode().strip()==SUBJECT
+ assert git('rev-parse',oid+'^{tree}').decode().strip()==seal['tree']
+ assert tree(oid)=={r['path']:{k:v for k,v in r.items() if k!='path'} for r in seal['treeInventory']}
+ git('update-ref',BRANCH,oid,BASE)
+ # Synchronize only the index; no -u and no filesystem checkout/reset.
+ git('read-tree',oid)
+ assert git('status','--porcelain=v1','--untracked-files=all')==b''
+ assert git('rev-parse','HEAD',cwd=MAIN).decode().strip()==PARENT
+ assert git('status','--porcelain=v1','--untracked-files=all',cwd=MAIN)==b''
+ git('diff','--check','HEAD^','HEAD')
+ receipt={'kind':'MO1307AcceptedCommitVerification','result':'PASS','commit':oid,'parent':PARENT,'subject':SUBJECT,'tree':seal['tree'],'files':seal['files'],'completeTreeEquality':True,'cleanWorktree':True,'mainUnchanged':True,'historicalEvidenceRetained':True,'push':False,'tag':False,'strategy':'exclusive temporary index + immutable tree + sole-parent commit-tree + compare-and-swap branch update; index-only read-tree'}
+ write(CACHE/'accepted-commit.json',receipt)
+ print(json.dumps(receipt))
+
+if __name__=='__main__':
+ assert len(sys.argv)==2 and sys.argv[1] in ('prepare','commit')
+ (prepare if sys.argv[1]=='prepare' else commit)()

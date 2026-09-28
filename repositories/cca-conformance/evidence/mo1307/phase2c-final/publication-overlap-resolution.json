@@ -1,0 +1,356 @@
+{
+  "kind": "MO1307FinalPublicationThreeWayResolution",
+  "result": "PASS",
+  "path": "repositories/memoryos-readiness/src/publication.mjs",
+  "base": {
+    "revision": "0d68ac211b3b204635e7af252cd693dce5bd70b1",
+    "byteLength": 6796,
+    "sha256": "abd089bcbc4d9cc306d760c8116584f9bed5b772bd2bf12aeccd6761675602d4"
+  },
+  "preservedDirty": {
+    "snapshot": "preservation/files/000590.data",
+    "byteLength": 7895,
+    "sha256": "d0a6fea5dbc62645ba6008910c9205e5b69c529d2ab1cedcc899084677667fbd"
+  },
+  "authority": {
+    "revision": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+    "byteLength": 11913,
+    "sha256": "a2f41d0a2aadd5a84a8a9e9ccce3465d71c911194adeec3d0f71ebd2ec6a7096"
+  },
+  "resolved": {
+    "byteLength": 13123,
+    "sha256": "5225207b23b8fa92aea1fca35fc01e3c68913a8487e5436d27f7089349d62dab"
+  },
+  "decisions": [
+    "Preserve dirty terminal single-use staging/finalization failures and concurrent pre-admission invalidation; do not override actual admitted rename state.",
+    "Preserve abort-aware staged writes; clear operational interval immediately at observed interruption even when underlying I/O awaits later settlement.",
+    "Preserve and complete strict checkpoints after awaited file/chain operations and before any following mutation or helper stage.",
+    "Adopt authoritative exact PRE_SUBMISSION, COMMIT_IN_PROGRESS, COMMITTED, FAILED states and immutable status observations.",
+    "Adopt exact single rename admission and actual-settlement commit, independent interruption flags, bounded read-only namespace verification and fixed settlement +2000ms disposition.",
+    "Integrate supervisor pre-admission stop callback gating; admitted operation owns settlement without terminal timeout/cancellation or cleanup claim.",
+    "Use authoritative publicationTransportCheckpoint before and during stdout; overrun/cancelled committed publication yields OUTPUT/21 retaining final.",
+    "Use one original failed-transport allowance for timely committed stdout failure; overrun/failed finalization diagnostics retain settlement dispositionDeadline."
+  ],
+  "validDirtyImplementationPreserved": true,
+  "authorityFieldsExcludeNormativeIdentity": true,
+  "productionBindings": [
+    {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 13123,
+      "sha256": "5225207b23b8fa92aea1fca35fc01e3c68913a8487e5436d27f7089349d62dab"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/runtime.mjs",
+      "byteLength": 16282,
+      "sha256": "bd1bd5e810fad661d291ddfc17251c39c02fdaba11cfbe6069beb4cdf54d1124"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/cli.mjs",
+      "byteLength": 4419,
+      "sha256": "63e6c97aaa689d8d0ef89233cd8f23b5d3827fc055dc76fad1fbfb0fad697728"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/output.mjs",
+      "byteLength": 2386,
+      "sha256": "eea2e7f6dc23f88b8afdca19b273939a020ccc145ec78d4f701983e0d8449aca"
+    }
+  ],
+  "tests": {
+    "receipt": "runtime-publication-attempt1/receipt.json",
+    "counts": {
+      "tests": 122,
+      "pass": 122,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "R26": "PASS",
+    "R27": "PASS"
+  },
+  "queuedRenameWitnesses": [
+    {
+      "mode": "deadline",
+      "scope": "ACTUAL_QUEUED_RENAME_AND_CLI_WITH_SYNTHETIC_IDENTITY_FRAMES",
+      "requests": 1,
+      "engineeringClock": "Monotonic elapsed-time offset at slot 8; original CLI absolute deadline has 100ms remaining, no budget restart.",
+      "finiteJobs": 4,
+      "observation": {
+        "elapsedMs": 441.6748,
+        "settled": false,
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 30141.4773,
+          "helpers": 0,
+          "workers": 1,
+          "helperUsedMs": 0,
+          "activeRole": null,
+          "cleanupConfirmed": false,
+          "publication": {
+            "phase": "COMMIT_IN_PROGRESS",
+            "admitted": true,
+            "deadlineExpiredAfterAdmission": true,
+            "cancelledAfterAdmission": true,
+            "namespaceVerified": false,
+            "dispositionDeadline": null
+          },
+          "terminalCode": null,
+          "terminalAt": null,
+          "cleanupDeadline": null,
+          "events": [
+            {
+              "type": "start",
+              "at": 239.7841,
+              "role": "worker",
+              "deadline": 10239.6178,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 242.752,
+              "role": "worker",
+              "threadId": 1,
+              "resourceLimits": {
+                "maxYoungGenerationSizeMb": 16,
+                "maxOldGenerationSizeMb": 128,
+                "codeRangeSizeMb": 0,
+                "stackSizeMb": 4
+              }
+            },
+            {
+              "type": "quiescent",
+              "at": 385.9412,
+              "role": "worker",
+              "ordinal": 1
+            },
+            {
+              "type": "publication-interruption",
+              "at": 30145.219999999998,
+              "code": "MO1307_TIMEOUT",
+              "phase": "COMMIT_IN_PROGRESS"
+            },
+            {
+              "type": "publication-interruption",
+              "at": 30211.654199999997,
+              "code": "MO1307_CANCELLED",
+              "phase": "COMMIT_IN_PROGRESS"
+            }
+          ]
+        },
+        "finalPresent": false,
+        "pendingPresent": true,
+        "stdoutBytes": 0
+      },
+      "elapsedMs": 1531.684,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 30141.4773,
+        "helpers": 0,
+        "workers": 1,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": {
+          "phase": "COMMITTED",
+          "admitted": true,
+          "deadlineExpiredAfterAdmission": true,
+          "cancelledAfterAdmission": true,
+          "namespaceVerified": true,
+          "dispositionDeadline": 3618.142
+        },
+        "terminalCode": "MO1307_OUTPUT",
+        "terminalAt": 31248.541599999997,
+        "cleanupDeadline": 3618.142,
+        "events": [
+          {
+            "type": "start",
+            "at": 239.7841,
+            "role": "worker",
+            "deadline": 10239.6178,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 242.752,
+            "role": "worker",
+            "threadId": 1,
+            "resourceLimits": {
+              "maxYoungGenerationSizeMb": 16,
+              "maxOldGenerationSizeMb": 128,
+              "codeRangeSizeMb": 0,
+              "stackSizeMb": 4
+            }
+          },
+          {
+            "type": "quiescent",
+            "at": 385.9412,
+            "role": "worker",
+            "ordinal": 1
+          },
+          {
+            "type": "publication-interruption",
+            "at": 30145.219999999998,
+            "code": "MO1307_TIMEOUT",
+            "phase": "COMMIT_IN_PROGRESS"
+          },
+          {
+            "type": "publication-interruption",
+            "at": 30211.654199999997,
+            "code": "MO1307_CANCELLED",
+            "phase": "COMMIT_IN_PROGRESS"
+          },
+          {
+            "type": "terminal",
+            "at": 31248.585099999997,
+            "code": "MO1307_OUTPUT",
+            "stage": "PUBLICATION"
+          }
+        ]
+      },
+      "failure": "MO1307_OUTPUT",
+      "exitCode": 21,
+      "stdoutBytes": 0,
+      "failureCleanupDeadline": 3618.142
+    },
+    {
+      "mode": "cancellation",
+      "scope": "ACTUAL_QUEUED_RENAME_AND_CLI_WITH_SYNTHETIC_IDENTITY_FRAMES",
+      "requests": 1,
+      "engineeringClock": "Real monotonic clock",
+      "finiteJobs": 4,
+      "observation": {
+        "elapsedMs": 201.78520000000003,
+        "settled": false,
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 31679.5183,
+          "helpers": 0,
+          "workers": 1,
+          "helperUsedMs": 0,
+          "activeRole": null,
+          "cleanupConfirmed": false,
+          "publication": {
+            "phase": "COMMIT_IN_PROGRESS",
+            "admitted": true,
+            "deadlineExpiredAfterAdmission": false,
+            "cancelledAfterAdmission": true,
+            "namespaceVerified": false,
+            "dispositionDeadline": null
+          },
+          "terminalCode": null,
+          "terminalAt": null,
+          "cleanupDeadline": null,
+          "events": [
+            {
+              "type": "start",
+              "at": 1722.1331,
+              "role": "worker",
+              "deadline": 11722.1146,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 1722.664,
+              "role": "worker",
+              "threadId": 2,
+              "resourceLimits": {
+                "maxYoungGenerationSizeMb": 16,
+                "maxOldGenerationSizeMb": 128,
+                "codeRangeSizeMb": -1,
+                "stackSizeMb": 4
+              }
+            },
+            {
+              "type": "quiescent",
+              "at": 1825.7196,
+              "role": "worker",
+              "ordinal": 1
+            },
+            {
+              "type": "publication-interruption",
+              "at": 1881.2496,
+              "code": "MO1307_CANCELLED",
+              "phase": "COMMIT_IN_PROGRESS"
+            }
+          ]
+        },
+        "finalPresent": false,
+        "pendingPresent": true,
+        "stdoutBytes": 0
+      },
+      "elapsedMs": 1301.3746999999998,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 31679.5183,
+        "helpers": 0,
+        "workers": 1,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": {
+          "phase": "COMMITTED",
+          "admitted": true,
+          "deadlineExpiredAfterAdmission": false,
+          "cancelledAfterAdmission": true,
+          "namespaceVerified": true,
+          "dispositionDeadline": 4861.9087
+        },
+        "terminalCode": "MO1307_OUTPUT",
+        "terminalAt": 2862.8617,
+        "cleanupDeadline": 4861.9087,
+        "events": [
+          {
+            "type": "start",
+            "at": 1722.1331,
+            "role": "worker",
+            "deadline": 11722.1146,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 1722.664,
+            "role": "worker",
+            "threadId": 2,
+            "resourceLimits": {
+              "maxYoungGenerationSizeMb": 16,
+              "maxOldGenerationSizeMb": 128,
+              "codeRangeSizeMb": -1,
+              "stackSizeMb": 4
+            }
+          },
+          {
+            "type": "quiescent",
+            "at": 1825.7196,
+            "role": "worker",
+            "ordinal": 1
+          },
+          {
+            "type": "publication-interruption",
+            "at": 1881.2496,
+            "code": "MO1307_CANCELLED",
+            "phase": "COMMIT_IN_PROGRESS"
+          },
+          {
+            "type": "terminal",
+            "at": 2862.8802,
+            "code": "MO1307_OUTPUT",
+            "stage": "PUBLICATION"
+          }
+        ]
+      },
+      "failure": "MO1307_OUTPUT",
+      "exitCode": 21,
+      "stdoutBytes": 0,
+      "failureCleanupDeadline": 4861.9087
+    }
+  ],
+  "limits": [
+    "Queued-rename identities are explicitly synthetic engineering fixtures; filesystem rename, libuv contention and worker threads are real. Full native helper acceptance is separate.",
+    "Deadline queued case uses the supported private monotonic-clock engineering seam to represent elapsed CLI time at slot 8; cancellation-only queued case uses the real monotonic clock.",
+    "Non-abortable pre-admission I/O may complete later; terminal checkpoints prevent further helper stages, publication admission and success resurrection. Owned pending/root evidence is retained.",
+    "No finite bound is claimed for the single admitted unresolved rename. Post-settlement read-only waits alone race the fixed disposition allowance."
+  ],
+  "developmentNotes": [
+    "Python edit bootstrap was unavailable and performed no mutation. The same authorized edit was applied using pinned Node; first executed test campaign passed."
+  ],
+  "historicalEvidenceUnmodified": true
+}

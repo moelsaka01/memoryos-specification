@@ -1,0 +1,182 @@
+{
+  "kind": "MO1307FinalNativeLifecycleClosure",
+  "result": "PASS",
+  "cases": 7,
+  "acceptedHelpers": 47,
+  "sourceBindings": [
+    {
+      "path": "native-lifecycle-attempt1/final-inputs.json",
+      "files": 85,
+      "unchanged": true
+    },
+    {
+      "path": "native-lifecycle-attempt1/engineering-inputs.json",
+      "files": 29,
+      "unchanged": true
+    },
+    {
+      "path": "native-lifecycle-attempt2-remaining/inputs.json",
+      "files": 86,
+      "unchanged": true
+    }
+  ],
+  "observations": [
+    {
+      "maximumAttributableRoles": 3,
+      "maximumHelpers": 1,
+      "maximumConsoleHosts": 1,
+      "sampleCount": 206,
+      "remainingKnownOwnedProcesses": []
+    },
+    {
+      "maximumAttributableRoles": 3,
+      "maximumHelpers": 1,
+      "maximumConsoleHosts": 1,
+      "sampleCount": 179,
+      "remainingKnownOwnedProcesses": []
+    }
+  ],
+  "rows": [
+    {
+      "name": "evaluate-a",
+      "command": "evaluate",
+      "elapsedMs": 14230.678,
+      "helpers": 9,
+      "workers": 1,
+      "requestAttempts": 9,
+      "outcome": {
+        "exitCode": 0,
+        "committed": true
+      },
+      "failure": null,
+      "stdoutBytes": 353,
+      "publication": {
+        "phase": "COMMITTED",
+        "admitted": true,
+        "deadlineExpiredAfterAdmission": false,
+        "cancelledAfterAdmission": false,
+        "namespaceVerified": true,
+        "dispositionDeadline": 16320.1804
+      }
+    },
+    {
+      "name": "verify",
+      "command": "verify",
+      "elapsedMs": 7696.214500000002,
+      "helpers": 4,
+      "workers": 1,
+      "requestAttempts": 4,
+      "outcome": {
+        "exitCode": 0,
+        "committed": false
+      },
+      "failure": null,
+      "stdoutBytes": 351,
+      "publication": null
+    },
+    {
+      "name": "evaluate-b",
+      "command": "evaluate",
+      "elapsedMs": 19916.6284,
+      "helpers": 9,
+      "workers": 1,
+      "requestAttempts": 9,
+      "outcome": {
+        "exitCode": 0,
+        "committed": true
+      },
+      "failure": null,
+      "stdoutBytes": 353,
+      "publication": {
+        "phase": "COMMITTED",
+        "admitted": true,
+        "deadlineExpiredAfterAdmission": false,
+        "cancelledAfterAdmission": false,
+        "namespaceVerified": true,
+        "dispositionDeadline": 43940.1659
+      }
+    },
+    {
+      "name": "stdout-failure",
+      "command": "evaluate",
+      "elapsedMs": 12872.426,
+      "helpers": 9,
+      "workers": 1,
+      "requestAttempts": 9,
+      "outcome": null,
+      "failure": {
+        "code": "MO1307_OUTPUT",
+        "message": "MO1307_OUTPUT"
+      },
+      "stdoutBytes": 0,
+      "publication": {
+        "phase": "COMMITTED",
+        "admitted": true,
+        "deadlineExpiredAfterAdmission": false,
+        "cancelledAfterAdmission": false,
+        "namespaceVerified": true,
+        "dispositionDeadline": 14957.9289
+      }
+    },
+    {
+      "name": "cancel-before-admission",
+      "command": "evaluate",
+      "elapsedMs": 11473.8985,
+      "helpers": 8,
+      "workers": 1,
+      "requestAttempts": 9,
+      "outcome": null,
+      "failure": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "stdoutBytes": 0,
+      "publication": {
+        "phase": "PRE_SUBMISSION",
+        "admitted": false,
+        "deadlineExpiredAfterAdmission": false,
+        "cancelledAfterAdmission": false,
+        "namespaceVerified": false,
+        "dispositionDeadline": null
+      }
+    },
+    {
+      "name": "cancel-between-helper-worker",
+      "command": "evaluate",
+      "elapsedMs": 6591.332000000002,
+      "helpers": 4,
+      "workers": 0,
+      "requestAttempts": 4,
+      "outcome": null,
+      "failure": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "stdoutBytes": 0,
+      "publication": null
+    },
+    {
+      "name": "cancel-after-worker",
+      "command": "evaluate",
+      "elapsedMs": 6953.026099999999,
+      "helpers": 4,
+      "workers": 1,
+      "requestAttempts": 5,
+      "outcome": null,
+      "failure": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "stdoutBytes": 0,
+      "publication": null
+    }
+  ],
+  "wire": "2.0.0",
+  "evaluateRequests": 9,
+  "verifyRequests": 4,
+  "determinism": "Two distinct actual helper sessions; exact equal result and LF summary bytes.",
+  "allResponses": "Actual fixed production Windows PowerShell helper",
+  "semanticBoundary": "Reviewed fixed engineering worker only; 2A/2B integration remains guarded for Phase2D.",
+  "failedAttempt": "native-lifecycle-attempt1 remains aggregate FAIL due diagnosed shared-parent growth fixture; first three success cases retained, remaining four pass in isolated fixture continuation.",
+  "noProductChangeForFixture": true
+}

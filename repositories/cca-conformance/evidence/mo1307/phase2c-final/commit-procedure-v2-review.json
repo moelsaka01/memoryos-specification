@@ -1,0 +1,79 @@
+{
+  "kind": "MO1307FinalCommitProcedureV2Review",
+  "version": "1.0.0",
+  "result": "PASS",
+  "checkedAt": "2026-09-28T22:00:04.6709990Z",
+  "scope": "Independent read-only source/hash review. No product tests, seal preparation, commit-tree or branch update executed by reviewer.",
+  "sourceBindings": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c-final/commit-accepted.py",
+      "byteLength": 7522,
+      "sha256": "sha256:f1243bd1e6a60b4b1b5262a7420c9968c711bffe405e863fcad182aff1bd4cf6"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c-final/seal-evidence.py",
+      "byteLength": 6940,
+      "sha256": "sha256:8c84e793e70ddb0b377ab4a914c295aec66ea4595a869845db64a04ca6744669"
+    },
+    {
+      "path": ".gitattributes",
+      "byteLength": 5597,
+      "sha256": "sha256:f2801fd281ec1f3f60e973c77863ba5becadb111f7b002290369df703767ea21"
+    },
+    {
+      "path": "docs/mo1307-phase2c-final.md",
+      "byteLength": 14916,
+      "sha256": "sha256:c26c90418cf323ada6bb58a036e71222e48d37dd5b2509bd5eea7de8163d521e"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/commit-attempt1/disposition.json",
+      "byteLength": 1599,
+      "sha256": "sha256:1664d3fce388c9bb2ef68322071f77c25fbd86e45e6a905b887181322ed0874f"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/accepted-content-inventory.json",
+      "byteLength": 610953,
+      "sha256": "sha256:4cf13ad3e2eb4d7e5ca57898ff73e98f81596b17c3b44f46037708167ac95038"
+    }
+  ],
+  "procedureDelta": "Exact checked substitutions: exclusive accepted-v2.index; accepted-tree-v2.json; accepted-content-inventory-v2.json; capture stdout plus stderr in Git failure diagnostics. Both new Python verifiers use LF and no final blank lines. Seal verifier has no logic change.",
+  "securityInvariants": "Exact C2FB sole parent, fixed subject/branch, raw-byte/hash/blob equality, inventory self-exclusion/full tree identity, pre-commit diff guard, CAS branch update and index-only read-tree remain unchanged.",
+  "narrowWhitespacePolicy": "Exactly five paths allow their preserved final blank line. Historical/executed bytes remain unchanged from v1 accepted content inventory; no global whitespace weakening and no product/test/native-driver edits.",
+  "preservedCaptureBindings": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c-continuation/finalize-stop.mjs",
+      "byteLength": 29707,
+      "sha256": "sha256:b27ac9a68edc6dd70cbc717919928db3a68e0dd74cc7edbefdeea5e3a48d72ee"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c-final/native-surfaces-remaining.mjs",
+      "byteLength": 7208,
+      "sha256": "sha256:c99a4e80f1494978680f94e07e6db1c8e9ee1348661f02e47839ceff8a833855"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c-final/native-surfaces.mjs",
+      "byteLength": 7152,
+      "sha256": "sha256:ea68c14eeb1878dcf32a14d516c1744c82c79f7b1d65df4ee15e1936e13e2289"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c-resumed/finalize-stop.mjs",
+      "byteLength": 30228,
+      "sha256": "sha256:fd52c1994a2af006b40489fcb83fe417c800ac94438365800bb9920ba9239609"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c-resumed/production-launch-witness.mjs",
+      "byteLength": 3022,
+      "sha256": "sha256:b3e8da44dc72bad17564c245cd1c3a1f94055dde3f0502a7a7ea7a10eeb0ecf0"
+    }
+  ],
+  "productionInventory": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/final-production-inventory.json",
+    "byteLength": 17574,
+    "sha256": "sha256:bce28bc64c4c5f724e1c705f3ecc6152caf5b3871a29cb38ef728bc736155328"
+  },
+  "productionMembersVerifiedUnchanged": 84,
+  "reportUnchanged": true,
+  "precommitHead": "0d68ac211b3b204635e7af252cd693dce5bd70b1",
+  "preservedFailedAttempt": "commit-attempt1 remains PRE_COMMIT_STOPPED_NO_BRANCH_MOVEMENT; first inventory remains historical candidate evidence, v2 is exclusive and does not overwrite it.",
+  "noRemainingActionableFindings": true
+}

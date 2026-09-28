@@ -1,0 +1,56 @@
+{
+  "name": "worker-10000ms-timeout",
+  "outcome": "PASS",
+  "elapsedMs": 10006.715199999999,
+  "error": {
+    "code": "MO1307_TIMEOUT",
+    "message": "MO1307_TIMEOUT"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 50563.588,
+    "helpers": 0,
+    "workers": 1,
+    "helperUsedMs": 0,
+    "activeRole": null,
+    "cleanupConfirmed": true,
+    "publication": null,
+    "terminalCode": "MO1307_TIMEOUT",
+    "terminalAt": 30564.4365,
+    "cleanupDeadline": 32564.4365,
+    "events": [
+      {
+        "type": "start",
+        "at": 20563.7257,
+        "role": "worker",
+        "deadline": 30563.6984,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 20564.3826,
+        "role": "worker",
+        "threadId": 2,
+        "resourceLimits": {
+          "maxYoungGenerationSizeMb": 16,
+          "maxOldGenerationSizeMb": 128,
+          "codeRangeSizeMb": -1,
+          "stackSizeMb": 4
+        }
+      },
+      {
+        "type": "terminal",
+        "at": 30564.4604,
+        "code": "MO1307_TIMEOUT",
+        "stage": "EVALUATION"
+      },
+      {
+        "type": "cleanup",
+        "at": 30570.2352,
+        "role": "worker",
+        "confirmed": true
+      }
+    ]
+  }
+}

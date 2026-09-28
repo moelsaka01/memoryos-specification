@@ -30,7 +30,7 @@ function fieldLimits(v,options) {
   }
   for(const x of Object.values(v))fieldLimits(x,options);
 }
-const countCaps={components:L.candidateComponents,requiredComponents:L.candidateComponents,entries:L.manifestFiles,grants:L.grants,provenance:L.authoritySources,authoritySources:L.authoritySources,dependencies:L.dependenciesPerClaim,assumptions:L.assumptions,nodes:L.graphNodes,edges:L.graphEdges,gates:L.gates,slots:L.gates,qualifications:L.qualifications,blockers:L.blockers,history:L.historyRecords,records:L.historyRecords,sources:L.manifestFiles,sourceIds:L.manifestFiles,authoritySourceIds:L.authoritySources};
+const countCaps={components:L.candidateComponents,requiredComponents:L.candidateComponents,entries:L.manifestFiles,grants:L.grants,provenance:L.authoritySources,authoritySources:L.authoritySources,dependencies:L.dependenciesPerClaim,dependencyIds:L.dependenciesPerClaim,assumptions:L.assumptions,nodes:L.graphNodes,edges:L.graphEdges,gates:L.gates,slots:L.gates,gateIds:L.gates,affectedGateIds:L.gates,qualifications:L.qualifications,qualificationIds:L.qualifications,conditionIds:L.historyRecords,blockers:L.blockers,history:L.historyRecords,records:L.historyRecords,sources:L.manifestFiles,sourceIds:L.manifestFiles,authoritySourceIds:L.authoritySources,grantIds:L.grants,grantDigests:L.grants,evidenceClaimDigests:L.claims,normalizedGrants:L.grants};
 function admission(v,options) {
   if(!v || typeof v!=='object')return;
   for(const [k,x] of Object.entries(v)){
@@ -110,6 +110,11 @@ export function validateEnvelope(envelope,reference=null) {
     const union=[...pre.passed,...pre.failed,...pre.unevaluable].sort();
     if(!structurallyEqual(union,[...DEFINITIONS.coverage[pre.type]].sort()) || pre.verdict!==(pre.failed.length?'FAIL':pre.unevaluable.length?'UNEVALUABLE':'PASS'))fail('INTEGRITY','EVALUATION',reference);
   }
+  // Dedicated semantic categories apply to nested records as well. These
+  // additional validations only reject records already forbidden by Evidence;
+  // the complete unmodified Evidence schema is still mandatory below.
+  if(Array.isArray(pre?.qualifications))for(const q of pre.qualifications)validateRecord('Qualification',q,{code:'QUALIFICATION_MISMATCH',stage:'EVALUATION',reference});
+  if(pre?.type==='HISTORICAL_DISPOSITION' && Array.isArray(pre.detail?.records))for(const h of pre.detail.records)validateRecord('History',h,{code:'HISTORY_MISMATCH',stage:'EVALUATION',reference});
   if(pre?.type==='PROVIDER_CERTIFICATION' && pre.detail)validateProviderDetail(pre.detail,reference);
   validateRecord('Evidence',envelope,{reference});
   const c=envelope.claim,expected=DEFINITIONS.coverage[c.type];
@@ -191,7 +196,11 @@ export function aggregateReference(input) {
 export function selectPhaseError(checks,stage) {
   const errors=[];
   for(const check of checks)try{check();}catch(e){errors.push(operationalError(e,stage));}
-  if(errors.length){errors.sort((a,b)=>errorExit(a)-errorExit(b)||((a.reference??'')<(b.reference??'')?-1:(a.reference??'')>(b.reference??'')?1:0));throw errors[0];}
+  // A strict envelope validator can detect a later semantic phase while other
+  // safely inspectable files still have integrity errors. Preserve the frozen
+  // phase boundary before applying its numeric/lexical tie-break rules.
+  const phases=['LAUNCH','CONFIGURATION','ACQUISITION','INTEGRITY','AUTHORITY','GRAPH','EVALUATION','VERIFICATION','PUBLICATION'];
+  if(errors.length){errors.sort((a,b)=>phases.indexOf(a.stage)-phases.indexOf(b.stage)||errorExit(a)-errorExit(b)||((a.reference??'')<(b.reference??'')?-1:(a.reference??'')>(b.reference??'')?1:0));throw errors[0];}
 }
 
 export function inspectFoundationInputs(input,verify=false) {
@@ -219,24 +228,26 @@ export function inspectFoundationInputs(input,verify=false) {
   if(input.files.length>L.manifestFiles)fail('RESOURCE_LIMIT','ACQUISITION');
   if(Object.getOwnPropertySymbols(input.files).length || Object.getOwnPropertyNames(input.files).length!==input.files.length+1)fail('INPUT','ACQUISITION');
   let total=0;
+  const entryById=new Map(parsed.manifest.entries.map(entry=>[entry.id,entry]));
   copies.files=[];
   for(let i=0;i<input.files.length;i++){
     const descriptor=Object.getOwnPropertyDescriptor(input.files,String(i));if(!descriptor||!Object.hasOwn(descriptor,'value'))fail('INPUT','ACQUISITION');
     const file=descriptor.value;assertPlainFields(file,['bytes','id'],'ACQUISITION');
     if(typeof file.id!=='string'||!/^[a-z][a-z0-9._-]{0,63}$/u.test(file.id))fail('INPUT','ACQUISITION');
     total+=file.bytes?.byteLength??0;if(total>L.aggregateEvidenceBytes)fail('RESOURCE_LIMIT','ACQUISITION');
-    copies.files.push({id:file.id,bytes:snapshotBytes(file.bytes,L.rawSourceBytes,'ACQUISITION',file.id)});
+    const cap=entryById.get(file.id)?.type==='ENVELOPE'?L.envelopeBytes:L.rawSourceBytes;
+    copies.files.push({id:file.id,bytes:snapshotBytes(file.bytes,cap,'ACQUISITION',file.id)});
   }
   sortedUnique(copies.files,x=>x.id,{stage:'ACQUISITION'});
   if(verify){copies.resultBytes=snapshotBytes(input.resultBytes,L.resultBytes,'ACQUISITION','result');copies.decisionBytes=input.decisionBytes===null?null:snapshotBytes(input.decisionBytes,L.decisionBytes,'ACQUISITION','decision');}
   validateManifest(parsed.manifest);
-  if(parsed.manifest.candidateDigest!==input.expectedCandidateDigest||parsed.authority.assessment.candidateDigest!==input.expectedCandidateDigest)fail('CANDIDATE_MISMATCH','AUTHORITY','candidate');
   if(parsed.manifest.entries.map(x=>x.id).join(',')!==copies.files.map(x=>x.id).join(','))fail('INPUT','ACQUISITION','manifest');
   selectPhaseError(parsed.manifest.entries.map((entry,i)=>()=>{
     const bytes=copies.files[i].bytes;
     if(bytes.length!==entry.byteLength||digest(bytes)!==entry.sha256)fail('INTEGRITY','INTEGRITY',entry.id);
     if(entry.type==='ENVELOPE')validateEnvelope(parseCanonical(bytes,{maxBytes:L.envelopeBytes,reference:entry.id}),entry.id);
   }),'INTEGRITY');
+  if(parsed.manifest.candidateDigest!==input.expectedCandidateDigest||parsed.authority.assessment.candidateDigest!==input.expectedCandidateDigest)fail('CANDIDATE_MISMATCH','AUTHORITY','candidate');
   return {copies,parsed};
 }
 

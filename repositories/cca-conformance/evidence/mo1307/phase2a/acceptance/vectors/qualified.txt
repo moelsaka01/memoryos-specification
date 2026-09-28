@@ -1,0 +1,35 @@
+readiness=READY_WITH_QUALIFICATIONS readinessDigest=sha256:f8ba02c1f86cd807f453af8833b3dc03a8f9bdf168cae246b508e5f54aa28040 proofBindingDigest=sha256:ec7e924d988670a9b98884c7255af4f424d75e0d46a5fd850c381bcc2719a0fe
+gate=artifact state=SATISFIED
+gate=binding state=SATISFIED
+gate=history state=SATISFIED
+gate=provenance state=SATISFIED
+gate=provider.azure state=SATISFIED_WITH_QUALIFICATION
+gate=provider.azure.live state=NOT_REQUIRED
+gate=provider.generic state=SATISFIED
+gate=provider.github state=SATISFIED_WITH_QUALIFICATION
+gate=provider.github.hosted state=NOT_REQUIRED
+gate=provider.gitlab state=SATISFIED_WITH_QUALIFICATION
+gate=provider.gitlab.live state=NOT_REQUIRED
+gate=provider.jenkins state=SATISFIED_WITH_QUALIFICATION
+gate=provider.jenkins.live state=NOT_REQUIRED
+gate=resources state=SATISFIED
+gate=rest.contract state=NOT_APPLICABLE
+gate=sbom state=SATISFIED
+gate=scope state=SATISFIED
+gate=security state=SATISFIED
+gate=semantic state=SATISFIED
+gate=supply state=SATISFIED_WITH_QUALIFICATION
+gate=tag state=SATISFIED
+gate=windows state=SATISFIED
+qualification=q.advisory reason=BOUNDED_ADVISORY_REVIEW impact=RELEASE_IMPACTING provider=null gates=supply conditions=[]
+qualification=q.provider.azure reason=PROVIDER_NOT_LIVE_CERTIFIED impact=RELEASE_IMPACTING provider=azure gates=provider.azure,provider.azure.live conditions=[]
+qualification=q.provider.github reason=HOSTED_NOT_CERTIFIED impact=RELEASE_IMPACTING provider=github gates=provider.github,provider.github.hosted conditions=[]
+qualification=q.provider.gitlab reason=PROVIDER_NOT_LIVE_CERTIFIED impact=RELEASE_IMPACTING provider=gitlab gates=provider.gitlab,provider.gitlab.live conditions=[]
+qualification=q.provider.jenkins reason=PROVIDER_NOT_LIVE_CERTIFIED impact=RELEASE_IMPACTING provider=jenkins gates=provider.jenkins,provider.jenkins.live conditions=[]
+provider=azure implementation=IMPLEMENTED validation=CONTRACT_VALIDATED execution=NOT_LIVE_PROVIDER_CERTIFIED sourceExecutionLabel=NOT_LIVE_PROVIDER_CERTIFIED support=SUPPORTED_WITH_CONTRACT_VALIDATION_ONLY hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+provider=generic implementation=IMPLEMENTED validation=REAL_EXECUTION_CERTIFIED execution=REAL_EXECUTION_CERTIFIED sourceExecutionLabel=REAL_EXECUTION_CERTIFIED support=SUPPORTED hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+provider=github implementation=IMPLEMENTED validation=OFFLINE_VALIDATED execution=HOSTED_EXECUTION_NOT_CERTIFIED sourceExecutionLabel=NOT_CERTIFIED support=SUPPORTED_WITH_HOSTED_CERTIFICATION_LIMITATION hostedPass=false hostedFail=false hostedCne=false hostedParity=false
+provider=gitlab implementation=IMPLEMENTED validation=CONTRACT_VALIDATED execution=NOT_LIVE_PROVIDER_CERTIFIED sourceExecutionLabel=NOT_LIVE_PROVIDER_CERTIFIED support=SUPPORTED_WITH_CONTRACT_VALIDATION_ONLY hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+provider=jenkins implementation=IMPLEMENTED validation=CONTRACT_VALIDATED execution=NOT_LIVE_PROVIDER_CERTIFIED sourceExecutionLabel=NOT_LIVE_PROVIDER_CERTIFIED support=SUPPORTED_WITH_CONTRACT_VALIDATION_ONLY hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+humanAction=REVIEW_READINESS_AND_LIMITATIONS
+humanAction=DECIDE_RELEASE

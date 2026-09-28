@@ -1,0 +1,486 @@
+{
+  "productEditsInFinalNativeTask": 0,
+  "deadlines": {
+    "priorAttempts": "attempt1 preserves aggregate harness timing failure and first six valid cases; attempt2 remaining five passed before runtime timer fix; final-source attempt3 supersedes both for final acceptance",
+    "controls": "Real monotonic clock and unchanged budgets. Fixed native helper stdin EOF delay; narrow late-result cleanup deferral. Actual timed engineering workers, no 2A/2B semantic authority.",
+    "actualWorkers": 5.0,
+    "result": "PASS",
+    "cases": [
+      {
+        "cleanupConfirmed": true,
+        "workers": 0,
+        "name": "timely-helper",
+        "elapsedMs": 1405.0085,
+        "outcome": "PASS",
+        "helpers": 1
+      },
+      {
+        "cleanupConfirmed": true,
+        "workers": 0,
+        "name": "cancel-before-helper",
+        "elapsedMs": 0.8660999999999603,
+        "outcome": "PASS",
+        "helpers": 0
+      },
+      {
+        "cleanupConfirmed": false,
+        "workers": 0,
+        "name": "helper-5000ms-timeout",
+        "elapsedMs": 5018.4371,
+        "outcome": "PASS",
+        "helpers": 1
+      },
+      {
+        "cleanupConfirmed": true,
+        "workers": 0,
+        "name": "late-native-helper-success-rejected",
+        "elapsedMs": 5860.255899999999,
+        "outcome": "PASS",
+        "helpers": 1
+      },
+      {
+        "cleanupConfirmed": false,
+        "workers": 0,
+        "name": "cancel-during-helper",
+        "elapsedMs": 1523.5054,
+        "outcome": "PASS",
+        "helpers": 1
+      },
+      {
+        "cleanupConfirmed": true,
+        "workers": 0,
+        "name": "cancel-between-helper-worker",
+        "elapsedMs": 1598.6760999999988,
+        "outcome": "PASS",
+        "helpers": 1
+      },
+      {
+        "cleanupConfirmed": false,
+        "workers": 1,
+        "name": "aggregate-20000ms-excludes-worker",
+        "elapsedMs": 20330.861100000002,
+        "outcome": "PASS",
+        "helpers": 6
+      },
+      {
+        "cleanupConfirmed": true,
+        "workers": 1,
+        "name": "worker-10000ms-timeout",
+        "elapsedMs": 10013.208299999998,
+        "outcome": "PASS",
+        "helpers": 0
+      },
+      {
+        "cleanupConfirmed": true,
+        "workers": 1,
+        "name": "cancel-during-worker",
+        "elapsedMs": 111.36379999999917,
+        "outcome": "PASS",
+        "helpers": 0
+      },
+      {
+        "cleanupConfirmed": true,
+        "workers": 1,
+        "name": "late-real-worker-completion-rejected",
+        "elapsedMs": 10547.876200000006,
+        "outcome": "PASS",
+        "helpers": 0
+      },
+      {
+        "cleanupConfirmed": true,
+        "workers": 1,
+        "name": "cancel-after-worker-before-publication",
+        "elapsedMs": 43.694400000000314,
+        "outcome": "PASS",
+        "helpers": 0
+      }
+    ],
+    "receipt": "native-deadlines/attempt3-final-source/driver/receipt.json",
+    "nativeHelpers": 11.0,
+    "acceptedCases": 11
+  },
+  "topology": {
+    "startedUtc": "2026-09-28T21:38:13.5028522Z",
+    "maximumRoles": 3,
+    "maximumHelpers": 1,
+    "maximumConsoleHosts": 1,
+    "uncertainty": "Sampling supplements production transition guards; killed helpers without valid frames remain conservatively unconfirmed in product state and cannot start another phase.",
+    "elapsedMs": 56953.926,
+    "sampleCount": 283,
+    "receipt": "native-deadlines/attempt3-final-source/process-observation.json",
+    "knownSurvivors": []
+  },
+  "recordedUtc": "2026-09-28T21:42:34.0247942Z",
+  "authority": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+  "kind": "MO1307FinalNativeAcceptance",
+  "helperSha256": "ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b",
+  "result": "PASS_WITH_EXPLICIT_ENGINEERING_SCOPE",
+  "sourceBindings": [
+    {
+      "snapshot": "bin__memoryos-readiness.mjs.data",
+      "sha256": "2aa002a153e87b5127cf26001c9a1bb774142838c0faf7c324c040013e988321",
+      "file": "bin/memoryos-readiness.mjs"
+    },
+    {
+      "snapshot": "helpers__windows-inspect.ps1.data",
+      "sha256": "ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b",
+      "file": "helpers/windows-inspect.ps1"
+    },
+    {
+      "snapshot": "src__acquisition.mjs.data",
+      "sha256": "1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066",
+      "file": "src/acquisition.mjs"
+    },
+    {
+      "snapshot": "src__api-input.mjs.data",
+      "sha256": "57cd2e2309efac7f0c890b82ff4ca3f70f8cb324512611eba9b303e2da32e194",
+      "file": "src/api-input.mjs"
+    },
+    {
+      "snapshot": "src__canonical.mjs.data",
+      "sha256": "b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805",
+      "file": "src/canonical.mjs"
+    },
+    {
+      "snapshot": "src__cli-args.mjs.data",
+      "sha256": "107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7",
+      "file": "src/cli-args.mjs"
+    },
+    {
+      "snapshot": "src__cli.mjs.data",
+      "sha256": "3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2",
+      "file": "src/cli.mjs"
+    },
+    {
+      "snapshot": "src__constants.mjs.data",
+      "sha256": "987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9",
+      "file": "src/constants.mjs"
+    },
+    {
+      "snapshot": "src__errors.mjs.data",
+      "sha256": "71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac",
+      "file": "src/errors.mjs"
+    },
+    {
+      "snapshot": "src__foundation.mjs.data",
+      "sha256": "b68a98dc1101f9c8eb56bdd77bc585ce1889ae2699d27a027624026d41dc62b0",
+      "file": "src/foundation.mjs"
+    },
+    {
+      "snapshot": "src__helper-protocol.mjs.data",
+      "sha256": "96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+      "file": "src/helper-protocol.mjs"
+    },
+    {
+      "snapshot": "src__helper-transport.mjs.data",
+      "sha256": "ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+      "file": "src/helper-transport.mjs"
+    },
+    {
+      "snapshot": "src__index.mjs.data",
+      "sha256": "10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4",
+      "file": "src/index.mjs"
+    },
+    {
+      "snapshot": "src__integration.mjs.data",
+      "sha256": "e4cdbb1e34e2a90d8a5c4b98a3a5e1d2f9ae994ea22e01c98bdcb7956921e65b",
+      "file": "src/integration.mjs"
+    },
+    {
+      "snapshot": "src__output.mjs.data",
+      "sha256": "eea2e7f6dc23f88b8afdca19b273939a020ccc145ec78d4f701983e0d8449aca",
+      "file": "src/output.mjs"
+    },
+    {
+      "snapshot": "src__projections.mjs.data",
+      "sha256": "43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22",
+      "file": "src/projections.mjs"
+    },
+    {
+      "snapshot": "src__publication.mjs.data",
+      "sha256": "dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b",
+      "file": "src/publication.mjs"
+    },
+    {
+      "snapshot": "src__runtime.mjs.data",
+      "sha256": "012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+      "file": "src/runtime.mjs"
+    },
+    {
+      "snapshot": "src__schema-data.mjs.data",
+      "sha256": "467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11",
+      "file": "src/schema-data.mjs"
+    },
+    {
+      "snapshot": "src__schema.mjs.data",
+      "sha256": "9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7",
+      "file": "src/schema.mjs"
+    },
+    {
+      "snapshot": "src__windows-paths.mjs.data",
+      "sha256": "7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029",
+      "file": "src/windows-paths.mjs"
+    },
+    {
+      "snapshot": "src__worker-entry.mjs.data",
+      "sha256": "958dfaf21e7ed62d6214a09f7624b7c4c799aeddbdcd11daac8625a439ab35a7",
+      "file": "src/worker-entry.mjs"
+    },
+    {
+      "snapshot": "src__worker-policy.mjs.data",
+      "sha256": "29e0ccb0bb366199857753abd11c08f8cdec72bfe43672ef6ba9e8784e5b0831",
+      "file": "src/worker-policy.mjs"
+    }
+  ],
+  "filesystem": {
+    "acceptedPrimaryCases": 33,
+    "finalHandlePath": "Actual C:\\Program Files accepted and existing C:\\PROGRA~1 rejected",
+    "acceptedReceipt": "native-filesystem/attempt1/receipt.json",
+    "changedIdentity": "Native pending replacement has changed fileId; cross-slot rejection separately covered by publication/protocol suite",
+    "accessDenial": "Optional first ReadAttributes-only fixture did not establish denial; failed fixture retained, exact ACL restored; no access-denial PASS claimed",
+    "wrongVolume": "No safe other-volume fixture available: DriveInfo enumerates only Fixed C. No volume/mount created.",
+    "acceptedSupplementNativeLaunches": 2,
+    "acceptedSupplementCases": 1,
+    "supplementReceipt": "native-filesystem/final-path-attempt1/receipt.json",
+    "requiredNegativeCoverage": [
+      {
+        "outcome": "PASS",
+        "name": "native READ_SET same-handle bytes and seven-field identity"
+      },
+      {
+        "outcome": "PASS",
+        "name": "native CHECK_OUTPUT slots4/5 full stable drive-parent chains"
+      },
+      {
+        "outcome": "PASS",
+        "name": "native INSPECT_OUTPUT_ROOT and CHECK_STAGE_ROOT stable full chain"
+      },
+      {
+        "outcome": "PASS",
+        "name": "native INSPECT_PENDING and CHECK_FINALIZATION stable full chain/final absence"
+      },
+      {
+        "outcome": "PASS",
+        "name": "existing output rejected by native absence"
+      },
+      {
+        "outcome": "PASS",
+        "name": "existing final rejected by native absence"
+      },
+      {
+        "outcome": "PASS",
+        "name": "changed pending identity observed natively"
+      },
+      {
+        "outcome": "PASS",
+        "name": "traversal native request rejection"
+      },
+      {
+        "outcome": "PASS",
+        "name": "ADS native request rejection"
+      },
+      {
+        "outcome": "PASS",
+        "name": "drive-relative native request rejection"
+      },
+      {
+        "outcome": "PASS",
+        "name": "UNC native request rejection"
+      },
+      {
+        "outcome": "PASS",
+        "name": "device native request rejection"
+      },
+      {
+        "outcome": "PASS",
+        "name": "missing ancestor rejected"
+      },
+      {
+        "outcome": "PASS",
+        "name": "missing leaf is INPUT rather than absent success"
+      },
+      {
+        "outcome": "PASS",
+        "name": "directory used as file rejected"
+      },
+      {
+        "outcome": "PASS",
+        "name": "hardlinked input rejected"
+      },
+      {
+        "outcome": "PASS",
+        "name": "file symlink rejected"
+      },
+      {
+        "outcome": "PASS",
+        "name": "directory symlink ancestor rejected"
+      },
+      {
+        "outcome": "PASS",
+        "name": "junction ancestor rejected"
+      },
+      {
+        "outcome": "PASS",
+        "name": "2MiB read and canonical base64 chunks within fixed deadline"
+      },
+      {
+        "outcome": "PASS",
+        "name": "per-file decoded cap rejection"
+      },
+      {
+        "outcome": "PASS",
+        "name": "existing pending exclusive creation refuses overwrite"
+      },
+      {
+        "outcome": "PASS",
+        "name": "wrong version rejects"
+      },
+      {
+        "outcome": "PASS",
+        "name": "wrong session rejects"
+      },
+      {
+        "outcome": "PASS",
+        "name": "wrong sequence rejects"
+      },
+      {
+        "outcome": "PASS",
+        "name": "wrong operation rejects"
+      },
+      {
+        "outcome": "PASS",
+        "name": "unknown field rejects"
+      },
+      {
+        "outcome": "PASS",
+        "name": "duplicate key rejects"
+      },
+      {
+        "outcome": "PASS",
+        "name": "noncanonical body rejects"
+      },
+      {
+        "outcome": "PASS",
+        "name": "truncated frame rejects"
+      },
+      {
+        "outcome": "PASS",
+        "name": "extra frame rejects"
+      },
+      {
+        "outcome": "PASS",
+        "name": "trailing bytes rejects"
+      },
+      {
+        "outcome": "PASS",
+        "name": "oversized request rejects"
+      }
+    ],
+    "acceptedPrimaryNativeLaunches": 36
+  },
+  "environment": {
+    "inspectorCoverage": "Actual non-listening inspector configuration refused; inspect/debug activation flags rejected directly by final-source guard. No listener opened.",
+    "actualAcceptedCliProcesses": 8,
+    "receipts": [
+      "native-environment/attempt1/receipt.json",
+      "native-environment/attempt2-remaining/receipt.json"
+    ],
+    "actualWorkers": 1,
+    "retainedFailure": "Overbroad combined fixture poisoned SystemRoot/WINDIR and caused Node CSPRNG abort before JS entry. Corrected actual Node bootstrap keeps trusted Windows installation values; every requested poison key remains exercised. No product change.",
+    "actualNativeHelpers": 2,
+    "acceptedCases": 18,
+    "cases": [
+      {
+        "elapsedMs": 1517.2706,
+        "name": "actual-helper-sanitized-environment-under-combined-poison",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 39.9208000000001,
+        "name": "actual-worker-empty-environment-argv-and-frozen-resource-limits",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 125.19160000000011,
+        "name": "actual-cli-NODE_OPTIONS-empty",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 124.78710000000001,
+        "name": "actual-cli-NODE_OPTIONS-safe-option",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 118.38499999999999,
+        "name": "actual-cli-NODE_PATH",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 137.55560000000014,
+        "name": "actual-cli-preload-builtin",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 138.93780000000015,
+        "name": "actual-cli-import-builtin",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 205.1854000000003,
+        "name": "actual-cli-loader-noop",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 141.08759999999984,
+        "name": "actual-cli-inspect-configuration",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 2129.5834,
+        "name": "actual-cli-fixed-helper-under-combined-poison",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 0.7955000000001746,
+        "name": "launch-guard---require",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 0.040899999999965075,
+        "name": "launch-guard---import",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 0.026200000000244472,
+        "name": "launch-guard---loader",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 0.021600000000034925,
+        "name": "launch-guard---experimental-loader",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 0.01989999999977954,
+        "name": "launch-guard---inspect",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 0.019099999999980355,
+        "name": "launch-guard---inspect-brk",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 0.02099999999973079,
+        "name": "launch-guard---debug",
+        "outcome": "PASS"
+      },
+      {
+        "elapsedMs": 0.019099999999980355,
+        "name": "launch-guard---debug-brk",
+        "outcome": "PASS"
+      }
+    ],
+    "loaderCoverage": "Actual node:path preload/import and fixed inert data loader refused at CLI launch guard; bootstrap warnings retained separately."
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "kind": "MO1307FinalNativeDeadlineCampaign",
+  "dependencies": [
+    {
+      "file": "src/runtime.mjs",
+      "sha256": "bd1bd5e810fad661d291ddfc17251c39c02fdaba11cfbe6069beb4cdf54d1124"
+    },
+    {
+      "file": "src/helper-transport.mjs",
+      "sha256": "ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55"
+    },
+    {
+      "file": "src/helper-protocol.mjs",
+      "sha256": "96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "file": "src/constants.mjs",
+      "sha256": "987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9"
+    },
+    {
+      "file": "helpers/windows-inspect.ps1",
+      "sha256": "ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+    }
+  ],
+  "launch": {
+    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+    ],
+    "options": {
+      "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\memoryos-readiness\\",
+      "env": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true,
+      "detached": false,
+      "shell": false,
+      "stdio": [
+        "pipe",
+        "pipe",
+        "pipe"
+      ]
+    }
+  },
+  "cases": [
+    "timely-helper",
+    "cancel-before-helper",
+    "helper-5000ms-timeout",
+    "late-native-helper-success-rejected",
+    "cancel-during-helper",
+    "cancel-between-helper-worker",
+    "aggregate-20000ms-excludes-worker",
+    "worker-10000ms-timeout",
+    "cancel-during-worker",
+    "late-real-worker-completion-rejected",
+    "cancel-after-worker-before-publication"
+  ],
+  "controls": "Real monotonic clock and fixed budgets; fixed native helper only. Narrow engineering stdin EOF/shutdown delays. Actual worker threads with canned nonsemantic bytes.",
+  "policy": "Finite ordered campaign; stop on first unexpected result; no retry; external observer owns process sampling."
+}

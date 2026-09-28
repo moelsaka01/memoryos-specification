@@ -1,0 +1,127 @@
+{
+  "kind": "MO1307Phase2CFinalN24TimerReview",
+  "version": "1.0.0",
+  "result": "PASS",
+  "authorityCommit": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+  "authority": {
+    "path": "docs/mo1307-phase2c-finalization-boundary-correction.md",
+    "byteLength": 20727,
+    "sha256": "sha256:e5a7ef021cf217a7239a8568aa3172b4b58661d53ec82ff827b56530ee581b10",
+    "clauses": [
+      {
+        "line": 96,
+        "quote": "Bounded per-operation and supervisor deadline timers are permitted. The Freeze already requires timer initialization and external deadline enforcement; an unconditional `setInterval` token ban is a test overconstraint. A timer must belong to one invocation/operation, have a finite purpose and deadline, and be cleared/disposed on success, failure, cancellation or terminal disposition. No persistent server, watcher, cross-run timer, background scheduler or recurring work survives a completed invocation."
+      },
+      {
+        "line": 98,
+        "quote": "The admitted unresolved rename does not authorize an indefinite polling loop. A one-shot deadline timer may record an overrun once and cease; cancellation may be recorded without starting periodic work. Timer cleanup must be tested through actual lifetime observations, including repeated calls, rather than inferred solely from the presence of a `finally` whose awaited operation might never settle. The foundation uses one bounded read-only confirmation timer; no persistent timer or new process topology is authorized."
+      }
+    ]
+  },
+  "disposition": "C2FB explicitly permits invocation-scoped bounded timers and supersedes the unconditional setInterval-token ban; persistent servers, watchers and cross-run recurring work remain forbidden.",
+  "phase1Reconciliation": {
+    "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+    "byteLength": 23583,
+    "sha256": "sha256:0d506c7ad8b61f8e14046ba5d394a9a598fe4828c7e10d102de07a8e1b1a73c6",
+    "receipt": "repositories/cca-conformance/evidence/mo1307/phase2c-final/overlap-phase1-native.json",
+    "meaning": "Preserved current actual-helper N15/N17 and exact authorized argv; adopted exact corrected C2FB N24 static prohibition. No test was removed; Phase 1 still requires a separate fresh 105/105 run."
+  },
+  "testReceipt": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-attempt1/receipt.json",
+    "byteLength": 1459,
+    "sha256": "sha256:ce9bdcdcb436fa1b334e333e805d003485446e86d7f62d9ea084e4a94d84ab89"
+  },
+  "rawOutput": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-attempt1/stdout.txt",
+    "byteLength": 1500,
+    "sha256": "sha256:f78e96e2aecb48fcaf741a83c72d879d533357dadf35345b2f573781ec7101c0"
+  },
+  "boundSourceCount": 86,
+  "sourceBytesStillMatch": true,
+  "observation": "Async resource lifetime observation wraps each actual invocation. Every invocation disposes its supervisor; after two event-loop turns no owned timer remains, and a further outside-context observation interval sees no callbacks or rearming. Six sequential calls include success twice, write failure, write cancellation, rename failure and post-admission cancellation. Real owned file I/O and synthetic framed identities; no native helper certification.",
+  "extractionNote": "Node TAP escaped the embedded marker as a comment; command receipt timerWitnesses is null. This separate extraction reads the preserved raw log, validates all six rows, and does not alter or rerun that PASS test.",
+  "witnesses": [
+    {
+      "name": "success-a",
+      "observedTimers": 5,
+      "remainingTimers": 0,
+      "serverOrWatcherResources": 0,
+      "callbacksAfterSettlement": 0,
+      "outcome": "COMMITTED",
+      "activeRole": null
+    },
+    {
+      "name": "write-failure",
+      "observedTimers": 4,
+      "remainingTimers": 0,
+      "serverOrWatcherResources": 0,
+      "callbacksAfterSettlement": 0,
+      "outcome": "MO1307_OUTPUT",
+      "activeRole": null
+    },
+    {
+      "name": "write-cancellation",
+      "observedTimers": 4,
+      "remainingTimers": 0,
+      "serverOrWatcherResources": 0,
+      "callbacksAfterSettlement": 0,
+      "outcome": "MO1307_CANCELLED",
+      "activeRole": null
+    },
+    {
+      "name": "rename-failure",
+      "observedTimers": 6,
+      "remainingTimers": 0,
+      "serverOrWatcherResources": 0,
+      "callbacksAfterSettlement": 0,
+      "outcome": "MO1307_OUTPUT",
+      "activeRole": null
+    },
+    {
+      "name": "post-admission-cancellation",
+      "observedTimers": 6,
+      "remainingTimers": 0,
+      "serverOrWatcherResources": 0,
+      "callbacksAfterSettlement": 0,
+      "outcome": "MO1307_OUTPUT",
+      "activeRole": null
+    },
+    {
+      "name": "success-b",
+      "observedTimers": 5,
+      "remainingTimers": 0,
+      "serverOrWatcherResources": 0,
+      "callbacksAfterSettlement": 0,
+      "outcome": "COMMITTED",
+      "activeRole": null
+    }
+  ],
+  "counts": {
+    "topLevelTests": 1,
+    "passedTopLevelTests": 1,
+    "sequentialWitnesses": 6,
+    "totalObservedTimerResources": 30,
+    "survivingTimers": 0,
+    "postSettlementCallbacks": 0,
+    "serverOrWatcherResources": 0
+  },
+  "implementationReview": {
+    "runtime": {
+      "path": "repositories/memoryos-readiness/src/runtime.mjs",
+      "byteLength": 16282,
+      "sha256": "sha256:bd1bd5e810fad661d291ddfc17251c39c02fdaba11cfbe6069beb4cdf54d1124"
+    },
+    "publication": {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 13123,
+      "sha256": "sha256:5225207b23b8fa92aea1fca35fc01e3c68913a8487e5436d27f7089349d62dab"
+    },
+    "cli": {
+      "path": "repositories/memoryos-readiness/src/cli.mjs",
+      "byteLength": 4419,
+      "sha256": "sha256:63e6c97aaa689d8d0ef89233cd8f23b5d3827fc055dc76fad1fbfb0fad697728"
+    },
+    "findings": "Admission uses the mandatory strict checkpoint; admitted finalization awaits actual settlement without a terminal timer race. The deadline timer records once and ceases after interruption. Pre-admission pending-write polling clears immediately on observed interruption. Post-settlement verification and failed/overrun disposition share one fixed allowance. A found deadline-then-abort flag omission was repaired and separately tested by the runtime owner; this review does not replace those actual queued-rename receipts."
+  },
+  "scope": "Current bounded-operation lifetime witnesses and direct source review; no claim of a finite admitted native rename settlement bound, no semantic 2A/2B integration, no historical STOP relabeling."
+}

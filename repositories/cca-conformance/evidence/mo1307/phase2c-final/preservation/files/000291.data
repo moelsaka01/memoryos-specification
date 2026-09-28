@@ -1,0 +1,106 @@
+import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { DEFINITIONS } from './constants.mjs';
+import { ReadinessError, fail } from './errors.mjs';
+import { decodeHelperRequest, decodeHelperResponse } from './helper-protocol.mjs';
+
+// Installation identity for the supported native Windows installation. Neither
+// caller paths nor environment variables select an executable, script or cwd.
+export const WINDOWS_INSTALLATION = Object.freeze({ windowsDirectory: 'C:\\Windows',
+  powershell: 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe' });
+const SCRIPT = fileURLToPath(new URL('../helpers/windows-inspect.ps1', import.meta.url));
+const DIRECTORY = fileURLToPath(new URL('../', import.meta.url));
+const L = DEFINITIONS.limits;
+
+export function helperLaunchSpecification() {
+  return Object.freeze({ executable: WINDOWS_INSTALLATION.powershell,
+    args: Object.freeze(['-NoLogo', '-NoProfile', '-NonInteractive', '-File', SCRIPT]),
+    options: Object.freeze({ cwd: DIRECTORY, env: Object.freeze({ SystemRoot: WINDOWS_INSTALLATION.windowsDirectory,
+      WINDIR: WINDOWS_INSTALLATION.windowsDirectory }), windowsHide: true, detached: false,
+      shell: false, stdio: Object.freeze(['pipe', 'pipe', 'pipe']) }) });
+}
+
+export function createHelperTransport(supervisor) { return transport(supervisor, spawn); }
+// Internal engineering doubles are not reachable from API/CLI options.
+export function createHelperTransportForTesting(supervisor, spawnDouble) { return transport(supervisor, spawnDouble); }
+
+function transport(supervisor, launch) {
+  if (supervisor?.kind !== 'cli' || typeof supervisor.runOwned !== 'function' || typeof launch !== 'function') fail('INTERNAL', 'ACQUISITION');
+  const specification = helperLaunchSpecification();
+  return Object.freeze({
+    exchange(frame) {
+      supervisor.checkpoint('ACQUISITION');
+      const request = decodeHelperRequest(frame);
+      const detached = Buffer.from(frame);
+      return supervisor.runOwned('helper', lease => {
+        // Hidden pipes still create an attributable Windows console host here.
+        // The fixed helper natively detaches and confirms that host's exit
+        // before emitting any valid response. It launches no other children.
+        const child = launch(specification.executable, [...specification.args], {
+          ...specification.options, env: { ...specification.options.env }, stdio: [...specification.options.stdio],
+        });
+        let resolveClosed, resolveCompletion, rejectCompletion;
+        const closed = new Promise(resolve => { resolveClosed = resolve; });
+        const completion = new Promise((resolve, reject) => { resolveCompletion = resolve; rejectCompletion = reject; });
+        const chunks = [];
+        let total = 0, stderrBytes = 0, outputEnded = false, errorEnded = false, inputFinished = false;
+        let outputClosed = false, errorClosed = false, inputClosed = false, processClosed = false;
+        let processCode = null, streamFailure = null, consoleQuiescent = false;
+        const rejected = code => {
+          const error = new ReadinessError(code, 'ACQUISITION'); streamFailure ??= error; lease.fail(error);
+        };
+        const finish = () => {
+          if (!processClosed || !outputClosed || !errorClosed || !inputClosed) return;
+          // A validated frame can prove prior native console quiescence even
+          // after terminal cancellation; it can NEVER restore success.
+          let responseBytes;
+          try {
+            if (outputEnded && total <= L.helperResponseBytes) {
+              responseBytes = Buffer.concat(chunks, total);
+              decodeHelperResponse(responseBytes, request); consoleQuiescent = true;
+            }
+          } catch { /* No console proof from malformed/partial transport. */ }
+          resolveClosed();
+          try {
+            if (streamFailure) throw streamFailure;
+            if (processCode !== 0 || !outputEnded || !errorEnded || !inputFinished) fail('INTERNAL', 'ACQUISITION');
+            lease.checkpoint();
+            if (!consoleQuiescent) fail('INPUT', 'ACQUISITION');
+            lease.checkpoint();
+            resolveCompletion({ responseBytes, exitConfirmed: true });
+          } catch (error) { rejectCompletion(error); }
+        };
+        child.stdout.on('data', data => {
+          total += data.byteLength;
+          if (total > L.helperResponseBytes) { rejected('RESOURCE_LIMIT'); return; }
+          chunks.push(data);
+          // Once enough prefix bytes exist, reject an oversized advertised body
+          // before waiting for attacker-controlled completion or allocation.
+          if (total >= 4 && chunks.length < 5) {
+            const prefix = Buffer.concat(chunks, Math.min(total, 4));
+            if (prefix.readUInt32BE(0) + 4 > L.helperResponseBytes) rejected('RESOURCE_LIMIT');
+          }
+        });
+        child.stderr.on('data', data => {
+          stderrBytes += data.byteLength;
+          if (stderrBytes > L.stderrBytes) rejected('RESOURCE_LIMIT');
+        });
+        child.stdout.once('end', () => { outputEnded = true; });
+        child.stderr.once('end', () => { errorEnded = true; });
+        child.stdin.once('finish', () => { inputFinished = true; });
+        child.stdout.once('close', () => { outputClosed = true; finish(); });
+        child.stderr.once('close', () => { errorClosed = true; finish(); });
+        child.stdin.once('close', () => { inputClosed = true; finish(); });
+        for (const stream of [child.stdin, child.stdout, child.stderr]) stream.on('error', () => rejected('INTERNAL'));
+        child.once('error', () => rejected('INTERNAL'));
+        child.once('close', code => { processClosed = true; processCode = code; finish(); });
+        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT' });
+        child.stdin.end(detached);
+        return { completion, closed, quiescence: () => consoleQuiescent, abandon: () => child.unref?.(), terminate: () => {
+          child.stdin.destroy(); child.stdout.destroy(); child.stderr.destroy();
+          if (!processClosed) child.kill();
+        } };
+      }, { stage: 'ACQUISITION' });
+    },
+  });
+}

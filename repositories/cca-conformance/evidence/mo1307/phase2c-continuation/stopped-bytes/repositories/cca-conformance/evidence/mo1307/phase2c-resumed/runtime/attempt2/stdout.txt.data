@@ -1,0 +1,61 @@
+✔ R01 api exact absolute deadline and equality (3.323ms)
+✔ R01 cli exact absolute deadline and equality (0.1978ms)
+✔ R02 earlier cancellation stays terminal after deadline (0.2827ms)
+✔ R03 timeout wins simultaneous first cancellation observation (0.2235ms)
+✔ R04 preaborted signal prevents any launch (0.5794ms)
+✔ R05 monotonic decreasing clock rejects (0.2395ms)
+✔ R06 API cannot launch helper (0.5517ms)
+✔ R07 helper deadline includes all active time; equality rejects (0.8103ms)
+✔ R08 aggregate deadline does not reset across helpers (0.7801ms)
+✔ R09 worker time is excluded from helper aggregate but inside overall (0.4711ms)
+✔ R10 helper overlap is terminal and cleans prior owned role (0.4494ms)
+✔ R11 helper and worker cannot overlap (0.3797ms)
+✔ R12 frame alone cannot advance before actual close (70.5562ms)
+✔ R13 launch uses only fixed executable/script/environment and no shell (1.7291ms)
+✔ R14 helper trailing byte fails closed (2.4743ms)
+✔ R14 helper extra frame fails closed (1.2239ms)
+✔ R14 helper debug stdout fails closed (0.9313ms)
+✔ R14 helper truncated frame fails closed (9.9905ms)
+✔ R14 helper oversized prefix fails closed (1.7867ms)
+✔ R14 helper stderr overflow fails closed (1.6195ms)
+✔ R14 helper nonzero exit fails closed (1.0805ms)
+✔ R15 cancellation in launch terminates and ignores later valid frame (1.0773ms)
+✖ R16 cancellation during transport cleans child (10.6872ms)
+✔ R17 fixed actual worker has empty environment and exact heap intent (40.0088ms)
+✔ R18 successful worker result waits for termination (144.3863ms)
+✔ R19 actual worker crash fails closed (46.9602ms)
+✔ R19 actual worker duplicate fails closed (41.8623ms)
+✔ R19 actual worker stdout fails closed (34.5124ms)
+✔ R20 cancellation actually terminates CPU-bound worker thread (42.8154ms)
+✔ R21 production worker remains fail-closed without 2A/2B (121.0015ms)
+✔ R22 adapter matches closed 2A handoff; operational/session fields excluded (0.2942ms)
+✔ R23 verify evidence seam excludes result and decision bytes (0.1647ms)
+✔ R24 malformed decision uses dedicated mismatch, cap uses resource (0.4153ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 32
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 715.6889
+
+✖ failing tests:
+
+test at repositories\cca-conformance\tests\mo1307_phase2c_runtime_test.mjs:171:1
+✖ R16 cancellation during transport cleans child (10.6872ms)
+  Error [ReadinessError]: MO1307_CANCELLED
+      at checkpoint (file:///C:/Users/melsa/Documents/Codex/cca-mo1307-2c-resumed/repositories/memoryos-readiness/src/runtime.mjs:53:37)
+      at AbortSignal.onAbort (file:///C:/Users/melsa/Documents/Codex/cca-mo1307-2c-resumed/repositories/memoryos-readiness/src/runtime.mjs:66:33)
+      at [nodejs.internal.kHybridDispatch] (node:internal/event_target:848:20)
+      at AbortSignal.dispatchEvent (node:internal/event_target:789:26)
+      at runAbort (node:internal/abort_controller:554:10)
+      at abortSignal (node:internal/abort_controller:518:3)
+      at AbortController.abort (node:internal/abort_controller:573:5)
+      at Timeout._onTimeout (file:///C:/Users/melsa/Documents/Codex/cca-mo1307-2c-resumed/repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs:175:28)
+      at listOnTimeout (node:internal/timers:685:17)
+      at process.processTimers (node:internal/timers:618:7) {
+    code: 'MO1307_CANCELLED',
+    stage: 'ACQUISITION',
+    reference: null
+  }

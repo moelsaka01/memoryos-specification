@@ -1,0 +1,56 @@
+{
+  "name": "cancel-after-worker-before-publication",
+  "outcome": "PASS",
+  "elapsedMs": 43.694400000000314,
+  "error": {
+    "code": "MO1307_CANCELLED",
+    "message": "MO1307_CANCELLED"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 86492.21239999999,
+    "helpers": 0,
+    "workers": 1,
+    "helperUsedMs": 0,
+    "activeRole": null,
+    "cleanupConfirmed": true,
+    "publication": null,
+    "terminalCode": "MO1307_CANCELLED",
+    "terminalAt": 56535.84,
+    "cleanupDeadline": 58535.84,
+    "events": [
+      {
+        "type": "start",
+        "at": 56492.3662,
+        "role": "worker",
+        "deadline": 66492.3563,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 56493.1349,
+        "role": "worker",
+        "threadId": 5,
+        "resourceLimits": {
+          "maxYoungGenerationSizeMb": 16,
+          "maxOldGenerationSizeMb": 128,
+          "codeRangeSizeMb": -1,
+          "stackSizeMb": 4
+        }
+      },
+      {
+        "type": "quiescent",
+        "at": 56535.7257,
+        "role": "worker",
+        "ordinal": 1
+      },
+      {
+        "type": "terminal",
+        "at": 56535.8434,
+        "code": "MO1307_CANCELLED",
+        "stage": "LAUNCH"
+      }
+    ]
+  }
+}
