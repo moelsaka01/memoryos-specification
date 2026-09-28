@@ -1,0 +1,71 @@
+{
+  "kind": "MemoryOSReadinessPhase2CBlockerFinalChecks",
+  "version": "1.0.0",
+  "at": "2026-09-28T15:09:50.447901Z",
+  "head": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+  "status": "STOPPED_BLOCKED_NOT_COMPLETE",
+  "workspace": {
+    "stdout": "CCA workspace verification passed: C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c",
+    "result": "PASS"
+  },
+  "diffCheck": {
+    "stdout": "",
+    "result": "PASS",
+    "scope": "No tracked changes; new artifacts independently checked for encoding and whitespace"
+  },
+  "newArtifactTextChecks": "PASS",
+  "reportLinks": "PASS",
+  "bindings": [
+    {
+      "path": "docs/mo1307-phase2c-acquisition-publication.md",
+      "byteLength": 17422,
+      "sha256": "sha256:3bd4efc4c4af0df5098bd6667f648d0a1ce5d14eebc6028da854695ffc2788ae"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c/blocker-probe.mjs",
+      "byteLength": 12855,
+      "sha256": "sha256:286ff6c815efda572bf43a7c3865111dc9b12dadc94c72590d00808bd40fd6e3"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c/blocker-campaign.json",
+      "byteLength": 1476,
+      "sha256": "sha256:fc8f589f439db3d6d748403289551acf5b79b6b57f2699a82c8a0f0f112aec17"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c/blocker-receipt.json",
+      "byteLength": 13973,
+      "sha256": "sha256:7201513e1e1c05e9341e88a3b1aa00e3df285311e19da4a05c7b299c9e541bf1"
+    }
+  ],
+  "trackedChanges": [],
+  "commitCreated": false,
+  "pushPerformed": false,
+  "tagMutationPerformed": false,
+  "fullPhase1Regression": "NOT_RERUN_STOP_CONDITION",
+  "characterization": "NOT_RERUN_UNCHANGED_DEPENDENCIES",
+  "nativeFilesystemAcceptance": "NOT_RUN",
+  "productProcessTopology": "NOT_RUN",
+  "sharedOverlaps": [],
+  "next": "Reviewed helper/publication interface correction before dependent implementation",
+  "reportReviewAmendment": {
+    "at": "2026-09-28T15:11:27.5331031Z",
+    "reason": "Independent review corrected an exact-count wording to the frozen upper bound; no test or product behavior changed.",
+    "originalReportBinding": {
+      "path": "docs/mo1307-phase2c-acquisition-publication.md",
+      "byteLength": 17403,
+      "sha256": "sha256:3484d323f33e540e5cecb5157a0b6b5c9ebd26395a062d143bd6c6f4db1442f8"
+    },
+    "oldText": "| 14 | Process topology | Required three attributable OS processes and worker thread; NOT TESTED. |",
+    "newText": "| 14 | Process topology | At most three attributable OS processes, with a non-overlapping worker thread; NOT TESTED. |",
+    "accountingFields": 72,
+    "accountingOrder": "PASS",
+    "harnessCorrection": {
+      "firstCheck": "Expected 72 report fields",
+      "disposition": "HARNESS_SCOPE_ERROR",
+      "cause": "The first count included the three numbered helper-slot rows in addition to the 72 accounting rows. It stopped after editing the report and before saving the amended final-checks receipt.",
+      "correction": "Count and verify 1-72 only within the Required final-report accounting section.",
+      "productImpact": "NONE",
+      "probeCampaignRerun": false
+    }
+  }
+}

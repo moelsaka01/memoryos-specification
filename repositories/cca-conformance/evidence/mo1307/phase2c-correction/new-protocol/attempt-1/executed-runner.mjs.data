@@ -1,0 +1,44 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+import assert from 'node:assert/strict';
+
+const root = fileURLToPath(new URL('../../../../', import.meta.url));
+assert.equal(process.version, 'v24.21.0'); assert.equal(process.platform, 'win32'); assert.equal(process.arch, 'x64');
+assert.equal(process.argv.length, 3); assert.match(process.argv[2], /^attempt-[1-9][0-9]?$/);
+const destination = path.join(root, 'repositories/cca-conformance/evidence/mo1307/phase2c-correction/new-protocol', process.argv[2]);
+fs.mkdirSync(destination, { recursive: true });
+const hash = bytes => 'sha256:' + createHash('sha256').update(bytes).digest('hex');
+const write = (name, bytes) => { fs.writeFileSync(path.join(destination, name), bytes, { flag: 'wx' });
+  return { name, byteLength: bytes.length, sha256: hash(bytes) }; };
+const test = 'repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs';
+const bindings = [test, 'repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs',
+  'repositories/memoryos-readiness/src/helper-protocol.mjs', 'repositories/memoryos-readiness/src/publication.mjs',
+  'repositories/memoryos-readiness/src/constants.mjs'].map((name, index) => {
+    const bytes = fs.readFileSync(path.join(root, name));
+    return { path: name, byteLength: bytes.length, sha256: hash(bytes),
+      retained: write(String(index + 1).padStart(2, '0') + '-' + path.basename(name) + '.data', bytes) };
+  });
+write('campaign.json', Buffer.from(JSON.stringify({ kind: 'MemoryOSReadinessPublicationInspectionFocusedCampaign',
+  version: '1.0.0', startedAt: new Date().toISOString(), executions: 1, expectedGroups: 24,
+  noAutomaticRetry: true, scope: 'FOUNDATION_PROTOCOL_AND_OWNED_PUBLICATION_FIXTURES',
+  syntheticTransport: true, nativeAcquisitionCertification: false, inputs: bindings }, null, 2) + '\n'));
+const started = performance.now();
+const child = spawnSync(process.execPath, ['--test', '--test-concurrency=1', test], {
+  cwd: root, timeout: 60000, encoding: null, maxBuffer: 8388608, windowsHide: true,
+});
+const stdout = child.stdout ?? Buffer.alloc(0), stderr = child.stderr ?? Buffer.alloc(0);
+const text = stdout.toString('utf8');
+const tests = Number(text.match(/^# tests (\d+)$/m)?.[1] ?? 0);
+const pass = Number(text.match(/^# pass (\d+)$/m)?.[1] ?? 0);
+const fail = Number(text.match(/^# fail (\d+)$/m)?.[1] ?? 0);
+const receipt = { kind: 'MemoryOSReadinessPublicationInspectionFocusedReceipt', version: '1.0.0',
+  finishedAt: new Date().toISOString(), elapsedMs: Math.round((performance.now() - started) * 1000) / 1000,
+  status: child.status, signal: child.signal, error: child.error ? { code: child.error.code, message: child.error.message } : null,
+  tests, pass, fail, result: !child.error && child.status === 0 && tests === 24 && pass === 24 && fail === 0 ? 'PASS' : 'FAIL',
+  logs: [write('stdout.txt', stdout), write('stderr.txt', stderr)] };
+write('receipt.json', Buffer.from(JSON.stringify(receipt, null, 2) + '\n'));
+process.stdout.write(JSON.stringify(receipt) + '\n');
+if (receipt.result !== 'PASS') process.exitCode = 1;

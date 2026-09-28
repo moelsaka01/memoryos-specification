@@ -14,6 +14,7 @@ import { parseCliArgs, validateLaunch } from '../../memoryos-readiness/src/cli-a
 import { encodeHelperRequest, decodeHelperRequest, encodeHelperResponse, decodeHelperResponse,
   validateHelperRequest, createHelperSequence } from '../../memoryos-readiness/src/helper-protocol.mjs';
 import { createPublication, stagePublication, finalizePublication } from '../../memoryos-readiness/src/publication.mjs';
+import { fixtureInspection, fixtureInspect, fixtureSession, syntheticChain, fixtureRequest } from '../tools/mo1307-phase2c-correction/publication-fixture.mjs';
 
 const cwd = fileURLToPath(new URL('../../../', import.meta.url));
 const packageRoot = path.join(cwd, 'repositories', 'memoryos-readiness');
@@ -42,20 +43,20 @@ function request(sequence = 1, command = 'evaluate') {
     : sequence === 2 ? [file('candidate', D.limits.candidateBytes), file('manifest', D.limits.manifestBytes)]
       : sequence === 3 ? [file('evidence', D.limits.rawSourceBytes)]
         : command === 'verify' ? [file('result', D.limits.resultBytes, 'result')] : [];
-  return { kind: 'MemoryOSReadinessHelperRequest', version: '1.0.0', sequence,
+  return { kind: 'MemoryOSReadinessHelperRequest', version: '2.0.0', session: fixtureSession, sequence,
     operation: sequence === 4 && command === 'evaluate' ? 'CHECK_OUTPUT' : 'READ_SET',
     roots: sequence === 4 ? [{ id: command === 'evaluate' ? 'output' : 'result', path: 'C:\\Output' }] : roots,
     files };
 }
 function errorResponse(req, error = 'MO1307_INTERNAL') {
-  return { kind: 'MemoryOSReadinessHelperResponse', version: '1.0.0', sequence: req.sequence,
+  return { kind: 'MemoryOSReadinessHelperResponse', version: '2.0.0', session: req.session, sequence: req.sequence,
     operation: req.operation, status: 'ERROR', code: error, roots: [], files: [] };
 }
 function successResponse(req, bytes = Buffer.from('x')) {
-  return { kind: 'MemoryOSReadinessHelperResponse', version: '1.0.0', sequence: req.sequence,
+  return { kind: 'MemoryOSReadinessHelperResponse', version: '2.0.0', session: req.session, sequence: req.sequence,
     operation: req.operation, status: req.operation === 'READ_SET' ? 'OK' : 'ABSENT', code: null,
     roots: req.operation === 'READ_SET' ? req.roots.map(root => ({ id: root.id, identity: identity(root.path, true) }))
-      : [{ id: 'output-parent', identity: identity('C:\\', true) }],
+      : [{ id: 'output-parent', chain: syntheticChain('C:\\') }],
     files: req.files.map(file => {
       const root = req.roots.find(root => root.id === file.root);
       const encoded = bytes.toString('base64');
@@ -164,14 +165,16 @@ test('N11 helper sorted explicit allowlist path and per-file boundaries', () => 
   const swapped = request(); swapped.files.reverse(); code(() => validateHelperRequest(swapped), 'INPUT');
   const alias = request(); alias.files[1].path = 'AUTHORITY.json'; code(() => validateHelperRequest(alias), 'FILESYSTEM_BOUNDARY');
 });
-test('N12 four serial helper requests disallow overlap fifth request and retry', () => {
-  const sequence = createHelperSequence('evaluate');
+test('N12 acquisition needs four serial exits and invalid overlap or retry is terminal', () => {
+  const sequence = createHelperSequence('evaluate', { session: fixtureSession });
   for (let step = 1; step <= 4; step++) {
     const req = request(step); sequence.begin(req);
-    code(() => sequence.begin(req), 'INPUT'); sequence.complete(encodeHelperResponse(successResponse(req), req));
+    sequence.complete(encodeHelperResponse(successResponse(req), req)); sequence.helperExited();
   }
   code(() => sequence.begin(request(4)), 'INPUT');
-  const failed = createHelperSequence('verify'); const first = request(); failed.begin(first);
+  const overlap = createHelperSequence('evaluate', { session: fixtureSession }); const first = request(); overlap.begin(first);
+  code(() => overlap.begin(first), 'INPUT'); code(() => overlap.complete(encodeHelperResponse(successResponse(first), first)), 'INPUT');
+  const failed = createHelperSequence('verify', { session: fixtureSession }); failed.begin(first);
   failed.complete(encodeHelperResponse(errorResponse(first), first)); code(() => failed.begin(request(2)), 'INPUT');
 });
 test('N13 helper response exact snapshot identity and base64 validation', () => {
@@ -192,7 +195,8 @@ test('N14 helper decoded aggregate boundary and +1', () => {
 });
 test('N15 native fixed PowerShell protocol guard and sanitization', () => {
   const slashRoot = request(1); slashRoot.roots[0].path = 'C:/Input';
-  for (const req of [slashRoot, request(2), request(3), request(4), request(4, 'verify')]) {
+  for (const req of [slashRoot, request(2), request(3), request(4), request(4, 'verify'),
+    ...Array.from({ length: 5 }, (_, i) => fixtureRequest(i + 5))]) {
     const response = decodeHelperResponse(runHelper(encodeHelperRequest(req)), req);
     assert.equal(response.code, 'MO1307_INTERNAL'); assert.equal(response.status, 'ERROR');
     assert.deepEqual(response.files, []); assert.deepEqual(response.roots, []);
@@ -215,30 +219,15 @@ test('N17 native CLI emits only operational guard and no files', async () => {
   assert.equal(rejected.status, 10); assert.equal(JSON.parse(rejected.stderr).code, 'MO1307_USAGE');
 });
 
-// This test hook models already trusted native identities for owned ordinary
-// fixtures. Node stat is not claimed to establish all Windows reparse policy.
-async function fixtureInspect(root, relative) {
-  const full = relative === null ? root : resolveContained(root, relative);
-  const drive = path.parse(full).root;
-  const paths = [drive];
-  for (const part of full.slice(drive.length).split(path.sep).filter(Boolean)) paths.push(path.join(paths.at(-1), part));
-  const chain = [];
-  for (const item of paths) {
-    const stat = await fs.lstat(item, { bigint: true });
-    assert.equal(stat.isSymbolicLink(), false);
-    chain.push(identity(item, stat.isDirectory(), { fileId: stat.ino.toString(16).padStart(16, '0'),
-      volumeSerial: (stat.dev & 0xffffffffn).toString(16).padStart(8, '0'), byteLength: Number(stat.size), linkCount: Number(stat.nlink) }));
-  }
-  return chain;
-}
 async function outputRoot(name) {
   await fs.mkdir(attempt, { recursive: true });
   return path.join(attempt, name);
 }
 test('N18 publication exclusive create exact pending and single-file commit', async () => {
   const root = await outputRoot('commit'); const bytes = Buffer.from('{"phase":"foundation"}\n');
-  const token = await createPublication(root, { inspect: fixtureInspect });
-  await rejects(() => createPublication(root, { inspect: fixtureInspect }), 'OUTPUT');
+  const inspection = await fixtureInspection(root);
+  const token = await createPublication(root, { inspection });
+  await rejects(async () => createPublication(root, { inspection: await fixtureInspection(root) }), 'OUTPUT');
   await stagePublication(token, bytes);
   assert.deepEqual(await fs.readdir(root), ['memoryos-readiness-result.json.pending']);
   assert.deepEqual(await fs.readFile(path.join(root, 'memoryos-readiness-result.json.pending')), bytes);
@@ -248,7 +237,7 @@ test('N18 publication exclusive create exact pending and single-file commit', as
   await rejects(() => finalizePublication(token), 'OUTPUT');
 });
 test('N19 existing final destination never replaced and pending retained', async () => {
-  const root = await outputRoot('collision'); const token = await createPublication(root, { inspect: fixtureInspect });
+  const root = await outputRoot('collision'); const token = await createPublication(root, { inspection: await fixtureInspection(root) });
   await stagePublication(token, Buffer.from('{}\n'));
   const final = path.join(root, 'memoryos-readiness-result.json'); await fs.writeFile(final, 'existing');
   await rejects(() => finalizePublication(token), 'OUTPUT');
@@ -257,36 +246,37 @@ test('N19 existing final destination never replaced and pending retained', async
   await rejects(() => finalizePublication(token), 'OUTPUT');
 });
 test('N20 pending collision and mutation fail closed without cleanup', async () => {
-  const root = await outputRoot('pending-collision'); const token = await createPublication(root, { inspect: fixtureInspect });
+  const root = await outputRoot('pending-collision'); const token = await createPublication(root, { inspection: await fixtureInspection(root) });
   const pending = path.join(root, 'memoryos-readiness-result.json.pending'); await fs.writeFile(pending, 'retained');
   await rejects(() => stagePublication(token, Buffer.from('{}\n')), 'OUTPUT'); assert.equal(await fs.readFile(pending, 'utf8'), 'retained');
-  const second = await outputRoot('mutation'); const other = await createPublication(second, { inspect: fixtureInspect });
+  const second = await outputRoot('mutation'); const other = await createPublication(second, { inspection: await fixtureInspection(second) });
   await stagePublication(other, Buffer.from('{}\n')); await fs.writeFile(path.join(second, 'memoryos-readiness-result.json.pending'), '[]\n');
   await rejects(() => finalizePublication(other), 'OUTPUT');
   assert.deepEqual(await fs.readdir(second), ['memoryos-readiness-result.json.pending']);
 });
 test('N21 publication byte ceiling boundary and +1 before write', async () => {
-  const root = await outputRoot('ceiling'); const token = await createPublication(root, { inspect: fixtureInspect });
+  const root = await outputRoot('ceiling'); const token = await createPublication(root, { inspection: await fixtureInspection(root) });
   await stagePublication(token, Buffer.alloc(D.limits.resultBytes, 0x61));
   assert.equal((await fs.stat(path.join(root, 'memoryos-readiness-result.json.pending'))).size, D.limits.resultBytes);
-  const largeRoot = await outputRoot('oversize'); const large = await createPublication(largeRoot, { inspect: fixtureInspect });
+  const largeRoot = await outputRoot('oversize'); const large = await createPublication(largeRoot, { inspection: await fixtureInspection(largeRoot) });
   await rejects(() => stagePublication(large, Buffer.alloc(D.limits.resultBytes + 1)), 'OUTPUT');
   assert.deepEqual(await fs.readdir(largeRoot), []);
 });
-test('N22 trusted identity hook required and identity change rejects', async () => {
+test('N22 branded framed inspection required and identity change rejects', async () => {
   await rejects(() => createPublication(path.join(attempt, 'untrusted')), 'OUTPUT');
   const root = await outputRoot('identity-change'); let changed = false;
   const inspect = async (...values) => {
     const chain = await fixtureInspect(...values); if (changed) chain.at(-1).fileId = '000000000000ffff'; return chain;
   };
-  const token = await createPublication(root, { inspect }); changed = true;
+  const token = await createPublication(root, { inspection: await fixtureInspection(root, { inspect }) }); changed = true;
   await rejects(() => stagePublication(token, Buffer.from('{}\n')), 'OUTPUT'); assert.deepEqual(await fs.readdir(root), []);
 });
 test('N23 primitive late checkpoint prevents rename and retains pending', async () => {
   const root = await outputRoot('late'); let late = false;
-  const token = await createPublication(root, { inspect: fixtureInspect, checkpoint: () => {
+  const inspection = await fixtureInspection(root, { checkpoint: () => {
     if (late) throw new ReadinessError('TIMEOUT', 'PUBLICATION');
   } });
+  const token = await createPublication(root, { inspection });
   await stagePublication(token, Buffer.from('{}\n')); late = true;
   await rejects(() => finalizePublication(token), 'TIMEOUT'); assert.deepEqual(await fs.readdir(root), ['memoryos-readiness-result.json.pending']);
 });

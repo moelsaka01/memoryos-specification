@@ -1,0 +1,453 @@
+{
+  "kind": "MO1307PublicationGuardCharacterization",
+  "version": "1.0.0",
+  "campaign": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2c-correction/guard-characterization/attempt2/campaign.json",
+    "byteLength": 4459,
+    "sha256": "sha256:255aae32149097eea3a69b270681ded951690d51c059dd3cf1989855ed379aa0"
+  },
+  "runtime": {
+    "node": {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1304-phase3-toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "byteLength": 93580104,
+      "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32",
+      "version": "v24.21.0",
+      "platform": "win32",
+      "arch": "x64"
+    },
+    "powershell": {
+      "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "byteLength": 495616,
+      "sha256": "sha256:8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e",
+      "requiredVersionPrefix": "5.1.",
+      "version": "5.1.26100.9444"
+    }
+  },
+  "sourceBindings": [
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 12378,
+      "sha256": "sha256:d5a684bf72819b9f729fd70e1c2013a0b53455553646106e2bc364d2ac42481d"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17292,
+      "sha256": "sha256:c9ded466469d1291327a79071ec46dd199a9a9e6d1fe8af2f0dcbd449df5926e"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/constants.mjs",
+      "byteLength": 16791,
+      "sha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/canonical.mjs",
+      "byteLength": 6813,
+      "sha256": "sha256:b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/errors.mjs",
+      "byteLength": 1823,
+      "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "path": "repositories/memoryos-readiness/contracts/definitions.json",
+      "byteLength": 16555,
+      "sha256": "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c-correction/guard-characterization.mjs",
+      "byteLength": 9842,
+      "sha256": "sha256:408df2856cd0c8958541c0755151a9d697f321a1b34a508afc7a1e6599269f53"
+    }
+  ],
+  "startedAt": "2026-09-28T15:54:40.004Z",
+  "classification": "BOUNDED_FIXED_GUARD_STARTUP_AND_FRAMING_ONLY",
+  "invocations": [
+    {
+      "sequence": 1,
+      "operation": "READ_SET",
+      "session": "8b492e93f075173af2ed3b3f07ecd62bb272d09bd2661259e831895f1506957d",
+      "pid": 23104,
+      "request": {
+        "path": "01.request.bin",
+        "byteLength": 463,
+        "sha256": "sha256:0278df9243fea92c3f80186d7efb11b1febfc3ebe46db389f1d6bb188d5c3138"
+      },
+      "response": {
+        "path": "01.response.bin",
+        "byteLength": 242,
+        "sha256": "sha256:dfdb7d16bc38fe4d6d5cd6cd36b7c9bfb01162f8d053a5137c35d981e8000ccf"
+      },
+      "stderr": {
+        "path": "01.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "helperExitedBeforeNextLaunch": true,
+      "launchOffsetMs": 5.46569999999997,
+      "exitOffsetMs": 1985.1417,
+      "elapsedMs": 1979.676,
+      "aggregateActiveMs": 1979.676,
+      "result": "PASS",
+      "protocol": {
+        "closedFrame": true,
+        "matchingSequence": true,
+        "matchingSession": true,
+        "matchingOperation": true,
+        "status": "ERROR",
+        "code": "MO1307_INTERNAL"
+      }
+    },
+    {
+      "sequence": 2,
+      "operation": "READ_SET",
+      "session": "8b492e93f075173af2ed3b3f07ecd62bb272d09bd2661259e831895f1506957d",
+      "pid": 5044,
+      "request": {
+        "path": "02.request.bin",
+        "byteLength": 467,
+        "sha256": "sha256:c4c9de7524f7817cf06abedc18bd0bf792944dfaef45a225b0de842a5656d840"
+      },
+      "response": {
+        "path": "02.response.bin",
+        "byteLength": 242,
+        "sha256": "sha256:70f9eac59895be002d243b84f2bd9088724a5902c9804e77bb263179b9e13e91"
+      },
+      "stderr": {
+        "path": "02.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "helperExitedBeforeNextLaunch": true,
+      "launchOffsetMs": 1990.5073,
+      "exitOffsetMs": 3759.9184000000005,
+      "elapsedMs": 1769.4111000000003,
+      "aggregateActiveMs": 3749.0871,
+      "result": "PASS",
+      "protocol": {
+        "closedFrame": true,
+        "matchingSequence": true,
+        "matchingSession": true,
+        "matchingOperation": true,
+        "status": "ERROR",
+        "code": "MO1307_INTERNAL"
+      }
+    },
+    {
+      "sequence": 3,
+      "operation": "READ_SET",
+      "session": "8b492e93f075173af2ed3b3f07ecd62bb272d09bd2661259e831895f1506957d",
+      "pid": 17040,
+      "request": {
+        "path": "03.request.bin",
+        "byteLength": 392,
+        "sha256": "sha256:106a095de78a2af1963235756102e2ebd8b16024af4cdb5e506c549712e7f471"
+      },
+      "response": {
+        "path": "03.response.bin",
+        "byteLength": 242,
+        "sha256": "sha256:0d9ab934417c0dc598c4eb3b07c91f06553f3550561494cfdc896fc8dfed9184"
+      },
+      "stderr": {
+        "path": "03.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "helperExitedBeforeNextLaunch": true,
+      "launchOffsetMs": 3763.8873000000003,
+      "exitOffsetMs": 5116.360000000001,
+      "elapsedMs": 1352.4727000000003,
+      "aggregateActiveMs": 5101.559800000001,
+      "result": "PASS",
+      "protocol": {
+        "closedFrame": true,
+        "matchingSequence": true,
+        "matchingSession": true,
+        "matchingOperation": true,
+        "status": "ERROR",
+        "code": "MO1307_INTERNAL"
+      }
+    },
+    {
+      "sequence": 4,
+      "operation": "CHECK_OUTPUT",
+      "session": "8b492e93f075173af2ed3b3f07ecd62bb272d09bd2661259e831895f1506957d",
+      "pid": 11772,
+      "request": {
+        "path": "04.request.bin",
+        "byteLength": 324,
+        "sha256": "sha256:1a1ff7f01ccaeed834954ac703b08066c275a55a1f11e06bbccd9945d434bf1d"
+      },
+      "response": {
+        "path": "04.response.bin",
+        "byteLength": 246,
+        "sha256": "sha256:436f38578c45f32da3c86b5e4313d6c6221cf0031c7fb97ea664942e2d96af88"
+      },
+      "stderr": {
+        "path": "04.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "helperExitedBeforeNextLaunch": true,
+      "launchOffsetMs": 5118.9337000000005,
+      "exitOffsetMs": 6260.9835,
+      "elapsedMs": 1142.0497999999998,
+      "aggregateActiveMs": 6243.609600000001,
+      "result": "PASS",
+      "protocol": {
+        "closedFrame": true,
+        "matchingSequence": true,
+        "matchingSession": true,
+        "matchingOperation": true,
+        "status": "ERROR",
+        "code": "MO1307_INTERNAL"
+      }
+    },
+    {
+      "sequence": 5,
+      "operation": "CHECK_OUTPUT",
+      "session": "8b492e93f075173af2ed3b3f07ecd62bb272d09bd2661259e831895f1506957d",
+      "pid": 21112,
+      "request": {
+        "path": "05.request.bin",
+        "byteLength": 324,
+        "sha256": "sha256:dc7bef819656c5bdd53ac2ff926f293de104d8cebd4601278eb3ff8a9865aa62"
+      },
+      "response": {
+        "path": "05.response.bin",
+        "byteLength": 246,
+        "sha256": "sha256:8205073479a95ce7eb97a1cdfca5030f7eff529370745fde6877e40587f3f82f"
+      },
+      "stderr": {
+        "path": "05.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "helperExitedBeforeNextLaunch": true,
+      "launchOffsetMs": 6264.7816,
+      "exitOffsetMs": 7448.610900000001,
+      "elapsedMs": 1183.8293000000003,
+      "aggregateActiveMs": 7427.438900000001,
+      "result": "PASS",
+      "protocol": {
+        "closedFrame": true,
+        "matchingSequence": true,
+        "matchingSession": true,
+        "matchingOperation": true,
+        "status": "ERROR",
+        "code": "MO1307_INTERNAL"
+      }
+    },
+    {
+      "sequence": 6,
+      "operation": "INSPECT_OUTPUT_ROOT",
+      "session": "8b492e93f075173af2ed3b3f07ecd62bb272d09bd2661259e831895f1506957d",
+      "pid": 25160,
+      "request": {
+        "path": "06.request.bin",
+        "byteLength": 331,
+        "sha256": "sha256:a861f125ce3608db2328330061fdbcbd47eda5d5be4bcf2da58a138252af191a"
+      },
+      "response": {
+        "path": "06.response.bin",
+        "byteLength": 253,
+        "sha256": "sha256:1961963cae0954f6ff9be49e5590e5e874cd1594e8e5eb1d7fdf5bcfc02d71d2"
+      },
+      "stderr": {
+        "path": "06.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "helperExitedBeforeNextLaunch": true,
+      "launchOffsetMs": 7466.611900000001,
+      "exitOffsetMs": 8727.522599999998,
+      "elapsedMs": 1260.9106999999985,
+      "aggregateActiveMs": 8688.3496,
+      "result": "PASS",
+      "protocol": {
+        "closedFrame": true,
+        "matchingSequence": true,
+        "matchingSession": true,
+        "matchingOperation": true,
+        "status": "ERROR",
+        "code": "MO1307_INTERNAL"
+      }
+    },
+    {
+      "sequence": 7,
+      "operation": "CHECK_STAGE_ROOT",
+      "session": "8b492e93f075173af2ed3b3f07ecd62bb272d09bd2661259e831895f1506957d",
+      "pid": 18564,
+      "request": {
+        "path": "07.request.bin",
+        "byteLength": 328,
+        "sha256": "sha256:e002c76eabff25ba2157c6b24c5d25b5bcd0ebc9230b7d5b3fe55c9ac4c7bb24"
+      },
+      "response": {
+        "path": "07.response.bin",
+        "byteLength": 250,
+        "sha256": "sha256:3d92314be2715f156e04edd8bdb7354ec0c899ea59b3598a50bbf973846c38d7"
+      },
+      "stderr": {
+        "path": "07.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "helperExitedBeforeNextLaunch": true,
+      "launchOffsetMs": 8730.7595,
+      "exitOffsetMs": 10091.8177,
+      "elapsedMs": 1361.0581999999995,
+      "aggregateActiveMs": 10049.407799999999,
+      "result": "PASS",
+      "protocol": {
+        "closedFrame": true,
+        "matchingSequence": true,
+        "matchingSession": true,
+        "matchingOperation": true,
+        "status": "ERROR",
+        "code": "MO1307_INTERNAL"
+      }
+    },
+    {
+      "sequence": 8,
+      "operation": "INSPECT_PENDING",
+      "session": "8b492e93f075173af2ed3b3f07ecd62bb272d09bd2661259e831895f1506957d",
+      "pid": 20936,
+      "request": {
+        "path": "08.request.bin",
+        "byteLength": 327,
+        "sha256": "sha256:d5dca89d26e5127eb740431a608e2fb04f2f7a4f960309187a480502fed5c86f"
+      },
+      "response": {
+        "path": "08.response.bin",
+        "byteLength": 249,
+        "sha256": "sha256:85ef3f02aac8601b51388891b0e6d7333a27285724e002aeff8275db5405fd13"
+      },
+      "stderr": {
+        "path": "08.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "helperExitedBeforeNextLaunch": true,
+      "launchOffsetMs": 10094.0019,
+      "exitOffsetMs": 11157.1004,
+      "elapsedMs": 1063.0985,
+      "aggregateActiveMs": 11112.5063,
+      "result": "PASS",
+      "protocol": {
+        "closedFrame": true,
+        "matchingSequence": true,
+        "matchingSession": true,
+        "matchingOperation": true,
+        "status": "ERROR",
+        "code": "MO1307_INTERNAL"
+      }
+    },
+    {
+      "sequence": 9,
+      "operation": "CHECK_FINALIZATION",
+      "session": "8b492e93f075173af2ed3b3f07ecd62bb272d09bd2661259e831895f1506957d",
+      "pid": 23196,
+      "request": {
+        "path": "09.request.bin",
+        "byteLength": 330,
+        "sha256": "sha256:99bf66c368d20548c2cc1a13f020d80c6727099b4f706613b7312ecbd1c64a64"
+      },
+      "response": {
+        "path": "09.response.bin",
+        "byteLength": 252,
+        "sha256": "sha256:a2e9f9048899ebcc4e1dcfba22abf7c9922c605e4d6550db00c60b8e69a5a129"
+      },
+      "stderr": {
+        "path": "09.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "helperExitedBeforeNextLaunch": true,
+      "launchOffsetMs": 11164.3429,
+      "exitOffsetMs": 12268.1081,
+      "elapsedMs": 1103.7651999999998,
+      "aggregateActiveMs": 12216.271499999999,
+      "result": "PASS",
+      "protocol": {
+        "closedFrame": true,
+        "matchingSequence": true,
+        "matchingSession": true,
+        "matchingOperation": true,
+        "status": "ERROR",
+        "code": "MO1307_INTERNAL"
+      }
+    }
+  ],
+  "result": "PASS",
+  "nativeAcquisition": false,
+  "nativeHandleCertification": false,
+  "consoleProcessProof": false,
+  "successfulAssessmentLifecycle": false,
+  "workersStarted": 0,
+  "maxConcurrentSpawnedGuards": 1,
+  "processTopologyCertified": false,
+  "network": false,
+  "retries": 0,
+  "previousSemanticCharacterizationRetained": true,
+  "limitation": "Each guard invocation independently validates one framed request then rejects with MO1307_INTERNAL. ERROR is terminal in a real assessment; these nine independent measurements are not a successful nine-state lifecycle. No supplied path is acquired and no identity is fabricated.",
+  "metadataProbe": {
+    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-Command",
+      "$PSVersionTable.PSVersion.ToString()"
+    ],
+    "exit": 0,
+    "error": null,
+    "stdout": {
+      "path": "powershell-version.stdout.txt",
+      "byteLength": 16,
+      "sha256": "sha256:20e955843dca875613392595b8b605fe7c7ddeb5dd374f8eea4f6f2820fcf270"
+    },
+    "stderr": {
+      "path": "powershell-version.stderr.txt",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "seriesWallMs": 12269.5541,
+  "aggregateHelperActiveMs": 12216.271499999999,
+  "finishedAt": "2026-09-28T15:54:52.905Z"
+}

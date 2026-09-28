@@ -2,6 +2,12 @@
 
 Status: **CONTRACT FREEZE 1 ESTABLISHED / PHASE 1 NEXT**.
 
+**Authoritative Phase 2C publication inspection correction:** the historical
+status above describes the original Freeze task. The later
+[publication inspection correction](mo1307-phase2c-publication-inspection-correction.md)
+supersedes only the private helper/publication rules marked below. All other
+Freeze semantics and historical task boundaries remain unchanged.
+
 ## 1. Authority, baseline and scope
 
 This document freezes `memoryos.readiness` version `1.0.0`. MUST, MUST NOT and
@@ -106,8 +112,9 @@ to be zero. No direct business-policy PASS requirement is introduced in v1.
 | Contract | `memoryos.readiness@1.0.0` |
 | Profiles | `rest@1.0.0`, `cicd@1.0.0` only |
 | Gate/claim/qualification contracts | `1.0.0` each |
-| Every new record kind in this document | Independent `version:"1.0.0"` |
+| Every new semantic record kind in this document | Independent `version:"1.0.0"`; private helper wire exception below |
 | Human-decision record | `MemoryOSReadinessHumanDecision@1.0.0` |
+| Private helper wire protocol | `2.0.0`, authoritative Phase 2C publication inspection correction; semantic records remain `1.0.0` |
 
 These identifiers are independent of MemoryOS semantic versions, SDK/CLI
 versions and package versions even where version strings coincide. Unknown
@@ -1094,18 +1101,46 @@ concurrent attacker. The same helper validates output destination identities;
 publication occurs only in an exclusively created directory. Helpers never
 receive secrets or evaluate evidence as commands. Fixed argument arrays,
 encoded bounded protocol and trusted script bytes prevent shell injection.
-Private helper stdin is a framed JSON protocol, not public stdin input. Request
-frames are <=65,536 bytes and contain only operation READ_SET or CHECK_OUTPUT,
-explicit root capabilities, sorted logical IDs/relative paths and byte caps.
-Response frames are <=16,777,216 bytes, with only checked identity/status and
-base64 snapshots for READ_SET, or boundary status for CHECK_OUTPUT. No returned
-message or code is executed. At most four helper requests per CLI invocation, in this order:
-(1) config and authority; (2) candidate and manifest paths learned from the
-validated config; (3) manifest files; (4) result/decision for verify, or
-CHECK_OUTPUT for evaluate. Each READ_SET uses only its explicit allowlist;
-the helper does not discover paths or parse product configuration. Requests execute serially; no response may exceed its per-file
-or aggregate decoded caps. Exact private field names/framing implementation
-are non-public details; these operations, authority and bounds are fixed.
+**Authoritative Phase 2C publication inspection correction.** Private helper
+stdin remains framed JSON, not public stdin. Each fresh invocation of the same
+fixed helper accepts exactly one request frame then stdin EOF and emits exactly
+one response frame then stdout EOF. Request/response ceilings, including their
+four-byte big-endian length prefix, remain 65,536 / 16,777,216 bytes. The body
+is exact J. Private wire version is now 2.0.0, with a required fresh per-assessment
+session of 64 lowercase hex characters echoed with the exact global sequence
+and operation. Unknown fields/operations/versions, wrong session/sequence,
+extra/trailing frames and noncanonical bytes reject; no 1.0.0 fallback exists.
+
+Slots 1-4 retain their order and acquisition meaning: (1) config/authority;
+(2) candidate/manifest paths learned from validated config; (3) explicit
+manifest files; (4) result/decision for verify, or CHECK_OUTPUT for evaluate.
+CHECK_OUTPUT now returns ABSENT with the complete drive-through-output-parent
+identity chain, never an identity for an absent object. All READ_SET allowlists,
+snapshots and decoded limits remain unchanged; output is not a READ_SET root.
+
+After those helpers and the sole evaluation worker have terminated, evaluate
+uses exactly five additional serial slots: (5) CHECK_OUTPUT immediately before
+exclusive mkdir; (6) INSPECT_OUTPUT_ROOT after mkdir; (7) CHECK_STAGE_ROOT before
+pending creation; (8) INSPECT_PENDING after writing/verifying/closing pending;
+(9) CHECK_FINALIZATION after the final exact-byte reread/close and before the
+final checkpoint/rename. Slots 5-9 carry exactly the captured output-root
+capability and zero files. Pending/final basenames are fixed, never request
+parameters. Slot 9 supplies the full stable pending chain, including root,
+and native final-destination absence. Complete chains are at most 120 unchanged
+Identity records and must match the exact path-derived components. Parent,
+root and pending identities must remain stable across their observations.
+
+Successful evaluate has nine helper invocations/requests; successful verify has
+four; each invocation has exactly one request. Failures stop earlier, with no
+retry, skipped/repeated slot or open-ended loop. A private branded sequence
+enforces acquisition, confirmed helper exit, worker start/termination and
+publication phases. A branded single-use publication inspection capability
+binds the sequence, immutable root and byte transport; caller-supplied identities
+or arbitrary inspect callbacks cannot supply native authority. The correction
+document freezes exact request/response records, operation/status/chain mapping,
+cross-slot comparisons and capability/token transitions. No returned message
+or code is executed and no extra path, command or filesystem write authority is
+granted to the helper.
 
 Network is zero in core, CLI, helper and verification. External acquisition and
 human attestation happen before invocation. No provider API, URL fetching,
@@ -1119,7 +1154,10 @@ they do not claim to undo code preloaded before trusted launch.
 
 The CLI has one supervisor and at most one active helper process plus its
 Windows console host (three attributable OS processes total), with no overlap
-between helper acquisition and evaluation worker. Evaluation uses one Node
+between any helper and the evaluation worker or between helper invocations.
+Confirmed helper/console termination and bounded transport EOF are required
+before the next helper or worker; a response frame alone is insufficient.
+Evaluation uses one Node
 worker thread with fixed resource limits, not another process. No SDK runtime
 closure, provider SDK or arbitrary child executable is invoked. Resource and
 deadline failures cannot be relaxed by retrying inside a call.
@@ -1156,6 +1194,9 @@ all raw campaigns. Limits give bounded headroom for envelopes plus that scale.
 | Overall CLI invocation deadline | 30,000 ms |
 | Pure API call deadline | 10,000 ms |
 | One helper request / helper duration | 128 paths / 5,000 ms within overall deadline |
+| Aggregate helper-active duration, authoritative Phase 2C correction | 20,000 ms across all helper invocations; startup through confirmed process/console/transport quiescence |
+| Helper requests/invocations, authoritative Phase 2C correction | Evaluate 9 / verify 4; one request per invocation, no retries |
+| Native inspection chain, authoritative Phase 2C correction | At most 120 identities, exact complete path-derived chain |
 | Cancellation/termination cleanup allowance | 2,000 ms; never a success grace period |
 
 Byte limits are checked with cap+1 bounded reads before parsing/copying.
@@ -1177,6 +1218,18 @@ acquisition; the API deadline starts at public function entry before input
 snapshot copying. The CLI uses the remaining 30-second overall budget and a
 10-second evaluation sub-budget, whichever ends first. Input copying/parsing
 must remain bounded and wrapper checkpoints reject already-expired work.
+
+**Authoritative Phase 2C publication inspection correction:** the 5,000 ms
+helper ceiling is per one-frame invocation. A new explicit 20,000 ms aggregate
+helper-active ceiling preserves the original four-times-5,000 upper bound;
+nine requests do not receive nine independent budgets beyond that aggregate.
+For helper start S, prior helper-active elapsed used, and absolute CLI deadline
+D, its effective deadline is min(D, S+5,000, S+(20,000-used)). Active elapsed
+includes startup, inspection, framing/EOF waits and confirmed helper/console
+termination. It excludes periods when all helpers are gone, including worker
+execution; those periods still consume the unchanged overall CLI deadline.
+No phase resets used. Exhausting either helper ceiling is terminal TIMEOUT;
+cleanup is not success time. API, CLI, evaluation and cleanup limits are unchanged.
 
 Deadlines use an operational monotonic clock outside the pure evaluation
 function. A supervisor timer plus worker isolation prevents a same-thread timer
@@ -1281,6 +1334,19 @@ cleanup or failed-attempt deletion. Later manual retention management is outside
 the evaluator. A publication failure after computation returns OUTPUT and no
 success summary. A subsequent stdout failure also returns OUTPUT; if a complete
 file was already committed, retain it and never mislabel it partial or delete it.
+
+**Authoritative Phase 2C publication inspection correction:** native publication
+observations use section 17 slots 5-9 through the same fixed helper and a
+branded single-use inspection capability. createPublication binds the fresh
+parent/created-root chains; stagePublication binds the refreshed root and
+newly created pending chain; finalizePublication rereads/closes exact bytes,
+then obtains the stable full pending/root chain and native final absence before
+the deadline/cancellation checkpoint and rename. The opaque token remains
+private and single-use. Mandatory checkpoints surround each inspection and
+precede filesystem mutations. No Node stat/lstat or prior parent observation
+substitutes for native checks of newly created objects. The private immutable-root
+precondition and committed-output behavior remain unchanged. Verify never
+creates a publication capability or republishes a normative result.
 
 ## 20. Normative vectors and security negatives
 

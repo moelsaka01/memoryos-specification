@@ -1,0 +1,576 @@
+{
+  "kind": "MO1307Phase2CStreamCompatibility",
+  "version": "1.0.0",
+  "stream": "2b",
+  "baseline": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+  "commit": "b2877ab32c317bb67896414ba9cec64f6f436ca5",
+  "classification": "UNCHANGED_REUSABLE",
+  "result": "PASS",
+  "sourceWorktree": {
+    "path": "C:/Users/melsa/Documents/Codex/cca-mo1307-2b",
+    "before": {
+      "head": "b2877ab32c317bb67896414ba9cec64f6f436ca5",
+      "parent": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+      "status": ""
+    },
+    "after": {
+      "head": "b2877ab32c317bb67896414ba9cec64f6f436ca5",
+      "parent": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+      "status": ""
+    },
+    "modified": false
+  },
+  "runtime": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "snapshot": {
+    "path": ".cache/mo1307/phase2c-correction/compatibility/attempt1/2b",
+    "files": 671,
+    "sha256": "sha256:483103ab283464b8854f4fa5707d1c92ea7b0359e49eedbf0ac92bb94f3c236a"
+  },
+  "overlay": [
+    {
+      "path": "repositories/memoryos-readiness/contracts/definitions.json",
+      "byteLength": 16555,
+      "sha256": "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e",
+      "previousSha256": "sha256:6c806bf6af4a415135897d2337a98d92a212229abb407d5a871ed401f9f4b8f3",
+      "changed": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/constants.mjs",
+      "byteLength": 16791,
+      "sha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9",
+      "previousSha256": "sha256:d804625278a6c9b4e81437b822994532b8f8b09582db8f73ec74bfaf08f2c0f3",
+      "changed": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17117,
+      "sha256": "sha256:cc44f646c1d6a3da807198620c90d6a8e9b28ffd84cf4123f713902ec5c06d10",
+      "previousSha256": "sha256:f901242f66686d0aead915f4f9b939cb1c2105196d9843cea45e5f5f8aca1a4d",
+      "changed": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 6742,
+      "sha256": "sha256:aa339348415aadab6f331da18ea5c20f4901e43c98b20c4df0123ce2ad674579",
+      "previousSha256": "sha256:8c9d4d46dddf1ba6ebdd419f25991519ca49fdb55b855ffe057b00f2da083dfb",
+      "changed": true
+    }
+  ],
+  "definitionCheck": {
+    "changes": [
+      {
+        "path": "limits.helperAggregateDeadlineMs",
+        "before": null,
+        "after": 20000
+      },
+      {
+        "path": "limits.helperChainComponents",
+        "before": null,
+        "after": 120
+      },
+      {
+        "path": "limits.helperRequests",
+        "before": 4,
+        "after": 9
+      },
+      {
+        "path": "limits.helperVerifyRequests",
+        "before": null,
+        "after": 4
+      },
+      {
+        "path": "topology.helperOperations",
+        "before": [
+          "READ_SET",
+          "CHECK_OUTPUT"
+        ],
+        "after": [
+          "READ_SET",
+          "CHECK_OUTPUT",
+          "INSPECT_OUTPUT_ROOT",
+          "CHECK_STAGE_ROOT",
+          "INSPECT_PENDING",
+          "CHECK_FINALIZATION"
+        ]
+      },
+      {
+        "path": "topology.helperRequests",
+        "before": 4,
+        "after": 9
+      },
+      {
+        "path": "topology.helperVerifyRequests",
+        "before": null,
+        "after": 4
+      },
+      {
+        "path": "topology.publicationOperations",
+        "before": null,
+        "after": [
+          "CHECK_OUTPUT",
+          "INSPECT_OUTPUT_ROOT",
+          "CHECK_STAGE_ROOT",
+          "INSPECT_PENDING",
+          "CHECK_FINALIZATION"
+        ]
+      }
+    ],
+    "unchangedSemanticDefinitionsSha256": "sha256:970f6ae3eac193d9eb58add75a322a224d919644c2eec29a7b6018b10f469f7c",
+    "preservedTopology": [
+      "acquisitionStages",
+      "concurrentHelpers",
+      "evaluationWorkers",
+      "helperEnvironment",
+      "network",
+      "possibleConsoleHosts",
+      "supervisors",
+      "totalProcesses"
+    ]
+  },
+  "pureClosure": {
+    "members": [
+      "canonical.mjs",
+      "constants.mjs",
+      "errors.mjs",
+      "evidence-graph.mjs",
+      "evidence-history.mjs",
+      "evidence-verifier.mjs",
+      "foundation.mjs",
+      "schema-data.mjs",
+      "schema.mjs",
+      "windows-paths.mjs"
+    ],
+    "builtins": [
+      "node:crypto",
+      "node:path"
+    ],
+    "imports": [
+      {
+        "from": "canonical.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "canonical.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "canonical.mjs",
+        "to": "node:crypto"
+      },
+      {
+        "from": "errors.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "evidence-graph.mjs",
+        "to": "./canonical.mjs"
+      },
+      {
+        "from": "evidence-graph.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "evidence-graph.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "evidence-graph.mjs",
+        "to": "./foundation.mjs"
+      },
+      {
+        "from": "evidence-graph.mjs",
+        "to": "./schema.mjs"
+      },
+      {
+        "from": "evidence-history.mjs",
+        "to": "./canonical.mjs"
+      },
+      {
+        "from": "evidence-history.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "evidence-history.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "evidence-history.mjs",
+        "to": "./foundation.mjs"
+      },
+      {
+        "from": "evidence-history.mjs",
+        "to": "./schema.mjs"
+      },
+      {
+        "from": "evidence-verifier.mjs",
+        "to": "./canonical.mjs"
+      },
+      {
+        "from": "evidence-verifier.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "evidence-verifier.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "evidence-verifier.mjs",
+        "to": "./evidence-graph.mjs"
+      },
+      {
+        "from": "evidence-verifier.mjs",
+        "to": "./evidence-history.mjs"
+      },
+      {
+        "from": "evidence-verifier.mjs",
+        "to": "./foundation.mjs"
+      },
+      {
+        "from": "evidence-verifier.mjs",
+        "to": "./schema.mjs"
+      },
+      {
+        "from": "foundation.mjs",
+        "to": "./canonical.mjs"
+      },
+      {
+        "from": "foundation.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "foundation.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "foundation.mjs",
+        "to": "./schema.mjs"
+      },
+      {
+        "from": "foundation.mjs",
+        "to": "./windows-paths.mjs"
+      },
+      {
+        "from": "schema.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "schema.mjs",
+        "to": "./schema-data.mjs"
+      },
+      {
+        "from": "windows-paths.mjs",
+        "to": "./constants.mjs"
+      },
+      {
+        "from": "windows-paths.mjs",
+        "to": "./errors.mjs"
+      },
+      {
+        "from": "windows-paths.mjs",
+        "to": "node:path"
+      }
+    ]
+  },
+  "effectiveSources": [
+    {
+      "path": "repositories/memoryos-readiness/src/canonical.mjs",
+      "byteLength": 6813,
+      "sha256": "sha256:b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/cli-args.mjs",
+      "byteLength": 4280,
+      "sha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/constants.mjs",
+      "byteLength": 16791,
+      "sha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/errors.mjs",
+      "byteLength": 1823,
+      "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/evidence-graph.mjs",
+      "byteLength": 10839,
+      "sha256": "sha256:cc8a353da76fef3c8610085c6b0237021cdfedb4879d5bfe3ad4ae749166673c"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/evidence-history.mjs",
+      "byteLength": 13155,
+      "sha256": "sha256:16c5377d07bbc894f8aaa26495e7f215e5a2d2b80b73fdf36254393a7e7769bc"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/evidence-verifier.mjs",
+      "byteLength": 17846,
+      "sha256": "sha256:684d088b6578f463a7ed1b6e40cde63ec5de2bf039458050b9ebce4494ded3a0"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/foundation.mjs",
+      "byteLength": 22098,
+      "sha256": "sha256:19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17117,
+      "sha256": "sha256:cc44f646c1d6a3da807198620c90d6a8e9b28ffd84cf4123f713902ec5c06d10"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/index.mjs",
+      "byteLength": 1459,
+      "sha256": "sha256:81873bc18abb792dbe12214a183f96adfba3a02173e81a7033052d52843d5330"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/projections.mjs",
+      "byteLength": 2750,
+      "sha256": "sha256:43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 6742,
+      "sha256": "sha256:aa339348415aadab6f331da18ea5c20f4901e43c98b20c4df0123ce2ad674579"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/schema-data.mjs",
+      "byteLength": 98556,
+      "sha256": "sha256:467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/schema.mjs",
+      "byteLength": 4308,
+      "sha256": "sha256:9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    }
+  ],
+  "tests": {
+    "command": {
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1304-phase3-toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "repositories/cca-conformance/tests/mo1307_phase2b_authority_test.mjs",
+        "repositories/cca-conformance/tests/mo1307_phase2b_fixture_lineage_test.mjs",
+        "repositories/cca-conformance/tests/mo1307_phase2b_graph_test.mjs",
+        "repositories/cca-conformance/tests/mo1307_phase2b_history_test.mjs",
+        "repositories/cca-conformance/tests/mo1307_phase2b_limits_test.mjs",
+        "repositories/cca-conformance/tests/mo1307_phase2b_projection_test.mjs",
+        "repositories/cca-conformance/tests/mo1307_phase2b_review_test.mjs"
+      ]
+    },
+    "exit": 0,
+    "error": null,
+    "counts": {
+      "tests": 172,
+      "pass": 172,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "testNames": [
+      "A01 all sixteen frozen bundles produce only verified claims and exact independent graph/audit identities",
+      "A02 operator authority pin is separate and rejects an independently wrong trust root",
+      "A03 an evidence-controlled authority mutation cannot select its own new pin",
+      "A04 raw source bytes and raw length are verified independently of intact claim identity",
+      "A05 raw manifest identity and envelope hash cannot be repaired by a self-consistent claim hash",
+      "A06 exact canonical claim digest is recomputed under an intact reviewed envelope grant",
+      "A07 ungranted external evidence cannot satisfy a gate",
+      "A08 unknown evidence type and evidence version fail closed",
+      "A09 granting the wrong existing claim for a compiled gate is rejected",
+      "A10 exact grant source IDs cannot substitute or omit the envelope lineage",
+      "A11 source bytes cannot appoint themselves as authority provenance",
+      "A12 authority source Git fields, classification, length, hash and released target bind exactly",
+      "A13 candidate, manifest and independently reviewed component/contract closures cannot be substituted",
+      "A14 whole-candidate claims cannot use an earlier candidate root",
+      "A15 a manifest cannot relabel a claim origin or dependency identity",
+      "A16 declared dependency role, length and content are checked against the current inventory",
+      "A17 minimum dependency closure cannot omit any relevant current component",
+      "A18 changed declared grant closure and dangling dependency IDs reject rather than first-win",
+      "A19 scope escalation and unapproved/changed assumptions are stale",
+      "A20 unrelated root assumptions do not stale an approved claim subset",
+      "A21 selective reuse is explicit and unchanged dependencies retain their exact claims",
+      "A22 REUSED cannot conceal a whole-candidate claim",
+      "A23 old audit snapshots do not invent expiry and bounded disclosure remains mandatory",
+      "A24 permitted fresh raw metadata pins change proof audit but preserve normative projection",
+      "A25 duplicate IDs, copied normalized grants and unconsumed evidence fail closed",
+      "A26 explicit unavailable slots omit evidence safely and optional provider slots mirror the parent",
+      "A27 all admitted bytes are snapshots independent of subsequent caller mutations",
+      "A28 raw source byte ceiling admits exact boundary and rejects plus one",
+      "A29 explicit source and authority references cannot dangle",
+      "A30 canonical set orders remain normative and are never silently sorted by the verifier",
+      "A31 input map insertion and object member order do not affect verified canonical projection",
+      "A32 raw integrity failure wins over later root candidate mismatch",
+      "A33 an authority failure wins over a later structurally valid provider contradiction",
+      "A34 manifest file ceiling admits exactly 128 consumed files and rejects 129",
+      "A35 aggregate raw source admission accepts 8 MiB exactly and rejects one additional byte",
+      "A36 authority source ceiling admits 32 explicit provenance records and rejects 33",
+      "F01 MO-1306 preserved configuration receipts have exact granted source lineage",
+      "F02 correction preserves all normalized identities and every original raw source byte",
+      "F03 reconstructed original fixture still rejects unused configuration sources",
+      "G01 exact frozen graph, authority and audit bindings: could-not-evaluate",
+      "G01 exact frozen graph, authority and audit bindings: history-blocker-unavailable",
+      "G01 exact frozen graph, authority and audit bindings: informational-ready",
+      "G01 exact frozen graph, authority and audit bindings: metadata-only",
+      "G01 exact frozen graph, authority and audit bindings: mixed-precedence",
+      "G01 exact frozen graph, authority and audit bindings: mo1306-qualified",
+      "G01 exact frozen graph, authority and audit bindings: not-ready",
+      "G01 exact frozen graph, authority and audit bindings: post-tag-absent",
+      "G01 exact frozen graph, authority and audit bindings: post-tag-lightweight",
+      "G01 exact frozen graph, authority and audit bindings: post-tag-ready",
+      "G01 exact frozen graph, authority and audit bindings: post-tag-wrong-target",
+      "G01 exact frozen graph, authority and audit bindings: pre-tag-present",
+      "G01 exact frozen graph, authority and audit bindings: qualified",
+      "G01 exact frozen graph, authority and audit bindings: ready",
+      "G01 exact frozen graph, authority and audit bindings: rest-qualified",
+      "G01 exact frozen graph, authority and audit bindings: selective-reuse",
+      "G02 exactly six node and five edge types, one root, content sharing and origin provenance",
+      "G03 metadata and opaque historical cross-links cannot add normative authority or cycles",
+      "G04 missing normative claim, dependency, authority, grant and edge endpoints reject",
+      "G05 duplicate node IDs, duplicate edges, malformed content IDs and unknown types reject",
+      "G06 wrong edge direction, endpoint type, root and candidate identity reject",
+      "G07 every grant and claim must be rooted and every normative node reachable",
+      "G08 internal normative cycles and self references retain exact GRAPH_CYCLE classification",
+      "G09 dependency claims cannot mix current candidate and dependency edges",
+      "G10 graph nodes exactly 2048 pass and 2049 fail before expansion",
+      "G11 graph edges exactly 8192 pass and 8193 fail before expansion",
+      "G12 dependencies per claim exactly 1024 pass and 1025 fail",
+      "G13 derivation cannot silently drop or duplicate claims, grants or authorities",
+      "G14 claimed identity, dependency identity and candidate root mismatches reject",
+      "G15 normalized grant identity omits audit bytes, retains classes and scoped assumptions",
+      "G16 noncanonical normative array order rejects instead of silently changing identity",
+      "G17 derivation enforces the edge ceiling while expanding verified claim dependencies",
+      "G18 arbitrary object property insertion order preserves exact graph and authority bytes",
+      "HB01: all sixteen Phase 1 bundles preserve exact history, qualifications and independent provider projections",
+      "HB02: MO-1306 binds nineteen immutable raw rows and exact twelve negative history projections",
+      "HB03: MO-1306 preserves all independent provider axes and ten disclosures",
+      "HB04: known recurrence links only active mandatory gates, including an unavailable current gate",
+      "HB05: observed recurrence preserves historical outcome while excluding optional and inactive links",
+      "HB06: current-applicable history cannot erase an unavailable gate condition",
+      "HB07 immutable granted history rejects FAIL to PASS rewrite",
+      "HB07 immutable granted history rejects BLOCKED removal",
+      "HB07 immutable granted history rejects changed historical disposition",
+      "HB07 immutable granted history rejects wrong historical source",
+      "HB07 immutable granted history rejects wrong candidate provenance",
+      "HB07 immutable granted history rejects omitted required unresolved history",
+      "HB07 immutable granted history rejects fabricated resolution",
+      "HB07 immutable granted history rejects duplicate conflicting history",
+      "HB08: malformed PASS history and duplicate conflicting rows remain invalid with fixture-owned updated pins",
+      "HB09: reviewed history must resolve nested source and authority lineage",
+      "HB10: supplied scope and history inventories reject omissions and unknown condition references",
+      "QB01: qualifications reject omission",
+      "QB01: qualifications reject impact downgrade",
+      "QB01: qualifications reject wrong provider",
+      "QB01: qualifications reject wrong gate",
+      "QB01: qualifications reject unknown code",
+      "QB01: qualifications reject wrong scope authority",
+      "QB01: qualifications reject disclosure removal",
+      "QB01: qualifications reject fabricated authority member",
+      "QB02: scope qualification inventory rejects extra, omitted and conflicting records",
+      "QB03: an identical qualification shared by granted claims merges exact claim/grant identities",
+      "QB04: historical disclosures require exact preserved condition and gate set",
+      "QB05: bounded advisory and REST scope require their exact disclosures",
+      "QB06: unavailable scope retains known qualified history without inventing completeness",
+      "QB07: unavailable history retains known disclosures but still validates supplied scope condition inventory",
+      "QB08: both unavailable inventories retain locally valid known qualifications and defer missing inventory references",
+      "PB01 immutable MO-1306 authority rejects false github execution promotion",
+      "PB01 immutable MO-1306 authority rejects false gitlab execution promotion",
+      "PB01 immutable MO-1306 authority rejects false jenkins execution promotion",
+      "PB01 immutable MO-1306 authority rejects false azure execution promotion",
+      "PB02: full GitHub hosted certification requires all four exact case facts",
+      "PB03: provider labels cannot alias, substitute provider identity, or remove Generic certification unnoticed",
+      "PB04: contract-only providers cannot claim SUPPORTED while not live certified",
+      "PB05: known lower-minimum unsupported facts are retained for 2A blockers with no fabricated certification",
+      "PB06: unavailable provider parents produce no fabricated provider observation",
+      "PB07: independently reviewed validation and execution facts do not imply a universal certification ranking",
+      "DB01: selection order does not affect projection bytes or mutate input, and outputs are detached",
+      "DB02: semantic history and qualification set order remains frozen and rejects reordered arrays",
+      "LB01: history record count accepts 128 and rejects 129 without truncation",
+      "LB02: assessment qualification union accepts 128 and rejects 129 across individually bounded claims",
+      "LB03: exact original disposition length accepts 256 printable characters and rejects 257",
+      "IB01: complete independently pinned MO-1306 verifier retains exact history, provider state and qualifications",
+      "IB02: complete verifier rejects schema-valid rewritten or removed history despite fresh raw pins",
+      "IB03: complete verifier rejects all four MO-1306 execution promotions with unchanged reviewed grants",
+      "IB04: complete verifier uses dedicated qualification mismatch classification",
+      "IB05: complete verifier uses dedicated history mismatch classification for PASS rewriting",
+      "IB06: independently pinned source bytes and candidate context bind historical claims",
+      "L01 authority byte admission includes the exact ceiling and rejects plus one before parse/copy",
+      "L02 envelope byte ceiling is enforced in acquisition before snapshot copying",
+      "L03 manifest claim admission is 64 envelopes, independent of the finite gate authority limit",
+      "L04 grant representation admits 64 and rejects 65 without claiming all grants fit the closed profile",
+      "L05 claim dependencies and every explicit dependency reference list admit 1024 and reject 1025",
+      "L06 root, grant and claim assumption sets admit 32 and reject 33",
+      "L07 history representation admits 128 immutable rows and rejects 129",
+      "L08 qualification representation admits 128 and rejects 129 without truncation",
+      "L09 scope qualification/condition reference sets each enforce their exact 128 cap",
+      "L10 source references admit 128 and authority source references admit 32 at their declared schemas",
+      "L11 normalized authority and audit digest reference capacities are explicit, not generic INPUT errors",
+      "L12 independent cap failures never fabricate a partial verified projection",
+      "P2B projection and independent result evidence: could-not-evaluate",
+      "P2B projection and independent result evidence: history-blocker-unavailable",
+      "P2B projection and independent result evidence: informational-ready",
+      "P2B projection and independent result evidence: metadata-only",
+      "P2B projection and independent result evidence: mixed-precedence",
+      "P2B projection and independent result evidence: mo1306-qualified",
+      "P2B projection and independent result evidence: not-ready",
+      "P2B projection and independent result evidence: post-tag-absent",
+      "P2B projection and independent result evidence: post-tag-lightweight",
+      "P2B projection and independent result evidence: post-tag-ready",
+      "P2B projection and independent result evidence: post-tag-wrong-target",
+      "P2B projection and independent result evidence: pre-tag-present",
+      "P2B projection and independent result evidence: qualified",
+      "P2B projection and independent result evidence: ready",
+      "P2B projection and independent result evidence: rest-qualified",
+      "P2B projection and independent result evidence: selective-reuse",
+      "P2B verified snapshots detach and freeze every returned fact",
+      "P2B metadata changes only raw proof binding and diagnostics",
+      "P2B opaque bounded advisory timestamp has no age window or invented syntax",
+      "P2B deterministic internal projection uses canonical records, not object insertion order",
+      "P2B Freeze-mandated set ordering rejects permutations instead of normalizing signed identity",
+      "P2B explicit reuse dispositions preserve unrelated dependency closure",
+      "P2B independently reverified source mutation cannot hide behind result self-hashes",
+      "P2B result evidence tamper: candidate",
+      "P2B result evidence tamper: authorityIdentityDigest",
+      "P2B result evidence tamper: qualification",
+      "P2B result evidence tamper: history",
+      "P2B result evidence tamper: provider",
+      "P2B result evidence tamper: graph",
+      "P2B result evidence tamper: audit",
+      "P2B result evidence tamper: gateBinding",
+      "P2B proof material is exact frozen audit, independent of final readiness calculation",
+      "R01 raw source integrity precedes an earlier logical envelope coverage contradiction",
+      "R02 earlier validation phase precedes a smaller later-phase error exit",
+      "R03 independent source corruption precedes current-candidate authority mismatch"
+    ],
+    "stdout": {
+      "path": "2b.stdout.txt",
+      "byteLength": 38118,
+      "sha256": "sha256:9073a82f1255ca3f383ec72078295bd67088489c36b00fcd2ba18c3a30e0aa0a"
+    },
+    "stderr": {
+      "path": "2b.stderr.txt",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "exactAcceptedVectors": 16,
+  "elapsedMs": 35684,
+  "preservedBranchFoundation": true,
+  "preservedBranchFixtures": true,
+  "packageRegenerated": false,
+  "phase2DIntegration": false,
+  "network": false,
+  "predecessorCampaignsRerun": false,
+  "error": null
+}

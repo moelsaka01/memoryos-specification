@@ -1,0 +1,12 @@
+{
+  "kind": "MemoryOSReadinessCorrectionHarnessDisposition",
+  "version": "1.0.0",
+  "classification": "HARNESS_REPORTER_MISMATCH",
+  "originalReceiptResult": "FAIL",
+  "observedTestProcessExit": 0,
+  "observedSpecSummary": { "tests": 24, "pass": 24, "fail": 0 },
+  "cause": "The runner parsed TAP summary lines while Node selected the spec reporter. The runner therefore counted zero tests and correctly refused acceptance.",
+  "correction": "Select --test-reporter=tap explicitly; preserve the original failure and rerun this bounded focused suite once.",
+  "productionChangeRequired": false,
+  "originalResultRewritten": false
+}

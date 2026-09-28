@@ -9,6 +9,7 @@ $requestCeiling = 65536
 $responseCeiling = 16777216
 $sequence = 1
 $operation = 'READ_SET'
+$session = '0000000000000000000000000000000000000000000000000000000000000000'
 $code = 'MO1307_INPUT'
 
 function Reject-Protocol([string] $ErrorCode = 'MO1307_INPUT') {
@@ -131,13 +132,14 @@ try {
     }
     $request = ConvertFrom-Json -InputObject $text
     if (((Encode-Value $request) + "`n") -cne $text) { Reject-Protocol }
-    Assert-Keys $request @('files', 'kind', 'operation', 'roots', 'sequence', 'version')
+    Assert-Keys $request @('files', 'kind', 'operation', 'roots', 'sequence', 'session', 'version')
     if ($request.kind -isnot [string] -or $request.version -isnot [string] -or $request.operation -isnot [string] -or
-        $request.kind -cne 'MemoryOSReadinessHelperRequest' -or $request.version -cne '1.0.0' -or
-        $request.operation -cnotin @('READ_SET', 'CHECK_OUTPUT') -or
-        $request.sequence -isnot [int] -or $request.sequence -lt 1 -or $request.sequence -gt 4 -or
+        $request.kind -cne 'MemoryOSReadinessHelperRequest' -or $request.version -cne '2.0.0' -or
+        $request.session -isnot [string] -or $request.session -cnotmatch '^[a-f0-9]{64}$' -or
+        $request.operation -cnotin @('READ_SET', 'CHECK_OUTPUT', 'INSPECT_OUTPUT_ROOT', 'CHECK_STAGE_ROOT', 'INSPECT_PENDING', 'CHECK_FINALIZATION') -or
+        $request.sequence -isnot [int] -or $request.sequence -lt 1 -or $request.sequence -gt 9 -or
         $request.roots -isnot [array] -or $request.files -isnot [array]) { Reject-Protocol }
-    $sequence = $request.sequence; $operation = $request.operation
+    $sequence = $request.sequence; $operation = $request.operation; $session = $request.session
     if ($request.roots.Length -gt 3 -or $request.files.Length -gt 128) { Reject-Protocol 'MO1307_RESOURCE_LIMIT' }
     $roots = [System.Collections.Generic.Dictionary[string,string]]::new([StringComparer]::Ordinal)
     $prior = $null
@@ -171,10 +173,16 @@ try {
         $prior = $file.id
     }
     $ids = @($request.files | ForEach-Object { $_.id }) -join ','
-    if ($operation -ceq 'CHECK_OUTPUT') {
-        if ($sequence -ne 4 -or $request.files.Length -ne 0 -or $roots.Count -ne 1 -or -not $roots.ContainsKey('output')) { Reject-Protocol }
+    if ($operation -cne 'READ_SET') {
+        $publicationOperations = @('CHECK_OUTPUT', 'INSPECT_OUTPUT_ROOT', 'CHECK_STAGE_ROOT', 'INSPECT_PENDING', 'CHECK_FINALIZATION')
+        if ($request.files.Length -ne 0 -or $roots.Count -ne 1 -or -not $roots.ContainsKey('output') -or
+            ($sequence -eq 4 -and $operation -cne 'CHECK_OUTPUT') -or $sequence -lt 4 -or
+            ($sequence -ge 5 -and $operation -cne $publicationOperations[$sequence - 5])) { Reject-Protocol }
+        if (($roots['output'].TrimEnd('\') + '\memoryos-readiness-result.json.pending').Length -gt 240) {
+            Reject-Protocol 'MO1307_FILESYSTEM_BOUNDARY'
+        }
     } else {
-        if ($roots.Count -eq 0 -or $roots.ContainsKey('output') -or
+        if ($sequence -gt 4 -or $roots.Count -eq 0 -or $roots.ContainsKey('output') -or
             ($sequence -lt 4 -and ($roots.Count -ne 1 -or -not $roots.ContainsKey('input'))) -or
             ($sequence -eq 1 -and $ids -cne 'authority,config') -or
             ($sequence -eq 2 -and $ids -cne 'candidate,manifest') -or
@@ -202,7 +210,7 @@ try {
 }
 
 $reply = '{"code":"' + $code + '","files":[],"kind":"MemoryOSReadinessHelperResponse","operation":"' + $operation +
-    '","roots":[],"sequence":' + $sequence + ',"status":"ERROR","version":"1.0.0"}' + "`n"
+    '","roots":[],"sequence":' + $sequence + ',"session":"' + $session + '","status":"ERROR","version":"2.0.0"}' + "`n"
 $replyBytes = [System.Text.UTF8Encoding]::new($false, $true).GetBytes($reply)
 if ($replyBytes.Length + 4 -gt $responseCeiling) { exit 22 }
 $length = [uint32] $replyBytes.Length

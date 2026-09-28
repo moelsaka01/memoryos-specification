@@ -1,0 +1,33 @@
+{
+  "kind": "MemoryOSReadinessPublicationCorrectionBindingPlan",
+  "version": "1.0.0",
+  "C2C": {
+    "parent": "3883ca889911fcc5a6f46c24e569478a8c32648e",
+    "subject": "fix(memoryos-1.3): correct MO-1307 publication inspection contract",
+    "scope": "TARGETED_CONTRACT_AND_MINIMUM_SHARED_FOUNDATION"
+  },
+  "C2CB": {
+    "parent": "ACTUAL_EXISTING_C2C",
+    "subject": "conformance(memoryos-1.3): bind MO-1307 publication inspection correction",
+    "allowedFiles": [
+      "repositories/cca-conformance/evidence/mo1307/phase2c-correction/binding.json",
+      "repositories/cca-conformance/evidence/mo1307/phase2c-correction/binding-verification.json"
+    ],
+    "productionChanges": false
+  },
+  "acyclic": "C2C inventory excludes itself; C2CB binds actual C2C commit/tree/all changed blobs. No future or self hashes.",
+  "historicalEvidence": "B1 inventories and receipts retained unchanged; correction receipts describe corrected sources separately.",
+  "postBinding": [
+    "graph and binding",
+    "all five original blocker bytes and stopped state",
+    "focused correction tests",
+    "full affected Phase1 regression",
+    "2A/2B unchanged committed compatibility",
+    "package integrity",
+    "workspace verification",
+    "git diff --check HEAD^ HEAD",
+    "clean main"
+  ],
+  "postBindingReceiptLocation": ".cache/mo1307/phase2c-correction/post-binding (read-only validations; no third commit)",
+  "resumption": "Only exact verified C2CB; no resumed2C execution or worktree creation in this task"
+}
