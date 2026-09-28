@@ -1,0 +1,12 @@
+{
+  "kind": "MO1307FinalizationCorrectionAttemptDisposition",
+  "version": "1.0.0",
+  "originalResult": "FAIL",
+  "classification": "STALE_CLOSED_STATUS_EXPECTATION",
+  "observedFocused": { "tests": 24, "pass": 23, "fail": 1 },
+  "queuedRegression": "NOT_RUN_AFTER_FOCUSED_FAILURE",
+  "cause": "The operational dispositionDeadline field was added to the agreed status interface while the first campaign was being prepared. F01's exact expected object omitted its initial null value. Tested source bytes were unchanged during the actual run.",
+  "correction": "Add dispositionDeadline:null to the closed expected status and verify that settlement supplies a finite shared deadline. Retain the original test/source snapshots and logs before attempt 2.",
+  "productionDefectClaimed": false,
+  "originalResultRewritten": false
+}

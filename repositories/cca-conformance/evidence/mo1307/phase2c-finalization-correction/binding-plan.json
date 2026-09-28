@@ -1,0 +1,27 @@
+{
+  "kind": "MO1307FinalizationCorrectionBindingPlan",
+  "version": "1.0.0",
+  "baseline": "0d68ac211b3b204635e7af252cd693dce5bd70b1",
+  "branch": "main",
+  "exactlyTwoCommits": true,
+  "implementation": {
+    "name": "C2F",
+    "subject": "fix(memoryos-1.3): correct MO-1307 publication finalization boundary",
+    "parent": "0d68ac211b3b204635e7af252cd693dce5bd70b1",
+    "scope": "Targeted normative finalization/N24 correction, minimum shared publication primitive, package integrity, focused/native engineering regression and exact compatibility evidence."
+  },
+  "binding": {
+    "name": "C2FB",
+    "subject": "conformance(memoryos-1.3): bind MO-1307 finalization correction",
+    "parentRule": "Actual existing C2F; never a predicted/self-referential hash.",
+    "onlyFiles": ["binding.json", "binding-verification.json"],
+    "productionChanges": false
+  },
+  "inventoryRule": "Changed-file inventory closes over every C2F path except itself. C2FB binding covers every actual C2F changed Git blob including that inventory.",
+  "postBinding": "Verify direct graph, all actual/current blobs, retained diagnostic/history, final source-bound evidence; rerun focused plus real queued rename, shared regression including package/workspace/diff, and exact 2A/2B compatibility into ignored cache only. Main must finish clean.",
+  "priorEvidenceRule": "C2C/C2CB evidence remains byte-exact and is verified against its original immutable Git context, not misrepresented as current finalization acceptance.",
+  "push": false,
+  "tag": false,
+  "resumePhase2C": false,
+  "beginPhase2D": false
+}

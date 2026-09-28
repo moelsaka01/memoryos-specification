@@ -957,8 +957,8 @@ belong only to the new executable; predecessor semantic exits are unchanged.
 | RESULT_MISMATCH | 26 | Supplied result differs from exact recomputed result |
 | DECISION_MISMATCH | 27 | Malformed/incorrectly bound optional human decision |
 | RESOURCE_LIMIT | 28 | Other input/parser/count/heap admission limits exceeded |
-| TIMEOUT | 29 | Assessment deadline reached before completion |
-| CANCELLED | 30 | Caller cancellation/control-C before completed return/publication |
+| TIMEOUT | 29 | Assessment deadline reached before completion, except the admitted final-rename settlement in section 18 |
+| CANCELLED | 30 | Caller cancellation/control-C before completion, except the admitted final-rename settlement in section 18 |
 
 Evaluate exits: READY=0, READY_WITH_QUALIFICATIONS=2, NOT_READY=3,
 COULD_NOT_EVALUATE=4. Exit 2 is a completed qualified assessment, not an
@@ -986,7 +986,10 @@ The exact phase/check assignment is:
 | PUBLICATION | Evaluate exclusive directory/staging/rename, then stdout; verify stdout only. Failures OUTPUT. |
 
 No dependency on directory traversal order. TIMEOUT/CANCELLED interrupt the
-pipeline and suppress result publication. Acquisition failure cannot be masked
+pipeline and suppress result publication before final rename admission. The
+authoritative finalization correction in section 18 governs an already-submitted
+non-cancellable rename; it cannot return terminal TIMEOUT/CANCELLED while that
+mutation remains outstanding. Acquisition failure cannot be masked
 by a later semantic-looking blocker. Operational stderr is one J record
 `{kind:"MemoryOSReadinessError",version:"1.0.0",code,stage,reference:Id|null}`;
 no raw path, body, exception message, stack, environment or credential content.
@@ -1018,6 +1021,9 @@ authority arguments are relative files under input root. The only optional
 flags are those bracketed below. `--format` defaults to json. No other default
 exists, including no default profile/stage. Each invocation assesses exactly
 one candidate, with no queue, server, retry, watcher or cross-run cache.
+Bounded per-operation/supervisor deadline timers are permitted; persistent
+servers, watchers, cross-run timers and background schedulers are not. N24 must
+test timer ownership and disposal, not impose a blanket timer-token ban.
 
 ```text
 node.exe <package>/bin/memoryos-readiness.mjs evaluate --input-root <absolute> --config <relative> --authority <relative> --authority-sha256 <Digest> --candidate-sha256 <Digest> --output-root <absolute-new-directory> [--format json|text]
@@ -1191,13 +1197,13 @@ all raw campaigns. Limits give bounded headroom for envelopes plus that scale.
 | Temporary output space | 4,194,304 bytes; one staged result only |
 | Evaluation worker old / young heap | 128 / 16 MiB |
 | Engineering aggregate peak RSS | 512 MiB across supervisor/helper/console/worker |
-| Overall CLI invocation deadline | 30,000 ms |
+| Overall CLI invocation / final rename admission deadline | 30,000 ms; admitted rename settlement exception below |
 | Pure API call deadline | 10,000 ms |
 | One helper request / helper duration | 128 paths / 5,000 ms within overall deadline |
 | Aggregate helper-active duration, authoritative Phase 2C correction | 20,000 ms across all helper invocations; startup through confirmed process/console/transport quiescence |
 | Helper requests/invocations, authoritative Phase 2C correction | Evaluate 9 / verify 4; one request per invocation, no retries |
 | Native inspection chain, authoritative Phase 2C correction | At most 120 identities, exact complete path-derived chain |
-| Cancellation/termination cleanup allowance | 2,000 ms; never a success grace period |
+| Cancellation/termination cleanup allowance | 2,000 ms; also one bounded read-only/disposition allowance after admitted rename settles; never success grace |
 
 Byte limits are checked with cap+1 bounded reads before parsing/copying.
 Counts are checked before graph expansion; cycle detection is bounded.
@@ -1234,22 +1240,52 @@ cleanup is not success time. API, CLI, evaluation and cleanup limits are unchang
 Deadlines use an operational monotonic clock outside the pure evaluation
 function. A supervisor timer plus worker isolation prevents a same-thread timer
 from falsely claiming preemption of synchronous parsing. Success is accepted
-only strictly before the deadline; equality/later is TIMEOUT. Cancellation
-observed before success is CANCELLED. Late worker/helper output is ignored;
-no success grace. Cleanup may continue within its separate allowance but cannot
-publish. If abort and deadline are first observed at the same checkpoint,
-TIMEOUT wins when now >= deadline; an abort observed strictly earlier wins
-CANCELLED. After final rename, the result is committed: later abort/deadline
-cannot retract it. The remaining overall deadline still bounds stdout transport.
-Before rename (or for verify), timeout/abort returns TIMEOUT/CANCELLED; after
-rename, timeout/abort during stdout is OUTPUT with the committed file retained.
-A failed transport may have emitted a partial line; only one fully written
-summary ending LF is a complete success summary. Cancel pending writes and
-terminate within the cleanup allowance; stdout backpressure cannot wait forever.
-The 2-second cleanup allowance extends total elapsed time only for failed
-invocations, never the success deadline; maximum cleanup completion is 32 seconds for CLI or
-12 seconds for API. Worker termination failure is operational failure with no completed
-result, not a promise of instantaneous OS termination.
+only strictly before the deadline; equality/later before final rename admission
+is TIMEOUT. Cancellation observed before admission is CANCELLED. Late
+worker/helper output is ignored; cleanup admits no publication. If abort and
+deadline are first observed at the same checkpoint, TIMEOUT wins when now >=
+deadline; an abort observed strictly earlier wins CANCELLED.
+
+**Authoritative Phase 2C finalization boundary correction:** immediately after
+the last successful checkpoint and without an asynchronous gap, one fixed
+same-directory rename may be admitted strictly before the CLI deadline. Its
+submission enters COMMIT_IN_PROGRESS, not COMMITTED. Await that exact submitted
+operation without a timeout race or ordinary failure cleanup. Deadline/abort
+observed in this interval is recorded operationally, never returned as terminal
+TIMEOUT/CANCELLED while the mutation remains outstanding. Actual successful
+rename is still the sole commit point; native failure is OUTPUT. No retry,
+second rename, additional helper/worker or cleanup mutation is permitted.
+
+No finite settlement bound is claimed for this non-cancellable admitted rename.
+It may keep the invocation pending indefinitely. This exception is limited to
+settling that operation, not general execution or success grace. After
+settlement, one 2,000 ms allowance using the existing cleanup number bounds
+read-only namespace verification and operational disposition. It admits no new
+filesystem mutation. Failed/timed-out verification is OUTPUT while the actual
+COMMITTED/FAILED state and owned files remain intact. Exact final bytes and
+pending absence supplement the earlier native inspection; no tenth helper or
+Node-only replacement for native identity authority is introduced.
+
+A rename that succeeds after the deadline remains COMMITTED but yields CLI
+OUTPUT/21, with no new success stdout attempt and final retained. Cancellation
+observed after admission has the same post-settlement transport disposition.
+Timely successful rename/verification still requires a final checkpoint and
+complete stdout strictly before the original deadline. Later stdout failure,
+abort or timeout is OUTPUT with committed final retained. Only a fully written
+summary ending LF is success; a partial line is not. Post-settlement observation
+and failed/overrun finalization's error transport share their allowance. Timely
+successful finalization may enter ordinary stdout transport; its later first
+transport failure retains the original single 2-second failed-transport cleanup
+allowance. Neither allowance can reset or permit unbounded transport waits.
+
+Before submission, the original 2-second failed cleanup allowance and CLI
+32-second bound remain. The byte-only API's 10-second deadline / 12-second
+failed-cleanup bound and verify's original behavior remain unchanged. The
+universal CLI 32-second claim is superseded only for admitted rename settlement
+and its bounded subsequent disposition. Worker termination failure is an
+operational failure, not a promise of instantaneous OS termination. Exact
+states, private interfaces, N24 timer lifetime and unchanged authority are in
+the [finalization boundary correction](mo1307-phase2c-finalization-boundary-correction.md).
 
 The pure algorithm has no clock; API/CLI wrappers impose operational budgets.
 Completed results for identical authoritative inputs are deterministic; whether
@@ -1348,6 +1384,15 @@ substitutes for native checks of newly created objects. The private immutable-ro
 precondition and committed-output behavior remain unchanged. Verify never
 creates a publication capability or republishes a normative result.
 
+**Authoritative Phase 2C finalization boundary correction:** the last checkpoint
+admits exactly one non-cancellable rename; submission is not commitment.
+COMMIT_IN_PROGRESS must settle before terminal disposition, even after the
+deadline or cancellation. Actual success commits; failure is OUTPUT, without
+retry or namespace cleanup. Bounded read-only confirmation after settlement
+does not replace slot 9's native authority. Section 18 and the finalization
+correction supersede the earlier unconditional precommit late-publication ban
+only for this already-admitted operation.
+
 ## 20. Normative vectors and security negatives
 
 These are required contract vectors for Phase 1/2/3, not executed evidence now.
@@ -1373,7 +1418,7 @@ not a production release authorization.
 | V13 complete recomputation | Altered state/gate/qualification/blocker/history/graph/digest in result -> RESULT_MISMATCH; valid self-hashes do not suffice. |
 | V14 decision | READY+APPROVE, READY+REJECT and QUALIFIED+APPROVE leave readiness unchanged; NOT_READY/CNE+APPROVE is CONTRARY_TO_READINESS; wrong candidate/digest -> DECISION_MISMATCH; unknown actor remains unauthenticated; changed proofBindingDigest rejects the old decision even when readinessDigest is unchanged. |
 | V15 tags | PRE absent passes; POST correct annotated target passes; PRE present, POST absent, wrong target/name, lightweight/unexpected tag block applicable checks; no mutation. |
-| V16 publication | Pending/truncated file cannot verify; rename is commit point; existing output never overwritten; late completion cannot publish. |
+| V16 publication | Pending/truncated file cannot verify; actual successful rename is commit point; existing output never overwritten; late helper/worker or late-admitted rename cannot publish. An on-time admitted rename must settle before terminal disposition; late success retains committed final and yields OUTPUT, without retry/rollback. |
 | V17 bounds/offline | Every limit at boundary and +1, graph cycle, cancellation/deadline equality, hostile Windows paths and unavailable network; resource failures are operational and complete offline inputs need no network. |
 | V18 MO-1306 | Released qualified vector described below -> READY_WITH_QUALIFICATIONS, never hosted-certified by inference. |
 

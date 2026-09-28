@@ -1,0 +1,66 @@
+{
+  "kind": "MO1307FinalizationSharedRegression",
+  "version": "1.0.0",
+  "result": "PASS",
+  "commands": [
+    {
+      "id": "phase1",
+      "args": [
+        "repositories/cca-conformance/tools/mo1307-phase1/acceptance.mjs",
+        "--output",
+        "repositories/cca-conformance/evidence/mo1307/phase2c-finalization-correction/shared-regression/attempt-1/phase1"
+      ],
+      "status": 0,
+      "error": null,
+      "elapsedMs": 48722.9708,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-finalization-correction/shared-regression/attempt-1/phase1.stdout.txt",
+        "byteLength": 1161,
+        "sha256": "sha256:241caa9d70e7d06f845da03b4cc6b511288a59879f969e44f74b05a689f394c5"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-finalization-correction/shared-regression/attempt-1/phase1.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "prior-correction",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "--test-concurrency=1",
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+      ],
+      "status": 0,
+      "error": null,
+      "elapsedMs": 1021.3366000000024,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-finalization-correction/shared-regression/attempt-1/prior-correction.stdout.txt",
+        "byteLength": 5445,
+        "sha256": "sha256:ec07f3fafdcaace2ee3d50eb82ddd6f0af4103cd843e3e012263c47b040c0523"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-finalization-correction/shared-regression/attempt-1/prior-correction.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "tests": {
+        "tests": 24,
+        "pass": 24,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    }
+  ],
+  "sourcesUnchanged": true,
+  "phase1Receipt": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2c-finalization-correction/shared-regression/attempt-1/phase1/receipt.json",
+    "byteLength": 15766,
+    "sha256": "sha256:c990bfad9a55998d940af2629d2833a6b911070f7878a8a754fb9942805e01f3"
+  }
+}

@@ -73,7 +73,7 @@ Each helper has 5,000 ms, with a new explicit **20,000 ms aggregate helper-activ
 ceiling** preserving the original four-times-five-second upper bound. Active
 time starts before launch and includes startup, native work, framing/EOF waits
 and confirmed process/console termination. The CLI's 30,000 ms deadline remains
-absolute; each helper deadline is the earliest of its own five seconds, remaining
+absolute for helper acquisition and final rename admission; each helper deadline is the earliest of its own five seconds, remaining
 aggregate budget and overall deadline. Equality is TIMEOUT. The API deadline
 remains 10,000 ms; cleanup is at most 2,000 ms after failure, never success grace.
 Actual native process enforcement and the worker budget belong to resumed 2C.
@@ -88,13 +88,22 @@ No arbitrary identity callback or Node-lstat fallback supplies native authority.
 The opaque token binds one root/capability, exact detached bytes and checked
 chains. Finalization consumes it exactly once.
 
-Native final absence and the last checkpoint precede same-directory rename,
-the sole commit point. Node Windows rename can replace at kernel level, so
+Native final absence and the last checkpoint precede same-directory rename;
+actual successful rename is the sole commit point. Node Windows rename can replace at kernel level, so
 nonreplacement retains Freeze's explicit private immutable-root precondition
 and exclusion of concurrent adversarial namespace mutation. No stronger syscall
 guarantee is claimed. Failures retain owned pending bytes. Abort/deadline before
-rename prevents publication; after rename, failed stdout returns OUTPUT and
-retains the committed file. Verify creates no directory/file or publication
+rename submission prevents publication. The authoritative
+[finalization boundary correction](../../../docs/mo1307-phase2c-finalization-boundary-correction.md)
+requires the single admitted non-cancellable rename to settle before terminal
+disposition, even after deadline/cancellation. Submission is COMMIT_IN_PROGRESS,
+not commitment. No finite settlement bound is claimed; no cleanup mutation,
+second rename or extra helper is permitted. The unchanged 2,000 ms number bounds
+subsequent read-only verification and failed/overrun finalization disposition.
+Late successful rename remains COMMITTED but yields OUTPUT/21 with no success
+stdout attempt. Timely successful finalization retains the original stdout
+deadline; a later stdout failure returns OUTPUT and retains the committed file.
+Verify creates no directory/file or publication
 capability and never republishes a normative result.
 
 Engineering native tests may add the fixed process-only `-ExecutionPolicy Bypass`

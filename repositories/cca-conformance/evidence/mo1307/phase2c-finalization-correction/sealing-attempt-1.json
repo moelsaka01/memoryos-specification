@@ -1,0 +1,11 @@
+{
+  "kind": "MO1307FinalizationEvidenceSealDevelopmentDisposition",
+  "version": "1.0.0",
+  "result": "FAILED_ENGINEERING_RECEIPT_SHAPE_ASSUMPTION",
+  "command": "node tools/mo1307-phase2c-finalization-correction/check-evidence.mjs --seal",
+  "observation": "Security review uses disposition TARGETED_FOUNDATION_REVIEW_PASS_WITH_RETAINED_AVAILABILITY_LIMIT, not an unscoped result PASS. Initial seal assertion rejected that stronger scoped review shape before creating final-validation.json.",
+  "correction": "Verifier now requires each exact scoped review disposition, all source/acceptance hashes, 13 reviewed threats, seven alternatives and six N24 lifetime groups.",
+  "productionChanged": false,
+  "acceptanceTestsRerunRequired": false,
+  "failedAttemptPromoted": false
+}

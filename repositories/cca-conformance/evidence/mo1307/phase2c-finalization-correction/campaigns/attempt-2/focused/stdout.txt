@@ -1,0 +1,154 @@
+TAP version 13
+# Subtest: F01 publication status is an immutable operational snapshot before submission
+ok 1 - F01 publication status is an immutable operational snapshot before submission
+  ---
+  duration_ms: 47.3724
+  type: 'test'
+  ...
+# Subtest: F02 timeout before submission prevents any rename and retains pending
+ok 2 - F02 timeout before submission prevents any rename and retains pending
+  ---
+  duration_ms: 24.2259
+  type: 'test'
+  ...
+# Subtest: F03 cancellation before submission prevents rename and is terminal
+ok 3 - F03 cancellation before submission prevents rename and is terminal
+  ---
+  duration_ms: 19.5739
+  type: 'test'
+  ...
+# Subtest: F04 actual admission checkpoint rejects a deadline reached after final native inspection
+ok 4 - F04 actual admission checkpoint rejects a deadline reached after final native inspection
+  ---
+  duration_ms: 27.4153
+  type: 'test'
+  ...
+# Subtest: F05 admitted delayed success remains unresolved at post-submission deadline
+ok 5 - F05 admitted delayed success remains unresolved at post-submission deadline
+  ---
+  duration_ms: 35.7532
+  type: 'test'
+  ...
+# Subtest: F06 cancellation after submission is recorded without early cancellation or namespace cleanup
+ok 6 - F06 cancellation after submission is recorded without early cancellation or namespace cleanup
+  ---
+  duration_ms: 49.01
+  type: 'test'
+  ...
+# Subtest: F07 admitted failure after deadline resolves OUTPUT only after exact submitted operation settles
+ok 7 - F07 admitted failure after deadline resolves OUTPUT only after exact submitted operation settles
+  ---
+  duration_ms: 25.3002
+  type: 'test'
+  ...
+# Subtest: F08 no second rename or token reuse while an admitted rename is outstanding
+ok 8 - F08 no second rename or token reuse while an admitted rename is outstanding
+  ---
+  duration_ms: 26.1544
+  type: 'test'
+  ...
+# Subtest: F09 commit status changes only after successful actual rename and then preserves bytes
+ok 9 - F09 commit status changes only after successful actual rename and then preserves bytes
+  ---
+  duration_ms: 27.6316
+  type: 'test'
+  ...
+# Subtest: F10 mandatory checkpoint overrun after settlement is operational metadata, not precommit TIMEOUT
+ok 10 - F10 mandatory checkpoint overrun after settlement is operational metadata, not precommit TIMEOUT
+  ---
+  duration_ms: 22.8626
+  type: 'test'
+  ...
+# Subtest: F11 postcommit deadline or cancellation prevents a success summary and retains committed final
+ok 11 - F11 postcommit deadline or cancellation prevents a success summary and retains committed final
+  ---
+  duration_ms: 50.1552
+  type: 'test'
+  ...
+# Subtest: F12 normal verified commit permits transport while precommit and failed tokens do not
+ok 12 - F12 normal verified commit permits transport while precommit and failed tokens do not
+  ---
+  duration_ms: 23.4495
+  type: 'test'
+  ...
+# Subtest: F13 wrong interruption code and foreign token cannot create publication authority
+ok 13 - F13 wrong interruption code and foreign token cannot create publication authority
+  ---
+  duration_ms: 20.0737
+  type: 'test'
+  ...
+# Subtest: F14 changed pending bytes before admission prevent rename
+ok 14 - F14 changed pending bytes before admission prevent rename
+  ---
+  duration_ms: 22.345
+  type: 'test'
+  ...
+# Subtest: F15 existing final is retained and finalization never retries or chooses another basename
+ok 15 - F15 existing final is retained and finalization never retries or chooses another basename
+  ---
+  duration_ms: 25.4397
+  type: 'test'
+  ...
+# Subtest: F16 postcommit transport error cannot retract or reclassify committed final as partial
+ok 16 - F16 postcommit transport error cannot retract or reclassify committed final as partial
+  ---
+  duration_ms: 29.324
+  type: 'test'
+  ...
+# Subtest: F17 bounded invocation timers are allowed and destroyed after successful operation
+ok 17 - F17 bounded invocation timers are allowed and destroyed after successful operation
+  ---
+  duration_ms: 2.4028
+  type: 'test'
+  ...
+# Subtest: F18 timer lifetime policy detects a persistent cross-run scheduler
+ok 18 - F18 timer lifetime policy detects a persistent cross-run scheduler
+  ---
+  duration_ms: 2.0042
+  type: 'test'
+  ...
+# Subtest: F19 actual foundation finalization leaves no live timers across sequential invocations
+ok 19 - F19 actual foundation finalization leaves no live timers across sequential invocations
+  ---
+  duration_ms: 48.638
+  type: 'test'
+  ...
+# Subtest: F20 failed and cancelled foundation calls leave no cross-run timers
+ok 20 - F20 failed and cancelled foundation calls leave no cross-run timers
+  ---
+  duration_ms: 35.5712
+  type: 'test'
+  ...
+# Subtest: F21 failed read-only namespace verification retains committed output and clears its timer
+ok 21 - F21 failed read-only namespace verification retains committed output and clears its timer
+  ---
+  duration_ms: 36.8149
+  type: 'test'
+  ...
+# Subtest: F22 read-only verification timeout is bounded and late handle completion only closes
+ok 22 - F22 read-only verification timeout is bounded and late handle completion only closes
+  ---
+  duration_ms: 2040.5523
+  type: 'test'
+  ...
+# Subtest: F23 interruption recorded while pre-submission read is pending prevents later admission
+ok 23 - F23 interruption recorded while pre-submission read is pending prevents later admission
+  ---
+  duration_ms: 36.8166
+  type: 'test'
+  ...
+# Subtest: F24 the first observed pre-submission interruption remains terminal
+ok 24 - F24 the first observed pre-submission interruption remains terminal
+  ---
+  duration_ms: 27.4214
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2836.8308

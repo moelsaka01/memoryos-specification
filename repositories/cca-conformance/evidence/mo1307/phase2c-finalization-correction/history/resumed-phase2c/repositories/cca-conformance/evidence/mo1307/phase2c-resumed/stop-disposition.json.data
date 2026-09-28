@@ -1,0 +1,69 @@
+{
+  "kind": "MO1307Phase2CResumedStopDisposition",
+  "status": "STOPPED",
+  "classification": "ENVIRONMENT_BLOCKER",
+  "completion": "NOT_PHASE2C_COMPLETE",
+  "phase2DReady": false,
+  "baseline": "0d68ac211b3b204635e7af252cd693dce5bd70b1",
+  "branch": "codex/mo1307-phase2c-resumed",
+  "startedUtc": "2026-09-28T18:46:24Z",
+  "sealedUtc": "2026-09-28T19:23:52.588Z",
+  "elapsedMs": 2248588,
+  "elapsedMinutes": 37.47646666666667,
+  "ninetyMinuteCheckpointReached": false,
+  "twoHourCheckpointReached": false,
+  "hardStopUtc": "2026-09-28T21:46:24Z",
+  "hardStopCompliant": true,
+  "productionFailure": "repositories/cca-conformance/evidence/mo1307/phase2c-resumed/native-process/attempt2/native-surfaces/receipt.json",
+  "classificationDiagnostic": "repositories/cca-conformance/evidence/mo1307/phase2c-resumed/native-process/policy-diagnostic/receipt.json",
+  "interpretation": "Accepted unchanged production launch rejected on this host. Not a universal contract-impossibility finding.",
+  "policyChanged": false,
+  "productionBypassAdded": false,
+  "engineeringBypassDoesNotCertifyProduction": true,
+  "consoleAuthorizationResolved": true,
+  "completionCommitCreated": false,
+  "pushed": false,
+  "tagged": false,
+  "phase2DStarted": false,
+  "finalReadOnlyChecks": [
+    {
+      "name": "final-package-check",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-resumed/final-package-check/receipt.json",
+        "byteLength": 634,
+        "sha256": "8b17f7347d9ea79d9a3bbe6c3d11d02db30da5b691e88156989293d9470acf52"
+      },
+      "result": "PASS"
+    },
+    {
+      "name": "final-workspace-check",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-resumed/final-workspace-check/receipt.json",
+        "byteLength": 592,
+        "sha256": "3462a6d4a23a77447feb613a08a81a11519a63120bb4fcab544a049f8ee933ca"
+      },
+      "result": "PASS"
+    },
+    {
+      "name": "final-diff-check",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-resumed/final-diff-check/receipt.json",
+        "byteLength": 458,
+        "sha256": "310e689df8ee704bfb7ba45aada24875750513eea80795b99e8ff838c95bdd0b"
+      },
+      "result": "PASS"
+    }
+  ],
+  "outstanding": [
+    "Production helper launch blocked",
+    "Native nine/four lifecycle acceptance incomplete",
+    "Successful native no-overlap/quiescence acceptance incomplete",
+    "Remaining actual helper/aggregate deadline and cancellation witnesses unrun",
+    "Current publication/correction/surface regression missing",
+    "R26/R27 unrun; publication wait integration unresolved",
+    "Full native environment poison and remaining filesystem witnesses incomplete",
+    "Phase1 105/105 unrun; N24 static timer-test conflict"
+  ],
+  "report": "docs/mo1307-phase2c-resumed.md",
+  "futureCommitSelfReference": false
+}

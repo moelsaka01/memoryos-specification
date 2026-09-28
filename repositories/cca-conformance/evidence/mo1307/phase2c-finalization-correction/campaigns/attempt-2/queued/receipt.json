@@ -1,0 +1,81 @@
+{
+  "kind": "MO1307CorrectedQueuedRenameRegression",
+  "version": "1.0.0",
+  "result": "PASS",
+  "scope": "ONE_REAL_QUEUED_RENAME_WITH_SYNTHETIC_FRAMED_IDENTITY_FIXTURES",
+  "processId": 19764,
+  "runtime": "v24.21.0",
+  "platform": "win32",
+  "arch": "x64",
+  "engineeringAdmissionWindowMs": 50,
+  "defaultLibuvThreads": 4,
+  "finitePbkdf2Jobs": 4,
+  "iterationsPerJob": 1000000,
+  "admissionCheckpointAtMs": 6.828000000000003,
+  "submittedAtMs": 7.396100000000004,
+  "submissionTimingSource": "FSREQPROMISE init inside the actual unmodified fs.promises.rename call while foundation phase is COMMIT_IN_PROGRESS",
+  "admissionDeadlineAtMs": 56.82800000000002,
+  "observation": {
+    "elapsedMs": 57.84060000000001,
+    "statusBefore": {
+      "phase": "COMMIT_IN_PROGRESS",
+      "admitted": true,
+      "deadlineExpiredAfterAdmission": false,
+      "cancelledAfterAdmission": false,
+      "namespaceVerified": false,
+      "dispositionDeadline": null
+    },
+    "finalizeSettled": false,
+    "finalPresent": false,
+    "pendingPresent": true,
+    "statusAfter": {
+      "phase": "COMMIT_IN_PROGRESS",
+      "admitted": true,
+      "deadlineExpiredAfterAdmission": true,
+      "cancelledAfterAdmission": true,
+      "namespaceVerified": false,
+      "dispositionDeadline": null
+    }
+  },
+  "completedAtMs": 903.0151,
+  "completedJobs": [
+    {
+      "job": 2,
+      "elapsedMs": 900.9918
+    },
+    {
+      "job": 0,
+      "elapsedMs": 944.2992
+    },
+    {
+      "job": 3,
+      "elapsedMs": 1050.237
+    },
+    {
+      "job": 1,
+      "elapsedMs": 1079.5073
+    }
+  ],
+  "renameRequests": 1,
+  "failure": null,
+  "finalStatus": {
+    "phase": "COMMITTED",
+    "admitted": true,
+    "deadlineExpiredAfterAdmission": true,
+    "cancelledAfterAdmission": true,
+    "namespaceVerified": true,
+    "dispositionDeadline": 2988.7153
+  },
+  "resultProjection": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1307\\phase2c-finalization-correction\\queued-19764\\output\\memoryos-readiness-result.json",
+    "byteLength": 50
+  },
+  "finalPresent": true,
+  "pendingPresent": false,
+  "sameBytes": true,
+  "transportError": "MO1307_OUTPUT",
+  "noEarlyTimeoutOrCancellation": true,
+  "productMutationAuthority": "One actual same-directory rename only; no custom rename hook, no cleanup deletion, no retry.",
+  "engineeringScope": "One parent-bounded child; no helper/worker launch or full native acquisition acceptance. Existing libuv contention jobs are engineering only.",
+  "settlementBoundClaimed": false
+}
