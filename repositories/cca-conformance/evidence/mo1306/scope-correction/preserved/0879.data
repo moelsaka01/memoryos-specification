@@ -1,0 +1,25 @@
+"""Seal provider evidence after fresh native completion or explicit limitation."""
+import hashlib,json,pathlib
+ROOT=pathlib.Path(__file__).resolve().parents[4];TOOLS=pathlib.Path(__file__).parent;OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3cr';RESULTS=OUT/'provider-results'
+def sha(raw):return 'sha256:'+hashlib.sha256(raw).hexdigest()
+def row(p,base):
+ raw=p.read_bytes();return {'path':p.relative_to(base).as_posix(),'byteLength':len(raw),'sha256':sha(raw)}
+summary=json.loads((RESULTS/'summary.json').read_text())
+summary['auditToolDependencies']=[row(p,ROOT)for p in sorted(TOOLS.glob('provider-*'))if p.is_file()]
+summary['receipts']=[row(p,RESULTS)for p in sorted(RESULTS.glob('*'))if p.is_file()and p.name not in ('summary.json','audit-validator.json')and p.stat().st_size]
+summary['preservedAuditAttempts']=[{'evidence':'native-wrapper-first-attempt.json','disposition':'FAILURE_PRESERVED; frozen helper timing exceeded in diagnostic; no production alteration'},{'evidence':'node-adapter-regressions-first-attempt.json','disposition':'FAILURE_PRESERVED; audit host omitted Git from PATH, then corrected explicitly'}]
+summary['scope']='Offline independent schemas/parsers/AST/current generation, pure transport and local Windows wrapper only. No GitLab/Jenkins/Azure/GitHub provider service, hosted certification, Linux, VM, or bootstrap download.'
+summary['nativeWrapperStatus']='CONTRACT_VALIDATED_VIA_SCOPED_REUSE'
+summary['freshNativeWrapperStatus']='FAILED_EXECUTION_PRESERVED'
+summary['historicalEvidenceReused']=True
+summary['originalHistoricalPartialEvidenceReused']=False
+summary['nativeLauncherEvidence']=row(RESULTS/'scoped-native-reuse.json',ROOT)
+summary['nativeTraceEvidence']=row(RESULTS/'scoped-native-trace-revalidation.json',ROOT)
+summary['sourceReviewBinding']=row(RESULTS/'source-review.json',ROOT)
+summary['nativeOperationalAssessment']='Both fresh wrapper attempts failed and are preserved. Retry launch profile omitted stdin=DEVNULL, a specific nonconformance with retained successful harness. Its immediate failure cause is unresolved; helper timing is plausible but not proven. No new production defect established. 3A-R owns current artifact/native+hosted certification with correct launch profile.'
+if (RESULTS/'native-wrapper.json').exists()and (RESULTS/'native-wrapper.json').stat().st_size:
+ native=json.loads((RESULTS/'native-wrapper.json').read_text(encoding='utf-8-sig'));summary['nativeWrapperStatus']='PASS';summary['nativeWrapperCases']=native['passed']
+summary['sourceReview']='provider-results/source-review.json';summary['runtimeDependencies']='provider-results/validator-runtime-dependencies.json'
+(OUT/'provider-audit.json').write_text(json.dumps(summary,indent=2,sort_keys=True)+'\n',encoding='utf8')
+(RESULTS/'summary.json').write_text(json.dumps(summary,indent=2,sort_keys=True)+'\n',encoding='utf8')
+print(json.dumps({'status':'PASS','receipts':len(summary['receipts']),'nativeWrapperStatus':summary['nativeWrapperStatus']}))

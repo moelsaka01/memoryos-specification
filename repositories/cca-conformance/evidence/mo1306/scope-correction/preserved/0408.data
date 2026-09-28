@@ -1,0 +1,36 @@
+"""Current initial remote state: bounded GET only; no product execution."""
+import sys,json,concurrent.futures
+from pathlib import Path
+from datetime import datetime,timezone
+sys.dont_write_bytecode=True
+from remote_state import ROOT,OUT,REPO,BRANCH,MAIN,CANDIDATE,SETTINGS,API_VERSION,credential,get,row,put
+prefix='repos/'+REPO
+token=credential()
+queries=[('authenticated-user','user'),('repository',prefix),('main-ref',prefix+'/git/ref/heads/main'),('certification-ref',prefix+'/git/ref/heads/'+BRANCH),('workflow-registry',prefix+'/actions/workflows?per_page=100'),('actions-permissions',prefix+'/actions/permissions'),('rulesets',prefix+'/rulesets?includes_parents=true&per_page=100'),('main-branch',prefix+'/branches/main'),('certification-branch',prefix+'/branches/'+BRANCH),('certification-runs',prefix+'/actions/runs?branch='+BRANCH+'&per_page=100')]
+def fetch(item):
+ name,path=item
+ result=get(path,token)
+ return name,result
+with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:responses=dict(pool.map(fetch,queries))
+bindings={}
+for name,result in responses.items():
+ bindings[name]=put(OUT/'initial-remote'/f'{name}.json',result)
+ assert result['status']==200,(name,result['status'])
+repo=responses['repository']['body'];registry=responses['workflow-registry']['body']
+assert repo['full_name']==REPO and repo['id']==1312267996
+assert repo['default_branch']=='main' and responses['main-ref']['body']['object']['sha']==MAIN
+assert responses['certification-ref']['body']['object']['sha']==CANDIDATE
+assert responses['certification-runs']['body']['total_count']==0
+assert registry['total_count']<=100
+paths={'.github/workflows/mo1306-certification-'+c+'.yml' for c in ['pass','fail','cne']}
+scopes=responses['authenticated-user']['responseHeaders'].get('x-oauth-scopes','')
+assert repo['permissions']['admin'] is True and 'repo' in [s.strip() for s in scopes.split(',')]
+value={'kind':'MemoryOSPhase3ACertificationInitialRemoteState','status':'PASS','observedUtc':datetime.now(timezone.utc).isoformat(),'repository':REPO,'repositoryId':repo['id'],'defaultBranch':'main','remoteMain':MAIN,'oldCertificationCommit':CANDIDATE,'newScaffold':'451599e7b95a537ebc2daac627b061fd88791dea','certificationRunCount':0,
+'repositorySettings':{k:repo[k] for k in SETTINGS if k in repo},'adminCapability':True,'classicRepoScope':True,
+'workflowRegistryMatches':[w for w in registry['workflows'] if w['path'] in paths],
+'registrationDecision':'Re-read registry after authorized narrow branch update; use direct registration if all three active, otherwise conditional default switch.',
+'allowedMutationBoundary':{'gitRef':'refs/heads/'+BRANCH,'gitLeaseOld':CANDIDATE,'gitNew':'451599e7b95a537ebc2daac627b061fd88791dea','repositoryPayloadKeys':['default_branch'],'repositoryAllowedValues':['main',BRANCH],'dispatches':'one attempt each reviewed registered PASS/FAIL/CNE workflow; explicit native PASS gate required'},
+'forbiddenSettings':['branch protection','required checks','Actions permissions','visibility','secrets','variables','environments','webhooks','collaborators','merge settings','security settings','billing'],'remoteMutations':[],'dispatches':[],'responses':bindings,'tool':row(Path(__file__)),
+'docs':[{'url':'https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow','finding':'workflow_dispatch requires workflow on default branch; execution ref can select branch.'},{'url':'https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event','finding':'API2026-03-10 dispatch returns200 with workflow_run_id/run_url/html_url; wait by exact returned run ID, no blind duplicate POST.'},{'url':'https://docs.github.com/en/rest/repos/repos#update-a-repository','finding':'Repository PATCH supports default_branch; payload restricted to that field and restoration independently read back.'}]}
+print(json.dumps(put(OUT/'initial-state.json',value)))
+

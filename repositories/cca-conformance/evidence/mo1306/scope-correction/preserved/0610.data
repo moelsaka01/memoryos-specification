@@ -1,0 +1,73 @@
+{
+  "baseline": "9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44",
+  "historicalEvidenceReuse": {
+    "originalPhase3CPartialEvidenceReused": false,
+    "scope": "Scoped unchanged B2 native launcher/core/transport invariants only; separate scoped-native-reuse and trace receipts bind source bytes and old executions. Fresh C3AB provider assertions are separate; no old result is labeled fresh.",
+    "used": true
+  },
+  "limits": [
+    "Offline provider grammar/schema/AST is not live GitLab/Jenkins/Azure certification.",
+    "Node bootstrap source and supplied pinned-runtime handoff are distinct from fetching archive in hosted execution.",
+    "Five-provider equivalence covers frozen projection tables and generated invocation contracts; no provider service execution.",
+    "No OS-wide network denial claim; Python socket connect is denied in audit process and provider validators forbid remote references."
+  ],
+  "reviewed": [
+    {
+      "area": "Provider dispatch",
+      "files": [
+        "src/provider-ir.mjs",
+        "src/core.mjs",
+        "src/metadata.mjs"
+      ],
+      "finding": "Own-property membership is enforced at providerIR and readMetadataEnvironment; core runs providerIR before workspace/config processing. Internal metadata() indexes mappings under static literal provider call-site precondition. No user-controlled path bypass found."
+    },
+    {
+      "area": "Pure generation",
+      "files": [
+        "src/generator.mjs",
+        "src/generated-structure.mjs",
+        "src/providers/render.mjs",
+        "src/providers/github.mjs",
+        "src/providers/azure.mjs"
+      ],
+      "finding": "Configuration/deployment normalized and schema checked; provider templates closed, output paths fixed, generated structure validated, sorted manifest binds bytes/digests. No provider service or shell execution in generation."
+    },
+    {
+      "area": "GitLab/Jenkins",
+      "files": [
+        "templates/gitlab.yml.tpl",
+        "templates/jenkins.groovy.tpl"
+      ],
+      "finding": "Literal digests and restricted Windows label bind fixed Invoke-MemoryOSCI.ps1 invocation. Preserves common exit via finally. Jenkins engineering parser is a restricted lexer/recursive descent grammar and does not execute Groovy. Independent parser/schema/AST and negative corpus rerun."
+    },
+    {
+      "area": "Azure",
+      "files": [
+        "templates/azure.yml.tpl",
+        "src/providers/azure.mjs"
+      ],
+      "finding": "Closed Windows agent demand, disabled triggers, fixed checkout and PowerShell invocation, local publication and common exit. Independent full pinned Draft-07 schema plus strict subset and PowerShell AST reexecuted;698 local references,remote resolution forbidden."
+    },
+    {
+      "area": "GitHub offline",
+      "files": [
+        "templates/github.yml.tpl",
+        "scripts/Initialize-GitHubCI.ps1",
+        "scripts/Invoke-GitHubCI.ps1",
+        "scripts/github-transport.mjs",
+        "src/github-transport.mjs"
+      ],
+      "finding": "windows-2022; manual dispatch; contents read; full40hex action/tool pins; distinct tool/data checkout; no persisted credentials/submodules/LFS; fixed bootstrap URL and archive/runtime digest/length; core UUID from verified complete bundle; six artifact basenames; result/evidence metadata/config/distribution/run binding; fixed allowlisted expressions. Actual bootstrap download not executed. Hosted certification remains external 3A-R."
+    },
+    {
+      "area": "Output injection",
+      "files": [
+        "src/metadata.mjs",
+        "src/errors.mjs",
+        "src/github-transport.mjs"
+      ],
+      "finding": "Metadata allows inert non-path colons by frozen contract; controls/expressions rejected. JSON serialization and fixed diagnostic prose prevent exception/input interpolation. GitHub outputLines accepts only boolean completion, frozen exits and UUID run-id; injected newlines/traversal rejected by fresh transport tests."
+    }
+  ],
+  "status": "PASS"
+}

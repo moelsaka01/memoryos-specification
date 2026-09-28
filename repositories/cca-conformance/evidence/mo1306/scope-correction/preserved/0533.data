@@ -1,0 +1,76 @@
+95549: ;// CONCATENATED MODULE: ./node_modules/@azure/core-xml/dist/esm/xml.common.js
+95550: // Copyright (c) Microsoft Corporation.
+95551: // Licensed under the MIT License.
+95552: /**
+95553:  * Default key used to access the XML attributes.
+95554:  */
+95555: const xml_common_XML_ATTRKEY = "$";
+95556: /**
+95557:  * Default key used to access the XML value content.
+95558:  */
+95559: const xml_common_XML_CHARKEY = "_";
+95560: //# sourceMappingURL=xml.common.js.map
+95561: ;// CONCATENATED MODULE: ./node_modules/@azure/core-xml/dist/esm/xml.js
+95562: // Copyright (c) Microsoft Corporation.
+95563: // Licensed under the MIT License.
+95564:
+95565:
+95566: function getCommonOptions(options) {
+95567:     var _a;
+95568:     return {
+95569:         attributesGroupName: xml_common_XML_ATTRKEY,
+95570:         textNodeName: (_a = options.xmlCharKey) !== null && _a !== void 0 ? _a : xml_common_XML_CHARKEY,
+95571:         ignoreAttributes: false,
+95572:         suppressBooleanAttributes: false,
+95573:     };
+95574: }
+95575: function getSerializerOptions(options = {}) {
+95576:     var _a, _b;
+95577:     return Object.assign(Object.assign({}, getCommonOptions(options)), { attributeNamePrefix: "@_", format: true, suppressEmptyNode: true, indentBy: "", rootNodeName: (_a = options.rootName) !== null && _a !== void 0 ? _a : "root", cdataPropName: (_b = options.cdataPropName) !== null && _b !== void 0 ? _b : "__cdata" });
+95578: }
+95579: function getParserOptions(options = {}) {
+95580:     return Object.assign(Object.assign({}, getCommonOptions(options)), { parseAttributeValue: false, parseTagValue: false, attributeNamePrefix: "", stopNodes: options.stopNodes, processEntities: true, trimValues: false });
+95581: }
+95582: /**
+95583:  * Converts given JSON object to XML string
+95584:  * @param obj - JSON object to be converted into XML string
+95585:  * @param opts - Options that govern the XML building of given JSON object
+95586:  * `rootName` indicates the name of the root element in the resulting XML
+95587:  */
+95588: function stringifyXML(obj, opts = {}) {
+95589:     const parserOptions = getSerializerOptions(opts);
+95590:     const j2x = new json2xml(parserOptions);
+95591:     const node = { [parserOptions.rootNodeName]: obj };
+95592:     const xmlData = j2x.build(node);
+95593:     return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${xmlData}`.replace(/\n/g, "");
+95594: }
+95595: /**
+95596:  * Converts given XML string into JSON
+95597:  * @param str - String containing the XML content to be parsed into JSON
+95598:  * @param opts - Options that govern the parsing of given xml string
+95599:  * `includeRoot` indicates whether the root element is to be included or not in the output
+95600:  */
+95601: async function parseXML(str, opts = {}) {
+95602:     if (!str) {
+95603:         throw new Error("Document is empty");
+95604:     }
+95605:     const validation = XMLValidator.validate(str);
+95606:     if (validation !== true) {
+95607:         throw validation;
+95608:     }
+95609:     const parser = new XMLParser(getParserOptions(opts));
+95610:     const parsedXml = parser.parse(str);
+95611:     // Remove the <?xml version="..." ?> node.
+95612:     // This is a change in behavior on fxp v4. Issue #424
+95613:     if (parsedXml["?xml"]) {
+95614:         delete parsedXml["?xml"];
+95615:     }
+95616:     if (!opts.includeRoot) {
+95617:         for (const key of Object.keys(parsedXml)) {
+95618:             const value = parsedXml[key];
+95619:             return typeof value === "object" ? Object.assign({}, value) : value;
+95620:         }
+95621:     }
+95622:     return parsedXml;
+95623: }
+95624: //# sourceMappingURL=xml.js.map

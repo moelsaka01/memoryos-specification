@@ -1,0 +1,203 @@
+"""Evidence-only diagnostic closure. Never imports or executes native/M3/static validators."""
+import argparse,copy,hashlib,io,json,os,pathlib,re,stat,subprocess,zipfile
+R=pathlib.Path(__file__).resolve().parents[4];T=pathlib.Path(__file__).resolve().parent
+E=R/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-diagnostic';OLD=R/'repositories/cca-conformance/evidence/mo1306/phase3a-certification'
+C='701d48ee2012675966360dda775ab13013c09ab9';M='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37';BASE='451599e7b95a537ebc2daac627b061fd88791dea';MAIN='5955af062152a84c10de17860ba0bcabe8b3555f'
+ALLOW=['GITHUB_WORKSPACE','RUNNER_TEMP','RUNNER_TOOL_CACHE','RUNNER_WORKSPACE','USERPROFILE','HOME','TEMP','TMP','SystemRoot','WINDIR','PROCESSOR_ARCHITECTURE']
+ARTIFACT_NAMES={'observation-before.json','observation-after.json','oracle.json','diagnostic-summary.json'}
+LABELS={'generic':'REAL_EXECUTION_CERTIFIED','github':'NOT_CERTIFIED','gitlab':'CONTRACT_VALIDATED','jenkins':'CONTRACT_VALIDATED','azure':'CONTRACT_VALIDATED'}
+BOUND=set()
+def need(ok,msg):
+ if not ok:raise AssertionError(msg)
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def read(p):return json.loads(pathlib.Path(p).read_text(encoding='utf-8-sig'))
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(R).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def bind(v):
+ p=R/v['path'];need(p.resolve().is_relative_to(R.resolve()),'out-of-workspace binding');actual=row(p)
+ need(all(actual[k]==v[k] for k in ['path','byteLength','sha256']),'byte binding '+v['path']);BOUND.add(v['path']);return p
+def walk(v):
+ if isinstance(v,dict):
+  if {'path','byteLength','sha256'}<=v.keys() and not ('revision' in v):bind(v)
+  for x in v.values():walk(x)
+ elif isinstance(v,list):
+  for x in v:walk(x)
+def load(p):
+ p=E/p if isinstance(p,str) else p;d=read(p);BOUND.add(p.relative_to(R).as_posix());walk(d);return d
+def git(*args,root=R,raw=False):
+ p=subprocess.run(['git','-c','safe.directory='+str(root),'-C',str(root),*args],capture_output=True,env=dict(os.environ,GIT_OPTIONAL_LOCKS='0'),timeout=45)
+ need(p.returncode==0,'git read '+repr(args));return p.stdout if raw else p.stdout.decode('utf-8').strip()
+def refs_map(s):
+ result={}
+ for line in s.strip().splitlines():
+  a,b=line.split(' ',1);key,value=(a,b) if a.startswith('refs/') else (b,a);need(key not in result,'duplicate ref');result[key]=value
+ return result
+def report_env(v):
+ need(v['environmentAllowlist']==ALLOW and set(v['environment'])==set(ALLOW),'environment allowlist expansion')
+ need(v['engineeringOnly'] is True and v['productionVerdictOverridden'] is False,'observer overrides verdict')
+ need(v['phase'] in ['Before','After'] and str(v['powerShellVersion']).startswith('5.1.'),'observer runtime/phase')
+def safe_zip(path,names=None):
+ out={}
+ with zipfile.ZipFile(path) as z:
+  need(len(z.infolist())<=100,'archive member count')
+  total=0
+  for x in z.infolist():
+   n=x.filename;need(n not in out and not n.startswith(('/','\\')) and '\\' not in n and ':' not in n and all(c not in ['','.','..'] for c in n.split('/')),'archive path/duplicate')
+   need(not x.is_dir() and not x.flag_bits&1 and not stat.S_ISLNK(x.external_attr>>16),'archive type/encryption')
+   need(x.file_size<=8388608,'archive member size');total+=x.file_size;need(total<=33554432,'archive total bound');out[n]=z.read(x)
+ if names is not None:need(set(out)==names,'diagnostic exact artifact set')
+ return out
+
+def remote_final_claim(d,commit,runid):
+ need(d['status']=='PASS' and d['defaultBranch']=='main' and d['remoteMain']==MAIN and d['certificationCommit']==commit,'final remote boundary')
+ need(d['certificationRunCount']==2 and d['diagnosticRunId']==runid and d['runAttempt']==1 and d['artifactCount']==1,'final remote run/artifact count')
+ need(d['dispatchesDuringReadback']==[] and d['remoteMutationsDuringReadback']==[],'remote final writes')
+
+def run_claim(run,commit):
+ need(run['id']!=36357568243 and run['run_attempt']==1 and run['head_sha']==commit and run['head_branch']=='mo1306-certification' and run['event']=='workflow_dispatch' and run['path']=='.github/workflows/mo1306-hosted-diagnostic.yml','actual diagnostic run identity')
+
+def receipt_claim(d):
+ need(d['status']=='HOSTED_DIAGNOSTIC_EXHAUSTED' and d['classification']=='STILL_UNRESOLVED','unsupported causal disposition')
+ need(d['labels']==LABELS,'false certification label')
+ for k in ['oldRunReclassified','historicalRunReanalyzed','phase3DReady']:need(d[k] is False,'false causal/commit claim '+k)
+ for k in ['causeEstablished','githubHostedCertified','completionCommitCreated','historicalCauseResolved']:
+  if k in d:need(d[k] is False,'false optional causal/certification claim '+k)
+ need(d['actualFirstProductionRejectingSite'] is None and d['oracleFailureDoesNotProveProductionCause'] is True,'later oracle promoted to production cause')
+ need(d['nativeExecutions']==d['methodologyReruns']==0 and d['productionChanges']==d['certificationDispatches']==[],'unauthorized execution/change')
+ need(d['diagnosticDispatchCount']==1 and d['historicalRunId']==36357568243 and d['historicalDisposition']=='HOSTED_BOOTSTRAP_UNRESOLVED','diagnostic/historical scope')
+ need(d['certificationCommit'] is None and d['nativeHostedParity'] is None,'invented certification/commit')
+ need(d['candidate']==C and d['methodology']==M,'final authority')
+ need(d['tagsCreated']==d['releasesCreated']==[] and d['pushCount']==1,'remote scope')
+ need(d['finalDefaultBranch']=='main' and d['finalRemoteMain']==MAIN,'receipt restoration')
+
+
+def verify(final=False):
+ p=load('preservation-before.json');need(p['fileCount']==1021 and len(p['files'])==1021,'historical preservation count')
+ need(len({x['path'] for x in p['files']})==1021,'history duplicates')
+ need(git('rev-parse','HEAD')==p['head'] and git('branch','--show-current')==p['branch'],'local HEAD/branch')
+ idx=pathlib.Path(git('rev-parse','--git-path','index'));idx=idx if idx.is_absolute() else R/idx
+ need(sha(idx.read_bytes())==p['realIndexSha256'],'real index changed')
+ need(not git('diff','--name-only') and not git('diff','--cached','--name-only'),'tracked changes')
+ candidate=load('remote-candidate.json');commit=candidate['commit'];need(candidate['parent']==C and git('show','-s','--format=%P',commit)==C,'scaffold parent')
+ need(git('rev-parse',C+':repositories/memoryos-ci')==git('rev-parse',commit+':repositories/memoryos-ci'),'scaffold production changed')
+ oldrefs=refs_map(p['refsBefore']);newrefs=refs_map(git('for-each-ref','--format=%(refname) %(objectname)'));expected=dict(oldrefs);expected['refs/remotes/origin/mo1306-certification']=commit
+ need(newrefs==expected,'unauthorized local ref change')
+ main=R.parent/'cca-workspace';need(git('rev-parse','HEAD',root=main)==M and not git('status','--porcelain=v1','--untracked-files=all',root=main),'main checkout changed')
+ mainidx=pathlib.Path(git('rev-parse','--git-path','index',root=main));mainidx=mainidx if mainidx.is_absolute() else main/mainidx
+ need(sha(mainidx.read_bytes())==read(OLD/'m3-verification.json')['mainReadOnly']['indexSha256'],'main index')
+ prior=read(OLD/'native-final-gate.json');need(prior['status']=='PASS' and prior['nativeCertified'] is True and prior['genericLabel']=='REAL_EXECUTION_CERTIFIED','retained native state')
+ gate=load('static-gate.json');need(gate['status']=='PASS' and gate['productExecutions']==gate['nativeOrMethodologyReruns']==0,'static gate evidence')
+ auth=load('hosted-authorization.json');need(auth['maximumDispatches']==1 and auth['allowDiagnosticDispatch'] is True and auth['reviewedCertificationCommit']==commit,'diagnostic authorization')
+ need(auth['workflow']==gate['workflow'] and auth['engineeringTools']==gate['engineeringTools'],'authorization source binding')
+ need(gate['candidate']==row(E/'remote-candidate.json'),'candidate static gate')
+ for x in candidate['inputs']:need(git('show',commit+':'+x['destination'],raw=True)==bind(x).read_bytes(),'shipped tool bytes')
+ push=load('push-result.json');command=read(bind(push['push']));need(command['exitCode']==0,'push exit')
+ need(command['argv']==['git','push','--porcelain','--force-with-lease=refs/heads/mo1306-certification:'+BASE,'origin',commit+':refs/heads/mo1306-certification'],'push scope/lease')
+ refexpect=dict(push['remoteRefsBefore']);refexpect['refs/heads/mo1306-certification']=commit;need(push['remoteRefsAfter']==refexpect,'extra remote push')
+ campaigns=list((E/'github').glob('campaign-*'));need(len(campaigns)==1,'more than one diagnostic campaign')
+ folder=campaigns[0];summary=load(folder/'campaign-summary.json');need(summary['status']=='CAPTURED' and summary['historicalRun']==36357568243 and summary['candidate']==C and summary['certificationCommit']==commit,'campaign receipt')
+ need(summary['certificationDispatches']==[] and summary['noRetry'] is True,'certification retry')
+ restore=summary['restoration'];need(restore['status']=='PASS' and restore['defaultBranch']=='main' and restore['refs']=={'main':MAIN,'certification':commit} and restore['independentReadback'] is True,'restoration')
+ starts=[];results=[]
+ for path in sorted((folder/'journal').glob('*.json')):
+  d=read(path);BOUND.add(path.relative_to(R).as_posix())
+  if path.name.endswith('request-start.json'):
+   starts.append(d);method=d['method'];need(method in ['GET','PATCH','POST'],'remote mutation method')
+   if method=='PATCH':need(d['path']=='repos/moelsaka01/memoryos-specification' and set(d['payload'])=={'default_branch'} and d['payload']['default_branch'] in ['main','mo1306-certification'],'remote settings write')
+   if method=='POST':need(d['payload']=={'ref':'mo1306-certification'},'dispatch payload')
+  if path.name.endswith('request-result.json'):results.append(d)
+ posts=[x for x in starts if x['method']=='POST'];need(len(posts)==1,'multiple dispatch requests')
+ consumed=load('github/dispatch-consumed.json');need(consumed['path']==posts[0]['path'] and consumed['noRetry'] is True,'durable consumed marker')
+ acq=summary['diagnostic'];walk(acq);run=read(bind(acq['run']));jobs=read(bind(acq['jobs']));arts=read(bind(acq['artifacts']))
+ run_claim(run,commit)
+ need(str(run['workflow_id']) in posts[0]['path'] and acq['runId']==run['id'],'dispatch run binding')
+ need(jobs['total_count']==1 and len(jobs['jobs'])==1 and jobs['jobs'][0]['name']=='MemoryOS Diagnostic' and 'windows-2022' in jobs['jobs'][0]['labels'],'diagnostic job')
+ need(arts['total_count']==1 and len(arts['artifacts'])==1,'diagnostic artifact count');artifact=arts['artifacts'][0]
+ need(artifact['workflow_run']['id']==run['id'] and artifact['workflow_run']['head_sha']==commit and artifact['name']=='memoryos-diagnostic-'+str(run['id'])+'-1','artifact run association')
+ download=next(v for v in acq['downloads'] if '/actions/artifacts/' in v['apiPath']);archive=bind(download['file']);need(artifact['digest']==sha(archive.read_bytes()),'artifact API digest')
+ files=safe_zip(archive,ARTIFACT_NAMES)
+ for name,b in files.items():need((folder/'runs'/str(run['id'])/'diagnostic'/name).read_bytes()==b,'extracted report equality')
+ reports={n:json.loads(b.decode('utf-8-sig')) for n,b in files.items()}
+ before=reports['observation-before.json'];after=reports['observation-after.json'];oracle=reports['oracle.json'];diagnostic=reports['diagnostic-summary.json']
+ report_env(before);report_env(after);need(before['phase']=='Before' and after['phase']=='After','observation chronology')
+ need(oracle['engineeringOnly'] is True and oracle['productionVerdictOverridden'] is False and oracle['productionAuthority']==C,'oracle claim scope')
+ for src in oracle['sources']:
+  b=git('show',C+':repositories/memoryos-ci/'+src['path'],raw=True);need(len(b)==src['byteLength'] and sha(b)==src['sha256'],'oracle source authority')
+ need(oracle['runtime']['version']=='24.21.0' and oracle['runtime']['arch']=='x64' and oracle['runtime']['platform']=='win32','observed Node runtime')
+ for request in oracle['requests']:
+  need(len(request['targets'])<=48,'helper target bound')
+  canonical=(json.dumps({'kind':'MemoryOSCICDPathCheckRequest','version':'1.0.0','paths':request['targets']},sort_keys=True,separators=(',',':'),ensure_ascii=False)+'\n').encode()
+  need(len(canonical)==request['byteLength']<=16384 and sha(canonical)==request['sha256'],'request identity')
+  need(request['childEnvironment']=={'SystemRoot':before['environment']['SystemRoot'],'WINDIR':before['environment']['WINDIR']},'helper inherited environment')
+ need(diagnostic['certification'] is False,'diagnostic marked certification')
+ logs=next(v for v in acq['downloads'] if v['apiPath'].endswith('/logs'));logbytes=safe_zip(bind(logs['file']));text='\n'.join(b.decode('utf-8','replace') for b in logbytes.values())
+ need('Image: windows-2022' in text,'actual runner image')
+ inspection=load(folder/'runs'/str(run['id'])/'artifact-inspection.json');need(inspection['missingFiles']==[] and inspection['productCertification'] is False,'incomplete diagnostic artifact')
+ causal=load('causal-review.json');need(causal['classification']=='STILL_UNRESOLVED' and causal['actualFirstProductionRejectingSite'] is None,'overclaimed causal review')
+ need(causal['historicalRun']=={'id':36357568243,'reexamined':False,'retainedDisposition':'HOSTED_BOOTSTRAP_UNRESOLVED'},'historical restamping')
+ need(causal['oracle']['firstFailure']==oracle['firstFailure'] and causal['oracle']['outcome']==oracle['outcome'],'oracle causal receipt')
+ need(oracle['outcome']=='FAIL' and oracle['firstFailure']['site']=='checkPaths.helperDeadline' and len(oracle['requests'])==1,'actual later oracle outcome')
+ q=oracle['requests'][0];need(q['terminal']['site']=='checkPaths.helperDeadline' and q['terminal']['atMs']>=q['effectiveDeadlineMs'] and q['close']['atMs']>=q['terminal']['atMs'],'oracle deadline event order')
+ need(q['exit']['signal']==q['close']['signal']=='SIGTERM' and q['killResult'] is True and q['stdout']['byteLength']==q['stderr']['byteLengthCaptured']==0,'later oracle cleanup/empty output')
+ need(len(after['helperTargetPredicates'])==48 and all(x['facts']['predicate']=='PASS' for x in after['helperTargetPredicates']),'later target predicates')
+ need(all(x['status']=='PASS' for x in before['containmentPredicates']) and after['paths']['workspace']['volume']['driveFormat']=='NTFS','observed predicates')
+ need(diagnostic['bootstrapOutcome']=='failure' and 'MO1306_FILESYSTEM_BOUNDARY' in text,'actual bootstrap outcome')
+ finalremote=load('github/final-remote-state.json');remote_final_claim(finalremote,commit,run['id'])
+ bodies={}
+ for k,v in finalremote['responses'].items():
+  raw=read(bind(v));need(raw['method']=='GET' and raw['status']==200,'final readback method/status');bodies[k]=raw['body']
+ need(bodies['repository']['default_branch']=='main' and bodies['main-ref']['object']['sha']==MAIN and bodies['certification-ref']['object']['sha']==commit,'actual restored refs')
+ need(bodies['certification-runs']['total_count']==2 and {x['id'] for x in bodies['certification-runs']['workflow_runs']}=={36357568243,run['id']},'extra hosted run')
+ need(bodies['diagnostic-run']['id']==run['id'] and bodies['diagnostic-run']['head_sha']==commit and bodies['diagnostic-run']['run_attempt']==1,'final run identity')
+ beforeRemote=load('github/remote-preflight.json')
+ for k in ['actions-permissions','rulesets']:
+  need(bodies[k]==read(bind(beforeRemote['responses'][k]))['body'],'remote setting changed')
+ for k in ['main-branch','certification-branch']:
+  need(bodies[k]['protected']==read(bind(beforeRemote['responses'][k]))['body']['protected'],'branch protection changed')
+ need(finalremote['remoteRefChangesSinceInitial']=={'refs/heads/mo1306-certification':{'initial':BASE,'final':commit}},'unexpected remote ref movement')
+ rec=None
+ if (E/'execution-receipt.json').exists():
+  rec=load('execution-receipt.json');receipt_claim(rec)
+  need(rec['diagnosticRunId']==run['id'] and rec['diagnosticAttempt']==1 and rec['diagnosticJobId']==jobs['jobs'][0]['id'] and rec['diagnosticScaffold']==commit,'receipt actual run binding')
+  need(rec['capturedEnvironment']==before['environment'] and rec['oracleFirstFailure']==oracle['firstFailure'] and rec['remoteRestoration']==restore,'receipt observations')
+  fields=rec['finalReportAreas'];need(len(fields)==60,'final report count')
+  nums=[v.get('number',v.get('index')) for v in fields];need(nums==list(range(1,61)),'final report numbering')
+  report=(E/'REPORT.md').read_text(encoding='utf-8-sig');need(report.rstrip().endswith('MO-1306 PHASE 3A HOSTED DIAGNOSTIC EXHAUSTED'),'exact stop line')
+ elif final:raise AssertionError('final receipt absent')
+ index=E/'evidence-index.json'
+ if index.exists():
+  inventory=read(index);rows=inventory['files'];need(len(rows)==len({x['path'] for x in rows}),'inventory duplicates')
+  for x in rows:bind(x)
+  actual={p.relative_to(R).as_posix() for base in [E,T] for p in base.rglob('*') if p.is_file() and p!=index};need(actual=={x['path'] for x in rows},'closed evidence inventory')
+ elif final:raise AssertionError('final inventory absent')
+ return {'runId':run['id'],'runConclusion':run['conclusion'],'bootstrapOutcome':diagnostic['bootstrapOutcome'],'oracleOutcome':oracle['outcome'],'receipt':rec,'observer':before,'campaign':summary,'finalremote':finalremote,'run':run,'commit':commit}
+
+def negatives(data):
+ out=[]
+ def reject(name,fn):
+  try:fn()
+  except (AssertionError,KeyError,ValueError):out.append({'case':name,'status':'REJECTED'});return
+  raise AssertionError('negative passed '+name)
+ x=copy.deepcopy(data['observer']);x['environment']['GITHUB_TOKEN']='synthetic';reject('nonallowlisted-environment-key',lambda:report_env(x))
+ x=copy.deepcopy(data['observer']);x['productionVerdictOverridden']=True;reject('observer-overrides-production',lambda:report_env(x))
+ v=row(E/'static-gate.json');v['sha256']='sha256:'+'0'*64;reject('stale-source-hash',lambda:bind(v))
+ x=copy.deepcopy(data['run']);x['head_sha']=BASE;reject('swapped-diagnostic-source',lambda:run_claim(x,data['commit']))
+ x=copy.deepcopy(data['finalremote']);x['defaultBranch']='mo1306-certification';reject('default-not-restored',lambda:remote_final_claim(x,data['commit'],data['runId']))
+ archive=io.BytesIO()
+ with zipfile.ZipFile(archive,'w') as z:
+  for name in ARTIFACT_NAMES|{'extra.json'}:z.writestr(name,b'{}')
+ archive.seek(0);reject('extra-artifact-member',lambda:safe_zip(archive,ARTIFACT_NAMES))
+ if data['receipt']:
+  for name,key,value in [('oracle-pass-invented-cause','classification','GITHUB_ENVIRONMENT_TRANSIENT_PROVEN'),('false-hosted-certification','githubHostedCertified',True),('restamp-historical-failure','oldRunReclassified',True),('extra-diagnostic-dispatch','diagnosticDispatchCount',2),('native-rerun','nativeExecutions',1),('false-completion-commit','completionCommitCreated',True)]:
+   x=copy.deepcopy(data['receipt']);x[key]=value;reject(name,lambda x=x:receipt_claim(x))
+ return out
+
+def main():
+ ap=argparse.ArgumentParser();ap.add_argument('--check',action='store_true');ap.add_argument('--final',action='store_true');args=ap.parse_args();data=verify(args.final);ns=negatives(data)
+ result={'kind':'MemoryOSHostedDiagnosticIndependentValidation','status':'PASS','runId':data['runId'],'historicalFiles':1021,'boundFiles':len(BOUND),'diagnosticRuns':1,'artifactFiles':4,'negativeControls':len(ns),'nativeExecutions':0,'methodologyReruns':0,'productExecutions':0,'networkCalls':0,'finalReceiptValidated':data['receipt'] is not None,'validator':row(pathlib.Path(__file__))}
+ if not args.check:
+  need(data['receipt'] is not None,'final receipt must exist before outputs')
+  for name,value in [('validation.json',result),('validation-negatives.json',{'status':'PASS','cases':ns,'validator':row(pathlib.Path(__file__))})]:
+   with (E/name).open('x',encoding='utf-8',newline='\n') as f:json.dump(value,f,sort_keys=True,separators=(',',':'));f.write('\n')
+ print(json.dumps(result,sort_keys=True))
+if __name__=='__main__':main()

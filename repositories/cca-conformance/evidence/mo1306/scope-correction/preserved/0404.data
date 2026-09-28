@@ -1,0 +1,43 @@
+"""Offline receipt assembly after independent final-witness and exact-reuse validation."""
+import copy,hashlib,json,os,sys
+from pathlib import Path
+from datetime import datetime,timezone
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4];HERE=Path(__file__).resolve().parent
+BASE=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-certification'
+MAIN=Path(r'C:\Users\melsa\Documents\Codex\cca-workspace')
+M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37';C3CB='701d48ee2012675966360dda775ab13013c09ab9'
+GROUPS=['corrected-cli-dispatch','late-helper','late-terminal','policy-cne','policy-fail','policy-pass','timely-helper','valid-generate']
+RECURRENCE='Any final-witness failure stops certification immediately; same publication failure invalidates this exception. Preserve the failed attempt. No retries or campaign-ID reset; a new review is required.'
+def read(p):return json.loads(p.read_bytes())
+def ref(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(b),'sha256':'sha256:'+hashlib.sha256(b).hexdigest()}
+def put(p,v):
+ b=(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode();assert len(b)<=2*1024*1024
+ with p.open('xb') as f:f.write(b);f.flush();os.fsync(f.fileno())
+ return ref(p)
+def verify(row):assert ref(ROOT/row['path'])==row
+
+def main():
+ outcome=read(BASE/'final-witness-outcome.json');witness=read(BASE/'witness-validation.json');reuse=read(BASE/'reused-evidence.json');gate=read(BASE/'m3-verification.json')
+ assert outcome['status']=='OBSERVED_PASS_PENDING_INDEPENDENT_VALIDATION' and witness['status']==reuse['status']==gate['status']=='PASS'
+ assert not (BASE/'final-witness-failure.json').exists()
+ start=read(BASE/'final-witness-ledger-start.json');consumed=read(BASE/'final-witness-authorization-consumed.json');pre=read(BASE/'final-witness-preflight.json')
+ for row in [outcome['observed'],outcome['deadlineCleanup'],outcome['ledger'],outcome['consumed'],start['preflight'],consumed['ledger'],consumed['preflight'],consumed['methodologyGate'],consumed['rootGo']]:verify(row)
+ observed=read(ROOT/outcome['observed']['path']);assert observed['actual']['classification']=='INPUT_ERROR' and observed['actual']['publication']=='COMPLETE' and observed['exitCode']==11
+ assert outcome['attemptId']==start['attemptId']==consumed['attemptId']==observed['attemptId'] and outcome['executionCount']==1 and outcome['additionalExecutionsAllowed']==0
+ assert len(list((BASE/'native').iterdir()))==1 and len(start['historicalAndDiagnosticAttempts'])==5
+ casepath=MAIN/'repositories/cca-conformance/evidence/mo1306/methodology-b/eligibility.json';case=read(casepath)
+ assert case['history']['disposition']=='FAIL / UNRESOLVED' and case['history']['cause']=='UNRESOLVED'
+ old=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final/native-summary.json';original=read(old)
+ retained=[row for name in GROUPS for row in original['cases'] if Path(row['path']).stem==name];assert len(retained)==8
+ for row in retained:verify(row)
+ final={'attemptId':observed['attemptId'],'runId':observed['actual']['runId'],'class':'FINAL_CERTIFICATION_WITNESS','status':'PASS','actual':observed['actual'],'receipt':outcome['observed'],'independentValidation':ref(BASE/'witness-validation.json')}
+ ledger=put(BASE/'all-attempt-ledger.json',{'kind':'MemoryOSAllMissingInputAttempts','version':'1.0.0','methodologyAuthority':M3,'productionAuthority':C3CB,'attempts':start['historicalAndDiagnosticAttempts']+[final],'attemptCount':6,'finalExecutionCount':1,'additionalFinalExecutionsAllowed':0,'startLedger':ref(BASE/'final-witness-ledger-start.json'),'authorizationConsumed':ref(BASE/'final-witness-authorization-consumed.json'),'outcome':ref(BASE/'final-witness-outcome.json'),'recurrenceRule':RECURRENCE,'historicalDisposition':'FAIL / UNRESOLVED','historicalCause':'UNRESOLVED','appendOnly':'Start, consumed, observed and final ledger are distinct exclusively created records; no prior receipt is amended.'})
+ disclosure=copy.deepcopy(case['disclosure']);disclosure['methodologyRevision']=M3;disclosure['receiptState']='FINAL_WITNESS_RECORDED'
+ sidecar={'kind':'MemoryOSBoundedFinalWitness','methodologyRevision':M3,'disclosure':disclosure,'attempts':[{'id':observed['attemptId'],'candidate':case['candidate'],'result':'PASS','recurrence':False,'evidence':[ledger,ref(BASE/'witness-validation.json'),ref(BASE/'reused-evidence.json'),ref(BASE/'final-witness-outcome.json'),outcome['observed'],outcome['deadlineCleanup'],*observed['bundleFiles']]}],'allAttemptsAccounted':True,'retainedGroupsVerified':True,'previousFailureRecorded':False}
+ sidecarref=put(BASE/'methodology-sidecar.json',sidecar)
+ receipt={'kind':'MemoryOSPhase3ANativeCertificationReceipt','version':'1.0.0','status':'PASS','recordedUtc':datetime.now(timezone.utc).isoformat(),'productionAuthority':C3CB,'methodologyAuthority':M3,'methodologyGate':ref(BASE/'m3-verification.json'),'nativeEvidenceComplete':True,'genericPromotionRequiresIndependentReceiptValidation':True,'hostedCertified':False,'candidate':{'archive':pre['archive'],'distribution':pre['distribution'],'runtime':pre['node'],'installedMembers':94,'sdkClosure':25,'productionDependencies':0},'historicalFailure':{'history':case['history'],'originalReceipt':ref(old),'preservedPermanently':True,'resolved':False,'causalClaim':None},'faithfulDiagnosticAttempts':start['historicalAndDiagnosticAttempts'][1:4],'enhancedObservation':start['historicalAndDiagnosticAttempts'][4],'acceptedFinalWitness':final,'finalWitnessOutcome':ref(BASE/'final-witness-outcome.json'),'witnessValidation':ref(BASE/'witness-validation.json'),'allAttemptLedger':ledger,'methodologySidecar':sidecarref,'retainedNativeGroups':{'ids':GROUPS,'originalCases':retained,'independentDependencyValidation':ref(BASE/'reused-evidence.json'),'rerunCount':0},'correctionEvidence':{'processTopologyCorrectionA':{'retainedTopology':original['topology'],'newTopology':observed['topology'],'newDeadlineCleanup':outcome['deadlineCleanup']},'helperDeadlineCorrection':{'productionCorrection':'39d83316f7c72d6cb49f8b6cde36c1bfa833112a','productionBinding':C3CB,'reuseAnalysis':ref(ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final/reuse-analysis.json'),'retainedTiming':original['timing']},'cliDispatchCorrection':{'case':next(row for row in retained if Path(row['path']).stem=='corrected-cli-dispatch')},'unresolvedObservationMethodologyCorrectionB':{'actualM3':M3,'sidecar':sidecarref}},'semanticParity':original['semanticParity'],'installedIntegrity':observed['installedIntegrity'],'recurrenceRule':RECURRENCE,'recurrenceObserved':False,'finalAttemptAuthorizationConsumed':True,'finalWitnessExecutionCount':1,'historicalCauseEstablished':False,'limitations':['Historical FAIL / UNRESOLVED remains unchanged; current acceptance is candidate-specific under actual M3.','Process topology is sampled; no kernel containment or universal handle claim.','Reviewed observer adds measured bookkeeping; product clocks, deadlines, helper requests and outcomes remain unchanged.','M3 sidecar previousFailureRecorded=false refers only to a previous failed FINAL witness, never to the preserved historical failure.','Native receipt itself does not authorize a GitHub certification label; hosted evidence and parity remain required.'],'assembledBy':ref(Path(__file__))}
+ put(BASE/'native-receipt.json',receipt)
+ print(json.dumps({'status':'PASS','nativeReceipt':ref(BASE/'native-receipt.json'),'sidecar':sidecarref,'allAttemptLedger':ledger}))
+if __name__=='__main__':main()

@@ -1,0 +1,63 @@
+"""Strict read-only completeness validation for independent Phase 3C-R security evidence."""
+import copy,hashlib,json,sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[4];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3cr';BASE='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def read(name):return json.loads((OUT/name).read_bytes())
+def check_row(r):
+ p=(ROOT/r['path']).resolve();assert p.is_relative_to(ROOT.resolve()),'OUTSIDE_WORKSPACE';assert row(p)==r,'ARTIFACT_DRIFT '+r['path']
+def required_finish():
+ names=['positive-complete-bundle-verifier-logic','direct-sdk-exact-byte-oracle','cli-engineering-oracle-exact-bytes','metamorphic-UTC','metamorphic-Pacific-Honolulu','metamorphic-Asia-Dubai','metadata-incomplete-attempt-normative-isolation','first-failure-runtime-before-semantic-input','first-failure-pin-before-candidate-import','first-failure-version-before-relative-path','unknown-sdk-error-never-fabricates-cne']
+ names+=['tamper-'+v for v in ['result-exit','run-cross-link','projection-cross-link','distribution-cross-link','adapter-cross-link','runtime-cross-link','inputs-cross-link','unknown-field','normative-identity','normative-outcome']]
+ names+=['artifact-allowlist-'+v for v in ['extra','missing-marker','missing-outcome','manifest-path']]
+ names+=['stable-semantic-code-'+v for v in json.loads((ROOT/'repositories/memoryos-ci/contracts/semantic-errors.json').read_bytes())['codes']]
+ return set(names)
+def required_execution():
+ names=['config-defaults-and-serialization','containment-valid-spaces','regular-file-bounds-and-hardlink','junction-and-reparse-helper','missing-leaf-and-directory-type','file-symlink-or-host-privilege-disposition','trusted-node-executable','child-environment-actual-allowlist','worker-direct-argv-and-limits','closed-28-errors-and-exits','fixed-diagnostics-truncation-no-output-injection']
+ names+=['configuration-reject-'+v for v in ['unknown','wrongVersion','inline','both','neither','operation','timeoutLow','timeoutHigh','output','extensions','collision','URL']]
+ names+=['relative-boundary-'+str(i) for i in range(43)]+['absolute-boundary-'+str(i) for i in range(21)]
+ names+=['runtime-environment-reject-'+v for v in ['NODE_OPTIONS','NODE_PATH','NODE_INSPECT_RESUME_ON_START','NODE_REPL_EXTERNAL_MODULE']]
+ names+=['runtime-argv-reject-'+v for v in ['--require','--import','--loader','--inspect','--inspect-brk','--eval','--allow-child-process']]
+ names+=['native-generic-'+v for v in ['pass','fail','cne']]
+ return set(names)
+def validate(summary=None):
+ s=read('security-audit.json') if summary is None else summary;assert s['baseline']==BASE and s['status']=='PASS' and s['productionDefects']==0
+ assert set(s['areas'])=={'configuration','inputs','generic','filesystem','environment','network','processShell','resultErrors','injection','evidence','determinism'}
+ for r in s['artifacts']:check_row(r)
+ ex=read('security-execution.json');assert ex['baseline']==BASE and ex['status']=='FAIL';check_row(ex['harness']);positive=[x for x in ex['cases'] if x['status']=='PASS'];assert len(positive)==101 and {x['id'] for x in positive}==required_execution();failed=[x for x in ex['cases'] if x['status']=='FAIL'];assert len(failed)==1 and failed[0]['id']=='native-generic-metadata' and 'MO1306_ARTIFACT_WRITE' in failed[0]['error'];assert s['retainedOperationalRefusals']==3
+ finish=read('security-finish.json');assert finish['baseline']==BASE and finish['status']=='PASS';check_row(finish['harness']);check_row(finish['verificationSource']);assert len(finish['rows'])==109 and {x['id'] for x in finish['rows']}==required_finish();assert all(x['status']=='PASS' for x in finish['rows'])
+ for x in finish['rows']:
+  if x['id'].startswith('tamper-') or x['id'].startswith('artifact-allowlist-'):assert x['details']['observed'] in ['MO1306_BUNDLE_INTEGRITY','MO1306_SEMANTIC_INTEGRITY']
+  if x['id']=='cli-engineering-oracle-exact-bytes':
+   assert x['details']['exitCode']==0
+   for a in x['details']['artifacts']:check_row(a)
+ native=read('security-native.json');assert native['baseline']==BASE and len(native['cases'])==3;assert {x['name']:x['exitCode'] for x in native['cases']}=={'pass':0,'fail':6,'cne':7}
+ expectedNames={'evaluation-identity.json','policy-outcome.json','memoryos-ci-result.json','memoryos-ci-evidence.json','memoryos-ci-artifacts.json','memoryos-ci-complete.json'}
+ for c in native['cases']:
+  assert c['summary']['publication']=='COMPLETE' and c['summary']['exitCode']==c['exitCode'];assert len(c['artifacts'])==6
+  for r in c['artifacts']:check_row(r)
+  folder=ROOT/c['bundle'];assert {x.name for x in folder.iterdir()}==expectedNames;manifest=json.loads((folder/'memoryos-ci-artifacts.json').read_bytes());marker=json.loads((folder/'memoryos-ci-complete.json').read_bytes());assert marker['runId']==c['summary']['runId'] and marker['manifestSha256']==sha((folder/'memoryos-ci-artifacts.json').read_bytes());result=json.loads((folder/'memoryos-ci-result.json').read_bytes());evidence=json.loads((folder/'memoryos-ci-evidence.json').read_bytes());assert result['process']['exitCode']==c['exitCode'] and evidence['resultSha256']==sha((folder/'memoryos-ci-result.json').read_bytes())
+  for r in manifest['files']:
+   p=folder/r['path'];assert p.stat().st_size==r['byteLength'] and sha(p.read_bytes())==r['sha256']
+ verify=read('security-public-verify.json');assert verify['baseline']==BASE and verify['status']=='PASS' and verify['exitCode']==0 and verify['stdout']==verify['stderr']==''
+ suites=read('security-existing-suites.json');assert suites['baseline']==BASE and suites['status']=='PASS';assert [(x['id'],x.get('counts',{}).get('pass',x.get('tests'))) for x in suites['suites']]==[('contracts',152),('network-worker-authority',37),('correction-a-contract-negatives',14)]
+ for suite in suites['suites']:check_row(suite['log'])
+ reuse=read('security-lifecycle-reuse.json');assert reuse['baseline']==BASE and reuse['sourceRevision']=='0e35ffe70919d77b1db530929093826410b805f9' and reuse['status']=='PASS';assert len(reuse['unchangedDependencies'])==92
+ for dep in reuse['unchangedDependencies']:check_row(dep)
+ assert {r['id'] for r in reuse['traces']}=={'helper-cancel','worker-timeout','worker-cancel'}
+ for r in reuse['traces']:check_row(r['trace']);assert r['status']=='PASS' and r['commandBytesChecked'] and r['remainingPids']==[] and r['negativeRejections']==['fourth','rss','orphan','dictionary']
+ assert s['counts']=={'freshIndependentCases':101,'targetedLogicCases':109,'existingContractTests':152,'existingNetworkTests':37,'correctionAContractTests':14,'reusedLifecycleTraces':3,'lifecycleNegativeWitnesses':12,'publicVerifyCommands':1,'bundleTamperNegatives':14,'stableSDKErrorCodes':84}
+ assert s['limitations']==['No OS-wide network denial or kernel process-isolation claim','No hosted-provider execution or certification','Final installed Windows resource/cleanup certification remains external 3A-R','PowerShell path checks replaced only in the targeted verifier logic harness; fresh native bundles and filesystem checks use production helpers','Original failed operational attempts and harness-only failures remain failures; partial metadata output is not a completed publication']
+ return {'status':'PASS','baseline':BASE,'validatedArtifactCount':len(s['artifacts']),'requiredFreshCaseIds':sorted(required_execution()),'requiredLogicCaseIds':sorted(required_finish())}
+def negative_tests(s):
+ cases=[]
+ for name,mutate in [('wrong-baseline',lambda x:x.update(baseline='0'*40)),('forged-defect-clearance',lambda x:x.update(productionDefects=1)),('omit-area',lambda x:x['areas'].pop('filesystem')),('forge-count',lambda x:x['counts'].update(freshIndependentCases=100)),('hide-refusals',lambda x:x.update(retainedOperationalRefusals=0)),('erase-limit',lambda x:x['limitations'].pop()),('source-drift',lambda x:x['artifacts'][0].update(sha256='sha256:'+'0'*64))]:
+  bad=copy.deepcopy(s);mutate(bad)
+  try:validate(bad)
+  except (AssertionError,KeyError):cases.append({'id':name,'status':'PASS','rejected':True})
+  else:raise AssertionError('forged summary accepted '+name)
+ return cases
+if __name__=='__main__':
+ s=read('security-audit.json');result=validate(s);result['negativeWitnesses']=negative_tests(s);result['validator']=row(Path(__file__));result['summary']=row(OUT/'security-audit.json');(OUT/'security-validation.json').write_text(json.dumps(result,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8');print('Security completeness PASS;',len(result['requiredFreshCaseIds']),'fresh,',len(result['requiredLogicCaseIds']),'logic,',len(result['negativeWitnesses']),'validator negatives')

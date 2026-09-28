@@ -1,0 +1,41 @@
+"""Exact dependency reuse for retained native evidence; never execute a product group."""
+import argparse,datetime,hashlib,importlib.util,json,os,platform,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4];HERE=Path(__file__).resolve().parent;OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-certification';OLD=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final';MAIN=Path(r'C:\Users\melsa\Documents\Codex\cca-workspace')
+M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37';C3CB='701d48ee2012675966360dda775ab13013c09ab9'
+spec=importlib.util.spec_from_file_location('retained_final_validator',HERE.parent/'mo1306-phase3a-final/validate.py');old=importlib.util.module_from_spec(spec);spec.loader.exec_module(old)
+GROUPS=['corrected-cli-dispatch','late-helper','late-terminal','policy-cne','policy-fail','policy-pass','timely-helper','valid-generate']
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix() if p.is_relative_to(ROOT) else str(p),'byteLength':len(b),'sha256':sha(b)}
+def verify():
+ witness=json.loads((OUT/'witness-validation.json').read_bytes());assert witness['status']=='PASS' and witness['acceptedFinalWitness'] is True
+ a=old.Audit();native=a.json(OLD/'native-summary.json');reuse,manifest=a.candidate(native);review=a.native(native,manifest)
+ assert review['passedGroups']==8 and review['publicationFailure']['cause']=='UNRESOLVED'
+ run=a.value(native['nativeSummary']);bind=run['bindings'];pre=a.value(native['preflight'])
+ assert platform.system()=='Windows' and platform.machine()==bind['architecture'] and platform.platform()==bind['os']
+ timings=[a.value(r) for r in native['timing']]
+ for t in timings:
+  spawn=next(e for e in t['events'] if e['event']=='spawnBefore');assert spawn['options']['env']=={k:os.environ[k] for k in ('SystemRoot','WINDIR')}
+ rows=[]
+ for r in native['cases']:
+  case=a.value(r)
+  if case['id'] not in GROUPS:continue
+  assert case['status']=='PASS';refs=[]
+  def collect(v):
+   if isinstance(v,dict):
+    if {'path','byteLength','sha256'}<=v.keys():a.ref(v);refs.append(v)
+    else:
+     for x in v.values():collect(x)
+   elif isinstance(v,list):
+    for x in v:collect(x)
+  collect(case)
+  rows.append({'id':case['id'],'status':'REUSED_EXACT_DEPENDENCIES','originalReceipt':r,'rawToolInputArtifactBindings':refs,'sharedDependencies':'sharedBindings + installedMembers + sourceBindings + runtime/environment below','scope':'Original accepted group scope only; no new product execution or retroactive promotion of the failed ninth group.'})
+ assert sorted(r['id'] for r in rows)==GROUPS
+ return {'kind':'MemoryOSPhase3ACertificationRetainedEvidenceReuse','status':'PASS','methodologyRevision':M3,'productionAuthority':C3CB,'finalWitnessValidation':row(OUT/'witness-validation.json'),'retainedGroupCount':8,'rerunCount':0,'groups':sorted(rows,key=lambda x:x['id']),'sharedBindings':{k:v for k,v in bind.items() if k!='sourceBindings'},'sourceBindings':bind['sourceBindings'],'installedMembers':pre['installedMembers'],'archive':native['archive'],'distributionDigest':native['distributionDigest'],'sdkClosureFileCount':25,'productionDependencies':0,'environment':{'os':bind['os'],'architecture':bind['architecture'],'variables':{k:os.environ[k] for k in ('SystemRoot','WINDIR')},'basis':'Current OS/architecture/explicit environment equal original preflight and three recorded helper spawn environments; pinned Node bytes unchanged. Original controlled system executables are bound by fixed path/platform assumptions, not an invented historical OS-binary hash.'},'originalNativeReceipt':row(OLD/'native-summary.json'),'originalFailurePreserved':{'status':'NATIVE_CERTIFICATION_BLOCKED','classification':'ARTIFACT_ERROR','exitCode':17,'publication':'NONE','cause':'UNRESOLVED'},'offlineOriginalValidation':review,'checkedFileCount':len(a.checked),'independentValidator':row(HERE.parent/'mo1306-phase3a-final/validate.py'),'tool':row(Path(__file__))}
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');args=p.parse_args();v=verify()
+ if not args.check:
+  target=OUT/'reused-evidence.json';assert not target.exists();target.write_text(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
+ print(json.dumps({'status':'PASS','reusedGroups':8,'reruns':0,'checkedFiles':v['checkedFileCount'],'historicalCause':'UNRESOLVED'}))

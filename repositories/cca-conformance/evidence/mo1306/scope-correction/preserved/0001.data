@@ -1,0 +1,77 @@
+# MO-1306 final Phase 3A blocked report
+
+Native certification passed. GitHub certification is blocked by the first actual hosted bootstrap failure. No retry, FAIL/CNE dispatch, hosted label promotion or authoritative certification commit occurred.
+
+The historical missing-input failure remains FAIL / UNRESOLVED. This task does not claim that its cause was resolved.
+
+| # | Required area | Verified outcome |
+|---|---|---|
+| 1 | Starting state | Branch mo1306/phase3a-refresh; historical HEAD f236c4a2f94d8cd8e763aaa4bd6c52d703429692; refresh checkout only; main read-only. |
+| 2 | M3 | 85a0f85c1ebd013c545ccf2b3efe58a760e6cf37 |
+| 3 | M3 parent | 701d48ee2012675966360dda775ab13013c09ab9 |
+| 4 | M3 validation | Methodology validator PASS; tests PASS (84 negative, 5 positive). |
+| 5 | Eligibility matrix | 18 PASS / 0 FAIL / 0 NOT_ESTABLISHED; one final witness authorized. |
+| 6 | C3CB | 701d48ee2012675966360dda775ab13013c09ab9 |
+| 7 | Candidate archive | memoryos-ci@0.1.0; 197290 bytes; SHA-256 7649f6df77c3f6163eb94b343974abaeccebbd5bcb8a2208cc889128904ce45d; 94 members, 25 SDK files, zero production dependencies. |
+| 8 | Historical failure preservation | 758 historical files unchanged. Attempt 20260927T120240-b3df86 remains FAIL / UNRESOLVED; INPUT_ERROR11 then ARTIFACT_ERROR17, incomplete publication. |
+| 9 | Final-witness ledger created before execution | YES: durable start record at 22:46:05.421129 UTC; execution began 22:47:24.407293 UTC; exclusive consumed authorization retained. |
+| 10 | Final witness attempt ID | 20260927T224605-61fe80; run 574ec2a2-454b-4c8d-a1a4-e9c68273202a. |
+| 11 | Final witness result | PASS: INPUT_ERROR, independently accepted. |
+| 12 | Final witness exit | 11. |
+| 13 | Final witness bundle | COMPLETE; exactly result, evidence, artifacts manifest and completion marker; four canonical files. |
+| 14 | Final witness integrity | PASS: all 94 installed members unchanged; schema, candidate, distribution, run-id and hashes verified. |
+| 15 | Final witness cleanup | PASS: 20 timely helpers, minimum margin 444.6722 ms; no owned process or open descriptor left. |
+| 16 | Recurrence status | No final-witness recurrence; exactly one execution, zero retries, no additional witness authorized. |
+| 17 | Reused eight-group dependency validation | PASS: eight retained groups, 568 dependency bindings; zero reruns. |
+| 18 | Native receipt | Engineering native-receipt.json plus two closed-schema native companion receipts; independent validation PASS. |
+| 19 | Generic certification label | REAL_EXECUTION_CERTIFIED. |
+| 20 | Initial remote default branch | main. |
+| 21 | Initial remote main SHA | 5955af062152a84c10de17860ba0bcabe8b3555f |
+| 22 | Initial certification branch SHA | 3096139e0108be22528859e4f462356dddf6ef29 |
+| 23 | Certification scaffold | 451599e7b95a537ebc2daac627b061fd88791dea; sole parent C3CB; exactly three workflow files; operational scaffolding. |
+| 24 | Certification branch update | PASS: only refs/heads/mo1306-certification updated to reviewed scaffold. |
+| 25 | Force update used yes/no | YES: exact old-SHA force-with-lease; no other ref changed. |
+| 26 | Workflow registration requirement | Direct registration was unavailable; default-branch presence required. Current API semantics reviewed, registry checked before dispatch. |
+| 27 | Temporary default-branch switch yes/no | YES: main to mo1306-certification, then restored to main. |
+| 28 | Workflow registry result | PASS: all three reviewed workflows registered; no blind 404 retry. |
+| 29 | Workflow ID | PASS 368631903; FAIL 368631902; CNE 368631901; all active at registration. |
+| 30 | Action pins | checkout 3d3c42e5aac5ba805825da76410c181273ba90b1; upload-artifact 043fb46d1a93c77aae656e7c1c64a875d1fc6a0a; unchanged. |
+| 31 | Hosted Node identity | Node 24.21.0 win-x64 checks preceded the failing transport invocation by verified bootstrap control flow. No completed runtime artifact; this is qualified control-flow evidence, not a successful hosted receipt. ZIP pin 37618919 bytes / SHA-256 158f7685b44de51f6c0df1d153526cbcd3e1bc739a8dfc607721cef75de9e541. |
+| 32 | Hosted PASS run/result | Run 36357568243, attempt 1: workflow/job failure; bootstrap MO1306_FILESYSTEM_BOUNDARY / ACQUISITION, exit 1. Policy evaluation never ran. |
+| 33 | Hosted FAIL run/result | NOT_EXECUTED: stopped after PASS-case bootstrap failure. |
+| 34 | Hosted CNE run/result | NOT_EXECUTED: stopped after PASS-case bootstrap failure. |
+| 35 | Runner metadata | windows-2022; runner GitHub Actions 1000000460, runner ID 1000000460; job 108728221298; job 2026-09-27T23:06:33Z to 2026-09-27T23:07:08Z. |
+| 36 | Hosted artifacts | Zero hosted product artifacts. Actual run/job/artifact-list metadata and logs.zip preserved; upload skipped. |
+| 37 | Hosted completion/run-id | NOT_ESTABLISHED: no published hosted bundle, completion marker or bundle run-id. |
+| 38 | Native/hosted parity | NOT_ESTABLISHED: no hosted normative bytes; native oracle parity remains valid. |
+| 39 | Default branch restoration | PASS: immediate finally restoration, independently verified at 2026-09-27T23:07:24.127296+00:00. |
+| 40 | Final default branch | main. |
+| 41 | Final remote main SHA | 5955af062152a84c10de17860ba0bcabe8b3555f |
+| 42 | Final certification branch SHA | 451599e7b95a537ebc2daac627b061fd88791dea |
+| 43 | MO-1302 regression | PASS: exactly four targeted tests, zero failures; released Action bytes unchanged. |
+| 44 | Historical-disclosure sidecar | methodology-sidecar.json binds actual M3, original FAIL / UNRESOLVED, all six attempts and one final witness. |
+| 45 | Final Phase 3A receipt | execution-receipt.json records HOSTED_CERTIFICATION_BLOCKED; no overall certification claim. |
+| 46 | Generic final state | REAL_EXECUTION_CERTIFIED. |
+| 47 | GitHub final state | NOT_CERTIFIED; hosted bootstrap failed. |
+| 48 | Certification commit | NONE. No authoritative certification commit created or pushed. |
+| 49 | Certification commit parent | Not applicable; intended success parent H=f6e181ae330c8f884f5b9737f71f546eb2494201 was never used for a final certificate. |
+| 50 | M3 graph/binding strategy | Existing matching-byte engineering snapshot H has sole parent M3, and M3 sole parent C3CB. Native receipts bind H; scaffold binds C3CB. No future-hash self-reference, merge, amendment or checkpoint rewrite. |
+| 51 | Production changes | 0. Production authority remains exact C3CB; no product fix attempted. |
+| 52 | Workspace verification | PASS for actual blocked checkout; final post-commit verification is inapplicable. |
+| 53 | git diff --check | PASS for tracked worktree/index; preserved new evidence remains untracked. |
+| 54 | Final Git status | HEAD unchanged at historical checkpoint; no tracked/staged changes. Prior and new evidence/tooling directories remain untracked; no clean final certificate checkout claimed. |
+| 55 | Push operations | One authorized cert-branch push only. No main, M3, H or final-certificate push. Final readback observed three unrelated Dependabot heads changed; no task writes to those heads, actor/cause unverified. Exact delta retained. |
+| 56 | Tag state | No tag or release created; remote tag map unchanged. |
+| 57 | Linux/Ubuntu/WSL | No Linux, Ubuntu or WSL execution. |
+| 58 | VM | No separately provisioned VM. Authorized GitHub-hosted windows-2022 runner used. |
+| 59 | GitLab/Jenkins/Azure account usage | No GitLab, Jenkins or Azure account usage; their labels remain CONTRACT_VALIDATED. |
+| 60 | Duration | 37.25 minutes from 22:41:38 UTC to blocked report at 2026-09-27T23:18:52.805438+00:00; later offline seal checks are recorded separately. |
+| 61 | >90-minute justification if applicable | Not applicable; below 90 minutes. |
+| 62 | 3-hour hard-stop compliance | Compliant; stopped hosted execution immediately on failure, no retry or expansion. |
+| 63 | Exact Phase 3D recommendation | NOT READY FOR PHASE 3D INTEGRATION. Resolve and explicitly reauthorize the hosted bootstrap blocker before any new certification execution. |
+
+Actual hosted run: https://github.com/moelsaka01/memoryos-specification/actions/runs/36357568243
+
+The prerequisite harness snapshot and prepared success-only seal-certificate.py are retained as engineering evidence. The sealing tool was never executed. The frozen native receipts remain valid; no hosted success receipt was fabricated.
+
+MO-1306 PHASE 3A HOSTED CERTIFICATION BLOCKED

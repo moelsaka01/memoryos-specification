@@ -1,0 +1,75 @@
+95093:
+95094:   const entityConfig = this.options.processEntities;
+95095:
+95096:   if (!entityConfig.enabled) {
+95097:     return val;
+95098:   }
+95099:
+95100:   // Check tag-specific filtering
+95101:   if (entityConfig.allowedTags) {
+95102:     if (!entityConfig.allowedTags.includes(tagName)) {
+95103:       return val; // Skip entity replacement for current tag as not set
+95104:     }
+95105:   }
+95106:
+95107:   if (entityConfig.tagFilter) {
+95108:     if (!entityConfig.tagFilter(tagName, jPath)) {
+95109:       return val; // Skip based on custom filter
+95110:     }
+95111:   }
+95112:
+95113:   // Replace DOCTYPE entities
+95114:   for (let entityName in this.docTypeEntities) {
+95115:     const entity = this.docTypeEntities[entityName];
+95116:     const matches = val.match(entity.regx);
+95117:
+95118:     if (matches) {
+95119:       // Track expansions
+95120:       this.entityExpansionCount += matches.length;
+95121:
+95122:       // Check expansion limit
+95123:       if (entityConfig.maxTotalExpansions &&
+95124:         this.entityExpansionCount > entityConfig.maxTotalExpansions) {
+95125:         throw new Error(
+95126:           `Entity expansion limit exceeded: ${this.entityExpansionCount} > ${entityConfig.maxTotalExpansions}`
+95127:         );
+95128:       }
+95129:
+95130:       // Store length before replacement
+95131:       const lengthBefore = val.length;
+95132:       val = val.replace(entity.regx, entity.val);
+95133:
+95134:       // Check expanded length immediately after replacement
+95135:       if (entityConfig.maxExpandedLength) {
+95136:         this.currentExpandedLength += (val.length - lengthBefore);
+95137:
+95138:         if (this.currentExpandedLength > entityConfig.maxExpandedLength) {
+95139:           throw new Error(
+95140:             `Total expanded content size exceeded: ${this.currentExpandedLength} > ${entityConfig.maxExpandedLength}`
+95141:           );
+95142:         }
+95143:       }
+95144:     }
+95145:   }
+95146:   if (val.indexOf('&') === -1) return val;  // Early exit
+95147:
+95148:   // Replace standard entities
+95149:   for (let entityName in this.lastEntities) {
+95150:     const entity = this.lastEntities[entityName];
+95151:     val = val.replace(entity.regex, entity.val);
+95152:   }
+95153:   if (val.indexOf('&') === -1) return val;  // Early exit
+95154:
+95155:   // Replace HTML entities if enabled
+95156:   if (this.options.htmlEntities) {
+95157:     for (let entityName in this.htmlEntities) {
+95158:       const entity = this.htmlEntities[entityName];
+95159:       val = val.replace(entity.regex, entity.val);
+95160:     }
+95161:   }
+95162:
+95163:   // Replace ampersand entity last
+95164:   val = val.replace(this.ampEntity.regex, this.ampEntity.val);
+95165:
+95166:   return val;
+95167: }

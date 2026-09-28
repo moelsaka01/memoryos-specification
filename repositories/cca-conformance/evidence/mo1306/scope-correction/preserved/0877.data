@@ -1,0 +1,65 @@
+"""Explicit byte-dependent reuse of unchanged B2 native launcher/semantic layers."""
+import hashlib,json,pathlib,subprocess
+ROOT=pathlib.Path(__file__).resolve().parents[4];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3cr/provider-results'
+B2='0e35ffe70919d77b1db530929093826410b805f9';BASELINE='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44';GIT=r'C:\Program Files\Git\cmd\git.exe'
+def git(*args):return subprocess.check_output([GIT,*args],cwd=ROOT,stdin=subprocess.DEVNULL,creationflags=subprocess.CREATE_NO_WINDOW)
+def sha(raw):return 'sha256:'+hashlib.sha256(raw).hexdigest()
+def identity(p):
+ raw=p.read_bytes();return {'path':p.relative_to(ROOT).as_posix(),'byteLength':len(raw),'sha256':sha(raw)}
+tree={}
+for entry in git('ls-tree','-r',B2,'--','repositories/memoryos-ci','repositories/cca-conformance').decode().splitlines():
+ meta,name=entry.split('\t',1);tree[name]=meta.split()[2]
+checked={}
+def bind(p):
+ p=p.resolve();assert p.is_relative_to(ROOT);row=identity(p);raw=p.read_bytes();blob=hashlib.sha1(('blob '+str(len(raw))+'\0').encode()+raw).hexdigest();assert blob==tree[row['path']],row['path'];checked[row['path']]=row;return row
+changed=git('diff','--name-only',B2,BASELINE,'--','repositories/memoryos-ci').decode().splitlines()
+assert changed==['repositories/memoryos-ci/bin/memoryos-ci.mjs','repositories/memoryos-ci/distribution-manifest.json'],changed
+source=[]
+for p in sorted((ROOT/'repositories/memoryos-ci').rglob('*')):
+ if p.is_file() and p.relative_to(ROOT).as_posix()not in changed:source.append(bind(p))
+base=ROOT/'repositories/cca-conformance/evidence/mo1306/phase2d'
+receipts={name:json.loads((base/name).read_text())for name in ('launchers.json','github-wrapper.json','native-execution.json','semantic-parity.json')}
+for name in receipts:bind(base/name);assert receipts[name]['status']=='PASS'
+for tool in ['mo1306-phase2d/launchers.py','mo1306-phase2d/native.py','mo1306-phase2d/common.py','mo1306-phase2c/github-wrapper.test.mjs']:bind(ROOT/'repositories/cca-conformance/tools'/tool)
+def verify_bundle(directory,expected_provider,expected_exit,summary=None,oracle=None):
+ files={p.name:p.read_bytes()for p in directory.iterdir()if p.is_file()}
+ for p in directory.iterdir():assert p.is_file();bind(p)
+ result=json.loads(files['memoryos-ci-result.json']);evidence=json.loads(files['memoryos-ci-evidence.json']);manifest=json.loads(files['memoryos-ci-artifacts.json']);marker=json.loads(files['memoryos-ci-complete.json'])
+ assert result['provider']==expected_provider and result['process']['exitCode']==expected_exit
+ assert evidence['resultSha256']==sha(files['memoryos-ci-result.json'])
+ assert marker['manifestSha256']==sha(files['memoryos-ci-artifacts.json'])
+ assert result['runId']==evidence['runId']==manifest['runId']==marker['runId']==directory.name
+ for row in manifest['files']:assert len(files[row['path']])==row['byteLength']and sha(files[row['path']])==row['sha256']
+ if summary:assert summary['publication']=='COMPLETE' and summary['resultSha256']==sha(files['memoryos-ci-result.json'])and summary['runId']==directory.name
+ if oracle:
+  for name in ('evaluation-identity.json','policy-outcome.json'):
+   bind(oracle/name);assert files[name]==(oracle/name).read_bytes()
+ return {'provider':expected_provider,'exitCode':expected_exit,'runId':directory.name,'bundle':directory.relative_to(ROOT).as_posix(),'historicalCrossLinks':'PASS','normativeByteParity':'PASS'if oracle else 'NOT_APPLICABLE','metadata':evidence['metadata']}
+launcher_rows=[]
+for case in receipts['launchers.json']['cases']:
+ provider,outcome=case['id'].split('-');assert case['status']=='PASS'and case['poisonedNodeVariablesScrubbed']
+ oracle=ROOT/'repositories/cca-conformance/fixtures/mo1306'/('evaluate-policy-'+outcome)
+ launcher_rows.append(verify_bundle(ROOT/case['bundle'],provider,case['exitCode'],case['summary'],oracle))
+assert len(launcher_rows)==15
+native_rows=[]
+for case in receipts['native-execution.json']['cases']:
+ assert case['status']=='PASS'
+ result=verify_bundle(ROOT/case['bundle'],case['provider'],case['exitCode'],oracle=ROOT/case['oracle']if case['oracle']else None)
+ assert result['metadata']==case['expectedMetadata'];native_rows.append(result)
+assert len(native_rows)==45
+wrapper=receipts['github-wrapper.json'];assert wrapper['passed']==20 and wrapper['hostedExecuted']is False and wrapper['networkExecuted']is False
+wrapper_rows=[]
+for case in wrapper['cases']:
+ assert case['status']=='PASS'
+ if 'bundle'in case:wrapper_rows.append(verify_bundle(ROOT/case['bundle'],'github',case['exitCode']))
+changed_details=[]
+for name in changed:
+ current=(ROOT/name).read_bytes();old=git('show',B2+':'+name);changed_details.append({'path':name,'oldSha256':sha(old),'currentSha256':sha(current),'reuseExcluded':True})
+report={'kind':'MemoryOSPhase3CRScopedHistoricalNativeReuse','version':'1.0.0','status':'PASS','sourceRevision':B2,'targetRevision':BASELINE,'unchangedProductionCount':len(source),'unchangedProduction':source,'changedExcluded':changed_details,'checkedHistoricalFileCount':len(checked),'allByteDependencies':sorted(checked.values(),key=lambda r:r['path']),
+'counts':{'historicalFixedPowerShellLauncherCases':15,'historicalNativeSyntheticMetadataCases':45,'historicalWrapperCases':20,'freshBundleCrossLinkChecks':len(launcher_rows)+len(native_rows)+len(wrapper_rows)},'launcherCases':launcher_rows,'nativeCases':native_rows,'wrapperBundleCases':wrapper_rows,
+'reuseScope':'Only unchanged fixed PowerShell launcher, provider core/metadata/projection, transport, filesystem/process implementation and SDK normative-byte invariants. These are historical executions, with freshly rechecked source equality and bundle hash/normative parity; not fresh C3AB native certification.',
+'exclusions':['B2 CLI entry and B2 distribution manifest are explicitly excluded from byte-equality reuse.','Current CLI correction/public dispatch and current distribution identity require independent fresh Phase3CR evidence from coordinator/security, not these historical runs.','Both fresh wrapper attempts remain failed and are not overridden by this reuse.','No hosted or live provider certification is claimed.'],
+'currentAttemptAssessment':{'status':'FAILED_EXECUTION_PRESERVED','firstAttempt':'Pinned runtime handoff failed with FILESYSTEM_BOUNDARY; direct unchanged helper returned safe:true in2110ms and1578ms, the first exceeding frozen2000ms.','retry':'Pinned-runtime handoff succeeded; subsequent evaluation left empty .pending and emitted ARTIFACT_WRITE, then common result verification emitted FILESYSTEM_BOUNDARY, then wrapper refused absent canonical summary with RUNTIME_INTEGRITY.','causalLimit':'Frozen diagnostics do not distinguish helper timeout, invalid helper response, stderr, or path refusal. Exact cause of retry is not proven; prior direct helper timing establishes a feasible host failure mode, not causal proof.','engineeringDifference':'Current native retry subprocess.run omitted stdin=DEVNULL; retained phase2d/launcher-host-disposition.json documents open inherited stdin causing similar filesystem timeouts in its own historical campaign. This is a specific setup difference and remains an unconfirmed explanation for current retry.','productionAssessment':'Observed operational failures remain within frozen error/exit behavior and never publish completion. No unsafe acceptance, semantic alteration, or demonstrated new production contract defect established.'}}
+bind(base/'launcher-host-disposition.json');report['allByteDependencies']=sorted(checked.values(),key=lambda r:r['path']);report['checkedHistoricalFileCount']=len(checked)
+(OUT/'scoped-native-reuse.json').write_text(json.dumps(report,indent=2,sort_keys=True)+'\n',encoding='utf8')
+print(json.dumps({'status':'PASS','unchangedProductionCount':len(source),'checkedHistoricalFileCount':len(checked),'counts':report['counts']}))

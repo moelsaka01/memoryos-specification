@@ -1,0 +1,100 @@
+{
+  "kind": "MO1306Phase3CRDispatchValidation",
+  "version": "1.0.0",
+  "baseline": "9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44",
+  "status": "PASS",
+  "report": {
+    "path": "repositories/cca-conformance/evidence/mo1306/phase3cr/dispatch-audit.json",
+    "byteLength": 200846,
+    "sha256": "sha256:5d51e69ecff34fc2ba5dc962190ffe05ceba149ab84e03fd0cf535d2c498a04e"
+  },
+  "tool": {
+    "path": "repositories/cca-conformance/tools/mo1306-phase3cr/dispatch-validate.mjs",
+    "sha256": "sha256:39f9948b8daed21e1258c6e86da772bdfcc4f68ecbe7521c526b79c5c4610950"
+  },
+  "positive": true,
+  "negativeWitnesses": [
+    {
+      "name": "old-baseline",
+      "status": "EXPECTED_REJECTION",
+      "reason": "authority"
+    },
+    {
+      "name": "old-source",
+      "status": "EXPECTED_REJECTION",
+      "reason": "corrected CLI source"
+    },
+    {
+      "name": "runtime-substitution",
+      "status": "EXPECTED_REJECTION",
+      "reason": "trusted runtime"
+    },
+    {
+      "name": "removed-corpus-member",
+      "status": "EXPECTED_REJECTION",
+      "reason": "prototype corpus"
+    },
+    {
+      "name": "handler-entry",
+      "status": "EXPECTED_REJECTION",
+      "reason": "zero handler boundary"
+    },
+    {
+      "name": "incorrect-usage-exit",
+      "status": "EXPECTED_REJECTION",
+      "reason": "public error contract"
+    },
+    {
+      "name": "getter-triggered",
+      "status": "EXPECTED_REJECTION",
+      "reason": "prototype mutation"
+    },
+    {
+      "name": "missing-error",
+      "status": "EXPECTED_REJECTION",
+      "reason": "total counts"
+    },
+    {
+      "name": "provider-accepted",
+      "status": "EXPECTED_REJECTION",
+      "reason": "provider rejection"
+    },
+    {
+      "name": "projection-accepted",
+      "status": "EXPECTED_REJECTION",
+      "reason": "projection rejection"
+    },
+    {
+      "name": "wrong-truncation",
+      "status": "EXPECTED_REJECTION",
+      "reason": "truncation"
+    },
+    {
+      "name": "dynamic-metadata-provider",
+      "status": "EXPECTED_REJECTION",
+      "reason": "fixed metadata providers"
+    },
+    {
+      "name": "SDK-authority-mismatch",
+      "status": "EXPECTED_REJECTION",
+      "reason": "SDK closure correspondence"
+    },
+    {
+      "name": "bound-file-tamper",
+      "status": "EXPECTED_REJECTION",
+      "reason": "source bytes repositories/cca-conformance/evidence/mo1306/phase3-correction/dispatch-audit.json"
+    },
+    {
+      "name": "concealed-site",
+      "status": "EXPECTED_REJECTION",
+      "reason": "site inventory"
+    },
+    {
+      "name": "native-argv-change",
+      "status": "EXPECTED_REJECTION",
+      "reason": "native invocation"
+    }
+  ],
+  "negativeCount": 16,
+  "validatedResults": 228
+}

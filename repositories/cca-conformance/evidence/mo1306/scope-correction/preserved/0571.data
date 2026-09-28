@@ -1,0 +1,78 @@
+"""Independent, bounded offline probes of exact pinned upload-artifact code.
+Writes only in the explicitly authorized refresh2 checkout. No hosted execution.
+"""
+from pathlib import Path
+import hashlib,json,re,tarfile,difflib,base64,subprocess,time,datetime,ctypes
+from ctypes import wintypes
+ROOT=Path(__file__).resolve().parents[4]
+assert ROOT.name=='cca-mo1306-3b-refresh2'
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3b-r2'
+SOURCES=OUT/'xml-sources'; CACHE=ROOT/'.cache/mo1306-phase3b-r2/xml'
+NODE=ROOT.parent/'cca-workspace/.cache/mo1305-phase3br/toolchain/node-v24.21.0-win-x64/node.exe'
+sha=lambda b:hashlib.sha256(b).hexdigest()
+
+def source_review():
+ bundle=(CACHE/'dist__upload__index.js').read_text(encoding='utf-8'); merge=(CACHE/'dist__merge__index.js').read_text(encoding='utf-8')
+ lock=json.loads((CACHE/'package-lock.json').read_bytes()); copies={k:v for k,v in lock['packages'].items() if k.endswith('/fast-xml-parser')}
+ upstream=(SOURCES/'upstream-5.4.1.tgz').read_bytes()
+ assert 'sha512-'+base64.b64encode(hashlib.sha512(upstream).digest()).decode()==copies['node_modules/fast-xml-parser']['integrity']
+ t=tarfile.open(SOURCES/'upstream-5.4.1.tgz');review={'lockCopies':copies,'upstreamTarballMatchesLockIntegrity':True,'bundleCopies':{},'modules':[]}
+ for name,code in [('upload',bundle),('merge',merge)]:
+  review['bundleCopies'][name]={'XMLParserClassCount':len(re.findall(r'^class XMLParser \{',code,re.M)),'OrderedObjParserClassCount':len(re.findall(r'^class OrderedObjParser \{',code,re.M)),'affectedFunctionCount':len(re.findall(r'^const OrderedObjParser_replaceEntitiesValue = function',code,re.M))}
+ for rel in ['src/xmlparser/OrderedObjParser.js','src/xmlparser/OptionsBuilder.js','src/xmlparser/XMLParser.js']:
+  marker=';// CONCATENATED MODULE: ./node_modules/fast-xml-parser/'+rel
+  a=bundle.index(marker)+len(marker)+1;b=bundle.find(';// CONCATENATED MODULE:',a);code=bundle[a:b];up=t.extractfile('package/'+rel).read().decode()
+  diff=''.join(difflib.unified_diff(up.splitlines(True),code.splitlines(True),fromfile='upstream-5.4.1/'+rel,tofile='upload-bundle/'+rel))
+  name=Path(rel).stem;(SOURCES/(name+'.bundle.js')).write_text(code,encoding='utf-8');(SOURCES/(name+'.upstream.js')).write_text(up,encoding='utf-8');(SOURCES/(name+'.diff')).write_text(diff,encoding='utf-8')
+  def normalize(x):
+   x=re.sub(r'^import .*?;\s*$','',x,flags=re.M);x=x.replace("'use strict';",'').replace('export default ','').replace('export const ','const ')
+   for old,new in [('OrderedObjParser_replaceEntitiesValue','replaceEntitiesValue'),('ignoreAttributes_getIgnoreAttributesFn','getIgnoreAttributesFn'),('OptionsBuilder_defaultOptions','defaultOptions'),('xmlNode','XmlNode')]:x=re.sub(r'\b'+old+r'\b',new,x)
+   return '\n'.join(line.rstrip() for line in x.splitlines() if line.strip())
+  equal=normalize(up)==normalize(code);assert equal,rel
+  review['modules'].append({'path':rel,'upstreamSha256':sha(up.encode()),'bundleModuleSha256':sha(code.encode()),'bundleStartLine':bundle[:a].count('\n')+1,'bundleEndLine':bundle[:b].count('\n'),'normalizedEqual':equal,'normalization':'Remove import/export/strict directives, blank lines and ncc identifiers explicitly enumerated by xml-analysis.py; executable body otherwise unchanged.'})
+ (OUT/'xml-source-review.json').write_text(json.dumps(review,indent=2)+'\n',encoding='utf-8')
+ tail='run().catch(error => {\n    setFailed(error.message);\n});'
+ assert bundle.count(tail)==1
+ addition='export { XMLParser, OrderedObjParser, getParserOptions, parseXML, NodeHttpClient, esm_httpHeaders_createHttpHeaders as createHttpHeaders, run };\nexport function installTwirpStub(client){ internalArtifactTwirpClient = () => client; }\nexport function installBackendStub(){ getBackendIdsFromToken = () => ({workflowRunBackendId:"1",workflowJobRunBackendId:"1"}); }\n'
+ instrumented=bundle.replace(tail,'// Autorun suppressed for an offline local witness.\n'+addition)
+ (CACHE/'witness-bundle.mjs').write_text(instrumented,encoding='utf-8')
+ (OUT/'xml-instrumentation.json').write_text(json.dumps({'originalBundleSha256':sha(bundle.encode()),'instrumentedBundleSha256':sha(instrumented.encode()),'replacementCount':1,'replaced':tail,'replacement':addition,'testChanges':'Suppress autorun; export actual entry, parser and transport functions; substitute GitHub RPC and backend identifiers; replace only Node HTTP transport at runtime. Parser, serializer, zip, upload entry and Azure pipeline remain original. Deny external network builtins.'},indent=2)+'\n')
+ fixed=tarfile.open(SOURCES/'upstream-5.5.6.tgz').extractfile('package/lib/fxp.cjs').read()
+ (CACHE/'fixed-fxp.cjs').write_bytes(fixed)
+ return review
+
+class BASIC(ctypes.Structure):
+ _fields_=[('PerProcessUserTimeLimit',ctypes.c_longlong),('PerJobUserTimeLimit',ctypes.c_longlong),('LimitFlags',wintypes.DWORD),('MinimumWorkingSetSize',ctypes.c_size_t),('MaximumWorkingSetSize',ctypes.c_size_t),('ActiveProcessLimit',wintypes.DWORD),('Affinity',ctypes.c_size_t),('PriorityClass',wintypes.DWORD),('SchedulingClass',wintypes.DWORD)]
+class IO(ctypes.Structure):
+ _fields_=[(k,ctypes.c_ulonglong) for k in ['ReadOperationCount','WriteOperationCount','OtherOperationCount','ReadTransferCount','WriteTransferCount','OtherTransferCount']]
+class EXTENDED(ctypes.Structure):
+ _fields_=[('BasicLimitInformation',BASIC),('IoInfo',IO),('ProcessMemoryLimit',ctypes.c_size_t),('JobMemoryLimit',ctypes.c_size_t),('PeakProcessMemoryUsed',ctypes.c_size_t),('PeakJobMemoryUsed',ctypes.c_size_t)]
+
+def probe(mode):
+ k=ctypes.WinDLL('kernel32',use_last_error=True)
+ k.CreateJobObjectW.restype=wintypes.HANDLE;k.CreateJobObjectW.argtypes=[ctypes.c_void_p,wintypes.LPCWSTR]
+ k.SetInformationJobObject.argtypes=[wintypes.HANDLE,ctypes.c_int,ctypes.c_void_p,wintypes.DWORD]
+ k.AssignProcessToJobObject.argtypes=[wintypes.HANDLE,wintypes.HANDLE]
+ k.QueryInformationJobObject.argtypes=[wintypes.HANDLE,ctypes.c_int,ctypes.c_void_p,wintypes.DWORD,ctypes.c_void_p]
+ k.CloseHandle.argtypes=[wintypes.HANDLE]
+ job=k.CreateJobObjectW(None,None);limits=EXTENDED();limits.BasicLimitInformation.LimitFlags=0x100|0x2000;limits.ProcessMemoryLimit=384*1024*1024
+ if not k.SetInformationJobObject(job,9,ctypes.byref(limits),ctypes.sizeof(limits)):raise ctypes.WinError(ctypes.get_last_error())
+ command=[str(NODE),'--max-old-space-size=96','--expose-gc',str(Path(__file__).with_name('xml-witness.mjs')),str(CACHE/'witness-bundle.mjs'),mode,str(CACHE/mode)]
+ start=time.monotonic();p=subprocess.Popen(command,cwd=ROOT,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+ if not k.AssignProcessToJobObject(job,wintypes.HANDLE(p._handle)):
+  p.kill();raise ctypes.WinError(ctypes.get_last_error())
+ timeout=False
+ try:stdout,stderr=p.communicate(b'go\n',timeout=10)
+ except subprocess.TimeoutExpired:timeout=True;p.kill();stdout,stderr=p.communicate()
+ elapsed=time.monotonic()-start;k.QueryInformationJobObject(job,9,ctypes.byref(limits),ctypes.sizeof(limits),None);k.CloseHandle(job)
+ lines=stdout.decode('utf-8',errors='replace').splitlines();matches=[s[len('XML_WITNESS_JSON='):] for s in lines if s.startswith('XML_WITNESS_JSON=')]
+ result={'mode':mode,'command':command,'exitCode':p.returncode,'wallSeconds':elapsed,'timedOut':timeout,'wallLimitSeconds':10,'v8OldSpaceLimitMiB':96,'hardWindowsJobProcessMemoryLimitBytes':384*1024*1024,'peakProcessCommittedBytes':limits.PeakProcessMemoryUsed,'stdoutSha256':sha(stdout),'stderr':stderr.decode('utf-8',errors='replace'),'witness':json.loads(matches[-1]) if matches else None}
+ (OUT/('xml-'+mode+'.json')).write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
+ (OUT/('xml-'+mode+'.stdout.txt')).write_bytes(stdout)
+ print(json.dumps({'mode':mode,'exitCode':p.returncode,'wallSeconds':elapsed,'peakProcessCommittedBytes':limits.PeakProcessMemoryUsed,'hasWitness':bool(matches),'stderr':result['stderr'][:600]}))
+ assert not timeout and p.returncode==0 and matches,mode
+ return result
+
+if __name__=='__main__':
+ source_review()
+ for mode in ['boundary','entry-success','entry-stage-error','entry-commit-error','fixed-boundary']:probe(mode)

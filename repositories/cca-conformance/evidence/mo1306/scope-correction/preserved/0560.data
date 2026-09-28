@@ -1,0 +1,51 @@
+{
+  "current3ARWorkflows": [
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3a-refresh\\.github\\workflows\\mo1306-certification-pass.yml",
+      "sha256": "79dfcad62e9c54aebbe00fb100ee545025388351afc12ee98b8a193d3dc17416",
+      "relevantUploadInvocationEqual": true,
+      "manualDispatch": true,
+      "contentsRead": true,
+      "toolRefIsC3AB": true,
+      "noPullRequestTriggers": true,
+      "noSecretsExpression": true,
+      "uploadInvocation": "        if: always() && steps.evaluate.outputs.complete == 'true'\n        uses: 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'\n        with:\n          name: 'memoryos-ci-${{ github.run_id }}-${{ github.run_attempt }}'\n          path: |\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/evaluation-identity.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-artifacts.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-complete.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-evidence.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-result.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/policy-outcome.json\n          if-no-files-found: 'error'\n          include-hidden-files: true\n          retention-days: 7\n"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3a-refresh\\.github\\workflows\\mo1306-certification-fail.yml",
+      "sha256": "8de9b21bae83eb047afce792c4c690e715acde9cff2eae8103c00f7acaad06f3",
+      "relevantUploadInvocationEqual": true,
+      "manualDispatch": true,
+      "contentsRead": true,
+      "toolRefIsC3AB": true,
+      "noPullRequestTriggers": true,
+      "noSecretsExpression": true,
+      "uploadInvocation": "        if: always() && steps.evaluate.outputs.complete == 'true'\n        uses: 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'\n        with:\n          name: 'memoryos-ci-${{ github.run_id }}-${{ github.run_attempt }}'\n          path: |\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/evaluation-identity.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-artifacts.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-complete.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-evidence.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-result.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/policy-outcome.json\n          if-no-files-found: 'error'\n          include-hidden-files: true\n          retention-days: 7\n"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3a-refresh\\.github\\workflows\\mo1306-certification-cne.yml",
+      "sha256": "63680e49998af94c1530b46f81387cea7c2cedbb40494be2359546e2b4cb6d37",
+      "relevantUploadInvocationEqual": true,
+      "manualDispatch": true,
+      "contentsRead": true,
+      "toolRefIsC3AB": true,
+      "noPullRequestTriggers": true,
+      "noSecretsExpression": true,
+      "uploadInvocation": "        if: always() && steps.evaluate.outputs.complete == 'true'\n        uses: 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'\n        with:\n          name: 'memoryos-ci-${{ github.run_id }}-${{ github.run_attempt }}'\n          path: |\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/evaluation-identity.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-artifacts.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-complete.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-evidence.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-result.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/policy-outcome.json\n          if-no-files-found: 'error'\n          include-hidden-files: true\n          retention-days: 7\n"
+    }
+  ],
+  "allRelevantInvocationsEqual": true,
+  "note": "Current 3A-R checkout read-only. Relevant upload block is identical; trusted tool repository/ref corrected to C3AB in 3A-R. No hosted execution performed.",
+  "historicalGeneratedFixture": {
+    "path": "repositories/cca-conformance/evidence/mo1306/phase3-correction/generated/github/.github/workflows/memoryos-ci.yml",
+    "sha256": "130af98bb8c0a749ffcb28f35fa5f6c505d06233ebda0d7d3232bf5c5234f52a",
+    "note": "Historical phase3-correction fixture with B2 tool ref, retained only as invocation comparison; not asserted to be a fresh candidate workflow."
+  },
+  "candidateGeneratedWorkflow": {
+    "path": ".cache/phase3b-r2/artifact/github-generated-1/.github/workflows/memoryos-ci.yml",
+    "sha256": "0904fe85fa55a141d1c3dbdbaa757a524611e9b2e1e4d59de1d050b268427348",
+    "storedCopy": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/frozen-candidate-workflow.yml",
+    "toolRefIsC3AB": true,
+    "origin": "Fresh installed corrected archive generation by independent artifact-review agent; see artifact-installed-generation.json."
+  }
+}

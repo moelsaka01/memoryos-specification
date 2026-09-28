@@ -1,0 +1,68 @@
+94638: class OrderedObjParser {
+94639:   constructor(options) {
+94640:     this.options = options;
+94641:     this.currentNode = null;
+94642:     this.tagsNodeStack = [];
+94643:     this.docTypeEntities = {};
+94644:     this.lastEntities = {
+94645:       "apos": { regex: /&(apos|#39|#x27);/g, val: "'" },
+94646:       "gt": { regex: /&(gt|#62|#x3E);/g, val: ">" },
+94647:       "lt": { regex: /&(lt|#60|#x3C);/g, val: "<" },
+94648:       "quot": { regex: /&(quot|#34|#x22);/g, val: "\"" },
+94649:     };
+94650:     this.ampEntity = { regex: /&(amp|#38|#x26);/g, val: "&" };
+94651:     this.htmlEntities = {
+94652:       "space": { regex: /&(nbsp|#160);/g, val: " " },
+94653:       // "lt" : { regex: /&(lt|#60);/g, val: "<" },
+94654:       // "gt" : { regex: /&(gt|#62);/g, val: ">" },
+94655:       // "amp" : { regex: /&(amp|#38);/g, val: "&" },
+94656:       // "quot" : { regex: /&(quot|#34);/g, val: "\"" },
+94657:       // "apos" : { regex: /&(apos|#39);/g, val: "'" },
+94658:       "cent": { regex: /&(cent|#162);/g, val: "¢" },
+94659:       "pound": { regex: /&(pound|#163);/g, val: "£" },
+94660:       "yen": { regex: /&(yen|#165);/g, val: "¥" },
+94661:       "euro": { regex: /&(euro|#8364);/g, val: "€" },
+94662:       "copyright": { regex: /&(copy|#169);/g, val: "©" },
+94663:       "reg": { regex: /&(reg|#174);/g, val: "®" },
+94664:       "inr": { regex: /&(inr|#8377);/g, val: "₹" },
+94665:       "num_dec": { regex: /&#([0-9]{1,7});/g, val: (_, str) => fromCodePoint(str, 10, "&#") },
+94666:       "num_hex": { regex: /&#x([0-9a-fA-F]{1,6});/g, val: (_, str) => fromCodePoint(str, 16, "&#x") },
+94667:     };
+94668:     this.addExternalEntities = addExternalEntities;
+94669:     this.parseXml = parseXml;
+94670:     this.parseTextData = parseTextData;
+94671:     this.resolveNameSpace = resolveNameSpace;
+94672:     this.buildAttributesMap = buildAttributesMap;
+94673:     this.isItStopNode = isItStopNode;
+94674:     this.replaceEntitiesValue = OrderedObjParser_replaceEntitiesValue;
+94675:     this.readStopNodeData = readStopNodeData;
+94676:     this.saveTextToParentTag = saveTextToParentTag;
+94677:     this.addChild = addChild;
+94678:     this.ignoreAttributesFn = ignoreAttributes_getIgnoreAttributesFn(this.options.ignoreAttributes)
+94679:     this.entityExpansionCount = 0;
+94680:     this.currentExpandedLength = 0;
+94681:
+94682:     if (this.options.stopNodes && this.options.stopNodes.length > 0) {
+94683:       this.stopNodesExact = new Set();
+94684:       this.stopNodesWildcard = new Set();
+94685:       for (let i = 0; i < this.options.stopNodes.length; i++) {
+94686:         const stopNodeExp = this.options.stopNodes[i];
+94687:         if (typeof stopNodeExp !== 'string') continue;
+94688:         if (stopNodeExp.startsWith("*.")) {
+94689:           this.stopNodesWildcard.add(stopNodeExp.substring(2));
+94690:         } else {
+94691:           this.stopNodesExact.add(stopNodeExp);
+94692:         }
+94693:       }
+94694:     }
+94695:   }
+94696:
+94697: }
+94698:
+94699: function addExternalEntities(externalEntities) {
+94700:   const entKeys = Object.keys(externalEntities);
+94701:   for (let i = 0; i < entKeys.length; i++) {
+94702:     const ent = entKeys[i];
+94703:     const escaped = ent.replace(/[.\-+*:]/g, '\\.');
+94704:     this.lastEntities[ent] = {
+94705:       regex: new RegExp("&" + escaped + ";", "g"),

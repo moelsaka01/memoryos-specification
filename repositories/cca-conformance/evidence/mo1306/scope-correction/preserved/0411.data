@@ -1,0 +1,80 @@
+"""Read-only registration preflight for Phase 3A-R blocker resolution.
+
+Final-target current-state preflight. This tool accepts no mutation mode. It only performs authenticated GET requests,
+checks exact frozen workflows, and retains new evidence without modifying history.
+"""
+from pathlib import Path
+from datetime import datetime, timezone
+import argparse, base64, hashlib, json, os, subprocess, urllib.request, urllib.error, urllib.parse
+
+ROOT=Path(__file__).resolve().parents[4]
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-certification/github'
+OLD=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3ar'
+REPO='moelsaka01/memoryos-specification'
+BRANCH='mo1306-certification'
+CANDIDATE='3096139e0108be22528859e4f462356dddf6ef29'
+C3AB='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+CHECKPOINT='f236c4a2f94d8cd8e763aaa4bd6c52d703429692'
+MAIN='5955af062152a84c10de17860ba0bcabe8b3555f'
+API_VERSION='2026-03-10'
+SETTINGS=['default_branch','visibility','private','archived','disabled','is_template','allow_forking',
+'allow_squash_merge','allow_merge_commit','allow_rebase_merge','allow_auto_merge','delete_branch_on_merge',
+'allow_update_branch','use_squash_pr_title_as_default','squash_merge_commit_title','squash_merge_commit_message',
+'merge_commit_title','merge_commit_message','web_commit_signoff_required','has_issues','has_projects',
+'has_wiki','has_pages','has_discussions','has_downloads','security_and_analysis']
+DOCS=[
+{'url':'https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow',
+ 'finding':'The manual workflow_dispatch trigger requires the workflow file on the default branch; a ref selects the execution branch after registration.'},
+{'url':'https://docs.github.com/en/rest/actions/workflows',
+ 'finding':'Documented workflow endpoints list/get, dispatch, enable and disable existing workflows; no separate register endpoint is documented. Version 2026-03-10 dispatch returns HTTP 200 with workflow_run_id.'},
+{'url':'https://docs.github.com/en/rest/repos/repos#update-a-repository',
+ 'finding':'PATCH /repos/{owner}/{repo} accepts default_branch. Fine-grained token permission required is Administration(write).'},
+{'url':'https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-branches-in-your-repository/changing-the-default-branch',
+ 'finding':'Changing the default branch requires more than one branch and repository admin access.'}
+]
+
+def now():return datetime.now(timezone.utc).isoformat()
+def sha(data):return 'sha256:'+hashlib.sha256(data).hexdigest()
+def row(path):
+ data=path.read_bytes()
+ return {'path':path.relative_to(ROOT).as_posix(),'byteLength':len(data),'sha256':sha(data)}
+def put(path,value):
+ path.parent.mkdir(parents=True,exist_ok=True)
+ assert not path.exists(),str(path)
+ path.write_text(json.dumps(value,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8')
+ return row(path)
+
+class SameGitHubAPI(urllib.request.HTTPRedirectHandler):
+ def redirect_request(self,req,fp,code,msg,headers,newurl):
+  parsed=urllib.parse.urlsplit(newurl)
+  if parsed.scheme!='https' or parsed.netloc!='api.github.com':
+   raise RuntimeError('Unexpected API redirect')
+  return super().redirect_request(req,fp,code,msg,headers,newurl)
+
+def credential():
+ env={**os.environ,'GIT_TERMINAL_PROMPT':'0','GCM_INTERACTIVE':'Never','GIT_OPTIONAL_LOCKS':'0'}
+ result=subprocess.run(['git','credential','fill'],cwd=ROOT,env=env,
+  input=b'protocol=https\nhost=github.com\n\n',capture_output=True,timeout=30,creationflags=subprocess.CREATE_NO_WINDOW)
+ assert result.returncode==0,'Credential helper unavailable; secret output not retained'
+ values=dict(line.split('=',1) for line in result.stdout.decode().splitlines() if '=' in line)
+ assert values.get('password'),'Credential unavailable'
+ return values['password']
+
+def get(path,token):
+ assert not path.startswith('/') and '..' not in path.split('/')
+ headers={'User-Agent':'MO1306-Phase3AR-Resolution-ReadOnly','Accept':'application/vnd.github+json',
+          'X-GitHub-Api-Version':API_VERSION,'Authorization':'Bearer '+token}
+ request=urllib.request.Request('https://api.github.com/'+path,headers=headers,method='GET')
+ start=now();opener=urllib.request.build_opener(SameGitHubAPI())
+ try:
+  with opener.open(request,timeout=30) as response:
+   status=response.status;raw=response.read(4194305);url=response.url;received=response.headers
+ except urllib.error.HTTPError as error:
+  status=error.code;raw=error.read(4194305);url=error.url;received=error.headers
+ assert len(raw)<=4194304,'API response too large'
+ body=json.loads(raw) if raw else None
+ if isinstance(body,dict) and 'temp_clone_token' in body:body['temp_clone_token']=None
+ selected={name:received.get(name) for name in ['date','x-github-request-id','x-oauth-scopes',
+  'x-accepted-oauth-scopes','x-accepted-github-permissions','github-authentication-token-expiration'] if received.get(name)}
+ return {'method':'GET','path':path,'status':status,'url':url,'startedUtc':start,'endedUtc':now(),
+         'apiVersion':API_VERSION,'responseHeaders':selected,'body':body}

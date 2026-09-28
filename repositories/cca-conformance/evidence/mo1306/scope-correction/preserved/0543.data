@@ -1,0 +1,92 @@
+93944:
+93945: const XMLValidator = {
+93946:   validate: validate
+93947: }
+93948:
+93949: ;// CONCATENATED MODULE: ./node_modules/fast-xml-parser/src/xmlparser/OptionsBuilder.js
+93950: const OptionsBuilder_defaultOptions = {
+93951:   preserveOrder: false,
+93952:   attributeNamePrefix: '@_',
+93953:   attributesGroupName: false,
+93954:   textNodeName: '#text',
+93955:   ignoreAttributes: true,
+93956:   removeNSPrefix: false, // remove NS from tag name or attribute name if true
+93957:   allowBooleanAttributes: false, //a tag can have attributes without any value
+93958:   //ignoreRootElement : false,
+93959:   parseTagValue: true,
+93960:   parseAttributeValue: false,
+93961:   trimValues: true, //Trim string values of tag and attributes
+93962:   cdataPropName: false,
+93963:   numberParseOptions: {
+93964:     hex: true,
+93965:     leadingZeros: true,
+93966:     eNotation: true
+93967:   },
+93968:   tagValueProcessor: function (tagName, val) {
+93969:     return val;
+93970:   },
+93971:   attributeValueProcessor: function (attrName, val) {
+93972:     return val;
+93973:   },
+93974:   stopNodes: [], //nested tags will not be parsed even for errors
+93975:   alwaysCreateTextNode: false,
+93976:   isArray: () => false,
+93977:   commentPropName: false,
+93978:   unpairedTags: [],
+93979:   processEntities: true,
+93980:   htmlEntities: false,
+93981:   ignoreDeclaration: false,
+93982:   ignorePiTags: false,
+93983:   transformTagName: false,
+93984:   transformAttributeName: false,
+93985:   updateTag: function (tagName, jPath, attrs) {
+93986:     return tagName
+93987:   },
+93988:   // skipEmptyListItem: false
+93989:   captureMetaData: false,
+93990:   maxNestedTags: 100,
+93991:   strictReservedNames: true,
+93992: };
+93993:
+93994: /**
+93995:  * Normalizes processEntities option for backward compatibility
+93996:  * @param {boolean|object} value
+93997:  * @returns {object} Always returns normalized object
+93998:  */
+93999: function normalizeProcessEntities(value) {
+94000:   // Boolean backward compatibility
+94001:   if (typeof value === 'boolean') {
+94002:     return {
+94003:       enabled: value, // true or false
+94004:       maxEntitySize: 10000,
+94005:       maxExpansionDepth: 10,
+94006:       maxTotalExpansions: 1000,
+94007:       maxExpandedLength: 100000,
+94008:       allowedTags: null,
+94009:       tagFilter: null
+94010:     };
+94011:   }
+94012:
+94013:   // Object config - merge with defaults
+94014:   if (typeof value === 'object' && value !== null) {
+94015:     return {
+94016:       enabled: value.enabled !== false, // default true if not specified
+94017:       maxEntitySize: value.maxEntitySize ?? 10000,
+94018:       maxExpansionDepth: value.maxExpansionDepth ?? 10,
+94019:       maxTotalExpansions: value.maxTotalExpansions ?? 1000,
+94020:       maxExpandedLength: value.maxExpandedLength ?? 100000,
+94021:       allowedTags: value.allowedTags ?? null,
+94022:       tagFilter: value.tagFilter ?? null
+94023:     };
+94024:   }
+94025:
+94026:   // Default to enabled with limits
+94027:   return normalizeProcessEntities(true);
+94028: }
+94029:
+94030: const buildOptions = function (options) {
+94031:   const built = Object.assign({}, OptionsBuilder_defaultOptions, options);
+94032:
+94033:   // Always normalize processEntities for backward compatibility and validation
+94034:   built.processEntities = normalizeProcessEntities(built.processEntities);
+94035:   //console.debug(built.processEntities)

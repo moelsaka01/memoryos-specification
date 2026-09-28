@@ -1,0 +1,24 @@
+"""Closed v1 provider claims and release gates. No hosted execution authority."""
+from common import need
+PROVIDERS={
+ 'generic':{'implementation':'IMPLEMENTED','validation':'REAL_EXECUTION_CERTIFIED','execution':'REAL_EXECUTION_CERTIFIED','releaseStatus':'SUPPORTED','limitation':None},
+ 'github':{'implementation':'IMPLEMENTED','validation':'OFFLINE_VALIDATED','execution':'NOT_CERTIFIED','releaseStatus':'SUPPORTED_WITH_HOSTED_CERTIFICATION_LIMITATION','limitation':'Hosted execution NOT_CERTIFIED; PASS case bootstrap failed, FAIL/CNE not executed, native/hosted parity not established; bounded diagnostic EXHAUSTED / UNRESOLVED.'},
+ **{p:{'implementation':'IMPLEMENTED','validation':'CONTRACT_VALIDATED','execution':'NOT_LIVE_PROVIDER_CERTIFIED','releaseStatus':'SUPPORTED_WITH_CONTRACT_VALIDATION_ONLY','limitation':'Contract validation only; live-provider execution is not certified.'} for p in ['gitlab','jenkins','azure']}}
+GATES={'genericNativeWindows':'MANDATORY','githubImplementationAndOfflineContract':'MANDATORY','githubHostedExecution':'OPTIONAL_NON_BLOCKING_V1','gitlabOfflineContract':'MANDATORY','jenkinsOfflineContract':'MANDATORY','azureOfflineContract':'MANDATORY','gitlabLiveExecution':'NOT_REQUIRED','jenkinsLiveExecution':'NOT_REQUIRED','azureLiveExecution':'NOT_REQUIRED','securityAndSemanticParity':'MANDATORY','packageSupplyChainSbomProvenance':'MANDATORY','finalConformanceAndAcyclicBinding':'MANDATORY'}
+FORBIDDEN=['HOSTED_EXECUTION_CERTIFIED','GitHub live execution certified','GitHub parity certified','GitHub hosted PASS certified','GitHub hosted FAIL certified','GitHub hosted CNE certified','historical hosted failure promoted to PASS','diagnostic promoted to certification']
+HOSTED={'initialRun':{'id':36357568243,'attempt':1,'conclusion':'failure','disposition':'HOSTED_BOOTSTRAP_UNRESOLVED','policyEvaluation':'NOT_STARTED','productArtifactCount':0},'diagnosticRun':{'id':36396330199,'attempt':1,'conclusion':'failure','disposition':'HOSTED_DIAGNOSTIC_EXHAUSTED','classification':'STILL_UNRESOLVED','isCertification':False},'passCertified':False,'failExecuted':False,'failCertified':False,'cneExecuted':False,'cneCertified':False,'parity':'NOT_ESTABLISHED','productArtifacts':'NOT_AVAILABLE_FOR_CERTIFICATION','rootCause':'STILL_UNRESOLVED'}
+STOP={'additionalDiagnosticRetry':'EXHAUSTED','observerCampaign':'EXHAUSTED','blindHostedRetry':'EXHAUSTED','additionalMethodologyException':'EXHAUSTED','scopeCorrectionReopensExecution':False}
+NOT_PROVEN=['productionDefect','workflowDefect','scaffoldDefect','contractConflict','hostedIncompatibility','githubTransient']
+SECURITY=['filesystemValidation','pathContainment','secretHandling','networkRestrictions','processLimits','resourceLimits','providerGrammarValidation','actionPins','supplyChainChecks','sbomRequirements','semanticParity','genericExecutionCertification']
+ENVIRONMENT=['Linux','Ubuntu','WSL','userProvisionedVM','GitLabAccountOrSubscription','JenkinsInstallationOrServer','AzureDevOpsAccountOrSubscription']
+NEXT=['bind-C3CB-M3-S3','bind-Generic-REAL_EXECUTION_CERTIFIED','bind-GitHub-hosted-limitation','bind-3B-R2-unchanged-advisory-findings','rebind-corrected-package-archive-SBOM-provenance','bind-3C-R-and-affected-helper-correction-evidence','reconcile-exact-byte-dependencies','validate-provider-matrix','validate-all-historical-dispositions','reject-false-GitHub-claims','run-final-conformance','create-I3-BF-or-equivalent-acyclic-final-binding','prepare-exact-release-tag-target-for-later-review']
+WORDING=('MO-1306 provides a real-execution-certified Generic Windows runner and implemented provider adapters for GitHub, GitLab, Jenkins and Azure DevOps. GitLab, Jenkins and Azure DevOps are contract-validated without live-provider certification. GitHub is implemented and offline contract-validated, but hosted execution certification is not claimed for MO-1306 v1 after the bounded hosted bootstrap investigation ended unresolved.')
+def policy():
+    import copy
+    return copy.deepcopy({'providers':PROVIDERS,'releaseGates':GATES,'hostedFacts':HOSTED,'forbiddenClaims':FORBIDDEN,'diagnosticStop':STOP,'unprovenCauses':dict.fromkeys(NOT_PROVEN,'NOT_PROVEN'),'securityBoundaries':dict.fromkeys(SECURITY,'UNCHANGED_MANDATORY'),'environmentPrerequisites':dict.fromkeys(ENVIRONMENT,False),'canonicalReleaseWording':WORDING})
+def validate_policy(v):
+    expected=policy();need(set(v)==set(expected),'POLICY_FIELDS')
+    for key in expected:need(v[key]==expected[key],'INVALID_'+key)
+    return True
+def pre3d():return {'status':'CERTIFICATION_SCOPE_CORRECTED','readiness':'READY_FOR_QUALIFIED_PHASE_3D','released':False,'phase3Complete':False,'tagReady':False,'githubHostedGateRequired':False,'phase3DRequirements':NEXT,'phase3DRequirementsCompleted':False,'executionCampaignsAuthorized':False}
+def validate_pre3d(v):need(v==pre3d(),'PREMATURE_RELEASE_OR_MISSING_3D_GATE');return True

@@ -1,0 +1,29 @@
+"""Final four-GET and Git-ref readback only; no remote writes or dispatch."""
+from pathlib import Path
+import sys,json,subprocess,os,concurrent.futures
+ROOT=Path(__file__).resolve().parents[4]
+sys.path.insert(0,str(ROOT/'repositories/cca-conformance/tools/mo1306-phase3a-certification'))
+from remote_state import credential,get,row,put,now,SETTINGS,REPO,BRANCH,MAIN
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-resolution'
+CERT='451599e7b95a537ebc2daac627b061fd88791dea';RUN=36357568243
+load=lambda p:json.loads(p.read_text(encoding='utf-8-sig'))
+def main():
+    initial=load(OUT/'remote-preflight.json');initialRefs=load(ROOT/initial['gitRefs']['path'])['refs'];token=credential()
+    paths={'repository':f'repos/{REPO}','main-ref':f'repos/{REPO}/git/ref/heads/main','certification-ref':f'repos/{REPO}/git/ref/heads/{BRANCH}','certification-runs':f'repos/{REPO}/actions/runs?branch={BRANCH}&per_page=100'}
+    responses={};bodies={}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+        futures={name:pool.submit(get,path,token) for name,path in paths.items()}
+        for name,future in futures.items():
+            response=future.result();responses[name]=put(OUT/'final-remote'/(name+'.json'),response)
+            assert response['status']==200,(name,response['status']);bodies[name]=response['body']
+    token=None
+    result=subprocess.run(['git','ls-remote','--heads','--tags','origin'],cwd=ROOT,capture_output=True,timeout=60,creationflags=subprocess.CREATE_NO_WINDOW,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0','GIT_TERMINAL_PROMPT':'0','GCM_INTERACTIVE':'Never'})
+    refs={ref:commit for commit,ref in (line.split() for line in result.stdout.decode().splitlines())} if result.returncode==0 else {}
+    delta={ref:{'initial':initialRefs.get(ref),'final':refs.get(ref)} for ref in sorted(set(refs)|set(initialRefs)) if refs.get(ref)!=initialRefs.get(ref)}
+    refrow=put(OUT/'final-remote/git-refs.json',{'argv':['git','ls-remote','--heads','--tags','origin'],'observedUtc':now(),'exitCode':result.returncode,'stdout':result.stdout.decode(),'stderr':result.stderr.decode(),'refs':refs,'changesSinceInitial':delta})
+    repo=bodies['repository'];settings={key:repo[key] for key in SETTINGS if key in repo};runs=bodies['certification-runs'];runIds=[run['id'] for run in runs['workflow_runs']]
+    checks={'defaultBranchMain':repo['default_branch']=='main','mainUnchanged':bodies['main-ref']['object']['sha']==MAIN and refs.get('refs/heads/main')==MAIN,'certificationUnchanged':bodies['certification-ref']['object']['sha']==CERT and refs.get('refs/heads/'+BRANCH)==CERT,'repositorySettingsUnchanged':settings==initial['repositorySettings'],'noNewCertificationRuns':runs['total_count']==1 and runIds==[RUN],'retainedAttemptUnchanged':len(runs['workflow_runs'])==1 and runs['workflow_runs'][0]['run_attempt']==1 and runs['workflow_runs'][0]['head_sha']==CERT and runs['workflow_runs'][0]['conclusion']=='failure','tagsUnchanged':{k:v for k,v in refs.items() if k.startswith('refs/tags/')}=={k:v for k,v in initialRefs.items() if k.startswith('refs/tags/')},'onlyUnrelatedDependabotRefMovement':all(ref.startswith('refs/heads/dependabot/') for ref in delta),'remoteGitQueryPassed':result.returncode==0}
+    receipt={'kind':'MemoryOSPhase3AHostedResolutionFinalRemoteState','version':'1.0.0','status':'PASS' if all(checks.values()) else 'BLOCKED','scope':'Current-state read-only verification after bounded unresolved diagnosis; not hosted certification.','observedUtc':now(),'repository':REPO,'defaultBranch':repo['default_branch'],'remoteMain':bodies['main-ref']['object']['sha'],'certificationCommit':bodies['certification-ref']['object']['sha'],'certificationRunCount':runs['total_count'],'runIds':runIds,'newDispatchCount':0,'settingsWriteCount':0,'pushCount':0,'tagsCreated':[],'releasesCreated':[],'remoteMutations':[],'dispatches':[],'defaultBranchSwitchUsed':False,'defaultBranchRestorationRequired':False,'settingsUnchanged':checks['repositorySettingsUnchanged'],'settingsScope':list(settings),'repositorySettings':settings,'actionsRulesProtectionEvidenceScope':'Verified unchanged by initial preflight; not re-queried at final readback. This task performed no writes.','artifactCount':0,'artifactCountEvidence':'Initial preflight blocked-artifacts GET; existing run attempt unchanged, no new runs. Not re-queried at final readback.','allRemoteRefsUnchanged':not bool(delta),'remoteRefChangesSinceInitial':delta,'unrelatedRefMovementAttribution':'No actor/cause attribution; record Dependabot-named ref changes if any.','checks':checks,'responses':responses,'gitRefs':refrow,'initialPreflight':row(OUT/'remote-preflight.json'),'tool':row(Path(__file__).resolve()),'safeGetDependency':row(ROOT/'repositories/cca-conformance/tools/mo1306-phase3a-certification/remote_state.py'),'limitations':'Snapshot comparison cannot rule out external changes made and reverted between observations; no task writes occurred. No release API query was needed to substantiate that this task created no releases.'}
+    record=put(OUT/'final-remote-state.json',receipt)
+    print(json.dumps({'receipt':record,'status':receipt['status'],'defaultBranch':receipt['defaultBranch'],'remoteMain':receipt['remoteMain'],'certificationCommit':receipt['certificationCommit'],'runIds':runIds,'delta':delta}))
+if __name__=='__main__':main()

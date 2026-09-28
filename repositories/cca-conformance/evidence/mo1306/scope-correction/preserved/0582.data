@@ -1,0 +1,74 @@
+{
+  "baseline": "9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44",
+  "version": "1.0.0",
+  "productionWorkingChanges": [],
+  "kind": "MO1306Phase3CRIndependentDispatchSourceReview",
+  "cliCorrectionDiff": "diff --git a/repositories/memoryos-ci/bin/memoryos-ci.mjs b/repositories/memoryos-ci/bin/memoryos-ci.mjs\nindex 8229307..7332404 100644\n--- a/repositories/memoryos-ci/bin/memoryos-ci.mjs\n+++ b/repositories/memoryos-ci/bin/memoryos-ci.mjs\n@@ -16,8 +16,9 @@ const diagnostic=diagnosticWriter(text=>process.stderr.write(text));\n const controller=new AbortController();\n const cancel=()=>controller.abort();process.once('SIGINT',cancel);process.once('SIGTERM',cancel);\n function argv(args) {\n-  const command=args[0],allowed={run:['workspace','config','provider'],generate:['config','deployment','output'],verify:['bundle']}[command];\n-  if(!allowed)reject('USAGE');\n+  const command=args[0],commands={run:['workspace','config','provider'],generate:['config','deployment','output'],verify:['bundle']};\n+  if(!Object.hasOwn(commands,command))reject('USAGE');\n+  const allowed=commands[command];\n   const result={command};\n   for(let i=1;i<args.length;i+=2) {\n     const flag=args[i];if(!flag.startsWith('--')||!allowed.includes(flag.slice(2))||Object.hasOwn(result,flag.slice(2))||i+1>=args.length)reject('USAGE');",
+  "productionDeltaFromB2": [
+    "repositories/memoryos-ci/bin/memoryos-ci.mjs",
+    "repositories/memoryos-ci/distribution-manifest.json"
+  ],
+  "semanticPreservation": "B2-to-C3AB package delta is exactly CLI own-property dispatch and distribution manifest. All SDK closure, semantic delegate, worker, supervisor, verifier, contracts, projections, errors and adapters are unchanged Git blobs. The companion dispatch-audit receipt independently checks each of 25 runtime closure members against source authority and reads SDK version 1.1.0.",
+  "powerShell": {
+    "rows": [
+      {
+        "review": "Array indexing of validated path segments or bounded summary output; no command-name object table and no JavaScript prototype inheritance.",
+        "file": "repositories/memoryos-ci/scripts/check-paths.ps1",
+        "line": 26,
+        "expression": "$parts[$i]"
+      },
+      {
+        "review": "Array indexing of validated path segments or bounded summary output; no command-name object table and no JavaScript prototype inheritance.",
+        "file": "repositories/memoryos-ci/scripts/check-paths.ps1",
+        "line": 27,
+        "expression": "$parts[$i]"
+      },
+      {
+        "review": "Array indexing of validated path segments or bounded summary output; no command-name object table and no JavaScript prototype inheritance.",
+        "file": "repositories/memoryos-ci/scripts/Invoke-MemoryOSCI.ps1",
+        "line": 35,
+        "expression": "$summaryLines[0]"
+      },
+      {
+        "review": "Array indexing of validated path segments or bounded summary output; no command-name object table and no JavaScript prototype inheritance.",
+        "file": "repositories/memoryos-ci/scripts/Invoke-MemoryOSCI.ps1",
+        "line": 36,
+        "expression": "$summaryLines[0]"
+      },
+      {
+        "review": "Array indexing of validated path segments or bounded summary output; no command-name object table and no JavaScript prototype inheritance.",
+        "file": "repositories/memoryos-ci/scripts/Invoke-MemoryOSCI.ps1",
+        "line": 44,
+        "expression": "$verified[0]"
+      }
+    ],
+    "files": 4,
+    "version": "7.6.5",
+    "bindings": [
+      {
+        "path": "repositories/memoryos-ci/scripts/check-paths.ps1",
+        "byteLength": 2315,
+        "sha256": "sha256:756728cede90bf30344e7f234f80a4bc122d155eb7618c99c8010a060508f197"
+      },
+      {
+        "path": "repositories/memoryos-ci/scripts/Initialize-GitHubCI.ps1",
+        "byteLength": 6442,
+        "sha256": "sha256:1fbc7419fa82f0943da5efa1114c9510b18ee59ffb14f6e06c4bf8829f9daa25"
+      },
+      {
+        "path": "repositories/memoryos-ci/scripts/Invoke-GitHubCI.ps1",
+        "byteLength": 5614,
+        "sha256": "sha256:e8651b713e9c7c08baeb0a0ec7a44ec05a94a10d993607a3f1a48f87ce999fa0"
+      },
+      {
+        "path": "repositories/memoryos-ci/scripts/Invoke-MemoryOSCI.ps1",
+        "byteLength": 3308,
+        "sha256": "sha256:8406ff4e95c44f27d9af88950b9d715c9851b5dd6bb579d3187fba3f82e050e1"
+      }
+    ],
+    "sites": 5,
+    "edition": "Core"
+  },
+  "scope": "Five current PowerShell computed sites independently parsed using native AST; companion receipt covers 135 JS sites including 34 high-risk map lookups. Correction engineering/historical inventory was reviewed without promoting its results to runtime evidence.",
+  "status": "PASS"
+}

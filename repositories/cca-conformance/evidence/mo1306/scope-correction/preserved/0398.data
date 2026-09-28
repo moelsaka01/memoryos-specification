@@ -1,0 +1,71 @@
+"""Read-only bundle parity and final GET verification after restored hosted campaign."""
+from pathlib import Path
+import argparse,base64,json
+from datetime import datetime,timezone
+from remote_state import ROOT,OUT,REPO,BRANCH,MAIN,SETTINGS,credential,get,row,put,sha
+C3CB='701d48ee2012675966360dda775ab13013c09ab9'
+M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37'
+SCAFFOLD='451599e7b95a537ebc2daac627b061fd88791dea'
+NATIVE_CASES=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-final/native/20260927T120240-b3df86/cases'
+def bound(record):
+ p=ROOT/record['path'];assert p.resolve().is_relative_to(ROOT)
+ assert row(p)==record
+ return p
+def main():
+ ap=argparse.ArgumentParser();ap.add_argument('--campaign',type=Path,required=True);ap.add_argument('--native-receipt',type=Path,required=True);a=ap.parse_args()
+ folder=a.campaign.resolve();assert folder.is_relative_to(OUT.resolve()) and folder.name.startswith('campaign-')
+ native=a.native_receipt.resolve();assert native.is_relative_to(OUT.parent.resolve())
+ nr=json.loads(native.read_bytes());assert nr['status']=='PASS'
+ summary=folder/'campaign-summary.json';campaign=json.loads(summary.read_bytes())
+ assert campaign['status']=='PASS' and campaign['restoration']['status']=='PASS' and campaign['restoration']['defaultBranch']=='main'
+ assert campaign['candidate']==C3CB and campaign['methodology']==M3 and campaign['certificationCommit']==SCAFFOLD
+ assert [c['case'] for c in campaign['cases']]==['pass','fail','cne']
+ cases=[];parity=[]
+ for record in campaign['cases']:
+  name=record['case'];vpath=bound(record['bundleValidation']);v=json.loads(vpath.read_bytes())
+  assert v['status']=='PASS' and v['actualHostedExecution'] and v['complete'] and record['semanticAndArtifactValidation']=='PASS'
+  assert v['runId']==record['runId']
+  for f in v['bundleFiles']:bound(f)
+  npath=NATIVE_CASES/('policy-'+name+'.json');n=json.loads(npath.read_bytes());assert n['status']=='PASS'
+  for f in n['bundleFiles']:bound(f)
+  nb=ROOT/n['bundle'];hb=ROOT/v['bundle']
+  normative=[]
+  for file in ['evaluation-identity.json','policy-outcome.json']:
+   left=(nb/file).read_bytes();right=(hb/file).read_bytes()
+   assert left==right,'Native/hosted normative byte mismatch'
+   normative.append({'name':file,'byteLength':len(left),'sha256':sha(left),'native':row(nb/file),'hosted':row(hb/file)})
+  native_result=json.loads((nb/'memoryos-ci-result.json').read_bytes())
+  hosted_result=json.loads((hb/'memoryos-ci-result.json').read_bytes())
+  assert native_result['semantic']==hosted_result['semantic']
+  assert native_result['classification']==hosted_result['classification']
+  parity.append({'case':name,'status':'PASS','nativeCase':row(npath),'nativeBundle':n['bundle'],'hostedBundle':v['bundle'],'hostedValidation':row(vpath),'semantic':hosted_result['semantic'],'classification':hosted_result['classification'],'normative':normative,'exactNormativeBytesEqual':True,'operationalMetadataExcluded':True})
+  cases.append({**record,'validation':v,'nativeCase':row(npath)})
+ parity_value={'kind':'MemoryOSPhase3ACertificationNativeHostedParity','status':'PASS','candidate':C3CB,'methodology':M3,'nativeReceipt':row(native),'cases':parity,'campaign':row(summary),'tool':row(Path(__file__))}
+ parity_row=put(OUT/'parity.json',parity_value)
+ # Independent new GETs, separate from restoration PATCH response or campaign client.
+ token=credential();responses={}
+ def read(name,path):
+  result=get(path,token);responses[name]=put(OUT/'final-readonly'/(name+'.json'),result)
+  assert result['status']==200
+  return result['body']
+ prefix='repos/'+REPO;initial=json.loads((OUT/'initial-state.json').read_bytes())
+ repo=read('repository',prefix);assert repo['full_name']==REPO and repo['default_branch']=='main'
+ assert {k:repo[k] for k in SETTINGS if k in repo}==initial['repositorySettings']
+ main=read('main-ref',prefix+'/git/ref/heads/main')['object']['sha'];cert=read('certification-ref',prefix+'/git/ref/heads/'+BRANCH)['object']['sha']
+ assert main==MAIN and cert==SCAFFOLD
+ for label,path in [('actions-permissions','/actions/permissions'),('rulesets','/rulesets?includes_parents=true&per_page=100')]:
+  current=read(label,prefix+path)
+  before=json.loads(bound(initial['responses'][label]).read_bytes())['body']
+  assert current==before
+ reviewed=json.loads((OUT/'workflow-review.json').read_bytes())['workflows']
+ for workflow in reviewed:
+  remote=read('workflow-'+workflow['case'],prefix+'/contents/'+workflow['workflowPath']+'?ref='+SCAFFOLD)
+  b=base64.b64decode(remote['content']);assert len(b)==workflow['byteLength'] and sha(b)==workflow['sha256'] and b==(ROOT/workflow['path']).read_bytes()
+ runs=read('certification-runs',prefix+'/actions/runs?branch='+BRANCH+'&per_page=100')
+ assert runs['total_count']==3 and {r['id'] for r in runs['workflow_runs']}=={c['runId'] for c in cases}
+ remote={'kind':'MemoryOSPhase3ACertificationFinalRemoteState','status':'PASS','observedUtc':datetime.now(timezone.utc).isoformat(),'defaultBranch':'main','remoteMain':main,'certificationCommit':cert,'certificationBranch':BRANCH,'settingsUnchanged':True,'actionsPermissionsUnchanged':True,'rulesetsUnchanged':True,'workflows':reviewed,'workflowBytesUnchanged':True,'certificationRunCount':3,'runIds':[c['runId'] for c in cases],'artifactCount':3,'artifactCountScope':'Exactly one validated artifact listed and downloaded for each of the three exact campaign runs; not a repository-wide artifact count.','restoration':campaign['restoration'],'independentReadback':True,'responses':responses,'initial':row(OUT/'initial-state.json'),'campaign':row(summary),'remoteWriteBoundary':'Only authorized certification ref push, conditional default_branch switch and three exact workflow dispatches. No tags/releases or unrelated setting writes in campaign.'}
+ remote_row=put(OUT/'final-state.json',remote)
+ result={'kind':'MemoryOSPhase3ACertificationHostedSummary','status':'PASS','candidate':C3CB,'methodology':M3,'certificationCommit':SCAFFOLD,'nativeReceipt':row(native),'cases':cases,'parity':parity_row,'remote':remote_row,'campaign':row(summary),'historicalCause':'UNRESOLVED','historicalFailureRetained':True,'actualHostedCases':3,'artifactsValidated':3,'githubLabel':'HOSTED_EXECUTION_CERTIFIED','tool':row(Path(__file__))}
+ print(json.dumps(put(OUT/'hosted-summary.json',result)))
+if __name__=='__main__':main()
+

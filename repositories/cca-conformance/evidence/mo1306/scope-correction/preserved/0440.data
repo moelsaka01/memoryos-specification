@@ -1,0 +1,85 @@
+# MO-1306 Phase 3B-R2 independent release artifact certification
+
+**Corrected artifact certification passes; releaseReady=true within Phase 3B-R2.** Undici is NOT_REACHABLE_IN_FROZEN_USAGE; fast-xml-parser is REACHABLE_NOT_ATTACKER_CONTROLLED. No discretionary risk acceptance is made and neither frozen Action pin is changed. Separate Phase 3A-R and Phase 3D release gates remain unresolved.
+
+The decision comes from this review's independently checked pinned sources, exact upstream module comparisons, library call paths, input origins and bounded offline witnesses. Historical conclusions remain visible and unchanged. In particular, the reproduced XML count bypass is a real parser-contract defect. Its vulnerable input in this workflow is hosted-service response XML, not repository or artifact bytes. Ordinary service errors are code-reachable without compromise; control of malicious XML requires a failure in the explicit hosted endpoint/service/transport trust boundary.
+
+The [Undici maintainer advisory](https://github.com/nodejs/undici/security/advisories/GHSA-35p6-xmwp-9g52) and [fix](https://github.com/nodejs/undici/commit/6ea54ef8c4051e95bb68c89d4a5c9274fe6fbb4b) establish the affected reused-socket mechanism. The [XML maintainer advisory](https://github.com/NaturalIntelligence/fast-xml-parser/security/advisories/GHSA-8gc5-j5rx-235r), exact5.4.1 sources and [fix](https://github.com/NaturalIntelligence/fast-xml-parser/commit/bd26122c838e6a55e7d7ac49b4ccc01a49999a01) establish the missing count. Authoritative source snapshots, hashes and acquisition records are retained. The detailed [XML review](../repositories/cca-conformance/docs/mo1306-phase3b-r2-xml.md) explains its dataflow and transport qualification.
+
+Evidence root: `repositories/cca-conformance/evidence/mo1306/phase3b-r2/`. The independent canonical receipt and closed provenance are generated only after required evidence checks. Package bytes and all historical worktrees remain unchanged.
+
+| # | Required result | Observation |
+| --- | --- | --- |
+| 1 | Baseline | Initially clean mo1306/phase3b-refresh2 at 9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44; expected subject verified. |
+| 2 | C3A/C3AB graph | B2 0e35ffe70919d77b1db530929093826410b805f9 -> C3A 90b9ac914e477fb90fe317d0de9ba310aae37f60 -> C3AB 9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44; exact single parents. |
+| 3 | Original 3B preservation | d522385de980a0105c5e6f17ba7f3ffb73cab6bd preserved read-only, 281 certification files unchanged. COMPLETE_WITH_OPEN_FINDINGS; releaseReady=false on old B2. |
+| 4 | First 3B-R preservation | 57 existing evidence/tool files unchanged. User-reported XML APPLICABLE_ACCEPTANCE_REQUIRED/releaseReady=false agrees with retained draft constants. No completed canonical receipt or final report was present. |
+| 5 | Corrected archive identity | memoryos-ci@0.1.0 / memoryos-ci-0.1.0.tgz, 197172 bytes; SHA-256 2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d. |
+| 6 | Package delta | All 94 compared with old B2 archive: 92 UNCHANGED; bin/memoryos-ci.mjs CHANGED_BY_C3A; distribution-manifest.json MECHANICALLY_REGENERATED. Only behavior change is own-property command dispatch. |
+| 7 | Package members | Exactly 94 regular allowlisted members; canonical metadata and all C3AB Git blob bytes verified. |
+| 8 | SDK closure | Exactly 25 SDK 1.1.0 source-parity files. Closure SHA-256 f00fbd2b654ed3a845bce79334fb422a604d2e51294010c859ac08956330e424. |
+| 9 | Production dependencies | Zero external production npm dependencies; root-only lock, no install lifecycle scripts. |
+| 10 | Reproducibility | Two separate clean assemblies equal the required archive byte-for-byte. |
+| 11 | Offline install | Fresh isolated npm ci; initially empty explicit cache; --offline --ignore-scripts --no-audit --no-fund; all 94 members verified. |
+| 12 | Installed correction regression | run/generate/verify passed; ordinary unknown, constructor, toString, __proto__ each exact MO1306_USAGE/10; representative PASS/0, FAIL/6, CNE/7 and normative SDK oracle equality. |
+| 13 | Installed integrity | All 94 installed package files and entire installation inventory unchanged before/after. |
+| 14 | Unchanged supply reuse | 1938 explicit identities rehashed; original expensive provenance reused only after exact matching. No inherited advisory conclusion. |
+| 15 | Node/npm | Node 24.21.0 x64 and npm 11.19.0; 1994 Node archive payloads and 1926 npm files matched. Action runner node24 is a separate hosted runtime. |
+| 16 | GitLab schema | 128034 bytes, commit a725331f22234d3078d7300944b9454da103e73c; SHA-256 a4dc2b155aa574575fbfd51dcca99388db5ba1b563ab5e05ce8df005e7eb9ced; unchanged. |
+| 17 | Azure schema | 1640523 bytes, commit 9e40e814abd20917f273dd587497086f0476a563; SHA-256 f00a9630f6550204148634d9a13f634b5750a225559886effe09a751482f0459; unchanged. |
+| 18 | Jenkins parser | Parser SHA-256 940bf6b9527bfb0da2ef491b057b8cab42e410344d0d8a3c7268fcbca36f5de0; grammar 71b1a8415e7cd34007dbc1ead8b89fab3f42b73faa68ebb2b1ad1fa35554c01b; unchanged, zero external parser dependencies. |
+| 19 | Engineering validators | Seven wheels/payloads/notices unchanged: attrs26.1.0, jsonschema4.26.0, jsonschema-specifications2025.9.1, PyYAML6.0.3, referencing0.37.0, rpds-py2026.6.3, typing-extensions4.16.0. |
+| 20 | checkout pin | 3d3c42e5aac5ba805825da76410c181273ba90b1; unchanged. |
+| 21 | upload-artifact pin | 043fb46d1a93c77aae656e7c1c64a875d1fc6a0a; unchanged. |
+| 22 | Undici version | 6.23.0, single lock dependency; one implementation in upload bundle and one identical implementation in unused merge bundle. Lock SRI and upstream source match verified. |
+| 23 | Undici affected range | <6.27.0; >=7.0.0,<7.28.0; >=8.0.0,<8.5.0. Fixed 6.27.0,7.28.0,8.5.0; bundled6.23.0 affected. |
+| 24 | Undici affected path | lib/dispatcher/client-h1.js resumeH1 / Parser.onHeadersComplete / writeH1; bundle module637, lines45900-47275. A reused idle HTTP/1.1 connection can misassociate an unsolicited upstream response. |
+| 25 | Undici code reachability | NOT_REACHED for affected transport/parser. Startup imports and optional ProxyAgent construction occur, but upload RPC and Azure use native Node HTTP; retry/redirect/proxy/error branches remain native. |
+| 26 | Undici attacker reachability | No affected input can be controlled in this invocation because the Undici dispatch edge is absent. |
+| 27 | Undici final disposition | NOT_REACHABLE_IN_FROZEN_USAGE. Exact entry run with local transport sentinels makes zero Undici calls; explicit wrapper positive control makes one. |
+| 28 | fast-xml-parser version | 5.4.1; one lock dependency, one parser in upload and one identical parser in unused merge. npm lock SRI and three upstream modules independently compared. |
+| 29 | XML affected range | Normalized >=4.0.0-beta.3,<4.5.5 and >=5.0.0,<5.5.6; fixed4.5.5/5.5.6. Maintainer broad range overlaps its4.5.5 backport; both representations identify5.4.1 as affected. |
+| 30 | XML affected path | OrderedObjParser.replaceEntitiesValue, bundled line95093; standard/numeric-alias substitutions omit expansion accounting. |
+| 31 | XML input origin | Azure/selected hosted upload service response.bodyAsText. Endpoint is selected by GitHub CreateArtifact.signedUploadUrl. |
+| 32 | XML parser call path | run -> artifact upload -> signed URL -> BlobClient uploadStream -> stageBlock/commitBlockList -> Azure deserialization -> parseXML -> XMLParser -> replaceEntitiesValue; XML body/content-type conditional. |
+| 33 | 1001 reproduction | REPRODUCED: <r> plus 1001 &#60; plus </r>, 5012 input bytes -> 1001 decoded < characters at limit1000. 0.916ms; sampled heap increase500936 bytes; RSS68448256->68595712. These are bounded observations, not a stress benchmark. |
+| 34 | 999/1000/1001 boundaries | Numeric aliases/standard entities decode at all three counts; DOCTYPE entity rejects1001; generic &#65; stays literal; fixed5.5.6 rejects1001. Nearby998/1002 also covered. |
+| 35 | XML code reachability | CODE_REACHABLE: normal service XML error reaches parser. Exact entry witnesses: successful upload0 calls; stage-error1; commit-error1. |
+| 36 | XML attacker reachability | NOT_ATTACKER_REACHABLE_WITHIN_FROZEN_THREAT_MODEL. Contributor cannot select arbitrary XML service-response bytes. |
+| 37 | Mitigation analysis | Limit1000 and htmlEntities:false are partial controls, not complete mitigation. XML validation checks syntax, not this missing count. No claim of resource-exhaustion resistance. |
+| 38 | XML final disposition | REACHABLE_NOT_ATTACKER_CONTROLLED. This is input-origin classification, not risk acceptance or a statement that the dependency is fixed. |
+| 39 | Hosted compromise distinction | Benign errors need no compromise to reach parser. Malicious selected XML requires Azure/service/endpoint failure, GitHub malicious signedURL, or trusted TLS/proxy/runner failure. SDK permits a service-selected HTTP URL; no host-pinning guarantee is claimed. |
+| 40 | Repository data to vulnerable XML | No: frozen artifact name is GitHub run identifiers, URL is service supplied, headers fixed/size-derived, block IDs library-generated. Documented operation contracts do not reflect opaque artifact data into XML errors. |
+| 41 | Artifact bytes to vulnerable XML | No: six files become opaque ZIP Put Block bytes. Outgoing BlockList XML contains generated block IDs, never artifact text. |
+| 42 | Current 3A-R cross-check | HEAD f236c4a2f94d8cd8e763aaa4bd6c52d703429692; pass/fail/cne workflows have identical relevant upload invocation and frozen pins, trusted C3AB tools. Current3A receipt remains CERTIFICATION_BLOCKED / hosted ENVIRONMENT_BLOCKED. |
+| 43 | Action update required | No, for these two findings under the exact frozen invocation. Pins unchanged; changed usage/trust boundaries require reassessment. |
+| 44 | Corrected SBOM | 177393 bytes; sha256:fb3af7154220cc08fb165f75358166382c2681ef5d2181eea4afbd6179bcd839;161 packages,94 files,255 relationships;69 product files plus25 SDK files. |
+| 45 | Full schema validation | PASS, complete45312-byte authoritative SPDX2.3 schema, SHA-256239208b7ac287b3cf5d9a9af23f9d69863971102a5e1587a27a398b43490b89b; jsonschema4.26.0 Draft7 with formats, remote refs denied; embedded and expanded SBOM validated. |
+| 46 | Licenses/notices | Mechanically rechecked exact product/schema/wheel notices and39 Action notices. Product/SDK license remains NOASSERTION; no blanket license grant. |
+| 47 | Provenance | provenance.json binds C3A/C3AB/source tree/archive/distribution/SDK/toolchain/schemas/validators/Action pins/advisories/SBOM and closed evidence/tool/report inventory; no future commit self-reference. |
+| 48 | Tamper controls | 3 artifact controls (old CLI, corrupt archive, distribution);10 SBOM controls;7 receipt/provenance controls including pin substitution, each advisory file, SBOM bytes and receipt changes. All required categories covered. |
+| 49 | Receipt | certification-receipt.json is canonical independent R2 receipt; receipt-validation.json binds the receipt and provenance with7 negative controls. |
+| 50 | releaseReady | true within Phase3B-R2 scope only; riskAcceptanceGranted=false; not a whole-release/hosted certification claim. |
+| 51 | Remaining blocker | No Phase3B-R2 blocker. Whole-release3A-R native/resource/hosted gates and3D binding remain external; current3C audit complete at20aa4e4245643e1c3a7b3f676622c5d2d36015b2. |
+| 52 | Tests/results | Artifact:2 assemblies,1 install,3 run,3 verify,4 generate,4 invalid commands,1 import audit,3 tamper cases. XML33 scenarios; Undici entry/source/factory/positive-control witnesses; SBOM10 and closure7 negatives. Counts have separate scopes and are not blindly summed. |
+| 53 | Workspace verification | PASS; retained exact command/output in final-workspace.json. |
+| 54 | git diff --check | PASS; final-diff-check.json plus staged/post-commit checks before delivery. |
+| 55 | Files changed | Only new R2 evidence/tools, this certification report, and conformance XML review report. No production/package/history files changed. Exact inventory is in provenance.json. |
+| 56 | Commit policy | One audit-only certification commit, subject cert(memoryos-1.3): independently recertify corrected MO-1306 release artifact. Created only after closure validation. |
+| 57 | Commit hash | Actual created identity is reported outside the commit contents, in final response/post-commit observation; no future self-reference. |
+| 58 | Commit parent | Exactly9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44; post-commit verifier requires exact parent and subject. |
+| 59 | Final Git status | Post-commit verifier requires clean status; final observed state delivered with actual commit identity. |
+| 60 | Push state | No push or remote mutation. |
+| 61 | Tag state | No tag; protected refs checked unchanged. |
+| 62 | Linux/Ubuntu state | Not used; no WSL or Linux campaign. |
+| 63 | VM state | No VM used. |
+| 64 | Provider account state | No account operations or hosted campaign; public primary-source GET retrieval only. |
+| 65 | Duration | Evidence preparation 1488 seconds from 2026-09-26T19:53:02+00:00; total through commit reported separately. |
+| 66 | 90-minute checkpoint | Not required; completed within normal90-minute target. |
+| 67 | 3-hour hard stop | Compliant; no extension or blind retry loop. |
+| 68 | Phase3D recommendation | Integrate actual C3AB, this3B-R2 cert and completed3C-R audit; preserve original3B and first3B-R disagreement. Resolve/integrate outstanding3A-R evidence or explicitly authorized owner disposition before final release claims. No Action correction required by these findings. |
+
+Resolved harness observations are retained, not counted as product failures: initial workspace command omitted --root; an initial diagnostic assertion omitted frozen fields; the Undici local placeholder server URL triggered the GHES guard; XML export instrumentation had an initial alias error. Corrections were confined to engineering harnesses and no product deadline or invariant was relaxed. No test sent malicious traffic to an external system.
+
+MO-1306 PHASE 3B-R2 COMPLETE
+READY FOR PHASE 3D INTEGRATION

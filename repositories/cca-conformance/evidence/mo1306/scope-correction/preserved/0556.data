@@ -1,0 +1,107 @@
+124205: ;// CONCATENATED MODULE: ./node_modules/@actions/artifact/lib/internal/upload/upload-artifact.js
+124206: var upload_artifact_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+124207:     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+124208:     return new (P || (P = Promise))(function (resolve, reject) {
+124209:         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+124210:         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+124211:         function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+124212:         step((generator = generator.apply(thisArg, _arguments || [])).next());
+124213:     });
+124214: };
+124215:
+124216:
+124217:
+124218:
+124219:
+124220:
+124221:
+124222:
+124223:
+124224:
+124225:
+124226:
+124227:
+124228:
+124229: function uploadArtifact(name, files, rootDirectory, options) {
+124230:     return upload_artifact_awaiter(this, void 0, void 0, function* () {
+124231:         let artifactFileName = `${name}.zip`;
+124232:         if (options === null || options === void 0 ? void 0 : options.skipArchive) {
+124233:             if (files.length === 0) {
+124234:                 throw new FilesNotFoundError([]);
+124235:             }
+124236:             if (files.length > 1) {
+124237:                 throw new Error('skipArchive option is only supported when uploading a single file');
+124238:             }
+124239:             if (!external_fs_.existsSync(files[0])) {
+124240:                 throw new FilesNotFoundError(files);
+124241:             }
+124242:             artifactFileName = external_path_.basename(files[0]);
+124243:             name = artifactFileName;
+124244:         }
+124245:         validateArtifactName(name);
+124246:         validateRootDirectory(rootDirectory);
+124247:         let zipSpecification = [];
+124248:         if (!(options === null || options === void 0 ? void 0 : options.skipArchive)) {
+124249:             zipSpecification = getUploadZipSpecification(files, rootDirectory);
+124250:             if (zipSpecification.length === 0) {
+124251:                 throw new FilesNotFoundError(zipSpecification.flatMap(s => (s.sourcePath ? [s.sourcePath] : [])));
+124252:             }
+124253:         }
+124254:         const contentType = getMimeType(artifactFileName);
+124255:         // get the IDs needed for the artifact creation
+124256:         const backendIds = getBackendIdsFromToken();
+124257:         // create the artifact client
+124258:         const artifactClient = internalArtifactTwirpClient();
+124259:         // create the artifact
+124260:         const createArtifactReq = {
+124261:             workflowRunBackendId: backendIds.workflowRunBackendId,
+124262:             workflowJobRunBackendId: backendIds.workflowJobRunBackendId,
+124263:             name,
+124264:             mimeType: StringValue.create({ value: contentType }),
+124265:             version: 7
+124266:         };
+124267:         // if there is a retention period, add it to the request
+124268:         const expiresAt = getExpiration(options === null || options === void 0 ? void 0 : options.retentionDays);
+124269:         if (expiresAt) {
+124270:             createArtifactReq.expiresAt = expiresAt;
+124271:         }
+124272:         const createArtifactResp = yield artifactClient.CreateArtifact(createArtifactReq);
+124273:         if (!createArtifactResp.ok) {
+124274:             throw new InvalidResponseError('CreateArtifact: response from backend was not ok');
+124275:         }
+124276:         let stream;
+124277:         if (options === null || options === void 0 ? void 0 : options.skipArchive) {
+124278:             // Upload raw file without archiving
+124279:             stream = yield createRawFileUploadStream(files[0]);
+124280:         }
+124281:         else {
+124282:             // Create and upload zip archive
+124283:             stream = yield createZipUploadStream(zipSpecification, options === null || options === void 0 ? void 0 : options.compressionLevel);
+124284:         }
+124285:         info(`Uploading artifact: ${artifactFileName}`);
+124286:         const uploadResult = yield uploadToBlobStorage(createArtifactResp.signedUploadUrl, stream, contentType);
+124287:         // finalize the artifact
+124288:         const finalizeArtifactReq = {
+124289:             workflowRunBackendId: backendIds.workflowRunBackendId,
+124290:             workflowJobRunBackendId: backendIds.workflowJobRunBackendId,
+124291:             name,
+124292:             size: uploadResult.uploadSize ? uploadResult.uploadSize.toString() : '0'
+124293:         };
+124294:         if (uploadResult.sha256Hash) {
+124295:             finalizeArtifactReq.hash = StringValue.create({
+124296:                 value: `sha256:${uploadResult.sha256Hash}`
+124297:             });
+124298:         }
+124299:         info(`Finalizing artifact upload`);
+124300:         const finalizeArtifactResp = yield artifactClient.FinalizeArtifact(finalizeArtifactReq);
+124301:         if (!finalizeArtifactResp.ok) {
+124302:             throw new InvalidResponseError('FinalizeArtifact: response from backend was not ok');
+124303:         }
+124304:         const artifactId = BigInt(finalizeArtifactResp.artifactId);
+124305:         info(`Artifact ${name} successfully finalized. Artifact ID ${artifactId}`);
+124306:         return {
+124307:             size: uploadResult.uploadSize,
+124308:             digest: uploadResult.sha256Hash,
+124309:             id: Number(artifactId)
+124310:         };
+124311:     });

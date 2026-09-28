@@ -1,0 +1,82 @@
+/** Diagnostic-only observer: unchanged installed modules, clocks, fs operands/results and timer arguments. */
+import fs from 'node:fs';
+import path from 'node:path';
+import cp from 'node:child_process';
+import {performance} from 'node:perf_hooks';
+import {syncBuiltinESMExports} from 'node:module';
+import {pathToFileURL} from 'node:url';
+import {createHash} from 'node:crypto';
+const externalArgv=[...process.argv],originalExecArgv=[...process.execArgv];
+const [reportPath,cli,...cliArgs]=process.argv.slice(2);
+const workspace=cliArgs[cliArgs.indexOf('--workspace')+1];
+const observedRoot=workspace.toLowerCase();
+const events=[],counts={},fdPaths=new Map(),timers=new Map(),children=[];
+let sequence=0,activeChild=null,timerSequence=0,callbackOverheadMs=0,fsObservationOverheadMs=0,flushed=false;
+const originals={spawn:cp.spawn,setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout};
+const methods=['lstatSync','statSync','realpathSync','existsSync','mkdirSync','openSync','fstatSync','readSync','writeSync','closeSync','writeFileSync','readFileSync','renameSync','unlinkSync','rmdirSync','readdirSync'];
+for(const name of methods)originals[name]=fs[name];
+const now=()=>performance.now();
+const sha=bytes=>'sha256:'+createHash('sha256').update(bytes).digest('hex');
+const errorRecord=e=>({name:e?.name??null,code:e?.code??null,errno:e?.errno??null,syscall:e?.syscall??null,path:e?.path??null,dest:e?.dest??null,message:e?.message??null,stack:e?.stack??null});
+const log=(event,data={})=>{const qpcBeforeNs=process.hrtime.bigint();const atMs=now();const qpcAfterNs=process.hrtime.bigint();events.push({sequence:++sequence,event,atMs,qpcBeforeNs:String(qpcBeforeNs),qpcAfterNs:String(qpcAfterNs),...data});};
+const pathValue=v=>typeof v==='string'?v:Buffer.isBuffer(v)?v.toString('utf8'):v instanceof URL?v.href:null;
+const scoped=p=>typeof p==='string'&&(p.toLowerCase()===observedRoot||p.toLowerCase().startsWith(observedRoot+path.sep));
+function describe(args){return args.map(v=>typeof v==='bigint'?String(v):Buffer.isBuffer(v)||ArrayBuffer.isView(v)?{type:v.constructor.name,byteLength:v.byteLength}:v instanceof URL?v.href:v instanceof Error?errorRecord(v):typeof v==='function'?{type:'function'}:v);}
+function resultRecord(v){if(v&&typeof v.isFile==='function')return {isFile:v.isFile(),isDirectory:v.isDirectory(),isSymbolicLink:v.isSymbolicLink(),size:String(v.size),nlink:String(v.nlink),mode:Number(v.mode)};if(Buffer.isBuffer(v))return {byteLength:v.length};if(Array.isArray(v))return {count:v.length};return v;}
+for(const method of methods){
+ fs[method]=function(...args){
+  counts[method]=(counts[method]??0)+1;
+  const trackingBegin=now();
+  const operands=(method==='renameSync'?args.slice(0,2):args.slice(0,1)).map(v=>typeof v==='number'?fdPaths.get(v)??null:pathValue(v));
+  const tracked=operands.some(scoped),entry=tracked?{method,operands,arguments:describe(args)}:null;
+  if(tracked)log('fsBefore',entry);
+  fsObservationOverheadMs+=now()-trackingBegin;
+  const before=now();
+  try{
+   const value=Reflect.apply(originals[method],this,args);const after=now();
+   if(method==='openSync'&&typeof args[0]==='string')fdPaths.set(value,args[0]);
+   if(method==='closeSync')fdPaths.delete(args[0]);
+   if(tracked){const tick=now();log('fsAfter',{method,operands,elapsedMs:after-before,result:resultRecord(value)});fsObservationOverheadMs+=now()-tick;}
+   return value;
+  }catch(error){
+   const tick=now();log('fsError',{method,operands,arguments:describe(args),elapsedMs:tick-before,error:errorRecord(error),workspaceScoped:tracked});fsObservationOverheadMs+=now()-tick;throw error;
+  }
+ };
+}
+cp.spawn=function(...args){
+ const tick=now(),ordinal=children.length+1;
+ log('helperSpawnBefore',{ordinal,executable:args[0],argv:args[1],options:args[2]});
+ callbackOverheadMs+=now()-tick;
+ const child=Reflect.apply(originals.spawn,this,args),state={ordinal,pid:child.pid??null,spawnReturnedAtMs:now(),request:null};children.push(state);activeChild=state;
+ log('helperSpawnReturn',{ordinal,pid:state.pid});
+ const emit=child.emit,kill=child.kill,stdinEnd=child.stdin.end,stdinDestroy=child.stdin.destroy,outEmit=child.stdout.emit,errEmit=child.stderr.emit;
+ child.emit=function(event,...rest){
+  const tick=now();if(['spawn','error','exit','close'].includes(event))log('helperEventBefore',{ordinal,pid:child.pid,eventName:event,args:describe(rest)});callbackOverheadMs+=now()-tick;
+  const result=Reflect.apply(emit,this,[event,...rest]);const endTick=now();if(['exit','close'].includes(event))log('helperEventAfter',{ordinal,pid:child.pid,eventName:event});callbackOverheadMs+=now()-endTick;return result;
+ };
+ child.kill=function(...rest){const tick=now();log('helperKillBefore',{ordinal,pid:child.pid,args:rest});callbackOverheadMs+=now()-tick;const value=Reflect.apply(kill,this,rest);log('helperKillReturn',{ordinal,pid:child.pid,result:value});return value;};
+ child.stdin.end=function(...rest){const tick=now(),raw=Buffer.isBuffer(rest[0])?rest[0]:Buffer.from(rest[0]??'');let request;try{request=JSON.parse(raw);}catch{request=null;}state.request=request;log('helperStdinEnd',{ordinal,pid:child.pid,byteLength:raw.length,sha256:sha(raw),request});callbackOverheadMs+=now()-tick;return Reflect.apply(stdinEnd,this,rest);};
+ child.stdin.destroy=function(...rest){log('helperStdinDestroy',{ordinal,pid:child.pid,args:describe(rest)});return Reflect.apply(stdinDestroy,this,rest);};
+ child.stdout.emit=function(event,...rest){if(event==='data')log('helperStdout',{ordinal,pid:child.pid,byteLength:rest[0].length,text:rest[0].subarray(0,2048).toString('utf8')});return Reflect.apply(outEmit,this,[event,...rest]);};
+ child.stderr.emit=function(event,...rest){if(event==='data')log('helperStderr',{ordinal,pid:child.pid,byteLength:rest[0].length,text:rest[0].subarray(0,2048).toString('utf8')});return Reflect.apply(errEmit,this,[event,...rest]);};
+ return child;
+};
+globalThis.setTimeout=function(callback,delay,...args){
+ const id=++timerSequence,ordinal=activeChild?.ordinal??null,before=now();
+ const wrapped=function(...values){const tick=now();log('timerFireBefore',{id,ordinal,requestedDelayMs:delay});callbackOverheadMs+=now()-tick;try{return Reflect.apply(callback,this,values);}finally{log('timerFireAfter',{id,ordinal});}};
+ const handle=Reflect.apply(originals.setTimeout,this,[wrapped,delay,...args]),after=now();timers.set(handle,id);
+ log('timerArmed',{id,ordinal,requestedDelayMs:delay,registrationBeforeMs:before,registrationAfterMs:after,dueLowerMs:before+Number(delay),dueUpperMs:after+Number(delay),callbackSource:callback.toString()});return handle;
+};
+globalThis.clearTimeout=function(handle){log('timerCleared',{id:timers.get(handle)??null});return Reflect.apply(originals.clearTimeout,this,[handle]);};
+for(const name of methods){if(Object.hasOwn(originals[name],'native'))Object.defineProperty(fs[name],'native',Object.getOwnPropertyDescriptor(originals[name],'native'));}
+syncBuiltinESMExports();
+process.argv=[process.execPath,cli,...cliArgs];
+const environment=Object.fromEntries(['SystemRoot','WINDIR'].map(k=>[k,process.env[k]??null]));
+log('productImportBefore',{externalArgv,productArgv:[...process.argv],execArgv:[...process.execArgv],cwd:process.cwd(),environment});
+function flush(exitCode){
+ if(flushed)return;flushed=true;
+ const report={kind:'MemoryOSPhase3AEnvironmentNodeObservation',version:'1.0.0',clock:'Node performance.now; no clock patched; relative values comparable only within this process',timeOrigin:performance.timeOrigin,captureFinishedHrtimeNs:String(process.hrtime.bigint()),hrtimeBasis:'Pinned Node v24.21.0 process.hrtime.bigint -> uv_hrtime -> Windows QPC divided by frequency in nanoseconds; no process offset. performance.now only paired through each QPC bracket.',externalArgv,productArgv:[...process.argv],originalExecArgv,execArgvAtExit:[...process.execArgv],environment,cwd:process.cwd(),workspace,exitCode,events,helperCount:children.length,fsCallCounts:counts,measuredBookkeepingMs:{fs:fsObservationOverheadMs,callbacks:callbackOverheadMs},remainingTrackedFileDescriptors:[...fdPaths].filter(([,p])=>scoped(p)).map(([fd,p])=>({fd,path:p})),scope:'Engineering wrapper replaces only the Node entry script and exposes the exact original CLI argument shape to the unchanged installed CLI. execArgv, child arguments/environment, fs API operands/returns/errors, helper bytes, clock and timer delay arguments are preserved. Bookkeeping adds unavoidable nonzero timing overhead and is not subtracted from product deadlines. Buffered events are flushed only on process exit using original filesystem functions. No accepted case or pure verify is rerun.'};
+ const raw=JSON.stringify(report)+'\n';originals.writeFileSync(reportPath,raw,{flag:'wx'});
+}
+process.once('exit',flush);
+try{await import(pathToFileURL(cli));log('productImportSettled',{exitCode:process.exitCode??0});}catch(error){log('productImportRejected',{error:errorRecord(error)});throw error;}

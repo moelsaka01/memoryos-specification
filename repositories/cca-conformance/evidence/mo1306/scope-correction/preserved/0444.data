@@ -1,0 +1,733 @@
+{
+  "advisory": "GHSA-8gc5-j5rx-235r",
+  "status": "COMPLETE",
+  "disposition": "REACHABLE_NOT_ATTACKER_CONTROLLED",
+  "dispositionDefinition": "The affected implementation is included and is conditionally code-reachable in the exact frozen upload invocation. Its XML response input cannot be selected or populated with arbitrary entity syntax by a repository contributor under the frozen trusted-tool/data and hosted-service trust boundaries. Malicious XML control requires a trusted hosted endpoint/service or authenticated transport/runner trust failure. This is not a claim that the dependency is patched or that parser resource limits fully mitigate it.",
+  "releaseReadyCompatible": true,
+  "actionUpdateRequired": false,
+  "riskAcceptanceMade": false,
+  "candidate": "9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44",
+  "actionPin": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
+  "reviewedAt": "2026-09-26T20:17:28.504750+00:00",
+  "authority": {
+    "maintainerUrl": "https://github.com/NaturalIntelligence/fast-xml-parser/security/advisories/GHSA-8gc5-j5rx-235r",
+    "maintainerAffectedRange": ">=4.0.0-beta.3, <= 5.5.5",
+    "maintainerPatchedVersions": [
+      "4.5.5",
+      "5.5.6"
+    ],
+    "githubGlobalNormalizedRanges": [
+      ">= 4.0.0-beta.3, < 4.5.5",
+      ">= 5.0.0, < 5.5.6"
+    ],
+    "rangeNote": "Maintainer broad range overlaps the 4.5.5 backport; global split ranges resolve that ambiguity. 5.4.1 is affected under either statement.",
+    "fixCommit": "bd26122c838e6a55e7d7ac49b4ccc01a49999a01",
+    "fixedReleaseCommit": "870043e75e78545192bc70950c6286d36c7cdf23",
+    "workaround": "htmlEntities:false",
+    "mechanism": "DOCTYPE replacement counts expansions; standard-entity replacements and HTML/numeric replacements omit expansion accounting. Large attacker-selected XML can cause excess CPU/memory despite explicit limits.",
+    "impact": "Availability/denial of service, potential memory exhaustion; no resource-exhaustion test was performed.",
+    "preconditions": [
+      "Control XML supplied to parser",
+      "Enabled entity-processing path",
+      "Enough references to create resource pressure"
+    ],
+    "sourceCorrection": "For exact bundled 5.4.1, general num_dec/num_hex are in htmlEntities, not lastEntities as maintainer narrative suggests. lastEntities still processes standard named entities and fixed numeric spellings such as &#60; without counting. Generic &#65; with htmlEntities:false remains literal and is not counted as 1001 decoded expansions."
+  },
+  "identity": {
+    "bundledVersion": "5.4.1",
+    "dependencyChain": [
+      "@actions/artifact@6.2.0",
+      "@azure/storage-blob@12.31.0",
+      "@azure/core-xml@1.5.0",
+      "fast-xml-parser@5.4.1"
+    ],
+    "coreClientVersion": "1.10.1",
+    "lockCopies": 1,
+    "physicalBundledCopies": 2,
+    "activeBundle": "dist/upload/index.js",
+    "inactiveBundle": "dist/merge/index.js",
+    "uploadBundleSha256": "eea594941d8ee535974e0fbc03bbdf567f3abc78194f224b93f2df9a887ee2e9",
+    "mergeBundleSha256": "6e779dc9c2334d90debc1f9eb97e053b0c01a080aa96d42b5c4edde6a7c33565",
+    "affectedImplementationIncluded": true,
+    "upstreamComparison": "OrderedObjParser, OptionsBuilder, XMLParser executable bodies equal npm 5.4.1 after only enumerated ncc import/export and identifier transformations. These modules are byte-identical across upload/merge bundles. Upstream tarball SHA-512 equals lock integrity. Full hashes and diffs in xml-source-review.json and xml-sources."
+  },
+  "parser": {
+    "affectedFunction": "src/xmlparser/OrderedObjParser.js replaceEntitiesValue (bundled OrderedObjParser_replaceEntitiesValue)",
+    "bundleFunctionLine": 95093,
+    "azureOptions": {
+      "attributesGroupName": "$",
+      "textNodeName": "#",
+      "ignoreAttributes": false,
+      "suppressBooleanAttributes": false,
+      "parseAttributeValue": false,
+      "parseTagValue": false,
+      "attributeNamePrefix": "",
+      "processEntities": true,
+      "trimValues": false
+    },
+    "effectiveOptions": {
+      "preserveOrder": false,
+      "attributeNamePrefix": "",
+      "attributesGroupName": "$",
+      "textNodeName": "#",
+      "ignoreAttributes": false,
+      "removeNSPrefix": false,
+      "allowBooleanAttributes": false,
+      "parseTagValue": false,
+      "parseAttributeValue": false,
+      "trimValues": false,
+      "cdataPropName": false,
+      "numberParseOptions": {
+        "hex": true,
+        "leadingZeros": true,
+        "eNotation": true
+      },
+      "alwaysCreateTextNode": false,
+      "commentPropName": false,
+      "unpairedTags": [],
+      "processEntities": {
+        "enabled": true,
+        "maxEntitySize": 10000,
+        "maxExpansionDepth": 10,
+        "maxTotalExpansions": 1000,
+        "maxExpandedLength": 100000,
+        "allowedTags": null,
+        "tagFilter": null
+      },
+      "htmlEntities": false,
+      "ignoreDeclaration": false,
+      "ignorePiTags": false,
+      "transformTagName": false,
+      "transformAttributeName": false,
+      "captureMetaData": false,
+      "maxNestedTags": 100,
+      "strictReservedNames": true,
+      "suppressBooleanAttributes": false
+    },
+    "nonJsonOptionDetails": {
+      "stopNodes": "undefined (Azure explicit override)",
+      "tagValueProcessor": "function(tagName,val){return val;}",
+      "attributeValueProcessor": "function(attrName,val){return val;}",
+      "isArray": "()=>false",
+      "updateTag": "function(tagName,jPath,attrs){return tagName;}",
+      "note": "All scalar/array settings in effectiveOptions; function/undefined settings are represented here because JSON.stringify omits them."
+    },
+    "validation": "@azure/core-xml calls XMLValidator.validate before XMLParser.parse; valid numeric/standard entity syntax passes.",
+    "callPath": [
+      {
+        "from": "manual workflow_dispatch",
+        "to": "upload step",
+        "edge": "CONDITIONAL",
+        "condition": "always() && evaluate.outputs.complete == true; six fixed output basenames"
+      },
+      {
+        "from": "Action main dist/upload/index.js",
+        "to": "run -> shared uploadArtifact -> @actions/artifact.uploadArtifact",
+        "edge": "REACHED",
+        "lines": "130504-130629"
+      },
+      {
+        "from": "artifact uploadArtifact",
+        "to": "CreateArtifact -> uploadToBlobStorage(CreateArtifactResp.signedUploadUrl, zip stream)",
+        "edge": "REACHED",
+        "lines": "124246-124286"
+      },
+      {
+        "from": "uploadToBlobStorage",
+        "to": "BlobClient.getBlockBlobClient().uploadStream",
+        "edge": "REACHED",
+        "lines": "123930-123972"
+      },
+      {
+        "from": "uploadStream",
+        "to": "stageBlock and commitBlockList / Azure pipeline",
+        "edge": "REACHED",
+        "lines": "119930-119967"
+      },
+      {
+        "from": "Azure response",
+        "to": "deserializationPolicy -> deserializeResponseBody -> parse",
+        "edge": "REACHED",
+        "lines": "91476-91528"
+      },
+      {
+        "from": "parse(response.bodyAsText)",
+        "to": "@azure/core-xml parseXML",
+        "edge": "CONDITIONAL",
+        "condition": "Nonempty nonstreamed response body with application/xml or application/atom+xml Content-Type. An ordinary Azure XML error suffices; not restricted to status 400.",
+        "lines": "91653-91688"
+      },
+      {
+        "from": "parseXML",
+        "to": "XMLValidator.validate -> new XMLParser(options).parse",
+        "edge": "REACHED",
+        "lines": "95579-95610"
+      },
+      {
+        "from": "XMLParser.parse",
+        "to": "OrderedObjParser.replaceEntitiesValue",
+        "edge": "CONDITIONAL",
+        "condition": "XML text/attribute contains ampersand entity references; processEntities enabled",
+        "lines": "94726;94792;95093-95166"
+      },
+      {
+        "from": "frozen upload action",
+        "to": "merge Action entry",
+        "edge": "NOT_REACHED",
+        "condition": "action.yml main selects dist/upload/index.js; workflow does not invoke /merge"
+      }
+    ]
+  },
+  "dataOrigin": {
+    "classification": "Azure/service-controlled XML response, endpoint selected by GitHub-controlled signedUploadUrl",
+    "codeReachability": "CODE_REACHABLE",
+    "attackerReachability": "NOT_ATTACKER_REACHABLE_WITHIN_FROZEN_THREAT_MODEL",
+    "artifactBytesParsedAsXml": false,
+    "repositoryBytesParsedAsXml": false,
+    "serviceCompromiseRequiredForOrdinaryParserCall": false,
+    "fields": [
+      {
+        "input": "artifact filenames/contents",
+        "origin": "artifact-content-controlled / repository-controlled to extent permitted by MemoryOS evaluator",
+        "flow": "fixed six basenames read, zipped and sent as opaque Put Block bytes; never XMLParser input"
+      },
+      {
+        "input": "artifact name",
+        "origin": "workflow-controlled plus GitHub-controlled run_id/run_attempt",
+        "flow": "fixed memoryos-ci-${run_id}-${run_attempt}; JSON CreateArtifact request, not arbitrary repository text"
+      },
+      {
+        "input": "signedUploadUrl/container/blob/SAS",
+        "origin": "GitHub-controlled CreateArtifact response",
+        "flow": "Azure URL; no repository-derived URL input"
+      },
+      {
+        "input": "block ID",
+        "origin": "Action/library-generated UUID and increasing block number",
+        "flow": "base64 encoded query value and XML BlockList Latest value; no repository strings"
+      },
+      {
+        "input": "Put Block request body",
+        "origin": "artifact-content-controlled opaque zip bytes",
+        "flow": "binary media; no XML parse or reflected-body contract"
+      },
+      {
+        "input": "Put Block List body",
+        "origin": "library-generated",
+        "flow": "serialized XML of generated block IDs; artifact bytes are absent"
+      },
+      {
+        "input": "content type / headers",
+        "origin": "workflow/library-controlled; byte count derived from payload size",
+        "flow": "application/zip blob content type, fixed operation headers, generated request ID, decimal size; no arbitrary repository metadata/header values"
+      },
+      {
+        "input": "XML parser body",
+        "origin": "Azure/service-controlled",
+        "flow": "response.bodyAsText from upload HTTP response; Content-Type also service supplied"
+      },
+      {
+        "input": "network traffic",
+        "origin": "network-attacker-controlled only if authenticated transport trust fails",
+        "flow": "ordinary MITM cannot replace authenticated HTTPS body under trusted TLS/proxy/runner assumptions"
+      }
+    ],
+    "reflectionAnalysis": "Azure error XML may describe invalid request fields. In this exact invocation those fields are service-issued URL components, fixed headers, decimal lengths, generated IDs and block-list structure; opaque artifact contents are not reflected by the documented Put Block/Put Block List contract. Changing payload size may influence response choice, but does not select arbitrary XML entity syntax. No repository bytes enter the URL/query or XML BlockList. This is source/contract analysis, not a claim to inspect private Azure implementation.",
+    "trustBoundary": [
+      "manual dispatch only",
+      "trusted tool checkout separated from data checkout",
+      "contents:read",
+      "no PR/pull_request_target trigger",
+      "no ordinary secret input",
+      "six artifact basenames",
+      "no repository script execution or repository-controlled upload endpoint in frozen invocation"
+    ],
+    "maliciousInputAlternatives": [
+      "Compromised/misbehaving Azure upload endpoint returns malicious XML",
+      "Compromised/misbehaving GitHub artifact service returns attacker endpoint or insecure signed URL",
+      "Compromised trusted runner/proxy/CA/TLS configuration permits authenticated response substitution",
+      "Another trusted-infrastructure failure that supplies malicious service XML"
+    ],
+    "transportQualification": "SDK allowInsecureConnection:true permits a service-supplied HTTP URL; no local hostname allowlist is enforced. Frozen workflow does not select endpoint or disable TLS validation. Normal signed endpoint is HTTPS. Redirect policy defaults to same-origin (cross-origin and HTTPS-to-HTTP changes rejected); PUT follows eligible 300/307 only under trusted response. Thus this is hosted infrastructure trust, not a universal HTTP/TLS or host-pinning guarantee.",
+    "serviceResponseScope": "XML is exclusively consumed from the selected hosted upload service response on this path; it is not exclusively Azure if GitHub changes the returned endpoint. A malicious chosen XML requires trusted-service/endpoint or transport failure, but a benign Azure error reaches the parser without compromise."
+  },
+  "mitigation": {
+    "entityLimit": "PARTIALLY_BOUNDS_DIFFERENT_ENTITY_PATH; DOES_NOT_PREVENT_THIS_ADVISORY",
+    "entityLimitExplanation": "1000 caps DOCTYPE-defined substitutions, but standard/numeric-alias loops bypass accounting. 1001 witness proves property violation, not a workflow DoS.",
+    "htmlEntitiesFalse": "PARTIAL: disables general numeric/HTML table, leaves standard and numeric-alias substitutions uncounted. Maintainer workaround is not a complete mitigation for exact 5.4.1.",
+    "xmlValidation": "UNRELATED_TO_RESOURCE_LIMIT: accepts well-formed repeated entities",
+    "frozenBoundary": "Prevents repository contributors from choosing vulnerable service-response XML; selected disposition is attacker-control classification, not a claim that parser is mitigated."
+  },
+  "witnesses": {
+    "independent": true,
+    "boundaryRows": 25,
+    "fixedControlRows": 5,
+    "entryScenarios": 3,
+    "totalScenarioCount": 33,
+    "boundaryNumbers": [
+      998,
+      999,
+      1000,
+      1001,
+      1002
+    ],
+    "boundary99910001001": [
+      {
+        "kind": "numeric-lt",
+        "count": 999,
+        "inputBytes": 5002,
+        "inputSha256": "7d2878c342094e803eb52ef46557458e5d063ec6272a975fea1603b1c1d78082",
+        "limit": 1000,
+        "accepted": true,
+        "error": null,
+        "outputLength": 999,
+        "observedExpansions": 999,
+        "outputSha256": "bc8fc1156f20a2569b7d068dcd9c42128e1615fa6a88408dfa1ac8a333ce0f6e",
+        "outputPrefix": "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<",
+        "elapsedMs": 1.450400000000002,
+        "memoryBefore": {
+          "rss": 67833856,
+          "heapTotal": 22765568,
+          "heapUsed": 13096608,
+          "external": 13543819,
+          "arrayBuffers": 281741
+        },
+        "memoryAfter": {
+          "rss": 67981312,
+          "heapTotal": 22765568,
+          "heapUsed": 13611656,
+          "external": 13543819,
+          "arrayBuffers": 281741
+        },
+        "heapDeltaBytes": 515048
+      },
+      {
+        "kind": "numeric-lt",
+        "count": 1000,
+        "inputBytes": 5007,
+        "inputSha256": "f94802abbc328c639429c881964d7fa85a892a10dff14ba6144a131831cc44f3",
+        "limit": 1000,
+        "accepted": true,
+        "error": null,
+        "outputLength": 1000,
+        "observedExpansions": 1000,
+        "outputSha256": "5c57ef0eb406aeddbe8a9174407973fff85555e2d07943d7434e8ac2fba54f7e",
+        "outputPrefix": "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<",
+        "elapsedMs": 1.5078000000000031,
+        "memoryBefore": {
+          "rss": 68141056,
+          "heapTotal": 22765568,
+          "heapUsed": 13107088,
+          "external": 13543819,
+          "arrayBuffers": 281741
+        },
+        "memoryAfter": {
+          "rss": 68194304,
+          "heapTotal": 22765568,
+          "heapUsed": 13755680,
+          "external": 13543819,
+          "arrayBuffers": 281741
+        },
+        "heapDeltaBytes": 648592
+      },
+      {
+        "kind": "numeric-lt",
+        "count": 1001,
+        "inputBytes": 5012,
+        "inputSha256": "4f9d04655e66dbdbdfe0bf2176bbe70c704565bfe9607690425c9a9653f8a2e0",
+        "limit": 1000,
+        "accepted": true,
+        "error": null,
+        "outputLength": 1001,
+        "observedExpansions": 1001,
+        "outputSha256": "2f8139a494582dea4e6467cc69a1bf1bf81573c1ceb1b7e1834b68efce378f5a",
+        "outputPrefix": "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<",
+        "elapsedMs": 0.9159999999999968,
+        "memoryBefore": {
+          "rss": 68448256,
+          "heapTotal": 22765568,
+          "heapUsed": 13122464,
+          "external": 13543819,
+          "arrayBuffers": 281741
+        },
+        "memoryAfter": {
+          "rss": 68595712,
+          "heapTotal": 22765568,
+          "heapUsed": 13623400,
+          "external": 13543819,
+          "arrayBuffers": 281741
+        },
+        "heapDeltaBytes": 500936
+      }
+    ],
+    "exactConstruction": "<r> + entity.repeat(n) + </r>; DOCTYPE control prefixes <!DOCTYPE r [<!ENTITY a \"A\">]>; service witness uses <Error><Code>InvalidRequest</Code><Message> + &#60;.repeat(1001) + </Message></Error>.",
+    "observation1001": "REPRODUCED for numeric aliases and standard entities: 1001 decoded chars accepted at normalized limit 1000. Generic &#65; remains literal, so that construction alone is not decoded expansion.",
+    "fixedVersionControl": "npm 5.5.6 accepts 998/999/1000 and rejects 1001/1002 for &#60; at the same Azure parser options.",
+    "timingRangeMs": [
+      0.45029999999997017,
+      3.6317999999999984
+    ],
+    "maxBoundaryInputBytes": 6019,
+    "maximumProcessCommittedBytes": 96665600,
+    "bounds": {
+      "perProcessWallSeconds": 10,
+      "v8OldSpaceMiB": 96,
+      "hardWindowsJobProcessMemoryMiB": 384,
+      "parentAssignsMemoryJobBeforeProbeGate": true,
+      "networkBuiltinsDenied": true
+    },
+    "entryResults": [
+      {
+        "mode": "entry-success",
+        "wallSeconds": 1.375,
+        "parserCalls": 0,
+        "error": null,
+        "operations": [
+          "block",
+          "blocklist"
+        ]
+      },
+      {
+        "mode": "entry-stage-error",
+        "wallSeconds": 1.375,
+        "parserCalls": 1,
+        "error": {
+          "name": "RestError",
+          "code": "InvalidRequest",
+          "messagePrefix": "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<",
+          "messageLength": 1001
+        },
+        "operations": [
+          "block"
+        ]
+      },
+      {
+        "mode": "entry-commit-error",
+        "wallSeconds": 1.4530000000013388,
+        "parserCalls": 1,
+        "error": {
+          "name": "RestError",
+          "code": "InvalidRequest",
+          "messagePrefix": "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<",
+          "messageLength": 1001
+        },
+        "operations": [
+          "block",
+          "blocklist"
+        ]
+      }
+    ],
+    "limitations": "Offline transport substitutes prove exact bundled call reachability and origin separation; they are not a live hosted run or an external exploitation attempt. No unbounded input or exhaustion measured. Initial export-alias harness syntax issue was corrected before valid runs; it is not a product/advisory failure."
+  },
+  "workflowCrossCheck": {
+    "current3ARWorkflows": [
+      {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3a-refresh\\.github\\workflows\\mo1306-certification-pass.yml",
+        "sha256": "79dfcad62e9c54aebbe00fb100ee545025388351afc12ee98b8a193d3dc17416",
+        "relevantUploadInvocationEqual": true,
+        "manualDispatch": true,
+        "contentsRead": true,
+        "toolRefIsC3AB": true,
+        "noPullRequestTriggers": true,
+        "noSecretsExpression": true,
+        "uploadInvocation": "        if: always() && steps.evaluate.outputs.complete == 'true'\n        uses: 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'\n        with:\n          name: 'memoryos-ci-${{ github.run_id }}-${{ github.run_attempt }}'\n          path: |\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/evaluation-identity.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-artifacts.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-complete.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-evidence.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-result.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/policy-outcome.json\n          if-no-files-found: 'error'\n          include-hidden-files: true\n          retention-days: 7\n"
+      },
+      {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3a-refresh\\.github\\workflows\\mo1306-certification-fail.yml",
+        "sha256": "8de9b21bae83eb047afce792c4c690e715acde9cff2eae8103c00f7acaad06f3",
+        "relevantUploadInvocationEqual": true,
+        "manualDispatch": true,
+        "contentsRead": true,
+        "toolRefIsC3AB": true,
+        "noPullRequestTriggers": true,
+        "noSecretsExpression": true,
+        "uploadInvocation": "        if: always() && steps.evaluate.outputs.complete == 'true'\n        uses: 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'\n        with:\n          name: 'memoryos-ci-${{ github.run_id }}-${{ github.run_attempt }}'\n          path: |\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/evaluation-identity.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-artifacts.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-complete.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-evidence.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-result.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/policy-outcome.json\n          if-no-files-found: 'error'\n          include-hidden-files: true\n          retention-days: 7\n"
+      },
+      {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3a-refresh\\.github\\workflows\\mo1306-certification-cne.yml",
+        "sha256": "63680e49998af94c1530b46f81387cea7c2cedbb40494be2359546e2b4cb6d37",
+        "relevantUploadInvocationEqual": true,
+        "manualDispatch": true,
+        "contentsRead": true,
+        "toolRefIsC3AB": true,
+        "noPullRequestTriggers": true,
+        "noSecretsExpression": true,
+        "uploadInvocation": "        if: always() && steps.evaluate.outputs.complete == 'true'\n        uses: 'actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'\n        with:\n          name: 'memoryos-ci-${{ github.run_id }}-${{ github.run_attempt }}'\n          path: |\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/evaluation-identity.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-artifacts.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-complete.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-evidence.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/memoryos-ci-result.json\n            _memoryos/data/.memoryos-ci/out/${{ steps.evaluate.outputs.run-id }}/policy-outcome.json\n          if-no-files-found: 'error'\n          include-hidden-files: true\n          retention-days: 7\n"
+      }
+    ],
+    "allRelevantInvocationsEqual": true,
+    "note": "Current 3A-R checkout read-only. Relevant upload block is identical; trusted tool repository/ref corrected to C3AB in 3A-R. No hosted execution performed.",
+    "historicalGeneratedFixture": {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3-correction/generated/github/.github/workflows/memoryos-ci.yml",
+      "sha256": "130af98bb8c0a749ffcb28f35fa5f6c505d06233ebda0d7d3232bf5c5234f52a",
+      "note": "Historical phase3-correction fixture with B2 tool ref, retained only as invocation comparison; not asserted to be a fresh candidate workflow."
+    },
+    "candidateGeneratedWorkflow": {
+      "path": ".cache/phase3b-r2/artifact/github-generated-1/.github/workflows/memoryos-ci.yml",
+      "sha256": "0904fe85fa55a141d1c3dbdbaa757a524611e9b2e1e4d59de1d050b268427348",
+      "storedCopy": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/frozen-candidate-workflow.yml",
+      "toolRefIsC3AB": true,
+      "origin": "Fresh installed corrected archive generation by independent artifact-review agent; see artifact-installed-generation.json."
+    }
+  },
+  "historicalDisagreement": "Independent evidence reproduces count bypass while distinguishing service-origin code reachability from repository attacker control. It does not inherit either earlier advisory disposition; original 3B COMPLETE_WITH_OPEN_FINDINGS/releaseReady=false and first-refresh stopped APPLICABLE_ACCEPTANCE_REQUIRED evidence remain untouched.",
+  "remainingDependencies": [
+    "Continued integrity of pinned Action and trusted tool checkout",
+    "GitHub endpoint selection and hosted upload service integrity",
+    "Hosted runner, DNS/CA/TLS/proxy trust for normal HTTPS connection",
+    "Reevaluate if workflow exposes endpoint/options/env to repository code, enables an alternate invocation, or changes pins"
+  ],
+  "evidence": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-boundary.json",
+      "length": 27740,
+      "sha256": "648ebb5d1c55a0c0d9903dbd0df1af04f9e407666c7ca614f4ce1a5b79ba2e08"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-entry-commit-error.json",
+      "length": 8201,
+      "sha256": "71efd18aaba29a0bd216744621986f7ea451588af9d06e558703826a5eed65ac"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-entry-stage-error.json",
+      "length": 7649,
+      "sha256": "4cfcdc3c81a990d441fc3fc0d90db3aa9cbb563e240dff595747477b207c65bf"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-entry-success.json",
+      "length": 6134,
+      "sha256": "877fdc390e2236d077cad1f4123af48c0f3159129deb543a6ac27650676f37e1"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-fixed-boundary.json",
+      "length": 4274,
+      "sha256": "85cad839d346e89c90f58649af2318667e7c852d2c798109d90aafbc8160ab80"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-instrumentation.json",
+      "length": 983,
+      "sha256": "2ca989dcbe6a6a99c5ce3383ab7380e3f858c77ab2f7472f1df3208493ee51c6"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-source-review.json",
+      "length": 3385,
+      "sha256": "2b8f01791225d156cfc996b5385f1f1e84d4f46bac38ffb790817f6a33c77cf9"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/action-source-identities.json",
+      "length": 2136,
+      "sha256": "aeff395394d8fd5f4575e3c088c7729d0f04e08a66c7612ae2b9c7c32a5a5253"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/archive-all-implementation-copies.json",
+      "length": 428,
+      "sha256": "5f791177defcab422550391160f3b3f8a74f38635b5a0e57a84f1c751c79b544"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/azure-deserialization-policy.txt",
+      "length": 12412,
+      "sha256": "aa2394c1fb300eabe73220905d32b7291ab39443f4b54a20a399fcdb82ad50e8"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/azure-parser-options.txt",
+      "length": 3744,
+      "sha256": "aa1c3fea03a9390584b36552c7a9d75774920113cd51e4d8bd8c6009c5d50eb7"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/azure-pipeline-parser-binding.txt",
+      "length": 3758,
+      "sha256": "6ef9fb01cf50ed71c4a462a28c3938cac13039e2d330e8e9e46eaf2b93aa4743"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/azure-put-block-list.html.gz",
+      "length": 17730,
+      "sha256": "c40937d0b585044f5ae37ad42d5910616fa0f041f78ee74c9a77c4a556be1635"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/azure-put-block.html.gz",
+      "length": 15449,
+      "sha256": "fc41d000cbe3945f9171680b30a0a55eb2140b60270dba7fb6821c6e1ceb168a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/azure-redirect-policy.txt",
+      "length": 2834,
+      "sha256": "cca309828b394c9847d28be957d53ac4bdcb69fd8863f6b6cdc23d1fb6d0d09f"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/azure-status-errors.html.gz",
+      "length": 10734,
+      "sha256": "d3c2a73ce62ef4c7c3a8bdcd9454f9deccc3984bd1166504462fe59ce43ddc79"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/azure-transport-TLS.txt",
+      "length": 4974,
+      "sha256": "7ebec365f9056cf274d9ba1c787cf7d27eda36d300400cade80026d20d2b2278"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/azure-upload-stream.txt",
+      "length": 3231,
+      "sha256": "34433f85b5691c8b1320ca3069b1845dca360fcb20b15c208965041f2a39179c"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/blob-upload.txt",
+      "length": 4511,
+      "sha256": "cbbb1a78b9918a721d361567ebf2a22c9d68f350342cafb2ab6ad365f07608f2"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/bundle-excerpts.json",
+      "length": 5878,
+      "sha256": "bdcdfbf0cfd4c09b6e841ea052de763420e145c5067367efe0f9cb78bff24a23"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/entity-defaults.txt",
+      "length": 3514,
+      "sha256": "b12ee902e8cbdb66d76ce8f3e7d355ecae808747cba20123c9f0671bd0853e69"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/entity-implementation.txt",
+      "length": 3428,
+      "sha256": "3fb185d60e6b1e9130144c2a4d90767215edec0f9b5673712cfe43c0fd1be85c"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/entity-replacement.txt",
+      "length": 2832,
+      "sha256": "6a633b28c88455a6224a7d778db9e0769c8598b26d48515840ca996c00bd8aa6"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/entry-inputs-and-run.txt",
+      "length": 6465,
+      "sha256": "cd330c2433c75864aa34caec40a5f15053c0a8fb78b155fabc4797d6e6d52db9"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/fixed-commit.json",
+      "length": 7645,
+      "sha256": "86e801593975e55a0717e683ba5a86f7bea73ee7b720d344fee7d09a0d73fad4"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/fixed-compare.json",
+      "length": 338412,
+      "sha256": "9aaf8d401676dd6b964c4d8a10d9f0cda9174c5eb87620e12129bea01a726972"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/fixed-release.json",
+      "length": 2039,
+      "sha256": "025d79363388bed58b056882fffb7d21d6c1ca145194df7544b28e3200deaa75"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/frozen-candidate-workflow.yml",
+      "length": 4409,
+      "sha256": "0904fe85fa55a141d1c3dbdbaa757a524611e9b2e1e4d59de1d050b268427348"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/ghsa-global.json",
+      "length": 7220,
+      "sha256": "89e5b97a31509c050400da9c9ab6df59ce9687d861d72dc41e54a4ab950e5696"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/ghsa-maintainer.json",
+      "length": 6749,
+      "sha256": "8e5259c5236dcefe14d51da1a732f1add6f6b0de4e60d41259f1483281e18a84"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/OptionsBuilder.bundle.js.gz",
+      "length": 1014,
+      "sha256": "4b5754e42d41a7f35206733d58d3f10ee90234cbc200d3e5c3db976db96ef5f0"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/OptionsBuilder.diff.gz",
+      "length": 373,
+      "sha256": "49015c694890c59d8ff39315a434334627a180da38ebf958e1a55514cf90fe18"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/OptionsBuilder.upstream.js.gz",
+      "length": 1009,
+      "sha256": "e8012aae2ae56e7bed2c93b61a25768a635641ce5d1108ac4800c4bde09fa7b5"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/OrderedObjParser.bundle.js.gz",
+      "length": 5999,
+      "sha256": "dff5e02a4ea6e0e1be14ba31a0496b104e1c1b622cddf6aedd6e3418cc38f74d"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/OrderedObjParser.diff.gz",
+      "length": 1312,
+      "sha256": "591e66e9cd399d2a49a5d36e68ea8ee28fcd2b2f2170eb8dba909ca56a35ddf3"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/OrderedObjParser.upstream.js.gz",
+      "length": 6083,
+      "sha256": "c420ecc259897f8a392719bd7e9aebcbf71d0679946ce8f39a39bc113e57de77"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/primary-retrieval.json",
+      "length": 3224,
+      "sha256": "d346264ad3a92c4881786c315a74790a0c1da9a8567bd1862bf05646aa74389c"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/service-url.txt",
+      "length": 961,
+      "sha256": "47d2945a375c1e78b6768d98f368d8e9f5ad487a0029b3eb2b174fd4433f9a35"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/stage-block-and-commit.txt",
+      "length": 4400,
+      "sha256": "39da7e43c9ee7fc507a4e4bc218bc39eae7d751ade172947dbbf424ff62a9601"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/upload-library.txt",
+      "length": 5808,
+      "sha256": "7058c075e46f4ba50369579f1fe7bfb925f523cb6e9215222c8c48dbe37599b8"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/upstream-5.4.1.tgz",
+      "length": 161162,
+      "sha256": "e681676683a0b388a9a66c1c25bf41e272490a62ba6c73a61b8648e599a27ef2"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/upstream-5.5.6.tgz",
+      "length": 220235,
+      "sha256": "3e98bc34f56eac049f3bcc5c49927d7b064d3c997fc2a737f630e50c8f689aca"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/verbatim-source-storage.json",
+      "length": 3878,
+      "sha256": "63ec1c8fca385d3ad44037a8b7cb50800e756bc681f80655b327be778ceab48c"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/XMLParser.bundle.js.gz",
+      "length": 895,
+      "sha256": "a016cdb83be6483b097cf1930a7efb44fc4ade98e74deef29130b81f527cb5cf"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/XMLParser.diff.gz",
+      "length": 319,
+      "sha256": "3a3965c303c865ca32d22c1c313ba3255ebb7cd6328f8d9445deae46cf39029f"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-sources/XMLParser.upstream.js.gz",
+      "length": 974,
+      "sha256": "420a621e5703a224c221d2729b71e8ce0510ee4bd7e3b604a91e2c6c56e7be7a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1306/phase3b-r2/xml-workflow-context.json",
+      "length": 5584,
+      "sha256": "3036111a8d43eb960e2a8c488071a11dc12e5b82d6f66635bf5d4fbc4a48f1d2"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1306-phase3b-r2/xml-analysis.py",
+      "length": 8186,
+      "sha256": "6806589a99938b2716d03028a89a13dacba499a2b34fa8b98685f82ba7c05c5a"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1306-phase3b-r2/xml-finalize.py",
+      "length": 16895,
+      "sha256": "078b5e2a37fbfe35e96f9908ebd27fcf4a93ee3f84d869ad29a61607db467c5e"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1306-phase3b-r2/xml-witness.mjs",
+      "length": 7249,
+      "sha256": "4a6ffff34b89519a1612371c803657f401b627e8f083213c1fef0d3b889620be"
+    }
+  ],
+  "verbatimSourceStorage": "xml-sources/verbatim-source-storage.json maps downloaded/source bytes to gzip snapshots; raw SHA-256s remain the original byte identities."
+}

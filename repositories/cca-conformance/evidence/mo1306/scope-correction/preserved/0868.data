@@ -1,0 +1,30 @@
+param([switch]$Record)
+$ErrorActionPreference='Stop'
+$dispatchRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../../..'))
+$dispatchFiles = @(Get-ChildItem -LiteralPath (Join-Path $dispatchRoot 'repositories/memoryos-ci/scripts') -Filter '*.ps1' | Sort-Object Name)
+$dispatchRows = @()
+$dispatchBindings = @()
+foreach ($dispatchFile in $dispatchFiles) {
+  $dispatchTokens=$null
+  $dispatchErrors=$null
+  $dispatchTree=[Management.Automation.Language.Parser]::ParseFile($dispatchFile.FullName,[ref]$dispatchTokens,[ref]$dispatchErrors)
+  if ($dispatchErrors.Count) { throw 'PowerShell syntax error' }
+  $dispatchRelative=$dispatchFile.FullName.Substring($dispatchRoot.Length+1).Replace('\','/')
+  $dispatchBindings += @{path=$dispatchRelative;byteLength=$dispatchFile.Length;sha256=('sha256:'+(Get-FileHash -LiteralPath $dispatchFile.FullName -Algorithm SHA256).Hash.ToLowerInvariant())}
+  foreach ($dispatchExpression in $dispatchTree.FindAll({param($node) $node -is [Management.Automation.Language.IndexExpressionAst] -or ($node -is [Management.Automation.Language.MemberExpressionAst] -and $node.Member -isnot [Management.Automation.Language.StringConstantExpressionAst])},$true)) {
+    $dispatchRows += @{file=$dispatchRelative;line=$dispatchExpression.Extent.StartLineNumber;expression=$dispatchExpression.Extent.Text;review='Array indexing of validated path segments or bounded summary output; no command-name object table and no JavaScript prototype inheritance.'}
+  }
+}
+if ($dispatchRows.Count -ne 5) { throw 'Unexpected PowerShell computed-site inventory' }
+$dispatchExpected=@('$parts[$i]','$parts[$i]','$summaryLines[0]','$summaryLines[0]','$verified[0]') | Sort-Object
+if ((($dispatchRows.expression | Sort-Object) -join "`n") -cne ($dispatchExpected -join "`n")) { throw 'Unexpected PowerShell lookup expression' }
+$dispatchHead=(& git -C $dispatchRoot rev-parse HEAD).Trim()
+if ($dispatchHead -ne '9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44') { throw 'Baseline changed' }
+$dispatchDelta=@(& git -C $dispatchRoot diff --name-only 0e35ffe70919d77b1db530929093826410b805f9 $dispatchHead -- repositories/memoryos-ci)
+if (($dispatchDelta -join ',') -ne 'repositories/memoryos-ci/bin/memoryos-ci.mjs,repositories/memoryos-ci/distribution-manifest.json') { throw 'Unexpected correction production change' }
+$dispatchCurrent=@(& git -C $dispatchRoot diff HEAD --name-only -- repositories/memoryos-ci)
+if ($dispatchCurrent.Count) { throw 'Production working bytes changed' }
+$dispatchDiff=(& git -C $dispatchRoot diff 0e35ffe70919d77b1db530929093826410b805f9 $dispatchHead -- repositories/memoryos-ci/bin/memoryos-ci.mjs) -join "`n"
+$dispatchReceipt=@{kind='MO1306Phase3CRIndependentDispatchSourceReview';version='1.0.0';baseline=$dispatchHead;status='PASS';powerShell=@{version=$PSVersionTable.PSVersion.ToString();edition=$PSVersionTable.PSEdition;files=$dispatchFiles.Count;sites=$dispatchRows.Count;bindings=$dispatchBindings;rows=$dispatchRows};productionDeltaFromB2=$dispatchDelta;productionWorkingChanges=$dispatchCurrent;cliCorrectionDiff=$dispatchDiff;semanticPreservation='B2-to-C3AB package delta is exactly CLI own-property dispatch and distribution manifest. All SDK closure, semantic delegate, worker, supervisor, verifier, contracts, projections, errors and adapters are unchanged Git blobs. The companion dispatch-audit receipt independently checks each of 25 runtime closure members against source authority and reads SDK version 1.1.0.';scope='Five current PowerShell computed sites independently parsed using native AST; companion receipt covers 135 JS sites including 34 high-risk map lookups. Correction engineering/historical inventory was reviewed without promoting its results to runtime evidence.'}
+if ($Record) { $dispatchJson=$dispatchReceipt | ConvertTo-Json -Depth 12; $dispatchTarget=Join-Path $dispatchRoot 'repositories/cca-conformance/evidence/mo1306/phase3cr/dispatch-source-review.json'; if(Test-Path -LiteralPath $dispatchTarget){throw 'Refusing to overwrite retained evidence'};[IO.File]::WriteAllText($dispatchTarget,$dispatchJson+"`n",[Text.UTF8Encoding]::new($false)) }
+@{status='PASS';powerShellSites=$dispatchRows.Count;powerShellFiles=$dispatchFiles.Count;productionDeltaCount=$dispatchDelta.Count}|ConvertTo-Json -Compress

@@ -1,0 +1,409 @@
+"""Verify preserved Phase 3B bytes and exact reusable dependencies without editing it.
+
+No original harness is imported or executed. Writes are confined to this refresh's
+evidence directory. --check recomputes evidence without writing and requires exact
+equality with the recorded deterministic results.
+"""
+from pathlib import Path, PurePosixPath
+import argparse
+import hashlib
+import io
+import json
+import os
+import subprocess
+import tarfile
+import sys
+sys.dont_write_bytecode = True
+import zipfile
+
+ROOT = Path(__file__).resolve().parents[4]
+ORIGINAL = ROOT.parent / "cca-mo1306-3b"
+OUT = ROOT / "repositories/cca-conformance/evidence/mo1306/phase3b-r2"
+OLD = "d522385de980a0105c5e6f17ba7f3ffb73cab6bd"
+B2 = "0e35ffe70919d77b1db530929093826410b805f9"
+C3AB = "9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44"
+EVIDENCE = "repositories/cca-conformance/evidence/mo1306/phase3b"
+TOOLS = "repositories/cca-conformance/tools/mo1306-phase3b"
+PKG = "repositories/memoryos-ci"
+GIT = "C:/Program Files/Git/cmd/git.exe"
+
+
+def ensure(condition, message):
+    if not condition:
+        raise RuntimeError(message)
+
+
+def identity(raw):
+    return {"byteLength": len(raw), "sha256": "sha256:" + hashlib.sha256(raw).hexdigest()}
+
+
+def row(root, path):
+    return {"path": path, **identity((root / path).read_bytes())}
+
+
+def match(raw, expected):
+    ensure(identity(raw) == {k: expected[k] for k in ("byteLength", "sha256")},
+           "Identity mismatch: " + str(expected.get("path", expected.get("filename"))))
+
+
+def git(*args, cwd=ROOT, data=None):
+    return subprocess.run([GIT, *args], cwd=cwd, input=data, check=True,
+                          capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW).stdout
+
+
+def blobs(revision, paths):
+    paths = sorted(set(paths))
+    output = io.BytesIO(git("cat-file", "--batch",
+                          data="".join(revision + ":" + p + "\n" for p in paths).encode()))
+    result = {}
+    for path in paths:
+        header = output.readline().split()
+        ensure(len(header) == 3 and header[1] == b"blob", "Missing Git blob: " + path)
+        size = int(header[2])
+        result[path] = output.read(size)
+        ensure(output.read(1) == b"\n", "Invalid Git batch boundary")
+    ensure(not output.read(), "Unexpected Git batch output")
+    return result
+
+
+def load(path):
+    return json.loads((ORIGINAL / EVIDENCE / path).read_bytes())
+
+
+def old_binding(path):
+    return {"commit": OLD, **row(ORIGINAL, path)}
+
+
+def checked_file(root, expected):
+    match((root / expected["path"]).read_bytes(), expected)
+
+
+def safe_member(path):
+    parts = PurePosixPath(path)
+    ensure(not parts.is_absolute() and ".." not in parts.parts, "Unsafe archived path")
+    return parts
+
+
+def paired_record(path, original_blobs, corrected_blobs):
+    original = original_blobs[path]
+    corrected = corrected_blobs[path]
+    ensure(original == corrected, "Dependency changed: " + path)
+    ensure((ORIGINAL / path).read_bytes() == original, "Original tracked dependency changed")
+    ensure((ROOT / path).read_bytes() == corrected, "Corrected tracked dependency changed")
+    return {"path": path, **identity(original), "originalCommit": OLD,
+            "correctedCommit": C3AB, "gitAndWorkingCopyEquality": True}
+
+
+def run():
+    ensure(ROOT.name == "cca-mo1306-3b-refresh2", "Unexpected refresh workspace")
+    ensure(git("rev-parse", "HEAD", cwd=ORIGINAL).decode().strip() == OLD, "Original HEAD changed")
+    ensure(git("rev-parse", "HEAD^", cwd=ORIGINAL).decode().strip() == B2, "Original parent changed")
+    ensure(git("status", "--porcelain=v1", cwd=ORIGINAL) == b"", "Original worktree is not clean")
+    ensure(git("rev-parse", C3AB).decode().strip() == C3AB, "Missing corrected authority")
+    prefixes = [EVIDENCE, TOOLS, "docs/mo1306-phase3b-certification.md",
+                "docs/mo1306-phase3b-supply-review.md"]
+    names = [p.decode() for p in git("ls-tree", "-rz", "--name-only", OLD, "--", *prefixes).split(b"\0") if p]
+    committed = blobs(OLD, names)
+    indexed = []
+    for name in names:
+        raw = (ORIGINAL / name).read_bytes()
+        ensure(raw == committed[name], "Original byte differs from certification commit: " + name)
+        indexed.append({"path": name, **identity(raw)})
+    receipt = load("certification-receipt.json")
+    ensure(receipt["candidate"]["baseline"] == B2 and receipt["candidate"]["archive"]["sha256"] ==
+           "sha256:6541e2a935f7bd0d5580b32fc9f17a07d471bc16486fd2a044ecef7628d2458b",
+           "Original receipt candidate changed")
+    for item in receipt["artifacts"] + receipt["harness"]["files"]:
+        checked_file(ORIGINAL, item)
+        ensure(item["path"] in committed, "Receipt identity outside original certification scope")
+        match(committed[item["path"]], item)
+    index = {
+        "kind": "MemoryOSPhase3BR2PreservedOriginalIndex", "version": "1.0.0", "status": "PASS",
+        "originalWorktree": str(ORIGINAL), "originalCommit": OLD, "originalParent": B2,
+        "originalWorkingTreeClean": True, "originalReceipt": old_binding(EVIDENCE + "/certification-receipt.json"),
+        "originalReceiptArtifactCount": len(receipt["artifacts"]),
+        "executedHarnessFilesBoundToActualCommit": len(receipt["harness"]["files"]),
+        "originalReceiptUnchanged": True, "files": indexed, "fileCount": len(indexed),
+        "scope": "All tracked original Phase 3B evidence, tools and both full reports byte-matched to d522; no original file rewritten.",
+    }
+
+    implementation_source = ROOT.parent / "cca-mo1306-3b-refresh/repositories/cca-conformance/tools/mo1306-phase3b-refresh/preservation.py"
+    ensure(hashlib.sha256(implementation_source.read_bytes()).hexdigest() == "44e63b014133aedbac05d59f5b82544ea2050836bbdf3b1fc0afe3a4097fbffc", "Reused mechanical verifier source changed")
+    implementation_provenance = {
+        "sourceWorktree": str(implementation_source.parents[4]),
+        "source": str(implementation_source), **identity(implementation_source.read_bytes()),
+        "reviewed": True,
+        "changes": ["Authorized refresh2 root", "Independent R2 evidence names and identity", "Explicit implementation attribution", "No Python bytecode writes"],
+        "scope": "Mechanically reused identity algorithm only; historical advisory dispositions are not inherited."
+    }
+
+    supplies = load("supply-identities.json")
+    # Freshly validate the retained cache, not merely the historical PASS labels.
+    for check in supplies["checks"]:
+        checked_file(ORIGINAL, check)
+    checked_file(ORIGINAL, supplies["node"])
+    checked_file(ORIGINAL, supplies["nodeArchive"])
+    distribution = load("supply-node-distribution-files.json")
+    expected_distribution = {r["path"]: r for r in distribution["files"]}
+    archive = ORIGINAL / supplies["nodeArchive"]["path"]
+    observed_distribution = set()
+    with zipfile.ZipFile(archive) as zipped:
+        for entry in zipped.infolist():
+            safe_member(entry.filename)
+            if entry.is_dir():
+                continue
+            name = (archive.parent / entry.filename).relative_to(ORIGINAL).as_posix()
+            ensure(name not in observed_distribution, "Duplicate Node ZIP member")
+            observed_distribution.add(name)
+            raw = zipped.read(entry)
+            match(raw, expected_distribution[name])
+            ensure((ORIGINAL / name).read_bytes() == raw, "Node distribution payload differs")
+    ensure(observed_distribution == set(expected_distribution) and len(observed_distribution) == 1994,
+           "Node distribution set mismatch")
+    npm_closure = json.loads((ORIGINAL / supplies["npm"]["retainedClosure"]["path"]).read_bytes())
+    npm_root = (ORIGINAL / supplies["npm"]["packageManifest"]["path"]).parent
+    ensure({p.relative_to(npm_root).as_posix() for p in npm_root.rglob("*") if p.is_file()} ==
+           {r["path"] for r in npm_closure["files"]}, "npm closure file set differs")
+    for item in npm_closure["files"]:
+        checked_file(npm_root, item)
+    ensure(len(npm_closure["files"]) == 1926, "Unexpected npm closure count")
+    ensure(json.loads((npm_root / "package.json").read_bytes())["version"] == "11.19.0", "npm version differs")
+    node = ORIGINAL / supplies["node"]["path"]
+    env = {k: os.environ[k] for k in ("SystemRoot", "WINDIR") if k in os.environ}
+    env.update(PATH="NO-PATH-TOOLS", NODE_DISABLE_COMPILE_CACHE="1")
+    actual_runtime = json.loads(subprocess.run(
+        [str(node), "-p", "JSON.stringify({version:process.version,arch:process.arch,platform:process.platform,versions:process.versions})"],
+        cwd=ROOT, env=env, capture_output=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW).stdout)
+    for key in ("version", "arch", "platform", "versions"):
+        ensure(actual_runtime[key] == supplies["node"][key], "Actual Node runtime identity differs")
+    signature_inputs = supplies["nodeSignature"]["inputs"]
+    for item in signature_inputs:
+        checked_file(ORIGINAL, item)
+    public = load("supply-node-public-provenance.json")
+    for key in ("fingerprintEvidence", "officialPublicKey", "retainedPublicSignatureInputs"):
+        checked_file(ORIGINAL, public[key])
+    signature_dir = ORIGINAL / EVIDENCE / "supply-node-signatures"
+    ensure((signature_dir / "verified-SHASUMS256.txt").read_bytes() ==
+           (signature_dir / "SHASUMS256.txt").read_bytes(), "Signed plaintext differs")
+    ensure(supplies["nodeArchive"]["sha256"].split(":")[1] + "  node-v24.21.0-win-x64.zip" in
+           (signature_dir / "SHASUMS256.txt").read_text(), "ZIP absent from signed checksum list")
+    ensure("VALIDSIG " + public["fingerprint"] in
+           (signature_dir / "verification.stdout.txt").read_text(), "Retained signature result differs")
+    # This reuses exact committed signature verification, with current full ZIP parity.
+    wheels = []
+    tracked = list(supplies["schemas"]) + list(supplies["schemaNotices"]) + list(supplies["notices"])
+    tracked += supplies["providerTemplates"] + [supplies[k] for k in
+                 ("engineeringLock", "jenkinsParser", "jenkinsGrammar", "genericProvider")]
+    tracked += [supplies["npm"]["retainedClosure"]]
+    for dep in supplies["wheels"]:
+        wheel_path = ORIGINAL / ".cache/mo1306/wheels" / dep["filename"]
+        match(wheel_path.read_bytes(), dep)
+        payload = []
+        with zipfile.ZipFile(wheel_path) as zipped:
+            for entry in zipped.infolist():
+                safe_member(entry.filename)
+                if entry.is_dir():
+                    continue
+                raw = zipped.read(entry)
+                ensure((ORIGINAL / ".cache/mo1306/validators" / entry.filename).read_bytes() == raw,
+                       "Installed wheel payload differs: " + entry.filename)
+                payload.append({"path": entry.filename, **identity(raw)})
+            for notice in dep["noticesVerified"]:
+                checked_file(ORIGINAL, notice)
+                ensure(any(zipped.read(member) == (ORIGINAL / notice["path"]).read_bytes()
+                           for member in notice["matchingWheelMembers"]), "Wheel notice mismatch")
+        ensure(len(payload) == dep["installedMemberCount"], "Wheel payload count differs")
+        source = json.loads((ORIGINAL / EVIDENCE / "supply-sources" /
+                             ("pypi-" + dep["name"].lower() + ".json")).read_bytes())
+        upstream = next(r for r in source["urls"] if r["filename"] == dep["filename"])
+        ensure(upstream["digests"]["sha256"] == dep["sha256"].split(":")[1] and
+               upstream["size"] == dep["byteLength"] and upstream["url"] == dep["sourceUrl"],
+               "Wheel official metadata differs")
+        wheels.append({**dep, "retainedWheelPath": str(wheel_path),
+                       "currentInstalledPayloads": sorted(payload, key=lambda x: x["path"])})
+        tracked += dep["noticesVerified"]
+
+    sdk = load("package-runtime-closure.json")
+    manifest_path = PKG + "/" + sdk["closureManifest"]["path"]
+    tracked += [{"path": manifest_path, **{k: sdk["closureManifest"][k] for k in ("byteLength", "sha256")}}]
+    sdk_paths = []
+    for item in sdk["files"]:
+        for path in (PKG + "/runtime/" + item["path"], item["source"]):
+            sdk_paths.append(path)
+            tracked.append({"path": path, "byteLength": item["byteLength"], "sha256": "sha256:" + item["sha256"]})
+    # Include all parser/validator dependencies imported for provider validation.
+    validator_paths = [p.decode() for p in git("ls-tree", "-rz", "--name-only", C3AB, "--",
+                        "repositories/cca-conformance/tools/mo1306-phase2b",
+                        "repositories/cca-conformance/tools/mo1306-phase2c").split(b"\0") if p]
+    validator_paths = [p for p in validator_paths if p.endswith((".py", ".ps1", ".mjs", ".json"))]
+    import_report = load("commands/installed-import-audit.stdout.txt")
+    imported_modules = sorted({PKG + "/" + r["module"] for r in import_report["imports"]})
+    audit_path = "repositories/cca-conformance/tools/mo1306/imports.mjs"
+    boundary_path = PKG + "/src/worker-boundary.mjs"
+    dependency_paths = sorted({r["path"] for r in tracked} | set(validator_paths) |
+                              set(imported_modules) | {audit_path, boundary_path})
+    original_deps = blobs(OLD, dependency_paths)
+    corrected_deps = blobs(C3AB, dependency_paths)
+    changed = {p for p in dependency_paths if original_deps[p] != corrected_deps[p]}
+    ensure(changed == {PKG + "/bin/memoryos-ci.mjs"}, "Unexpected reusable dependency delta: " + str(changed))
+    paired = [paired_record(p, original_deps, corrected_deps) for p in dependency_paths if p not in changed]
+    for item in tracked:
+        match(original_deps[item["path"]], item)
+        match(corrected_deps[item["path"]], item)
+    import_groups = []
+    for module in imported_modules:
+        entries = [r for r in import_report["imports"] if PKG + "/" + r["module"] == module]
+        import_groups.append({"module": module, "originalIdentity": identity(original_deps[module]),
+                              "correctedIdentity": identity(corrected_deps[module]), "entries": entries,
+                              "reuse": "REQUIRES_CORRECTED_INSTALLED_IMPORT_AUDIT" if module in changed else
+                                      "UNCHANGED_MODULE_AND_RETAINED_IMPORT_ENTRIES"})
+    actions = []
+    notice_layout = load("supply-notice-layout.json")
+    for name in ("checkout", "upload-artifact"):
+        action = load("supply-action-" + name + ".json")
+        checked_file(ORIGINAL, action["sourceArchive"])
+        with tarfile.open(ORIGINAL / action["sourceArchive"]["path"], "r:gz") as tf:
+            files = {}
+            for member in tf.getmembers():
+                parts = safe_member(member.name).parts
+                if member.isdir():
+                    continue
+                ensure(member.isfile(), "Nonregular Action snapshot member")
+                path = PurePosixPath(*parts[1:]).as_posix()
+                ensure(path not in files, "Duplicate Action member")
+                files[path] = tf.extractfile(member).read()
+            ensure(set(files) == {r["path"] for r in action["files"]}, "Action file set differs")
+            for item in action["files"]:
+                match(files[item["path"]], item)
+            for mapping in notice_layout["mapping"]:
+                if mapping["action"] == "actions/" + name:
+                    checked_file(ORIGINAL, mapping["retained"])
+                    ensure(files[mapping["upstreamPath"]] == (ORIGINAL / mapping["retained"]["path"]).read_bytes(),
+                           "Retained Action notice differs")
+        actions.append({"action": action["action"], "revision": action["revision"],
+                        "version": action["version"], "sourceArchive": action["sourceArchive"],
+                        "fileCount": len(files), "runtimeEntrypoints": action["runtimeEntrypoints"],
+                        "notices": len([r for r in notice_layout["mapping"] if r["action"] == action["action"]]),
+                        "identityOnly": True, "advisoryDisposition": "REQUIRES_INDEPENDENT_3BR2_REVIEW"})
+    notices = [r for r in paired if r["path"] in {r["path"] for r in
+               supplies["notices"] + supplies["schemaNotices"] + sum([d["noticesVerified"] for d in supplies["wheels"]], [])}]
+    ensure((ROOT / PKG / "notices/node-LICENSE.txt").read_bytes() == (node.parent / "LICENSE").read_bytes(),
+           "Product Node notice differs from verified distribution")
+
+    negatives = load("package-tamper-negatives.json")
+    unchanged_targets = {
+        "runtime-substitution": [PKG + "/runtime/authoritative/web/js/memoryos-sdk.js", manifest_path],
+        "schema-substitution": [PKG + "/schemas/configuration-1.0.0.schema.json", PKG + "/contracts/contract.json"],
+        "template-substitution": [PKG + "/templates/gitlab.yml.tpl", PKG + "/contracts/contract.json"],
+        "action-pin-substitution": [PKG + "/templates/github.yml.tpl", PKG + "/contracts/contract.json"],
+        "dependency-injection": [PKG + "/package.json", PKG + "/package-lock.json"],
+        "lifecycle-script-injection": [PKG + "/package.json", PKG + "/package-lock.json"],
+        "sbom-tamper": [PKG + "/sbom.spdx.json"],
+    }
+    additional_paths = sorted({p for group in unchanged_targets.values() for p in group})
+    more_old, more_new = blobs(OLD, additional_paths), blobs(C3AB, additional_paths)
+    negative_mapping = []
+    for case in negatives["cases"]:
+        deps = [paired_record(p, more_old, more_new) for p in unchanged_targets.get(case["id"], [])]
+        negative_mapping.append({
+            "id": case["id"], "originalResult": case["status"],
+            "originalExpectedStructuralCode": case["expectedStructuralCode"],
+            "dependencyIdentities": deps,
+            "disposition": "REUSE_UNCHANGED_COMPONENT_REJECTION_EVIDENCE_ONLY" if deps else
+                           "RETAINED_HISTORY_REQUIRES_REFRESHED_ARTIFACT_CONTROL",
+            "limitation": "Original mutation starts from the old B2 archive. This is not a new run or proof of the corrected archive or refreshed verifier.",
+        })
+    schema = row(ORIGINAL, TOOLS + "/sbom-spdx-2.3-schema.json")
+    sbom_tests = load("sbom-validation.json")
+    receipt_tests = load("receipt-validation.json")
+    for obj, key in ((sbom_tests, "negatives"), (receipt_tests, "negatives")):
+        ensure(all(r["status"] == "PASS" for r in obj[key]), "Original negative control failure")
+    report = {
+        "kind": "MemoryOSPhase3BR2RetainedDependencyVerification", "version": "1.0.0", "status": "PASS",
+        "correctedAuthority": C3AB, "originalCertification": OLD, "originalBaseline": B2,
+        "implementationProvenance": implementation_provenance,
+        "originalIndex": {"path": (OUT / "supply-original3b-index.json").relative_to(ROOT).as_posix(),
+                          **identity(canonical(index))},
+        "supplyIdentitySource": old_binding(EVIDENCE + "/supply-identities.json"),
+        "retainedExplicitSupplyIdentitiesRechecked": len(supplies["checks"]),
+        "node": supplies["node"], "actualNodeRuntime": actual_runtime, "nodeArchive": supplies["nodeArchive"],
+        "nodeDistribution": {"freshMatchedMemberCount": len(observed_distribution),
+                             "retainedInventory": old_binding(EVIDENCE + "/supply-node-distribution-files.json")},
+        "nodeOfficialDistributionEvidence": {
+            "disposition": "REUSED_EXACT_SIGNATURE_INPUTS_AND_RESULTS",
+            "publicProvenance": old_binding(EVIDENCE + "/supply-node-public-provenance.json"),
+            "signatureInputs": signature_inputs, "fingerprint": public["fingerprint"],
+            "signedPlaintextAndArchiveChecksumRechecked": True,
+            "freshSignatureExecution": False,
+            "limitation": "The original committed cryptographic verification is preserved; this refresh rereads all inputs/results and matches the complete official ZIP and all current payloads.",
+        },
+        "npm": {**supplies["npm"], "freshMatchedFiles": len(npm_closure["files"]),
+                "engineeringOnly": True},
+        "engineeringWheels": wheels, "engineeringLock": supplies["engineeringLock"],
+        "schemas": supplies["schemas"], "jenkinsParser": supplies["jenkinsParser"],
+        "jenkinsGrammar": supplies["jenkinsGrammar"], "jenkinsExternalDependencies": 0,
+        "trackedDependencies": paired,
+        "sdkClosure": {"count": len(sdk["files"]), "manifest": sdk["closureManifest"],
+                       "packageAndAuthoritativeSourceRows": len(sdk_paths),
+                       "allOriginalCorrectedGitAndWorkingCopyBytesEqual": True},
+        "actions": actions,
+        "notices": {"trackedNoticeIdentities": notices, "actionNoticeCount": len(notice_layout["mapping"]),
+                    "actionNoticeLayout": old_binding(EVIDENCE + "/supply-notice-layout.json"),
+                    "allExactNoticesRechecked": True, "firstPartyAndSdkLicense": "NOASSERTION",
+                    "scope": "Retained notices and declared metadata only; no blanket license grant."},
+        "sourceIndependence": {
+            "originalEvidence": old_binding(EVIDENCE + "/installed-certification.json"),
+            "originalImportAudit": old_binding(EVIDENCE + "/commands/installed-import-audit.stdout.txt"),
+            "auditTool": next(r for r in paired if r["path"] == audit_path),
+            "workerBoundary": next(r for r in paired if r["path"] == boundary_path),
+            "originalImportEntryCount": len(import_report["imports"]), "moduleDependencies": import_groups,
+            "reusable": "Exact unchanged module bytes and their retained AST import entries; unchanged worker permission/network boundary.",
+            "requiresFreshExecution": ["Corrected CLI AST imports", "Corrected installed execution",
+                                      "Absolute verified Node and isolated environment", "Installed before/after integrity"],
+            "limitation": "Historical process environment and persistence observations belong to old execution. No OS-wide source access or network tracing is claimed.",
+        },
+        "negativeReuse": {
+            "packageEvidence": old_binding(EVIDENCE + "/package-tamper-negatives.json"),
+            "originalPackageVerifier": old_binding(TOOLS + "/package_verify.py"),
+            "packageCases": negative_mapping,
+            "sbomEvidence": old_binding(EVIDENCE + "/sbom-validation.json"),
+            "unchangedSpdxSchema": {"commit": OLD, **schema},
+            "originalSbomCases": [{"id": r["id"], "disposition": "RETAINED_SCHEMA_MECHANISM_HISTORY_ONLY"}
+                                  for r in sbom_tests["negatives"]],
+            "receiptEvidence": old_binding(EVIDENCE + "/receipt-validation.json"),
+            "originalReceiptCases": [{"id": r["id"], "disposition": "NOT_REUSED_CORRECTED_RECEIPT_HAS_NEW_IDENTITIES"}
+                                     for r in receipt_tests["negatives"]],
+            "requiredAffectedControls": ["corrected CLI", "corrected archive", "distribution manifest",
+                                         "corrected SBOM", "corrected provenance", "corrected receipt"],
+            "noOldArtifactAcceptanceReused": True,
+        },
+        "scope": "No original harness executed, no original file changed, no public acquisition or hosted provider operation. Exact retained identity verification does not resolve the two open Action advisories.",
+    }
+    ensure(git("status", "--porcelain=v1", cwd=ORIGINAL) == b"", "Original worktree changed during audit")
+    return {"supply-original3b-index.json": index, "supply-identities.json": report}
+
+
+def canonical(value):
+    return (json.dumps(value, sort_keys=True, indent=2) + "\n").encode("utf-8")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--check", action="store_true", help="Read-only recomputation and exact evidence comparison")
+    args = parser.parse_args()
+    results = run()
+    if args.check:
+        for name, value in results.items():
+            ensure((OUT / name).read_bytes() == canonical(value), "Recorded evidence differs: " + name)
+    else:
+        OUT.mkdir(parents=True, exist_ok=True)
+        for name, value in results.items():
+            target = OUT / name
+            ensure(target.resolve().is_relative_to(ROOT.resolve()), "Output escapes refresh")
+            target.write_bytes(canonical(value))
+    print(json.dumps({"status": "PASS", "mode": "check" if args.check else "record",
+                      "originalFiles": results["supply-original3b-index.json"]["fileCount"],
+                      "supplyIdentities": results["supply-identities.json"]["retainedExplicitSupplyIdentitiesRechecked"],
+                      "nodeFiles": results["supply-identities.json"]["nodeDistribution"]["freshMatchedMemberCount"],
+                      "npmFiles": results["supply-identities.json"]["npm"]["freshMatchedFiles"],
+                      "wheels": len(results["supply-identities.json"]["engineeringWheels"])}))

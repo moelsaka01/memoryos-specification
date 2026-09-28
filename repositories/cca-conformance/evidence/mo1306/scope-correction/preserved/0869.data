@@ -1,0 +1,124 @@
+// Independent C3C-R dispatch audit. Does not import correction test implementations.
+import fs from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
+import Module from 'node:module';
+import {createHash} from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath,pathToFileURL} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../../..');
+const pkg=path.join(root,'repositories/memoryos-ci');
+const output=path.join(root,'repositories/cca-conformance/evidence/mo1306/phase3cr/dispatch-audit.json');
+const BASELINE='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44';
+const B2='0e35ffe70919d77b1db530929093826410b805f9';
+const sha=raw=>'sha256:'+createHash('sha256').update(raw).digest('hex');
+const read=p=>fs.readFileSync(path.join(root,p));
+const identity=p=>({path:p.replaceAll('\\','/'),byteLength:read(p).length,sha256:sha(read(p))});
+const must=(condition,detail)=>{if(!condition)throw Error(detail);};
+const env=Object.fromEntries(['SystemRoot','WINDIR'].filter(k=>process.env[k]).map(k=>[k,process.env[k]]));
+const load=name=>import(pathToFileURL(path.join(pkg,'src',name+'.mjs')));
+const errors=await load('errors'),{J}=await load('serialization'),providers=await load('provider-ir'),metadata=await load('metadata'),contracts=await load('contracts');
+const {run}=await load('core');
+const sourcePath='repositories/memoryos-ci/bin/memoryos-ci.mjs',source=read(sourcePath).toString('utf8');
+const compiler=new Module('independent-refresh-parser');
+compiler._compile(process.binding('natives')['internal/deps/acorn/acorn/dist/acorn'],'independent-refresh-parser.cjs');
+const parse=text=>compiler.exports.parse(text,{ecmaVersion:'latest',sourceType:'module',locations:true});
+const ast=parse(source),imports=ast.body.filter(n=>n.type==='ImportDeclaration');
+let body=source;for(const n of [...imports].reverse())body=body.slice(0,n.start)+body.slice(n.end);
+const prototypes=[...new Set([...Object.getOwnPropertyNames(Object.prototype),'prototype','name','length','arguments','caller','apply','call','bind'])];
+const ordinary=[undefined,'','invalid-command','mo1306-phase3cr-random-1','RUN','Run','Generate','VERIFY','r\u03c5n','\uff52\uff55\uff4e','run\u200b','\n','run\t','\u0001','x'.repeat(4096),'--help','--run','../run','C:/run','generic','gitlab','jenkins','azure','github'];
+const corpus=[...prototypes,...ordinary];
+const results=[];
+async function check(group,name,fn){const observation=await fn();results.push({group,name,status:'PASS',...observation});}
+function rejected(fn,code,exit){let error;try{fn();}catch(e){error=e;}must(error?.code===code,'Unexpected rejection: '+String(error?.code)+' expected '+code);must(errors.projections[errors.classification(error)].exitCode===exit,'Wrong rejection exit');return {code,exitCode:exit};}
+function expectedDiagnostic(code){const out=[];errors.diagnosticWriter(s=>out.push(s))(new errors.CIError(code));return out.join('');}
+async function instrument(args,{mutation=null,guardRemoved=false}={}){
+ const observations={handlers:[],installationEntries:0,getterCalls:0,stdout:'',stderr:'',exitCode:0};
+ const processStub={argv:['node','memoryos-ci.mjs',...args],once(){},removeListener(){},stdout:{write(s){observations.stdout+=s;}},stderr:{write(s){observations.stderr+=s;}}};
+ const sandbox={Buffer,AbortController,path,performance:{now:()=>0},process:processStub,CIError:errors.CIError,reject:errors.reject,classification:errors.classification,projections:errors.projections,diagnosticWriter:errors.diagnosticWriter,J,observations,
+ installNetworkBoundary(){},run:async()=>{observations.handlers.push('run');return {summary:{exitCode:0}};},verifyInstallation:async()=>{observations.installationEntries++;return {identities:{distributionDigest:'test'},generatorDigest:'test'};},verifyBundle:async()=>{observations.handlers.push('verify');},generate:()=>{observations.handlers.push('generate');return [];},absolutePath:p=>p,readChecked:()=>Buffer.from('{}'),checkPaths:async()=>{},createDirectory:async()=>{},configuration:()=>({}),deployment:()=>({distributionDigest:'test'}),fs:{existsSync:()=>false,rmdirSync(){}}};
+ const context=vm.createContext(sandbox);
+ const before=mutation?`const saved=Object.getOwnPropertyDescriptor(Object.prototype,${JSON.stringify(mutation.key)});Object.defineProperty(Object.prototype,${JSON.stringify(mutation.key)},{configurable:true,get(){observations.getterCalls++;return ${JSON.stringify(mutation.value)};}});`:'';
+ const after=mutation?`if(saved)Object.defineProperty(Object.prototype,${JSON.stringify(mutation.key)},saved);else delete Object.prototype[${JSON.stringify(mutation.key)}];`:'';
+ let executable=body;
+ if(guardRemoved){const guard="if(!Object.hasOwn(commands,command))reject('USAGE');";must(executable.includes(guard),'Correction guard missing');executable=executable.replace(guard,'');}
+ await vm.runInContext(`(async()=>{${before}try{${executable}}finally{${after}}})()`,context,{timeout:1000});
+ observations.exitCode=processStub.exitCode??0;
+ return observations;
+}
+for(const selector of corpus){
+ const args=selector===undefined?[]:[selector],name=selector??'<missing>';
+ await check('public-command',name,async()=>{
+  const argv=['--max-old-space-size=128',path.join(pkg,'bin/memoryos-ci.mjs'),...args];
+  const result=spawnSync(process.execPath,argv,{cwd:root,env,encoding:'utf8',windowsHide:true,timeout:10000,maxBuffer:32768});
+  must(!result.error,'Native process error '+String(result.error));
+  must(result.status===10&&result.stdout===''&&result.stderr===expectedDiagnostic('USAGE'),'Public unknown command contract failed '+name);
+  const instrumented=await instrument(args);
+  must(instrumented.exitCode===10&&instrumented.stderr===result.stderr&&instrumented.handlers.length===0&&instrumented.installationEntries===0,'Unknown command entered boundary '+name);
+  return {selector:selector??null,argv:[process.execPath,...argv],exitCode:result.status,stdout:result.stdout,stderr:result.stderr,instrumented};
+ });
+}
+const valid={run:['--workspace','fixture','--config','fixture'],generate:['--config','fixture','--deployment','fixture','--output','fixture'],verify:['--bundle','fixture']};
+for(const [name,flags] of Object.entries(valid))await check('own-command-positive',name,async()=>{const r=await instrument([name,...flags]);must(r.exitCode===0&&r.handlers.join(',')===name,'Legitimate handler selection');return r;});
+for(const name of ['inheritedCommand','run2','toJSON','then','constructor','toString','__proto__','hasOwnProperty'])await check('inherited-command-mutation',name,async()=>{const r=await instrument([name],{mutation:{key:name,value:[]}});must(r.exitCode===10&&r.handlers.length===0&&r.installationEntries===0&&r.getterCalls===0,'Inherited command accepted or read');return {...r,isolation:'fresh VM realm; descriptor restored in finally'};});
+for(const [name,flags]of Object.entries(valid))await check('own-command-shadow',name,async()=>{const r=await instrument([name,...flags],{mutation:{key:name,value:['attacker']}});must(r.exitCode===0&&r.handlers.join(',')===name&&r.getterCalls===0,'Own command did not dominate inherited property');return r;});
+for(const name of ['constructor','toString','__proto__'])await check('correction-detection-negative',name,async()=>{const r=await instrument([name],{guardRemoved:true});must(r.exitCode===16&&JSON.parse(r.stderr).code==='MO1306_INTERNAL_FAILURE','Harness failed to detect removed guard');return {...r,mutation:'Only in-memory imported CLI body; no production write',expectedRejectedContract:'MO1306_USAGE/10'};});
+const selectors=[...prototypes,'','GENERIC','unknown-provider'];
+for(const name of selectors){
+ await check('provider-adapter-negative',name,()=>rejected(()=>providers.providerIR(name),'MO1306_PROVIDER_UNSUPPORTED',10));
+ await check('provider-metadata-negative',name,()=>rejected(()=>metadata.readMetadataEnvironment(name),'MO1306_PROVIDER_UNSUPPORTED',10));
+ await check('provider-core-negative',name,async()=>{const r=await run({provider:name});must(r.error?.code==='MO1306_PROVIDER_UNSUPPORTED'&&r.summary.exitCode===10&&r.summary.publication==='NONE'&&r.runDirectory===null,'Core provider failure');return {code:r.error.code,exitCode:r.summary.exitCode,publication:r.summary.publication,runDirectory:r.runDirectory};});
+ await check('projection-negative',name,()=>rejected(()=>errors.project(name),'MO1306_INTERNAL_FAILURE',16));
+ await check('schema-name-negative',name,()=>rejected(()=>contracts.validate(name,{}),'MO1306_CONFIG_INVALID',10));
+}
+for(const value of [null,17,{},[]])await check('projection-type-negative',JSON.stringify(value),()=>rejected(()=>errors.project(value),'MO1306_INTERNAL_FAILURE',16));
+for(const name of ['phase3crProvider','phase3crProjection']){
+ await check('inherited-provider-projection',name,async()=>{const old=Object.getOwnPropertyDescriptor(Object.prototype,name);let getterCalls=0;
+  try{Object.defineProperty(Object.prototype,name,{configurable:true,get(){getterCalls++;return providers.providerIR('generic');}});
+   rejected(()=>providers.providerIR(name),'MO1306_PROVIDER_UNSUPPORTED',10);rejected(()=>metadata.readMetadataEnvironment(name),'MO1306_PROVIDER_UNSUPPORTED',10);rejected(()=>errors.project(name),'MO1306_INTERNAL_FAILURE',16);
+   const r=await run({provider:name});must(r.error?.code==='MO1306_PROVIDER_UNSUPPORTED'&&getterCalls===0,'Inherited provider read');return {getterCalls,adapterCode:'MO1306_PROVIDER_UNSUPPORTED',metadataCode:'MO1306_PROVIDER_UNSUPPORTED',coreCode:r.error.code,projectionCode:'MO1306_INTERNAL_FAILURE',restored:true};
+  }finally{if(old)Object.defineProperty(Object.prototype,name,old);else delete Object.prototype[name];}
+ });
+}
+for(const provider of providers.providerNames)await check('provider-positive',provider,()=>{const adapter=providers.providerIR(provider),normalized=adapter.normalizeMetadata({});must(adapter.id==='memoryos.cicd.adapter.'+provider&&normalized.provider===provider,'Provider identity/metadata');const projections=Object.fromEntries(Object.keys(errors.projections).map(name=>[name,adapter.project(name)]));must(Object.keys(projections).length===11,'Projection count');for(const [name,row]of Object.entries(errors.projections))must(J(projections[name])===J(row.projection),'Provider projection bytes');return {id:adapter.id,metadata:normalized,projectionClassifications:Object.keys(projections)};});
+for(const [name,row]of Object.entries(errors.projections))await check('projection-positive',name,()=>{must(J(errors.project(name))===J(row.projection),'Frozen projection');return {exitCode:row.exitCode,projection:row.projection};});
+for(const [name,row]of Object.entries(errors.catalog.errors))await check('machine-error',name,()=>{const error=new errors.CIError(name);must(errors.classification(error)===row[0]&&errors.projections[row[0]].exitCode===row[1]&&errors.errorObject(error).stage===row[2],'Machine error mapping');const diagnostic=expectedDiagnostic(name),decoded=JSON.parse(diagnostic);must(decoded.code===name&&decoded.stage===row[2]&&decoded.message==='The requested operation could not complete.','Diagnostic prose');return {classification:row[0],exitCode:row[1],stage:row[2],diagnostic};});
+await check('diagnostic-truncation','record-32',()=>{const output=[],write=errors.diagnosticWriter(s=>output.push(s));for(let i=0;i<100;i++)write(new errors.CIError('USAGE'));must(output.length===32&&JSON.parse(output[31]).code==='MO1306_DIAGNOSTICS_TRUNCATED'&&JSON.parse(output[31]).message==='Additional diagnostics were discarded.','Truncation');return {attempted:100,records:32,bytes:Buffer.byteLength(output.join('')),finalRecord:output[31]};});
+await check('diagnostic-redaction','untrusted-exception',()=>{const out=[],write=errors.diagnosticWriter(s=>out.push(s));write(new Error('SECRET_token\n::error::injected'));must(out.join('')===expectedDiagnostic('INTERNAL_FAILURE'),'Exception leaked');return {diagnostic:out.join('')};});
+function walk(n,fn){if(!n||typeof n!=='object')return;fn(n);for(const [key,value]of Object.entries(n)){if(['loc','start','end'].includes(key))continue;if(Array.isArray(value))value.forEach(v=>walk(v,fn));else if(value&&typeof value==='object')walk(value,fn);}}
+const productFiles=[];function files(folder){for(const entry of fs.readdirSync(folder,{withFileTypes:true})){if(entry.name==='runtime')continue;const file=path.join(folder,entry.name);if(entry.isDirectory())files(file);else if(/\.(mjs|js)$/.test(file))productFiles.push(path.relative(root,file).replaceAll('\\','/'));}}files(pkg);
+const sites=[],metadataCallers=[];
+for(const file of productFiles){const text=read(file).toString('utf8');walk(parse(text),n=>{if(n.type==='MemberExpression'&&n.computed||n.type==='BinaryExpression'&&n.operator==='in')sites.push({file,line:n.loc.start.line,column:n.loc.start.column,expression:text.slice(n.start,n.end),type:n.type});if(n.type==='CallExpression'&&n.callee.type==='Identifier'&&n.callee.name==='metadata')metadataCallers.push({file,line:n.loc.start.line,expression:text.slice(n.start,n.end),provider:n.arguments[0]?.value??null});});}
+must(metadataCallers.length===6&&metadataCallers.every(s=>providers.providerNames.includes(s.provider)),'Non-literal metadata provider path');
+const correctionAuditPath='repositories/cca-conformance/evidence/mo1306/phase3-correction/dispatch-audit.json';
+const correctionAudit=JSON.parse(read(correctionAuditPath));
+const priorProduct=correctionAudit.sites.filter(s=>s.file.startsWith('repositories/memoryos-ci/'));
+const highRiskExpressions=/^(commands\[|projections\[|catalog\.errors\[|adapters\[|mappings\[|slots\[|replacements\[|paths\[|templates\[|adapterDigests\[|installation\.adapterDigests\[|root\.\$defs|schema\.properties\[|output\[)/;
+for(const site of sites){
+ const e=site.expression;
+ if(e==='commands[command]')site.review='Own membership before lookup; independently observed public negatives, isolated prototype getters and all three own-command positives.';
+ else if(e==='mappings[provider]'&&site.line===13)site.review='Internal metadata helper has a fixed-literal provider precondition. Independently enumerated all six production callers; external provider enters guarded providerIR/readMetadataEnvironment. No public unknown selector reaches this lookup.';
+ else if(e.startsWith('mappings['))site.review='readMetadataEnvironment own membership guard precedes provider lookup; independently negative-tested.';
+ else if(e.startsWith('root.$defs'))site.review='Frozen schema reference lookup only. Contract validation dispatch is a Map; unknown schema names independently reject. Schemas are inventoried, no external schema loader.';
+ else if(e.startsWith('projections[')||e.startsWith('catalog.errors['))site.review='Own-checked project/CIError or prior frozen schema enum validation of Summary/Result/WorkerResponse; source call chain reviewed and selector/error contracts independently tested.';
+ else if(e==='adapters[name]'||e.startsWith('replacements[')||e.startsWith('slots[')||e.startsWith('paths[')||e.startsWith('installation.adapterDigests['))site.review='Dominating own-property membership guard; constrained adapter/render/verification lookup.';
+ else if(e.startsWith('templates[')||e==='adapterDigests[provider]')site.review='Provider literal enumeration, exact provider branch, or explicit five-provider allowlist precedes lookup.';
+ else if(e==='output[key]')site.review='Null-prototype parsed JSON object with dangerous-key and own-duplicate rejection.';
+ else if(e.startsWith('schema.properties[')||e==='input[key]')site.review='Own-key input iteration and own schema-properties membership guard.';
+ else site.review='Reviewed fixed role/field/key enumeration or numeric string/array indexing; no public object-map selector accepted through prototype chain.';
+ site.highRisk=highRiskExpressions.test(e);
+}
+const currentUnmatched=sites.filter(s=>!priorProduct.some(p=>p.file===s.file&&p.expression===s.expression));
+must(currentUnmatched.length===1&&currentUnmatched[0].expression==='commands[command]','Unexpected production lookup changes');
+const closure=JSON.parse(read('repositories/memoryos-ci/runtime/runtime-closure-manifest.json'));
+const closureBindings=closure.files.map(entry=>{const shipped=identity('repositories/memoryos-ci/runtime/'+entry.path),authority=identity(entry.source);must(shipped.sha256==='sha256:'+entry.sha256&&shipped.byteLength===entry.byteLength&&authority.sha256===shipped.sha256,'Runtime closure source mismatch');return {shipped,authority};});
+const sdk=await import(pathToFileURL(path.join(pkg,'runtime/authoritative/web/js/memoryos-sdk.js')));
+must(sdk.MEMORYOS_SDK_VERSION==='1.1.0','SDK version');
+const semanticFiles=['src/delegate.mjs','src/worker.mjs','src/supervisor.mjs','src/verification.mjs'].map(p=>'repositories/memoryos-ci/'+p);
+const semanticDispatch=semanticFiles.map(file=>({identity:identity(file),imports:parse(read(file).toString('utf8')).body.filter(n=>n.type==='ImportDeclaration').map(n=>n.source.value)}));
+const runtimeBinding={path:process.execPath,byteLength:fs.statSync(process.execPath).size,sha256:sha(fs.readFileSync(process.execPath)),version:process.version,platform:process.platform,architecture:process.arch};
+must(runtimeBinding.sha256==='sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'&&process.version==='v24.21.0','Trusted runtime');
+const groups=Object.fromEntries([...new Set(results.map(r=>r.group))].map(group=>[group,results.filter(r=>r.group===group).length]));
+const result={kind:'MO1306Phase3CRIndependentDispatchAudit',version:'1.0.0',baseline:BASELINE,previousProductionBaseline:B2,status:'PASS',runtime:runtimeBinding,source:identity(sourcePath),correctionReview:{identity:identity(correctionAuditPath),priorCounts:correctionAudit.counts,priorProductionSites:priorProduct.length,review:'Correction inventory read as discovery input, not execution evidence. Independently parsed current production source and reviewed all computed sites, with targeted native and imported public APIs.'},commands:Object.keys(valid),prototypeCorpus:prototypes,generalCorpus:ordinary.map(x=>x??null),results,counts:{total:results.length,pass:results.length,fail:0,groups},dispatchReview:{scope:'First-party MO-1306 package JS including shipped scripts; immutable 25-member SDK authority checked separately. Historical/test inventory reviewed, not reclassified as runtime dispatch.',currentSites:sites.length,highRiskSites:sites.filter(s=>s.highRisk).length,sites,currentUnmatched,metadataCallers},semanticAuthority:{sdkVersion:sdk.MEMORYOS_SDK_VERSION,closureBindings,semanticDispatch,decisionPath:'core -> supervise -> worker -> delegate -> MemoryOS SDK evaluatePolicy/evaluatePolicySet -> SDK verification. No alternate evaluator or CLI/REST/MCP production fallback exists in these reviewed entry and delegate paths.'},bindings:[...new Set([...productFiles,...closureBindings.flatMap(r=>[r.shipped.path,r.authority.path]),'repositories/memoryos-ci/runtime/runtime-closure-manifest.json','repositories/memoryos-ci/contracts/errors.json','repositories/memoryos-ci/contracts/projection.json',correctionAuditPath])].sort().map(identity),limitations:['Native CLI negatives run on pinned Windows Node with only SystemRoot/WINDIR inherited. NUL cannot appear in Windows process argv.','Zero handler proof executes the exact full CLI body after AST-identified import removal in isolated VM realms with instrumented imports; it is paired with native unmodified-source negative processes. Positive VM cases establish dispatch only; separate security/provider receipts bind full native valid execution.','Prototype additions are isolated engineering witnesses; no claim that ordinary CLI input can mutate prototypes.','Repository dispatch review follows MO-1306 production authority and unchanged SDK closure; historical/test tools do not become production surfaces.']};
+fs.writeFileSync(output,JSON.stringify(result,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({status:result.status,counts:result.counts,productionSites:sites.length,highRiskSites:result.dispatchReview.highRiskSites,output}));

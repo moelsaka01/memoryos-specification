@@ -1,0 +1,110 @@
+"""Immediate, fail-closed certification validation for one actual hosted run."""
+from pathlib import Path
+import base64, json, os, re, stat, subprocess, zipfile
+from remote_state import ROOT, REPO, row, sha
+INSTALL=ROOT/'.cache/mo1306-phase3a-final/install/node_modules/memoryos-ci'
+NODE=ROOT/'.cache/mo1306-phase3a-final/node-v24.21.0-win-x64/node.exe'
+CAPS={'evaluation-identity.json':4060,'memoryos-ci-artifacts.json':8192,'memoryos-ci-complete.json':1024,
+ 'memoryos-ci-evidence.json':16384,'memoryos-ci-result.json':8192,'policy-outcome.json':4060}
+NORMATIVE=['evaluation-identity.json','policy-outcome.json']
+
+def put(path,value):
+ raw=value if isinstance(value,bytes) else (json.dumps(value,sort_keys=True,separators=(',',':'))+'\n').encode()
+ path.parent.mkdir(parents=True,exist_ok=True)
+ with path.open('xb') as stream:stream.write(raw)
+ return row(path)
+
+def members(path,caps=None):
+ with zipfile.ZipFile(path) as archive:
+  infos=archive.infolist();names=[i.filename for i in infos]
+  assert len(set(names))==len(names),'Duplicate ZIP member'
+  if caps is not None:assert set(names)==set(caps),'ZIP member allowlist'
+  else:assert 1<=len(names)<=100,'Log ZIP member count'
+  total=0;result={}
+  for info in infos:
+   name=info.filename
+   assert not name.startswith(('/','\\')) and '\\' not in name and ':' not in name
+   assert all(part not in ('','..','.') for part in name.rstrip('/').split('/'))
+   assert not info.flag_bits&1,'Encrypted ZIP'
+   mode=info.external_attr>>16
+   assert not stat.S_ISLNK(mode),'ZIP symlink'
+   if info.is_dir():
+    assert caps is None;continue
+   if mode&0o170000:assert stat.S_ISREG(mode),'ZIP special file'
+   cap=caps[name] if caps is not None else 8388608
+   assert info.file_size<=cap,'Expanded member cap'
+   total+=info.file_size;assert total<=(49152 if caps is not None else 33554432),'Expanded ZIP cap'
+   data=archive.read(info);assert len(data)==info.file_size
+   result[name]=data
+  return result
+
+def validate_logs(path,job,expected_exit):
+ logs=members(path)
+ text='\n'.join(data.decode('utf-8','strict') for data in logs.values())
+ assert 'windows-2022' in job['labels'],'Runner label'
+ assert 'Microsoft Windows Server 2022' in text and 'Image: windows-2022' in text,'Runner image log'
+ versions=re.findall(r'\bVersion: ([0-9]{8}\.[0-9.]+)',text)
+ assert versions,'Runner image version missing'
+ errors=re.findall(r'Process completed with exit code ([0-9]+)\.',text)
+ # GitHub may include the same line in combined and per-step files.
+ assert set(errors)==({str(expected_exit)} if expected_exit else set()),'Unexpected process failure log'
+ assert re.search(r'\bCOMPLETE: true\b',text),'Complete output missing in gate environment'
+ assert re.search(r'\bEXIT_CODE: '+str(expected_exit)+r'\b',text),'Common exit output mismatch'
+ assert re.search(r'\bEVALUATE_OUTCOME: success\b',text)
+ assert re.search(r'\bUPLOAD_OUTCOME: success\b',text)
+ return {'image':'windows-2022','imageVersions':sorted(set(versions)),
+  'os':'Microsoft Windows Server 2022','gateExit':expected_exit,
+  'complete':True,'evaluateOutcome':'success','uploadOutcome':'success',
+  'members':[{'path':n,'byteLength':len(b),'sha256':sha(b)} for n,b in sorted(logs.items())]}
+
+def request_for(case,run_id,commit,workflow,files,distribution):
+ fixture=ROOT/'repositories/cca-conformance/fixtures/mo1306'/('evaluate-policy-'+case)
+ vectors=json.loads((fixture.parent/'vectors.json').read_bytes())
+ vector=next(v for v in vectors['vectors'] if v['id']=='evaluate-policy-'+case)
+ for name in NORMATIVE:assert files[name]==(fixture/name).read_bytes(),'Frozen normative byte parity'
+ configuration=re.findall(r"-ConfigurationDigest '(sha256:[a-f0-9]{64})'",workflow.read_text())
+ assert len(configuration)==3 and len(set(configuration))==1
+ inputs=[]
+ for role,name in [('policy','policy.json'),('candidateMip','candidate.mip')]:
+  raw=(fixture/name).read_bytes();inputs.append({'role':role,'byteLength':len(raw),'sha256':sha(raw)})
+ return {'install':str(INSTALL),'distributionDigest':distribution,
+  'expectedDecision':vector['decision'],'expectedExit':{'pass':0,'fail':6,'cne':7}[case],
+  'configurationDigest':configuration[0],
+  'expectedInputs':inputs,'expectedSemantic':{key:vector[key] for key in ['semanticDigest','evaluationIdentityDigest','outcomeDigest']},
+  'expectedMetadata':{'provider':'github','repository':REPO,'revision':commit,'runId':str(run_id),
+   'jobId':'memoryos_ci','attempt':1,'event':'workflow_dispatch','changeRequest':None},
+  'files':{name:base64.b64encode(raw).decode() for name,raw in sorted(files.items())}}
+
+def validate_case(folder,case,run_id,commit,workflow,artifact,job,distribution):
+ """Must complete before caller is allowed to dispatch the next case."""
+ assert not (folder/'bundle-validation.json').exists(),'No overwrite of prior validation'
+ files=members(artifact,CAPS)
+ request=request_for(case,run_id,commit,workflow,files,distribution)
+ request_path=folder/'bundle-validation-request.json';put(request_path,request)
+ env=dict(os.environ)
+ for key in ['NODE_OPTIONS','NODE_PATH','NODE_INSPECT_RESUME_ON_START','NODE_REPL_EXTERNAL_MODULE']:env.pop(key,None)
+ bridge=Path(__file__).with_suffix('.mjs')
+ execution=subprocess.run([str(NODE),'--max-old-space-size=128',str(bridge),str(request_path)],
+  cwd=ROOT,env=env,capture_output=True,timeout=45,creationflags=subprocess.CREATE_NO_WINDOW)
+ put(folder/'bundle-validator.stdout.txt',execution.stdout)
+ put(folder/'bundle-validator.stderr.txt',execution.stderr)
+ assert execution.returncode==0,'Hosted schema/SDK/bundle validation rejected; STOP'
+ validation=json.loads(execution.stdout);assert validation['status']=='PASS'
+ logs=validate_logs(folder/'logs.zip',job,request['expectedExit'])
+ assert validation['evidence']['runtime']['osRelease'].startswith('10.0.20348'),'Hosted OS release'
+ bundle=folder/'bundle'/validation['result']['runId']
+ bundle_files=[put(bundle/name,raw) for name,raw in sorted(files.items())]
+ receipt={'status':'PASS','case':case,'runId':run_id,'bundleRunId':validation['result']['runId'],
+  'actualHostedExecution':True,'sdkSemanticVerification':True,'artifactAllowlist':'EXACT_SIX_FILES',
+  'frozenNormativeByteParity':True,'configurationDigest':request['configurationDigest'],
+  'expectedMetadata':request['expectedMetadata'],'runtime':validation['evidence']['runtime'],
+  'distributionDigest':distribution,'classification':validation['result']['classification'],
+  'commonExit':validation['result']['process']['exitCode'],'complete':True,'runnerImage':logs,
+  'bundle':bundle.relative_to(ROOT).as_posix(),'bundleFiles':bundle_files,
+  'normativeDigests':validation['normativeFileDigests'],'semantic':validation['result']['semantic'],
+  'projection':validation['result']['projection'],'identities':validation['identities'],
+  'artifact':row(artifact),'workflow':row(workflow),'bridge':row(bridge),'validator':row(Path(__file__)),
+  'request':row(request_path),'stdout':row(folder/'bundle-validator.stdout.txt'),'logs':row(folder/'logs.zip')}
+ put(folder/'bundle-validation.json',receipt)
+ return receipt
+

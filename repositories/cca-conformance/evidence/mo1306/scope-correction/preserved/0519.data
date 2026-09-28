@@ -1,0 +1,8 @@
+{
+  "originalBundleSha256": "eea594941d8ee535974e0fbc03bbdf567f3abc78194f224b93f2df9a887ee2e9",
+  "instrumentedBundleSha256": "a9cb027eda8bd4eefdad96b09dc49fb9390bb6d8e7ae3c78e567945549db0963",
+  "replacementCount": 1,
+  "replaced": "run().catch(error => {\n    setFailed(error.message);\n});",
+  "replacement": "export { XMLParser, OrderedObjParser, getParserOptions, parseXML, NodeHttpClient, esm_httpHeaders_createHttpHeaders as createHttpHeaders, run };\nexport function installTwirpStub(client){ internalArtifactTwirpClient = () => client; }\nexport function installBackendStub(){ getBackendIdsFromToken = () => ({workflowRunBackendId:\"1\",workflowJobRunBackendId:\"1\"}); }\n",
+  "testChanges": "Suppress autorun; export actual entry, parser and transport functions; substitute GitHub RPC and backend identifiers; replace only Node HTTP transport at runtime. Parser, serializer, zip, upload entry and Azure pipeline remain original. Deny external network builtins."
+}

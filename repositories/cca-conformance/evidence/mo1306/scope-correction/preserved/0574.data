@@ -1,0 +1,140 @@
+# MO-1306 Phase 3C targeted refresh
+
+**Independent offline audit complete; ready for Phase 3D evidence integration. Final release certification remains pending the named external gates.**
+
+Baseline: initially clean `mo1306/phase3c-refresh`, C3AB `9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44`, parent C3A `90b9ac914e477fb90fe317d0de9ba310aae37f60`. C3A has B2 `0e35ffe70919d77b1db530929093826410b805f9` as its sole parent; B2 binds I2 `58b7b8cc90fe798fafe6d09bf04db45ceea29f6d`.
+
+Independent corrected archive rebuild: **197172 bytes**, SHA-256 `2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d`, exactly **94 regular members** matching current package bytes. Node **24.21.0 x64**, SHA-256 `ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32`. This audit changes no production bytes and does not substitute for 3B-R installed/supply-chain certification.
+
+## Original blocker and correction
+
+All four uncommitted files in the original 3C worktree retain their initial byte lengths/SHA-256 and match the correction's preserved copies. Original `constructor`, `toString`, and `__proto__` failures remain **BLOCKED / PRODUCTION_DEFECT**, exit 16. The correction creates new evidence; it never rewrites the original outcome.
+
+Fresh correction checks: **228/228**, including **44 native invalid command cases** (20 prototype names plus 24 general invalid inputs) with exact `MO1306_USAGE`/10 and empty stdout. Paired exact-main-source instrumentation proves zero command-handler and installation entry. Native output alone is not represented as instrumentation. Eight inherited getter mutations cannot create commands; three own-command shadows remain valid; three removed-guard controls reproduce the defect. Public run/verify passed native execution. An independent public generate command also exited 0 with empty streams and two files exactly matching independent generation, using the documented detached/closed-stdin launch profile.
+
+Independent dispatch review inventories **135 JavaScript sites**, including 34 high-risk sites, and parses five PowerShell sites. Provider adapter/core/metadata user selectors reject `PROVIDER_UNSUPPORTED`/10; five legitimate providers pass. Internal metadata normalization receives six fixed literal provider call sites. Projection rejection remains the frozen `INTERNAL_FAILURE`/16, distinct from unsupported-provider errors. No second substantive production selector defect was found.
+
+SDK **1.1.0** remains the sole production semantic authority. All 25 authoritative runtime closure members match source bytes. SDK and CLI engineering oracles match normative bytes; no CLI/REST/MCP production fallback or policy-semantic change was introduced. All 28 machine errors, truncation, stable SDK passthrough, first-failure ordering and semantic 0/6/7 versus operational 10-17 separation are checked.
+
+## Providers and behavior
+
+| Audit area | Evidence and result |
+| --- | --- |
+| Generic | Three fresh complete native PASS/0, FAIL/6, CNE/7 bundles and public verify/0. Configuration/input/exit/evidence/environment/filesystem and fixed argv checks passed. Final installed certification stays with 3A-R. |
+| GitLab | Pinned 128034-byte official schema; 141 local references; restricted subset, fixed runner invocation/digests, fresh generation and 79 negative corpus cases. |
+| Jenkins | Restricted parser 1.0.0; closed lexer/grammar and PowerShell AST; 104 negatives. No Groovy execution. |
+| Azure | Pinned v1.261.1 full 1640523-byte schema; all 698 local references; supported schema extensions/subset/PowerShell AST; 59 negatives; fresh generation/equivalence. |
+| GitHub offline | windows-2022, pinned Node bootstrap and Actions, manual dispatch, contents-read permission, tool/data trust separation, core run UUID/completion-derived selection, six/four-basename allowlist, results/evidence and expression allowlist. 50 negative files plus 3 AST negatives. No hosted claim. |
+| Provider equivalence | Five providers × 11 projection classes = 55 checks, including PASS/FAIL/CNE/config/input/integrity/timeout/cancellation and remaining operational exits. Publication failure and forced-provider interruption are kept distinct. |
+| Determinism | Five-provider repeated/order/clone generation plus three path/time/locale permutations preserve expected bytes. Operational metadata remains outside normative identity. |
+| MO-1302 | 43 action files and four released workflows plus gate contract match released Git blobs; existing required check/pins/exits preserved; four selected regressions passed. Historical Ubuntu workflows were read, never executed. |
+
+Fresh provider checks are 454 assertions (376 negatives), 201 GitLab/Jenkins parser tests, 538 Node regression tests and 50 Azure/GitHub API checks. These counts overlap corpus subsets and are deliberately not summed into a single certification total. Source/validator/schema/runtime identities are retained with each scope. Native layer 6 uses explicitly byte-bound unchanged fixed-launcher/core execution evidence and current corrected-entry execution; it is not represented as a new full hosted or installed campaign.
+
+## Security and evidence
+
+Security checks comprise 101 independent cases, 109 targeted logic cases, 152 existing contract tests, 37 worker/network-boundary tests, 14 Correction A contract tests, three exact-source lifecycle traces and 12 trace-negative controls. Fourteen bundle tamper cases and 84 stable SDK-code cases are subsets of 109. The targeted verifier-logic harness substitutes only the PowerShell path helper so helper startup cannot mask intended bundle errors; production filesystem checks and complete native bundle verification are tested separately.
+
+Filesystem coverage includes 43 relative and 21 absolute negative paths, containment, traversal, drive-relative/UNC/device/ADS, hardlinks, native junctions/reparse points and file symlinks, temporary ownership, artifact basenames and incomplete completion markers. Environment coverage includes NODE_OPTIONS/NODE_PATH, preloads/loaders, inspect/debug flags, proxies, credentials, PATH/PATHEXT and unexpected inheritance. The observed child environment is only SystemRoot/WINDIR. Network evidence covers the frozen API/import/permission boundary; no OS-wide firewall or kernel-isolation claim is made.
+
+Correction A topology, direct argv, fixed PowerShell execution, sampled descendants and cleanup are replayed against 92 unchanged package dependencies. No arbitrary shell or Groovy service was introduced. Installed current-artifact resource/cleanup certification remains external 3A-R. YAML, Groovy, PowerShell, GitHub/Azure expressions, multiline/control, metadata, placeholders, paths and output/annotation injection are covered by provider and shared corpora.
+
+All evidence/result/canonical digest and cardinality cross-links are source-bound; tampered results, repaired outer hashes, wrong runs, missing markers, modified normative bytes and extra files reject. Partial metadata-publication output was independently SDK-verified only for normative invariance and remains an incomplete operational failure.
+
+## Preserved attempts and reuse
+
+The original partial 3C parser/schema/transport observations are retained with 142 exact B2/current byte dependencies. Fresh provider outputs and unfinished areas receive current checks. Historical observations are not added to fresh counts, and original failed CLI dispatch is never relabeled PASS. B1's unmodified 152-case suite was replayed; all 2400 retained B2 evidence files and 169 correction evidence files match committed Git blobs. Failed first 2D gate, source 2A/2B, original/corrected 2C, I2/B2 and C3A/C3AB dispositions remain unchanged.
+
+Three security operational refusals and a harness serialization failure remain retained. A valid helper was independently observed near the frozen 2000 ms startup limit; the exact cause of the later metadata publication refusal was not externally traced. Both optional current native GitHub-wrapper attempts also remain failures. The wrapper test launch profile omitted the documented DEVNULL stdin setting; its retry reached operational publication/filesystem refusal followed by transport-integrity rejection. Missing closed stdin and measured helper pressure are supporting setup observations, not a proven immediate cause or a product PASS. No further blind replay was made.
+
+The initial correction-validator replay exceeded its 120-second engineering deadline. The same assertion functions subsequently passed using one independently hash-checked Git cat-file batch instead of hundreds of separate immutable-blob subprocesses. No assertion or production timeout was weakened. Parser/reporting-only setup failures and their corrected harness bytes remain explicit.
+
+## Provider labels and release closure
+
+| Provider | Supported label |
+| --- | --- |
+| Generic | REAL_EXECUTION_VALIDATED; 3A-R final certification pending/external |
+| GitLab | CONTRACT_VALIDATED / NOT_LIVE_PROVIDER_CERTIFIED |
+| Jenkins | CONTRACT_VALIDATED / NOT_LIVE_PROVIDER_CERTIFIED |
+| Azure | CONTRACT_VALIDATED / NOT_LIVE_PROVIDER_CERTIFIED |
+| GitHub | HOSTED_EXECUTION_CERTIFICATION_PENDING |
+
+The closed matrix has **60 requirements**, covering all 26 freeze sections, all 32 A-AF decisions and all 24 required CF categories. Counts: **48 SATISFIED**, **5 PENDING_3A_REFRESH**, **3 PENDING_3B_REFRESH**, **4 PENDING_3D**, **0 BLOCKED**. There is no unclassified unresolved state. External branch observations are committed-state snapshots; no uncommitted 3A-R/3B-R result is accepted as authority.
+
+The machine matrix is [release-closure.json](../repositories/cca-conformance/evidence/mo1306/phase3cr/release-closure.json). Its code-owned requirement catalog rejects omitted/duplicated rows, false external PASS, wrong pending counts, unknown states, missing evidence, and missing section/decision/category coverage. The audit inventory is [mo1306-phase3cr-inventory.json](../repositories/cca-conformance/mo1306-phase3cr-inventory.json).
+
+| Requirement | State | Owner |
+| --- | --- | --- |
+| authority | SATISFIED | 3C-R |
+| cli-command-correction | SATISFIED | 3C-R |
+| cli-prototype-mutation | SATISFIED | 3C-R |
+| repository-dispatch | SATISFIED | 3C-R |
+| provider-dispatch | SATISFIED | 3C-R |
+| projection-selectors | SATISFIED | 3C-R |
+| sdk-authority | SATISFIED | 3C-R |
+| semantic-preservation | SATISFIED | 3C-R |
+| serialization-versioning | SATISFIED | 3C-R |
+| configuration | SATISFIED | 3C-R |
+| trusted-runtime | SATISFIED | 3C-R |
+| input-acquisition | SATISFIED | 3C-R |
+| normalized-invocation | SATISFIED | 3C-R |
+| metadata-classification | SATISFIED | 3C-R |
+| metadata-invariance | SATISFIED | 3C-R |
+| semantic-outcomes | SATISFIED | 3C-R |
+| machine-errors | SATISFIED | 3C-R |
+| stdout-diagnostics | SATISFIED | 3C-R |
+| evidence-crosslinks | SATISFIED | 3C-R |
+| publication-protocol | SATISFIED | 3C-R |
+| bundle-tamper | SATISFIED | 3C-R |
+| filesystem-paths | SATISFIED | 3C-R |
+| filesystem-links | SATISFIED | 3C-R |
+| filesystem-races | SATISFIED | 3C-R |
+| network-boundary | SATISFIED | 3C-R |
+| environment-boundary | SATISFIED | 3C-R |
+| process-argv | SATISFIED | 3C-R |
+| correction-a-topology | SATISFIED | 3C-R |
+| lifecycle | SATISFIED | 3C-R |
+| concurrency | SATISFIED | 3C-R |
+| resource-contract | SATISFIED | 3C-R |
+| generation-determinism | SATISFIED | 3C-R |
+| generation-integrity | SATISFIED | 3C-R |
+| gitlab-schema-subset | SATISFIED | 3C-R |
+| jenkins-parser-grammar | SATISFIED | 3C-R |
+| azure-schema-references | SATISFIED | 3C-R |
+| provider-launchers | SATISFIED | 3C-R |
+| github-workflow | SATISFIED | 3C-R |
+| github-transport | SATISFIED | 3C-R |
+| mo1302-preservation | SATISFIED | 3C-R |
+| provider-equivalence | SATISFIED | 3C-R |
+| injection-corpus | SATISFIED | 3C-R |
+| archive-corrected-identity | SATISFIED | 3C-R |
+| historical-failures | SATISFIED | 3C-R |
+| original-partial-reuse | SATISFIED | 3C-R |
+| provider-labels | SATISFIED | 3C-R |
+| scoped-exclusions | SATISFIED | 3C-R |
+| current-audit-validation | SATISFIED | 3C-R |
+| native-installed-certification | PENDING_3A_REFRESH | 3A-R |
+| native-boundary-certification | PENDING_3A_REFRESH | 3A-R |
+| native-resource-certification | PENDING_3A_REFRESH | 3A-R |
+| github-hosted-campaign | PENDING_3A_REFRESH | 3A-R |
+| github-hosted-evidence | PENDING_3A_REFRESH | 3A-R |
+| package-installed-supply | PENDING_3B_REFRESH | 3B-R |
+| sbom-provenance-notices | PENDING_3B_REFRESH | 3B-R |
+| advisory-disposition | PENDING_3B_REFRESH | 3B-R |
+| integration-actual-revisions | PENDING_3D | 3D |
+| final-receipt-coverage | PENDING_3D | 3D |
+| release-hosted-disposition | PENDING_3D | 3D |
+| final-release-claims | PENDING_3D | 3D |
+
+## Validation, commit and Phase 3D notes
+
+Correction binding validator: 8 negative controls. Dispatch validator: 16. Provider validator: 8. Security summary validator: 7. Root audit/matrix validator: 25. Historical lifecycle negative controls: 12. Counts are separate scopes. Workspace verification and git diff --check pass; final staging and commit-parent checks are performed after evidence sealing.
+
+Audit files and their exact executed, initially uncommitted harness hashes are bound by one audit-only commit with subject `cert(memoryos-1.3): audit corrected MO-1306 provider security and release readiness`, parent exactly `9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44`. This document does not invent that future commit's hash. The final validation references the already-created inventory without a self-hash cycle; the actual commit binds both.
+
+Audit evidence preparation elapsed 1900 seconds from 2026-09-26T19:19:55Z, within the 90-minute target and 3-hour absolute stop. No merge, push, tag, Linux/Ubuntu/WSL, local VM, provider account or paid service operation occurred.
+
+Phase 3D must bind actual independent refresh commits, preserve every failed attempt and original 3C blocker, close installed native/resource/cleanup and actual hosted evidence or explicit owner disposition through 3A-R, and close corrected package/SBOM/provenance/advisory acceptance through 3B-R. Use the documented detached/closed-stdin native launch profile; do not promote the failed optional wrapper probes. Final release claims and any tag/push require their separately authorized gates. This audit introduces no release-governance semantics or production corrections.
+
+MO-1306 PHASE 3C REFRESH COMPLETE
+READY FOR PHASE 3D INTEGRATION

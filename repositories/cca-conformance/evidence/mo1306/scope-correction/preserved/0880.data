@@ -1,0 +1,58 @@
+"""Verify provider audit closure and reject tampered in-memory witnesses."""
+import copy,hashlib,json,pathlib,sys
+ROOT=pathlib.Path(__file__).resolve().parents[4];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3cr';RESULTS=OUT/'provider-results'
+BASELINE='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+def sha(raw):return 'sha256:'+hashlib.sha256(raw).hexdigest()
+def validate(summary):
+ assert summary['baseline']==BASELINE and summary['status']=='PASS'
+ assert summary['historicalEvidenceReused'] is True and summary['originalHistoricalPartialEvidenceReused'] is False
+ assert summary['nativeWrapperStatus']=='CONTRACT_VALIDATED_VIA_SCOPED_REUSE'
+ assert summary['freshNativeWrapperStatus']=='FAILED_EXECUTION_PRESERVED'
+ reuse=json.loads((RESULTS/'scoped-native-reuse.json').read_text());assert reuse['status']=='PASS' and reuse['unchangedProductionCount']==92
+ traces=json.loads((RESULTS/'scoped-native-trace-revalidation.json').read_text());assert traces['status']=='PASS' and traces['nativeTraceCount']==45 and traces['fixedLauncherCommandCount']==15
+ for row in reuse['allByteDependencies']+traces['byteDependencies']:
+  raw=(ROOT/row['path']).read_bytes();assert len(raw)==row['byteLength']and sha(raw)==row['sha256']
+ required={'fresh-probe.json','current-generated-validation.json','gitlab-jenkins-tests.json','jenkins-corpus.json','azure-corpus.json','github-corpus.json','node-adapter-regressions.json','azure-github-api-regression.json','byte-dependencies.json','validator-runtime-dependencies.json','source-review.json','scoped-native-reuse.json','scoped-native-trace-revalidation.json','native-wrapper-first-attempt.json','native-wrapper-retry.json'}
+ rows=summary['receipts'];names=[x['path']for x in rows]
+ assert len(names)==len(set(names)) and required.issubset(set(names))
+ for row in rows:
+  assert pathlib.PurePosixPath(row['path']).name==row['path']
+  raw=(RESULTS/row['path']).read_bytes();assert len(raw)==row['byteLength']and sha(raw)==row['sha256']
+ source=json.loads((RESULTS/'byte-dependencies.json').read_text())
+ assert source['baseline']==BASELINE
+ for row in source['identities']+summary['auditToolDependencies']:
+  p=(ROOT/row['path']).resolve();assert p.is_relative_to(ROOT)
+  raw=p.read_bytes();assert len(raw)==row['byteLength']and sha(raw)==row['sha256']
+ probe=json.loads((RESULTS/'fresh-probe.json').read_text(encoding='utf-8-sig'))
+ assert probe['baseline']==BASELINE and probe['status']=='PASS'
+ assert len(probe['rows'])==probe['counts']['checks']==summary['freshProbeCounts']['checks']
+ assert all(r['status']=='PASS' for r in probe['rows'])
+ assert probe['counts']['equivalence']==55 and probe['counts']['providers']==5
+ generated=json.loads((RESULTS/'current-generated-validation.json').read_text())
+ assert {r['provider']for r in generated}=={'generic','github','gitlab','jenkins','azure'}
+ assert all(r['status']=='PASS' for r in generated)
+ assert summary['providerLabels']['github']=='HOSTED_EXECUTION_CERTIFICATION_PENDING'
+ for name in ('gitlab','jenkins','azure'):assert summary['providerLabels'][name]=='CONTRACT_VALIDATED / NOT_LIVE_PROVIDER_CERTIFIED'
+ assert summary['nodeTests']==538 and summary['gitlabJenkinsTests']==201
+ for name,countkey in [('azure-corpus.json','azureNegativeCount'),('github-corpus.json','githubNegativeCount')]:
+  corpus=json.loads((RESULTS/name).read_text());assert corpus['negativeCount']==summary[countkey]
+ if summary.get('nativeWrapperStatus')=='PASS':
+  report=json.loads((RESULTS/'native-wrapper.json').read_text());assert report['passed']==summary['nativeWrapperCases']==len(report['cases']);assert all(r['status']=='PASS'for r in report['cases'])
+  assert report['networkExecuted'] is False and report['hostedExecuted'] is False
+ return True
+if __name__=='__main__':
+ summary=json.loads((OUT/'provider-audit.json').read_text());validate(summary)
+ witnesses=[]
+ for name,mutation in [
+ ('baseline',lambda x:x.update(baseline='0'*40)),('status',lambda x:x.update(status='FAIL')),
+ ('receipt-digest',lambda x:x['receipts'][0].update(sha256='sha256:'+'0'*64)),
+ ('receipt-removal',lambda x:x.update(receipts=[])),('receipt-path-traversal',lambda x:x['receipts'][0].update(path='../outside')),
+ ('count-forgery',lambda x:x.update(nodeTests=539)),('hosted-overclaim',lambda x:x['providerLabels'].update(github='HOSTED_CERTIFIED')),
+ ('evidence-reuse-overclaim',lambda x:x.update(originalHistoricalPartialEvidenceReused=True))]:
+  bad=copy.deepcopy(summary);mutation(bad)
+  try:validate(bad)
+  except (AssertionError,KeyError,FileNotFoundError):witnesses.append({'id':name,'status':'REJECTED'})
+  else:raise AssertionError('negative validator witness accepted:'+name)
+ receipt={'kind':'MemoryOSPhase3CRProviderAuditValidation','baseline':BASELINE,'status':'PASS','positiveCount':1,'negativeCount':len(witnesses),'negatives':witnesses}
+ (RESULTS/'audit-validator.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf8')
+ print(json.dumps(receipt))

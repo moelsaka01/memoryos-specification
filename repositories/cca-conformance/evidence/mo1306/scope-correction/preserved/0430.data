@@ -1,0 +1,152 @@
+"""Offline static pre-remote gate; parses engineering source but never executes product."""
+import argparse, ast, copy, hashlib, json, os, pathlib, re, subprocess, sys
+R=pathlib.Path(__file__).resolve().parents[4]
+T=pathlib.Path(__file__).resolve().parent
+E=R/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-diagnostic'
+C='701d48ee2012675966360dda775ab13013c09ab9'
+OLD='451599e7b95a537ebc2daac627b061fd88791dea'
+M='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37'
+CHECKOUT='actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1'
+UPLOAD='actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'
+NODE_SHA='ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+ALLOW=['GITHUB_WORKSPACE','RUNNER_TEMP','RUNNER_TOOL_CACHE','RUNNER_WORKSPACE','USERPROFILE','HOME','TEMP','TMP','SystemRoot','WINDIR','PROCESSOR_ARCHITECTURE']
+WP='.github/workflows/mo1306-hosted-diagnostic.yml'
+WF=E/'workflow/mo1306-hosted-diagnostic.yml'
+sys.path.insert(0,str(R/'.cache/mo1306/validators'))
+sys.path.insert(0,str(R/'repositories/cca-conformance/tools/mo1306-phase2c'))
+import yaml
+from safe_yaml import powershell_ast
+
+def need(ok,msg):
+ if not ok:raise AssertionError(msg)
+def sha(b):return 'sha256:'+hashlib.sha256(b).hexdigest()
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(R).as_posix(),'byteLength':len(b),'sha256':sha(b)}
+def read(p):return json.loads(p.read_text(encoding='utf-8-sig'))
+def git(*args,raw=False):
+ p=subprocess.run(['git','-c','safe.directory='+str(R),'-C',str(R),*args],capture_output=True,timeout=45,env=dict(os.environ,GIT_OPTIONAL_LOCKS='0'))
+ need(p.returncode==0,'git read/check '+str(args)+': '+p.stderr.decode('utf-8','replace'))
+ return p.stdout if raw else p.stdout.decode().strip()
+def file_binding(x):
+ p=R/x['path'];need(row(p)=={k:x[k] for k in ['path','byteLength','sha256']},'changed reviewed bytes '+x['path'])
+def grammar(raw):
+ need(0<len(raw)<=32768,'workflow byte cap');s=raw.decode('utf-8');need(not s.startswith('\ufeff') and s.endswith('\n'),'workflow encoding')
+ need(not re.search(r'[\x00-\x09\x0b-\x1f\x7f-\x9f]',s),'workflow controls')
+ for t in yaml.scan(s,Loader=yaml.BaseLoader):
+  need(not isinstance(t,(yaml.tokens.AnchorToken,yaml.tokens.AliasToken,yaml.tokens.TagToken,yaml.tokens.DirectiveToken,yaml.tokens.DocumentStartToken,yaml.tokens.DocumentEndToken)),'workflow aliases/tags')
+ def convert(n):
+  if isinstance(n,yaml.MappingNode):
+   result={}
+   for k,v in n.value:
+    need(isinstance(k,yaml.ScalarNode) and k.value not in result and k.value!='<<','duplicate/merge key')
+    result[k.value]=convert(v)
+   return result
+  if isinstance(n,yaml.SequenceNode):return [convert(x) for x in n.value]
+  need(isinstance(n,yaml.ScalarNode),'workflow scalar');return n.value
+ d=convert(yaml.compose(s,Loader=yaml.BaseLoader));need(isinstance(d,dict),'workflow map');return d
+
+def secret_gate(text):
+ for pattern in [r'GetEnvironmentVariables\s*\(',r'(?i:Get-ChildItem|gci|dir|ls)\s+(?:-Path\s+)?["\x27]?Env:',r'(?i:Get-Item)\s+["\x27]?Env:\*',r'(?i:github\.token|secrets\s*\.|authorization\s*[:=]|ACTIONS_RUNTIME_TOKEN|GITHUB_TOKEN|GH_TOKEN)',r'Object\.(?:entries|values|keys)\s*\(\s*process\.env',r'JSON\.stringify\s*\(\s*process\.env',r'(?:console\.log|process\.stdout\.write)\s*\(\s*process\.env']:
+  need(not re.search(pattern,text),'secret/environment enumeration pattern '+pattern)
+
+def workflow_gate(d,old):
+ need(set(d)=={'name','on','permissions','jobs'} and d['on']=={'workflow_dispatch':{}},'diagnostic trigger')
+ need(d['permissions']=={'contents':'read'} and set(d['jobs'])=={'memoryos_diagnostic'},'workflow permission/jobs')
+ job=d['jobs']['memoryos_diagnostic'];need(job['runs-on']=='windows-2022' and int(job['timeout-minutes'])<=10,'runner/deadline')
+ steps=job['steps'];ids=[x['id'] for x in steps]
+ need(ids==['tools','data','prepare_fixture','diagnostic_before','bootstrap','diagnostic_after','diagnostic_upload','diagnostic_gate'],'diagnostic-only step set/order')
+ by={x['id']:x for x in steps};prior={x['id']:x for x in next(iter(old['jobs'].values()))['steps']}
+ for k in ['tools','data','prepare_fixture']:need(by[k]==prior[k],'changed original step '+k)
+ b=dict(by['bootstrap']);need(b.pop('continue-on-error')=='true' and b==prior['bootstrap'],'changed product bootstrap')
+ need([x['uses'] for x in steps if 'uses' in x]==[CHECKOUT,CHECKOUT,UPLOAD],'Action pins changed')
+ need(by['tools']['with']['ref']==C and by['data']['with']['ref']=='${{ github.sha }}','source/scaffold binding')
+ need(all(x.get('with',{}).get('persist-credentials')=='false' for x in steps if x.get('uses')==CHECKOUT),'checkout credentials persist')
+ need(by['diagnostic_upload']['if']=='always()' and by['diagnostic_after']['if']=='always()','diagnostic evidence retained on failure')
+ need(by['diagnostic_upload']['with']['path']=='${{ runner.temp }}/mo1306-hosted-diagnostic/*.json','artifact scope')
+ need('exit 1' in by['diagnostic_gate']['run'] and "DIAGNOSTIC_BOOTSTRAP_OUTCOME -cne 'success'" in by['diagnostic_gate']['run'],'product failure suppressed')
+ allowed_expressions={'${{ github.sha }}','${{ steps.bootstrap.outcome }}','${{ steps.diagnostic_before.outcome }}','${{ steps.diagnostic_after.outcome }}','${{ steps.diagnostic_upload.outcome }}','${{ github.run_id }}','${{ github.run_attempt }}','${{ runner.temp }}'}
+ for expression in re.findall(r'\$\{\{.*?\}\}',WF.read_text(encoding='utf-8')):need(expression in allowed_expressions,'unreviewed expression')
+ for x in steps:
+  if 'run' in x:need(x['shell']=='powershell','script shell');secret_gate(x['run'])
+ return steps
+
+def tool_gate(observe,oracle):
+ secret_gate(observe);secret_gate(oracle)
+ match=re.search(r'\$allowlist\s*=\s*@\((.*?)\)',observe,re.S|re.I)
+ need(match is not None,'literal diagnostic allowlist missing')
+ actual=re.findall(r"'([^']+)'",match.group(1));need(actual==ALLOW,'diagnostic environment allowlist changed')
+ need(not re.search(r'\$env:[A-Za-z_][A-Za-z0-9_]*\s*=|SetEnvironmentVariable\s*\(',observe,re.I),'observer modifies product environment')
+ need('2097152' in observe and '2097152' in oracle,'bounded reports')
+ need('causalLimitation' in oracle and 'Neither a passing nor a failing later oracle alone identifies the original production rejection' in oracle,'oracle causal distinction')
+ need('productionVerdictOverridden:false' in oracle and "productionAuthority:'"+C+"'" in oracle,'oracle authority/decision')
+ need('performance.now()+2000' in oracle and ',2000)' in oracle and 'performance.now()+73000' in oracle,'oracle frozen timers')
+ need('start+=48' in oracle and '>16384' in oracle and '>1024' in oracle,'helper bounds')
+ need(NODE_SHA in oracle and '93580104' in oracle and "process.versions.node!=='24.21.0'" in oracle,'Node pin')
+ need('Buffer.alloc(65536)' in oracle and 'fs.readFileSync(full)' not in oracle,'Node streaming identity')
+ need('!sameFile(before,fs.fstatSync(fd,{bigint:true}))' in oracle and '!sameFile(before,fs.lstatSync(full,{bigint:true}))' in oracle,'node stability')
+ need(not re.search(r"if\([^\n]*digest\('hex'\)[^\n]*\)\s*\{\s*\}",oracle),'ignored executable digest')
+ for name in ['NODE_OPTIONS','NODE_PATH','NODE_INSPECT_RESUME_ON_START','NODE_REPL_EXTERNAL_MODULE']:need('process.env.'+name in oracle,'node injection-presence check missing')
+ need('verifyDistribution(home,\'github\')' in oracle and "path.join(home,'scripts/check-paths.ps1')" in oracle,'unchanged distribution/helper')
+ return actual
+
+def candidate_gate(c):
+ need(c['status']=='PASS' and c['parent']==C and c['previousScaffold']==OLD,'candidate authority')
+ commit=c['commit'];need(git('show','-s','--format=%P',commit)==C,'candidate parent')
+ inputs=c['inputs'];dest=[x['destination'] for x in inputs]
+ need(set(dest)=={WP,'repositories/cca-conformance/tools/mo1306-phase3a-hosted-diagnostic/observe.ps1','repositories/cca-conformance/tools/mo1306-phase3a-hosted-diagnostic/oracle.mjs'},'scaffold minimum changed files')
+ need(set(git('diff','--name-only',OLD,commit).splitlines())==set(dest),'extra scaffold modification')
+ for x in inputs:
+  file_binding(x);need(git('show',commit+':'+x['destination'],raw=True)==(R/x['path']).read_bytes(),'candidate/local byte mismatch')
+ need(git('rev-parse',C+':repositories/memoryos-ci')==git('rev-parse',commit+':repositories/memoryos-ci'),'production tree changed')
+ need(not git('diff','--name-only',C,commit,'--','docs','specifications'),'contract changed')
+ for case in ['pass','fail','cne']:
+  p='.github/workflows/mo1306-certification-'+case+'.yml';need(git('show',OLD+':'+p,raw=True)==git('show',commit+':'+p,raw=True),'certification workflow modified')
+ git('diff','--check',OLD,commit)
+
+def main():
+ ap=argparse.ArgumentParser();ap.add_argument('--check',action='store_true');args=ap.parse_args()
+ old=grammar(git('show',OLD+':.github/workflows/mo1306-certification-pass.yml',raw=True));d=grammar(WF.read_bytes());steps=workflow_gate(d,old)
+ observe=(T/'observe.ps1').read_text(encoding='utf-8-sig');oracle=(T/'oracle.mjs').read_text(encoding='utf-8-sig');allow=tool_gate(observe,oracle)
+ parses=[]
+ for name,script in [('observe.ps1',observe)]+[(x['id'],x['run']) for x in steps if 'run' in x]:
+  nodes=powershell_ast(script);parses.append({'source':name,'status':'PASS','astNodeCount':len(nodes),'sourceSha256':sha(script.encode())})
+ node=R/'.cache/mo1306-phase3a-final/node-v24.21.0-win-x64/node.exe'
+ syntax=subprocess.run([str(node),'--check',str(T/'oracle.mjs')],capture_output=True,timeout=20);need(syntax.returncode==0 and not syntax.stderr,'oracle syntax')
+ need(sha(node.read_bytes())=='sha256:'+NODE_SHA,'syntax engine Node pin')
+ campaign=T/'diagnostic_campaign.py';campaign_source=campaign.read_text(encoding='utf-8-sig');ast.parse(campaign_source)
+ need('os.fsync(' in campaign_source and "dispatch-consumed.json" in campaign_source,'durable single dispatch ledger')
+ need('finally:' in campaign_source and 'restoration=restore_main(client,before)' in campaign_source,'unconditional restoration')
+ need("self.dispatch_path==path" in campaign_source and "payload=={'ref':BRANCH}" in campaign_source,'dispatch closed ref/workflow')
+ need("static['workflow']==gate['workflow']" in campaign_source and "static['engineeringTools']==gate['engineeringTools']" in campaign_source,'authorization/static match')
+ smoke=read(E/'observer-secret-smoke.json');need(smoke['status']=='PASS' and smoke['leakedSentinels']==0 and smoke['sentinelCount']==6 and smoke['productExecutions']==smoke['oracleExecutions']==0,'observer smoke')
+ for k in ['observer','runner','observerReport','stdout','stderr']:file_binding(smoke[k])
+ need((E/'observer-secret-smoke-report.json').read_bytes()==(R/smoke['observerReport']['path']).read_bytes(),'preserved smoke bytes')
+ offline=read(E/'campaign-offline-review-v2.json');need(offline['status']=='PASS' and offline['count']==27 and offline['networkCalls']==offline['productCalls']==offline['remoteMutations']==0,'campaign offline guards')
+ file_binding(offline['campaignTool']);file_binding(offline['testTool'])
+ c=read(E/'remote-candidate.json');candidate_gate(c)
+ pre=read(E/'github/remote-preflight.json');need(pre['status']=='PASS' and pre['defaultBranch']=='main' and pre['certificationCommit']==OLD and pre['remoteMutations']==[] and pre['dispatches']==[],'remote preflight')
+ preserved=read(E/'preservation-before.json')
+ for x in preserved['files']:file_binding(x)
+ need(git('rev-parse','HEAD')==preserved['head'],'local HEAD changed')
+ negatives=[]
+ def rejected(name,fn):
+  try:fn()
+  except (AssertionError,ValueError,yaml.YAMLError):negatives.append({'case':name,'status':'REJECTED'});return
+  raise AssertionError('negative accepted '+name)
+ for name,text in [('full-ps-environment','[Environment]::GetEnvironmentVariables()'),('ps-env-drive','Get-ChildItem Env:'),('token-output','Write-Output $env:GITHUB_TOKEN'),('node-environment-json','JSON.stringify(process.env)'),('node-environment-entries','Object.entries(process.env)'),('authorization-output','authorization: secret')]:rejected(name,lambda text=text:secret_gate(text))
+ rejected('allowlist-token-injection',lambda:tool_gate(observe.replace("'HOME'","'GITHUB_TOKEN'",1),oracle))
+ x=copy.deepcopy(d);x['jobs']['memoryos_diagnostic']['steps'][0]['uses']='actions/checkout@main';rejected('unpinned-action',lambda:workflow_gate(x,old))
+ x=copy.deepcopy(d);x['jobs']['memoryos_diagnostic']['steps'][4]['run']+='\nexit 0\n';rejected('changed-bootstrap-decision',lambda:workflow_gate(x,old))
+ x=copy.deepcopy(d);x['on']['push']={};rejected('extra-automatic-trigger',lambda:workflow_gate(x,old))
+ rejected('duplicate-workflow-key',lambda:grammar(b"'on': {}\n'on': {}\n"))
+ reviewed=[WF,T/'observe.ps1',T/'oracle.mjs',campaign,E/'remote-candidate.json',E/'scaffold-inputs.json',E/'github/remote-preflight.json',T/'build-scaffold.py',T/'push-diagnostic.py',T/'authorize-diagnostic.py',T/'static_gate.py',E/'observer-secret-smoke.json',E/'observer-secret-smoke-initial-attempt.json',T/'observer_secret_smoke.py',T/'observer_secret_smoke_v2.py',R/'repositories/cca-conformance/tools/mo1306-phase3a-certification/remote_state.py',R/'repositories/cca-conformance/tools/mo1306-phase2c/safe_yaml.py']
+ reviewed += [R/x['path'] for x in [smoke['observerReport'],smoke['stdout'],smoke['stderr']]]
+ reviewed += [E/'observer-secret-smoke-report.json',E/'campaign-offline-review-v2.json',R/offline['testTool']['path']]
+ reviewed += sorted((R/'.cache/mo1306/validators/yaml').glob('*.py'))
+ deps=[row(p) for p in reviewed]
+ result={'kind':'MemoryOSHostedDiagnosticStaticGate','status':'PASS','productionAuthority':C,'methodologyAuthority':M,'candidate':row(E/'remote-candidate.json'),'workflow':dict(row(WF),workflowPath=WP),'engineeringTools':[row(T/n) for n in ['observe.ps1','oracle.mjs']],'reviewedFiles':deps,'environmentAllowlist':allow,'staticChecks':{'workflowGrammar':'PASS','powershellParse':'PASS','diagnosticAllowlist':'PASS','secretOutputNegatives':'PASS','actionPinsUnchanged':True,'nodePinUnchanged':True,'productionTreeUnchanged':True,'C3CBBinding':'PASS','gitDiffCheck':'PASS'},'parseReviews':parses,'negativeCount':len(negatives),'preservedHistoricalFiles':len(preserved['files']),'productExecutions':0,'nativeOrMethodologyReruns':0,'remoteMutations':0,'causalScope':'A later oracle is a separate observation. Oracle PASS cannot resolve the actual production failure; no causal classification is authorized by this static gate.'}
+ if not args.check:
+  for name,obj in [('static-gate-negatives.json',{'status':'PASS','cases':negatives,'validator':row(T/'static_gate.py')}),('static-gate.json',result)]:
+   with (E/name).open('x',encoding='utf-8',newline='\n') as f:json.dump(obj,f,sort_keys=True,separators=(',',':'));f.write('\n')
+ print(json.dumps({'status':'PASS','candidate':c['commit'],'negativeCount':len(negatives),'reviewedFiles':len(deps),'parseReviews':parses,'output':row(E/'static-gate.json') if (E/'static-gate.json').exists() else None}))
+if __name__=='__main__':main()

@@ -1,0 +1,751 @@
+MemoryOS 1.3
+MO-1306 PROVIDER-NEUTRAL CI/CD INTEGRATION
+
+FINAL HOSTED DIAGNOSTIC AUTHORIZATION
+GITHUB WINDOWS-2022 FILESYSTEM PREDICATE CAPTURE
+
+==================================================
+0. PURPOSE
+==================================================
+
+The retained hosted run 36357568243 is permanently insufficient to establish
+the first rejecting filesystem operation.
+
+Do NOT analyze that run again attempting to infer missing telemetry.
+
+Do NOT rerun native certification.
+
+Native certification is COMPLETE:
+
+Generic = REAL_EXECUTION_CERTIFIED.
+
+This task authorizes exactly ONE new GitHub-hosted DIAGNOSTIC run whose sole
+purpose is to capture the missing filesystem-boundary evidence before another
+certification attempt.
+
+This is not a certification retry.
+
+PASS/FAIL/CNE certification must not run until this diagnostic establishes the
+cause.
+
+==================================================
+1. WORKSPACE
+==================================================
+
+Continue exclusively in:
+
+C:\Users\melsa\Documents\Codex\cca-mo1306-3a-refresh
+
+Production authority:
+
+C3CB:
+701d48ee2012675966360dda775ab13013c09ab9
+
+Methodology authority:
+
+M3:
+85a0f85c1ebd013c545ccf2b3efe58a760e6cf37
+
+Current certification scaffold:
+
+451599e7b95a537ebc2daac627b061fd88791dea
+
+Do not modify production.
+
+Do not modify main.
+
+==================================================
+2. PRESERVE EXISTING FAILED RUN
+==================================================
+
+Run:
+
+36357568243
+
+remains:
+
+HOSTED_BOOTSTRAP_UNRESOLVED.
+
+Do not reclassify it.
+
+Do not replace it.
+
+The new diagnostic run is a separate engineering observation.
+
+==================================================
+3. WHY NEW TELEMETRY IS REQUIRED
+==================================================
+
+Existing evidence does NOT contain:
+
+exact rejected path
+
+actual OS realpath
+
+Node/helper exit
+
+Windows errno
+
+helper outcome
+
+reparse state at rejection
+
+RUNNER_TEMP
+
+RUNNER_TOOL_CACHE
+
+RUNNER_WORKSPACE
+
+USERPROFILE
+
+TEMP
+
+TMP
+
+SystemRoot
+
+WINDIR
+
+actual bootstrap HOME.
+
+Multiple filesystem rejection branches collapse to the same retained
+MO1306_FILESYSTEM_BOUNDARY diagnostic.
+
+Therefore causal resolution from run 36357568243 is impossible.
+
+==================================================
+4. DIAGNOSTIC WORKFLOW ONLY
+==================================================
+
+Create a certification-only diagnostic workflow revision.
+
+Do NOT change:
+
+memoryos-ci production source
+
+package bytes
+
+C3CB
+
+M3
+
+Action pins
+
+Node pin
+
+contract
+
+filesystem policy
+
+deadlines
+
+provider semantics.
+
+The diagnostic workflow may add bounded preflight and engineering
+instrumentation only.
+
+==================================================
+5. NO SECRET ENUMERATION
+==================================================
+
+Do NOT dump the complete environment.
+
+Do NOT print:
+
+GitHub token
+
+credentials
+
+authorization headers
+
+secrets
+
+cookies
+
+all environment variables.
+
+Print only explicitly allowlisted non-secret variables required for filesystem
+diagnosis.
+
+==================================================
+6. REQUIRED HOSTED ENVIRONMENT CAPTURE
+==================================================
+
+Capture exactly where available:
+
+GITHUB_WORKSPACE
+
+RUNNER_TEMP
+
+RUNNER_TOOL_CACHE
+
+RUNNER_WORKSPACE
+
+USERPROFILE
+
+HOME
+
+TEMP
+
+TMP
+
+SystemRoot
+
+WINDIR
+
+PROCESSOR_ARCHITECTURE.
+
+Also capture:
+
+PowerShell version
+
+Node version
+
+Node architecture
+
+process.execPath.
+
+==================================================
+7. REQUIRED PATHS
+==================================================
+
+For each relevant path capture:
+
+raw path
+
+absolute lexical normalized path
+
+Node realpath
+
+PowerShell resolved path where available
+
+existence
+
+file/directory type
+
+length
+
+drive/root
+
+filesystem/volume information where safely available
+
+attributes
+
+reparse-point status.
+
+Required path classes:
+
+workspace W
+
+trusted tool root
+
+runtime root
+
+runtime node.exe
+
+candidate/data root
+
+configuration path
+
+memoryos-ci package root
+
+package entry point
+
+temporary/output root used by bootstrap.
+
+==================================================
+8. ANCESTOR REPARSE AUDIT
+==================================================
+
+For every relevant root/path, inspect each existing ancestor from volume root
+to target.
+
+Record:
+
+ancestor path
+
+attributes
+
+whether ReparsePoint is present.
+
+Do not follow arbitrary external links.
+
+Do not enumerate unrelated filesystem content.
+
+==================================================
+9. PATH CONTAINMENT
+==================================================
+
+Before invoking production, independently compute and record the exact frozen
+containment predicates for:
+
+tool capability
+
+runtime capability
+
+data capability
+
+configuration capability
+
+package capability.
+
+Record PASS/FAIL for each.
+
+This diagnostic is observational.
+
+Do not weaken failed predicates.
+
+==================================================
+10. HELPER REQUEST
+==================================================
+
+Capture the exact filesystem-helper request metadata needed to diagnose the
+boundary failure:
+
+operation type
+
+root capability class
+
+target path
+
+canonical serialized request length
+
+request digest
+
+chunk/batch identity where applicable.
+
+Do not log raw sensitive file contents.
+
+==================================================
+11. PRODUCTION PREDICATE TRACE
+==================================================
+
+Add engineering-only instrumentation around the production bootstrap call so
+that if production returns:
+
+MO1306_FILESYSTEM_BOUNDARY
+
+the diagnostic can identify the FIRST failed predicate/site without changing
+the product decision.
+
+Preferred approach:
+
+instrument externally or use a source-equivalent engineering predicate oracle.
+
+Do not modify packaged production bytes.
+
+At minimum distinguish:
+
+nodePathCheck(process.execPath)
+
+installation member/root check
+
+configuration path check
+
+realpath failure
+
+reparse rejection
+
+containment rejection
+
+path-form rejection
+
+length rejection
+
+helper request rejection
+
+helper response rejection
+
+other known filesystem-boundary branch.
+
+==================================================
+12. NO PRODUCT DECISION OVERRIDE
+==================================================
+
+Instrumentation must not:
+
+turn failure into success
+
+skip a check
+
+replace a path
+
+change environment seen by product
+
+change filesystem layout
+
+change timing materially beyond ordinary diagnostic overhead
+
+suppress an error.
+
+==================================================
+13. DIAGNOSTIC SCAFFOLD
+==================================================
+
+Create a new certification-only scaffold based on C3CB.
+
+It may differ from 451599e7 only by the minimum diagnostic workflow/tooling
+needed for this hosted observation.
+
+Record exact changed files and bytes.
+
+No product files.
+
+==================================================
+14. STATIC GATE
+==================================================
+
+Before remote execution require:
+
+workflow grammar PASS
+
+PowerShell parse PASS
+
+diagnostic allowlist PASS
+
+secret-output negative tests PASS
+
+Action pins unchanged
+
+Node pin unchanged
+
+production tree unchanged
+
+C3CB binding PASS
+
+git diff --check PASS.
+
+==================================================
+15. REMOTE AUTHORIZATION
+==================================================
+
+You are authorized to update ONLY:
+
+refs/heads/mo1306-certification
+
+to the diagnostic scaffold.
+
+Use exact old-SHA protection / force-with-lease equivalent if necessary.
+
+Do not modify remote main.
+
+Do not push tags.
+
+Do not create releases.
+
+==================================================
+16. REGISTRATION
+==================================================
+
+Use the already proven registration mechanism.
+
+If required:
+
+temporarily switch default branch:
+
+main
+→ mo1306-certification
+
+verify diagnostic workflow registration.
+
+Do not change any other repository setting.
+
+==================================================
+17. ONE DIAGNOSTIC RUN
+==================================================
+
+Dispatch exactly ONE diagnostic hosted run.
+
+This is not PASS certification.
+
+Do not dispatch FAIL or CNE.
+
+Do not retry the diagnostic.
+
+If GitHub infrastructure prevents the run from starting, preserve evidence and
+stop.
+
+==================================================
+18. DIAGNOSTIC RESULT
+==================================================
+
+The diagnostic must produce enough evidence to classify the original hosted
+bootstrap problem as one of:
+
+WORKFLOW_LAYOUT_DEFECT
+
+CERTIFICATION_SCAFFOLD_DEFECT
+
+PRODUCT_HOSTED_FILESYSTEM_DEFECT
+
+HOSTED_FILESYSTEM_CONTRACT_CONFLICT
+
+GITHUB_ENVIRONMENT_TRANSIENT_PROVEN
+
+OTHER_CAUSE_PROVEN
+
+STILL_UNRESOLVED.
+
+Do not use UNKNOWN subcategories to manufacture closure.
+
+==================================================
+19. RESTORE DEFAULT BRANCH
+==================================================
+
+Immediately after diagnostic evidence retrieval:
+
+restore default branch to:
+
+main
+
+if changed.
+
+Verify independently.
+
+Remote main SHA must remain unchanged.
+
+==================================================
+20. IF WORKFLOW/SCAFFOLD DEFECT
+==================================================
+
+If cause is proven to be workflow/scaffold-only:
+
+correct the certification scaffold locally.
+
+Run static validation.
+
+You are then authorized to update mo1306-certification and proceed directly
+to actual hosted certification:
+
+PASS once
+
+FAIL once
+
+CNE once.
+
+No additional user authorization required.
+
+==================================================
+21. IF PRODUCT DEFECT
+==================================================
+
+If cause is proven to be production:
+
+STOP.
+
+Do not modify product here.
+
+Return exact source site and minimal correction.
+
+End:
+
+MO-1306 PHASE 3A HOSTED PRODUCTION BLOCKER
+
+==================================================
+22. IF CONTRACT CONFLICT
+==================================================
+
+If legitimate GitHub windows-2022 filesystem topology violates the frozen
+contract:
+
+STOP.
+
+Do not weaken contract.
+
+End:
+
+MO-1306 PHASE 3A HOSTED CONTRACT BLOCKER
+
+==================================================
+23. IF STILL UNRESOLVED
+==================================================
+
+If this one diagnostic run still cannot identify the first rejecting predicate
+or cause:
+
+STOP MO-1306 hosted certification work.
+
+Do not request another observer campaign.
+
+Do not retry.
+
+Do not create another methodology exception.
+
+End:
+
+MO-1306 PHASE 3A HOSTED DIAGNOSTIC EXHAUSTED
+
+==================================================
+24. HOSTED CERTIFICATION IF FIXABLE
+==================================================
+
+Only if the diagnostic proves and resolves a workflow/scaffold-only defect:
+
+run actual:
+
+PASS
+
+FAIL
+
+CNE
+
+on windows-2022.
+
+Use exact C3CB product.
+
+Keep frozen Action pins and Node bootstrap.
+
+==================================================
+25. ARTIFACTS / PARITY
+==================================================
+
+For successful hosted certification:
+
+download actual artifacts
+
+validate exact sets
+
+verify completion/run-id
+
+compare PASS/FAIL/CNE against already-certified native normative bytes.
+
+Do not rerun native.
+
+==================================================
+26. FINAL RECEIPT
+==================================================
+
+If hosted certification completes, bind:
+
+C3CB
+
+M3
+
+native REAL_EXECUTION_CERTIFIED receipt
+
+historical failed hosted run 36357568243
+
+new diagnostic run
+
+proven root cause
+
+corrected scaffold if applicable
+
+hosted PASS
+
+hosted FAIL
+
+hosted CNE
+
+artifacts
+
+native/hosted parity
+
+remote restoration.
+
+==================================================
+27. FINAL LABEL
+==================================================
+
+Only after full hosted success:
+
+GitHub = HOSTED_EXECUTION_CERTIFIED.
+
+==================================================
+28. FINAL CERTIFICATION COMMIT
+==================================================
+
+Only after full success create:
+
+cert(memoryos-1.3): certify final MO-1306 Windows and GitHub execution
+
+using the already established C3CB/M3 binding strategy.
+
+No production changes.
+
+Do not push final certificate.
+
+Do not tag.
+
+==================================================
+29. TIME BUDGET
+==================================================
+
+Diagnostic:
+<=30 minutes.
+
+If workflow/scaffold fix is proven:
+hosted closure <=45 additional minutes.
+
+Normal total ceiling:
+90 minutes.
+
+Absolute hard stop:
+3 hours only for active hosted jobs.
+
+==================================================
+30. FINAL REPORT
+==================================================
+
+Return:
+
+1. Starting remote state
+2. C3CB
+3. M3
+4. Native state
+5. Historical failed run
+6. Diagnostic scaffold SHA
+7. Diagnostic changed files
+8. Environment allowlist
+9. GITHUB_WORKSPACE
+10. RUNNER_TEMP
+11. RUNNER_TOOL_CACHE
+12. RUNNER_WORKSPACE
+13. USERPROFILE
+14. HOME
+15. TEMP/TMP
+16. SystemRoot/WINDIR
+17. Node version/arch/execPath
+18. PowerShell version
+19. Workspace realpath
+20. Tool-root realpath
+21. Runtime-root realpath
+22. Node realpath
+23. Data-root realpath
+24. Config realpath
+25. Package realpath
+26. Filesystem/volume observations
+27. Ancestor reparse results
+28. Independent containment predicates
+29. Helper request identity
+30. First failed production-equivalent predicate
+31. Exact rejected path
+32. Exact error/errno/helper result
+33. Diagnostic run ID/job
+34. Root-cause classification
+35. Workflow defect
+36. Scaffold defect
+37. Product defect
+38. Contract conflict
+39. Hosted transient
+40. Default-branch restoration
+41. Final default branch
+42. Final remote main
+43. If workflow/scaffold corrected, corrected scaffold
+44. Hosted PASS
+45. Hosted FAIL
+46. Hosted CNE
+47. Hosted artifacts
+48. Native/hosted parity
+49. GitHub final label
+50. Final receipt
+51. Certification commit
+52. Production changes
+53. Workspace verification
+54. git diff --check
+55. Pushes
+56. Tags/releases
+57. Linux/Ubuntu/WSL
+58. VM
+59. Duration
+60. Exact Phase 3D recommendation

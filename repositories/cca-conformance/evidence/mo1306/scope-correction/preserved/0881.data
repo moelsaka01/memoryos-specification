@@ -1,0 +1,17 @@
+"""Fresh valid public generate command with frozen detached, closed-stdin profile."""
+import json,os,subprocess,time,hashlib
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[4];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3cr';WORK=ROOT/'.cache/c3r/native-cli';WORK.mkdir(parents=True,exist_ok=True)
+NODE=ROOT/'.cache/mo1305-phase3br/toolchain/node-v24.21.0-win-x64/node.exe';CLI=ROOT/'repositories/memoryos-ci/bin/memoryos-ci.mjs'
+p=json.loads((OUT/'provider-results/fresh-probe.json').read_bytes());expected=next(x for x in p['outputs'] if x['provider']=='generic');deployment=WORK/'deployment.json';deployment.write_bytes((json.dumps(expected['deployment'],sort_keys=True,separators=(',',':'))+'\n').encode());output=WORK/'generated';assert not output.exists()
+args=[str(NODE),'--max-old-space-size=128',str(CLI),'generate','--config',str(ROOT/'repositories/cca-conformance/fixtures/mo1306/evaluate-policy-pass/memoryos-ci.json'),'--deployment',str(deployment),'--output',str(output)]
+start=time.monotonic();r=subprocess.run(args,cwd=ROOT,env={k:os.environ[k] for k in ['SystemRoot','WINDIR']},stdin=subprocess.DEVNULL,capture_output=True,timeout=90,creationflags=subprocess.DETACHED_PROCESS|subprocess.CREATE_NEW_PROCESS_GROUP)
+record={'kind':'MemoryOSPhase3CRPublicGenerate','baseline':'9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44','argv':args,'stdin':'DEVNULL','creationFlags':['DETACHED_PROCESS','CREATE_NEW_PROCESS_GROUP'],'exitCode':r.returncode,'stdout':r.stdout.decode('utf8'),'stderr':r.stderr.decode('utf8'),'elapsedMs':round((time.monotonic()-start)*1000),'deployment':expected['deployment'],'status':'PASS' if r.returncode==0 else 'FAILED_EXECUTION_PRESERVED'}
+if r.returncode==0:
+ actual=sorted(x.relative_to(output).as_posix() for x in output.rglob('*') if x.is_file());assert actual==sorted(x['path'] for x in expected['files']);rows=[]
+ for f in expected['files']:
+  b=(output/f['path']).read_bytes();assert b==f['text'].encode();rows.append({'path':f['path'],'byteLength':len(b),'sha256':'sha256:'+hashlib.sha256(b).hexdigest()})
+ record['generatedFiles']=rows;record['matchesIndependentProviderGeneration']=True
+else:record['matchesIndependentProviderGeneration']=False
+p=OUT/'public-generate.json';assert not p.exists();p.write_bytes((json.dumps(record,sort_keys=True,separators=(',',':'))+'\n').encode());assert r.returncode==0 and not r.stdout and not r.stderr,record
+print('Public CLI generate PASS',len(record['generatedFiles']),'files',record['elapsedMs'],'ms')

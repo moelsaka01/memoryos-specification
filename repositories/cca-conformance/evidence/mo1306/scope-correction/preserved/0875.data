@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {generate} from '../../../memoryos-ci/src/generator.mjs';
+import {providerIR,providerNames} from '../../../memoryos-ci/src/provider-ir.mjs';
+import {readMetadataEnvironment} from '../../../memoryos-ci/src/metadata.mjs';
+import {configuration,digest} from '../../../memoryos-ci/src/contracts.mjs';
+import {verifyDistribution} from '../../../memoryos-ci/src/integrity.mjs';
+import {catalog,diagnosticWriter,projections} from '../../../memoryos-ci/src/errors.mjs';
+import {run} from '../../../memoryos-ci/src/core.mjs';
+const root=fileURLToPath(new URL('../../../../',import.meta.url));
+const pkg=path.join(root,'repositories/memoryos-ci');
+const config=configuration(fs.readFileSync(path.join(root,'repositories/cca-conformance/fixtures/mo1306/evaluate-policy-pass/memoryos-ci.json')));
+const installation=verifyDistribution(pkg),pin=installation.identities.distributionDigest;
+const expected={PASS:[0,'SUCCESS','SUCCESS'],FAIL:[6,'POLICY_FAIL','FAILURE'],COULD_NOT_EVALUATE:[7,'NOT_EVALUATED','FAILURE'],CONFIGURATION_ERROR:[10,'ADAPTER_ERROR','FAILURE'],INPUT_ERROR:[11,'ADAPTER_ERROR','FAILURE'],SEMANTIC_ERROR:[12,'ADAPTER_ERROR','FAILURE'],TIMEOUT:[13,'TIMEOUT','FAILURE'],CANCELLED:[14,'CANCELLED','CANCELLED'],INTEGRITY_ERROR:[15,'ADAPTER_ERROR','FAILURE'],INTERNAL_ERROR:[16,'ADAPTER_ERROR','FAILURE'],ARTIFACT_ERROR:[17,'ADAPTER_ERROR','FAILURE']};
+const settings={generic:{},gitlab:{runnerTag:'MemoryOS_Windows'},jenkins:{agentLabel:'MemoryOS_Windows'},azure:{pool:'MemoryOS_Windows'},github:{repository:'memoryos/ci-tools',toolRevision:'9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44',configPath:'repositories/cca-conformance/fixtures/mo1306/evaluate-policy-pass/memoryos-ci.json'}};
+const rows=[];let negativeCount=0;
+function check(id,action){action();rows.push({id,status:'PASS'});}
+function deny(id,action,code){check(id,()=>{let caught;try{action();}catch(e){caught=e;}assert.ok(caught,'accepted '+id);assert.equal(caught.code,code);const out=[];diagnosticWriter(v=>out.push(v))(caught);assert.ok(!out.join('').includes('INJECT_SENTINEL'));});negativeCount++;}
+function reverse(v){return Array.isArray(v)?v.map(reverse):v&&typeof v==='object'?Object.fromEntries(Object.entries(v).reverse().map(([k,x])=>[k,reverse(x)])):v;}
+const corpus=[...new Set([...Object.getOwnPropertyNames(Object.prototype),'prototype','then','name','length','caller','arguments','apply','bind','call','__injected_provider__'])];
+for(const name of corpus){
+ deny('providerIR/'+name,()=>providerIR(name),'MO1306_PROVIDER_UNSUPPORTED');
+ deny('metadata-dispatch/'+name,()=>readMetadataEnvironment(name),'MO1306_PROVIDER_UNSUPPORTED');
+ const value=await run({provider:name});assert.equal(value.summary.exitCode,10);assert.equal(value.error.code,'MO1306_PROVIDER_UNSUPPORTED');assert.equal(value.summary.publication,'NONE');rows.push({id:'core-dispatch/'+name,status:'PASS'});negativeCount++;
+}
+for(const val of [null,undefined,0,{},[],new String('generic')])deny('provider-nonstring/'+String(val),()=>providerIR(val),'MO1306_PROVIDER_UNSUPPORTED');
+Object.defineProperty(Object.prototype,'__injected_provider__',{value:providerIR('generic'),configurable:true});
+try {deny('prototype-mutation/providerIR',()=>providerIR('__injected_provider__'),'MO1306_PROVIDER_UNSUPPORTED');deny('prototype-mutation/metadata',()=>readMetadataEnvironment('__injected_provider__'),'MO1306_PROVIDER_UNSUPPORTED');}finally{delete Object.prototype.__injected_provider__;}
+assert.deepEqual([...providerNames].sort(),Object.keys(settings).sort());
+const outputs=[];
+for(const [provider,options] of Object.entries(settings)){
+ const adapter=providerIR(provider),deployment={kind:'MemoryOSCICDDeployment',version:'1.0.0',provider,distributionDigest:pin,options};
+ for(const [classification,[exitCode,klass,jobStatus]] of Object.entries(expected))check('equivalence/'+provider+'/'+classification,()=>{assert.deepEqual(adapter.project(classification),{class:klass,jobStatus});assert.equal(projections[classification].exitCode,exitCode);const detached=adapter.project(classification);detached.class='mutated';assert.deepEqual(adapter.project(classification),{class:klass,jobStatus});});
+ for(const value of corpus)deny('projection/'+provider+'/'+value,()=>adapter.project(value),'MO1306_INTERNAL_FAILURE');
+ const files=generate(config,deployment,installation.generatorDigest);
+ check('determinism/'+provider,()=>{assert.deepEqual(files,generate(config,deployment,installation.generatorDigest));assert.deepEqual(files,generate(reverse(config),reverse(deployment),installation.generatorDigest));assert.deepEqual(files,generate(structuredClone(config),structuredClone(deployment),installation.generatorDigest));});
+ const manifest=JSON.parse(files.find(f=>f.path==='memoryos-ci-generation.json').bytes);
+ check('generation-digests/'+provider,()=>{for(const row of manifest.files){const f=files.find(f=>f.path===row.path);assert.equal(digest(f.bytes),row.sha256);assert.equal(f.bytes.length,row.byteLength);}assert.equal(manifest.generator.sha256,installation.generatorDigest);});
+ check('metadata-empty/'+provider,()=>{const v=adapter.normalizeMetadata({});assert.equal(v.provider,provider);assert.ok(Object.entries(v).every(([k,x])=>k==='provider'||x===null));});
+ outputs.push({provider,deployment,configurationDigest:manifest.configurationSha256,files:files.map(f=>({path:f.path,text:f.bytes.toString('utf8'),byteLength:f.bytes.length,sha256:digest(f.bytes)}))});
+}
+const hostile=['INJECT_SENTINEL\nrun: evil','INJECT_SENTINEL\rnext','INJECT_SENTINEL\t','INJECT_SENTINEL\0','INJECT_SENTINEL\u001b','INJECT_SENTINEL\u007f','${{ secrets.INJECT_SENTINEL }}','$[INJECT_SENTINEL]','$(INJECT_SENTINEL)','INJECT_SENTINEL;exit 0','INJECT_SENTINEL|whoami',"INJECT_SENTINEL'",'INJECT_SENTINEL"','INJECT_SENTINEL`','../INJECT_SENTINEL','C:INJECT_SENTINEL','//host/INJECT_SENTINEL','INJECT_SENTINEL:ads','##vso[INJECT_SENTINEL]','::error::INJECT_SENTINEL'];
+for(const [provider,options] of Object.entries(settings))for(const key of Object.keys(options))for(const [i,value]of hostile.entries())deny('generation-injection/'+provider+'/'+key+'/'+i,()=>generate(config,{kind:'MemoryOSCICDDeployment',version:'1.0.0',provider,distributionDigest:pin,options:{...options,[key]:value}},installation.generatorDigest),'MO1306_GENERATION_INVALID');
+const metadataKeys={github:'GITHUB_REPOSITORY',gitlab:'CI_PROJECT_PATH',jenkins:'JOB_NAME',azure:'BUILD_REPOSITORY_NAME'};
+for(const [provider,key]of Object.entries(metadataKeys))for(const [i,value]of hostile.entries()){if([17,19].includes(i))check('metadata-inert-colons/'+provider+'/'+i,()=>{const m=providerIR(provider).normalizeMetadata({[key]:value});assert.equal(JSON.parse(JSON.stringify(m)).repository,value);});else deny('metadata-injection/'+provider+'/'+i,()=>providerIR(provider).normalizeMetadata({[key]:value}),'MO1306_METADATA_INVALID');}
+console.log(JSON.stringify({kind:'MemoryOSPhase3CRFreshProviderAudit',version:'1.0.0',baseline:'9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44',status:'PASS',node:process.version,scope:'Offline current-source independent assertions; no hosted provider execution',counts:{checks:rows.length,negativeCount,prototypeNames:corpus.length,equivalence:55,providers:5},rows,installation:{identities:installation.identities,generatorDigest:installation.generatorDigest,adapterDigests:installation.adapterDigests},outputs,metadataInternalPrecondition:'metadata() is called only with static legitimate provider literals; user-controlled selectors pass own-property guards before entry'}));

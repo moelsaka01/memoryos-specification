@@ -1,0 +1,15 @@
+import base64,hashlib,json,os,pathlib,subprocess,time
+ROOT=pathlib.Path(__file__).resolve().parents[4];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3cr/provider-results'
+workspace=ROOT/'.cache/mo1306-phase3cr/provider-wrapper/pass';pkg=workspace/'_memoryos/tool/repositories/memoryos-ci';node=workspace/'_memoryos/runtime/node.exe'
+manifest=json.loads((pkg/'distribution-manifest.json').read_text())
+paths=[node,pkg,*[pkg/r['path'] for r in manifest['files']]]
+helper=pkg/'scripts/check-paths.ps1';ps=pathlib.Path(os.environ['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'
+cmd=[str(ps),'-NoProfile','-NonInteractive','-EncodedCommand',base64.b64encode(helper.read_text().encode('utf-16le')).decode()]
+rows=[]
+for start in range(0,len(paths),48):
+ request={'kind':'MemoryOSCICDPathCheckRequest','version':'1.0.0','paths':[{'path':str(p),'allowMissingLeaf':False} for p in paths[start:start+48]]}
+ stamp=time.monotonic();p=subprocess.run(cmd,input=(json.dumps(request,separators=(',',':'))+'\n').encode(),stdout=subprocess.PIPE,stderr=subprocess.PIPE,env={k:os.environ[k] for k in ('SystemRoot','WINDIR')},timeout=15,creationflags=subprocess.CREATE_NO_WINDOW)
+ rows.append({'batchStart':start,'pathCount':len(request['paths']),'exitCode':p.returncode,'stdout':p.stdout.decode(),'stderr':p.stderr.decode(),'elapsedMs':round((time.monotonic()-stamp)*1000)})
+report={'kind':'ProviderNativeHelperDiagnostic','status':'DIAGNOSTIC_ONLY','frozenHelperBudgetMs':2000,'diagnosticTimeoutSeconds':15,'helperSha256':'sha256:'+hashlib.sha256(helper.read_bytes()).hexdigest(),'maxPathLength':max(len(str(p))for p in paths),'requestPaths':[str(p)for p in paths],'rows':rows}
+(OUT/'native-helper-diagnostic.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf8')
+print(json.dumps({k:v for k,v in report.items()if k!='requestPaths'}))

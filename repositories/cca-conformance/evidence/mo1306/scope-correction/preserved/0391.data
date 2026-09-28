@@ -1,0 +1,84 @@
+"""Preserve a stopped hosted campaign without producing a success certificate."""
+import datetime,hashlib,json,subprocess,sys
+from pathlib import Path
+R=Path(__file__).resolve().parents[4];T=Path(__file__).resolve().parent;E=R/'repositories/cca-conformance/evidence/mo1306/phase3a-certification'
+C3CB='701d48ee2012675966360dda775ab13013c09ab9';M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37';H='f6e181ae330c8f884f5b9737f71f546eb2494201';OLD='f236c4a2f94d8cd8e763aaa4bd6c52d703429692';REMOTE_MAIN='5955af062152a84c10de17860ba0bcabe8b3555f';SCAFFOLD='451599e7b95a537ebc2daac627b061fd88791dea'
+def read(p):return json.loads(p.read_bytes())
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(R).as_posix(),'byteLength':len(b),'sha256':'sha256:'+hashlib.sha256(b).hexdigest()}
+def put(p,v):
+ with p.open('x',encoding='utf-8',newline='\n') as f:f.write(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n')
+def git(*a):return subprocess.check_output(['git',*a],cwd=R).decode().strip()
+assert sys.argv[1:]==['--close-blocked'];assert git('rev-parse','HEAD')==OLD
+assert read(E/'native-final-gate.json')['status']=='PASS'
+blocked=read(E/'github/hosted-blocked-summary.json');remote=read(E/'github/final-state-blocked.json');assert blocked['status'] in ['BLOCKED','HOSTED_CERTIFICATION_BLOCKED'] and remote['status']=='PASS'
+campaign=E/'github/campaign-20260927T230612Z';c=read(campaign/'campaign-summary.json');run=read(campaign/'runs/36357568243/run.json');job=read(campaign/'runs/36357568243/jobs.json')['jobs'][0]
+assert c['status']=='BLOCKED' and c['restoration']['status']=='PASS' and c['restoration']['defaultBranch']=='main' and run['conclusion']=='failure'
+assert read(E/'github/hosted-receipt-disposition.json')['status'] in ['BLOCKED','HOSTED_CERTIFICATION_BLOCKED','PASS','RECORDED']
+assert not git('diff','--name-only') and not git('diff','--cached','--name-only')
+assert not (R/'.cache/mo1306-phase3a-certification/final-commit.json').exists()
+for r in read(E/'preservation-before.json')['files']:assert row(R/r['path'])==r
+workspace=read(E/'workspace-blocked.json');assert workspace['status']=='PASS' and workspace['head']==OLD and workspace['trackedChanges'] is False and workspace['stagedChanges'] is False
+finished=datetime.datetime.now(datetime.timezone.utc);started=datetime.datetime.fromisoformat(read(E/'task-context.json')['startedUtc']);duration=(finished-started).total_seconds()
+values=[
+'Branch mo1306/phase3a-refresh; historical HEAD '+OLD+'; refresh checkout only; main read-only.',
+M3,C3CB,'Methodology validator PASS; tests PASS (84 negative, 5 positive).','18 PASS / 0 FAIL / 0 NOT_ESTABLISHED; one final witness authorized.',C3CB,
+'memoryos-ci@0.1.0; 197290 bytes; SHA-256 7649f6df77c3f6163eb94b343974abaeccebbd5bcb8a2208cc889128904ce45d; 94 members, 25 SDK files, zero production dependencies.',
+'758 historical files unchanged. Attempt 20260927T120240-b3df86 remains FAIL / UNRESOLVED; INPUT_ERROR11 then ARTIFACT_ERROR17, incomplete publication.',
+'YES: durable start record at 22:46:05.421129 UTC; execution began 22:47:24.407293 UTC; exclusive consumed authorization retained.',
+'20260927T224605-61fe80; run 574ec2a2-454b-4c8d-a1a4-e9c68273202a.',
+'PASS: INPUT_ERROR, independently accepted.','11.','COMPLETE; exactly result, evidence, artifacts manifest and completion marker; four canonical files.',
+'PASS: all 94 installed members unchanged; schema, candidate, distribution, run-id and hashes verified.',
+'PASS: 20 timely helpers, minimum margin 444.6722 ms; no owned process or open descriptor left.',
+'No final-witness recurrence; exactly one execution, zero retries, no additional witness authorized.',
+'PASS: eight retained groups, 568 dependency bindings; zero reruns.',
+'Engineering native-receipt.json plus two closed-schema native companion receipts; independent validation PASS.',
+'REAL_EXECUTION_CERTIFIED.','main.',REMOTE_MAIN,'3096139e0108be22528859e4f462356dddf6ef29',
+SCAFFOLD+'; sole parent C3CB; exactly three workflow files; operational scaffolding.',
+'PASS: only refs/heads/mo1306-certification updated to reviewed scaffold.',
+'YES: exact old-SHA force-with-lease; no other ref changed.',
+'Direct registration was unavailable; default-branch presence required. Current API semantics reviewed, registry checked before dispatch.',
+'YES: main to mo1306-certification, then restored to main.',
+'PASS: all three reviewed workflows registered; no blind 404 retry.',
+'PASS 368631903; FAIL 368631902; CNE 368631901; all active at registration.',
+'checkout 3d3c42e5aac5ba805825da76410c181273ba90b1; upload-artifact 043fb46d1a93c77aae656e7c1c64a875d1fc6a0a; unchanged.',
+'Node 24.21.0 win-x64 checks preceded the failing transport invocation by verified bootstrap control flow. No completed runtime artifact; this is qualified control-flow evidence, not a successful hosted receipt. ZIP pin 37618919 bytes / SHA-256 158f7685b44de51f6c0df1d153526cbcd3e1bc739a8dfc607721cef75de9e541.',
+'Run 36357568243, attempt 1: workflow/job failure; bootstrap MO1306_FILESYSTEM_BOUNDARY / ACQUISITION, exit 1. Policy evaluation never ran.',
+'NOT_EXECUTED: stopped after PASS-case bootstrap failure.',
+'NOT_EXECUTED: stopped after PASS-case bootstrap failure.',
+'windows-2022; runner GitHub Actions 1000000460, runner ID 1000000460; job 108728221298; job '+job['started_at']+' to '+job['completed_at']+'.',
+'Zero hosted product artifacts. Actual run/job/artifact-list metadata and logs.zip preserved; upload skipped.',
+'NOT_ESTABLISHED: no published hosted bundle, completion marker or bundle run-id.',
+'NOT_ESTABLISHED: no hosted normative bytes; native oracle parity remains valid.',
+'PASS: immediate finally restoration, independently verified at '+c['restoration']['verifiedUtc']+'.',
+'main.',REMOTE_MAIN,SCAFFOLD,
+'PASS: exactly four targeted tests, zero failures; released Action bytes unchanged.',
+'methodology-sidecar.json binds actual M3, original FAIL / UNRESOLVED, all six attempts and one final witness.',
+'execution-receipt.json records HOSTED_CERTIFICATION_BLOCKED; no overall certification claim.',
+'REAL_EXECUTION_CERTIFIED.','NOT_CERTIFIED; hosted bootstrap failed.',
+'NONE. No authoritative certification commit created or pushed.',
+'Not applicable; intended success parent H='+H+' was never used for a final certificate.',
+'Existing matching-byte engineering snapshot H has sole parent M3, and M3 sole parent C3CB. Native receipts bind H; scaffold binds C3CB. No future-hash self-reference, merge, amendment or checkpoint rewrite.',
+'0. Production authority remains exact C3CB; no product fix attempted.',
+'PASS for actual blocked checkout; final post-commit verification is inapplicable.',
+'PASS for tracked worktree/index; preserved new evidence remains untracked.',
+'HEAD unchanged at historical checkpoint; no tracked/staged changes. Prior and new evidence/tooling directories remain untracked; no clean final certificate checkout claimed.',
+'One authorized cert-branch push only. No main, M3, H or final-certificate push. Final readback observed three unrelated Dependabot heads changed; no task writes to those heads, actor/cause unverified. Exact delta retained.',
+'No tag or release created; remote tag map unchanged.',
+'No Linux, Ubuntu or WSL execution.','No separately provisioned VM. Authorized GitHub-hosted windows-2022 runner used.',
+'No GitLab, Jenkins or Azure account usage; their labels remain CONTRACT_VALIDATED.',
+f'{duration/60:.2f} minutes from 22:41:38 UTC to blocked report at {finished.isoformat()}; later offline seal checks are recorded separately.',
+'Not applicable; below 90 minutes.','Compliant; stopped hosted execution immediately on failure, no retry or expansion.',
+'NOT READY FOR PHASE 3D INTEGRATION. Resolve and explicitly reauthorize the hosted bootstrap blocker before any new certification execution.'
+]
+assert len(values)==63
+request=(E/'task-request.txt').read_text();section=request.rsplit('Return:\n',1)[1].split('If final witness fails',1)[0]
+import re
+names=re.findall(r'^\d+\. (.+)$',section,re.M);assert len(names)==63
+report=['# MO-1306 final Phase 3A blocked report','','Native certification passed. GitHub certification is blocked by the first actual hosted bootstrap failure. No retry, FAIL/CNE dispatch, hosted label promotion or authoritative certification commit occurred.','','The historical missing-input failure remains FAIL / UNRESOLVED. This task does not claim that its cause was resolved.','','| # | Required area | Verified outcome |','|---|---|---|']
+report += ['| '+str(i)+' | '+name+' | '+v.replace('|','/')+' |' for i,(name,v) in enumerate(zip(names,values),1)]
+report+=['','Actual hosted run: https://github.com/moelsaka01/memoryos-specification/actions/runs/36357568243','','The prerequisite harness snapshot and prepared success-only seal-certificate.py are retained as engineering evidence. The sealing tool was never executed. The frozen native receipts remain valid; no hosted success receipt was fabricated.','','MO-1306 PHASE 3A HOSTED CERTIFICATION BLOCKED','']
+with (E/'REPORT.md').open('x',encoding='utf-8',newline='\n') as f:f.write('\n'.join(report))
+names=['task-context.json','preservation-before.json','m3-verification.json','native-final-gate.json','native-receipt.json','native-validation.json','frozen-native-validation.json','frozen-independent-validation.json','mo1306-phase3a-native.json','mo1306-phase3a-retained-native.json','all-attempt-ledger.json','methodology-sidecar.json','witness-validation.json','reused-evidence.json','harness-binding.json','graph-resolution.json','mo1302-regression.json','github/hosted-receipt-disposition.json','github/push-result.json','github/hosted-blocked-summary.json','github/final-state-blocked.json','workspace-blocked.json','report-assembly-note.json','REPORT.md']
+v={'kind':'MemoryOSPhase3AFinalExecutionDisposition','status':'HOSTED_CERTIFICATION_BLOCKED','productionAuthority':C3CB,'methodologyAuthority':M3,'historicalCauseResolved':False,'historicalDisposition':'FAIL / UNRESOLVED','nativeCertified':True,'githubHostedCertified':False,'labels':{'generic':'REAL_EXECUTION_CERTIFIED','github':'NOT_CERTIFIED','gitlab':'CONTRACT_VALIDATED','jenkins':'CONTRACT_VALIDATED','azure':'CONTRACT_VALIDATED'},'allCertificationGatesPassed':False,'labelsPromoted':False,'phase3DReady':False,'expectedParent':H,'expectedParentScope':'Only the unexecuted success plan; no authoritative certificate exists.','containingCommitIdentity':'NO_AUTHORITATIVE_CERTIFICATION_COMMIT_CREATED','finalWitnessExecutions':1,'acceptedGroupsRerun':False,'hostedRuns':1,'hostedAcceptedCases':0,'hostedArtifacts':0,'hostedCasesNotExecuted':['fail','cne'],'hostedRetryCount':0,'defaultBranchRestored':True,'productionChanges':0,'unrelatedRemoteRefDriftObserved':True,'unrelatedRemoteRefActor':'NOT_ESTABLISHED','taskDirectWritesOutsideAuthorization':False,'authoritativeCertificationCommitCreated':False,'completionCommitCreated':False,'engineeringHarnessSnapshot':H,'finalCommit':None,'phase3DRecommendation':'NOT READY FOR PHASE 3D INTEGRATION','durationSecondsToReport':duration,'recordedUtc':finished.isoformat(),'bindings':[row(E/n) for n in names],'unexecutedSuccessSealingTool':row(T/'seal-certificate.py'),'creator':row(Path(__file__))}
+put(E/'execution-receipt.json',v);print(json.dumps({'status':v['status'],'reportFields':63,'durationMinutes':duration/60,'receipt':row(E/'execution-receipt.json')}))

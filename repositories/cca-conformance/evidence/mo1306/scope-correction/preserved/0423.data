@@ -1,0 +1,36 @@
+"""Independent read-only final diagnostic state verification after campaign restoration."""
+import argparse,concurrent.futures,json,os,subprocess,sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[4]
+sys.path.insert(0,str(ROOT/'repositories/cca-conformance/tools/mo1306-phase3a-certification'))
+from remote_state import credential,get,put,row,now,REPO,BRANCH,MAIN,SETTINGS
+E=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-diagnostic';OUT=E/'github'
+def load(p):return json.loads(p.read_text(encoding='utf-8-sig'))
+def main():
+ parser=argparse.ArgumentParser();parser.add_argument('--campaign',type=Path,required=True);args=parser.parse_args()
+ campaign=args.campaign.resolve();assert campaign.is_relative_to(OUT.resolve()) and campaign.name.startswith('campaign-')
+ summary=load(campaign/'campaign-summary.json');assert summary['restoration']['status']=='PASS'
+ accepted=[load(p) for p in (campaign/'journal').glob('*-dispatch-accepted.json')];assert len(accepted)==1
+ run_id=accepted[0]['runId'];workflow_id=accepted[0]['workflowId'];candidate=load(E/'remote-candidate.json')['commit'];initial=load(OUT/'remote-preflight.json')
+ paths={'repository':f'repos/{REPO}','main-ref':f'repos/{REPO}/git/ref/heads/main','certification-ref':f'repos/{REPO}/git/ref/heads/{BRANCH}','certification-runs':f'repos/{REPO}/actions/runs?branch={BRANCH}&per_page=100','diagnostic-run':f'repos/{REPO}/actions/runs/{run_id}','diagnostic-jobs':f'repos/{REPO}/actions/runs/{run_id}/jobs?filter=all&per_page=100','diagnostic-artifacts':f'repos/{REPO}/actions/runs/{run_id}/artifacts?per_page=100','actions-permissions':f'repos/{REPO}/actions/permissions','rulesets':f'repos/{REPO}/rulesets?includes_parents=true','main-branch':f'repos/{REPO}/branches/main','certification-branch':f'repos/{REPO}/branches/{BRANCH}'}
+ token=credential();responses={};bodies={}
+ with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+  futures={name:pool.submit(get,path,token) for name,path in paths.items()}
+  for name,future in futures.items():
+   result=future.result();responses[name]=put(OUT/'final-remote'/(name+'.json'),result);assert result['status']==200;bodies[name]=result['body']
+ token=None
+ git=subprocess.run(['git','ls-remote','--heads','--tags','origin'],cwd=ROOT,capture_output=True,timeout=60,creationflags=subprocess.CREATE_NO_WINDOW,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0','GIT_TERMINAL_PROMPT':'0','GCM_INTERACTIVE':'Never'})
+ refs={ref:commit for commit,ref in (line.split() for line in git.stdout.decode().splitlines())} if git.returncode==0 else {}
+ before=load(ROOT/initial['gitRefs']['path'])['refs'];delta={ref:{'initial':before.get(ref),'final':refs.get(ref)} for ref in sorted(set(before)|set(refs)) if before.get(ref)!=refs.get(ref)}
+ refrow=put(OUT/'final-remote/git-refs.json',{'argv':['git','ls-remote','--heads','--tags','origin'],'observedUtc':now(),'exitCode':git.returncode,'stdout':git.stdout.decode(),'stderr':git.stderr.decode(),'refs':refs,'changesSinceInitial':delta})
+ repo=bodies['repository'];settings={key:repo[key] for key in SETTINGS if key in repo};run=bodies['diagnostic-run'];jobs=bodies['diagnostic-jobs'];artifacts=bodies['diagnostic-artifacts'];runs=bodies['certification-runs']
+ checks={'defaultMain':repo['default_branch']=='main','mainUnchanged':bodies['main-ref']['object']['sha']==MAIN and refs.get('refs/heads/main')==MAIN,'certificationReviewed':bodies['certification-ref']['object']['sha']==candidate and refs.get('refs/heads/'+BRANCH)==candidate,'repositorySettingsUnchanged':settings==initial['repositorySettings'],'exactlyOneNewDiagnostic':runs['total_count']==2 and {r['id'] for r in runs['workflow_runs']}=={36357568243,run_id},'diagnosticIdentity':run['id']==run_id and run['workflow_id']==workflow_id and run['head_sha']==candidate and run['head_branch']==BRANCH and run['run_attempt']==1 and run['event']=='workflow_dispatch' and run['status']=='completed' and run['path']=='.github/workflows/mo1306-hosted-diagnostic.yml','singleJob':jobs['total_count']==1 and jobs['jobs'][0]['run_id']==run_id,'tagsUnchanged':{r:v for r,v in refs.items() if r.startswith('refs/tags/')}=={r:v for r,v in before.items() if r.startswith('refs/tags/')},'onlyAuthorizedOrDependabotRefChanges':all(ref=='refs/heads/'+BRANCH or ref.startswith('refs/heads/dependabot/') for ref in delta),'remoteGitSucceeded':git.returncode==0}
+ for name in ['actions-permissions','rulesets']:
+  checks[name+'Unchanged']=bodies[name]==load(ROOT/initial['responses'][name]['path'])['body']
+ for name in ['main-branch','certification-branch']:
+  prior=load(ROOT/initial['responses'][name]['path'])['body'];current=bodies[name]
+  checks[name+'ProtectionUnchanged']=all(prior.get(k)==current.get(k) for k in ['protected','protection','protection_url'])
+ receipt={'kind':'MemoryOSHostedDiagnosticFinalRemoteState','status':'PASS' if all(checks.values()) else 'BLOCKED','scope':'Independent current-state readback, not causal or hosted certification success.','observedUtc':now(),'defaultBranch':repo['default_branch'],'remoteMain':bodies['main-ref']['object']['sha'],'certificationCommit':bodies['certification-ref']['object']['sha'],'diagnosticRunId':run_id,'workflowId':workflow_id,'jobIds':[job['id'] for job in jobs['jobs']],'runAttempt':run['run_attempt'],'runConclusion':run['conclusion'],'certificationRunCount':runs['total_count'],'artifactCount':artifacts['total_count'],'artifactIds':[artifact['id'] for artifact in artifacts['artifacts']],'settingsUnchanged':checks['repositorySettingsUnchanged'],'tagsUnchanged':checks['tagsUnchanged'],'remoteRefChangesSinceInitial':delta,'unrelatedRefAttribution':'Dependabot-named movement, if any, recorded without actor or cause attribution.','checks':checks,'responses':responses,'gitRefs':refrow,'initial':row(OUT/'remote-preflight.json'),'campaign':row(campaign/'campaign-summary.json'),'restoration':summary['restoration'],'remoteMutationsDuringReadback':[],'dispatchesDuringReadback':[],'tool':row(Path(__file__).resolve())}
+ result=put(OUT/'final-remote-state.json',receipt)
+ print(json.dumps({'receipt':result,'status':receipt['status'],'defaultBranch':receipt['defaultBranch'],'remoteMain':receipt['remoteMain'],'certificationCommit':receipt['certificationCommit'],'diagnosticRunId':run_id,'artifactCount':receipt['artifactCount'],'delta':delta}))
+if __name__=='__main__':main()

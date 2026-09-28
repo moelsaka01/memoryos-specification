@@ -1,0 +1,34 @@
+"""Synthetic observer-only leakage smoke. Never invokes Node, product or native tests."""
+from pathlib import Path
+import os,json,hashlib,subprocess,uuid
+R=Path(__file__).resolve().parents[4];T=Path(__file__).resolve().parent;E=R/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-diagnostic'
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(R).as_posix(),'byteLength':len(b),'sha256':'sha256:'+hashlib.sha256(b).hexdigest()}
+def put(p,v):
+ with p.open('x',encoding='utf-8',newline='\n') as f:json.dump(v,f,sort_keys=True,separators=(',',':'));f.write('\n')
+assert not (E/'observer-secret-smoke.json').exists()
+scratch=R/'.cache/mo1306-phase3a-hosted-diagnostic'/('observer-smoke-'+uuid.uuid4().hex[:8]);workspace=scratch/'workspace';out=scratch/'out'
+workspace.mkdir(parents=True);out.mkdir()
+env=dict(os.environ)
+allow=['GITHUB_WORKSPACE','RUNNER_TEMP','RUNNER_TOOL_CACHE','RUNNER_WORKSPACE','USERPROFILE','HOME','TEMP','TMP','SystemRoot','WINDIR','PROCESSOR_ARCHITECTURE']
+for name in allow:
+ if name not in ['SystemRoot','WINDIR','PROCESSOR_ARCHITECTURE']:env[name]=str(workspace)
+env['MEMORYOS_CI_HOME']=str(workspace/'_memoryos/tool/repositories/memoryos-ci')
+env['MEMORYOS_CI_CONFIG']=str(workspace/'_memoryos/tool/repositories/cca-conformance/fixtures/mo1306/evaluate-policy-pass/memoryos-ci.json')
+secret_names=['GITHUB_TOKEN','GH_TOKEN','ACTIONS_RUNTIME_TOKEN','AWS_SECRET_ACCESS_KEY','AUTHORIZATION','UNLISTED_SENTINEL']
+values={name:'MO1306_SYNTHETIC_SECRET_'+uuid.uuid4().hex for name in secret_names};env.update(values)
+ps=Path(os.environ['SystemRoot'])/'System32/WindowsPowerShell/v1.0/powershell.exe'
+args=[str(ps),'-NoProfile','-NonInteractive','-File',str(T/'observe.ps1'),'-Phase','Before','-WorkspaceRoot',str(workspace),'-OutputDirectory',str(out)]
+p=subprocess.run(args,cwd=R,env=env,capture_output=True,timeout=30)
+report=out/'observation-before.json';raw=report.read_bytes() if report.exists() else b''
+combined=p.stdout+p.stderr+raw
+assert p.returncode==0,(p.returncode,p.stderr.decode('utf-8','replace'))
+assert all(v.encode() not in combined for v in values.values()),'Synthetic non-allowlisted secret leaked'
+v=json.loads(raw);assert list(v['environment'])==allow and v['environmentAllowlist']==allow
+assert all(k not in v['environment'] for k in secret_names)
+assert v['phase']=='Before' and v['engineeringOnly'] is True and v['productionVerdictOverridden'] is False
+assert len(raw)<=2097152 and v['powerShellVersion'].startswith('5.1.')
+for name,b in [('observer-secret-smoke.stdout.txt',p.stdout),('observer-secret-smoke.stderr.txt',p.stderr)]:
+ with (E/name).open('xb') as f:f.write(b)
+result={'kind':'MemoryOSHostedDiagnosticObserverSecretSmoke','status':'PASS','scope':'Synthetic engineering observer Before only; no product, oracle, native or methodology execution.','observer':row(T/'observe.ps1'),'runner':row(Path(__file__)),'argv':args,'exitCode':p.returncode,'powerShellVersion':v['powerShellVersion'],'environmentKeys':allow,'sentinelVariableNames':secret_names,'sentinelCount':len(values),'leakedSentinels':0,'environmentEnumeration':False,'observerReport':row(report),'stdout':row(E/'observer-secret-smoke.stdout.txt'),'stderr':row(E/'observer-secret-smoke.stderr.txt'),'productExecutions':0,'oracleExecutions':0,'nativeReruns':0}
+put(E/'observer-secret-smoke.json',result);print(json.dumps({'status':'PASS','reportBytes':len(raw),'powerShellVersion':v['powerShellVersion'],'sentinelsRejected':len(values)}))

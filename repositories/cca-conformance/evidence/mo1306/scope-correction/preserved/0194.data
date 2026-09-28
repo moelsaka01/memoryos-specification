@@ -1,0 +1,127 @@
+MemoryOS 1.3 MO-1306 final hosted diagnostic report
+
+Classification: STILL_UNRESOLVED. One diagnostic executed; no certification retries or native reruns.
+
+The later source-equivalent oracle rejected its first helper batch at the frozen two-second deadline. All later helper-target path audits passed. This observation does not establish the production first rejection, so hosted work stops under request section 23.
+
+1. **Starting remote state**: Default main; main 5955af062152a84c10de17860ba0bcabe8b3555f; certification scaffold 451599e7b95a537ebc2daac627b061fd88791dea; historical branch run count 1.
+
+2. **C3CB**: 701d48ee2012675966360dda775ab13013c09ab9
+
+3. **M3**: 85a0f85c1ebd013c545ccf2b3efe58a760e6cf37
+
+4. **Native state**: Generic = REAL_EXECUTION_CERTIFIED; complete and reused; zero native or methodology reruns.
+
+5. **Historical failed run**: 36357568243 remains HOSTED_BOOTSTRAP_UNRESOLVED, preserved unchanged and not reanalyzed for missing telemetry.
+
+6. **Diagnostic scaffold SHA**: 0d98a5453298df3d8bcf48bfd317ed436e78e1d3; sole parent C3CB.
+
+7. **Diagnostic changed files**: .github/workflows/mo1306-hosted-diagnostic.yml (8447 bytes, sha256:b53548fd0537830854a8db26b890c2021ea2ab9a29afad11ae1a47e27aa662f1); repositories/cca-conformance/tools/mo1306-phase3a-hosted-diagnostic/observe.ps1 (9750 bytes, sha256:80caec5a3d15e20b1c1a5fcedb9433b585a69db56680d938d558729b408ebdbe); repositories/cca-conformance/tools/mo1306-phase3a-hosted-diagnostic/oracle.mjs (16473 bytes, sha256:6143de3585bda48a2b9b66fce8e2dad9377b258b0f74ef2d92e411feb92747e8)
+
+8. **Environment allowlist**: GITHUB_WORKSPACE, RUNNER_TEMP, RUNNER_TOOL_CACHE, RUNNER_WORKSPACE, USERPROFILE, HOME, TEMP, TMP, SystemRoot, WINDIR, PROCESSOR_ARCHITECTURE. Exactly these eleven values; before/after snapshots agree; no full environment dump. PROCESSOR_ARCHITECTURE=AMD64.
+
+9. **GITHUB_WORKSPACE**: D:\\a\\memoryos-specification\\memoryos-specification
+
+10. **RUNNER_TEMP**: D:\\a\\_temp
+
+11. **RUNNER_TOOL_CACHE**: C:\\hostedtoolcache\\windows
+
+12. **RUNNER_WORKSPACE**: D:\\a\\memoryos-specification
+
+13. **USERPROFILE**: C:\\Users\\runneradmin
+
+14. **HOME**: Unset/null in both before and after step observations. No in-process environment snapshot at the production rejection.
+
+15. **TEMP/TMP**: Both C:\\Users\\RUNNER~1\\AppData\\Local\\Temp
+
+16. **SystemRoot/WINDIR**: Both C:\\Windows
+
+17. **Node version/arch/execPath**: 24.21.0 / win32 / x64 / D:\\a\\memoryos-specification\\memoryos-specification\\_memoryos\\runtime\\node.exe; pinned executable identity verified in the later oracle.
+
+18. **PowerShell version**: 5.1.20348.5622
+
+19. **Workspace realpath**: D:\\a\\memoryos-specification\\memoryos-specification; equals lexical path in the later Node observation.
+
+20. **Tool-root realpath**: D:\\a\\memoryos-specification\\memoryos-specification\\_memoryos\\tool; equals lexical path in the later Node observation.
+
+21. **Runtime-root realpath**: D:\\a\\memoryos-specification\\memoryos-specification\\_memoryos\\runtime; equals lexical path in the later Node observation.
+
+22. **Node realpath**: D:\\a\\memoryos-specification\\memoryos-specification\\_memoryos\\runtime\\node.exe; equals lexical path in the later Node observation.
+
+23. **Data-root realpath**: D:\\a\\memoryos-specification\\memoryos-specification\\_memoryos\\data; equals lexical path in the later Node observation.
+
+24. **Config realpath**: D:\\a\\memoryos-specification\\memoryos-specification\\_memoryos\\tool\\repositories\\cca-conformance\\fixtures\\mo1306\\evaluate-policy-pass\\memoryos-ci.json; equals lexical path in the later Node observation.
+
+25. **Package realpath**: D:\\a\\memoryos-specification\\memoryos-specification\\_memoryos\\tool\\repositories\\memoryos-ci; equals lexical path in the later Node observation.
+
+26. **Filesystem/volume observations**: Required observed paths are on ready fixed NTFS D:\\; no cross-drive equality requirement was imposed. Runtime and bootstrap ZIP absent before bootstrap, present afterward; product output absent because evaluation did not run. Package entry, bootstrap archive, runner temporary root, and diagnostic output observations are retained. Environment C: paths are values, not blanket volume observations.
+
+27. **Ancestor reparse results**: No reparse attributes on inspected existing ancestors. Ten later Node path observations have matching realpaths and no symbolic-link ancestors. All 48 later helper-target PowerShell audits PASS. Missing product output is expected; these snapshots do not capture state at the production rejection.
+
+28. **Independent containment predicates**: Before production: tool, runtime, data, configuration, package, and exact Ordinal configuration prefix all PASS (six predicates).
+
+29. **Helper request identity**: Later oracle only: operation checkPaths; installation batch 1/start 0; 48 targets; 8555 canonical bytes; sha256:ce349d10d63daaf57cf84cbebd4916f58e1bd2f33ac65f341772b5480972358d. Per-target trusted-runtime/trusted-package capability metadata and exact target paths retained. Subsequent batches/configuration helper were not executed.
+
+30. **First failed production-equivalent predicate**: Later oracle: installation-member-root-check / checkPaths.helperDeadline, first batch. Actual production first predicate remains uncaptured; no retroactive attribution. C3CB filesystem.mjs deadline source mapping retained in source-site.json.
+
+31. **Exact rejected path**: No individual path rejection was observed. Oracle timeout has target=null for the 48-path request; the actual production rejected path remains unobserved.
+
+32. **Exact error/errno/helper result**: Production: MO1306_FILESYSTEM_BOUNDARY / ACQUISITION at 08:16:32.9776815Z; runner step exit 1, not evidence of Node/helper numeric exit. Oracle deadline 2230.2255 ms, timer terminal 2236.9404 ms, close 2250.6842 ms; helper exit code null, signal SIGTERM, kill true, stdout 0 bytes, stderr 0 bytes, no response or OS errno captured; observer Node exit 0 denotes successful report delivery only.
+
+33. **Diagnostic run ID/job**: Run 36396330199, attempt 1; workflow 368899138; job 108843505688; windows-2022; conclusion failure. Bootstrap outcome failure; jobs API bootstrap conclusion success reflects continue-on-error used for evidence retrieval. Final gate propagated failure.
+
+34. **Root-cause classification**: STILL_UNRESOLVED. The later timeout proves an engineering helper timeout, not the production first rejection or historical cause.
+
+35. **Workflow defect**: Not proven. No causal closure or corrective change authorized by the captured evidence.
+
+36. **Scaffold defect**: Not proven. No causal closure or corrective change authorized by the captured evidence.
+
+37. **Product defect**: Not proven. No causal closure or corrective change authorized by the captured evidence.
+
+38. **Contract conflict**: Not proven. No causal closure or corrective change authorized by the captured evidence.
+
+39. **Hosted transient**: Not proven. No causal closure or corrective change authorized by the captured evidence.
+
+40. **Default-branch restoration**: Artifact retrieval ended 2026-09-28T08:16:54.156198+00:00; restoration independently verified 2026-09-28T08:17:01.102694+00:00. Fresh independent readback 2026-09-28T08:17:26.403246+00:00 also PASS; settings/actions/rules/protection unchanged.
+
+41. **Final default branch**: main
+
+42. **Final remote main**: 5955af062152a84c10de17860ba0bcabe8b3555f; unchanged.
+
+43. **If workflow/scaffold corrected, corrected scaffold**: None. Diagnostic scaffold remains 0d98a5453298df3d8bcf48bfd317ed436e78e1d3 for evidence preservation; no fix was proven.
+
+44. **Hosted PASS**: Not dispatched. Cause gate remains unsatisfied; zero certification retries.
+
+45. **Hosted FAIL**: Not dispatched. Cause gate remains unsatisfied; zero certification retries.
+
+46. **Hosted CNE**: Not dispatched. Cause gate remains unsatisfied; zero certification retries.
+
+47. **Hosted artifacts**: One diagnostic artifact 10957954743, 10758-byte ZIP, sha256:4dbd3bec77a344e3bada5508377079f01e035396bcec8f7109bc8974ef546b86. Exact four JSON members retrieved and bound; logs.zip 26332 bytes. These are engineering evidence, not certification result artifacts.
+
+48. **Native/hosted parity**: Not performed: no hosted certification artifacts exist. Certified native normative evidence is preserved; zero native reruns.
+
+49. **GitHub final label**: NOT_CERTIFIED; HOSTED_EXECUTION_CERTIFIED is not earned. Generic retains REAL_EXECUTION_CERTIFIED; GitLab/Jenkins/Azure retain CONTRACT_VALIDATED.
+
+50. **Final receipt**: execution-receipt.json binds the diagnostic, static authorization, source, historical/native preservation, independent causal review and remote restoration. It is an exhausted diagnostic receipt, not a certification receipt.
+
+51. **Certification commit**: None. No final certification commit created or pushed; historical local HEAD remains f236c4a2f94d8cd8e763aaa4bd6c52d703429692.
+
+52. **Production changes**: Zero. C3CB product tree, package bytes, M3, pins, contracts, deadlines and provider semantics unchanged. Historical local HEAD differences from C3CB were preserved and never used as hosted production authority.
+
+53. **Workspace verification**: PASS: 1021 historical files unchanged; real index, local HEAD and tracked/staged state unchanged; main checkout clean at M3. New evidence/tool namespaces remain untracked.
+
+54. **git diff --check**: PASS for diagnostic scaffold versus old scaffold and local tracked working tree.
+
+55. **Pushes**: Exactly one: refs/heads/mo1306-certification 451599e7b95a537ebc2daac627b061fd88791dea -> 0d98a5453298df3d8bcf48bfd317ed436e78e1d3 with exact old-SHA lease. Full remote ref comparison shows no other changes.
+
+56. **Tags/releases**: None created or pushed; tags unchanged.
+
+57. **Linux/Ubuntu/WSL**: None used.
+
+58. **VM**: No local VM, Windows Sandbox, or alternate execution environment used. One authorized GitHub-hosted windows-2022 runner executed the diagnostic.
+
+59. **Duration**: 23.69 minutes through report/receipt creation from 2026-09-28T07:58:08+00:00; diagnostic evidence retrieved and main restored in 18.89 minutes. Final offline validation/seal duration is recorded separately.
+
+60. **Exact Phase 3D recommendation**: NOT READY FOR PHASE 3D INTEGRATION. Stop MO-1306 hosted certification work; no further diagnostic retry, observer campaign, or methodology exception.
+
+MO-1306 PHASE 3A HOSTED DIAGNOSTIC EXHAUSTED

@@ -1,0 +1,539 @@
+"""Independent closed-world verification for the corrected C3AB npm archive.
+
+This engineering verifier never executes archive content and never extracts unsafe
+members. C3AB Git blobs, rather than an archive-supplied inventory, are its authority.
+"""
+import gzip
+import hashlib
+import io
+import json
+import re
+import struct
+import tarfile
+from pathlib import Path
+
+B2 = '0e35ffe70919d77b1db530929093826410b805f9'
+ARCHIVE_LENGTH = 197172
+ARCHIVE_SHA256 = '2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d'
+CLOSURE_SHA256 = 'f00fbd2b654ed3a845bce79334fb422a604d2e51294010c859ac08956330e424'
+DISTRIBUTION_SHA256 = '311927a980bd397ab70b95da77d546e4b212968d05973ecf998817764431d773'
+ACTIONS = {'actions/checkout': '3d3c42e5aac5ba805825da76410c181273ba90b1',
+           'actions/upload-artifact': '043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'}
+
+
+def digest(raw):
+    return hashlib.sha256(raw).hexdigest()
+
+
+def identity(raw):
+    return {'byteLength': len(raw), 'sha256': 'sha256:' + digest(raw)}
+
+
+def canonical(value):
+    return (json.dumps(value, sort_keys=True, separators=(',', ':')) + '\n').encode()
+
+
+def inventory(contents):
+    return [{'path': path, **identity(contents[path])} for path in sorted(contents)]
+
+
+def safe_path(name):
+    if not isinstance(name, str) or not re.fullmatch(r'package/[A-Za-z0-9_.\/-]+', name):
+        return False
+    parts = name.split('/')
+    if any(p in ('', '.', '..') or p.endswith(('.', ' ')) for p in parts):
+        return False
+    return not any(re.fullmatch(r'(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\..*)?', p, re.I) for p in parts)
+
+
+def verify_archive(raw, authoritative, source_files=None):
+    """Return all observed violations, including structural checks after digest failure.
+
+    authoritative maps exact package-relative paths to C3AB blob bytes. source_files,
+    when supplied, maps runtime provenance source paths to their B2 blob bytes.
+    """
+    issues = []
+    def reject(code, detail):
+        issues.append({'code': code, 'detail': detail})
+    if len(raw) != ARCHIVE_LENGTH or digest(raw) != ARCHIVE_SHA256:
+        reject('archive-identity', identity(raw))
+    try:
+        uncompressed = gzip.decompress(raw)
+    except (OSError, EOFError, ValueError) as error:
+        reject('gzip-integrity', str(error))
+        return {'status': 'FAIL', 'issues': issues, 'archive': identity(raw), 'files': []}
+    if raw[:3] != b'\x1f\x8b\x08' or raw[3] != 0 or raw[4:8] != b'\0'*4 or raw[8:10] != b'\x02\xff':
+        reject('gzip-metadata', 'Require no flags, zero mtime, max compression, neutral OS')
+    contents = {}
+    rows = []
+    seen_case = set()
+    try:
+        with tarfile.open(fileobj=io.BytesIO(uncompressed), mode='r:') as archive:
+            members = archive.getmembers()
+            for member in members:
+                if not safe_path(member.name):
+                    reject('unsafe-package-path', member.name)
+                if member.name.casefold() in seen_case:
+                    reject('duplicate-member', member.name)
+                seen_case.add(member.name.casefold())
+                if not member.isfile() or member.type != tarfile.REGTYPE or member.linkname or member.pax_headers:
+                    reject('member-type', member.name)
+                    continue
+                relative = member.name.removeprefix('package/')
+                mode = 0o755 if relative.startswith('bin/') else 0o644
+                if (member.mode, member.uid, member.gid, member.mtime, member.uname, member.gname) != (mode, 0, 0, 0, '', ''):
+                    reject('tar-metadata', member.name)
+                payload = archive.extractfile(member).read()
+                if len(payload) != member.size:
+                    reject('member-length', member.name)
+                rows.append({'path': relative, 'fileType': 'regular', 'mode': oct(member.mode), **identity(payload)})
+                contents[relative] = payload
+            if members:
+                end = members[-1].offset_data + ((members[-1].size + 511)//512)*512
+                if uncompressed[end:] != b'\0'*1024:
+                    reject('tar-trailer', 'Expected exactly two zero end blocks')
+            if [m.name for m in members] != sorted(m.name for m in members):
+                reject('tar-order', 'Members must be in ordinal sorted order')
+    except (tarfile.TarError, OSError, ValueError) as error:
+        reject('tar-integrity', str(error))
+        return {'status': 'FAIL', 'issues': issues, 'archive': identity(raw), 'files': rows}
+    missing = sorted(set(authoritative) - set(contents))
+    extra = sorted(set(contents) - set(authoritative))
+    if len(rows) != 94 or missing or extra:
+        reject('member-allowlist', {'expectedCount': 94, 'actualCount': len(rows), 'missing': missing, 'extra': extra})
+    for name in sorted(set(authoritative) & set(contents)):
+        if contents[name] != authoritative[name]:
+            reject('member-content', {'path': name, 'expected': identity(authoritative[name]), 'actual': identity(contents[name])})
+    forbidden = {'.git', '.cache', 'node_modules', '.npmrc', '.env', 'id_rsa', 'id_ed25519', 'credentials', 'temp', 'tmp', '__pycache__'}
+    for name in contents:
+        if any(part.lower() in forbidden for part in name.split('/')):
+            reject('prohibited-member', name)
+    def parse(name):
+        try:
+            return json.loads(contents[name])
+        except (KeyError, ValueError, TypeError) as error:
+            reject('json-content', {'path': name, 'error': str(error)})
+            return {}
+    package = parse('package.json')
+    lock = parse('package-lock.json')
+    if (package.get('name'), package.get('version'), package.get('private'), package.get('type'), package.get('engines'), package.get('packageManager')) != ('memoryos-ci', '0.1.0', True, 'module', {'node': '24.21.0'}, 'npm@11.19.0'):
+        reject('package-identity', 'Package name/version/private/type/engine/packageManager mismatch')
+    dependency_fields = ('dependencies', 'optionalDependencies', 'peerDependencies', 'bundledDependencies', 'bundleDependencies', 'devDependencies')
+    if any(package.get(k) for k in dependency_fields) or set(lock.get('packages', {})) != {''} or lock.get('dependencies'):
+        reject('dependency-graph', 'Expected zero declared dependencies and a root-only package-lock graph')
+    root = lock.get('packages', {}).get('', {})
+    if any(root.get(k) for k in dependency_fields):
+        reject('dependency-graph', 'Lock root contains injected dependency metadata')
+    if package.get('scripts') or root.get('scripts') or root.get('hasInstallScript'):
+        reject('lifecycle-script', 'No package scripts or install hooks permitted')
+    if (lock.get('name'), lock.get('version'), lock.get('lockfileVersion'), root.get('name'), root.get('version'), root.get('engines')) != ('memoryos-ci', '0.1.0', 3, 'memoryos-ci', '0.1.0', {'node': '24.21.0'}):
+        reject('dependency-graph', 'Lock identity does not agree with frozen package')
+    manifest = parse('distribution-manifest.json')
+    manifest_expected = [{'path': p, **identity(contents[p])} for p in sorted(contents) if p != 'distribution-manifest.json']
+    if (manifest.get('kind'), manifest.get('version'), manifest.get('package'), manifest.get('packageVersion'), manifest.get('files')) != ('MemoryOSCICDDistributionManifest', '1.0.0', 'memoryos-ci', '0.1.0', manifest_expected):
+        reject('manifest-inventory', 'Distribution manifest differs from the complete observed content')
+    if digest(contents.get('distribution-manifest.json', b'')) != DISTRIBUTION_SHA256:
+        reject('manifest-identity', 'Distribution manifest differs from C3AB pin')
+    closure = parse('runtime/runtime-closure-manifest.json')
+    closure_rows = closure.get('files', [])
+    if digest(contents.get('runtime/runtime-closure-manifest.json', b'')) != CLOSURE_SHA256 or len(closure_rows) != 25:
+        reject('runtime-closure', 'Runtime manifest pin or 25-file cardinality mismatch')
+    closure_names = {'runtime/' + row.get('path', '') for row in closure_rows}
+    if closure_names != {p for p in contents if p.startswith('runtime/authoritative/')}:
+        reject('runtime-closure', 'Runtime SDK file set is not exactly the manifest closure')
+    for row in closure_rows:
+        target = 'runtime/' + row.get('path', '')
+        data = contents.get(target, b'')
+        if len(data) != row.get('byteLength') or digest(data) != row.get('sha256'):
+            reject('runtime-closure', target)
+        if source_files is not None and data != source_files.get(row.get('source')):
+            reject('runtime-source-parity', target)
+    contract = parse('contracts/contract.json')
+    contract_names = sorted(p for p in contents if p.startswith(('schemas/', 'templates/', 'contracts/')) and p != 'contracts/contract.json')
+    contract_rows = [{'path': p, **identity(contents[p])} for p in contract_names]
+    if contract.get('files') != contract_rows:
+        reject('contract-inventory', 'Contract member hashes do not bind exact schema/template/contract bytes')
+    templates = {p for p in contents if p.startswith('templates/')}
+    if templates != {'templates/azure.yml.tpl', 'templates/github.yml.tpl', 'templates/gitlab.yml.tpl', 'templates/jenkins.groovy.tpl'}:
+        reject('template-inventory', sorted(templates))
+    actual_actions = re.findall(rb"uses: '(actions/[a-z-]+)@([a-zA-Z0-9.-]+)'", contents.get('templates/github.yml.tpl', b''))
+    if {(a.decode(), b.decode()) for a, b in actual_actions} != set(ACTIONS.items()) or len(actual_actions) != 3:
+        reject('action-pins', [(a.decode(), b.decode()) for a, b in actual_actions])
+    if contents.get('sbom.spdx.json') != authoritative.get('sbom.spdx.json'):
+        reject('sbom-identity', 'Frozen shipped SPDX component document bytes changed; full schema certification is separate')
+    return {'status': 'FAIL' if issues else 'PASS', 'archive': identity(raw), 'issues': issues, 'files': rows,
+            'memberCount': len(rows), 'runtimeClosureFiles': len(closure_rows), 'productionDependencies': 0 if not any(i['code'] == 'dependency-graph' for i in issues) else None}
+
+# The pure archive verifier above is retained engineering logic, not a reused
+# certification conclusion. All records below are newly executed against C3AB.
+import base64
+import datetime
+import os
+import shutil
+import subprocess
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parents[4]
+OUT = ROOT / 'repositories/cca-conformance/evidence/mo1306/phase3b-r2'
+CACHE = ROOT / '.cache/phase3b-r2/artifact'
+PKG = ROOT / 'repositories/memoryos-ci'
+OLD = ROOT.parent / 'cca-mo1306-3b'
+C3A = '90b9ac914e477fb90fe317d0de9ba310aae37f60'
+C3AB = '9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+GIT = Path('C:/Program Files/Git/cmd/git.exe')
+NODE = ROOT.parent / 'cca-workspace/.cache/mo1305-phase3br/toolchain/node-v24.21.0-win-x64/node.exe'
+NPM = NODE.parent / 'node_modules/npm/bin/npm-cli.js'
+PYTHON = Path('C:/Users/melsa/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe')
+ENV = {k: os.environ[k] for k in ('SystemRoot', 'WINDIR') if k in os.environ}
+ENV.update(PATH='NO-PATH-TOOLS', PATHEXT='.COM;.EXE;.BAT;.CMD', PYTHONDONTWRITEBYTECODE='1',
+           TEMP=str(CACHE/'temp'), TMP=str(CACHE/'temp'), USERPROFILE=str(CACHE/'profile'),
+           APPDATA=str(CACHE/'appdata'), LOCALAPPDATA=str(CACHE/'localappdata'))
+
+
+def file_row(path, base=ROOT):
+    return {'path': path.relative_to(base).as_posix() if path.is_relative_to(base) else str(path), **identity(path.read_bytes())}
+
+
+def files(folder):
+    rows = []
+    for path in sorted(folder.rglob('*')):
+        assert not path.is_symlink(), path
+        if path.is_file():
+            assert path.stat().st_nlink == 1, path
+            rows.append(file_row(path, folder))
+    return sorted(rows, key=lambda row: row['path'])
+
+
+def put(name, value):
+    assert name.startswith('artifact') or name.startswith('commands/artifact-'), name
+    path = OUT / name
+    assert path.resolve().is_relative_to(OUT.resolve())
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        assert path.read_bytes() == canonical(value), 'Retained evidence differs: '+name
+    else:
+        path.write_bytes(canonical(value))
+    return file_row(path)
+
+
+def git(*args, data=None):
+    return subprocess.run([str(GIT), '-c', 'core.longpaths=true', '-c', 'core.autocrlf=false', '-c', 'core.eol=lf', *args],
+                          input=data, capture_output=True, check=True, timeout=90, cwd=ROOT,
+                          env={**os.environ, 'GIT_OPTIONAL_LOCKS':'0'}, creationflags=subprocess.CREATE_NO_WINDOW).stdout
+
+
+def blobs(revision, names):
+    data = git('cat-file', '--batch', data=b'\n'.join((revision + ':' + name).encode() for name in names) + b'\n')
+    found = {}; offset = 0
+    for name in names:
+        end = data.index(b'\n', offset); head = data[offset:end].split()
+        assert len(head) == 3 and head[1] == b'blob', (name, head)
+        length = int(head[2]); offset = end + 1
+        found[name] = data[offset:offset+length]; offset += length
+        assert data[offset:offset+1] == b'\n'; offset += 1
+    assert offset == len(data)
+    return found
+
+
+def command(name, args, cwd, expected=0, timeout=90):
+    started = time.monotonic(); args = list(map(str, args))
+    retained = OUT / ('commands/artifact-'+name+'.json')
+    if retained.exists():
+        prior = json.loads(retained.read_bytes())
+        assert prior['argv'] == args and prior['cwd'] == str(cwd) and prior['status'] == 'PASS'
+        return prior, file_row(retained)
+    proc = subprocess.run(args, cwd=cwd, env=ENV, stdin=subprocess.DEVNULL, capture_output=True,
+                          timeout=timeout, creationflags=subprocess.CREATE_NO_WINDOW)
+    record = {'id':name, 'argv':args, 'cwd':str(cwd), 'environment':ENV,
+              'expectedExitCode':expected, 'exitCode':proc.returncode,
+              'elapsedMs':round((time.monotonic()-started)*1000),
+              'stdout':proc.stdout.decode('utf8'), 'stderr':proc.stderr.decode('utf8'),
+              'status':'PASS' if proc.returncode == expected else 'FAIL'}
+    reference = put('commands/artifact-'+name+'.json', record)
+    print(name, record['status'], flush=True)
+    assert proc.returncode == expected, record
+    return record, reference
+
+
+def content_map(raw):
+    result = {}
+    with tarfile.open(fileobj=io.BytesIO(raw), mode='r:*') as archive:
+        for member in archive.getmembers():
+            assert member.isfile() and safe_path(member.name)
+            name = member.name.removeprefix('package/')
+            assert name not in result
+            result[name] = archive.extractfile(member).read()
+    return result
+
+
+def write_members(folder, contents):
+    assert folder.resolve().is_relative_to(CACHE.resolve()) and not folder.exists(), folder
+    folder.mkdir(parents=True)
+    for relative, raw in contents.items():
+        assert safe_path('package/' + relative)
+        path = folder / relative; path.parent.mkdir(parents=True, exist_ok=True); path.write_bytes(raw)
+    assert files(folder) == inventory(contents)
+
+
+def authority():
+    prefix = 'repositories/memoryos-ci/'
+    names = git('ls-tree','-r','--name-only',C3AB,'--',prefix).decode().splitlines()
+    assert len(names) == 94
+    members = {name.removeprefix(prefix):data for name,data in blobs(C3AB,names).items()}
+    closure = json.loads(members['runtime/runtime-closure-manifest.json'])
+    source_files = blobs(C3AB,[row['source'] for row in closure['files']])
+    assert files(PKG) == inventory(members)
+    return names, members, source_files
+
+
+def gate():
+    assert ROOT == Path('C:/Users/melsa/Documents/Codex/cca-mo1306-3b-refresh2')
+    assert git('rev-parse','HEAD').decode().strip() == C3AB
+    assert git('branch','--show-current').decode().strip() == 'mo1306/phase3b-refresh2'
+    assert git('show','-s','--format=%P',C3A).decode().strip() == B2
+    assert git('show','-s','--format=%P',C3AB).decode().strip() == C3A
+    assert not git('diff','--name-only') and not git('diff','--cached','--name-only')
+    for name in ['temp','profile','appdata','localappdata']:
+        (CACHE/name).mkdir(parents=True,exist_ok=True)
+    assert digest(NODE.read_bytes()) == 'ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'
+    node,node_ref = command('node',[NODE,'--version'],CACHE)
+    npm,npm_ref = command('npm',[NODE,NPM,'--version'],CACHE)
+    assert node['stdout'].strip() == 'v24.21.0' and npm['stdout'].strip() == '11.19.0'
+    names, members, source_files = authority()
+    assert {name.removeprefix('repositories/memoryos-ci/'):data for name,data in blobs(C3A,names).items()} == members
+    cli=members['bin/memoryos-ci.mjs']
+    assert digest(cli) == '0040be1cae98e9aa44dad356a962b5f3470fe63a3c005febcd5325ec29b808ab'
+    assert b'if(!Object.hasOwn(commands,command))reject(\'USAGE\');' in cli
+    export=git('archive','--format=tar',C3AB+':repositories/memoryos-ci'); inputs={}
+    with tarfile.open(fileobj=io.BytesIO(export),mode='r:') as archive:
+        for item in archive.getmembers():
+            if item.isdir(): continue
+            assert item.isfile() and safe_path('package/'+item.name) and item.name not in inputs
+            inputs[item.name]=archive.extractfile(item).read()
+    assert inputs == members
+    folder=CACHE/'a/package'
+    if folder.exists(): assert files(folder) == inventory(inputs)
+    else: write_members(folder, inputs)
+    archive=CACHE/'a/memoryos-ci-0.1.0.tgz'
+    _,build_ref=command('assembly-a',[NODE,folder/'scripts/pack.mjs',archive],folder)
+    validation=verify_archive(archive.read_bytes(),members,source_files)
+    assert validation['status'] == 'PASS', validation
+    validation_ref=put('artifact-candidate-validation.json',validation)
+    _,workspace_ref=command('workspace-gate-corrected-invocation',[PYTHON,'-B',ROOT/'tools/verify_workspace.py','--root',ROOT],ROOT,timeout=90)
+    _,diff_ref=command('diff-check-gate',[GIT,'diff','--check'],ROOT)
+    result={'status':'PASS','baseline':C3AB,'correction':C3A,'B2':B2,
+        'graph':{'C3AParent':B2,'C3ABParent':C3A},'sourceTree':git('rev-parse',C3AB+'^{tree}').decode().strip(),
+        'packageSourceTree':git('rev-parse',C3AB+':repositories/memoryos-ci').decode().strip(),
+        'candidate':file_row(archive),'memberCount':94,'runtimeClosureFiles':25,'productionDependencies':0,
+        'distribution':{'path':'repositories/memoryos-ci/distribution-manifest.json',**identity(members['distribution-manifest.json'])},
+        'cli':{'path':'repositories/memoryos-ci/bin/memoryos-ci.mjs',**identity(cli)},
+        'sdkClosure':{'path':'repositories/memoryos-ci/runtime/runtime-closure-manifest.json',**identity(members['runtime/runtime-closure-manifest.json'])},
+        'validation':validation_ref,'assemblyA':{'method':'Fresh git archive C3AB:repositories/memoryos-ci','inputs':inventory(inputs),'command':build_ref},
+        'node':file_row(NODE),'npmEntrypoint':file_row(NPM),'nodeCommand':node_ref,'npmCommand':npm_ref,
+        'workspaceVerification':workspace_ref,'diffCheck':diff_ref,'recordedAt':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+    put('artifact-gate.json',result)
+    print(json.dumps({'gate':'PASS','candidate':result['candidate'],'members':94,'SDK':25,'productionDependencies':0}),flush=True)
+
+
+def archive_bytes(contents):
+    blocks=[]
+    for relative in sorted(contents):
+        member=tarfile.TarInfo('package/'+relative)
+        member.mode=0o755 if relative.startswith('bin/') else 0o644
+        member.uid=member.gid=member.mtime=0
+        raw=contents[relative]; member.size=len(raw)
+        blocks += [member.tobuf(format=tarfile.USTAR_FORMAT),raw,b'\0'*((-len(raw))%512)]
+    blocks.append(b'\0'*1024)
+    result=bytearray(gzip.compress(b''.join(blocks),compresslevel=9,mtime=0)); result[9]=255
+    return bytes(result)
+
+
+def certify():
+    gate_record=json.loads((OUT/'artifact-gate.json').read_bytes())
+    assert gate_record['status']=='PASS'
+    names,members,source_files=authority()
+    candidate=ROOT/gate_record['candidate']['path']; raw=candidate.read_bytes()
+    assert file_row(candidate)==gate_record['candidate'] and verify_archive(raw,members,source_files)['status']=='PASS'
+    prefix='repositories/memoryos-ci/'
+    old_members={name.removeprefix(prefix):data for name,data in blobs(B2,names).items()}
+    old_record=OLD/'repositories/cca-conformance/evidence/mo1306/phase3b/package-certification.json'
+    old_cert=json.loads(old_record.read_bytes());old_archive=Path(old_cert['candidate']['path'])
+    assert old_archive.is_relative_to(OLD)
+    old_raw=old_archive.read_bytes()
+    assert len(old_raw)==197160 and digest(old_raw)=='6541e2a935f7bd0d5580b32fc9f17a07d471bc16486fd2a044ecef7628d2458b'
+    assert content_map(old_raw)==old_members
+    changes=[]
+    for name in sorted(members):
+        kind='UNCHANGED' if old_members[name]==members[name] else 'MECHANICALLY_REGENERATED' if name=='distribution-manifest.json' else 'CHANGED_BY_C3A'
+        changes.append({'path':name,'classification':kind,'old':identity(old_members[name]),'corrected':identity(members[name])})
+    assert [x['path'] for x in changes if x['classification']!='UNCHANGED']==['bin/memoryos-ci.mjs','distribution-manifest.json']
+    old_dispatch=b"  const command=args[0],allowed={run:['workspace','config','provider'],generate:['config','deployment','output'],verify:['bundle']}[command];\n  if(!allowed)reject('USAGE');"
+    new_dispatch=b"  const command=args[0],commands={run:['workspace','config','provider'],generate:['config','deployment','output'],verify:['bundle']};\n  if(!Object.hasOwn(commands,command))reject('USAGE');\n  const allowed=commands[command];"
+    assert old_members['bin/memoryos-ci.mjs'].count(old_dispatch)==1
+    assert old_members['bin/memoryos-ci.mjs'].replace(old_dispatch,new_dispatch)==members['bin/memoryos-ci.mjs']
+    manifest=json.loads(old_members['distribution-manifest.json'])
+    for item in manifest['files']:
+        if item['path']=='bin/memoryos-ci.mjs': item.update(identity(members[item['path']]))
+    assert canonical(manifest)==members['distribution-manifest.json']
+    delta_ref=put('artifact-member-delta.json',{'status':'PASS','oldArchive':file_row(old_archive),'historicalObservation':file_row(old_record),
+        'oldRevision':B2,'correctedRevision':C3AB,'correction':C3A,'counts':{'UNCHANGED':92,'CHANGED_BY_C3A':1,'MECHANICALLY_REGENERATED':1},
+        'onlyProductionBehaviorChange':'CLI command must be an own property before indexing command flags',
+        'mechanicalRegeneration':'Only CLI byteLength and sha256 replaced in canonical distribution manifest',
+        'files':changes})
+    sdk=json.loads(members['runtime/runtime-closure-manifest.json'])
+    assert len(sdk['files'])==25
+    for item in sdk['files']:
+        data=members['runtime/'+item['path']]
+        assert data==source_files[item['source']] and data==old_members['runtime/'+item['path']]
+        assert len(data)==item['byteLength'] and digest(data)==item['sha256']
+    sdk_ref=put('artifact-sdk-closure.json',{'status':'PASS','fileCount':25,'unchangedFromB2':True,'sourceRevision':C3AB,
+        'manifest':gate_record['sdkClosure'],'files':sdk['files']})
+    assembly_b={name.removeprefix(prefix):data for name,data in blobs(C3AB,names).items()}
+    assert assembly_b==members
+    folder=CACHE/'b/package'
+    if folder.exists(): assert files(folder)==inventory(members)
+    else: write_members(folder,assembly_b)
+    target=CACHE/'b/memoryos-ci-0.1.0.tgz'
+    _,build_ref=command('assembly-b',[NODE,folder/'scripts/pack.mjs',target],folder)
+    assert target.read_bytes()==raw and verify_archive(target.read_bytes(),members,source_files)['status']=='PASS'
+    reproducibility_ref=put('artifact-reproducibility.json',{'status':'PASS','independentCleanRoots':2,'byteIdentical':True,
+        'builds':[gate_record['assemblyA'],{'method':'Fresh independent git cat-file --batch C3AB blob reads','inputs':inventory(assembly_b),'archive':file_row(target),'command':build_ref}],
+        'expected':gate_record['candidate']})
+    negatives=[]
+    def rejection(name,mutated,required):
+        check=verify_archive(mutated,members,source_files);codes={r['code'] for r in check['issues']}
+        assert check['status']=='FAIL' and {'archive-identity',*required}<=codes,(name,check)
+        negatives.append({'id':name,'status':'PASS','expected':'REJECT','observed':'REJECT','archive':identity(mutated),
+            'requiredDiagnostics':required,'diagnostics':check['issues']})
+    corrupt=bytearray(raw);corrupt[len(corrupt)//2]^=1
+    rejection('archive-corruption',bytes(corrupt),['gzip-integrity'])
+    modified=dict(members);modified['bin/memoryos-ci.mjs']=old_members['bin/memoryos-ci.mjs']
+    rejection('old-cli-substitution',archive_bytes(modified),['member-content','manifest-inventory'])
+    modified=dict(members);invalid=json.loads(members['distribution-manifest.json'])
+    next(x for x in invalid['files'] if x['path']=='bin/memoryos-ci.mjs')['sha256']='sha256:'+'0'*64
+    modified['distribution-manifest.json']=canonical(invalid)
+    rejection('distribution-manifest-tamper',archive_bytes(modified),['member-content','manifest-inventory','manifest-identity'])
+    tamper_ref=put('artifact-tamper-controls.json',{'status':'PASS','passed':3,'failed':0,'cases':negatives,
+        'scope':'Archive/CLI/distribution affected controls; mutations stay in memory and are never executed.'})
+    install=CACHE/'install';npm_cache=CACHE/'empty-npm-cache'
+    if not install.exists():
+        install.mkdir();npm_cache.mkdir();assert not list(npm_cache.iterdir())
+        (CACHE/'memoryos-ci-0.1.0.tgz').write_bytes(raw)
+        package={'name':'mo1306-phase3b-r2-offline-witness','version':'1.0.0','private':True,'dependencies':{'memoryos-ci':'file:../memoryos-ci-0.1.0.tgz'}}
+        lock={'name':package['name'],'version':'1.0.0','lockfileVersion':3,'requires':True,
+            'packages':{'':{k:package[k] for k in ('name','version','dependencies')},'node_modules/memoryos-ci':{'version':'0.1.0','resolved':'file:../memoryos-ci-0.1.0.tgz',
+                'integrity':'sha512-'+base64.b64encode(hashlib.sha512(raw).digest()).decode(),'bin':{'memoryos-ci':'bin/memoryos-ci.mjs'},'engines':{'node':'24.21.0'}}}}
+        (install/'package.json').write_bytes(canonical(package));(install/'package-lock.json').write_bytes(canonical(lock))
+        (CACHE/'user.npmrc').write_bytes(b'');(CACHE/'global.npmrc').write_bytes(b'')
+        put('artifact-offline-preconditions.json',{'cacheExplicit':str(npm_cache),'initialCacheEmpty':True,'installRootInitiallyEmpty':True,
+            'inputLock':lock,'inputLockIdentity':file_row(install/'package-lock.json'),'archive':file_row(CACHE/'memoryos-ci-0.1.0.tgz'),
+            'userConfigEmpty':True,'globalConfigEmpty':True})
+    preconditions=json.loads((OUT/'artifact-offline-preconditions.json').read_bytes())
+    assert file_row(install/'package-lock.json')==preconditions['inputLockIdentity']
+    _,offline_ref=command('offline-npm-ci',[NODE,NPM,'ci','--offline','--ignore-scripts','--no-audit','--no-fund',
+        '--cache',npm_cache,'--userconfig',CACHE/'user.npmrc','--globalconfig',CACHE/'global.npmrc'],install,timeout=120)
+    assert file_row(install/'package-lock.json')==preconditions['inputLockIdentity']
+    installed=install/'node_modules/memoryos-ci'; before=files(installed)
+    assert before==inventory(members) and len(before)==94
+    before_ref=put('artifact-installed-before.json',{'packageRoot':str(installed),'files':before,'installFiles':files(install)})
+    _,distribution_ref=command('installed-distribution',[NODE,'--max-old-space-size=128',installed/'scripts/verify-distribution.mjs'],install)
+    checks=[]
+    for name in ['invalid-command','constructor','toString','__proto__']:
+        result,ref=command('dispatch-'+name,[NODE,'--max-old-space-size=128',installed/'bin/memoryos-ci.mjs',name],install,expected=10,timeout=15)
+        assert result['stdout']=='' and json.loads(result['stderr'])=={'code':'MO1306_USAGE','kind':'MemoryOSCICDDiagnostic','message':'The requested operation could not complete.','stage':'LAUNCH','version':'1.0.0'}
+        checks.append({'command':name,'exitCode':10,'diagnostic':'MO1306_USAGE','evidence':ref})
+    installed_checks(installed,members,checks)
+    assert files(installed)==before
+    retained_before=json.loads((OUT/'artifact-installed-before.json').read_bytes())
+    assert files(install)==retained_before['installFiles']
+    assert file_row(NODE)==gate_record['node'] and file_row(NPM)==gate_record['npmEntrypoint']
+    after_ref=put('artifact-installed-after.json',{'packageRoot':str(installed),'files':files(installed),'installFiles':files(install)})
+    certification={'kind':'MemoryOSPhase3BR2ArtifactCertification','version':'1.0.0','status':'PASS','baseline':C3AB,'correction':C3A,
+        'candidate':gate_record['candidate'],'memberCount':94,'runtimeClosureFiles':25,'productionDependencies':0,
+        'gate':file_row(OUT/'artifact-gate.json'),'packageDelta':delta_ref,'sdkClosure':sdk_ref,'reproducibility':reproducibility_ref,
+        'distribution':gate_record['distribution'],'tamperControls':tamper_ref,
+        'offlineInstall':{'status':'PASS','initialCacheEmpty':True,'explicitCache':str(npm_cache),'offline':True,'ignoreScripts':True,'audit':False,'fund':False,
+            'lockUnchanged':True,'allMembersVerified':True,'preconditions':file_row(OUT/'artifact-offline-preconditions.json'),'command':offline_ref},
+        'installedDistribution':distribution_ref,'invalidCommands':checks,'outcomes':file_row(OUT/'artifact-installed-outcomes.json'),
+        'generation':file_row(OUT/'artifact-installed-generation.json'),'importAudit':file_row(OUT/'artifact-source-independence.json'),
+        'integrity':{'before':before_ref,'after':after_ref,'all94MembersUnchanged':True,'entireInstallUnchanged':True},
+        'testCounts':{'cleanAssemblies':2,'offlineInstall':1,'validRun':3,'validVerify':3,'validGenerate':4,'invalidCommands':4,'tamperControls':3,'importAudit':1},
+        'retainedHarnessError':file_row(OUT/'commands/artifact-workspace-gate.json'),
+        'finishedAt':datetime.datetime.now(datetime.timezone.utc).isoformat()}
+    put('artifact-certification.json',certification)
+    print(json.dumps({'artifactCertification':'PASS','testCounts':certification['testCounts']}),flush=True)
+
+
+def installed_checks(installed,members,checks):
+    install=installed.parent.parent
+    oracle_path=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3-correction/semantic-smoke.json'
+    oracle=json.loads(oracle_path.read_bytes()); outcomes=[]
+    for suffix,expected,decision in [('pass',0,'PASS'),('fail',6,'FAIL'),('cne',7,'COULD_NOT_EVALUATE')]:
+        case=next(x for x in oracle['cases'] if x['id']=='policy-'+suffix)
+        assert case['expectedExit']==expected and case['decision']==decision
+        source=Path(case['work']);data=CACHE/('run-'+suffix);data.mkdir(exist_ok=True)
+        for name in ['memoryos-ci.json','policy.json','candidate.mip','oracle-identity.json','oracle-outcome.json']:
+            if (data/name).exists(): assert (data/name).read_bytes()==(source/name).read_bytes()
+            else: (data/name).write_bytes((source/name).read_bytes())
+        for item in case['artifacts']:
+            assert identity((data/Path(item['path']).name).read_bytes())=={k:item[k] for k in ('byteLength','sha256')}
+        inputs=[file_row(data/name,data) for name in sorted(['memoryos-ci.json','policy.json','candidate.mip','oracle-identity.json','oracle-outcome.json'])]
+        result,run_ref=command('run-'+suffix,[NODE,'--max-old-space-size=128',installed/'bin/memoryos-ci.mjs','run',
+            '--workspace',data,'--config',data/'memoryos-ci.json'],install,expected=expected)
+        summary=json.loads(result['stdout'])
+        assert summary['classification']==decision and summary['exitCode']==expected and summary['publication']=='COMPLETE'
+        bundle=data/'.memoryos-ci/out'/summary['runId']
+        for name,oracle_file in [('evaluation-identity.json','oracle-identity.json'),('policy-outcome.json','oracle-outcome.json')]:
+            assert (bundle/name).read_bytes()==(data/oracle_file).read_bytes()
+        for item in inputs: assert file_row(data/item['path'],data)==item
+        _,verify_ref=command('verify-'+suffix,[NODE,'--max-old-space-size=128',installed/'bin/memoryos-ci.mjs','verify','--bundle',bundle],install)
+        bundle_data={p.name:json.loads(p.read_bytes()) for p in bundle.iterdir()}
+        assert set(bundle_data)=={'evaluation-identity.json','policy-outcome.json','memoryos-ci-result.json','memoryos-ci-evidence.json','memoryos-ci-artifacts.json','memoryos-ci-complete.json'}
+        assert bundle_data['memoryos-ci-result.json']['classification']==decision
+        outcomes.append({'id':case['id'],'classification':decision,'exitCode':expected,'inputs':inputs,'sourceOracleRecord':file_row(oracle_path),
+            'summary':summary,'bundleFiles':files(bundle),'bundleData':bundle_data,'normativeOracleByteParity':True,'run':run_ref,'verify':verify_ref})
+    put('artifact-installed-outcomes.json',{'status':'PASS','cases':outcomes,'scope':'Fresh installed PASS/FAIL/CNE executions; unchanged normative fixture/oracle bytes reused only after explicit identity verification.'})
+    generated=[];config=CACHE/'run-pass/memoryos-ci.json'
+    for provider,options in [('generic',{}),('github',{'repository':'moelsaka01/cca-workspace','toolRevision':C3AB,'configPath':'repositories/cca-conformance/fixtures/mo1306/evaluate-policy-pass/memoryos-ci.json'})]:
+        deployment={'kind':'MemoryOSCICDDeployment','version':'1.0.0','provider':provider,'distributionDigest':'sha256:'+DISTRIBUTION_SHA256,'options':options}
+        deploy=CACHE/(provider+'-deployment.json');deploy.write_bytes(canonical(deployment)); copies=[]; refs=[]
+        for index in (1,2):
+            target=CACHE/(provider+'-generated-'+str(index))
+            _,ref=command('generate-'+provider+'-'+str(index),[NODE,'--max-old-space-size=128',installed/'bin/memoryos-ci.mjs','generate',
+                '--config',config,'--deployment',deploy,'--output',target],install)
+            copies.append({p.relative_to(target).as_posix():p.read_bytes() for p in target.rglob('*') if p.is_file()});refs.append(ref)
+        assert copies[0]==copies[1]
+        assert all(b'\r' not in raw and raw.endswith(b'\n') and not raw.startswith(b'\xef\xbb\xbf') for raw in copies[0].values())
+        generation=json.loads(copies[0]['memoryos-ci-generation.json'])
+        assert generation['deploymentSha256']=='sha256:'+digest(canonical(deployment))
+        if provider=='github':
+            workflow=copies[0]['.github/workflows/memoryos-ci.yml'].decode()
+            assert C3AB in workflow and DISTRIBUTION_SHA256 in workflow
+            for pin in ACTIONS.values(): assert pin in workflow
+        generated.append({'provider':provider,'deployment':deployment,'deterministicFreshRoots':2,'files':inventory(copies[0]),
+            'contents':{k:v.decode() for k,v in copies[0].items()},'commands':refs})
+    put('artifact-installed-generation.json',{'status':'PASS','providers':generated,'scope':'Fresh installed generic/GitHub generation only; no hosted execution.'})
+    scanner=ROOT/'repositories/cca-conformance/tools/mo1306/imports.mjs'
+    assert scanner.read_bytes()==(OLD/'repositories/cca-conformance/tools/mo1306/imports.mjs').read_bytes()
+    isolated=CACHE/'imports.mjs';isolated.write_bytes(scanner.read_bytes())
+    result,ref=command('installed-import-audit',[NODE,isolated,installed],install)
+    imported=json.loads(result['stdout'])
+    import_pattern=rb"(?:from\s*|import\s*)['\"]([^'\"]+)['\"]"
+    assert re.findall(import_pattern,git('show',B2+':repositories/memoryos-ci/bin/memoryos-ci.mjs'))==re.findall(import_pattern,members['bin/memoryos-ci.mjs'])
+    for item in imported['imports']:
+        spec=item['specifier']
+        if spec.startswith('node:'): continue
+        assert spec.startswith('.')
+        target=((installed/item['module']).parent/spec).resolve()
+        assert target.is_relative_to(installed.resolve()) and target.is_file()
+    put('artifact-source-independence.json',{'status':'PASS','command':ref,'importCount':len(imported['imports']),
+        'allNonBuiltinImportsInstalledLocal':True,'affectedCLIImportsUnchangedFromB2':True,'cwdIsolated':True,
+        'path':'NO-PATH-TOOLS','nodeOptionsAndNodePathAbsent':True,'network':'Product network boundary retained; npm offline install',
+        'scope':'Static import closure plus fresh isolated installed execution; no OS-wide tracing or hosted execution.'})
+
+
+if __name__ == '__main__':
+    assert sys.argv[1:] in (['gate'],['certify'])
+    if sys.argv[1]=='gate': gate()
+    else: certify()

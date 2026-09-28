@@ -1,0 +1,35 @@
+import base64,hashlib,json,pathlib,subprocess,sys
+ROOT=pathlib.Path(__file__).resolve().parents[4];OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3cr/provider-results';B2='0e35ffe70919d77b1db530929093826410b805f9'
+sys.dont_write_bytecode=True;sys.path.insert(0,str(ROOT/'repositories/cca-conformance/tools/mo1306-phase2d'))
+from trace_phase2d import validate_trace
+raw=subprocess.check_output([r'C:\Program Files\Git\cmd\git.exe','ls-tree','-r',B2,'--','repositories/cca-conformance'],cwd=ROOT,stdin=subprocess.DEVNULL,creationflags=subprocess.CREATE_NO_WINDOW).decode()
+tree={line.split('\t',1)[1]:line.split('\t',1)[0].split()[2]for line in raw.splitlines()}
+rows={}
+def bind(p):
+ p=p.resolve();data=p.read_bytes();name=p.relative_to(ROOT).as_posix();assert hashlib.sha1(('blob '+str(len(data))+'\0').encode()+data).hexdigest()==tree[name]
+ row={'path':name,'byteLength':len(data),'sha256':'sha256:'+hashlib.sha256(data).hexdigest()};rows[name]=row;return row
+base=ROOT/'repositories/cca-conformance/evidence/mo1306/phase2d';cases=json.loads((base/'native-execution.json').read_text())['cases'];checked=[]
+helper=(ROOT/'repositories/memoryos-ci/scripts/check-paths.ps1').read_bytes();encoded=base64.b64encode(helper.decode().encode('utf-16le')).decode()
+for case in cases:
+ p=ROOT/case['trace']['path'];identity=bind(p);assert identity==case['trace'];t=json.loads(p.read_text());assert t['status']=='PASS' and t['exitCode']==case['exitCode']
+ dictionary=t['traceEncoding']['commandLines'];package=pathlib.PureWindowsPath(t['command'][2]).parents[1]
+ ps=next(dictionary[x['commandLine']['sha256']].split(' -NoProfile')[0]for x in t['lifetimes']if x['name'].lower()=='powershell.exe')
+ ids={'node':t['command'][0],'powershell':ps,'conhost':r'C:\Windows\System32\conhost.exe'}
+ verdict=validate_trace(t,ids,None);assert verdict['status']=='PASS'
+ expected_helper=subprocess.list2cmdline([ps,'-NoProfile','-NonInteractive','-EncodedCommand',encoded]);expected_worker=subprocess.list2cmdline([ids['node'],'--permission','--allow-fs-read='+str(package),'--max-old-space-size=256','--max-semi-space-size=16',str(package/'src/worker.mjs')])
+ childcount=0
+ for child in t['lifetimes']:
+  if child['parent']!=t['rootPid'] or child['pid']==t['rootPid']:continue
+  line=dictionary[child['commandLine']['sha256']];assert line==(expected_helper if child['name'].lower()=='powershell.exe'else expected_worker);childcount+=1
+ checked.append({'id':case['id'],'status':'PASS','topology':verdict,'directChildCommandsBound':childcount})
+launcher=[]
+for case in json.loads((base/'launchers.json').read_text())['cases']:
+ p=base/'commands'/('launcher-'+case['id']+'.json');bind(p);command=json.loads(p.read_text());assert command['status']=='PASS' and command['exitCode']==case['exitCode'];args=command['command'];provider=case['id'].split('-')[0]
+ assert args[args.index('-Provider')+1]==provider and args[args.index('-File')+1].endswith('scripts\\Invoke-MemoryOSCI.ps1')
+ for stream in command['streams']:assert bind(ROOT/stream['path'])==stream
+ stdout=(ROOT/command['streams'][0]['path']).read_bytes();assert json.loads(stdout)==case['summary']
+ launcher.append({'id':case['id'],'status':'PASS','exitCode':case['exitCode'],'commandAndStreamsByteBound':True})
+for name in ('mo1306-phase2d/trace_phase2d.py','mo1306-correction-a/topology.py','mo1306-phase2d/observer.py'):bind(ROOT/'repositories/cca-conformance/tools'/name)
+report={'kind':'MemoryOSPhase3CRHistoricalTraceRevalidation','status':'PASS','sourceRevision':B2,'targetRevision':'9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44','nativeTraceCount':len(checked),'fixedLauncherCommandCount':len(launcher),'cases':checked,'launchers':launcher,'byteDependencies':sorted(rows.values(),key=lambda r:r['path']),'scope':'Fresh offline revalidation of immutable B2 observed topology and exact helper/semantic argv against current byte-identical helper/core worker layers. CLI root argv retained as historical; no live or current native certification.'}
+(OUT/'scoped-native-trace-revalidation.json').write_text(json.dumps(report,indent=2,sort_keys=True)+'\n',encoding='utf8')
+print(json.dumps({'status':'PASS','nativeTraceCount':len(checked),'fixedLauncherCommandCount':len(launcher),'byteDependencyCount':len(rows)}))

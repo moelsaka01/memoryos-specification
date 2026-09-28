@@ -1,0 +1,12 @@
+"""Bind a passing immutable local static gate to exactly one hosted diagnostic."""
+from pathlib import Path
+import json,hashlib
+R=Path(__file__).resolve().parents[4];E=R/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-diagnostic';T=R/'repositories/cca-conformance/tools/mo1306-phase3a-hosted-diagnostic'
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(R).as_posix(),'byteLength':len(b),'sha256':'sha256:'+hashlib.sha256(b).hexdigest()}
+gate=json.loads((E/'static-gate.json').read_text(encoding='utf-8'));assert gate['status']=='PASS'
+for f in gate['reviewedFiles']:assert row(R/f['path'])==f
+candidate=json.loads((E/'remote-candidate.json').read_text(encoding='utf-8'))
+workflow=dict(row(E/'workflow/mo1306-hosted-diagnostic.yml'),workflowPath='.github/workflows/mo1306-hosted-diagnostic.yml')
+v={'kind':'MemoryOSPhase3AHostedDiagnosticAuthorization','status':'PASS','allowDiagnosticDispatch':True,'maximumDispatches':1,'candidate':'701d48ee2012675966360dda775ab13013c09ab9','methodology':'85a0f85c1ebd013c545ccf2b3efe58a760e6cf37','nativeCertified':True,'nativeStateSource':row(R/'repositories/cca-conformance/evidence/mo1306/phase3a-certification/native-final-gate.json'),'reviewedRemoteMain':'5955af062152a84c10de17860ba0bcabe8b3555f','oldCertificationCommit':'451599e7b95a537ebc2daac627b061fd88791dea','reviewedCertificationCommit':candidate['commit'],'campaignTool':row(T/'diagnostic_campaign.py'),'toolDependencies':[row(R/'repositories/cca-conformance/tools/mo1306-phase3a-certification/remote_state.py')],'staticGate':row(E/'static-gate.json'),'workflow':workflow,'engineeringTools':[row(T/n) for n in ['observe.ps1','oracle.mjs']],'noCertificationRunAuthorizedUntilCauseProven':True,'nativeReruns':False}
+p=E/'hosted-authorization.json';assert not p.exists();p.write_text(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n',encoding='utf-8');print(json.dumps({'status':'PASS','candidate':candidate['commit'],'maximumDispatches':1}))

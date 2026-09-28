@@ -1,0 +1,57 @@
+86180: /**
+86181:  * The programmatic identifier of the redirectPolicy.
+86182:  */
+86183: const redirectPolicyName = "redirectPolicy";
+86184: /**
+86185:  * Methods that are allowed to follow redirects 301 and 302
+86186:  */
+86187: const allowedRedirect = ["GET", "HEAD"];
+86188: /**
+86189:  * A policy to follow Location headers from the server in order
+86190:  * to support server-side redirection.
+86191:  * In the browser, this policy is not used.
+86192:  * @param options - Options to control policy behavior.
+86193:  */
+86194: function redirectPolicy_redirectPolicy(options = {}) {
+86195:     const { maxRetries = 20, allowCrossOriginRedirects = false } = options;
+86196:     return {
+86197:         name: redirectPolicyName,
+86198:         async sendRequest(request, next) {
+86199:             const response = await next(request);
+86200:             return handleRedirect(next, response, maxRetries, allowCrossOriginRedirects);
+86201:         },
+86202:     };
+86203: }
+86204: async function handleRedirect(next, response, maxRetries, allowCrossOriginRedirects, currentRetries = 0) {
+86205:     const { request, status, headers } = response;
+86206:     const locationHeader = headers.get("location");
+86207:     if (locationHeader &&
+86208:         (status === 300 ||
+86209:             (status === 301 && allowedRedirect.includes(request.method)) ||
+86210:             (status === 302 && allowedRedirect.includes(request.method)) ||
+86211:             (status === 303 && request.method === "POST") ||
+86212:             status === 307) &&
+86213:         currentRetries < maxRetries) {
+86214:         const url = new URL(locationHeader, request.url);
+86215:         // Only follow redirects to the same origin by default.
+86216:         if (!allowCrossOriginRedirects) {
+86217:             const originalUrl = new URL(request.url);
+86218:             if (url.origin !== originalUrl.origin) {
+86219:                 log_logger.verbose(`Skipping cross-origin redirect from ${originalUrl.origin} to ${url.origin}.`);
+86220:                 return response;
+86221:             }
+86222:         }
+86223:         request.url = url.toString();
+86224:         // POST request with Status code 303 should be converted into a
+86225:         // redirected GET request if the redirect url is present in the location header
+86226:         if (status === 303) {
+86227:             request.method = "GET";
+86228:             request.headers.delete("Content-Length");
+86229:             delete request.body;
+86230:         }
+86231:         request.headers.delete("Authorization");
+86232:         const res = await next(request);
+86233:         return handleRedirect(next, res, maxRetries, allowCrossOriginRedirects, currentRetries + 1);
+86234:     }
+86235:     return response;
+86236: }

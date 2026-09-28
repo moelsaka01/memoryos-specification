@@ -1,0 +1,114 @@
+"""Independent R2 evidence closure. Never modifies production or other worktrees.
+Creation occurs only after artifact, supply, advisory and SPDX gates. The receipt
+binds an existing C3AB candidate, never the future certification commit itself.
+"""
+import copy,hashlib,json,os,subprocess,sys
+from pathlib import Path
+sys.dont_write_bytecode=True
+ROOT=Path(__file__).resolve().parents[4]
+HERE=Path(__file__).parent
+OUT=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3b-r2'
+C3AB='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'
+C3A='90b9ac914e477fb90fe317d0de9ba310aae37f60'
+B2='0e35ffe70919d77b1db530929093826410b805f9'
+ARCHIVE='sha256:2f1e9424ce64e44b7b1587ce206fe5f7ae72579652ca1fc891c489bc1a21925d'
+PINS={'checkout':'3d3c42e5aac5ba805825da76410c181273ba90b1','upload-artifact':'043fb46d1a93c77aae656e7c1c64a875d1fc6a0a'}
+ALLOWED={'NOT_APPLICABLE_VERSION','NOT_REACHABLE_IN_FROZEN_USAGE','REACHABLE_NOT_ATTACKER_CONTROLLED','MITIGATED_BY_FROZEN_BOUNDARY'}
+DISPOSITIONS=ALLOWED|{'APPLICABLE_ACCEPTANCE_REQUIRED','ACTION_UPDATE_REQUIRED','UNRESOLVED_BLOCKER'}
+EXCLUDED={'provenance.json','certification-receipt.json','receipt-validation.json'}
+SUBJECT='cert(memoryos-1.3): independently recertify corrected MO-1306 release artifact'
+def canon(o):return (json.dumps(o,sort_keys=True,separators=(',',':'),ensure_ascii=True)+'\n').encode()
+def ident(raw):return {'byteLength':len(raw),'sha256':'sha256:'+hashlib.sha256(raw).hexdigest()}
+def row(p):return {'path':p.relative_to(ROOT).as_posix(),**ident(p.read_bytes())}
+def read(name):return json.loads((OUT/name).read_bytes())
+def need(c,m):
+ if not c:raise ValueError(m)
+def git(*a):return subprocess.check_output(['git','-c','core.longpaths=true',*a],cwd=ROOT,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'}).decode().strip()
+def inventory():
+ paths=list(HERE.rglob('*'))+[p for p in OUT.rglob('*') if not(p.parent==OUT and p.name in EXCLUDED)]+list((ROOT/'docs').glob('mo1306-phase3b-r2*.md'))+[ROOT/'repositories/cca-conformance/docs/mo1306-phase3b-r2-xml.md']
+ return sorted((row(p) for p in paths if p.is_file()),key=lambda r:r['path'])
+def validate_refs(refs,override=None):
+ for ref in refs:
+  p=(ROOT/ref['path']).resolve()
+  need(p.is_relative_to(ROOT),'OUTSIDE_EVIDENCE_ROOT')
+  raw=override[ref['path']] if override and ref['path'] in override else p.read_bytes()
+  need(ident(raw)=={k:ref[k] for k in ('byteLength','sha256')},'BOUND_FILE_IDENTITY:'+ref['path'])
+def expected():
+ need(ROOT.name=='cca-mo1306-3b-refresh2','WRONG_WORKSPACE')
+ need(git('branch','--show-current')=='mo1306/phase3b-refresh2','WRONG_BRANCH')
+ changes=set(git('diff','--name-only',C3AB).splitlines())|set(git('ls-files','--others','--exclude-standard').splitlines())
+ def scoped(p):return p.startswith('repositories/cca-conformance/tools/mo1306-phase3b-r2/') or p.startswith('repositories/cca-conformance/evidence/mo1306/phase3b-r2/') or p.startswith('docs/mo1306-phase3b-r2') or p=='repositories/cca-conformance/docs/mo1306-phase3b-r2-xml.md'
+ need(all(scoped(p) for p in changes),'NONCERTIFICATION_CHANGE')
+ need(git('diff','--name-only',C3AB,'--','repositories/memoryos-ci')=='','PRODUCTION_CHANGED')
+ need(git('show','-s','--format=%P',C3AB)==C3A and git('show','-s','--format=%P',C3A)==B2,'CANDIDATE_GRAPH')
+ base=read('initial-authority.json')
+ need(git('for-each-ref','--format=%(refname) %(objectname)','refs/heads/main','refs/tags').splitlines()==base['protectedRefs'],'PROTECTED_REFS_CHANGED')
+ # Inputs are explicitly selected by final review, then their entire closure is hashed.
+ summary=read('review-summary.json')
+ need(summary['artifactCertification']=='PASS','ARTIFACT_FAILURE')
+ need(summary['supplyIdentityVerification']=='PASS','SUPPLY_IDENTITY_FAILURE')
+ need(summary['fullSBOMSchemaValidation']=='PASS','SBOM_VALIDATION_FAILURE')
+ findings=summary['findings']
+ need(len(findings)==2 and all(f['disposition'] in DISPOSITIONS for f in findings),'FINDING_CARDINALITY_OR_DISPOSITION')
+ need({f['advisory'] for f in findings}=={'GHSA-35p6-xmwp-9g52','GHSA-8gc5-j5rx-235r'},'FINDINGS_SET')
+ for f,n in zip(sorted(findings,key=lambda f:f['advisory']),['advisory-undici.json','advisory-xml.json']):
+  a=read(n);need(a['status'] in ('PASS','COMPLETE') and a['advisory']==f['advisory'] and a['disposition']==f['disposition'],'ADVISORY_SUMMARY_MISMATCH')
+ artifact=read('artifact-certification.json')
+ need(artifact['status']=='PASS' and artifact['baseline']==C3AB and artifact['memberCount']==94 and artifact['runtimeClosureFiles']==25 and artifact['productionDependencies']==0,'ARTIFACT_FACTS')
+ validate_refs([artifact['candidate'],artifact['distribution'],artifact['sdkClosure']])
+ need(artifact['candidate']['sha256']==ARCHIVE and artifact['candidate']['byteLength']==197172,'ARTIFACT_IDENTITY')
+ need(artifact['offlineInstall']['status']=='PASS' and artifact['offlineInstall']['initialCacheEmpty'] and artifact['offlineInstall']['offline'] and artifact['offlineInstall']['ignoreScripts'],'OFFLINE_GATE')
+ need(artifact['offlineInstall']['audit'] is False and artifact['offlineInstall']['fund'] is False and artifact['offlineInstall']['allMembersVerified'],'OFFLINE_OPTIONS_OR_MEMBERS')
+ need(artifact['integrity']['all94MembersUnchanged'] and artifact['integrity']['entireInstallUnchanged'],'INSTALLED_INTEGRITY')
+ for n in ['artifact-gate.json','artifact-reproducibility.json','artifact-installed-outcomes.json','artifact-installed-generation.json','artifact-sdk-closure.json','supply-identities.json','supply-history.json','supply-workflow-crosscheck.json']:
+  need(read(n)['status']=='PASS','UNDERLYING_GATE:'+n)
+ need(read('artifact-reproducibility.json')['byteIdentical'],'REPRODUCIBILITY')
+ need(read('supply-identities.json')['correctedAuthority']==C3AB,'SUPPLY_CANDIDATE')
+ ready=all(f['disposition'] in ALLOWED for f in findings)
+ need(summary['releaseReady']==ready,'READINESS_RULE')
+ need(summary['actionPins']==PINS,'ACTION_PIN_SUBSTITUTION')
+ need(summary['archive']=={'byteLength':197172,'sha256':ARCHIVE},'WRONG_ARCHIVE')
+ need(summary['workspaceVerification']=='PASS' and summary['diffCheck']=='PASS','WORKSPACE_GATE')
+ need(read('final-workspace.json')['exitCode']==0 and read('final-diff-check.json')['exitCode']==0,'WORKSPACE_EXECUTION_GATE')
+ for n in summary['requiredEvidence']:need((OUT/n).is_file(),'MISSING_EVIDENCE:'+n)
+ sbom=read('sbom-validation.json')
+ need(sbom['candidate']==row(OUT/'sbom-candidate.spdx.json'),'SBOM_ACTUAL_IDENTITY')
+ need(sbom['status']=='PASS' and (sbom['packageCount'],sbom['fileCount'],sbom['relationshipCount'])==(161,94,255),'SBOM_COUNTS')
+ provenance={'kind':'MemoryOSPhase3BR2Provenance','version':'1.0.0','candidate':{'C3A':C3A,'C3AB':C3AB,'B2':B2,'sourceTree':git('rev-parse',C3AB+'^{tree}'),'packageSourceTree':git('rev-parse',C3AB+':repositories/memoryos-ci')},'archive':summary['archive'],'distribution':row(ROOT/'repositories/memoryos-ci/distribution-manifest.json'),'SDKClosure':row(ROOT/'repositories/memoryos-ci/runtime/runtime-closure-manifest.json'),'actionPins':PINS,'supplyEvidence':row(OUT/'supply-identities.json'),'toolchain':{'node':read('supply-identities.json')['node'],'npm':read('supply-identities.json')['npm']},'schemas':read('supply-identities.json')['schemas'],'engineeringValidators':[{'name':v['name'],'version':v['version'],'sha256':v['sha256']} for v in read('supply-identities.json')['engineeringWheels']],'advisoryEvidence':[row(OUT/'advisory-undici.json'),row(OUT/'advisory-xml.json')],'SBOM':row(OUT/'sbom-candidate.spdx.json'),'inputs':inventory(),'futureCommitSelfReference':False,'scope':'Independent Phase3B-R2 only; external hosted/native/release integration authority remains separate.'}
+ receipt={'kind':'MemoryOSPhase3BR2CertificationReceipt','version':'1.0.0','reviewIdentity':'MO-1306-PHASE-3B-R2-INDEPENDENT-2026-09-26','candidate':provenance['candidate'],'archive':summary['archive'],'provenance':{'path':(OUT/'provenance.json').relative_to(ROOT).as_posix(),**ident(canon(provenance))},'historicalReviews':summary['historicalReviews'],'findings':findings,'actionPins':PINS,'releaseReady':ready,'riskAcceptanceGranted':False,'actionUpdateRequired':any(f['disposition']=='ACTION_UPDATE_REQUIRED' for f in findings),'artifactCertification':'PASS','SBOM':row(OUT/'sbom-candidate.spdx.json'),'remainingExternalDependencies':summary['remainingExternalDependencies'],'testResults':summary['testResults'],'scope':'Phase3B-R2 release artifact readiness only, not whole-release or provider-hosted certification.'}
+ return provenance,receipt
+
+def verify(provenance,receipt,expected_provenance,expected_receipt,override=None):
+ need(provenance==expected_provenance,'PROVENANCE_MISMATCH')
+ validate_refs(provenance['inputs'],override)
+ need(receipt==expected_receipt,'RECEIPT_MISMATCH')
+ need(receipt['provenance']['sha256']==ident(canon(provenance))['sha256'],'PROVENANCE_RECEIPT_BINDING')
+
+def main():
+ mode=sys.argv[1] if len(sys.argv)>1 else '--check'
+ ep,er=expected()
+ if mode=='--create':
+  need(git('rev-parse','HEAD')==C3AB,'PRECOMMIT_PARENT')
+  (OUT/'provenance.json').write_bytes(canon(ep));(OUT/'certification-receipt.json').write_bytes(canon(er))
+ p=read('provenance.json');r=read('certification-receipt.json')
+ verify(p,r,ep,er)
+ negatives=[]
+ def reject(name,pp,rr,override=None):
+  try:verify(pp,rr,ep,er,override)
+  except ValueError as e:negatives.append({'id':name,'status':'PASS','rejection':str(e)})
+  else:raise ValueError('NEGATIVE_ACCEPTED:'+name)
+ pp=copy.deepcopy(p);pp['candidate']['C3AB']=B2;reject('provenance-candidate-tamper',pp,r)
+ rr=copy.deepcopy(r);rr['releaseReady']=not rr['releaseReady'];reject('receipt-readiness-tamper',p,rr)
+ rr=copy.deepcopy(r);rr['actionPins']['upload-artifact']='0'*40;reject('action-pin-substitution',p,rr)
+ rr=copy.deepcopy(r);rr['archive']['sha256']='sha256:'+'0'*64;reject('receipt-archive-tamper',p,rr)
+ for f in ('advisory-undici.json','advisory-xml.json','sbom-candidate.spdx.json'):
+  path=OUT/f;reject('bound-'+f+'-tamper',p,r,{path.relative_to(ROOT).as_posix():path.read_bytes()+b' '})
+ result={'kind':'MemoryOSPhase3BR2ReceiptValidation','status':'PASS','provenance':row(OUT/'provenance.json'),'receipt':row(OUT/'certification-receipt.json'),'boundFiles':len(p['inputs']),'negativeCount':len(negatives),'negatives':negatives,'releaseReady':r['releaseReady']}
+ if mode=='--create':(OUT/'receipt-validation.json').write_bytes(canon(result))
+ else:need((OUT/'receipt-validation.json').read_bytes()==canon(result),'VALIDATION_REPORT_TAMPER')
+ if mode=='--post-commit':
+  need(git('show','-s','--format=%P','HEAD')==C3AB,'COMMIT_PARENT')
+  need(git('show','-s','--format=%s','HEAD')==SUBJECT,'COMMIT_SUBJECT')
+  need(git('status','--porcelain=v1')=='','FINAL_DIRTY')
+ print(json.dumps(result))
+if __name__=='__main__':main()

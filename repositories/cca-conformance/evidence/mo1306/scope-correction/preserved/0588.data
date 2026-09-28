@@ -1,0 +1,220 @@
+{
+  "auditToolDependencies": [
+    {
+      "byteLength": 10221,
+      "path": "repositories/cca-conformance/tools/mo1306-phase3cr/provider-audit.py",
+      "sha256": "sha256:50eb213fc9323ac4d0edd845811f3efc1ce7324e15a19ceecff2bdc413868530"
+    },
+    {
+      "byteLength": 1860,
+      "path": "repositories/cca-conformance/tools/mo1306-phase3cr/provider-helper-diagnostic.py",
+      "sha256": "sha256:ff52f2eccc9955f0c990033afec8ec226131e9055b9ce1d15ad1ad47adc4c202"
+    },
+    {
+      "byteLength": 2335,
+      "path": "repositories/cca-conformance/tools/mo1306-phase3cr/provider-native.py",
+      "sha256": "sha256:11dc03b1f9a4ddf206d59ac5d556db01636dd42f5d84712747c7d7b3ffff4c9e"
+    },
+    {
+      "byteLength": 7651,
+      "path": "repositories/cca-conformance/tools/mo1306-phase3cr/provider-probe.mjs",
+      "sha256": "sha256:62bab71e2f4b7ded47bf3eb02c7de89064367e7cd02a2e53eb19004ab6f827f1"
+    },
+    {
+      "byteLength": 4258,
+      "path": "repositories/cca-conformance/tools/mo1306-phase3cr/provider-reuse-traces.py",
+      "sha256": "sha256:b74c5f59c09031d07353eb054afefbfb309c168e616b32385d707efad41bc796"
+    },
+    {
+      "byteLength": 7865,
+      "path": "repositories/cca-conformance/tools/mo1306-phase3cr/provider-reuse.py",
+      "sha256": "sha256:a4b3348f9e9608bfe7719519c78fb9c06ab70e28396f87f0128314253f97107a"
+    },
+    {
+      "byteLength": 5036,
+      "path": "repositories/cca-conformance/tools/mo1306-phase3cr/provider-review.py",
+      "sha256": "sha256:53fd803a9ee937d8a846d1e0973a7e17acc334812641692d9517d793170edcf4"
+    },
+    {
+      "byteLength": 2996,
+      "path": "repositories/cca-conformance/tools/mo1306-phase3cr/provider-seal.py",
+      "sha256": "sha256:cc61e96ab6aa450b05586d3a164b9b482acc05bff814f9295decb0c63635a7cb"
+    },
+    {
+      "byteLength": 4952,
+      "path": "repositories/cca-conformance/tools/mo1306-phase3cr/provider-validator.py",
+      "sha256": "sha256:d7d423a8409622d1365a5f9c67bcccdd7f07ae58051169f492ef3ea832c5dc9e"
+    }
+  ],
+  "azureGithubApiChecks": 50,
+  "azureNegativeCount": 59,
+  "baseline": "9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44",
+  "currentGeneratedProviders": 5,
+  "dependencyCount": 162,
+  "freshExecution": true,
+  "freshNativeWrapperStatus": "FAILED_EXECUTION_PRESERVED",
+  "freshProbeCounts": {
+    "checks": 454,
+    "equivalence": 55,
+    "negativeCount": 376,
+    "prototypeNames": 22,
+    "providers": 5
+  },
+  "githubAstNegativeCount": 3,
+  "githubNegativeCount": 50,
+  "gitlabJenkinsTests": 201,
+  "gitlabNegativeCount": 79,
+  "historicalEvidenceReused": true,
+  "jenkinsNegativeCount": 104,
+  "kind": "MemoryOSPhase3CROfflineProviderValidation",
+  "nativeLauncherEvidence": {
+    "byteLength": 190033,
+    "path": "repositories/cca-conformance/evidence/mo1306/phase3cr/provider-results/scoped-native-reuse.json",
+    "sha256": "sha256:bbf2e6777ea38693ee5ea8b97249cedaf3c4d134864ed9bf426a8e92d2fec364"
+  },
+  "nativeOperationalAssessment": "Both fresh wrapper attempts failed and are preserved. Retry launch profile omitted stdin=DEVNULL, a specific nonconformance with retained successful harness. Its immediate failure cause is unresolved; helper timing is plausible but not proven. No new production defect established. 3A-R owns current artifact/native+hosted certification with correct launch profile.",
+  "nativeTraceEvidence": {
+    "byteLength": 34047,
+    "path": "repositories/cca-conformance/evidence/mo1306/phase3cr/provider-results/scoped-native-trace-revalidation.json",
+    "sha256": "sha256:1e7a8a9e26ed3c861d6068c65f181b0eb4b3be3b93e14098044abf4c9ed32f10"
+  },
+  "nativeWrapperStatus": "CONTRACT_VALIDATED_VIA_SCOPED_REUSE",
+  "nodeTests": 538,
+  "originalHistoricalPartialEvidenceReused": false,
+  "preservedAuditAttempts": [
+    {
+      "disposition": "FAILURE_PRESERVED; frozen helper timing exceeded in diagnostic; no production alteration",
+      "evidence": "native-wrapper-first-attempt.json"
+    },
+    {
+      "disposition": "FAILURE_PRESERVED; audit host omitted Git from PATH, then corrected explicitly",
+      "evidence": "node-adapter-regressions-first-attempt.json"
+    }
+  ],
+  "providerLabels": {
+    "azure": "CONTRACT_VALIDATED / NOT_LIVE_PROVIDER_CERTIFIED",
+    "generic": "REAL_EXECUTION_VALIDATED; final 3A-R certification external",
+    "github": "HOSTED_EXECUTION_CERTIFICATION_PENDING",
+    "gitlab": "CONTRACT_VALIDATED / NOT_LIVE_PROVIDER_CERTIFIED",
+    "jenkins": "CONTRACT_VALIDATED / NOT_LIVE_PROVIDER_CERTIFIED"
+  },
+  "receipts": [
+    {
+      "byteLength": 18125,
+      "path": "azure-corpus.json",
+      "sha256": "sha256:0a524236e3d240a7fceea11256749819afb9a7cf50f22ee62795339475fc42e6"
+    },
+    {
+      "byteLength": 455,
+      "path": "azure-github-api-regression.json",
+      "sha256": "sha256:6c2b49e2c0b177d1f6c3ff142236d19ce3b0513e21cbe6816bde81913e59d848"
+    },
+    {
+      "byteLength": 34152,
+      "path": "byte-dependencies.json",
+      "sha256": "sha256:8305aadf39db5be695233ce9d9c7310cc4250406a897c2129044600603b8aaef"
+    },
+    {
+      "byteLength": 12250,
+      "path": "current-generated-validation.json",
+      "sha256": "sha256:3845461cdf255b8858684df1e2c225e6b6664763727d3b29f1c1c59fba381df6"
+    },
+    {
+      "byteLength": 43460,
+      "path": "fresh-probe.json",
+      "sha256": "sha256:59f05d2f533e14f3c2703f6476b7d70a844aea4d2af7fcbdca358467c75c6646"
+    },
+    {
+      "byteLength": 20305,
+      "path": "github-corpus.json",
+      "sha256": "sha256:6986ff5cf15a7e63551b4aa2f64c1e2be87ffbffa8163b615d0284d13bf0786a"
+    },
+    {
+      "byteLength": 20356,
+      "path": "gitlab-jenkins-tests.json",
+      "sha256": "sha256:70d0367984a99608be1ff01e2d45253a46e148ddd0885f36465cf61721b73019"
+    },
+    {
+      "byteLength": 383,
+      "path": "gitlab-script.ps1",
+      "sha256": "sha256:aab694d04b1f823f3c0850b9385d4b85a9fa2ba03b8ffdd434d43cd864885c3b"
+    },
+    {
+      "byteLength": 33041,
+      "path": "jenkins-corpus.json",
+      "sha256": "sha256:7ad1d30b87623299830af645f9022e8647d9d83f454ae5f515ec239594cce8c9"
+    },
+    {
+      "byteLength": 380,
+      "path": "jenkins-script.ps1",
+      "sha256": "sha256:a1a0475eef8e14b6f5cb3b0880e3e3e8b2c44b0cc29d4e2030313aaf71f106a0"
+    },
+    {
+      "byteLength": 19183,
+      "path": "native-helper-diagnostic.json",
+      "sha256": "sha256:0a9f01637706d42560f747f909e53573fd101065e48c02fe40a35ad30bc08f6c"
+    },
+    {
+      "byteLength": 2176,
+      "path": "native-runner.stdout.txt",
+      "sha256": "sha256:83a238ef429d5163b070c4b81bd69e623f2e18b49bddd04618ad4eb7332f71f7"
+    },
+    {
+      "byteLength": 692,
+      "path": "native-wrapper-first-attempt.json",
+      "sha256": "sha256:c2a972501d11e56c173e704db9646e7212b1e229bb41175514d5dfaa51bfcaad"
+    },
+    {
+      "byteLength": 2231,
+      "path": "native-wrapper-retry.json",
+      "sha256": "sha256:1624a6afc3b3b5bb2a67328ece4cb5137f0806cea4a1164c2a92a7cb6a243d98"
+    },
+    {
+      "byteLength": 12149,
+      "path": "node-adapter-regressions-first-attempt.json",
+      "sha256": "sha256:7fe71bf03a58dbca36b4c012a666f080be1523e1a616c556af0193ba074f10d6"
+    },
+    {
+      "byteLength": 87356,
+      "path": "node-adapter-regressions.json",
+      "sha256": "sha256:f425a33161e66d8ce614e8492409a4c447f83655d82e35aea5c4b1311888f7bb"
+    },
+    {
+      "byteLength": 190033,
+      "path": "scoped-native-reuse.json",
+      "sha256": "sha256:bbf2e6777ea38693ee5ea8b97249cedaf3c4d134864ed9bf426a8e92d2fec364"
+    },
+    {
+      "byteLength": 34047,
+      "path": "scoped-native-trace-revalidation.json",
+      "sha256": "sha256:1e7a8a9e26ed3c861d6068c65f181b0eb4b3be3b93e14098044abf4c9ed32f10"
+    },
+    {
+      "byteLength": 4041,
+      "path": "source-review.json",
+      "sha256": "sha256:64010cb63c0145589cda52f189ff7f5c003de4e9e6575829d0956e26cd5ea965"
+    },
+    {
+      "byteLength": 21320,
+      "path": "validator-runtime-dependencies.json",
+      "sha256": "sha256:18b8328d8cc812e0684bfe0e4d44e30ac4fe2b3e0ee4adbf295c77469e09b814"
+    }
+  ],
+  "runtime": {
+    "PyYAML": "6.0.3",
+    "jsonschema": "4.26.0",
+    "node": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1306-3c-refresh\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+    "nodeSha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32",
+    "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "runtimeDependencies": "provider-results/validator-runtime-dependencies.json",
+  "scope": "Offline independent schemas/parsers/AST/current generation, pure transport and local Windows wrapper only. No GitLab/Jenkins/Azure/GitHub provider service, hosted certification, Linux, VM, or bootstrap download.",
+  "sourceReview": "provider-results/source-review.json",
+  "sourceReviewBinding": {
+    "byteLength": 4041,
+    "path": "repositories/cca-conformance/evidence/mo1306/phase3cr/provider-results/source-review.json",
+    "sha256": "sha256:64010cb63c0145589cda52f189ff7f5c003de4e9e6575829d0956e26cd5ea965"
+  },
+  "status": "PASS",
+  "version": "1.0.0"
+}

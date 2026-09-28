@@ -1,0 +1,327 @@
+"""One reviewed hosted diagnostic, no certification retries, unconditional default restoration."""
+from pathlib import Path
+from datetime import datetime,timezone
+import argparse,base64,hashlib,json,os,re,subprocess,sys,time,zipfile,stat
+import urllib.request,urllib.error,urllib.parse
+ROOT=Path(__file__).resolve().parents[4]
+sys.path.insert(0,str(ROOT/'repositories/cca-conformance/tools/mo1306-phase3a-certification'))
+from remote_state import REPO,BRANCH,CHECKPOINT,MAIN,API_VERSION,SETTINGS,credential,row,sha
+E=ROOT/'repositories/cca-conformance/evidence/mo1306/phase3a-hosted-diagnostic'
+OUT=E/'github'
+C3CB='701d48ee2012675966360dda775ab13013c09ab9'
+M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37'
+OLD_CERT='451599e7b95a537ebc2daac627b061fd88791dea'
+WORKFLOW_PATH='.github/workflows/mo1306-hosted-diagnostic.yml'
+WORKFLOW_NAME='MemoryOS Hosted Filesystem Diagnostic'
+CANDIDATE_RECEIPT=E/'remote-candidate.json'
+CANDIDATE=None
+ACTIVE_GATE=None
+API_ROOT='https://api.github.com/'
+PREFIX='repos/'+REPO
+MAX_DIAGNOSTIC_DISPATCHES=1
+MAX_CAMPAIGN_SECONDS=900
+MAX_RUN_SECONDS=600
+ALLOWED_STORAGE_SUFFIXES=('.githubusercontent.com','.blob.core.windows.net')
+
+def now():return datetime.now(timezone.utc).isoformat()
+def canonical(v):return (json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode()
+def write_new(path,value):
+ path.parent.mkdir(parents=True,exist_ok=True)
+ with path.open('xb') as f:
+  f.write(value if isinstance(value,bytes) else canonical(value));f.flush();os.fsync(f.fileno())
+ return row(path)
+
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+ def redirect_request(self,*args,**kwargs):return None
+
+class StorageRedirect(urllib.request.HTTPRedirectHandler):
+ def redirect_request(self,req,fp,code,msg,headers,newurl):
+  storage_url(newurl)
+  # No API credential is sent to signed artifact/log storage or further redirects.
+  return urllib.request.Request(newurl,headers={'User-Agent':'MO1306-Artifact-Retrieval'},method='GET')
+
+def storage_url(url):
+ parsed=urllib.parse.urlsplit(url)
+ assert parsed.scheme=='https' and not parsed.username and not parsed.password and not parsed.fragment
+ assert parsed.hostname and any(parsed.hostname.endswith(s) for s in ALLOWED_STORAGE_SUFFIXES),'Unexpected storage host'
+ return parsed
+
+def validate_request(method,path,payload):
+ assert not path.startswith('/') and '..' not in path.split('/')
+ if method=='GET':
+  assert payload is None
+  assert path=='user' or path==PREFIX or path.startswith(PREFIX+'/')
+ elif method=='PATCH':
+  assert path==PREFIX and isinstance(payload,dict) and list(payload)==['default_branch']
+  assert payload['default_branch'] in ['main',BRANCH]
+ elif method=='POST':
+  assert re.fullmatch(re.escape(PREFIX)+r'/actions/workflows/[1-9][0-9]*/dispatches',path)
+  assert payload=={'ref':BRANCH}
+ else:raise AssertionError('Mutation outside closed authorization')
+
+class Client:
+ def __init__(self,folder,token):
+  self.folder=folder;self.token=token;self.sequence=0;self.dispatch_path=None
+ def event(self,label,value):
+  self.sequence+=1
+  return write_new(self.folder/'journal'/('%04d-%s.json'%(self.sequence,label)),value)
+ def request(self,method,path,payload=None):
+  validate_request(method,path,payload)
+  if method=='POST':
+   assert self.dispatch_path==path,'Only exact registered diagnostic workflow may dispatch'
+   write_new(OUT/'dispatch-consumed.json',{'kind':'MemoryOSHostedDiagnosticDispatchConsumed','startedUtc':now(),'method':method,'path':path,'ref':BRANCH,'campaign':str(self.folder.relative_to(ROOT)),'noRetry':True})
+  self.event('request-start',{'startedUtc':now(),'method':method,'path':path,'payload':payload,'apiVersion':API_VERSION})
+  headers={'User-Agent':'MO1306-Registration-Resolution','Accept':'application/vnd.github+json',
+   'X-GitHub-Api-Version':API_VERSION,'Authorization':'Bearer '+self.token}
+  request=urllib.request.Request(API_ROOT+path,data=None if payload is None else canonical(payload),headers=headers,method=method)
+  start=now()
+  try:
+   try:
+    with urllib.request.build_opener(NoRedirect()).open(request,timeout=30) as response:
+     status=response.status;raw=response.read(4194305);received=response.headers
+   except urllib.error.HTTPError as error:
+    status=error.code;raw=error.read(4194305);received=error.headers
+   assert len(raw)<=4194304
+   try:body=json.loads(raw) if raw else None
+   except ValueError:body=raw.decode('utf-8','replace')
+   if isinstance(body,dict) and 'temp_clone_token' in body:body['temp_clone_token']=None
+   result={'method':method,'path':path,'status':status,'startedUtc':start,'endedUtc':now(),'body':body,
+    'responseHeaders':{k:received.get(k) for k in ['date','x-github-request-id','x-oauth-scopes',
+     'x-accepted-github-permissions','github-authentication-token-expiration'] if received.get(k)}}
+   # Signed Location URLs are used only in memory; their query credentials are never retained.
+   location=received.get('Location')
+   self.event('request-result',result)
+   return result,location
+  except BaseException as error:
+   self.event('request-error',{'method':method,'path':path,'startedUtc':start,'endedUtc':now(),
+    'errorType':type(error).__name__,'message':'API request failed; inspect preceding request identity. No credential output.'})
+   raise
+ def get(self,path):
+  result,_=self.request('GET',path)
+  assert result['status']==200,'GitHub GET failed: '+path+' HTTP '+str(result['status'])
+  return result['body']
+ def download(self,path,target,limit):
+  result,location=self.request('GET',path)
+  assert result['status'] in [301,302,303,307] and location,'Expected API signed-download redirect'
+  parsed=storage_url(location)
+  request=urllib.request.Request(location,headers={'User-Agent':'MO1306-Artifact-Retrieval'},method='GET')
+  start=now();target.parent.mkdir(parents=True,exist_ok=True)
+  with urllib.request.build_opener(StorageRedirect()).open(request,timeout=60) as response:
+   assert response.status==200
+   final=storage_url(response.url)
+   length=response.headers.get('Content-Length')
+   if length is not None:assert int(length)<=limit
+   count=0
+   with target.open('xb') as file:
+    while True:
+     data=response.read(65536)
+     if not data:break
+     count+=len(data);assert count<=limit,'Download byte cap'
+     file.write(data)
+  receipt={'startedUtc':start,'endedUtc':now(),'apiPath':path,'storageHost':final.hostname,
+   'storagePath':final.path,'authorizationForwarded':False,'bytes':count,'file':row(target)}
+  self.event('download',receipt);return receipt
+
+def settings(repo):return {key:repo[key] for key in SETTINGS if key in repo}
+def refs(client):
+ main=client.get(PREFIX+'/git/ref/heads/main')['object']['sha']
+ cert=client.get(PREFIX+'/git/ref/heads/'+BRANCH)['object']['sha']
+ assert main==MAIN,'External main change; STOP'
+ assert cert==CANDIDATE,'External certification branch change; STOP'
+ return {'main':main,'certification':cert}
+def reviewed_workflows(client):
+ gate=ACTIVE_GATE
+ record=gate['workflow'];path=record['workflowPath']
+ assert path==WORKFLOW_PATH
+ rows=[record]+gate['engineeringTools']
+ for entry in rows:
+  remote_path=entry.get('workflowPath',entry['path'])
+  data=client.get(PREFIX+'/contents/'+remote_path+'?ref='+CANDIDATE)
+  raw=base64.b64decode(data['content'])
+  assert len(raw)==entry['byteLength'] and sha(raw)==entry['sha256'] and (ROOT/entry['path']).read_bytes()==raw
+ return {path:record}
+
+def snapshot(client):
+ repo=client.get(PREFIX)
+ assert repo['id']==1312267996 and repo['full_name']==REPO
+ return {'repository':{'id':repo['id'],'full_name':repo['full_name'],'settings':settings(repo),
+           'permissions':repo.get('permissions',{})},'refs':refs(client),
+  'actionsPermissions':client.get(PREFIX+'/actions/permissions'),
+  'rulesets':client.get(PREFIX+'/rulesets?includes_parents=true&per_page=100'),
+  'branches':{branch:client.get(PREFIX+'/branches/'+branch) for branch in ['main',BRANCH]}}
+
+def restore_main(client,before,sleep=time.sleep):
+ """Idempotent inverse operation; independently read back after every attempt."""
+ observations=[]
+ for attempt,delay in enumerate([0,2,5],1):
+  if delay:sleep(delay)
+  try:
+   repo=client.get(PREFIX)
+   if repo['default_branch']!='main':
+    response,_=client.request('PATCH',PREFIX,{'default_branch':'main'})
+    observations.append({'attempt':attempt,'patchStatus':response['status']})
+   else:observations.append({'attempt':attempt,'alreadyMain':True})
+   # A new GET verifies actual state, independently of the PATCH response.
+   restored=client.get(PREFIX)
+   assert restored['default_branch']=='main','Default not restored'
+   current_refs=refs(client)
+   expected=dict(before['repository']['settings']);expected['default_branch']='main'
+   assert settings(restored)==expected,'Repository settings changed'
+   actions=client.get(PREFIX+'/actions/permissions')
+   rules=client.get(PREFIX+'/rulesets?includes_parents=true&per_page=100')
+   assert actions==before['actionsPermissions'] and rules==before['rulesets'],'Actions/rules settings drift'
+   current_branches={branch:client.get(PREFIX+'/branches/'+branch) for branch in ['main',BRANCH]}
+   for branch in current_branches:
+    assert current_branches[branch]['protected']==before['branches'][branch]['protected']
+    assert current_branches[branch]['commit']['sha']==before['branches'][branch]['commit']['sha']
+   receipt={'status':'PASS','defaultBranch':'main','refs':current_refs,'settingsUnchanged':True,
+    'observations':observations,'verifiedUtc':now(),'independentReadback':True}
+   client.event('restoration-verified',receipt)
+   return receipt
+  except BaseException as error:
+   observations.append({'attempt':attempt,'errorType':type(error).__name__})
+   client.event('restoration-attempt-error',observations[-1])
+ client.event('restoration-blocked',{'status':'REMOTE_STATE_BLOCKED','observations':observations})
+ raise RuntimeError('MO-1306 PHASE 3A REMOTE STATE BLOCKED: default restoration/readback not verified')
+
+def bound(entry):
+ target=ROOT/entry['path'];assert target.resolve().is_relative_to(ROOT)
+ assert row(target)=={k:entry[k] for k in ['path','byteLength','sha256']}
+ return target
+
+def validate_gate(path):
+ global CANDIDATE,ACTIVE_GATE
+ assert path.resolve().is_relative_to(E)
+ gate=json.loads(path.read_bytes())
+ assert gate['kind']=='MemoryOSPhase3AHostedDiagnosticAuthorization' and gate['status']=='PASS'
+ assert gate['allowDiagnosticDispatch'] is True and gate['maximumDispatches']==1
+ assert gate['candidate']==C3CB and gate['methodology']==M3 and gate['nativeCertified'] is True
+ assert gate['reviewedRemoteMain']==MAIN and gate['oldCertificationCommit']==OLD_CERT
+ candidate=json.loads(CANDIDATE_RECEIPT.read_bytes());CANDIDATE=candidate['commit']
+ assert candidate['parent']==C3CB and gate['reviewedCertificationCommit']==CANDIDATE
+ assert gate['campaignTool']==row(Path(__file__))
+ dependencies=[row(ROOT/'repositories/cca-conformance/tools/mo1306-phase3a-certification/remote_state.py')]
+ assert gate['toolDependencies']==dependencies
+ for evidence in [gate['staticGate'],gate['workflow'],*gate['engineeringTools']]:bound(evidence)
+ static=json.loads((ROOT/gate['staticGate']['path']).read_bytes());assert static['status']=='PASS'
+ assert static['workflow']==gate['workflow'] and static['engineeringTools']==gate['engineeringTools']
+ assert static['candidate']==row(CANDIDATE_RECEIPT)
+ for reviewed in static['reviewedFiles']:bound(reviewed)
+ assert gate['workflow']['workflowPath']==WORKFLOW_PATH
+ assert set(item['path'] for item in gate['engineeringTools'])=={'repositories/cca-conformance/tools/mo1306-phase3a-hosted-diagnostic/'+name for name in ['observe.ps1','oracle.mjs']}
+ assert not (OUT/'dispatch-consumed.json').exists(),'Diagnostic authorization already consumed; no retry'
+ ACTIVE_GATE=gate
+ return gate
+
+def register(client,deadline):
+ for delay in [0,3,5,10,15,20,30]:
+  if delay:time.sleep(delay)
+  assert time.monotonic()<deadline
+  registry=client.get(PREFIX+'/actions/workflows?per_page=100');assert registry['total_count']<=100
+  found=[item for item in registry['workflows'] if item['path']==WORKFLOW_PATH]
+  if found:
+   assert len(found)==1 and found[0]['name']==WORKFLOW_NAME and found[0]['state']=='active'
+   detail=client.get(PREFIX+'/actions/workflows/'+str(found[0]['id']))
+   assert detail['id']==found[0]['id'] and detail['path']==WORKFLOW_PATH and detail['state']=='active'
+   reviewed_workflows(client);client.event('registration-verified',detail)
+   return detail
+ raise RuntimeError('Diagnostic workflow registration unavailable; no dispatch')
+
+def acquire_diagnostic(client,workflow,deadline):
+ refs(client);assert client.get(PREFIX)['default_branch']==client.expected_default
+ path=PREFIX+'/actions/workflows/'+str(workflow['id'])+'/dispatches';client.dispatch_path=path
+ response,_=client.request('POST',path,{'ref':BRANCH})
+ assert response['status']==200,'No dispatch retry permitted'
+ run_id=response['body']['workflow_run_id'];assert isinstance(run_id,int) and run_id>0
+ assert response['body']['run_url']==API_ROOT+PREFIX+'/actions/runs/'+str(run_id)
+ client.event('dispatch-accepted',{'kind':'diagnostic','workflowId':workflow['id'],'runId':run_id})
+ print('Diagnostic accepted run '+str(run_id),flush=True)
+ until=min(deadline,time.monotonic()+MAX_RUN_SECONDS)
+ while True:
+  run=client.get(PREFIX+'/actions/runs/'+str(run_id))
+  assert run['id']==run_id and run['workflow_id']==workflow['id'] and run['head_sha']==CANDIDATE and run['head_branch']==BRANCH and run['event']=='workflow_dispatch' and run['run_attempt']==1 and run['path']==WORKFLOW_PATH
+  if run['status']=='completed':break
+  assert time.monotonic()<until,'Bounded diagnostic wait exhausted; no retry'
+  time.sleep(10)
+ folder=client.folder/'runs'/str(run_id)
+ jobs=client.get(PREFIX+'/actions/runs/'+str(run_id)+'/jobs?filter=all&per_page=100')
+ artifacts=client.get(PREFIX+'/actions/runs/'+str(run_id)+'/artifacts?per_page=100')
+ runrow=write_new(folder/'run.json',run);jobsrow=write_new(folder/'jobs.json',jobs);artsrow=write_new(folder/'artifacts.json',artifacts)
+ downloads=[client.download(PREFIX+'/actions/runs/'+str(run_id)+'/logs',folder/'logs.zip',33554432)]
+ assert artifacts['total_count']<=1 and len(artifacts['artifacts'])==artifacts['total_count']
+ for artifact in artifacts['artifacts']:
+  assert artifact['name']=='memoryos-diagnostic-'+str(run_id)+'-1' and artifact['expired'] is False
+  download=client.download(PREFIX+'/actions/artifacts/'+str(artifact['id'])+'/zip',folder/('artifact-'+str(artifact['id'])+'.zip'),16777216)
+  downloads.append(download)
+  assert re.fullmatch(r'sha256:[a-f0-9]{64}',artifact.get('digest','')) and download['file']['sha256']==artifact['digest']
+  association=artifact.get('workflow_run');assert association and association['id']==run_id and association['head_sha']==CANDIDATE and association['head_branch']==BRANCH
+ record={'kind':'MemoryOSHostedDiagnosticAcquisition','runId':run_id,'workflowId':workflow['id'],'attempt':1,'headSha':CANDIDATE,'ref':BRANCH,'conclusion':run['conclusion'],'run':runrow,'jobs':jobsrow,'artifacts':artsrow,'downloads':downloads,'artifactCount':artifacts['total_count'],'jobIds':[job['id'] for job in jobs['jobs']],'certification':False}
+ write_new(folder/'diagnostic-acquisition.json',record)
+ assert jobs['total_count']==1 and jobs['jobs'][0]['name']=='MemoryOS Diagnostic'
+ assert artifacts['total_count']==1,'Diagnostic artifact absent; preserve and STOP'
+ return record
+
+def inspect_artifact(record):
+ folder=ROOT/record['run']['path'];folder=folder.parent
+ artifact=next(item for item in record['downloads'] if '/actions/artifacts/' in item['apiPath'])
+ allowed={'observation-before.json','observation-after.json','oracle.json','diagnostic-summary.json'}
+ rows=[];total=0;seen=set()
+ with zipfile.ZipFile(ROOT/artifact['file']['path']) as archive:
+  assert 1<=len(archive.infolist())<=4
+  for item in archive.infolist():
+   name=item.filename
+   assert name in allowed and name not in seen and '/' not in name and '\\' not in name and not item.is_dir()
+   assert not item.flag_bits&1 and not stat.S_ISLNK(item.external_attr>>16)
+   assert item.file_size<=4194304;total+=item.file_size;assert total<=16777216
+   seen.add(name);data=archive.read(item);assert len(data)==item.file_size
+   json.loads(data.decode('utf-8-sig'));rows.append(write_new(folder/'diagnostic'/name,data))
+ receipt={'status':'CAPTURED','files':rows,'missingFiles':sorted(allowed-seen),'productCertification':False,'sourceArtifact':artifact['file'],'classification':'PENDING_INDEPENDENT_CAUSAL_REVIEW'}
+ write_new(folder/'artifact-inspection.json',receipt);return receipt
+
+def execute(gate_path):
+ gate=validate_gate(gate_path)
+ assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT).decode().strip()==CHECKPOINT
+ folder=OUT/('campaign-'+datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'));folder.mkdir(parents=True,exist_ok=False)
+ client=Client(folder,credential())
+ profile,_=client.request('GET','user');assert profile['status']==200 and 'repo' in [s.strip() for s in profile['responseHeaders'].get('x-oauth-scopes','').split(',')]
+ before=snapshot(client);write_new(folder/'before.json',before)
+ assert before['repository']['settings']['default_branch']=='main' and before['repository']['permissions'].get('admin') is True
+ commit=client.get(PREFIX+'/git/commits/'+CANDIDATE);assert [p['sha'] for p in commit['parents']]==[C3CB]
+ reviewed_workflows(client)
+ registry=client.get(PREFIX+'/actions/workflows?per_page=100');assert registry['total_count']<=100
+ switch=WORKFLOW_PATH not in {item['path'] for item in registry['workflows']};client.expected_default=BRANCH if switch else 'main'
+ write_new(folder/'authorization.json',{'gate':row(gate_path),'campaignTool':row(Path(__file__)),'candidate':row(CANDIDATE_RECEIPT),'before':row(folder/'before.json'),'requiresTemporarySwitch':switch,'maximumDispatches':1})
+ started=now();deadline=time.monotonic()+MAX_CAMPAIGN_SECONDS;result=None;error=None;restoration=None
+ try:
+  if switch:
+   response,_=client.request('PATCH',PREFIX,{'default_branch':BRANCH});assert response['status']==200
+   observed=client.get(PREFIX);expected=dict(before['repository']['settings']);expected['default_branch']=BRANCH
+   assert settings(observed)==expected
+  workflow=register(client,deadline);result=acquire_diagnostic(client,workflow,deadline)
+ except BaseException as failure:
+  error={'type':type(failure).__name__,'message':str(failure)[:600]};client.event('campaign-error',error)
+ finally:
+  try:restoration=restore_main(client,before)
+  except BaseException as failure:restoration={'status':'REMOTE_STATE_BLOCKED','errorType':type(failure).__name__}
+  summary={'kind':'MemoryOSPhase3AHostedDiagnosticCampaign','version':'1.0.0','status':'CAPTURED' if result and not error and restoration['status']=='PASS' else 'BLOCKED','startedUtc':started,'endedUtc':now(),'candidate':C3CB,'methodology':M3,'certificationCommit':CANDIDATE,'historicalRun':36357568243,'diagnostic':result,'error':error,'restoration':restoration,'defaultBranchSwitchUsed':switch,'authorization':row(gate_path),'certificationDispatches':[],'noRetry':True,'newPushes':[],'tagsCreated':[]}
+  write_new(folder/'campaign-summary.json',summary)
+ if restoration['status']!='PASS':raise RuntimeError('Default restoration/readback blocked')
+ if error:raise RuntimeError('Diagnostic acquisition failed; preserved; no retry')
+ inspection=inspect_artifact(result)
+ print(json.dumps({'status':'DIAGNOSTIC_RETRIEVED_MAIN_RESTORED','campaign':str(folder.relative_to(ROOT)),'runId':result['runId'],'inspection':inspection}),flush=True)
+
+def main():
+ parser=argparse.ArgumentParser(description=__doc__)
+ group=parser.add_mutually_exclusive_group(required=True)
+ group.add_argument('--execute-reviewed-diagnostic',action='store_true');group.add_argument('--restore-main-from-campaign',type=Path)
+ parser.add_argument('--authorization',type=Path);args=parser.parse_args()
+ if args.execute_reviewed_diagnostic:
+  assert args.authorization is not None;execute(args.authorization.resolve())
+ else:
+  global CANDIDATE
+  CANDIDATE=json.loads(CANDIDATE_RECEIPT.read_bytes())['commit'];folder=args.restore_main_from_campaign.resolve()
+  assert folder.is_relative_to(OUT.resolve()) and folder.name.startswith('campaign-')
+  before=json.loads((folder/'before.json').read_bytes());assert before['refs']=={'main':MAIN,'certification':CANDIDATE}
+  recovery=folder/('recovery-'+datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ'));recovery.mkdir(exist_ok=False)
+  print(json.dumps(restore_main(Client(recovery,credential()),before)))
+if __name__=='__main__':main()

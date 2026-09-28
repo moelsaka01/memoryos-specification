@@ -1,0 +1,70 @@
+98280:     }
+98281:     let corePipeline = pipeline._corePipeline;
+98282:     if (!corePipeline) {
+98283:         const packageDetails = `azsdk-js-azure-storage-blob/${esm_utils_constants_SDK_VERSION}`;
+98284:         const userAgentPrefix = restOptions.userAgentOptions && restOptions.userAgentOptions.userAgentPrefix
+98285:             ? `${restOptions.userAgentOptions.userAgentPrefix} ${packageDetails}`
+98286:             : `${packageDetails}`;
+98287:         corePipeline = createClientPipeline({
+98288:             ...restOptions,
+98289:             loggingOptions: {
+98290:                 additionalAllowedHeaderNames: StorageBlobLoggingAllowedHeaderNames,
+98291:                 additionalAllowedQueryParameters: StorageBlobLoggingAllowedQueryParameters,
+98292:                 logger: storage_blob_dist_esm_log_logger.info,
+98293:             },
+98294:             userAgentOptions: {
+98295:                 userAgentPrefix,
+98296:             },
+98297:             serializationOptions: {
+98298:                 stringifyXML: stringifyXML,
+98299:                 serializerOptions: {
+98300:                     xml: {
+98301:                         // Use customized XML char key of "#" so we can deserialize metadata
+98302:                         // with "_" key
+98303:                         xmlCharKey: "#",
+98304:                     },
+98305:                 },
+98306:             },
+98307:             deserializationOptions: {
+98308:                 parseXML: parseXML,
+98309:                 serializerOptions: {
+98310:                     xml: {
+98311:                         // Use customized XML char key of "#" so we can deserialize metadata
+98312:                         // with "_" key
+98313:                         xmlCharKey: "#",
+98314:                     },
+98315:                 },
+98316:             },
+98317:         });
+98318:         corePipeline.removePolicy({ phase: "Retry" });
+98319:         corePipeline.removePolicy({ name: decompressResponsePolicy_decompressResponsePolicyName });
+98320:         corePipeline.addPolicy(storageCorrectContentLengthPolicy());
+98321:         corePipeline.addPolicy(storageRetryPolicy(restOptions.retryOptions), { phase: "Retry" });
+98322:         corePipeline.addPolicy(storageRequestFailureDetailsParserPolicy());
+98323:         corePipeline.addPolicy(storageBrowserPolicy());
+98324:         const downlevelResults = processDownlevelPipeline(pipeline);
+98325:         if (downlevelResults) {
+98326:             corePipeline.addPolicy(downlevelResults.wrappedPolicies, downlevelResults.afterRetry ? { afterPhase: "Retry" } : undefined);
+98327:         }
+98328:         const credential = getCredentialFromPipeline(pipeline);
+98329:         if (isTokenCredential(credential)) {
+98330:             corePipeline.addPolicy(bearerTokenAuthenticationPolicy({
+98331:                 credential,
+98332:                 scopes: restOptions.audience ?? StorageOAuthScopes,
+98333:                 challengeCallbacks: { authorizeRequestOnChallenge: authorizeRequestOnTenantChallenge },
+98334:             }), { phase: "Sign" });
+98335:         }
+98336:         else if (credential instanceof StorageSharedKeyCredential) {
+98337:             corePipeline.addPolicy(storageSharedKeyCredentialPolicy({
+98338:                 accountName: credential.accountName,
+98339:                 accountKey: credential.accountKey,
+98340:             }), { phase: "Sign" });
+98341:         }
+98342:         pipeline._corePipeline = corePipeline;
+98343:     }
+98344:     return {
+98345:         ...restOptions,
+98346:         allowInsecureConnection: true,
+98347:         httpClient,
+98348:         pipeline: corePipeline,
+98349:     };

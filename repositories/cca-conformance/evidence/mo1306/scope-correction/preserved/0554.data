@@ -1,0 +1,22 @@
+82468: ;// CONCATENATED MODULE: ./node_modules/@actions/artifact/lib/internal/shared/config.js
+82469:
+82470:
+82471: // Used for controlling the highWaterMark value of the zip that is being streamed
+82472: // The same value is used as the chunk size that is use during upload to blob storage
+82473: function getUploadChunkSize() {
+82474:     return 8 * 1024 * 1024; // 8 MB Chunks
+82475: }
+82476: function getRuntimeToken() {
+82477:     const token = process.env['ACTIONS_RUNTIME_TOKEN'];
+82478:     if (!token) {
+82479:         throw new Error('Unable to get the ACTIONS_RUNTIME_TOKEN env variable');
+82480:     }
+82481:     return token;
+82482: }
+82483: function getResultsServiceUrl() {
+82484:     const resultsUrl = process.env['ACTIONS_RESULTS_URL'];
+82485:     if (!resultsUrl) {
+82486:         throw new Error('Unable to get the ACTIONS_RESULTS_URL env variable');
+82487:     }
+82488:     return new URL(resultsUrl).origin;
+82489: }

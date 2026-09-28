@@ -1,0 +1,49 @@
+"""Seal exactly one authoritative local certificate; no push, tag, reset, rebase or merge."""
+import datetime,hashlib,json,os,subprocess,sys,uuid
+from pathlib import Path
+R=Path(__file__).resolve().parents[4];T=Path(__file__).resolve().parent;E=R/'repositories/cca-conformance/evidence/mo1306/phase3a-certification';CACHE=R/'.cache/mo1306-phase3a-certification'
+OLD='f236c4a2f94d8cd8e763aaa4bd6c52d703429692';H='f6e181ae330c8f884f5b9737f71f546eb2494201';M3='85a0f85c1ebd013c545ccf2b3efe58a760e6cf37';C3CB='701d48ee2012675966360dda775ab13013c09ab9';SUBJECT='cert(memoryos-1.3): certify final MO-1306 Windows and GitHub execution'
+def run(a,env=None,input=None):return subprocess.run(a,cwd=R,env=env,input=input,capture_output=True,timeout=180)
+def git(*a,env=None,input=None):
+ p=run(['git',*a],env,input);assert p.returncode==0,p.stderr.decode('utf-8','replace');return p.stdout.decode().strip()
+def read(p):return json.loads(p.read_bytes())
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(R).as_posix(),'byteLength':len(b),'sha256':'sha256:'+hashlib.sha256(b).hexdigest()}
+def put(p,v):
+ with p.open('x',encoding='utf-8',newline='\n') as f:f.write(json.dumps(v,sort_keys=True,separators=(',',':'))+'\n')
+assert sys.argv[1:]==['--create-and-verify'];assert git('rev-parse','HEAD')==OLD and git('branch','--show-current')=='mo1306/phase3a-refresh'
+assert not (CACHE/'final-commit.json').exists(),'Exactly one authoritative final commit'
+assert read(E/'execution-receipt.json')['status']=='CERTIFICATION_COMPLETE' and read(E/'validation.json')['status']=='PASS'
+p=run([sys.executable,'-B',str(T/'validate.py'),'--check']);assert p.returncode==0,p.stderr.decode();print(p.stdout.decode(),flush=True)
+for r in read(E/'preservation-before.json')['files']:assert row(R/r['path'])==r
+for r in read(E/'harness-binding.json')['committedToolBindings']:assert row(R/r['path'])==r
+assert git('rev-parse',H+'^')==M3 and git('rev-parse',M3+'^')==C3CB
+refs_before=git('for-each-ref','--format=%(refname) %(objectname)')
+index=CACHE/('final-index-'+uuid.uuid4().hex);env={**os.environ,'GIT_INDEX_FILE':str(index),'GIT_OPTIONAL_LOCKS':'0'};git('read-tree',H,env=env)
+paths=sorted(p.relative_to(R).as_posix() for base in [E,T] for p in base.rglob('*') if p.is_file());lines=[]
+for path in paths:
+ blob=git('hash-object','-w','--stdin',input=(R/path).read_bytes());lines.append('100644 '+blob+'\t'+path+'\n')
+git('update-index','--index-info',input=''.join(lines).encode(),env=env)
+changed=git('diff','--cached','--name-only',H,env=env).splitlines();assert changed and all(x.startswith(('repositories/cca-conformance/evidence/mo1306/phase3a-certification/','repositories/cca-conformance/tools/mo1306-phase3a-certification/')) for x in changed)
+git('diff','--cached','--check',H,env=env);tree=git('write-tree',env=env)
+assert git('rev-parse',tree+':repositories/memoryos-ci')==git('rev-parse',C3CB+':repositories/memoryos-ci')
+assert git('rev-parse',tree+':.github/actions/memoryos-policy-gate')==git('rev-parse',C3CB+':.github/actions/memoryos-policy-gate')
+# Preserve all already-present paths. Only M3/H files absent from the historical
+# checkout need materialization; a differing present file is an immediate stop.
+missing=git('diff','--name-only',env=env).splitlines();assert all(not (R/x).exists() for x in missing),'Existing file differs from final tree'
+assert not git('ls-files','--others','--exclude-standard',env=env),'Unaccounted untracked path'
+for r in read(E/'preservation-before.json')['files']:
+ b=subprocess.check_output(['git','show',tree+':'+r['path']],cwd=R);assert b==(R/r['path']).read_bytes()
+put(CACHE/'final-tree-review.json',{'status':'PASS','tree':tree,'parent':H,'changedPaths':changed,'missingPathsToMaterialize':missing,'productionChanges':0,'historicalFilesPreserved':758,'diffCheck':'PASS','refsBefore':refs_before})
+commit=git('commit-tree',tree,'-p',H,'-m',SUBJECT)
+put(CACHE/'final-commit.json',{'commit':commit,'tree':tree,'parent':H,'subject':SUBJECT,'recordedUtc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'pushed':False,'tagged':False})
+git('update-ref','refs/heads/mo1306/phase3a-refresh',commit,OLD)
+git('read-tree',commit)
+if missing:git('checkout-index','--stdin',input=('\n'.join(missing)+'\n').encode())
+assert not git('status','--porcelain=v1','--untracked-files=all')
+git('diff','--check');git('diff-tree','--check',H,commit)
+p=run([sys.executable,'-B','tools/verify_workspace.py','--root',str(R)]);assert p.returncode==0,p.stderr.decode();workspace=p.stdout.decode()
+p=run([sys.executable,'-B',str(T/'validate.py'),'--check','--postcommit']);assert p.returncode==0,p.stderr.decode();validation=p.stdout.decode()
+refs_after=git('for-each-ref','--format=%(refname) %(objectname)');assert refs_after==refs_before.replace('refs/heads/mo1306/phase3a-refresh '+OLD,'refs/heads/mo1306/phase3a-refresh '+commit)
+put(CACHE/'post-commit.json',{'status':'PASS','commit':commit,'parent':H,'methodologyAuthority':M3,'productionAuthority':C3CB,'graph':'PASS','workspace':workspace,'independentValidation':validation,'diffCheck':'PASS','worktreeClean':True,'pushed':False,'tagged':False,'finishedUtc':datetime.datetime.now(datetime.timezone.utc).isoformat()})
+print(json.dumps({'status':'PASS','commit':commit,'parent':H,'workspace':'PASS','independentValidation':'PASS','diffCheck':'PASS','worktreeClean':True}),flush=True)

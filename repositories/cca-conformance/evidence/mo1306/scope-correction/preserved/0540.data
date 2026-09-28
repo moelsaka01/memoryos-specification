@@ -1,0 +1,51 @@
+119918:      *
+119919:      * PERFORMANCE IMPROVEMENT TIPS:
+119920:      * * Input stream highWaterMark is better to set a same value with bufferSize
+119921:      *    parameter, which will avoid Buffer.concat() operations.
+119922:      *
+119923:      * @param stream - Node.js Readable stream
+119924:      * @param bufferSize - Size of every buffer allocated, also the block size in the uploaded block blob. Default value is 8MB
+119925:      * @param maxConcurrency -  Max concurrency indicates the max number of buffers that can be allocated,
+119926:      *                                 positive correlation with max uploading concurrency. Default value is 5
+119927:      * @param options - Options to Upload Stream to Block Blob operation.
+119928:      * @returns Response data for the Blob Upload operation.
+119929:      */
+119930:     async uploadStream(stream, bufferSize = DEFAULT_BLOCK_BUFFER_SIZE_BYTES, maxConcurrency = 5, options = {}) {
+119931:         if (!options.blobHTTPHeaders) {
+119932:             options.blobHTTPHeaders = {};
+119933:         }
+119934:         if (!options.conditions) {
+119935:             options.conditions = {};
+119936:         }
+119937:         return tracingClient.withSpan("BlockBlobClient-uploadStream", options, async (updatedOptions) => {
+119938:             let blockNum = 0;
+119939:             const blockIDPrefix = esm_randomUUID();
+119940:             let transferProgress = 0;
+119941:             const blockList = [];
+119942:             const scheduler = new BufferScheduler(stream, bufferSize, maxConcurrency, async (body, length) => {
+119943:                 const blockID = utils_common_generateBlockID(blockIDPrefix, blockNum);
+119944:                 blockList.push(blockID);
+119945:                 blockNum++;
+119946:                 await this.stageBlock(blockID, body, length, {
+119947:                     customerProvidedKey: options.customerProvidedKey,
+119948:                     conditions: options.conditions,
+119949:                     encryptionScope: options.encryptionScope,
+119950:                     tracingOptions: updatedOptions.tracingOptions,
+119951:                 });
+119952:                 // Update progress after block is successfully uploaded to server, in case of block trying
+119953:                 transferProgress += length;
+119954:                 if (options.onProgress) {
+119955:                     options.onProgress({ loadedBytes: transferProgress });
+119956:                 }
+119957:             },
+119958:             // concurrency should set a smaller value than maxConcurrency, which is helpful to
+119959:             // reduce the possibility when a outgoing handler waits for stream data, in
+119960:             // this situation, outgoing handlers are blocked.
+119961:             // Outgoing queue shouldn't be empty.
+119962:             Math.ceil((maxConcurrency / 4) * 3));
+119963:             await scheduler.do();
+119964:             return utils_common_assertResponse(await this.commitBlockList(blockList, {
+119965:                 ...options,
+119966:                 tracingOptions: updatedOptions.tracingOptions,
+119967:             }));
+119968:         });

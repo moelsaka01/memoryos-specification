@@ -1,0 +1,103 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { pathToFileURL } from 'node:url';
+import { performance } from 'node:perf_hooks';
+
+// Engineering-only second observation. Never changes an earlier product verdict.
+const args=process.argv.slice(2), opts={};
+for(let i=0;i<args.length;i+=2){if(!['--workspace','--output','--configuration-digest','--distribution-digest'].includes(args[i])||!args[i+1]||Object.hasOwn(opts,args[i]))throw Error('observer arguments');opts[args[i]]=args[i+1];}
+if(Object.keys(opts).length!==4)throw Error('observer arguments');
+const home=process.env.MEMORYOS_CI_HOME,config=process.env.MEMORYOS_CI_CONFIG;
+const observerTemp=process.env.RUNNER_TEMP;
+const hash=b=>'sha256:'+createHash('sha256').update(b).digest('hex');
+const events=[],requests=[],known=new Set([process.execPath,home,config,opts['--workspace'],opts['--output']].filter(Boolean));
+let phase='observer-start',firstFailure=null,installation=null,hookCostMs=0;
+const t0=performance.now();
+function event(type,data={}){const t=performance.now();events.push({type,atMs:t,...data});hookCostMs+=performance.now()-t;}
+function safeError(e){const out={name:String(e?.name??'Error').slice(0,80)};for(const k of ['code','errno','syscall'])if(typeof e?.[k]==='number'||typeof e?.[k]==='string'&&/^[A-Za-z0-9_. -]{1,120}$/.test(e[k]))out[k]=e[k];for(const k of ['path','dest'])if(typeof e?.[k]==='string'&&known.has(e[k]))out[k]=e[k];return out;}
+function fail(site,target,details={}){const e=Error('Engineering predicate rejection');e.code='MO1306_FILESYSTEM_BOUNDARY';e.site=site;e.target=target;if(!firstFailure)firstFailure={phase,site,target,...details};throw e;}
+function originalError(site,target,e){if(!firstFailure)firstFailure={phase,site,target,error:safeError(e)};throw e;}
+const sourceNames=['src/filesystem.mjs','src/integrity.mjs','src/github-transport.mjs','scripts/check-paths.ps1','scripts/Initialize-GitHubCI.ps1'];
+const sources=[];
+const reserved=/^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i;
+function absolutePath(value,code='FILESYSTEM_BOUNDARY'){
+ if(typeof value!=='string')fail('absolutePath.type',null,{code});
+ if(value.length>240)fail('absolutePath.length',value,{code,length:value.length,limit:240});
+ if(!/^[A-Za-z]:[\\/]/.test(value)||/[:\x00-\x1f\x7f"'\x60$;|&<>{}\[\]()!*?]/.test(value.slice(2)))fail('absolutePath.form',value,{code});
+ const ordinary=value.replaceAll('/','\\'),root=path.parse(ordinary).root,parts=ordinary.slice(root.length).split('\\');
+ if(ordinary!==root&&parts.some(p=>!p||p==='.'||p==='..'||/^[ ]|[ .]$/.test(p)||reserved.test(p)))fail('absolutePath.segment',value,{code});
+ const resolved=path.resolve(ordinary);if(resolved.toLowerCase()!==ordinary.toLowerCase())fail('absolutePath.normalization',value,{code,resolved});return resolved;
+}
+function nodePathCheck(value,allowMissingLeaf=false){
+ const full=absolutePath(value);known.add(full);const parsed=path.parse(full),parts=full.slice(parsed.root.length).split(path.sep).filter(Boolean);let current=parsed.root;
+ for(const [i,part]of parts.entries()){current=path.join(current,part);known.add(current);let stat;try{stat=fs.lstatSync(current);}catch(e){if(e.code==='ENOENT'&&allowMissingLeaf&&i===parts.length-1)return full;originalError('nodePathCheck.lstat',current,e);}
+ if(stat.isSymbolicLink())fail('nodePathCheck.reparse',current);if(i<parts.length-1&&!stat.isDirectory())fail('nodePathCheck.ancestorType',current);}
+ let real;try{real=fs.realpathSync(full);}catch(e){originalError('nodePathCheck.realpath',full,e);}event('nodePathCheck',{path:full,realpath:real});
+ if(real.toLowerCase()!==full.toLowerCase())fail('nodePathCheck.realpathEquality',full,{realpath:real});return full;
+}
+const sameFile=(a,b)=>a.ino===b.ino&&a.dev===b.dev&&a.size===b.size&&a.mtimeNs===b.mtimeNs&&a.ctimeNs===b.ctimeNs;
+function readChecked(value,maximum,{readCode='INPUT_READ',limitCode='INPUT_LIMIT',changeCode='INPUT_CHANGED'}={}){
+ const full=absolutePath(value);let before,fd;
+ try{nodePathCheck(full);before=fs.lstatSync(full,{bigint:true});if(!before.isFile()||before.nlink!==1n)fail('readChecked.kindOrLinks',full,{links:String(before.nlink)});
+ if(before.size>BigInt(maximum)){const e=Error();e.code=limitCode;throw e;}fd=fs.openSync(full,'r');if(!sameFile(before,fs.fstatSync(fd,{bigint:true}))){const e=Error();e.code=changeCode;throw e;}
+ const bytes=Buffer.alloc(Number(before.size)+1);let length=0,count;while(length<bytes.length&&(count=fs.readSync(fd,bytes,length,bytes.length-length,length))>0)length+=count;
+ if(length!==Number(before.size)||!sameFile(before,fs.fstatSync(fd,{bigint:true}))||!sameFile(before,fs.lstatSync(full,{bigint:true}))){const e=Error();e.code=changeCode;throw e;}return bytes.subarray(0,length);
+ }catch(e){if(!firstFailure)firstFailure={phase,site:'readChecked',target:full,error:safeError(e),readCode};throw e;}finally{if(fd!==undefined)fs.closeSync(fd);}
+}
+function childEnvironment(){const systemRoot=absolutePath(process.env.SystemRoot??'','RUNTIME_INTEGRITY'),windir=absolutePath(process.env.WINDIR??'','RUNTIME_INTEGRITY');if(systemRoot.toLowerCase()!==windir.toLowerCase())fail('childEnvironment.SystemRootWINDIR',null);for(const name of ['HOMEDRIVE','HOMEPATH','LOGONSERVER','PATH','SYSTEMDRIVE','TEMP','USERDOMAIN','USERNAME','USERPROFILE']){for(let attempts=0;attempts<8&&Object.hasOwn(process.env,name);attempts++)delete process.env[name];if(Object.hasOwn(process.env,name))fail('childEnvironment.deletion',null,{name});}return {SystemRoot:systemRoot,WINDIR:windir};}
+let J,parseJSON;
+async function checkPaths(paths,deadline){
+ for(const entry of paths)absolutePath(entry.path);
+ for(let start=0;start<paths.length;start+=48){const remaining=deadline-performance.now();if(remaining<=0)fail('checkPaths.overallDeadline',null);const selected=paths.slice(start,start+48),request=J({kind:'MemoryOSCICDPathCheckRequest',version:'1.0.0',paths:selected});
+ const record={ordinal:requests.length+1,phase,batchStart:start,targetCount:selected.length,operation:'checkPaths',capabilityClass:phase,targets:selected,targetMetadata:selected.map(entry=>({path:entry.path,capabilityClass:entry.path===process.execPath?'trusted-runtime':entry.path===config?'trusted-configuration':'trusted-package',member:entry.path===home?null:entry.path.startsWith(home+path.sep)?path.relative(home,entry.path):null})),byteLength:Buffer.byteLength(request),sha256:hash(request)};requests.push(record);
+ if(Buffer.byteLength(request)>16384)fail('checkPaths.requestLimit',null,{request:record.ordinal});
+ const env=childEnvironment(),helper=readChecked(path.join(home,'scripts/check-paths.ps1'),32768,{readCode:'RUNTIME_INTEGRITY'}),exe=nodePathCheck(path.join(env.SystemRoot,'System32/WindowsPowerShell/v1.0/powershell.exe'));
+ await new Promise((resolve,rejectPromise)=>{
+ let output=Buffer.alloc(0),stderr=Buffer.alloc(0),terminal=null,timer,reap;const helperDeadline=performance.now()+2000,effectiveDeadline=Math.min(deadline,helperDeadline),timeoutCode=deadline<=helperDeadline?'OVERALL_TIMEOUT':'FILESYSTEM_BOUNDARY';
+ record.helperDeadlineMs=helperDeadline;record.effectiveDeadlineMs=effectiveDeadline;record.fixedHelperSha256=hash(helper);record.childEnvironment=env;record.spawnBeforeMs=performance.now();
+ if(performance.now()>=effectiveDeadline){try{fail('checkPaths.beforeSpawnDeadline',null,{request:record.ordinal});}catch(e){rejectPromise(e);}return;}
+ const child=spawn(exe,['-NoProfile','-NonInteractive','-EncodedCommand',helper.toString('utf8')&&Buffer.from(helper.toString('utf8'),'utf16le').toString('base64')],{env,cwd:home,shell:false,windowsHide:true,stdio:['pipe','pipe','pipe']});record.spawnReturnMs=performance.now();record.pid=child.pid??null;
+ const stop=site=>{if(terminal)return;terminal={site,atMs:performance.now()};record.terminal=terminal;child.stdin.destroy();record.killResult=child.kill();reap=setTimeout(()=>{record.reapExceeded=true;rejectPromise(Error('CLEANUP_FAILED'));},2000);};
+ timer=setTimeout(()=>stop('checkPaths.helperDeadline'),Math.max(0,effectiveDeadline-performance.now()));record.timerArmedMs=performance.now();
+ child.on('error',e=>{record.spawnError=safeError(e);stop('checkPaths.childError');});
+ child.stdout.on('data',data=>{if(terminal)return;if(output.length+data.length>1024)stop('checkPaths.stdoutLimit');else output=Buffer.concat([output,data]);});
+ child.stderr.on('data',data=>{if(stderr.length<1024)stderr=Buffer.concat([stderr,data.subarray(0,1024-stderr.length)]);stop('checkPaths.stderr');});child.stdin.on('error',e=>{record.stdinError=safeError(e);});
+ child.on('exit',(code,signal)=>{record.exit={atMs:performance.now(),code,signal};});
+ child.on('close',(code,signal)=>{clearTimeout(timer);clearTimeout(reap);record.close={atMs:performance.now(),code,signal};record.stdout={byteLength:output.length,sha256:hash(output),canonicalText:/^\{"kind":"MemoryOSCICDPathCheck","safe":(?:true|false),"version":"1.0.0"\}\n$/.test(output.toString('utf8'))?output.toString('utf8'):null};record.stderr={byteLengthCaptured:stderr.length,sha256:hash(stderr),contentOmitted:'No raw stderr is emitted because arbitrary exception text is outside the output allowlist.'};
+ try{if(terminal)fail(terminal.site,null,{request:record.ordinal,timeoutCode});if(performance.now()>=effectiveDeadline)fail('checkPaths.closeDeadline',null,{request:record.ordinal,timeoutCode});let response;try{response=parseJSON(output,1024,'FILESYSTEM_BOUNDARY');}catch(e){fail('checkPaths.responseParse',null,{request:record.ordinal,error:safeError(e)});}
+ if(code!==0)fail('checkPaths.helperExit',null,{request:record.ordinal,exitCode:code,responseSafe:response.safe??null});if(J(response)!==output.toString('utf8')||Object.keys(response).sort().join(',')!=='kind,safe,version'||response.kind!=='MemoryOSCICDPathCheck'||response.version!=='1.0.0'||response.safe!==true)fail('checkPaths.responsePredicate',null,{request:record.ordinal,responseSafe:response.safe??null});if(performance.now()>=effectiveDeadline)fail('checkPaths.postResponseDeadline',null,{request:record.ordinal,timeoutCode});record.outcome='PASS';resolve();}catch(e){record.outcome='FAIL';rejectPromise(e);}});child.stdin.end(request);
+ });
+ }
+}
+let outcome='PASS',caught=null,startedUtc=new Date().toISOString();const deadline=performance.now()+73000;
+try{
+ if(process.platform!=='win32'||process.arch!=='x64'||process.versions.node!=='24.21.0'||process.execArgv.length!==1||process.execArgv[0]!=='--max-old-space-size=128')throw Error('observer runtime mismatch');
+ for(const p of sourceNames){const b=fs.readFileSync(path.join(home,p));sources.push({path:p,byteLength:b.length,sha256:hash(b)});}
+ ({J}=await import(pathToFileURL(path.join(home,'src/serialization.mjs'))));({parseJSON}=await import(pathToFileURL(path.join(home,'src/json.mjs'))));
+ const {verifyDistribution}=await import(pathToFileURL(path.join(home,'src/integrity.mjs'))),{configuration,digest}=await import(pathToFileURL(path.join(home,'src/contracts.mjs')));
+ if(!/^sha256:[a-f0-9]{64}$/.test(opts['--configuration-digest'])||!/^sha256:[a-f0-9]{64}$/.test(opts['--distribution-digest']))fail('transportInstallation.pinForm',null);
+ if(process.env.NODE_OPTIONS||process.env.NODE_PATH||process.env.NODE_INSPECT_RESUME_ON_START||process.env.NODE_REPL_EXTERNAL_MODULE)fail('verifyNode.forbiddenEnvironmentPresence',null);
+ phase='nodePathCheck(process.execPath)';event('phase',{phase});const full=nodePathCheck(process.execPath),before=fs.lstatSync(full,{bigint:true});
+ if(!before.isFile()||before.nlink!==1n||before.size!==93580104n)fail('verifyNode.kindLinksSize',full);const fd=fs.openSync(full,'r'),buffer=Buffer.alloc(65536),h=createHash('sha256');let count;
+ try{if(!sameFile(before,fs.fstatSync(fd,{bigint:true})))fail('verifyNode.initialIdentity',full);while((count=fs.readSync(fd,buffer,0,buffer.length,null))>0)h.update(buffer.subarray(0,count));if('sha256:'+h.digest('hex')!=='sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'||!sameFile(before,fs.fstatSync(fd,{bigint:true}))||!sameFile(before,fs.lstatSync(full,{bigint:true})))fail('verifyNode.digestOrStability',full);}finally{fs.closeSync(fd);}
+ phase='distribution-verification';event('phase',{phase});installation=verifyDistribution(home,'github');
+ phase='installation-member-root-check';event('phase',{phase});await checkPaths([{path:process.execPath,allowMissingLeaf:false},{path:home,allowMissingLeaf:false},...installation.manifest.files.map(row=>({path:path.join(home,row.path),allowMissingLeaf:false}))],deadline);
+ if(installation.identities.distributionDigest!==opts['--distribution-digest'])fail('transportInstallation.distributionPin',home);
+ phase='configuration-path-check';event('phase',{phase});const cfg=absolutePath(config);await checkPaths([{path:cfg,allowMissingLeaf:false}],deadline);if(digest(J(configuration(readChecked(cfg,16384))))!==opts['--configuration-digest'])fail('transportInstallation.configurationPin',cfg);
+}catch(e){outcome='FAIL';caught=safeError(e);if(!firstFailure)firstFailure={phase,site:'untraced-integrity-or-observer-error',target:null,error:caught};}
+const pathObservations=[];
+const observedPaths=[opts['--workspace'],path.join(opts['--workspace'],'_memoryos/tool'),path.join(opts['--workspace'],'_memoryos/runtime'),process.execPath,path.join(opts['--workspace'],'_memoryos/data'),config,home,path.join(home,'scripts/github-transport.mjs'),observerTemp,path.dirname(opts['--output'])].filter(Boolean);
+for(const p of [...new Set(observedPaths)]){
+ const row={raw:p,lexical:path.resolve(p),length:p.length,root:path.parse(p).root,ancestors:[]};
+ try{
+  let q=path.parse(p).root,reparse=false;const sequence=[q];for(const part of p.slice(q.length).split(path.sep).filter(Boolean)){q=path.join(q,part);sequence.push(q);}
+  let targetStat;
+  for(const current of sequence){known.add(current);const st=fs.lstatSync(current);row.ancestors.push({path:current,symbolicLink:st.isSymbolicLink(),directory:st.isDirectory()});if(st.isSymbolicLink()){reparse=true;row.realpathSkipped='ancestor symbolic link';break;}if(current!==p&&!st.isDirectory()){row.realpathSkipped='non-directory ancestor';reparse=true;break;}if(current===p)targetStat=st;}
+  if(!reparse&&targetStat){row.exists=true;row.type=targetStat.isDirectory()?'directory':targetStat.isFile()?'file':'other';row.symbolicLink=false;row.realpath=fs.realpathSync(p);}
+ }catch(e){row.error=safeError(e);row.realpathSkipped='missing or inaccessible ancestor/target';}
+ pathObservations.push(row);
+}
+const report={kind:'MemoryOSHostedFilesystemPredicateOracle',version:'1.0.0',engineeringOnly:true,temporalScope:'Separate later source-equivalent observation after the original bootstrap; no retroactive production-site attribution.',limitations:['No signal object is supplied, matching bootstrap options; cancellation branches are inactive.','Error telemetry reports oracle predicate names; it does not replace the product error catalog.','Path and timer instrumentation has ordinary diagnostic overhead; timing observations belong only to this oracle.'],productionVerdictOverridden:false,productionAuthority:'701d48ee2012675966360dda775ab13013c09ab9',sourceEquivalence:'Source-equivalent ordered predicates with unchanged imported distribution/serialization/configuration implementation and literal shipped PowerShell helper. Added in-memory timestamps and bounded outcome collection have overhead; this is a subsequent observation, never the original production call.',causalLimitation:'Neither a passing nor a failing later oracle alone identifies the original production rejection. Attribute its firstFailure only to this observation; require direct evidence for a production cause.',startedUtc,endedUtc:new Date().toISOString(),elapsedMs:performance.now()-t0,eventHookCostMs:hookCostMs,outcome,firstFailure,error:caught,runtime:{version:process.versions.node,arch:process.arch,platform:process.platform,execPath:process.execPath,execArgv:process.execArgv},sources,identities:installation?.identities??null,paths:pathObservations,requests,events};
+const bytes=Buffer.from(JSON.stringify(report)+'\n');if(bytes.length>2097152)throw Error('observer report exceeds frozen engineering cap');const output=fs.openSync(opts['--output'],'wx');try{fs.writeFileSync(output,bytes);fs.fsyncSync(output);}finally{fs.closeSync(output);}process.stdout.write(JSON.stringify({oracleOutcome:outcome,reportBytes:bytes.length})+'\n');

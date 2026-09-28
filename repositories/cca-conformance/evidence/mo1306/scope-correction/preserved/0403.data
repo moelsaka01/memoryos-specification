@@ -1,0 +1,22 @@
+"""Four targeted released MO-1302 projections; no MO-1306 witness execution."""
+import datetime,hashlib,json,os,subprocess
+from pathlib import Path
+root=Path(__file__).resolve().parents[4];out=root/'repositories/cca-conformance/evidence/mo1306/phase3a-certification';cache=root/'.cache/mo1306-phase3a-certification/mo1302-temp';cache.mkdir(parents=True,exist_ok=True)
+node=root/'.cache/mo1306-phase3a-final/node-v24.21.0-win-x64/node.exe';test=root/'repositories/cca-conformance/tests/mo1302_action_foundation_conformance_test.mjs'
+def git(*args):return subprocess.check_output(['git',*args],cwd=root).decode().strip()
+def row(p):
+ b=p.read_bytes();return {'path':p.relative_to(root).as_posix(),'byteLength':len(b),'sha256':'sha256:'+hashlib.sha256(b).hexdigest()}
+def put(name,v):
+ with (out/name).open('xb') as f:f.write((json.dumps(v,sort_keys=True,separators=(',',':'))+'\n').encode())
+assert not (out/'mo1302-regression.json').exists()
+release=git('rev-parse','memoryos-1.3-mo1302^{commit}');tree=git('rev-parse','memoryos-1.3-mo1302:.github/actions/memoryos-policy-gate')
+assert release=='7e07bd0db9ab10146f2e0e0bbd67a4c5850cf41d' and tree=='0a9f322dc1bc6b603473a414ec794d926698a07a'
+for rev in ['HEAD','85a0f85c1ebd013c545ccf2b3efe58a760e6cf37','701d48ee2012675966360dda775ab13013c09ab9']:assert git('rev-parse',rev+':.github/actions/memoryos-policy-gate')==tree
+assert json.loads((out/'final-witness-outcome.json').read_bytes())['status']=='OBSERVED_PASS_PENDING_INDEPENDENT_VALIDATION'
+argv=[str(node),'--test','--test-reporter=tap','--test-name-pattern=Action metadata, bootstrap exports|CLI transport accepts|PortablePath and action-input|outputs are exactly nineteen',str(test)]
+start=datetime.datetime.now(datetime.timezone.utc);p=subprocess.run(argv,cwd=root,capture_output=True,timeout=120,env={**os.environ,'TMP':str(cache),'TEMP':str(cache)});end=datetime.datetime.now(datetime.timezone.utc)
+for name,b in [('mo1302.stdout.txt',p.stdout),('mo1302.stderr.txt',p.stderr)]:
+ with (out/name).open('xb') as f:f.write(b)
+text=p.stdout.decode('utf-8','replace');counts={key:int(next(l for l in text.splitlines() if l.startswith('# '+key+' ')).split()[-1]) for key in ['tests','pass','fail','cancelled','skipped','todo']}
+v={'kind':'MemoryOSPhase3AFinalTargetedMO1302Regression','status':'PASS' if p.returncode==0 and counts['pass']==4 and counts['fail']==0 else 'FAIL','argv':argv,'cwd':str(root),'startedUtc':start.isoformat(),'endedUtc':end.isoformat(),'elapsedSeconds':(end-start).total_seconds(),'exitCode':p.returncode,'counts':counts,'scope':'Exactly four retained targeted release projections; no full MO1302 campaign. Temporary files isolated in ignored cache.','releasedCommit':release,'releasedActionTree':tree,'C3CBM3ActionBytesIdentical':True,'node':row(node),'test':row(test),'stdout':row(out/'mo1302.stdout.txt'),'stderr':row(out/'mo1302.stderr.txt'),'tool':row(Path(__file__))}
+put('mo1302-regression.json',v);print(json.dumps(v));assert v['status']=='PASS'

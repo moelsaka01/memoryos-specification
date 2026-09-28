@@ -1,0 +1,79 @@
+// Independent receipt validator with in-memory tamper witnesses; never runs production.
+import fs from 'node:fs';import path from 'node:path';import {createHash} from 'node:crypto';import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../../..');
+const out=path.join(root,'repositories/cca-conformance/evidence/mo1306/phase3cr');
+const reportPath=path.join(out,'dispatch-audit.json'),raw=fs.readFileSync(reportPath),report=JSON.parse(raw);
+const hash=b=>'sha256:'+createHash('sha256').update(b).digest('hex');
+const must=(v,m)=>{if(!v)throw Error(m);};
+const sorted=x=>JSON.stringify([...x].sort());
+const catalog=JSON.parse(fs.readFileSync(path.join(root,'repositories/memoryos-ci/contracts/errors.json')));
+const projections=JSON.parse(fs.readFileSync(path.join(root,'repositories/memoryos-ci/contracts/projection.json'))).classifications;
+const expectedGroups={'public-command':44,'own-command-positive':3,'inherited-command-mutation':8,'own-command-shadow':3,'correction-detection-negative':3,'provider-adapter-negative':23,'provider-metadata-negative':23,'provider-core-negative':23,'projection-negative':23,'schema-name-negative':23,'projection-type-negative':4,'inherited-provider-projection':2,'provider-positive':5,'projection-positive':11,'machine-error':28,'diagnostic-truncation':1,'diagnostic-redaction':1};
+function validate(r){
+ must(r.kind==='MO1306Phase3CRIndependentDispatchAudit'&&r.version==='1.0.0'&&r.baseline==='9e1bbff99c23cdbc4c80f11e87eadb89a36e8f44'&&r.status==='PASS','authority');
+ must(r.source.sha256==='sha256:0040be1cae98e9aa44dad356a962b5f3470fe63a3c005febcd5325ec29b808ab','corrected CLI source');
+ must(r.runtime.version==='v24.21.0'&&r.runtime.platform==='win32'&&r.runtime.architecture==='x64'&&r.runtime.byteLength===93580104&&r.runtime.sha256==='sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32','trusted runtime');
+ must(r.results.length===Object.values(expectedGroups).reduce((a,b)=>a+b,0)&&r.counts.total===r.results.length&&r.counts.pass===r.results.length&&r.counts.fail===0,'total counts');
+ must(sorted(Object.keys(r.counts.groups))===sorted(Object.keys(expectedGroups)),'group keys');
+ for(const [group,count]of Object.entries(expectedGroups))must(r.results.filter(v=>v.group===group).length===count&&r.counts.groups[group]===count,'group count '+group);
+ must(r.results.every(row=>row.status==='PASS')&&new Set(r.results.map(x=>x.group+'\0'+x.name)).size===r.results.length,'result identity/status');
+ must(sorted(r.prototypeCorpus)===sorted([...new Set([...Object.getOwnPropertyNames(Object.prototype),'prototype','name','length','arguments','caller','apply','call','bind'])]),'prototype corpus');
+ const group=g=>r.results.filter(x=>x.group===g);
+ for(const row of group('public-command')){
+  must(row.exitCode===10&&row.stdout===''&&JSON.parse(row.stderr).code==='MO1306_USAGE','public error contract');
+  must(row.instrumented.handlers.length===0&&row.instrumented.installationEntries===0&&row.instrumented.exitCode===10&&row.instrumented.stderr===row.stderr,'zero handler boundary');
+  must(row.argv[0]===r.runtime.path&&row.argv[1]==='--max-old-space-size=128'&&row.argv[2]===path.join(root,'repositories/memoryos-ci/bin/memoryos-ci.mjs'),'native invocation');
+ }
+ must(group('public-command').every(x=>JSON.parse(x.stderr).message==='The requested operation could not complete.'),'fixed diagnostics');
+ for(const key of r.prototypeCorpus)must(group('public-command').some(r=>r.selector===key),'prototype native coverage');
+ for(const row of [...group('own-command-positive'),...group('own-command-shadow')])must(row.exitCode===0&&row.handlers.join(',')===row.name&&row.getterCalls===0,'own handler');
+ for(const row of group('inherited-command-mutation'))must(row.exitCode===10&&row.handlers.length===0&&row.installationEntries===0&&row.getterCalls===0,'prototype mutation');
+ for(const row of group('correction-detection-negative'))must(row.exitCode===16&&JSON.parse(row.stderr).code==='MO1306_INTERNAL_FAILURE','removed guard control');
+ for(const g of ['provider-adapter-negative','provider-metadata-negative','provider-core-negative'])for(const row of group(g))must(row.code==='MO1306_PROVIDER_UNSUPPORTED'&&row.exitCode===10,'provider rejection');
+ for(const row of group('provider-core-negative'))must(row.publication==='NONE'&&row.runDirectory===null,'provider failure publishes nothing');
+ for(const g of ['projection-negative','projection-type-negative'])for(const row of group(g))must(row.code==='MO1306_INTERNAL_FAILURE'&&row.exitCode===16,'projection rejection');
+ for(const row of group('schema-name-negative'))must(row.code==='MO1306_CONFIG_INVALID'&&row.exitCode===10,'schema selector');
+ for(const row of group('inherited-provider-projection'))must(row.getterCalls===0&&row.adapterCode==='MO1306_PROVIDER_UNSUPPORTED'&&row.metadataCode===row.adapterCode&&row.coreCode===row.adapterCode&&row.projectionCode==='MO1306_INTERNAL_FAILURE'&&row.restored===true,'provider mutation');
+ must(sorted(group('provider-positive').map(x=>x.name))===sorted(['generic','gitlab','jenkins','azure','github']),'legitimate providers');
+ for(const row of group('provider-positive'))must(row.id==='memoryos.cicd.adapter.'+row.name&&row.metadata.provider===row.name&&sorted(row.projectionClassifications)===sorted(Object.keys(projections)),'provider positive shape');
+ for(const row of group('projection-positive'))must(row.exitCode===projections[row.name].exitCode&&JSON.stringify(row.projection)===JSON.stringify(projections[row.name].projection),'projection bytes');
+ must(sorted(group('machine-error').map(x=>x.name))===sorted(Object.keys(catalog.errors))&&Object.keys(catalog.errors).length===28,'28 machine errors');
+ for(const row of group('machine-error')){const expected=catalog.errors[row.name],d=JSON.parse(row.diagnostic);must(row.classification===expected[0]&&row.exitCode===expected[1]&&row.stage===expected[2]&&d.code===row.name&&d.stage===row.stage&&d.message==='The requested operation could not complete.','error mapping');}
+ const truncation=group('diagnostic-truncation')[0];must(truncation.attempted===100&&truncation.records===32&&truncation.bytes<=16384&&JSON.parse(truncation.finalRecord).code==='MO1306_DIAGNOSTICS_TRUNCATED','truncation');
+ must(r.dispatchReview.currentSites===r.dispatchReview.sites.length&&r.dispatchReview.currentSites===135,'site inventory');
+ must(r.dispatchReview.highRiskSites===r.dispatchReview.sites.filter(x=>x.highRisk).length&&r.dispatchReview.highRiskSites>=25,'high-risk review');
+ must(r.dispatchReview.sites.every(s=>s.review.length>30),'review rationale');
+ must(r.dispatchReview.currentUnmatched.length===1&&r.dispatchReview.currentUnmatched[0].expression==='commands[command]','correction delta');
+ must(r.dispatchReview.metadataCallers.length===6&&r.dispatchReview.metadataCallers.every(s=>['generic','gitlab','jenkins','azure','github'].includes(s.provider)),'fixed metadata providers');
+ must(r.semanticAuthority.sdkVersion==='1.1.0'&&r.semanticAuthority.closureBindings.length===25,'semantic authority');
+ for(const row of r.semanticAuthority.closureBindings)must(row.shipped.sha256===row.authority.sha256&&row.shipped.byteLength===row.authority.byteLength,'SDK closure correspondence');
+ must(r.semanticAuthority.semanticDispatch.length===4,'semantic path inventory');
+ const bindings=new Map(r.bindings.map(b=>[b.path,b]));
+ must(bindings.size===r.bindings.length&&bindings.size>=85,'source binding coverage');
+ for(const entry of [r.source,...r.bindings,...r.semanticAuthority.closureBindings.flatMap(x=>[x.shipped,x.authority])]){const actual=fs.readFileSync(path.join(root,entry.path));must(entry.byteLength===actual.length&&entry.sha256===hash(actual),'source bytes '+entry.path);}
+ for(const row of r.semanticAuthority.semanticDispatch)must(bindings.get(row.identity.path)?.sha256===row.identity.sha256,'semantic path binding');
+ return true;
+}
+validate(report);
+const mutations=[
+ ['old-baseline',r=>r.baseline='0e35ffe70919d77b1db530929093826410b805f9'],
+ ['old-source',r=>r.source.sha256='sha256:'+'0'.repeat(64)],
+ ['runtime-substitution',r=>r.runtime.sha256='sha256:'+'0'.repeat(64)],
+ ['removed-corpus-member',r=>r.prototypeCorpus.pop()],
+ ['handler-entry',r=>r.results.find(x=>x.group==='public-command').instrumented.handlers.push('run')],
+ ['incorrect-usage-exit',r=>r.results.find(x=>x.group==='public-command').exitCode=16],
+ ['getter-triggered',r=>r.results.find(x=>x.group==='inherited-command-mutation').getterCalls=1],
+ ['missing-error',r=>r.results.splice(r.results.findIndex(x=>x.group==='machine-error'),1)],
+ ['provider-accepted',r=>r.results.find(x=>x.group==='provider-core-negative').code='MO1306_INTERNAL_FAILURE'],
+ ['projection-accepted',r=>r.results.find(x=>x.group==='projection-negative').exitCode=0],
+ ['wrong-truncation',r=>r.results.find(x=>x.group==='diagnostic-truncation').records=100],
+ ['dynamic-metadata-provider',r=>r.dispatchReview.metadataCallers[0].provider='constructor'],
+ ['SDK-authority-mismatch',r=>r.semanticAuthority.closureBindings[0].authority.sha256='sha256:'+'0'.repeat(64)],
+ ['bound-file-tamper',r=>r.bindings[0].sha256='sha256:'+'0'.repeat(64)],
+ ['concealed-site',r=>r.dispatchReview.sites.pop()],
+ ['native-argv-change',r=>r.results.find(x=>x.group==='public-command').argv[1]='--inspect']
+];
+const negatives=[];for(const [name,change]of mutations){const altered=structuredClone(report);change(altered);let reason=null;try{validate(altered);}catch(e){reason=e.message;}must(reason,'Validator accepted negative '+name);negatives.push({name,status:'EXPECTED_REJECTION',reason});}
+const receipt={kind:'MO1306Phase3CRDispatchValidation',version:'1.0.0',baseline:report.baseline,status:'PASS',report:{path:path.relative(root,reportPath).replaceAll('\\','/'),byteLength:raw.length,sha256:hash(raw)},tool:{path:path.relative(root,fileURLToPath(import.meta.url)).replaceAll('\\','/'),sha256:hash(fs.readFileSync(fileURLToPath(import.meta.url)))},positive:true,negativeWitnesses:negatives,negativeCount:negatives.length,validatedResults:report.results.length};
+if(process.argv.includes('--record'))fs.writeFileSync(path.join(out,'dispatch-validation.json'),JSON.stringify(receipt,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({status:'PASS',validatedResults:receipt.validatedResults,negativeCount:receipt.negativeCount}));
