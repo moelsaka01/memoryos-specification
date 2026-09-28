@@ -1,0 +1,52 @@
+readiness=READY_WITH_QUALIFICATIONS readinessDigest=sha256:e5addcc82bed243a59d31fa72068e1e2e672581f2c501eb8e9bacb5fbf3b2490 proofBindingDigest=sha256:85f33f0fd5273c8418a8edf526b05e77ca1161a08200e623e104881918343b01
+gate=artifact state=SATISFIED
+gate=binding state=SATISFIED
+gate=history state=SATISFIED
+gate=provenance state=SATISFIED
+gate=provider.azure state=SATISFIED_WITH_QUALIFICATION
+gate=provider.azure.live state=NOT_REQUIRED
+gate=provider.generic state=SATISFIED
+gate=provider.github state=SATISFIED_WITH_QUALIFICATION
+gate=provider.github.hosted state=NOT_REQUIRED
+gate=provider.gitlab state=SATISFIED_WITH_QUALIFICATION
+gate=provider.gitlab.live state=NOT_REQUIRED
+gate=provider.jenkins state=SATISFIED_WITH_QUALIFICATION
+gate=provider.jenkins.live state=NOT_REQUIRED
+gate=resources state=SATISFIED
+gate=rest.contract state=NOT_APPLICABLE
+gate=sbom state=SATISFIED
+gate=scope state=SATISFIED
+gate=security state=SATISFIED
+gate=semantic state=SATISFIED
+gate=supply state=SATISFIED_WITH_QUALIFICATION
+gate=tag state=SATISFIED
+gate=windows state=SATISFIED_WITH_QUALIFICATION
+qualification=q.advisory reason=BOUNDED_ADVISORY_REVIEW impact=RELEASE_IMPACTING provider=null gates=supply conditions=[]
+qualification=q.history.diagnostic-36396330199 reason=HISTORICAL_UNRESOLVED_PRESERVED impact=RELEASE_IMPACTING provider=null gates=provider.github,provider.github.hosted conditions=condition.diagnostic-36396330199
+qualification=q.history.hosted-36357568243 reason=HISTORICAL_UNRESOLVED_PRESERVED impact=RELEASE_IMPACTING provider=null gates=provider.github,provider.github.hosted conditions=condition.hosted-36357568243
+qualification=q.history.native-publication reason=HISTORICAL_UNRESOLVED_PRESERVED impact=RELEASE_IMPACTING provider=null gates=windows conditions=condition.native-publication
+qualification=q.history.publication-diagnostics reason=HISTORICAL_UNRESOLVED_PRESERVED impact=RELEASE_IMPACTING provider=null gates=windows conditions=condition.publication-diagnostics
+qualification=q.history.publication-environment-capture reason=HISTORICAL_UNRESOLVED_PRESERVED impact=RELEASE_IMPACTING provider=null gates=windows conditions=condition.publication-environment-capture
+qualification=q.provider.azure reason=PROVIDER_NOT_LIVE_CERTIFIED impact=RELEASE_IMPACTING provider=azure gates=provider.azure,provider.azure.live conditions=[]
+qualification=q.provider.github reason=HOSTED_NOT_CERTIFIED impact=RELEASE_IMPACTING provider=github gates=provider.github,provider.github.hosted conditions=[]
+qualification=q.provider.gitlab reason=PROVIDER_NOT_LIVE_CERTIFIED impact=RELEASE_IMPACTING provider=gitlab gates=provider.gitlab,provider.gitlab.live conditions=[]
+qualification=q.provider.jenkins reason=PROVIDER_NOT_LIVE_CERTIFIED impact=RELEASE_IMPACTING provider=jenkins gates=provider.jenkins,provider.jenkins.live conditions=[]
+history=history.3a-deadline-blocker outcome=BLOCKED disposition=SUPERSEDED recurrence=NOT_APPLICABLE
+history=history.diagnostic-36396330199 outcome=FAIL disposition=PRESERVED_WITH_QUALIFICATION recurrence=NOT_APPLICABLE
+history=history.first-2d-source-gate outcome=FAIL disposition=SUPERSEDED recurrence=NOT_APPLICABLE
+history=history.first-3b-refresh outcome=BLOCKED disposition=SUPERSEDED recurrence=NOT_APPLICABLE
+history=history.hosted-36357568243 outcome=FAIL disposition=PRESERVED_WITH_QUALIFICATION recurrence=NOT_APPLICABLE
+history=history.native-publication outcome=FAIL disposition=PRESERVED_WITH_QUALIFICATION recurrence=NOT_OBSERVED
+history=history.original-3a-accepted outcome=BLOCKED disposition=SUPERSEDED recurrence=NOT_APPLICABLE
+history=history.original-3a-provisional outcome=UNEVALUABLE disposition=SUPERSEDED recurrence=NOT_APPLICABLE
+history=history.original-3b outcome=BLOCKED disposition=SUPERSEDED recurrence=NOT_APPLICABLE
+history=history.original-3c-blocker outcome=BLOCKED disposition=SUPERSEDED recurrence=NOT_APPLICABLE
+history=history.publication-diagnostics outcome=BLOCKED disposition=PRESERVED_WITH_QUALIFICATION recurrence=NOT_OBSERVED
+history=history.publication-environment-capture outcome=BLOCKED disposition=PRESERVED_WITH_QUALIFICATION recurrence=NOT_OBSERVED
+provider=azure implementation=IMPLEMENTED validation=CONTRACT_VALIDATED execution=NOT_LIVE_PROVIDER_CERTIFIED sourceExecutionLabel=NOT_LIVE_PROVIDER_CERTIFIED support=SUPPORTED_WITH_CONTRACT_VALIDATION_ONLY hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+provider=generic implementation=IMPLEMENTED validation=REAL_EXECUTION_CERTIFIED execution=REAL_EXECUTION_CERTIFIED sourceExecutionLabel=REAL_EXECUTION_CERTIFIED support=SUPPORTED hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+provider=github implementation=IMPLEMENTED validation=OFFLINE_VALIDATED execution=HOSTED_EXECUTION_NOT_CERTIFIED sourceExecutionLabel=NOT_CERTIFIED support=SUPPORTED_WITH_HOSTED_CERTIFICATION_LIMITATION hostedPass=false hostedFail=false hostedCne=false hostedParity=false
+provider=gitlab implementation=IMPLEMENTED validation=CONTRACT_VALIDATED execution=NOT_LIVE_PROVIDER_CERTIFIED sourceExecutionLabel=NOT_LIVE_PROVIDER_CERTIFIED support=SUPPORTED_WITH_CONTRACT_VALIDATION_ONLY hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+provider=jenkins implementation=IMPLEMENTED validation=CONTRACT_VALIDATED execution=NOT_LIVE_PROVIDER_CERTIFIED sourceExecutionLabel=NOT_LIVE_PROVIDER_CERTIFIED support=SUPPORTED_WITH_CONTRACT_VALIDATION_ONLY hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+humanAction=REVIEW_READINESS_AND_LIMITATIONS
+humanAction=DECIDE_RELEASE

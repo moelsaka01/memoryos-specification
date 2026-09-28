@@ -1,0 +1,31 @@
+readiness=NOT_READY readinessDigest=sha256:a306e1aef26ce5415918e191bb0a4e6c4c1bd77d9de8ebb707e943cab64f4f4b proofBindingDigest=sha256:264f7c6e2cbfcea2c99183cb07a3b67d9b74baa22b030342a2cf5bd52e72ec2e
+gate=artifact state=SATISFIED
+gate=binding state=SATISFIED
+gate=history state=SATISFIED
+gate=provenance state=SATISFIED
+gate=provider.azure state=SATISFIED
+gate=provider.azure.live state=NOT_REQUIRED
+gate=provider.generic state=SATISFIED
+gate=provider.github state=SATISFIED
+gate=provider.github.hosted state=NOT_REQUIRED
+gate=provider.gitlab state=SATISFIED
+gate=provider.gitlab.live state=NOT_REQUIRED
+gate=provider.jenkins state=SATISFIED
+gate=provider.jenkins.live state=NOT_REQUIRED
+gate=resources state=SATISFIED
+gate=rest.contract state=NOT_APPLICABLE
+gate=sbom state=SATISFIED
+gate=scope state=SATISFIED
+gate=security state=BLOCKED
+gate=semantic state=SATISFIED
+gate=supply state=SATISFIED
+gate=tag state=SATISFIED
+gate=windows state=SATISFIED
+blocker=blocker.a2dacabd0581fdcf3f47cb1460497e59de81bbb4ccacd0de178126aed67fc116 gate=security reason=CHECK_FAILED check=FILESYSTEM condition=null
+provider=azure implementation=IMPLEMENTED validation=CONTRACT_VALIDATED execution=LIVE_PROVIDER_CERTIFIED sourceExecutionLabel=LIVE_PROVIDER_CERTIFIED support=SUPPORTED hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+provider=generic implementation=IMPLEMENTED validation=REAL_EXECUTION_CERTIFIED execution=REAL_EXECUTION_CERTIFIED sourceExecutionLabel=REAL_EXECUTION_CERTIFIED support=SUPPORTED hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+provider=github implementation=IMPLEMENTED validation=OFFLINE_VALIDATED execution=HOSTED_EXECUTION_CERTIFIED sourceExecutionLabel=HOSTED_EXECUTION_CERTIFIED support=SUPPORTED hostedPass=true hostedFail=true hostedCne=true hostedParity=true
+provider=gitlab implementation=IMPLEMENTED validation=CONTRACT_VALIDATED execution=LIVE_PROVIDER_CERTIFIED sourceExecutionLabel=LIVE_PROVIDER_CERTIFIED support=SUPPORTED hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+provider=jenkins implementation=IMPLEMENTED validation=CONTRACT_VALIDATED execution=LIVE_PROVIDER_CERTIFIED sourceExecutionLabel=LIVE_PROVIDER_CERTIFIED support=SUPPORTED hostedPass=null hostedFail=null hostedCne=null hostedParity=null
+humanAction=REVIEW_READINESS_AND_LIMITATIONS
+humanAction=DECIDE_RELEASE
