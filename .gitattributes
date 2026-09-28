@@ -50,3 +50,10 @@ repositories/cca-conformance/tools/mo1306-phase2d/** -text whitespace=trailing-s
 
 # Preserve the exact captured Azure fixture stdout, including its second final LF.
 repositories/cca-conformance/evidence/mo1306/phase2d/commands/azure-generation.stdout.txt whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+
+# MO-1307 Phase 1 exact package, fixture and executed engineering bytes.
+repositories/memoryos-readiness/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/tools/mo1307-phase1/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/tests/mo1307_phase1_*.mjs -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/fixtures/mo1307/** -text whitespace=-trailing-space,space-before-tab,cr-at-eol,-blank-at-eof
+repositories/cca-conformance/evidence/mo1307/** -text whitespace=space-before-tab,cr-at-eol,-blank-at-eof,-trailing-space

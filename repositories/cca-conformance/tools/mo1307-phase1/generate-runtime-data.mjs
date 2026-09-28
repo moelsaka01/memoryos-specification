@@ -1,0 +1,11 @@
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+const root=fileURLToPath(new URL('../../../../',import.meta.url));
+const pkg=resolve(root,'repositories/memoryos-readiness');
+const definitions=JSON.parse(readFileSync(resolve(pkg,'contracts/definitions.json'),'utf8'));
+const schemas=Object.fromEntries(readdirSync(resolve(pkg,'schemas')).filter(n=>n.endsWith('.json')).sort().map(name=>[name,JSON.parse(readFileSync(resolve(pkg,'schemas',name),'utf8'))]));
+const freeze='function freeze(x){if(x && typeof x==="object"){for(const v of Object.values(x))freeze(v);Object.freeze(x);}return x;}\n';
+writeFileSync(resolve(pkg,'src/constants.mjs'),'// Generated from contracts/definitions.json; regenerate with conformance tooling.\n'+freeze+'export const DEFINITIONS=freeze('+JSON.stringify(definitions)+');\n');
+writeFileSync(resolve(pkg,'src/schema-data.mjs'),'// Generated from the shipped local schemas; no runtime filesystem or remote refs.\n'+freeze+'export const SCHEMAS=freeze('+JSON.stringify(schemas)+');\n');
+process.stdout.write(JSON.stringify({definitions:true,schemas:Object.keys(schemas).length})+'\n');

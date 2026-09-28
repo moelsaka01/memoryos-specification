@@ -1,0 +1,105 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { DEFINITIONS as D } from '../../memoryos-readiness/src/constants.mjs';
+import * as api from '../../memoryos-readiness/src/index.mjs';
+import { canonicalBytes as J, parseCanonical as P, digest, canonicalDigest, readinessDigest, proofBindingDigest, blockerId, snapshotBytes } from '../../memoryos-readiness/src/canonical.mjs';
+import { ReadinessError, serializeError, errorExit, evaluationExit } from '../../memoryos-readiness/src/errors.mjs';
+import { validateRecord, validateGraphStructure, selectPhaseError } from '../../memoryos-readiness/src/foundation.mjs';
+import { validateSchema } from '../../memoryos-readiness/src/schema.mjs';
+
+const utf=s=>Buffer.from(s,'utf8');
+const code=(fn,expected)=>assert.throws(fn,e=>e.code==='MO1307_'+expected);
+test('C01 frozen public exports contain exactly two async functions',()=>{
+  assert.deepEqual(Object.keys(api),['evaluateReadiness','verifyReadiness']);
+  for(const fn of Object.values(api))assert.equal(fn.constructor.name,'AsyncFunction');
+});
+test('C02 closed counts and every frozen exit',()=>{
+  assert.equal(D.errors.length,21);assert.deepEqual(D.errors.map(e=>e.exit),Array.from({length:21},(_,i)=>10+i));
+  assert.equal(Object.keys(D.coverage).length,14);assert.equal(D.gateDefinitions.length,22);
+  for(const [state,exit] of Object.entries({READY:0,READY_WITH_QUALIFICATIONS:2,NOT_READY:3,COULD_NOT_EVALUATE:4}))assert.equal(evaluationExit(state),exit);
+  code(()=>evaluationExit('UNKNOWN'),'INPUT');
+});
+test('C03 deterministic key order includes numeric-looking ASCII keys',()=>{
+  assert.equal(J({'2':'b','10':'a',z:0,a:1}).toString(),'{"10":"a","2":"b","a":1,"z":0}\n');
+  assert.equal(J({b:1,a:2}).toString(),J({a:2,b:1}).toString());
+});
+test('C04 Unicode scalars are not normalized or escaped unnecessarily',()=>{
+  const x={a:'é/𝄞',b:'e\u0301'};assert.equal(J(P(J(x))).toString(),J(x).toString());assert.notEqual(canonicalDigest({x:x.a}),canonicalDigest({x:x.b}));
+});
+const parserNegatives=[
+  ['duplicate-key','{"a":1,"a":2}\n','INPUT'],['escaped-duplicate-key','{"a":1,"\\u0061":2}\n','INPUT'],
+  ['unknown-token','undefined\n','INPUT'],['negative-zero','-0\n','INPUT'],['negative-integer','-1\n','INPUT'],
+  ['fraction','1.5\n','INPUT'],['exponent','1e2\n','INPUT'],['unsafe-integer','9007199254740992\n','INPUT'],
+  ['leading-zero','01\n','INPUT'],['unpaired-surrogate','"\\ud800"\n','INPUT'],['control-string','"\\n"\n','INPUT'],
+  ['del-string','"\\u007f"\n','INPUT'],['non-ascii-key','{"é":1}\n','INPUT'],['trailing-garbage','{}x\n','INPUT'],
+  ['trailing-comma','{"a":1,}\n','INPUT'],['empty-document','','INPUT'],['noncanonical-spaces','{ "a":1}\n','INTEGRITY'],
+  ['missing-lf','{}','INTEGRITY'],['double-lf','{}\n\n','INTEGRITY'],['key-order','{"b":1,"a":2}\n','INTEGRITY'],
+  ['unnecessary-escape','"\\u0061"\n','INTEGRITY'],['escaped-solidus','"\\/"\n','INTEGRITY'],['crlf','{}\r\n','INTEGRITY'],
+];
+for(const [name,bytes,error] of parserNegatives)test('C05 parser '+name,()=>code(()=>P(utf(bytes)),error));
+test('C06 invalid UTF-8 and BOM reject',()=>{
+  code(()=>P(Buffer.from([0xc0,0xaf])),'INPUT');code(()=>P(Buffer.concat([Buffer.from([239,187,191]),utf('{}\n')])),'INPUT');
+});
+test('C07 depth limit admits16 and rejects17',()=>{
+  const nest=n=>{let x=0;for(let i=1;i<n;i++)x=[x];return x;};P(J(nest(16)));code(()=>J(nest(17)),'RESOURCE_LIMIT');
+});
+test('C08 members/key/string exact boundaries',()=>{
+  const o=Object.fromEntries(Array.from({length:64},(_,i)=>['k'+i,i]));P(J(o));code(()=>J({...o,overflow:0}),'RESOURCE_LIMIT');
+  P(J({['k'.repeat(64)]:'x'.repeat(4096)}));code(()=>J({['k'.repeat(65)]:0}),'RESOURCE_LIMIT');code(()=>J('x'.repeat(4097)),'RESOURCE_LIMIT');
+  code(()=>J('𝄞'.repeat(2049)),'RESOURCE_LIMIT');
+});
+test('C09 total values boundary and bounded copy',()=>{
+  J(Array(131071).fill(0));code(()=>J(Array(131072).fill(0)),'RESOURCE_LIMIT');
+  assert.equal(snapshotBytes(utf('abc'),3).length,3);code(()=>snapshotBytes(utf('abcd'),3),'RESOURCE_LIMIT');
+});
+test('C10 shared buffers/accessors/sparse arrays/cycles/undefined reject',()=>{
+  code(()=>P(new Uint8Array(new SharedArrayBuffer(4))),'INPUT');
+  code(()=>J({get leak(){throw Error('secret');}}),'INPUT');code(()=>J(Array(1)),'INPUT');
+  const x={};x.x=x;code(()=>J(x),'INPUT');code(()=>J({x:undefined}),'INPUT');code(()=>J(new Date()),'INPUT');
+});
+test('C11 SHA256 raw/claim/candidate identity and independent proof layer',()=>{
+  assert.equal(digest(utf('abc')),'sha256:ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
+  const a={readiness:'READY'},r=readinessDigest(a);
+  assert.notEqual(proofBindingDigest(r,{locator:'one'}),proofBindingDigest(r,{locator:'two'}));
+  assert.equal(readinessDigest(a),r);assert.notEqual(r,canonicalDigest(a));
+});
+test('C12 every error has immutable fields and fixed safe diagnostic',()=>{
+  for(const row of D.errors){const e=new ReadinessError(row.suffix,'INTEGRITY','candidate');assert.equal(errorExit(e),row.exit);assert.throws(()=>{e.code='secret';});
+    const bytes=serializeError(e);assert.ok(bytes.length<=D.limits.errorRecordBytes);assert.equal(P(bytes).code,row.code);assert.ok(!bytes.includes(utf('stack')));}
+  assert.equal(serializeError(Error('token=private-secret')).includes(utf('private-secret')),false);
+});
+test('C13 errors select numeric exit then ASCII reference within a phase',()=>{
+  const checks=[()=>{throw new ReadinessError('INTEGRITY','INTEGRITY','z');},()=>{throw new ReadinessError('INPUT','INTEGRITY','b');},()=>{throw new ReadinessError('INPUT','INTEGRITY','a');}];
+  assert.throws(()=>selectPhaseError(checks,'INTEGRITY'),e=>e.code==='MO1307_INPUT'&&e.reference==='a');
+});
+const config={kind:'MemoryOSReadinessConfiguration',version:'1.0.0',profile:{id:'cicd',version:'1.0.0'},stage:'PRE_TAG_READINESS',candidate:'candidate.json',manifest:'manifest.json'};
+test('C14 exact configuration accepted and unknown fields/profiles/versions rejected',()=>{
+  validateRecord('Configuration',config);code(()=>validateRecord('Configuration',{...config,token:'secret'}),'INPUT');
+  code(()=>validateRecord('Configuration',{...config,version:'2.0.0'}),'EVIDENCE_VERSION');
+  code(()=>validateRecord('Configuration',{...config,profile:{id:'core',version:'1.0.0'}}),'PROFILE_MISMATCH');
+});
+test('C15 no discovery or output/trust fields in configuration',()=>{
+  for(const key of ['outputRoot','authority','trustedAuthorityDigest','environment','include','extends'])code(()=>validateRecord('Configuration',{...config,[key]:'x'}),'INPUT');
+});
+test('C16 deterministic blocker ID excludes mutable claim provenance',()=>{
+  const input={gateId:'semantic',reasonCode:'CHECK_FAILED',checkCode:'SEMANTIC_PARITY',conditionId:null};
+  assert.match(blockerId(input),/^blocker\.[0-9a-f]{64}$/u);assert.equal(blockerId(input),blockerId({...input,claimDigest:'unused'}));
+});
+test('C17 error schema is closed and operational outcomes are not readiness states',()=>{
+  code(()=>validateSchema('ReadinessState','MO1307_INPUT'),'INPUT');
+  code(()=>validateRecord('Error',{...P(serializeError(new ReadinessError('INPUT','INTEGRITY'))),message:'secret'}),'INPUT');
+});
+test('C18 no future runtime result from foundation public entry points',async()=>{
+  await assert.rejects(api.evaluateReadiness({}),e=>e.code==='MO1307_INPUT');
+  await assert.rejects(api.verifyReadiness({}),e=>e.code==='MO1307_INPUT');
+  const controller=new AbortController();controller.abort();
+  await assert.rejects(api.evaluateReadiness({}, {signal:controller.signal}),e=>e.code==='MO1307_CANCELLED');
+});
+test('C19 shared definitions are deeply immutable',()=>{
+  assert.ok(Object.isFrozen(D));assert.ok(Object.isFrozen(D.limits));assert.throws(()=>{D.limits.apiDeadlineMs=1;});
+});
+test('C20 generated definitions equal source canonical bytes',()=>{
+  const file=new URL('../../memoryos-readiness/contracts/definitions.json',import.meta.url);
+  assert.equal(J(D).toString(),readFileSync(file,'utf8'));
+});

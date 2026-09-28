@@ -1,0 +1,53 @@
+// Assemble bounded, non-self-referential Phase 1 engineering evidence after PASS.
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createHash } from 'node:crypto';
+import assert from 'node:assert/strict';
+import { canonical } from './package.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../../..');
+const prefix='repositories/cca-conformance/';
+const evidence=prefix+'evidence/mo1307/phase1/';
+const hash=b=>'sha256:'+createHash('sha256').update(b).digest('hex');
+const read=p=>fs.readFileSync(path.join(root,p));
+const json=p=>JSON.parse(read(p));
+const write=(p,v)=>{fs.mkdirSync(path.dirname(path.join(root,p)),{recursive:true});fs.writeFileSync(path.join(root,p),canonical(v)+'\n');};
+const row=p=>{const b=read(p);return {path:p,byteLength:b.length,sha256:hash(b)};};
+const walk=p=>fs.readdirSync(path.join(root,p)).sort().flatMap(n=>{const name=p+'/'+n;return fs.statSync(path.join(root,name)).isDirectory()?walk(name):[name];});
+assert.equal(process.argv.length,2);
+assert.ok(!fs.existsSync(path.join(root,prefix+'mo1307-conformance-inventory.json')));
+const acceptance=json(evidence+'acceptance/receipt.json');assert.equal(acceptance.result,'PASS');
+const cases=[];
+for(const name of ['small','mo1306-shaped','maximum']){
+  const source='.cache/mo1307/phase1/characterization-'+name+'-1/';
+  const destination=evidence+'characterization/'+name+'/';
+  const child=json(source+'child.stdout.json'),observer=json(source+'observer.json');
+  assert.equal(child.result,'PASS');assert.equal(observer.status,'OBSERVED');assert.equal(observer.childExitCode,0);
+  assert.ok(child.worker.inputAndPureDurationMs<10000&&child.supervisorElapsedMs<10000&&observer.elapsedMs<30000);
+  assert.ok(observer.peakAggregateWorkingSetBytes>0&&observer.peakAggregateWorkingSetBytes<=536870912);
+  fs.mkdirSync(path.join(root,destination),{recursive:true});
+  for(const file of ['child.stdout.json','child.stderr.txt','observer.json'])fs.copyFileSync(path.join(root,source,file),path.join(root,destination,file));
+  cases.push({case:name,pureDurationMs:child.worker.pureDurationMs,inputAndPureDurationMs:child.worker.inputAndPureDurationMs,supervisorDurationMs:child.supervisorElapsedMs,
+    observerDurationMs:observer.elapsedMs,sampledPeakRssBytes:observer.peakAggregateWorkingSetBytes,samples:observer.samples,maximumSampleGapMs:observer.maximumObservedSampleGapMs,
+    sizes:child.worker.sizes,counts:child.worker.counts,readinessIdentity:child.worker.identities.readiness,proofIdentity:child.worker.identities.proof,
+    evidence:['child.stdout.json','child.stderr.txt','observer.json'].map(p=>row(destination+p))});
+}
+write(evidence+'characterization/summary.json',{kind:'MemoryOSReadinessPhase1CharacterizationSummary',version:'1.0.0',result:'PASS',cases,repeats:2,limitsChanged:false,
+  repeatDisposition:'Initial small case observer failed WMI/CIM access denied in sandbox; first permission-corrected repeat had only a startup sample due to CIM latency. Both are retained under development. Second additional small repeat uses a 2000 ms retained-buffer observation hold and requires later active samples. Pure-operation timing excludes the hold. Two other cases run once each.',
+  maximumReconstruction:'Pinned Node tools/mo1307-phase1/generate-fixtures.mjs --maximum-dir .cache/mo1307/phase1/characterization-inputs/maximum',
+  limitations:['Phase 1 structural/reference operations only; full acquisition/evaluation and installed runtime certification remain future work.','External RSS samples include the Node worker and discovered attributable console host, exclude the engineering observer, and can miss short-lived peaks.','A 2000 ms retained-buffer hold improves visibility and is excluded from pure-operation duration.','The maximum vector fills selected simultaneous admission ceilings; remaining independent ceilings are checked structurally, not all maximized together.']});
+const files=[
+  '.gitattributes','docs/mo1307-contract-freeze-1.md','docs/mo1307-release-governance-readiness.md','docs/mo1307-phase1-foundation.md',
+  ...walk('repositories/memoryos-readiness'),...walk(prefix+'fixtures/mo1307'),...walk(prefix+'tools/mo1307-phase1'),...walk(evidence.slice(0,-1)),
+  ...['core','fixtures','native','package'].map(n=>prefix+'tests/mo1307_phase1_'+n+'_test.mjs'),
+].sort();
+assert.equal(new Set(files).size,files.length);assert.ok(!files.some(p=>p.endsWith('/binding.json')));
+const tests=acceptance.commands.find(c=>c.id==='phase1-tests');assert.equal(tests.tests.fail,0);
+const cat=json(prefix+'fixtures/mo1307/catalog.json');
+write(prefix+'mo1307-conformance-inventory.json',{kind:'MemoryOSReadinessPhase1ConformanceInventory',version:'1.0.0',milestone:'MO-1307',freezeCommit:'e0cb8e9cc6aa73e26945db30756a6667a8d9e322',
+  phase1:'FOUNDATION_CANDIDATE',phase2:'NOT_STARTED',phase3:'NOT_STARTED',release:'NOT_READY',implementationCommit:null,bindingStrategy:'Actual I1 commit/tree and this inventory digest are bound by a separate conformance-only B1 child. No future or self hash.',
+  package:{name:'memoryos-readiness',version:'0.1.0',path:'repositories/memoryos-readiness',private:true,productionDependencies:0},
+  tests:tests.tests,testCatalog:tests.testNames,
+  fixtures:{catalogEntries:cat.entries.length,positiveSchema:cat.entries.filter(x=>x.schemaValid===true).length,negativeSchema:cat.entries.filter(x=>x.schemaValid===false).length,parserNegatives:cat.entries.filter(x=>x.schemaValid===null).length},
+  phase3Certification:false,characterizationCases:3,artifacts:files.map(row)});
+process.stdout.write(JSON.stringify({result:'PASS',artifacts:files.length,tests:tests.tests,characterizationCases:cases.length})+'\n');

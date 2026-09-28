@@ -1,0 +1,78 @@
+✔ N01 pinned native runtime and fixed PowerShell installation (10.5071ms)
+✔ N02 closed CLI commands and defaults (1.9297ms)
+✔ N03 prototype-sensitive and invented commands reject as usage (1.0995ms)
+✔ N04 duplicate unknown missing extra flags reject (0.6739ms)
+✔ N05 forbidden runtime environment and Node options reject before I/O (0.5325ms)
+✔ N06 relative lexical boundaries and hostile spellings (0.6664ms)
+✔ N07 absolute roots full paths overlap and case aliases (0.7183ms)
+✔ N08 identity policy rejects any reparse flag hardlink wrong type and changes (1.2712ms)
+✔ N09 helper canonical round-trip and closed operation fields (6.7703ms)
+✔ N10 helper frame prefix truncation trailing data and caps (0.9885ms)
+✔ N11 helper sorted explicit allowlist path and per-file boundaries (1.7458ms)
+✔ N12 four serial helper requests disallow overlap fifth request and retry (6.4546ms)
+✔ N13 helper response exact snapshot identity and base64 validation (1.9948ms)
+✔ N14 helper decoded aggregate boundary and +1 (488.1231ms)
+✖ N15 native fixed PowerShell protocol guard and sanitization (996.4154ms)
+✖ N16 native helper rejects hostile operation extra fields and oversized frame (952.4218ms)
+✔ N17 native CLI emits only operational guard and no files (308.1812ms)
+✔ N18 publication exclusive create exact pending and single-file commit (48.6489ms)
+✔ N19 existing final destination never replaced and pending retained (30.2304ms)
+✔ N20 pending collision and mutation fail closed without cleanup (37.8751ms)
+✔ N21 publication byte ceiling boundary and +1 before write (42.8996ms)
+✔ N22 trusted identity hook required and identity change rejects (10.0712ms)
+✔ N23 primitive late checkpoint prevents rename and retains pending (25.5379ms)
+✔ N24 foundation has no network imports server watcher or process orchestration (6.0371ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 22
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3194.9107
+
+✖ failing tests:
+
+test at repositories\cca-conformance\tests\mo1307_phase1_native_test.mjs:179:1
+✖ N15 native fixed PowerShell protocol guard and sanitization (996.4154ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at runHelper (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:74:39)
+      at TestContext.<anonymous> (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:180:64)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at repositories\cca-conformance\tests\mo1307_phase1_native_test.mjs:184:1
+✖ N16 native helper rejects hostile operation extra fields and oversized frame (952.4218ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 0
+  
+      at runHelper (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:74:39)
+      at TestContext.<anonymous> (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:187:19)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

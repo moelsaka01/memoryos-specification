@@ -1,0 +1,52 @@
+"""Offline pinned Draft 2020-12 metaschema and fixture validation; no installation."""
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[4]
+LOCK = ROOT / 'repositories/cca-conformance/fixtures/mo1306/engineering-validator-lock.json'
+lock = json.loads(LOCK.read_text(encoding='utf-8'))
+assert sys.version.split()[0] == lock['python'], 'Pinned engineering Python required'
+for row in lock['dependencies']:
+    wheel = ROOT / '.cache/mo1306/wheels' / row['filename']
+    data = wheel.read_bytes()
+    assert len(data) == row['byteLength'] and 'sha256:' + hashlib.sha256(data).hexdigest() == row['sha256'], row['filename']
+sys.path.insert(0, str(ROOT / '.cache/mo1306/validators'))
+import importlib.metadata
+import jsonschema
+from referencing import Registry, Resource
+from referencing.exceptions import NoSuchResource
+assert importlib.metadata.version('jsonschema') == '4.26.0'
+schema_dir = ROOT / 'repositories/memoryos-readiness/schemas'
+documents = {p.name: json.loads(p.read_text(encoding='utf-8')) for p in sorted(schema_dir.glob('*.json'))}
+def retrieve(uri):
+    # Only explicit local shipped basenames are capabilities; never fetch a URI.
+    name = uri.rsplit('/', 1)[-1]
+    if name not in documents or not (uri.startswith('urn:memoryos:readiness:') or uri.startswith('https://memoryos.local/') or uri == name):
+        raise NoSuchResource(ref=uri)
+    return Resource.from_contents(documents[name])
+registry = Registry(retrieve=retrieve)
+for name, document in documents.items():
+    jsonschema.Draft202012Validator.check_schema(document)
+    registry = registry.with_resource(name, Resource.from_contents(document))
+    if '$id' in document:
+        registry = registry.with_resource(document['$id'], Resource.from_contents(document))
+fixture_root = ROOT / 'repositories/cca-conformance/fixtures/mo1307'
+catalog = json.loads((fixture_root / 'catalog.json').read_text(encoding='utf-8'))
+positive = negative = 0
+failures=[]
+for row in catalog['entries']:
+    if 'schema' not in row: continue
+    document = documents[row['schema'] + '-1.0.0.schema.json']
+    value = json.loads((fixture_root / row['path']).read_text(encoding='utf-8'))
+    validator = jsonschema.Draft202012Validator(document, registry=registry)
+    valid = validator.is_valid(value)
+    if valid != row['schemaValid']:
+        errors=list(validator.iter_errors(value))
+        failures.append({'id':row['id'],'expected':row['schemaValid'],'actual':valid,'diagnostics':[e.message[:200] for e in errors[:2]]})
+    if row['schemaValid']: positive += 1
+    else: negative += 1
+result={'kind':'MemoryOSReadinessPhase1SchemaCheck','version':'1.0.0','schemas':len(documents),'positiveFixtures':positive,'negativeFixtures':negative,'validator':'jsonschema@4.26.0','python':sys.version.split()[0],'network':False,'failures':failures,'result':'PASS' if not failures else 'FAIL'}
+print(json.dumps(result,sort_keys=True,separators=(',',':')))
+sys.exit(0 if not failures else 1)
