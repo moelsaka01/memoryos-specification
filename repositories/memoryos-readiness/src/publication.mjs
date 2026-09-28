@@ -32,11 +32,38 @@ function sameChain(before, after) {
     directory: identity.isDirectory, stage: 'PUBLICATION',
   }));
 }
+function invalidate(state) {
+  if (!state.admitted) {
+    state.failed = true; state.phase = 'FAILED';
+    state.stopPendingWrite?.(new ReadinessError('OUTPUT', 'PUBLICATION'));
+  }
+  state.consumed = true; output();
+}
 function checkpoint(state) {
+  if (state.failed) output();
   if (state.interruptionBeforeAdmission !== null) fail(state.interruptionBeforeAdmission, 'PUBLICATION', null);
   // Admission remains strictly before the deadline. Once submitted, the exact
   // non-cancellable rename must settle; it must never be raced by this check.
   state.checkpoint();
+}
+
+// Clear on the first interruption even if an abort-aware write settles later.
+async function writePending(handle, bytes, state) {
+  const abort = new AbortController();
+  let interrupted = null;
+  const stopWrite = error => {
+    interrupted ??= error; clearInterval(timer); abort.abort();
+  };
+  const timer = setInterval(() => {
+    try { checkpoint(state); } catch (error) { stopWrite(error); }
+  }, 5);
+  state.stopPendingWrite = stopWrite;
+  try {
+    await handle.writeFile(bytes, { signal: abort.signal });
+    if (interrupted) throw interrupted;
+    checkpoint(state);
+  } catch (error) { throw interrupted ?? error; }
+  finally { clearInterval(timer); state.stopPendingWrite = null; }
 }
 
 // Operational observations only: none enters normative result/proof identity.
@@ -50,7 +77,12 @@ export function publicationStatus(token) {
 export function recordPublicationInterruption(token, code) {
   const state = stateOf(token);
   if (!['MO1307_TIMEOUT', 'MO1307_CANCELLED'].includes(code)) output();
-  if (!state.admitted) state.interruptionBeforeAdmission ??= code.slice(7);
+  if (!state.admitted) {
+    state.interruptionBeforeAdmission ??= code.slice(7);
+    // Supervisor stop notification clears operation-owned polling before it
+    // returns to the caller, even when writeFile itself has not settled yet.
+    state.stopPendingWrite?.(new ReadinessError(state.interruptionBeforeAdmission, 'PUBLICATION'));
+  }
   else if (code === 'MO1307_TIMEOUT') state.deadlineExpiredAfterAdmission = true;
   else state.cancelledAfterAdmission = true;
   return publicationStatus(token);
@@ -134,11 +166,13 @@ export async function createPublication(root, { inspection } = {}) {
     check();
     // No recursive mkdir and no pre-existing destination is accepted.
     await fs.mkdir(root, { recursive: false, mode: 0o700 });
+    check();
     const created = await chainAt(inspection, 'INSPECT_OUTPUT_ROOT', root);
     sameChain(before, created.slice(0, -1));
+    check();
     const token = Object.freeze(Object.create(null));
     tokens.set(token, { root, inspection, checkpoint: check, chain: created, pendingChain: null,
-      bytes: null, staged: false, consumed: false, busy: false, phase: 'PRE_SUBMISSION', admitted: false,
+      bytes: null, staged: false, consumed: false, busy: false, failed: false, stopPendingWrite: null, phase: 'PRE_SUBMISSION', admitted: false,
       interruptionBeforeAdmission: null, deadlineExpiredAfterAdmission: false,
       cancelledAfterAdmission: false, namespaceVerified: false, dispositionDeadline: null });
     return token;
@@ -147,7 +181,7 @@ export async function createPublication(root, { inspection } = {}) {
 
 export async function stagePublication(token, input) {
   const state = stateOf(token);
-  if (state.consumed || state.staged || state.busy) output();
+  if (state.consumed || state.staged || state.busy || state.failed) invalidate(state);
   state.busy = true;
   try {
     return await guarded(async () => {
@@ -158,36 +192,43 @@ export async function stagePublication(token, input) {
       checkpoint(state);
       sameChain(state.chain, await chainAt(state.inspection, 'CHECK_STAGE_ROOT', state.root));
       const pending = path.win32.join(state.root, PENDING);
+      checkpoint(state);
       // Exclusive creation prevents replacement even before the commit point.
       const handle = await fs.open(pending, 'wx+', 0o600);
       try {
         checkpoint(state);
-        await handle.writeFile(bytes);
+        await writePending(handle, bytes, state);
         checkpoint(state);
         await handle.sync();
+        checkpoint(state);
         const stat = await handle.stat();
+        checkpoint(state);
         if (!stat.isFile() || stat.nlink !== 1 || stat.size !== bytes.byteLength) output();
         const verify = Buffer.alloc(bytes.byteLength + 1);
         let used = 0;
         while (used < verify.length) {
+          checkpoint(state);
           const { bytesRead } = await handle.read(verify, used, verify.length - used, used);
+          checkpoint(state);
           if (bytesRead === 0) break;
           used += bytesRead;
         }
         if (used !== bytes.byteLength || !verify.subarray(0, used).equals(bytes)) output();
       } finally { await handle.close(); }
+      checkpoint(state);
       const pendingChain = await chainAt(state.inspection, 'INSPECT_PENDING', state.root, PENDING);
       sameChain(state.chain, pendingChain.slice(0, -1));
       if (pendingChain.at(-1).byteLength !== bytes.byteLength) output();
+      checkpoint(state);
       state.bytes = bytes; state.pendingChain = pendingChain; state.staged = true;
     });
-  } catch (error) { state.consumed = true; throw error; }
+  } catch (error) { state.failed = true; state.phase = 'FAILED'; state.consumed = true; throw error; }
   finally { state.busy = false; }
 }
 
 export async function finalizePublication(token) {
   const state = stateOf(token);
-  if (state.consumed || !state.staged || state.busy) output();
+  if (state.consumed || !state.staged || state.busy || state.failed) invalidate(state);
   state.consumed = true;
   return guarded(async () => { try {
     checkpoint(state);
@@ -195,12 +236,16 @@ export async function finalizePublication(token) {
     const final = path.win32.join(state.root, FINAL);
     const handle = await fs.open(pending, 'r');
     try {
+      checkpoint(state);
       const stat = await handle.stat();
+      checkpoint(state);
       if (!stat.isFile() || stat.nlink !== 1 || stat.size !== state.bytes.byteLength) output();
       const verify = Buffer.alloc(state.bytes.byteLength + 1);
       let used = 0;
       while (used < verify.length) {
+        checkpoint(state);
         const { bytesRead } = await handle.read(verify, used, verify.length - used, used);
+        checkpoint(state);
         if (bytesRead === 0) break;
         used += bytesRead;
       }
@@ -208,6 +253,7 @@ export async function finalizePublication(token) {
     } finally { await handle.close(); }
     // One native operation checks the full pending chain and final absence
     // after the final exact-byte read has closed its handle.
+    checkpoint(state);
     const finalChain = await chainAt(state.inspection, 'CHECK_FINALIZATION', state.root, PENDING);
     sameChain(state.chain, finalChain.slice(0, -1));
     sameChain(state.pendingChain, finalChain);

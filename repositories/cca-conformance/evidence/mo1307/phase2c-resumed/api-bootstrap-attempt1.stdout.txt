@@ -1,0 +1,78 @@
+TAP version 13
+# Subtest: APIBOOT01 earlier malformed config dominates later oversized evidence
+ok 1 - APIBOOT01 earlier malformed config dominates later oversized evidence
+  ---
+  duration_ms: 20.0405
+  type: 'test'
+  ...
+# Subtest: APIBOOT02 config shape error dominates wrong authority pin in same phase
+ok 2 - APIBOOT02 config shape error dominates wrong authority pin in same phase
+  ---
+  duration_ms: 11.4586
+  type: 'test'
+  ...
+# Subtest: APIBOOT03 malformed config dominates oversized authority safely
+ok 3 - APIBOOT03 malformed config dominates oversized authority safely
+  ---
+  duration_ms: 4.6972
+  type: 'test'
+  ...
+# Subtest: APIBOOT04 exact manifest ENVELOPE cap applied before bytes copy
+not ok 4 - APIBOOT04 exact manifest ENVELOPE cap applied before bytes copy
+  ---
+  duration_ms: 0.9019
+  type: 'test'
+  location: 'C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\repositories\\cca-conformance\\tests\\mo1307_phase2c_api_bootstrap_test.mjs:18:1'
+  failureType: 'testCodeFailure'
+  error: 'Unexpected non-whitespace character after JSON at position 3 (line 1 column 4)'
+  code: 'ERR_TEST_FAILURE'
+  name: 'SyntaxError'
+  stack: |-
+    JSON.parse (<anonymous>)
+    TestContext.<anonymous> (file:///C:/Users/melsa/Documents/Codex/cca-mo1307-2c-resumed/repositories/cca-conformance/tests/mo1307_phase2c_api_bootstrap_test.mjs:19:57)
+    Test.runInAsyncScope (node:async_hooks:227:14)
+    Test.run (node:internal/test_runner/test:1402:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+    Test.postRun (node:internal/test_runner/test:1542:19)
+    Test.run (node:internal/test_runner/test:1467:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: APIBOOT05 exact manifest file set checked before copying unknown file
+ok 5 - APIBOOT05 exact manifest file set checked before copying unknown file
+  ---
+  duration_ms: 11.3976
+  type: 'test'
+  ...
+# Subtest: APIBOOT06 snapshots remain detached and byte-identical
+ok 6 - APIBOOT06 snapshots remain detached and byte-identical
+  ---
+  duration_ms: 10.0898
+  type: 'test'
+  ...
+# Subtest: APIBOOT07 TIMEOUT interruption dominates collected parse errors
+ok 7 - APIBOOT07 TIMEOUT interruption dominates collected parse errors
+  ---
+  duration_ms: 0.3087
+  type: 'test'
+  ...
+# Subtest: APIBOOT07 CANCELLED interruption dominates collected parse errors
+ok 8 - APIBOOT07 CANCELLED interruption dominates collected parse errors
+  ---
+  duration_ms: 0.1901
+  type: 'test'
+  ...
+# Subtest: APIBOOT08 hostile typed-array byteLength override is never invoked
+ok 9 - APIBOOT08 hostile typed-array byteLength override is never invoked
+  ---
+  duration_ms: 11.4074
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 8
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 209.9735

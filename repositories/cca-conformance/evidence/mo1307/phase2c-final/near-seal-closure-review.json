@@ -1,0 +1,131 @@
+{
+  "kind": "MO1307Phase2CFinalNearSealClosureReview",
+  "version": "1.0.0",
+  "result": "PASS",
+  "checkedAt": "2026-09-28T21:46:24.837Z",
+  "main": {
+    "path": "C:/Users/melsa/Documents/Codex/cca-workspace",
+    "head": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+    "clean": true,
+    "modified": false
+  },
+  "sourceWorktreeHead": "0d68ac211b3b204635e7af252cd693dce5bd70b1",
+  "streams": [
+    {
+      "stream": "2a",
+      "commit": "b628349b4e678a8f71086b1b5c807ffe2edf9a5d",
+      "classification": "UNCHANGED_REUSABLE",
+      "worktree": {
+        "path": "C:/Users/melsa/Documents/Codex/cca-mo1307-2a",
+        "head": "b628349b4e678a8f71086b1b5c807ffe2edf9a5d",
+        "clean": true,
+        "modified": false
+      },
+      "sharedCurrentClosureFiles": 8,
+      "acceptedCommitClosureFiles": 2,
+      "retainedAcceptance": {
+        "tests": {
+          "tests": 84,
+          "pass": 84,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "exactVectors": 16
+      },
+      "semanticTestsRerun": false
+    },
+    {
+      "stream": "2b",
+      "commit": "b2877ab32c317bb67896414ba9cec64f6f436ca5",
+      "classification": "UNCHANGED_REUSABLE",
+      "worktree": {
+        "path": "C:/Users/melsa/Documents/Codex/cca-mo1307-2b",
+        "head": "b2877ab32c317bb67896414ba9cec64f6f436ca5",
+        "clean": true,
+        "modified": false
+      },
+      "sharedCurrentClosureFiles": 6,
+      "acceptedCommitClosureFiles": 4,
+      "retainedAcceptance": {
+        "tests": {
+          "tests": 172,
+          "pass": 172,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0
+        },
+        "exactVectors": 16
+      },
+      "semanticTestsRerun": false
+    }
+  ],
+  "history": {
+    "preservedSnapshotsVerified": 593,
+    "immutableCurrentHistoricalFiles": 547,
+    "originalStoppedArtifactsVerified": 5,
+    "stoppedReportsUnchanged": true
+  },
+  "testClosures": [
+    {
+      "directory": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-attempt3",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-attempt3/receipt.json",
+        "byteLength": 1459,
+        "sha256": "sha256:0130dd05ea78e9e4e54c88391f5a1071593bdcdc871594ba075c0dc6546ec4a5"
+      },
+      "tests": {
+        "tests": 1,
+        "pass": 1,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "boundSourceFiles": 86,
+      "currentSourceBytesUnchanged": true
+    },
+    {
+      "directory": "repositories/cca-conformance/evidence/mo1307/phase2c-final/phase1-attempt1",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/phase1-attempt1/receipt.json",
+        "byteLength": 1678,
+        "sha256": "sha256:bd88458f3eec49bbf96e24798208af2834f4cc4b9a4bcd99d2ca3100465d5a73"
+      },
+      "tests": {
+        "tests": 105,
+        "pass": 105,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "boundSourceFiles": 682,
+      "currentSourceBytesUnchanged": true
+    }
+  ],
+  "packageSequence": "Current source closure excludes root sbom.spdx.json and distribution-manifest.json; regenerate and verify those final metadata bindings only after all relevant tests, then ensure other source bytes remain unchanged.",
+  "exact2DHandoff": {
+    "phase2B": [
+      "verifyEvidence(input)",
+      "verifyResultEvidence(input,resultBytes)"
+    ],
+    "phase2BReturn": [
+      "projection",
+      "audit",
+      "diagnostics"
+    ],
+    "phase2A": [
+      "computeReadiness(verified)",
+      "compareReadinessResult(verified,suppliedResultBytes)",
+      "projectReadinessResult(result,format)"
+    ],
+    "adapter": "Select candidate,candidateDigest,profile,stage,authorityIdentityDigest,claims,graph,graphDigest from projection; scopeId=projection.normalizedAuthority.scopeId; slots=projection.normalizedAuthority.slots; audit=returned audit. Do not pass diagnostics or invent authority."
+  },
+  "noProductOrTestExecution": true,
+  "noOtherWorktreeWrites": true,
+  "noCacheDirectoriesCreated": true,
+  "noSemanticIntegration": true
+}

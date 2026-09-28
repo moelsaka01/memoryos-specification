@@ -1,0 +1,35 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../../..');
+const evidence='repositories/cca-conformance/evidence/mo1307/phase2c-final';
+const member='repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs';
+const base='0d68ac211b3b204635e7af252cd693dce5bd70b1',authority='08de262d1ef3149b6e540bcaea0cf910e02732bd';
+const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
+const row=bytes=>({byteLength:bytes.length,sha256:hash(bytes)});
+const git=ref=>{const result=spawnSync('C:/Program Files/Git/cmd/git.exe',['-c','safe.directory='+root,'-C',root,'show',ref+':'+member],{windowsHide:true});assert.equal(result.status,0);return result.stdout;};
+const baseBytes=git(base),authorityBytes=git(authority),dirty=fs.readFileSync(path.join(root,member));
+const inventory=JSON.parse(fs.readFileSync(path.join(root,evidence,'preservation/inventory.json')));
+const preserved=inventory.rows.find(item=>item.path===member);assert.ok(preserved);
+assert.equal(hash(dirty),preserved.sha256.replace(/^sha256:/,''));
+const old="    assert.doesNotMatch(source, /\\b(?:fetch|WebSocket|createServer|watch|watchFile|setInterval)\\s*\\(/);";
+assert.equal(dirty.toString().split(old).length,2);
+const authorityText=authorityBytes.toString();
+const start=authorityText.indexOf('    // Invocation-scoped deadline timers are permitted.');
+const end=authorityText.indexOf('\n',authorityText.indexOf('assert.doesNotMatch(source, /\\b(?:fetch|WebSocket|createServer|watch|watchFile)',start));
+assert.ok(start>0&&end>start);
+const replacement=authorityText.slice(start,end);
+const merged=Buffer.from(dirty.toString().replace(old,replacement));
+const before=dirty.toString().split("test('N24")[0],after=merged.toString().split("test('N24")[0];assert.equal(before,after);
+assert.ok(merged.includes(Buffer.from('N15 native fixed PowerShell snapshots and checked inspection sanitization')));
+assert.ok(merged.includes(Buffer.from('N17 native CLI acquires inputs then retains semantic integration guard')));
+assert.ok(merged.includes(Buffer.from("'-ExecutionPolicy', 'Bypass', '-File', helper")));
+fs.writeFileSync(path.join(root,member),merged);
+const receipt={kind:'MO1307Phase2CPhase1NativeThreeWayResolution',result:'PASS',member,base:{commit:base,...row(baseBytes)},dirty:row(dirty),authority:{commit:authority,...row(authorityBytes)},resolved:row(merged),
+ decisions:['Preserve dirty N15 actual native snapshots/inspection witness instead of C2FB foundation guard.','Preserve dirty N17 real CLI acquisition followed by semantic-integration guard; no fabricated semantic success.','Adopt exact C2FB N24 comment and narrowed no-network/server/watcher expression.','Retain internally fixed process-scoped Bypass launch used by native helper witnesses.','Keep 105-test suite cardinality: no additional top-level Phase1 test or silent exclusion.'],
+ preN24BytesUnchanged:true,authorityN24FragmentExact:true,historicalEvidenceModified:false,testsExecuted:false};
+fs.writeFileSync(path.join(root,evidence,'overlap-phase1-native.json'),JSON.stringify(receipt,null,2)+'\n',{flag:'wx'});
+process.stdout.write(JSON.stringify(receipt)+'\n');

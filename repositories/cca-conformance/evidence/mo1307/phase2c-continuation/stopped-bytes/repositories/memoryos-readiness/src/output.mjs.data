@@ -1,0 +1,47 @@
+import { performance } from 'node:perf_hooks';
+import { DEFINITIONS } from './constants.mjs';
+import { fail, operationalError, serializeError } from './errors.mjs';
+
+// A complete LF-terminated bounded write is required. Callback, close/error,
+// cancellation and absolute deadline race through one terminal settlement.
+export function writeSummary(stream, bytes, supervisor) {
+  if (!(bytes instanceof Uint8Array) || bytes.byteLength === 0 || bytes.byteLength > DEFINITIONS.limits.textStdoutBytes || bytes.at(-1) !== 10) fail('OUTPUT', 'PUBLICATION');
+  supervisor.checkpoint('PUBLICATION');
+  return new Promise((resolve, reject) => {
+    let done = false, timer;
+    const finish = error => {
+      if (done) return;
+      done = true;
+      clearInterval(timer);
+      stream.off('error', onError); stream.off('close', onClose);
+      if (error) { stream.destroy(); reject(error); } else resolve();
+    };
+    const onError = () => { try { fail('OUTPUT', 'PUBLICATION'); } catch (error) { finish(error); } };
+    const onClose = () => onError();
+    stream.once('error', onError); stream.once('close', onClose);
+    timer = setInterval(() => { try { supervisor.checkpoint('PUBLICATION'); } catch (error) { finish(operationalError(error)); } }, 5);
+    try {
+      stream.write(Buffer.from(bytes), error => {
+        if (done) return;
+        if (error) { onError(); return; }
+        try { supervisor.checkpoint('PUBLICATION'); finish(); } catch (failure) { finish(failure); }
+      });
+    } catch { onError(); }
+  });
+}
+
+// Diagnostics share the ORIGINAL failed-call cleanup deadline. They never get
+// another allowance after a child has consumed the two-second cleanup budget.
+export async function writeDiagnostic(stream, error, cleanupDeadline) {
+  const remaining = cleanupDeadline - performance.now();
+  if (remaining <= 0) return;
+  const bytes = serializeError(error);
+  if (bytes.byteLength > DEFINITIONS.limits.errorRecordBytes || bytes.byteLength > DEFINITIONS.limits.stderrBytes) return;
+  await new Promise(resolve => {
+    let done = false, timer;
+    const finish = () => { if (done) return; done = true; clearTimeout(timer); stream.off('error', finish); resolve(); };
+    stream.once('error', finish);
+    timer = setTimeout(() => { stream.destroy(); finish(); }, Math.max(1, Math.floor(remaining)));
+    try { stream.write(bytes, finish); } catch { finish(); }
+  });
+}

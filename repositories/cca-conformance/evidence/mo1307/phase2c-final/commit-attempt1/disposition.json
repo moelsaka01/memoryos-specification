@@ -1,0 +1,19 @@
+{
+  "kind": "MO1307CommitAttemptDisposition",
+  "classification": "HARNESS_DEFECT",
+  "result": "PRE_COMMIT_STOPPED_NO_BRANCH_MOVEMENT",
+  "headRetained": "0d68ac211b3b204635e7af252cd693dce5bd70b1",
+  "failedTree": "1f18b7b44a7d72255b668375096954fb167fd9a6",
+  "reason": "Full proposed-tree whitespace check includes newly added files; earlier worktree diff did not. Five historical/executed harness files retain a final blank line; two new Python verifier files had CRCRLF at their last line from text-mode conversion.",
+  "correction": "Preserve every old byte and failed seal; narrowly document final-blank-line whitespace policy for the five exact captures; normalize only the two new engineering Python verifiers to LF, keep logic unchanged except diagnostic stdout capture and exclusive v2 seal filenames. No production/test/fixture/native-driver bytes changed.",
+  "preservedInventory": "accepted-content-inventory.json remains the first uncommitted candidate inventory, not final commit acceptance; v2 inventory will supersede it.",
+  "exactCapturePaths": [
+    "repositories/cca-conformance/tools/mo1307-phase2c-continuation/finalize-stop.mjs",
+    "repositories/cca-conformance/tools/mo1307-phase2c-final/native-surfaces-remaining.mjs",
+    "repositories/cca-conformance/tools/mo1307-phase2c-final/native-surfaces.mjs",
+    "repositories/cca-conformance/tools/mo1307-phase2c-resumed/finalize-stop.mjs",
+    "repositories/cca-conformance/tools/mo1307-phase2c-resumed/production-launch-witness.mjs"
+  ],
+  "noCommitCreated": true,
+  "noResetCleanStashRebaseMerge": true
+}

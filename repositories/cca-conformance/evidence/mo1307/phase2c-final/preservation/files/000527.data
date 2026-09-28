@@ -1,0 +1,1 @@
+{"classification":"HARNESS_DEFECT","attempt":"runtime/attempt2","failure":"R16 passed an already synchronously throwing terminal transport call into assert.rejects instead of assert.throws.","productChangeRequired":false,"correction":"Use assert.throws for the synchronous terminal checkpoint; retain original failure and run one regression.","counts":{"pass":32,"fail":1}}

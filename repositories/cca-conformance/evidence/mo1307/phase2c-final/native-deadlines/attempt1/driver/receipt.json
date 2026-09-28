@@ -1,0 +1,455 @@
+{
+  "kind": "MO1307FinalNativeDeadlines",
+  "result": "FAIL",
+  "failure": {
+    "code": "ERR_ASSERTION",
+    "message": "aggregate-20000ms-excludes-worker elapsed=5026.0324",
+    "stack": "AssertionError [ERR_ASSERTION]: aggregate-20000ms-excludes-worker elapsed=5026.0324\n    at run (file:///C:/Users/melsa/Documents/Codex/cca-mo1307-2c-resumed/repositories/cca-conformance/tools/mo1307-phase2c-final-native/deadlines.mjs:103:29)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/melsa/Documents/Codex/cca-mo1307-2c-resumed/repositories/cca-conformance/tools/mo1307-phase2c-final-native/deadlines.mjs:151:21"
+  },
+  "runtime": {
+    "node": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "dependencies": [
+    {
+      "file": "src/runtime.mjs",
+      "sha256": "bd1bd5e810fad661d291ddfc17251c39c02fdaba11cfbe6069beb4cdf54d1124"
+    },
+    {
+      "file": "src/helper-transport.mjs",
+      "sha256": "ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55"
+    },
+    {
+      "file": "src/helper-protocol.mjs",
+      "sha256": "96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "file": "src/constants.mjs",
+      "sha256": "987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9"
+    },
+    {
+      "file": "helpers/windows-inspect.ps1",
+      "sha256": "ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+    }
+  ],
+  "cases": [
+    {
+      "name": "timely-helper",
+      "outcome": "PASS",
+      "elapsedMs": 1465.4541,
+      "error": null,
+      "detail": {
+        "status": "OK",
+        "identity": {
+          "attributes": 32,
+          "byteLength": 3,
+          "fileId": "0016000000138858",
+          "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-2c-resumed\\.cache\\mo1307-final-native\\deadlines-26284\\input\\small.bin",
+          "isDirectory": false,
+          "linkCount": 1,
+          "volumeSerial": "bec58120"
+        }
+      },
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 30070.6553,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 1453.7685999999999,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": null,
+        "terminalAt": null,
+        "cleanupDeadline": null,
+        "events": [
+          {
+            "type": "start",
+            "at": 75.4695,
+            "role": "helper",
+            "deadline": 5075.3846,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 86.1957,
+            "role": "helper",
+            "pid": 25672,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 1529.16,
+            "role": "helper",
+            "ordinal": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "cancel-before-helper",
+      "outcome": "PASS",
+      "elapsedMs": 0.9374000000000251,
+      "error": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 31536.761,
+        "helpers": 0,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_CANCELLED",
+        "terminalAt": 1537.4079,
+        "cleanupDeadline": 3537.4079,
+        "events": [
+          {
+            "type": "terminal",
+            "at": 1537.4202,
+            "code": "MO1307_CANCELLED",
+            "stage": "LAUNCH"
+          }
+        ]
+      }
+    },
+    {
+      "name": "helper-5000ms-timeout",
+      "outcome": "PASS",
+      "elapsedMs": 5027.3817,
+      "error": {
+        "code": "MO1307_TIMEOUT",
+        "message": "MO1307_TIMEOUT"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 31538.2657,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": "helper",
+        "cleanupConfirmed": false,
+        "publication": null,
+        "terminalCode": "MO1307_TIMEOUT",
+        "terminalAt": 6553.959,
+        "cleanupDeadline": 8553.958999999999,
+        "events": [
+          {
+            "type": "start",
+            "at": 1538.9731,
+            "role": "helper",
+            "deadline": 6538.9462,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 1550.4434,
+            "role": "helper",
+            "pid": 3092,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "terminal",
+            "at": 6553.9693,
+            "code": "MO1307_TIMEOUT",
+            "stage": "ACQUISITION"
+          },
+          {
+            "type": "cleanup",
+            "at": 6565.5636,
+            "role": "helper",
+            "confirmed": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "late-native-helper-success-rejected",
+      "outcome": "PASS",
+      "elapsedMs": 6054.390699999999,
+      "error": {
+        "code": "MO1307_TIMEOUT",
+        "message": "MO1307_TIMEOUT"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 36569.2234,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_TIMEOUT",
+        "terminalAt": 11571.0434,
+        "cleanupDeadline": 13571.0434,
+        "events": [
+          {
+            "type": "start",
+            "at": 6569.9317,
+            "role": "helper",
+            "deadline": 11569.9118,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 6579.8775,
+            "role": "helper",
+            "pid": 19888,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "terminal",
+            "at": 11571.0744,
+            "code": "MO1307_TIMEOUT",
+            "stage": "ACQUISITION"
+          },
+          {
+            "type": "cleanup",
+            "at": 12623.4987,
+            "role": "helper",
+            "confirmed": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "cancel-during-helper",
+      "outcome": "PASS",
+      "elapsedMs": 1532.5465000000004,
+      "error": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 42625.7706,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": "helper",
+        "cleanupConfirmed": false,
+        "publication": null,
+        "terminalCode": "MO1307_CANCELLED",
+        "terminalAt": 14138.1055,
+        "cleanupDeadline": 16138.1055,
+        "events": [
+          {
+            "type": "start",
+            "at": 12626.505,
+            "role": "helper",
+            "deadline": 17626.4634,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 12637.6404,
+            "role": "helper",
+            "pid": 26124,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "terminal",
+            "at": 14138.1227,
+            "code": "MO1307_CANCELLED",
+            "stage": "ACQUISITION"
+          },
+          {
+            "type": "cleanup",
+            "at": 14158.2088,
+            "role": "helper",
+            "confirmed": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "cancel-between-helper-worker",
+      "outcome": "PASS",
+      "elapsedMs": 1821.2751000000007,
+      "error": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 44162.4395,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 1820.1978,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_CANCELLED",
+        "terminalAt": 15983.4347,
+        "cleanupDeadline": 17983.434699999998,
+        "events": [
+          {
+            "type": "start",
+            "at": 14163.1227,
+            "role": "helper",
+            "deadline": 19163.1057,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 14178.1029,
+            "role": "helper",
+            "pid": 25904,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 15983.3093,
+            "role": "helper",
+            "ordinal": 1
+          },
+          {
+            "type": "terminal",
+            "at": 15983.4408,
+            "code": "MO1307_CANCELLED",
+            "stage": "LAUNCH"
+          }
+        ]
+      }
+    },
+    {
+      "name": "aggregate-20000ms-excludes-worker",
+      "outcome": "PASS",
+      "elapsedMs": 5026.0324,
+      "error": {
+        "code": "MO1307_TIMEOUT",
+        "message": "MO1307_TIMEOUT"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 45984.2986,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": "helper",
+        "cleanupConfirmed": false,
+        "publication": null,
+        "terminalCode": "MO1307_TIMEOUT",
+        "terminalAt": 20987.2835,
+        "cleanupDeadline": 22987.2835,
+        "events": [
+          {
+            "type": "start",
+            "at": 15985.5942,
+            "role": "helper",
+            "deadline": 20985.5798,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 15997.5732,
+            "role": "helper",
+            "pid": 20872,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "terminal",
+            "at": 20987.3309,
+            "code": "MO1307_TIMEOUT",
+            "stage": "ACQUISITION"
+          },
+          {
+            "type": "cleanup",
+            "at": 21010.2159,
+            "role": "helper",
+            "confirmed": false
+          }
+        ]
+      }
+    }
+  ],
+  "invocations": [
+    {
+      "name": "helper-5000ms-timeout",
+      "ordinal": "001",
+      "pid": 3092,
+      "startedAt": 1550.3415,
+      "eofDelayMs": 6000,
+      "lateCleanup": false,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": null,
+      "closedAt": 6564.5076,
+      "exitCode": null
+    },
+    {
+      "name": "late-native-helper-success-rejected",
+      "ordinal": "002",
+      "pid": 19888,
+      "startedAt": 6579.7661,
+      "eofDelayMs": 5250,
+      "lateCleanup": true,
+      "stdoutBytes": 798,
+      "stderrBytes": 0,
+      "killRequestedAt": 11571.3015,
+      "responseAt": 12575.5776,
+      "closedAt": 12620.2702,
+      "exitCode": 0
+    },
+    {
+      "name": "cancel-during-helper",
+      "ordinal": "003",
+      "pid": 26124,
+      "startedAt": 12637.5522,
+      "eofDelayMs": 6000,
+      "lateCleanup": false,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": null,
+      "closedAt": 14156.4465,
+      "exitCode": null
+    },
+    {
+      "name": "cancel-between-helper-worker",
+      "ordinal": "004",
+      "pid": 25904,
+      "startedAt": 14177.984,
+      "eofDelayMs": 0,
+      "lateCleanup": false,
+      "stdoutBytes": 798,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 15949.673,
+      "closedAt": 15980.9841,
+      "exitCode": 0
+    },
+    {
+      "name": "aggregate-20000ms-excludes-worker",
+      "ordinal": "005",
+      "pid": 20872,
+      "startedAt": 15997.5172,
+      "eofDelayMs": 4200,
+      "lateCleanup": false,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": null,
+      "closedAt": 21008.1592,
+      "exitCode": null
+    }
+  ],
+  "workerObservations": [],
+  "limitations": [
+    "Delay controls are engineering-only lifecycle seams; all helper response frames and Windows identities are real native observations.",
+    "Timed-out or cancelled helpers lacking a valid frame remain conservatively unconfirmed in product state; the external observer separately checks no remaining owned process.",
+    "This timing campaign supplies canned worker bytes and does not certify 2A/2B semantics."
+  ]
+}

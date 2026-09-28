@@ -1,20 +1,21 @@
 #!/usr/bin/env node
-import { parseCliArgs, validateLaunch } from '../src/cli-args.mjs';
-import { errorExit, fail, operationalError, serializeError } from '../src/errors.mjs';
+import { performance } from 'node:perf_hooks';
+import { runCli } from '../src/cli.mjs';
+import { errorExit, operationalError } from '../src/errors.mjs';
 
-// Closed diagnostics must not be replaced by Node's raw unhandled stream stack.
+const started = performance.now();
+const controller = new AbortController();
+const cancel = () => controller.abort();
+process.once('SIGINT', cancel);
+process.once('SIGTERM', cancel);
+// Never expose a raw Node stream exception or helper diagnostic.
 process.stderr.on('error', () => { process.exitCode = 21; });
-
+process.stdout.on('error', () => {});
 try {
-  validateLaunch({ platform: process.platform, arch: process.arch, version: process.version,
-    execArgv: process.execArgv, environment: process.env });
-  parseCliArgs(process.argv.slice(2));
-  // Phase 1 establishes the closed launch/path contract only. Full bounded
-  // configuration/snapshot acquisition and assessment are Phase 2C/2A/2B work.
-  // No input is read, output created or fake readiness returned by this guard.
-  fail('INTERNAL', 'ACQUISITION', null);
+  const result = await runCli(process.argv.slice(2), { signal: controller.signal, started, stderr: process.stderr });
+  process.exitCode = result.exitCode;
 } catch (error) {
-  const safe = operationalError(error, 'ACQUISITION');
-  process.exitCode = errorExit(safe);
-  process.stderr.write(serializeError(safe));
+  process.exitCode = errorExit(operationalError(error, 'ACQUISITION'));
+} finally {
+  process.off('SIGINT', cancel); process.off('SIGTERM', cancel);
 }

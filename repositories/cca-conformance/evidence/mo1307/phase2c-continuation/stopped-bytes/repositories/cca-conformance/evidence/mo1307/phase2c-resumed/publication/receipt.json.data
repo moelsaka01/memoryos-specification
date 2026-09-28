@@ -1,0 +1,97 @@
+{
+  "kind": "MO1307ResumedPublicationRegression",
+  "version": "1.0.0",
+  "result": "PASS",
+  "command": {
+    "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1304-phase3-toolchain\\node-v24.21.0-win-x64\\node.exe",
+    "args": [
+      "--test",
+      "--test-reporter=tap",
+      "--test-concurrency=1",
+      "repositories/cca-conformance/tests/mo1307_phase2c_publication_test.mjs",
+      "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs"
+    ]
+  },
+  "runtime": {
+    "version": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "counts": {
+    "tests": 79,
+    "pass": 79,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "publicationGroups": 55,
+  "publicationNegativeGroups": 53,
+  "publicationPositiveGroups": 2,
+  "correctionGroups": 24,
+  "exit": 0,
+  "error": null,
+  "sources": [
+    {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 7124,
+      "sha256": "sha256:357e46cd8299c4f30b96e865b348ecd730f0ad2678a0a51220393654a033b8c8"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_publication_test.mjs",
+      "byteLength": 11774,
+      "sha256": "sha256:0dc51a50b88ee7ae4b2a9042dc5951436760a0c3cb6595fa3ef0a434afc1271f"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs",
+      "byteLength": 16808,
+      "sha256": "sha256:07564080e458e97eb9d35154b2f44eff6d566df437cdcc9ca0ca701165133d1f"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs",
+      "byteLength": 6049,
+      "sha256": "sha256:6632cd8d53156c7b2b600b2e57382ffa24e5fb6a4105488f5947f4bf40062009"
+    }
+  ],
+  "scope": "FRAMED_ENGINEERING_DOUBLE_AND_REAL_OWNED_FILE_IO; NOT_NATIVE_HANDLE_CERTIFICATION",
+  "nativeHelperInvoked": false,
+  "priorFailure": {
+    "classification": "PRODUCT_DEFECT",
+    "probes": [
+      "PTERM01",
+      "PTERM02"
+    ],
+    "failed": 2,
+    "stdout": "terminality-attempt1.stdout.txt",
+    "stderr": "terminality-attempt1.stderr.txt",
+    "sourceBaseline": "0d68ac211b3b204635e7af252cd693dce5bd70b1:repositories/memoryos-readiness/src/publication.mjs",
+    "finding": "Repeated staging rejection or premature finalization did not invalidate the token, permitting later staging/finalization after OUTPUT.",
+    "fix": "Invalid token lifecycle transitions terminally invalidate and consume state. In-flight staging checks invalidation before mutation and before accepting staged state.",
+    "singleLocalFix": true,
+    "regression": "terminality-regression.stdout.txt",
+    "regressionPass": 2
+  },
+  "expandedAttempt1": {
+    "tests": 55,
+    "pass": 55,
+    "fail": 0,
+    "note": "Additional review strengthened PDET02 to vary both sessions and roots; final run binds updated test."
+  },
+  "retention": "All owned outputs and pending files retained in per-process .cache/mo1307/phase2c-resumed/publication-* directories.",
+  "limitations": [
+    "Synthetic framed identity exchange is an engineering double. Separate actual native helper witnesses own native authenticity.",
+    "Post-rename stdout/deadline transport belongs to CLI tests.",
+    "Node Windows rename is not a kernel no-replace primitive against an excluded concurrent privileged namespace attacker. Guarantee relies on private immutable-root precondition and native absence/stability observations."
+  ]
+}

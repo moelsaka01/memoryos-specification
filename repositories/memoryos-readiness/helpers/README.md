@@ -1,16 +1,16 @@
-# Fixed Windows helper foundation
+# Fixed checked Windows helper
 
 `windows-inspect.ps1` is the same fixed Windows PowerShell 5.1 helper. The
 [authoritative Phase 2C publication inspection correction](../../../docs/mo1307-phase2c-publication-inspection-correction.md)
-updates its private protocol to `2.0.0` and represents the native observations
-missing from the original four-slot foundation. The script remains fail-closed:
-valid requests return `ERROR/MO1307_INTERNAL` until separately authorized Phase
-2C implements checked native handles. It does not fabricate successful native
-inspection, acquire product inputs, write files or perform publication.
+updates its private protocol to `2.0.0`. The script implements checked native
+acquisition and complete publication chains through fixed Win32 signatures
+emitted in memory with Reflection.Emit. It launches no compiler, imports no
+external assembly/module, creates no temporary file and writes no product file.
+No caller-selected executable, native symbol, script or expression is accepted.
 
 The trusted caller uses the installation's verified absolute Windows directory
 followed by `System32/WindowsPowerShell/v1.0/powershell.exe`, with fixed
-`-NoLogo -NoProfile -NonInteractive -File <absolute-packaged-script>` arguments.
+`-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File <absolute-packaged-script>` arguments.
 Only verified `SystemRoot` and `WINDIR` are passed as environment entries.
 There is no PATH lookup, selectable script/executable/expression, module import,
 network, credential access, discovery or additional writable root.
@@ -76,7 +76,7 @@ and confirmed process/console termination. The CLI's 30,000 ms deadline remains
 absolute for helper acquisition and final rename admission; each helper deadline is the earliest of its own five seconds, remaining
 aggregate budget and overall deadline. Equality is TIMEOUT. The API deadline
 remains 10,000 ms; cleanup is at most 2,000 ms after failure, never success grace.
-Actual native process enforcement and the worker budget belong to resumed 2C.
+The supervisor enforces process/worker deadlines and confirms helper and transport termination.
 
 `createPublicationInspection(sequence,root,{exchange,checkpoint})` creates a
 branded single-use capability after worker termination. Its mandatory checkpoint
@@ -106,9 +106,47 @@ deadline; a later stdout failure returns OUTPUT and retains the committed file.
 Verify creates no directory/file or publication
 capability and never republishes a normative result.
 
-Engineering native tests may add the fixed process-only `-ExecutionPolicy Bypass`
-option under the retained Phase 1 harness policy. This changes no persistent
-machine, user or enterprise policy and introduces no product launch override.
-Synthetic protocol/identity tests are foundation tests, not native acquisition,
-topology or installed-execution certification. Full orchestration remains
-outside this correction task.
+The targeted continuation explicitly authorizes the exact fixed process-only
+`-ExecutionPolicy Bypass` arguments for this packaged helper in production. The
+launcher constructs the entire argv internally. No caller can select the policy,
+script, executable or switches. This changes no persistent machine, user or
+enterprise policy and introduces no caller launch override. Earlier engineering
+Bypass receipts remain historical; fresh production launch evidence is required.
+Synthetic protocol/identity tests establish only their engineering properties.
+The resumed Phase 2C evidence separately records actual native helper, filesystem,
+process and deadline witnesses; it does not claim integrated 2A/2B certification.
+
+Native `CreateFileW` opens every drive/ancestor/leaf with
+`FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS`. Ordinary file
+handles request read access and allow only read sharing, denying write/delete
+sharing. Directory handles use read-attributes access. The same file handle
+supplies `GetFileInformationByHandle` identity, bounded sequential snapshot
+bytes and after-read identity. `GetFileType` requires a disk object and
+`GetFinalPathNameByHandleW` establishes the exact ordinary local handle path.
+Attributes, type, relevant length, link count, volume serial and 64-bit file ID
+are native values. Every chain component must share its checked drive volume.
+Every held handle is rechecked and its path is reopened for all-seven-field
+identity comparison before success. All handles close before the response.
+
+Native absence admits only `ERROR_FILE_NOT_FOUND` for the exact leaf beneath
+an already checked parent chain. Missing ancestors, access denial, sharing
+failures and ambiguous native failures never become absence. Existing output
+or final destinations produce a closed error; the supervisor maps publication
+errors to OUTPUT. No identity is invented for an absent file/directory.
+
+The hidden PowerShell process may own a headless console even with redirected
+pipes. Startup captures those byte transports, checks that the console has only
+the helper as a member, and uses a fixed Toolhelp32 snapshot to identify its sole
+child as conhost.exe with parent PID equal to the helper PID. It opens that
+process, verifies the native image is the actual system conhost.exe, detaches
+with `FreeConsole`, and, if necessary, terminates only that positively identified
+owned process through its held native handle. A wait of at most 1,000 ms must
+confirm termination. This exact owned-console cleanup was explicitly authorized
+for resumed Phase 2C. It is not an arbitrary process-termination facility.
+
+Every valid frame, including an ERROR frame, is emitted only after this startup
+console proof. A proof failure exits 22 without a frame or diagnostic. The
+supervisor still must confirm helper termination and complete transport EOF.
+Failure before a validated frame cannot assert console quiescence and remains
+terminal. Bounded external observation records any remaining owned process;
+no next phase is admitted from an unconfirmed cleanup observation.

@@ -1,0 +1,98 @@
+{
+  "kind": "MO1307Phase2CContinuationDisposition",
+  "status": "STOPPED",
+  "classification": "CONTRACT_DEFECT",
+  "completion": "NOT_PHASE2C_COMPLETE",
+  "phase2DReady": false,
+  "head": "0d68ac211b3b204635e7af252cd693dce5bd70b1",
+  "branch": "codex/mo1307-phase2c-resumed",
+  "startedUtc": "2026-09-28T19:33:51.625Z",
+  "sealedUtc": "2026-09-28T19:44:25.622Z",
+  "elapsedMs": 633997,
+  "elapsedMinutes": 10.566616666666667,
+  "targetMinutes": 90,
+  "ninetyMinuteCheckpointReached": false,
+  "twoHourCheckpointReached": false,
+  "hardStopUtc": "2026-09-28T22:33:51.625Z",
+  "hardStopCompliant": true,
+  "previousEnvironmentBlocker": {
+    "preserved": true,
+    "exactAuthorizedProductionLaunch": "PASS",
+    "elapsedMs": 1455.1296,
+    "cleanupConfirmed": true
+  },
+  "launchSecurity": {
+    "count": 13,
+    "pass": 13,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "launchChangeIsExactMinimalArgvReplacement": true,
+  "changedPriorFiles": [
+    "repositories/memoryos-readiness/helpers/README.md",
+    "repositories/memoryos-readiness/src/helper-transport.mjs"
+  ],
+  "helperChanged": false,
+  "persistentPolicyMutation": false,
+  "callerAuthorityExpansion": false,
+  "blocker": {
+    "receipt": "repositories/cca-conformance/evidence/mo1307/phase2c-continuation/rename-boundary-diagnostic/receipt.json",
+    "authorityReview": "repositories/cca-conformance/evidence/mo1307/phase2c-continuation/rename-authority-review.json",
+    "scope": "Finite engineering contention of a real native rename; not ordinary full-CLI failure or universal architecture-impossibility proof.",
+    "finding": "Final absent at terminal timeout; same already-submitted native rename commits during cleanup.",
+    "requiredDecision": "In-flight rename cancellation/containment and disposition, while preserving actual rename commit point and reconciling no-publication cleanup with bounded waits."
+  },
+  "preservation": {
+    "snapshotCount": 278,
+    "snapshotsVerified": true,
+    "immutablePriorFiles": 239,
+    "immutableVerified": true
+  },
+  "checks": [
+    {
+      "name": "stopped-package-check",
+      "result": "FAIL",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-continuation/stopped-package-check/receipt.json",
+        "byteLength": 624,
+        "sha256": "7ce6eb524c4f43af68630f621191b3d7601256724c2252e316e6ba7c8af30272"
+      }
+    },
+    {
+      "name": "stopped-workspace-check",
+      "result": "PASS",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-continuation/stopped-workspace-check/receipt.json",
+        "byteLength": 600,
+        "sha256": "5fa8afcbf07ba80f79c29d6b58ad4a827f581147b7c4c5a54d5551cae9e38eb1"
+      }
+    },
+    {
+      "name": "stopped-diff-check",
+      "result": "PASS",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-continuation/stopped-diff-check/receipt.json",
+        "byteLength": 468,
+        "sha256": "812dcbd8294147826f2215a87441af98b0939b90877762404e0160f6fb117787"
+      }
+    }
+  ],
+  "packageDisposition": "UNSEALED: expected SBOM binding failure after authorized launch/documentation change; no final regeneration after STOP.",
+  "notRun": [
+    "R26",
+    "R27",
+    "final-source publication/correction/surface/runtime regressions",
+    "fresh nine-request evaluate",
+    "fresh four-request verify",
+    "fresh successful topology",
+    "remaining native helper/deadline/cancellation/filesystem/environment witnesses",
+    "fresh 105/105 Phase1"
+  ],
+  "completionCommitCreated": false,
+  "pushPerformed": false,
+  "tagMutationPerformed": false,
+  "phase2DStarted": false,
+  "futureCommitSelfReference": false,
+  "report": "docs/mo1307-phase2c-continuation.md"
+}

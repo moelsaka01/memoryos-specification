@@ -1,0 +1,163 @@
+{
+  "kind": "MO1307Phase2CFinalTimerRegression",
+  "version": "1.0.0",
+  "result": "PASS",
+  "authorityCommit": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+  "authorityReview": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-review.json",
+    "byteLength": 6572,
+    "sha256": "sha256:90b18cc328947cbf43bb143a60bf293c83f7505763c92fdaeefb43445125ac44"
+  },
+  "attempts": [
+    {
+      "number": 1,
+      "result": "PASS",
+      "scope": "Six earlier lifetime cases; narrower coverage and earlier production bytes; not final acceptance.",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-attempt1/receipt.json",
+        "byteLength": 1459,
+        "sha256": "sha256:ce9bdcdcb436fa1b334e333e805d003485446e86d7f62d9ea084e4a94d84ab89"
+      }
+    },
+    {
+      "number": 2,
+      "result": "FAIL",
+      "classification": "IMPLEMENTATION_DEFECT",
+      "finding": "A staged write intentionally kept unresolved left one polling timer alive after supervisor.dispose and two event-loop turns.",
+      "repeatedBeforeFix": false,
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-attempt2/receipt.json",
+        "byteLength": 1468,
+        "sha256": "sha256:8b1322c5bdbc619102076c3fc583394310df1c4d0cb44cdb26b510a1021d885f"
+      }
+    },
+    {
+      "number": 3,
+      "result": "PASS",
+      "classification": "FOCUSED_FIXED_REGRESSION",
+      "scope": "Same stalled-write failure plus all earlier six cases, bound to corrected production.",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-attempt3/receipt.json",
+        "byteLength": 1459,
+        "sha256": "sha256:0130dd05ea78e9e4e54c88391f5a1071593bdcdc871594ba075c0dc6546ec4a5"
+      }
+    }
+  ],
+  "fix": "CLI stage wait passes its existing opaque publication token to private waitOperation. Initial-checkpoint failure and supervisor stop synchronously call existing recordPublicationInterruption. A private state-owned write-stop callback clears polling and aborts the pending write immediately. No new public export, helper wire field, normative state, deadline or process topology.",
+  "failureSourcePreservation": [
+    {
+      "original": "repositories/cca-conformance/tools/mo1307-phase2c-continuation/timer-witness.mjs",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-attempt2/timer-witness.mjs.data",
+      "byteLength": 7580,
+      "sha256": "sha256:55d8bc8afc910e2b87582e0988c978ff5348ebcaefe529a04cb1e5d14ef4ece8"
+    },
+    {
+      "original": "repositories/cca-conformance/tests/mo1307_phase2c_timer_lifetime_test.mjs",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-attempt2/timer-lifetime-test.mjs.data",
+      "byteLength": 522,
+      "sha256": "sha256:fd9e2afa341b15e010d8027b2e7f1076b8490803ca54d3c7ad0169c288a039f7"
+    },
+    {
+      "original": "repositories/memoryos-readiness/src/publication.mjs",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-defect-source-preservation/publication.mjs.data",
+      "byteLength": 13123,
+      "sha256": "sha256:5225207b23b8fa92aea1fca35fc01e3c68913a8487e5436d27f7089349d62dab"
+    },
+    {
+      "original": "repositories/memoryos-readiness/src/runtime.mjs",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-defect-source-preservation/runtime.mjs.data",
+      "byteLength": 16282,
+      "sha256": "sha256:bd1bd5e810fad661d291ddfc17251c39c02fdaba11cfbe6069beb4cdf54d1124"
+    },
+    {
+      "original": "repositories/memoryos-readiness/src/cli.mjs",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-defect-source-preservation/cli.mjs.data",
+      "byteLength": 4419,
+      "sha256": "sha256:63e6c97aaa689d8d0ef89233cd8f23b5d3827fc055dc76fad1fbfb0fad697728"
+    }
+  ],
+  "sourceBindingsUnchanged": true,
+  "boundSourceCount": 86,
+  "rawOutput": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2c-final/timer-attempt3/stdout.txt",
+    "byteLength": 1734,
+    "sha256": "sha256:f2f62b14a6a43cabbf9cc989a63fd740a6fe7e899d36909dcb2a2a7d4fc3446a"
+  },
+  "witnesses": [
+    {
+      "name": "success-a",
+      "observedTimers": 5,
+      "remainingTimers": 0,
+      "serverOrWatcherResources": 0,
+      "callbacksAfterSettlement": 0,
+      "outcome": "COMMITTED",
+      "activeRole": null
+    },
+    {
+      "name": "write-failure",
+      "observedTimers": 4,
+      "remainingTimers": 0,
+      "serverOrWatcherResources": 0,
+      "callbacksAfterSettlement": 0,
+      "outcome": "MO1307_OUTPUT",
+      "activeRole": null
+    },
+    {
+      "name": "write-cancellation",
+      "observedTimers": 4,
+      "remainingTimers": 0,
+      "serverOrWatcherResources": 0,
+      "callbacksAfterSettlement": 0,
+      "outcome": "MO1307_CANCELLED",
+      "activeRole": null
+    },
+    {
+      "name": "rename-failure",
+      "observedTimers": 6,
+      "remainingTimers": 0,
+      "serverOrWatcherResources": 0,
+      "callbacksAfterSettlement": 0,
+      "outcome": "MO1307_OUTPUT",
+      "activeRole": null
+    },
+    {
+      "name": "post-admission-cancellation",
+      "observedTimers": 6,
+      "remainingTimers": 0,
+      "serverOrWatcherResources": 0,
+      "callbacksAfterSettlement": 0,
+      "outcome": "MO1307_OUTPUT",
+      "activeRole": null
+    },
+    {
+      "name": "stalled-write-cancellation",
+      "observedTimers": 3,
+      "remainingTimers": 0,
+      "serverOrWatcherResources": 0,
+      "callbacksAfterSettlement": 0,
+      "outcome": "MO1307_CANCELLED",
+      "activeRole": null
+    },
+    {
+      "name": "success-b",
+      "observedTimers": 5,
+      "remainingTimers": 0,
+      "serverOrWatcherResources": 0,
+      "callbacksAfterSettlement": 0,
+      "outcome": "COMMITTED",
+      "activeRole": null
+    }
+  ],
+  "counts": {
+    "topLevelTests": 1,
+    "passedTopLevelTests": 1,
+    "sequentialWitnesses": 7,
+    "totalObservedTimerResources": 33,
+    "survivingTimers": 0,
+    "postSettlementCallbacks": 0,
+    "serverOrWatcherResources": 0
+  },
+  "witnessScope": "Real owned filesystem I/O and async resource lifetime observation, with synthetic framed identities. The stalled write remains unresolved through disposal and observation; engineering cleanup releases it only afterward. No actual native helper claim.",
+  "timerInterpretation": "C2FB permits bounded operation/supervisor timers; after final return none survives into later calls. Admitted rename settlement remains unbounded by authority but its one-shot deadline observer ceases after recording interruption; no recurring polling of that rename is introduced.",
+  "historicalEvidence": "Earlier receipts and stopped reports remain byte-preserved and are not rewritten."
+}

@@ -1,0 +1,17 @@
+{
+  "cause": "Aggregate EOF hold4200ms left less than800ms for real native protocol/read/serialization, so individual5000ms deadline won correctly before aggregate exercised.",
+  "completedAcceptedCases": [
+    "timely-helper",
+    "cancel-before-helper",
+    "helper-5000ms-timeout",
+    "late-native-helper-success-rejected",
+    "cancel-during-helper",
+    "cancel-between-helper-worker"
+  ],
+  "failedCase": "aggregate-20000ms-excludes-worker",
+  "originalAclFixture": "ReadAttributes-only denial did not produce accessdenied; fixture failure preserved, exact ACL restoration verified.",
+  "rowCaveat": "Aggregate row incorrectly records PASS for expected TIMEOUT before elapsed assertion; enclosing receipt result FAIL is authoritative.",
+  "correction": "Use real3000ms EOF holds and valid sequential slots up to9, worker only afterslot4; no budget or product changes. Only remaining5cases run inattempt2.",
+  "evidenceResult": "FAIL retained",
+  "disposition": "HARNESS_DEFECT"
+}

@@ -1,0 +1,14 @@
+
+  #  C:\Users\melsa\Documents\Codex\cca-workspace\.cache\mo1304-phase3-toolchain\node-v24.21.0-win-x64\node.exe[13812]: std::shared_ptr<InitializationResultImpl> __cdecl node::InitializeOncePerProcessInternal(const std::vector<std::string> &, ProcessInitializationFlags::Flags) at src\node.cc:1266
+  #  Assertion failed: ncrypto::CSPRNG(nullptr, 0)
+
+----- Native stack trace -----
+
+ 1: 00007FF6228890C6 node::SetAbortHandler+54
+ 2: 00007FF622888C77 node::MultiIsolatePlatform::DisposeIsolate+770039
+ 3: 00007FF6228EB00E node::InitializeOncePerProcess+2974
+ 4: 00007FF6228EB3CD node::Start+445
+ 5: 00007FF6229AD312 node::AsyncResource::CallbackScope::CallbackScope+610
+ 6: 00007FF622BBD3C4 node::AsyncResource::CallbackScope::CallbackScope+2163476
+ 7: 00007FFD4389CD87 BaseThreadInitThunk+23
+ 8: 00007FFD45B2CAEC RtlUserThreadStart+44

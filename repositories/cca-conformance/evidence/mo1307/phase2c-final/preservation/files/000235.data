@@ -1,0 +1,25 @@
+{
+  "kind": "MO1307OperationalReviewProbes",
+  "classification": "READ_ONLY_REVIEW_OBSERVATIONS_REQUIRING_DISPOSITION",
+  "outcomes": [
+    {
+      "id": "api-early-malformed-config-plus-later-oversized-file",
+      "code": "MO1307_RESOURCE_LIMIT",
+      "stage": "ACQUISITION",
+      "reference": "a"
+    },
+    {
+      "id": "cli-launch-poison-plus-unsafe-config",
+      "code": "MO1307_FILESYSTEM_BOUNDARY",
+      "stage": "CONFIGURATION",
+      "reference": "config"
+    },
+    {
+      "id": "api-worker-parent-heap-flag",
+      "exit": 0,
+      "stdout": "{\"environment\":{},\"resourceLimits\":{\"maxYoungGenerationSizeMb\":16,\"maxOldGenerationSizeMb\":128,\"codeRangeSizeMb\":0,\"stackSizeMb\":4}}",
+      "stderr": "",
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+const fs = require('node:fs'); const path = require('node:path'); const { spawnSync } = require('node:child_process');
+const base = process.argv[2];
+const r = spawnSync('C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe', ['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(base,'diagnostic2-helper.ps1')],{ input:fs.readFileSync(path.join(base,'001.request.bin')),env:{SystemRoot:'C:\\Windows',WINDIR:'C:\\Windows'},windowsHide:true,detached:true,timeout:5000,maxBuffer:16777216});
+fs.writeFileSync(path.join(base,'detached-status.stdout'),r.stdout,{flag:'wx'}); fs.writeFileSync(path.join(base,'detached-status.stderr'),r.stderr,{flag:'wx'}); const result={status:r.status,signal:r.signal,error:r.error?.code,stderr:r.stderr.toString()}; fs.writeFileSync(path.join(base,"detached-status.json"),JSON.stringify(result,null,2)+"\n",{flag:"wx"}); console.log(JSON.stringify(result));

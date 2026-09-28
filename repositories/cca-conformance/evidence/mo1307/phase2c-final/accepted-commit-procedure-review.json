@@ -1,0 +1,27 @@
+{
+  "kind": "MO1307FinalAcceptedCommitProcedureReview",
+  "version": "1.0.0",
+  "result": "PASS",
+  "scope": "Independent read-only source review; preparation and commit procedure were not executed by this reviewer.",
+  "source": {
+    "path": "repositories/cca-conformance/tools/mo1307-phase2c-final/commit-accepted.py",
+    "byteLength": 7453,
+    "sha256": "sha256:092756507ab14551e1cb4786896f3f39acddb80dd17918cb40783841dd5d5c09"
+  },
+  "soleParent": "08de262d1ef3149b6e540bcaea0cf910e02732bd",
+  "oldBranchHead": "0d68ac211b3b204635e7af252cd693dce5bd70b1",
+  "branch": "refs/heads/codex/mo1307-phase2c-resumed",
+  "requirements": [
+    "Run only after acceptance.json and all required gates are PASS, final report and receipt set are complete, and independent history/source freshness checks pass.",
+    "Exclusive temporary index starts from exact C2FB parent; git add -A captures preserved current worktree without checkout, reset, clean, stash or rebase.",
+    "Every baseline path remains present; changed paths are scope-checked; raw working bytes equal staged Git blob bytes before tree seal.",
+    "Changed-content inventory excludes only itself; complete immutable tree inventory includes its own blob and hash separately.",
+    "Commit phase checks fixed parent, old head, branch and subject; revalidates every changed row length, SHA256 and exact blob bytes plus the inventory own hash/blob.",
+    "A final temporary-index tree comparison catches staged path/content changes after sealing before commit-tree.",
+    "Commit-tree uses exactly one fixed C2FB parent; subject, parent, complete tree identity and full tree inventory are verified before branch movement.",
+    "Branch update is compare-and-swap from exact old C2CB head; real index synchronization uses read-tree without -u, so it does not overwrite worktree files.",
+    "After branch update the tool verifies clean resumed worktree, unchanged clean main, and diff whitespace; it never pushes or tags."
+  ],
+  "addressedFinding": "Initial commit phase compared only normalized Git tree; it now also verifies original raw bytes and inventory identity immediately before tree comparison/commit construction.",
+  "conditions": "Read-only procedure review is not an executed accepted-commit receipt and does not substitute for final acceptance, final source freshness, historical byte preservation, or post-commit verification."
+}

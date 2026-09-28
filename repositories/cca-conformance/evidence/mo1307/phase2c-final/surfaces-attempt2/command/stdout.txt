@@ -1,0 +1,574 @@
+TAP version 13
+# Subtest: APIBOOT01 earlier malformed config dominates later oversized evidence
+ok 1 - APIBOOT01 earlier malformed config dominates later oversized evidence
+  ---
+  duration_ms: 36.5291
+  type: 'test'
+  ...
+# Subtest: APIBOOT02 config shape error dominates wrong authority pin in same phase
+ok 2 - APIBOOT02 config shape error dominates wrong authority pin in same phase
+  ---
+  duration_ms: 21.3833
+  type: 'test'
+  ...
+# Subtest: APIBOOT03 malformed config dominates oversized authority safely
+ok 3 - APIBOOT03 malformed config dominates oversized authority safely
+  ---
+  duration_ms: 9.6548
+  type: 'test'
+  ...
+# Subtest: APIBOOT04 exact manifest ENVELOPE cap applied before bytes copy
+ok 4 - APIBOOT04 exact manifest ENVELOPE cap applied before bytes copy
+  ---
+  duration_ms: 23.8243
+  type: 'test'
+  ...
+# Subtest: APIBOOT05 exact manifest file set checked before copying unknown file
+ok 5 - APIBOOT05 exact manifest file set checked before copying unknown file
+  ---
+  duration_ms: 18.1882
+  type: 'test'
+  ...
+# Subtest: APIBOOT06 snapshots remain detached and byte-identical
+ok 6 - APIBOOT06 snapshots remain detached and byte-identical
+  ---
+  duration_ms: 20.0256
+  type: 'test'
+  ...
+# Subtest: APIBOOT07 TIMEOUT interruption dominates collected parse errors
+ok 7 - APIBOOT07 TIMEOUT interruption dominates collected parse errors
+  ---
+  duration_ms: 0.6707
+  type: 'test'
+  ...
+# Subtest: APIBOOT07 CANCELLED interruption dominates collected parse errors
+ok 8 - APIBOOT07 CANCELLED interruption dominates collected parse errors
+  ---
+  duration_ms: 0.4072
+  type: 'test'
+  ...
+# Subtest: APIBOOT08 hostile typed-array byteLength override is never invoked
+ok 9 - APIBOOT08 hostile typed-array byteLength override is never invoked
+  ---
+  duration_ms: 18.9719
+  type: 'test'
+  ...
+# Subtest: C2C01 corrected limits leave all byte ceilings unchanged
+ok 10 - C2C01 corrected limits leave all byte ceilings unchanged
+  ---
+  duration_ms: 2.3295
+  type: 'test'
+  ...
+# Subtest: C2C02 every required observation has a canonical closed framed representation
+ok 11 - C2C02 every required observation has a canonical closed framed representation
+  ---
+  duration_ms: 15.1996
+  type: 'test'
+  ...
+# Subtest: C2C03 old wire version missing session unknown fields and arbitrary operations reject
+ok 12 - C2C03 old wire version missing session unknown fields and arbitrary operations reject
+  ---
+  duration_ms: 2.0474
+  type: 'test'
+  ...
+# Subtest: C2C04 operation sequence and fixed output leaf authority are closed
+ok 13 - C2C04 operation sequence and fixed output leaf authority are closed
+  ---
+  duration_ms: 3.1227
+  type: 'test'
+  ...
+# Subtest: C2C05 bounded frames reject trailing requests responses and alternate session
+ok 14 - C2C05 bounded frames reject trailing requests responses and alternate session
+  ---
+  duration_ms: 1.7834
+  type: 'test'
+  ...
+# Subtest: C2C06 complete acquisition then terminated worker then five publication requests
+ok 15 - C2C06 complete acquisition then terminated worker then five publication requests
+  ---
+  duration_ms: 11.8632
+  type: 'test'
+  ...
+# Subtest: C2C07 helper completion cannot substitute for fully quiescent exit
+ok 16 - C2C07 helper completion cannot substitute for fully quiescent exit
+  ---
+  duration_ms: 5.3678
+  type: 'test'
+  ...
+# Subtest: C2C08 helper and worker overlap and repeated worker transition are terminal
+ok 17 - C2C08 helper and worker overlap and repeated worker transition are terminal
+  ---
+  duration_ms: 7.528
+  type: 'test'
+  ...
+# Subtest: C2C09 verify remains four reads followed by worker and cannot publish
+ok 18 - C2C09 verify remains four reads followed by worker and cannot publish
+  ---
+  duration_ms: 5.1228
+  type: 'test'
+  ...
+# Subtest: C2C10 request failure abort and transport failure permit no retry
+ok 19 - C2C10 request failure abort and transport failure permit no retry
+  ---
+  duration_ms: 4.5102
+  type: 'test'
+  ...
+# Subtest: C2C11 full component chains reject missing ancestors wrong paths reparse and hardlinks
+ok 20 - C2C11 full component chains reject missing ancestors wrong paths reparse and hardlinks
+  ---
+  duration_ms: 2.3096
+  type: 'test'
+  ...
+# Subtest: C2C12 acquisition parent cannot be reused after native identity change
+ok 21 - C2C12 acquisition parent cannot be reused after native identity change
+  ---
+  duration_ms: 3.8139
+  type: 'test'
+  ...
+# Subtest: C2C13 path and cross-invocation session substitutions terminate assessment
+ok 22 - C2C13 path and cross-invocation session substitutions terminate assessment
+  ---
+  duration_ms: 4.0561
+  type: 'test'
+  ...
+# Subtest: C2C14 capability branding root binding and single claim exclude substitution
+ok 23 - C2C14 capability branding root binding and single claim exclude substitution
+  ---
+  duration_ms: 14.2095
+  type: 'test'
+  ...
+# Subtest: C2C15 unclaimed out-of-order or concurrent inspection cannot be retried
+ok 24 - C2C15 unclaimed out-of-order or concurrent inspection cannot be retried
+  ---
+  duration_ms: 8.317
+  type: 'test'
+  ...
+# Subtest: C2C16 bridge requires exact transport fields and confirmed process quiescence
+ok 25 - C2C16 bridge requires exact transport fields and confirmed process quiescence
+  ---
+  duration_ms: 5.4996
+  type: 'test'
+  ...
+# Subtest: C2C17 per-invocation deadline includes response parsing and process exit
+ok 26 - C2C17 per-invocation deadline includes response parsing and process exit
+  ---
+  duration_ms: 1.697
+  type: 'test'
+  ...
+# Subtest: C2C18 aggregate helper budget cannot silently multiply with sequential invocations
+ok 27 - C2C18 aggregate helper budget cannot silently multiply with sequential invocations
+  ---
+  duration_ms: 2.847
+  type: 'test'
+  ...
+# Subtest: C2C19 overall CLI deadline and nonmonotonic clock fail without grace
+ok 28 - C2C19 overall CLI deadline and nonmonotonic clock fail without grace
+  ---
+  duration_ms: 3.4453
+  type: 'test'
+  ...
+# Subtest: C2C20 framed publication performs exact five observations and one final rename
+ok 29 - C2C20 framed publication performs exact five observations and one final rename
+  ---
+  duration_ms: 63.298
+  type: 'test'
+  ...
+# Subtest: C2C21 cancellation after each publication inspection is terminal and retains incomplete attempt
+ok 30 - C2C21 cancellation after each publication inspection is terminal and retains incomplete attempt
+  ---
+  duration_ms: 101.6249
+  type: 'test'
+  ...
+# Subtest: C2C22 immediate pre-rename checkpoint blocks timeout after final native observation
+ok 31 - C2C22 immediate pre-rename checkpoint blocks timeout after final native observation
+  ---
+  duration_ms: 27.5205
+  type: 'test'
+  ...
+# Subtest: C2C23 final native pending identity comparison rejects stale replacement and retains bytes
+ok 32 - C2C23 final native pending identity comparison rejects stale replacement and retains bytes
+  ---
+  duration_ms: 31.0953
+  type: 'test'
+  ...
+# Subtest: C2C24 mismatched branded capability and legacy callback cannot create an output root
+ok 33 - C2C24 mismatched branded capability and legacy callback cannot create an output root
+  ---
+  duration_ms: 5.4516
+  type: 'test'
+  ...
+# Subtest: LP01 exact trusted Windows PowerShell 5.1 executable
+ok 34 - LP01 exact trusted Windows PowerShell 5.1 executable
+  ---
+  duration_ms: 1.5507
+  type: 'test'
+  ...
+# Subtest: LP02 exact fixed argument ordering and Bypass value
+ok 35 - LP02 exact fixed argument ordering and Bypass value
+  ---
+  duration_ms: 0.9665
+  type: 'test'
+  ...
+# Subtest: LP03 fixed packaged helper path from module location
+ok 36 - LP03 fixed packaged helper path from module location
+  ---
+  duration_ms: 0.1598
+  type: 'test'
+  ...
+# Subtest: LP04 no encoded command, expression or shell authority
+ok 37 - LP04 no encoded command, expression or shell authority
+  ---
+  duration_ms: 0.1506
+  type: 'test'
+  ...
+# Subtest: LP05 caller object cannot supply executable, script or policy
+ok 38 - LP05 caller object cannot supply executable, script or policy
+  ---
+  duration_ms: 0.1824
+  type: 'test'
+  ...
+# Subtest: LP06 launch specification and nested authority are immutable
+ok 39 - LP06 launch specification and nested authority are immutable
+  ---
+  duration_ms: 0.6012
+  type: 'test'
+  ...
+# Subtest: LP07 ambient PATH, system-root, policy and script poisons cannot select launch
+ok 40 - LP07 ambient PATH, system-root, policy and script poisons cannot select launch
+  ---
+  duration_ms: 0.4518
+  type: 'test'
+  ...
+# Subtest: LP08 actual transport calls spawn with fixed array and sanitized environment
+ok 41 - LP08 actual transport calls spawn with fixed array and sanitized environment
+  ---
+  duration_ms: 1.4659
+  type: 'test'
+  ...
+# Subtest: LP09 CLI cannot select --script
+ok 42 - LP09 CLI cannot select --script
+  ---
+  duration_ms: 0.7014
+  type: 'test'
+  ...
+# Subtest: LP09 CLI cannot select --execution-policy
+ok 43 - LP09 CLI cannot select --execution-policy
+  ---
+  duration_ms: 0.2234
+  type: 'test'
+  ...
+# Subtest: LP09 CLI cannot select --powershell
+ok 44 - LP09 CLI cannot select --powershell
+  ---
+  duration_ms: 0.1462
+  type: 'test'
+  ...
+# Subtest: LP10 no persistent policy or registry mutation code is introduced
+ok 45 - LP10 no persistent policy or registry mutation code is introduced
+  ---
+  duration_ms: 14.3739
+  type: 'test'
+  ...
+# Subtest: LP11 public package exports cannot expose launch override
+ok 46 - LP11 public package exports cannot expose launch override
+  ---
+  duration_ms: 1.2287
+  type: 'test'
+  ...
+# Subtest: SUP01 post-rename TIMEOUT returns OUTPUT and retains exact committed result
+ok 47 - SUP01 post-rename TIMEOUT returns OUTPUT and retains exact committed result
+  ---
+  duration_ms: 290.861
+  type: 'test'
+  ...
+# Subtest: SUP01 post-rename CANCELLED returns OUTPUT and retains exact committed result
+ok 48 - SUP01 post-rename CANCELLED returns OUTPUT and retains exact committed result
+  ---
+  duration_ms: 211.4192
+  type: 'test'
+  ...
+# Subtest: SUP02 verify stdout backpressure times out without product filesystem changes
+ok 49 - SUP02 verify stdout backpressure times out without product filesystem changes
+  ---
+  duration_ms: 212.833
+  type: 'test'
+  ...
+# Subtest: SUP03 input root identity change between helper slots fails closed
+ok 50 - SUP03 input root identity change between helper slots fails closed
+  ---
+  duration_ms: 23.8323
+  type: 'test'
+  ...
+# Subtest: SUP04 physical file alias across bootstrap slots is rejected despite distinct paths
+ok 51 - SUP04 physical file alias across bootstrap slots is rejected despite distinct paths
+  ---
+  duration_ms: 19.4578
+  type: 'test'
+  ...
+# Subtest: SUP05 malformed external decision rejects without stdout or changes
+ok 52 - SUP05 malformed external decision rejects without stdout or changes
+  ---
+  duration_ms: 226.9679
+  type: 'test'
+  ...
+# Subtest: SUP06 wrong external decision proof binding rejects
+ok 53 - SUP06 wrong external decision proof binding rejects
+  ---
+  duration_ms: 247.3141
+  type: 'test'
+  ...
+# Subtest: SUP07 contrary APPROVE preserves not-ready and reports unverified authenticity
+ok 54 - SUP07 contrary APPROVE preserves not-ready and reports unverified authenticity
+  ---
+  duration_ms: 248.0355
+  type: 'test'
+  ...
+# Subtest: SUP07 contrary APPROVE preserves could-not-evaluate and reports unverified authenticity
+ok 55 - SUP07 contrary APPROVE preserves could-not-evaluate and reports unverified authenticity
+  ---
+  duration_ms: 225.2176
+  type: 'test'
+  ...
+# Subtest: SUP08 slot4 output inspection ERROR maps to frozen OUTPUT before worker
+ok 56 - SUP08 slot4 output inspection ERROR maps to frozen OUTPUT before worker
+  ---
+  duration_ms: 43.9039
+  type: 'test'
+  ...
+# Subtest: SURFACE evaluate nine slots exact bytes/summary/exit ready
+ok 57 - SURFACE evaluate nine slots exact bytes/summary/exit ready
+  ---
+  duration_ms: 218.3842
+  type: 'test'
+  ...
+# Subtest: SURFACE evaluate nine slots exact bytes/summary/exit qualified
+ok 58 - SURFACE evaluate nine slots exact bytes/summary/exit qualified
+  ---
+  duration_ms: 179.4988
+  type: 'test'
+  ...
+# Subtest: SURFACE evaluate nine slots exact bytes/summary/exit not-ready
+ok 59 - SURFACE evaluate nine slots exact bytes/summary/exit not-ready
+  ---
+  duration_ms: 172.8907
+  type: 'test'
+  ...
+# Subtest: SURFACE evaluate nine slots exact bytes/summary/exit could-not-evaluate
+ok 60 - SURFACE evaluate nine slots exact bytes/summary/exit could-not-evaluate
+  ---
+  duration_ms: 177.3109
+  type: 'test'
+  ...
+# Subtest: SURFACE verify four slots exit0 no writes
+ok 61 - SURFACE verify four slots exit0 no writes
+  ---
+  duration_ms: 142.0032
+  type: 'test'
+  ...
+# Subtest: SURFACE decision transport downstream and authenticity retained
+ok 62 - SURFACE decision transport downstream and authenticity retained
+  ---
+  duration_ms: 208.049
+  type: 'test'
+  ...
+# Subtest: SURFACE verify altered supplied result rejects before stdout
+ok 63 - SURFACE verify altered supplied result rejects before stdout
+  ---
+  duration_ms: 146.7044
+  type: 'test'
+  ...
+# Subtest: SURFACE tag observations transported as original bytes without Git
+ok 64 - SURFACE tag observations transported as original bytes without Git
+  ---
+  duration_ms: 87.1291
+  type: 'test'
+  ...
+# Subtest: SURFACE determinism across random sessions and output roots
+ok 65 - SURFACE determinism across random sessions and output roots
+  ---
+  duration_ms: 326.2071
+  type: 'test'
+  ...
+# Subtest: SURFACE complete text output
+ok 66 - SURFACE complete text output
+  ---
+  duration_ms: 192.1797
+  type: 'test'
+  ...
+# Subtest: SURFACE post-rename stdout failure returns OUTPUT retains committed result
+ok 67 - SURFACE post-rename stdout failure returns OUTPUT retains committed result
+  ---
+  duration_ms: 172.6488
+  type: 'test'
+  ...
+# Subtest: SURFACE cancellation before worker no directory publication
+ok 68 - SURFACE cancellation before worker no directory publication
+  ---
+  duration_ms: 48.9558
+  type: 'test'
+  ...
+# Subtest: SURFACE cancellation before final inspection retains pending
+ok 69 - SURFACE cancellation before final inspection retains pending
+  ---
+  duration_ms: 168.2026
+  type: 'test'
+  ...
+# Subtest: SURFACE 2B to 2A adapter selects exact handoff fields
+ok 70 - SURFACE 2B to 2A adapter selects exact handoff fields
+  ---
+  duration_ms: 0.2841
+  type: 'test'
+  ...
+# Subtest: API admission wrong argument
+ok 71 - API admission wrong argument
+  ---
+  duration_ms: 0.5024
+  type: 'test'
+  ...
+# Subtest: API admission shared array
+ok 72 - API admission shared array
+  ---
+  duration_ms: 6.4896
+  type: 'test'
+  ...
+# Subtest: API admission duplicate file ID
+ok 73 - API admission duplicate file ID
+  ---
+  duration_ms: 9.8926
+  type: 'test'
+  ...
+# Subtest: API admission oversized candidate
+ok 74 - API admission oversized candidate
+  ---
+  duration_ms: 8.8089
+  type: 'test'
+  ...
+# Subtest: API admission unknown property
+ok 75 - API admission unknown property
+  ---
+  duration_ms: 0.228
+  type: 'test'
+  ...
+# Subtest: API admission wrong pin
+ok 76 - API admission wrong pin
+  ---
+  duration_ms: 0.1446
+  type: 'test'
+  ...
+# Subtest: API snapshots all bytes before asynchronous work
+ok 77 - API snapshots all bytes before asynchronous work
+  ---
+  duration_ms: 12.2349
+  type: 'test'
+  ...
+# Subtest: API caller mutation after entry cannot affect worker
+ok 78 - API caller mutation after entry cannot affect worker
+  ---
+  duration_ms: 140.5418
+  type: 'test'
+  ...
+# Subtest: API missing declared file rejects
+ok 79 - API missing declared file rejects
+  ---
+  duration_ms: 10.0743
+  type: 'test'
+  ...
+# Subtest: API abort before entry is terminal
+ok 80 - API abort before entry is terminal
+  ---
+  duration_ms: 0.2907
+  type: 'test'
+  ...
+# Subtest: API abort during worker terminates
+ok 81 - API abort during worker terminates
+  ---
+  duration_ms: 17.5661
+  type: 'test'
+  ...
+# Subtest: API public evaluate and verify retain integration pending guard
+ok 82 - API public evaluate and verify retain integration pending guard
+  ---
+  duration_ms: 263.377
+  type: 'test'
+  ...
+# Subtest: CLI dispatch ""
+ok 83 - CLI dispatch ""
+  ---
+  duration_ms: 0.5612
+  type: 'test'
+  ...
+# Subtest: CLI dispatch "unknown"
+ok 84 - CLI dispatch "unknown"
+  ---
+  duration_ms: 0.0819
+  type: 'test'
+  ...
+# Subtest: CLI dispatch "constructor"
+ok 85 - CLI dispatch "constructor"
+  ---
+  duration_ms: 0.0724
+  type: 'test'
+  ...
+# Subtest: CLI dispatch "toString"
+ok 86 - CLI dispatch "toString"
+  ---
+  duration_ms: 0.0434
+  type: 'test'
+  ...
+# Subtest: CLI dispatch "__proto__"
+ok 87 - CLI dispatch "__proto__"
+  ---
+  duration_ms: 0.0406
+  type: 'test'
+  ...
+# Subtest: CLI dispatch "Evaluate"
+ok 88 - CLI dispatch "Evaluate"
+  ---
+  duration_ms: 0.0412
+  type: 'test'
+  ...
+# Subtest: CLI negative missing command
+ok 89 - CLI negative missing command
+  ---
+  duration_ms: 0.0723
+  type: 'test'
+  ...
+# Subtest: CLI negative missing flag
+ok 90 - CLI negative missing flag
+  ---
+  duration_ms: 0.0736
+  type: 'test'
+  ...
+# Subtest: CLI negative duplicate flag
+ok 91 - CLI negative duplicate flag
+  ---
+  duration_ms: 0.0588
+  type: 'test'
+  ...
+# Subtest: CLI negative unknown flag
+ok 92 - CLI negative unknown flag
+  ---
+  duration_ms: 0.0547
+  type: 'test'
+  ...
+# Subtest: CLI negative unsafe path
+ok 93 - CLI negative unsafe path
+  ---
+  duration_ms: 0.3117
+  type: 'test'
+  ...
+# Subtest: CLI negative overlong argument
+ok 94 - CLI negative overlong argument
+  ---
+  duration_ms: 0.0957
+  type: 'test'
+  ...
+1..94
+# tests 94
+# suites 0
+# pass 94
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5799.0995
