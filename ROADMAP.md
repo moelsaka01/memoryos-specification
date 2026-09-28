@@ -11,7 +11,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
 | MemoryOS 1.2 | Released — v1.2.0 | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, and its official Conformance Suite |
 | MemoryOS 1.2.1 | Corrective restoration | Restores omitted intended v1.2 source, registered tests, fixtures, examples, documentation, frozen Standard and MIP publication assets, and corrected conformance provenance while preserving all v1.2 semantics and CSP fixes |
-| MemoryOS 1.3 | In development; MO-1301 through MO-1305 released | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, and certified REST Gateway; MO-1306 certification scope corrected; qualified Phase 3D integration next |
+| MemoryOS 1.3 | In development; MO-1301 through MO-1305 released | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, and certified REST Gateway; MO-1306 qualified final certification integrated; validated BF inventory governs release tag review |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -104,7 +104,7 @@ without renumbering the released milestones. MO-1301 through MO-1305 retain
 their existing scope, commits, contracts, conformance history, evidence, and
 tags. MO-1306 is the next milestone. Its roadmap authority and the focused
 freeze and [hosted scope correction](docs/mo1306-hosted-certification-scope-correction.md)
-now establish CERTIFICATION_SCOPE_CORRECTED / READY_FOR_QUALIFIED_PHASE_3D.
+now bind qualified final certification; the Phase 3D final inventory and post-BF validation govern completion and release tag review.
 
 | Milestone | Title | Status | Architectural layer |
 |---|---|---|---|
@@ -113,7 +113,7 @@ now establish CERTIFICATION_SCOPE_CORRECTED / READY_FOR_QUALIFIED_PHASE_3D.
 | MO-1303 | VS Code Extension | CLOSED / RELEASED WITH EXTERNAL-INFRASTRUCTURE EXCEPTION | VS Code developer integration |
 | MO-1304 | MCP Server and Agent Integration | CLOSED / CERTIFIED / RELEASED | MCP / agent integration over existing MemoryOS capabilities |
 | MO-1305 | REST Gateway | CLOSED / CERTIFIED / RELEASED | Bounded REST/API integration |
-| MO-1306 | Provider-Neutral CI/CD Integration | CERTIFICATION_SCOPE_CORRECTED / READY_FOR_QUALIFIED_PHASE_3D | Provider-neutral CI/CD integration |
+| MO-1306 | Provider-Neutral CI/CD Integration | QUALIFIED_FINAL_CERTIFICATION / BF_VALIDATION_AUTHORITY | Provider-neutral CI/CD integration |
 | MO-1307 | Release Policies / Release Readiness | PLANNED / AUTHORITY PENDING | Higher-level release policy and readiness |
 | MO-1308 | Investigation History | PLANNED / AUTHORITY PENDING | Durable investigation/evaluation history and traceability |
 | MO-1309 | Cloud Dashboard | PLANNED / AUTHORITY PENDING | Cloud-facing dashboard experience |
@@ -198,7 +198,7 @@ reconciliation changes no package, contract, receipt, evidence, or release tag.
 
 ### MO-1306: Provider-Neutral CI/CD Integration
 
-Status: **CERTIFICATION_SCOPE_CORRECTED / READY_FOR_QUALIFIED_PHASE_3D**.
+Status: **QUALIFIED_FINAL_CERTIFICATION / BF_VALIDATION_AUTHORITY**.
 
 The focused roadmap authority is
 [MemoryOS 1.3 MO-1306 — Provider-Neutral CI/CD Integration](docs/mo1306-provider-neutral-cicd.md).
@@ -211,7 +211,7 @@ offline package. Regression uses the existing SDK/CLI acquisition path.
 The earlier authority's status/open register describes its authorization stage;
 its hard constraints remain binding. Production authority is C3CB, methodology
 authority is M3, and the [S3 scope correction](docs/mo1306-hosted-certification-scope-correction.md)
-authorizes qualified Phase 3D integration. MO-1306 is not released or tag-ready.
+authorizes qualified Phase 3D integration. The [final integration](docs/mo1306-phase3d-qualified-release.md) and [final inventory](repositories/cca-conformance/mo1306-final-release-inventory.json) bind the corrected candidate, native certificate, audits and hosted limitation. Phase 1/2/3 COMPLETE and CERTIFIED_READY_TO_TAG become effective only after read-only post-BF validation passes. The release tag remains absent pending user review.
 
 Native Windows 11 x64 generic execution is required. A separate Windows
 `windows-2022` GitHub Actions integration preserves released MO-1302 behavior;
@@ -276,7 +276,9 @@ Freeze.
 
 The exact next task is:
 
-**MEMORYOS 1.3 MO-1306 QUALIFIED PHASE 3D FINAL CERTIFICATION INTEGRATION**
+**MEMORYOS 1.3 MO-1306 RELEASE TAG REVIEW**
+
+After successful post-BF validation, review `memoryos-1.3-mo1306` targeting the exact BF commit. No tag, push, remote change or historical-worktree cleanup is authorized by the integration task.
 
 ## IM-001: engineering foundation
 
