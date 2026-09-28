@@ -265,7 +265,17 @@ rule. This roadmap authorizes no further hosted or native campaign.
 
 ### MO-1307: Release Governance and Readiness
 
-Status: **CONTRACT FREEZE 1 ESTABLISHED / PHASE 1 NEXT**.
+Status: **PHASE 1 FOUNDATION BOUND / PHASE 2 NEXT**.
+
+The [Phase 1 implementation](docs/mo1307-phase1-foundation.md) establishes the
+private offline package, shared contracts, 52 schemas, canonicalization,
+foundation validation, Windows protocol/publication primitives and bounded
+fixtures. [B1](repositories/cca-conformance/evidence/mo1307/phase1/binding.json)
+binds actual implementation I1 `7aa5ede6ec52b36d0428273d78c8ca7aa37a39ee` and its
+non-self-referential inventory. Acceptance records 105 passing tests and three
+bounded characterization cases; preserved development attempts remain visible.
+The two public functions and CLI commands are deliberately guarded until Phase 2.
+Phase 2 and Phase 3 are not started; MO-1307 release remains NOT_READY.
 
 The [MO-1307 authority](docs/mo1307-release-governance-readiness.md) defines
 deterministic, evidence-backed assessment of an exact candidate: satisfied and
@@ -317,12 +327,15 @@ Freeze.
 
 The exact next task is:
 
-**MEMORYOS 1.3 MO-1307 PHASE 1 — READINESS FOUNDATION**
+**MEMORYOS 1.3 MO-1307 PHASE 2 — PARALLEL IMPLEMENTATION (2A / 2B / 2C)**
 
-Implement only the frozen foundation after separate Phase 1 task authorization.
-Implementation has not started. The Freeze changed documentation only: no
-production code, schemas, package/dependencies, certification evidence,
-branches/worktrees, push or tag.
+After post-B1 validation passes and Phase 2 is separately authorized, start all
+three branches/worktrees from the same exact B1 commit: 2A owns gate/aggregation
+and canonical results, 2B owns authority/evidence/dependency/graph verification,
+and 2C owns native acquisition, wrappers, deadlines/cancellation and publication.
+Shared Phase 1 contracts and fixtures remain centrally reconciled. Phase 2D
+integrates those streams before certification. No Phase 2 branch/worktree, push,
+tag, provider campaign or Phase 3 certification is created by Phase 1.
 
 ## IM-001: engineering foundation
 
