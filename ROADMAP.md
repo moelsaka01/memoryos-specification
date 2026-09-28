@@ -11,7 +11,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
 | MemoryOS 1.2 | Released — v1.2.0 | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, and its official Conformance Suite |
 | MemoryOS 1.2.1 | Corrective restoration | Restores omitted intended v1.2 source, registered tests, fixtures, examples, documentation, frozen Standard and MIP publication assets, and corrected conformance provenance while preserving all v1.2 semantics and CSP fixes |
-| MemoryOS 1.3 | In development; MO-1301 through MO-1306 RELEASED | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, certified REST Gateway, and qualified Provider-Neutral CI/CD Integration; MO-1307 AUTHORIZED / CONTRACT FREEZE 1 NEXT |
+| MemoryOS 1.3 | In development; MO-1301 through MO-1306 RELEASED | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, certified REST Gateway, and qualified Provider-Neutral CI/CD Integration; MO-1307 CONTRACT FREEZE 1 ESTABLISHED / PHASE 1 NEXT |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -104,9 +104,11 @@ without renumbering the released milestones. MO-1301 through MO-1306 retain
 their existing scope, commits, contracts, conformance history, evidence, and
 tags. MO-1306 is released with its qualified provider matrix and
 [hosted scope correction](docs/mo1306-hosted-certification-scope-correction.md).
-MO-1307 is next; its [roadmap authority](docs/mo1307-release-governance-readiness.md)
-establishes release governance and readiness boundaries and the Contract Freeze 1
-agenda. No MO-1307 implementation or Phase 1/2/3 evidence is authorized here.
+MO-1307's [roadmap authority](docs/mo1307-release-governance-readiness.md)
+establishes release governance and readiness boundaries. Its
+[Contract Freeze 1](docs/mo1307-contract-freeze-1.md) resolves all 50 decisions;
+Phase 1 is next. No MO-1307 implementation or Phase 1/2/3 evidence was created
+by the documentation-only Freeze task.
 
 | Milestone | Title | Status | Architectural layer |
 |---|---|---|---|
@@ -116,14 +118,14 @@ agenda. No MO-1307 implementation or Phase 1/2/3 evidence is authorized here.
 | MO-1304 | MCP Server and Agent Integration | CLOSED / CERTIFIED / RELEASED | MCP / agent integration over existing MemoryOS capabilities |
 | MO-1305 | REST Gateway | CLOSED / CERTIFIED / RELEASED | Bounded REST/API integration |
 | MO-1306 | Provider-Neutral CI/CD Integration | CLOSED / QUALIFIED CERTIFICATION / RELEASED | Provider-neutral CI/CD integration with preserved provider limitations |
-| MO-1307 | Release Governance and Readiness | AUTHORIZED / CONTRACT FREEZE 1 NEXT | Deterministic evidence-backed readiness; final release authorization remains human |
+| MO-1307 | Release Governance and Readiness | CONTRACT FREEZE 1 ESTABLISHED / PHASE 1 NEXT | Deterministic evidence-backed readiness; final release authorization remains human |
 | MO-1308 | Investigation History | PLANNED / AUTHORITY PENDING | Durable investigation/evaluation history and traceability |
 | MO-1309 | Cloud Dashboard | PLANNED / AUTHORITY PENDING | Cloud-facing dashboard experience |
 
 Later milestones must delegate to existing semantic authority rather than
 silently reimplementing MemoryOS semantics. The MO-1306 freeze and scope
-correction retain their released scope. MO-1307 has roadmap authority but no
-frozen implementation contract. MO-1308 and MO-1309 still require their own
+correction retain their released scope. MO-1307 now has a frozen implementation
+contract, with Phase 1 not started. MO-1308 and MO-1309 still require their own
 authority and freeze; unrelated proposals elsewhere in this document remain
 proposals.
 
@@ -263,7 +265,7 @@ rule. This roadmap authorizes no further hosted or native campaign.
 
 ### MO-1307: Release Governance and Readiness
 
-Status: **AUTHORIZED / CONTRACT FREEZE 1 NEXT**.
+Status: **CONTRACT FREEZE 1 ESTABLISHED / PHASE 1 NEXT**.
 
 The [MO-1307 authority](docs/mo1307-release-governance-readiness.md) defines
 deterministic, evidence-backed assessment of an exact candidate: satisfied and
@@ -276,12 +278,17 @@ MemoryOS may compute, validate and present readiness evidence. Final release,
 tag, push, publication, deployment and merge authorization remains a human or
 governance decision. MO-1307 does not autonomously approve or execute release.
 
-Contract Freeze 1 must settle the closed evidence categories, exact candidate
-and dependency identities, gate/qualification/blocker model, acyclic graph,
-invalidation and reuse, trust/security, canonical output, optional human
-decision record, tag-state treatment, resources, distribution and any thin
-interface exposure. The authority's decision register is the closed agenda;
-recommendations there are not frozen contracts, schemas or implementation.
+[Contract Freeze 1](docs/mo1307-contract-freeze-1.md) selects a private offline
+ESM package with one pure core, two CLI commands and two JavaScript functions;
+closed REST/CI/CD profiles, four readiness states, six gate states, 22 gates,
+14 evidence types and 21 operational errors. It freezes exact candidate and
+dependency bindings, operator-pinned authority, an acyclic evidence graph,
+selective reuse, qualifications/history, canonical readiness/proof identities,
+optional external human-decision verification, pre-tag/post-tag stages, bounded
+resources and atomic single-result publication. All 50 decisions are closed,
+with zero unresolved normative decisions. The original authority's open
+register remains historical pre-Freeze analysis; the Freeze supplies current
+contract authority and the Phase 1 plan.
 The released MO-1306 provider matrix and GitHub hosted-certification limitation
 must remain visible. No REST, MCP, VS Code, Action or CI adapter expansion is
 automatic. Core evaluation must work offline over supplied evidence on native
@@ -310,12 +317,12 @@ Freeze.
 
 The exact next task is:
 
-**MEMORYOS 1.3 MO-1307 CONTRACT FREEZE 1 — RELEASE GOVERNANCE AND READINESS**
+**MEMORYOS 1.3 MO-1307 PHASE 1 — READINESS FOUNDATION**
 
-Resolve the MO-1307 decision register and freeze bounded contracts and the
-Phase 1 plan. Implementation has not started. No production code, adapters,
-release automation, package/dependency changes, Phase 1/2/3 evidence, branch or
-worktree creation, push or tag is authorized by this roadmap authority task.
+Implement only the frozen foundation after separate Phase 1 task authorization.
+Implementation has not started. The Freeze changed documentation only: no
+production code, schemas, package/dependencies, certification evidence,
+branches/worktrees, push or tag.
 
 ## IM-001: engineering foundation
 
