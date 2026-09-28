@@ -7,7 +7,7 @@ import { isBuiltin } from 'node:module';
 
 export const defaultRoot=fileURLToPath(new URL('../../../memoryos-readiness/',import.meta.url));
 const schemaNames=['assessment','assumption','audit','authority','authority-source','blocker','candidate','claim','cne-reason','code','component','configuration','contract-manifest','decision-projection','dependency','derived-qualification','digest','distribution-manifest','error','evidence','file-member','gate-definition','gate-result','grant','graph','history','history-projection','human-decision','id','identity','integer','manifest','manifest-entry','normalized-authority','normalized-authority-source','normalized-grant','normalized-slot','product-version','proof-binding','provider-detail','qualification','relative-file','result','revision','semantic-contract','shared','slot','string','summary','tag-name','tag-observation','timestamp'];
-const sourceNames=['canonical','cli-args','constants','errors','foundation','helper-protocol','index','projections','publication','schema-data','schema','windows-paths'];
+const sourceNames=['canonical','cli-args','constants','errors','evidence-graph','evidence-history','evidence-verifier','foundation','helper-protocol','index','projections','publication','schema-data','schema','windows-paths'];
 export const packageFiles=Object.freeze([
   'LICENSE-NOTICE.md','NOTICES.md','README.md','bin/memoryos-readiness.mjs',
   'contracts/contract.json','contracts/definitions.json','distribution-manifest.json',

@@ -1,0 +1,32 @@
+{
+  "kind": "MemoryOSReadinessPhase2BCampaign",
+  "version": "1.0.0",
+  "scope": "Evidence authority; no readiness aggregation or transport",
+  "tests": [
+    "authority",
+    "graph",
+    "history",
+    "projection",
+    "limits",
+    "fixture_lineage"
+  ],
+  "regressions": [
+    "Phase1 core",
+    "Phase1 fixtures",
+    "Phase1 package",
+    "Phase1 native",
+    "fixture generation byte check",
+    "package exact-member check",
+    "workspace verification",
+    "git diff --check"
+  ],
+  "retry": "Only after diagnosis and relevant correction; retain original failure evidence",
+  "boundaries": "Each Phase2B-owned count/byte/parser/graph cap at boundary and +1; record finite-profile constraints",
+  "trust": "Independent reviewed operator pin; no arbitrary legacy parsing",
+  "budgetMinutes": 90,
+  "extendedHardStopMinutes": 180,
+  "network": false,
+  "predecessorReruns": false,
+  "characterizationRerun": false,
+  "handoff": "2A consumes verified projection; 2C independently re-verifies pinned snapshots; 2D reconciles shared changes and recomputes complete final result"
+}
