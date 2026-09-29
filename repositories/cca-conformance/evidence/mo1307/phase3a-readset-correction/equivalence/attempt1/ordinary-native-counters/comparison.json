@@ -1,0 +1,166 @@
+{
+  "name": "ordinary-native-counters",
+  "result": "PASS",
+  "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+  "tags": [
+    "fresh native observation counters"
+  ],
+  "mutation": null,
+  "exactResponseEqual": true,
+  "code": null,
+  "status": "OK",
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary-native-counters/request.bin",
+    "byteLength": 385,
+    "sha256": "sha256:44e0db7b6b6a59a49ef207c5399fd3a956fbdc35bc45af169571587ae6d2959d"
+  },
+  "b2": {
+    "code": 0,
+    "signal": null,
+    "pid": 12748,
+    "elapsedMs": 3729.353799999997,
+    "exitMs": 3729.3108999999968,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary-native-counters/b2.stdout.bin",
+      "byteLength": 833,
+      "sha256": "sha256:5d6690018fca27a668c693b241e9a01425e6f0827fb92d75d7feb62d28e7bb13"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary-native-counters/b2.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary-native-counters/b2-instrumented.ps1",
+      "byteLength": 32893,
+      "sha256": "sha256:8b223177e023f9a9ace3272c65adb4ec5812ac568e8710094d45da1d675ed6ff"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\evidence\\mo1307\\phase3a-readset-correction\\equivalence\\attempt1\\ordinary-native-counters\\b2-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "candidate": {
+    "code": 0,
+    "signal": null,
+    "pid": 10912,
+    "elapsedMs": 3318.5520000000106,
+    "exitMs": 3318.5193,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary-native-counters/candidate.stdout.bin",
+      "byteLength": 833,
+      "sha256": "sha256:5d6690018fca27a668c693b241e9a01425e6f0827fb92d75d7feb62d28e7bb13"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary-native-counters/candidate.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary-native-counters/candidate-instrumented.ps1",
+      "byteLength": 33339,
+      "sha256": "sha256:678e1fd333c8111c66e1830e537999d3279ea67843383f1b4a17e0098ae2ef65"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\evidence\\mo1307\\phase3a-readset-correction\\equivalence\\attempt1\\ordinary-native-counters\\candidate-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "nativeObservationCountsEqual": true,
+  "telemetry": {
+    "b2": {
+      "phase": "root-post",
+      "counters": {
+        "initial:Open-Native": 21,
+        "root-post:GetFileInformationByHandle": 20,
+        "post-read:GetFileInformationByHandle": 22,
+        "post-read:Open-Native": 11,
+        "root-post:Assert-SameIdentity": 20,
+        "root-post:Read-Identity": 20,
+        "post-read:Read-Identity": 22,
+        "root-post:GetFinalPathNameByHandleW": 20,
+        "post-read:Assert-SameIdentity": 22,
+        "post-read:GetFinalPathNameByHandleW": 22,
+        "root-post:Open-Native": 10,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "initial:GetFileInformationByHandle": 21
+      },
+      "mutations": 0,
+      "mutation": "",
+      "workingSet64": 139046912,
+      "peakWorkingSet64": 140664832,
+      "managedBytes": 65590792,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary-native-counters/b2-telemetry.json",
+        "byteLength": 652,
+        "sha256": "sha256:4643cf4a40323d27696c50e021b9d2115ede573d4ecc35bfda3f7942b66c1410"
+      }
+    },
+    "candidate": {
+      "phase": "root-post",
+      "counters": {
+        "initial:Open-Native": 21,
+        "root-post:GetFileInformationByHandle": 20,
+        "post-read:GetFileInformationByHandle": 22,
+        "post-read:Open-Native": 11,
+        "root-post:Assert-SameIdentity": 20,
+        "root-post:Read-Identity": 20,
+        "post-read:Read-Identity": 22,
+        "root-post:GetFinalPathNameByHandleW": 20,
+        "post-read:Assert-SameIdentity": 22,
+        "post-read:GetFinalPathNameByHandleW": 22,
+        "root-post:Open-Native": 10,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "initial:GetFileInformationByHandle": 21
+      },
+      "mutations": 0,
+      "mutation": "",
+      "workingSet64": 120995840,
+      "peakWorkingSet64": 140529664,
+      "managedBytes": 48093088,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary-native-counters/candidate-telemetry.json",
+        "byteLength": 652,
+        "sha256": "sha256:b8aa275ae9b56d9d04b4c5a819e369c1a1dda38480150e3ec9ea79270226b785"
+      }
+    }
+  }
+}

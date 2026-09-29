@@ -1,0 +1,50 @@
+{
+  "kind": "MO1307ReadSetCorrectionEvidenceCheck",
+  "version": "1.0.0",
+  "result": "FAIL",
+  "checks": [
+    {
+      "id": "baseline-and-unchanged-authorities",
+      "result": "PASS",
+      "B2": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+      "unchangedPackageMembers": 86,
+      "allowedProductionChanges": [
+        "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "repositories/memoryos-readiness/sbom.spdx.json",
+        "repositories/memoryos-readiness/distribution-manifest.json"
+      ],
+      "contractChanged": false,
+      "limitsChanged": false
+    },
+    {
+      "id": "historical-and-certification-preservation",
+      "result": "PASS",
+      "sourceFiles": 34668,
+      "originalInputRoots": 2,
+      "previous3A": "BLOCKED",
+      "diagnosis": "ROOT_CAUSE_ESTABLISHED",
+      "phase3B": "TARGETED_REFRESH_REQUIRED",
+      "phase3C": "TARGETED_REFRESH_REQUIRED"
+    },
+    {
+      "id": "package-and-contract",
+      "result": "PASS",
+      "members": 89,
+      "contractMembers": 53,
+      "dependencies": 0,
+      "optimizationPasses": 1,
+      "helper": {
+        "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "byteLength": 30210,
+        "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+      }
+    }
+  ],
+  "failure": {
+    "code": "ERR_ASSERTION",
+    "message": "Expected values to be strictly equal:\n\n0 !== false\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== false\n\n    at securitySourceCheck (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase3a-readset-correction/check-evidence.mjs:82:405)\n    at checkEvidence (file:///C:/Users/melsa/Documents/Codex/cca-workspace/repositories/cca-conformance/tools/mo1307-phase3a-readset-correction/check-evidence.mjs:86:391)\n    at file:///C:/Users/melsa/Documents/Codex/cca-workspace/[eval1]:4:331\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async node:internal/modules/esm/loader:223:26\n    at async ModuleLoader.executeModuleJob (node:internal/modules/esm/loader:220:20)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
+  },
+  "readOnly": true,
+  "certification": false
+}

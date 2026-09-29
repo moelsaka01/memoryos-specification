@@ -1,0 +1,754 @@
+{
+  "kind": "MO1307ReadSetCorrectionEvidenceCheck",
+  "version": "1.0.0",
+  "result": "PASS",
+  "readOnly": true,
+  "checks": [
+    {
+      "id": "baseline-and-unchanged-authorities",
+      "result": "PASS",
+      "B2": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+      "unchangedPackageMembers": 86,
+      "allowedProductionChanges": [
+        "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "repositories/memoryos-readiness/sbom.spdx.json",
+        "repositories/memoryos-readiness/distribution-manifest.json"
+      ],
+      "contractChanged": false,
+      "limitsChanged": false
+    },
+    {
+      "id": "historical-and-certification-preservation",
+      "result": "PASS",
+      "sourceFiles": 34668,
+      "originalInputRoots": 2,
+      "previous3A": "BLOCKED",
+      "diagnosis": "ROOT_CAUSE_ESTABLISHED",
+      "phase3B": "TARGETED_REFRESH_REQUIRED",
+      "phase3C": "TARGETED_REFRESH_REQUIRED"
+    },
+    {
+      "id": "package-and-contract",
+      "result": "PASS",
+      "members": 89,
+      "contractMembers": 53,
+      "dependencies": 0,
+      "optimizationPasses": 1,
+      "helper": {
+        "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "byteLength": 30210,
+        "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+      }
+    },
+    {
+      "id": "independent-helper-source-review",
+      "result": "PASS",
+      "scope": "Independent source/diff proof review of pass1 only; native corpus and performance acceptance are separate receipts"
+    },
+    {
+      "id": "affected-regressions",
+      "result": "PASS",
+      "package": 8,
+      "phase1Native": 25,
+      "phase2c": 219,
+      "phase2d": 58,
+      "exact2A2BVectors": 16
+    },
+    {
+      "id": "exact-helper-equivalence",
+      "result": "PASS",
+      "cases": 39,
+      "negativeCases": 32,
+      "freshnessCases": 12,
+      "additionalFinalPathControls": 5,
+      "controlledMutationCases": 17,
+      "counterComparisons": 19,
+      "oracleEngineeringGuardIsNotProductDeadline": true
+    },
+    {
+      "id": "strict-product-helper-performance",
+      "result": "PASS",
+      "runs": [
+        {
+          "case": "mo1306",
+          "exchangeMs": 3129.6876,
+          "marginMs": 1870.3123999999998,
+          "helperActiveMs": 3127.4022
+        },
+        {
+          "case": "mo1306",
+          "exchangeMs": 2945.6094,
+          "marginMs": 2054.3906,
+          "helperActiveMs": 2943.728
+        },
+        {
+          "case": "mo1306",
+          "exchangeMs": 2783.4989,
+          "marginMs": 2216.5011,
+          "helperActiveMs": 2781.4892
+        },
+        {
+          "case": "ready",
+          "exchangeMs": 1269.1151,
+          "marginMs": 3730.8849,
+          "helperActiveMs": 1268.1331
+        }
+      ],
+      "worstMO1306Ms": 3129.6876,
+      "marginMs": 1870.3123999999998,
+      "cleanupProductHelpers": 4,
+      "historicalReadyFailureResolved": false,
+      "cacheState": "Uncontrolled ordinary OS cache; not a cold-cache or warm-cache-only guarantee."
+    },
+    {
+      "id": "packaged-cli-correction-smoke",
+      "result": "PASS",
+      "cases": [
+        {
+          "case": "mo1306",
+          "exit": 2,
+          "elapsedMs": 11067.2351,
+          "cleanupConfirmed": true
+        },
+        {
+          "case": "ready",
+          "exit": 0,
+          "elapsedMs": 8500.885100000001,
+          "cleanupConfirmed": true
+        }
+      ],
+      "helperCountBasis": "Nine unchanged source-bound native exchanges per successful exact CLI run",
+      "workerCountBasis": "One unchanged source-bound fixed worker per successful exact CLI run",
+      "directCliProcessAndThreePipesClosed": true,
+      "certification": false
+    }
+  ],
+  "receiptBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/acceptance.json",
+      "byteLength": 10460,
+      "sha256": "sha256:63ebfc28d54a2e29ef65066ddf355ca0adbbff8aacf1fae1476237f96a9a599a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/baseline.json",
+      "byteLength": 20019,
+      "sha256": "sha256:4ff9168c630fd042ddd730a0666e5643de39f4d36e110ab9059d8448f1261559"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/source-certification-before.json",
+      "byteLength": 9149759,
+      "sha256": "sha256:f03f43bbfd34502d65c2a1fa6c9e280fd52962de64b8c4b31d344618565824c9"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/source-certification-after.json",
+      "byteLength": 9150084,
+      "sha256": "sha256:77b37f1d78ea32285252e4bbd802919a1a5a8cdba63e1eb792146b960aa02e11"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/source-preservation-final.json",
+      "byteLength": 2759,
+      "sha256": "sha256:f4d1f269b349faba3076d3301d860708d31874699230a6af0f2cdeb820f8e5e3"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/diagnostic-binding.json",
+      "byteLength": 70082,
+      "sha256": "sha256:e6d43493c99a7f92b9dba02d984e281d7ec2907577c75be76f3f3f3a8d4d9e6c"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/certification-impact.json",
+      "byteLength": 13918,
+      "sha256": "sha256:cbc2c9c72166d9b7ea9998b20de837dee4da796d893d6f2dcb488d78b0334d12"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/package/pass-1/receipt.json",
+      "byteLength": 40296,
+      "sha256": "sha256:8f7df41df85801b4987d489b351b6213e021573cd487fe4ac5b23ff925015789"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/optimization-design-pass1.json",
+      "byteLength": 2057,
+      "sha256": "sha256:1190d225d40a932e8adea82a0e3d1094b4423a1150ce5066e8a3f29aff2c5939"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/helper-security-review.json",
+      "byteLength": 8186,
+      "sha256": "sha256:0f76a4f74d555b13285ecb8a741381f6305b0f997ac96b05d53e87a55957f873"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/cheap-attempt1/receipt.json",
+      "byteLength": 31221,
+      "sha256": "sha256:a68d4d28804c71e51ae5bcd4b1ab21f3f416d1a8ff39b028b1012711bc76789d"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/cheap-attempt1/inputs-before.json",
+      "byteLength": 168294,
+      "sha256": "sha256:d824d9ebb3e5f27e3af56c8553f1f4e9fc7b3d4aebb5d7f039b15b923ca8f8e3"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/cheap-attempt1/inputs-after.json",
+      "byteLength": 168294,
+      "sha256": "sha256:d824d9ebb3e5f27e3af56c8553f1f4e9fc7b3d4aebb5d7f039b15b923ca8f8e3"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/package-attempt1/receipt.json",
+      "byteLength": 2368,
+      "sha256": "sha256:5247bf03018debbe79f9f827f0c604d01391d4b4c252085adb41f6b4b595c6e4"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/package-attempt1/inputs-before.json",
+      "byteLength": 168496,
+      "sha256": "sha256:7f9b8432d7aadaee62a37969ea2f50bd572705b0df425b921a2becf35af4e372"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/package-attempt1/inputs-after.json",
+      "byteLength": 168496,
+      "sha256": "sha256:7f9b8432d7aadaee62a37969ea2f50bd572705b0df425b921a2becf35af4e372"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/phase1-native-attempt1/receipt.json",
+      "byteLength": 3692,
+      "sha256": "sha256:3a28e78af116be46808ef436e2ea978ff1e4ae97bd21589ce186bbcf3ee7d18f"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/phase1-native-attempt1/inputs-before.json",
+      "byteLength": 168496,
+      "sha256": "sha256:d0cc7679d3ed313b38c53b4aed97e334f0d3a8c17529ba535e87fcefd2af6735"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/phase1-native-attempt1/inputs-after.json",
+      "byteLength": 168496,
+      "sha256": "sha256:d0cc7679d3ed313b38c53b4aed97e334f0d3a8c17529ba535e87fcefd2af6735"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/phase2c-attempt1/receipt.json",
+      "byteLength": 19264,
+      "sha256": "sha256:68286fe40b6ca0184242058bd949aa0536d6050296aa7d2203c3844678e55180"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/phase2c-attempt1/inputs-before.json",
+      "byteLength": 170373,
+      "sha256": "sha256:e736823d78d822d5154e0c0524f0cbb9b73102c9710f6eeafe78df936e3201b7"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/phase2c-attempt1/inputs-after.json",
+      "byteLength": 170373,
+      "sha256": "sha256:e736823d78d822d5154e0c0524f0cbb9b73102c9710f6eeafe78df936e3201b7"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/phase2d-attempt1/receipt.json",
+      "byteLength": 6981,
+      "sha256": "sha256:a9e2a41c935cb71e83f5988fe6e7725c82d75bb249afdde8149f8b9a60f21a73"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/phase2d-attempt1/inputs-before.json",
+      "byteLength": 168499,
+      "sha256": "sha256:7298369edce186c6d25efb411b04474973aa5f5d340fcf197b3836e1e179c14a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/phase2d-attempt1/inputs-after.json",
+      "byteLength": 168499,
+      "sha256": "sha256:7298369edce186c6d25efb411b04474973aa5f5d340fcf197b3836e1e179c14a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/vectors-attempt1/receipt.json",
+      "byteLength": 1559,
+      "sha256": "sha256:e94c1b6cbd3660e3d60e471c3778254d30860b08f2fe84a2ab4d93cc509a644c"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/vectors-attempt1/inputs-before.json",
+      "byteLength": 168294,
+      "sha256": "sha256:d824d9ebb3e5f27e3af56c8553f1f4e9fc7b3d4aebb5d7f039b15b923ca8f8e3"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/vectors-attempt1/inputs-after.json",
+      "byteLength": 168294,
+      "sha256": "sha256:d824d9ebb3e5f27e3af56c8553f1f4e9fc7b3d4aebb5d7f039b15b923ca8f8e3"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/regressions/vectors-attempt1/vectors.stdout.txt",
+      "byteLength": 10504,
+      "sha256": "sha256:a6148993221259a6587acfa04b6d99d38657573430ee99716e72a72b05e66adc"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/receipt.json",
+      "byteLength": 234999,
+      "sha256": "sha256:d768ffba171b55a84a5dd676a0db6f8d779fa5416f236573c6f89fdc329dce7a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/campaign.json",
+      "byteLength": 35648,
+      "sha256": "sha256:f886cb98a501db22f69a8818b0c3b69a81419e4871760f3e143c6ba690c60636"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary/comparison.json",
+      "byteLength": 3700,
+      "sha256": "sha256:6f47f86092ea0161ceea232fa2ee480cb6bf83e8dc03de9017d10ef0e2da9da7"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/mixed-case-root/comparison.json",
+      "byteLength": 3752,
+      "sha256": "sha256:738b26d3ac712afc0067273867d5e63b0007bd8a69d164fb13ef7ac013acb4a8"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/unicode-root/comparison.json",
+      "byteLength": 3745,
+      "sha256": "sha256:0f255da504067d2ba755b4e48b3e034791bd136dd262e20558101cbc8a78558b"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/mo1306-exact/comparison.json",
+      "byteLength": 3758,
+      "sha256": "sha256:0a8ad22b7d4f08cf16cb376f6f650c5b5fb496f59170abd56fe81b31b801cc92"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ready-exact/comparison.json",
+      "byteLength": 3741,
+      "sha256": "sha256:774ba1a929566838d9b2ded2f894c5b085f97d8386e35f13fc805a5b3494562d"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-root/comparison.json",
+      "byteLength": 3749,
+      "sha256": "sha256:0d3dd4a087090ac9d01f6d453a7d4d37fa64ac389eecbf19ac8c45339b1e2d6e"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/traversal/comparison.json",
+      "byteLength": 3743,
+      "sha256": "sha256:23edc37c094a5d6f40844058ba52a5703867e307bd52327ec3e2cef800467d08"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/drive-relative/comparison.json",
+      "byteLength": 3781,
+      "sha256": "sha256:a907602a5ae3173523248fed117419312d61a1f1513e0589d1c4988563bfe86a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/unc/comparison.json",
+      "byteLength": 3695,
+      "sha256": "sha256:7da00fff51c77ea731e16030fc1b2e87b50cb023b2a3069424ae4072e1b3dd1a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/device/comparison.json",
+      "byteLength": 3724,
+      "sha256": "sha256:cdac448555ffd6b2a654add9b83f821a6a3eb3baff8da4079283cdd1d03f405c"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ads/comparison.json",
+      "byteLength": 3702,
+      "sha256": "sha256:d804eed6099fe932d317de3bd413afe79c9b1cb94715a548c2ac587b6ce06c3b"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/file-symlink/comparison.json",
+      "byteLength": 3765,
+      "sha256": "sha256:f9fb129005188149bca9a6df2dcef68c192655294b4973a5d255abb793df3b90"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/directory-junction/comparison.json",
+      "byteLength": 3817,
+      "sha256": "sha256:a17b643ac2fab1201aa80e9101b844f819e2040516556e69859461d70b9b1d47"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/hardlink/comparison.json",
+      "byteLength": 3738,
+      "sha256": "sha256:512d9cf808e11b222aeca444ee65c1413e77c808ad41085ecded7cbd81089f25"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-type/comparison.json",
+      "byteLength": 3751,
+      "sha256": "sha256:5c6678a8b0bacff3ae8bb5dc9affc2f882d02a31e49f7473807c4af91516dc5e"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/missing-file/comparison.json",
+      "byteLength": 3742,
+      "sha256": "sha256:a0cac40ea6016976372ad71112e386177114eff986031a30c9be9a4b3b3d410a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/malformed-request/comparison.json",
+      "byteLength": 3787,
+      "sha256": "sha256:2dfba658c28bf5bda64b3d637979c00ab435065b73b3e34604235e4f1bd9be11"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-session/comparison.json",
+      "byteLength": 3758,
+      "sha256": "sha256:3d5ecf3e675544896b6514389732eb02e603a0610df04099e0e9f2408fef6901"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-sequence/comparison.json",
+      "byteLength": 3764,
+      "sha256": "sha256:504367a04717d849494d525f13cdcbd8607c82dc8af63c8350961bda60b0e465"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-operation/comparison.json",
+      "byteLength": 3773,
+      "sha256": "sha256:ec82ef8451b0549a85ab3d55a595730baaee5abcfe8b09d15eae6bf70c9fe16d"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary-native-counters/comparison.json",
+      "byteLength": 6452,
+      "sha256": "sha256:b9c1af0666deecd0a3887853bf9b8f14bfedf99d3fad9869b6bb2d4e866d4819"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary-native-counters/b2-instrumentation.json",
+      "byteLength": 3047,
+      "sha256": "sha256:81f7fec8f75b0346935bccb7fb83c2017bb775291effbda12f909c5f05463459"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary-native-counters/candidate-instrumentation.json",
+      "byteLength": 3012,
+      "sha256": "sha256:fa0387416f1c9cbe2c5427906d81decfb50cc0f853edbb24acfe28b3635f77ba"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/mo1306-native-counters/comparison.json",
+      "byteLength": 6479,
+      "sha256": "sha256:4ed1cc7d08469058f8eb8e2a24c9d3e9c62d33426c88d98a115ab8b056b9cee0"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/mo1306-native-counters/b2-instrumentation.json",
+      "byteLength": 3045,
+      "sha256": "sha256:5f669be16d3e9a8bd80d4c7f3843ec08209ea14f9bffc1985f4a7a2761ec280a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/mo1306-native-counters/candidate-instrumentation.json",
+      "byteLength": 3010,
+      "sha256": "sha256:72d48c78de754ea11101011c77db356dbf7428fe4060823d0b64affbb481a7b8"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-identity/comparison.json",
+      "byteLength": 5970,
+      "sha256": "sha256:ea23aef31b39aaaab3e84389284ff6cd5a48f3ac714d51760d7d32a7805999dc"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-identity/b2-instrumentation.json",
+      "byteLength": 3046,
+      "sha256": "sha256:57dd95508365c96f46aa35a0bc0cced23475aa1042f689ad52329b84493af68d"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-identity/candidate-instrumentation.json",
+      "byteLength": 3011,
+      "sha256": "sha256:a84282855e1b66ada6c672dbba62868093d2cb395cbad8313d335944ac7fe305"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-volume/comparison.json",
+      "byteLength": 5951,
+      "sha256": "sha256:3c942e331b8bcb19a926b797ab6accdff8e6fc223877fbeb1ba1b238be1a23bd"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-volume/b2-instrumentation.json",
+      "byteLength": 3041,
+      "sha256": "sha256:66d4887fabddebf890068a142f8515d2d566e625c4a7a0ad7492ee69196185e1"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-volume/candidate-instrumentation.json",
+      "byteLength": 3006,
+      "sha256": "sha256:4313adaff2a3a87cd0e30cc8904d065ba1eb631306ca6754d4f7b49e182a0f4a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-ancestor-identity/comparison.json",
+      "byteLength": 6017,
+      "sha256": "sha256:9e8ca134be4e411b3928d35540a9ba761b49b7b9348d07fc7e6da45bb2fa1a43"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-ancestor-identity/b2-instrumentation.json",
+      "byteLength": 3059,
+      "sha256": "sha256:b324333a58b99f934ccf87e0a570c4b25b73b6487f7167620a1a49ec3d6e06b1"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-ancestor-identity/candidate-instrumentation.json",
+      "byteLength": 3024,
+      "sha256": "sha256:7d6e6b53cf22dc14f2f78db8bbfc8705a67f3028131aef9f80880a6942b029af"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-size-observation/comparison.json",
+      "byteLength": 6053,
+      "sha256": "sha256:430949f9345a9ca5f86499e5bc542a49c68543cc7fe400665639d4a28eb27e27"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-size-observation/b2-instrumentation.json",
+      "byteLength": 3051,
+      "sha256": "sha256:56d96bd1e017a2295d1f3ea9488a52282b7e5645e9e9496a522421064cab23ab"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-size-observation/candidate-instrumentation.json",
+      "byteLength": 3016,
+      "sha256": "sha256:e77bd445c6c69a5263530541a910e6f81537d815c454871ab53c32f3f2efb8fc"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-link-observation/comparison.json",
+      "byteLength": 6065,
+      "sha256": "sha256:99d8f5c56b82c32a5f3ba04dd9f2160cc2d3ff19b7b3b76950ea3102a4b8b65e"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-link-observation/b2-instrumentation.json",
+      "byteLength": 3051,
+      "sha256": "sha256:987d536e3117da69d507c90d29686484180c31d5b957487d2fdac15999a848da"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-link-observation/candidate-instrumentation.json",
+      "byteLength": 3016,
+      "sha256": "sha256:60cb1a1bcd8deed90c1f7987f1dd206f46133a9bb0f804e457b6dd120e5e68a3"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-attributes-observation/comparison.json",
+      "byteLength": 6165,
+      "sha256": "sha256:0563c21c5338ec03421c526e147b6252e4419aabb032d4a7e4158538bfff5f01"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-attributes-observation/b2-instrumentation.json",
+      "byteLength": 3063,
+      "sha256": "sha256:74d618a7623d54f6d219487ce1d429442f920a99bec1d62b66ea91d54bff3db6"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-attributes-observation/candidate-instrumentation.json",
+      "byteLength": 3028,
+      "sha256": "sha256:92ac3157e6892dfba8cd04a3c3bd7f9dfe9b79db50cababbde136db1dfe1a27b"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-final-path/comparison.json",
+      "byteLength": 5979,
+      "sha256": "sha256:21c33586800889f603d254f06dd337218fe7a97b2630bdf3179b0925e3905888"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-final-path/b2-instrumentation.json",
+      "byteLength": 3049,
+      "sha256": "sha256:99608734b80cb4e58074c7db521b21a99f8f54b2aeda9eb9c66c84f8a8fc6c90"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-final-path/candidate-instrumentation.json",
+      "byteLength": 3014,
+      "sha256": "sha256:01e35a3417cc45d5c2765b379f0d91ffaacc439e1498582bb034eb352f16e3ad"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-final-expectation/comparison.json",
+      "byteLength": 6101,
+      "sha256": "sha256:5605f586454962188e1f0e75983abdab6290bc6b9d4a65b0173c36d05837f0ed"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-final-expectation/b2-instrumentation.json",
+      "byteLength": 3062,
+      "sha256": "sha256:53edf9839c4cda2f41d9df3994b1d8a3a837cb2d67c511a612afcc9b30978c43"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-final-expectation/candidate-instrumentation.json",
+      "byteLength": 3027,
+      "sha256": "sha256:74bf8682b6d2da18c3151c37a2c4bdaf1df2b03f746f1c6ae94501c79764c865"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-file-replacement/comparison.json",
+      "byteLength": 6043,
+      "sha256": "sha256:c5a1c1457f1f6e8a52bc8465cb88c888462c55767dad047cdb7671f979e63364"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-file-replacement/b2-instrumentation.json",
+      "byteLength": 3054,
+      "sha256": "sha256:6ae3d056f75408e483472127e2d64b8c1560deccff1bbbe5e62532f035b27404"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-file-replacement/candidate-instrumentation.json",
+      "byteLength": 3019,
+      "sha256": "sha256:70653a945dd70c24bfc48d093eb83a0f42d3a8d6623ac2f9b293d03e4e05fd85"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/comparison.json",
+      "byteLength": 6037,
+      "sha256": "sha256:70fd8daa8c945c2d606f3b10b4ec2250459d7221ee9cc76adbed02d780d8b379"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/b2-instrumentation.json",
+      "byteLength": 3050,
+      "sha256": "sha256:a4de20675347911e809a56262fb6f914455dc07de323f576b9f5bc937c1fb973"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/candidate-instrumentation.json",
+      "byteLength": 3015,
+      "sha256": "sha256:81bdcdb46f87671fb8b72109bc12added5d7dd7ad60a54e485ca73eaf8d204f3"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-reparse-mutation/comparison.json",
+      "byteLength": 6051,
+      "sha256": "sha256:b9f3b28bcad2710a12109b4855496c724a7ed5efd8135047271f7b0b8f6d811f"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-reparse-mutation/b2-instrumentation.json",
+      "byteLength": 3054,
+      "sha256": "sha256:bad66cf6ecca9e62dfe93e8efc5d27677b670254b27e63b0b2475c6ba3619aa0"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-reparse-mutation/candidate-instrumentation.json",
+      "byteLength": 3019,
+      "sha256": "sha256:16d92d1bb216ff51f56b152f54a9b14aaed1572310bd87a34649ddcd4afdf108"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-ancestor-replacement/comparison.json",
+      "byteLength": 6146,
+      "sha256": "sha256:d1312f3a28bb99962aa5e3add1ec89b147e794b2074233b60fcc66a247b2cd6b"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-ancestor-replacement/b2-instrumentation.json",
+      "byteLength": 3067,
+      "sha256": "sha256:5ac62367fbfc0b61362c24bdb9d1253878289beba206cb38ec74188f7f18762a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-ancestor-replacement/candidate-instrumentation.json",
+      "byteLength": 3032,
+      "sha256": "sha256:3c2d263b78f1421df28d7704401f7afce7dbb5beee4e2bb6bf7eb4b7dab28bfc"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-ads/comparison.json",
+      "byteLength": 6030,
+      "sha256": "sha256:b10fc39adeb826653379d3cbaa3561c1ea8e14e415a14dff3eb53f761ac48ee5"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-ads/b2-instrumentation.json",
+      "byteLength": 3053,
+      "sha256": "sha256:237772c09c3137c084ddb1e15bf310e0090a607e2ab7c56c6879985bb8f473f5"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-ads/candidate-instrumentation.json",
+      "byteLength": 3018,
+      "sha256": "sha256:53a5071662ff5b32628fdd549c189ec97158d4a40548f0ffc08bb2b787c1ca3b"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-trailing-dot/comparison.json",
+      "byteLength": 6164,
+      "sha256": "sha256:013d2b36e2f573a3f2d840809b10d4e8593517425d1b13831b8161f38e588813"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-trailing-dot/b2-instrumentation.json",
+      "byteLength": 3071,
+      "sha256": "sha256:5a1b7d4814ea6143a0a8d6f2574955cd113c82ad7964513615150ca610a95d7b"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-trailing-dot/candidate-instrumentation.json",
+      "byteLength": 3036,
+      "sha256": "sha256:93f6ccefcab741d2122ca5509a374b35789c096ad8e0b19f111c066c358868cf"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-trailing-space/comparison.json",
+      "byteLength": 6197,
+      "sha256": "sha256:a41139f133f5ff903d0b00ac5ba9ef955630505cd48881be30b852351e71eb1a"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-trailing-space/b2-instrumentation.json",
+      "byteLength": 3075,
+      "sha256": "sha256:612d0c62b4ac58a6e24ba7c7cf83ab02ba295d6a80b31a44419afbe9610b2368"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-trailing-space/candidate-instrumentation.json",
+      "byteLength": 3040,
+      "sha256": "sha256:f2d384148379d18445a68860dea3242445a8fa71d27b92a7b3e40e0219b83442"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-separator/comparison.json",
+      "byteLength": 6119,
+      "sha256": "sha256:5b00777c223883e48c54d8249822289cbca7a16435155bfb55a7200117609a07"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-separator/b2-instrumentation.json",
+      "byteLength": 3065,
+      "sha256": "sha256:2e1633b26071274aa7dc49527cdfc0ae80690b913a0f7a23747e88dc8b6ed6fd"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-separator/candidate-instrumentation.json",
+      "byteLength": 3030,
+      "sha256": "sha256:f74c1673d20d573ae981a4f331c0507e95061d95d1c3c5a55abb7aa90651c4fd"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-control/comparison.json",
+      "byteLength": 6090,
+      "sha256": "sha256:abc65c700b6bf8675c64ea097901624b813a005724e8b774146e9744586e597c"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-control/b2-instrumentation.json",
+      "byteLength": 3061,
+      "sha256": "sha256:ecfce0122d39365fac2965f7ba230d2cc742daa2bb2a594b947548ec51e51339"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-control/candidate-instrumentation.json",
+      "byteLength": 3026,
+      "sha256": "sha256:cfaba367fba0b3329e75aa2d9ca44cf8f1e05ddb5109e1a25b9f95d6588e3085"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/security-freshness.json",
+      "byteLength": 27771,
+      "sha256": "sha256:c41cadc637a200a1c1c2d85f9ca7e2f66ce7cb61895d86b20a50972b496f38e3"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/mo1306-run1/receipt.json",
+      "byteLength": 37657,
+      "sha256": "sha256:006847e3973abedc1ea85959e654373a7d55b742eb3977415d8857643145123e"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/mo1306-run1/campaign.json",
+      "byteLength": 37479,
+      "sha256": "sha256:471afeb2b6a94edde15ba907492ba2e74c4a762225db450d6393cc8cc2b011fb"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/mo1306-run2/receipt.json",
+      "byteLength": 37646,
+      "sha256": "sha256:362ed4e04b5bd7280752e022a77b2e92a95f0c554ec9dc647b32cb14b1befaa7"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/mo1306-run2/campaign.json",
+      "byteLength": 37479,
+      "sha256": "sha256:471afeb2b6a94edde15ba907492ba2e74c4a762225db450d6393cc8cc2b011fb"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/mo1306-run3/receipt.json",
+      "byteLength": 37647,
+      "sha256": "sha256:7d074952eb3731eab04b3dd2b456728c300685a5af2462ec589512b8cfdc3673"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/mo1306-run3/campaign.json",
+      "byteLength": 37479,
+      "sha256": "sha256:471afeb2b6a94edde15ba907492ba2e74c4a762225db450d6393cc8cc2b011fb"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/ready-run1/receipt.json",
+      "byteLength": 25865,
+      "sha256": "sha256:40a48762018754124dec1e51c7e23975c98898b4a41f41098682a47ac793f441"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/ready-run1/campaign.json",
+      "byteLength": 25701,
+      "sha256": "sha256:387bfd50b05b1c353e8a9c5d5cab34dd85b84214e7c5a29e19ec78acb0459478"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/mo1306-run1/receipt.json",
+      "byteLength": 37657,
+      "sha256": "sha256:006847e3973abedc1ea85959e654373a7d55b742eb3977415d8857643145123e"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/mo1306-run2/receipt.json",
+      "byteLength": 37646,
+      "sha256": "sha256:362ed4e04b5bd7280752e022a77b2e92a95f0c554ec9dc647b32cb14b1befaa7"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/mo1306-run3/receipt.json",
+      "byteLength": 37647,
+      "sha256": "sha256:7d074952eb3731eab04b3dd2b456728c300685a5af2462ec589512b8cfdc3673"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/performance/ready-run1/receipt.json",
+      "byteLength": 25865,
+      "sha256": "sha256:40a48762018754124dec1e51c7e23975c98898b4a41f41098682a47ac793f441"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/cli-smoke/mo1306/receipt.json",
+      "byteLength": 40538,
+      "sha256": "sha256:9a93c0efd7d04f2e751b1e6ac286a6b5a199e80346210b516b44d0f1d879f43f"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/cli-smoke/mo1306/campaign.json",
+      "byteLength": 39541,
+      "sha256": "sha256:dae4453bd981902dd2c5ebfecaa19e12e409163f39ee1cbfebaeb4ffac2e47ea"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/cli-smoke/ready/receipt.json",
+      "byteLength": 28504,
+      "sha256": "sha256:53265c560ffe0c2a54512c687ac6d61f4a0a07d3eff3219a672b78c56b0a7a53"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/cli-smoke/ready/campaign.json",
+      "byteLength": 27533,
+      "sha256": "sha256:d8892d1814462679319c21e2fba1e55a562630eeeb629711818dbfeffcef2e2d"
+    }
+  ],
+  "certification": false
+}

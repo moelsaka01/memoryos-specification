@@ -1,0 +1,154 @@
+{
+  "name": "changed-ancestor-identity",
+  "result": "PASS",
+  "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+  "tags": [
+    "ancestor identity changes"
+  ],
+  "mutation": "ancestor-id",
+  "exactResponseEqual": true,
+  "code": "MO1307_FILESYSTEM_BOUNDARY",
+  "status": "ERROR",
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-ancestor-identity/request.bin",
+    "byteLength": 402,
+    "sha256": "sha256:08580a56f86520dfddef4dcebac5a296682083b8ff81ae103a89daf8bb1296ba"
+  },
+  "b2": {
+    "code": 0,
+    "signal": null,
+    "pid": 25776,
+    "elapsedMs": 1763.6568000000116,
+    "exitMs": 1763.639200000005,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-ancestor-identity/b2.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-ancestor-identity/b2.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-ancestor-identity/b2-instrumented.ps1",
+      "byteLength": 32905,
+      "sha256": "sha256:9a0da838bc3c8b2efe5b8366959814193403f8849a440b691ec104bbaa35ac92"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\evidence\\mo1307\\phase3a-readset-correction\\equivalence\\attempt1\\changed-ancestor-identity\\b2-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "candidate": {
+    "code": 0,
+    "signal": null,
+    "pid": 16536,
+    "elapsedMs": 1704.5531000000046,
+    "exitMs": 1704.5357999999978,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-ancestor-identity/candidate.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-ancestor-identity/candidate.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-ancestor-identity/candidate-instrumented.ps1",
+      "byteLength": 33351,
+      "sha256": "sha256:e02eb8dac90b57d0c371d3819137a99b419790889538dbcae51f105521154e46"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\evidence\\mo1307\\phase3a-readset-correction\\equivalence\\attempt1\\changed-ancestor-identity\\candidate-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "nativeObservationCountsEqual": true,
+  "telemetry": {
+    "b2": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 1,
+        "initial:GetFileInformationByHandle": 21,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 1,
+        "post-read:GetFinalPathNameByHandleW": 1,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 1,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "ancestor-id",
+      "workingSet64": 117485568,
+      "peakWorkingSet64": 119455744,
+      "managedBytes": 37745720,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-ancestor-identity/b2-telemetry.json",
+        "byteLength": 458,
+        "sha256": "sha256:f400556c0df1c49f938543e595d76f3ac87cbcc56d09c19837d99f060637e30e"
+      }
+    },
+    "candidate": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 1,
+        "initial:GetFileInformationByHandle": 21,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 1,
+        "post-read:GetFinalPathNameByHandleW": 1,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 1,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "ancestor-id",
+      "workingSet64": 115453952,
+      "peakWorkingSet64": 119332864,
+      "managedBytes": 32231496,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-ancestor-identity/candidate-telemetry.json",
+        "byteLength": 458,
+        "sha256": "sha256:2c4b319e52b825c2f8d071cdfe10b346fd99ace2ce2d578d29dd7a101e72a457"
+      }
+    }
+  }
+}

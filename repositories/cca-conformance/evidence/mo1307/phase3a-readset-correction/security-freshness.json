@@ -1,0 +1,699 @@
+{
+  "kind": "MO1307ReadSetSecurityFreshnessSummary",
+  "version": "1.0.0",
+  "result": "PASS",
+  "receipt": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/receipt.json",
+    "byteLength": 234999,
+    "sha256": "sha256:d768ffba171b55a84a5dd676a0db6f8d779fa5416f236573c6f89fdc329dce7a"
+  },
+  "baseline": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/oracle/baseline.json",
+    "byteLength": 501,
+    "sha256": "sha256:fca51d566b12a6eb96ea5a214c5a3628cae096f1bcbad3db88d3322c153d9e1d"
+  },
+  "b2": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/oracle/b2-windows-inspect.ps1",
+    "byteLength": 29771,
+    "sha256": "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+  },
+  "candidate": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/oracle/pass1-windows-inspect.ps1",
+    "byteLength": 30210,
+    "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+  },
+  "checker": {
+    "path": "repositories/cca-conformance/tools/mo1307-phase3a-readset-correction/check-equivalence.mjs",
+    "byteLength": 8834,
+    "sha256": "sha256:1863e7ede734a0d76f7c10955665ba83302afbc184467db91ee9bd061c040d6f"
+  },
+  "runtime": {
+    "node": {
+      "path": "C:/Users/melsa/Documents/Codex/cca-workspace/.cache/mo1304-phase3-toolchain/node-v24.21.0-win-x64/node.exe",
+      "byteLength": 93580104,
+      "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+    },
+    "nodeVersion": "v24.21.0",
+    "powershell": {
+      "path": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "byteLength": 495616,
+      "sha256": "sha256:8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e"
+    }
+  },
+  "counts": {
+    "cases": 39,
+    "nativeHelperInvocations": 78,
+    "successCases": 7,
+    "negativeCases": 32,
+    "instrumentedComparisons": 19,
+    "controlledMutationComparisons": 17,
+    "section14Categories": 22,
+    "section15Categories": 6
+  },
+  "section14": [
+    {
+      "category": "ordinary READ_SET success",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "ordinary",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary/comparison.json",
+            "byteLength": 3700,
+            "sha256": "sha256:6f47f86092ea0161ceea232fa2ee480cb6bf83e8dc03de9017d10ef0e2da9da7"
+          }
+        }
+      ]
+    },
+    {
+      "category": "MO-1306 65-file READ_SET",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "mo1306-exact",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/mo1306-exact/comparison.json",
+            "byteLength": 3758,
+            "sha256": "sha256:0a8ad22b7d4f08cf16cb376f6f650c5b5fb496f59170abd56fe81b31b801cc92"
+          }
+        }
+      ]
+    },
+    {
+      "category": "READY READ_SET",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "ready-exact",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ready-exact/comparison.json",
+            "byteLength": 3741,
+            "sha256": "sha256:774ba1a929566838d9b2ded2f894c5b085f97d8386e35f13fc805a5b3494562d"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong root",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-root",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-root/comparison.json",
+            "byteLength": 3749,
+            "sha256": "sha256:0d3dd4a087090ac9d01f6d453a7d4d37fa64ac389eecbf19ac8c45339b1e2d6e"
+          }
+        }
+      ]
+    },
+    {
+      "category": "traversal",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "traversal",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/traversal/comparison.json",
+            "byteLength": 3743,
+            "sha256": "sha256:23edc37c094a5d6f40844058ba52a5703867e307bd52327ec3e2cef800467d08"
+          }
+        }
+      ]
+    },
+    {
+      "category": "drive-relative",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "drive-relative",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/drive-relative/comparison.json",
+            "byteLength": 3781,
+            "sha256": "sha256:a907602a5ae3173523248fed117419312d61a1f1513e0589d1c4988563bfe86a"
+          }
+        }
+      ]
+    },
+    {
+      "category": "UNC",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "unc",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/unc/comparison.json",
+            "byteLength": 3695,
+            "sha256": "sha256:7da00fff51c77ea731e16030fc1b2e87b50cb023b2a3069424ae4072e1b3dd1a"
+          }
+        }
+      ]
+    },
+    {
+      "category": "device path",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "device",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/device/comparison.json",
+            "byteLength": 3724,
+            "sha256": "sha256:cdac448555ffd6b2a654add9b83f821a6a3eb3baff8da4079283cdd1d03f405c"
+          }
+        }
+      ]
+    },
+    {
+      "category": "ADS",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "ads",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ads/comparison.json",
+            "byteLength": 3702,
+            "sha256": "sha256:d804eed6099fe932d317de3bd413afe79c9b1cb94715a548c2ac587b6ce06c3b"
+          }
+        }
+      ]
+    },
+    {
+      "category": "file symlink",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "file-symlink",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/file-symlink/comparison.json",
+            "byteLength": 3765,
+            "sha256": "sha256:f9fb129005188149bca9a6df2dcef68c192655294b4973a5d255abb793df3b90"
+          }
+        }
+      ]
+    },
+    {
+      "category": "directory junction/reparse",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "directory-junction",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/directory-junction/comparison.json",
+            "byteLength": 3817,
+            "sha256": "sha256:a17b643ac2fab1201aa80e9101b844f819e2040516556e69859461d70b9b1d47"
+          }
+        }
+      ]
+    },
+    {
+      "category": "hardlink",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "hardlink",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/hardlink/comparison.json",
+            "byteLength": 3738,
+            "sha256": "sha256:512d9cf808e11b222aeca444ee65c1413e77c808ad41085ecded7cbd81089f25"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong type",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-type",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-type/comparison.json",
+            "byteLength": 3751,
+            "sha256": "sha256:5c6678a8b0bacff3ae8bb5dc9affc2f882d02a31e49f7473807c4af91516dc5e"
+          }
+        }
+      ]
+    },
+    {
+      "category": "changed identity",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-identity",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-identity/comparison.json",
+            "byteLength": 5970,
+            "sha256": "sha256:ea23aef31b39aaaab3e84389284ff6cd5a48f3ac714d51760d7d32a7805999dc"
+          }
+        },
+        {
+          "name": "native-file-replacement",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-file-replacement/comparison.json",
+            "byteLength": 6043,
+            "sha256": "sha256:c5a1c1457f1f6e8a52bc8465cb88c888462c55767dad047cdb7671f979e63364"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong final path",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-final-path",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-final-path/comparison.json",
+            "byteLength": 5979,
+            "sha256": "sha256:21c33586800889f603d254f06dd337218fe7a97b2630bdf3179b0925e3905888"
+          }
+        },
+        {
+          "name": "observed-final-ads",
+          "scope": "ENGINEERING_NATIVE_FINAL_PATH_VALUE_PERTURBATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-ads/comparison.json",
+            "byteLength": 6030,
+            "sha256": "sha256:b10fc39adeb826653379d3cbaa3561c1ea8e14e415a14dff3eb53f761ac48ee5"
+          }
+        },
+        {
+          "name": "observed-final-trailing-dot",
+          "scope": "ENGINEERING_NATIVE_FINAL_PATH_VALUE_PERTURBATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-trailing-dot/comparison.json",
+            "byteLength": 6164,
+            "sha256": "sha256:013d2b36e2f573a3f2d840809b10d4e8593517425d1b13831b8161f38e588813"
+          }
+        },
+        {
+          "name": "observed-final-trailing-space",
+          "scope": "ENGINEERING_NATIVE_FINAL_PATH_VALUE_PERTURBATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-trailing-space/comparison.json",
+            "byteLength": 6197,
+            "sha256": "sha256:a41139f133f5ff903d0b00ac5ba9ef955630505cd48881be30b852351e71eb1a"
+          }
+        },
+        {
+          "name": "observed-final-separator",
+          "scope": "ENGINEERING_NATIVE_FINAL_PATH_VALUE_PERTURBATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-separator/comparison.json",
+            "byteLength": 6119,
+            "sha256": "sha256:5b00777c223883e48c54d8249822289cbca7a16435155bfb55a7200117609a07"
+          }
+        },
+        {
+          "name": "observed-final-control",
+          "scope": "ENGINEERING_NATIVE_FINAL_PATH_VALUE_PERTURBATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/observed-final-control/comparison.json",
+            "byteLength": 6090,
+            "sha256": "sha256:abc65c700b6bf8675c64ea097901624b813a005724e8b774146e9744586e597c"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong volume/identity where safely representable",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-volume",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-volume/comparison.json",
+            "byteLength": 5951,
+            "sha256": "sha256:3c942e331b8bcb19a926b797ab6accdff8e6fc223877fbeb1ba1b238be1a23bd"
+          }
+        }
+      ]
+    },
+    {
+      "category": "missing file",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "missing-file",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/missing-file/comparison.json",
+            "byteLength": 3742,
+            "sha256": "sha256:a0cac40ea6016976372ad71112e386177114eff986031a30c9be9a4b3b3d410a"
+          }
+        }
+      ]
+    },
+    {
+      "category": "file mutation between observations",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-attributes-observation",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-attributes-observation/comparison.json",
+            "byteLength": 6165,
+            "sha256": "sha256:0563c21c5338ec03421c526e147b6252e4419aabb032d4a7e4158538bfff5f01"
+          }
+        },
+        {
+          "name": "native-size-mutation",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/comparison.json",
+            "byteLength": 6037,
+            "sha256": "sha256:70fd8daa8c945c2d606f3b10b4ec2250459d7221ee9cc76adbed02d780d8b379"
+          }
+        }
+      ]
+    },
+    {
+      "category": "malformed request",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "malformed-request",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/malformed-request/comparison.json",
+            "byteLength": 3787,
+            "sha256": "sha256:2dfba658c28bf5bda64b3d637979c00ab435065b73b3e34604235e4f1bd9be11"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong session",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-session",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-session/comparison.json",
+            "byteLength": 3758,
+            "sha256": "sha256:3d5ecf3e675544896b6514389732eb02e603a0610df04099e0e9f2408fef6901"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong sequence",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-sequence",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-sequence/comparison.json",
+            "byteLength": 3764,
+            "sha256": "sha256:504367a04717d849494d525f13cdcbd8607c82dc8af63c8350961bda60b0e465"
+          }
+        }
+      ]
+    },
+    {
+      "category": "wrong operation",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "wrong-operation",
+          "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/wrong-operation/comparison.json",
+            "byteLength": 3773,
+            "sha256": "sha256:ec82ef8451b0549a85ab3d55a595730baaee5abcfe8b09d15eae6bf70c9fe16d"
+          }
+        }
+      ]
+    }
+  ],
+  "section15": [
+    {
+      "category": "file changes between initial and post-read identity",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-attributes-observation",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-attributes-observation/comparison.json",
+            "byteLength": 6165,
+            "sha256": "sha256:0563c21c5338ec03421c526e147b6252e4419aabb032d4a7e4158538bfff5f01"
+          }
+        },
+        {
+          "name": "native-size-mutation",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/comparison.json",
+            "byteLength": 6037,
+            "sha256": "sha256:70fd8daa8c945c2d606f3b10b4ec2250459d7221ee9cc76adbed02d780d8b379"
+          }
+        }
+      ]
+    },
+    {
+      "category": "ancestor identity changes where safely testable",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-ancestor-identity",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-ancestor-identity/comparison.json",
+            "byteLength": 6017,
+            "sha256": "sha256:9e8ca134be4e411b3928d35540a9ba761b49b7b9348d07fc7e6da45bb2fa1a43"
+          }
+        },
+        {
+          "name": "native-ancestor-replacement",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-ancestor-replacement/comparison.json",
+            "byteLength": 6146,
+            "sha256": "sha256:d1312f3a28bb99962aa5e3add1ec89b147e794b2074233b60fcc66a247b2cd6b"
+          }
+        }
+      ]
+    },
+    {
+      "category": "file is replaced",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-identity",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-identity/comparison.json",
+            "byteLength": 5970,
+            "sha256": "sha256:ea23aef31b39aaaab3e84389284ff6cd5a48f3ac714d51760d7d32a7805999dc"
+          }
+        },
+        {
+          "name": "native-file-replacement",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-file-replacement/comparison.json",
+            "byteLength": 6043,
+            "sha256": "sha256:c5a1c1457f1f6e8a52bc8465cb88c888462c55767dad047cdb7671f979e63364"
+          }
+        }
+      ]
+    },
+    {
+      "category": "link/reparse state changes",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-link-observation",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-link-observation/comparison.json",
+            "byteLength": 6065,
+            "sha256": "sha256:99d8f5c56b82c32a5f3ba04dd9f2160cc2d3ff19b7b3b76950ea3102a4b8b65e"
+          }
+        },
+        {
+          "name": "native-reparse-mutation",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-reparse-mutation/comparison.json",
+            "byteLength": 6051,
+            "sha256": "sha256:b9f3b28bcad2710a12109b4855496c724a7ed5efd8135047271f7b0b8f6d811f"
+          }
+        }
+      ]
+    },
+    {
+      "category": "size changes",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-size-observation",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-size-observation/comparison.json",
+            "byteLength": 6053,
+            "sha256": "sha256:430949f9345a9ca5f86499e5bc542a49c68543cc7fe400665639d4a28eb27e27"
+          }
+        },
+        {
+          "name": "native-size-mutation",
+          "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/native-size-mutation/comparison.json",
+            "byteLength": 6037,
+            "sha256": "sha256:70fd8daa8c945c2d606f3b10b4ec2250459d7221ee9cc76adbed02d780d8b379"
+          }
+        }
+      ]
+    },
+    {
+      "category": "final-path expectation changes",
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "changed-final-expectation",
+          "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+          "comparison": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/changed-final-expectation/comparison.json",
+            "byteLength": 6101,
+            "sha256": "sha256:5605f586454962188e1f0e75983abdab6290bc6b9d4a65b0173c36d05837f0ed"
+          }
+        }
+      ]
+    }
+  ],
+  "nativeObservations": {
+    "b2": {
+      "phase": "root-post",
+      "counters": {
+        "initial:Open-Native": 724,
+        "root-post:GetFileInformationByHandle": 18,
+        "post-read:GetFileInformationByHandle": 1430,
+        "post-read:Open-Native": 715,
+        "root-post:Assert-SameIdentity": 18,
+        "root-post:Read-Identity": 18,
+        "post-read:Read-Identity": 1430,
+        "root-post:GetFinalPathNameByHandleW": 18,
+        "post-read:Assert-SameIdentity": 1430,
+        "post-read:GetFinalPathNameByHandleW": 1430,
+        "root-post:Open-Native": 9,
+        "initial:Read-Identity": 724,
+        "initial:Assert-SameIdentity": 585,
+        "initial:GetFinalPathNameByHandleW": 724,
+        "initial:GetFileInformationByHandle": 724
+      },
+      "mutations": 0,
+      "mutation": "",
+      "workingSet64": 126124032,
+      "peakWorkingSet64": 153403392,
+      "managedBytes": 33177176,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/mo1306-native-counters/b2-telemetry.json",
+        "byteLength": 665,
+        "sha256": "sha256:a9336c4275ce30f2b89f19f8e50001c64f8dfea1e55456d8071dc7c3fedb1646"
+      }
+    },
+    "candidate": {
+      "phase": "root-post",
+      "counters": {
+        "initial:Open-Native": 724,
+        "root-post:GetFileInformationByHandle": 18,
+        "post-read:GetFileInformationByHandle": 1430,
+        "post-read:Open-Native": 715,
+        "root-post:Assert-SameIdentity": 18,
+        "root-post:Read-Identity": 18,
+        "post-read:Read-Identity": 1430,
+        "root-post:GetFinalPathNameByHandleW": 18,
+        "post-read:Assert-SameIdentity": 1430,
+        "post-read:GetFinalPathNameByHandleW": 1430,
+        "root-post:Open-Native": 9,
+        "initial:Read-Identity": 724,
+        "initial:Assert-SameIdentity": 585,
+        "initial:GetFinalPathNameByHandleW": 724,
+        "initial:GetFileInformationByHandle": 724
+      },
+      "mutations": 0,
+      "mutation": "",
+      "workingSet64": 126021632,
+      "peakWorkingSet64": 180015104,
+      "managedBytes": 33172160,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/mo1306-native-counters/candidate-telemetry.json",
+        "byteLength": 665,
+        "sha256": "sha256:77b3e571d3666ca83c56f15ca27aff7cc2ad168e3558bd21fc25962653cfc008"
+      }
+    }
+  },
+  "memory": [
+    {
+      "case": "ordinary-native-counters",
+      "b2": {
+        "workingSet64": 139046912,
+        "peakWorkingSet64": 140664832,
+        "managedBytes": 65590792
+      },
+      "candidate": {
+        "workingSet64": 120995840,
+        "peakWorkingSet64": 140529664,
+        "managedBytes": 48093088
+      },
+      "observedPeakWorkingSetDelta": -135168,
+      "observedManagedBytesDelta": -17497704,
+      "comparison": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/ordinary-native-counters/comparison.json",
+        "byteLength": 6452,
+        "sha256": "sha256:b9c1af0666deecd0a3887853bf9b8f14bfedf99d3fad9869b6bb2d4e866d4819"
+      }
+    },
+    {
+      "case": "mo1306-native-counters",
+      "b2": {
+        "workingSet64": 126124032,
+        "peakWorkingSet64": 153403392,
+        "managedBytes": 33177176
+      },
+      "candidate": {
+        "workingSet64": 126021632,
+        "peakWorkingSet64": 180015104,
+        "managedBytes": 33172160
+      },
+      "observedPeakWorkingSetDelta": 26611712,
+      "observedManagedBytesDelta": -5016,
+      "comparison": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/equivalence/attempt1/mo1306-native-counters/comparison.json",
+        "byteLength": 6479,
+        "sha256": "sha256:4ed1cc7d08469058f8eb8e2a24c9d3e9c62d33426c88d98a115ab8b056b9cee0"
+      }
+    }
+  ],
+  "memoryInterpretation": "Separate instrumented-process observations include engine, GC and observer overhead; observed deltas are not isolated optimization allocations. The source diff removes pure lexical work and allocates no additional production cache or metadata.",
+  "limitations": [
+    "Native observations remain real and counted. Explicit observation-field injections are synthetic and labeled. Controlled filesystem replacement/size/reparse tests release the checked leaf in engineering copies solely to permit mutations that production read-sharing normally blocks; no such hook exists in production. Ancestor replacement preserves held ancestor handles.",
+    "Instrumented process current/peak working set and managed bytes are observations including observer overhead; no hard RSS enforcement or isolated allocation attribution claimed.",
+    "The 20-second engineering guard produces exact B2 oracle frames; this corpus does not establish compliance with the unchanged 5-second production deadline.",
+    "Controlled native mutation hooks only exist in reversible engineering source copies. Production sharing and observations remain unchanged."
+  ],
+  "historicalCertification": "BLOCKED; unchanged by this engineering equivalence campaign",
+  "network": false,
+  "recertification": false
+}

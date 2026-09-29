@@ -1,0 +1,1329 @@
+TAP version 13
+# Subtest: APIBOOT01 earlier malformed config dominates later oversized evidence
+ok 1 - APIBOOT01 earlier malformed config dominates later oversized evidence
+  ---
+  duration_ms: 17.4365
+  type: 'test'
+  ...
+# Subtest: APIBOOT02 config shape error dominates wrong authority pin in same phase
+ok 2 - APIBOOT02 config shape error dominates wrong authority pin in same phase
+  ---
+  duration_ms: 10.2693
+  type: 'test'
+  ...
+# Subtest: APIBOOT03 malformed config dominates oversized authority safely
+ok 3 - APIBOOT03 malformed config dominates oversized authority safely
+  ---
+  duration_ms: 4.8617
+  type: 'test'
+  ...
+# Subtest: APIBOOT04 exact manifest ENVELOPE cap applied before bytes copy
+ok 4 - APIBOOT04 exact manifest ENVELOPE cap applied before bytes copy
+  ---
+  duration_ms: 10.2614
+  type: 'test'
+  ...
+# Subtest: APIBOOT05 exact manifest file set checked before copying unknown file
+ok 5 - APIBOOT05 exact manifest file set checked before copying unknown file
+  ---
+  duration_ms: 8.9583
+  type: 'test'
+  ...
+# Subtest: APIBOOT06 snapshots remain detached and byte-identical
+ok 6 - APIBOOT06 snapshots remain detached and byte-identical
+  ---
+  duration_ms: 10.2491
+  type: 'test'
+  ...
+# Subtest: APIBOOT07 TIMEOUT interruption dominates collected parse errors
+ok 7 - APIBOOT07 TIMEOUT interruption dominates collected parse errors
+  ---
+  duration_ms: 0.3449
+  type: 'test'
+  ...
+# Subtest: APIBOOT07 CANCELLED interruption dominates collected parse errors
+ok 8 - APIBOOT07 CANCELLED interruption dominates collected parse errors
+  ---
+  duration_ms: 0.1799
+  type: 'test'
+  ...
+# Subtest: APIBOOT08 hostile typed-array byteLength override is never invoked
+ok 9 - APIBOOT08 hostile typed-array byteLength override is never invoked
+  ---
+  duration_ms: 10.3332
+  type: 'test'
+  ...
+# Subtest: C2C01 corrected limits leave all byte ceilings unchanged
+ok 10 - C2C01 corrected limits leave all byte ceilings unchanged
+  ---
+  duration_ms: 0.9677
+  type: 'test'
+  ...
+# Subtest: C2C02 every required observation has a canonical closed framed representation
+ok 11 - C2C02 every required observation has a canonical closed framed representation
+  ---
+  duration_ms: 7.2763
+  type: 'test'
+  ...
+# Subtest: C2C03 old wire version missing session unknown fields and arbitrary operations reject
+ok 12 - C2C03 old wire version missing session unknown fields and arbitrary operations reject
+  ---
+  duration_ms: 0.8386
+  type: 'test'
+  ...
+# Subtest: C2C04 operation sequence and fixed output leaf authority are closed
+ok 13 - C2C04 operation sequence and fixed output leaf authority are closed
+  ---
+  duration_ms: 1.4467
+  type: 'test'
+  ...
+# Subtest: C2C05 bounded frames reject trailing requests responses and alternate session
+ok 14 - C2C05 bounded frames reject trailing requests responses and alternate session
+  ---
+  duration_ms: 0.7057
+  type: 'test'
+  ...
+# Subtest: C2C06 complete acquisition then terminated worker then five publication requests
+ok 15 - C2C06 complete acquisition then terminated worker then five publication requests
+  ---
+  duration_ms: 6.2058
+  type: 'test'
+  ...
+# Subtest: C2C07 helper completion cannot substitute for fully quiescent exit
+ok 16 - C2C07 helper completion cannot substitute for fully quiescent exit
+  ---
+  duration_ms: 2.3317
+  type: 'test'
+  ...
+# Subtest: C2C08 helper and worker overlap and repeated worker transition are terminal
+ok 17 - C2C08 helper and worker overlap and repeated worker transition are terminal
+  ---
+  duration_ms: 3.3807
+  type: 'test'
+  ...
+# Subtest: C2C09 verify remains four reads followed by worker and cannot publish
+ok 18 - C2C09 verify remains four reads followed by worker and cannot publish
+  ---
+  duration_ms: 2.1132
+  type: 'test'
+  ...
+# Subtest: C2C10 request failure abort and transport failure permit no retry
+ok 19 - C2C10 request failure abort and transport failure permit no retry
+  ---
+  duration_ms: 2.8064
+  type: 'test'
+  ...
+# Subtest: C2C11 full component chains reject missing ancestors wrong paths reparse and hardlinks
+ok 20 - C2C11 full component chains reject missing ancestors wrong paths reparse and hardlinks
+  ---
+  duration_ms: 0.9844
+  type: 'test'
+  ...
+# Subtest: C2C12 acquisition parent cannot be reused after native identity change
+ok 21 - C2C12 acquisition parent cannot be reused after native identity change
+  ---
+  duration_ms: 1.8348
+  type: 'test'
+  ...
+# Subtest: C2C13 path and cross-invocation session substitutions terminate assessment
+ok 22 - C2C13 path and cross-invocation session substitutions terminate assessment
+  ---
+  duration_ms: 1.5905
+  type: 'test'
+  ...
+# Subtest: C2C14 capability branding root binding and single claim exclude substitution
+ok 23 - C2C14 capability branding root binding and single claim exclude substitution
+  ---
+  duration_ms: 5.6448
+  type: 'test'
+  ...
+# Subtest: C2C15 unclaimed out-of-order or concurrent inspection cannot be retried
+ok 24 - C2C15 unclaimed out-of-order or concurrent inspection cannot be retried
+  ---
+  duration_ms: 4.0826
+  type: 'test'
+  ...
+# Subtest: C2C16 bridge requires exact transport fields and confirmed process quiescence
+ok 25 - C2C16 bridge requires exact transport fields and confirmed process quiescence
+  ---
+  duration_ms: 3.0556
+  type: 'test'
+  ...
+# Subtest: C2C17 per-invocation deadline includes response parsing and process exit
+ok 26 - C2C17 per-invocation deadline includes response parsing and process exit
+  ---
+  duration_ms: 0.8598
+  type: 'test'
+  ...
+# Subtest: C2C18 aggregate helper budget cannot silently multiply with sequential invocations
+ok 27 - C2C18 aggregate helper budget cannot silently multiply with sequential invocations
+  ---
+  duration_ms: 1.4293
+  type: 'test'
+  ...
+# Subtest: C2C19 overall CLI deadline and nonmonotonic clock fail without grace
+ok 28 - C2C19 overall CLI deadline and nonmonotonic clock fail without grace
+  ---
+  duration_ms: 1.8314
+  type: 'test'
+  ...
+# Subtest: C2C20 framed publication performs exact five observations and one final rename
+ok 29 - C2C20 framed publication performs exact five observations and one final rename
+  ---
+  duration_ms: 46.0503
+  type: 'test'
+  ...
+# Subtest: C2C21 cancellation after each publication inspection is terminal and retains incomplete attempt
+ok 30 - C2C21 cancellation after each publication inspection is terminal and retains incomplete attempt
+  ---
+  duration_ms: 73.9955
+  type: 'test'
+  ...
+# Subtest: C2C22 immediate pre-rename checkpoint blocks timeout after final native observation
+ok 31 - C2C22 immediate pre-rename checkpoint blocks timeout after final native observation
+  ---
+  duration_ms: 22.1856
+  type: 'test'
+  ...
+# Subtest: C2C23 final native pending identity comparison rejects stale replacement and retains bytes
+ok 32 - C2C23 final native pending identity comparison rejects stale replacement and retains bytes
+  ---
+  duration_ms: 24.1759
+  type: 'test'
+  ...
+# Subtest: C2C24 mismatched branded capability and legacy callback cannot create an output root
+ok 33 - C2C24 mismatched branded capability and legacy callback cannot create an output root
+  ---
+  duration_ms: 2.6039
+  type: 'test'
+  ...
+# Subtest: F01 publication status is an immutable operational snapshot before submission
+ok 34 - F01 publication status is an immutable operational snapshot before submission
+  ---
+  duration_ms: 40.9335
+  type: 'test'
+  ...
+# Subtest: F02 timeout before submission prevents any rename and retains pending
+ok 35 - F02 timeout before submission prevents any rename and retains pending
+  ---
+  duration_ms: 28.2712
+  type: 'test'
+  ...
+# Subtest: F03 cancellation before submission prevents rename and is terminal
+ok 36 - F03 cancellation before submission prevents rename and is terminal
+  ---
+  duration_ms: 27.0542
+  type: 'test'
+  ...
+# Subtest: F04 actual admission checkpoint rejects a deadline reached after final native inspection
+ok 37 - F04 actual admission checkpoint rejects a deadline reached after final native inspection
+  ---
+  duration_ms: 25.3136
+  type: 'test'
+  ...
+# Subtest: F05 admitted delayed success remains unresolved at post-submission deadline
+ok 38 - F05 admitted delayed success remains unresolved at post-submission deadline
+  ---
+  duration_ms: 25.4038
+  type: 'test'
+  ...
+# Subtest: F06 cancellation after submission is recorded without early cancellation or namespace cleanup
+ok 39 - F06 cancellation after submission is recorded without early cancellation or namespace cleanup
+  ---
+  duration_ms: 26.8362
+  type: 'test'
+  ...
+# Subtest: F07 admitted failure after deadline resolves OUTPUT only after exact submitted operation settles
+ok 40 - F07 admitted failure after deadline resolves OUTPUT only after exact submitted operation settles
+  ---
+  duration_ms: 28.9897
+  type: 'test'
+  ...
+# Subtest: F08 no second rename or token reuse while an admitted rename is outstanding
+ok 41 - F08 no second rename or token reuse while an admitted rename is outstanding
+  ---
+  duration_ms: 32.7544
+  type: 'test'
+  ...
+# Subtest: F09 commit status changes only after successful actual rename and then preserves bytes
+ok 42 - F09 commit status changes only after successful actual rename and then preserves bytes
+  ---
+  duration_ms: 40.3939
+  type: 'test'
+  ...
+# Subtest: F10 mandatory checkpoint overrun after settlement is operational metadata, not precommit TIMEOUT
+ok 43 - F10 mandatory checkpoint overrun after settlement is operational metadata, not precommit TIMEOUT
+  ---
+  duration_ms: 34.8441
+  type: 'test'
+  ...
+# Subtest: F11 postcommit deadline or cancellation prevents a success summary and retains committed final
+ok 44 - F11 postcommit deadline or cancellation prevents a success summary and retains committed final
+  ---
+  duration_ms: 61.9607
+  type: 'test'
+  ...
+# Subtest: F12 normal verified commit permits transport while precommit and failed tokens do not
+ok 45 - F12 normal verified commit permits transport while precommit and failed tokens do not
+  ---
+  duration_ms: 24.126
+  type: 'test'
+  ...
+# Subtest: F13 wrong interruption code and foreign token cannot create publication authority
+ok 46 - F13 wrong interruption code and foreign token cannot create publication authority
+  ---
+  duration_ms: 18.1986
+  type: 'test'
+  ...
+# Subtest: F14 changed pending bytes before admission prevent rename
+ok 47 - F14 changed pending bytes before admission prevent rename
+  ---
+  duration_ms: 22.3649
+  type: 'test'
+  ...
+# Subtest: F15 existing final is retained and finalization never retries or chooses another basename
+ok 48 - F15 existing final is retained and finalization never retries or chooses another basename
+  ---
+  duration_ms: 26.4711
+  type: 'test'
+  ...
+# Subtest: F16 postcommit transport error cannot retract or reclassify committed final as partial
+ok 49 - F16 postcommit transport error cannot retract or reclassify committed final as partial
+  ---
+  duration_ms: 35.0082
+  type: 'test'
+  ...
+# Subtest: F17 bounded invocation timers are allowed and destroyed after successful operation
+ok 50 - F17 bounded invocation timers are allowed and destroyed after successful operation
+  ---
+  duration_ms: 4.1815
+  type: 'test'
+  ...
+# Subtest: F18 timer lifetime policy detects a persistent cross-run scheduler
+ok 51 - F18 timer lifetime policy detects a persistent cross-run scheduler
+  ---
+  duration_ms: 2.9892
+  type: 'test'
+  ...
+# Subtest: F19 actual foundation finalization leaves no live timers across sequential invocations
+ok 52 - F19 actual foundation finalization leaves no live timers across sequential invocations
+  ---
+  duration_ms: 54.79
+  type: 'test'
+  ...
+# Subtest: F20 failed and cancelled foundation calls leave no cross-run timers
+ok 53 - F20 failed and cancelled foundation calls leave no cross-run timers
+  ---
+  duration_ms: 42.7529
+  type: 'test'
+  ...
+# Subtest: F21 failed read-only namespace verification retains committed output and clears its timer
+ok 54 - F21 failed read-only namespace verification retains committed output and clears its timer
+  ---
+  duration_ms: 34.8025
+  type: 'test'
+  ...
+# Subtest: F22 read-only verification timeout is bounded and late handle completion only closes
+ok 55 - F22 read-only verification timeout is bounded and late handle completion only closes
+  ---
+  duration_ms: 2042.2028
+  type: 'test'
+  ...
+# Subtest: F23 interruption recorded while pre-submission read is pending prevents later admission
+ok 56 - F23 interruption recorded while pre-submission read is pending prevents later admission
+  ---
+  duration_ms: 24.3816
+  type: 'test'
+  ...
+# Subtest: F24 the first observed pre-submission interruption remains terminal
+ok 57 - F24 the first observed pre-submission interruption remains terminal
+  ---
+  duration_ms: 22.7869
+  type: 'test'
+  ...
+# Subtest: LP01 exact trusted Windows PowerShell 5.1 executable
+ok 58 - LP01 exact trusted Windows PowerShell 5.1 executable
+  ---
+  duration_ms: 0.8661
+  type: 'test'
+  ...
+# Subtest: LP02 exact fixed argument ordering and Bypass value
+ok 59 - LP02 exact fixed argument ordering and Bypass value
+  ---
+  duration_ms: 0.6358
+  type: 'test'
+  ...
+# Subtest: LP03 fixed packaged helper path from module location
+ok 60 - LP03 fixed packaged helper path from module location
+  ---
+  duration_ms: 0.1142
+  type: 'test'
+  ...
+# Subtest: LP04 no encoded command, expression or shell authority
+ok 61 - LP04 no encoded command, expression or shell authority
+  ---
+  duration_ms: 0.0968
+  type: 'test'
+  ...
+# Subtest: LP05 caller object cannot supply executable, script or policy
+ok 62 - LP05 caller object cannot supply executable, script or policy
+  ---
+  duration_ms: 0.1323
+  type: 'test'
+  ...
+# Subtest: LP06 launch specification and nested authority are immutable
+ok 63 - LP06 launch specification and nested authority are immutable
+  ---
+  duration_ms: 0.4446
+  type: 'test'
+  ...
+# Subtest: LP07 ambient PATH, system-root, policy and script poisons cannot select launch
+ok 64 - LP07 ambient PATH, system-root, policy and script poisons cannot select launch
+  ---
+  duration_ms: 0.3609
+  type: 'test'
+  ...
+# Subtest: LP08 actual transport calls spawn with fixed array and sanitized environment
+ok 65 - LP08 actual transport calls spawn with fixed array and sanitized environment
+  ---
+  duration_ms: 1.2191
+  type: 'test'
+  ...
+# Subtest: LP09 CLI cannot select --script
+ok 66 - LP09 CLI cannot select --script
+  ---
+  duration_ms: 0.5381
+  type: 'test'
+  ...
+# Subtest: LP09 CLI cannot select --execution-policy
+ok 67 - LP09 CLI cannot select --execution-policy
+  ---
+  duration_ms: 0.1845
+  type: 'test'
+  ...
+# Subtest: LP09 CLI cannot select --powershell
+ok 68 - LP09 CLI cannot select --powershell
+  ---
+  duration_ms: 0.1069
+  type: 'test'
+  ...
+# Subtest: LP10 no persistent policy or registry mutation code is introduced
+ok 69 - LP10 no persistent policy or registry mutation code is introduced
+  ---
+  duration_ms: 9.4079
+  type: 'test'
+  ...
+# Subtest: LP11 public package exports cannot expose launch override
+ok 70 - LP11 public package exports cannot expose launch override
+  ---
+  duration_ms: 1.0163
+  type: 'test'
+  ...
+# Subtest: PTERM01 a rejected second staging terminally consumes publication
+ok 71 - PTERM01 a rejected second staging terminally consumes publication
+  ---
+  duration_ms: 41.0205
+  type: 'test'
+  ...
+# Subtest: PTERM02 premature finalization consumes token before later staging
+ok 72 - PTERM02 premature finalization consumes token before later staging
+  ---
+  duration_ms: 14.7814
+  type: 'test'
+  ...
+# Subtest: PCHAIN5-attributes all-field cross-slot stability rejects changed attributes
+ok 73 - PCHAIN5-attributes all-field cross-slot stability rejects changed attributes
+  ---
+  duration_ms: 8.4792
+  type: 'test'
+  ...
+# Subtest: PCHAIN5-byteLength all-field cross-slot stability rejects changed byteLength
+ok 74 - PCHAIN5-byteLength all-field cross-slot stability rejects changed byteLength
+  ---
+  duration_ms: 7.4475
+  type: 'test'
+  ...
+# Subtest: PCHAIN5-fileId all-field cross-slot stability rejects changed fileId
+ok 75 - PCHAIN5-fileId all-field cross-slot stability rejects changed fileId
+  ---
+  duration_ms: 6.4692
+  type: 'test'
+  ...
+# Subtest: PCHAIN5-finalPath all-field cross-slot stability rejects changed finalPath
+ok 76 - PCHAIN5-finalPath all-field cross-slot stability rejects changed finalPath
+  ---
+  duration_ms: 7.973
+  type: 'test'
+  ...
+# Subtest: PCHAIN5-isDirectory all-field cross-slot stability rejects changed isDirectory
+ok 77 - PCHAIN5-isDirectory all-field cross-slot stability rejects changed isDirectory
+  ---
+  duration_ms: 7.1264
+  type: 'test'
+  ...
+# Subtest: PCHAIN5-linkCount all-field cross-slot stability rejects changed linkCount
+ok 78 - PCHAIN5-linkCount all-field cross-slot stability rejects changed linkCount
+  ---
+  duration_ms: 6.634
+  type: 'test'
+  ...
+# Subtest: PCHAIN5-volumeSerial all-field cross-slot stability rejects changed volumeSerial
+ok 79 - PCHAIN5-volumeSerial all-field cross-slot stability rejects changed volumeSerial
+  ---
+  duration_ms: 6.9759
+  type: 'test'
+  ...
+# Subtest: PCHAIN6-attributes all-field cross-slot stability rejects changed attributes
+ok 80 - PCHAIN6-attributes all-field cross-slot stability rejects changed attributes
+  ---
+  duration_ms: 15.6902
+  type: 'test'
+  ...
+# Subtest: PCHAIN6-byteLength all-field cross-slot stability rejects changed byteLength
+ok 81 - PCHAIN6-byteLength all-field cross-slot stability rejects changed byteLength
+  ---
+  duration_ms: 11.1536
+  type: 'test'
+  ...
+# Subtest: PCHAIN6-fileId all-field cross-slot stability rejects changed fileId
+ok 82 - PCHAIN6-fileId all-field cross-slot stability rejects changed fileId
+  ---
+  duration_ms: 11.0631
+  type: 'test'
+  ...
+# Subtest: PCHAIN6-finalPath all-field cross-slot stability rejects changed finalPath
+ok 83 - PCHAIN6-finalPath all-field cross-slot stability rejects changed finalPath
+  ---
+  duration_ms: 9.9357
+  type: 'test'
+  ...
+# Subtest: PCHAIN6-isDirectory all-field cross-slot stability rejects changed isDirectory
+ok 84 - PCHAIN6-isDirectory all-field cross-slot stability rejects changed isDirectory
+  ---
+  duration_ms: 12.2426
+  type: 'test'
+  ...
+# Subtest: PCHAIN6-linkCount all-field cross-slot stability rejects changed linkCount
+ok 85 - PCHAIN6-linkCount all-field cross-slot stability rejects changed linkCount
+  ---
+  duration_ms: 11.2937
+  type: 'test'
+  ...
+# Subtest: PCHAIN6-volumeSerial all-field cross-slot stability rejects changed volumeSerial
+ok 86 - PCHAIN6-volumeSerial all-field cross-slot stability rejects changed volumeSerial
+  ---
+  duration_ms: 11.9007
+  type: 'test'
+  ...
+# Subtest: PCHAIN7-attributes all-field cross-slot stability rejects changed attributes
+ok 87 - PCHAIN7-attributes all-field cross-slot stability rejects changed attributes
+  ---
+  duration_ms: 12.7787
+  type: 'test'
+  ...
+# Subtest: PCHAIN7-byteLength all-field cross-slot stability rejects changed byteLength
+ok 88 - PCHAIN7-byteLength all-field cross-slot stability rejects changed byteLength
+  ---
+  duration_ms: 15.054
+  type: 'test'
+  ...
+# Subtest: PCHAIN7-fileId all-field cross-slot stability rejects changed fileId
+ok 89 - PCHAIN7-fileId all-field cross-slot stability rejects changed fileId
+  ---
+  duration_ms: 14.6525
+  type: 'test'
+  ...
+# Subtest: PCHAIN7-finalPath all-field cross-slot stability rejects changed finalPath
+ok 90 - PCHAIN7-finalPath all-field cross-slot stability rejects changed finalPath
+  ---
+  duration_ms: 15.6975
+  type: 'test'
+  ...
+# Subtest: PCHAIN7-isDirectory all-field cross-slot stability rejects changed isDirectory
+ok 91 - PCHAIN7-isDirectory all-field cross-slot stability rejects changed isDirectory
+  ---
+  duration_ms: 14.3689
+  type: 'test'
+  ...
+# Subtest: PCHAIN7-linkCount all-field cross-slot stability rejects changed linkCount
+ok 92 - PCHAIN7-linkCount all-field cross-slot stability rejects changed linkCount
+  ---
+  duration_ms: 12.9514
+  type: 'test'
+  ...
+# Subtest: PCHAIN7-volumeSerial all-field cross-slot stability rejects changed volumeSerial
+ok 93 - PCHAIN7-volumeSerial all-field cross-slot stability rejects changed volumeSerial
+  ---
+  duration_ms: 16.2975
+  type: 'test'
+  ...
+# Subtest: PCHAIN8-attributes all-field cross-slot stability rejects changed attributes
+ok 94 - PCHAIN8-attributes all-field cross-slot stability rejects changed attributes
+  ---
+  duration_ms: 21.6032
+  type: 'test'
+  ...
+# Subtest: PCHAIN8-byteLength all-field cross-slot stability rejects changed byteLength
+ok 95 - PCHAIN8-byteLength all-field cross-slot stability rejects changed byteLength
+  ---
+  duration_ms: 23.8875
+  type: 'test'
+  ...
+# Subtest: PCHAIN8-fileId all-field cross-slot stability rejects changed fileId
+ok 96 - PCHAIN8-fileId all-field cross-slot stability rejects changed fileId
+  ---
+  duration_ms: 24.2042
+  type: 'test'
+  ...
+# Subtest: PCHAIN8-finalPath all-field cross-slot stability rejects changed finalPath
+ok 97 - PCHAIN8-finalPath all-field cross-slot stability rejects changed finalPath
+  ---
+  duration_ms: 23.9657
+  type: 'test'
+  ...
+# Subtest: PCHAIN8-isDirectory all-field cross-slot stability rejects changed isDirectory
+ok 98 - PCHAIN8-isDirectory all-field cross-slot stability rejects changed isDirectory
+  ---
+  duration_ms: 18.9487
+  type: 'test'
+  ...
+# Subtest: PCHAIN8-linkCount all-field cross-slot stability rejects changed linkCount
+ok 99 - PCHAIN8-linkCount all-field cross-slot stability rejects changed linkCount
+  ---
+  duration_ms: 19.351
+  type: 'test'
+  ...
+# Subtest: PCHAIN8-volumeSerial all-field cross-slot stability rejects changed volumeSerial
+ok 100 - PCHAIN8-volumeSerial all-field cross-slot stability rejects changed volumeSerial
+  ---
+  duration_ms: 20.2345
+  type: 'test'
+  ...
+# Subtest: PCHAIN9-attributes all-field cross-slot stability rejects changed attributes
+ok 101 - PCHAIN9-attributes all-field cross-slot stability rejects changed attributes
+  ---
+  duration_ms: 21.064
+  type: 'test'
+  ...
+# Subtest: PCHAIN9-byteLength all-field cross-slot stability rejects changed byteLength
+ok 102 - PCHAIN9-byteLength all-field cross-slot stability rejects changed byteLength
+  ---
+  duration_ms: 21.6325
+  type: 'test'
+  ...
+# Subtest: PCHAIN9-fileId all-field cross-slot stability rejects changed fileId
+ok 103 - PCHAIN9-fileId all-field cross-slot stability rejects changed fileId
+  ---
+  duration_ms: 20.5723
+  type: 'test'
+  ...
+# Subtest: PCHAIN9-finalPath all-field cross-slot stability rejects changed finalPath
+ok 104 - PCHAIN9-finalPath all-field cross-slot stability rejects changed finalPath
+  ---
+  duration_ms: 23.976
+  type: 'test'
+  ...
+# Subtest: PCHAIN9-isDirectory all-field cross-slot stability rejects changed isDirectory
+ok 105 - PCHAIN9-isDirectory all-field cross-slot stability rejects changed isDirectory
+  ---
+  duration_ms: 21.928
+  type: 'test'
+  ...
+# Subtest: PCHAIN9-linkCount all-field cross-slot stability rejects changed linkCount
+ok 106 - PCHAIN9-linkCount all-field cross-slot stability rejects changed linkCount
+  ---
+  duration_ms: 19.0464
+  type: 'test'
+  ...
+# Subtest: PCHAIN9-volumeSerial all-field cross-slot stability rejects changed volumeSerial
+ok 107 - PCHAIN9-volumeSerial all-field cross-slot stability rejects changed volumeSerial
+  ---
+  duration_ms: 22.6301
+  type: 'test'
+  ...
+# Subtest: PNEG01 pending native byteLength must equal staged detached bytes
+ok 108 - PNEG01 pending native byteLength must equal staged detached bytes
+  ---
+  duration_ms: 19.136
+  type: 'test'
+  ...
+# Subtest: PNEG02 wrong root branded capability cannot mutate either destination
+ok 109 - PNEG02 wrong root branded capability cannot mutate either destination
+  ---
+  duration_ms: 3.695
+  type: 'test'
+  ...
+# Subtest: PNEG03 foreign capability and legacy callback cannot create a directory
+ok 110 - PNEG03 foreign capability and legacy callback cannot create a directory
+  ---
+  duration_ms: 0.9163
+  type: 'test'
+  ...
+# Subtest: PNEG04 foreign token never authorizes staging or finalization
+ok 111 - PNEG04 foreign token never authorizes staging or finalization
+  ---
+  duration_ms: 0.4171
+  type: 'test'
+  ...
+# Subtest: PNEG05 second capability claim terminates original token
+ok 112 - PNEG05 second capability claim terminates original token
+  ---
+  duration_ms: 8.6221
+  type: 'test'
+  ...
+# Subtest: PNEG06 second finalization preserves committed exact file and cannot rename again
+ok 113 - PNEG06 second finalization preserves committed exact file and cannot rename again
+  ---
+  duration_ms: 23.4034
+  type: 'test'
+  ...
+# Subtest: PNEG07 same-length changed pending bytes fail final reread before slot9
+ok 114 - PNEG07 same-length changed pending bytes fail final reread before slot9
+  ---
+  duration_ms: 20.2018
+  type: 'test'
+  ...
+# Subtest: PNEG08 preexisting pending file is never overwritten and remains diagnostic evidence
+ok 115 - PNEG08 preexisting pending file is never overwritten and remains diagnostic evidence
+  ---
+  duration_ms: 14.1809
+  type: 'test'
+  ...
+# Subtest: PNEG09 preexisting final file causes failure and remains byte-identical
+ok 116 - PNEG09 preexisting final file causes failure and remains byte-identical
+  ---
+  duration_ms: 20.6402
+  type: 'test'
+  ...
+# Subtest: PNEG10 existing output directory cannot be claimed or overwritten
+ok 117 - PNEG10 existing output directory cannot be claimed or overwritten
+  ---
+  duration_ms: 8.2446
+  type: 'test'
+  ...
+# Subtest: PNEG11-TIMEOUT immediate pre-rename checkpoint is terminal
+ok 118 - PNEG11-TIMEOUT immediate pre-rename checkpoint is terminal
+  ---
+  duration_ms: 23.8809
+  type: 'test'
+  ...
+# Subtest: PNEG11-CANCELLED immediate pre-rename checkpoint is terminal
+ok 119 - PNEG11-CANCELLED immediate pre-rename checkpoint is terminal
+  ---
+  duration_ms: 24.3089
+  type: 'test'
+  ...
+# Subtest: PNEG12-before-write cancellation retains owned pending bytes without publishing
+ok 120 - PNEG12-before-write cancellation retains owned pending bytes without publishing
+  ---
+  duration_ms: 13.162
+  type: 'test'
+  ...
+# Subtest: PNEG12-after-write cancellation retains owned pending bytes without publishing
+ok 121 - PNEG12-after-write cancellation retains owned pending bytes without publishing
+  ---
+  duration_ms: 14.2697
+  type: 'test'
+  ...
+# Subtest: PNEG13 in-flight staging cannot revive token after concurrent staging rejection
+ok 122 - PNEG13 in-flight staging cannot revive token after concurrent staging rejection
+  ---
+  duration_ms: 10.511
+  type: 'test'
+  ...
+# Subtest: PNEG14 wrong session from framed transport aborts sequence and cannot publish
+ok 123 - PNEG14 wrong session from framed transport aborts sequence and cannot publish
+  ---
+  duration_ms: 6.1167
+  type: 'test'
+  ...
+# Subtest: PDET01 staging snapshots caller bytes before async work
+ok 124 - PDET01 staging snapshots caller bytes before async work
+  ---
+  duration_ms: 28.1321
+  type: 'test'
+  ...
+# Subtest: PDET02 changing roots and assessment sessions does not alter exact published bytes
+ok 125 - PDET02 changing roots and assessment sessions does not alter exact published bytes
+  ---
+  duration_ms: 47.4281
+  type: 'test'
+  ...
+# Subtest: PTERM03 concurrent rejection during final reread cannot launch slot9
+ok 126 - PTERM03 concurrent rejection during final reread cannot launch slot9
+  ---
+  duration_ms: 17.9645
+  type: 'test'
+  ...
+# Subtest: PTERM04 concurrent rejection during pending close cannot launch slot8
+ok 127 - PTERM04 concurrent rejection during pending close cannot launch slot8
+  ---
+  duration_ms: 14.5404
+  type: 'test'
+  ...
+# \# QUEUED_CLI {"mode":"deadline","scope":"ACTUAL_QUEUED_RENAME_AND_CLI_WITH_SYNTHETIC_IDENTITY_FRAMES","requests":1,"engineeringClock":"Monotonic elapsed-time offset at slot 8; original CLI absolute deadline has 100ms remaining, no budget restart.","finiteJobs":4,"observation":{"elapsedMs":346.6493,"settled":false,"snapshot":{"kind":"cli","deadline":30078.9851,"helpers":0,"workers":1,"helperUsedMs":0,"activeRole":null,"cleanupConfirmed":false,"publication":{"phase":"COMMIT_IN_PROGRESS","admitted":true,"deadlineExpiredAfterAdmission":true,"cancelledAfterAdmission":true,"namespaceVerified":false,"dispositionDeadline":null},"terminalCode":null,"terminalAt":null,"cleanupDeadline":null,"events":[{"type":"start","at":143.8246,"role":"worker","deadline":10143.7453,"ordinal":1},{"type":"observation","at":145.4675,"role":"worker","threadId":1,"resourceLimits":{"maxYoungGenerationSizeMb":16,"maxOldGenerationSizeMb":128,"codeRangeSizeMb":-1,"stackSizeMb":4}},{"type":"quiescent","at":242.3555,"role":"worker","ordinal":1},{"type":"publication-interruption","at":30090.684900000004,"code":"MO1307_TIMEOUT","phase":"COMMIT_IN_PROGRESS"},{"type":"publication-interruption","at":30138.188400000003,"code":"MO1307_CANCELLED","phase":"COMMIT_IN_PROGRESS"}]},"finalPresent":false,"pendingPresent":true,"stdoutBytes":0},"elapsedMs":1189.2549999999999,"snapshot":{"kind":"cli","deadline":30078.9851,"helpers":0,"workers":1,"helperUsedMs":0,"activeRole":null,"cleanupConfirmed":true,"publication":{"phase":"COMMITTED","admitted":true,"deadlineExpiredAfterAdmission":true,"cancelledAfterAdmission":true,"namespaceVerified":true,"dispositionDeadline":3223.3297000000002},"terminalCode":"MO1307_OUTPUT","terminalAt":30937.186100000003,"cleanupDeadline":3223.3297000000002,"events":[{"type":"start","at":143.8246,"role":"worker","deadline":10143.7453,"ordinal":1},{"type":"observation","at":145.4675,"role":"worker","threadId":1,"resourceLimits":{"maxYoungGenerationSizeMb":16,"maxOldGenerationSizeMb":128,"codeRangeSizeMb":-1,"stackSizeMb":4}},{"type":"quiescent","at":242.3555,"role":"worker","ordinal":1},{"type":"publication-interruption","at":30090.684900000004,"code":"MO1307_TIMEOUT","phase":"COMMIT_IN_PROGRESS"},{"type":"publication-interruption","at":30138.188400000003,"code":"MO1307_CANCELLED","phase":"COMMIT_IN_PROGRESS"},{"type":"terminal","at":30937.2128,"code":"MO1307_OUTPUT","stage":"PUBLICATION"}]},"failure":"MO1307_OUTPUT","exitCode":21,"stdoutBytes":0,"failureCleanupDeadline":3223.3297000000002}
+# Subtest: FCLI actual queued rename awaits settlement after deadline
+ok 128 - FCLI actual queued rename awaits settlement after deadline
+  ---
+  duration_ms: 1205.1906
+  type: 'test'
+  ...
+# \# QUEUED_CLI {"mode":"cancellation","scope":"ACTUAL_QUEUED_RENAME_AND_CLI_WITH_SYNTHETIC_IDENTITY_FRAMES","requests":1,"engineeringClock":"Real monotonic clock","finiteJobs":4,"observation":{"elapsedMs":194.01779999999985,"settled":false,"snapshot":{"kind":"cli","deadline":31274.9804,"helpers":0,"workers":1,"helperUsedMs":0,"activeRole":null,"cleanupConfirmed":false,"publication":{"phase":"COMMIT_IN_PROGRESS","admitted":true,"deadlineExpiredAfterAdmission":false,"cancelledAfterAdmission":true,"namespaceVerified":false,"dispositionDeadline":null},"terminalCode":null,"terminalAt":null,"cleanupDeadline":null,"events":[{"type":"start","at":1312.7453,"role":"worker","deadline":11312.7276,"ordinal":1},{"type":"observation","at":1313.2927,"role":"worker","threadId":2,"resourceLimits":{"maxYoungGenerationSizeMb":16,"maxOldGenerationSizeMb":128,"codeRangeSizeMb":-1,"stackSizeMb":4}},{"type":"quiescent","at":1402.969,"role":"worker","ordinal":1},{"type":"publication-interruption","at":1469.0166,"code":"MO1307_CANCELLED","phase":"COMMIT_IN_PROGRESS"}]},"finalPresent":false,"pendingPresent":true,"stdoutBytes":0},"elapsedMs":1123.3330999999998,"snapshot":{"kind":"cli","deadline":31274.9804,"helpers":0,"workers":1,"helperUsedMs":0,"activeRole":null,"cleanupConfirmed":true,"publication":{"phase":"COMMITTED","admitted":true,"deadlineExpiredAfterAdmission":false,"cancelledAfterAdmission":true,"namespaceVerified":true,"dispositionDeadline":4211.1019},"terminalCode":"MO1307_OUTPUT","terminalAt":2212.2459,"cleanupDeadline":4211.1019,"events":[{"type":"start","at":1312.7453,"role":"worker","deadline":11312.7276,"ordinal":1},{"type":"observation","at":1313.2927,"role":"worker","threadId":2,"resourceLimits":{"maxYoungGenerationSizeMb":16,"maxOldGenerationSizeMb":128,"codeRangeSizeMb":-1,"stackSizeMb":4}},{"type":"quiescent","at":1402.969,"role":"worker","ordinal":1},{"type":"publication-interruption","at":1469.0166,"code":"MO1307_CANCELLED","phase":"COMMIT_IN_PROGRESS"},{"type":"terminal","at":2212.2597,"code":"MO1307_OUTPUT","stage":"PUBLICATION"}]},"failure":"MO1307_OUTPUT","exitCode":21,"stdoutBytes":0,"failureCleanupDeadline":4211.1019}
+# Subtest: FCLI actual queued rename awaits settlement after cancellation
+ok 129 - FCLI actual queued rename awaits settlement after cancellation
+  ---
+  duration_ms: 1128.0563
+  type: 'test'
+  ...
+# Subtest: PWAIT terminal cancellation prevents late advancement after mkdir
+ok 130 - PWAIT terminal cancellation prevents late advancement after mkdir
+  ---
+  duration_ms: 78.3521
+  type: 'test'
+  ...
+# Subtest: PWAIT terminal cancellation prevents late advancement after sync
+ok 131 - PWAIT terminal cancellation prevents late advancement after sync
+  ---
+  duration_ms: 63.9909
+  type: 'test'
+  ...
+# Subtest: PWAIT terminal cancellation prevents late advancement after final-open
+ok 132 - PWAIT terminal cancellation prevents late advancement after final-open
+  ---
+  duration_ms: 79.4978
+  type: 'test'
+  ...
+# \# STDOUT_DISPOSITION {"mode":"timeout","delivered":353,"snapshot":{"kind":"cli","deadline":32629.3352,"helpers":0,"workers":1,"helperUsedMs":0,"activeRole":null,"cleanupConfirmed":true,"publication":{"phase":"COMMITTED","admitted":true,"deadlineExpiredAfterAdmission":true,"cancelledAfterAdmission":false,"namespaceVerified":true,"dispositionDeadline":4789.718},"terminalCode":"MO1307_OUTPUT","terminalAt":32646.1755,"cleanupDeadline":34646.1755,"events":[{"type":"start","at":2672.4466,"role":"worker","deadline":12672.4076,"ordinal":1},{"type":"observation","at":2673.1046,"role":"worker","threadId":3,"resourceLimits":{"maxYoungGenerationSizeMb":16,"maxOldGenerationSizeMb":128,"codeRangeSizeMb":-1,"stackSizeMb":4}},{"type":"quiescent","at":2761.5638,"role":"worker","ordinal":1},{"type":"publication-transport","at":2790.7766},{"type":"publication-interruption","at":32646.0706,"code":"MO1307_TIMEOUT","phase":"COMMITTED"},{"type":"terminal","at":32646.1969,"code":"MO1307_OUTPUT","stage":"PUBLICATION"}]}}
+# Subtest: FCLI post-commit stalled stdout timeout retains final and one transport allowance
+ok 133 - FCLI post-commit stalled stdout timeout retains final and one transport allowance
+  ---
+  duration_ms: 224.4495
+  type: 'test'
+  ...
+# \# STDOUT_DISPOSITION {"mode":"cancellation","delivered":353,"snapshot":{"kind":"cli","deadline":32851.8125,"helpers":0,"workers":1,"helperUsedMs":0,"activeRole":null,"cleanupConfirmed":true,"publication":{"phase":"COMMITTED","admitted":true,"deadlineExpiredAfterAdmission":false,"cancelledAfterAdmission":true,"namespaceVerified":true,"dispositionDeadline":5010.1455000000005},"terminalCode":"MO1307_OUTPUT","terminalAt":3050.8047,"cleanupDeadline":5050.804700000001,"events":[{"type":"start","at":2895.3173,"role":"worker","deadline":12895.299500000001,"ordinal":1},{"type":"observation","at":2895.7717,"role":"worker","threadId":4,"resourceLimits":{"maxYoungGenerationSizeMb":16,"maxOldGenerationSizeMb":128,"codeRangeSizeMb":-1,"stackSizeMb":4}},{"type":"quiescent","at":2980.9419,"role":"worker","ordinal":1},{"type":"publication-transport","at":3010.7887},{"type":"publication-interruption","at":3050.7751,"code":"MO1307_CANCELLED","phase":"COMMITTED"},{"type":"terminal","at":3050.8095,"code":"MO1307_OUTPUT","stage":"PUBLICATION"}]}}
+# Subtest: FCLI post-commit stalled stdout cancellation retains final and one transport allowance
+ok 134 - FCLI post-commit stalled stdout cancellation retains final and one transport allowance
+  ---
+  duration_ms: 221.1376
+  type: 'test'
+  ...
+# Subtest: R01 api exact absolute deadline and equality
+ok 135 - R01 api exact absolute deadline and equality
+  ---
+  duration_ms: 2.1517
+  type: 'test'
+  ...
+# Subtest: R01 cli exact absolute deadline and equality
+ok 136 - R01 cli exact absolute deadline and equality
+  ---
+  duration_ms: 0.2118
+  type: 'test'
+  ...
+# Subtest: R02 earlier cancellation stays terminal after deadline
+ok 137 - R02 earlier cancellation stays terminal after deadline
+  ---
+  duration_ms: 0.422
+  type: 'test'
+  ...
+# Subtest: R03 timeout wins simultaneous first cancellation observation
+ok 138 - R03 timeout wins simultaneous first cancellation observation
+  ---
+  duration_ms: 0.4192
+  type: 'test'
+  ...
+# Subtest: R04 preaborted signal prevents any launch
+ok 139 - R04 preaborted signal prevents any launch
+  ---
+  duration_ms: 1.0462
+  type: 'test'
+  ...
+# Subtest: R05 monotonic decreasing clock rejects
+ok 140 - R05 monotonic decreasing clock rejects
+  ---
+  duration_ms: 0.4357
+  type: 'test'
+  ...
+# Subtest: R06 API cannot launch helper
+ok 141 - R06 API cannot launch helper
+  ---
+  duration_ms: 0.5512
+  type: 'test'
+  ...
+# Subtest: R07 helper deadline includes all active time; equality rejects
+ok 142 - R07 helper deadline includes all active time; equality rejects
+  ---
+  duration_ms: 1.203
+  type: 'test'
+  ...
+# Subtest: R08 aggregate deadline does not reset across helpers
+ok 143 - R08 aggregate deadline does not reset across helpers
+  ---
+  duration_ms: 1.1327
+  type: 'test'
+  ...
+# Subtest: R09 worker time is excluded from helper aggregate but inside overall
+ok 144 - R09 worker time is excluded from helper aggregate but inside overall
+  ---
+  duration_ms: 0.721
+  type: 'test'
+  ...
+# Subtest: R10 helper overlap is terminal and cleans prior owned role
+ok 145 - R10 helper overlap is terminal and cleans prior owned role
+  ---
+  duration_ms: 0.71
+  type: 'test'
+  ...
+# Subtest: R11 helper and worker cannot overlap
+ok 146 - R11 helper and worker cannot overlap
+  ---
+  duration_ms: 0.606
+  type: 'test'
+  ...
+# Subtest: R12 frame alone cannot advance before actual close
+ok 147 - R12 frame alone cannot advance before actual close
+  ---
+  duration_ms: 55.828
+  type: 'test'
+  ...
+# Subtest: R13 launch uses only fixed executable/script/environment and no shell
+ok 148 - R13 launch uses only fixed executable/script/environment and no shell
+  ---
+  duration_ms: 1.0948
+  type: 'test'
+  ...
+# Subtest: R14 helper trailing byte fails closed
+ok 149 - R14 helper trailing byte fails closed
+  ---
+  duration_ms: 2.5241
+  type: 'test'
+  ...
+# Subtest: R14 helper extra frame fails closed
+ok 150 - R14 helper extra frame fails closed
+  ---
+  duration_ms: 2.0922
+  type: 'test'
+  ...
+# Subtest: R14 helper debug stdout fails closed
+ok 151 - R14 helper debug stdout fails closed
+  ---
+  duration_ms: 1.57
+  type: 'test'
+  ...
+# Subtest: R14 helper truncated frame fails closed
+ok 152 - R14 helper truncated frame fails closed
+  ---
+  duration_ms: 7.2736
+  type: 'test'
+  ...
+# Subtest: R14 helper oversized prefix fails closed
+ok 153 - R14 helper oversized prefix fails closed
+  ---
+  duration_ms: 2.05
+  type: 'test'
+  ...
+# Subtest: R14 helper stderr overflow fails closed
+ok 154 - R14 helper stderr overflow fails closed
+  ---
+  duration_ms: 1.8709
+  type: 'test'
+  ...
+# Subtest: R14 helper nonzero exit fails closed
+ok 155 - R14 helper nonzero exit fails closed
+  ---
+  duration_ms: 2.9414
+  type: 'test'
+  ...
+# Subtest: R15 cancellation in launch terminates and ignores later valid frame
+ok 156 - R15 cancellation in launch terminates and ignores later valid frame
+  ---
+  duration_ms: 1.2368
+  type: 'test'
+  ...
+# Subtest: R16 cancellation during transport cleans child
+ok 157 - R16 cancellation during transport cleans child
+  ---
+  duration_ms: 22.2522
+  type: 'test'
+  ...
+# Subtest: R17 fixed actual worker has empty environment and exact heap intent
+ok 158 - R17 fixed actual worker has empty environment and exact heap intent
+  ---
+  duration_ms: 36.7941
+  type: 'test'
+  ...
+# Subtest: R18 successful worker result waits for termination
+ok 159 - R18 successful worker result waits for termination
+  ---
+  duration_ms: 138.6243
+  type: 'test'
+  ...
+# Subtest: R19 actual worker crash fails closed
+ok 160 - R19 actual worker crash fails closed
+  ---
+  duration_ms: 33.7792
+  type: 'test'
+  ...
+# Subtest: R19 actual worker duplicate fails closed
+ok 161 - R19 actual worker duplicate fails closed
+  ---
+  duration_ms: 30.7493
+  type: 'test'
+  ...
+# Subtest: R19 actual worker stdout fails closed
+ok 162 - R19 actual worker stdout fails closed
+  ---
+  duration_ms: 31.7176
+  type: 'test'
+  ...
+# Subtest: R20 cancellation actually terminates CPU-bound worker thread
+ok 163 - R20 cancellation actually terminates CPU-bound worker thread
+  ---
+  duration_ms: 46.0832
+  type: 'test'
+  ...
+# Subtest: R21 production worker executes accepted 2A/2B and confirms quiescence
+ok 164 - R21 production worker executes accepted 2A/2B and confirms quiescence
+  ---
+  duration_ms: 239.6775
+  type: 'test'
+  ...
+# Subtest: R22 adapter matches closed 2A handoff; operational/session fields excluded
+ok 165 - R22 adapter matches closed 2A handoff; operational/session fields excluded
+  ---
+  duration_ms: 0.2791
+  type: 'test'
+  ...
+# Subtest: R23 verify evidence seam excludes result and decision bytes
+ok 166 - R23 verify evidence seam excludes result and decision bytes
+  ---
+  duration_ms: 0.1384
+  type: 'test'
+  ...
+# Subtest: R24 malformed decision uses dedicated mismatch, cap uses resource
+ok 167 - R24 malformed decision uses dedicated mismatch, cap uses resource
+  ---
+  duration_ms: 0.4434
+  type: 'test'
+  ...
+# Subtest: R25 actual worker policy denies filesystem/network/process/module escape imports
+ok 168 - R25 actual worker policy denies filesystem/network/process/module escape imports
+  ---
+  duration_ms: 61.3027
+  type: 'test'
+  ...
+# Subtest: R26 cancellation preempts pending publication promise without another role
+ok 169 - R26 cancellation preempts pending publication promise without another role
+  ---
+  duration_ms: 0.6416
+  type: 'test'
+  ...
+# Subtest: R27 late publication promise cannot restore terminal success
+ok 170 - R27 late publication promise cannot restore terminal success
+  ---
+  duration_ms: 0.2505
+  type: 'test'
+  ...
+# Subtest: SUP01 post-rename TIMEOUT returns OUTPUT and retains exact committed result
+ok 171 - SUP01 post-rename TIMEOUT returns OUTPUT and retains exact committed result
+  ---
+  duration_ms: 187.5676
+  type: 'test'
+  ...
+# Subtest: SUP01 post-rename CANCELLED returns OUTPUT and retains exact committed result
+ok 172 - SUP01 post-rename CANCELLED returns OUTPUT and retains exact committed result
+  ---
+  duration_ms: 158.9824
+  type: 'test'
+  ...
+# Subtest: SUP02 verify stdout backpressure times out without product filesystem changes
+ok 173 - SUP02 verify stdout backpressure times out without product filesystem changes
+  ---
+  duration_ms: 148.9519
+  type: 'test'
+  ...
+# Subtest: SUP03 input root identity change between helper slots fails closed
+ok 174 - SUP03 input root identity change between helper slots fails closed
+  ---
+  duration_ms: 17.4816
+  type: 'test'
+  ...
+# Subtest: SUP04 physical file alias across bootstrap slots is rejected despite distinct paths
+ok 175 - SUP04 physical file alias across bootstrap slots is rejected despite distinct paths
+  ---
+  duration_ms: 16.6282
+  type: 'test'
+  ...
+# Subtest: SUP05 malformed external decision rejects without stdout or changes
+ok 176 - SUP05 malformed external decision rejects without stdout or changes
+  ---
+  duration_ms: 195.9824
+  type: 'test'
+  ...
+# Subtest: SUP06 wrong external decision proof binding rejects
+ok 177 - SUP06 wrong external decision proof binding rejects
+  ---
+  duration_ms: 189.0751
+  type: 'test'
+  ...
+# Subtest: SUP07 contrary APPROVE preserves not-ready and reports unverified authenticity
+ok 178 - SUP07 contrary APPROVE preserves not-ready and reports unverified authenticity
+  ---
+  duration_ms: 217.8429
+  type: 'test'
+  ...
+# Subtest: SUP07 contrary APPROVE preserves could-not-evaluate and reports unverified authenticity
+ok 179 - SUP07 contrary APPROVE preserves could-not-evaluate and reports unverified authenticity
+  ---
+  duration_ms: 249.8161
+  type: 'test'
+  ...
+# Subtest: SUP08 slot4 output inspection ERROR maps to frozen OUTPUT before worker
+ok 180 - SUP08 slot4 output inspection ERROR maps to frozen OUTPUT before worker
+  ---
+  duration_ms: 54.0188
+  type: 'test'
+  ...
+# Subtest: SURFACE evaluate nine slots exact bytes/summary/exit ready
+ok 181 - SURFACE evaluate nine slots exact bytes/summary/exit ready
+  ---
+  duration_ms: 277.2113
+  type: 'test'
+  ...
+# Subtest: SURFACE evaluate nine slots exact bytes/summary/exit qualified
+ok 182 - SURFACE evaluate nine slots exact bytes/summary/exit qualified
+  ---
+  duration_ms: 234.2617
+  type: 'test'
+  ...
+# Subtest: SURFACE evaluate nine slots exact bytes/summary/exit not-ready
+ok 183 - SURFACE evaluate nine slots exact bytes/summary/exit not-ready
+  ---
+  duration_ms: 250.7269
+  type: 'test'
+  ...
+# Subtest: SURFACE evaluate nine slots exact bytes/summary/exit could-not-evaluate
+ok 184 - SURFACE evaluate nine slots exact bytes/summary/exit could-not-evaluate
+  ---
+  duration_ms: 255.3878
+  type: 'test'
+  ...
+# Subtest: SURFACE verify four slots exit0 no writes
+ok 185 - SURFACE verify four slots exit0 no writes
+  ---
+  duration_ms: 212.3276
+  type: 'test'
+  ...
+# Subtest: SURFACE decision transport downstream and authenticity retained
+ok 186 - SURFACE decision transport downstream and authenticity retained
+  ---
+  duration_ms: 303.9752
+  type: 'test'
+  ...
+# Subtest: SURFACE verify altered supplied result rejects before stdout
+ok 187 - SURFACE verify altered supplied result rejects before stdout
+  ---
+  duration_ms: 244.5037
+  type: 'test'
+  ...
+# Subtest: SURFACE tag observations transported as original bytes without Git
+ok 188 - SURFACE tag observations transported as original bytes without Git
+  ---
+  duration_ms: 126.7227
+  type: 'test'
+  ...
+# Subtest: SURFACE determinism across random sessions and output roots
+ok 189 - SURFACE determinism across random sessions and output roots
+  ---
+  duration_ms: 490.7405
+  type: 'test'
+  ...
+# Subtest: SURFACE complete text output
+ok 190 - SURFACE complete text output
+  ---
+  duration_ms: 282.9265
+  type: 'test'
+  ...
+# Subtest: SURFACE post-rename stdout failure returns OUTPUT retains committed result
+ok 191 - SURFACE post-rename stdout failure returns OUTPUT retains committed result
+  ---
+  duration_ms: 259.3743
+  type: 'test'
+  ...
+# Subtest: SURFACE cancellation before worker no directory publication
+ok 192 - SURFACE cancellation before worker no directory publication
+  ---
+  duration_ms: 61.7923
+  type: 'test'
+  ...
+# Subtest: SURFACE cancellation before final inspection retains pending
+ok 193 - SURFACE cancellation before final inspection retains pending
+  ---
+  duration_ms: 258.2386
+  type: 'test'
+  ...
+# Subtest: SURFACE 2B to 2A adapter selects exact handoff fields
+ok 194 - SURFACE 2B to 2A adapter selects exact handoff fields
+  ---
+  duration_ms: 0.5303
+  type: 'test'
+  ...
+# Subtest: API admission wrong argument
+ok 195 - API admission wrong argument
+  ---
+  duration_ms: 0.8716
+  type: 'test'
+  ...
+# Subtest: API admission shared array
+ok 196 - API admission shared array
+  ---
+  duration_ms: 14.6712
+  type: 'test'
+  ...
+# Subtest: API admission duplicate file ID
+ok 197 - API admission duplicate file ID
+  ---
+  duration_ms: 15.235
+  type: 'test'
+  ...
+# Subtest: API admission oversized candidate
+ok 198 - API admission oversized candidate
+  ---
+  duration_ms: 7.8269
+  type: 'test'
+  ...
+# Subtest: API admission unknown property
+ok 199 - API admission unknown property
+  ---
+  duration_ms: 0.2472
+  type: 'test'
+  ...
+# Subtest: API admission wrong pin
+ok 200 - API admission wrong pin
+  ---
+  duration_ms: 0.1523
+  type: 'test'
+  ...
+# Subtest: API snapshots all bytes before asynchronous work
+ok 201 - API snapshots all bytes before asynchronous work
+  ---
+  duration_ms: 11.6259
+  type: 'test'
+  ...
+# Subtest: API caller mutation after entry cannot affect worker
+ok 202 - API caller mutation after entry cannot affect worker
+  ---
+  duration_ms: 490.2037
+  type: 'test'
+  ...
+# Subtest: API missing declared file rejects
+ok 203 - API missing declared file rejects
+  ---
+  duration_ms: 21.9403
+  type: 'test'
+  ...
+# Subtest: API abort before entry is terminal
+ok 204 - API abort before entry is terminal
+  ---
+  duration_ms: 0.5135
+  type: 'test'
+  ...
+# Subtest: API abort during worker terminates
+ok 205 - API abort during worker terminates
+  ---
+  duration_ms: 28.9092
+  type: 'test'
+  ...
+# Subtest: API public evaluate and verify execute accepted integrated semantics
+ok 206 - API public evaluate and verify execute accepted integrated semantics
+  ---
+  duration_ms: 805.4687
+  type: 'test'
+  ...
+# Subtest: CLI dispatch ""
+ok 207 - CLI dispatch ""
+  ---
+  duration_ms: 0.7325
+  type: 'test'
+  ...
+# Subtest: CLI dispatch "unknown"
+ok 208 - CLI dispatch "unknown"
+  ---
+  duration_ms: 0.1994
+  type: 'test'
+  ...
+# Subtest: CLI dispatch "constructor"
+ok 209 - CLI dispatch "constructor"
+  ---
+  duration_ms: 0.1001
+  type: 'test'
+  ...
+# Subtest: CLI dispatch "toString"
+ok 210 - CLI dispatch "toString"
+  ---
+  duration_ms: 0.0805
+  type: 'test'
+  ...
+# Subtest: CLI dispatch "__proto__"
+ok 211 - CLI dispatch "__proto__"
+  ---
+  duration_ms: 0.056
+  type: 'test'
+  ...
+# Subtest: CLI dispatch "Evaluate"
+ok 212 - CLI dispatch "Evaluate"
+  ---
+  duration_ms: 0.0495
+  type: 'test'
+  ...
+# Subtest: CLI negative missing command
+ok 213 - CLI negative missing command
+  ---
+  duration_ms: 0.0898
+  type: 'test'
+  ...
+# Subtest: CLI negative missing flag
+ok 214 - CLI negative missing flag
+  ---
+  duration_ms: 0.0919
+  type: 'test'
+  ...
+# Subtest: CLI negative duplicate flag
+ok 215 - CLI negative duplicate flag
+  ---
+  duration_ms: 0.062
+  type: 'test'
+  ...
+# Subtest: CLI negative unknown flag
+ok 216 - CLI negative unknown flag
+  ---
+  duration_ms: 0.0663
+  type: 'test'
+  ...
+# Subtest: CLI negative unsafe path
+ok 217 - CLI negative unsafe path
+  ---
+  duration_ms: 0.4209
+  type: 'test'
+  ...
+# Subtest: CLI negative overlong argument
+ok 218 - CLI negative overlong argument
+  ---
+  duration_ms: 0.1725
+  type: 'test'
+  ...
+# \# TIMER_WITNESS [{"name":"success-a","observedTimers":5,"remainingTimers":0,"serverOrWatcherResources":0,"callbacksAfterSettlement":0,"outcome":"COMMITTED","activeRole":null},{"name":"write-failure","observedTimers":4,"remainingTimers":0,"serverOrWatcherResources":0,"callbacksAfterSettlement":0,"outcome":"MO1307_OUTPUT","activeRole":null},{"name":"write-cancellation","observedTimers":4,"remainingTimers":0,"serverOrWatcherResources":0,"callbacksAfterSettlement":0,"outcome":"MO1307_CANCELLED","activeRole":null},{"name":"rename-failure","observedTimers":6,"remainingTimers":0,"serverOrWatcherResources":0,"callbacksAfterSettlement":0,"outcome":"MO1307_OUTPUT","activeRole":null},{"name":"post-admission-cancellation","observedTimers":6,"remainingTimers":0,"serverOrWatcherResources":0,"callbacksAfterSettlement":0,"outcome":"MO1307_OUTPUT","activeRole":null},{"name":"stalled-write-cancellation","observedTimers":3,"remainingTimers":0,"serverOrWatcherResources":0,"callbacksAfterSettlement":0,"outcome":"MO1307_CANCELLED","activeRole":null},{"name":"success-b","observedTimers":5,"remainingTimers":0,"serverOrWatcherResources":0,"callbacksAfterSettlement":0,"outcome":"COMMITTED","activeRole":null}]
+# Subtest: N24-C invocation timers clear after success, write/rename failure and pre/post-admission cancellation including a stalled write; no server, watcher or cross-run callbacks
+ok 219 - N24-C invocation timers clear after success, write/rename failure and pre/post-admission cancellation including a stalled write; no server, watcher or cross-run callbacks
+  ---
+  duration_ms: 410.9259
+  type: 'test'
+  ...
+1..219
+# tests 219
+# suites 0
+# pass 219
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15383.7159
