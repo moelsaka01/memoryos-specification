@@ -1,0 +1,126 @@
+{
+  "kind": "MO1307Phase3CRefreshConsumerProtocol",
+  "result": "PASS",
+  "sources": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/protocol.mjs",
+      "byteLength": 3252,
+      "sha256": "sha256:63b929ea339de0ec2437b51db4977531710875daa5ac5180073e16aa4514d327"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/canonical.mjs",
+      "byteLength": 6813,
+      "sha256": "sha256:b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/ordinary/request.bin",
+      "byteLength": 375,
+      "sha256": "sha256:21c99febf26b9e2c311b5120097fc5f78096e764e6b95101a1bdf003f91c614b"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/ordinary/candidate.stdout.bin",
+      "byteLength": 813,
+      "sha256": "sha256:cdff624e58793c85df9298137809f5bfd256205e4a9ad92be1cd08ec82406ddd"
+    }
+  ],
+  "rows": [
+    {
+      "id": "response-wrong-version",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-wrong-session",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-wrong-sequence",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-wrong-operation",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-unknown-field",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-malformed-base64",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-noncanonical-base64",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-truncated-frame",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-extra-frame",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-trailing-bytes",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "cross-session-response-replay",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "sequence-entry-bypass",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "native-frame-control",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": false,
+      "result": "PASS"
+    }
+  ],
+  "count": 13,
+  "negativeCount": 12,
+  "scope": "Native malformed requests are separately exercised in the equivalence campaign. Cross-session ownership is enforced by the JS consumer/sequence; each one-shot helper echoes a syntactically valid session and does not own cross-process session history."
+}

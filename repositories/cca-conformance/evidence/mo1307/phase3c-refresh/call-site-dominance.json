@@ -1,0 +1,309 @@
+{
+  "kind": "MO1307Phase3CRefreshCallSiteDominance",
+  "version": "1.0.0",
+  "result": "PASS",
+  "provenance": {
+    "executionKind": "STATIC_SOURCE_PARSE_ONLY",
+    "parserVersion": "7.6.5",
+    "script": {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/helper-review.ps1",
+      "byteLength": 19077,
+      "sha256": "sha256:bed5b7e3416cd4cf90daf9ce5b76a603f3cae4fe915b977c03ccd6c22d81f912"
+    },
+    "sourceBasisCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+    "preOptimizationCommit": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+    "original3CWorkspace": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c",
+    "nativeHelperRuns": 0,
+    "runtimeCertification": false,
+    "packageCertification": false,
+    "historicalEvidenceReusedAsCurrentExecution": false
+  },
+  "helper": {
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 30210,
+    "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+  },
+  "readIdentityCallCount": 3,
+  "readIdentityCalls": [
+    {
+      "command": "Read-Identity",
+      "owner": "Open-Chain",
+      "line": 248,
+      "text": "Read-Identity $handle $paths[$index] $isDirectory"
+    },
+    {
+      "command": "Read-Identity",
+      "owner": "Assert-ChainStable",
+      "line": 259,
+      "text": "Read-Identity $entry.handle $entry.path $entry.directory"
+    },
+    {
+      "command": "Read-Identity",
+      "owner": "Assert-ChainStable",
+      "line": 262,
+      "text": "Read-Identity $fresh $entry.path $entry.directory"
+    }
+  ],
+  "openChainCallCount": 3,
+  "openChainCalls": [
+    {
+      "command": "Open-Chain",
+      "owner": "Invoke-ReadSet",
+      "line": 283,
+      "text": "Open-Chain $Roots[$root.id] $true"
+    },
+    {
+      "command": "Open-Chain",
+      "owner": "Invoke-ReadSet",
+      "line": 289,
+      "text": "Open-Chain $full $false $true"
+    },
+    {
+      "command": "Open-Chain",
+      "owner": "Invoke-Inspection",
+      "line": 337,
+      "text": "Open-Chain $path (-not $pending)"
+    }
+  ],
+  "stableChainCallCount": 3,
+  "stableChainCalls": [
+    {
+      "command": "Assert-ChainStable",
+      "owner": "Invoke-ReadSet",
+      "line": 313,
+      "text": "Assert-ChainStable $chain"
+    },
+    {
+      "command": "Assert-ChainStable",
+      "owner": "Invoke-ReadSet",
+      "line": 322,
+      "text": "Assert-ChainStable $chain"
+    },
+    {
+      "command": "Assert-ChainStable",
+      "owner": "Invoke-Inspection",
+      "line": 344,
+      "text": "Assert-ChainStable $chain"
+    }
+  ],
+  "chainMemberReassignmentCount": 0,
+  "pathValidation": [
+    {
+      "lines": [
+        33,
+        34,
+        37,
+        38,
+        39,
+        414,
+        415,
+        422
+      ],
+      "proof": "Each request root passes Assert-Root, converts slash to backslash, then enters a request-local Dictionary[string,string]. No observation-derived value enters that dictionary."
+    },
+    {
+      "lines": [
+        41,
+        42,
+        43,
+        46,
+        434,
+        435,
+        436
+      ],
+      "proof": "File relative segments pass Assert-Relative, are converted to backslashes and appended to a validated root. Full length and case-insensitive duplicate checks precede acquisition."
+    },
+    {
+      "lines": [
+        233,
+        234,
+        235,
+        236,
+        237,
+        238,
+        239,
+        242,
+        247,
+        248,
+        250
+      ],
+      "proof": "Every Open-Chain call validates its complete path before building drive-root and complete-segment prefixes. Each prefix is no longer than the validated full path. Expected strings are retained in local entries independently of identity.finalPath."
+    }
+  ],
+  "readIdentityDominance": [
+    {
+      "callLine": 248,
+      "owner": "Open-Chain",
+      "dominatingValidationLine": 234,
+      "value": "$paths[$index]",
+      "proof": "The only initial Read-Identity call follows full-path validation and prefix construction within the same function."
+    },
+    {
+      "callLine": 259,
+      "owner": "Assert-ChainStable",
+      "dominatingProducers": [
+        283,
+        289,
+        337
+      ],
+      "value": "$entry.path",
+      "proof": "All callers supply chains returned by Open-Chain; there are no assignments to entry path, identity, handle or directory members."
+    },
+    {
+      "callLine": 262,
+      "owner": "Assert-ChainStable",
+      "dominatingProducers": [
+        283,
+        289,
+        337
+      ],
+      "value": "$entry.path",
+      "proof": "The freshly reopened handle is opened with the same retained validated expected path at line 261, then independently observed and disposed."
+    }
+  ],
+  "freshness": [
+    {
+      "phase": "initial",
+      "lines": [
+        188,
+        200,
+        210,
+        212,
+        223,
+        247,
+        248,
+        251
+      ],
+      "proof": "Each component gets an actual native open, identity, disk type and final path. Full equality and common-volume enforcement remain."
+    },
+    {
+      "phase": "post-read-held-and-fresh",
+      "lines": [
+        300,
+        301,
+        305,
+        309,
+        310,
+        311,
+        313,
+        259,
+        261,
+        262,
+        263
+      ],
+      "proof": "A borrowed wrapper reads the checked leaf handle without closing the owner. Every component then has both held-handle reobservation and fresh-path open/reobservation, compared against the complete original identity."
+    },
+    {
+      "phase": "final-root",
+      "lines": [
+        322,
+        259,
+        261,
+        262
+      ],
+      "proof": "Every initial root chain receives fresh held and reopened observations after all requested files finish."
+    },
+    {
+      "phase": "publication",
+      "lines": [
+        337,
+        344,
+        259,
+        261,
+        262
+      ],
+      "proof": "Each publication chain is freshly opened and fully checked, including held and reopened observations; no acquisition observation cache substitutes for them."
+    }
+  ],
+  "publicationFlows": [
+    {
+      "operation": "CHECK_OUTPUT",
+      "producer": "src/acquisition.mjs:81 and src/publication.mjs:165",
+      "helperLines": [
+        327,
+        332,
+        333,
+        334,
+        335,
+        337,
+        339,
+        344
+      ],
+      "path": "Validated output root parent via GetDirectoryName; non-drive-root output enforced; target absence checked natively."
+    },
+    {
+      "operation": "INSPECT_OUTPUT_ROOT",
+      "producer": "src/publication.mjs:170",
+      "helperLines": [
+        327,
+        329,
+        337,
+        344
+      ],
+      "path": "The request-local validated output root."
+    },
+    {
+      "operation": "CHECK_STAGE_ROOT",
+      "producer": "src/publication.mjs:193",
+      "helperLines": [
+        327,
+        329,
+        337,
+        344
+      ],
+      "path": "The request-local validated output root."
+    },
+    {
+      "operation": "INSPECT_PENDING",
+      "producer": "src/publication.mjs:219",
+      "helperLines": [
+        327,
+        328,
+        336,
+        337,
+        344,
+        445
+      ],
+      "path": "Validated output root plus fixed memoryos-readiness-result.json.pending segment; full length checked before native invocation."
+    },
+    {
+      "operation": "CHECK_FINALIZATION",
+      "producer": "src/publication.mjs:257",
+      "helperLines": [
+        327,
+        328,
+        336,
+        337,
+        340,
+        341,
+        344,
+        445
+      ],
+      "path": "Same fixed pending path and a separate native absence check of fixed final filename."
+    }
+  ],
+  "requestScope": {
+    "rootsDictionary": 408,
+    "chains": [
+      276,
+      283,
+      289,
+      337
+    ],
+    "entries": 242,
+    "paths": 235,
+    "processRequests": 1,
+    "loopsAcrossRequests": 0,
+    "nativeObservationCache": false,
+    "crossRequestCache": false,
+    "durableCache": false,
+    "cleanupLines": [
+      254,
+      263,
+      320,
+      324,
+      347
+    ]
+  },
+  "equalityBoundary": "OrdinalIgnoreCase equality to ordinary drive path prefixes preserves delimiters, control/ADS exclusions, dot/trailing-character exclusions and reserved device-name exclusions. Unicode letter case variation cannot introduce those lexical delimiters. Original observed spelling is kept in identity.finalPath and later compared case-sensitively."
+}

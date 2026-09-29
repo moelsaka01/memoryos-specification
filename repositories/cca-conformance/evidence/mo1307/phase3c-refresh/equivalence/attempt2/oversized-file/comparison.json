@@ -1,0 +1,105 @@
+{
+  "name": "oversized-file",
+  "result": "PASS",
+  "scope": "UNMODIFIED_HELPER_EXACT_FRAME",
+  "tags": [
+    "oversized-file"
+  ],
+  "mutation": null,
+  "exactResponseEqual": true,
+  "code": "MO1307_RESOURCE_LIMIT",
+  "status": "ERROR",
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/oversized-file/request.bin",
+    "byteLength": 372,
+    "sha256": "sha256:d7484c790c61ac0c4a1f2bda9c07a17d94b5401dc8bfb43fe7508a09ac586c12"
+  },
+  "b2": {
+    "code": 0,
+    "signal": null,
+    "pid": 26584,
+    "elapsedMs": 2446.5076000000117,
+    "exitMs": 2446.4843999999866,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/oversized-file/b2.stdout.bin",
+      "byteLength": 248,
+      "sha256": "sha256:75fa34daf4f33b7e92e861d4f84cc152f074912c73ff8b5e1e5c27c8cdd508df"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/oversized-file/b2.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/oracle/b2-windows-inspect.ps1",
+      "byteLength": 29771,
+      "sha256": "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\cca-conformance\\evidence\\mo1307\\phase3a-readset-correction\\oracle\\b2-windows-inspect.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "candidate": {
+    "code": 0,
+    "signal": null,
+    "pid": 26640,
+    "elapsedMs": 2328.6846999999834,
+    "exitMs": 2328.641799999983,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/oversized-file/candidate.stdout.bin",
+      "byteLength": 248,
+      "sha256": "sha256:75fa34daf4f33b7e92e861d4f84cc152f074912c73ff8b5e1e5c27c8cdd508df"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/oversized-file/candidate.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 30210,
+      "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "nativeObservationCountsEqual": null,
+  "telemetry": null
+}

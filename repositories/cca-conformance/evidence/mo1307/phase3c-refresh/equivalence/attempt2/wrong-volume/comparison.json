@@ -1,0 +1,156 @@
+{
+  "name": "wrong-volume",
+  "result": "PASS",
+  "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+  "tags": [
+    "wrong volume/identity where safely representable"
+  ],
+  "mutation": "volume",
+  "exactResponseEqual": true,
+  "code": "MO1307_FILESYSTEM_BOUNDARY",
+  "status": "ERROR",
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/wrong-volume/request.bin",
+    "byteLength": 379,
+    "sha256": "sha256:d22a1b87b0aa9c9de282331b21d0029621065620d499b1557a9af375770d18a1"
+  },
+  "b2": {
+    "code": 0,
+    "signal": null,
+    "pid": 23756,
+    "elapsedMs": 3395.104800000001,
+    "exitMs": 3395.0736000000034,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/wrong-volume/b2.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/wrong-volume/b2.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/wrong-volume/b2-instrumented.ps1",
+      "byteLength": 33031,
+      "sha256": "sha256:e057fa36ce986bca591a6cb13691f2d23910e34c7ffc78958a7ba0009566a6fa"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-refresh\\equivalence\\attempt2\\wrong-volume\\b2-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "candidate": {
+    "code": 0,
+    "signal": null,
+    "pid": 14708,
+    "elapsedMs": 3416.6206999999995,
+    "exitMs": 3416.595000000001,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/wrong-volume/candidate.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/wrong-volume/candidate.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/wrong-volume/candidate-instrumented.ps1",
+      "byteLength": 33477,
+      "sha256": "sha256:722f6b02bc3216e7224d0ee6276bb14ab3d0fff7ff7ebefe6e7456805547a928"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-refresh\\equivalence\\attempt2\\wrong-volume\\candidate-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "nativeObservationCountsEqual": true,
+  "telemetry": {
+    "b2": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 21,
+        "initial:GetFileInformationByHandle": 21,
+        "post-read:Open-Native": 10,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 21,
+        "post-read:GetFinalPathNameByHandleW": 21,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 21,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "volume",
+      "workingSet64": 133505024,
+      "peakWorkingSet64": 133505024,
+      "managedBytes": 53056312,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/wrong-volume/b2-telemetry.json",
+        "byteLength": 484,
+        "sha256": "sha256:48dae2d9a5ec6d90742b9c7a69d277eddfbc86ab6670a47d214ac04167b7b25c"
+      }
+    },
+    "candidate": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 21,
+        "initial:GetFileInformationByHandle": 21,
+        "post-read:Open-Native": 10,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 21,
+        "post-read:GetFinalPathNameByHandleW": 21,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 21,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "volume",
+      "workingSet64": 127545344,
+      "peakWorkingSet64": 130109440,
+      "managedBytes": 47966800,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/wrong-volume/candidate-telemetry.json",
+        "byteLength": 484,
+        "sha256": "sha256:99f3e56482fe9be877bb6b695ed076dd50f18518eb781c49a056c4e1362f3484"
+      }
+    }
+  }
+}

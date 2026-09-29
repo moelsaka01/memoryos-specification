@@ -1,0 +1,94 @@
+{
+  "kind": "MO1307Phase3CRefreshDeadlineEnvironment",
+  "baseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "created": "2026-09-29T13:27:01.942Z",
+  "node": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+    "byteLength": 93580104,
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "helper": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+    "byteLength": 30210,
+    "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+  },
+  "sources": [
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\helper-transport.mjs",
+      "byteLength": 6250,
+      "sha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+      "relative": "src/helper-transport.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+      "relative": "src/helper-protocol.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\runtime.mjs",
+      "byteLength": 16904,
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+      "relative": "src/runtime.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029",
+      "relative": "src/windows-paths.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\cli-args.mjs",
+      "byteLength": 4280,
+      "sha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7",
+      "relative": "src/cli-args.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\errors.mjs",
+      "byteLength": 1823,
+      "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac",
+      "relative": "src/errors.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\constants.mjs",
+      "byteLength": 16791,
+      "sha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9",
+      "relative": "src/constants.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+      "byteLength": 30210,
+      "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8",
+      "relative": "helpers/windows-inspect.ps1"
+    }
+  ],
+  "launch": {
+    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+    ],
+    "options": {
+      "cwd": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\",
+      "env": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true,
+      "detached": false,
+      "shell": false,
+      "stdio": [
+        "pipe",
+        "pipe",
+        "pipe"
+      ]
+    }
+  },
+  "scope": "Representative security boundary only. No CLI smoke, worker/runtime certification, provider use, production change or package certification.",
+  "controls": "Actual fixed executable/script with engineering stdin EOF or shutdown timing control; crash forced on owned process. Raw request limits use engineering 15000ms outer guard. Old helper is an explicitly selected read-only historical algorithm resource comparison."
+}

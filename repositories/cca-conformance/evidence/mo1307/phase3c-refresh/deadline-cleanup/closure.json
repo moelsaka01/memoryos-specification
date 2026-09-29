@@ -1,0 +1,359 @@
+{
+  "kind": "MO1307Phase3CRefreshDeadlineCleanupResourceEnvironmentClosure",
+  "result": "PASS",
+  "baseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "acceptedAttempt": "attempt-2",
+  "evidenceRows": 18,
+  "countingBoundary": "Counts only this lane: 13 unique targeted controls comprise 11 actual rejection controls (6 new, 5 rerun) and 2 accepted/behavioral controls. Parent must union with path/protocol/equivalence corpus by control identity; no duplicate counting for repeated attempts, native/JS cap layers, or two historical environment rows.",
+  "supportingRows": [
+    "fixed-native-timely",
+    "resource-sample-old-b2",
+    "resource-sample-corrected",
+    "bounded-state-and-fixed-source-review"
+  ],
+  "actualNativeInvocations": [
+    {
+      "name": "fixed-native-timely",
+      "pid": 25284,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "timeout-exact-mapping",
+      "pid": 19092,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "late-native-success-refused",
+      "pid": 6016,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "crash-closed-transport",
+      "pid": 24192,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "fixed-launch-combined-environment-poison",
+      "pid": 1104,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "resource-native-path-cap129",
+      "pid": 14376,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "resource-native-request-prefix-cap",
+      "pid": 23280,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "resource-native-declared-file-cap",
+      "pid": 22840,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "resource-native-observed-file-cap",
+      "pid": 24392,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "resource-sample-old-b2",
+      "pid": 14436,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "resource-sample-corrected",
+      "pid": 26808,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    }
+  ],
+  "osSamples": 73,
+  "sampledConsoleHosts": [
+    {
+      "pid": 26020,
+      "parent": 25284,
+      "name": "conhost.exe",
+      "created": "2026-09-29T17:28:31.9619070+04:00"
+    },
+    {
+      "pid": 14612,
+      "parent": 19092,
+      "name": "conhost.exe",
+      "created": "2026-09-29T17:28:34.0881020+04:00"
+    },
+    {
+      "pid": 25692,
+      "parent": 6016,
+      "name": "conhost.exe",
+      "created": "2026-09-29T17:28:39.1239590+04:00"
+    },
+    {
+      "pid": 1840,
+      "parent": 24192,
+      "name": "conhost.exe",
+      "created": "2026-09-29T17:28:44.4148970+04:00"
+    },
+    {
+      "pid": 2604,
+      "parent": 1104,
+      "name": "conhost.exe",
+      "created": "2026-09-29T17:28:46.6679970+04:00"
+    },
+    {
+      "pid": 21556,
+      "parent": 14376,
+      "name": "conhost.exe",
+      "created": "2026-09-29T17:28:49.5412740+04:00"
+    },
+    {
+      "pid": 22800,
+      "parent": 6016,
+      "name": "conhost.exe",
+      "created": "2026-09-29T17:28:50.1741310+04:00"
+    },
+    {
+      "pid": 23704,
+      "parent": 23280,
+      "name": "conhost.exe",
+      "created": "2026-09-29T17:28:51.9589380+04:00"
+    },
+    {
+      "pid": 2244,
+      "parent": 22840,
+      "name": "conhost.exe",
+      "created": "2026-09-29T17:28:53.6958320+04:00"
+    },
+    {
+      "pid": 12872,
+      "parent": 24392,
+      "name": "conhost.exe",
+      "created": "2026-09-29T17:28:55.9426640+04:00"
+    },
+    {
+      "pid": 7528,
+      "parent": 14436,
+      "name": "conhost.exe",
+      "created": "2026-09-29T17:28:58.7485240+04:00"
+    },
+    {
+      "pid": 25780,
+      "parent": 26808,
+      "name": "conhost.exe",
+      "created": "2026-09-29T17:29:01.6008140+04:00"
+    }
+  ],
+  "remainingOwnedProcesses": [],
+  "resourceComparison": [
+    {
+      "name": "resource-sample-old-b2",
+      "pid": 14436,
+      "elapsedMs": 2826.078699999998,
+      "sampledWorkingSetMax": 101691392
+    },
+    {
+      "name": "resource-sample-corrected",
+      "pid": 26808,
+      "elapsedMs": 2681.4541000000027,
+      "sampledWorkingSetMax": 105017344
+    }
+  ],
+  "sourceBinding": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\cca-conformance\\tools\\mo1307-phase3c-refresh\\deadline-cleanup.mjs",
+    "sha256": "sha256:8706a27482f3e6c62cbafccbf796095c1466c36ab9d12592a060bec3f291de55",
+    "executedAttempt2Sha256": "sha256:8706a27482f3e6c62cbafccbf796095c1466c36ab9d12592a060bec3f291de55"
+  },
+  "preservedFailure": {
+    "attempt": "attempt-1",
+    "result": "FAIL",
+    "case": "late-native-success-refused",
+    "classification": "INSUFFICIENT_ENGINEERING_LATE_RESPONSE_STIMULUS",
+    "facts": "The helper was intentionally held at stdin EOF until 5250ms; no response arrived before the 6800ms engineering fallback kill. Timeout remained terminal, no bytes were accepted, all transports closed and external observer found zero descendants. No product security defect was demonstrated.",
+    "remedy": "Attempt-2 captures exact native helper output while the child completes normally, delays transport delivery to 5250ms using a PassThrough proxy, and proves the valid native OK frame cannot restore success after 5000ms terminal TIMEOUT. Production helper source, fixed launch, clocks and deadlines remain unchanged."
+  },
+  "scope": [
+    "Actual timeout and crash controls run exact fixed current helper. Late control uses exact current native response with explicitly delayed engineering delivery; it is not a claim that the child itself generated the frame after timeout.",
+    "No helper or attributable console host survived the observed campaign; all 11 helper PIDs were sampled and all process/three-stream close events were observed.",
+    "Timeout/crash product cleanupConfirmed remains false without a valid native frame. This conservative terminal state is distinct from external observed process quiescence.",
+    "CIM process/creation-time tracking may conservatively over-attribute a child if its parent PID is recycled after an owned helper exits; this can add observations, not conceal an owned survivor. No topology maximum is claimed.",
+    "Old/new representative working-set samples and exact unchanged READ_SET allocation structures establish targeted boundedness review only; 3A-R retains runtime capacity/RSS certification.",
+    "No network primitive/import/call or timing/debug log is introduced by helper source; static review and synthetic poison do not claim an OS egress sandbox.",
+    "Synthetic environment sentinel did not appear in helper stdout/stderr or error projection. No real credentials were read.",
+    "MO1306 runtime completion remains pending separate 3A-R certification."
+  ],
+  "uniqueTargetedControls": 13,
+  "actualRejectionControls": 11,
+  "newRejectionControls": 6,
+  "rerunRejectionControls": 5,
+  "acceptedBehavioralControls": 2,
+  "targetedControlMapping": [
+    {
+      "id": "helper-timeout-terminal",
+      "witnesses": [
+        "timeout-exact-mapping"
+      ],
+      "classification": "NEW",
+      "result": "PASS",
+      "controlDisposition": "EXPECTED_REJECTION"
+    },
+    {
+      "id": "late-native-frame-terminal",
+      "witnesses": [
+        "late-native-success-refused"
+      ],
+      "classification": "NEW",
+      "result": "PASS",
+      "controlDisposition": "EXPECTED_REJECTION"
+    },
+    {
+      "id": "helper-crash-cleanup",
+      "witnesses": [
+        "crash-closed-transport"
+      ],
+      "classification": "NEW",
+      "result": "PASS",
+      "controlDisposition": "EXPECTED_REJECTION"
+    },
+    {
+      "id": "poison-fixed-launch",
+      "witnesses": [
+        "fixed-launch-combined-environment-poison"
+      ],
+      "classification": "RERUN",
+      "oldControls": [
+        "native-environment-poison-fixed-launch",
+        "actual-fixed-transport-poisoned-parent"
+      ],
+      "counting": "One combined witness; two historical rows are not counted twice.",
+      "result": "PASS",
+      "controlDisposition": "ACCEPTED_BEHAVIORAL"
+    },
+    {
+      "id": "helper-path-count",
+      "witnesses": [
+        "resource-request-path-cap128-129",
+        "resource-native-path-cap129"
+      ],
+      "classification": "NEW",
+      "counting": "JS and native layer evidence for one 129-path negative; 128-path JS admission is supporting positive.",
+      "result": "PASS",
+      "controlDisposition": "EXPECTED_REJECTION"
+    },
+    {
+      "id": "helper-request-byte-limit",
+      "witnesses": [
+        "resource-native-request-prefix-cap"
+      ],
+      "classification": "RERUN",
+      "oldControls": [
+        "native-wire-oversized-length"
+      ],
+      "result": "PASS",
+      "controlDisposition": "EXPECTED_REJECTION"
+    },
+    {
+      "id": "helper-declared-file-cap",
+      "witnesses": [
+        "resource-native-declared-file-cap"
+      ],
+      "classification": "NEW",
+      "result": "PASS",
+      "controlDisposition": "EXPECTED_REJECTION"
+    },
+    {
+      "id": "helper-observed-file-cap",
+      "witnesses": [
+        "resource-native-observed-file-cap"
+      ],
+      "classification": "RERUN",
+      "oldControls": [
+        "native-oversized-file"
+      ],
+      "result": "PASS",
+      "controlDisposition": "EXPECTED_REJECTION"
+    },
+    {
+      "id": "deadline-partial-and-terminal-sequence",
+      "witnesses": [
+        "deadline-sequence-no-partial-or-late-success"
+      ],
+      "classification": "NEW",
+      "result": "PASS",
+      "controlDisposition": "EXPECTED_REJECTION"
+    },
+    {
+      "id": "launch-require-substitution",
+      "witnesses": [
+        "launch-substitution-require"
+      ],
+      "classification": "RERUN",
+      "oldControls": [
+        "launch-flag---require"
+      ],
+      "result": "PASS",
+      "controlDisposition": "EXPECTED_REJECTION"
+    },
+    {
+      "id": "launch-import-substitution",
+      "witnesses": [
+        "launch-substitution-import"
+      ],
+      "classification": "RERUN",
+      "oldControls": [
+        "launch-flag---import"
+      ],
+      "result": "PASS",
+      "controlDisposition": "EXPECTED_REJECTION"
+    },
+    {
+      "id": "launch-loader-substitution",
+      "witnesses": [
+        "launch-substitution-loader"
+      ],
+      "classification": "RERUN",
+      "oldControls": [
+        "launch-flag---loader"
+      ],
+      "result": "PASS",
+      "controlDisposition": "EXPECTED_REJECTION"
+    },
+    {
+      "id": "secret-error-projection",
+      "witnesses": [
+        "secret-safe-error-projection"
+      ],
+      "classification": "RERUN",
+      "oldControls": [
+        "secret-fixed-diagnostic"
+      ],
+      "result": "PASS",
+      "controlDisposition": "ACCEPTED_BEHAVIORAL"
+    }
+  ],
+  "countLabelCorrection": {
+    "preservedPriorClosure": "closure-count-label-attempt1.json.data",
+    "reason": "Environment-poison isolation and secret-safe diagnostic projection are accepted/behavioral controls, not rejected requests. Test outcomes, receipts and executed harness bytes are unchanged."
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "kind": "MO1307Phase3CRefreshAdditionalTOCTOU",
+  "result": "PASS",
+  "sourceBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/oracle/b2-windows-inspect.ps1",
+      "byteLength": 29771,
+      "sha256": "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 30210,
+      "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/toctou-boundaries.mjs",
+      "byteLength": 5791,
+      "sha256": "sha256:0bfaa2e3aefe6b6f554c4597cb6e59f435e95852b6ba6768ca8ee1f15fa9b1f3"
+    }
+  ],
+  "rows": [
+    {
+      "id": "before-read-replacement",
+      "result": "PASS",
+      "negative": true,
+      "code": "MO1307_FILESYSTEM_BOUNDARY",
+      "exactResponseEquivalent": true,
+      "scope": "ENGINEERING_CONTROLLED_NATIVE_FILESYSTEM_MUTATION",
+      "request": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/before-read-replacement/request.bin",
+        "byteLength": 375,
+        "sha256": "sha256:968e32746a6192692897cc09bf0046a73964cb62ce208b707e7b873188755b7f"
+      },
+      "runs": [
+        {
+          "code": 0,
+          "signal": null,
+          "pid": 2548,
+          "closeObserved": true,
+          "stdout": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/before-read-replacement/b2.stdout.bin",
+            "byteLength": 253,
+            "sha256": "sha256:bfce1712ce0ef0a25c7cdc519e107a702b07ef703cf6a20ebcb53ebfc6f7c04e"
+          },
+          "stderr": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/before-read-replacement/b2.stderr.bin",
+            "byteLength": 0,
+            "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "helper": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/before-read-replacement/b2-instrumented.ps1",
+            "byteLength": 30395,
+            "sha256": "sha256:a470e06a321500cb755602bbd1b606ad6d768f79ac7cbbf446554bdf74f9c73e"
+          }
+        },
+        {
+          "code": 0,
+          "signal": null,
+          "pid": 22196,
+          "closeObserved": true,
+          "stdout": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/before-read-replacement/candidate.stdout.bin",
+            "byteLength": 253,
+            "sha256": "sha256:bfce1712ce0ef0a25c7cdc519e107a702b07ef703cf6a20ebcb53ebfc6f7c04e"
+          },
+          "stderr": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/before-read-replacement/candidate.stderr.bin",
+            "byteLength": 0,
+            "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "helper": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/before-read-replacement/candidate-instrumented.ps1",
+            "byteLength": 30855,
+            "sha256": "sha256:f496318c7ea99662f8f72bf47dfa38b7afa8341dfb4737287590463cbfb486ca"
+          }
+        }
+      ]
+    },
+    {
+      "id": "held-to-fresh-replacement",
+      "result": "PASS",
+      "negative": true,
+      "code": "MO1307_FILESYSTEM_BOUNDARY",
+      "exactResponseEquivalent": true,
+      "scope": "ENGINEERING_CONTROLLED_NATIVE_FILESYSTEM_MUTATION",
+      "request": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/held-to-fresh-replacement/request.bin",
+        "byteLength": 377,
+        "sha256": "sha256:a389cf74897cca0bfa9776058f05dbda7e931a3290726e64df64f29e51b8baa1"
+      },
+      "runs": [
+        {
+          "code": 0,
+          "signal": null,
+          "pid": 6564,
+          "closeObserved": true,
+          "stdout": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/held-to-fresh-replacement/b2.stdout.bin",
+            "byteLength": 253,
+            "sha256": "sha256:bfce1712ce0ef0a25c7cdc519e107a702b07ef703cf6a20ebcb53ebfc6f7c04e"
+          },
+          "stderr": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/held-to-fresh-replacement/b2.stderr.bin",
+            "byteLength": 0,
+            "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "helper": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/held-to-fresh-replacement/b2-instrumented.ps1",
+            "byteLength": 30434,
+            "sha256": "sha256:e757ce7163666886400d6f627e92c69fc992db9304f2786488d4b86cdf0f8d09"
+          }
+        },
+        {
+          "code": 0,
+          "signal": null,
+          "pid": 19204,
+          "closeObserved": true,
+          "stdout": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/held-to-fresh-replacement/candidate.stdout.bin",
+            "byteLength": 253,
+            "sha256": "sha256:bfce1712ce0ef0a25c7cdc519e107a702b07ef703cf6a20ebcb53ebfc6f7c04e"
+          },
+          "stderr": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/held-to-fresh-replacement/candidate.stderr.bin",
+            "byteLength": 0,
+            "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "helper": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/held-to-fresh-replacement/candidate-instrumented.ps1",
+            "byteLength": 30894,
+            "sha256": "sha256:5bd282b6d27b3addcddf45e1ff2013e0d28649f7df8a3a5545536c341452a202"
+          }
+        }
+      ]
+    }
+  ],
+  "scope": "Two additional mutation windows. Actual filesystem replacements are performed in reversible engineering copies after releasing the held leaf solely to permit the mutation. Original native calls/checks remain present. No claim that production sharing permits this adversary."
+}

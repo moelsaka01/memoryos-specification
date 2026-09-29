@@ -1,0 +1,69 @@
+{
+  "id": "late-native-success-refused",
+  "layer": "ACTUAL_FIXED_HELPER_FRAME_ENGINEERING_DELAYED_STREAM_DELIVERY",
+  "result": "PASS",
+  "elapsedMs": 5285.9813,
+  "detail": {
+    "accepted": false,
+    "errorCode": "MO1307_TIMEOUT",
+    "mappedPublicExit": 29,
+    "lateNativeOK": true,
+    "noSecretEcho": true,
+    "exactFixedLaunch": true,
+    "poisonedKeys": [],
+    "snapshot": {
+      "kind": "cli",
+      "deadline": 37247.5174,
+      "helpers": 1,
+      "workers": 0,
+      "helperUsedMs": 0,
+      "activeRole": null,
+      "cleanupConfirmed": true,
+      "publication": null,
+      "terminalCode": "MO1307_TIMEOUT",
+      "terminalAt": 12258.4618,
+      "cleanupDeadline": 14258.4618,
+      "events": [
+        {
+          "type": "start",
+          "at": 7249.0359,
+          "role": "helper",
+          "deadline": 12249.0068,
+          "ordinal": 1
+        },
+        {
+          "type": "observation",
+          "at": 7271.0879,
+          "role": "helper",
+          "pid": 6016,
+          "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+        },
+        {
+          "type": "terminal",
+          "at": 12258.61,
+          "code": "MO1307_TIMEOUT",
+          "stage": "ACQUISITION"
+        },
+        {
+          "type": "cleanup",
+          "at": 12531.5998,
+          "role": "helper",
+          "confirmed": true
+        }
+      ]
+    },
+    "observation": {
+      "name": "late-native-success-refused",
+      "pid": 6016,
+      "startedAt": 7270.5895,
+      "closedAt": 9871.6053,
+      "exitCode": 0,
+      "stdoutBytes": 867,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 9825.7115,
+      "deliveredAt": 12526.57
+    }
+  }
+}

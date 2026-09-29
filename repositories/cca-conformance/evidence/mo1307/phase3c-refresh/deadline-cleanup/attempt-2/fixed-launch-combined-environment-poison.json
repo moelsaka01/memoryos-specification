@@ -1,0 +1,81 @@
+{
+  "id": "fixed-launch-combined-environment-poison",
+  "layer": "ACTUAL_FIXED_HELPER",
+  "result": "PASS",
+  "elapsedMs": 2861.3407000000007,
+  "detail": {
+    "accepted": true,
+    "errorCode": null,
+    "mappedPublicExit": null,
+    "lateNativeOK": false,
+    "noSecretEcho": true,
+    "exactFixedLaunch": true,
+    "poisonedKeys": [
+      "ALL_PROXY",
+      "AWS_SECRET_ACCESS_KEY",
+      "AZURE_CLIENT_SECRET",
+      "GITHUB_TOKEN",
+      "HOME",
+      "HTTPS_PROXY",
+      "HTTP_PROXY",
+      "MEMORYOS_READINESS_HELPER",
+      "PATH",
+      "PATHEXT",
+      "POWERSHELL",
+      "POWERSHELL_EXECUTABLE",
+      "PSExecutionPolicyPreference",
+      "PSHOME",
+      "PSModulePath",
+      "SystemRoot",
+      "USERPROFILE",
+      "WINDIR"
+    ],
+    "snapshot": {
+      "kind": "cli",
+      "deadline": 44790.061,
+      "helpers": 1,
+      "workers": 0,
+      "helperUsedMs": 2855.3086999999978,
+      "activeRole": null,
+      "cleanupConfirmed": true,
+      "publication": null,
+      "terminalCode": null,
+      "terminalAt": null,
+      "cleanupDeadline": null,
+      "events": [
+        {
+          "type": "start",
+          "at": 14793.8015,
+          "role": "helper",
+          "deadline": 19793.7733,
+          "ordinal": 1
+        },
+        {
+          "type": "observation",
+          "at": 14815.2046,
+          "role": "helper",
+          "pid": 1104,
+          "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+        },
+        {
+          "type": "quiescent",
+          "at": 17649.1116,
+          "role": "helper",
+          "ordinal": 1
+        }
+      ]
+    },
+    "observation": {
+      "name": "fixed-launch-combined-environment-poison",
+      "pid": 1104,
+      "startedAt": 14815.0558,
+      "closedAt": 17643.9363,
+      "exitCode": 0,
+      "stdoutBytes": 867,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 17600.1053
+    }
+  }
+}

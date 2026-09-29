@@ -1,0 +1,79 @@
+{
+  "kind": "MO1307Phase3CRefreshExecutionSummary",
+  "result": "PASS",
+  "checkedBindings": 620,
+  "equivalence": {
+    "pairs": 69,
+    "negative": 55,
+    "success": 14,
+    "helperInvocations": 138,
+    "instrumentedPairs": 21,
+    "mutations": 19
+  },
+  "additionalTOCTOU": 2,
+  "consumerProtocol": 13,
+  "deadlineRows": 18,
+  "localMO1306": {
+    "files": 65,
+    "entries": 790,
+    "nativeIdentityObservations": 2370,
+    "nativeOpens": 1580,
+    "rootRebound": true,
+    "oldNewCountersEqual": true
+  },
+  "counts": {
+    "REUSED": {
+      "controls": 459,
+      "negative": 349,
+      "acceptedOrBehavioral": 110
+    },
+    "RERUN": {
+      "controls": 36,
+      "negative": 32,
+      "acceptedOrBehavioral": 4
+    },
+    "NEW": {
+      "controls": 56,
+      "negative": 45,
+      "acceptedOrBehavioral": 11
+    }
+  },
+  "rawExperimentalRows": 102,
+  "sources": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/receipt.json",
+      "byteLength": 362684,
+      "sha256": "sha256:03241f7aa302f4d8cc04ac10de27d8addf5621b63a15db84617d44813a5e22c7"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/protocol-subset.json",
+      "byteLength": 3964,
+      "sha256": "sha256:046b3d30734ee63e848ed3b2f0526fe85da8c00349879b5eeaea0c9413bf09cc"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/receipt.json",
+      "byteLength": 6521,
+      "sha256": "sha256:b6f1d4179160bbe22740726359647f50ff3f4cfed39d1bb998cf4fec14ec5201"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/deadline-cleanup/attempt-2/receipt.json",
+      "byteLength": 29147,
+      "sha256": "sha256:80446332d718ae3671687bf33f283cbcfea02d2858f150026fa3365ec12380c1"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/old-control-classification.json",
+      "byteLength": 614016,
+      "sha256": "sha256:47067416398b9a034e87160ebef7cfaf0a27375b9a202984ecb44f23c24c48de"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/assemble-corpus.mjs",
+      "byteLength": 10902,
+      "sha256": "sha256:43962ed39b3a9888b693c861479368d6bae7c598fdf0282c0de34bb43c1ab162"
+    }
+  ],
+  "limitations": [
+    "Bounded engineering guard is not runtime certification.",
+    "Historical MO1306/READY request contents and descriptors are identical, but root is rebound to r3c and native identities/path depth therefore differ from the historical frame.",
+    "Mutation copies explicitly release held leaf sharing to permit controlled replacements; production bytes remain untouched."
+  ]
+}

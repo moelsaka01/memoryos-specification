@@ -1,0 +1,378 @@
+{
+  "kind": "MO1307Phase3CRefreshFinalReportIndependentReview",
+  "version": "1.0.0",
+  "result": "PASS",
+  "reviewedAt": "2026-09-29T13:42:35.819Z",
+  "reviewMode": "READ_ONLY_REPORT_AND_BOUND_EVIDENCE_REVIEW",
+  "report": {
+    "path": "docs/mo1307-phase3c-refresh.md",
+    "byteLength": 18730,
+    "sha256": "sha256:8c52be310a6444926026fb22c3a231ef71f6fa8be43737e9761a2ca348859a81"
+  },
+  "postTestReview": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/independent-review.json",
+    "byteLength": 14285,
+    "sha256": "sha256:db7b6bfb772a7045a407ef2d867f266b5de1db34def4c6af5f94330fe5a59d21"
+  },
+  "allPostTestBindingsStillExact": true,
+  "register": {
+    "requiredEntries": 57,
+    "actualEntries": 57,
+    "orderedUniqueNumbers": true,
+    "rows": [
+      {
+        "number": 1,
+        "item": "Baseline",
+        "disposition": "Exact requested branch/HEAD; initially clean"
+      },
+      {
+        "number": 2,
+        "item": "C3RB",
+        "disposition": "defe93989efc6501b1a730b82e79e705884b269b"
+      },
+      {
+        "number": 3,
+        "item": "Original 3C",
+        "disposition": "191f34748141afca2027e8e9db0c6f1b6a9c84c0"
+      },
+      {
+        "number": 4,
+        "item": "Original preservation",
+        "disposition": "11540 nonignored files, clean Git, unchanged"
+      },
+      {
+        "number": 5,
+        "item": "Reuse matrix",
+        "disposition": "31 areas: 19 reusable/11 targeted/1 invalidated outer identity"
+      },
+      {
+        "number": 6,
+        "item": "New helper identity",
+        "disposition": "35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+      },
+      {
+        "number": 7,
+        "item": "Old/new delta",
+        "disposition": "One redundant Assert-Root statement removed; comments changed"
+      },
+      {
+        "number": 8,
+        "item": "Read-Identity call sites",
+        "disposition": "3"
+      },
+      {
+        "number": 9,
+        "item": "Validated-path dominance",
+        "disposition": "PASS all production call paths"
+      },
+      {
+        "number": 10,
+        "item": "Request-local reuse",
+        "disposition": "PASS; no new cache or observation reuse"
+      },
+      {
+        "number": 11,
+        "item": "Native freshness",
+        "disposition": "PASS"
+      },
+      {
+        "number": 12,
+        "item": "Mutation controls",
+        "disposition": "19 equivalence + 2 additional; all refuse"
+      },
+      {
+        "number": 13,
+        "item": "Final-path security",
+        "disposition": "PASS"
+      },
+      {
+        "number": 14,
+        "item": "Path negatives",
+        "disposition": "PASS actual Windows cases"
+      },
+      {
+        "number": 15,
+        "item": "Helper protocol",
+        "disposition": "PASS native and consumer subsets"
+      },
+      {
+        "number": 16,
+        "item": "Equivalence",
+        "disposition": "69 exact-frame pairs PASS"
+      },
+      {
+        "number": 17,
+        "item": "TOCTOU",
+        "disposition": "PASS initial/read/post and held/fresh boundaries"
+      },
+      {
+        "number": 18,
+        "item": "Deadline security",
+        "disposition": "PASS exact timeout mapping and late refusal"
+      },
+      {
+        "number": 19,
+        "item": "Cleanup",
+        "disposition": "PASS external quiescence; conservative product flags preserved"
+      },
+      {
+        "number": 20,
+        "item": "Resources",
+        "disposition": "PASS targeted boundedness; full runtime capacity out of scope"
+      },
+      {
+        "number": 21,
+        "item": "Package/helper binding",
+        "disposition": "PASS source/allowlist/distribution/SBOM/runtime script"
+      },
+      {
+        "number": 22,
+        "item": "PowerShell launch",
+        "disposition": "PASS fixed executable/script"
+      },
+      {
+        "number": 23,
+        "item": "Environment",
+        "disposition": "PASS synthetic poison and substitution"
+      },
+      {
+        "number": 24,
+        "item": "Network",
+        "disposition": "No added capability; no network/provider execution"
+      },
+      {
+        "number": 25,
+        "item": "Secrets/logs",
+        "disposition": "PASS static residue and synthetic sentinel"
+      },
+      {
+        "number": 26,
+        "item": "Trust-root reuse",
+        "disposition": "Unchanged dependencies; current outer binding refreshed"
+      },
+      {
+        "number": 27,
+        "item": "Grant reuse",
+        "disposition": "Unchanged dependencies; current outer binding refreshed"
+      },
+      {
+        "number": 28,
+        "item": "Raw-lineage reuse",
+        "disposition": "Unchanged semantics; acquisition boundary refreshed"
+      },
+      {
+        "number": 29,
+        "item": "DAG reuse",
+        "disposition": "Unchanged dependencies"
+      },
+      {
+        "number": 30,
+        "item": "History reuse",
+        "disposition": "Unchanged dependencies"
+      },
+      {
+        "number": 31,
+        "item": "Qualification/provider reuse",
+        "disposition": "Unchanged dependencies and limitations"
+      },
+      {
+        "number": 32,
+        "item": "Decision/tag reuse",
+        "disposition": "Unchanged semantics; no authenticity promotion"
+      },
+      {
+        "number": 33,
+        "item": "Result/proof reuse",
+        "disposition": "Unchanged dependencies"
+      },
+      {
+        "number": 34,
+        "item": "MO-1306 runtime claim",
+        "disposition": "Correction validation exists; certification pending 3A-R"
+      },
+      {
+        "number": 35,
+        "item": "Release-claim audit",
+        "disposition": "PASS; no automatic release authority"
+      },
+      {
+        "number": 36,
+        "item": "Reused rejection controls",
+        "disposition": "349"
+      },
+      {
+        "number": 37,
+        "item": "Rerun rejection controls",
+        "disposition": "32"
+      },
+      {
+        "number": 38,
+        "item": "New rejection controls",
+        "disposition": "45"
+      },
+      {
+        "number": 39,
+        "item": "Independent review",
+        "disposition": "Separate post-test source/corpus and report attestations"
+      },
+      {
+        "number": 40,
+        "item": "Production defects",
+        "disposition": "0 established"
+      },
+      {
+        "number": 41,
+        "item": "Certification disposition",
+        "disposition": "PASS targeted 3C-R for exact C3RB; scoped handoff"
+      },
+      {
+        "number": 42,
+        "item": "Production changes",
+        "disposition": "0"
+      },
+      {
+        "number": 43,
+        "item": "Evidence",
+        "disposition": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/"
+      },
+      {
+        "number": 44,
+        "item": "Report",
+        "disposition": "docs/mo1307-phase3c-refresh.md"
+      },
+      {
+        "number": 45,
+        "item": "Workspace verification",
+        "disposition": "PASS"
+      },
+      {
+        "number": 46,
+        "item": "git diff --check",
+        "disposition": "Required final staged seal gate; receipt records execution"
+      },
+      {
+        "number": 47,
+        "item": "Commit hash",
+        "disposition": "Containing one commit; final response records exact hash"
+      },
+      {
+        "number": 48,
+        "item": "Commit parent",
+        "disposition": "defe93989efc6501b1a730b82e79e705884b269b"
+      },
+      {
+        "number": 49,
+        "item": "Final Git status",
+        "disposition": "Final response verifies after commit"
+      },
+      {
+        "number": 50,
+        "item": "Push",
+        "disposition": "None"
+      },
+      {
+        "number": 51,
+        "item": "Tag",
+        "disposition": "None"
+      },
+      {
+        "number": 52,
+        "item": "Linux/Ubuntu/WSL",
+        "disposition": "Not used"
+      },
+      {
+        "number": 53,
+        "item": "VM",
+        "disposition": "Not used"
+      },
+      {
+        "number": 54,
+        "item": "Provider accounts",
+        "disposition": "Not used"
+      },
+      {
+        "number": 55,
+        "item": "Duration",
+        "disposition": "Start 13:16 UTC; report capture 2026-09-29T13:40:55.575Z; final response records completion"
+      },
+      {
+        "number": 56,
+        "item": "Hard-stop compliance",
+        "disposition": "Three-hour hard deadline 16:16 UTC; seal enforces it"
+      },
+      {
+        "number": 57,
+        "item": "Exact Phase 3D handoff",
+        "disposition": "Containing 3C-R commit plus separately accepted 3A-R/3B-R on exact C3RB"
+      }
+    ]
+  },
+  "findings": [],
+  "claimChecks": [
+    "Exact C3RB/C3R/original3C and old/new helper/distribution/SBOM identities match source bindings.",
+    "31-area reuse matrix, 89 shipped pairs with 86 unchanged, 628 C3R members, 36 trust sources, 145 reviewed inputs and 583 fixtures match receipts.",
+    "One removed executable statement, 5256 identical remaining tokens, three Read-Identity call sites and all production/publication dominators match independent review.",
+    "69 exact response pairs, 55 negatives, 14 positives, 21 instrumented pairs, 19 mutations, two supplemental TOCTOU pairs, 13 consumer and 18 deadline rows match retained evidence.",
+    "2370 local native identity observations and 1580 opens are qualified by root rebinding; historical 2172/1448 are not conflated.",
+    "551 distinct current controls and 349/32/45 reused/rerun/new negatives match independent deduplication. Thirty-seven refreshed historical IDs map to 36 scenarios because one combined environment witness covers two IDs.",
+    "Conservative timeout/crash cleanupConfirmed:false, actual late-frame delivery scope, sampling/PID limitations, no hard RSS conclusion, and downstream distinct-volume limitation remain explicit.",
+    "No MO1306 runtime certification, old package/helper identity promotion, provider live execution, human-authenticity promotion or automatic release authorization is claimed.",
+    "All 57 requested register entries exist once and in order; commit hash, final status and duration are truthfully deferred to post-commit response.",
+    "Future seal checks are stated prospectively, not falsely reported as already complete. Report requires one commit with exact C3RB parent and separately accepted 3A-R/3B-R before Phase3D integration."
+  ],
+  "sourceReceipts": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/preservation.json",
+      "byteLength": 14907,
+      "sha256": "sha256:fe11a977275d0cbfb6b56e1914cd1870fc014b7b5678ab4d53699dc8583c7f48"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/workspace-verification.json",
+      "byteLength": 961,
+      "sha256": "sha256:99acc1c3c05278bad8140ff7ec47c9af2ee0162de95a8c84338f1de685e65f33"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/reuse-matrix.json",
+      "byteLength": 32849,
+      "sha256": "sha256:5447a06440685a4569e58e24b44d9187e5277b858915b652037253a008553f22"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/unchanged-trust-bindings.json",
+      "byteLength": 288339,
+      "sha256": "sha256:e382ad53340e4bb2945450e12fb5e38a63ff0c24c34180df362e32d1d72fca0b"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/package-binding.json",
+      "byteLength": 55983,
+      "sha256": "sha256:39aa180126d4b562c2fd82b24e0e34191db06315bb612b8d5ae4d98906899802"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/targeted-negative-corpus.json",
+      "byteLength": 290371,
+      "sha256": "sha256:9258b9a4f0e35d6ba7926f44f76a54309d006849d04672ae6f552d2ae961e919"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/execution-summary.json",
+      "byteLength": 2710,
+      "sha256": "sha256:75e3256c804b4abf1b63425bab4c6e688cd7d2ff092bef5ba31b6204e740e6c0"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/release-claims.json",
+      "byteLength": 20268,
+      "sha256": "sha256:4ac27482b5de22809a4df8679c900bbe126fc09f80e3d5ae30977132b48e8d07"
+    }
+  ],
+  "remainingSealGates": [
+    "Full final evidence inventory and exact staged-byte closure",
+    "Only authorized tools/evidence/report additions; unchanged C3RB production and original3C",
+    "Final git diff --check",
+    "Three-hour deadline enforcement",
+    "Exactly one commit with required subject and sole C3RB parent",
+    "Post-commit clean Git verification and actual commit hash/duration in final response"
+  ],
+  "productionChanges": 0,
+  "testsRerunByReview": 0,
+  "reportEditsByReview": 0,
+  "sealExecutionClaimed": false,
+  "commitExecutionClaimed": false
+}

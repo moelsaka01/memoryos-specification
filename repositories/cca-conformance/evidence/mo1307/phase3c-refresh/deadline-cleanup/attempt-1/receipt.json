@@ -1,0 +1,244 @@
+{
+  "kind": "MO1307Phase3CRefreshDeadlineEnvironmentReceipt",
+  "result": "FAIL",
+  "failure": {
+    "code": "MO1307_INPUT",
+    "message": "MO1307_INPUT",
+    "stack": "ReadinessError: MO1307_INPUT\n    at fail (file:///C:/Users/melsa/Documents/Codex/r3c/repositories/memoryos-readiness/src/errors.mjs:21:61)\n    at reject (file:///C:/Users/melsa/Documents/Codex/r3c/repositories/memoryos-readiness/src/helper-protocol.mjs:21:35)\n    at unframe (file:///C:/Users/melsa/Documents/Codex/r3c/repositories/memoryos-readiness/src/helper-protocol.mjs:100:29)\n    at decodeHelperResponse (file:///C:/Users/melsa/Documents/Codex/r3c/repositories/memoryos-readiness/src/helper-protocol.mjs:175:86)\n    at native (file:///C:/Users/melsa/Documents/Codex/r3c/repositories/cca-conformance/tools/mo1307-phase3c-refresh/deadline-cleanup.mjs:133:27)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async test (file:///C:/Users/melsa/Documents/Codex/r3c/repositories/cca-conformance/tools/mo1307-phase3c-refresh/deadline-cleanup.mjs:111:89)\n    at async file:///C:/Users/melsa/Documents/Codex/r3c/repositories/cca-conformance/tools/mo1307-phase3c-refresh/deadline-cleanup.mjs:148:5"
+  },
+  "cases": [
+    {
+      "id": "fixed-native-timely",
+      "layer": "ACTUAL_FIXED_HELPER",
+      "result": "PASS",
+      "elapsedMs": 2942.1537,
+      "detail": {
+        "accepted": true,
+        "errorCode": null,
+        "mappedPublicExit": null,
+        "lateNativeOK": false,
+        "noSecretEcho": true,
+        "exactFixedLaunch": true,
+        "poisonedKeys": [],
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 30157.2126,
+          "helpers": 1,
+          "workers": 0,
+          "helperUsedMs": 2931.8053,
+          "activeRole": null,
+          "cleanupConfirmed": true,
+          "publication": null,
+          "terminalCode": null,
+          "terminalAt": null,
+          "cleanupDeadline": null,
+          "events": [
+            {
+              "type": "start",
+              "at": 164.2969,
+              "role": "helper",
+              "deadline": 5164.0908,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 197.1264,
+              "role": "helper",
+              "pid": 17532,
+              "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+            },
+            {
+              "type": "quiescent",
+              "at": 3095.9122,
+              "role": "helper",
+              "ordinal": 1
+            }
+          ]
+        },
+        "observation": {
+          "name": "fixed-native-timely",
+          "pid": 17532,
+          "startedAt": 196.4848,
+          "closedAt": 3084.1516,
+          "exitCode": 0,
+          "stdoutBytes": 867,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 3018.2051
+        }
+      }
+    },
+    {
+      "id": "timeout-exact-mapping",
+      "layer": "ACTUAL_FIXED_HELPER_ENGINEERING_EOF_DELAY",
+      "result": "PASS",
+      "elapsedMs": 5066.0061000000005,
+      "detail": {
+        "accepted": false,
+        "errorCode": "MO1307_TIMEOUT",
+        "mappedPublicExit": 29,
+        "lateNativeOK": false,
+        "noSecretEcho": true,
+        "exactFixedLaunch": true,
+        "poisonedKeys": [],
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 33104.2606,
+          "helpers": 1,
+          "workers": 0,
+          "helperUsedMs": 0,
+          "activeRole": "helper",
+          "cleanupConfirmed": false,
+          "publication": null,
+          "terminalCode": "MO1307_TIMEOUT",
+          "terminalAt": 8128.5701,
+          "cleanupDeadline": 10128.5701,
+          "events": [
+            {
+              "type": "start",
+              "at": 3112.135,
+              "role": "helper",
+              "deadline": 8112.0868,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 3137.1223,
+              "role": "helper",
+              "pid": 2448,
+              "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+            },
+            {
+              "type": "terminal",
+              "at": 8128.6398,
+              "code": "MO1307_TIMEOUT",
+              "stage": "ACQUISITION"
+            },
+            {
+              "type": "cleanup",
+              "at": 8169.5474,
+              "role": "helper",
+              "confirmed": false
+            }
+          ]
+        },
+        "observation": {
+          "name": "timeout-exact-mapping",
+          "pid": 2448,
+          "startedAt": 3136.9799,
+          "closedAt": 8159.3431,
+          "exitCode": null,
+          "stdoutBytes": 0,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null
+        }
+      }
+    },
+    {
+      "id": "late-native-success-refused",
+      "layer": "ACTUAL_FIXED_HELPER_ENGINEERING_EOF_SHUTDOWN_DELAY",
+      "result": "FAIL",
+      "elapsedMs": 6841.806100000001,
+      "error": {
+        "code": "MO1307_INPUT",
+        "message": "MO1307_INPUT",
+        "stack": "ReadinessError: MO1307_INPUT\n    at fail (file:///C:/Users/melsa/Documents/Codex/r3c/repositories/memoryos-readiness/src/errors.mjs:21:61)\n    at reject (file:///C:/Users/melsa/Documents/Codex/r3c/repositories/memoryos-readiness/src/helper-protocol.mjs:21:35)\n    at unframe (file:///C:/Users/melsa/Documents/Codex/r3c/repositories/memoryos-readiness/src/helper-protocol.mjs:100:29)\n    at decodeHelperResponse (file:///C:/Users/melsa/Documents/Codex/r3c/repositories/memoryos-readiness/src/helper-protocol.mjs:175:86)\n    at native (file:///C:/Users/melsa/Documents/Codex/r3c/repositories/cca-conformance/tools/mo1307-phase3c-refresh/deadline-cleanup.mjs:133:27)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async test (file:///C:/Users/melsa/Documents/Codex/r3c/repositories/cca-conformance/tools/mo1307-phase3c-refresh/deadline-cleanup.mjs:111:89)\n    at async file:///C:/Users/melsa/Documents/Codex/r3c/repositories/cca-conformance/tools/mo1307-phase3c-refresh/deadline-cleanup.mjs:148:5"
+      }
+    }
+  ],
+  "invocations": [
+    {
+      "name": "fixed-native-timely",
+      "pid": 17532,
+      "startedAt": 196.4848,
+      "closedAt": 3084.1516,
+      "exitCode": 0,
+      "stdoutBytes": 867,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 3018.2051
+    },
+    {
+      "name": "timeout-exact-mapping",
+      "pid": 2448,
+      "startedAt": 3136.9799,
+      "closedAt": 8159.3431,
+      "exitCode": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null
+    },
+    {
+      "name": "late-native-success-refused",
+      "pid": 18744,
+      "startedAt": 8193.4353,
+      "closedAt": 15013.8997,
+      "exitCode": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": 13182.1938
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\helper-transport.mjs",
+      "byteLength": 6250,
+      "sha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+      "relative": "src/helper-transport.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+      "relative": "src/helper-protocol.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\runtime.mjs",
+      "byteLength": 16904,
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+      "relative": "src/runtime.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029",
+      "relative": "src/windows-paths.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\cli-args.mjs",
+      "byteLength": 4280,
+      "sha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7",
+      "relative": "src/cli-args.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\errors.mjs",
+      "byteLength": 1823,
+      "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac",
+      "relative": "src/errors.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\constants.mjs",
+      "byteLength": 16791,
+      "sha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9",
+      "relative": "src/constants.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+      "byteLength": 30210,
+      "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8",
+      "relative": "helpers/windows-inspect.ps1"
+    }
+  ],
+  "productionChanged": false,
+  "runtime": {
+    "version": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "limits": "Security boundary controls only; no MO1306 runtime promotion. Timeout/crash without valid native frame leave conservative product cleanupConfirmed=false. External OS observer and full stream/process closures establish actual targeted no-survivor boundary."
+}

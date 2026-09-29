@@ -1,0 +1,188 @@
+// Security evidence binding only: never installs, packages, launches product code, or changes historical worktrees.
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+
+const root = path.resolve(fileURLToPath(new URL('../../../../', import.meta.url)));
+const old = 'C:/Users/melsa/Documents/Codex/cca-mo1307-3c';
+assert.equal(root.toLowerCase(), 'c:\\users\\melsa\\documents\\codex\\r3c');
+const B2 = '976d4a04d75dadc02e30215dd5a8ddeaa2352df8';
+const C3R = '58c98b7eb0aa2d07bab78753ce66b564066aafeb';
+const C3RB = 'defe93989efc6501b1a730b82e79e705884b269b';
+const OLD3C = '191f34748141afca2027e8e9db0c6f1b6a9c84c0';
+const pkgBase = 'repositories/memoryos-readiness/';
+const oldEvidence = 'repositories/cca-conformance/evidence/mo1307/phase3c/';
+const correction = 'repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/';
+const dest = path.join(root, 'repositories/cca-conformance/evidence/mo1307/phase3c-refresh');
+const read = (base, rel) => fs.readFileSync(path.join(base, rel));
+const json = (base, rel) => JSON.parse(read(base, rel));
+const sha = (bytes, algorithm = 'sha256') => createHash(algorithm).update(bytes).digest('hex');
+const identity = (base, rel) => {const bytes = read(base, rel); return {path:rel, byteLength:bytes.length, sha256:'sha256:'+sha(bytes)};};
+const git = (base, ...args) => execFileSync('git', args, {cwd:base, encoding:'utf8', maxBuffer:64*1024*1024, windowsHide:true}).trim();
+const gitBlobCache = new Map();
+const cacheKey = (base, commit, rel) => base+'|'+commit+'|'+rel;
+function prefetchGit(base, commit, rels) {
+ const raw=execFileSync('git',['cat-file','--batch'],{cwd:base,input:rels.map(rel=>commit+':'+rel+'\n').join(''),maxBuffer:256*1024*1024,windowsHide:true});
+ let cursor=0;
+ for(const rel of rels){const end=raw.indexOf(10,cursor),header=raw.subarray(cursor,end).toString();const match=/^[0-9a-f]+ blob ([0-9]+)$/.exec(header);assert.ok(match,header);const length=Number(match[1]);const start=end+1;gitBlobCache.set(cacheKey(base,commit,rel),raw.subarray(start,start+length));assert.equal(raw[start+length],10);cursor=start+length+1;}
+ assert.equal(cursor,raw.length);
+}
+const gitBytes = (base, commit, rel) => gitBlobCache.get(cacheKey(base,commit,rel)) ?? execFileSync('git', ['show', commit+':'+rel], {cwd:base, maxBuffer:64*1024*1024, windowsHide:true});
+const save = (name, value) => fs.writeFileSync(path.join(dest,name), JSON.stringify(value,null,2)+'\n');
+const executionTool=identity(root,'repositories/cca-conformance/tools/mo1307-phase3c-refresh/reuse-binding.mjs');
+const executionRuntime={executable:process.execPath,version:process.version,sha256:'sha256:'+sha(fs.readFileSync(process.execPath)),scope:'Source hashing/Git comparisons only; no product code execution'};
+const provenance = {executionTool,executionRuntime,old3C:OLD3C, oldCandidate:B2, C3R, C3RB, classificationIsDependencyEligibility:true, runtimeCertification:false, packageCertification:false};
+assert.equal(git(old,'rev-parse','HEAD'),OLD3C);
+assert.equal(git(old,'status','--porcelain=v1','--untracked-files=all'),'');
+assert.equal(git(root,'rev-parse',C3RB+'^'),C3R);
+assert.equal(git(root,'rev-parse',C3R+'^'),B2);
+assert.equal(git(old,'rev-parse',OLD3C+'^'),B2);
+assert.equal(git(root,'diff','--name-only',C3R,C3RB,'--',pkgBase),'');
+fs.mkdirSync(dest,{recursive:true});
+
+// Exhaustive shipped source membership comparison, not archive or installed artifact certification.
+const pkg = json(root,pkgBase+'package.json');
+assert.deepEqual(pkg.files,json(old,pkgBase+'package.json').files);
+assert.equal(pkg.files.length,89);
+assert.deepEqual(pkg.dependencies,{});
+prefetchGit(old,OLD3C,pkg.files.map(f=>pkgBase+f));
+prefetchGit(root,C3RB,pkg.files.map(f=>pkgBase+f));
+const members = pkg.files.map(f => {
+ const rel=pkgBase+f, a=read(old,rel), b=read(root,rel);
+ assert.deepEqual(a,gitBytes(old,OLD3C,rel)); assert.deepEqual(b,gitBytes(root,C3RB,rel));
+ return {path:rel,old:identity(old,rel),current:identity(root,rel),equal:a.equals(b)};
+});
+const changed=members.filter(x=>!x.equal);
+assert.deepEqual(changed.map(x=>x.path),['distribution-manifest.json','helpers/windows-inspect.ps1','sbom.spdx.json'].map(x=>pkgBase+x));
+const distribution=json(root,pkgBase+'distribution-manifest.json');
+const distributionRows=distribution.files.map(row=>{const actual=identity(root,pkgBase+row.path);assert.equal(row.byteLength,actual.byteLength);assert.equal(row.sha256,actual.sha256);return {...row,actualMatches:true};});
+assert.equal(distributionRows.length,88);
+const sbom=json(root,pkgBase+'sbom.spdx.json');
+const helperBytes=read(root,pkgBase+'helpers/windows-inspect.ps1');
+const helperSbom=sbom.files.filter(x=>x.fileName==='helpers/windows-inspect.ps1');assert.equal(helperSbom.length,1);
+for(const sum of helperSbom[0].checksums){assert.equal(sum.checksumValue,sha(helperBytes,sum.algorithm.toLowerCase()));}
+const transport=read(root,pkgBase+'src/helper-transport.mjs').toString();
+assert.ok(transport.includes("new URL('../helpers/windows-inspect.ps1', import.meta.url)"));
+assert.ok(transport.includes("powershell: 'C:\\\\Windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\powershell.exe'"));
+const c3rBinding=json(root,correction+'binding.json');
+assert.equal(c3rBinding.implementation.commit,C3R);
+prefetchGit(root,C3R,c3rBinding.members.map(row=>row.path));
+const boundRows=c3rBinding.members.map(row=>{const actual=identity(root,row.path);assert.equal(actual.byteLength,row.byteLength);assert.equal(actual.sha256,row.sha256);assert.deepEqual(read(root,row.path),gitBytes(root,C3R,row.path));return {...row,verified:true};});
+const packageBinding={kind:'MO1307Phase3CRefreshSecurityPackageBinding',result:'PASS',...provenance,scope:'Security audit applies to exact source helper selected by unchanged fixed transport; no archive assembly, installation, artifact tamper or supply certification.',C3RTree:git(root,'rev-parse',C3R+'^{tree}'),C3RBTree:git(root,'rev-parse',C3RB+'^{tree}'),binding:identity(root,correction+'binding.json'),boundC3RMembersVerified:boundRows.length,package:identity(root,pkgBase+'package.json'),allowlistMembers:89,unchangedMembers:86,changedMembers:changed,allPackageMembers:members,helperAllowlistRow:pkg.files.indexOf('helpers/windows-inspect.ps1'),helperDistributionRow:distributionRows.find(x=>x.path==='helpers/windows-inspect.ps1'),sbomDistributionRow:distributionRows.find(x=>x.path==='sbom.spdx.json'),helperSbomRow:helperSbom[0],distributionRowsVerified:distributionRows.length,launchSource:identity(root,pkgBase+'src/helper-transport.mjs'),runtimeHelperPath:path.join(root,pkgBase,'helpers/windows-inspect.ps1'),runtimeHelperIdentity:identity(root,pkgBase+'helpers/windows-inspect.ps1'),callerScriptSelection:false,oldArtifactIdentityIsCurrent:false,sbomNamespace:sbom.documentNamespace,sbomVerificationCodes:sbom.packages.map(x=>({SPDXID:x.SPDXID,packageVerificationCode:x.packageVerificationCode})),productionChangedByThisTool:false};
+save('package-binding.json',packageBinding);
+
+// Original inner proof dependencies include every shipped member except the changed native helper and its metadata.
+const sourceRows=json(old,oldEvidence+'trust-graph/source-bindings.json');
+const reviewedRows=json(old,oldEvidence+'trust-graph/reviewed-input-bindings.json');
+const verifyRows=(rows,origin)=>rows.map(row=>{
+ const prior=identity(old,row.path); assert.equal(prior.byteLength,row.byteLength);assert.equal(prior.sha256,row.sha256);
+ if(!fs.existsSync(path.join(root,row.path))){assert.ok(row.path.startsWith('repositories/cca-conformance/tools/mo1307-phase3c/'));return {...row,origin,location:'OLD3C_READ_ONLY',classification:'HISTORICAL_ENGINEERING_TOOL_BOUND_IN_ORIGINAL_COMMIT'};}
+ const current=identity(root,row.path);assert.equal(current.byteLength,row.byteLength);assert.equal(current.sha256,row.sha256);return {...row,origin,location:'CURRENT_AND_OLD3C',classification:'UNCHANGED_REUSABLE'};
+});
+const boundSource=verifyRows(sourceRows,'trust-graph/source-bindings.json');
+const boundInputs=verifyRows(reviewedRows,'trust-graph/reviewed-input-bindings.json');
+const fixturePaths=git(old,'ls-tree','-r','--name-only',OLD3C,'--','repositories/cca-conformance/fixtures/mo1307').split('\n').filter(Boolean);
+const fixtures=fixturePaths.map(rel=>{const a=read(old,rel),b=read(root,rel);assert.deepEqual(a,b);return {...identity(root,rel),equal:true};});
+const proofPaths=['docs/mo1307-phase3c-security-certification.md',...['certification-receipt.json','attack-surface-inventory.json','negative-corpus.json','root-source-review.md','trust-graph/receipt.json','trust-graph/review.md','trust-graph/source-bindings.json','trust-graph/reviewed-input-bindings.json','trust-graph/integration-review.json','trust-graph/integration-review-addendum.json','governance/accepted-corpus.json','governance/report.md','governance/release-effect-inventory.json','governance/mo1306-preserved-result.json','governance/mo1306-text-projection.json','runtime-boundary/source-review.json','runtime-boundary/run-1/corpus.partial.json','runtime-boundary/run-2/receipt.json','runtime-boundary/supplement.json','runtime-boundary/native-identity.json','runtime-boundary/volume-identity.json','runtime-boundary/native-wrong-volume.json','package-source-boundary.json','supplementary-witnesses.json','safe-root-environment-determinism.json','output-construction-boundaries.json','final-validation.json'].map(x=>oldEvidence+x)];
+prefetchGit(old,OLD3C,proofPaths);
+const historicalProofs=proofPaths.map(rel=>{const data=read(old,rel);assert.deepEqual(data,gitBytes(old,OLD3C,rel));return {...identity(old,rel),sourceRoot:old,commit:OLD3C,gitBlobEqual:true};});
+const engineeringPaths=git(old,'ls-tree','-r','--name-only',OLD3C,'--','repositories/cca-conformance/tools/mo1307-phase3c').split('\n').filter(Boolean);
+const tools=engineeringPaths.map(rel=>({...identity(old,rel),sourceRoot:old,commit:OLD3C}));
+const allJs=members.filter(x=>x.path.endsWith('.mjs')); assert.ok(allJs.every(x=>x.equal));
+const indexSource=read(root,pkgBase+'src/index.mjs').toString();
+assert.ok(indexSource.includes('kind: \'api\''));assert.ok(indexSource.includes('supervisor.runWorker'));
+assert.ok(!indexSource.includes('createHelperTransport'));
+const cliSource=read(root,pkgBase+'src/cli.mjs').toString();
+assert.ok(cliSource.indexOf('const launch = parseCliArgs(argv);')<cliSource.indexOf('const { exchange } = createHelperTransport(supervisor);'));
+const unchangedTrust={kind:'MO1307Phase3CRefreshUnchangedTrustBindings',result:'PASS',...provenance,sourceRoot:old,sourceBindings:boundSource,reviewedInputBindings:boundInputs,sourceBindingCount:boundSource.length,reviewedInputBindingCount:boundInputs.length,allShippedJavaScriptUnchanged:allJs.length,unchangedShippedMembers:members.filter(x=>x.equal),fixtureCount:fixtures.length,fixtures,historicalProofs,originalEngineeringTools:tools,dependencyArgument:[
+ 'All shipped JavaScript, schemas, constants, contract definitions and original MO1307 fixtures are exact old3C bytes.',
+ 'Trust, grant, raw-lineage semantics, DAG, history, qualification, provider, human decision, tag, result and proof cases call pure assessInWorker/verifiers or public byte APIs. The public byte API selects kind api and invokes the fixed worker; it does not acquire files through the native helper.',
+ 'Index imports runtime; fixed worker entry/policy/import closure and publication/helper-protocol defensive modules are all byte-identical. No byte API path instantiates helper transport. Native acquisition is separately refreshed.',
+ 'Original unsupported CLI dispatch rows refuse in parseCliArgs before createHelperTransport and before orchestrateCli. Unchanged JavaScript module loading has no top-level native helper invocation.',
+ 'Synthetic worker/publication/identity doubles establish their unchanged JS admission contracts only. They are never relabeled as fresh native helper execution.',
+ 'Fixtures may contain old candidate/package identifiers as intentional test data. Their unchanged semantic tests remain valid inner proofs; they do not assert that the old outer package identity describes C3RB.',
+ 'Old report, receipts, tools and selected raw evidence are exact original commit blobs. Their original B2 baseline fields are immutable historical provenance, refreshed through this explicit outer C3RB binding.'
+],outerBinding:{classification:'INVALIDATED',subject:'Old B2 helper, distribution, SBOM, package and candidate identities as CURRENT C3RB audit authority',historicalValidity:'PRESERVED',replacement:'package-binding.json plus current refresh certification receipt',innerProofReuse:'UNCHANGED_REUSABLE after byte/dependency checks'}};
+save('unchanged-trust-bindings.json',unchangedTrust);
+
+const corpus=json(old,oldEvidence+'negative-corpus.json');assert.equal(corpus.cases.length,496);assert.equal(new Set(corpus.cases.map(x=>x.id)).size,496);
+const affected=x=>x.layer==='NATIVE_WINDOWS_HELPER'||x.id==='runtime-boundary:actual-fixed-transport-poisoned-parent';
+const controls=corpus.cases.map(x=>({id:x.id,group:x.group,layer:x.layer,classification:affected(x)?'TARGETED_REFRESH_REQUIRED':'UNCHANGED_REUSABLE',negative:x.expected.accept===false,originalExpected:x.expected,originalActual:x.actual,originalResult:x.result,originalSourceReceipt:x.sourceReceipt,originalSourceBinding:identity(old,oldEvidence+x.sourceReceipt),dependencies:affected(x)?['package-binding.json#runtimeHelperIdentity','unchanged-trust-bindings.json#unchangedShippedMembers']:['unchanged-trust-bindings.json#unchangedShippedMembers','unchanged-trust-bindings.json#fixtures'],reason:affected(x)?'Actual native process execution depends on changed helper bytes; original old helper outcome alone cannot certify C3RB.':'The exercised JavaScript/worker/semantic/defensive function and inputs are byte-identical; no changed native helper observation is used by this control.'}));
+const count=classification=>{const a=controls.filter(x=>x.classification===classification);return {controls:a.length,negativeControls:a.filter(x=>x.negative).length,acceptedOrBehavioralControls:a.filter(x=>!x.negative).length};};
+const summary={originalControls:496,originalNegativeControls:381,originalAcceptedOrBehavioralControls:115,UNCHANGED_REUSABLE:count('UNCHANGED_REUSABLE'),TARGETED_REFRESH_REQUIRED:count('TARGETED_REFRESH_REQUIRED'),INVALIDATED:count('INVALIDATED')};
+assert.equal(summary.UNCHANGED_REUSABLE.controls,470);assert.equal(summary.UNCHANGED_REUSABLE.negativeControls,358);assert.equal(summary.TARGETED_REFRESH_REQUIRED.controls,26);assert.equal(summary.TARGETED_REFRESH_REQUIRED.negativeControls,23);
+save('old-control-classification.json',{kind:'MO1307Phase3CRefreshOriginalControlClassification',result:'PASS',...provenance,originalCorpus:identity(old,oldEvidence+'negative-corpus.json'),summary,countSemantics:'Dependency reuse eligibility, not an assertion that required reruns have completed. Final targeted corpus must map every refreshed original ID to actual evidence and distinguish reused/rerun/new unique IDs. Accepted behavioral controls are never reported as negative tests. Representative reruns of reusable controls change final execution accounting without changing byte-based reuse eligibility.',controls});
+
+const U='UNCHANGED_REUSABLE',T='TARGETED_REFRESH_REQUIRED',I='INVALIDATED';
+const area=(name,classification,dependencies,evidence,reason)=>({area:name,classification,dependencies:dependencies.map(x=>pkgBase+x),originalEvidence:evidence.map(x=>oldEvidence+x),reason});
+const areas=[
+ area('Readiness precedence and complete findings',U,['src/readiness-core.mjs','src/readiness-result.mjs','src/integration.mjs'],['governance/accepted-corpus.json'],'Same semantic closure, fixtures and precedence matrix; no native helper dependency.'),
+ area('Trust-root semantics',U,['src/api-input.mjs','src/foundation.mjs','src/evidence-verifier.mjs'],['trust-graph/receipt.json'],'Operator pin is unchanged separate byte input; pure/public API authority proof excludes acquisition.'),
+ area('Authority grants',U,['src/evidence-verifier.mjs','src/schema.mjs','src/schema-data.mjs'],['trust-graph/receipt.json'],'Exact type/scope/assumption/dependency authority checks and fixtures are unchanged.'),
+ area('Raw-source lineage outside helper acquisition',U,['src/foundation.mjs','src/evidence-verifier.mjs','src/integration.mjs'],['trust-graph/receipt.json'],'All eight raw lineage mutation inputs and verifier bytes match; native delivery of bytes is refreshed separately.'),
+ area('Candidate, dependency applicability and reuse',U,['src/foundation.mjs','src/evidence-verifier.mjs'],['trust-graph/receipt.json'],'Synthetic candidate/dependency fixtures test unchanged semantics; fixture candidate identity is not current package authority.'),
+ area('DAG derivation, closure, cycles and limits',U,['src/evidence-graph.mjs','src/evidence-verifier.mjs'],['trust-graph/receipt.json'],'Independent graph oracle, data and production graph bytes unchanged.'),
+ area('History',U,['src/evidence-history.mjs','src/evidence-verifier.mjs'],['governance/accepted-corpus.json'],'Pinned history, raw source inputs and predicates unchanged.'),
+ area('Qualifications and retained MO1306 disclosures',U,['src/evidence-history.mjs','src/readiness-core.mjs','src/projections.mjs'],['governance/accepted-corpus.json','governance/mo1306-preserved-result.json'],'Seven codes, ten disclosures and 303620-byte result retain identical semantic dependency closure.'),
+ area('Provider axes and promotion refusal',U,['src/readiness-core.mjs','src/evidence-history.mjs'],['governance/accepted-corpus.json'],'Implementation/validation/execution/support remain independent; no provider execution claim.'),
+ area('Human decisions',U,['src/foundation.mjs','src/integration.mjs','src/projections.mjs'],['governance/accepted-corpus.json'],'Decision projection and NOT_VERIFIED_BY_MEMORYOS remain unchanged; no authentication promotion.'),
+ area('Tag governance',U,['src/readiness-core.mjs','src/schema-data.mjs'],['governance/accepted-corpus.json'],'Supplied tag observations remain data; no native/Git action dependency.'),
+ area('Result, proof and recomputation',U,['src/integration.mjs','src/readiness-result.mjs','src/evidence-verifier.mjs'],['trust-graph/receipt.json'],'Full input/result recomputation and proof serializer bytes are unchanged.'),
+ area('CLI dispatch and launch refusal',U,['bin/memoryos-readiness.mjs','src/cli-args.mjs','src/cli.mjs'],['root-corpus-results.json','dispatch-native-diagnostic.json'],'Unsupported dispatch fails before helper transport construction; frozen launch validation is unchanged.'),
+ area('Canonical parser, schema and prototype defenses',U,['src/canonical.mjs','src/schema.mjs','src/schema-data.mjs','src/api-input.mjs'],['root-corpus-results.json','root-source-review.md'],'Unchanged parser/prototype surfaces and finite limits; helper parser observations refreshed independently.'),
+ area('Error catalog, precedence, result/output bounds',U,['src/errors.mjs','src/foundation.mjs','src/output.mjs','src/readiness-result.mjs'],['root-corpus-results.json','output-construction-boundaries.json'],'Exact JavaScript mappings and limits; no helper-native result inferred.'),
+ area('Worker policy and worker message defenses',U,['src/runtime.mjs','src/worker-entry.mjs','src/worker-policy.mjs'],['runtime-boundary/supplement.json','runtime-boundary/run-1/corpus.partial.json'],'Worker code, imports and defensive doubles unchanged. Helper timing interaction belongs to refresh.'),
+ area('Publication capability and irreversible finalization state machine',U,['src/publication.mjs','src/helper-protocol.mjs','src/runtime.mjs'],['runtime-boundary/run-1/corpus.partial.json'],'Synthetic native inspection seams and finite rename state logic unchanged; actual native inspection refreshed.'),
+ area('Native path validation and final path',T,['helpers/windows-inspect.ps1','src/windows-paths.mjs','src/acquisition.mjs'],['runtime-boundary/run-2/receipt.json','runtime-boundary/native-wrong-volume.json'],'Changed Read-Identity validation structure requires dominance, native aliases/links/type and final-path refresh.'),
+ area('Native freshness and TOCTOU',T,['helpers/windows-inspect.ps1','src/acquisition.mjs'],['runtime-boundary/native-identity.json','runtime-boundary/volume-identity.json'],'Fresh initial/read/post-read handle observations cannot be inferred from unchanged outer JavaScript.'),
+ area('Native helper identity authority and alternate flows',T,['helpers/windows-inspect.ps1'],['runtime-boundary/source-review.json'],'Every production Read-Identity caller and checked-chain expected path must be re-established.'),
+ area('Helper protocol/rejection behavior',T,['helpers/windows-inspect.ps1','src/helper-protocol.mjs'],['runtime-boundary/run-2/receipt.json','runtime-boundary/run-1/corpus.partial.json'],'Inner JS wire validation is reusable; exact corrected native response/refusal and alternate entry behavior require execution.'),
+ area('Helper deadlines, late response and cleanup interaction',T,['helpers/windows-inspect.ps1','src/helper-transport.mjs','src/runtime.mjs'],['runtime-boundary/source-review.json','runtime-boundary/supplement.json'],'Unchanged deadline code does not by itself prove corrected helper process/pipe/owned-console behavior.'),
+ area('Request-local metadata and helper resource behavior',T,['helpers/windows-inspect.ps1','src/constants.mjs'],['runtime-boundary/source-review.json'],'Review no observation cache/global table and exercise request limits; full runtime/RSS certification excluded.'),
+ area('PowerShell launch and environment around corrected script',T,['helpers/windows-inspect.ps1','src/helper-transport.mjs','src/cli-args.mjs'],['runtime-boundary/source-review.json','runtime-boundary/supplement.json'],'Fixed launch source reusable but new script requires binding and representative substitution/poison witnesses.'),
+ area('Network authority',T,['helpers/windows-inspect.ps1','src/worker-policy.mjs'],['runtime-boundary/source-review.json','governance/release-effect-inventory.json'],'Unchanged worker denial evidence reused; changed helper must be searched/reviewed for new primitives and imports.'),
+ area('Secrets and logs',T,['helpers/windows-inspect.ps1','src/errors.mjs','src/output.mjs'],['runtime-boundary/source-review.json','runtime-boundary/run-2/receipt.json'],'Fixed JS diagnostics reusable; corrected helper checked for instrumentation/log residue and sentinel disclosure.'),
+ area('Package-source/helper runtime binding',T,['package.json','distribution-manifest.json','sbom.spdx.json','helpers/windows-inspect.ps1','src/helper-transport.mjs'],['package-source-boundary.json'],'Current allowlist row, distribution row, SBOM checksum and fixed runtime source must all match corrected helper.'),
+ area('Release authority boundary',U,['src/cli.mjs','src/readiness-core.mjs','src/foundation.mjs','src/projections.mjs'],['governance/release-effect-inventory.json','governance/accepted-corpus.json'],'No decision/tag/readiness path grants release action; unchanged JS closure; helper delta grants no new native capability.'),
+ area('Release claims and MO1306 runtime disposition',T,['README.md','helpers/README.md'],['governance/report.md'],'Corrected smoke must remain correction-only; old outer artifact/helper identities cannot be promoted; 3A-R/3B-R remain separate.'),
+ {area:'Old candidate/helper/distribution/SBOM identities as authority for current C3RB',classification:I,dependencies:changed.map(x=>x.path),originalEvidence:[oldEvidence+'certification-receipt.json',oldEvidence+'package-source-boundary.json'],reason:'The old identities are not current. Historical certification remains valid for B2. New outer binding replaces identity assertion while exact unaffected inner proofs are reused.'},
+ {area:'Original independent review and historical preservation',classification:U,dependencies:[],originalEvidence:[oldEvidence+'trust-graph/integration-review.json',oldEvidence+'trust-graph/integration-review-addendum.json',oldEvidence+'final-validation.json'],reason:'Retained as historical original-commit proof and limitations only. A new separate read-only review is mandatory for the changed helper and final refresh evidence.'}
+];
+const attack=json(old,oldEvidence+'attack-surface-inventory.json');
+const affectedSurfaces=new Set([5,7,16,17,20,22]);
+const surfaces=attack.surfaces.map(x=>({...x,classification:affectedSurfaces.has(x.id)?T:U,scope:affectedSurfaces.has(x.id)?'Native helper acquisition, observation or identity outer binding refresh; unchanged semantic subproof retained.':'Unchanged production dependency closure; helper-adjacent global claims independently refreshed.'}));
+const supplementary=json(old,oldEvidence+'supplementary-witnesses.json').entries.map(x=>({...x,classification:['runtime-boundary/native-identity.json','runtime-boundary/native-wrong-volume.json'].includes(x.receipt)?T:U,countedAsOriginalPrimaryControl:false,reason:x.receipt.includes('native-wrong-volume')?'Historical actual distinct-volume refusal remains, downstream native volumeSerial branch remains NOT_ESTABLISHED. Current junction/reparse/native-volume observations may refresh the affected policy without claiming a new downstream branch execution.':x.receipt.includes('native-identity')?'Actual changed helper observation must be refreshed.':'Unchanged byte/API/JavaScript or output-construction dependency; outer original candidate annotation is historical.'}));
+save('reuse-matrix.json',{kind:'MO1307Phase3CRefreshReuseMatrix',result:'PASS_CLASSIFIED',...provenance,summary,classificationRules:{UNCHANGED_REUSABLE:'Exact exercised dependency bytes/fixtures match and changed helper is not executed by inner proof.',TARGETED_REFRESH_REQUIRED:'Changed native helper is a direct/transitive exercised dependency or its current outer identity is required.',INVALIDATED:'Only applicability of an old exact identity assertion to C3RB is invalidated; no historical outcome is erased.'},areas,attackSurfaces:surfaces,supplementary,executionAccounting:'old-control-classification.json contains each original selected ID exactly once; final corpus owns rerun/new counts and target witness links. Supplementary receipts remain separate units, never silently added to primary counts.',limitations:['MO1306 correction smoke exists; runtime certification remains pending separate 3A-R.','No full artifact/supply certification; separate 3B-R required.','Native downstream volumeSerial branch remains unestablished; private immutable roots/trusted host assumptions remain.','Original failed attempts, unauthenticated human decisions, hosted/live provider limitations and admitted rename availability remain.']});
+
+// Current claim review binds exact documents and explicit support passages; historical statements retain historical scope.
+const claimDocuments=['docs/mo1307-phase3a-readset-correction.md','docs/mo1307-phase2d-integration.md',pkgBase+'README.md',pkgBase+'helpers/README.md',correction+'certification-impact.json',correction+'binding.json',correction+'binding-verification.json'];
+const claimEvidence=claimDocuments.map(rel=>({...identity(root,rel),matchingLines:read(root,rel).toString().split(/\r?\n/).map((text,i)=>({line:i+1,text})).filter(x=>/certif|C3R|C3RB|native completion|NOT_ESTABLISHED|NOT_VERIFIED_BY_MEMORYOS|hosted|live|authorize|authorization|correct.*smoke|correction smoke/i.test(x.text)).filter(x=>x.text.length<700)}));
+const report=read(root,'docs/mo1307-phase3a-readset-correction.md').toString();
+assert.ok(report.includes('validation, not Phase 3A recertification'));
+assert.ok(report.includes('old B2 package'));assert.ok(report.includes('old B2 bytes'));
+assert.ok(report.includes('do not resume Phase 3A'));assert.ok(report.includes('Do not start 3D until those accepted inputs'));
+const impact=json(root,correction+'certification-impact.json');assert.equal(impact.phase3C.acceptedCommit,OLD3C);assert.equal(impact.phase3C.classification,T);assert.equal(impact.phase3B.classification,T);assert.equal(c3rBinding.certification,false);
+const readme=read(root,pkgBase+'README.md').toString();
+for(const phrase of ['NOT_VERIFIED_BY_MEMORYOS','GitHub hosted execution is not certified','does not authorize a tag or claim Phase 3 certification'])assert.ok(readme.includes(phrase));
+const oldRelease=json(old,oldEvidence+'governance/release-effect-inventory.json');
+const codeDeltas=members.filter(x=>!x.equal&&/\.(mjs|ps1)$/.test(x.path));assert.equal(codeDeltas.length,1);
+const oldHelper=read(old,pkgBase+'helpers/windows-inspect.ps1').toString();const newHelper=helperBytes.toString();
+const oldExec=oldHelper.split(/\r?\n/).filter(x=>x.trim()&&!x.trim().startsWith('#'));
+const newExec=newHelper.split(/\r?\n/).filter(x=>x.trim()&&!x.trim().startsWith('#'));
+assert.deepEqual(oldExec.filter(x=>x.trim()!=='Assert-Root $observed'),newExec);
+const claimRows=[
+ {claim:'Phase 3A certified because correction smoke passed',status:'REFUTED',basis:'Correction report explicitly denies recertification; impact.phase3A requires separate fresh installed runtime/process/resource certification.'},
+ {claim:'Old 3B artifact identity is current',status:'REFUTED',basis:'Old B2 package labeled historical, changed helper/distribution/SBOM require targeted 3B-R; no archive certified here.'},
+ {claim:'Old 3C helper identity is current',status:'REFUTED',basis:'This audit binds exact new helper and invalidates only old identity applicability to C3RB, preserving original B2 proof.'},
+ {claim:'GitHub hosted certification',status:'NOT_CERTIFIED_PRESERVED',basis:'Unchanged README, result fixtures and qualifications explicitly retain hosted limitations.'},
+ {claim:'GitLab/Jenkins/Azure live certification',status:'NOT_LIVE_CERTIFIED_PRESERVED',basis:'Unchanged provider axes and original qualification evidence remain contract-only.'},
+ {claim:'Automatic human approval authenticity',status:'NOT_VERIFIED_BY_MEMORYOS_PRESERVED',basis:'Unchanged decision/result source and original synthetic decision corpus; actor strings never authenticate.'},
+ {claim:'Automatic release authorization',status:'ABSENT',basis:'Unchanged JS release-effect inventory plus only one removed helper executable statement; no new release/Git/deployment primitive.'},
+ {claim:'MO1306 runtime certification by 3C-R',status:'PENDING_SEPARATE_3A_R',basis:'Correction validation exists. Original native completion NOT_ESTABLISHED remains historical. This refresh tests helper security/equivalence and never promotes native runtime certification.'},
+ {claim:'3D may integrate without separately accepted 3A-R and 3B-R',status:'REFUTED',basis:'Correction handoff requires separately accepted refreshed inputs for exact C3RB. Security evidence alone grants no release authority.'}
+];
+save('release-claims.json',{kind:'MO1307Phase3CRefreshReleaseClaims',result:'PASS',...provenance,documents:claimEvidence,reviewedOldReport:identity(old,'docs/mo1307-phase3c-security-certification.md'),originalReleaseEffectInventory:identity(old,oldEvidence+'governance/release-effect-inventory.json'),originalReleaseEffectSourceMembers:oldRelease.members.length,currentShippedCodeMembers:allJs.length+1,codeChanges:codeDeltas,onlyExecutableDelta:'Remove Assert-Root $observed; comments added. No executable line added.',claims:claimRows,finalReportRequirement:'Root final receipt/report must preserve every claim disposition above; this claim review predates root final assembly and does not certify an unseen final report.',productionChanges:false});
+console.log(JSON.stringify({result:'PASS',files:['package-binding.json','unchanged-trust-bindings.json','old-control-classification.json','reuse-matrix.json','release-claims.json'],summary,fixtureCount:fixtures.length,sourceBindings:boundSource.length,reviewedInputs:boundInputs.length,C3RBoundMembers:boundRows.length,productionMembers:members.length,changed:changed.map(x=>x.path)}));

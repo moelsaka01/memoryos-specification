@@ -1,0 +1,26 @@
+{
+  "kind": "MO1307Phase3CRefreshBindingHarnessAttempt",
+  "attempt": 1,
+  "result": "HARNESS_ASSERTION_FAILURE",
+  "productExecution": false,
+  "productionDefect": false,
+  "tool": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/reuse-binding-attempt1.mjs.data",
+    "byteLength": 30773,
+    "sha256": "sha256:a9594a549cd28c1f1144921f5c2ead8cac792536758a5bde9597ac00594edf3a"
+  },
+  "exitCode": 1,
+  "runtime": "Node.js v24.14.0",
+  "observedError": {
+    "name": "AssertionError",
+    "code": "ERR_ASSERTION",
+    "operator": "deepStrictEqual",
+    "location": "reuse-binding.mjs:161:8",
+    "difference": "Actual old executable-line array retained Assert-Root $observed because the engineering filter incorrectly searched for $observed = Assert-Root $observed."
+  },
+  "diagnosticCapture": "The original tool response was truncated; this is a faithful salient diagnostic summary, not a complete raw stderr capture.",
+  "checksBeforeFailure": "Package-binding, unchanged-trust-bindings, original-control-classification and reuse-matrix computations completed. Release claims receipt had not been written.",
+  "correction": "Correct only the engineering expected removed statement to Assert-Root $observed; product remains untouched. Final second execution uses the corrected tool and batched read-only Git blob retrieval.",
+  "sourceChronology": "One exact literal replacement in two engineering source strings was applied to disk while the initial Node process retained its already-loaded module. The initial bytes were reconstructed by reversing that sole literal replacement and preserved with the hash above before further edits. Subsequent source changes occurred after first process exited.",
+  "retryScope": "Full source-only binding audit, no native/product tests rerun."
+}

@@ -1,0 +1,689 @@
+{
+  "kind": "MO1307Phase3CRefreshReuseMatrix",
+  "result": "PASS_CLASSIFIED",
+  "executionTool": {
+    "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/reuse-binding.mjs",
+    "byteLength": 32055,
+    "sha256": "sha256:088cfe354e1367e218d6d765f07a4ed190a82b1df0cb4416bf3ddb5715751c79"
+  },
+  "executionRuntime": {
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.14.0",
+    "sha256": "sha256:63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+    "scope": "Source hashing/Git comparisons only; no product code execution"
+  },
+  "old3C": "191f34748141afca2027e8e9db0c6f1b6a9c84c0",
+  "oldCandidate": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "C3R": "58c98b7eb0aa2d07bab78753ce66b564066aafeb",
+  "C3RB": "defe93989efc6501b1a730b82e79e705884b269b",
+  "classificationIsDependencyEligibility": true,
+  "runtimeCertification": false,
+  "packageCertification": false,
+  "summary": {
+    "originalControls": 496,
+    "originalNegativeControls": 381,
+    "originalAcceptedOrBehavioralControls": 115,
+    "UNCHANGED_REUSABLE": {
+      "controls": 470,
+      "negativeControls": 358,
+      "acceptedOrBehavioralControls": 112
+    },
+    "TARGETED_REFRESH_REQUIRED": {
+      "controls": 26,
+      "negativeControls": 23,
+      "acceptedOrBehavioralControls": 3
+    },
+    "INVALIDATED": {
+      "controls": 0,
+      "negativeControls": 0,
+      "acceptedOrBehavioralControls": 0
+    }
+  },
+  "classificationRules": {
+    "UNCHANGED_REUSABLE": "Exact exercised dependency bytes/fixtures match and changed helper is not executed by inner proof.",
+    "TARGETED_REFRESH_REQUIRED": "Changed native helper is a direct/transitive exercised dependency or its current outer identity is required.",
+    "INVALIDATED": "Only applicability of an old exact identity assertion to C3RB is invalidated; no historical outcome is erased."
+  },
+  "areas": [
+    {
+      "area": "Readiness precedence and complete findings",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/readiness-core.mjs",
+        "repositories/memoryos-readiness/src/readiness-result.mjs",
+        "repositories/memoryos-readiness/src/integration.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/governance/accepted-corpus.json"
+      ],
+      "reason": "Same semantic closure, fixtures and precedence matrix; no native helper dependency."
+    },
+    {
+      "area": "Trust-root semantics",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/api-input.mjs",
+        "repositories/memoryos-readiness/src/foundation.mjs",
+        "repositories/memoryos-readiness/src/evidence-verifier.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/receipt.json"
+      ],
+      "reason": "Operator pin is unchanged separate byte input; pure/public API authority proof excludes acquisition."
+    },
+    {
+      "area": "Authority grants",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/evidence-verifier.mjs",
+        "repositories/memoryos-readiness/src/schema.mjs",
+        "repositories/memoryos-readiness/src/schema-data.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/receipt.json"
+      ],
+      "reason": "Exact type/scope/assumption/dependency authority checks and fixtures are unchanged."
+    },
+    {
+      "area": "Raw-source lineage outside helper acquisition",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/foundation.mjs",
+        "repositories/memoryos-readiness/src/evidence-verifier.mjs",
+        "repositories/memoryos-readiness/src/integration.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/receipt.json"
+      ],
+      "reason": "All eight raw lineage mutation inputs and verifier bytes match; native delivery of bytes is refreshed separately."
+    },
+    {
+      "area": "Candidate, dependency applicability and reuse",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/foundation.mjs",
+        "repositories/memoryos-readiness/src/evidence-verifier.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/receipt.json"
+      ],
+      "reason": "Synthetic candidate/dependency fixtures test unchanged semantics; fixture candidate identity is not current package authority."
+    },
+    {
+      "area": "DAG derivation, closure, cycles and limits",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/evidence-graph.mjs",
+        "repositories/memoryos-readiness/src/evidence-verifier.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/receipt.json"
+      ],
+      "reason": "Independent graph oracle, data and production graph bytes unchanged."
+    },
+    {
+      "area": "History",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/evidence-history.mjs",
+        "repositories/memoryos-readiness/src/evidence-verifier.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/governance/accepted-corpus.json"
+      ],
+      "reason": "Pinned history, raw source inputs and predicates unchanged."
+    },
+    {
+      "area": "Qualifications and retained MO1306 disclosures",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/evidence-history.mjs",
+        "repositories/memoryos-readiness/src/readiness-core.mjs",
+        "repositories/memoryos-readiness/src/projections.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/governance/accepted-corpus.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/governance/mo1306-preserved-result.json"
+      ],
+      "reason": "Seven codes, ten disclosures and 303620-byte result retain identical semantic dependency closure."
+    },
+    {
+      "area": "Provider axes and promotion refusal",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/readiness-core.mjs",
+        "repositories/memoryos-readiness/src/evidence-history.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/governance/accepted-corpus.json"
+      ],
+      "reason": "Implementation/validation/execution/support remain independent; no provider execution claim."
+    },
+    {
+      "area": "Human decisions",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/foundation.mjs",
+        "repositories/memoryos-readiness/src/integration.mjs",
+        "repositories/memoryos-readiness/src/projections.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/governance/accepted-corpus.json"
+      ],
+      "reason": "Decision projection and NOT_VERIFIED_BY_MEMORYOS remain unchanged; no authentication promotion."
+    },
+    {
+      "area": "Tag governance",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/readiness-core.mjs",
+        "repositories/memoryos-readiness/src/schema-data.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/governance/accepted-corpus.json"
+      ],
+      "reason": "Supplied tag observations remain data; no native/Git action dependency."
+    },
+    {
+      "area": "Result, proof and recomputation",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/integration.mjs",
+        "repositories/memoryos-readiness/src/readiness-result.mjs",
+        "repositories/memoryos-readiness/src/evidence-verifier.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/receipt.json"
+      ],
+      "reason": "Full input/result recomputation and proof serializer bytes are unchanged."
+    },
+    {
+      "area": "CLI dispatch and launch refusal",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/bin/memoryos-readiness.mjs",
+        "repositories/memoryos-readiness/src/cli-args.mjs",
+        "repositories/memoryos-readiness/src/cli.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/root-corpus-results.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/dispatch-native-diagnostic.json"
+      ],
+      "reason": "Unsupported dispatch fails before helper transport construction; frozen launch validation is unchanged."
+    },
+    {
+      "area": "Canonical parser, schema and prototype defenses",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/canonical.mjs",
+        "repositories/memoryos-readiness/src/schema.mjs",
+        "repositories/memoryos-readiness/src/schema-data.mjs",
+        "repositories/memoryos-readiness/src/api-input.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/root-corpus-results.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/root-source-review.md"
+      ],
+      "reason": "Unchanged parser/prototype surfaces and finite limits; helper parser observations refreshed independently."
+    },
+    {
+      "area": "Error catalog, precedence, result/output bounds",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/errors.mjs",
+        "repositories/memoryos-readiness/src/foundation.mjs",
+        "repositories/memoryos-readiness/src/output.mjs",
+        "repositories/memoryos-readiness/src/readiness-result.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/root-corpus-results.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/output-construction-boundaries.json"
+      ],
+      "reason": "Exact JavaScript mappings and limits; no helper-native result inferred."
+    },
+    {
+      "area": "Worker policy and worker message defenses",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/runtime.mjs",
+        "repositories/memoryos-readiness/src/worker-entry.mjs",
+        "repositories/memoryos-readiness/src/worker-policy.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/supplement.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/run-1/corpus.partial.json"
+      ],
+      "reason": "Worker code, imports and defensive doubles unchanged. Helper timing interaction belongs to refresh."
+    },
+    {
+      "area": "Publication capability and irreversible finalization state machine",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/publication.mjs",
+        "repositories/memoryos-readiness/src/helper-protocol.mjs",
+        "repositories/memoryos-readiness/src/runtime.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/run-1/corpus.partial.json"
+      ],
+      "reason": "Synthetic native inspection seams and finite rename state logic unchanged; actual native inspection refreshed."
+    },
+    {
+      "area": "Native path validation and final path",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "dependencies": [
+        "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "repositories/memoryos-readiness/src/windows-paths.mjs",
+        "repositories/memoryos-readiness/src/acquisition.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/run-2/receipt.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/native-wrong-volume.json"
+      ],
+      "reason": "Changed Read-Identity validation structure requires dominance, native aliases/links/type and final-path refresh."
+    },
+    {
+      "area": "Native freshness and TOCTOU",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "dependencies": [
+        "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "repositories/memoryos-readiness/src/acquisition.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/native-identity.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/volume-identity.json"
+      ],
+      "reason": "Fresh initial/read/post-read handle observations cannot be inferred from unchanged outer JavaScript."
+    },
+    {
+      "area": "Native helper identity authority and alternate flows",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "dependencies": [
+        "repositories/memoryos-readiness/helpers/windows-inspect.ps1"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/source-review.json"
+      ],
+      "reason": "Every production Read-Identity caller and checked-chain expected path must be re-established."
+    },
+    {
+      "area": "Helper protocol/rejection behavior",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "dependencies": [
+        "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "repositories/memoryos-readiness/src/helper-protocol.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/run-2/receipt.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/run-1/corpus.partial.json"
+      ],
+      "reason": "Inner JS wire validation is reusable; exact corrected native response/refusal and alternate entry behavior require execution."
+    },
+    {
+      "area": "Helper deadlines, late response and cleanup interaction",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "dependencies": [
+        "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "repositories/memoryos-readiness/src/helper-transport.mjs",
+        "repositories/memoryos-readiness/src/runtime.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/source-review.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/supplement.json"
+      ],
+      "reason": "Unchanged deadline code does not by itself prove corrected helper process/pipe/owned-console behavior."
+    },
+    {
+      "area": "Request-local metadata and helper resource behavior",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "dependencies": [
+        "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "repositories/memoryos-readiness/src/constants.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/source-review.json"
+      ],
+      "reason": "Review no observation cache/global table and exercise request limits; full runtime/RSS certification excluded."
+    },
+    {
+      "area": "PowerShell launch and environment around corrected script",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "dependencies": [
+        "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "repositories/memoryos-readiness/src/helper-transport.mjs",
+        "repositories/memoryos-readiness/src/cli-args.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/source-review.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/supplement.json"
+      ],
+      "reason": "Fixed launch source reusable but new script requires binding and representative substitution/poison witnesses."
+    },
+    {
+      "area": "Network authority",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "dependencies": [
+        "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "repositories/memoryos-readiness/src/worker-policy.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/source-review.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/governance/release-effect-inventory.json"
+      ],
+      "reason": "Unchanged worker denial evidence reused; changed helper must be searched/reviewed for new primitives and imports."
+    },
+    {
+      "area": "Secrets and logs",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "dependencies": [
+        "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "repositories/memoryos-readiness/src/errors.mjs",
+        "repositories/memoryos-readiness/src/output.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/source-review.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/run-2/receipt.json"
+      ],
+      "reason": "Fixed JS diagnostics reusable; corrected helper checked for instrumentation/log residue and sentinel disclosure."
+    },
+    {
+      "area": "Package-source/helper runtime binding",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "dependencies": [
+        "repositories/memoryos-readiness/package.json",
+        "repositories/memoryos-readiness/distribution-manifest.json",
+        "repositories/memoryos-readiness/sbom.spdx.json",
+        "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "repositories/memoryos-readiness/src/helper-transport.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/package-source-boundary.json"
+      ],
+      "reason": "Current allowlist row, distribution row, SBOM checksum and fixed runtime source must all match corrected helper."
+    },
+    {
+      "area": "Release authority boundary",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [
+        "repositories/memoryos-readiness/src/cli.mjs",
+        "repositories/memoryos-readiness/src/readiness-core.mjs",
+        "repositories/memoryos-readiness/src/foundation.mjs",
+        "repositories/memoryos-readiness/src/projections.mjs"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/governance/release-effect-inventory.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/governance/accepted-corpus.json"
+      ],
+      "reason": "No decision/tag/readiness path grants release action; unchanged JS closure; helper delta grants no new native capability."
+    },
+    {
+      "area": "Release claims and MO1306 runtime disposition",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "dependencies": [
+        "repositories/memoryos-readiness/README.md",
+        "repositories/memoryos-readiness/helpers/README.md"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/governance/report.md"
+      ],
+      "reason": "Corrected smoke must remain correction-only; old outer artifact/helper identities cannot be promoted; 3A-R/3B-R remain separate."
+    },
+    {
+      "area": "Old candidate/helper/distribution/SBOM identities as authority for current C3RB",
+      "classification": "INVALIDATED",
+      "dependencies": [
+        "repositories/memoryos-readiness/distribution-manifest.json",
+        "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "repositories/memoryos-readiness/sbom.spdx.json"
+      ],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/certification-receipt.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/package-source-boundary.json"
+      ],
+      "reason": "The old identities are not current. Historical certification remains valid for B2. New outer binding replaces identity assertion while exact unaffected inner proofs are reused."
+    },
+    {
+      "area": "Original independent review and historical preservation",
+      "classification": "UNCHANGED_REUSABLE",
+      "dependencies": [],
+      "originalEvidence": [
+        "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/integration-review.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/integration-review-addendum.json",
+        "repositories/cca-conformance/evidence/mo1307/phase3c/final-validation.json"
+      ],
+      "reason": "Retained as historical original-commit proof and limitations only. A new separate read-only review is mandatory for the changed helper and final refresh evidence."
+    }
+  ],
+  "attackSurfaces": [
+    {
+      "id": 1,
+      "surface": "CLI",
+      "trust": "Untrusted argv; separate operator trust pins",
+      "validator": "cli-args.parseCliArgs / validateLaunch",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 2,
+      "surface": "Byte API",
+      "trust": "Untrusted detached input bytes; explicit operator pins",
+      "validator": "api-input.snapshotApiInput / foundation / fixed worker",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 3,
+      "surface": "Configuration",
+      "trust": "Untrusted, closed profile/stage/file selectors",
+      "validator": "parseCanonical / Configuration / cross-binding",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 4,
+      "surface": "Candidate",
+      "trust": "Untrusted content; independently pinned digest",
+      "validator": "Candidate / validateCandidate / authority closure",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 5,
+      "surface": "Manifest",
+      "trust": "Untrusted paths and byte declarations; root-pinned digest",
+      "validator": "Manifest / validateManifest / native acquisition",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "scope": "Native helper acquisition, observation or identity outer binding refresh; unchanged semantic subproof retained."
+    },
+    {
+      "id": 6,
+      "surface": "Authority input",
+      "trust": "Trusted only through independent exact raw digest pin",
+      "validator": "authority schema / verifyEvidence",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 7,
+      "surface": "Evidence source files",
+      "trust": "Opaque untrusted bytes; no semantic execution",
+      "validator": "native handle read / manifest length and hash / lineage",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "scope": "Native helper acquisition, observation or identity outer binding refresh; unchanged semantic subproof retained."
+    },
+    {
+      "id": 8,
+      "surface": "Claims",
+      "trust": "Untrusted normalized assertions",
+      "validator": "Evidence schema / granted claim digest / semantic cross-fields",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 9,
+      "surface": "Grants",
+      "trust": "Trusted-root-scoped authorization",
+      "validator": "Grant schema / exact source,scope,dependencies,applicability",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 10,
+      "surface": "Dependencies",
+      "trust": "Untrusted explicit identities",
+      "validator": "component closure and stale checks",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 11,
+      "surface": "History",
+      "trust": "Authority-pinned immutable outcomes",
+      "validator": "evidence-history and qualification cross references",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 12,
+      "surface": "Qualifications",
+      "trust": "Closed authority-bound disclosures",
+      "validator": "qualification schema / seven predicates / union completeness",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 13,
+      "surface": "Provider state",
+      "trust": "Independent assertion axes",
+      "validator": "provider schemas / exact minima / promotion constraints",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 14,
+      "surface": "Human decision",
+      "trust": "External unauthenticated claim",
+      "validator": "verifyReadiness / checkDecisionBinding",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 15,
+      "surface": "Tag observation",
+      "trust": "Supplied whole-candidate fact; no live Git authority",
+      "validator": "TagObservation / stage-specific conditions",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 16,
+      "surface": "Helper wire",
+      "trust": "Private child bytes untrusted until validated",
+      "validator": "framing / strict J / exact session sequence operation schemas",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "scope": "Native helper acquisition, observation or identity outer binding refresh; unchanged semantic subproof retained."
+    },
+    {
+      "id": 17,
+      "surface": "PowerShell launch",
+      "trust": "Fixed trusted native inspection capability",
+      "validator": "helper-transport fixed exe and packaged script; restricted env",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "scope": "Native helper acquisition, observation or identity outer binding refresh; unchanged semantic subproof retained."
+    },
+    {
+      "id": 18,
+      "surface": "Worker message",
+      "trust": "Fixed worker result still admitted defensively",
+      "validator": "runtime message admission and exit settlement",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 19,
+      "surface": "Publication token/capability",
+      "trust": "Private branded single-use authority",
+      "validator": "WeakMap/WeakSet membership and phase/root/session checks",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 20,
+      "surface": "Output filesystem",
+      "trust": "Exclusive private immutable root; native observations",
+      "validator": "Windows identity chain / pending stage / one admitted rename",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "scope": "Native helper acquisition, observation or identity outer binding refresh; unchanged semantic subproof retained."
+    },
+    {
+      "id": 21,
+      "surface": "stdout/stderr",
+      "trust": "Unreliable bounded output sink",
+      "validator": "writeSummary / writeDiagnostic fixed projection",
+      "classification": "UNCHANGED_REUSABLE",
+      "scope": "Unchanged production dependency closure; helper-adjacent global claims independently refreshed."
+    },
+    {
+      "id": 22,
+      "surface": "Package/runtime boundary",
+      "trust": "Trusted provisioned runtime and immutable shipped source",
+      "validator": "package exports / source manifest / launch policy",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "scope": "Native helper acquisition, observation or identity outer binding refresh; unchanged semantic subproof retained."
+    }
+  ],
+  "supplementary": [
+    {
+      "receipt": "runtime-boundary/native-identity.json",
+      "scope": "Actual native two-phase root identity replacement; FS_BOUNDARY/CONFIGURATION/20",
+      "byteLength": 2558,
+      "sha256": "sha256:52e90f998387659641881acca2a5a4993dad998ec63405f518a3aefc5c301742",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "countedAsOriginalPrimaryControl": false,
+      "reason": "Actual changed helper observation must be refreshed."
+    },
+    {
+      "receipt": "runtime-boundary/volume-identity.json",
+      "scope": "Synthetic closed-helper response volumeSerial substitution; FS_BOUNDARY/ACQUISITION/20",
+      "byteLength": 784,
+      "sha256": "sha256:1a1a2d8271876894f9f9fa81adfd57f9c6b3c1894bda46e224483a8b449683c2",
+      "classification": "UNCHANGED_REUSABLE",
+      "countedAsOriginalPrimaryControl": false,
+      "reason": "Unchanged byte/API/JavaScript or output-construction dependency; outer original candidate annotation is historical."
+    },
+    {
+      "receipt": "runtime-boundary/native-wrong-volume.json",
+      "scope": "Actual distinct Windows filesystem volume escape refused; source-supported earlier reparse guard, not native downstream volumeSerial branch",
+      "byteLength": 7538,
+      "sha256": "sha256:40da6473d7cd34803c747725eca46b26d749d5ca2d1838ed180573df3251f70c",
+      "classification": "TARGETED_REFRESH_REQUIRED",
+      "countedAsOriginalPrimaryControl": false,
+      "reason": "Historical actual distinct-volume refusal remains, downstream native volumeSerial branch remains NOT_ESTABLISHED. Current junction/reparse/native-volume observations may refresh the affected policy without claiming a new downstream branch execution."
+    },
+    {
+      "receipt": "safe-root-environment-determinism.json",
+      "scope": "Two fresh public API calls; one comparison across safe roots/sessions/poisoned environments",
+      "byteLength": 1182,
+      "sha256": "sha256:3fbb37574f3c024c698dd08427e59ebfd8d4b918b1fe4fefda6d783275e19117",
+      "classification": "UNCHANGED_REUSABLE",
+      "countedAsOriginalPrimaryControl": false,
+      "reason": "Unchanged byte/API/JavaScript or output-construction dependency; outer original candidate annotation is historical."
+    },
+    {
+      "receipt": "output-construction-boundaries.json",
+      "scope": "Two reused exact-B2 output-construction regression tests; dependency hashes checked, not independent new primary cases",
+      "byteLength": 1043,
+      "sha256": "sha256:da3b90b003b53065e22fc91b7f4f235d249399ecd7c3a65d42ed5cbbafac754d",
+      "classification": "UNCHANGED_REUSABLE",
+      "countedAsOriginalPrimaryControl": false,
+      "reason": "Unchanged byte/API/JavaScript or output-construction dependency; outer original candidate annotation is historical."
+    }
+  ],
+  "executionAccounting": "old-control-classification.json contains each original selected ID exactly once; final corpus owns rerun/new counts and target witness links. Supplementary receipts remain separate units, never silently added to primary counts.",
+  "limitations": [
+    "MO1306 correction smoke exists; runtime certification remains pending separate 3A-R.",
+    "No full artifact/supply certification; separate 3B-R required.",
+    "Native downstream volumeSerial branch remains unestablished; private immutable roots/trusted host assumptions remain.",
+    "Original failed attempts, unauthenticated human decisions, hosted/live provider limitations and admitted rename availability remain."
+  ]
+}

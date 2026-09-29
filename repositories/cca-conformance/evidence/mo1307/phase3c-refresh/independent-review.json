@@ -1,0 +1,291 @@
+{
+  "kind": "MO1307Phase3CRefreshIndependentPostTestReview",
+  "version": "1.0.0",
+  "result": "PASS",
+  "reviewStage": "POST_TEST_SOURCE_AND_CORPUS",
+  "finalReportReview": "PENDING_SEPARATE_REPORT_ATTESTATION",
+  "reviewedAt": "2026-09-29T13:38:32.409Z",
+  "C3RB": "defe93989efc6501b1a730b82e79e705884b269b",
+  "original3C": "191f34748141afca2027e8e9db0c6f1b6a9c84c0",
+  "method": "Separate agent read-only post-test inspection after tests froze. Rechecked raw frames, byte bindings, source reversal, native counters, exact identities, receipt rows, deduplication and package helper binding. Only this review receipt is written; no production, tests, prior evidence or historical worktree is altered by the post-test review.",
+  "nativeCorpusBindingChecks": 642,
+  "additionalCurrentBindingChecks": 203,
+  "risks": [
+    {
+      "risk": "missing validated-path dominator",
+      "result": "PASS",
+      "evidence": "Exactly three Read-Identity calls at helper lines248/259/262; only Open-Chain initially produces expected prefixes after Assert-Root234. All three Open-Chain entry sites283/289/337 and all three stability callers313/322/344 traced. Six publication slots each have accepted and traversal-refusal fresh cases."
+    },
+    {
+      "risk": "freshness accidentally removed",
+      "result": "PASS",
+      "evidence": "Post-deletion5256 executable tokens match;19 native invocation sites unchanged. Every successful Read-Identity still obtains native identity/type/final path; unchanged fail-fast rejection can stop before later observations. All21 instrumented pair counters match. Native before-read and held-to-fresh replacements each reject."
+    },
+    {
+      "risk": "native identity or observation reuse",
+      "result": "PASS",
+      "evidence": "Initial, held post-read, reopened post-read and final-root observations remain distinct native calls.2370 identity/information/final-path observations and1580 opens on each local MO1306 side. No observation substitutes for a later check."
+    },
+    {
+      "risk": "new global state or cross-request cache",
+      "result": "PASS",
+      "evidence": "Only executable change deletes the observed-path Assert-Root; no new metadata or cache. Existing request-local paths and chains retain validated immutable strings. No chain path/identity/handle/directory property reassignment occurs in production. Helper reads one frame then exits."
+    },
+    {
+      "risk": "error-path bypass",
+      "result": "PASS",
+      "evidence": "69 exact old/new response pairs include55 rejections and14 accepted outcomes;12 fresh JS-consumer negatives, including replay/base64, reject exact MO1307_INPUT. Expected old boundary code retained at full-path mismatch."
+    },
+    {
+      "risk": "deadline-dependent validation skip or late success",
+      "result": "PASS",
+      "evidence": "No helper deadline branch added; exact unchanged supervisor/sequence rechecks preserved. Actual fixed-helper timeout maps29, forced crash22, delayed genuine native OK remains terminal TIMEOUT. Partial and late sequence controls reject."
+    },
+    {
+      "risk": "debug, timing, secret or network residue",
+      "result": "PASS",
+      "evidence": "Five static helper scan classes have0matches, backed by exact token delta and complete source review. Fixed-launch environment poison covers18keys; synthetic credential sentinel absent from helper stdout and fixed error projection; all11 helper stderr captures empty."
+    },
+    {
+      "risk": "package/helper binding mismatch",
+      "result": "PASS",
+      "evidence": "Current30210-byte helperSHA25635381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8 equals package allowlist member8, distribution, SBOM and fixed runtime-helper source. All package member current/old bindings rechecked. Package certification is not claimed."
+    }
+  ],
+  "execution": {
+    "equivalencePairs": 69,
+    "equivalenceNegative": 55,
+    "equivalencePositive": 14,
+    "nativeHelperInvocationsInEquivalence": 138,
+    "instrumentedPairs": 21,
+    "equivalenceMutations": 19,
+    "additionalTOCTOUMutations": 2,
+    "consumerProtocolControls": 13,
+    "consumerProtocolNegatives": 12,
+    "deadlineResourceEnvironmentRows": 18,
+    "deadlineActualHelperInvocations": 11,
+    "externalOSSamples": 73,
+    "allObservedHelpersAndStreamsClosed": true,
+    "remainingAttributableProcesses": 0
+  },
+  "corpusDeduplication": {
+    "result": "PASS",
+    "originalHistoricalIds": 496,
+    "historicalIdsUniqueAndExactlyCovered": true,
+    "originalNegativeControls": 381,
+    "originalRowsRefreshed": 37,
+    "distinctRefreshedScenarios": 36,
+    "combinedEnvironmentWitnessHistoricalIds": 2,
+    "uniqueCurrentControls": 551,
+    "formula": "496 original IDs +56 new controls -1 merged environment scenario =551 distinct current controls",
+    "counts": {
+      "REUSED": {
+        "controls": 459,
+        "negative": 349,
+        "acceptedOrBehavioral": 110
+      },
+      "RERUN": {
+        "controls": 36,
+        "negative": 32,
+        "acceptedOrBehavioral": 4
+      },
+      "NEW": {
+        "controls": 56,
+        "negative": 45,
+        "acceptedOrBehavioral": 11
+      }
+    },
+    "primaryExecutionWitnessesNotDoubleCounted": true,
+    "rawExperimentalRows": 102
+  },
+  "limitations": [
+    "Only local roots are rebound for historical MO1306/READY contents. The current local path depth yields2370 native identity/final-path observations and1580opens, versus historical2172/1448; old and new current counters match exactly. This does not reexecute the original historical request frame unchanged.",
+    "Controlled filesystem mutation copies release held leaf sharing solely to permit a mutation normally blocked by production. Marked instrumentation is reversible to exact old/new source; no production hooks exist.",
+    "Equivalence uses a20-second engineering guard; no5-second runtime certification or MO1306 runtime promotion is inferred.",
+    "Timeout/crash without a valid frame retain conservative product cleanupConfirmed:false. Full process/stream closures plus bounded OS observation establish the tested no-survivor boundary; sampling is not exhaustive transient-process proof.",
+    "One helper-delta narrative sentence was corrected before this binding to specify every successful Read-Identity invocation, respecting unchanged early rejection; no source or test behavior changed.",
+    "Final report and release-claim prose do not yet exist at this review stage and require a separate final-report attestation."
+  ],
+  "productionDefects": [],
+  "unresolvedSourceOrCorpusFindings": [],
+  "productionChanges": 0,
+  "runtimeCertification": false,
+  "packageCertification": false,
+  "reportRead": false,
+  "sources": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/helper-delta-review.json",
+      "byteLength": 9692,
+      "sha256": "sha256:9b108cbbc2e89378580b16f347efafede15352c47240d4e5be48e71ea1905d32"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/call-site-dominance.json",
+      "byteLength": 8674,
+      "sha256": "sha256:53e9c6f74987a94428bc7032aee051ed6a07478a7f2ba1ba5908b712523b8940"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/network-secrets-source.json",
+      "byteLength": 6352,
+      "sha256": "sha256:e3413b98dd2f2e35fb75e9b9423184a4889a953a34fcf3a1898a8ce87974e8fd"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/equivalence/attempt2/receipt.json",
+      "byteLength": 362684,
+      "sha256": "sha256:03241f7aa302f4d8cc04ac10de27d8addf5621b63a15db84617d44813a5e22c7"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/toctou-boundaries/attempt2/receipt.json",
+      "byteLength": 6521,
+      "sha256": "sha256:b6f1d4179160bbe22740726359647f50ff3f4cfed39d1bb998cf4fec14ec5201"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/protocol-subset.json",
+      "byteLength": 3964,
+      "sha256": "sha256:046b3d30734ee63e848ed3b2f0526fe85da8c00349879b5eeaea0c9413bf09cc"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/deadline-cleanup/attempt-2/receipt.json",
+      "byteLength": 29147,
+      "sha256": "sha256:80446332d718ae3671687bf33f283cbcfea02d2858f150026fa3365ec12380c1"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/deadline-cleanup/attempt-2/boundary-closure.json",
+      "byteLength": 2381,
+      "sha256": "sha256:e2ff0a97daec2007e6e50814389438f3ec08712afec6168b0c19ade5849ab869"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/deadline-cleanup/attempt-2/process-observation.json",
+      "byteLength": 72563,
+      "sha256": "sha256:2c47abacec109f08e70ad6ed3ffabb097e30ec7567678706149b2d4452eef21d"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/package-binding.json",
+      "byteLength": 55983,
+      "sha256": "sha256:39aa180126d4b562c2fd82b24e0e34191db06315bb612b8d5ae4d98906899802"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/old-control-classification.json",
+      "byteLength": 614016,
+      "sha256": "sha256:47067416398b9a034e87160ebef7cfaf0a27375b9a202984ecb44f23c24c48de"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/targeted-negative-corpus.json",
+      "byteLength": 290371,
+      "sha256": "sha256:9258b9a4f0e35d6ba7926f44f76a54309d006849d04672ae6f552d2ae961e919"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/execution-summary.json",
+      "byteLength": 2710,
+      "sha256": "sha256:75e3256c804b4abf1b63425bab4c6e688cd7d2ff092bef5ba31b6204e740e6c0"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/reuse-matrix.json",
+      "byteLength": 32849,
+      "sha256": "sha256:5447a06440685a4569e58e24b44d9187e5277b858915b652037253a008553f22"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/unchanged-trust-bindings.json",
+      "byteLength": 288339,
+      "sha256": "sha256:e382ad53340e4bb2945450e12fb5e38a63ff0c24c34180df362e32d1d72fca0b"
+    }
+  ],
+  "tools": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/helper-review.ps1",
+      "byteLength": 19077,
+      "sha256": "sha256:bed5b7e3416cd4cf90daf9ce5b76a603f3cae4fe915b977c03ccd6c22d81f912"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/equivalence.mjs",
+      "byteLength": 27228,
+      "sha256": "sha256:54355e05671bc2f300a3d1250e76d13d5a4529fe4e196ad399b91e1c8aa78ad8"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/toctou-boundaries.mjs",
+      "byteLength": 5791,
+      "sha256": "sha256:0bfaa2e3aefe6b6f554c4597cb6e59f435e95852b6ba6768ca8ee1f15fa9b1f3"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/protocol.mjs",
+      "byteLength": 3252,
+      "sha256": "sha256:63b929ea339de0ec2437b51db4977531710875daa5ac5180073e16aa4514d327"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/deadline-cleanup.mjs",
+      "byteLength": 24171,
+      "sha256": "sha256:8706a27482f3e6c62cbafccbf796095c1466c36ab9d12592a060bec3f291de55"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/assemble-corpus.mjs",
+      "byteLength": 10902,
+      "sha256": "sha256:43962ed39b3a9888b693c861479368d6bae7c598fdf0282c0de34bb43c1ab162"
+    }
+  ],
+  "production": [
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 30210,
+      "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/acquisition.mjs",
+      "byteLength": 6409,
+      "sha256": "sha256:1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+      "byteLength": 6250,
+      "sha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/runtime.mjs",
+      "byteLength": 16904,
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 13610,
+      "sha256": "sha256:dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/cli-args.mjs",
+      "byteLength": 4280,
+      "sha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/errors.mjs",
+      "byteLength": 1823,
+      "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "path": "repositories/memoryos-readiness/contracts/definitions.json",
+      "byteLength": 16555,
+      "sha256": "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e"
+    },
+    {
+      "path": "repositories/memoryos-readiness/distribution-manifest.json",
+      "byteLength": 12631,
+      "sha256": "sha256:5802973c276d10f48db51f842101cd664fbc21e13a74b344a9e0b421746ffc09"
+    },
+    {
+      "path": "repositories/memoryos-readiness/sbom.spdx.json",
+      "byteLength": 47328,
+      "sha256": "sha256:7997bb939027132d307864750331ba70c0538a7590aea2773cafa5e3759aabaa"
+    },
+    {
+      "path": "repositories/memoryos-readiness/package.json",
+      "byteLength": 3258,
+      "sha256": "sha256:21c9a7f9121f2d9171c332bb04e59656a7981fad98e328df0f4d8abf118ae2d6"
+    }
+  ]
+}

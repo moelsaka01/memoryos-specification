@@ -1,0 +1,905 @@
+{
+  "kind": "MO1307Phase3CRefreshDeadlineEnvironmentReceipt",
+  "result": "PASS",
+  "failure": null,
+  "cases": [
+    {
+      "id": "fixed-native-timely",
+      "layer": "ACTUAL_FIXED_HELPER",
+      "result": "PASS",
+      "elapsedMs": 2128.2325,
+      "detail": {
+        "accepted": true,
+        "errorCode": null,
+        "mappedPublicExit": null,
+        "lateNativeOK": false,
+        "noSecretEcho": true,
+        "exactFixedLaunch": true,
+        "poisonedKeys": [],
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 30089.5219,
+          "helpers": 1,
+          "workers": 0,
+          "helperUsedMs": 2121.0265,
+          "activeRole": null,
+          "cleanupConfirmed": true,
+          "publication": null,
+          "terminalCode": null,
+          "terminalAt": null,
+          "cleanupDeadline": null,
+          "events": [
+            {
+              "type": "start",
+              "at": 94.7732,
+              "role": "helper",
+              "deadline": 5094.6301,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 110.9594,
+              "role": "helper",
+              "pid": 25284,
+              "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+            },
+            {
+              "type": "quiescent",
+              "at": 2215.6726,
+              "role": "helper",
+              "ordinal": 1
+            }
+          ]
+        },
+        "observation": {
+          "name": "fixed-native-timely",
+          "pid": 25284,
+          "startedAt": 110.537,
+          "closedAt": 2210.8377,
+          "exitCode": 0,
+          "stdoutBytes": 867,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 2156.4489
+        }
+      }
+    },
+    {
+      "id": "timeout-exact-mapping",
+      "layer": "ACTUAL_FIXED_HELPER_ENGINEERING_EOF_DELAY",
+      "result": "PASS",
+      "elapsedMs": 5027.6634,
+      "detail": {
+        "accepted": false,
+        "errorCode": "MO1307_TIMEOUT",
+        "mappedPublicExit": 29,
+        "lateNativeOK": false,
+        "noSecretEcho": true,
+        "exactFixedLaunch": true,
+        "poisonedKeys": [],
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 32218.9436,
+          "helpers": 1,
+          "workers": 0,
+          "helperUsedMs": 0,
+          "activeRole": "helper",
+          "cleanupConfirmed": false,
+          "publication": null,
+          "terminalCode": "MO1307_TIMEOUT",
+          "terminalAt": 7225.9545,
+          "cleanupDeadline": 9225.9545,
+          "events": [
+            {
+              "type": "start",
+              "at": 2220.2026,
+              "role": "helper",
+              "deadline": 7220.1606,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 2236.4398,
+              "role": "helper",
+              "pid": 19092,
+              "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+            },
+            {
+              "type": "terminal",
+              "at": 7226.1247,
+              "code": "MO1307_TIMEOUT",
+              "stage": "ACQUISITION"
+            },
+            {
+              "type": "cleanup",
+              "at": 7246.2725,
+              "role": "helper",
+              "confirmed": false
+            }
+          ]
+        },
+        "observation": {
+          "name": "timeout-exact-mapping",
+          "pid": 19092,
+          "startedAt": 2236.3098,
+          "closedAt": 7244.4888,
+          "exitCode": null,
+          "stdoutBytes": 0,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null
+        }
+      }
+    },
+    {
+      "id": "late-native-success-refused",
+      "layer": "ACTUAL_FIXED_HELPER_FRAME_ENGINEERING_DELAYED_STREAM_DELIVERY",
+      "result": "PASS",
+      "elapsedMs": 5285.9813,
+      "detail": {
+        "accepted": false,
+        "errorCode": "MO1307_TIMEOUT",
+        "mappedPublicExit": 29,
+        "lateNativeOK": true,
+        "noSecretEcho": true,
+        "exactFixedLaunch": true,
+        "poisonedKeys": [],
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 37247.5174,
+          "helpers": 1,
+          "workers": 0,
+          "helperUsedMs": 0,
+          "activeRole": null,
+          "cleanupConfirmed": true,
+          "publication": null,
+          "terminalCode": "MO1307_TIMEOUT",
+          "terminalAt": 12258.4618,
+          "cleanupDeadline": 14258.4618,
+          "events": [
+            {
+              "type": "start",
+              "at": 7249.0359,
+              "role": "helper",
+              "deadline": 12249.0068,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 7271.0879,
+              "role": "helper",
+              "pid": 6016,
+              "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+            },
+            {
+              "type": "terminal",
+              "at": 12258.61,
+              "code": "MO1307_TIMEOUT",
+              "stage": "ACQUISITION"
+            },
+            {
+              "type": "cleanup",
+              "at": 12531.5998,
+              "role": "helper",
+              "confirmed": true
+            }
+          ]
+        },
+        "observation": {
+          "name": "late-native-success-refused",
+          "pid": 6016,
+          "startedAt": 7270.5895,
+          "closedAt": 9871.6053,
+          "exitCode": 0,
+          "stdoutBytes": 867,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 9825.7115,
+          "deliveredAt": 12526.57
+        }
+      }
+    },
+    {
+      "id": "crash-closed-transport",
+      "layer": "ACTUAL_FIXED_HELPER_OWNED_PROCESS_KILL",
+      "result": "PASS",
+      "elapsedMs": 2252.3812,
+      "detail": {
+        "accepted": false,
+        "errorCode": "MO1307_INTERNAL",
+        "mappedPublicExit": 22,
+        "lateNativeOK": false,
+        "noSecretEcho": true,
+        "exactFixedLaunch": true,
+        "poisonedKeys": [],
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 42535.9743,
+          "helpers": 1,
+          "workers": 0,
+          "helperUsedMs": 0,
+          "activeRole": "helper",
+          "cleanupConfirmed": false,
+          "publication": null,
+          "terminalCode": "MO1307_INTERNAL",
+          "terminalAt": 14787.6857,
+          "cleanupDeadline": 16787.6857,
+          "events": [
+            {
+              "type": "start",
+              "at": 12538.606,
+              "role": "helper",
+              "deadline": 17538.5014,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 12563.0826,
+              "role": "helper",
+              "pid": 24192,
+              "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+            },
+            {
+              "type": "terminal",
+              "at": 14787.7355,
+              "code": "MO1307_INTERNAL",
+              "stage": "ACQUISITION"
+            },
+            {
+              "type": "cleanup",
+              "at": 14787.9018,
+              "role": "helper",
+              "confirmed": false
+            }
+          ]
+        },
+        "observation": {
+          "name": "crash-closed-transport",
+          "pid": 24192,
+          "startedAt": 12562.8623,
+          "closedAt": 14783.8553,
+          "exitCode": null,
+          "stdoutBytes": 0,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "crashRequestedAt": 14765.2275
+        }
+      }
+    },
+    {
+      "id": "fixed-launch-combined-environment-poison",
+      "layer": "ACTUAL_FIXED_HELPER",
+      "result": "PASS",
+      "elapsedMs": 2861.3407000000007,
+      "detail": {
+        "accepted": true,
+        "errorCode": null,
+        "mappedPublicExit": null,
+        "lateNativeOK": false,
+        "noSecretEcho": true,
+        "exactFixedLaunch": true,
+        "poisonedKeys": [
+          "ALL_PROXY",
+          "AWS_SECRET_ACCESS_KEY",
+          "AZURE_CLIENT_SECRET",
+          "GITHUB_TOKEN",
+          "HOME",
+          "HTTPS_PROXY",
+          "HTTP_PROXY",
+          "MEMORYOS_READINESS_HELPER",
+          "PATH",
+          "PATHEXT",
+          "POWERSHELL",
+          "POWERSHELL_EXECUTABLE",
+          "PSExecutionPolicyPreference",
+          "PSHOME",
+          "PSModulePath",
+          "SystemRoot",
+          "USERPROFILE",
+          "WINDIR"
+        ],
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 44790.061,
+          "helpers": 1,
+          "workers": 0,
+          "helperUsedMs": 2855.3086999999978,
+          "activeRole": null,
+          "cleanupConfirmed": true,
+          "publication": null,
+          "terminalCode": null,
+          "terminalAt": null,
+          "cleanupDeadline": null,
+          "events": [
+            {
+              "type": "start",
+              "at": 14793.8015,
+              "role": "helper",
+              "deadline": 19793.7733,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 14815.2046,
+              "role": "helper",
+              "pid": 1104,
+              "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+            },
+            {
+              "type": "quiescent",
+              "at": 17649.1116,
+              "role": "helper",
+              "ordinal": 1
+            }
+          ]
+        },
+        "observation": {
+          "name": "fixed-launch-combined-environment-poison",
+          "pid": 1104,
+          "startedAt": 14815.0558,
+          "closedAt": 17643.9363,
+          "exitCode": 0,
+          "stdoutBytes": 867,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 17600.1053
+        }
+      }
+    },
+    {
+      "id": "resource-request-path-cap128-129",
+      "layer": "PRODUCTION_JS_ADMISSION",
+      "result": "PASS",
+      "elapsedMs": 11.642199999998411,
+      "detail": {
+        "acceptedPathCount": 128,
+        "rejectedPathCount": 129
+      }
+    },
+    {
+      "id": "resource-native-path-cap129",
+      "layer": "ACTUAL_FIXED_HELPER_RAW_ENGINEERING_TRANSPORT",
+      "result": "PASS",
+      "elapsedMs": 2417.9922000000006,
+      "detail": {
+        "response": "MO1307_RESOURCE_LIMIT",
+        "observation": {
+          "name": "resource-native-path-cap129",
+          "pid": 14376,
+          "startedAt": 17688.751,
+          "closedAt": 20082.4927,
+          "exitCode": 0,
+          "stdoutBytes": 248,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 20031.5092
+        },
+        "engineeringGuardMs": 15000,
+        "scriptBinding": {
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+          "byteLength": 30210,
+          "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+        }
+      }
+    },
+    {
+      "id": "resource-native-request-prefix-cap",
+      "layer": "ACTUAL_FIXED_HELPER_RAW_ENGINEERING_TRANSPORT",
+      "result": "PASS",
+      "elapsedMs": 1736.4968000000008,
+      "detail": {
+        "response": "MO1307_RESOURCE_LIMIT",
+        "observation": {
+          "name": "resource-native-request-prefix-cap",
+          "pid": 23280,
+          "startedAt": 20106.2023,
+          "closedAt": 21820.1296,
+          "exitCode": 0,
+          "stdoutBytes": 248,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 21777.196
+        },
+        "engineeringGuardMs": 15000,
+        "scriptBinding": {
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+          "byteLength": 30210,
+          "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+        }
+      }
+    },
+    {
+      "id": "resource-native-declared-file-cap",
+      "layer": "ACTUAL_FIXED_HELPER_RAW_ENGINEERING_TRANSPORT",
+      "result": "PASS",
+      "elapsedMs": 2244.324499999999,
+      "detail": {
+        "response": "MO1307_RESOURCE_LIMIT",
+        "observation": {
+          "name": "resource-native-declared-file-cap",
+          "pid": 22840,
+          "startedAt": 21841.1401,
+          "closedAt": 24065.4707,
+          "exitCode": 0,
+          "stdoutBytes": 248,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 24018.9283
+        },
+        "engineeringGuardMs": 15000,
+        "scriptBinding": {
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+          "byteLength": 30210,
+          "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+        }
+      }
+    },
+    {
+      "id": "resource-native-observed-file-cap",
+      "layer": "ACTUAL_FIXED_HELPER_RAW_ENGINEERING_TRANSPORT",
+      "result": "PASS",
+      "elapsedMs": 2801.5450999999994,
+      "detail": {
+        "response": "MO1307_RESOURCE_LIMIT",
+        "observation": {
+          "name": "resource-native-observed-file-cap",
+          "pid": 24392,
+          "startedAt": 24090.4777,
+          "closedAt": 26865.8618,
+          "exitCode": 0,
+          "stdoutBytes": 248,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 26820.5526
+        },
+        "engineeringGuardMs": 15000,
+        "scriptBinding": {
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+          "byteLength": 30210,
+          "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+        }
+      }
+    },
+    {
+      "id": "resource-sample-old-b2",
+      "layer": "HISTORICAL_HELPER_ENGINEERING_SCRIPT_SELECTION",
+      "result": "PASS",
+      "elapsedMs": 2852.188699999999,
+      "detail": {
+        "response": "OK",
+        "observation": {
+          "name": "resource-sample-old-b2",
+          "pid": 14436,
+          "startedAt": 26895.8372,
+          "closedAt": 29721.9159,
+          "exitCode": 0,
+          "stdoutBytes": 867,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 29672.1733
+        },
+        "engineeringGuardMs": 15000,
+        "scriptBinding": {
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+          "byteLength": 29771,
+          "sha256": "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+        }
+      }
+    },
+    {
+      "id": "resource-sample-corrected",
+      "layer": "ACTUAL_FIXED_HELPER_RAW_ENGINEERING_TRANSPORT",
+      "result": "PASS",
+      "elapsedMs": 2703.7458000000006,
+      "detail": {
+        "response": "OK",
+        "observation": {
+          "name": "resource-sample-corrected",
+          "pid": 26808,
+          "startedAt": 29746.1393,
+          "closedAt": 32427.5934,
+          "exitCode": 0,
+          "stdoutBytes": 867,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 32330.2829
+        },
+        "engineeringGuardMs": 15000,
+        "scriptBinding": {
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+          "byteLength": 30210,
+          "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+        }
+      }
+    },
+    {
+      "id": "deadline-sequence-no-partial-or-late-success",
+      "layer": "PRODUCTION_SEQUENCE_SYNTHETIC_CLOCK",
+      "result": "PASS",
+      "elapsedMs": 13.857200000002194,
+      "detail": {
+        "deadlineMs": 5000,
+        "firstError": "MO1307_TIMEOUT",
+        "subsequentTerminalRefusal": "MO1307_INPUT"
+      }
+    },
+    {
+      "id": "launch-substitution-require",
+      "layer": "PRODUCTION_LAUNCH_ADMISSION",
+      "result": "PASS",
+      "elapsedMs": 0.5092000000004191,
+      "detail": {
+        "code": "MO1307_USAGE",
+        "noModuleExecuted": true
+      }
+    },
+    {
+      "id": "launch-substitution-import",
+      "layer": "PRODUCTION_LAUNCH_ADMISSION",
+      "result": "PASS",
+      "elapsedMs": 0.15420000000085565,
+      "detail": {
+        "code": "MO1307_USAGE",
+        "noModuleExecuted": true
+      }
+    },
+    {
+      "id": "launch-substitution-loader",
+      "layer": "PRODUCTION_LAUNCH_ADMISSION",
+      "result": "PASS",
+      "elapsedMs": 0.1455000000023574,
+      "detail": {
+        "code": "MO1307_USAGE",
+        "noModuleExecuted": true
+      }
+    },
+    {
+      "id": "secret-safe-error-projection",
+      "layer": "PRODUCTION_ERROR_SERIALIZATION",
+      "result": "PASS",
+      "elapsedMs": 0.5077999999994063,
+      "detail": {
+        "diagnostic": {
+          "code": "MO1307_INTERNAL",
+          "kind": "MemoryOSReadinessError",
+          "reference": null,
+          "stage": "EVALUATION",
+          "version": "1.0.0"
+        },
+        "sentinelAbsent": true
+      }
+    },
+    {
+      "id": "bounded-state-and-fixed-source-review",
+      "layer": "SOURCE_REVIEW_MECHANICAL_DEPENDENCY_BINDING",
+      "result": "PASS",
+      "elapsedMs": 9.092400000001362,
+      "detail": {
+        "bindings": [
+          {
+            "relative": "src/helper-transport.mjs",
+            "oldSha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+            "newSha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+            "equal": true
+          },
+          {
+            "relative": "src/helper-protocol.mjs",
+            "oldSha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+            "newSha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+            "equal": true
+          },
+          {
+            "relative": "src/runtime.mjs",
+            "oldSha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+            "newSha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+            "equal": true
+          },
+          {
+            "relative": "src/windows-paths.mjs",
+            "oldSha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029",
+            "newSha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029",
+            "equal": true
+          },
+          {
+            "relative": "src/cli-args.mjs",
+            "oldSha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7",
+            "newSha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7",
+            "equal": true
+          },
+          {
+            "relative": "src/errors.mjs",
+            "oldSha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac",
+            "newSha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac",
+            "equal": true
+          },
+          {
+            "relative": "src/constants.mjs",
+            "oldSha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9",
+            "newSha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9",
+            "equal": true
+          },
+          {
+            "relative": "helpers/windows-inspect.ps1",
+            "oldSha256": "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b",
+            "newSha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8",
+            "equal": false
+          }
+        ],
+        "readSetBodyIdentical": true,
+        "requestLocalCollections": [
+          "rootChains <=3 roots",
+          "responseRoots <=3",
+          "responseFiles <=128 files",
+          "nativeFiles <=128 native ids",
+          "data <=maxBytes+1 per file",
+          "chunks bounded by maxBytes and response ceiling"
+        ],
+        "limits": {
+          "aggregateEvidenceBytes": 8388608,
+          "apiDeadlineMs": 10000,
+          "assumptions": 32,
+          "authorityBytes": 1048576,
+          "authoritySources": 32,
+          "blockers": 128,
+          "candidateBytes": 524288,
+          "candidateComponents": 1024,
+          "claims": 64,
+          "cleanupAllowanceMs": 2000,
+          "cliDeadlineMs": 30000,
+          "configurationBytes": 16384,
+          "decisionActorCodeUnits": 128,
+          "decisionBytes": 8192,
+          "decisionReasonCodeUnits": 1024,
+          "dependenciesPerClaim": 1024,
+          "engineeringAggregateRssBytes": 536870912,
+          "envelopeBytes": 262144,
+          "errorRecordBytes": 1024,
+          "fullPathCodeUnits": 240,
+          "gates": 128,
+          "grants": 64,
+          "graphEdges": 8192,
+          "graphNodes": 2048,
+          "helperAggregateDeadlineMs": 20000,
+          "helperChainComponents": 120,
+          "helperDeadlineMs": 5000,
+          "helperRequestBytes": 65536,
+          "helperRequestPaths": 128,
+          "helperRequests": 9,
+          "helperResponseBytes": 16777216,
+          "helperVerifyRequests": 4,
+          "historyDispositionChars": 256,
+          "historyRecords": 128,
+          "jsonDepth": 16,
+          "jsonSummaryBytes": 1024,
+          "jsonValues": 131072,
+          "keyCodeUnits": 64,
+          "manifestBytes": 262144,
+          "manifestFiles": 128,
+          "metadataCodeUnits": 256,
+          "objectMembers": 64,
+          "qualifications": 128,
+          "rawSourceBytes": 2097152,
+          "relativePathChars": 180,
+          "resultBytes": 4194304,
+          "sourceKindChars": 128,
+          "sourceVersionChars": 64,
+          "stderrBytes": 4096,
+          "stringCodeUnits": 4096,
+          "tagNameChars": 128,
+          "temporaryOutputBytes": 4194304,
+          "textStdoutBytes": 131072,
+          "workerOldHeapMiB": 128,
+          "workerYoungHeapMiB": 16
+        },
+        "findings": [
+          "No new cache, path-keyed global table or cross-request memory: helper processes one frame then exits. Existing script native field stores emitted Win32 delegate type only.",
+          "No deadline-dependent helper branch or debug/timing output; parent admission/finish checkpoints and terminal error preserve timeout mapping.",
+          "READ_SET control body and owned-chain disposal are byte-identical old/new. Optimization changes pure path validation cost, not allocation structure.",
+          "Helper imports/calls expose only existing native filesystem, identity, console/process cleanup primitives. No added network/provider capability."
+        ],
+        "scope": "Source review and bounded representative measurements, not aggregate RSS certification."
+      }
+    }
+  ],
+  "invocations": [
+    {
+      "name": "fixed-native-timely",
+      "pid": 25284,
+      "startedAt": 110.537,
+      "closedAt": 2210.8377,
+      "exitCode": 0,
+      "stdoutBytes": 867,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 2156.4489
+    },
+    {
+      "name": "timeout-exact-mapping",
+      "pid": 19092,
+      "startedAt": 2236.3098,
+      "closedAt": 7244.4888,
+      "exitCode": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null
+    },
+    {
+      "name": "late-native-success-refused",
+      "pid": 6016,
+      "startedAt": 7270.5895,
+      "closedAt": 9871.6053,
+      "exitCode": 0,
+      "stdoutBytes": 867,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 9825.7115,
+      "deliveredAt": 12526.57
+    },
+    {
+      "name": "crash-closed-transport",
+      "pid": 24192,
+      "startedAt": 12562.8623,
+      "closedAt": 14783.8553,
+      "exitCode": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "crashRequestedAt": 14765.2275
+    },
+    {
+      "name": "fixed-launch-combined-environment-poison",
+      "pid": 1104,
+      "startedAt": 14815.0558,
+      "closedAt": 17643.9363,
+      "exitCode": 0,
+      "stdoutBytes": 867,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 17600.1053
+    },
+    {
+      "name": "resource-native-path-cap129",
+      "pid": 14376,
+      "startedAt": 17688.751,
+      "closedAt": 20082.4927,
+      "exitCode": 0,
+      "stdoutBytes": 248,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 20031.5092
+    },
+    {
+      "name": "resource-native-request-prefix-cap",
+      "pid": 23280,
+      "startedAt": 20106.2023,
+      "closedAt": 21820.1296,
+      "exitCode": 0,
+      "stdoutBytes": 248,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 21777.196
+    },
+    {
+      "name": "resource-native-declared-file-cap",
+      "pid": 22840,
+      "startedAt": 21841.1401,
+      "closedAt": 24065.4707,
+      "exitCode": 0,
+      "stdoutBytes": 248,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 24018.9283
+    },
+    {
+      "name": "resource-native-observed-file-cap",
+      "pid": 24392,
+      "startedAt": 24090.4777,
+      "closedAt": 26865.8618,
+      "exitCode": 0,
+      "stdoutBytes": 248,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 26820.5526
+    },
+    {
+      "name": "resource-sample-old-b2",
+      "pid": 14436,
+      "startedAt": 26895.8372,
+      "closedAt": 29721.9159,
+      "exitCode": 0,
+      "stdoutBytes": 867,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 29672.1733
+    },
+    {
+      "name": "resource-sample-corrected",
+      "pid": 26808,
+      "startedAt": 29746.1393,
+      "closedAt": 32427.5934,
+      "exitCode": 0,
+      "stdoutBytes": 867,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 32330.2829
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\helper-transport.mjs",
+      "byteLength": 6250,
+      "sha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+      "relative": "src/helper-transport.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+      "relative": "src/helper-protocol.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\runtime.mjs",
+      "byteLength": 16904,
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+      "relative": "src/runtime.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029",
+      "relative": "src/windows-paths.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\cli-args.mjs",
+      "byteLength": 4280,
+      "sha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7",
+      "relative": "src/cli-args.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\errors.mjs",
+      "byteLength": 1823,
+      "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac",
+      "relative": "src/errors.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\src\\constants.mjs",
+      "byteLength": 16791,
+      "sha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9",
+      "relative": "src/constants.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\r3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+      "byteLength": 30210,
+      "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8",
+      "relative": "helpers/windows-inspect.ps1"
+    }
+  ],
+  "productionChanged": false,
+  "runtime": {
+    "version": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "limits": "Security boundary controls only; no MO1306 runtime promotion. Timeout/crash without valid native frame leave conservative product cleanupConfirmed=false. External OS observer and full stream/process closures establish actual targeted no-survivor boundary."
+}
