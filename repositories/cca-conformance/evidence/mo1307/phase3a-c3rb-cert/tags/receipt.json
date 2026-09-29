@@ -1,0 +1,1344 @@
+{
+  "step": "G",
+  "result": "PASS",
+  "failure": null,
+  "cases": [
+    {
+      "name": "post-tag-ready",
+      "result": "PASS",
+      "stage": "POST_TAG_VERIFICATION",
+      "readiness": "READY",
+      "checkCode": null,
+      "nativeEvaluateExit": 0,
+      "nativeVerifyExit": 0,
+      "exactApiParity": true
+    },
+    {
+      "name": "pre-tag-present",
+      "result": "PASS",
+      "stage": "PRE_TAG_READINESS",
+      "readiness": "NOT_READY",
+      "checkCode": "TAG_PRESENCE",
+      "nativeEvaluateExit": 3,
+      "nativeVerifyExit": 0,
+      "exactApiParity": true
+    },
+    {
+      "name": "post-tag-absent",
+      "result": "PASS",
+      "stage": "POST_TAG_VERIFICATION",
+      "readiness": "NOT_READY",
+      "checkCode": "TAG_PRESENCE",
+      "nativeEvaluateExit": 3,
+      "nativeVerifyExit": 0,
+      "exactApiParity": true
+    },
+    {
+      "name": "post-tag-lightweight",
+      "result": "PASS",
+      "stage": "POST_TAG_VERIFICATION",
+      "readiness": "NOT_READY",
+      "checkCode": "TAG_ANNOTATION",
+      "nativeEvaluateExit": 3,
+      "nativeVerifyExit": 0,
+      "exactApiParity": true
+    },
+    {
+      "name": "post-tag-wrong-target",
+      "result": "PASS",
+      "stage": "POST_TAG_VERIFICATION",
+      "readiness": "NOT_READY",
+      "checkCode": "TAG_TARGET",
+      "nativeEvaluateExit": 3,
+      "nativeVerifyExit": 0,
+      "exactApiParity": true
+    },
+    {
+      "name": "post-tag-wrong-name",
+      "result": "PASS",
+      "stage": "POST_TAG_VERIFICATION",
+      "readiness": "NOT_READY",
+      "checkCode": "TAG_NAME",
+      "nativeEvaluateExit": 3,
+      "nativeVerifyExit": 0,
+      "exactApiParity": true
+    }
+  ],
+  "rows": [
+    {
+      "name": "post-tag-ready",
+      "operation": "evaluate",
+      "elapsedMs": 15397.392399999999,
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-ready/evaluate/stdout.data",
+        "byteLength": 353,
+        "sha256": "sha256:93e27e14b42f17cfb57302bc1065188ec2b830cc5d4cc881883e82f4a3e9e589"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-ready/evaluate/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-ready/evaluate/observation.json",
+        "byteLength": 40410,
+        "sha256": "sha256:818af9c2ed117e2b371813657ba520cc66434fdd5aa74f49da4a154e5734bf5c"
+      },
+      "helperUsedMs": 13245.368799999998,
+      "productLifecycleElapsedMs": 13600.1641,
+      "summary": {
+        "blockerCount": 0,
+        "cneCount": 0,
+        "decision": null,
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "evaluate",
+        "proofBindingDigest": "sha256:9a5a43d4cc7ad2908ab9c90c1a96211d92880c8aacde757e1628f49f33bc2f7c",
+        "qualificationCount": 0,
+        "readiness": "READY",
+        "readinessDigest": "sha256:6a4dda7d983c63716bc2691a26147cfa87163a7c245f630ee714f75124c0d5c3",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 59991,
+        "sha256": "sha256:1c4c883707418947a0c6ca6db35d667c79eb1b8704137cca9d74ea594f51b327",
+        "gates": 22,
+        "readiness": "READY",
+        "readinessDigest": "sha256:6a4dda7d983c63716bc2691a26147cfa87163a7c245f630ee714f75124c0d5c3",
+        "proofBindingDigest": "sha256:9a5a43d4cc7ad2908ab9c90c1a96211d92880c8aacde757e1628f49f33bc2f7c",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "post-tag-ready",
+      "operation": "verify",
+      "elapsedMs": 7255.484899999998,
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-ready/verify/stdout.data",
+        "byteLength": 351,
+        "sha256": "sha256:c056b0b40f092f559af6dc796e109da57a13c786e45a1719edaf35aebe1d997a"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-ready/verify/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-ready/verify/observation.json",
+        "byteLength": 21151,
+        "sha256": "sha256:99717fa619b72f5dad4f7ba3d6bd67a63689916a95de861b775105a51da8fe49"
+      },
+      "helperUsedMs": 5561.090799999999,
+      "productLifecycleElapsedMs": 5886.669,
+      "summary": {
+        "blockerCount": 0,
+        "cneCount": 0,
+        "decision": null,
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "verify",
+        "proofBindingDigest": "sha256:9a5a43d4cc7ad2908ab9c90c1a96211d92880c8aacde757e1628f49f33bc2f7c",
+        "qualificationCount": 0,
+        "readiness": "READY",
+        "readinessDigest": "sha256:6a4dda7d983c63716bc2691a26147cfa87163a7c245f630ee714f75124c0d5c3",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 59991,
+        "sha256": "sha256:1c4c883707418947a0c6ca6db35d667c79eb1b8704137cca9d74ea594f51b327",
+        "gates": 22,
+        "readiness": "READY",
+        "readinessDigest": "sha256:6a4dda7d983c63716bc2691a26147cfa87163a7c245f630ee714f75124c0d5c3",
+        "proofBindingDigest": "sha256:9a5a43d4cc7ad2908ab9c90c1a96211d92880c8aacde757e1628f49f33bc2f7c",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "post-tag-ready",
+      "operation": "public-api-evaluate",
+      "result": "PASS",
+      "elapsedMs": 285.4995999999992,
+      "parity": {
+        "result": "PASS",
+        "byteLength": 59991,
+        "sha256": "sha256:1c4c883707418947a0c6ca6db35d667c79eb1b8704137cca9d74ea594f51b327",
+        "gates": 22,
+        "readiness": "READY",
+        "readinessDigest": "sha256:6a4dda7d983c63716bc2691a26147cfa87163a7c245f630ee714f75124c0d5c3",
+        "proofBindingDigest": "sha256:9a5a43d4cc7ad2908ab9c90c1a96211d92880c8aacde757e1628f49f33bc2f7c",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-ready/api-evaluate-result.data",
+        "byteLength": 59991,
+        "sha256": "sha256:1c4c883707418947a0c6ca6db35d667c79eb1b8704137cca9d74ea594f51b327"
+      }
+    },
+    {
+      "name": "post-tag-ready",
+      "operation": "public-api-verify",
+      "elapsedMs": 302.4493999999977,
+      "result": "PASS",
+      "parity": {
+        "result": "PASS",
+        "byteLength": 59991,
+        "sha256": "sha256:1c4c883707418947a0c6ca6db35d667c79eb1b8704137cca9d74ea594f51b327",
+        "gates": 22,
+        "readiness": "READY",
+        "readinessDigest": "sha256:6a4dda7d983c63716bc2691a26147cfa87163a7c245f630ee714f75124c0d5c3",
+        "proofBindingDigest": "sha256:9a5a43d4cc7ad2908ab9c90c1a96211d92880c8aacde757e1628f49f33bc2f7c",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-ready/api-verify-result.data",
+        "byteLength": 59991,
+        "sha256": "sha256:1c4c883707418947a0c6ca6db35d667c79eb1b8704137cca9d74ea594f51b327"
+      },
+      "decision": null
+    },
+    {
+      "name": "pre-tag-present",
+      "operation": "evaluate",
+      "elapsedMs": 13539.379800000002,
+      "exit": 3,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/pre-tag-present/evaluate/stdout.data",
+        "byteLength": 357,
+        "sha256": "sha256:a4401ffb1d03dbe891d09d4fa0d51445a7e26e8552c8d5870959b3d1a75c3d12"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/pre-tag-present/evaluate/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/pre-tag-present/evaluate/observation.json",
+        "byteLength": 40404,
+        "sha256": "sha256:ab35b91ba55ec33550823037c623f5e1f79a638510ee3787b3e4644123f5df26"
+      },
+      "helperUsedMs": 11768.9403,
+      "productLifecycleElapsedMs": 12079.8038,
+      "summary": {
+        "blockerCount": 1,
+        "cneCount": 0,
+        "decision": null,
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "evaluate",
+        "proofBindingDigest": "sha256:4731e7eef6aa725cb6b18d3d24ff8fa55a4ae8630809deafb57dd8dda3e7a951",
+        "qualificationCount": 0,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:01819aa006f7de4fc45ef9a54a7130ef427179e968c437940cd664c0df3b67db",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 60508,
+        "sha256": "sha256:aad9da94809030114a8f25a2ab730c5cd39a3ec57ad342f5126afdd62561d0c5",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:01819aa006f7de4fc45ef9a54a7130ef427179e968c437940cd664c0df3b67db",
+        "proofBindingDigest": "sha256:4731e7eef6aa725cb6b18d3d24ff8fa55a4ae8630809deafb57dd8dda3e7a951",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "pre-tag-present",
+      "operation": "verify",
+      "elapsedMs": 7424.226499999997,
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/pre-tag-present/verify/stdout.data",
+        "byteLength": 355,
+        "sha256": "sha256:2da7ff00277dda0982376aaa22059257b5ddb14319af8583ad24a30bc7b23c3d"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/pre-tag-present/verify/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/pre-tag-present/verify/observation.json",
+        "byteLength": 21125,
+        "sha256": "sha256:be505b376450a7e4c5463c69bb71e171a17d25ef07feb531572bff9ab170ea23"
+      },
+      "helperUsedMs": 5657.933,
+      "productLifecycleElapsedMs": 5989.9917,
+      "summary": {
+        "blockerCount": 1,
+        "cneCount": 0,
+        "decision": null,
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "verify",
+        "proofBindingDigest": "sha256:4731e7eef6aa725cb6b18d3d24ff8fa55a4ae8630809deafb57dd8dda3e7a951",
+        "qualificationCount": 0,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:01819aa006f7de4fc45ef9a54a7130ef427179e968c437940cd664c0df3b67db",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 60508,
+        "sha256": "sha256:aad9da94809030114a8f25a2ab730c5cd39a3ec57ad342f5126afdd62561d0c5",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:01819aa006f7de4fc45ef9a54a7130ef427179e968c437940cd664c0df3b67db",
+        "proofBindingDigest": "sha256:4731e7eef6aa725cb6b18d3d24ff8fa55a4ae8630809deafb57dd8dda3e7a951",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "pre-tag-present",
+      "operation": "public-api-evaluate",
+      "result": "PASS",
+      "elapsedMs": 309.2523000000001,
+      "parity": {
+        "result": "PASS",
+        "byteLength": 60508,
+        "sha256": "sha256:aad9da94809030114a8f25a2ab730c5cd39a3ec57ad342f5126afdd62561d0c5",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:01819aa006f7de4fc45ef9a54a7130ef427179e968c437940cd664c0df3b67db",
+        "proofBindingDigest": "sha256:4731e7eef6aa725cb6b18d3d24ff8fa55a4ae8630809deafb57dd8dda3e7a951",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/pre-tag-present/api-evaluate-result.data",
+        "byteLength": 60508,
+        "sha256": "sha256:aad9da94809030114a8f25a2ab730c5cd39a3ec57ad342f5126afdd62561d0c5"
+      }
+    },
+    {
+      "name": "pre-tag-present",
+      "operation": "public-api-verify",
+      "elapsedMs": 320.75189999999566,
+      "result": "PASS",
+      "parity": {
+        "result": "PASS",
+        "byteLength": 60508,
+        "sha256": "sha256:aad9da94809030114a8f25a2ab730c5cd39a3ec57ad342f5126afdd62561d0c5",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:01819aa006f7de4fc45ef9a54a7130ef427179e968c437940cd664c0df3b67db",
+        "proofBindingDigest": "sha256:4731e7eef6aa725cb6b18d3d24ff8fa55a4ae8630809deafb57dd8dda3e7a951",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/pre-tag-present/api-verify-result.data",
+        "byteLength": 60508,
+        "sha256": "sha256:aad9da94809030114a8f25a2ab730c5cd39a3ec57ad342f5126afdd62561d0c5"
+      },
+      "decision": null
+    },
+    {
+      "name": "post-tag-absent",
+      "operation": "evaluate",
+      "elapsedMs": 14548.551200000002,
+      "exit": 3,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-absent/evaluate/stdout.data",
+        "byteLength": 357,
+        "sha256": "sha256:c008ca1c401d118d9af9387c54eeeeec17ddc0e55f14ac18dd039f4ca75dbee0"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-absent/evaluate/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-absent/evaluate/observation.json",
+        "byteLength": 40431,
+        "sha256": "sha256:b3a9822fdef249dea0d2073363f92a07e22cc6f866b574a4f6a47f54c96df0d4"
+      },
+      "helperUsedMs": 12596.2564,
+      "productLifecycleElapsedMs": 12978.5734,
+      "summary": {
+        "blockerCount": 1,
+        "cneCount": 0,
+        "decision": null,
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "evaluate",
+        "proofBindingDigest": "sha256:db78c30718050af61d552c08463952259b266950d7f62302e0f4c2320980b978",
+        "qualificationCount": 0,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:9d69afc29651734fa101df21d8eab6882e5b389f66cf9e8af1265b259606a262",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 60512,
+        "sha256": "sha256:2466271c8dea4ade10b2c7e9ddb3732181ffdbad7d1aa2c2fe448c10bd11bfcf",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:9d69afc29651734fa101df21d8eab6882e5b389f66cf9e8af1265b259606a262",
+        "proofBindingDigest": "sha256:db78c30718050af61d552c08463952259b266950d7f62302e0f4c2320980b978",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "post-tag-absent",
+      "operation": "verify",
+      "elapsedMs": 7453.139000000003,
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-absent/verify/stdout.data",
+        "byteLength": 355,
+        "sha256": "sha256:cc0a2ac6085ce16a2907c02ab8a02c76fadbc32276ed9dec2c05225a006cea18"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-absent/verify/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-absent/verify/observation.json",
+        "byteLength": 21092,
+        "sha256": "sha256:329aa3bb703d70a7866f43f7669878f5ba6cdb3f0279cef0967980a26eba1d6a"
+      },
+      "helperUsedMs": 5591.0317000000005,
+      "productLifecycleElapsedMs": 5914.6345,
+      "summary": {
+        "blockerCount": 1,
+        "cneCount": 0,
+        "decision": null,
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "verify",
+        "proofBindingDigest": "sha256:db78c30718050af61d552c08463952259b266950d7f62302e0f4c2320980b978",
+        "qualificationCount": 0,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:9d69afc29651734fa101df21d8eab6882e5b389f66cf9e8af1265b259606a262",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 60512,
+        "sha256": "sha256:2466271c8dea4ade10b2c7e9ddb3732181ffdbad7d1aa2c2fe448c10bd11bfcf",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:9d69afc29651734fa101df21d8eab6882e5b389f66cf9e8af1265b259606a262",
+        "proofBindingDigest": "sha256:db78c30718050af61d552c08463952259b266950d7f62302e0f4c2320980b978",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "post-tag-absent",
+      "operation": "public-api-evaluate",
+      "result": "PASS",
+      "elapsedMs": 274.86699999999837,
+      "parity": {
+        "result": "PASS",
+        "byteLength": 60512,
+        "sha256": "sha256:2466271c8dea4ade10b2c7e9ddb3732181ffdbad7d1aa2c2fe448c10bd11bfcf",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:9d69afc29651734fa101df21d8eab6882e5b389f66cf9e8af1265b259606a262",
+        "proofBindingDigest": "sha256:db78c30718050af61d552c08463952259b266950d7f62302e0f4c2320980b978",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-absent/api-evaluate-result.data",
+        "byteLength": 60512,
+        "sha256": "sha256:2466271c8dea4ade10b2c7e9ddb3732181ffdbad7d1aa2c2fe448c10bd11bfcf"
+      }
+    },
+    {
+      "name": "post-tag-absent",
+      "operation": "public-api-verify",
+      "elapsedMs": 302.64199999999255,
+      "result": "PASS",
+      "parity": {
+        "result": "PASS",
+        "byteLength": 60512,
+        "sha256": "sha256:2466271c8dea4ade10b2c7e9ddb3732181ffdbad7d1aa2c2fe448c10bd11bfcf",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:9d69afc29651734fa101df21d8eab6882e5b389f66cf9e8af1265b259606a262",
+        "proofBindingDigest": "sha256:db78c30718050af61d552c08463952259b266950d7f62302e0f4c2320980b978",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-absent/api-verify-result.data",
+        "byteLength": 60512,
+        "sha256": "sha256:2466271c8dea4ade10b2c7e9ddb3732181ffdbad7d1aa2c2fe448c10bd11bfcf"
+      },
+      "decision": null
+    },
+    {
+      "name": "post-tag-lightweight",
+      "operation": "evaluate",
+      "elapsedMs": 13847.454599999997,
+      "exit": 3,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-lightweight/evaluate/stdout.data",
+        "byteLength": 357,
+        "sha256": "sha256:d45942937b11b9b39e9072499c497bbd748726d7bdfb21262f0633d6da36a874"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-lightweight/evaluate/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-lightweight/evaluate/observation.json",
+        "byteLength": 40413,
+        "sha256": "sha256:dd3895277c82ea85947e698eaa37e9a4c3498babead373fafc5d51ff1398fa24"
+      },
+      "helperUsedMs": 12132.897100000002,
+      "productLifecycleElapsedMs": 12450.5185,
+      "summary": {
+        "blockerCount": 1,
+        "cneCount": 0,
+        "decision": null,
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "evaluate",
+        "proofBindingDigest": "sha256:6bcede33ba2a6900aa19f2eef4a6545150392b1d53980bbb259411511e839f1c",
+        "qualificationCount": 0,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:eff23dfb77bf225233a945ef8a51340b8b13d24fa1f701d9235cfd0fe3ca6efc",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 60514,
+        "sha256": "sha256:cd310bd5027cfed86278e5ef5b44076d65c65ea694f36105ccd76a4f44a4a218",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:eff23dfb77bf225233a945ef8a51340b8b13d24fa1f701d9235cfd0fe3ca6efc",
+        "proofBindingDigest": "sha256:6bcede33ba2a6900aa19f2eef4a6545150392b1d53980bbb259411511e839f1c",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "post-tag-lightweight",
+      "operation": "verify",
+      "elapsedMs": 9341.159999999989,
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-lightweight/verify/stdout.data",
+        "byteLength": 355,
+        "sha256": "sha256:dde0e6c2348a27880bfe6569edb4f2d309094adb9341824abe81974803b83a4e"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-lightweight/verify/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-lightweight/verify/observation.json",
+        "byteLength": 21140,
+        "sha256": "sha256:b1517bbcd861766d824a1895e517c402e6956fbc2782086d808f030b74ef7b1c"
+      },
+      "helperUsedMs": 7478.8246,
+      "productLifecycleElapsedMs": 7937.3383,
+      "summary": {
+        "blockerCount": 1,
+        "cneCount": 0,
+        "decision": null,
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "verify",
+        "proofBindingDigest": "sha256:6bcede33ba2a6900aa19f2eef4a6545150392b1d53980bbb259411511e839f1c",
+        "qualificationCount": 0,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:eff23dfb77bf225233a945ef8a51340b8b13d24fa1f701d9235cfd0fe3ca6efc",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 60514,
+        "sha256": "sha256:cd310bd5027cfed86278e5ef5b44076d65c65ea694f36105ccd76a4f44a4a218",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:eff23dfb77bf225233a945ef8a51340b8b13d24fa1f701d9235cfd0fe3ca6efc",
+        "proofBindingDigest": "sha256:6bcede33ba2a6900aa19f2eef4a6545150392b1d53980bbb259411511e839f1c",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "post-tag-lightweight",
+      "operation": "public-api-evaluate",
+      "result": "PASS",
+      "elapsedMs": 363.6405999999988,
+      "parity": {
+        "result": "PASS",
+        "byteLength": 60514,
+        "sha256": "sha256:cd310bd5027cfed86278e5ef5b44076d65c65ea694f36105ccd76a4f44a4a218",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:eff23dfb77bf225233a945ef8a51340b8b13d24fa1f701d9235cfd0fe3ca6efc",
+        "proofBindingDigest": "sha256:6bcede33ba2a6900aa19f2eef4a6545150392b1d53980bbb259411511e839f1c",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-lightweight/api-evaluate-result.data",
+        "byteLength": 60514,
+        "sha256": "sha256:cd310bd5027cfed86278e5ef5b44076d65c65ea694f36105ccd76a4f44a4a218"
+      }
+    },
+    {
+      "name": "post-tag-lightweight",
+      "operation": "public-api-verify",
+      "elapsedMs": 355.75620000000345,
+      "result": "PASS",
+      "parity": {
+        "result": "PASS",
+        "byteLength": 60514,
+        "sha256": "sha256:cd310bd5027cfed86278e5ef5b44076d65c65ea694f36105ccd76a4f44a4a218",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:eff23dfb77bf225233a945ef8a51340b8b13d24fa1f701d9235cfd0fe3ca6efc",
+        "proofBindingDigest": "sha256:6bcede33ba2a6900aa19f2eef4a6545150392b1d53980bbb259411511e839f1c",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-lightweight/api-verify-result.data",
+        "byteLength": 60514,
+        "sha256": "sha256:cd310bd5027cfed86278e5ef5b44076d65c65ea694f36105ccd76a4f44a4a218"
+      },
+      "decision": null
+    },
+    {
+      "name": "post-tag-wrong-target",
+      "operation": "evaluate",
+      "elapsedMs": 13768.2494,
+      "exit": 3,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-target/evaluate/stdout.data",
+        "byteLength": 357,
+        "sha256": "sha256:b3190474610ada7bd7b07591d3e77e39462120d07a3a2b00afb04377cc5a7e7e"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-target/evaluate/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-target/evaluate/observation.json",
+        "byteLength": 40398,
+        "sha256": "sha256:2deeb215a12a6bc6865a0444f9c41a8bc31fe75f7b40471938e82eba718bf255"
+      },
+      "helperUsedMs": 11927.8036,
+      "productLifecycleElapsedMs": 12266.8305,
+      "summary": {
+        "blockerCount": 1,
+        "cneCount": 0,
+        "decision": null,
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "evaluate",
+        "proofBindingDigest": "sha256:56ffe0723898ed1426bec2ed8ed9da355ae80f54a7878e14c189dea6df4a72db",
+        "qualificationCount": 0,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:7de0760a8cc2509ee2e0da11eed8fd1457c47c3898a81a334ca0e7d2e556aa1d",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 60510,
+        "sha256": "sha256:da2143ee1a070f1128a6344d2499fe8eb6e56a75b5e31577577aabdef1e3046c",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:7de0760a8cc2509ee2e0da11eed8fd1457c47c3898a81a334ca0e7d2e556aa1d",
+        "proofBindingDigest": "sha256:56ffe0723898ed1426bec2ed8ed9da355ae80f54a7878e14c189dea6df4a72db",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "post-tag-wrong-target",
+      "operation": "verify",
+      "elapsedMs": 7259.415599999993,
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-target/verify/stdout.data",
+        "byteLength": 355,
+        "sha256": "sha256:fef5e6adea38cd6d261b5ad118e7bb9c0dc86fa827ff653170e6406c16224182"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-target/verify/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-target/verify/observation.json",
+        "byteLength": 21201,
+        "sha256": "sha256:76843346bda0a5e5a1965ef45e8dc3cae0a9d74bcf1c57267e624ce33dbfda91"
+      },
+      "helperUsedMs": 5506.345200000001,
+      "productLifecycleElapsedMs": 5854.1672,
+      "summary": {
+        "blockerCount": 1,
+        "cneCount": 0,
+        "decision": null,
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "verify",
+        "proofBindingDigest": "sha256:56ffe0723898ed1426bec2ed8ed9da355ae80f54a7878e14c189dea6df4a72db",
+        "qualificationCount": 0,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:7de0760a8cc2509ee2e0da11eed8fd1457c47c3898a81a334ca0e7d2e556aa1d",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 60510,
+        "sha256": "sha256:da2143ee1a070f1128a6344d2499fe8eb6e56a75b5e31577577aabdef1e3046c",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:7de0760a8cc2509ee2e0da11eed8fd1457c47c3898a81a334ca0e7d2e556aa1d",
+        "proofBindingDigest": "sha256:56ffe0723898ed1426bec2ed8ed9da355ae80f54a7878e14c189dea6df4a72db",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "post-tag-wrong-target",
+      "operation": "public-api-evaluate",
+      "result": "PASS",
+      "elapsedMs": 277.9119000000064,
+      "parity": {
+        "result": "PASS",
+        "byteLength": 60510,
+        "sha256": "sha256:da2143ee1a070f1128a6344d2499fe8eb6e56a75b5e31577577aabdef1e3046c",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:7de0760a8cc2509ee2e0da11eed8fd1457c47c3898a81a334ca0e7d2e556aa1d",
+        "proofBindingDigest": "sha256:56ffe0723898ed1426bec2ed8ed9da355ae80f54a7878e14c189dea6df4a72db",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-target/api-evaluate-result.data",
+        "byteLength": 60510,
+        "sha256": "sha256:da2143ee1a070f1128a6344d2499fe8eb6e56a75b5e31577577aabdef1e3046c"
+      }
+    },
+    {
+      "name": "post-tag-wrong-target",
+      "operation": "public-api-verify",
+      "elapsedMs": 302.08929999999236,
+      "result": "PASS",
+      "parity": {
+        "result": "PASS",
+        "byteLength": 60510,
+        "sha256": "sha256:da2143ee1a070f1128a6344d2499fe8eb6e56a75b5e31577577aabdef1e3046c",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:7de0760a8cc2509ee2e0da11eed8fd1457c47c3898a81a334ca0e7d2e556aa1d",
+        "proofBindingDigest": "sha256:56ffe0723898ed1426bec2ed8ed9da355ae80f54a7878e14c189dea6df4a72db",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-target/api-verify-result.data",
+        "byteLength": 60510,
+        "sha256": "sha256:da2143ee1a070f1128a6344d2499fe8eb6e56a75b5e31577577aabdef1e3046c"
+      },
+      "decision": null
+    },
+    {
+      "name": "post-tag-wrong-name",
+      "operation": "evaluate",
+      "elapsedMs": 13286.67360000001,
+      "exit": 3,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-name/evaluate/stdout.data",
+        "byteLength": 357,
+        "sha256": "sha256:c5f3217ce84c6575b327fafa7eade10c192d88f9a085e59b0f20b4bb01b7ff18"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-name/evaluate/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-name/evaluate/observation.json",
+        "byteLength": 40453,
+        "sha256": "sha256:072fd978c7d224acf92ccd83223d755e7a0fc977334ddcdb0645119b0a3d7065"
+      },
+      "helperUsedMs": 11479.414299999997,
+      "productLifecycleElapsedMs": 11821.8144,
+      "summary": {
+        "blockerCount": 1,
+        "cneCount": 0,
+        "decision": null,
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "evaluate",
+        "proofBindingDigest": "sha256:f5913bf4f7f1140beadb2ae26444902a8376218e2549d8940be24947d359ff79",
+        "qualificationCount": 0,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:d141b4c169922ca405f9a182bec26d5b136e5eb7c3fbaaeb56cdcf0125948c74",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 60508,
+        "sha256": "sha256:3a3f0b5b468ada374d07c1e40ea360422887e766d90638979f6c768a6f16f510",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:d141b4c169922ca405f9a182bec26d5b136e5eb7c3fbaaeb56cdcf0125948c74",
+        "proofBindingDigest": "sha256:f5913bf4f7f1140beadb2ae26444902a8376218e2549d8940be24947d359ff79",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "post-tag-wrong-name",
+      "operation": "verify",
+      "elapsedMs": 7245.040899999993,
+      "exit": 0,
+      "signal": null,
+      "error": null,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-name/verify/stdout.data",
+        "byteLength": 355,
+        "sha256": "sha256:9fd5ec217aabf09943a219e3b5a4d373cb44c6f906115a43c40b9fa42c7f52dc"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-name/verify/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "result": "PASS",
+      "observation": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-name/verify/observation.json",
+        "byteLength": 21114,
+        "sha256": "sha256:7643af1df612770c39fca6ca3e9fc1857b61b556fb5fce57a704275543740bd2"
+      },
+      "helperUsedMs": 5499.379,
+      "productLifecycleElapsedMs": 5839.4825,
+      "summary": {
+        "blockerCount": 1,
+        "cneCount": 0,
+        "decision": null,
+        "kind": "MemoryOSReadinessSummary",
+        "operation": "verify",
+        "proofBindingDigest": "sha256:f5913bf4f7f1140beadb2ae26444902a8376218e2549d8940be24947d359ff79",
+        "qualificationCount": 0,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:d141b4c169922ca405f9a182bec26d5b136e5eb7c3fbaaeb56cdcf0125948c74",
+        "version": "1.0.0"
+      },
+      "preservedResult": {
+        "result": "PASS",
+        "byteLength": 60508,
+        "sha256": "sha256:3a3f0b5b468ada374d07c1e40ea360422887e766d90638979f6c768a6f16f510",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:d141b4c169922ca405f9a182bec26d5b136e5eb7c3fbaaeb56cdcf0125948c74",
+        "proofBindingDigest": "sha256:f5913bf4f7f1140beadb2ae26444902a8376218e2549d8940be24947d359ff79",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      }
+    },
+    {
+      "name": "post-tag-wrong-name",
+      "operation": "public-api-evaluate",
+      "result": "PASS",
+      "elapsedMs": 275.54370000000927,
+      "parity": {
+        "result": "PASS",
+        "byteLength": 60508,
+        "sha256": "sha256:3a3f0b5b468ada374d07c1e40ea360422887e766d90638979f6c768a6f16f510",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:d141b4c169922ca405f9a182bec26d5b136e5eb7c3fbaaeb56cdcf0125948c74",
+        "proofBindingDigest": "sha256:f5913bf4f7f1140beadb2ae26444902a8376218e2549d8940be24947d359ff79",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-name/api-evaluate-result.data",
+        "byteLength": 60508,
+        "sha256": "sha256:3a3f0b5b468ada374d07c1e40ea360422887e766d90638979f6c768a6f16f510"
+      }
+    },
+    {
+      "name": "post-tag-wrong-name",
+      "operation": "public-api-verify",
+      "elapsedMs": 308.03979999999865,
+      "result": "PASS",
+      "parity": {
+        "result": "PASS",
+        "byteLength": 60508,
+        "sha256": "sha256:3a3f0b5b468ada374d07c1e40ea360422887e766d90638979f6c768a6f16f510",
+        "gates": 22,
+        "readiness": "NOT_READY",
+        "readinessDigest": "sha256:d141b4c169922ca405f9a182bec26d5b136e5eb7c3fbaaeb56cdcf0125948c74",
+        "proofBindingDigest": "sha256:f5913bf4f7f1140beadb2ae26444902a8376218e2549d8940be24947d359ff79",
+        "exactFields": [
+          "candidate",
+          "candidateDigest",
+          "profile",
+          "stage",
+          "gates",
+          "blockers",
+          "cneReasons",
+          "qualifications",
+          "history",
+          "providers",
+          "readiness",
+          "readinessDigest",
+          "proofBindingDigest",
+          "canonicalResultBytes"
+        ]
+      },
+      "resultBytes": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/post-tag-wrong-name/api-verify-result.data",
+        "byteLength": 60508,
+        "sha256": "sha256:3a3f0b5b468ada374d07c1e40ea360422887e766d90638979f6c768a6f16f510"
+      },
+      "decision": null
+    }
+  ],
+  "installedUnchanged": true,
+  "finishedAt": "2026-09-29T23:21:00.212Z",
+  "actualInstalledBinObserved": true,
+  "noRetry": true,
+  "sourceBindings": [
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-cert/common.mjs",
+        "byteLength": 3164,
+        "sha256": "sha256:b32ecefbe5bbacd6c5363783baab67b3114355b82bacb08a183c7c14c5f6f0f4"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/executed-sources/common.mjs.data",
+        "byteLength": 3164,
+        "sha256": "sha256:b32ecefbe5bbacd6c5363783baab67b3114355b82bacb08a183c7c14c5f6f0f4"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-cert/decisions-tags.mjs",
+        "byteLength": 19369,
+        "sha256": "sha256:eb8401b51dead7c99b07ba95f13ef0a226611458e7c1b7d248f563ebec0167f9"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/executed-sources/decisions-tags.mjs.data",
+        "byteLength": 19369,
+        "sha256": "sha256:eb8401b51dead7c99b07ba95f13ef0a226611458e7c1b7d248f563ebec0167f9"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-cert/observer-entry.mjs",
+        "byteLength": 7834,
+        "sha256": "sha256:b3c7c5b5a838011b02c978cb51d46ddf7e2a16e27cecb78bbd88eccdfbad96c2"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/executed-sources/observer-entry.mjs.data",
+        "byteLength": 7834,
+        "sha256": "sha256:b3c7c5b5a838011b02c978cb51d46ddf7e2a16e27cecb78bbd88eccdfbad96c2"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-cert/runtime-observer.mjs",
+        "byteLength": 331,
+        "sha256": "sha256:3d89cd943126931be84f3af59ad8cff3acf40bfdab180e3771b4f8cbbe59fa85"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/executed-sources/runtime-observer.mjs.data",
+        "byteLength": 331,
+        "sha256": "sha256:3d89cd943126931be84f3af59ad8cff3acf40bfdab180e3771b4f8cbbe59fa85"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-cert/transport-observer.mjs",
+        "byteLength": 975,
+        "sha256": "sha256:8e7480c4c39662dfceaffd7f5fb799e1beb42e6d919898677762b111ccfd226f"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/executed-sources/transport-observer.mjs.data",
+        "byteLength": 975,
+        "sha256": "sha256:8e7480c4c39662dfceaffd7f5fb799e1beb42e6d919898677762b111ccfd226f"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-cert/errors-observer.mjs",
+        "byteLength": 298,
+        "sha256": "sha256:096d79449c2c2c397516a7ace42169a2d3ea001f102ee4599b6dec69cb031006"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/tags/executed-sources/errors-observer.mjs.data",
+        "byteLength": 298,
+        "sha256": "sha256:096d79449c2c2c397516a7ace42169a2d3ea001f102ee4599b6dec69cb031006"
+      }
+    }
+  ],
+  "noGitSubprocessForTagObservation": true,
+  "noTagMutation": true,
+  "noNetwork": true
+}

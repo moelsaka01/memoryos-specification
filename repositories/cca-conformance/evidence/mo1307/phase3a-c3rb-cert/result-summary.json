@@ -1,0 +1,437 @@
+{
+  "kind": "MO1307Phase3AFailedCampaignReportingSupplement",
+  "version": "1.0.0",
+  "result": "FAILED/INCOMPLETE",
+  "reportingOnly": true,
+  "newProductExecutions": 0,
+  "diagnosticCampaign": false,
+  "candidate": "defe93989efc6501b1a730b82e79e705884b269b",
+  "worktree": "C:/m7a",
+  "branch": "codex/mo1307-phase3a-c3rb-cert",
+  "receipt": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/certification-receipt.json",
+    "byteLength": 323670,
+    "sha256": "sha256:8c216030a88b2e491ad878b471c61981ad05eaed6a5a146179f66940b4c93776"
+  },
+  "seal": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/campaign-seal.json",
+    "byteLength": 256523,
+    "sha256": "sha256:f509b2d9f4ac36b0a1590811586a2c5828d0a9cf64f02da8ec32d17edb072e0c"
+  },
+  "inventory": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/recovered-inventory.json",
+    "byteLength": 68277,
+    "sha256": "sha256:ae927858aed6c9ddc255ed0efb9fb74160ffbd899f9780aa6c3f9109ae51b784"
+  },
+  "completed": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I"
+  ],
+  "failed": [
+    "J"
+  ],
+  "notRun": [
+    "K",
+    "L",
+    "M",
+    "N",
+    "O"
+  ],
+  "firstMandatoryFailure": {
+    "stage": "J",
+    "case": "cleanup-topology: exact cleanup allowance subtraction assertion",
+    "source": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-cert/cleanup-topology.mjs:27",
+    "expected": 2000,
+    "actual": 2000.000000000001,
+    "operator": "strictEqual",
+    "checkerExit": 1,
+    "productOperationalExit": null,
+    "explanation": "Recorded mandatory checker failure. No arithmetic correction, deadline change, retry or diagnostic campaign was performed.",
+    "originControl": "H/helper-timeout",
+    "helperRequest": {
+      "name": "helper-timeout",
+      "ordinal": "002",
+      "pid": 28400,
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "requestSha256": "sha256:fe393bd20de6a931dd8fe42bab2ce50f2c3da3246eab65c65767c39213531a04",
+      "responseSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "helperObjects": [
+        {
+          "identity": {
+            "pid": 28400,
+            "creationTime100ns": 134351976651173090,
+            "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+          },
+          "role": "helper",
+          "parentIdentity": {
+            "pid": 9152,
+            "creationTime100ns": 134351976623564080,
+            "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe"
+          },
+          "firstObservedAt": {
+            "qpc": 2188152325343,
+            "nativeUtc100ns": 134351976651509950,
+            "utc": "2026-09-29T23:21:05.150207+00:00"
+          },
+          "lastSeenAt": {
+            "qpc": 2188201641131,
+            "nativeUtc100ns": 134351976700825810,
+            "utc": "2026-09-29T23:21:10.082380+00:00"
+          },
+          "signaledAt": {
+            "qpc": 2188202422470,
+            "nativeUtc100ns": 134351976701607070,
+            "utc": "2026-09-29T23:21:10.156487+00:00"
+          },
+          "nativeTimes": {
+            "creationTime100ns": 134351976651173090,
+            "exitTime100ns": 134351976701305810,
+            "kernelTime100ns": 3125000,
+            "userTime100ns": 3281250
+          }
+        }
+      ],
+      "consoleObjects": [
+        {
+          "identity": {
+            "pid": 26736,
+            "creationTime100ns": 134351976651300060,
+            "executable": "C:\\Windows\\System32\\conhost.exe"
+          },
+          "role": "console_host",
+          "parentIdentity": {
+            "pid": 28400,
+            "creationTime100ns": 134351976651173090,
+            "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+          },
+          "firstObservedAt": {
+            "qpc": 2188152327681,
+            "nativeUtc100ns": 134351976651512290,
+            "utc": "2026-09-29T23:21:05.151206+00:00"
+          },
+          "lastSeenAt": {
+            "qpc": 2188158441889,
+            "nativeUtc100ns": 134351976657626540,
+            "utc": "2026-09-29T23:21:05.762584+00:00"
+          },
+          "signaledAt": {
+            "qpc": 2188159157964,
+            "nativeUtc100ns": 134351976658342580,
+            "utc": "2026-09-29T23:21:05.833716+00:00"
+          },
+          "nativeTimes": {
+            "creationTime100ns": 134351976651300060,
+            "exitTime100ns": 134351976658086830,
+            "kernelTime100ns": 0,
+            "userTime100ns": 0
+          }
+        }
+      ],
+      "helperObjectSignaled": true,
+      "consoleObjectSignaled": true,
+      "transportClosed": true,
+      "killRequestedAt": 6474.8006,
+      "responseBytes": 0
+    },
+    "clocks": {
+      "terminalAtMs": 6474.1113,
+      "cleanupDeadlineAtMs": 8474.1113,
+      "transportClosedAtMs": 6490.0497,
+      "transportCleanupMarginMs": 1984.061600000001,
+      "clockBridge": {
+        "readyQpc": 2188138344879,
+        "qpcFrequency": 10000000,
+        "performanceSeenAt": 175.1588,
+        "performanceBeforeWriteAt": 175.1785,
+        "qpcAcknowledged": 2188139571935,
+        "offsetLowerMs": -218813782.01500002,
+        "offsetUpperMs": -218813659.32909995,
+        "offsetBracketWidthMs": 122.68590006232262,
+        "method": "QPC-to-Node-performance offset bounded by ready/read and write/ack ordering; no wall-clock conversion or deadline grace."
+      }
+    },
+    "evidence": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/steps/J.stderr.data",
+      "byteLength": 701,
+      "sha256": "sha256:db84dfba05a51974b1fee79d366c319b819ff27f53571a1b155abf6724170a9c"
+    }
+  },
+  "nativeCli": {
+    "invocations": 29,
+    "helpers": 171,
+    "workers": 29,
+    "exitCounts": {
+      "0": 17,
+      "2": 2,
+      "3": 6,
+      "4": 1,
+      "27": 3
+    },
+    "maxObservedHelperExchangeMs": 3998.4058999999997,
+    "maxChargedHelperLifecycleMs": 3997.2690000000002,
+    "maxAggregateHelperActiveMs": 13569.3452,
+    "maxCliLifecycleMs": 13921.3113,
+    "allRecordedInvocationsMatchedExpected": true
+  },
+  "controls": {
+    "H": {
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "timely-helper",
+          "result": "PASS",
+          "expectedError": null,
+          "actualError": null,
+          "elapsedMs": 1229.4992000000002,
+          "helpers": 1,
+          "workers": 0,
+          "terminalAt": null,
+          "cleanupDeadline": null,
+          "activeRole": null,
+          "cleanupConfirmed": true
+        },
+        {
+          "name": "cancel-before-helper",
+          "result": "PASS",
+          "expectedError": "MO1307_CANCELLED",
+          "actualError": "MO1307_CANCELLED",
+          "elapsedMs": 0.9349000000001979,
+          "helpers": 0,
+          "workers": 0,
+          "terminalAt": 1460.9594,
+          "cleanupDeadline": 3460.9593999999997,
+          "activeRole": null,
+          "cleanupConfirmed": true
+        },
+        {
+          "name": "helper-timeout",
+          "result": "PASS",
+          "expectedError": "MO1307_TIMEOUT",
+          "actualError": "MO1307_TIMEOUT",
+          "elapsedMs": 5033.904100000001,
+          "helpers": 1,
+          "workers": 0,
+          "terminalAt": 6474.1113,
+          "cleanupDeadline": 8474.1113,
+          "activeRole": "helper",
+          "cleanupConfirmed": false
+        },
+        {
+          "name": "late-helper-success-rejected",
+          "result": "PASS",
+          "expectedError": "MO1307_TIMEOUT",
+          "actualError": "MO1307_TIMEOUT",
+          "elapsedMs": 5790.787400000001,
+          "helpers": 1,
+          "workers": 0,
+          "terminalAt": 11507.463,
+          "cleanupDeadline": 13507.463,
+          "activeRole": null,
+          "cleanupConfirmed": true
+        },
+        {
+          "name": "cancel-during-helper",
+          "result": "PASS",
+          "expectedError": "MO1307_CANCELLED",
+          "actualError": "MO1307_CANCELLED",
+          "elapsedMs": 1517.5707000000002,
+          "helpers": 1,
+          "workers": 0,
+          "terminalAt": 13791.917,
+          "cleanupDeadline": 15791.917,
+          "activeRole": "helper",
+          "cleanupConfirmed": false
+        },
+        {
+          "name": "cancel-between-helper-worker",
+          "result": "PASS",
+          "expectedError": "MO1307_CANCELLED",
+          "actualError": "MO1307_CANCELLED",
+          "elapsedMs": 1194.0133999999998,
+          "helpers": 1,
+          "workers": 0,
+          "terminalAt": 15001.0953,
+          "cleanupDeadline": 17001.0953,
+          "activeRole": null,
+          "cleanupConfirmed": true
+        },
+        {
+          "name": "aggregate-helper-exhaustion",
+          "result": "PASS",
+          "expectedError": "MO1307_TIMEOUT",
+          "actualError": "MO1307_TIMEOUT",
+          "elapsedMs": 20319.556999999997,
+          "helpers": 6,
+          "workers": 1,
+          "terminalAt": 35308.3527,
+          "cleanupDeadline": 37308.3527,
+          "activeRole": "helper",
+          "cleanupConfirmed": false
+        }
+      ],
+      "externalProof": "PASS",
+      "helperCount": 11
+    },
+    "I": {
+      "result": "PASS",
+      "cases": [
+        {
+          "name": "worker-timeout",
+          "result": "PASS",
+          "expectedError": "MO1307_TIMEOUT",
+          "actualError": "MO1307_TIMEOUT",
+          "elapsedMs": 10010.4949,
+          "helpers": 0,
+          "workers": 1,
+          "terminalAt": 10168.0802,
+          "cleanupDeadline": 12168.0802,
+          "activeRole": null,
+          "cleanupConfirmed": true
+        },
+        {
+          "name": "worker-cancellation",
+          "result": "PASS",
+          "expectedError": "MO1307_CANCELLED",
+          "actualError": "MO1307_CANCELLED",
+          "elapsedMs": 109.1869000000006,
+          "helpers": 0,
+          "workers": 1,
+          "terminalAt": 10283.3264,
+          "cleanupDeadline": 12283.3264,
+          "activeRole": null,
+          "cleanupConfirmed": true
+        },
+        {
+          "name": "late-worker-result-rejected",
+          "result": "PASS",
+          "expectedError": "MO1307_TIMEOUT",
+          "actualError": "MO1307_TIMEOUT",
+          "elapsedMs": 10546.271200000001,
+          "helpers": 0,
+          "workers": 1,
+          "terminalAt": 20300.8248,
+          "cleanupDeadline": 22300.8248,
+          "activeRole": null,
+          "cleanupConfirmed": true
+        },
+        {
+          "name": "cancel-after-worker-before-publication",
+          "result": "PASS",
+          "expectedError": "MO1307_CANCELLED",
+          "actualError": "MO1307_CANCELLED",
+          "elapsedMs": 47.31449999999677,
+          "helpers": 0,
+          "workers": 1,
+          "terminalAt": 20886.6711,
+          "cleanupDeadline": 22886.6711,
+          "activeRole": null,
+          "cleanupConfirmed": true
+        }
+      ]
+    }
+  },
+  "cleanupAndProcess": {
+    "mandatoryStageJ": "FAIL",
+    "helperTimeoutProductCleanupConfirmed": false,
+    "priorExternalHelperTimeoutProof": "PASS",
+    "externalKnownHelperObjectsSignaled": true,
+    "allThreeStreamsClosedBeforeCleanupDeadline": true,
+    "timeoutTransportClosedBeforeCleanupDeadline": true,
+    "workerControls": [
+      {
+        "name": "worker-timeout",
+        "cleanupConfirmed": true,
+        "activeRole": null
+      },
+      {
+        "name": "worker-cancellation",
+        "cleanupConfirmed": true,
+        "activeRole": null
+      },
+      {
+        "name": "late-worker-result-rejected",
+        "cleanupConfirmed": true,
+        "activeRole": null
+      },
+      {
+        "name": "cancel-after-worker-before-publication",
+        "cleanupConfirmed": true,
+        "activeRole": null
+      }
+    ],
+    "readySampledTopology": "PASS",
+    "readyAllKnownObjectsSignaled": true,
+    "maximumProductRoles": 3,
+    "maximumRawProcesses": 4,
+    "engineeringBootstrapConsoles": [
+      {
+        "identity": {
+          "pid": 4428,
+          "creationTime100ns": 134351973577367040,
+          "executable": "C:\\Windows\\System32\\conhost.exe"
+        },
+        "role": "other_descendant",
+        "parentIdentity": {
+          "pid": 19740,
+          "creationTime100ns": 134351973566919580,
+          "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe"
+        },
+        "firstObservedAt": {
+          "qpc": 2185080532417,
+          "nativeUtc100ns": 134351973579717020,
+          "utc": "2026-09-29T23:15:57.971654+00:00"
+        },
+        "lastSeenAt": {
+          "qpc": 2185221117683,
+          "nativeUtc100ns": 134351973720302340,
+          "utc": "2026-09-29T23:16:12.030072+00:00"
+        },
+        "signaledAt": {
+          "qpc": 2185222391220,
+          "nativeUtc100ns": 134351973721575820,
+          "utc": "2026-09-29T23:16:12.147770+00:00"
+        },
+        "nativeTimes": {
+          "creationTime100ns": 134351973577367040,
+          "exitTime100ns": 134351973720423230,
+          "kernelTime100ns": 156250,
+          "userTime100ns": 0
+        }
+      }
+    ],
+    "peakSampledProductWorkingSetBytes": 189247488,
+    "unknownShortLivedDescendants": "NOT_EXCLUDED_BY_SAMPLING",
+    "noNewProcessSamplingAfterFailure": true
+  },
+  "cliApiParity": {
+    "AthroughG": "PASS",
+    "formalDeterminismStageN": "NOT_RUN",
+    "finalMO1306StageO": "NOT_RUN"
+  },
+  "limits": {
+    "helperWholeLifecycleMs": 5000,
+    "aggregateHelperActiveMs": 20000,
+    "cliRenameAdmissionMs": 30000,
+    "apiWorkerMs": 10000,
+    "failureCleanupMs": 2000
+  },
+  "replacementHelperBoundH": "NOT_ESTABLISHED",
+  "historicalPreservation": {
+    "files": 1330,
+    "changed": 0,
+    "promoted": false
+  },
+  "installedAndSourceIntegrity": "PASS",
+  "phase3DHandoff": "NONE: Phase 3A failed/incomplete; other streams unaffected",
+  "retryCount": 0,
+  "replacementCount": 0
+}

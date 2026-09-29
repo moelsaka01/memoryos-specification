@@ -1,0 +1,37 @@
+{
+  "generation": "FINAL_FINITE_NATIVE_CERTIFICATION",
+  "startedAt": "2026-09-29T14:25:26Z",
+  "order": [
+    "A MO1306 evaluate verify API parity",
+    "B READY evaluate verify API parity",
+    "C NOT_READY evaluate verify API parity",
+    "D CNE evaluate verify API parity",
+    "E REST evaluate verify API parity",
+    "F required human decisions",
+    "G supplied tag observations",
+    "H helper deadline controls",
+    "I worker deadline/cancellation controls",
+    "J timeout cleanup/topology",
+    "K finalization",
+    "L affected filesystem/native",
+    "M environment isolation",
+    "N byte determinism",
+    "O final MO1306 evaluate verify"
+  ],
+  "onePrimaryPerMandatoryVector": true,
+  "finalMO1306Repeat": 1,
+  "repeatOnlyAfterAllPriorPass": true,
+  "maximumMO1306Evaluations": 2,
+  "retryFailedVector": false,
+  "stopOnFirstMandatoryFailure": true,
+  "noStatisticalGrace": true,
+  "limits": {
+    "helper": 5000,
+    "helperAggregate": 20000,
+    "cli": 30000,
+    "worker": 10000,
+    "api": 10000,
+    "cleanup": 2000
+  },
+  "noProductChanges": true
+}

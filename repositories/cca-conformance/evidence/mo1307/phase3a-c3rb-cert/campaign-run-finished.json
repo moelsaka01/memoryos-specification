@@ -1,0 +1,19 @@
+{
+  "finishedAt": "2026-09-29T23:22:05.645Z",
+  "result": "FAILED_INCOMPLETE",
+  "failure": {
+    "step": "J",
+    "scheduler": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/scheduler/J-receipt.json",
+      "byteLength": 584,
+      "sha256": "sha256:b50ae13100b2cba1d4460adde06c1b265b738db9d45bbad71aadb24eb4001758"
+    },
+    "caseFailure": {
+      "name": "AssertionError",
+      "code": "ERR_ASSERTION",
+      "message": "node:internal/modules/run_main:107\r\n    triggerUncaughtException(\r\n    ^\r\n\r\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\r\n+ actual - expected\r\n\r\n+ 2000.000000000001\r\n- 2000\r\n      ^\r\n\r\n    at file:///C:/m7a/repositories/cca-conformance/tools/mo1307-phase3a-c3rb-cert/cleanup-topology.mjs:27:322\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\r\n    at async node:internal/modules/esm/loader:647:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\r\n  generatedMessage: true,\r\n  code: 'ERR_ASSERTION',\r\n  actual: 2000.000000000001,\r\n  expected: 2000,\r\n  operator: 'strictEqual',\r\n  diff: 'simple'\r\n}\r\n\r\nNode.js v24.21.0\r\n\n\n1 !== 0\n",
+      "stack": "AssertionError [ERR_ASSERTION]: node:internal/modules/run_main:107\r\n    triggerUncaughtException(\r\n    ^\r\n\r\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\r\n+ actual - expected\r\n\r\n+ 2000.000000000001\r\n- 2000\r\n      ^\r\n\r\n    at file:///C:/m7a/repositories/cca-conformance/tools/mo1307-phase3a-c3rb-cert/cleanup-topology.mjs:27:322\r\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\r\n    at async node:internal/modules/esm/loader:647:26\r\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\r\n  generatedMessage: true,\r\n  code: 'ERR_ASSERTION',\r\n  actual: 2000.000000000001,\r\n  expected: 2000,\r\n  operator: 'strictEqual',\r\n  diff: 'simple'\r\n}\r\n\r\nNode.js v24.21.0\r\n\n\n1 !== 0\n\n    at file:///C:/m7a/repositories/cca-conformance/tools/mo1307-phase3a-c3rb-cert/stage.mjs:17:80\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
+    }
+  },
+  "noFurtherProductExecution": true
+}

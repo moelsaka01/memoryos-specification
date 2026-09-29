@@ -1,0 +1,271 @@
+{
+  "name": "aggregate-helper-exhaustion",
+  "started": 15001.9391,
+  "finished": 35321.4953,
+  "result": "PASS",
+  "elapsedMs": 20319.556999999997,
+  "error": {
+    "code": "MO1307_TIMEOUT",
+    "message": "MO1307_TIMEOUT"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 45001.9527,
+    "helpers": 6,
+    "workers": 1,
+    "helperUsedMs": 17658.611300000004,
+    "activeRole": "helper",
+    "cleanupConfirmed": false,
+    "publication": null,
+    "terminalCode": "MO1307_TIMEOUT",
+    "terminalAt": 35308.3527,
+    "cleanupDeadline": 37308.3527,
+    "events": [
+      {
+        "type": "start",
+        "at": 15002.8162,
+        "role": "helper",
+        "deadline": 20002.805099999998,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 15011.3332,
+        "role": "helper",
+        "pid": 24460,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 18578.3414,
+        "role": "helper",
+        "ordinal": 1
+      },
+      {
+        "type": "start",
+        "at": 18579.6163,
+        "role": "helper",
+        "deadline": 23579.6004,
+        "ordinal": 2
+      },
+      {
+        "type": "observation",
+        "at": 18586.856,
+        "role": "helper",
+        "pid": 19136,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 22136.2177,
+        "role": "helper",
+        "ordinal": 2
+      },
+      {
+        "type": "start",
+        "at": 22136.8628,
+        "role": "helper",
+        "deadline": 27136.8507,
+        "ordinal": 3
+      },
+      {
+        "type": "observation",
+        "at": 22146.9175,
+        "role": "helper",
+        "pid": 15296,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 25795.9283,
+        "role": "helper",
+        "ordinal": 3
+      },
+      {
+        "type": "start",
+        "at": 25796.5629,
+        "role": "helper",
+        "deadline": 30796.5443,
+        "ordinal": 4
+      },
+      {
+        "type": "observation",
+        "at": 25805.4534,
+        "role": "helper",
+        "pid": 24468,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 29237.588,
+        "role": "helper",
+        "ordinal": 4
+      },
+      {
+        "type": "start",
+        "at": 29238.0891,
+        "role": "worker",
+        "deadline": 39238.0786,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 29239.6138,
+        "role": "worker",
+        "threadId": 1,
+        "resourceLimits": {
+          "maxYoungGenerationSizeMb": 16,
+          "maxOldGenerationSizeMb": 128,
+          "codeRangeSizeMb": -1,
+          "stackSizeMb": 4
+        }
+      },
+      {
+        "type": "quiescent",
+        "at": 29530.0851,
+        "role": "worker",
+        "ordinal": 1
+      },
+      {
+        "type": "start",
+        "at": 29530.4329,
+        "role": "helper",
+        "deadline": 34530.4286,
+        "ordinal": 5
+      },
+      {
+        "type": "observation",
+        "at": 29537.1469,
+        "role": "helper",
+        "pid": 26672,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 32956.7832,
+        "role": "helper",
+        "ordinal": 5
+      },
+      {
+        "type": "start",
+        "at": 32958.2631,
+        "role": "helper",
+        "deadline": 35299.643599999996,
+        "ordinal": 6
+      },
+      {
+        "type": "observation",
+        "at": 32966.3957,
+        "role": "helper",
+        "pid": 3524,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "terminal",
+        "at": 35308.3918,
+        "code": "MO1307_TIMEOUT",
+        "stage": "ACQUISITION"
+      },
+      {
+        "type": "cleanup",
+        "at": 35321.4402,
+        "role": "helper",
+        "confirmed": false
+      }
+    ]
+  },
+  "expectedError": "MO1307_TIMEOUT",
+  "engineeringElapsedEnvelope": {
+    "minMs": 20000,
+    "maxMs": 23000,
+    "productDeadlineOverride": false
+  },
+  "invocations": [
+    {
+      "ordinal": "006",
+      "pid": 24460,
+      "protocolSequence": 1,
+      "operation": "READ_SET"
+    },
+    {
+      "ordinal": "007",
+      "pid": 19136,
+      "protocolSequence": 2,
+      "operation": "READ_SET"
+    },
+    {
+      "ordinal": "008",
+      "pid": 15296,
+      "protocolSequence": 3,
+      "operation": "READ_SET"
+    },
+    {
+      "ordinal": "009",
+      "pid": 24468,
+      "protocolSequence": 4,
+      "operation": "CHECK_OUTPUT"
+    },
+    {
+      "ordinal": "010",
+      "pid": 26672,
+      "protocolSequence": 5,
+      "operation": "CHECK_OUTPUT"
+    },
+    {
+      "ordinal": "011",
+      "pid": 3524,
+      "protocolSequence": 6,
+      "operation": "INSPECT_OUTPUT_ROOT"
+    }
+  ],
+  "workerObservations": [
+    {
+      "type": "start",
+      "caseName": "aggregate-helper-exhaustion",
+      "threadId": 1,
+      "at": 29239.4122,
+      "env": {},
+      "execArgv": [],
+      "resourceLimits": {
+        "maxOldGenerationSizeMb": 128,
+        "maxYoungGenerationSizeMb": 16
+      }
+    },
+    {
+      "type": "message",
+      "threadId": 1,
+      "at": 29528.7307
+    },
+    {
+      "type": "exit",
+      "threadId": 1,
+      "at": 29529.8669,
+      "code": 0
+    },
+    {
+      "type": "stream-end",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 29529.9901
+    },
+    {
+      "type": "stream-end",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 29530.0384
+    },
+    {
+      "type": "stream-close",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 29530.0663
+    },
+    {
+      "type": "stream-close",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 29530.0709
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "name": "helper-timeout",
+  "started": 1461.8106,
+  "finished": 6495.7134,
+  "result": "PASS",
+  "elapsedMs": 5033.904100000001,
+  "error": {
+    "code": "MO1307_TIMEOUT",
+    "message": "MO1307_TIMEOUT"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 31461.8242,
+    "helpers": 1,
+    "workers": 0,
+    "helperUsedMs": 0,
+    "activeRole": "helper",
+    "cleanupConfirmed": false,
+    "publication": null,
+    "terminalCode": "MO1307_TIMEOUT",
+    "terminalAt": 6474.1113,
+    "cleanupDeadline": 8474.1113,
+    "events": [
+      {
+        "type": "start",
+        "at": 1462.3239,
+        "role": "helper",
+        "deadline": 6462.2981,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 1473.5312,
+        "role": "helper",
+        "pid": 28400,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "terminal",
+        "at": 6474.1491,
+        "code": "MO1307_TIMEOUT",
+        "stage": "ACQUISITION"
+      },
+      {
+        "type": "cleanup",
+        "at": 6495.5962,
+        "role": "helper",
+        "confirmed": false
+      }
+    ]
+  },
+  "expectedError": "MO1307_TIMEOUT",
+  "engineeringElapsedEnvelope": {
+    "minMs": 5000,
+    "maxMs": 7000,
+    "productDeadlineOverride": false
+  },
+  "invocations": [
+    {
+      "ordinal": "002",
+      "pid": 28400,
+      "protocolSequence": 3,
+      "operation": "READ_SET"
+    }
+  ],
+  "workerObservations": []
+}

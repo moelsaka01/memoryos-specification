@@ -1,0 +1,1829 @@
+{
+  "kind": "MO1307Phase3AFinalRuntimeControls",
+  "mode": "H",
+  "timeOrigin": 1790724063653.52,
+  "clockBridge": {
+    "readyQpc": 2188138344879,
+    "qpcFrequency": 10000000,
+    "performanceSeenAt": 175.1588,
+    "performanceBeforeWriteAt": 175.1785,
+    "qpcAcknowledged": 2188139571935,
+    "offsetLowerMs": -218813782.01500002,
+    "offsetUpperMs": -218813659.32909995,
+    "offsetBracketWidthMs": 122.68590006232262,
+    "method": "QPC-to-Node-performance offset bounded by ready/read and write/ack ordering; no wall-clock conversion or deadline grace."
+  },
+  "result": "PASS",
+  "failure": null,
+  "cases": [
+    {
+      "name": "timely-helper",
+      "started": 226.9723,
+      "finished": 1456.4659,
+      "result": "PASS",
+      "elapsedMs": 1229.4992000000002,
+      "error": null,
+      "detail": {
+        "status": "OK",
+        "exitConfirmed": true
+      },
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 30228.2318,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 1223.2124000000001,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": null,
+        "terminalAt": null,
+        "cleanupDeadline": null,
+        "events": [
+          {
+            "type": "start",
+            "at": 232.7834,
+            "role": "helper",
+            "deadline": 5232.6986,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 245.402,
+            "role": "helper",
+            "pid": 3328,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 1455.9184,
+            "role": "helper",
+            "ordinal": 1
+          }
+        ]
+      },
+      "expectedError": null,
+      "engineeringElapsedEnvelope": {
+        "minMs": null,
+        "maxMs": 5000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [
+        {
+          "ordinal": "001",
+          "pid": 3328,
+          "protocolSequence": 3,
+          "operation": "READ_SET"
+        }
+      ],
+      "workerObservations": []
+    },
+    {
+      "name": "cancel-before-helper",
+      "started": 1460.302,
+      "finished": 1461.236,
+      "result": "PASS",
+      "elapsedMs": 0.9349000000001979,
+      "error": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 31460.3384,
+        "helpers": 0,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_CANCELLED",
+        "terminalAt": 1460.9594,
+        "cleanupDeadline": 3460.9593999999997,
+        "events": [
+          {
+            "type": "terminal",
+            "at": 1460.9794,
+            "code": "MO1307_CANCELLED",
+            "stage": "LAUNCH"
+          }
+        ]
+      },
+      "expectedError": "MO1307_CANCELLED",
+      "engineeringElapsedEnvelope": {
+        "minMs": null,
+        "maxMs": 1000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [],
+      "workerObservations": []
+    },
+    {
+      "name": "helper-timeout",
+      "started": 1461.8106,
+      "finished": 6495.7134,
+      "result": "PASS",
+      "elapsedMs": 5033.904100000001,
+      "error": {
+        "code": "MO1307_TIMEOUT",
+        "message": "MO1307_TIMEOUT"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 31461.8242,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": "helper",
+        "cleanupConfirmed": false,
+        "publication": null,
+        "terminalCode": "MO1307_TIMEOUT",
+        "terminalAt": 6474.1113,
+        "cleanupDeadline": 8474.1113,
+        "events": [
+          {
+            "type": "start",
+            "at": 1462.3239,
+            "role": "helper",
+            "deadline": 6462.2981,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 1473.5312,
+            "role": "helper",
+            "pid": 28400,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "terminal",
+            "at": 6474.1491,
+            "code": "MO1307_TIMEOUT",
+            "stage": "ACQUISITION"
+          },
+          {
+            "type": "cleanup",
+            "at": 6495.5962,
+            "role": "helper",
+            "confirmed": false
+          }
+        ]
+      },
+      "expectedError": "MO1307_TIMEOUT",
+      "engineeringElapsedEnvelope": {
+        "minMs": 5000,
+        "maxMs": 7000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [
+        {
+          "ordinal": "002",
+          "pid": 28400,
+          "protocolSequence": 3,
+          "operation": "READ_SET"
+        }
+      ],
+      "workerObservations": []
+    },
+    {
+      "name": "late-helper-success-rejected",
+      "started": 6496.7907,
+      "finished": 12287.5773,
+      "result": "PASS",
+      "elapsedMs": 5790.787400000001,
+      "error": {
+        "code": "MO1307_TIMEOUT",
+        "message": "MO1307_TIMEOUT"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 36496.8313,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_TIMEOUT",
+        "terminalAt": 11507.463,
+        "cleanupDeadline": 13507.463,
+        "events": [
+          {
+            "type": "start",
+            "at": 6497.7343,
+            "role": "helper",
+            "deadline": 11497.7109,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 6510.782,
+            "role": "helper",
+            "pid": 18584,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "terminal",
+            "at": 11507.4962,
+            "code": "MO1307_TIMEOUT",
+            "stage": "ACQUISITION"
+          },
+          {
+            "type": "cleanup",
+            "at": 12287.5129,
+            "role": "helper",
+            "confirmed": true
+          }
+        ]
+      },
+      "expectedError": "MO1307_TIMEOUT",
+      "engineeringElapsedEnvelope": {
+        "minMs": 5000,
+        "maxMs": 7000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [
+        {
+          "ordinal": "003",
+          "pid": 18584,
+          "protocolSequence": 3,
+          "operation": "READ_SET"
+        }
+      ],
+      "workerObservations": []
+    },
+    {
+      "name": "cancel-during-helper",
+      "started": 12289.052,
+      "finished": 13806.6219,
+      "result": "PASS",
+      "elapsedMs": 1517.5707000000002,
+      "error": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 42289.0989,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": "helper",
+        "cleanupConfirmed": false,
+        "publication": null,
+        "terminalCode": "MO1307_CANCELLED",
+        "terminalAt": 13791.917,
+        "cleanupDeadline": 15791.917,
+        "events": [
+          {
+            "type": "start",
+            "at": 12289.623,
+            "role": "helper",
+            "deadline": 17289.586499999998,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 12297.7053,
+            "role": "helper",
+            "pid": 9516,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "terminal",
+            "at": 13791.941,
+            "code": "MO1307_CANCELLED",
+            "stage": "ACQUISITION"
+          },
+          {
+            "type": "cleanup",
+            "at": 13806.5725,
+            "role": "helper",
+            "confirmed": false
+          }
+        ]
+      },
+      "expectedError": "MO1307_CANCELLED",
+      "engineeringElapsedEnvelope": {
+        "minMs": 1400,
+        "maxMs": 3500,
+        "productDeadlineOverride": false
+      },
+      "invocations": [
+        {
+          "ordinal": "004",
+          "pid": 9516,
+          "protocolSequence": 3,
+          "operation": "READ_SET"
+        }
+      ],
+      "workerObservations": []
+    },
+    {
+      "name": "cancel-between-helper-worker",
+      "started": 13807.316,
+      "finished": 15001.3286,
+      "result": "PASS",
+      "elapsedMs": 1194.0133999999998,
+      "error": {
+        "code": "MO1307_CANCELLED",
+        "message": "MO1307_CANCELLED"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 43807.364199999996,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 1192.8091999999997,
+        "activeRole": null,
+        "cleanupConfirmed": true,
+        "publication": null,
+        "terminalCode": "MO1307_CANCELLED",
+        "terminalAt": 15001.0953,
+        "cleanupDeadline": 17001.0953,
+        "events": [
+          {
+            "type": "start",
+            "at": 13808.1897,
+            "role": "helper",
+            "deadline": 18808.1717,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 13818.5839,
+            "role": "helper",
+            "pid": 17388,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 15000.9867,
+            "role": "helper",
+            "ordinal": 1
+          },
+          {
+            "type": "terminal",
+            "at": 15001.1003,
+            "code": "MO1307_CANCELLED",
+            "stage": "LAUNCH"
+          }
+        ]
+      },
+      "expectedError": "MO1307_CANCELLED",
+      "engineeringElapsedEnvelope": {
+        "minMs": null,
+        "maxMs": 5000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [
+        {
+          "ordinal": "005",
+          "pid": 17388,
+          "protocolSequence": 3,
+          "operation": "READ_SET"
+        }
+      ],
+      "workerObservations": []
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "started": 15001.9391,
+      "finished": 35321.4953,
+      "result": "PASS",
+      "elapsedMs": 20319.556999999997,
+      "error": {
+        "code": "MO1307_TIMEOUT",
+        "message": "MO1307_TIMEOUT"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 45001.9527,
+        "helpers": 6,
+        "workers": 1,
+        "helperUsedMs": 17658.611300000004,
+        "activeRole": "helper",
+        "cleanupConfirmed": false,
+        "publication": null,
+        "terminalCode": "MO1307_TIMEOUT",
+        "terminalAt": 35308.3527,
+        "cleanupDeadline": 37308.3527,
+        "events": [
+          {
+            "type": "start",
+            "at": 15002.8162,
+            "role": "helper",
+            "deadline": 20002.805099999998,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 15011.3332,
+            "role": "helper",
+            "pid": 24460,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 18578.3414,
+            "role": "helper",
+            "ordinal": 1
+          },
+          {
+            "type": "start",
+            "at": 18579.6163,
+            "role": "helper",
+            "deadline": 23579.6004,
+            "ordinal": 2
+          },
+          {
+            "type": "observation",
+            "at": 18586.856,
+            "role": "helper",
+            "pid": 19136,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 22136.2177,
+            "role": "helper",
+            "ordinal": 2
+          },
+          {
+            "type": "start",
+            "at": 22136.8628,
+            "role": "helper",
+            "deadline": 27136.8507,
+            "ordinal": 3
+          },
+          {
+            "type": "observation",
+            "at": 22146.9175,
+            "role": "helper",
+            "pid": 15296,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 25795.9283,
+            "role": "helper",
+            "ordinal": 3
+          },
+          {
+            "type": "start",
+            "at": 25796.5629,
+            "role": "helper",
+            "deadline": 30796.5443,
+            "ordinal": 4
+          },
+          {
+            "type": "observation",
+            "at": 25805.4534,
+            "role": "helper",
+            "pid": 24468,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 29237.588,
+            "role": "helper",
+            "ordinal": 4
+          },
+          {
+            "type": "start",
+            "at": 29238.0891,
+            "role": "worker",
+            "deadline": 39238.0786,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 29239.6138,
+            "role": "worker",
+            "threadId": 1,
+            "resourceLimits": {
+              "maxYoungGenerationSizeMb": 16,
+              "maxOldGenerationSizeMb": 128,
+              "codeRangeSizeMb": -1,
+              "stackSizeMb": 4
+            }
+          },
+          {
+            "type": "quiescent",
+            "at": 29530.0851,
+            "role": "worker",
+            "ordinal": 1
+          },
+          {
+            "type": "start",
+            "at": 29530.4329,
+            "role": "helper",
+            "deadline": 34530.4286,
+            "ordinal": 5
+          },
+          {
+            "type": "observation",
+            "at": 29537.1469,
+            "role": "helper",
+            "pid": 26672,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 32956.7832,
+            "role": "helper",
+            "ordinal": 5
+          },
+          {
+            "type": "start",
+            "at": 32958.2631,
+            "role": "helper",
+            "deadline": 35299.643599999996,
+            "ordinal": 6
+          },
+          {
+            "type": "observation",
+            "at": 32966.3957,
+            "role": "helper",
+            "pid": 3524,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "terminal",
+            "at": 35308.3918,
+            "code": "MO1307_TIMEOUT",
+            "stage": "ACQUISITION"
+          },
+          {
+            "type": "cleanup",
+            "at": 35321.4402,
+            "role": "helper",
+            "confirmed": false
+          }
+        ]
+      },
+      "expectedError": "MO1307_TIMEOUT",
+      "engineeringElapsedEnvelope": {
+        "minMs": 20000,
+        "maxMs": 23000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [
+        {
+          "ordinal": "006",
+          "pid": 24460,
+          "protocolSequence": 1,
+          "operation": "READ_SET"
+        },
+        {
+          "ordinal": "007",
+          "pid": 19136,
+          "protocolSequence": 2,
+          "operation": "READ_SET"
+        },
+        {
+          "ordinal": "008",
+          "pid": 15296,
+          "protocolSequence": 3,
+          "operation": "READ_SET"
+        },
+        {
+          "ordinal": "009",
+          "pid": 24468,
+          "protocolSequence": 4,
+          "operation": "CHECK_OUTPUT"
+        },
+        {
+          "ordinal": "010",
+          "pid": 26672,
+          "protocolSequence": 5,
+          "operation": "CHECK_OUTPUT"
+        },
+        {
+          "ordinal": "011",
+          "pid": 3524,
+          "protocolSequence": 6,
+          "operation": "INSPECT_OUTPUT_ROOT"
+        }
+      ],
+      "workerObservations": [
+        {
+          "type": "start",
+          "caseName": "aggregate-helper-exhaustion",
+          "threadId": 1,
+          "at": 29239.4122,
+          "env": {},
+          "execArgv": [],
+          "resourceLimits": {
+            "maxOldGenerationSizeMb": 128,
+            "maxYoungGenerationSizeMb": 16
+          }
+        },
+        {
+          "type": "message",
+          "threadId": 1,
+          "at": 29528.7307
+        },
+        {
+          "type": "exit",
+          "threadId": 1,
+          "at": 29529.8669,
+          "code": 0
+        },
+        {
+          "type": "stream-end",
+          "stream": "stdout",
+          "threadId": 1,
+          "at": 29529.9901
+        },
+        {
+          "type": "stream-end",
+          "stream": "stderr",
+          "threadId": 1,
+          "at": 29530.0384
+        },
+        {
+          "type": "stream-close",
+          "stream": "stdout",
+          "threadId": 1,
+          "at": 29530.0663
+        },
+        {
+          "type": "stream-close",
+          "stream": "stderr",
+          "threadId": 1,
+          "at": 29530.0709
+        }
+      ]
+    }
+  ],
+  "invocations": [
+    {
+      "name": "timely-helper",
+      "ordinal": "001",
+      "helperInvocationOrdinal": 1,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 3328,
+      "startedAt": 245.1132,
+      "eofDelayMs": 0,
+      "lateCleanup": false,
+      "stdoutBytes": 764,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 1422.709,
+      "closedAt": 1453.4797,
+      "exitAt": 1453.3401,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 897.4171
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 897.8618
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 1440.0647
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 1440.2975
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 1440.4852
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 1440.5308
+        }
+      ],
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "rootCount": 1,
+      "requestSha256": "sha256:a9afea3570b56e17bfdd0439691bd88249bd323e936f467d2439ce484587ef2a",
+      "requestBytes": 383,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:da1d9235634f691ed12924d8bd6111461026470fdd6768b057de9a20375fdf36"
+    },
+    {
+      "name": "helper-timeout",
+      "ordinal": "002",
+      "helperInvocationOrdinal": 2,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 28400,
+      "startedAt": 1473.4268,
+      "eofDelayMs": 6000,
+      "lateCleanup": false,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "killRequestedAt": 6474.8006,
+      "responseAt": null,
+      "closedAt": 6490.0497,
+      "exitAt": 6489.927,
+      "exitCode": null,
+      "streamEvents": [
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 6475.5317
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 6475.5563
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 6475.5771
+        }
+      ],
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "rootCount": 1,
+      "requestSha256": "sha256:fe393bd20de6a931dd8fe42bab2ce50f2c3da3246eab65c65767c39213531a04",
+      "requestBytes": 383,
+      "exitSignal": "SIGTERM",
+      "transportClosed": true,
+      "responseSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "late-helper-success-rejected",
+      "ordinal": "003",
+      "helperInvocationOrdinal": 3,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 18584,
+      "startedAt": 6510.5086,
+      "eofDelayMs": 5250,
+      "lateCleanup": true,
+      "stdoutBytes": 764,
+      "stderrBytes": 0,
+      "killRequestedAt": 11507.8887,
+      "responseAt": 12260.978,
+      "closedAt": 12285.8231,
+      "exitAt": 12285.757,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 11770.3324
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 11770.499
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 12275.1976
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 12275.375
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 12275.4096
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 12275.5664
+        }
+      ],
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "rootCount": 1,
+      "requestSha256": "sha256:711c56e1e348f04c6400840865b99baf3919f2e6a5332f53aa7d547750d2b8b7",
+      "requestBytes": 383,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:6fe26b5880f1ec11d5c6f24f3e7d4112b717e7cb60e5dd64e08f798f840e0016"
+    },
+    {
+      "name": "cancel-during-helper",
+      "ordinal": "004",
+      "helperInvocationOrdinal": 4,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 9516,
+      "startedAt": 12297.6351,
+      "eofDelayMs": 6000,
+      "lateCleanup": false,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "killRequestedAt": 13792.191,
+      "responseAt": null,
+      "closedAt": 13805.274,
+      "exitAt": 13805.2282,
+      "exitCode": null,
+      "streamEvents": [
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 13792.8053
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 13792.832
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 13792.8435
+        }
+      ],
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "rootCount": 1,
+      "requestSha256": "sha256:4ecffc393077873946da0f3f3aac22dcd5761597f62bb0a4e2929c5fb2c6d7e9",
+      "requestBytes": 383,
+      "exitSignal": "SIGTERM",
+      "transportClosed": true,
+      "responseSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "cancel-between-helper-worker",
+      "ordinal": "005",
+      "helperInvocationOrdinal": 5,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 17388,
+      "startedAt": 13818.5247,
+      "eofDelayMs": 0,
+      "lateCleanup": false,
+      "stdoutBytes": 764,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 14969.892,
+      "closedAt": 14995.7976,
+      "exitAt": 14995.7501,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 14470.6619
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 14470.7267
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 14984.8616
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 14985.0252
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 14985.2721
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 14985.2838
+        }
+      ],
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "rootCount": 1,
+      "requestSha256": "sha256:f887b367cb8a762da9a675c22984c51f267fc52a2a3c4f698a00d06f67d1c526",
+      "requestBytes": 383,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:a09df89b732bb265a1638de65a9931f3842e0f015c67c90d8a0ba7999d49e66c"
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "ordinal": "006",
+      "helperInvocationOrdinal": 6,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 24460,
+      "startedAt": 15011.1936,
+      "eofDelayMs": 3000,
+      "lateCleanup": false,
+      "stdoutBytes": 1057,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 18551.1727,
+      "closedAt": 18575.8388,
+      "exitAt": 18575.7493,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 18023.3675
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 18023.4457
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 18566.4379
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 18566.6104
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 18566.635
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 18566.6767
+        }
+      ],
+      "protocolSequence": 1,
+      "operation": "READ_SET",
+      "fileCount": 2,
+      "rootCount": 1,
+      "requestSha256": "sha256:77f3350f0d00763cbae914c4304d08557ef720d8376d753b54b6f08b543a5bb0",
+      "requestBytes": 459,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:9c9b1e9d902c073e1fecd9dc1b48ccb83c52175ae2e9048b0b27d37345843c11"
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "ordinal": "007",
+      "helperInvocationOrdinal": 7,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 19136,
+      "startedAt": 18586.8059,
+      "eofDelayMs": 3000,
+      "lateCleanup": false,
+      "stdoutBytes": 1061,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 22104.1227,
+      "closedAt": 22130.3022,
+      "exitAt": 22130.2737,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 21591.322
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 21591.3991
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 22119.2322
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 22119.4619
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 22119.5354
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 22119.6374
+        }
+      ],
+      "protocolSequence": 2,
+      "operation": "READ_SET",
+      "fileCount": 2,
+      "rootCount": 1,
+      "requestSha256": "sha256:29241c3ad02252f2380002d1df372261383c00d6482b3364297ce2219cfa190d",
+      "requestBytes": 463,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:f89d4ccd1a82f2825cc57e41af6b903e0a6d11dd44f03ca7171a981af0b80162"
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "ordinal": "008",
+      "helperInvocationOrdinal": 8,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 15296,
+      "startedAt": 22146.7676,
+      "eofDelayMs": 3000,
+      "lateCleanup": false,
+      "stdoutBytes": 764,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 25766.4734,
+      "closedAt": 25794.4667,
+      "exitAt": 25794.4334,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 25151.474
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 25151.5631
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 25782.5513
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 25782.6213
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 25782.7811
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 25782.7914
+        }
+      ],
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "rootCount": 1,
+      "requestSha256": "sha256:007fc8941349eebb00dce65f03ca4e1a434a86a2d7cdf1b9db7ecef1d3f61bd8",
+      "requestBytes": 383,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:1d83c8ea874a50ac15b8f697b67160b8b1d1c8b318ddabb671ebabe02b52b30a"
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "ordinal": "009",
+      "helperInvocationOrdinal": 9,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 24468,
+      "startedAt": 25805.4075,
+      "eofDelayMs": 3000,
+      "lateCleanup": false,
+      "stdoutBytes": 1710,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 29210.6672,
+      "closedAt": 29235.9707,
+      "exitAt": 29235.9419,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 28808.6065
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 28808.7243
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 29227.0265
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 29227.1211
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 29227.24
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 29227.2563
+        }
+      ],
+      "protocolSequence": 4,
+      "operation": "CHECK_OUTPUT",
+      "fileCount": 0,
+      "rootCount": 1,
+      "requestSha256": "sha256:86a34c9be68da78fabcf9a4380c0df3ea9849974d8dfe9505300462c58134214",
+      "requestBytes": 329,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:2e9cd5933350d1857106d5100ab71021856b2759a84f9d0ccd6f9056b0efde1e"
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "ordinal": "010",
+      "helperInvocationOrdinal": 10,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 26672,
+      "startedAt": 29537.1051,
+      "eofDelayMs": 3000,
+      "lateCleanup": false,
+      "stdoutBytes": 1710,
+      "stderrBytes": 0,
+      "killRequestedAt": null,
+      "responseAt": 32930.1164,
+      "closedAt": 32954.8534,
+      "exitAt": 32954.8195,
+      "exitCode": 0,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 32542.3233
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 32542.4281
+        },
+        {
+          "id": "stdout",
+          "event": "end",
+          "at": 32945.1329
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 32945.2978
+        },
+        {
+          "id": "stderr",
+          "event": "end",
+          "at": 32945.3188
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 32945.351
+        }
+      ],
+      "protocolSequence": 5,
+      "operation": "CHECK_OUTPUT",
+      "fileCount": 0,
+      "rootCount": 1,
+      "requestSha256": "sha256:91958d85a7fae7ec03cdc57f8826c218069991804ae6713d8bc497c819f9d046",
+      "requestBytes": 329,
+      "exitSignal": null,
+      "transportClosed": true,
+      "responseSha256": "sha256:5112d4c0dc8c3891eb16f05f86e76d7b1188393bfb22cc594a7210349e68e2e5"
+    },
+    {
+      "name": "aggregate-helper-exhaustion",
+      "ordinal": "011",
+      "helperInvocationOrdinal": 11,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\m7a\\.cache\\m7a\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 3524,
+      "startedAt": 32966.3598,
+      "eofDelayMs": 3000,
+      "lateCleanup": false,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "killRequestedAt": 35308.5416,
+      "responseAt": null,
+      "closedAt": 35320.5836,
+      "exitAt": 35320.5474,
+      "exitCode": null,
+      "streamEvents": [
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 35308.933
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 35308.9474
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 35308.9548
+        }
+      ],
+      "protocolSequence": 6,
+      "operation": "INSPECT_OUTPUT_ROOT",
+      "fileCount": 0,
+      "rootCount": 1,
+      "requestSha256": "sha256:b8b47a09621f9dc3eb477e17e41e0bd86b286a13acc363049db3a1d09a15c48a",
+      "requestBytes": 336,
+      "exitSignal": "SIGTERM",
+      "transportClosed": true,
+      "responseSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "workerObservations": [
+    {
+      "type": "start",
+      "caseName": "aggregate-helper-exhaustion",
+      "threadId": 1,
+      "at": 29239.4122,
+      "env": {},
+      "execArgv": [],
+      "resourceLimits": {
+        "maxOldGenerationSizeMb": 128,
+        "maxYoungGenerationSizeMb": 16
+      }
+    },
+    {
+      "type": "message",
+      "threadId": 1,
+      "at": 29528.7307
+    },
+    {
+      "type": "exit",
+      "threadId": 1,
+      "at": 29529.8669,
+      "code": 0
+    },
+    {
+      "type": "stream-end",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 29529.9901
+    },
+    {
+      "type": "stream-end",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 29530.0384
+    },
+    {
+      "type": "stream-close",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 29530.0663
+    },
+    {
+      "type": "stream-close",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 29530.0709
+    }
+  ],
+  "dependenciesBefore": [
+    {
+      "file": "helpers/windows-inspect.ps1",
+      "sha256": "35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+    },
+    {
+      "file": "src/acquisition.mjs",
+      "sha256": "1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+    },
+    {
+      "file": "src/api-input.mjs",
+      "sha256": "57cd2e2309efac7f0c890b82ff4ca3f70f8cb324512611eba9b303e2da32e194"
+    },
+    {
+      "file": "src/canonical.mjs",
+      "sha256": "b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "file": "src/cli-args.mjs",
+      "sha256": "107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+    },
+    {
+      "file": "src/cli.mjs",
+      "sha256": "3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+    },
+    {
+      "file": "src/constants.mjs",
+      "sha256": "987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9"
+    },
+    {
+      "file": "src/errors.mjs",
+      "sha256": "71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "file": "src/evidence-graph.mjs",
+      "sha256": "cc8a353da76fef3c8610085c6b0237021cdfedb4879d5bfe3ad4ae749166673c"
+    },
+    {
+      "file": "src/evidence-history.mjs",
+      "sha256": "16c5377d07bbc894f8aaa26495e7f215e5a2d2b80b73fdf36254393a7e7769bc"
+    },
+    {
+      "file": "src/evidence-verifier.mjs",
+      "sha256": "684d088b6578f463a7ed1b6e40cde63ec5de2bf039458050b9ebce4494ded3a0"
+    },
+    {
+      "file": "src/foundation.mjs",
+      "sha256": "19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d"
+    },
+    {
+      "file": "src/helper-protocol.mjs",
+      "sha256": "96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "file": "src/helper-transport.mjs",
+      "sha256": "ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55"
+    },
+    {
+      "file": "src/index.mjs",
+      "sha256": "10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+    },
+    {
+      "file": "src/integration.mjs",
+      "sha256": "c73e278db2b2cdd5b38e3e9a6046ba529aafe92af5abfee4e0ced8b0ec02c64e"
+    },
+    {
+      "file": "src/output.mjs",
+      "sha256": "eea2e7f6dc23f88b8afdca19b273939a020ccc145ec78d4f701983e0d8449aca"
+    },
+    {
+      "file": "src/projections.mjs",
+      "sha256": "43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22"
+    },
+    {
+      "file": "src/publication.mjs",
+      "sha256": "dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+    },
+    {
+      "file": "src/readiness-core.mjs",
+      "sha256": "7891139345e71030709adf2fdb1ff93342a74282980d1b09d1535e44fa0ef1cd"
+    },
+    {
+      "file": "src/readiness-result.mjs",
+      "sha256": "847525fb9be50cc956c5859e8accd271806db61fdf083e9b5165bd8cf91d9fea"
+    },
+    {
+      "file": "src/runtime.mjs",
+      "sha256": "012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    {
+      "file": "src/schema-data.mjs",
+      "sha256": "467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+    },
+    {
+      "file": "src/schema.mjs",
+      "sha256": "9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+    },
+    {
+      "file": "src/windows-paths.mjs",
+      "sha256": "7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "file": "src/worker-entry.mjs",
+      "sha256": "958dfaf21e7ed62d6214a09f7624b7c4c799aeddbdcd11daac8625a439ab35a7"
+    },
+    {
+      "file": "src/worker-policy.mjs",
+      "sha256": "29e0ccb0bb366199857753abd11c08f8cdec72bfe43672ef6ba9e8784e5b0831"
+    }
+  ],
+  "dependenciesAfter": [
+    {
+      "file": "helpers/windows-inspect.ps1",
+      "sha256": "35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+    },
+    {
+      "file": "src/acquisition.mjs",
+      "sha256": "1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+    },
+    {
+      "file": "src/api-input.mjs",
+      "sha256": "57cd2e2309efac7f0c890b82ff4ca3f70f8cb324512611eba9b303e2da32e194"
+    },
+    {
+      "file": "src/canonical.mjs",
+      "sha256": "b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "file": "src/cli-args.mjs",
+      "sha256": "107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+    },
+    {
+      "file": "src/cli.mjs",
+      "sha256": "3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+    },
+    {
+      "file": "src/constants.mjs",
+      "sha256": "987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9"
+    },
+    {
+      "file": "src/errors.mjs",
+      "sha256": "71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "file": "src/evidence-graph.mjs",
+      "sha256": "cc8a353da76fef3c8610085c6b0237021cdfedb4879d5bfe3ad4ae749166673c"
+    },
+    {
+      "file": "src/evidence-history.mjs",
+      "sha256": "16c5377d07bbc894f8aaa26495e7f215e5a2d2b80b73fdf36254393a7e7769bc"
+    },
+    {
+      "file": "src/evidence-verifier.mjs",
+      "sha256": "684d088b6578f463a7ed1b6e40cde63ec5de2bf039458050b9ebce4494ded3a0"
+    },
+    {
+      "file": "src/foundation.mjs",
+      "sha256": "19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d"
+    },
+    {
+      "file": "src/helper-protocol.mjs",
+      "sha256": "96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "file": "src/helper-transport.mjs",
+      "sha256": "ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55"
+    },
+    {
+      "file": "src/index.mjs",
+      "sha256": "10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+    },
+    {
+      "file": "src/integration.mjs",
+      "sha256": "c73e278db2b2cdd5b38e3e9a6046ba529aafe92af5abfee4e0ced8b0ec02c64e"
+    },
+    {
+      "file": "src/output.mjs",
+      "sha256": "eea2e7f6dc23f88b8afdca19b273939a020ccc145ec78d4f701983e0d8449aca"
+    },
+    {
+      "file": "src/projections.mjs",
+      "sha256": "43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22"
+    },
+    {
+      "file": "src/publication.mjs",
+      "sha256": "dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+    },
+    {
+      "file": "src/readiness-core.mjs",
+      "sha256": "7891139345e71030709adf2fdb1ff93342a74282980d1b09d1535e44fa0ef1cd"
+    },
+    {
+      "file": "src/readiness-result.mjs",
+      "sha256": "847525fb9be50cc956c5859e8accd271806db61fdf083e9b5165bd8cf91d9fea"
+    },
+    {
+      "file": "src/runtime.mjs",
+      "sha256": "012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    {
+      "file": "src/schema-data.mjs",
+      "sha256": "467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+    },
+    {
+      "file": "src/schema.mjs",
+      "sha256": "9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+    },
+    {
+      "file": "src/windows-paths.mjs",
+      "sha256": "7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "file": "src/worker-entry.mjs",
+      "sha256": "958dfaf21e7ed62d6214a09f7624b7c4c799aeddbdcd11daac8625a439ab35a7"
+    },
+    {
+      "file": "src/worker-policy.mjs",
+      "sha256": "29e0ccb0bb366199857753abd11c08f8cdec72bfe43672ef6ba9e8784e5b0831"
+    }
+  ],
+  "noProductChanges": true,
+  "limits": {
+    "helperMs": 5000,
+    "aggregateMs": 20000,
+    "workerMs": 10000,
+    "cliMs": 30000
+  },
+  "limitations": [
+    "Delay controls are engineering-only seams; native helper response frames and native file identities are real.",
+    "No valid response exists for killed helper: product cleanupConfirmed remains false and is not relabeled. External retained process handles and transport events separately establish actual cleanup.",
+    "Worker control bytes are nonsemantic; worker timeout/cancellation use actual native Node threads.",
+    "Process sampler has blind spots between samples; production role guards enforce transitions."
+  ]
+}
