@@ -1,0 +1,18 @@
+{
+  "result": "PASS",
+  "changesAfterAssembly": [
+    {
+      "change": "Tar parser now explicitly requires terminal zero blocks and rejects trailing data",
+      "validation": "Both retained assembly archives and candidate reparsed; missing-terminator/trailing-data controls observed."
+    },
+    {
+      "change": "Assembler now asserts absent install root and exact installed node_modules package-name set",
+      "validation": "Fresh unique run root created in initially cache-free r3b; smoke separately asserts the actual installed package set equals memoryos-readiness."
+    },
+    {
+      "change": "Runtime tamper control property corrected to reuse-details.node.sha256, without fallback",
+      "validation": "Supplemental check rehashed actual pinned executable and detected mutated hash against the verified binding."
+    }
+  ],
+  "executionToolLimitation": "Assembler source received these validation-strengthening edits after its successful assembly/install run. Current tool hashes describe retained tools; they are not misrepresented as contemporaneous assembly tool hashes. Actual command receipts, independent archives and all source/archive/install parity are revalidated by the final verifier."
+}

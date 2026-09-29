@@ -1,0 +1,70 @@
+{
+  "result": "PASS",
+  "old": {
+    "path": "helpers/windows-inspect.ps1",
+    "byteLength": 29771,
+    "sha256": "ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+  },
+  "new": {
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 30210,
+    "sha256": "35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+  },
+  "packagePath": "package/helpers/windows-inspect.ps1",
+  "distributionRow": {
+    "byteLength": 30210,
+    "path": "helpers/windows-inspect.ps1",
+    "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+  },
+  "sbomFile": {
+    "SPDXID": "SPDXRef-File-700c5becb658ca3933b020d34a39d2b1e38e13ba",
+    "checksums": [
+      {
+        "algorithm": "SHA1",
+        "checksumValue": "b808daabaf391fe5d34a522f52a80b73f86b0761"
+      },
+      {
+        "algorithm": "SHA256",
+        "checksumValue": "35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+      }
+    ],
+    "copyrightText": "NOASSERTION",
+    "fileName": "helpers/windows-inspect.ps1",
+    "licenseConcluded": "NOASSERTION"
+  },
+  "runtimeRole": "Fixed PowerShell script launched only by CLI native acquisition/publication transport",
+  "launch": {
+    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\melsa\\Documents\\Codex\\r3b\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+    ],
+    "options": {
+      "cwd": "C:\\Users\\melsa\\Documents\\Codex\\r3b\\repositories\\memoryos-readiness\\",
+      "env": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true,
+      "detached": false,
+      "shell": false,
+      "stdio": [
+        "pipe",
+        "pipe",
+        "pipe"
+      ]
+    }
+  },
+  "launchCodeExactOldEquality": true,
+  "semanticClaim": "C3R evidence reports performance optimization with contract/security behavior unchanged for its retained cases. Phase 3B certifies artifact identity, not security equivalence.",
+  "correctionReview": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/helper-security-review.json",
+    "byteLength": 8186,
+    "sha256": "0f76a4f74d555b13285ecb8a741381f6305b0f997ac96b05d53e87a55957f873"
+  }
+}
