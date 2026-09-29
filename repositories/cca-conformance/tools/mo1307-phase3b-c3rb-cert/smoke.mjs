@@ -1,0 +1,16 @@
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
+import {root,E,S,cache,node,rec,write,read,json,inventory,controlledEnv,command,tarMembers} from './common.mjs';
+const install=path.join(cache,'installed'),pkg=path.join(install,'node_modules/memoryos-readiness'),fixture='repositories/cca-conformance/fixtures/mo1307/bundles/ready';
+assert.deepEqual(fs.readdirSync(path.join(install,'node_modules')).filter(n=>!n.startsWith('.')),['memoryos-readiness']);
+assert.ok(!fs.existsSync(path.join(install,'fixture')));fs.cpSync(path.join(root,fixture),path.join(install,'fixture'),{recursive:true});
+const driver='repositories/cca-conformance/tools/mo1307-phase3b-c3rb-cert/installed-smoke.mjs';fs.copyFileSync(path.join(root,driver),path.join(install,'installed-smoke.mjs'));
+const env=controlledEnv(path.join(cache,'smoke-home')),cwd='C:\\Windows\\System32';
+const run=command('installed-api-vector',node,[path.join(install,'installed-smoke.mjs')],{cwd,env,timeout:45000});const result=JSON.parse(run.output);assert.equal(result.result,'PASS');
+const cli=command('installed-cli-closed-dispatch',node,[path.join(pkg,'bin/memoryos-readiness.mjs'),'constructor'],{cwd,env,expected:10,timeout:15000});assert.match(read(E+'/logs/installed-cli-closed-dispatch.stderr.txt').toString(),/MO1307_USAGE/);assert.equal(read(E+'/logs/installed-cli-closed-dispatch.stdout.txt').length,0);
+const fixtureRows=inventory(path.join(install,'fixture'));assert.deepEqual(fixtureRows,inventory(path.join(root,fixture)));
+write(E+'/installed-smoke.json',{result:'PASS',scope:'Public API load, one exact ready byte API vector, closed invalid CLI dispatch. Original 3B did not require a native verify CLI operation. No Phase 3A native campaign.',api:result,cli:{expectedExit:10,observedExit:cli.status,code:'MO1307_USAGE'},commands:[rec(E+'/commands/installed-api-vector.json'),rec(E+'/commands/installed-cli-closed-dispatch.json')],driver:rec(driver),fixtureSource:fixture,fixtureRows});
+const after=inventory(pkg);assert.deepEqual(after,json(E+'/installed-inventory-before.json').members);const members=tarMembers(read(E+'/memoryos-readiness-0.1.0.tgz'));for(const r of after){const a=members.find(m=>m.path==='package/'+r.path);assert.equal(a.sha256,r.sha256);assert.equal(a.byteLength,r.byteLength);}
+write(E+'/installed-inventory-after.json',{result:'PASS',root:pkg,members:after,archiveAndSourceParity:true});
+write(E+'/installed-persistence.json',{result:'PASS',before:rec(E+'/installed-inventory-before.json'),after:rec(E+'/installed-inventory-after.json'),membersRehashed:89,mutations:0,helper:after.find(r=>r.path==='helpers/windows-inspect.ps1')});
+write(E+'/source-independence.json',{result:'PASS',cwd,outsideSourceWorktree:true,packageRoot:pkg,publicNameResolution:result.resolutions,NODE_PATH:'',NODE_OPTIONS:'',ambientPackageImports:0,sourceWorktreeImports:0,worker:'Fixed package worker-entry URL, package-only policy; source-bound unmodified worker launch uses empty env and execArgv',fixtureDataCopied:true,fixtureRecords:fixtureRows,sourceImportsDeniedBySmokeHook:true,scope:'Writes confined to m7b; smoke working directory is existing Windows System32 (read-only).'});
+console.log(JSON.stringify({result:'PASS',api:result.result,cliExit:cli.status,installedMembers:after.length,persistence:'PASS'}));

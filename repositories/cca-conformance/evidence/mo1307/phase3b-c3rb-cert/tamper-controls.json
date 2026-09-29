@@ -1,0 +1,258 @@
+{
+  "result": "PASS",
+  "count": 22,
+  "controls": [
+    {
+      "name": "archive-byte-tamper",
+      "result": "PASS",
+      "observedError": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '75b6c51cee6895fca51065f5c0ed2db6d9b826ad2dac0cad5887cec8405cfcad'\n- '341f67e821a56cf88133e8b361e8c670849ff9feaf583ae2732cc3ca61d389a2'\n",
+      "expectedRejection": "Mismatch required"
+    },
+    {
+      "name": "missing-member",
+      "result": "PASS",
+      "observedError": "MEMBER_COUNT\n\n88 !== 89\n",
+      "expectedRejection": "MEMBER_COUNT"
+    },
+    {
+      "name": "unexpected-member",
+      "result": "PASS",
+      "observedError": "MEMBER_COUNT\n\n90 !== 89\n",
+      "expectedRejection": "MEMBER_COUNT"
+    },
+    {
+      "name": "unsafe-tar-path",
+      "result": "PASS",
+      "observedError": "UNSAFE_PATH",
+      "expectedRejection": "UNSAFE_PATH"
+    },
+    {
+      "name": "nonregular-tar-member",
+      "result": "PASS",
+      "observedError": "NONREGULAR\n\n'2' !== '0'\n",
+      "expectedRejection": "NONREGULAR"
+    },
+    {
+      "name": "duplicate-member",
+      "result": "PASS",
+      "observedError": "DUPLICATE\n\n88 !== 89\n",
+      "expectedRejection": "DUPLICATE"
+    },
+    {
+      "name": "missing-tar-terminator",
+      "result": "PASS",
+      "observedError": "TAR_TERMINATOR",
+      "expectedRejection": "TAR_TERMINATOR"
+    },
+    {
+      "name": "trailing-tar-data",
+      "result": "PASS",
+      "observedError": "The expression evaluated to a falsy value:\n\n  assert.ok(tar.subarray(o).every(x=>x===0))\n",
+      "expectedRejection": "Mismatch required"
+    },
+    {
+      "name": "helper-tamper",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_SBOM_BINDING",
+      "expectedRejection": "SBOM_BINDING",
+      "target": "helpers/windows-inspect.ps1",
+      "before": {
+        "path": "helpers/windows-inspect.ps1",
+        "byteLength": 30210,
+        "sha256": "35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+      },
+      "after": {
+        "path": "helpers/windows-inspect.ps1",
+        "byteLength": 30233,
+        "sha256": "1be836ce970a1eff81f058d146c9e0f44b44ce4ff86a9cf33f919c9b8db66e2d"
+      }
+    },
+    {
+      "name": "distribution-hash-tamper",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_DISTRIBUTION_BINDING",
+      "expectedRejection": "DISTRIBUTION_BINDING",
+      "target": "distribution-manifest.json",
+      "before": {
+        "path": "distribution-manifest.json",
+        "byteLength": 12631,
+        "sha256": "5802973c276d10f48db51f842101cd664fbc21e13a74b344a9e0b421746ffc09"
+      },
+      "after": {
+        "path": "distribution-manifest.json",
+        "byteLength": 12631,
+        "sha256": "6c88bcc78eed3b3d85e578a6f0ecfc6f0ee8ae0a6507c32fdcf8e9b9a24b4cbd"
+      }
+    },
+    {
+      "name": "distribution-length-tamper",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_DISTRIBUTION_BINDING",
+      "expectedRejection": "DISTRIBUTION_BINDING",
+      "target": "distribution-manifest.json",
+      "before": {
+        "path": "distribution-manifest.json",
+        "byteLength": 12631,
+        "sha256": "5802973c276d10f48db51f842101cd664fbc21e13a74b344a9e0b421746ffc09"
+      },
+      "after": {
+        "path": "distribution-manifest.json",
+        "byteLength": 12631,
+        "sha256": "5aeb5983b1cfbf4494b54be09165cebef5a98b0f946e0101ef34e78d32c785db"
+      }
+    },
+    {
+      "name": "sbom-checksum-tamper",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_SBOM_BINDING",
+      "expectedRejection": "SBOM_BINDING",
+      "target": "sbom.spdx.json",
+      "before": {
+        "path": "sbom.spdx.json",
+        "byteLength": 47328,
+        "sha256": "7997bb939027132d307864750331ba70c0538a7590aea2773cafa5e3759aabaa"
+      },
+      "after": {
+        "path": "sbom.spdx.json",
+        "byteLength": 47328,
+        "sha256": "87bcbc4373192c5edbe224b6a9ab8de03c3f12d239b07cd630f903467489505b"
+      }
+    },
+    {
+      "name": "schema-tamper",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_SCHEMA_DATA_DRIFT",
+      "expectedRejection": "SCHEMA_DATA_DRIFT",
+      "target": "schemas/assessment-1.0.0.schema.json",
+      "before": {
+        "path": "schemas/assessment-1.0.0.schema.json",
+        "byteLength": 111,
+        "sha256": "773b9d56360d4a19145ee39b53280bb762bcb74ea4cb2807d703d12f25a8568c"
+      },
+      "after": {
+        "path": "schemas/assessment-1.0.0.schema.json",
+        "byteLength": 147,
+        "sha256": "2a6c38bd31ced5f8667d0ad600f4b5d1fb1620ba5cfc31284b1839d68e7ba850"
+      }
+    },
+    {
+      "name": "unexpected-production-dependency",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_PACKAGE_METADATA",
+      "expectedRejection": "PACKAGE_METADATA",
+      "target": "package.json",
+      "before": {
+        "path": "package.json",
+        "byteLength": 3258,
+        "sha256": "21c9a7f9121f2d9171c332bb04e59656a7981fad98e328df0f4d8abf118ae2d6"
+      },
+      "after": {
+        "path": "package.json",
+        "byteLength": 3278,
+        "sha256": "63b50f3e3f72853f21ff4e6b0a26b3d204cef3947eac61e2d7c87e46bfdff35f"
+      }
+    },
+    {
+      "name": "external-runtime-import",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_EXTERNAL_IMPORT",
+      "expectedRejection": "EXTERNAL_IMPORT",
+      "target": "src/index.mjs",
+      "before": {
+        "path": "src/index.mjs",
+        "byteLength": 1179,
+        "sha256": "10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+      },
+      "after": {
+        "path": "src/index.mjs",
+        "byteLength": 1211,
+        "sha256": "5d891eb4c0aa0532eb38ea916aa13ad9db4f9f4da8b5df6d2169629da52b413c"
+      }
+    },
+    {
+      "name": "source-worktree-import",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_EXTERNAL_IMPORT",
+      "expectedRejection": "EXTERNAL_IMPORT",
+      "target": "src/index.mjs",
+      "before": {
+        "path": "src/index.mjs",
+        "byteLength": 1179,
+        "sha256": "10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+      },
+      "after": {
+        "path": "src/index.mjs",
+        "byteLength": 1251,
+        "sha256": "a46c13ec2f7a02280b8e1c6f8fc999091f918789988f2007d4636ab8dc167e4d"
+      }
+    },
+    {
+      "name": "network-builtin-import",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_NETWORK_OR_UNKNOWN_BUILTIN",
+      "expectedRejection": "NETWORK_OR_UNKNOWN_BUILTIN",
+      "target": "src/index.mjs",
+      "before": {
+        "path": "src/index.mjs",
+        "byteLength": 1179,
+        "sha256": "10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+      },
+      "after": {
+        "path": "src/index.mjs",
+        "byteLength": 1200,
+        "sha256": "182409fe6fada03f06a253a6870fc2dda8583ddf4cacede2aee20281c26e598d"
+      }
+    },
+    {
+      "name": "extra-package-file",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_UNEXPECTED_MEMBER",
+      "expectedRejection": "UNEXPECTED_MEMBER"
+    },
+    {
+      "name": "missing-package-file",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_MISSING_MEMBER",
+      "expectedRejection": "MISSING_MEMBER"
+    },
+    {
+      "name": "provenance-byte-tamper",
+      "result": "PASS",
+      "observedError": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'f35ce4132babc26c18e46c6480ccb75583cacc24690efa71b4e609a980b1da73'\n- '4e9be918510cc25828006d6af95c9ba058df2c1e75ceff5e52df0f17319a6620'\n",
+      "expectedRejection": "Mismatch required"
+    },
+    {
+      "name": "runtime-identity-mismatch",
+      "result": "PASS",
+      "observedError": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '0000000000000000000000000000000000000000000000000000000000000000'\n- 'ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'\n",
+      "expectedRejection": "Mismatch required"
+    },
+    {
+      "name": "installed-helper-mutation",
+      "result": "PASS",
+      "observedError": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      byteLength: 468,\n      path: 'LICENSE-NOTICE.md',\n      sha256: '38242c10d734faf4cdf2ca223760a4ade3ab44516cd42989e95dbf6e66f15413'\n...\n    {\n+     byteLength: 30240,\n-     byteLength: 30210,\n      path: 'helpers/windows-inspect.ps1',\n+     sha256: 'f01f69a437877898c54e5c5c48baaf206bbd98cf657a6c8bb6182467be819a8a'\n-     sha256: '35381850f1ef8c322e5281",
+      "expectedRejection": "Mismatch required",
+      "mutation": {
+        "path": "helpers/windows-inspect.ps1",
+        "byteLength": 30240,
+        "sha256": "f01f69a437877898c54e5c5c48baaf206bbd98cf657a6c8bb6182467be819a8a"
+      },
+      "restored": {
+        "path": "helpers/windows-inspect.ps1",
+        "byteLength": 30210,
+        "sha256": "35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+      },
+      "all89MembersRestored": true
+    }
+  ],
+  "reusedNegativeControls": 0,
+  "reason": "Original negative summary does not retain checker-source closure; bounded controls reexecuted.",
+  "productionMutated": false,
+  "installedNegativeAfterPersistence": "Explicit isolated mutation restored; full inventory rechecked.",
+  "provenanceInput": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3b-c3rb-cert/provenance-input.json",
+    "byteLength": 883,
+    "sha256": "4e9be918510cc25828006d6af95c9ba058df2c1e75ceff5e52df0f17319a6620"
+  },
+  "finalProvenanceTamper": "Final seal additionally checks tamper against actual final provenance bytes."
+}

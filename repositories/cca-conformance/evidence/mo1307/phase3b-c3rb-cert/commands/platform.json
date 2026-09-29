@@ -1,0 +1,27 @@
+{
+  "name": "platform",
+  "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+  "args": [
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-Command",
+    "$v=Get-CimInstance Win32_OperatingSystem; [pscustomobject]@{caption=$v.Caption;version=$v.Version;build=$v.BuildNumber;architecture=$v.OSArchitecture;powershell=$PSVersionTable.PSVersion.ToString()} | ConvertTo-Json -Compress"
+  ],
+  "cwd": "C:\\m7b\\",
+  "startedUtc": "2026-09-29T23:11:05.308Z",
+  "elapsedMs": 1995.6376999999993,
+  "status": 0,
+  "signal": null,
+  "error": null,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3b-c3rb-cert/logs/platform.stdout.txt",
+    "byteLength": 134,
+    "sha256": "80230ce5f1347f8cadbd11eed3af926aa649641aabbedd88cb1e94fe90add572"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3b-c3rb-cert/logs/platform.stderr.txt",
+    "byteLength": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

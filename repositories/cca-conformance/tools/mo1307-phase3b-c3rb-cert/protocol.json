@@ -1,0 +1,14 @@
+{
+  "kind": "MO1307Phase3BC3RBFiniteProtocol",
+  "version": "1.0.0",
+  "source": "defe93989efc6501b1a730b82e79e705884b269b",
+  "authority": ["docs/mo1307-contract-freeze-1.md#19", "docs/mo1307-contract-freeze-1.md#21", "5cb213eeab8a6deec39a8f8f93ea13a70e053231", "explicit user fresh Phase 3B instruction"],
+  "attempts": 1,
+  "failurePolicy": "Stop at the first mandatory failure; preserve exact stdout, stderr and exception. No production repair or rerun.",
+  "executionStages": ["candidate-toolchain-preflight", "source-package-contract-distribution-sbom-closure", "toolchain-schema-reuse-licenses", "full-pinned-document-validation", "independent-assemblies", "fresh-offline-install", "installed-package-smoke-and-persistence", "tamper-controls", "bounded-advisory-handoff", "workspace-and-preservation"],
+  "mandatoryInventory": ["exact C3RB Git blobs", "Windows 11 x64", "Node 24.21.0 exact hash", "npm 11.19.0 full toolchain", "PowerShell 5.1 executable and helper", "89 exact members", "tar paths types headers terminator and bytes", "88 distribution rows", "53 contract rows", "52 schemas and pinned offline validators", "SPDX 2.3 full schema and semantic recomputation", "87 SBOM files and 88 relationships", "two fresh clean assemblies", "archive reproducibility", "one fresh empty-cache offline install", "installed-member equality", "public API/closed CLI bounded package smoke", "installed persistence and source independence", "runtime closure and zero production dependencies/hooks", "licenses and notices", "22 tamper controls", "existing-evidence bounded advisory handoff", "source/archive provenance", "historical preservation", "workspace verification", "final evidence seal and exact report"],
+  "reusePolicy": "Only schema fixture results and upstream provenance can be reused after complete exact dependency checks; archive, assemblies, install, metadata, toolchain identities, document checks, closure and tamper controls receive fresh observations. Advisory history is newly reviewed with an explicit stale-currentness limitation, not same-date PASS.",
+  "network": "No acquisition, provider accounts, hosted execution, npm network fallback or remote schema retrieval.",
+  "outOfScope": ["C3S", "Phase 3A campaign", "Phase 3C campaign", "Phase 3D integration", "release authorization", "risk acceptance", "production repairs", "push", "tag"],
+  "budgetMinutes": 90
+}
