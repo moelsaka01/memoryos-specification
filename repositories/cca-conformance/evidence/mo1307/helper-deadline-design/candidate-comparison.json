@@ -1,0 +1,128 @@
+{
+  "kind": "MO1307HelperDeadlineCandidateComparison",
+  "version": "1.0.0",
+  "baseline": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+  "result": "CONDITIONAL_C1_PREFERRED_NO_NUMERIC_BOUND",
+  "bindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/bound-selection-method.json",
+      "byteLength": 4833,
+      "sha256": "sha256:594bc9e6fed2445f07ddfcb73be853e54db78440623ce6ad1c8adea463ba3bff"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/aggregate-analysis.json",
+      "byteLength": 42202,
+      "sha256": "sha256:7a06094655ffff801b189ed2b6e9f8b3156a1428bc36cbaaf01a5fecef39ce53"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/cli-analysis.json",
+      "byteLength": 89137,
+      "sha256": "sha256:e3b2adcf32e06d12946c1dcc12ec2457effe639d3f10497e899c3a65c0d3efac"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/security-dos-analysis.json",
+      "byteLength": 14765,
+      "sha256": "sha256:087b365cdc9054acd8e39e510b371736c2632d8dec30c2a05877b4a9415e7f19"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "C1",
+      "changes": [
+        "H"
+      ],
+      "aggregate": 20000,
+      "cli": 30000,
+      "assessment": "CONDITIONALLY_PREFERRED",
+      "reason": "Preserves independent cumulative/overall caps. min-formula is internally coherent even if not every helper can spend H; admission caps are not per-slot reservations or a guarantee9maxima will succeed."
+    },
+    {
+      "id": "C2",
+      "changes": [
+        "H",
+        "aggregate"
+      ],
+      "assessment": "NOT_JUSTIFIED_BY_CURRENT_SCOPE",
+      "reason": "Increasing aggregate would enlarge cumulative native exposure; requires measured independent aggregate insufficiency and explicit new security rationale, not9×H."
+    },
+    {
+      "id": "C3",
+      "changes": [
+        "H",
+        "CLI admission"
+      ],
+      "assessment": "NOT_JUSTIFIED_BY_CURRENT_SCOPE",
+      "reason": "Longer CLI admission enlarges prepublication occupancy and staging/admission opportunity; no automatic need follows from a larger per-helper ceiling."
+    },
+    {
+      "id": "C4",
+      "changes": [
+        "H",
+        "aggregate",
+        "CLI admission",
+        "other related limits"
+      ],
+      "assessment": "NOT_JUSTIFIED",
+      "reason": "Broadens multiple independent controls without direct dependency; API/worker/cleanup have no justified increase."
+    }
+  ],
+  "preferredScope": "C1",
+  "proposedHelperMs": null,
+  "retainedLimits": {
+    "aggregateMs": 20000,
+    "cliMs": 30000,
+    "apiMs": 10000,
+    "workerMs": 10000,
+    "cleanupMs": 2000
+  },
+  "parameterizedAssessment": {
+    "H": "Unselected finite per-helper whole-lifecycle ceiling; domain is only an analysis ceiling.",
+    "effectiveDeadline": "min(D,S+H,S+(20000-used))",
+    "perHelperExposureIncreaseMs": "max(0,min(H,remaining aggregate,remaining CLI)-min(5000,remaining aggregate,remaining CLI))",
+    "aggregateExposure": "No independent increase; all successful charges and next admission remain clipped. Terminal failure prevents further helper work.",
+    "cliExposure": "No independent increase to30000 admission; the preexisting admitted non-cancellable rename exception remains untouched.",
+    "cleanup": "Original terminal+2000, with no restart and no promotion of unconfirmed cleanup."
+  },
+  "securityOnlyIllustrations": [
+    {
+      "H": 6000,
+      "proposed": false,
+      "nonClippedSingleHelperIncrementMs": 1000,
+      "remainingAggregateAndCliCanShorten": true,
+      "additionalCleanupMs": 0,
+      "numericSufficiency": "NOT_ESTABLISHED"
+    },
+    {
+      "H": 8000,
+      "proposed": false,
+      "nonClippedSingleHelperIncrementMs": 3000,
+      "remainingAggregateAndCliCanShorten": true,
+      "additionalCleanupMs": 0,
+      "numericSufficiency": "NOT_ESTABLISHED"
+    },
+    {
+      "H": 10000,
+      "proposed": false,
+      "nonClippedSingleHelperIncrementMs": 5000,
+      "remainingAggregateAndCliCanShorten": true,
+      "additionalCleanupMs": 0,
+      "numericSufficiency": "NOT_ESTABLISHED"
+    },
+    {
+      "H": 20000,
+      "proposed": false,
+      "nonClippedSingleHelperIncrementMs": 15000,
+      "remainingAggregateAndCliCanShorten": true,
+      "additionalCleanupMs": 0,
+      "numericSufficiency": "NOT_ESTABLISHED"
+    }
+  ],
+  "counterfactual": {
+    "slowestObservedOtherEightHelperMs": 11752.5402,
+    "remainingForRequest3AtThoseFixedOtherDurationsMs": 8247.4598,
+    "meaning": "Arithmetic only, not a reservation, a candidate bound or guarantee; several slow helpers can exhaust the shared budget."
+  },
+  "noBroaderLimitChangeJustified": true,
+  "productionChanged": false,
+  "certification": false
+}

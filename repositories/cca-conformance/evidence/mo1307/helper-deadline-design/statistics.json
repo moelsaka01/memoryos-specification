@@ -1,0 +1,449 @@
+{
+  "kind": "MO1307HelperDeadlineDesignStatistics",
+  "version": "1.0.0",
+  "result": "PASS",
+  "plan": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/sample-plan.json",
+    "byteLength": 46461,
+    "sha256": "sha256:38791b138a80dd37d46acaec1eb7e004d9103105b829afae14622cd7e4978b2c"
+  },
+  "campaign": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/campaign.json",
+    "byteLength": 5102,
+    "sha256": "sha256:b46c60629041524b728a2f1687d24e55b54e212b923dc49ab5c813a588295e4e"
+  },
+  "sampleCount": 10,
+  "successCount": 9,
+  "timeoutCount": 1,
+  "censoredCount": 1,
+  "unexecuted": [
+    {
+      "sampleId": "11-C",
+      "case": "C",
+      "block": 3
+    },
+    {
+      "sampleId": "12-C",
+      "case": "C",
+      "block": 3
+    },
+    {
+      "sampleId": "13-E",
+      "case": "E",
+      "block": 3
+    },
+    {
+      "sampleId": "14-C",
+      "case": "C",
+      "block": 3
+    },
+    {
+      "sampleId": "15-C",
+      "case": "C",
+      "block": 3
+    },
+    {
+      "sampleId": "16-C",
+      "case": "C",
+      "block": 4
+    },
+    {
+      "sampleId": "17-C",
+      "case": "C",
+      "block": 4
+    },
+    {
+      "sampleId": "18-C",
+      "case": "C",
+      "block": 4
+    },
+    {
+      "sampleId": "19-E",
+      "case": "E",
+      "block": 4
+    },
+    {
+      "sampleId": "20-C",
+      "case": "C",
+      "block": 4
+    },
+    {
+      "sampleId": "21-C",
+      "case": "C",
+      "block": 5
+    },
+    {
+      "sampleId": "22-C",
+      "case": "C",
+      "block": 5
+    },
+    {
+      "sampleId": "23-C",
+      "case": "C",
+      "block": 5
+    },
+    {
+      "sampleId": "24-C",
+      "case": "C",
+      "block": 5
+    },
+    {
+      "sampleId": "25-E",
+      "case": "E",
+      "block": 5
+    }
+  ],
+  "byCase": [
+    {
+      "case": "C",
+      "planned": 20,
+      "observed": 8,
+      "successes": 7,
+      "timeouts": 1,
+      "censored": 1,
+      "sampleIds": [
+        "02-C",
+        "03-C",
+        "04-C",
+        "05-C",
+        "06-C",
+        "08-C",
+        "09-C",
+        "10-C"
+      ],
+      "rawSupervisorActiveMs": [
+        3760.0214000000005,
+        3698.9052999999994,
+        4176.5257,
+        3604.408199999998,
+        3221.3763,
+        4015.4340999999986,
+        4262.5466000000015,
+        null
+      ],
+      "rawWholeSettlementMs": [
+        3760.1347000000005,
+        3699.0465999999997,
+        4176.5761,
+        3604.5311,
+        3221.4202000000005,
+        4015.4818000000014,
+        4262.664700000001,
+        5031.686200000004
+      ],
+      "rawResults": [
+        "SUCCESS",
+        "SUCCESS",
+        "SUCCESS",
+        "SUCCESS",
+        "SUCCESS",
+        "SUCCESS",
+        "SUCCESS",
+        "TIMEOUT"
+      ],
+      "successfulSupervisorActiveMs": {
+        "n": 7,
+        "raw": [
+          3760.0214000000005,
+          3698.9052999999994,
+          4176.5257,
+          3604.408199999998,
+          3221.3763,
+          4015.4340999999986,
+          4262.5466000000015
+        ],
+        "min": 3221.3763,
+        "max": 4262.5466000000015,
+        "median": 3760.0214000000005
+      },
+      "successfulWholeSettlementMs": {
+        "n": 7,
+        "raw": [
+          3760.1347000000005,
+          3699.0465999999997,
+          4176.5761,
+          3604.5311,
+          3221.4202000000005,
+          4015.4818000000014,
+          4262.664700000001
+        ],
+        "min": 3221.4202000000005,
+        "max": 4262.664700000001,
+        "median": 3760.1347000000005
+      },
+      "allSettlementMs": {
+        "n": 8,
+        "raw": [
+          3760.1347000000005,
+          3699.0465999999997,
+          4176.5761,
+          3604.5311,
+          3221.4202000000005,
+          4015.4818000000014,
+          4262.664700000001,
+          5031.686200000004
+        ],
+        "min": 3221.4202000000005,
+        "max": 5031.686200000004,
+        "median": 3887.808250000001
+      },
+      "minimumSuccessfulWholeMarginMs": 737.3352999999988,
+      "samplesBelow5000": 7,
+      "samplesAtOrAbove5000": 1
+    },
+    {
+      "case": "E",
+      "planned": 5,
+      "observed": 2,
+      "successes": 2,
+      "timeouts": 0,
+      "censored": 0,
+      "sampleIds": [
+        "01-E",
+        "07-E"
+      ],
+      "rawSupervisorActiveMs": [
+        1288.4044,
+        1166.4922000000006
+      ],
+      "rawWholeSettlementMs": [
+        1288.4605,
+        1166.5548999999992
+      ],
+      "rawResults": [
+        "SUCCESS",
+        "SUCCESS"
+      ],
+      "successfulSupervisorActiveMs": {
+        "n": 2,
+        "raw": [
+          1288.4044,
+          1166.4922000000006
+        ],
+        "min": 1166.4922000000006,
+        "max": 1288.4044,
+        "median": 1227.4483000000002
+      },
+      "successfulWholeSettlementMs": {
+        "n": 2,
+        "raw": [
+          1288.4605,
+          1166.5548999999992
+        ],
+        "min": 1166.5548999999992,
+        "max": 1288.4605,
+        "median": 1227.5076999999997
+      },
+      "allSettlementMs": {
+        "n": 2,
+        "raw": [
+          1288.4605,
+          1166.5548999999992
+        ],
+        "min": 1166.5548999999992,
+        "max": 1288.4605,
+        "median": 1227.5076999999997
+      },
+      "minimumSuccessfulWholeMarginMs": 3711.5395,
+      "samplesBelow5000": 2,
+      "samplesAtOrAbove5000": 0
+    }
+  ],
+  "rows": [
+    {
+      "sampleId": "01-E",
+      "case": "E",
+      "result": "SUCCESS",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/samples/01-E/receipt.json",
+        "byteLength": 6020,
+        "sha256": "sha256:cd4589bc55c2dc45d0e29fc566efdaddded9a9baf691aba680942671724b8c27"
+      },
+      "supervisorHelperActiveMs": 1288.4044,
+      "supervisorTerminalMs": null,
+      "wholeSettlementMs": 1288.4605,
+      "terminalOverrunMs": null,
+      "requestFrameBytes": 345,
+      "responseFrameBytes": 1905,
+      "cleanupConfirmed": true,
+      "censored": false,
+      "wholeMarginMs": 3711.5395
+    },
+    {
+      "sampleId": "02-C",
+      "case": "C",
+      "result": "SUCCESS",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/samples/02-C/receipt.json",
+        "byteLength": 6073,
+        "sha256": "sha256:1ed877975604f9635f535ef2b8332bd84d1ef82a81e69e6cbb2d81a431f91db5"
+      },
+      "supervisorHelperActiveMs": 3760.0214000000005,
+      "supervisorTerminalMs": null,
+      "wholeSettlementMs": 3760.1347000000005,
+      "terminalOverrunMs": null,
+      "requestFrameBytes": 7570,
+      "responseFrameBytes": 2693766,
+      "cleanupConfirmed": true,
+      "censored": false,
+      "wholeMarginMs": 1239.8652999999995
+    },
+    {
+      "sampleId": "03-C",
+      "case": "C",
+      "result": "SUCCESS",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/samples/03-C/receipt.json",
+        "byteLength": 6099,
+        "sha256": "sha256:b3734fce5167140a649ccc8cb9abe57d6a089cad72b5ef44a902b32b2d0a0ed1"
+      },
+      "supervisorHelperActiveMs": 3698.9052999999994,
+      "supervisorTerminalMs": null,
+      "wholeSettlementMs": 3699.0465999999997,
+      "terminalOverrunMs": null,
+      "requestFrameBytes": 7570,
+      "responseFrameBytes": 2693766,
+      "cleanupConfirmed": true,
+      "censored": false,
+      "wholeMarginMs": 1300.9534000000003
+    },
+    {
+      "sampleId": "04-C",
+      "case": "C",
+      "result": "SUCCESS",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/samples/04-C/receipt.json",
+        "byteLength": 6056,
+        "sha256": "sha256:cd93f96e51936a5ba5def375ce9e93352d316146ffc2a4f46ee1215605856292"
+      },
+      "supervisorHelperActiveMs": 4176.5257,
+      "supervisorTerminalMs": null,
+      "wholeSettlementMs": 4176.5761,
+      "terminalOverrunMs": null,
+      "requestFrameBytes": 7570,
+      "responseFrameBytes": 2693766,
+      "cleanupConfirmed": true,
+      "censored": false,
+      "wholeMarginMs": 823.4238999999998
+    },
+    {
+      "sampleId": "05-C",
+      "case": "C",
+      "result": "SUCCESS",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/samples/05-C/receipt.json",
+        "byteLength": 6105,
+        "sha256": "sha256:dd07138162a5485f1a3f2f602e5bfe150f392c4c50636bdcc1c02729b151cee9"
+      },
+      "supervisorHelperActiveMs": 3604.408199999998,
+      "supervisorTerminalMs": null,
+      "wholeSettlementMs": 3604.5311,
+      "terminalOverrunMs": null,
+      "requestFrameBytes": 7570,
+      "responseFrameBytes": 2693766,
+      "cleanupConfirmed": true,
+      "censored": false,
+      "wholeMarginMs": 1395.4688999999998
+    },
+    {
+      "sampleId": "06-C",
+      "case": "C",
+      "result": "SUCCESS",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/samples/06-C/receipt.json",
+        "byteLength": 6084,
+        "sha256": "sha256:d29002d87a4fdb2fbcee25d106dbfe1a5d9415ae1cff8354bd69cbad0c767bf7"
+      },
+      "supervisorHelperActiveMs": 3221.3763,
+      "supervisorTerminalMs": null,
+      "wholeSettlementMs": 3221.4202000000005,
+      "terminalOverrunMs": null,
+      "requestFrameBytes": 7570,
+      "responseFrameBytes": 2693766,
+      "cleanupConfirmed": true,
+      "censored": false,
+      "wholeMarginMs": 1778.5797999999995
+    },
+    {
+      "sampleId": "07-E",
+      "case": "E",
+      "result": "SUCCESS",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/samples/07-E/receipt.json",
+        "byteLength": 6103,
+        "sha256": "sha256:10d8f8fef3246c517caf5a0507d5c827d15959289dec41562a3f7b4cf2cd6118"
+      },
+      "supervisorHelperActiveMs": 1166.4922000000006,
+      "supervisorTerminalMs": null,
+      "wholeSettlementMs": 1166.5548999999992,
+      "terminalOverrunMs": null,
+      "requestFrameBytes": 345,
+      "responseFrameBytes": 1905,
+      "cleanupConfirmed": true,
+      "censored": false,
+      "wholeMarginMs": 3833.445100000001
+    },
+    {
+      "sampleId": "08-C",
+      "case": "C",
+      "result": "SUCCESS",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/samples/08-C/receipt.json",
+        "byteLength": 6105,
+        "sha256": "sha256:f6721558a1dc760b7ecaecdcb745a1c53e336b2b1d372006e0bd6444bc7b391b"
+      },
+      "supervisorHelperActiveMs": 4015.4340999999986,
+      "supervisorTerminalMs": null,
+      "wholeSettlementMs": 4015.4818000000014,
+      "terminalOverrunMs": null,
+      "requestFrameBytes": 7570,
+      "responseFrameBytes": 2693766,
+      "cleanupConfirmed": true,
+      "censored": false,
+      "wholeMarginMs": 984.5181999999986
+    },
+    {
+      "sampleId": "09-C",
+      "case": "C",
+      "result": "SUCCESS",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/samples/09-C/receipt.json",
+        "byteLength": 6113,
+        "sha256": "sha256:2b49a705b839456502ecf9ec746e941ca43f829d5aab92d533e23eddbc2da516"
+      },
+      "supervisorHelperActiveMs": 4262.5466000000015,
+      "supervisorTerminalMs": null,
+      "wholeSettlementMs": 4262.664700000001,
+      "terminalOverrunMs": null,
+      "requestFrameBytes": 7570,
+      "responseFrameBytes": 2693766,
+      "cleanupConfirmed": true,
+      "censored": false,
+      "wholeMarginMs": 737.3352999999988
+    },
+    {
+      "sampleId": "10-C",
+      "case": "C",
+      "result": "TIMEOUT",
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/samples/10-C/receipt.json",
+        "byteLength": 6336,
+        "sha256": "sha256:f259b9e5b2bd93027f292e659286748e65e114d4d7872584d7407712cdf22ec7"
+      },
+      "supervisorHelperActiveMs": null,
+      "supervisorTerminalMs": 5007.5264000000025,
+      "wholeSettlementMs": 5031.686200000004,
+      "terminalOverrunMs": 7.526400000002468,
+      "requestFrameBytes": 7570,
+      "responseFrameBytes": 0,
+      "cleanupConfirmed": false,
+      "censored": true,
+      "wholeMarginMs": -31.686200000003737
+    }
+  ],
+  "primaryMetric": "Successful real supervisor helperUsedMs. Failure terminal and external settlement are distinct and never successful completion observations.",
+  "tailQuantiles": "NOT_ESTIMATED",
+  "noPooling": true,
+  "noOutliersDiscarded": true,
+  "certification": false
+}

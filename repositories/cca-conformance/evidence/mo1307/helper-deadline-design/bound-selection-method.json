@@ -1,0 +1,59 @@
+{
+  "kind": "MO1307HelperDeadlineBoundSelectionMethod",
+  "version": "1.0.0",
+  "baseline": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+  "declaredAtUtc": "2026-09-29T17:54:02.104Z",
+  "result": "PREDECLARED_METHOD_NOT_A_BOUND",
+  "objective": "Finite whole-helper engineering envelope for the certified native Windows environment under declared ordinary load, retaining fail-closed behavior outside it. No hard-real-time, zero-timeout, mathematical maximum or worst-case scheduling claim.",
+  "priorFormulaReview": {
+    "proposal": "U + max(1500ms,0.30*U) + uncertainty",
+    "acceptedAutomatically": false,
+    "reason": "The previous observed maximum is not an upper tolerance estimate U; one timeout is right-censored.1500ms and30% are unvalidated engineering policy choices, not measured platform bounds. They may be compared later but do not establish a numeric replacement."
+  },
+  "selectionRule": {
+    "scope": "C1 first: only per-helper finite whole-lifecycle bound, subject to independent aggregate/CLI/security review.",
+    "candidateDomain": {
+      "minimumExclusiveMs": 5000,
+      "maximumInclusiveMs": 20000,
+      "granularityMs": 500,
+      "reason": "The unchanged20s helper-active cap makes a larger per-helper allowance ineffective for a fresh first helper. Domain is an analysis ceiling, not authorization or a claim that20s is acceptable."
+    },
+    "rawRequirement": "R=U+V+Q, only when each term has an independent documented basis. U is a justified upper successful-lifecycle envelope; V is explicitly justified ordinary-load/startup variability not already in U; Q is bounded measurement uncertainty not already in U/V. Do not double-count.",
+    "rounding": "After R exists, choose the smallest500ms grid value H>=R in (5000,20000], then assess DoS and aggregate/admission clipping. Never select H first.",
+    "evidenceGate": [
+      "No unresolved successful-completion censoring may be converted into an upper observation.",
+      "No guessed observer-overhead subtraction or same-host sequential-campaign causal pairing.",
+      "U/V/Q require independent statistical or engineering justification; finite sample maxima/spreads alone are not sufficient.",
+      "Transfer to the earlier private sequence clock must include its framing, decoding and exit-checkpoint costs in the justified envelope; standalone supervisor times omit that transfer.",
+      "Explicit aggregate/CLI and security review must support the smallest scope before any numeric proposal."
+    ],
+    "resultBranches": {
+      "BOUND_SELECTED": "Only if U,V,Q are justified and the finite rounded candidate passes all coherence/security gates; proposal still requires separate correction authority.",
+      "MORE_CHARACTERIZATION_REQUIRED": "If U,V,Q or observer sensitivity remain unresolved, or censoring prevents a successful upper envelope; retain5000 and specify finite missing evidence/authority.",
+      "MODEL_C_NOT_COHERENT": "Only if evidence establishes no finite whole-helper-only or separately justified related-budget correction can satisfy the declared security/coherence constraints."
+    }
+  },
+  "reliability": {
+    "type": "Engineering envelope; no achieved population probability claimed.",
+    "statisticalIllustration": {
+      "assumptions": "Continuous independent identically distributed observations sampled from one predeclared ordinary-load stratum; not established for these sequential host observations.",
+      "coverage": 0.95,
+      "confidence": 0.95,
+      "maximumConfidenceWith20": 0.6415140775914581,
+      "minimumUncensoredSamplesFor95_95": 59,
+      "zeroFailures20OneSided95UpperFailureProbability": 0.13910834066826516,
+      "derivation": "P(sample maximum covers at least fraction p)=1-p^n. Zero-failure upper failure probability solves(1-q)^n=alpha.",
+      "warning": "These calculations demonstrate limitations; they are not a reliability claim about this product. No historical population pooling."
+    }
+  },
+  "measurementPolicy": {
+    "primary": "Real supervisor helperUsedMs through confirmed quiescence for successful single-helper samples; terminalAt-origin for refusal. Whole origin-to-transport settlement retained separately for comparison.",
+    "uncertainty": "Parent notification, validation and settlement differ. Record those differences; they do not bound all OS scheduling or unobserved bootstrap uncertainty. Unknown Q remains unknown.",
+    "observerSensitivity": "Compare retained prior same-request C/E cohorts descriptively, including censoring. They are sequential under uncontrolled host activity, not randomized or paired. No overhead subtraction.",
+    "bootstrap": "NOT_OBSERVABLE separately; startup remains inside the whole clock."
+  },
+  "productionChanges": false,
+  "freezeChanges": false,
+  "deadlineChanges": false,
+  "certification": false
+}

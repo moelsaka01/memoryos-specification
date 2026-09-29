@@ -1,0 +1,253 @@
+{
+  "kind": "MO1307HelperDeadlineTestImpact",
+  "version": "1.0.0",
+  "baseline": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+  "productBaseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "result": "PASS",
+  "scope": "DESIGN_ONLY_CONDITIONAL_FUTURE_CORRECTION",
+  "createdAtUtc": "2026-09-29T17:54:32.892Z",
+  "currentLimits": {
+    "helperMs": 5000,
+    "aggregateHelperActiveMs": 20000,
+    "cliAdmissionMs": 30000,
+    "apiMs": 10000,
+    "workerMs": 10000,
+    "cleanupMs": 2000
+  },
+  "condition": "Only after separate authority selects a finite numeric H and authorizes the precise correction; H is unselected in these plans.",
+  "sourceBindings": [
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs",
+      "byteLength": 16808,
+      "sha256": "sha256:07564080e458e97eb9d35154b2f44eff6d566df437cdcc9ca0ca701165133d1f",
+      "git": {
+        "workspace": "C:/Users/melsa/Documents/Codex/cca-workspace",
+        "revision": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+        "blob": "be6c23c6f09a542302eccf5fb59e1b7471e00b38",
+        "exactBlobBytesVerified": true
+      }
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs",
+      "byteLength": 16914,
+      "sha256": "sha256:41ac036c712de739362a5d79504f4c35e12dadb9102fec59d722759f9888823c",
+      "git": {
+        "workspace": "C:/Users/melsa/Documents/Codex/cca-workspace",
+        "revision": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+        "blob": "380c37d163d0fba4fe9ea4c49424c4db6ca41db0",
+        "exactBlobBytesVerified": true
+      }
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+      "byteLength": 23696,
+      "sha256": "sha256:c0524079400446040b5df90ec326d57e85c27ab04778ee4f85a69f0679fca889",
+      "git": {
+        "workspace": "C:/Users/melsa/Documents/Codex/cca-workspace",
+        "revision": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+        "blob": "3699fdedd55d832536dba3602da29dab228be646",
+        "exactBlobBytesVerified": true
+      }
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs",
+      "byteLength": 17108,
+      "sha256": "sha256:63bebd85b33ce9d23442c347b6e322ec0f8b47733152d2da680fd2d8de8ad420",
+      "git": {
+        "workspace": "C:/Users/melsa/Documents/Codex/cca-workspace",
+        "revision": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+        "blob": "bfa4a9686a84285ac608fc228dc0d2a1829b0cde",
+        "exactBlobBytesVerified": true
+      }
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs",
+      "byteLength": 10000,
+      "sha256": "sha256:23fadc6cfb598ae12cf8b9b3d43fdf357edd3ff4cea0b9bad45e0c09a0f25dfa",
+      "git": {
+        "workspace": "C:/Users/melsa/Documents/Codex/cca-workspace",
+        "revision": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+        "blob": "95f513c3d7428837086b84c654157c99ff001dee",
+        "exactBlobBytesVerified": true
+      }
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_native_runtime_test.mjs",
+      "byteLength": 1535,
+      "sha256": "sha256:210f3d45654d2e19289819f6827e4de35512793fb10f906c0ab711c11eb8ec46",
+      "git": {
+        "workspace": "C:/Users/melsa/Documents/Codex/cca-workspace",
+        "revision": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+        "blob": "f92bea420a21e9f10832c808a6c5848d4f05a287",
+        "exactBlobBytesVerified": true
+      }
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs",
+      "byteLength": 7629,
+      "sha256": "sha256:1e21f3fe57777288220ca83075206789fa0040e32b609748eb0c8d2948fe9ce2",
+      "git": {
+        "workspace": "C:/Users/melsa/Documents/Codex/cca-workspace",
+        "revision": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+        "blob": "8c37fd7ca9728b24d1e2eb006c92a5043487ff25",
+        "exactBlobBytesVerified": true
+      }
+    }
+  ],
+  "noneRunHere": true,
+  "directUpdates": [
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs",
+      "tests": [
+        "C2C01",
+        "C2C17"
+      ],
+      "references": [
+        {
+          "path": "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs",
+          "startLine": 36,
+          "endLine": 36,
+          "anchor": "helperDeadlineMs, 5000"
+        },
+        {
+          "path": "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs",
+          "startLine": 164,
+          "endLine": 171,
+          "anchor": "test('C2C17"
+        }
+      ],
+      "change": "Pin H explicitly in the numeric-contract test. Replace4999/5000 boundary stimuli with H−1/H; add H+1, late frame and late exit cases. Do not merely lengthen harness timeout."
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs",
+      "tests": [
+        "R07",
+        "R09"
+      ],
+      "references": [
+        {
+          "path": "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs",
+          "startLine": 87,
+          "endLine": 95,
+          "anchor": "test('R07"
+        },
+        {
+          "path": "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs",
+          "startLine": 109,
+          "endLine": 117,
+          "anchor": "test('R09"
+        }
+      ],
+      "change": "R07 uses H at equality; add before/after cases and origin-before-spawn checks. R09 final helper deadline14010 depends on old5000 and must instead assert min(30000,9010+H,9010+20000−10). Preserve worker deadline10010 and charged10 assertions."
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+      "tests": [
+        "native helper runner"
+      ],
+      "references": [
+        {
+          "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+          "startLine": 74,
+          "endLine": 74,
+          "anchor": "timeout: D.limits.helperDeadlineMs"
+        }
+      ],
+      "change": "Runner follows generated H. Keep independent product deadline witnesses; spawnSync timeout is an engineering guard and is not itself proof of production supervisor enforcement."
+    }
+  ],
+  "retainAndExtend": [
+    {
+      "paths": [
+        "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs",
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "tests": [
+        "C2C18",
+        "C2C19",
+        "R01–R06",
+        "R08",
+        "R09"
+      ],
+      "requirement": "Existing4999×4 aggregate stimulus remains valid for H>5000 and must still reject at20000. Add cases where aggregate remaining < H and where CLI remaining < both H and aggregate; equality rejects, no unused budget resets, worker time excluded from helper aggregate but included in CLI."
+    },
+    {
+      "paths": [
+        "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs"
+      ],
+      "tests": [
+        "R10–R16"
+      ],
+      "requirement": "No helper overlap/worker overlap, valid frame insufficient without exit, terminal cancellation/timeout cannot be restored by delayed valid bytes. Test cleanup deadline remains terminal+2000 and first terminal cause retained."
+    },
+    {
+      "paths": [
+        "repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs",
+        "repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs"
+      ],
+      "tests": [
+        "F02–F11",
+        "F16–F24",
+        "FCLI",
+        "PWAIT"
+      ],
+      "requirement": "Rerun unchanged finalization/late-success/queued-rename/postcommit-output and timer lifetime controls; no helper budget change can extend final admission or retract actual commit. Keep shared disposition allowance."
+    },
+    {
+      "paths": [
+        "repositories/cca-conformance/tests/mo1307_phase2c_native_runtime_test.mjs",
+        "repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs"
+      ],
+      "tests": [
+        "NRT01",
+        "stdout/deadline supplements"
+      ],
+      "requirement": "Worker remains10000, API10000, CLI30000, cleanup2000. Native worker and stdout controls remain distinct from helper correction."
+    }
+  ],
+  "newBoundaryMatrix": [
+    "real supervisor and independent sequence agree on selected H while retaining their original origins",
+    "successful complete frame+EOF+exit strictly before H; equality and later fail",
+    "slow startup consumes H; stalled stdin/response/exit consumes H; no unbounded preclock stage",
+    "aggregate exact boundary before/after worker and clipped later helper",
+    "CLI remaining budget shorter than H; no publication after terminal",
+    "abort strictly earlier vs simultaneous deadline; unchanged TIMEOUT precedence",
+    "timeout with valid late frame versus no/partial frame: preserve true/false quiescence-proof distinction",
+    "cleanup exceeds or cannot confirm2000: no further work and no false cleanup success",
+    "no environment/argv/config override of H",
+    "maximum admitted count/bytes/path-depth remains bounded; no validation bypass near deadline"
+  ],
+  "literalClassification": [
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+      "literal": "Buffer.alloc(5000)",
+      "meaning": "byte fixture, not a deadline; unchanged"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+      "literal": "timeout:5000 for invalid __proto__ dispatch",
+      "meaning": "engineering quick-refusal guard, not helper cap; unchanged unless separately justified"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs",
+      "literal": "<5000 read-only confirmation tolerance",
+      "meaning": "engineering test tolerance around unchanged2000 disposition, not product helper bound; do not replace blindly"
+    }
+  ],
+  "regressionClosure": [
+    "syntax/import/schema/package/generated metadata checks",
+    "affected Phase1 native/protocol tests",
+    "Phase2C runtime/surface/publication/finalization/N24 closure",
+    "selected Phase2D semantic vectors and exact readiness/proof bytes",
+    "new bound-specific finite correction controls",
+    "separately authorized installed Phase3A runtime and targeted3B/3C refreshes"
+  ],
+  "historicalHarnessPolicy": "Do not edit retained past tools, snapshots, baselines,5000 assertions or failed receipts to conceal their source state. New correction tooling may derive H from the newly authorized constant and bind all executed sources; scope any update to a live future runner explicitly.",
+  "engineeringVersusNative": "Synthetic clocks/doubles prove predicates; actual installed timeout/process/console/quiescence witnesses remain independently required. No native campaign occurs in this design audit.",
+  "productionChangesHere": false,
+  "freezeChangesHere": false,
+  "deadlineChangesHere": false,
+  "packageRegenerationHere": false,
+  "certification": false,
+  "phase3AR": "BLOCKED"
+}

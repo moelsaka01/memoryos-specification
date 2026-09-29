@@ -1,0 +1,245 @@
+{
+  "kind": "MO1307HelperDeadlineContractDeltaPlan",
+  "version": "1.0.0",
+  "baseline": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+  "productBaseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "result": "PASS",
+  "scope": "DESIGN_ONLY_CONDITIONAL_FUTURE_CORRECTION",
+  "createdAtUtc": "2026-09-29T17:53:31.727Z",
+  "currentLimits": {
+    "helperMs": 5000,
+    "aggregateHelperActiveMs": 20000,
+    "cliAdmissionMs": 30000,
+    "apiMs": 10000,
+    "workerMs": 10000,
+    "cleanupMs": 2000
+  },
+  "condition": "Only after separate authority selects a finite numeric H and authorizes the precise correction; H is unselected in these plans.",
+  "sourceBindings": [
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "byteLength": 110295,
+      "sha256": "sha256:831899163c36595ee38291eb6dd3fcff0ea0c6cc041a99f16933a11a6cdc17f8",
+      "git": {
+        "workspace": "C:/Users/melsa/Documents/Codex/cca-workspace",
+        "revision": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+        "blob": "f48ecd8eab57813c532556217536692aa6336380",
+        "exactBlobBytesVerified": true
+      }
+    },
+    {
+      "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+      "byteLength": 28935,
+      "sha256": "sha256:cf6d7be0892e0a376213c134ba368d522bf57d8e19baa85232163ee2edde5a3f",
+      "git": {
+        "workspace": "C:/Users/melsa/Documents/Codex/cca-workspace",
+        "revision": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+        "blob": "dc6d1f84e6f346447faa3de64765ce09e811118e",
+        "exactBlobBytesVerified": true
+      }
+    },
+    {
+      "path": "docs/mo1307-phase2c-finalization-boundary-correction.md",
+      "byteLength": 20727,
+      "sha256": "sha256:e5a7ef021cf217a7239a8568aa3172b4b58661d53ec82ff827b56530ee581b10",
+      "git": {
+        "workspace": "C:/Users/melsa/Documents/Codex/cca-workspace",
+        "revision": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+        "blob": "b0c509889746b309bce2bb83d835752c2daea709",
+        "exactBlobBytesVerified": true
+      }
+    },
+    {
+      "path": "docs/mo1307-phase3a-readset-correction.md",
+      "byteLength": 19683,
+      "sha256": "sha256:f4a178da17deddc64c32ce9ee69528f7f881d679b5ee044805c736594f19da02",
+      "git": {
+        "workspace": "C:/Users/melsa/Documents/Codex/cca-workspace",
+        "revision": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+        "blob": "c85bd7b8a28e714159fc1978ac375c229ff7fd2b",
+        "exactBlobBytesVerified": true
+      }
+    },
+    {
+      "path": "docs/mo1307-phase2d-integration.md",
+      "byteLength": 29383,
+      "sha256": "sha256:484704855d1ea52104e1b86bf81d800180ad6567a206a2eac4ed7304bdb181b6",
+      "git": {
+        "workspace": "C:/Users/melsa/Documents/Codex/cca-workspace",
+        "revision": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+        "blob": "79674e871666f10babedb0f85cab3db668ddb4ae",
+        "exactBlobBytesVerified": true
+      }
+    },
+    {
+      "path": "docs/mo1307-helper-deadline-characterization.md",
+      "byteLength": 23231,
+      "sha256": "sha256:58cc4bbbb318eaf3c6196f20fc2861f9e4594451be2934170c74121506723a39",
+      "git": {
+        "workspace": "C:/Users/melsa/Documents/Codex/cca-workspace",
+        "revision": "6d444e323f8048712908eaff22712eeac8a4e6b3",
+        "blob": "214f6d720acdee5eb1815f44a39179cf488848c0",
+        "exactBlobBytesVerified": true
+      }
+    }
+  ],
+  "proposedParameter": {
+    "name": "H",
+    "meaning": "finite whole-helper lifecycle ceiling in milliseconds",
+    "value": null,
+    "notAnOverride": true
+  },
+  "proposedFormula": "effectiveDeadline=min(D,S+H,S+(20000-used))",
+  "deltas": [
+    {
+      "document": "docs/mo1307-contract-freeze-1.md",
+      "sections": [
+        "3 versions",
+        "18 resource table",
+        "18 authoritative publication correction formula"
+      ],
+      "references": [
+        {
+          "path": "docs/mo1307-contract-freeze-1.md",
+          "startLine": 122,
+          "endLine": 124,
+          "anchor": "A changed field, predicate, exit, limit"
+        },
+        {
+          "path": "docs/mo1307-contract-freeze-1.md",
+          "startLine": 1202,
+          "endLine": 1202,
+          "anchor": "| One helper request / helper duration |"
+        },
+        {
+          "path": "docs/mo1307-contract-freeze-1.md",
+          "startLine": 1228,
+          "endLine": 1238,
+          "anchor": "**Authoritative Phase 2C publication inspection correction:** the 5,000 ms"
+        }
+      ],
+      "futureChange": "Add explicit new scoped correction authority. Replace only the current per-helper 5000 numeric ceiling by selected H and S+5000 by S+H. Keep 20000 as an independent security ceiling; describe 4×5000 as historical derivation, not a live algebraic dependency requiring multiplication by H. Review contract/package versions explicitly; no semantic/wire version change is inferred automatically."
+    },
+    {
+      "document": "docs/mo1307-phase2c-publication-inspection-correction.md",
+      "sections": [
+        "Deadlines and process topology",
+        "Exact limit and compatibility impact"
+      ],
+      "references": [
+        {
+          "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+          "startLine": 129,
+          "endLine": 135,
+          "anchor": "The existing limits remain:"
+        },
+        {
+          "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+          "startLine": 133,
+          "endLine": 135,
+          "anchor": "Let `S` be invocation start"
+        },
+        {
+          "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+          "startLine": 148,
+          "endLine": 148,
+          "anchor": "| Per-helper deadline |"
+        }
+      ],
+      "futureChange": "Supply a targeted supersession notice for the per-helper numeric value/formula only, preserving the historical correction and all lifecycle/topology/security text. The explicit 20000 aggregate remains independent under C1."
+    },
+    {
+      "document": "docs/mo1307-phase2c-finalization-boundary-correction.md",
+      "sections": [
+        "Compatibility, evidence and continuation authority",
+        "Settlement, bounded observations and transport"
+      ],
+      "references": [
+        {
+          "path": "docs/mo1307-phase2c-finalization-boundary-correction.md",
+          "startLine": 120,
+          "endLine": 121,
+          "anchor": "Private helper wire stays 2.0.0"
+        },
+        {
+          "path": "docs/mo1307-phase2c-finalization-boundary-correction.md",
+          "startLine": 57,
+          "endLine": 57,
+          "anchor": "The CLI's unchanged 30,000 ms deadline"
+        },
+        {
+          "path": "docs/mo1307-phase2c-finalization-boundary-correction.md",
+          "startLine": 61,
+          "endLine": 61,
+          "anchor": "Ordinary failed-call cleanup before submission"
+        }
+      ],
+      "futureChange": "Cross-reference the future numeric helper correction at the retained 5000 compatibility statement; no change to admitted rename truth, unbounded settlement interval, shared post-settlement 2000 disposition, 30000 admission, API or ordinary cleanup."
+    },
+    {
+      "document": "docs/mo1307-phase3a-readset-correction.md",
+      "sections": [
+        "Unchanged operational limits",
+        "Validation and remaining scope"
+      ],
+      "references": [
+        {
+          "path": "docs/mo1307-phase3a-readset-correction.md",
+          "startLine": 134,
+          "endLine": 134,
+          "anchor": "| Helper | 5000 ms"
+        },
+        {
+          "path": "docs/mo1307-phase3a-readset-correction.md",
+          "startLine": 251,
+          "endLine": 251,
+          "anchor": "These successful correction runs establish"
+        }
+      ],
+      "futureChange": "Preserve this historical C3R/C3RB correction and every original measurement unchanged. Future authority must state its selected limit applies to the new candidate only; do not retrofit H into historical receipts."
+    },
+    {
+      "document": "docs/mo1307-phase2d-integration.md",
+      "sections": [
+        "Windows operations and irreversible publication",
+        "I2/B2 binding and Phase 3 plan"
+      ],
+      "references": [
+        {
+          "path": "docs/mo1307-phase2d-integration.md",
+          "startLine": 196,
+          "endLine": 196,
+          "anchor": "| Helper | 5000 ms"
+        }
+      ],
+      "futureChange": "Historical integration limits and failures stay unchanged. Future correction links to the scope it supersedes for the new candidate; no relabeling of B2 evidence."
+    }
+  ],
+  "preserve": [
+    "WHOLE_HELPER_LIFECYCLE including startup through required process/console/transport quiescence",
+    "strict completion before every effective deadline; equality rejects",
+    "one fresh single-frame helper invocation per slot; no retry, no overlap and no reset",
+    "nine evaluate and four verify invocations; one evaluation worker thread",
+    "operational TIMEOUT/CANCELLED remain distinct from readiness/CNE",
+    "native path/identity/refusal and immutable-root preconditions",
+    "API/worker 10000 ms and cleanup 2000 ms",
+    "30-second final rename admission and the narrowly admitted non-cancellable rename settlement exception",
+    "readiness, grant, graph, history, provider, decision and result/proof semantics"
+  ],
+  "minimumCoherentScope": "C1: per-helper H only, conditional on evidence/security review. Increasing a per-helper admission ceiling does not require increasing aggregate or overall deadlines; later calls remain clipped to remaining budgets.",
+  "excludedChanges": [
+    "startup clock placement",
+    "helper persistence or new process roles",
+    "limits chosen by CLI/config/environment",
+    "weaker native validation",
+    "aggregate multiplication by nine",
+    "cleanup grace",
+    "automatic certification/release authority"
+  ],
+  "productionChangesHere": false,
+  "freezeChangesHere": false,
+  "deadlineChangesHere": false,
+  "packageRegenerationHere": false,
+  "certification": false,
+  "phase3AR": "BLOCKED"
+}
