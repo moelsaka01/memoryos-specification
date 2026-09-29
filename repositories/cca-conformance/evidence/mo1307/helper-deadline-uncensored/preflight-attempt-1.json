@@ -1,0 +1,29 @@
+{
+  "kind": "MO1307UncensoredPreflightAttempt",
+  "result": "FAIL",
+  "nativeHelperExecutions": 0,
+  "reason": "Observer Python daemon buffered stdin shutdown lock; exit3221225477 before guard test. Existing ready/receipt are preflight-only, not campaign or PASS.",
+  "retainedSources": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/observer-preflight/native-observer.py.source",
+      "byteLength": 26948,
+      "sha256": "sha256:7a72ca97565c08191aab37209f42770cf23f33f443a45f743adf69c634fbe473"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/observer-preflight/harness-validation.mjs.source",
+      "byteLength": 4932,
+      "sha256": "sha256:b1af4faa1a8bef7b6486eb89d9cf38db94d0f4020e07e2d59b6e2c1279e940a5"
+    }
+  ],
+  "ready": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/observer-preflight/ready.json",
+    "byteLength": 1903,
+    "sha256": "sha256:c529479643e5ea6a68b5ba59774587703ebe58173d4d9a10a943e74bd01e742c"
+  },
+  "receipt": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/observer-preflight/receipt.json",
+    "byteLength": 500,
+    "sha256": "sha256:8fe42f2eaf264353f8358fdaa46eecda58152478dab967a399649a3f2a48cb12"
+  },
+  "repair": "Replace buffered stdin reader with raw os.read bounded framing; separately named preflight2 required before sample-plan sealing."
+}

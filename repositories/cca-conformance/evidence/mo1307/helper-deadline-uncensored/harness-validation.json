@@ -1,0 +1,185 @@
+{
+  "kind": "MO1307UncensoredHarnessValidation",
+  "result": "PASS",
+  "createdAtUtc": "2026-09-29T18:45:04.768Z",
+  "checks": [
+    {
+      "name": "syntax:repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored/common.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "syntax:repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored/plan.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "syntax:repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored/campaign.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "syntax:repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored/engineering-supervisor.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "syntax:repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored/harness-validation.mjs",
+      "result": "PASS"
+    },
+    {
+      "name": "ordinary_success_requires_owner_closure_and_quiescence",
+      "result": "PASS",
+      "snapshot": {
+        "mode": "ENGINEERING_OBSERVATION_ONLY",
+        "origin": 5579.3495,
+        "completedAt": 5579.6132,
+        "launches": 1,
+        "terminalCode": null,
+        "terminalAt": null,
+        "cleanupDeadline": null,
+        "transportCleanupConfirmed": true,
+        "events": [
+          {
+            "type": "start",
+            "at": 5579.3902,
+            "origin": 5579.3495,
+            "productDeadline": 10579.3495,
+            "engineeringDeadline": 25579.3495
+          },
+          {
+            "type": "quiescent",
+            "at": 5579.621,
+            "completedAt": 5579.6132
+          }
+        ]
+      }
+    },
+    {
+      "name": "missing_quiescence_is_not_success",
+      "result": "PASS",
+      "snapshot": {
+        "mode": "ENGINEERING_OBSERVATION_ONLY",
+        "origin": 5579.7342,
+        "completedAt": null,
+        "launches": 1,
+        "terminalCode": "ERR_ASSERTION",
+        "terminalAt": 5580.668,
+        "cleanupDeadline": 7580.668,
+        "transportCleanupConfirmed": false,
+        "events": [
+          {
+            "type": "start",
+            "at": 5579.7398,
+            "origin": 5579.7342,
+            "productDeadline": 10579.734199999999,
+            "engineeringDeadline": 25579.7342
+          },
+          {
+            "type": "terminal",
+            "at": 5580.6873,
+            "code": "ERR_ASSERTION",
+            "cleanupDeadline": 7580.668
+          },
+          {
+            "type": "cleanup",
+            "at": 5580.7747,
+            "confirmed": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "native_observer_startup_and_normal_close_without_helpers",
+      "result": "PASS",
+      "observerResult": {
+        "code": 0,
+        "signal": null,
+        "stderr": ""
+      },
+      "ready": {
+        "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/observer-preflight-3/ready.json",
+        "byteLength": 1902,
+        "sha256": "sha256:40dcf050b7bce7e2f6ef18d4bbbc15d74d64e0cfdb08e2091161347003814f51"
+      },
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/observer-preflight-3/receipt.json",
+        "byteLength": 500,
+        "sha256": "sha256:f6450ae0e99e53d9fcd0a4712a119983adf1cd918fc84f9eb3f273900b6afce4"
+      },
+      "controlWriteMs": 0.89679999999953
+    },
+    {
+      "name": "real_20000ms_guard_terminates_owned_double_and_late_completion_cannot_restore_success",
+      "result": "PASS",
+      "snapshot": {
+        "mode": "ENGINEERING_OBSERVATION_ONLY",
+        "origin": 5754.4099,
+        "completedAt": null,
+        "launches": 1,
+        "terminalCode": "ENGINEERING_GUARD_EXCEEDED",
+        "terminalAt": 25762.937,
+        "cleanupDeadline": 27762.937,
+        "transportCleanupConfirmed": true,
+        "events": [
+          {
+            "type": "start",
+            "at": 5754.4174,
+            "origin": 5754.4099,
+            "productDeadline": 10754.409899999999,
+            "engineeringDeadline": 25754.4099
+          },
+          {
+            "type": "terminal",
+            "at": 25763.0248,
+            "code": "ENGINEERING_GUARD_EXCEEDED",
+            "cleanupDeadline": 27762.937
+          },
+          {
+            "type": "cleanup",
+            "at": 25763.2923,
+            "confirmed": true
+          }
+        ]
+      },
+      "nativeHelpers": 0
+    }
+  ],
+  "sourceBindings": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored/common.mjs",
+      "byteLength": 2690,
+      "sha256": "sha256:f8b5b1dfe4523352fc4380a20f55d4e2fa3a2d12db53ec19246b8a038d8821fb"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored/plan.mjs",
+      "byteLength": 9334,
+      "sha256": "sha256:479f9712caa15b5d9f7a48f0b2dbd503670144e613087f28c4c81a0736fc3136"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored/campaign.mjs",
+      "byteLength": 15009,
+      "sha256": "sha256:bf84295548e36515cc6e09e9650d55eeb3b57f771f2ce1806b3c9cf69254de7a"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored/engineering-supervisor.mjs",
+      "byteLength": 3757,
+      "sha256": "sha256:60f79a4358140ce79b76b785295575f1d3b605cd0029767362d1579322180ed3"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored/native-observer.py",
+      "byteLength": 27960,
+      "sha256": "sha256:877531ff73bd1b60c35c1c4067b5b57ae960e9cc177119d1d1f5baffe57ef3b4"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored/harness-validation.mjs",
+      "byteLength": 5036,
+      "sha256": "sha256:45c31d9b2cbe20d06f3b0464b4180ac62b5f6de2f38ababe634d233882ba5b34"
+    }
+  ],
+  "nativeHelperExecutions": 0,
+  "observerProcesses": 1,
+  "clockCalibration": {
+    "calls": 10000,
+    "positiveMinimumMs": 0.00009999999929277692,
+    "observedMaximumDeltaMs": 0.40089999999963766,
+    "zeroDeltas": 0,
+    "scope": "Observed Node monotonic granularity only; not a maximum scheduling/measurement uncertainty bound."
+  }
+}

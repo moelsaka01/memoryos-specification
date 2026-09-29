@@ -1,0 +1,312 @@
+{
+  "kind": "MO1307UncensoredSample",
+  "version": "1.0.0",
+  "ordinal": 1,
+  "sampleId": "01-E",
+  "case": "E",
+  "block": 1,
+  "result": "PROTOCOL_OR_SEMANTIC_MISMATCH",
+  "classification": "CHARACTERIZATION_DEFECT",
+  "productClassification": "NO_SUCCESS_CLASSIFICATION",
+  "engineeringGuardClassification": "CHARACTERIZATION_DEFECT",
+  "productCounterfactual": null,
+  "utcStart": "2026-09-29T18:45:45.265Z",
+  "utcEnd": "2026-09-29T18:45:47.733Z",
+  "wholeLifecycleMs": 2451.8941,
+  "transportSettlementMs": 2451.9599,
+  "error": {
+    "code": "PROTOCOL_OR_SEMANTIC_MISMATCH",
+    "message": "Response protocol, identity, status or exact input-byte validation failed"
+  },
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-characterization/requests/E.request.bin",
+    "byteLength": 345,
+    "sha256": "sha256:de4cae02de42b9e288bc6478ae058e2c2ff534c7ddafb41e2a64658dab4c9901"
+  },
+  "response": {
+    "byteLength": 257,
+    "sha256": "sha256:98a5c1b82cb5953e9547112e5eb4837062dd9ee016a239b374b6d4a7e09584df"
+  },
+  "validation": {
+    "protocol": false,
+    "exactInputBytes": false,
+    "responseStatus": null,
+    "files": []
+  },
+  "inputIdentity": "EXACT_RETAINED_ROOTS_DESCRIPTORS_ORDER_HASHES",
+  "nativeObserver": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/observer/samples/01-E/process-observations.json",
+    "byteLength": 4738,
+    "sha256": "sha256:0828d55d00d6dd9cd75480c1f51bfe4ad2a0073c04a9b47d7d242f26c8ff06c1"
+  },
+  "nativeSummary": {
+    "helperCount": 1,
+    "consoleCount": 1,
+    "allSignaled": true,
+    "unexpectedChildren": [],
+    "completeDescendantCoverage": false,
+    "externalConsoleExitProof": true,
+    "identityFailureCount": 0
+  },
+  "prepared": {
+    "command": "prepare",
+    "sampleId": "01-E",
+    "result": "OK",
+    "contextBefore": {
+      "at": {
+        "qpc": 2022953617157,
+        "utc": "2026-09-29T18:45:45.279898+00:00",
+        "systemTime100ns": "134351811452801747"
+      },
+      "processCount": 396,
+      "snapshot": {
+        "startedQpc": 2022953523147,
+        "finishedQpc": 2022953615454,
+        "snapshotAt": {
+          "qpc": 2022953589645,
+          "utc": "2026-09-29T18:45:45.275881+00:00",
+          "systemTime100ns": "134351811452774224"
+        },
+        "elapsedMs": 9.2307,
+        "processCount": 396
+      },
+      "availablePhysicalBytes": 2765459456,
+      "totalPhysicalBytes": 16889192448,
+      "memoryLoadPercent": 83,
+      "systemCpuCumulative100ns": {
+        "idle": "13867919687500",
+        "kernelIncludingIdle": "14834467656250",
+        "user": "1349082343750"
+      }
+    },
+    "preparedAt": {
+      "qpc": 2022953617445,
+      "utc": "2026-09-29T18:45:45.279898+00:00",
+      "systemTime100ns": "134351811452802041"
+    }
+  },
+  "activeAck": {
+    "command": "active",
+    "sampleId": "01-E",
+    "result": "OK",
+    "helperIdentity": {
+      "pid": 22800,
+      "creationTime100ns": "134351811452836006",
+      "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+    },
+    "activeObservedAt": {
+      "qpc": 2022953726969,
+      "utc": "2026-09-29T18:45:45.289861+00:00",
+      "systemTime100ns": "134351811452911547"
+    },
+    "observerStopRequested": false
+  },
+  "snapshot": {
+    "mode": "ENGINEERING_OBSERVATION_ONLY",
+    "origin": 645.7774,
+    "completedAt": 3097.6715,
+    "launches": 1,
+    "terminalCode": null,
+    "terminalAt": null,
+    "cleanupDeadline": null,
+    "transportCleanupConfirmed": true,
+    "events": [
+      {
+        "type": "start",
+        "at": 645.8297,
+        "origin": 645.7774,
+        "productDeadline": 5645.7774,
+        "engineeringDeadline": 20645.7774
+      },
+      {
+        "type": "observation",
+        "at": 655.2751,
+        "pid": 22800,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 3097.7081,
+        "completedAt": 3097.6715
+      }
+    ]
+  },
+  "pid": 22800,
+  "spawnCount": 1,
+  "stderrBytes": 0,
+  "pipes": {
+    "stdin": true,
+    "stdout": true,
+    "stderr": true
+  },
+  "nodeTimeOriginUnixMs": 1790707544630.431,
+  "times": {
+    "exchangeBegin": 644.9488,
+    "origin": 645.7774,
+    "spawnEntered": 646.7313,
+    "spawnReturned": 655.0016,
+    "spawnEvent": 655.5498,
+    "stdinFinish": 2424.4994,
+    "firstByte": 3057.0248,
+    "exited": {
+      "at": 3096.5353,
+      "code": 0,
+      "signal": null
+    },
+    "closed": {
+      "at": 3096.6139,
+      "code": 0,
+      "signal": null
+    },
+    "transportSettled": 3097.7373
+  },
+  "beforeContext": {
+    "utc": "2026-09-29T18:45:45.251Z",
+    "availableMemoryBytes": 2672836608,
+    "totalMemoryBytes": 16889192448,
+    "cpuTimes": [
+      {
+        "user": 15470796,
+        "nice": 0,
+        "sys": 14604281,
+        "idle": 172219343,
+        "irq": 1504843
+      },
+      {
+        "user": 14656343,
+        "nice": 0,
+        "sys": 10548343,
+        "idle": 177089640,
+        "irq": 431515
+      },
+      {
+        "user": 18087218,
+        "nice": 0,
+        "sys": 12616500,
+        "idle": 171590640,
+        "irq": 489171
+      },
+      {
+        "user": 15631125,
+        "nice": 0,
+        "sys": 11000593,
+        "idle": 175662640,
+        "irq": 403500
+      },
+      {
+        "user": 18087281,
+        "nice": 0,
+        "sys": 12354046,
+        "idle": 171853031,
+        "irq": 473046
+      },
+      {
+        "user": 16300531,
+        "nice": 0,
+        "sys": 10952906,
+        "idle": 175040828,
+        "irq": 383859
+      },
+      {
+        "user": 18841953,
+        "nice": 0,
+        "sys": 12919796,
+        "idle": 170532609,
+        "irq": 481921
+      },
+      {
+        "user": 17832968,
+        "nice": 0,
+        "sys": 11658296,
+        "idle": 172803062,
+        "irq": 407687
+      }
+    ],
+    "nodeMemory": {
+      "rss": 238436352,
+      "heapTotal": 11313152,
+      "heapUsed": 6420288,
+      "external": 192874608,
+      "arrayBuffers": 190404514
+    }
+  },
+  "afterContext": {
+    "utc": "2026-09-29T18:45:47.730Z",
+    "availableMemoryBytes": 2747490304,
+    "totalMemoryBytes": 16889192448,
+    "cpuTimes": [
+      {
+        "user": 15471046,
+        "nice": 0,
+        "sys": 14604546,
+        "idle": 172221296,
+        "irq": 1504859
+      },
+      {
+        "user": 14656546,
+        "nice": 0,
+        "sys": 10548593,
+        "idle": 177091687,
+        "irq": 431531
+      },
+      {
+        "user": 18087593,
+        "nice": 0,
+        "sys": 12616765,
+        "idle": 171592484,
+        "irq": 489171
+      },
+      {
+        "user": 15631468,
+        "nice": 0,
+        "sys": 11000765,
+        "idle": 175664609,
+        "irq": 403500
+      },
+      {
+        "user": 18087750,
+        "nice": 0,
+        "sys": 12354453,
+        "idle": 171854625,
+        "irq": 473062
+      },
+      {
+        "user": 16300750,
+        "nice": 0,
+        "sys": 10953125,
+        "idle": 175042953,
+        "irq": 383875
+      },
+      {
+        "user": 18842390,
+        "nice": 0,
+        "sys": 12920093,
+        "idle": 170534343,
+        "irq": 481921
+      },
+      {
+        "user": 17833203,
+        "nice": 0,
+        "sys": 11658421,
+        "idle": 172805203,
+        "irq": 407687
+      }
+    ],
+    "nodeMemory": {
+      "rss": 142192640,
+      "heapTotal": 11575296,
+      "heapUsed": 6401360,
+      "external": 96295940,
+      "arrayBuffers": 93794286
+    }
+  },
+  "observerControlWriteMs": 0.07400000000006912,
+  "transportNativeConsoleProof": true,
+  "engineeringCleanupConfirmed": true,
+  "completeDescendantCoverageEstablished": false,
+  "helperCopy": false,
+  "productionChanges": false,
+  "productExecutionResult": false,
+  "certification": false,
+  "fileContentsLogged": false
+}

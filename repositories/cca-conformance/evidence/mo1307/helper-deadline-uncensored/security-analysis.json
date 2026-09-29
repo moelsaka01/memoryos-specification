@@ -1,0 +1,158 @@
+{
+  "version": "1.0.0",
+  "baseline": "1e78a9a963ea945847a9192f8ec3a9ce2b4e7cc5",
+  "productBaseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "capturedAtUtc": "2026-09-29T18:37:39.269101+00:00",
+  "scope": "READ_ONLY_CONDITIONAL_C1_ANALYSIS",
+  "candidateHMs": null,
+  "numericHSelectedByThisAnalysis": false,
+  "productionChanges": false,
+  "freezeChanges": false,
+  "certification": false,
+  "kind": "MO1307UncensoredSecurityAnalysis",
+  "result": "PARAMETERIZED_SECURITY_REVIEW_NO_NUMERIC_BOUND",
+  "sourceBindings": [
+    {
+      "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/security-dos-analysis.json",
+      "byteLength": 14765,
+      "sha256": "sha256:087b365cdc9054acd8e39e510b371736c2632d8dec30c2a05877b4a9415e7f19"
+    },
+    {
+      "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "path": "repositories/memoryos-readiness/contracts/definitions.json",
+      "byteLength": 16555,
+      "sha256": "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e"
+    },
+    {
+      "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 30210,
+      "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+    },
+    {
+      "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+      "byteLength": 6250,
+      "sha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55"
+    },
+    {
+      "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "path": "repositories/memoryos-readiness/src/runtime.mjs",
+      "byteLength": 16904,
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    }
+  ],
+  "allCurrentDefinitionLimits": {
+    "aggregateEvidenceBytes": 8388608,
+    "apiDeadlineMs": 10000,
+    "assumptions": 32,
+    "authorityBytes": 1048576,
+    "authoritySources": 32,
+    "blockers": 128,
+    "candidateBytes": 524288,
+    "candidateComponents": 1024,
+    "claims": 64,
+    "cleanupAllowanceMs": 2000,
+    "cliDeadlineMs": 30000,
+    "configurationBytes": 16384,
+    "decisionActorCodeUnits": 128,
+    "decisionBytes": 8192,
+    "decisionReasonCodeUnits": 1024,
+    "dependenciesPerClaim": 1024,
+    "engineeringAggregateRssBytes": 536870912,
+    "envelopeBytes": 262144,
+    "errorRecordBytes": 1024,
+    "fullPathCodeUnits": 240,
+    "gates": 128,
+    "grants": 64,
+    "graphEdges": 8192,
+    "graphNodes": 2048,
+    "helperAggregateDeadlineMs": 20000,
+    "helperChainComponents": 120,
+    "helperDeadlineMs": 5000,
+    "helperRequestBytes": 65536,
+    "helperRequestPaths": 128,
+    "helperRequests": 9,
+    "helperResponseBytes": 16777216,
+    "helperVerifyRequests": 4,
+    "historyDispositionChars": 256,
+    "historyRecords": 128,
+    "jsonDepth": 16,
+    "jsonSummaryBytes": 1024,
+    "jsonValues": 131072,
+    "keyCodeUnits": 64,
+    "manifestBytes": 262144,
+    "manifestFiles": 128,
+    "metadataCodeUnits": 256,
+    "objectMembers": 64,
+    "qualifications": 128,
+    "rawSourceBytes": 2097152,
+    "relativePathChars": 180,
+    "resultBytes": 4194304,
+    "sourceKindChars": 128,
+    "sourceVersionChars": 64,
+    "stderrBytes": 4096,
+    "stringCodeUnits": 4096,
+    "tagNameChars": 128,
+    "temporaryOutputBytes": 4194304,
+    "textStdoutBytes": 131072,
+    "workerOldHeapMiB": 128,
+    "workerYoungHeapMiB": 16
+  },
+  "candidateOccupancy": {
+    "domain": "5000 < H <=20000, only if later established and separately authorized",
+    "nonClippedAdditionalSingleHelperMs": "H-5000",
+    "actualAdditionalPermittedIntervalMs": "max(0,min(H,remainingAggregate,remainingCLI))-max(0,min(5000,remainingAggregate,remainingCLI))",
+    "aggregate": "No independent increase; active work remains clipped by20000 shared budget.",
+    "cli": "No independent admission increase; original30000 deadline remains. It is not a universal process-lifetime ceiling after timely admitted non-cancellable rename.",
+    "cleanupStart": "A larger H may postpone refusal and the start of the original terminal+2000 cleanup; no extension/reset or late-success rescue is permitted."
+  },
+  "threatAssessment": [
+    {
+      "control": "Attacker-influenced bounded workload",
+      "finding": "Explicit manifest paths and untrusted file content, path depth/layout and local I/O can consume work before semantic rejection.128 files,2097152 bytes per raw source,8388608 aggregate bytes and all full path/frame/JSON/identity-chain caps remain unchanged."
+    },
+    {
+      "control": "PowerShell/process occupancy",
+      "finding": "One fresh fixed helper and possible attributable console only; no service/pool/persistence/additional product role or helper/worker overlap. Longer H would allow longer finite occupancy only after separate authority."
+    },
+    {
+      "control": "Native boundary checks",
+      "finding": "Exact unchanged C3RB helper preserves regular-file, reparse, hardlink, volume/final-path, held/fresh identity and cap+1 checks. No helper instrumentation/copy/optimization or changed request algorithm is authorized."
+    },
+    {
+      "control": "Protocol and late response",
+      "finding": "Exact framing/session/sequence/order/content validation, exit0/EOF/closed pipes and required console quiescence remain success requirements. Production still rejects at its strict effective deadline; engineering later completion cannot restore production success."
+    },
+    {
+      "control": "Terminal and cleanup",
+      "finding": "Failure is terminal, no replacement/retry/reset. At engineering20000 guard, owned cleanup is bounded2000 and campaign stops; unconfirmed proof remains unconfirmed. Product cleanup semantics are unchanged."
+    },
+    {
+      "control": "Observer and uncertainty",
+      "finding": "Ten offline actual-sequence measurements quantify only a finite local transfer window. Scheduler/async continuation/GC/timer/console-attribution uncertainties are not numerically bounded by their maximum; no guessed subtraction or arbitrary padding."
+    },
+    {
+      "control": "Publication and external authority",
+      "finding": "No publication or certification is performed by this evidence task. Existing rename admission/actual settlement/disposition truth, human authenticity and release-authority boundaries remain."
+    },
+    {
+      "control": "Memory and concurrency",
+      "finding": "Existing worker heap bounds and all parser/frame allocation ceilings remain. The512MiB engineering RSS acceptance figure is not a hard whole-process sandbox; host-level independent API concurrency remains outside this single-invocation control."
+    }
+  ],
+  "engineeringClassification": {
+    "atMost5000": "WITHIN_PRODUCT_BOUND per authorized observation terminology; exact equality is still rejected by the unchanged strict production checkpoint",
+    "greaterThan5000AtMost20000": "SUCCESSFUL_COMPLETION_BEYOND_PRODUCT_BOUND / PRODUCT_DEADLINE_EXCEEDED; never a product PASS",
+    "noValidCompletionBy20000": "ENGINEERING_GUARD_EXCEEDED; campaign stop and design blocker"
+  },
+  "numericSecurityAcceptance": "NOT_EVALUATED_WITHOUT_ESTABLISHED_H",
+  "nativeLaunchesByThisAnalysis": 0
+}

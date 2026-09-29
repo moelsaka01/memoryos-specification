@@ -1,0 +1,246 @@
+{
+  "version": "1.0.0",
+  "baseline": "1e78a9a963ea945847a9192f8ec3a9ce2b4e7cc5",
+  "productBaseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "capturedAtUtc": "2026-09-29T18:37:39.269101+00:00",
+  "scope": "READ_ONLY_CONDITIONAL_C1_ANALYSIS",
+  "candidateHMs": null,
+  "numericHSelectedByThisAnalysis": false,
+  "productionChanges": false,
+  "freezeChanges": false,
+  "certification": false,
+  "kind": "MO1307UncensoredCLIAnalysis",
+  "result": "RETAIN_EXISTING_ADMISSION_AND_RELATED_LIMITS",
+  "sourceBindings": [
+    {
+      "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-design/cli-analysis.json",
+      "byteLength": 89137,
+      "sha256": "sha256:e3b2adcf32e06d12946c1dcc12ec2457effe639d3f10497e899c3a65c0d3efac"
+    },
+    {
+      "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "path": "repositories/memoryos-readiness/contracts/definitions.json",
+      "byteLength": 16555,
+      "sha256": "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e"
+    },
+    {
+      "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/private-sequence-transfer.json",
+      "byteLength": 16215,
+      "sha256": "sha256:2b9bd27c81f301958db972ae000ab744dadd528f388244faf6d2cc509956152d"
+    },
+    {
+      "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "path": "repositories/memoryos-readiness/src/runtime.mjs",
+      "byteLength": 16904,
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    {
+      "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "path": "repositories/memoryos-readiness/src/index.mjs",
+      "byteLength": 1179,
+      "sha256": "sha256:10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+    },
+    {
+      "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "byteLength": 13610,
+      "sha256": "sha256:dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+    }
+  ],
+  "currentLimits": {
+    "cliAdmissionMs": 30000,
+    "apiMs": 10000,
+    "workerMs": 10000,
+    "cleanupMs": 2000
+  },
+  "retainedNineHelperRuns": [
+    {
+      "id": "localization-diagnostic-1",
+      "lifecycleMs": 16200.7457,
+      "supervisorHelperActiveMs": 14644.9063,
+      "workerEventToQuiescenceMs": 1316.7967000000008,
+      "derived": {
+        "sumChargesMatchesRecordedSupervisorTotal": true,
+        "acquisitionRequests1Through4Ms": 8224.9113,
+        "publicationInspectionRequests5Through9Ms": 6419.995000000001,
+        "request3ChargeMs": 3657.1553,
+        "otherEightHelperChargesMs": 10987.751,
+        "aggregateRemainingMs": 5355.093699999999,
+        "request3ReplacementCeilingWithOtherEightObservedChargesMs": 9012.249,
+        "cliRemainingAtLifecycleFinishMs": 13799.2543,
+        "lifecycleMinusHelperChargesMinusWorkerEventIntervalMs": 239.04269999999815,
+        "residualInterpretation": "Arithmetic remainder includes orchestration, parsing, staging, exact byte reads, rename, output and clock endpoint differences; it is not an isolated publication or CPU measurement.",
+        "replacementInterpretation": "Counterfactual arithmetic only: observed other-eight durations held fixed. No reservation, future performance guarantee or new measured execution."
+      },
+      "publication": {
+        "phase": "COMMITTED",
+        "admitted": true,
+        "deadlineExpiredAfterAdmission": false,
+        "cancelledAfterAdmission": false,
+        "namespaceVerified": true,
+        "dispositionDeadline": 18585.1307
+      }
+    },
+    {
+      "id": "localization-diagnostic-2",
+      "lifecycleMs": 17614.704100000003,
+      "supervisorHelperActiveMs": 16073.794900000004,
+      "workerEventToQuiescenceMs": 1327.0645999999997,
+      "derived": {
+        "sumChargesMatchesRecordedSupervisorTotal": true,
+        "acquisitionRequests1Through4Ms": 9336.7608,
+        "publicationInspectionRequests5Through9Ms": 6737.034100000004,
+        "request3ChargeMs": 4321.2546999999995,
+        "otherEightHelperChargesMs": 11752.540200000005,
+        "aggregateRemainingMs": 3926.2050999999956,
+        "request3ReplacementCeilingWithOtherEightObservedChargesMs": 8247.459799999995,
+        "cliRemainingAtLifecycleFinishMs": 12385.295899999997,
+        "lifecycleMinusHelperChargesMinusWorkerEventIntervalMs": 213.84459999999854,
+        "residualInterpretation": "Arithmetic remainder includes orchestration, parsing, staging, exact byte reads, rename, output and clock endpoint differences; it is not an isolated publication or CPU measurement.",
+        "replacementInterpretation": "Counterfactual arithmetic only: observed other-eight durations held fixed. No reservation, future performance guarantee or new measured execution."
+      },
+      "publication": {
+        "phase": "COMMITTED",
+        "admitted": true,
+        "deadlineExpiredAfterAdmission": false,
+        "cancelledAfterAdmission": false,
+        "namespaceVerified": true,
+        "dispositionDeadline": 19970.6841
+      }
+    },
+    {
+      "id": "final-generation-primary-mo1306",
+      "lifecycleMs": 13145.2485,
+      "supervisorHelperActiveMs": 11815.222899999997,
+      "workerEventToQuiescenceMs": 1123.9881999999998,
+      "derived": {
+        "sumChargesMatchesRecordedSupervisorTotal": true,
+        "acquisitionRequests1Through4Ms": 6739.3649000000005,
+        "publicationInspectionRequests5Through9Ms": 5075.8579999999965,
+        "request3ChargeMs": 2765.4361000000004,
+        "otherEightHelperChargesMs": 9049.786799999996,
+        "aggregateRemainingMs": 8184.777100000003,
+        "request3ReplacementCeilingWithOtherEightObservedChargesMs": 10950.213200000004,
+        "cliRemainingAtLifecycleFinishMs": 16854.7515,
+        "lifecycleMinusHelperChargesMinusWorkerEventIntervalMs": 206.0374000000029,
+        "residualInterpretation": "Arithmetic remainder includes orchestration, parsing, staging, exact byte reads, rename, output and clock endpoint differences; it is not an isolated publication or CPU measurement.",
+        "replacementInterpretation": "Counterfactual arithmetic only: observed other-eight durations held fixed. No reservation, future performance guarantee or new measured execution."
+      },
+      "publication": {
+        "phase": "COMMITTED",
+        "admitted": true,
+        "deadlineExpiredAfterAdmission": false,
+        "cancelledAfterAdmission": false,
+        "namespaceVerified": true,
+        "dispositionDeadline": 15207.2586
+      }
+    },
+    {
+      "id": "final-generation-ready",
+      "lifecycleMs": 11302.3825,
+      "supervisorHelperActiveMs": 10772.4147,
+      "workerEventToQuiescenceMs": 459.53319999999985,
+      "derived": {
+        "sumChargesMatchesRecordedSupervisorTotal": true,
+        "acquisitionRequests1Through4Ms": 5044.7878,
+        "publicationInspectionRequests5Through9Ms": 5727.626899999999,
+        "request3ChargeMs": 1468.6667000000002,
+        "otherEightHelperChargesMs": 9303.748,
+        "aggregateRemainingMs": 9227.5853,
+        "request3ReplacementCeilingWithOtherEightObservedChargesMs": 10696.252,
+        "cliRemainingAtLifecycleFinishMs": 18697.6175,
+        "lifecycleMinusHelperChargesMinusWorkerEventIntervalMs": 70.4346000000005,
+        "residualInterpretation": "Arithmetic remainder includes orchestration, parsing, staging, exact byte reads, rename, output and clock endpoint differences; it is not an isolated publication or CPU measurement.",
+        "replacementInterpretation": "Counterfactual arithmetic only: observed other-eight durations held fixed. No reservation, future performance guarantee or new measured execution."
+      },
+      "publication": {
+        "phase": "COMMITTED",
+        "admitted": true,
+        "deadlineExpiredAfterAdmission": false,
+        "cancelledAfterAdmission": false,
+        "namespaceVerified": true,
+        "dispositionDeadline": 13410.0519
+      }
+    }
+  ],
+  "budgetAnalysis": {
+    "sequencing": "Evaluate: acquisition helper requests 1-4; exactly one worker; publication inspection helper requests 5-9. Verify-decision: four helper requests and one worker. Helpers and worker do not overlap.",
+    "arithmetic": "20000 + 10000 = 30000 leaves zero separately reserved time for all other work if both maxima are consumed. Independent maxima are ceilings, not reservations or simultaneous entitlements.",
+    "coherence": "CLI admission remains coherent because the worker and every helper are clipped to the same absolute 30000ms deadline. Successful completion at each component maximum is not promised.",
+    "worker": "Worker keeps its existing 10000ms cap and remaining CLI cap; public API keeps a separate 10000ms supervisor deadline and invokes no native helper.",
+    "cleanup": "A terminal failure fixes a single 2000ms cleanup allowance; changing H does not refresh that allowance, authorize retry, or convert unconfirmed cleanup into success.",
+    "publication": "Before finalization admission, deadline or cancellation prevents rename. After the sole non-cancellable rename has been submitted, actual settlement must be awaited; this existing exception is not bounded by CLI30000. Following observed settlement, one shared 2000ms read-only confirmation/disposition allowance applies. There is no reset, rollback, second rename or success-stdout extension. A late committed namespace is retained and yields OUTPUT21.",
+    "stdout": "Timely verified publication may transport the exact summary only within the original CLI deadline; output failure after commit retains the namespace.",
+    "HOnlyChange": "A later separately authorized numeric helper-bound correction alone must not silently alter aggregate, CLI, API, worker, cleanup, cancellation, finalization-admission or post-admission settlement rules.",
+    "unresolvedPerformance": "These observed traces leave positive helper and CLI slack, but no measured guarantee covers simultaneous slow calls, worst-case worker work, OS contention, or finalization settlement."
+  },
+  "transfer": {
+    "offlineCalibration": {
+      "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/private-sequence-transfer.json",
+      "byteLength": 16215,
+      "sha256": "sha256:2b9bd27c81f301958db972ae000ab744dadd528f388244faf6d2cc509956152d"
+    },
+    "observedMaximumMs": 50.22990000000004,
+    "globalOrFutureQBoundMs": null,
+    "retainedLiveBrackets": {
+      "rows": [
+        {
+          "id": "localization-diagnostic-1",
+          "source": {
+            "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\r3a",
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-localization/per-request-timing.json",
+            "byteLength": 22922,
+            "sha256": "sha256:623fcc95b7eb7294913ab56538b8445419d8124c2373ba14f60e974151d30645"
+          },
+          "previousQuiescenceToSlot3SupervisorOriginMs": 79.06789999999955,
+          "slot3QuiescenceToNextSupervisorOriginMs": 58.545099999999366,
+          "combinedObservedBracketMs": 137.61299999999892,
+          "slot3TransportEntryToSupervisorOriginMs": 2.478899999999612
+        },
+        {
+          "id": "localization-diagnostic-2",
+          "source": {
+            "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\r3a",
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-localization/per-request-timing.json",
+            "byteLength": 22922,
+            "sha256": "sha256:623fcc95b7eb7294913ab56538b8445419d8124c2373ba14f60e974151d30645"
+          },
+          "previousQuiescenceToSlot3SupervisorOriginMs": 48.25759999999946,
+          "slot3QuiescenceToNextSupervisorOriginMs": 76.40499999999884,
+          "combinedObservedBracketMs": 124.66259999999829,
+          "slot3TransportEntryToSupervisorOriginMs": 1.1863999999991393
+        },
+        {
+          "id": "final-generation-primary-mo1306",
+          "source": {
+            "sourceRoot": "C:\\Users\\melsa\\Documents\\Codex\\r3a",
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3a-refresh-final/semantics/A-mo1306-qualified/evaluate/observation.json",
+            "byteLength": 41396,
+            "sha256": "sha256:aa115ca930d8bbe6a26c957e08c777e71e4d5b4a07fb8a2905ef847aaaa0ecdd"
+          },
+          "previousQuiescenceToSlot3SupervisorOriginMs": 66.09499999999935,
+          "slot3QuiescenceToNextSupervisorOriginMs": 42.82549999999992,
+          "combinedObservedBracketMs": 108.92049999999927,
+          "slot3TransportEntryToSupervisorOriginMs": 1.2924999999995634
+        }
+      ],
+      "maximumCombinedObservedBracketMs": 137.61299999999892,
+      "interpretation": "Each observed bracket surrounds actual slot3 sequence work before/after the supervisor interval, but also contains unrelated prior/current snapshot parsing and next-request setup. It is a loose containment interval for that recorded run, not pure sequence time or a future upper bound.",
+      "notAdditiveToOfflineCalibration": true,
+      "noQBound": "These brackets and offline calibration measure overlapping work. Do not add them together or convert the maximum into a population or scheduling bound."
+    },
+    "unknowns": [
+      "Actual asynchronous continuation scheduling between transport settlement and sequence.complete in a live CLI.",
+      "Supervisor pre-run admission/checkpoint overhead and observer/harness ordering differences not represented by the measured transport decode/clone.",
+      "Unobserved host scheduling/GC/load variation outside this ten-iteration offline window.",
+      "A mathematical bound on timer resolution, event ordering or attributable-console observation uncertainty."
+    ],
+    "rounding": "A500ms deterministic grid does not by itself establish coverage of numerically unbounded residual uncertainty; no new admission clock or padding is inferred."
+  },
+  "separateEngineeringClock": "An authorized20000ms engineering observation guard observes the unchanged helper beyond5000; it is not the product CLI supervisor or an API/worker deadline change.",
+  "currentDisposition": "Retain30000 CLI admission,10000 API/worker and2000 cleanup. The existing one-rename post-admission settlement exception is not broadened.",
+  "nativeLaunchesByThisAnalysis": 0
+}

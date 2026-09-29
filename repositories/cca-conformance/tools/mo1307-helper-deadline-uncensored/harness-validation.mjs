@@ -1,0 +1,41 @@
+// Pre-seal ownership tests and observer startup calibration. ZERO helper launches.
+import assert from 'node:assert/strict';
+import path from 'node:path';
+import {spawn,spawnSync} from 'node:child_process';
+import {performance} from 'node:perf_hooks';
+import {root,evidence,record,write} from './common.mjs';
+import {createEngineeringSupervisor,GUARD_MS,CLEANUP_MS} from './engineering-supervisor.mjs';
+const toolRoot='repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored';
+const observerEvidence=evidence+'/'+(process.argv[2]??'observer-preflight-3');
+assert.match(observerEvidence,/\/observer-preflight-\d+$/);
+const bindings=['common.mjs','plan.mjs','campaign.mjs','engineering-supervisor.mjs','native-observer.py','harness-validation.mjs'].map(p=>record(toolRoot+'/'+p));
+const checks=[];
+for(const p of bindings.filter(p=>p.path.endsWith('.mjs'))){const r=spawnSync(process.execPath,['--check',p.path],{cwd:root,windowsHide:true,encoding:'utf8'});assert.equal(r.status,0,r.stderr);checks.push({name:'syntax:'+p.path,result:'PASS'});}
+let terminated=0;
+const successful=createEngineeringSupervisor();
+const value=await successful.runOwned('helper',()=>({completion:Promise.resolve('expected'),closed:Promise.resolve(),quiescence:()=>true,terminate:()=>{terminated++;}}));
+assert.equal(value,'expected');assert.equal(terminated,0);assert.equal(successful.snapshot().transportCleanupConfirmed,true);
+checks.push({name:'ordinary_success_requires_owner_closure_and_quiescence',result:'PASS',snapshot:successful.snapshot()});
+const missing=createEngineeringSupervisor();
+await assert.rejects(missing.runOwned('helper',()=>({completion:Promise.resolve(),closed:Promise.resolve(),quiescence:()=>false,terminate:()=>{terminated++;},abandon:()=>{}})));
+assert.equal(missing.snapshot().transportCleanupConfirmed,false);
+checks.push({name:'missing_quiescence_is_not_success',result:'PASS',snapshot:missing.snapshot()});
+const deltas=[];let previous=performance.now();for(let i=0;i<10000;i++){const at=performance.now();deltas.push(at-previous);previous=at;}
+const positive=deltas.filter(v=>v>0);
+const observer=spawn('C:/Users/melsa/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe',['-B',toolRoot+'/native-observer.py','--output',path.join(root,observerEvidence)],{cwd:root,windowsHide:true,stdio:['pipe','pipe','pipe']});
+let buffer='',stderr='',ready=null,done=null,controlWriteMs=null;
+const observerResult=await new Promise((resolve,reject)=>{
+ const timer=setTimeout(()=>{observer.kill();reject(new Error('Observer startup validation timeout'));},10000);
+ observer.stdout.on('data',b=>{buffer+=b.toString();for(let end;(end=buffer.indexOf('\n'))>=0;){const line=buffer.slice(0,end);buffer=buffer.slice(end+1);if(!line.trim())continue;const value=JSON.parse(line);if(value.event==='ready'){ready=value;const begin=performance.now();observer.stdin.end(JSON.stringify({command:'done'})+'\n');controlWriteMs=performance.now()-begin;}else if(value.command==='done')done=value;}});
+ observer.stderr.on('data',b=>{stderr+=b.toString();});observer.on('error',reject);
+ observer.on('close',(code,signal)=>{clearTimeout(timer);resolve({code,signal,stderr});});
+});
+assert.equal(observerResult.code,0,stderr);assert.equal(done.result,'OK');assert.equal(done.completedSamples,0);assert.equal(ready.productProcessesLaunched,0);
+checks.push({name:'native_observer_startup_and_normal_close_without_helpers',result:'PASS',observerResult,ready:record(observerEvidence+'/ready.json'),receipt:record(observerEvidence+'/receipt.json'),controlWriteMs});
+let closeGuard,completeGuard,guardTerminations=0;
+const guarded=createEngineeringSupervisor();
+await assert.rejects(guarded.runOwned('helper',()=>({completion:new Promise(resolve=>{completeGuard=resolve;}),closed:new Promise(resolve=>{closeGuard=resolve;}),quiescence:()=>true,terminate:()=>{guardTerminations++;closeGuard();setTimeout(()=>completeGuard('late'),10);}})),e=>e.code==='ENGINEERING_GUARD_EXCEEDED');
+const guardSnapshot=guarded.snapshot();assert.equal(guardTerminations,1);assert.ok(guardSnapshot.terminalAt>=guardSnapshot.origin+GUARD_MS);assert.equal(guardSnapshot.cleanupDeadline-guardSnapshot.terminalAt,CLEANUP_MS);assert.equal(guardSnapshot.completedAt,null);
+checks.push({name:'real_20000ms_guard_terminates_owned_double_and_late_completion_cannot_restore_success',result:'PASS',snapshot:guardSnapshot,nativeHelpers:0});
+write(evidence+'/harness-validation.json',{kind:'MO1307UncensoredHarnessValidation',result:'PASS',createdAtUtc:new Date().toISOString(),checks,sourceBindings:bindings,nativeHelperExecutions:0,observerProcesses:1,clockCalibration:{calls:10000,positiveMinimumMs:Math.min(...positive),observedMaximumDeltaMs:Math.max(...deltas),zeroDeltas:deltas.length-positive.length,scope:'Observed Node monotonic granularity only; not a maximum scheduling/measurement uncertainty bound.'}});
+console.log(JSON.stringify({result:'PASS',checks:checks.length,nativeHelperExecutions:0,receipt:record(evidence+'/harness-validation.json')}));

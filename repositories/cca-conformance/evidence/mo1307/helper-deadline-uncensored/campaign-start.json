@@ -1,0 +1,135 @@
+{
+  "kind": "MO1307UncensoredCampaignStart",
+  "baseline": "1e78a9a963ea945847a9192f8ec3a9ce2b4e7cc5",
+  "startedAtUtc": "2026-09-29T18:45:45.012Z",
+  "plan": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/sample-plan.json",
+    "byteLength": 53250,
+    "sha256": "sha256:ea5621f822787eced758705572f134858f0a5e8d5930edd810c9e2f4f9971662"
+  },
+  "launch": {
+    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+    ],
+    "options": {
+      "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\memoryos-readiness\\",
+      "env": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true,
+      "detached": false,
+      "shell": false,
+      "stdio": [
+        "pipe",
+        "pipe",
+        "pipe"
+      ]
+    }
+  },
+  "observer": {
+    "executable": {
+      "path": "C:/Users/melsa/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe",
+      "byteLength": 107312,
+      "sha256": "sha256:4278cf2a296f31737cae77cafeeb3dc71683094cf3b8fd6f3f02c968687e771c"
+    },
+    "args": [
+      "-B",
+      "repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored/native-observer.py",
+      "--output",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\evidence\\mo1307\\helper-deadline-uncensored\\observer"
+    ],
+    "ready": {
+      "kind": "MO1307UncensoredNativeObserverReady",
+      "version": "1.0.0",
+      "command": "ready",
+      "event": "ready",
+      "observerPid": 21312,
+      "observerIdentity": {
+        "pid": 21312,
+        "creationTime100ns": "134351811450311682",
+        "executable": "C:\\Users\\melsa\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe"
+      },
+      "startedAt": {
+        "qpc": 2022952205499,
+        "utc": "2026-09-29T18:45:45.124841+00:00",
+        "systemTime100ns": "134351811451390031"
+      },
+      "qpcFrequency": 10000000,
+      "discoveryIntervalMs": 200,
+      "globalGuardSeconds": 2700,
+      "maximumSamples": 70,
+      "maximumSampleBytes": 262144,
+      "calibration": [
+        {
+          "startedQpc": 2022952210131,
+          "finishedQpc": 2022952285288,
+          "snapshotAt": {
+            "qpc": 2022952258398,
+            "utc": "2026-09-29T18:45:45.140959+00:00",
+            "systemTime100ns": "134351811451442981"
+          },
+          "elapsedMs": 7.5157,
+          "processCount": 396
+        },
+        {
+          "startedQpc": 2022952286404,
+          "finishedQpc": 2022952358425,
+          "snapshotAt": {
+            "qpc": 2022952330186,
+            "utc": "2026-09-29T18:45:45.140959+00:00",
+            "systemTime100ns": "134351811451514771"
+          },
+          "elapsedMs": 7.2021,
+          "processCount": 396
+        },
+        {
+          "startedQpc": 2022952359790,
+          "finishedQpc": 2022952434638,
+          "snapshotAt": {
+            "qpc": 2022952406362,
+            "utc": "2026-09-29T18:45:45.158805+00:00",
+            "systemTime100ns": "134351811451590945"
+          },
+          "elapsedMs": 7.4848,
+          "processCount": 396
+        }
+      ],
+      "calibrationObserverCpuMs": 15.625,
+      "nativeStructure": {
+        "size": 568,
+        "pidOffset": 8,
+        "parentOffset": 32,
+        "nameOffset": 44
+      },
+      "sourceBindings": [
+        {
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\tools\\mo1307-helper-deadline-uncensored\\native-observer.py",
+          "byteLength": 27960,
+          "sha256": "sha256:877531ff73bd1b60c35c1c4067b5b57ae960e9cc177119d1d1f5baffe57ef3b4"
+        },
+        {
+          "path": "C:\\Users\\melsa\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\python\\python.exe",
+          "byteLength": 107312,
+          "sha256": "sha256:4278cf2a296f31737cae77cafeeb3dc71683094cf3b8fd6f3f02c968687e771c"
+        }
+      ],
+      "pythonVersion": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+      "productProcessesLaunched": 0
+    }
+  },
+  "node": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1304-phase3-toolchain\\node-v24.21.0-win-x64\\node.exe",
+    "byteLength": 93580104,
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "productionDeadlineMs": 5000,
+  "engineeringGuardMs": 20000
+}

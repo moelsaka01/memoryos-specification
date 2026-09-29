@@ -1,0 +1,55 @@
+{
+  "kind": "MO1307UncensoredResponseClassification",
+  "result": "VALID_MATCHING_ERROR_FRAME_UNEXPECTED_SEMANTIC_RESULT",
+  "baseline": "1e78a9a963ea945847a9192f8ec3a9ce2b4e7cc5",
+  "sample": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/samples/01-E/receipt.json",
+    "byteLength": 7759,
+    "sha256": "sha256:9629f96f44ae5088a8aaf17e7793b7513c573fc04726ad5f02dea3193f5b419f"
+  },
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-characterization/requests/E.request.bin",
+    "byteLength": 345,
+    "sha256": "sha256:de4cae02de42b9e288bc6478ae058e2c2ff534c7ddafb41e2a64658dab4c9901"
+  },
+  "responseIdentity": {
+    "byteLength": 257,
+    "sha256": "sha256:98a5c1b82cb5953e9547112e5eb4837062dd9ee016a239b374b6d4a7e09584df"
+  },
+  "method": "Offline reconstruction in memory of each of the four canonical protocol-allowed empty ERROR frames with the exact retained request operation/session/sequence. Unique byte-length and SHA-256 equality identifies the recorded frame. No new helper execution and no payload logged.",
+  "candidates": [
+    {
+      "code": "MO1307_INPUT",
+      "byteLength": 243,
+      "sha256": "sha256:88821f2f3fc6bffc8982e21e9ef8c3c418719ce8adc532f4a3eb3a3147e04fb4",
+      "matchesRecordedResponse": false
+    },
+    {
+      "code": "MO1307_FILESYSTEM_BOUNDARY",
+      "byteLength": 257,
+      "sha256": "sha256:98a5c1b82cb5953e9547112e5eb4837062dd9ee016a239b374b6d4a7e09584df",
+      "matchesRecordedResponse": true
+    },
+    {
+      "code": "MO1307_RESOURCE_LIMIT",
+      "byteLength": 252,
+      "sha256": "sha256:f97a86199d791fdf298716f3b29bcddc6d14f0bb834fe5b51863f7785fdeb1a7",
+      "matchesRecordedResponse": false
+    },
+    {
+      "code": "MO1307_INTERNAL",
+      "byteLength": 246,
+      "sha256": "sha256:873a1d68c86d39105616b235100fdc094720ad4a5965110ab63d5f3b77df986a",
+      "matchesRecordedResponse": false
+    }
+  ],
+  "identifiedStatus": "ERROR",
+  "identifiedCode": "MO1307_FILESYSTEM_BOUNDARY",
+  "expectedStatus": "ABSENT",
+  "originalFlagExplanation": "The immutable sample receipt records validation.protocol=false because its bundled success gate asserts expected ABSENT before setting that flag. The unchanged transport already accepted a matching valid frame; this supplementary digest equality confirms a canonical error frame. It is not a malformed-frame finding or a successful control.",
+  "rootCause": "NOT_ESTABLISHED; filesystem-boundary refusal is an observed native result, not proof that source content changed or the observer caused it.",
+  "nativeExecutions": 0,
+  "fileContentsLogged": false,
+  "productionChanges": false,
+  "certification": false
+}

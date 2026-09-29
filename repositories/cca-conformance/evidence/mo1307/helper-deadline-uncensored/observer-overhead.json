@@ -1,0 +1,48 @@
+{
+  "kind": "MO1307UncensoredObserverOverhead",
+  "result": "MEASURED_NOT_SUBTRACTED",
+  "sample": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/samples/01-E/receipt.json",
+    "byteLength": 7759,
+    "sha256": "sha256:9629f96f44ae5088a8aaf17e7793b7513c573fc04726ad5f02dea3193f5b419f"
+  },
+  "nativeObservation": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/observer/samples/01-E/process-observations.json",
+    "byteLength": 4738,
+    "sha256": "sha256:0828d55d00d6dd9cd75480c1f51bfe4ad2a0073c04a9b47d7d242f26c8ff06c1"
+  },
+  "startupSnapshotCalibrationMs": [
+    7.5157,
+    7.2021,
+    7.4848
+  ],
+  "startupCalibrationObserverCpuMs": 15.625,
+  "observerTotalCpuAfterCalibrationMs": 31.25,
+  "actualSample": {
+    "controlWriteMs": 0.07400000000006912,
+    "allSnapshotQueryMs": 28.8106,
+    "inClockDiscoverySnapshotMs": 18.9182,
+    "nativeObservationWorkMs": 29.388499999999997,
+    "discoverySnapshotCount": 2,
+    "finalSnapshotMs": 9.8924
+  },
+  "monotonicCalibration": {
+    "calls": 10000,
+    "positiveMinimumMs": 0.00009999999929277692,
+    "observedMaximumDeltaMs": 0.40089999999963766,
+    "zeroDeltas": 0,
+    "scope": "Observed Node monotonic granularity only; not a maximum scheduling/measurement uncertainty bound."
+  },
+  "limitations": [
+    "Snapshots and IPC can perturb scheduling; their measured wall work is concurrent and not subtractable helper latency.",
+    "One failed E control provides no observer effect estimate for Case C.",
+    "QPC/FILETIME and Node events are retained in their native domains; no invented universal cross-clock bound.",
+    "Preflight1 Python buffered-reader shutdown failure and repaired preflight2/3 are separate zero-helper attempts, not sample replacements."
+  ],
+  "source": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-uncensored/harness-validation.json",
+    "byteLength": 6123,
+    "sha256": "sha256:b227140d01784f72e7ebfe5d6ff9eede3cc08112281019320aa81a03bf6bf5d2"
+  },
+  "nativeExecutionsByAnalysis": 0
+}

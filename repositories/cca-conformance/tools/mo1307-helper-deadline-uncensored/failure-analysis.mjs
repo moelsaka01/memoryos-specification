@@ -1,0 +1,21 @@
+// Read-only postmortem; no native helper launch, probe, token change or replay.
+import fs from 'node:fs';
+import path from 'node:path';
+import {evidence,json,record,write} from './common.mjs';
+const plan=json(evidence+'/sample-plan.json'),control=plan.cases.find(c=>c.id==='E');
+const parent=path.win32.dirname(control.root),stat=fs.lstatSync(parent);
+write(evidence+'/failure-analysis.json',{kind:'MO1307UncensoredFailureAnalysis',result:'REFUSAL_IDENTIFIED_CAUSE_NOT_ESTABLISHED',capturedAtUtc:new Date().toISOString(),
+ responseClassification:record(evidence+'/response-classification.json'),sample:record(evidence+'/samples/01-E/receipt.json'),nativeObservation:record(evidence+'/observer/samples/01-E/process-observations.json'),
+ sources:[record('repositories/memoryos-readiness/helpers/windows-inspect.ps1'),record('repositories/memoryos-readiness/src/helper-transport.mjs'),record('repositories/cca-conformance/tools/mo1307-helper-deadline-uncensored/native-observer.py')],
+ established:['Unique canonical response digest identifies MO1307_FILESYSTEM_BOUNDARY, status ERROR, with exact request session/sequence/operation.','Helper startup native initialization and console quiescence precede request processing; their failure exits22 without a framed response. A valid ERROR frame with exit0 is a later filesystem inspection refusal.','Both held helper and attributable-console objects signaled; no unexpected observed topology or identity failure.','No engineering guard fired; the recorded lifecycle is a rejected control and cannot be used as successful E or C data.'],
+ possibleNativeSites:[{function:'Open-Native / Open-Chain',lines:[184,233]},{function:'Read-Identity',lines:[197]},{function:'Assert-NativeAbsent',lines:[266]},{function:'Assert-ChainStable',lines:[257]},{function:'CHECK_OUTPUT branch',lines:[326,344]}],
+ nativeFailureSite:'NOT_ESTABLISHED: protocol does not expose branch or Win32 error.',
+ currentOrdinaryMetadata:{root:control.root,rootAbsent:!fs.existsSync(control.root),parent,parentDirectory:stat.isDirectory(),parentSymbolicLink:stat.isSymbolicLink(),scope:'Read-only Node metadata after failure; not the failed native CreateFile/identity trace and not proof of access at execution time.'},
+ observerAssessment:{access:'SYNCHRONIZE|PROCESS_QUERY_LIMITED_INFORMATION only',processTermination:false,consoleAttachment:false,filesystemTargetHandlesOpened:false,priorityTokenEnvironmentChanges:false,identifiedDirectFilesystemRefusalMechanism:false,remainingUncertainty:'Observer scheduling perturbation and external filesystem races cannot be excluded; no causation is established.'},
+ executionContext:{campaignCommand:'Pinned Node campaign.mjs through exec_command with default sandbox permissions',declaredWorkspacePolicy:'Managed workspace-write profile supplied in this task',elevatedOrUnrestrictedReplay:false,effectiveWindowsTokenCaptured:false,equivalenceToAcceptedRunSecurityContext:'NOT_ESTABLISHED',meaning:'The command permission mode is known, but effective token/access-policy parity was not measured. Execution-context differences are a diagnostic lead, not a proven cause of this refusal.'},
+ unchangedState:{production:true,Freeze:true,allFrozenLimits:true,historicalEvidence:true},
+ nextDiagnosticProposal:{requiresSeparateAuthority:true,executedHere:false,maximumDiagnosticNativeProbePasses:1,maximumUnchangedEConfirmations:1,maximumCExecutions:0,
+ steps:['Bind the stopped sample, exact request/root/helper/runtime identities and accepted comparison evidence.','Compare effective execution token/sandbox context and inspect the exact ancestor/absent-leaf checks read-only using the same access/share flags, recording branch/Win32 code and metadata only.','Only after a supported hypothesis, permit at most one separately authorized unchanged E confirmation; do not resume or replace any sample in this campaign.','If native failure remains unlocalized, stop; any instrumentation or later campaign requires new explicit authority.'],
+ noProductionChange:true,noFrozenLimitChange:true,noAutomaticFollowup:true},
+ nativeHelperExecutions:0,noFileContentsLogged:true,certification:false});
+console.log(JSON.stringify({result:'REFUSAL_IDENTIFIED_CAUSE_NOT_ESTABLISHED',nativeHelperExecutions:0}));

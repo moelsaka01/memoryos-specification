@@ -1,0 +1,534 @@
+"""Bounded engineering observer: process queries and retained handles only.
+
+No launches, process termination, console attachment, priority changes, or
+production imports. Toolhelp discovery stops after console acquisition. The
+observer never turns a missed process into proof of absence.
+"""
+import argparse
+import ctypes as C
+from ctypes import wintypes as W
+from datetime import datetime, timezone
+import hashlib
+import json
+import os
+from pathlib import Path
+import queue
+import re
+import sys
+import threading
+import time
+
+K = C.WinDLL('kernel32', use_last_error=True)
+INVALID = C.c_void_p(-1).value
+WAIT_OBJECT_0, WAIT_TIMEOUT, WAIT_FAILED = 0, 258, 0xffffffff
+ACCESS = 0x00100000 | 0x1000  # SYNCHRONIZE | PROCESS_QUERY_LIMITED_INFORMATION
+INTERVAL_MS, GLOBAL_GUARD_SECONDS, MAX_SAMPLES = 200, 2700, 70
+MAX_SAMPLE_BYTES, MAX_PROCESSES = 262144, 16384
+HELPER = r'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe'
+CONSOLE = r'C:\Windows\System32\conhost.exe'
+
+
+class ProcessEntry(C.Structure):
+    _fields_ = [('size', W.DWORD), ('usage', W.DWORD), ('pid', W.DWORD),
+                ('heap', C.c_size_t), ('module', W.DWORD), ('threads', W.DWORD),
+                ('parent', W.DWORD), ('priority', W.LONG), ('flags', W.DWORD),
+                ('name', W.WCHAR * 260)]
+
+
+class MemoryStatus(C.Structure):
+    _fields_ = [('length', W.DWORD), ('load', W.DWORD),
+                ('totalPhysical', C.c_uint64), ('availablePhysical', C.c_uint64),
+                ('totalPageFile', C.c_uint64), ('availablePageFile', C.c_uint64),
+                ('totalVirtual', C.c_uint64), ('availableVirtual', C.c_uint64),
+                ('availableExtendedVirtual', C.c_uint64)]
+
+
+def signature(name, result, *arguments):
+    function = getattr(K, name)
+    function.restype = result
+    function.argtypes = list(arguments)
+    return function
+
+
+signature('OpenProcess', W.HANDLE, W.DWORD, W.BOOL, W.DWORD)
+signature('CloseHandle', W.BOOL, W.HANDLE)
+signature('WaitForSingleObject', W.DWORD, W.HANDLE, W.DWORD)
+signature('WaitForMultipleObjects', W.DWORD, W.DWORD, C.POINTER(W.HANDLE), W.BOOL, W.DWORD)
+signature('CreateEventW', W.HANDLE, C.c_void_p, W.BOOL, W.BOOL, W.LPCWSTR)
+signature('SetEvent', W.BOOL, W.HANDLE)
+signature('CreateToolhelp32Snapshot', W.HANDLE, W.DWORD, W.DWORD)
+signature('Process32FirstW', W.BOOL, W.HANDLE, C.POINTER(ProcessEntry))
+signature('Process32NextW', W.BOOL, W.HANDLE, C.POINTER(ProcessEntry))
+signature('QueryFullProcessImageNameW', W.BOOL, W.HANDLE, W.DWORD, W.LPWSTR, C.POINTER(W.DWORD))
+signature('GetProcessTimes', W.BOOL, W.HANDLE, *([C.POINTER(W.FILETIME)] * 4))
+signature('GetSystemTimePreciseAsFileTime', None, C.POINTER(W.FILETIME))
+signature('QueryPerformanceCounter', W.BOOL, C.POINTER(C.c_int64))
+signature('QueryPerformanceFrequency', W.BOOL, C.POINTER(C.c_int64))
+signature('GlobalMemoryStatusEx', W.BOOL, C.POINTER(MemoryStatus))
+signature('GetSystemTimes', W.BOOL, *([C.POINTER(W.FILETIME)] * 3))
+
+FREQUENCY = C.c_int64()
+if not K.QueryPerformanceFrequency(C.byref(FREQUENCY)):
+    raise C.WinError(C.get_last_error())
+
+
+def qpc():
+    value = C.c_int64()
+    if not K.QueryPerformanceCounter(C.byref(value)):
+        raise C.WinError(C.get_last_error())
+    return value.value
+
+
+def stamp():
+    native = W.FILETIME()
+    K.GetSystemTimePreciseAsFileTime(C.byref(native))
+    return {'qpc': qpc(), 'utc': datetime.now(timezone.utc).isoformat(),
+            'systemTime100ns': str(filetime(native))}
+
+
+def filetime(value):
+    return (value.dwHighDateTime << 32) | value.dwLowDateTime
+
+
+def times(handle):
+    values = [W.FILETIME() for _ in range(4)]
+    if not K.GetProcessTimes(handle, *[C.byref(value) for value in values]):
+        raise C.WinError(C.get_last_error())
+    return dict(zip(('creationTime100ns', 'exitTime100ns', 'kernelTime100ns', 'userTime100ns'),
+                    (str(filetime(value)) for value in values)))
+
+
+def encode(value):
+    return (json.dumps(value, ensure_ascii=True, separators=(',', ':')) + '\n').encode('ascii')
+
+
+def emit(value):
+    sys.stdout.buffer.write(encode(value))
+    sys.stdout.buffer.flush()
+
+
+def write(path, value):
+    data = encode(value)
+    if len(data) > MAX_SAMPLE_BYTES:
+        raise ValueError('observer sample output ceiling')
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open('xb') as stream:
+        stream.write(data)
+    return {'path': str(path), 'byteLength': len(data), 'sha256': 'sha256:' + hashlib.sha256(data).hexdigest()}
+
+
+def binding(path):
+    data = path.read_bytes()
+    return {'path': str(path), 'byteLength': len(data), 'sha256': 'sha256:' + hashlib.sha256(data).hexdigest()}
+
+
+def snapshot():
+    started = qpc()
+    handle = K.CreateToolhelp32Snapshot(2, 0)
+    if handle == INVALID:
+        raise C.WinError(C.get_last_error())
+    at = stamp()
+    entries = {}
+    try:
+        entry = ProcessEntry()
+        entry.size = C.sizeof(entry)
+        if not K.Process32FirstW(handle, C.byref(entry)):
+            raise C.WinError(C.get_last_error())
+        while True:
+            entries[int(entry.pid)] = {'pid': int(entry.pid), 'parentPid': int(entry.parent),
+                                        'imageName': entry.name}
+            if len(entries) > MAX_PROCESSES:
+                raise ValueError('native process-count ceiling')
+            if not K.Process32NextW(handle, C.byref(entry)):
+                if C.get_last_error() != 18:
+                    raise C.WinError(C.get_last_error())
+                break
+    finally:
+        K.CloseHandle(handle)
+    finished = qpc()
+    return entries, {'startedQpc': started, 'finishedQpc': finished, 'snapshotAt': at,
+                     'elapsedMs': (finished - started) * 1000 / FREQUENCY.value,
+                     'processCount': len(entries)}
+
+
+def context(entries, inspection):
+    memory = MemoryStatus()
+    memory.length = C.sizeof(memory)
+    if not K.GlobalMemoryStatusEx(C.byref(memory)):
+        raise C.WinError(C.get_last_error())
+    cpu = [W.FILETIME() for _ in range(3)]
+    if not K.GetSystemTimes(*[C.byref(value) for value in cpu]):
+        raise C.WinError(C.get_last_error())
+    return {'at': stamp(), 'processCount': len(entries), 'snapshot': inspection,
+            'availablePhysicalBytes': memory.availablePhysical, 'totalPhysicalBytes': memory.totalPhysical,
+            'memoryLoadPercent': memory.load,
+            'systemCpuCumulative100ns': dict(zip(('idle', 'kernelIncludingIdle', 'user'),
+                                                (str(filetime(value)) for value in cpu)))}
+
+
+def acquire(pid, role, expected_path, parent=None, entry=None, snapshot_at=None):
+    handle = K.OpenProcess(ACCESS, False, pid)
+    if not handle:
+        raise C.WinError(C.get_last_error())
+    try:
+        native_times = times(handle)
+        length = W.DWORD(32768)
+        executable = C.create_unicode_buffer(length.value)
+        if not K.QueryFullProcessImageNameW(handle, 0, executable, C.byref(length)):
+            raise C.WinError(C.get_last_error())
+        if expected_path is not None and executable.value.casefold() != expected_path.casefold():
+            raise ValueError('fixed process executable mismatch')
+        identity = {'pid': pid, 'creationTime100ns': native_times['creationTime100ns'],
+                    'executable': executable.value}
+        if entry is not None and Path(executable.value).name.casefold() != entry['imageName'].casefold():
+            raise ValueError('snapshot versus process image identity race')
+        born = int(identity['creationTime100ns'])
+        if snapshot_at is not None and born > int(snapshot_at['systemTime100ns']):
+            raise ValueError('snapshot versus process creation identity race')
+        if parent is not None:
+            parent_times = times(parent['handle'])
+            if (entry['parentPid'] != parent['identity']['pid'] or born < int(parent['identity']['creationTime100ns'])
+                    or (int(parent_times['exitTime100ns']) and born > int(parent_times['exitTime100ns']))):
+                raise ValueError('process parent lifetime attribution mismatch')
+        row = {'handle': handle, 'role': role, 'identity': identity, 'nativeTimes': native_times,
+               'parentIdentity': parent['identity'] if parent is not None else None,
+               'firstObservedAt': stamp(), 'signaledAt': None}
+        handle = None
+        return row
+    finally:
+        if handle:
+            K.CloseHandle(handle)
+
+
+def observe_exit(row):
+    if row['signaledAt'] is not None:
+        return True
+    status = K.WaitForSingleObject(row['handle'], 0)
+    if status == WAIT_OBJECT_0:
+        row['nativeTimes'] = times(row['handle'])
+        row['signaledAt'] = stamp()
+        return True
+    if status != WAIT_TIMEOUT:
+        raise C.WinError(C.get_last_error())
+    return False
+
+
+class Sample:
+    def __init__(self, sample_id):
+        self.id = sample_id
+        entries, inspection = snapshot()
+        self.before = context(entries, inspection)
+        self.prepared = stamp()
+        self.rows = []
+        self.snapshots = []
+        self.issues = []
+        self.pid = None
+        self.next_discovery = None
+        self.active_at = None
+        self.observation_work_ms = 0
+        self.stop_sent = False
+
+    def issue(self, kind, **details):
+        row = {'kind': kind, **details}
+        if row not in self.issues and len(self.issues) < 64:
+            self.issues.append(row)
+        if not self.stop_sent:
+            self.stop_sent = True
+            emit({'event': 'stop', 'sampleId': self.id, 'reason': kind, 'details': details})
+
+    def active(self, pid):
+        self.pid = pid
+        self.active_at = stamp()
+        helper = acquire(pid, 'helper', HELPER)
+        if int(helper['identity']['creationTime100ns']) < int(self.prepared['systemTime100ns']):
+            K.CloseHandle(helper['handle'])
+            raise ValueError('helper predates sample prepare')
+        self.rows.append(helper)
+        self.discover('INITIAL_ACTIVE')
+
+    def discover(self, reason):
+        started = qpc()
+        entries, inspection = snapshot()
+        inspection['reason'] = reason
+        self.snapshots.append(inspection)
+        known = {row['identity']['pid']: row for row in self.rows}
+        for pid, entry in entries.items():
+            parent = known.get(entry['parentPid'])
+            if parent is None or pid in known:
+                continue
+            role = 'console_host' if parent['role'] == 'helper' and entry['imageName'].casefold() == 'conhost.exe' else 'unexpected_descendant'
+            try:
+                row = acquire(pid, role, CONSOLE if role == 'console_host' else None,
+                              parent, entry, inspection['snapshotAt'])
+            except Exception as error:
+                self.issue('CHILD_IDENTITY_NOT_ESTABLISHED', pid=pid,
+                           parentPid=entry['parentPid'], error=str(error))
+                continue
+            if len(self.rows) >= 16:
+                K.CloseHandle(row['handle'])
+                self.issue('OBSERVER_PROCESS_HANDLE_CEILING', maximum=16)
+                break
+            self.rows.append(row)
+            known[pid] = row
+            if role == 'unexpected_descendant':
+                self.issue('UNEXPECTED_PROCESS_TOPOLOGY', identity=row['identity'])
+        consoles = [row for row in self.rows if row['role'] == 'console_host']
+        if len(consoles) > 1:
+            self.issue('MULTIPLE_ATTRIBUTED_CONSOLES', count=len(consoles))
+        self.next_discovery = None if consoles or self.stop_sent else time.monotonic() + INTERVAL_MS / 1000
+        self.observation_work_ms += (qpc() - started) * 1000 / FREQUENCY.value
+        return entries, inspection
+
+    def observe(self):
+        started = qpc()
+        for row in self.rows:
+            try:
+                observe_exit(row)
+            except Exception as error:
+                row['observationError'] = str(error)
+                self.issue('NATIVE_EXIT_OBSERVATION_FAILURE', identity=row['identity'], error=str(error))
+        self.observation_work_ms += (qpc() - started) * 1000 / FREQUENCY.value
+
+    def finish(self, output, reason='SETTLED'):
+        try:
+            try:
+                if self.pid is None:
+                    entries, inspection = snapshot()
+                else:
+                    entries, inspection = self.discover('FINAL_SETTLED')
+                after = context(entries, inspection)
+            except Exception as error:
+                self.issue('FINAL_NATIVE_CONTEXT_FAILURE', error=str(error))
+                after = {'at': stamp(), 'result': 'NOT_OBSERVABLE', 'error': str(error)}
+            self.observe()
+            lifetimes = []
+            for row in self.rows:
+                try:
+                    native_times = times(row['handle'])
+                except Exception as error:
+                    native_times = row['nativeTimes']
+                    self.issue('FINAL_PROCESS_TIMES_FAILURE', identity=row['identity'], error=str(error))
+                lifetimes.append({key: value for key, value in row.items() if key not in ('handle', 'nativeTimes')}
+                                 | {'nativeTimes': native_times,
+                                    'cpuMs': (int(native_times['kernelTime100ns']) + int(native_times['userTime100ns'])) / 10000})
+            helpers = [row for row in lifetimes if row['role'] == 'helper']
+            consoles = [row for row in lifetimes if row['role'] == 'console_host']
+            all_signaled = bool(lifetimes) and all(row['signaledAt'] is not None for row in lifetimes)
+            proof = (len(helpers) == 1 and len(consoles) == 1 and all_signaled and not self.issues)
+            record = {'kind': 'MO1307UncensoredNativeObservations', 'version': '1.0.0',
+                      'sampleId': self.id, 'result': 'OBSERVED' if proof else 'PARTIAL', 'reason': reason,
+                      'requestedHelperPid': self.pid, 'preparedAt': self.prepared, 'activeObservedAt': self.active_at,
+                      'finishedAt': stamp(), 'qpcFrequency': FREQUENCY.value,
+                      'contextBefore': self.before, 'contextAfter': after, 'lifetimes': lifetimes,
+                      'discoverySnapshots': self.snapshots, 'discoveryIntervalMs': INTERVAL_MS,
+                      'snapshotQueryMs': sum(row['elapsedMs'] for row in self.snapshots),
+                      'nativeObservationWorkMs': self.observation_work_ms,
+                      'observedHelperCount': len(helpers), 'observedConsoleHostCount': len(consoles),
+                      'allObservedObjectsSignaled': all_signaled, 'externalConsoleExitProof': proof,
+                      'unexpectedProcessTopology': any(row['role'] == 'unexpected_descendant' for row in lifetimes) or len(consoles) > 1,
+                      'identityFailures': self.issues, 'completeDescendantCoverageEstablished': False,
+                      'processTerminationPerformed': False, 'productProcessesLaunched': 0,
+                      'extraSettlementWaitMs': 0,
+                      'limitations': [
+                          'Toolhelp snapshots can miss short-lived descendants; absence is not complete topology proof.',
+                          'Discovery snapshots stop after one attributed console is acquired, with a final snapshot after settlement.',
+                          'Only signaled retained handles prove exit of those identified process objects.',
+                          'NativeObservationWorkMs is measured query/wait wall work, not isolated CPU cost or subtractable product latency.',
+                          'A validated unchanged helper response independently proves its native console-quiescence routine completed.',
+                          'No inner helper stage, complete scheduling explanation, or product deadline outcome is inferred.']}
+            pin = write(output / 'samples' / self.id / 'process-observations.json', record)
+            return {'path': pin['path'], 'receipt': pin, 'observation': pin,
+                    'observationResult': record['result'], 'externalConsoleExitProof': proof,
+                    'allObservedObjectsSignaled': all_signaled,
+                    'unexpectedProcessTopology': record['unexpectedProcessTopology'],
+                    'identityFailureCount': len(self.issues), 'contextAfter': after,
+                    'summary': {'helperCount': len(helpers), 'consoleCount': len(consoles),
+                                'allSignaled': all_signaled,
+                                'unexpectedChildren': [row['identity'] for row in lifetimes if row['role'] == 'unexpected_descendant'],
+                                'completeDescendantCoverage': False, 'externalConsoleExitProof': proof,
+                                'identityFailureCount': len(self.issues)}}
+        finally:
+            for row in self.rows:
+                K.CloseHandle(row['handle'])
+            self.rows.clear()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output', type=Path, required=True)
+    args = parser.parse_args()
+    workspace = Path(__file__).resolve().parents[4]
+    output = args.output.resolve()
+    if not output.is_relative_to(workspace) or output == workspace:
+        parser.error('output must be within the owned workspace')
+    output.mkdir(parents=True, exist_ok=True)
+    if (output / 'ready.json').exists():
+        parser.error('observer output must be single-use')
+    if (C.sizeof(C.c_void_p) != 8 or C.sizeof(ProcessEntry) != 568
+            or ProcessEntry.pid.offset != 8 or ProcessEntry.parent.offset != 32 or ProcessEntry.name.offset != 44):
+        raise ValueError('unsupported native process-entry ABI')
+    started = stamp()
+    self_row = acquire(os.getpid(), 'engineering_observer', str(Path(sys.executable).resolve()))
+    try:
+        calibration = []
+        calibration_cpu_before = times(self_row['handle'])
+        for _ in range(3):
+            entries, inspection = snapshot()
+            if (os.getpid() not in entries or entries[os.getpid()]['parentPid'] != os.getppid()
+                    or entries[os.getpid()]['imageName'].casefold() != Path(sys.executable).name.casefold()):
+                raise ValueError('native process-entry calibration mismatch')
+            calibration.append(inspection)
+        self_before = times(self_row['handle'])
+        calibration_cpu_ms = sum(int(self_before[key]) - int(calibration_cpu_before[key])
+                                 for key in ('kernelTime100ns', 'userTime100ns')) / 10000
+        ready = {'kind': 'MO1307UncensoredNativeObserverReady', 'version': '1.0.0', 'command': 'ready', 'event': 'ready',
+                 'observerPid': os.getpid(), 'observerIdentity': self_row['identity'], 'startedAt': started,
+                 'qpcFrequency': FREQUENCY.value, 'discoveryIntervalMs': INTERVAL_MS,
+                 'globalGuardSeconds': GLOBAL_GUARD_SECONDS, 'maximumSamples': MAX_SAMPLES,
+                 'maximumSampleBytes': MAX_SAMPLE_BYTES, 'calibration': calibration,
+                 'calibrationObserverCpuMs': calibration_cpu_ms,
+                 'nativeStructure': {'size': C.sizeof(ProcessEntry), 'pidOffset': ProcessEntry.pid.offset,
+                                     'parentOffset': ProcessEntry.parent.offset, 'nameOffset': ProcessEntry.name.offset},
+                 'sourceBindings': [binding(Path(__file__).resolve()), binding(Path(sys.executable))],
+                 'pythonVersion': sys.version, 'productProcessesLaunched': 0}
+        write(output / 'ready.json', ready)
+        emit(ready)
+        commands = queue.Queue(maxsize=256)
+        event = K.CreateEventW(None, False, False, None)
+        if not event:
+            raise C.WinError(C.get_last_error())
+
+        def reader():
+            try:
+                pending = b''
+                while True:
+                    # Never hold Python's buffered-stdin lock in a daemon
+                    # thread at interpreter shutdown. Raw reads also keep the
+                    # framing ceiling independent of BufferedReader internals.
+                    chunk = os.read(0, 4096)
+                    if not chunk:
+                        if pending:
+                            raise ValueError('incomplete input record at EOF')
+                        commands.put({'_eof': True})
+                        K.SetEvent(event)
+                        return
+                    pending += chunk
+                    while b'\n' in pending:
+                        line, pending = pending.split(b'\n', 1)
+                        if len(line) + 1 > 4096:
+                            raise ValueError('input record byte ceiling')
+                        value = json.loads(line)
+                        commands.put(value)
+                        K.SetEvent(event)
+                        if isinstance(value, dict) and value.get('command') == 'done':
+                            return
+                    if len(pending) >= 4096:
+                        raise ValueError('input record byte ceiling or framing')
+            except Exception as error:
+                commands.put({'_readerError': str(error)})
+                K.SetEvent(event)
+
+        reader_thread = threading.Thread(target=reader, name='engineering-control-reader', daemon=True)
+        reader_thread.start()
+        current, completed, seen = None, [], set()
+        deadline = time.monotonic() + GLOBAL_GUARD_SECONDS
+        failure = None
+        try:
+            while True:
+                if time.monotonic() >= deadline:
+                    raise TimeoutError('bounded observer campaign guard')
+                while not commands.empty():
+                    command = commands.get_nowait()
+                    if not isinstance(command, dict) or '_readerError' in command or '_eof' in command:
+                        raise ValueError('observer control stream ended before done or malformed')
+                    verb = command.get('command')
+                    if verb == 'done':
+                        if set(command) != {'command'} or current is not None:
+                            raise ValueError('done while sample active')
+                        emit({'command': 'done', 'result': 'OK', 'completedSamples': len(completed)})
+                        return 0
+                    required = {'command', 'sampleId', 'pid'} if verb == 'active' else {'command', 'sampleId'}
+                    if set(command) != required or verb not in ('prepare', 'active', 'settled'):
+                        raise ValueError('closed observer command mismatch')
+                    sample_id = command['sampleId']
+                    if not isinstance(sample_id, str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]{0,63}', sample_id):
+                        raise ValueError('invalid sample ID')
+                    if verb == 'prepare':
+                        if current is not None or sample_id in seen or len(seen) >= MAX_SAMPLES:
+                            raise ValueError('sample repeat, overlap or count ceiling')
+                        seen.add(sample_id)
+                        current = Sample(sample_id)
+                        emit({'command': verb, 'sampleId': sample_id, 'result': 'OK',
+                              'contextBefore': current.before, 'preparedAt': current.prepared})
+                    elif current is None or current.id != sample_id:
+                        raise ValueError('active/settled sample identity mismatch')
+                    elif verb == 'active':
+                        pid = command['pid']
+                        if current.pid is not None or not isinstance(pid, int) or isinstance(pid, bool) or pid <= 0:
+                            raise ValueError('invalid or repeated active PID')
+                        try:
+                            current.active(pid)
+                        except Exception as error:
+                            current.issue('ACTIVE_NATIVE_OBSERVER_FAILURE', error=str(error))
+                            current.next_discovery = None
+                        emit({'command': verb, 'sampleId': sample_id, 'result': 'OK',
+                              'helperIdentity': current.rows[0]['identity'] if current.rows else None,
+                              'activeObservedAt': current.active_at, 'observerStopRequested': current.stop_sent})
+                    else:
+                        if current.pid is None:
+                            raise ValueError('settled without active helper')
+                        result = current.finish(output)
+                        current = None
+                        completed.append({'sampleId': sample_id, **result})
+                        emit({'command': verb, 'sampleId': sample_id, 'result': 'OK', **result})
+                if current is not None and current.pid is not None:
+                    try:
+                        current.observe()
+                        if current.next_discovery is not None and time.monotonic() >= current.next_discovery:
+                            current.discover('BOUNDED_CONSOLE_DISCOVERY')
+                    except Exception as error:
+                        current.issue('ACTIVE_NATIVE_OBSERVER_FAILURE', error=str(error))
+                        current.next_discovery = None
+                wait_ms = max(1, min(60000, int((deadline - time.monotonic()) * 1000)))
+                if current is not None and current.next_discovery is not None:
+                    wait_ms = max(1, min(wait_ms, int((current.next_discovery - time.monotonic()) * 1000)))
+                rows = [] if current is None else [row for row in current.rows if row['signaledAt'] is None and 'observationError' not in row]
+                handles = (W.HANDLE * (1 + len(rows)))(event, *[row['handle'] for row in rows])
+                result = K.WaitForMultipleObjects(len(handles), handles, False, wait_ms)
+                if result == WAIT_FAILED:
+                    raise C.WinError(C.get_last_error())
+        except Exception as error:
+            failure = {'type': type(error).__name__, 'message': str(error)}
+            if current is not None:
+                current.issue('OBSERVER_CONTROL_OR_WAIT_FAILURE', error=str(error))
+                # Root owns termination. Give its stop listener one bounded
+                # cleanup interval; never terminate or attach a console here.
+                handles = [row['handle'] for row in current.rows]
+                if handles:
+                    array = (W.HANDLE * len(handles))(*handles)
+                    K.WaitForMultipleObjects(len(handles), array, True, 2000)
+                try:
+                    result = current.finish(output, 'OBSERVER_FAILURE')
+                    completed.append({'sampleId': current.id, **result})
+                except Exception as finish_error:
+                    failure['finishError'] = str(finish_error)
+            emit({'command': 'error', 'result': 'FAIL', 'failure': failure})
+            return 2
+        finally:
+            # Normal done exits the raw reader before another read. The join
+            # occurs outside every helper clock and cannot wait indefinitely.
+            reader_thread.join(timeout=0.2)
+            after = times(self_row['handle'])
+            cpu_ms = sum(int(after[key]) - int(self_before[key]) for key in ('kernelTime100ns', 'userTime100ns')) / 10000
+            write(output / 'receipt.json', {'kind': 'MO1307UncensoredNativeObserverReceipt', 'version': '1.0.0',
+                  'result': 'OBSERVED' if failure is None else 'FAIL', 'failure': failure,
+                  'startedAt': started, 'finishedAt': stamp(), 'completedSamples': completed,
+                  'observerCpuMsAfterCalibration': cpu_ms, 'productProcessesLaunched': 0,
+                  'processTerminationPerformed': False, 'completeDescendantCoverageEstablished': False})
+            K.CloseHandle(event)
+    finally:
+        K.CloseHandle(self_row['handle'])
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())
