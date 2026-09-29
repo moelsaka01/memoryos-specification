@@ -1,0 +1,55 @@
+{
+  "kind": "MO1307HelperDeadlineMarginAnalysis",
+  "version": "1.0.0",
+  "result": "PASS",
+  "baseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "statistics": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-characterization/statistics.json",
+    "byteLength": 174210,
+    "sha256": "sha256:fbd4e37d82130087c4523c182c6534c8dab1f24976c08bd77891d25163313198"
+  },
+  "predeclaredThresholds": {
+    "large": "margin >=1500 ms",
+    "moderate": "750 <= margin <1500 ms",
+    "thin": "0 < margin <750 ms",
+    "violation": "margin <=0 ms"
+  },
+  "byCase": [
+    {
+      "case": "A",
+      "minimumMarginMs": 2217.8088999999964,
+      "marginClassification": "large",
+      "timeouts": 0
+    },
+    {
+      "case": "B",
+      "minimumMarginMs": 1979.361100000002,
+      "marginClassification": "large",
+      "timeouts": 0
+    },
+    {
+      "case": "C",
+      "minimumMarginMs": -24.656699999999546,
+      "marginClassification": "violation",
+      "timeouts": 1
+    },
+    {
+      "case": "D",
+      "minimumMarginMs": 1296.7739000000001,
+      "marginClassification": "moderate",
+      "timeouts": 0
+    },
+    {
+      "case": "E",
+      "minimumMarginMs": 1961.392200000002,
+      "marginClassification": "large",
+      "timeouts": 0
+    }
+  ],
+  "minimumObservedMarginMs": -24.656699999999546,
+  "minimumSuccessfulMarginMs": 154.93690000000788,
+  "noOutliersDiscarded": true,
+  "noRetries": true,
+  "limitsChanged": false,
+  "certification": false
+}

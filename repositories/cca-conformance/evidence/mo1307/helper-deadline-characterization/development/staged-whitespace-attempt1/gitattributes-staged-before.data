@@ -1,0 +1,84 @@
+* text=auto eol=lf
+*.mip binary
+.github/actions/memoryos-policy-gate/**/*.json -text
+repositories/cca-conformance/tests/fixtures/github-policy-gate/**/*.json -text
+repositories/cca-conformance/tests/fixtures/github-policy-gate/**/*.sha256 -text
+repositories/cca-studio/web/data/investigation-policy/**/*.json -text
+repositories/cca-studio/tests/fixtures/investigation-policy/**/*.json -text
+repositories/memoryos-rest/notices/node-LICENSE.txt -text -diff
+
+# Retain exact bytes of the frozen R6 execution tools.
+repositories/cca-conformance/tools/mo1305-phase1/bounded-proof.mjs -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/tools/mo1305-bounded-run.py -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+# Failed attempts and bound receipts retain their exact captured bytes.
+repositories/cca-conformance/evidence/mo1305* -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/evidence/mo1305*/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+docs/mo1305-phase1-resource-review.md -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+# Preserve the historical report's intentional Markdown hard break.
+docs/mo1305-r6-root-cause-diagnostic.md whitespace=blank-at-eof,space-before-tab,-blank-at-eol
+
+# Preserve the exact Phase 2B executed harness bytes bound by source-tree receipts.
+repositories/cca-conformance/tools/mo1305-phase2b/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+# Retain the exact executed transport-harness bytes bound by Phase 2C receipts.
+repositories/cca-conformance/tools/mo1305-phase2c/transport.mjs whitespace=-blank-at-eof
+
+# Preserve exact release-correction tooling bytes bound by source and execution receipts.
+repositories/cca-conformance/tools/mo1305-phase3-correction/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+# Preserve imported certification tools and final integration evidence identities.
+repositories/cca-conformance/tools/mo1305-phase3c-refresh/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/tools/mo1305-phase3d/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+# MO-1306 executable closures, historical attempts and matching-byte bindings.
+repositories/memoryos-ci/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/tools/mo1306/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/evidence/mo1306/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/fixtures/mo1306/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/mo1306-phase1-contract-blocker.md -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/memoryos-ci/notices/node-LICENSE.txt -text -diff
+repositories/cca-conformance/fixtures/mo1306-phase2c/azure/upstream/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/fixtures/mo1306-phase2c/actions/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+# Immutable upstream action prose includes trailing spaces; retain its exact hash.
+repositories/cca-conformance/fixtures/mo1306-phase2c/actions/upload-artifact-action.yml whitespace=blank-at-eof,space-before-tab,-blank-at-eol
+
+# Preserve exact Phase 2D engineering harness bytes used by recorded executions.
+repositories/cca-conformance/tools/mo1306-phase2d/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+# Preserve the exact captured Azure fixture stdout, including its second final LF.
+repositories/cca-conformance/evidence/mo1306/phase2d/commands/azure-generation.stdout.txt whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
+
+# MO-1307 Phase 1 exact package, fixture and executed engineering bytes.
+repositories/memoryos-readiness/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/tools/mo1307-phase1/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/tests/mo1307_phase1_*.mjs -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/fixtures/mo1307/** -text whitespace=-trailing-space,space-before-tab,cr-at-eol,-blank-at-eof
+repositories/cca-conformance/evidence/mo1307/** -text whitespace=space-before-tab,cr-at-eol,-blank-at-eof,-trailing-space
+
+# Preserve exact MO-1307 Phase 2C executed engineering source bytes.
+repositories/cca-conformance/tools/mo1307-phase2c-*/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/tests/mo1307_phase2c_*.mjs -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/mo1307-phase2c-*.md -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+# Exact historical/executed engineering captures retain their final blank line.
+repositories/cca-conformance/tools/mo1307-phase2c-continuation/finalize-stop.mjs whitespace=trailing-space,space-before-tab,cr-at-eol,-blank-at-eof
+repositories/cca-conformance/tools/mo1307-phase2c-final/native-surfaces-remaining.mjs whitespace=trailing-space,space-before-tab,cr-at-eol,-blank-at-eof
+repositories/cca-conformance/tools/mo1307-phase2c-final/native-surfaces.mjs whitespace=trailing-space,space-before-tab,cr-at-eol,-blank-at-eof
+repositories/cca-conformance/tools/mo1307-phase2c-resumed/finalize-stop.mjs whitespace=trailing-space,space-before-tab,cr-at-eol,-blank-at-eof
+repositories/cca-conformance/tools/mo1307-phase2c-resumed/production-launch-witness.mjs whitespace=trailing-space,space-before-tab,cr-at-eol,-blank-at-eof
+
+# Preserve exact executed integration tools, tests, and bound integration report.
+repositories/cca-conformance/tools/mo1307-phase2d/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+repositories/cca-conformance/tests/mo1307_phase2d_*.mjs -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/mo1307-phase2d-integration.md -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+# Preserve exact executed READ_SET correction tools and bound report bytes.
+repositories/cca-conformance/tools/mo1307-phase3a-readset-correction/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/mo1307-phase3a-readset-correction.md -text whitespace=trailing-space,space-before-tab,cr-at-eol
+
+# Preserve exact helper deadline characterization evidence tooling and report bytes.
+repositories/cca-conformance/tools/mo1307-helper-deadline-characterization/** -text whitespace=trailing-space,space-before-tab,cr-at-eol
+docs/mo1307-helper-deadline-characterization.md -text whitespace=trailing-space,space-before-tab,cr-at-eol

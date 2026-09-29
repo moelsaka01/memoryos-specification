@@ -1,0 +1,115 @@
+{
+  "kind": "MO1307HelperDeadlineContractIntent",
+  "version": "1.0.0",
+  "baseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "analysisMode": "READ_ONLY_SOURCE_AND_NORMATIVE_AUTHORITY",
+  "productionChanges": false,
+  "freezeChanges": false,
+  "nativeExecutionsByThisAnalysis": 0,
+  "certification": false,
+  "phase3AR": "BLOCKED",
+  "modelSelection": "UNSELECTED_PENDING_MEASUREMENTS",
+  "result": "PASS",
+  "classification": "WHOLE_HELPER_LIFECYCLE",
+  "deadlineMs": 5000,
+  "aggregateHelperActiveMs": 20000,
+  "cliAdmissionMs": 30000,
+  "cleanupAllowanceMs": 2000,
+  "basis": "Classification follows explicit normative language, independently of observed implementation. The scoped publication correction expressly says the active timer starts before child launch and ends only at confirmed quiescence. Freeze incorporates startup, inspection, framing/EOF and helper/console termination.",
+  "authorities": [
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "byteLength": 110295,
+      "sha256": "sha256:831899163c36595ee38291eb6dd3fcff0ea0c6cc041a99f16933a11a6cdc17f8",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true,
+      "startLine": 1199,
+      "endLine": 1206,
+      "excerpt": "| Engineering aggregate peak RSS | 512 MiB across supervisor/helper/console/worker |\n| Overall CLI invocation / final rename admission deadline | 30,000 ms; admitted rename settlement exception below |\n| Pure API call deadline | 10,000 ms |\n| One helper request / helper duration | 128 paths / 5,000 ms within overall deadline |\n| Aggregate helper-active duration, authoritative Phase 2C correction | 20,000 ms across all helper invocations; startup through confirmed process/console/transport quiescence |\n| Helper requests/invocations, authoritative Phase 2C correction | Evaluate 9 / verify 4; one request per invocation, no retries |\n| Native inspection chain, authoritative Phase 2C correction | At most 120 identities, exact complete path-derived chain |\n| Cancellation/termination cleanup allowance | 2,000 ms; also one bounded read-only/disposition allowance after admitted rename settles; never success grace |",
+      "excerptSha256": "sha256:6bb83106a41fab2278ed44c1f58cf70fcc4a141c40358e34656d0f373477e419"
+    },
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "byteLength": 110295,
+      "sha256": "sha256:831899163c36595ee38291eb6dd3fcff0ea0c6cc041a99f16933a11a6cdc17f8",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true,
+      "startLine": 1222,
+      "endLine": 1247,
+      "excerpt": "The CLI deadline starts at trusted entry-point invocation before bootstrap\nacquisition; the API deadline starts at public function entry before input\nsnapshot copying. The CLI uses the remaining 30-second overall budget and a\n10-second evaluation sub-budget, whichever ends first. Input copying/parsing\nmust remain bounded and wrapper checkpoints reject already-expired work.\n\n**Authoritative Phase 2C publication inspection correction:** the 5,000 ms\nhelper ceiling is per one-frame invocation. A new explicit 20,000 ms aggregate\nhelper-active ceiling preserves the original four-times-5,000 upper bound;\nnine requests do not receive nine independent budgets beyond that aggregate.\nFor helper start S, prior helper-active elapsed used, and absolute CLI deadline\nD, its effective deadline is min(D, S+5,000, S+(20,000-used)). Active elapsed\nincludes startup, inspection, framing/EOF waits and confirmed helper/console\ntermination. It excludes periods when all helpers are gone, including worker\nexecution; those periods still consume the unchanged overall CLI deadline.\nNo phase resets used. Exhausting either helper ceiling is terminal TIMEOUT;\ncleanup is not success time. API, CLI, evaluation and cleanup limits are unchanged.\n\nDeadlines use an operational monotonic clock outside the pure evaluation\nfunction. A supervisor timer plus worker isolation prevents a same-thread timer\nfrom falsely claiming preemption of synchronous parsing. Success is accepted\nonly strictly before the deadline; equality/later before final rename admission\nis TIMEOUT. Cancellation observed before admission is CANCELLED. Late\nworker/helper output is ignored; cleanup admits no publication. If abort and\ndeadline are first observed at the same checkpoint, TIMEOUT wins when now >=\ndeadline; an abort observed strictly earlier wins CANCELLED.",
+      "excerptSha256": "sha256:1e7661f08c133e6f430dea1d6c8539102c8fb4d86f1ac7d30177edc554a62355"
+    },
+    {
+      "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+      "byteLength": 28935,
+      "sha256": "sha256:cf6d7be0892e0a376213c134ba368d522bf57d8e19baa85232163ee2edde5a3f",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true,
+      "startLine": 127,
+      "endLine": 137,
+      "excerpt": "## Deadlines and process topology\n\nThe existing limits remain: API 10,000 ms from public entry, CLI 30,000 ms from trusted entry, evaluation sub-budget 10,000 ms within remaining CLI time, each helper invocation 5,000 ms, and failed-call cleanup 2,000 ms with no success grace. The byte-only public API launches no Windows helper and performs no filesystem publication.\n\nThis correction explicitly adds **20,000 ms aggregate helper-active elapsed time per CLI assessment**. It preserves the original four-request upper bound of 4 × 5,000 ms rather than silently allowing nine fresh five-second budgets. This is a new explicit aggregate check, not a claim that Phase 1 previously implemented it. Active elapsed time includes process startup, native work, input/output/EOF waits and confirmed helper/console termination. It excludes time between invocations when all helper processes are gone, including evaluation-worker time. That excluded time remains charged to the unchanged overall CLI deadline.\n\nLet `S` be invocation start, `used` the accumulated duration of fully terminated prior helpers, and `D` the absolute CLI deadline. Its effective absolute deadline is `min(D, S+5000, S+(20000-used))`. Require positive remaining budget before launch and completion strictly before every applicable deadline; equality is TIMEOUT. The active timer starts before child launch and settles only at confirmed quiescence. No slot or new phase resets accumulated use. A per-helper or aggregate expiry is terminal TIMEOUT even if CLI time remains; pending cleanup cannot admit a response or publish.\n\nThe supervisor uses monotonic clocks and external timer enforcement; pure evaluation remains clock-free. TIMEOUT wins when abort and expiration are first observed at the same checkpoint with now at/after deadline; an abort already observed strictly earlier remains CANCELLED. Before final rename submission, cleanup may last at most 2,000 ms after failure and never permits another helper, worker or publication; CLI 32,000 / API 12,000 ms bounds retain that scope. The later finalization correction supersedes the universal CLI bound only while one admitted non-cancellable rename settles; it then permits one bounded 2,000 ms read-only/disposition interval, never success grace or mutation. Late helper/worker output is ignored. Bounded per-operation/supervisor timers are permitted; persistent/cross-run timers, servers, watchers and background schedulers remain prohibited.\n\nAt any instant there is one supervisor and at most one active fixed helper plus its possible console host: at most three attributable OS roles. Evaluation is one worker **thread**, never another process. No helper or helper console host overlaps the worker or another helper invocation. New launches wait for confirmed quiescence; receiving a frame or only an early child-exit event is insufficient. Engineering observers are excluded from product-role counts and are not product dependencies.",
+      "excerptSha256": "sha256:2f74dd41c819095933208e141857e8b5716a05d24b6a42863a0b3d545e5354bf"
+    },
+    {
+      "path": "docs/mo1307-phase2c-finalization-boundary-correction.md",
+      "byteLength": 20727,
+      "sha256": "sha256:e5a7ef021cf217a7239a8568aa3172b4b58661d53ec82ff827b56530ee581b10",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true,
+      "startLine": 57,
+      "endLine": 69,
+      "excerpt": "The CLI's unchanged 30,000 ms deadline becomes the final rename's **admission deadline**. This exception does not increase acquisition, worker, helper, parser, staging or stdout budgets. The byte-only public API remains subject to its unchanged 10,000 ms deadline and performs no filesystem publication.\n\nThere is no hard upper bound on an admitted rename's settlement. An indefinitely stalled rename can keep that invocation pending indefinitely. This is the explicit availability cost of retaining actual commit truth without allowing mutation after a reported terminal timeout. External process termination is not a certified cancellation or cleanup result and cannot manufacture either success or a claim that no mutation occurred.\n\nOrdinary failed-call cleanup before submission retains the 2,000 ms allowance. While COMMIT_IN_PROGRESS, no ordinary failure cleanup runs against the publication namespace and no cleanup-complete result is returned. After settlement, a single **2,000 ms read-only verification and operational-disposition allowance** starts, using the existing `cleanupAllowanceMs` number. This is a bounded post-settlement disposition interval, not a success grace period or another rename budget. It does not admit a helper, worker, write, deletion, retry or new publication. If finalization fails or has an overrun/cancellation, its error transport/cleanup shares this remaining allowance; it cannot restart a fresh two-second timer after verification. Timely successful finalization may enter ordinary stdout transport under the original CLI deadline; a later transport failure retains the original single failed-transport cleanup allowance from that first failure.\n\nAfter successful rename, verify final bytes equal the detached staged snapshot and pending is absent. After rejected rename, verify retained pending bytes and final absence where safely observable; the outcome remains OUTPUT regardless. These bounded read-only observations supplement the actual rename outcome and slot 9's native authority under the private immutable-root precondition. They do not replace native reparse/identity checks, add a tenth helper, or claim a kernel no-replace guarantee. Failed, ambiguous or timed-out verification yields OUTPUT with `namespaceVerified:false`; actual COMMITTED/FAILED remains intact. A read-only observation still outstanding at its bound may later complete/close, but cannot mutate or change the terminal disposition.\n\nSuccess remains eligible only after exact namespace confirmation and a final deadline/cancellation checkpoint strictly before the original CLI deadline. A rename admitted before the deadline but completed at/after it is an on-time admission with an operational overrun, not a late-admitted operation. Its publication is COMMITTED; its CLI outcome is **OUTPUT / exit 21**, final retained, with no newly attempted success stdout. Cancellation observed after admission similarly yields OUTPUT after successful settlement. Rename failure always yields OUTPUT and preserves owned evidence. No new error is introduced.\n\nIf successful settlement/verification remains timely and uncancelled, the existing stdout transport may proceed within the remaining original CLI budget. Only one complete LF-terminated summary is success; readiness exits remain 0/2/3/4. Timeout, cancellation, backpressure or another stdout failure after commit is OUTPUT, with the final file retained and no rollback. A partial summary is not success. Its failed-transport disposition has the original single 2,000 ms allowance from the first transport failure; neither transport nor cleanup may reset it or wait indefinitely. This is distinct from finalization already disposed as failed/overrun, which cannot enter a success transport attempt.\n\nThe former universal CLI 32,000 ms failed-return statement is superseded only for the admitted final rename's settlement plus the bounded post-settlement disposition described here. The API 12,000 ms failed-cleanup ceiling and all pre-submission numerical limits remain unchanged. No generalized deadline extension is authorized.",
+      "excerptSha256": "sha256:4ba8cd8012d30747219babdd231466a28212a8ea9ec739c00423780c80fe4075"
+    },
+    {
+      "path": "docs/mo1307-phase2c-finalization-boundary-correction.md",
+      "byteLength": 20727,
+      "sha256": "sha256:e5a7ef021cf217a7239a8568aa3172b4b58661d53ec82ff827b56530ee581b10",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true,
+      "startLine": 120,
+      "endLine": 120,
+      "excerpt": "No public error, schema, readiness state, profile, provider classification, normalized result byte, readiness/proof digest, source-history disposition, grant or trust boundary changes. Private helper wire stays 2.0.0; nine evaluate/four verify requests, 5,000 ms per helper, 20,000 ms aggregate helper-active time, three maximum attributable process roles and no helper/worker overlap remain unchanged. All byte, heap, RSS and path ceilings remain unchanged. Network/provider/Git execution remains absent.",
+      "excerptSha256": "sha256:129454a7df98a2e238cfcb5be0abd8e9ee952d8301fdff0f3fa551c65b886fde"
+    },
+    {
+      "path": "docs/mo1307-phase3a-readset-correction.md",
+      "byteLength": 19683,
+      "sha256": "sha256:f4a178da17deddc64c32ce9ee69528f7f881d679b5ee044805c736594f19da02",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true,
+      "startLine": 130,
+      "endLine": 147,
+      "excerpt": "## Unchanged operational limits\n\n| Boundary | Fixed value or rule |\n|---|---|\n| Helper | 5000 ms per invocation, strictly before deadline |\n| Aggregate active helper time | 20000 ms |\n| CLI admission | 30000 ms |\n| Worker and byte API | 10000 ms |\n| Ordinary cleanup | 2000 ms |\n| Helper requests | Nine evaluate; four verify; one frame and EOF per invocation; no retry |\n| Roles | Supervisor, one helper and possible owned console host; no helper/worker overlap |\n| Wire/Identity | 2.0.0 and the same seven-field Identity |\n| Package/contract | memoryos-readiness@0.1.0 / memoryos.readiness@1.0.0; zero external production npm dependencies |\n\nThe irreversible-publication correction remains authoritative: an admitted\nnon-cancellable rename is awaited to actual settlement, with its existing\nshared post-settlement allowance and retained availability limitation. This\nREAD_SET optimization adds no grace, deadline relaxation or publication change.",
+      "excerptSha256": "sha256:acd1f8273f7def066524493b83fdc5a7f43a9e7a41888391fe9503f1495a724e"
+    }
+  ],
+  "scope": {
+    "includes": [
+      "process creation",
+      "PowerShell startup",
+      "helper initialization",
+      "request processing",
+      "response framing and transport EOF",
+      "confirmed helper and attributable console termination"
+    ],
+    "excludes": [
+      "worker execution while no helper remains",
+      "time between fully terminated helper invocations"
+    ],
+    "remainingCliBudgetStillApplies": true,
+    "successStrictlyBeforeEveryApplicableDeadline": true,
+    "cleanupIsSuccessGrace": false
+  },
+  "alternativeClassifications": {
+    "REQUEST_EXECUTION": "NOT_SUPPORTED_BY_EXPLICIT_CURRENT_CONTRACT",
+    "TRANSPORT_EXCHANGE": "INCOMPLETE_DESCRIPTION: lifecycle includes startup and confirmed quiescence, not merely frame receipt",
+    "AMBIGUOUS": "NOT_APPLICABLE: current correction explicitly resolves clock scope"
+  },
+  "supersession": "Finalization exception concerns one admitted non-cancellable rename. It expressly does not expand acquisition/helper budgets. The READ_SET optimization preserves the deadlines.",
+  "earlyStop": {
+    "explicitContractImplementationContradictionEstablished": false,
+    "reason": "Source reviewed below includes every named lifecycle phase. No earlier-than-permitted helper clock or deterministic cleanup violation established by this source audit."
+  },
+  "consequence": "Do not select A or C without measurement/margin analysis. Model B would need separately authorized revision of explicit whole-lifecycle intent, not merely clarification of ambiguous text."
+}

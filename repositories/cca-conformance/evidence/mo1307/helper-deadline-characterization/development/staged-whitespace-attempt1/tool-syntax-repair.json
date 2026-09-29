@@ -1,0 +1,13 @@
+{
+  "kind": "MO1307HelperDeadlineClosureToolSyntaxRepair",
+  "result": "REPAIRED_BEFORE_EXECUTION",
+  "failedSource": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-characterization/development/staged-whitespace-attempt1/intermediate-final-validation-syntax-failure.mjs.data",
+    "byteLength": 5755,
+    "sha256": "sha256:5fc775f6e7c8c6fb74dd676106312d5fae0cefce026f6a806f6117e583c9ac4e"
+  },
+  "diagnosis": "A JavaScript replace replacement string interpreted the dollar-apostrophe sequence in a regex terminator as a replacement token. node --check rejected the resulting string before execution.",
+  "repair": "Rewrite the complete output-validation source line using a line map, with literal regex syntax.",
+  "validationExecutionOccurred": false,
+  "helperExecutions": 0
+}

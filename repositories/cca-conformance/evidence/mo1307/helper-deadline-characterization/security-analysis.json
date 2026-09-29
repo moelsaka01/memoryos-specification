@@ -1,0 +1,104 @@
+{
+  "kind": "MO1307HelperDeadlineSecurityAnalysis",
+  "version": "1.0.0",
+  "baseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "analysisMode": "READ_ONLY_SOURCE_AND_NORMATIVE_AUTHORITY",
+  "productionChanges": false,
+  "freezeChanges": false,
+  "nativeExecutionsByThisAnalysis": 0,
+  "certification": false,
+  "phase3AR": "BLOCKED",
+  "modelSelection": "UNSELECTED_PENDING_MEASUREMENTS",
+  "result": "PASS",
+  "analysisScope": "PRE_MEASUREMENT_CONDITIONAL_MODEL_COMPARISON",
+  "sourceBindings": [
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "byteLength": 110295,
+      "sha256": "sha256:831899163c36595ee38291eb6dd3fcff0ea0c6cc041a99f16933a11a6cdc17f8",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+      "byteLength": 28935,
+      "sha256": "sha256:cf6d7be0892e0a376213c134ba368d522bf57d8e19baa85232163ee2edde5a3f",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "docs/mo1307-phase2c-finalization-boundary-correction.md",
+      "byteLength": 20727,
+      "sha256": "sha256:e5a7ef021cf217a7239a8568aa3172b4b58661d53ec82ff827b56530ee581b10",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/runtime.mjs",
+      "byteLength": 16904,
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+      "byteLength": 6250,
+      "sha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 30210,
+      "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    }
+  ],
+  "models": [
+    {
+      "model": "A",
+      "name": "KEEP_5000_AS_CURRENT_WHOLE_HELPER_BOUND",
+      "security": "Retains existing fail-closed whole-process availability bound, aggregate20s/CLI30s, no retry, complete native observations and strict settled-before-deadline acceptance.",
+      "eligibility": "Explicit whole-lifecycle intent is established; credible representative margin and variance assessment remain measurement questions.",
+      "changeRequired": false
+    },
+    {
+      "model": "B",
+      "name": "KEEP_5000_AS_REQUEST_EXECUTION_BOUND",
+      "security": "Excluding startup creates an acquisition period that must have a separately authorized finite bound, counted with aggregate/CLI admission, cancellation, cleanup and no overlap. A pipe-write or client-asserted ready signal cannot authorize a clock reset or attest trusted request execution.",
+      "eligibility": "Current normative text expressly includes startup. Current intent does not support B without a substantive separately authorized contract/clock-placement correction. No reliableT3 means these observations alone may not isolate a5s request-work interval.",
+      "changeRequired": "SEPARATE_CONTRACT_AND_PRODUCTION_AUTHORIZATION_REQUIRED_IF_SELECTED"
+    },
+    {
+      "model": "C",
+      "name": "RECHARACTERIZE_WHOLE_HELPER_BOUND",
+      "security": "A longer bound increases per-invocation resource/denial-of-service exposure. Future authority must evaluate interaction with aggregate20s, CLI30s, nine/four serial requests, strict equality and bounded cleanup; none may silently expand or reset.",
+      "eligibility": "Only if measurement demonstrates insufficient whole-lifecycle engineering margin. A future bound method must use representative raw tails, observer uncertainty and declared reserve; do not select6000ms from one5063mssettlement.",
+      "changeRequired": "SEPARATE_EVIDENCE_BASED_CONTRACT_AND_PRODUCTION_AUTHORIZATION_REQUIRED_IF_SELECTED"
+    }
+  ],
+  "invariants": [
+    "No unbounded startup/execution/transport introduced",
+    "No persistent helper/service/pool/sidecar or PowerShell7 redesign",
+    "No deadline equality relaxation, retries or later-success promotion",
+    "Fresh complete native identity/chain/security checks remain unchanged",
+    "Historical timeout/cleanup uncertainty and blocked3A-R remain unchanged",
+    "No shipping bytes change; accepted exact-C3RB3B-R/3C-R authorities remain applicable in their existing scope"
+  ],
+  "safeExternalObservation": {
+    "rights": "Read-only process query/synchronize and memory-info rights for retained helper and positively attributed child conhost. No terminate rights, injection, admin requirement or external installation.",
+    "identity": "Bind PID to creation time, image identity and parent relation; retain native handles to resistPID reuse. Polling can miss short-lived consoles; report that limitation.",
+    "metrics": "GetProcessTimes CPU/creation/exit, working set, bounded process-count and available-memory/systemCPU snapshots. No commandline/environment dump or unrelated process content retention.",
+    "interpretation": "Elapsed greater than attributableCPU is compatible with waits/scheduling; it does not identify scheduler/Defender causation. Multi-thread CPU can exceed elapsed, and sampling overhead/gaps must be measured.",
+    "limits": "One predeclared finite query-only observer; no additional product helpers, induced timeouts, adaptive retries or machine tuning."
+  },
+  "uncertainty": "No A/B/C recommendation is made here; measurement and margin records must supply remaining evidence."
+}

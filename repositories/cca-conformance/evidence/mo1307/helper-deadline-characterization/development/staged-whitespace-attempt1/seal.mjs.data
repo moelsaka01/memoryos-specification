@@ -1,0 +1,13 @@
+// Exactly one documentation/evidence commit, with no future commit identity embedded.
+import assert from 'node:assert/strict';
+import {evidence,baseline,commitSubject,str,record,write,blobs,json,check} from './common.mjs';
+assert.equal(str('branch','--show-current'),'main');
+const inventoryPath=evidence+'/changed-file-inventory.json';
+const allowed=p=>p.startsWith(evidence+'/')||p.startsWith('repositories/cca-conformance/tools/mo1307-helper-deadline-characterization/')||p==='docs/mo1307-helper-deadline-characterization.md'||p==='.gitattributes';
+if(process.argv[2]==='inventory'){
+ assert.equal(str('rev-parse','HEAD'),baseline);assert.equal(str('diff','--cached','--name-only'),'');assert.equal(json(evidence+'/final-validation/receipt.json').result,'PASS');
+ const names=[...new Set([...str('diff','--name-only',baseline).split('\n'),...str('ls-files','--others','--exclude-standard').split('\n')].filter(Boolean))].sort();assert.ok(names.length>0);assert.ok(!names.includes(inventoryPath));for(const p of names)assert.ok(allowed(p),p);
+ write(inventoryPath,{kind:'MO1307HelperDeadlineChangedFileInventory',version:'1.0.0',baseline,members:names.map(p=>record(p)),exclusions:['This inventory excludes itself; postcommit verification compares its actual committed bytes to the workspace.'],commitSubject,productionChanges:false,certification:false,selfReference:'No future commit hash, tree or tag is embedded.'});console.log(JSON.stringify({result:'PASS',members:names.length}));
+}else if(process.argv[2]==='stage-check'){
+ assert.equal(str('rev-parse','HEAD'),baseline);const members=[...json(inventoryPath).members,record(inventoryPath)].sort((a,b)=>a.path<b.path?-1:1);assert.deepEqual(str('diff','--cached','--name-only').split('\n').filter(Boolean).sort(),members.map(m=>m.path));assert.equal(str('diff','--name-only'),'');assert.equal(str('ls-files','--others','--exclude-standard'),'');const bytes=blobs('',members.map(m=>m.path));members.forEach((m,i)=>{assert.ok(allowed(m.path));check(m,bytes[i]);check(m);});console.log(JSON.stringify({result:'PASS',exactStagedBlobs:members.length}));
+}else throw Error('Use inventory or stage-check');

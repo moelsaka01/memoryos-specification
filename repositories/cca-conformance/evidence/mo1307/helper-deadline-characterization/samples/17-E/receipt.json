@@ -1,0 +1,184 @@
+{
+  "kind": "MO1307HelperDeadlineSample",
+  "version": "1.0.0",
+  "sampleId": "17-E",
+  "case": "E",
+  "round": 4,
+  "result": "SUCCESS",
+  "error": null,
+  "wallClockUtc": "2026-09-29T15:58:56.556Z",
+  "nodeTimeOriginUnixMs": 1790697497420.519,
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-characterization/samples/17-E/request.bin",
+    "byteLength": 345,
+    "sha256": "sha256:de4cae02de42b9e288bc6478ae058e2c2ff534c7ddafb41e2a64658dab4c9901"
+  },
+  "response": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-characterization/samples/17-E/response.bin",
+    "byteLength": 1905,
+    "sha256": "sha256:90989c1b39cdab646d3abb636974f22c96434b392f8c6463e0b4c5e6fb6301ed"
+  },
+  "operation": "CHECK_OUTPUT",
+  "fileCount": 0,
+  "aggregateBytes": 0,
+  "requestFrameBytes": 345,
+  "responseFrameBytes": 1905,
+  "advertisedFrameBytes": 1905,
+  "completeFrameObserved": true,
+  "responseStatus": "ABSENT",
+  "validation": "EXACT_PROTOCOL_AND_INPUT_BYTES",
+  "pid": 28484,
+  "spawnCount": 1,
+  "stderrBytes": 0,
+  "times": {
+    "T0": {
+      "status": "DERIVED",
+      "at": 39135.7297,
+      "basis": "Real supervisor effective per-helper deadline minus unchanged5000ms; min-limits checked."
+    },
+    "supervisorStartEvent": 39135.7369,
+    "spawnCallEntered": 39135.7794,
+    "T1": 39154.6337,
+    "T2": {
+      "status": "OS_SPAWN_NOTIFICATION",
+      "at": 39155.7869,
+      "note": "Child successfully spawned; not proof of PowerShell/helper readiness."
+    },
+    "T3": {
+      "status": "NOT_OBSERVABLE"
+    },
+    "T4": 40808.6985,
+    "T5": 42104.0687,
+    "T6": 42113.0053,
+    "T7": {
+      "at": 42172.8589,
+      "code": 0,
+      "signal": null
+    },
+    "T8": {
+      "status": "SEE_EXTERNAL_PROCESS_OBSERVATIONS",
+      "note": "Native retained-handle exit when observed; valid frame provides source-backed prior-quiescence inference only."
+    },
+    "transportSettled": 42174.3375,
+    "childClose": {
+      "at": 42172.9025,
+      "code": 0,
+      "signal": null
+    }
+  },
+  "durations": {
+    "processCreationReturnMs": 18.854299999999057,
+    "clockOriginToSpawnReturnMs": 18.903999999994994,
+    "bootstrapMs": null,
+    "requestToFirstByteMs": 1295.3702000000048,
+    "requestToCompleteFrameMs": 1304.3067999999985,
+    "responseToExitMs": 59.85360000000219,
+    "launchToFirstByteMs": 2968.339,
+    "launchToCompleteFrameMs": 2977.2755999999936,
+    "launchToProcessExitMs": 3037.1291999999958,
+    "launchToTransportSettlementMs": 3038.607799999998,
+    "transportExchangeMs": 3038.766199999998,
+    "deadlineMarginMs": 1961.392200000002,
+    "terminalOverrunMs": null
+  },
+  "pipes": {
+    "stdin": true,
+    "stdout": true,
+    "stderr": true
+  },
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 69135.5356,
+    "helpers": 1,
+    "workers": 0,
+    "helperUsedMs": 3038.5502999999953,
+    "activeRole": null,
+    "cleanupConfirmed": true,
+    "publication": null,
+    "terminalCode": null,
+    "terminalAt": null,
+    "cleanupDeadline": null,
+    "events": [
+      {
+        "type": "start",
+        "at": 39135.7369,
+        "role": "helper",
+        "deadline": 44135.7297,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 39155.6543,
+        "role": "helper",
+        "pid": 28484,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 42174.2834,
+        "role": "helper",
+        "ordinal": 1
+      }
+    ]
+  },
+  "processObservation": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-characterization/observer/samples/17-E/process-observations.json",
+    "byteLength": 43439,
+    "sha256": "sha256:5618a7ea45cfbfa5bd64783410cec35d1d273f749b022affbc27dbb70066dadb"
+  },
+  "processAck": {
+    "kind": "MO1307HelperDeadlineObserverSettled",
+    "sampleId": "17-E",
+    "result": "OBSERVED",
+    "observation": {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\repositories\\cca-conformance\\evidence\\mo1307\\helper-deadline-characterization\\observer\\samples\\17-E\\process-observations.json",
+      "byteLength": 43439,
+      "sha256": "sha256:5618a7ea45cfbfa5bd64783410cec35d1d273f749b022affbc27dbb70066dadb"
+    },
+    "requiredCleanupViolation": false,
+    "qpc": 1922897658120,
+    "utc": "2026-09-29T15:58:59.684032+00:00"
+  },
+  "context": {
+    "kind": "MO1307HelperDeadlineObserverPrepared",
+    "sampleId": "17-E",
+    "context": {
+      "started": {
+        "qpc": 1922865946011,
+        "utc": "2026-09-29T15:58:56.512445+00:00"
+      },
+      "finished": {
+        "qpc": 1922866099300,
+        "utc": "2026-09-29T15:58:56.524050+00:00"
+      },
+      "nativeSystemTime100ns": "134351711365283861",
+      "cpuCumulative": {
+        "idle100ns": "13170982812500",
+        "kernel100ns": "14095985312500",
+        "user100ns": "1286865000000"
+      },
+      "memory": {
+        "totalPhysicalBytes": 16889192448,
+        "availablePhysicalBytes": 3299651584,
+        "memoryLoadPercent": 80
+      },
+      "processCount": 410,
+      "snapshotError": null,
+      "logicalCpuCount": 8,
+      "cpuMeaning": "Cumulative system counters, kernel includes idle. Utilization requires a later counter difference; this is not a point-in-time percentage."
+    },
+    "qpc": 1922866100717,
+    "utc": "2026-09-29T15:58:56.524050+00:00"
+  },
+  "observationError": null,
+  "activeControlWriteMs": 0.8852999999944586,
+  "cleanupConfirmed": true,
+  "productSource": {
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 30210,
+    "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+  },
+  "scope": "EXTERNAL_OBSERVATION_OF_EXACT_PRODUCT_HELPER_WITH_REAL_SUPERVISOR",
+  "privateSequenceExecuted": false,
+  "certification": false
+}

@@ -1,0 +1,24 @@
+{
+  "kind": "MO1307HelperDeadlineCheckerRepair",
+  "result": "CHECKER_REPRESENTATION_REPAIR",
+  "reason": "Protocol decoder intentionally returns null-prototype records; serialized statistics uses ordinary JSON records. The failed deepEqual compared prototypes rather than only persisted JSON content.",
+  "repair": "Normalize expected decoded root identities through a JSON round trip, then retain exact deep structural comparison.",
+  "failedReceipt": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-characterization/development/check-final/receipt.json",
+    "byteLength": 1375,
+    "sha256": "sha256:389cc2361c2f05f8f5d6f0acc4dc68656edefb9e0687abe6d05cf34c3beae9fb"
+  },
+  "failedOutput": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-characterization/development/check-final/stdout.json",
+    "byteLength": 4447,
+    "sha256": "sha256:3cfa27a5d9db8a64f70d32cd78ee30943797b582ba01c35441fa1ca2f36cdab1"
+  },
+  "executedChecker": {
+    "path": "repositories/cca-conformance/evidence/mo1307/helper-deadline-characterization/development/check-final/check-evidence.mjs.data",
+    "byteLength": 24154,
+    "sha256": "sha256:9c6bacbc3ce6f6acf7de6e8b7934760ece27e28709cf465da1e478c7e477e5ba"
+  },
+  "productionChanges": false,
+  "measurementChanges": false,
+  "nativeExecutions": 0
+}

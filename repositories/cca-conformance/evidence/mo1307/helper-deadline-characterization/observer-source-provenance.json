@@ -1,0 +1,64 @@
+{
+  "kind": "MO1307HelperDeadlineObserverSourceProvenance",
+  "version": "1.0.0",
+  "result": "PASS",
+  "baseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "original": {
+    "path": "C:/Users/melsa/Documents/Codex/r3a/repositories/cca-conformance/tools/mo1307-phase3a-refresh-final/runtime-controls-observer.py",
+    "byteLength": 19274,
+    "sha256": "sha256:0c7fc3b2563ee82ef4e873d889405d2c79381cb63bb34d981ff3d8693b6df1ee"
+  },
+  "retained": {
+    "path": "repositories/cca-conformance/tools/mo1307-helper-deadline-characterization/retained-runtime-controls-observer.py.data",
+    "byteLength": 19274,
+    "sha256": "sha256:0c7fc3b2563ee82ef4e873d889405d2c79381cb63bb34d981ff3d8693b6df1ee"
+  },
+  "observer": {
+    "path": "repositories/cca-conformance/tools/mo1307-helper-deadline-characterization/observer.py",
+    "byteLength": 19720,
+    "sha256": "sha256:29da245b1cfded967a103ecea4dd0f68e7c0eb9e407ff9ad59eca3509520b906"
+  },
+  "retainedCopyExact": true,
+  "originalMainInvoked": false,
+  "sourceWorktreeModified": false,
+  "utilitiesReused": [
+    "clock",
+    "filetime",
+    "process_times",
+    "snapshot",
+    "acquire",
+    "release",
+    "wait_record",
+    "MemoryCounters",
+    "fixed ctypes query signatures"
+  ],
+  "supplementalObservations": [
+    "GetSystemTimes",
+    "GlobalMemoryStatusEx",
+    "query-only working-set metrics"
+  ],
+  "processAuthority": {
+    "launch": false,
+    "terminate": false,
+    "inject": false,
+    "writeProduct": false,
+    "requestAdmin": false,
+    "queryOnly": true
+  },
+  "sourceReview": {
+    "result": "PASS",
+    "syntax": "Python ast.parse passed without importing observer or invoking native/helper code",
+    "fixedBounds": {
+      "pollMs": 50,
+      "settleAllowanceMs": 2000,
+      "totalGuardSeconds": 300,
+      "maxSampleBytes": 524288,
+      "maxControlBytes": 4096
+    },
+    "liveness": "Only positive WAIT_TIMEOUT on retained identified object after the full settled-control allowance sets requiredCleanupViolation. Missed consoles/query errors never become absence or violation proof.",
+    "limits": "Polling and native queries are externally scheduled. Actual gaps/overhead are retained; no hard OS scheduling/preemption guarantee.",
+    "casePlanCompatibility": "Safe ASCII sample identifiers include planned uppercase A-E suffixes."
+  },
+  "nativeExecutionsForValidation": 0,
+  "certification": false
+}

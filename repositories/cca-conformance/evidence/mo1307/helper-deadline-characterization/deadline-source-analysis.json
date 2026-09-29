@@ -1,0 +1,303 @@
+{
+  "kind": "MO1307HelperDeadlineSourceAnalysis",
+  "version": "1.0.0",
+  "baseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "analysisMode": "READ_ONLY_SOURCE_AND_NORMATIVE_AUTHORITY",
+  "productionChanges": false,
+  "freezeChanges": false,
+  "nativeExecutionsByThisAnalysis": 0,
+  "certification": false,
+  "phase3AR": "BLOCKED",
+  "modelSelection": "UNSELECTED_PENDING_MEASUREMENTS",
+  "result": "PASS",
+  "implementationScope": "WHOLE_HELPER_LIFECYCLE_WITH_ADDITIONAL_SEQUENCE_FRAMING_CHECKS",
+  "contractIntent": "WHOLE_HELPER_LIFECYCLE",
+  "sourceBindings": [
+    {
+      "path": "docs/mo1307-contract-freeze-1.md",
+      "byteLength": 110295,
+      "sha256": "sha256:831899163c36595ee38291eb6dd3fcff0ea0c6cc041a99f16933a11a6cdc17f8",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "docs/mo1307-phase2c-publication-inspection-correction.md",
+      "byteLength": 28935,
+      "sha256": "sha256:cf6d7be0892e0a376213c134ba368d522bf57d8e19baa85232163ee2edde5a3f",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "docs/mo1307-phase2c-finalization-boundary-correction.md",
+      "byteLength": 20727,
+      "sha256": "sha256:e5a7ef021cf217a7239a8568aa3172b4b58661d53ec82ff827b56530ee581b10",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "docs/mo1307-phase3a-readset-correction.md",
+      "byteLength": 19683,
+      "sha256": "sha256:f4a178da17deddc64c32ce9ee69528f7f881d679b5ee044805c736594f19da02",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/runtime.mjs",
+      "byteLength": 16904,
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+      "byteLength": 6250,
+      "sha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/acquisition.mjs",
+      "byteLength": 6409,
+      "sha256": "sha256:1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 30210,
+      "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    },
+    {
+      "path": "repositories/memoryos-readiness/contracts/definitions.json",
+      "byteLength": 16555,
+      "sha256": "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e",
+      "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "gitBlobBytesVerified": true
+    }
+  ],
+  "supervisor": {
+    "clock": "performance.now monotonic operational clock",
+    "origin": "runOwned captures launch = readNow() before starting the child factory",
+    "effectiveDeadline": "min(CLI absolute deadline, launch+5000, launch+(20000-helperUsedMs))",
+    "arming": "active owner is installed, start event recorded, arm() schedules deadline timer, then start() calls real spawn",
+    "success": "Transport completion AND closed promise; final strict checkpoint; native console-quiescence predicate; helperUsedMs charged through that confirmed quiescence",
+    "expiry": "checkpoint observes now >= minimum applicable deadline, fixes original terminal error and terminalAt, rejects stopped promise; no later response restores success",
+    "cleanup": "Terminate/destroy streams; await closed only until terminalAt+2000; confirm both closed within allowance and native console quiescence; otherwise record false and abandon/unref without permitting next work",
+    "sources": [
+      {
+        "path": "repositories/memoryos-readiness/src/runtime.mjs",
+        "byteLength": 16904,
+        "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+        "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+        "gitBlobBytesVerified": true,
+        "startLine": 20,
+        "endLine": 49,
+        "excerpt": "function buildSupervisor({ kind, signal, started, now = () => performance.now() } = {}, dependencies) {\n  if (!['api', 'cli'].includes(kind) || typeof now !== 'function'\n      || (signal !== undefined && !(signal instanceof AbortSignal))) fail('INPUT', 'LAUNCH');\n  const readNow = () => {\n    const current = now();\n    if (!Number.isFinite(current) || current < last) fail('INTERNAL', 'LAUNCH');\n    last = current;\n    return current;\n  };\n  let last = -Infinity;\n  const initial = readNow();\n  started ??= initial;\n  if (!Number.isFinite(started) || started > initial) fail('INPUT', 'LAUNCH');\n  const deadline = started + (kind === 'api' ? L.apiDeadlineMs : L.cliDeadlineMs);\n  let terminal = null, terminalAt = null, terminalCleanupDeadline = null, disposed = false, active = null;\n  let publication = null;\n  const publicationView = () => publication ? publicationStatus(publication.token) : null;\n  let helpers = 0, workers = 0, helperUsedMs = 0, clockTimer = null;\n  const events = [], stopListeners = new Set();\n  const record = (type, detail = {}) => events.push(Object.freeze({ type, at: readNow(), ...detail }));\n  const stop = (error, stage = 'EVALUATION', dispositionDeadline = null) => {\n    if (!terminal) {\n      terminal = operationalError(error, stage); terminalAt = readNow();\n      terminalCleanupDeadline = dispositionDeadline ?? terminalAt + L.cleanupAllowanceMs;\n      failureDeadlines.set(terminal, dispositionDeadline ?? performance.now() + L.cleanupAllowanceMs);\n      clearTimeout(clockTimer);\n      record('terminal', { code: terminal.code, stage: terminal.stage });\n      for (const listener of stopListeners) listener(terminal);\n    }\n    return terminal;",
+        "excerptSha256": "sha256:72494fe4aa180efdb94aab2057330ce5c5566ad17a4613d9f196fc6320c1a07d"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/runtime.mjs",
+        "byteLength": 16904,
+        "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+        "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+        "gitBlobBytesVerified": true,
+        "startLine": 51,
+        "endLine": 102,
+        "excerpt": "  const checkpoint = (stage = 'EVALUATION', limit = active?.deadline ?? deadline) => {\n    if (terminal) throw terminal;\n    if (disposed) throw stop(new ReadinessError('INTERNAL', stage));\n    const current = readNow();\n    // An abort callback is itself a checkpoint. Equal-time first observation\n    // chooses TIMEOUT; a previously terminal CANCELLED can never be replaced.\n    const status = publicationView();\n    const interruption = current >= Math.min(deadline, limit) ? 'TIMEOUT' : signal?.aborted ? 'CANCELLED' : null;\n    if (interruption && status?.admitted) {\n      const observed = [];\n      if (current >= Math.min(deadline, limit) && !status.deadlineExpiredAfterAdmission) observed.push('MO1307_TIMEOUT');\n      if (signal?.aborted && !status.cancelledAfterAdmission) observed.push('MO1307_CANCELLED');\n      for (const code of observed) {\n        recordPublicationInterruption(publication.token, code);\n        record('publication-interruption', { code, phase: status.phase });\n      }\n      // An admitted rename owns settlement. Neither terminal failure nor the\n      // two-second disposition clock can start before its actual outcome.\n      if (!publication.transport) throw new ReadinessError(interruption, stage);\n      throw stop(new ReadinessError('OUTPUT', 'PUBLICATION'));\n    }\n    if (interruption) throw stop(new ReadinessError(interruption, stage));\n    return current;\n  };\n  const arm = () => {\n    clearTimeout(clockTimer);\n    if (disposed || terminal) return;\n    const stage = active?.stage ?? 'EVALUATION';\n    const limit = Math.min(deadline, active?.deadline ?? deadline);\n    clockTimer = setTimeout(() => {\n      try { checkpoint(stage, limit); arm(); } catch { /* stop wakes the owner */ }\n    }, Math.max(1, Math.ceil(limit - readNow())));\n    clockTimer.unref?.();\n  };\n  const onAbort = () => { try { checkpoint(active?.stage ?? 'LAUNCH'); } catch { /* terminal */ } };\n  signal?.addEventListener('abort', onAbort, { once: true });\n  arm();\n\n  const cleanup = async (owner) => {\n    const cleanupDeadline = terminalAt + L.cleanupAllowanceMs;\n    let timer;\n    try {\n      try { owner.terminate?.(); } catch { /* still require closed observation */ }\n      const remaining = Math.max(0, cleanupDeadline - readNow());\n      const result = await Promise.race([\n        Promise.resolve(owner.closed).then(() => true, () => false),\n        new Promise(resolve => { timer = setTimeout(() => resolve(false), remaining); }),\n      ]);\n      owner.cleanupConfirmed = result === true && readNow() <= cleanupDeadline && owner.quiescence();\n      if (!owner.cleanupConfirmed) owner.abandon?.();\n      record('cleanup', { role: owner.kind, confirmed: owner.cleanupConfirmed });\n    } finally { clearTimeout(timer); }",
+        "excerptSha256": "sha256:fc21d5c110611e6ddd4977281860eee9de573dced9b5f1a2e317241da076468d"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/runtime.mjs",
+        "byteLength": 16904,
+        "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+        "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+        "gitBlobBytesVerified": true,
+        "startLine": 105,
+        "endLine": 153,
+        "excerpt": "  const runOwned = async (role, start, { stage = role === 'helper' ? 'ACQUISITION' : 'EVALUATION' } = {}) => {\n    if (publicationView()?.admitted) throw new ReadinessError('INTERNAL', stage);\n    checkpoint(stage);\n    if (!['helper', 'worker'].includes(role) || typeof start !== 'function' || active\n        || (role === 'helper' && kind !== 'cli') || (role === 'worker' && workers !== 0)) {\n      throw stop(new ReadinessError('INTERNAL', stage));\n    }\n    const launch = readNow();\n    const limit = role === 'helper'\n      ? Math.min(deadline, launch + L.helperDeadlineMs, launch + L.helperAggregateDeadlineMs - helperUsedMs)\n      : Math.min(deadline, launch + L.apiDeadlineMs);\n    checkpoint(stage, limit);\n    const owner = { kind: role, deadline: limit, stage, launch, terminate: null, closed: null, cleanupConfirmed: false, quiescence: () => true, abandon: null };\n    active = owner;\n    role === 'helper' ? helpers += 1 : workers += 1;\n    let wake, settleOwner;\n    owner.settled = new Promise(resolve => { settleOwner = resolve; });\n    const stopped = new Promise((_, reject) => { wake = reject; stopListeners.add(wake); });\n    // Install the rejecting promise before starting so synchronous launch abort\n    // cannot lose cancellation. The catch also prevents an abandoned rejection.\n    stopped.catch(() => {});\n    record('start', { role, deadline: limit, ordinal: role === 'helper' ? helpers : workers });\n    arm();\n    try {\n      const child = start(Object.freeze({ deadline: limit, checkpoint: () => checkpoint(stage, limit),\n        fail: error => stop(error, stage), observe: detail => record('observation', { role, ...detail }) }));\n      if (!child || typeof child.terminate !== 'function' || !child.completion || !child.closed) fail('INTERNAL', stage);\n      owner.terminate = child.terminate; owner.closed = child.closed;\n      owner.quiescence = child.quiescence ?? (() => true); owner.abandon = child.abandon;\n      const result = await Promise.race([child.completion, stopped]);\n      // completion is not authority for exit: closed must separately settle.\n      await Promise.race([child.closed, stopped]);\n      checkpoint(stage, limit);\n      if (!owner.quiescence()) fail('INTERNAL', stage);\n      owner.cleanupConfirmed = true;\n      if (role === 'helper') helperUsedMs += readNow() - launch;\n      record('quiescent', { role, ordinal: role === 'helper' ? helpers : workers });\n      return result;\n    } catch (error) {\n      stop(error, stage);\n      if (owner.closed) await cleanup(owner);\n      else { owner.cleanupConfirmed = true; record('cleanup', { role, confirmed: true, launchFailed: true }); }\n      throw terminal;\n    } finally {\n      stopListeners.delete(wake);\n      if (owner.cleanupConfirmed) active = null;\n      settleOwner(); arm();\n    }\n  };",
+        "excerptSha256": "sha256:f88e7dce9b021ddd0c6b096c38e5b78521faacedd19985f9443705f4ee2625e0"
+      }
+    ]
+  },
+  "transport": {
+    "preSupervisorWork": "Request decoding and detached Buffer copy occur before runOwned; they remain under overall CLI admission and, in real CLI orchestration, the earlier sequence clock",
+    "launch": "Exact fixed PowerShell 5.1 executable/arguments, sanitized environment, hidden non-detached pipe process",
+    "success": "All process and three pipe close flags; stdout/stderr EOF and stdin finish; exit0; exact matching decoded frame; strict checkpoints; responseBytes returned only with exitConfirmed:true",
+    "importantDistinction": "A complete frame, child exit, child close, and exchange settlement are different observations. Valid frame supplies source-backed proof of prior native owned-console quiescence, not its exact timestamp.",
+    "sources": [
+      {
+        "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+        "byteLength": 6250,
+        "sha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+        "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+        "gitBlobBytesVerified": true,
+        "startLine": 15,
+        "endLine": 25,
+        "excerpt": "export function helperLaunchSpecification() {\n  return Object.freeze({ executable: WINDOWS_INSTALLATION.powershell,\n    args: Object.freeze(['-NoLogo', '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', SCRIPT]),\n    options: Object.freeze({ cwd: DIRECTORY, env: Object.freeze({ SystemRoot: WINDOWS_INSTALLATION.windowsDirectory,\n      WINDIR: WINDOWS_INSTALLATION.windowsDirectory }), windowsHide: true, detached: false,\n      shell: false, stdio: Object.freeze(['pipe', 'pipe', 'pipe']) }) });\n}\n\nexport function createHelperTransport(supervisor) { return transport(supervisor, spawn); }\n// Internal engineering doubles are not reachable from API/CLI options.\nexport function createHelperTransportForTesting(supervisor, spawnDouble) { return transport(supervisor, spawnDouble); }",
+        "excerptSha256": "sha256:f9d8ee0752a4b310f4677f4ced243aeeec5fffc0f0841f72265cfb8c1aba09de"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+        "byteLength": 6250,
+        "sha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+        "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+        "gitBlobBytesVerified": true,
+        "startLine": 31,
+        "endLine": 71,
+        "excerpt": "    exchange(frame) {\n      supervisor.checkpoint('ACQUISITION');\n      const request = decodeHelperRequest(frame);\n      const detached = Buffer.from(frame);\n      return supervisor.runOwned('helper', lease => {\n        // Hidden pipes still create an attributable Windows console host here.\n        // The fixed helper natively detaches and confirms that host's exit\n        // before emitting any valid response. It launches no other children.\n        const child = launch(specification.executable, [...specification.args], {\n          ...specification.options, env: { ...specification.options.env }, stdio: [...specification.options.stdio],\n        });\n        let resolveClosed, resolveCompletion, rejectCompletion;\n        const closed = new Promise(resolve => { resolveClosed = resolve; });\n        const completion = new Promise((resolve, reject) => { resolveCompletion = resolve; rejectCompletion = reject; });\n        const chunks = [];\n        let total = 0, stderrBytes = 0, outputEnded = false, errorEnded = false, inputFinished = false;\n        let outputClosed = false, errorClosed = false, inputClosed = false, processClosed = false;\n        let processCode = null, streamFailure = null, consoleQuiescent = false;\n        const rejected = code => {\n          const error = new ReadinessError(code, 'ACQUISITION'); streamFailure ??= error; lease.fail(error);\n        };\n        const finish = () => {\n          if (!processClosed || !outputClosed || !errorClosed || !inputClosed) return;\n          // A validated frame can prove prior native console quiescence even\n          // after terminal cancellation; it can NEVER restore success.\n          let responseBytes;\n          try {\n            if (outputEnded && total <= L.helperResponseBytes) {\n              responseBytes = Buffer.concat(chunks, total);\n              decodeHelperResponse(responseBytes, request); consoleQuiescent = true;\n            }\n          } catch { /* No console proof from malformed/partial transport. */ }\n          resolveClosed();\n          try {\n            if (streamFailure) throw streamFailure;\n            if (processCode !== 0 || !outputEnded || !errorEnded || !inputFinished) fail('INTERNAL', 'ACQUISITION');\n            lease.checkpoint();\n            if (!consoleQuiescent) fail('INPUT', 'ACQUISITION');\n            lease.checkpoint();\n            resolveCompletion({ responseBytes, exitConfirmed: true });\n          } catch (error) { rejectCompletion(error); }",
+        "excerptSha256": "sha256:d50c1e3dacd220df9f871a2360ff22bf7bed8342216693d51ca376abbfa09337"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+        "byteLength": 6250,
+        "sha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+        "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+        "gitBlobBytesVerified": true,
+        "startLine": 73,
+        "endLine": 103,
+        "excerpt": "        child.stdout.on('data', data => {\n          total += data.byteLength;\n          if (total > L.helperResponseBytes) { rejected('RESOURCE_LIMIT'); return; }\n          chunks.push(data);\n          // Once enough prefix bytes exist, reject an oversized advertised body\n          // before waiting for attacker-controlled completion or allocation.\n          if (total >= 4 && chunks.length < 5) {\n            const prefix = Buffer.concat(chunks, Math.min(total, 4));\n            if (prefix.readUInt32BE(0) + 4 > L.helperResponseBytes) rejected('RESOURCE_LIMIT');\n          }\n        });\n        child.stderr.on('data', data => {\n          stderrBytes += data.byteLength;\n          if (stderrBytes > L.stderrBytes) rejected('RESOURCE_LIMIT');\n        });\n        child.stdout.once('end', () => { outputEnded = true; });\n        child.stderr.once('end', () => { errorEnded = true; });\n        child.stdin.once('finish', () => { inputFinished = true; });\n        child.stdout.once('close', () => { outputClosed = true; finish(); });\n        child.stderr.once('close', () => { errorClosed = true; finish(); });\n        child.stdin.once('close', () => { inputClosed = true; finish(); });\n        for (const stream of [child.stdin, child.stdout, child.stderr]) stream.on('error', () => rejected('INTERNAL'));\n        child.once('error', () => rejected('INTERNAL'));\n        child.once('close', code => { processClosed = true; processCode = code; finish(); });\n        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT' });\n        child.stdin.end(detached);\n        return { completion, closed, quiescence: () => consoleQuiescent, abandon: () => child.unref?.(), terminate: () => {\n          child.stdin.destroy(); child.stdout.destroy(); child.stderr.destroy();\n          if (!processClosed) child.kill();\n        } };\n      }, { stage: 'ACQUISITION' });",
+        "excerptSha256": "sha256:05205164ae1072adfbb78ae6e6c4f03ffec0777841b45238fae472ff1772d201"
+      }
+    ]
+  },
+  "sequence": {
+    "source": "Independent private sequence admission guard in the unchanged CLI",
+    "origin": "begin() checkpoint sample at line200 is stored as state.launched at213; it includes subsequent request validation/encoding/roundtrip before transport launch",
+    "limits": "Own5000ms per-slot and20000ms aggregate plus30s sequence clock; supervisor remains actual process preemption owner",
+    "completion": "complete() validates response between deadline checkpoints; helperExited() performs another checkpoint then charges elapsed and clears launched only after trusted exit acknowledgment",
+    "scope": "Transport timings cannot be relabeled as exact sequence durations. Sequence includes bounded trusted request/response framing around the supervisor lifecycle.",
+    "sources": [
+      {
+        "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+        "byteLength": 17308,
+        "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+        "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+        "gitBlobBytesVerified": true,
+        "startLine": 181,
+        "endLine": 236,
+        "excerpt": "export function createHelperSequence(command, { session = randomBytes(32).toString('hex'), now = () => performance.now() } = {}) {\n  if (!['evaluate', 'verify'].includes(command) || typeof session !== 'string' || !SESSION.test(session) || typeof now !== 'function') reject();\n  const start = now();\n  if (!Number.isFinite(start)) reject();\n  const state = { command, session, next: 1, active: null, awaitingExit: false, failed: false,\n    worker: 'NOT_STARTED', output: null, parent: null, claimed: false, usedMs: 0, launched: null, last: start };\n  const terminal = fn => { try { if (state.failed) reject(); return fn(); } catch (error) { state.failed = true; throw error; } };\n  const checkpoint = () => terminal(() => {\n    const current = now();\n    if (!Number.isFinite(current) || current < state.last) reject();\n    state.last = current;\n    if (current >= start + LIMITS.cliDeadlineMs || (state.launched !== null\n        && (current >= state.launched + LIMITS.helperDeadlineMs\n          || state.usedMs + current - state.launched >= LIMITS.helperAggregateDeadlineMs))) fail('TIMEOUT', 'ACQUISITION', null);\n    return current;\n  });\n  const api = Object.freeze({\n    session,\n    begin(request) { return terminal(() => {\n      const current = checkpoint();\n      validateHelperRequest(request);\n      if (state.active || state.awaitingExit || state.worker === 'RUNNING'\n          || state.next > (command === 'evaluate' ? LIMITS.helperRequests : LIMITS.helperVerifyRequests)\n          || request.sequence !== state.next || request.session !== session\n          || (state.next <= 4 && state.worker !== 'NOT_STARTED')\n          || (state.next > 4 && state.worker !== 'STOPPED')\n          || (state.next === 4 && request.operation !== (command === 'evaluate' ? 'CHECK_OUTPUT' : 'READ_SET'))) reject();\n      if (state.usedMs >= LIMITS.helperAggregateDeadlineMs) fail('TIMEOUT', 'ACQUISITION', null);\n      const encoded = encodeHelperRequest(request);\n      const copy = decodeHelperRequest(encoded);\n      if (state.next === 4 && command === 'evaluate') state.output = validateAbsoluteRoot(copy.roots[0].path);\n      if (state.next > 4 && validateAbsoluteRoot(copy.roots[0].path) !== state.output) reject('FILESYSTEM_BOUNDARY');\n      state.active = copy; state.launched = current; state.next += 1;\n      return encoded;\n    }); },\n    complete(bytes) { return terminal(() => {\n      checkpoint();\n      if (!state.active || state.awaitingExit) reject();\n      const response = decodeHelperResponse(bytes, state.active);\n      if (response.status === 'ERROR') { state.failed = true; return response; }\n      if (state.active.sequence === 4 && command === 'evaluate') state.parent = structuredClone(response.roots[0].chain);\n      if (state.active.sequence === 5) {\n        const chain = response.roots[0].chain;\n        if (chain.length !== state.parent.length) reject('FILESYSTEM_BOUNDARY');\n        chain.forEach((item, index) => assertStableIdentity(state.parent[index], item, { directory: true }));\n      }\n      state.active = null; state.awaitingExit = true;\n      checkpoint();\n      return response;\n    }); },\n    helperExited() { return terminal(() => {\n      const current = checkpoint();\n      if (!state.awaitingExit || state.active || state.launched === null) reject();\n      state.usedMs += current - state.launched;\n      state.launched = null; state.awaitingExit = false;\n    }); },",
+        "excerptSha256": "sha256:b934ccefc1c9c7157f17bb1482aee462b0d2a49268ee6b92bfb14fbb214daf2a"
+      },
+      {
+        "path": "repositories/memoryos-readiness/src/acquisition.mjs",
+        "byteLength": 6409,
+        "sha256": "sha256:1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066",
+        "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+        "gitBlobBytesVerified": true,
+        "startLine": 15,
+        "endLine": 43,
+        "excerpt": "  async function read(slot, requestRoots, files, operation = 'READ_SET') {\n    const stage = slot < 3 ? 'CONFIGURATION' : 'ACQUISITION';\n    checkpoint(stage);\n    try {\n      const frame = sequence.begin({ kind: 'MemoryOSReadinessHelperRequest', version: '2.0.0',\n        session: sequence.session, sequence: slot, operation, roots: requestRoots, files });\n      const answer = await exchange(frame);\n      if (!answer || answer.exitConfirmed !== true || Object.keys(answer).sort().join(',') !== 'exitConfirmed,responseBytes') fail('INTERNAL', stage);\n      const response = sequence.complete(answer.responseBytes);\n      if (response.status === 'ERROR') {\n        if (operation === 'CHECK_OUTPUT') fail('OUTPUT', 'PUBLICATION');\n        throw new ReadinessError(response.code, stage);\n      }\n      sequence.helperExited();\n      checkpoint(stage);\n      if (operation !== 'READ_SET') return response;\n      for (const root of response.roots) {\n        if (roots.has(root.id)) assertStableIdentity(roots.get(root.id), root.identity, { directory: true, stage });\n        else roots.set(root.id, root.identity);\n      }\n      const snapshots = Object.create(null);\n      for (const entry of response.files) {\n        const key = entry.identity.volumeSerial + ':' + entry.identity.fileId;\n        if (identities.has(key)) fail('FILESYSTEM_BOUNDARY', stage, entry.id);\n        identities.add(key);\n        snapshots[entry.id] = Buffer.from(entry.bytes.join(''), 'base64');\n      }\n      return snapshots;\n    } catch (error) { sequence.abort(); throw error; }",
+        "excerptSha256": "sha256:a782c6ab33eec04230837bc2baeafb9be59fd8ac6c53050c1c6192047ccdfd61"
+      }
+    ]
+  },
+  "helper": {
+    "initialization": "Open redirected stdin/stdout, initialize fixed native signatures and confirm owned-console quiescence before reading request header",
+    "response": "Construct canonical response, write header/body, flush then exit0",
+    "sources": [
+      {
+        "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "byteLength": 30210,
+        "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8",
+        "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+        "gitBlobBytesVerified": true,
+        "startLine": 129,
+        "endLine": 181,
+        "excerpt": "function Confirm-ConsoleQuiescence {\n    $buffer = [Runtime.InteropServices.Marshal]::AllocHGlobal(568)\n    $snapshot = [IntPtr]::Zero\n    $consoleHandle = [IntPtr]::Zero\n    try {\n        $count = $script:native::GetConsoleProcessList($buffer, 1)\n        $nativeError = [Runtime.InteropServices.Marshal]::GetLastWin32Error()\n        if ($count -eq 0 -and $nativeError -eq 6) { return }\n        if ($count -ne 1 -or [Runtime.InteropServices.Marshal]::ReadInt32($buffer) -ne $PID) { Reject-Protocol 'MO1307_INTERNAL' }\n        # x64 PROCESSENTRY32W is 568 bytes. Inspect only process identity, never\n        # command lines or environment. An owned console may have no HWND.\n        $snapshot = $script:native::CreateToolhelp32Snapshot(2, 0)\n        if ($snapshot -eq [IntPtr]::new(-1)) { Reject-Protocol 'MO1307_INTERNAL' }\n        [Runtime.InteropServices.Marshal]::WriteInt32($buffer, 568)\n        $next = $script:native::Process32FirstW($snapshot, $buffer)\n        $observed = 0; $owner = 0; $children = 0\n        while ($next) {\n            $observed++\n            if ($observed -gt 16384) { Reject-Protocol 'MO1307_RESOURCE_LIMIT' }\n            $parent = [Runtime.InteropServices.Marshal]::ReadInt32($buffer, 32)\n            if ($parent -eq $PID) {\n                $children++\n                $imageName = [Runtime.InteropServices.Marshal]::PtrToStringUni([IntPtr]::Add($buffer, 44))\n                if ($imageName -cne 'conhost.exe') { Reject-Protocol 'MO1307_INTERNAL' }\n                $owner = [Runtime.InteropServices.Marshal]::ReadInt32($buffer, 8)\n            }\n            $next = $script:native::Process32NextW($snapshot, $buffer)\n        }\n        if ([Runtime.InteropServices.Marshal]::GetLastWin32Error() -ne 18 -or $children -ne 1 -or $owner -le 0) { Reject-Protocol 'MO1307_INTERNAL' }\n        $consoleHandle = $script:native::OpenProcess(0x101001, $false, $owner)\n        if ($consoleHandle -eq [IntPtr]::Zero) { Reject-Protocol 'MO1307_INTERNAL' }\n        $image = [Text.StringBuilder]::new(512); $imageLength = [uint32] 512\n        if (-not $script:native::QueryFullProcessImageNameW($consoleHandle, 0, $image, [ref] $imageLength)) { Reject-Protocol 'MO1307_INTERNAL' }\n        $systemDirectory = [Environment]::GetFolderPath([Environment+SpecialFolder]::System)\n        if (-not [string]::Equals($image.ToString(), $systemDirectory + '\\conhost.exe', [StringComparison]::OrdinalIgnoreCase)) { Reject-Protocol 'MO1307_INTERNAL' }\n        if (-not $script:native::FreeConsole()) { Reject-Protocol 'MO1307_INTERNAL' }\n        # Bounded cleanup of the explicitly authorized exclusively owned host.\n        # FreeConsole has already detached this sole-member private console.\n        # Only the held, positively identified owned conhost object is targeted.\n        $wait = $script:native::WaitForSingleObject($consoleHandle, 0)\n        if ($wait -eq 258) {\n            if (-not $script:native::TerminateProcess($consoleHandle, 0) -and\n                $script:native::WaitForSingleObject($consoleHandle, 0) -ne 0) { Reject-Protocol 'MO1307_INTERNAL' }\n        } elseif ($wait -ne 0) { Reject-Protocol 'MO1307_INTERNAL' }\n        if ($script:native::WaitForSingleObject($consoleHandle, 1000) -ne 0) { Reject-Protocol 'MO1307_INTERNAL' }\n        $remaining = $script:native::GetConsoleProcessList($buffer, 1)\n        $nativeError = [Runtime.InteropServices.Marshal]::GetLastWin32Error()\n        if ($remaining -ne 0 -or $nativeError -ne 6) { Reject-Protocol 'MO1307_INTERNAL' }\n    } finally {\n        if ($consoleHandle -ne [IntPtr]::Zero) { [void] $script:native::CloseHandle($consoleHandle) }\n        if ($snapshot -ne [IntPtr]::Zero -and $snapshot -ne [IntPtr]::new(-1)) { [void] $script:native::CloseHandle($snapshot) }\n        [Runtime.InteropServices.Marshal]::FreeHGlobal($buffer)\n    }",
+        "excerptSha256": "sha256:98703402a8f94715caee6845477275a0febfa8a4a6faa0d396fd7084061fc694"
+      },
+      {
+        "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "byteLength": 30210,
+        "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8",
+        "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+        "gitBlobBytesVerified": true,
+        "startLine": 351,
+        "endLine": 381,
+        "excerpt": "# Save redirected byte transports before detaching the private console. Every\n# valid response (including ERROR) proves owned-console quiescence. Startup\n# failure emits no frame and no diagnostic; parent treats exit as unconfirmed.\ntry {\n    if ($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1 -or\n        -not [Environment]::Is64BitProcess) { exit 22 }\n    $stdin = [Console]::OpenStandardInput()\n    $savedStdout = [Console]::OpenStandardOutput()\n    Initialize-Native\n} catch { exit 22 }\n\ntry {\n    if ($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1 -or\n        -not [Environment]::Is64BitProcess) { Reject-Protocol }\n    $header = [byte[]]::new(4)\n    $used = 0\n    while ($used -lt 4) {\n        $count = $stdin.Read($header, $used, 4 - $used)\n        if ($count -eq 0) { Reject-Protocol }\n        $used += $count\n    }\n    $size = [long] $header[0] * 16777216 + [long] $header[1] * 65536 + [long] $header[2] * 256 + $header[3]\n    if ($size + 4 -gt $requestCeiling) { Reject-Protocol 'MO1307_RESOURCE_LIMIT' }\n    $body = [byte[]]::new([int] $size)\n    $used = 0\n    while ($used -lt $body.Length) {\n        $count = $stdin.Read($body, $used, $body.Length - $used)\n        if ($count -eq 0) { Reject-Protocol }\n        $used += $count\n    }\n    if ($stdin.ReadByte() -ne -1) { Reject-Protocol }",
+        "excerptSha256": "sha256:79db32ae5e3829524f72d2539e9902c0a9d1698daa97d0f2437f88d5fab43616"
+      },
+      {
+        "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "byteLength": 30210,
+        "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8",
+        "gitCommit": "defe93989efc6501b1a730b82e79e705884b269b",
+        "gitBlobBytesVerified": true,
+        "startLine": 479,
+        "endLine": 498,
+        "excerpt": "try {\n    $response = [pscustomobject] @{ code = $code; files = @(); kind = 'MemoryOSReadinessHelperResponse';\n        operation = $operation; roots = @(); sequence = $sequence; session = $session; status = 'ERROR'; version = '2.0.0' }\n    if ($null -eq $code -and $null -ne $nativeResult) {\n        $response.files = $nativeResult.files; $response.roots = $nativeResult.roots; $response.status = $nativeResult.status\n    }\n    $replyBytes = [Text.UTF8Encoding]::new($false, $true).GetBytes((Encode-Value $response) + \"`n\")\n    if ($replyBytes.Length + 4 -gt $responseCeiling) { Reject-Protocol 'MO1307_RESOURCE_LIMIT' }\n} catch {\n    $reply = '{\"code\":\"MO1307_RESOURCE_LIMIT\",\"files\":[],\"kind\":\"MemoryOSReadinessHelperResponse\",\"operation\":\"' + $operation +\n        '\",\"roots\":[],\"sequence\":' + $sequence + ',\"session\":\"' + $session + '\",\"status\":\"ERROR\",\"version\":\"2.0.0\"}' + \"`n\"\n    $replyBytes = [Text.UTF8Encoding]::new($false, $true).GetBytes($reply)\n}\n$length = [uint32] $replyBytes.Length\n$replyHeader = [byte[]] @([byte] (($length -shr 24) -band 255), [byte] (($length -shr 16) -band 255), [byte] (($length -shr 8) -band 255), [byte] ($length -band 255))\n$stdout = $savedStdout\n$stdout.Write($replyHeader, 0, 4)\n$stdout.Write($replyBytes, 0, $replyBytes.Length)\n$stdout.Flush()\nexit 0",
+        "excerptSha256": "sha256:cdfb2ebfaa68c67aafceb5ab040e752adabfc87b3e9276952230fc5685e2ce68"
+      }
+    ]
+  },
+  "strictness": {
+    "canTimerFireEarly": "Timer callback may be scheduled/observed later due to host scheduling; checkpoint itself refuses TIMEOUT unless now>=applicable limit. Source does not establish early timeout.",
+    "cleanupAfterDeadline": "Failure settlement may occur after5000ms and is not success grace. Raw elapsed>=5000 cannot alone locate the exact terminal observation.",
+    "aggregateShortening": "A helper can legitimately receive less than5000ms when remaining aggregate orCLI budget is smaller; record which deadline is limiting."
+  },
+  "eventPlan": [
+    {
+      "event": "T0",
+      "status": "DIRECT_RECORDED_EVENT_PLUS_DERIVED_ORIGIN",
+      "method": "Record supervisor start.at and deadline separately. Real origin is runtime launch sample; for a fresh single-helper supervisor with per-helper limit controlling, launch=deadline−5000 is derived, not directly observed start.at."
+    },
+    {
+      "event": "T1",
+      "status": "DIRECT",
+      "method": "Timestamp immediately after unchanged real spawn returns with child identity. This is Node spawn-return latency, not an independent kernel CreateProcess timestamp."
+    },
+    {
+      "event": "T2",
+      "status": "DIRECT_IF_OBSERVED",
+      "method": "Node spawn event proves successful creation. Native retained handle/HasExited or wait state can prove a live process; neither establishes PowerShell engine readiness or continuous CPU execution."
+    },
+    {
+      "event": "T3",
+      "status": "NOT_OBSERVABLE",
+      "method": "No readiness signal exists in unchanged protocol. Stdin finish does not prove helper consumption. Do not infer an exact bootstrap endpoint."
+    },
+    {
+      "event": "T4",
+      "status": "DIRECT",
+      "method": "stdin finish means request bytes accepted by writable pipe; supplied to transport, not proven consumed by helper."
+    },
+    {
+      "event": "T5",
+      "status": "DIRECT",
+      "method": "First nonempty stdout data chunk timestamp."
+    },
+    {
+      "event": "T6",
+      "status": "DIRECT",
+      "method": "Timestamp bytes reach advertised complete frame size; subsequently require exact complete frame/EOF and normal production validation."
+    },
+    {
+      "event": "T7",
+      "status": "DIRECT",
+      "method": "Record Node child exit separately from close/all-pipe settlement; retained native process handle exit time where available gives additional observation."
+    },
+    {
+      "event": "T8",
+      "status": "DIRECT_ONLY_IF_ATTRIBUTED_AND_SAMPLED",
+      "method": "Retain positively attributed conhost handle; native exit time/signaled observation if captured. If never captured mark NOT_OBSERVABLE. A valid response only establishes that native quiescence preceded it."
+    }
+  ],
+  "derivedLimits": [
+    "T5−T4 andT6−T4 include any remaining PowerShell/bootstrap/native initialization, waiting and request work; they are not pure execution CPU time.",
+    "Bootstrap duration cannot be isolated from these timestamps without a trusted external observable boundary. CHECK_OUTPUT supplies only a comparative low-workload observation.",
+    "Console quiescence normally occurs during Initialize-Native before request consumption; T8 is not necessarily later thanT7. Retain actual signed ordering, never force an artificial final event."
+  ],
+  "earlyStop": {
+    "triggerEstablished": false,
+    "reason": "No explicit contract contradiction or deterministic early-timeout/cleanup defect established by source review; future measured evidence may activate user stop policy."
+  }
+}
