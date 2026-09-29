@@ -1,0 +1,70 @@
+{
+  "kind": "MO1307Phase3CIndependentGitAttributeReview",
+  "version": "1.0.0",
+  "reviewedAt": "2026-09-29T10:03:14.190Z",
+  "baseline": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "result": "PASS_SCOPED_ENGINEERING_BYTE_PRESERVATION_AND_WHITESPACE_CHECKS",
+  "testsExecuted": false,
+  "productionEdits": false,
+  "previousAttestationsChanged": false,
+  "attribute": {
+    "path": "repositories/cca-conformance/tools/mo1307-phase3c/.gitattributes",
+    "byteLength": 154,
+    "sha256": "e04164bd07ea266655709cc940540aadd3178a8ecd382f13a067d78d4db3b4e6"
+  },
+  "exactRule": "* -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol",
+  "scope": "Directory-local rule applies only to repositories/cca-conformance/tools/mo1307-phase3c and descendants. It cannot change production-package or docs attributes.",
+  "assessment": {
+    "text": "-text prevents Git line-ending conversion so executed engineering harness bytes remain reproducible in Git blobs.",
+    "whitespace": "blank-at-eol and blank-at-eof explicitly retain trailing-space and excess terminal-blank-line checks; space-before-tab remains enabled. cr-at-eol recognizes CR as part of a CRLF terminator. Spaces or tabs before that terminator remain subject to blank-at-eol; the rule does not disable trailing-space checks.",
+    "limits": "This preserves the named default Git whitespace checks and permits CRLF terminators. It is not a waiver for trailing spaces, arbitrary whitespace errors, source changes or byte-identity mismatch. The parent must still pass final staged diff and exact Git-blob byte checks."
+  },
+  "observedEffectiveAttributes": {
+    "engineeringTools": "text unset; whitespace blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol",
+    "productionRuntime": "Separate scope unchanged: text unset; whitespace trailing-space,space-before-tab,cr-at-eol",
+    "report": "text auto; whitespace unspecified"
+  },
+  "history": {
+    "failedSeal": "sealing-attempt2/failure.json",
+    "classification": "ENGINEERING_GIT_CR_AT_EOL_CLASSIFICATION",
+    "failedDiffExit": 2,
+    "acceptedAsCompletedSeal": false,
+    "originalDiffOutputPreserved": true
+  },
+  "reportBinding": {
+    "path": "docs/mo1307-phase3c-security-certification.md",
+    "byteLength": 25239,
+    "sha256": "54cd32ac64c62c0dc7141de8014238597c0656c2dd913226158e56a438eef5ca"
+  },
+  "priorAttestationBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/final-report-attestation.json",
+      "byteLength": 3926,
+      "sha256": "02761ef48f677fd53aad5c924d31a31a405d16344883547571efe224c706174f"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/final-report-byte-normalization-attestation.json",
+      "byteLength": 3194,
+      "sha256": "b8b6da104e8d4cf0b977ab069770c7410c36f851adaf62ff7aa88a648836e9ce"
+    }
+  ],
+  "failedSealBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/sealing-attempt2/failure.json",
+      "byteLength": 630,
+      "sha256": "4effbeac2d8c9d638eadb731d39d21bc06fad01a3bff35bb34268bf67dfe8226"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/sealing-attempt2/diff-check.stdout.txt",
+      "byteLength": 6420,
+      "sha256": "338662c58b679c72b78a5d5ffdc8f8ab9de0dbd629c7f5fd28b32b3ff7f91865"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/sealing-attempt2/diff-check.stderr.txt",
+      "byteLength": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "conclusion": "No new production security concern. Refinement is confined to engineering text-byte preservation and CRLF recognition; trailing-space checks remain enabled. No prior review was rewritten.",
+  "editingCeasesAfterThisReview": true
+}

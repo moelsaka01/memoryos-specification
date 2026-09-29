@@ -1,0 +1,2904 @@
+{
+  "kind": "MO1307Phase3CRuntimeBoundaryClosure",
+  "baseline": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "count": 128,
+  "totalWitnesses": 131,
+  "supplementaryCases": [
+    {
+      "id": "actual-native-root-identity-replacement",
+      "receipt": "native-identity.json",
+      "result": "PASS",
+      "expected": {
+        "code": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "CONFIGURATION",
+        "exit": 20
+      },
+      "actual": {
+        "code": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "CONFIGURATION",
+        "exit": 20
+      },
+      "noPublication": true
+    },
+    {
+      "id": "cross-slot-volume-identity-substitution",
+      "receipt": "volume-identity.json",
+      "result": "PASS",
+      "expected": {
+        "code": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20
+      },
+      "actual": {
+        "code": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20
+      },
+      "noPublication": true
+    },
+    {
+      "id": "actual-windows-cross-volume-escape",
+      "receipt": "native-wrong-volume.json",
+      "result": "PASS",
+      "expected": {
+        "helperStatus": "ERROR",
+        "code": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "mappedPublicExit": 20,
+        "noPublication": true,
+        "exitConfirmed": true,
+        "quiescent": true
+      },
+      "actual": {
+        "helperStatus": "ERROR",
+        "code": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "mappedPublicExit": 20,
+        "noPublication": true,
+        "exitConfirmed": true,
+        "quiescent": true
+      }
+    }
+  ],
+  "result": "PASS_WITH_EXPLICIT_LIMITATIONS",
+  "acceptedCases": [
+    {
+      "id": "wire-valid-control",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-request-wrong-version",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-request-wrong-operation",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-request-unknown-field",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-request-invalid-session",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-request-invalid-sequence",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-request-output-read-set",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-duplicate-key",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-noncanonical",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTEGRITY",
+        "stage": "ACQUISITION",
+        "exit": 13,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTEGRITY",
+        "stage": "ACQUISITION",
+        "exit": 13,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-truncated-header",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-truncated-body",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-extra-frame",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-trailing-byte",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-debug-stdout",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-oversize-length",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-response-wrong-session",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-response-wrong-sequence",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-response-wrong-operation",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-response-unknown-field",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-response-bad-base64",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-response-noncanonical-base64",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-response-wrong-path",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-response-hardlink-record",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-response-reparse-record",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-response-wrong-type",
+      "layer": "HELPER_WIRE_JS",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "wire-cross-session-replay",
+      "layer": "HELPER_SEQUENCE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "sequence-helper-overlap",
+      "layer": "HELPER_SEQUENCE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "sequence-worker-before-quiescence",
+      "layer": "HELPER_SEQUENCE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-28",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-29",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-30",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-31",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-32",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-33",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-34",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-35",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-36",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-37",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-38",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-39",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-40",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-41",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-42",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "relative-43",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "root-44",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "root-45",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "root-46",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "root-47",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "root-48",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "root-49",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "root-50",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "path-alternate-slash-case",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "path-case-collision",
+      "layer": "WINDOWS_LEXICAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "path-identity-replacement",
+      "layer": "IDENTITY_RECORD",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "fixed-powershell-launch",
+      "layer": "SOURCE_AND_LAUNCH_SPEC",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "launch-env-NODE_OPTIONS",
+      "layer": "LAUNCH_REFUSAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "launch-env-NODE_PATH",
+      "layer": "LAUNCH_REFUSAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "launch-env-node_options",
+      "layer": "LAUNCH_REFUSAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "launch-flag---import",
+      "layer": "LAUNCH_REFUSAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "launch-flag---require",
+      "layer": "LAUNCH_REFUSAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "launch-flag---loader",
+      "layer": "LAUNCH_REFUSAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "launch-flag---inspect",
+      "layer": "LAUNCH_REFUSAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "launch-flag---eval",
+      "layer": "LAUNCH_REFUSAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "launch-unrelated-env-no-semantic-control",
+      "layer": "LAUNCH_REFUSAL",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "worker-wrong-message-type",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "worker-wrong-status",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "worker-malformed-result",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "worker-duplicate-result",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "worker-oversized-message",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "worker-unknown-error",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "worker-result-after-cancellation",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_CANCELLED",
+        "stage": "EVALUATION",
+        "exit": 30,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_CANCELLED",
+        "stage": "EVALUATION",
+        "exit": 30,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "worker-unexpected-stdout-secret",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "worker-stream-4097-limit",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "EVALUATION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "EVALUATION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "worker-fixed-selection-isolation",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "publication-unbranded-capability",
+      "layer": "PUBLICATION_CAPABILITY",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "publication-foreign-token",
+      "layer": "PUBLICATION_CAPABILITY",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "publication-wrong-root",
+      "layer": "PUBLICATION_CAPABILITY",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "publication-capability-reuse",
+      "layer": "PUBLICATION_CAPABILITY",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "publication-second-stage",
+      "layer": "PUBLICATION_STATE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "publication-pre-TIMEOUT",
+      "layer": "PUBLICATION_STATE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_TIMEOUT",
+        "stage": "PUBLICATION",
+        "exit": 29,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_TIMEOUT",
+        "stage": "PUBLICATION",
+        "exit": 29,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "publication-pre-CANCELLED",
+      "layer": "PUBLICATION_STATE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_CANCELLED",
+        "stage": "PUBLICATION",
+        "exit": 30,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_CANCELLED",
+        "stage": "PUBLICATION",
+        "exit": 30,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "publication-pending-substitution",
+      "layer": "PUBLICATION_BYTES",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "publication-final-collision",
+      "layer": "PUBLICATION_BYTES",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "publication-observed-identity-change",
+      "layer": "PUBLICATION_IDENTITY_DOUBLE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "publication-deadline-equality",
+      "layer": "PUBLICATION_STATE",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_TIMEOUT",
+        "stage": "PUBLICATION",
+        "exit": 29,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_TIMEOUT",
+        "stage": "PUBLICATION",
+        "exit": 29,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "publication-native-queued-single-rename",
+      "layer": "NATIVE_RENAME_WITH_SYNTHETIC_INSPECTION",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "noPublication": false,
+        "phase": "COMMITTED",
+        "renames": 1,
+        "earlyTerminal": false,
+        "transportError": "MO1307_OUTPUT",
+        "finalRetained": true
+      },
+      "actual": {
+        "accepted": true,
+        "noPublication": false,
+        "phase": "COMMITTED",
+        "renames": 1,
+        "earlyTerminal": false,
+        "transportError": "MO1307_OUTPUT",
+        "finalRetained": true,
+        "namespaceVerified": true,
+        "timeoutFlag": true,
+        "cancelFlag": true,
+        "dispositionDeadline": 3674.5497
+      },
+      "noPublication": false
+    },
+    {
+      "id": "native-ordinary-handle-control",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0
+      },
+      "actual": {
+        "accepted": true,
+        "error": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "OK",
+        "frameBytes": 904,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-traversal",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 253,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-drive-relative",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-1/corpus.partial.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 253,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-unc",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 253,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-device",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 253,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-ads",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 253,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-reserved",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 253,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-wrong-type",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 253,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-missing-input",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 239,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-oversized-file",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 248,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-unknown-field",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 239,
+        "session": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sequence": 1
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-wrong-version",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 239,
+        "session": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sequence": 1
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-wrong-operation",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 239,
+        "session": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sequence": 1
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-hardlink",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 253,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-file-symlink",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 253,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-junction",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 253,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-directory-symlink",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 253,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-wire-duplicate-key",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 239,
+        "session": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sequence": 1
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-wire-noncanonical",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 239,
+        "session": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sequence": 1
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-wire-truncated-length",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 239,
+        "session": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sequence": 1
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-wire-oversized-length",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 248,
+        "session": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sequence": 1
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-wire-extra-frame",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 239,
+        "session": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sequence": 1
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-wire-trailing-bytes",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 239,
+        "session": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sequence": 1
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-wire-debug-prefix",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 248,
+        "session": "0000000000000000000000000000000000000000000000000000000000000000",
+        "sequence": 1
+      },
+      "noPublication": true
+    },
+    {
+      "id": "native-environment-poison-fixed-launch",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "noPublication": true,
+        "stderrBytes": 0
+      },
+      "actual": {
+        "accepted": true,
+        "error": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "OK",
+        "frameBytes": 869,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "noPublication": true
+    },
+    {
+      "id": "secret-fixed-diagnostic",
+      "layer": "DIAGNOSTIC",
+      "receipt": "run-2/receipt.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "noPublication": true
+    },
+    {
+      "id": "helper-request-frame-ceiling-plus-one",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28
+      },
+      "noPublication": true
+    },
+    {
+      "id": "helper-response-frame-ceiling-plus-one",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28
+      },
+      "noPublication": true
+    },
+    {
+      "id": "helper-session-shape-5",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12
+      },
+      "noPublication": true
+    },
+    {
+      "id": "helper-session-shape-63",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12
+      },
+      "noPublication": true
+    },
+    {
+      "id": "helper-session-shape-65",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12
+      },
+      "noPublication": true
+    },
+    {
+      "id": "actual-fixed-transport-poisoned-parent",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "exitConfirmed": true,
+        "helpers": 1,
+        "workers": 0,
+        "quiescent": true
+      },
+      "actual": {
+        "accepted": true,
+        "exitConfirmed": true,
+        "helpers": 1,
+        "workers": 0,
+        "quiescent": true,
+        "events": [
+          {
+            "type": "start",
+            "at": 98.8227,
+            "role": "helper",
+            "deadline": 5098.7018,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 121.9081,
+            "role": "helper",
+            "pid": 11760,
+            "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+          },
+          {
+            "type": "quiescent",
+            "at": 3231.1257,
+            "role": "helper",
+            "ordinal": 1
+          }
+        ]
+      },
+      "noPublication": true
+    },
+    {
+      "id": "actual-worker-policy-node:fs",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "actual": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "noPublication": true
+    },
+    {
+      "id": "actual-worker-policy-node:child_process",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "actual": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "noPublication": true
+    },
+    {
+      "id": "actual-worker-policy-node:http",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "actual": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "noPublication": true
+    },
+    {
+      "id": "actual-worker-policy-node:https",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "actual": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "noPublication": true
+    },
+    {
+      "id": "actual-worker-policy-node:net",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "actual": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "noPublication": true
+    },
+    {
+      "id": "actual-worker-policy-node:dns",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "actual": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "noPublication": true
+    },
+    {
+      "id": "actual-worker-policy-fetch",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "actual": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "noPublication": true
+    },
+    {
+      "id": "actual-worker-policy-WebSocket",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "actual": {
+        "accepted": true,
+        "denied": true,
+        "exit": 0
+      },
+      "noPublication": true
+    },
+    {
+      "id": "supervisor-helper-worker-overlap-refusal",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": true,
+        "secondError": "MO1307_INTERNAL",
+        "firstError": "MO1307_INTERNAL",
+        "helpers": 1,
+        "workers": 0
+      },
+      "actual": {
+        "accepted": true,
+        "secondError": "MO1307_INTERNAL",
+        "firstError": "MO1307_INTERNAL",
+        "helpers": 1,
+        "workers": 0
+      },
+      "noPublication": true
+    },
+    {
+      "id": "worker-result-after-deadline-equality",
+      "layer": "SUPPLEMENT",
+      "receipt": "supplement.json",
+      "result": "PASS",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_TIMEOUT",
+        "stage": "EVALUATION",
+        "exit": 29
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_TIMEOUT",
+        "stage": "EVALUATION",
+        "exit": 29
+      },
+      "noPublication": true
+    }
+  ],
+  "historicalFailure": {
+    "receipt": "run-1/FAILED.json",
+    "case": "native-unc",
+    "result": "FAIL",
+    "classification": "ENGINEERING_OUTER_GUARD_TIMEOUT_WITH_NO_SECURITY_ACCEPTANCE",
+    "elapsedMs": 7059.036000000002,
+    "reason": "The direct protocol-only helper exceeded the first harness7000ms kill guard; no valid frame or forbidden-path acceptance was returned. Timing cause and historical console quiescence were not established. Preserve original source and failed receipt.",
+    "followup": "One bounded continuation for remaining native controls with20000ms engineering outer guard; frozen product5000ms helper supervisor untouched. Follow-up is not runtime capacity certification."
+  },
+  "forbiddenActions": {
+    "productionEdits": false,
+    "push": false,
+    "tag": false,
+    "providerAccounts": false,
+    "linux": false,
+    "wsl": false,
+    "vm": false
+  },
+  "limitations": [
+    {
+      "control": "wrong-volume actual native fixture",
+      "status": "ACTUAL_CROSS_VOLUME_ESCAPE_REFUSAL_PASS",
+      "reason": "Existing distinct NTFS volume GUID root was observed read-only, then targeted through one owned directory symlink. Actual fixed helper refused at earlier reparse policy; no target contents/read/list/write, no mount/drive creation. Native volumeSerial mismatch branch is not claimed; closed-response volume substitution remains separately tested.",
+      "receipt": "native-wrong-volume.json"
+    },
+    {
+      "control": "privileged concurrent namespace adversary",
+      "status": "EXCLUDED_BY_FROZEN_AUTHORITY",
+      "reason": "Private immutable roots are required. No hostile-OS sandbox or kernel no-replace guarantee."
+    },
+    {
+      "control": "OS-wide network isolation",
+      "status": "NOT_CLAIMED",
+      "reason": "Static closed import/Win32 authority and poisoned proxy/credential environment only; no OS network capture."
+    },
+    {
+      "control": "aggregate RSS",
+      "status": "NOT_CERTIFIED_HERE",
+      "reason": "3A owns resource characterization; no hard OS aggregate RSS sandbox."
+    },
+    {
+      "control": "MO1306 65-file native completion",
+      "status": "NOT_ESTABLISHED_PRESERVED",
+      "reason": "Not rerun; remains 3A responsibility."
+    },
+    {
+      "control": "indefinitely stalled admitted rename",
+      "status": "ADMITTED_AVAILABILITY_LIMITATION",
+      "reason": "One submitted rename may remain unresolved indefinitely; no retries, further mutation, polling service or cross-run task added."
+    }
+  ],
+  "sourceReview": "source-review.json",
+  "linkPreservation": "link-fixture-preservation.json"
+}

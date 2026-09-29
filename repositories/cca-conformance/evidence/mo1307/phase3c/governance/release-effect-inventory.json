@@ -1,0 +1,669 @@
+{
+  "kind": "MO1307Phase3CReleaseEffectInventory",
+  "version": "1.0.0",
+  "result": "PASS_SOURCE_REVIEW",
+  "scope": "All shipped mjs/ps1 bytes; import/effect occurrences plus manual source review of CLI, core, integration, projections, helper transport, fixed PowerShell and publication.",
+  "members": [
+    {
+      "path": "repositories/memoryos-readiness/bin/memoryos-readiness.mjs",
+      "sha256": "sha256:2aa002a153e87b5127cf26001c9a1bb774142838c0faf7c324c040013e988321",
+      "lines": [
+        {
+          "line": 2,
+          "text": "import { performance } from 'node:perf_hooks';"
+        },
+        {
+          "line": 3,
+          "text": "import { runCli } from '../src/cli.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { errorExit, operationalError } from '../src/errors.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "sha256": "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b",
+      "lines": [
+        {
+          "line": 96,
+          "text": "        @('CreateFileW', [Microsoft.Win32.SafeHandles.SafeFileHandle], [Type[]] @([string], [uint32], [uint32], [IntPtr], [uint32], [uint32], [IntPtr])),"
+        },
+        {
+          "line": 188,
+          "text": "    $handle = $script:native::CreateFileW($Path, $access, $sharing, [IntPtr]::Zero, 3, 0x02200000, [IntPtr]::Zero)"
+        },
+        {
+          "line": 262,
+          "text": "    $handle = $script:native::CreateFileW($Path, 128, 7, [IntPtr]::Zero, 3, 0x02200000, [IntPtr]::Zero)"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/acquisition.mjs",
+      "sha256": "sha256:1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 2,
+          "text": "import { digest, parseCanonical } from './canonical.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { fail, ReadinessError } from './errors.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { selectPhaseError, validateRecord, validateCandidate, validateManifest } from './foundation.mjs';"
+        },
+        {
+          "line": 5,
+          "text": "import { structurallyEqual } from './schema.mjs';"
+        },
+        {
+          "line": 6,
+          "text": "import { assertDistinctFiles, assertStableIdentity, resolveContained } from './windows-paths.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/api-input.mjs",
+      "sha256": "sha256:57cd2e2309efac7f0c890b82ff4ca3f70f8cb324512611eba9b303e2da32e194",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { types } from 'node:util';"
+        },
+        {
+          "line": 2,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { fail, operationalError } from './errors.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { digest, parseCanonical } from './canonical.mjs';"
+        },
+        {
+          "line": 5,
+          "text": "import { assertPlainFields, selectPhaseError, validateRecord, validateCandidate, validateManifest } from './foundation.mjs';"
+        },
+        {
+          "line": 6,
+          "text": "import { structurallyEqual } from './schema.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/canonical.mjs",
+      "sha256": "sha256:b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { createHash } from 'node:crypto';"
+        },
+        {
+          "line": 2,
+          "text": "import { fail } from './errors.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/cli-args.mjs",
+      "sha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { errorExit, fail, operationalError } from './errors.mjs';"
+        },
+        {
+          "line": 2,
+          "text": "import { assertDistinctFiles, assertDistinctRoots, resolveContained, validateAbsoluteRoot, validateRelativeFile } from './windows-paths.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/cli.mjs",
+      "sha256": "sha256:3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { performance } from 'node:perf_hooks';"
+        },
+        {
+          "line": 2,
+          "text": "import { parseCanonical } from './canonical.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { fail, ReadinessError, operationalError, evaluationExit } from './errors.mjs';"
+        },
+        {
+          "line": 5,
+          "text": "import { parseCliArgs, validateLaunch } from './cli-args.mjs';"
+        },
+        {
+          "line": 6,
+          "text": "import { createHelperSequence, createPublicationInspection } from './helper-protocol.mjs';"
+        },
+        {
+          "line": 7,
+          "text": "import { acquireCliInputs } from './acquisition.mjs';"
+        },
+        {
+          "line": 8,
+          "text": "import { createPublication, stagePublication, finalizePublication, publicationStatus, publicationTransportCheckpoint } from './publication.mjs';"
+        },
+        {
+          "line": 9,
+          "text": "import { createSupervisor } from './runtime.mjs';"
+        },
+        {
+          "line": 10,
+          "text": "import { createHelperTransport } from './helper-transport.mjs';"
+        },
+        {
+          "line": 11,
+          "text": "import { summaryProjection, textProjection } from './projections.mjs';"
+        },
+        {
+          "line": 12,
+          "text": "import { writeSummary, writeDiagnostic } from './output.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/constants.mjs",
+      "sha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9",
+      "lines": []
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/errors.mjs",
+      "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/evidence-graph.mjs",
+      "sha256": "sha256:cc8a353da76fef3c8610085c6b0237021cdfedb4879d5bfe3ad4ae749166673c",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 2,
+          "text": "import { canonicalDigest, candidateDigest, claimDigest } from './canonical.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { fail } from './errors.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { validateRecord, validateGraphStructure, assertPlainFields } from './foundation.mjs';"
+        },
+        {
+          "line": 5,
+          "text": "import { structurallyEqual } from './schema.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/evidence-history.mjs",
+      "sha256": "sha256:16c5377d07bbc894f8aaa26495e7f215e5a2d2b80b73fdf36254393a7e7769bc",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 2,
+          "text": "import { canonicalDigest } from './canonical.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { fail } from './errors.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { selectPhaseError, sortedUnique, validateRecord } from './foundation.mjs';"
+        },
+        {
+          "line": 5,
+          "text": "import { structurallyEqual } from './schema.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/evidence-verifier.mjs",
+      "sha256": "sha256:684d088b6578f463a7ed1b6e40cde63ec5de2bf039458050b9ebce4494ded3a0",
+      "lines": [
+        {
+          "line": 3,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { canonicalBytes, canonicalDigest, candidateDigest, claimDigest, digest, parseCanonical } from './canonical.mjs';"
+        },
+        {
+          "line": 5,
+          "text": "import { inspectFoundationInputs, selectPhaseError, validateEnvelope, validateRecord, validateResultIdentity, assertPlainFields, sortedUnique } from './foundation.mjs';"
+        },
+        {
+          "line": 6,
+          "text": "import { structurallyEqual as equal } from './schema.mjs';"
+        },
+        {
+          "line": 7,
+          "text": "import { fail } from './errors.mjs';"
+        },
+        {
+          "line": 8,
+          "text": "import { deriveEvidenceGraph, normalizeEvidenceGrant } from './evidence-graph.mjs';"
+        },
+        {
+          "line": 9,
+          "text": "import { verifyHistoryQualificationsProviders } from './evidence-history.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/foundation.mjs",
+      "sha256": "sha256:19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 2,
+          "text": "import { canonicalBytes, canonicalDigest, candidateDigest, claimDigest, digest, parseCanonical, snapshotBytes, readinessDigest, proofBindingDigest, blockerId } from './canonical.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { fail, operationalError, errorExit, ReadinessError } from './errors.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { validateSchema, structurallyEqual } from './schema.mjs';"
+        },
+        {
+          "line": 5,
+          "text": "import { validateRelativeFile } from './windows-paths.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { randomBytes } from 'node:crypto';"
+        },
+        {
+          "line": 2,
+          "text": "import path from 'node:path';"
+        },
+        {
+          "line": 3,
+          "text": "import { performance } from 'node:perf_hooks';"
+        },
+        {
+          "line": 4,
+          "text": "import { canonicalBytes, parseCanonical } from './canonical.mjs';"
+        },
+        {
+          "line": 5,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 6,
+          "text": "import { fail } from './errors.mjs';"
+        },
+        {
+          "line": 7,
+          "text": "import { assertComponentChain, assertStableIdentity, assertDistinctFiles, assertDistinctRoots, resolveContained, validateAbsoluteRoot, validateIdentityRecord } from './windows-paths.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+      "sha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { spawn } from 'node:child_process';"
+        },
+        {
+          "line": 2,
+          "text": "import { fileURLToPath } from 'node:url';"
+        },
+        {
+          "line": 3,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { ReadinessError, fail } from './errors.mjs';"
+        },
+        {
+          "line": 5,
+          "text": "import { decodeHelperRequest, decodeHelperResponse } from './helper-protocol.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/index.mjs",
+      "sha256": "sha256:10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { performance } from 'node:perf_hooks';"
+        },
+        {
+          "line": 2,
+          "text": "import { operationalError } from './errors.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { snapshotApiInput, apiSignal } from './api-input.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { createSupervisor } from './runtime.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/integration.mjs",
+      "sha256": "sha256:c73e278db2b2cdd5b38e3e9a6046ba529aafe92af5abfee4e0ced8b0ec02c64e",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 2,
+          "text": "import { parseCanonical } from './canonical.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { inspectFoundationInputs, checkDecisionBinding } from './foundation.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { fail, ReadinessError } from './errors.mjs';"
+        },
+        {
+          "line": 5,
+          "text": "import { verifyEvidence, verifyResultEvidence } from './evidence-verifier.mjs';"
+        },
+        {
+          "line": 6,
+          "text": "import { computeReadiness } from './readiness-core.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/output.mjs",
+      "sha256": "sha256:eea2e7f6dc23f88b8afdca19b273939a020ccc145ec78d4f701983e0d8449aca",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { performance } from 'node:perf_hooks';"
+        },
+        {
+          "line": 2,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { fail, operationalError, serializeError } from './errors.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/projections.mjs",
+      "sha256": "sha256:43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { canonicalBytes } from './canonical.mjs';"
+        },
+        {
+          "line": 2,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { validateRecord } from './foundation.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { fail } from './errors.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/publication.mjs",
+      "sha256": "sha256:dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import fs from 'node:fs/promises';"
+        },
+        {
+          "line": 2,
+          "text": "import path from 'node:path';"
+        },
+        {
+          "line": 3,
+          "text": "import { performance } from 'node:perf_hooks';"
+        },
+        {
+          "line": 4,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 5,
+          "text": "import { fail, ReadinessError } from './errors.mjs';"
+        },
+        {
+          "line": 6,
+          "text": "import { consumePublicationInspection, inspectPublication } from './helper-protocol.mjs';"
+        },
+        {
+          "line": 7,
+          "text": "import { assertComponentChain, assertStableIdentity, resolveContained, validateAbsoluteRoot } from './windows-paths.mjs';"
+        },
+        {
+          "line": 62,
+          "text": "    await handle.writeFile(bytes, { signal: abort.signal });"
+        },
+        {
+          "line": 168,
+          "text": "    await fs.mkdir(root, { recursive: false, mode: 0o700 });"
+        },
+        {
+          "line": 273,
+          "text": "      await fs.rename(pending, final);"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/readiness-core.mjs",
+      "sha256": "sha256:7891139345e71030709adf2fdb1ff93342a74282980d1b09d1535e44fa0ef1cd",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 2,
+          "text": "import { canonicalBytes, canonicalDigest, blockerId, snapshotBytes } from './canonical.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { validateRecord, validateCandidate, validateProviderDetail, aggregateReference,"
+        },
+        {
+          "line": 5,
+          "text": "import { structurallyEqual } from './schema.mjs';"
+        },
+        {
+          "line": 6,
+          "text": "import { fail } from './errors.mjs';"
+        },
+        {
+          "line": 7,
+          "text": "import { constructReadinessResult } from './readiness-result.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/readiness-result.mjs",
+      "sha256": "sha256:847525fb9be50cc956c5859e8accd271806db61fdf083e9b5165bd8cf91d9fea",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { canonicalBytes, readinessDigest, proofBindingDigest } from './canonical.mjs';"
+        },
+        {
+          "line": 2,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { aggregateReference, assertPlainFields, validateRecord } from './foundation.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { evaluationExit, fail, ReadinessError } from './errors.mjs';"
+        },
+        {
+          "line": 5,
+          "text": "import { summaryProjection, textProjection } from './projections.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/runtime.mjs",
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { performance } from 'node:perf_hooks';"
+        },
+        {
+          "line": 2,
+          "text": "import { Worker } from 'node:worker_threads';"
+        },
+        {
+          "line": 3,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        },
+        {
+          "line": 4,
+          "text": "import { ReadinessError, fail, operationalError } from './errors.mjs';"
+        },
+        {
+          "line": 5,
+          "text": "import { publicationStatus, recordPublicationInterruption, publicationTransportCheckpoint } from './publication.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/schema-data.mjs",
+      "sha256": "sha256:467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11",
+      "lines": []
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/schema.mjs",
+      "sha256": "sha256:9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { SCHEMAS } from './schema-data.mjs';"
+        },
+        {
+          "line": 2,
+          "text": "import { fail } from './errors.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import path from 'node:path';"
+        },
+        {
+          "line": 2,
+          "text": "import { fail } from './errors.mjs';"
+        },
+        {
+          "line": 3,
+          "text": "import { DEFINITIONS } from './constants.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/worker-entry.mjs",
+      "sha256": "sha256:958dfaf21e7ed62d6214a09f7624b7c4c799aeddbdcd11daac8625a439ab35a7",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { parentPort, workerData } from 'node:worker_threads';"
+        },
+        {
+          "line": 2,
+          "text": "import { installWorkerPolicy } from './worker-policy.mjs';"
+        }
+      ]
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/worker-policy.mjs",
+      "sha256": "sha256:29e0ccb0bb366199857753abd11c08f8cdec72bfe43672ef6ba9e8784e5b0831",
+      "lines": [
+        {
+          "line": 1,
+          "text": "import { registerHooks } from 'node:module';"
+        }
+      ]
+    }
+  ],
+  "disposition": {
+    "tagCreation": "ABSENT",
+    "push": "ABSENT",
+    "merge": "ABSENT",
+    "releasePublication": "ABSENT",
+    "deployment": "ABSENT",
+    "repositorySettingsMutation": "ABSENT",
+    "allowedWrites": "Exclusive readiness output directory, one fixed pending result, one final rename",
+    "childProcess": "Only fixed trusted Windows PowerShell helper",
+    "humanDecision": "Separate verify projection, never dispatch or mutation permission"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "kind": "MO1307Phase3CGovernanceDevelopmentDisposition",
+  "classification": "HARNESS_EXPECTATION_CORRECTED",
+  "originalReceipt": "corpus-attempt1.json",
+  "originalHarness": "governance-attempt1.mjs.data",
+  "cases": [
+    "HISTORY-DUPLICATE-SEMANTIC",
+    "QUALIFICATION-duplicate-conflict"
+  ],
+  "diagnosis": "Both mutations repeat nested IDs in ordered sets. foundation.validateRecord invokes recursively enforced sortedUnique during INTEGRITY before semantic history/qualification validation. Freeze section15 assigns duplicate IDs INPUT/12. Product rejection was correct; initial harness expected EVALUATION mismatch classes24/23.",
+  "source": "repositories/memoryos-readiness/src/foundation.mjs:13 and validateRecord ordering; docs/mo1307-contract-freeze-1.md sections3/15",
+  "targetedRerun": "corpus-correction.json",
+  "result": "PASS",
+  "productionChanges": false,
+  "reportingClarification": "Original receipt success exit values were evaluation-state classifications even for verify byte calls. accepted-corpus.json explicitly records verify classification0 and declares that no OS exit was measured. This is receipt semantics, not a product change or newly rerun execution."
+}

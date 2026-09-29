@@ -1,0 +1,28 @@
+import assert from 'node:assert/strict';import fs from 'node:fs/promises';import path from 'node:path';import {fileURLToPath} from 'node:url';import {spawn} from 'node:child_process';import {performance} from 'node:perf_hooks';
+import {createSupervisor} from '../../../../memoryos-readiness/src/runtime.mjs';import {createHelperTransport,helperLaunchSpecification} from '../../../../memoryos-readiness/src/helper-transport.mjs';import {encodeHelperRequest,decodeHelperResponse} from '../../../../memoryos-readiness/src/helper-protocol.mjs';import {ReadinessError,errorExit} from '../../../../memoryos-readiness/src/errors.mjs';
+const base=fileURLToPath(new URL('../../../evidence/mo1307/phase3c/runtime-boundary/',import.meta.url)),owned=path.join(base,'native-cross-volume'),link=path.join(owned,'foreign');
+const target='\\\\?\\Volume{12dbd20e-1280-4ec0-abfa-22933ac79b60}\\';
+const metadataScript=fileURLToPath(new URL('./volume-root-metadata.ps1',import.meta.url));
+const powershell='C:\\Program Files\\PowerShell\\7\\pwsh.exe';
+if(!path.resolve(link).startsWith(path.resolve(owned)+path.sep))throw new Error('outside owned fixture');
+async function metadata(){return new Promise((resolve,reject)=>{const c=spawn(powershell,['-NoLogo','-NoProfile','-NonInteractive','-File',metadataScript],{cwd:owned,windowsHide:true,shell:false,stdio:['ignore','pipe','pipe']});let stdout='',stderr='';const timer=setTimeout(()=>{c.kill();reject(new Error('metadata outer timeout'));},10000);c.stdout.on('data',b=>stdout+=b);c.stderr.on('data',b=>stderr+=b);c.once('error',reject);c.once('close',exit=>{clearTimeout(timer);try{assert.equal(exit,0);assert.equal(stderr,'');resolve(JSON.parse(stdout));}catch(e){reject(e);}});});}
+const expected={helperStatus:'ERROR',code:'MO1307_FILESYSTEM_BOUNDARY',stage:'ACQUISITION',mappedPublicExit:20,noPublication:true,exitConfirmed:true,quiescent:true};
+const receipt={kind:'MO1307Phase3CActualWindowsWrongVolumeEscape',baseline:'976d4a04d75dadc02e30215dd5a8ddeaa2352df8',started:new Date().toISOString(),expected,actual:null,result:'IN_PROGRESS',scope:'Actual Windows directory symlink escape from the owned C: fixture toward an already existing distinct NTFS volume GUID root. Expected rejection occurs at the earlier reparse policy; native volumeSerial-mismatch branch is not claimed.',targetContentRead:false,targetDirectoryEnumerated:false,targetWrites:false,mountCreated:false,driveAssigned:false,newVolumeCreated:false,productChanged:false};
+const save=()=>fs.writeFile(path.join(base,'native-wrong-volume.json'),JSON.stringify(receipt,null,2)+'\n');
+await fs.mkdir(owned,{recursive:false});
+let linked=false,supervisor;
+try{
+ receipt.before=await metadata();assert.equal(receipt.before.roots[0].volumeSerial,'bec58120');assert.equal(receipt.before.roots[1].volumeSerial,'7a4fed9b');assert.notEqual(receipt.before.roots[0].volumeSerial,receipt.before.roots[1].volumeSerial);
+ await fs.symlink(target,link,'dir');linked=true;
+ const st=await fs.lstat(link,{bigint:true});assert.equal(st.isSymbolicLink(),true);const observedTarget=await fs.readlink(link);assert.equal(observedTarget,target);receipt.link={path:link,target:observedTarget,type:'DIRECTORY_SYMBOLIC_LINK',sourceVolumeSerial:Number(st.dev).toString(16),fileId:st.ino.toString(16),linkCount:st.nlink.toString()};assert.equal(receipt.link.sourceVolumeSerial,'bec58120');
+ await save();
+ const request={kind:'MemoryOSReadinessHelperRequest',version:'2.0.0',session:'e'.repeat(64),sequence:3,operation:'READ_SET',roots:[{id:'input',path:owned}],files:[{id:'evidence',path:'foreign/nonexistent-mo1307-phase3c-probe.data',root:'input',maxBytes:0}]};receipt.request=request;
+ supervisor=createSupervisor({kind:'cli'});const begun=performance.now();const answer=await createHelperTransport(supervisor).exchange(encodeHelperRequest(request));const response=decodeHelperResponse(answer.responseBytes,request);receipt.helperElapsedMs=performance.now()-begun;const snapshot=supervisor.snapshot();receipt.actual={helperStatus:response.status,code:response.code,stage:'ACQUISITION',mappedPublicExit:errorExit(new ReadinessError(response.code,'ACQUISITION')),noPublication:true,exitConfirmed:answer.exitConfirmed,quiescent:snapshot.cleanupConfirmed};receipt.response=response;receipt.supervisor=snapshot;receipt.productionHelperLaunch=helperLaunchSpecification();assert.deepEqual(receipt.actual,expected);assert.equal(snapshot.helpers,1);assert.equal(snapshot.workers,0);assert.equal(snapshot.activeRole,null);receipt.result='PASS';
+}catch(e){receipt.result='FAIL';receipt.failure={code:e.code??null,message:e instanceof ReadinessError?e.message:'Engineering witness assertion or metadata failure'};throw e;}
+finally{
+ if(supervisor)await supervisor.dispose();
+ if(linked){const s=await fs.lstat(link);assert.equal(s.isSymbolicLink(),true);assert.equal(await fs.readlink(link),target);await fs.unlink(link);let absent=false;try{await fs.lstat(link);}catch(e){if(e.code==='ENOENT')absent=true;else throw e;}assert.equal(absent,true);receipt.linkCleanup={ownedEntryRemoved:true,nonrecursive:true,targetDeletion:false};}
+ try{receipt.after=await metadata();receipt.targetRootMetadataUnchanged=JSON.stringify(receipt.before?.roots[1])===JSON.stringify(receipt.after.roots[1]);assert.equal(receipt.targetRootMetadataUnchanged,true);}catch(e){receipt.result='FAIL';receipt.finalMetadataError=e.code??'ROOT_METADATA_CHECK_FAILED';}
+ receipt.finished=new Date().toISOString();await save();
+}
+assert.equal(receipt.result,'PASS');console.log(JSON.stringify({result:receipt.result,expected:receipt.expected,actual:receipt.actual,helperElapsedMs:receipt.helperElapsedMs,targetRootMetadataUnchanged:receipt.targetRootMetadataUnchanged,linkCleanup:receipt.linkCleanup}));

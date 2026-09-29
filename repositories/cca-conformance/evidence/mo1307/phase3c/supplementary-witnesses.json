@@ -1,0 +1,40 @@
+{
+  "kind": "MO1307Phase3CSupplementaryWitnessIndex",
+  "result": "PASS",
+  "primaryCountUnchanged": 496,
+  "receipts": 5,
+  "entries": [
+    {
+      "receipt": "runtime-boundary/native-identity.json",
+      "scope": "Actual native two-phase root identity replacement; FS_BOUNDARY/CONFIGURATION/20",
+      "byteLength": 2558,
+      "sha256": "sha256:52e90f998387659641881acca2a5a4993dad998ec63405f518a3aefc5c301742"
+    },
+    {
+      "receipt": "runtime-boundary/volume-identity.json",
+      "scope": "Synthetic closed-helper response volumeSerial substitution; FS_BOUNDARY/ACQUISITION/20",
+      "byteLength": 784,
+      "sha256": "sha256:1a1a2d8271876894f9f9fa81adfd57f9c6b3c1894bda46e224483a8b449683c2"
+    },
+    {
+      "receipt": "runtime-boundary/native-wrong-volume.json",
+      "scope": "Actual distinct Windows filesystem volume escape refused; source-supported earlier reparse guard, not native downstream volumeSerial branch",
+      "byteLength": 7538,
+      "sha256": "sha256:40da6473d7cd34803c747725eca46b26d749d5ca2d1838ed180573df3251f70c"
+    },
+    {
+      "receipt": "safe-root-environment-determinism.json",
+      "scope": "Two fresh public API calls; one comparison across safe roots/sessions/poisoned environments",
+      "byteLength": 1182,
+      "sha256": "sha256:3fbb37574f3c024c698dd08427e59ebfd8d4b918b1fe4fefda6d783275e19117"
+    },
+    {
+      "receipt": "output-construction-boundaries.json",
+      "scope": "Two reused exact-B2 output-construction regression tests; dependency hashes checked, not independent new primary cases",
+      "byteLength": 1043,
+      "sha256": "sha256:da3b90b003b53065e22fc91b7f4f235d249399ecd7c3a65d42ed5cbbafac754d"
+    }
+  ],
+  "independentWrongVolumeReview": "trust-graph/integration-review-addendum.json",
+  "countNote": "Receipts have distinct units: no summed supplemental test total is asserted; output receipt contains two reused tests."
+}

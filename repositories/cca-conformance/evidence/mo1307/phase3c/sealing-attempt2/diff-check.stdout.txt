@@ -1,0 +1,32 @@
+repositories/cca-conformance/tools/mo1307-phase3c/assemble-corpus.mjs:19: trailing whitespace.
++fs.writeFileSync(base+'/negative-corpus.json',JSON.stringify(corpus,null,2)+'\n',{flag:'wx'});console.log(JSON.stringify({result:corpus.result,unique:496,expectedRejections:count,acceptedOrBehavioralControls:496-count}));
+repositories/cca-conformance/tools/mo1307-phase3c/baseline.mjs:36: trailing whitespace.
++console.log(JSON.stringify({result:'PASS',boundMembers:checks.length,packageMembers:shipped.length,surfaces:surfaces.length}));
+repositories/cca-conformance/tools/mo1307-phase3c/dispatch-diagnostic.mjs:7: trailing whitespace.
++fs.writeFileSync(ev+'/dispatch-native-diagnostic.json',JSON.stringify(receipt,null,2)+'\n',{flag:'wx'});console.log(JSON.stringify(receipt));
+repositories/cca-conformance/tools/mo1307-phase3c/final-validation.mjs:41: trailing whitespace.
++fs.writeFileSync(ev+'/final-validation.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({result:'PASS',productionMembers:baseline.members.length,syntax:syntax.length,files:inventory.length,durationMinutes}));
+repositories/cca-conformance/tools/mo1307-phase3c/output-boundaries.mjs:10: trailing whitespace.
++fs.writeFileSync(ev+'/output-construction-boundaries.json',JSON.stringify(receipt,null,2)+'\n',{flag:'wx'});console.log(JSON.stringify(receipt));
+repositories/cca-conformance/tools/mo1307-phase3c/root-corpus.mjs:65: trailing whitespace.
++process.exitCode=failure?1:0;
+repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary.mjs:94: trailing whitespace.
++console.log(JSON.stringify({result:'PASS',count:rows.length,elapsedMs:performance.now()-clock,receipt:path.join(run,'receipt.json')}));
+repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary/native-identity.mjs:17: trailing whitespace.
++await fs.writeFile(path.join(base,'native-identity.json'),JSON.stringify(receipt,null,2)+'\n');assert.equal(receipt.result,'PASS');assert.notEqual(observations[0].root.fileId,observations[1].root.fileId);console.log(JSON.stringify({result:'PASS',helperCount:observations.length,error}));
+repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary/native-wrong-volume.mjs:28: trailing whitespace.
++assert.equal(receipt.result,'PASS');console.log(JSON.stringify({result:receipt.result,expected:receipt.expected,actual:receipt.actual,helperElapsedMs:receipt.helperElapsedMs,targetRootMetadataUnchanged:receipt.targetRootMetadataUnchanged,linkCleanup:receipt.linkCleanup}));
+repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary/runtime-boundary-links.mjs:7: trailing whitespace.
++const remaining=await fs.stat(path.join(fixture,'native','plain.data'));if(remaining.nlink!==1)throw new Error('hardlink remains');await fs.writeFile(file,JSON.stringify({records,targetPreserved:true,remainingPlainLinkCount:remaining.nlink,noRecursiveOperation:true},null,2)+'\n');console.log('Four owned link entries removed; targets and receipts preserved.');
+repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary/runtime-boundary-supplement.mjs:24: trailing whitespace.
++console.log(JSON.stringify({count:rows.length,result:'PASS'}));
+repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary/seal.mjs:26: trailing whitespace.
++await walk(base);await walk(path.join(workspace,'repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary'));auditFiles.push(await binding('repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary.mjs'));auditFiles.sort((a,b)=>a.path.localeCompare(b.path));await write('file-manifest.json',{kind:'MO1307Phase3CRuntimeBoundaryEvidenceInventory',selfExclusion:'file-manifest.json excludes itself; final Git tree binds it.',files:auditFiles,noSymlinksOrJunctions:true,regularFilesAllLinkCountOne:true});console.log(JSON.stringify({acceptedPrimaryCases:128,supplementaryCases:3,surfaces:findings.length,evidenceFiles:auditFiles.length}));
+repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary/volume-identity.mjs:6: trailing whitespace.
++for(let n=1;n<=4;n++){const r=q(n);sequence.begin(r);sequence.complete(encodeHelperResponse(a(r),r));sequence.helperExited();}sequence.beginWorker();sequence.endWorker();const request=q(5),answer=a(request);answer.roots[0].chain[0].volumeSerial='00000002';sequence.begin(request);let error;try{sequence.complete(encodeHelperResponse(answer,request));}catch(e){error={code:e.code,stage:e.stage,exit:errorExit(e)};}const expected={code:'MO1307_FILESYSTEM_BOUNDARY',stage:'ACQUISITION',exit:20};const receipt={kind:'MO1307Phase3CVolumeIdentityRefusal',expected,actual:error,noPublication:true,requestSequence:5,changedField:'volumeSerial',prior:'00000001',substituted:'00000002',layer:'CLOSED_NATIVE_IDENTITY_RESPONSE_CROSS_SLOT_VALIDATION_ON_WINDOWS',physicalOtherVolume:false,limitation:'No second physical-volume fixture. Native Open-Chain requires each component volume serial equal the drive serial before any response is produced; this new probe separately proves a later response cannot substitute a new volume identity.',result:JSON.stringify(expected)===JSON.stringify(error)?'PASS':'FAIL'};await fs.writeFile(fileURLToPath(new URL('../../../evidence/mo1307/phase3c/runtime-boundary/volume-identity.json',import.meta.url)),JSON.stringify(receipt,null,2)+'\n');assert.equal(receipt.result,'PASS');console.log('PASS volume identity substitution');
+repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary/volume-root-metadata.ps1:28: trailing whitespace.
++[pscustomobject]@{observedAtUtc=[DateTime]::UtcNow.ToString('o');roots=$results;directoryEnumeration=$false;fileContentsRead=$false;writes=$false;temporaryAssemblyFiles=$false}|ConvertTo-Json -Depth 5
+repositories/cca-conformance/tools/mo1307-phase3c/safe-root-determinism.mjs:22: trailing whitespace.
++}
+repositories/cca-conformance/tools/mo1307-phase3c/workspace-check.mjs:7: trailing whitespace.
++const receipt={kind:'MO1307Phase3CWorkspaceVerification',result:r.status===0?'PASS':'FAIL',exit:r.status,error:r.error?.code??null,durationMs:performance.now()-start,command:'python.exe -B tools/verify_workspace.py --root .',stdout:ev+'/workspace-verification.stdout.txt',stderr:ev+'/workspace-verification.stderr.txt'};fs.writeFileSync(ev+'/workspace-verification.json',JSON.stringify(receipt,null,2)+'\n',{flag:'wx'});console.log(JSON.stringify(receipt));console.log(r.stdout);console.log(r.stderr);

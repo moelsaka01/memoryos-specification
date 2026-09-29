@@ -1,0 +1,29 @@
+{
+  "kind": "MO1307Phase3CGitBytePreservation",
+  "result": "RESOLVED_ENGINEERING_STAGING_BOUNDARY",
+  "productionChanged": false,
+  "reason": "Temporary-index byte comparison identified Git text normalization in17 newly created audit text files. Historical evidence files already have text unset by existing repository attributes. This is not a product security failure.",
+  "harnesses": "Scoped tools/mo1307-phase3c/.gitattributes sets -text only for engineering files, preserving every primary/supplementary executed test harness byte and original receipt. The final sealing validator alone adds a staged-blob identity check and new temporary index name; its exact first-run source is preserved.",
+  "report": {
+    "path": "docs/mo1307-phase3c-security-certification.md",
+    "before": {
+      "bytes": 25240,
+      "sha256": "sha256:74387013a3ff20077d8efe2b3f6e5bac9fdfc505d0ce25ebe362515aade5050f",
+      "preservedAt": "repositories/cca-conformance/evidence/mo1307/phase3c/sealing-attempt1/report-before-lf-normalization.md.data"
+    },
+    "after": {
+      "bytes": 25239,
+      "sha256": "sha256:54cd32ac64c62c0dc7141de8014238597c0656c2dd913226158e56a438eef5ca"
+    },
+    "transformation": "CRLF to LF; one trailing CR removed; prose unchanged; independent report hash reviews refreshed separately."
+  },
+  "priorSeal": "sealing-attempt1 preserves original worktree validation, manifest, receipt and checkpoints; prior PASS did not check Git-staged blob identity. Final validator now requires staged-byte equality.",
+  "historicalBindings": "Earlier report reviews remain valid for preserved original report bytes. Runtime source manifests and all primary/supplementary executed test harness bytes remain unchanged.",
+  "priorSealingSource": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c/sealing-attempt1/final-validation-before-staged-byte-check.mjs.data",
+    "sha256": "sha256:25e0143d9ac0b7872db36dd77a5d88e2de20fafcc2ab8a1fe5af65477a3bc3c2",
+    "byteLength": 9048,
+    "recovery": "Git temporary-index original LF blob plus the one original terminal CR; verified exactly against first evidence-manifest SHA256 and size before preservation."
+  },
+  "whitespaceFollowup": "Second sealing attempt retained under sealing-attempt2. Tools-only attribute now preserves normal blank-at-eol, blank-at-eof and space-before-tab checks while additionally recognizing cr-at-eol; this does not disable trailing-space checks. It changes no test harness or production bytes."
+}

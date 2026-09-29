@@ -1,0 +1,132 @@
+{
+  "kind": "MO1307Phase3CGovernanceDerivedNoteCorrection",
+  "version": "1.0.0",
+  "classification": "REPORTING_NOTE_CORRECTION",
+  "result": "PASS",
+  "scope": "Only15 derived accepted-corpus row notes corrected; original receipt and original harness bytes preserved.",
+  "reason": "Independent integration review found a fresh-pin boilerplate note on unchanged-pin tests. Source confirms rebind:false retains all bindings for12 raw integrity mutations, while trust:false recomputes higher metadata but preserves the original trust pin for3 authority mismatch cases.",
+  "harnessSource": "repositories/cca-conformance/tools/mo1307-phase3c/governance.mjs",
+  "sourceLines": [
+    53,
+    59,
+    60,
+    69,
+    71,
+    95
+  ],
+  "correctedRows": [
+    {
+      "id": "HISTORY-PINNED-fail-pass",
+      "layer": "RAW_INTEGRITY_UNCHANGED_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin, authority and manifest retained. Raw envelope bytes alone were mutated; exact integrity checks reject before semantic use."
+    },
+    {
+      "id": "HISTORY-PINNED-blocked-removal",
+      "layer": "RAW_INTEGRITY_UNCHANGED_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin, authority and manifest retained. Raw envelope bytes alone were mutated; exact integrity checks reject before semantic use."
+    },
+    {
+      "id": "HISTORY-PINNED-outcome-deletion",
+      "layer": "RAW_INTEGRITY_UNCHANGED_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin, authority and manifest retained. Raw envelope bytes alone were mutated; exact integrity checks reject before semantic use."
+    },
+    {
+      "id": "HISTORY-PINNED-disposition-change",
+      "layer": "RAW_INTEGRITY_UNCHANGED_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin, authority and manifest retained. Raw envelope bytes alone were mutated; exact integrity checks reject before semantic use."
+    },
+    {
+      "id": "HISTORY-PINNED-source-change",
+      "layer": "RAW_INTEGRITY_UNCHANGED_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin, authority and manifest retained. Raw envelope bytes alone were mutated; exact integrity checks reject before semantic use."
+    },
+    {
+      "id": "HISTORY-PINNED-fabricated-resolution",
+      "layer": "RAW_INTEGRITY_UNCHANGED_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin, authority and manifest retained. Raw envelope bytes alone were mutated; exact integrity checks reject before semantic use."
+    },
+    {
+      "id": "HISTORY-PINNED-unresolved-omission",
+      "layer": "RAW_INTEGRITY_UNCHANGED_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin, authority and manifest retained. Raw envelope bytes alone were mutated; exact integrity checks reject before semantic use."
+    },
+    {
+      "id": "HISTORY-PINNED-duplicate-conflict",
+      "layer": "RAW_INTEGRITY_UNCHANGED_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin, authority and manifest retained. Raw envelope bytes alone were mutated; exact integrity checks reject before semantic use."
+    },
+    {
+      "id": "HISTORY-CANDIDATE",
+      "layer": "UNCHANGED_OPERATOR_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin retained. Mutated envelope and recomputed claim/grant/manifest/authority bytes cannot replace that independent pin; authority-byte mismatch rejects during CONFIGURATION before semantic use."
+    },
+    {
+      "id": "QUALIFICATION-WRONG-GRANTED-EVIDENCE",
+      "layer": "UNCHANGED_OPERATOR_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin retained. Mutated envelope and recomputed claim/grant/manifest/authority bytes cannot replace that independent pin; authority-byte mismatch rejects during CONFIGURATION before semantic use."
+    },
+    {
+      "id": "PROVIDER-PINNED-PROMOTION-github",
+      "layer": "RAW_INTEGRITY_UNCHANGED_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin, authority and manifest retained. Raw envelope bytes alone were mutated; exact integrity checks reject before semantic use."
+    },
+    {
+      "id": "PROVIDER-PINNED-PROMOTION-gitlab",
+      "layer": "RAW_INTEGRITY_UNCHANGED_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin, authority and manifest retained. Raw envelope bytes alone were mutated; exact integrity checks reject before semantic use."
+    },
+    {
+      "id": "PROVIDER-PINNED-PROMOTION-jenkins",
+      "layer": "RAW_INTEGRITY_UNCHANGED_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin, authority and manifest retained. Raw envelope bytes alone were mutated; exact integrity checks reject before semantic use."
+    },
+    {
+      "id": "PROVIDER-PINNED-PROMOTION-azure",
+      "layer": "RAW_INTEGRITY_UNCHANGED_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin, authority and manifest retained. Raw envelope bytes alone were mutated; exact integrity checks reject before semantic use."
+    },
+    {
+      "id": "TAG-AUTHORITY-MISMATCH",
+      "layer": "UNCHANGED_OPERATOR_TRUST",
+      "previousNote": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "correctedNote": "Original operator trust pin retained. Mutated envelope and recomputed claim/grant/manifest/authority bytes cannot replace that independent pin; authority-byte mismatch rejects during CONFIGURATION before semantic use."
+    }
+  ],
+  "acceptedCorpusBeforeSha256": "f0276e7988c123634a45ecbdcaf02febe390afbbd51660821d92e0efb79edbf4",
+  "acceptedCorpusAfterSha256": "3f56fe137c2a708ff1e926af88417f363d5d766d3c3261a38904f1891d3d470a",
+  "originalReceiptIdentities": [
+    {
+      "path": "corpus-attempt1.json",
+      "sha256": "86a4cd8ee77530a117226dd618efcac2bed66145b90b290ac663b1d65dd17d86"
+    },
+    {
+      "path": "corpus-correction.json",
+      "sha256": "b7e3134bae980ac1875329cedc86efe6b7588d543fbcc081c8ba4074a35089d8"
+    },
+    {
+      "path": "corpus-supplement.json",
+      "sha256": "3ba7a1076be240bc8ff476e2043ff5b35089c79b250a58ec4387ac2070fff45d"
+    },
+    {
+      "path": "governance-attempt1.mjs.data",
+      "sha256": "0406f6d514ae0e5faa9fd946c8790b6fc61b22b1ce9d81424d42fe8e7fb51edb"
+    }
+  ],
+  "testRerun": "NONE_REQUIRED_REPORTING_ONLY",
+  "casesAndResultsChanged": false,
+  "productionChanges": false
+}

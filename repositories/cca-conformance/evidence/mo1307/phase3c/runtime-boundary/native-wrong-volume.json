@@ -1,0 +1,222 @@
+{
+  "kind": "MO1307Phase3CActualWindowsWrongVolumeEscape",
+  "baseline": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "started": "2026-09-29T09:49:00.617Z",
+  "expected": {
+    "helperStatus": "ERROR",
+    "code": "MO1307_FILESYSTEM_BOUNDARY",
+    "stage": "ACQUISITION",
+    "mappedPublicExit": 20,
+    "noPublication": true,
+    "exitConfirmed": true,
+    "quiescent": true
+  },
+  "actual": {
+    "helperStatus": "ERROR",
+    "code": "MO1307_FILESYSTEM_BOUNDARY",
+    "stage": "ACQUISITION",
+    "mappedPublicExit": 20,
+    "noPublication": true,
+    "exitConfirmed": true,
+    "quiescent": true
+  },
+  "result": "PASS",
+  "scope": "Actual Windows directory symlink escape from the owned C: fixture toward an already existing distinct NTFS volume GUID root. Expected rejection occurs at the earlier reparse policy; native volumeSerial-mismatch branch is not claimed.",
+  "targetContentRead": false,
+  "targetDirectoryEnumerated": false,
+  "targetWrites": false,
+  "mountCreated": false,
+  "driveAssigned": false,
+  "newVolumeCreated": false,
+  "productChanged": false,
+  "before": {
+    "observedAtUtc": "2026-09-29T09:49:00.9934708Z",
+    "roots": [
+      {
+        "root": "C:\\",
+        "attributes": 22,
+        "volumeSerial": "bec58120",
+        "fileId": "0005000000000005",
+        "linkCount": 1,
+        "byteLength": 12288,
+        "lastWriteTimeLow": 423447402,
+        "lastWriteTimeHigh": 31280945
+      },
+      {
+        "root": "\\\\?\\Volume{12dbd20e-1280-4ec0-abfa-22933ac79b60}\\",
+        "attributes": 22,
+        "volumeSerial": "7a4fed9b",
+        "fileId": "0005000000000005",
+        "linkCount": 1,
+        "byteLength": 4096,
+        "lastWriteTimeLow": 3820657688,
+        "lastWriteTimeHigh": 31277189
+      }
+    ],
+    "directoryEnumeration": false,
+    "fileContentsRead": false,
+    "writes": false,
+    "temporaryAssemblyFiles": false
+  },
+  "link": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c\\runtime-boundary\\native-cross-volume-3\\foreign",
+    "target": "\\??\\Volume{12dbd20e-1280-4ec0-abfa-22933ac79b60}",
+    "type": "DIRECTORY_SYMBOLIC_LINK",
+    "sourceVolumeSerial": "bec58120",
+    "fileId": "3b00000008f17e",
+    "linkCount": "1"
+  },
+  "request": {
+    "kind": "MemoryOSReadinessHelperRequest",
+    "version": "2.0.0",
+    "session": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "sequence": 3,
+    "operation": "READ_SET",
+    "roots": [
+      {
+        "id": "input",
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c\\runtime-boundary\\native-cross-volume-3"
+      }
+    ],
+    "files": [
+      {
+        "id": "evidence",
+        "path": "foreign/nonexistent-mo1307-phase3c-probe.data",
+        "root": "input",
+        "maxBytes": 0
+      }
+    ]
+  },
+  "requestFrameBase64": "AAAB03siZmlsZXMiOlt7ImlkIjoiZXZpZGVuY2UiLCJtYXhCeXRlcyI6MCwicGF0aCI6ImZvcmVpZ24vbm9uZXhpc3RlbnQtbW8xMzA3LXBoYXNlM2MtcHJvYmUuZGF0YSIsInJvb3QiOiJpbnB1dCJ9XSwia2luZCI6Ik1lbW9yeU9TUmVhZGluZXNzSGVscGVyUmVxdWVzdCIsIm9wZXJhdGlvbiI6IlJFQURfU0VUIiwicm9vdHMiOlt7ImlkIjoiaW5wdXQiLCJwYXRoIjoiQzpcXFVzZXJzXFxtZWxzYVxcRG9jdW1lbnRzXFxDb2RleFxcY2NhLW1vMTMwNy0zY1xccmVwb3NpdG9yaWVzXFxjY2EtY29uZm9ybWFuY2VcXGV2aWRlbmNlXFxtbzEzMDdcXHBoYXNlM2NcXHJ1bnRpbWUtYm91bmRhcnlcXG5hdGl2ZS1jcm9zcy12b2x1bWUtMyJ9XSwic2VxdWVuY2UiOjMsInNlc3Npb24iOiJlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlIiwidmVyc2lvbiI6IjIuMC4wIn0K",
+  "responseFrameBase64": "AAAA+XsiY29kZSI6Ik1PMTMwN19GSUxFU1lTVEVNX0JPVU5EQVJZIiwiZmlsZXMiOltdLCJraW5kIjoiTWVtb3J5T1NSZWFkaW5lc3NIZWxwZXJSZXNwb25zZSIsIm9wZXJhdGlvbiI6IlJFQURfU0VUIiwicm9vdHMiOltdLCJzZXF1ZW5jZSI6Mywic2Vzc2lvbiI6ImVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWUiLCJzdGF0dXMiOiJFUlJPUiIsInZlcnNpb24iOiIyLjAuMCJ9Cg==",
+  "helperElapsedMs": 1575.2864999999997,
+  "response": {
+    "code": "MO1307_FILESYSTEM_BOUNDARY",
+    "files": [],
+    "kind": "MemoryOSReadinessHelperResponse",
+    "operation": "READ_SET",
+    "roots": [],
+    "sequence": 3,
+    "session": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "status": "ERROR",
+    "version": "2.0.0"
+  },
+  "supervisor": {
+    "kind": "cli",
+    "deadline": 30552.1269,
+    "helpers": 1,
+    "workers": 0,
+    "helperUsedMs": 1572.5825999999997,
+    "activeRole": null,
+    "cleanupConfirmed": true,
+    "publication": null,
+    "terminalCode": null,
+    "terminalAt": null,
+    "cleanupDeadline": null,
+    "events": [
+      {
+        "type": "start",
+        "at": 554.7499,
+        "role": "helper",
+        "deadline": 5554.679,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 561.6123,
+        "role": "helper",
+        "pid": 10036,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 2127.2671,
+        "role": "helper",
+        "ordinal": 1
+      }
+    ]
+  },
+  "productionHelperLaunch": {
+    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+    ],
+    "options": {
+      "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\repositories\\memoryos-readiness\\",
+      "env": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true,
+      "detached": false,
+      "shell": false,
+      "stdio": [
+        "pipe",
+        "pipe",
+        "pipe"
+      ]
+    }
+  },
+  "productHelperBinding": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+    "byteLength": 29771,
+    "sha256": "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+  },
+  "historicalAttempts": [
+    {
+      "receipt": "wrong-volume-attempt1/receipt.json",
+      "disposition": "PRESERVED_FAILED_ENGINEERING_EXECUTABLE_PATH",
+      "actualHelperLaunched": false,
+      "linkCreated": false
+    },
+    {
+      "receipt": "wrong-volume-attempt2/receipt.json",
+      "disposition": "PRESERVED_FAILED_ENGINEERING_READLINK_SPELLING",
+      "actualHelperLaunched": false,
+      "linkCreated": true,
+      "ownedLinkRemoved": true
+    }
+  ],
+  "linkCleanup": {
+    "ownedEntryRemoved": true,
+    "nonrecursive": true,
+    "targetDeletion": false
+  },
+  "after": {
+    "observedAtUtc": "2026-09-29T09:49:03.0839444Z",
+    "roots": [
+      {
+        "root": "C:\\",
+        "attributes": 22,
+        "volumeSerial": "bec58120",
+        "fileId": "0005000000000005",
+        "linkCount": 1,
+        "byteLength": 12288,
+        "lastWriteTimeLow": 423447402,
+        "lastWriteTimeHigh": 31280945
+      },
+      {
+        "root": "\\\\?\\Volume{12dbd20e-1280-4ec0-abfa-22933ac79b60}\\",
+        "attributes": 22,
+        "volumeSerial": "7a4fed9b",
+        "fileId": "0005000000000005",
+        "linkCount": 1,
+        "byteLength": 4096,
+        "lastWriteTimeLow": 3820657688,
+        "lastWriteTimeHigh": 31277189
+      }
+    ],
+    "directoryEnumeration": false,
+    "fileContentsRead": false,
+    "writes": false,
+    "temporaryAssemblyFiles": false
+  },
+  "targetRootMetadataUnchanged": true,
+  "finished": "2026-09-29T09:49:03.236Z"
+}

@@ -1,0 +1,125 @@
+{
+  "kind": "MO1307Phase3CReadOnlyVolumeFeasibility",
+  "observedAtUtc": "2026-09-29T09:41:06.3879846Z",
+  "baseline": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "scope": "Read-only existing-volume inventory and root metadata only; no links, mounts, drives or namespaces created by feasibility assessment.",
+  "initialRestrictedCim": {
+    "logicalDisk": "Access denied",
+    "volume": "Access denied",
+    "claimedEmptyInventory": false
+  },
+  "authorizedCim": {
+    "observedAtUtc": "2026-09-29T09:39:42.7245000Z",
+    "logicalDriveLetters": [
+      "C:"
+    ],
+    "volumes": [
+      {
+        "device": "\\\\?\\Volume{05030407-0886-4b3e-a328-d5ebc6ea7faf}\\",
+        "driveLetter": "C:",
+        "fileSystem": "NTFS",
+        "label": "OS",
+        "serial": "bec58120",
+        "bootVolume": true,
+        "systemVolume": false
+      },
+      {
+        "device": "\\\\?\\Volume{12dbd20e-1280-4ec0-abfa-22933ac79b60}\\",
+        "driveLetter": null,
+        "fileSystem": "NTFS",
+        "label": null,
+        "serial": "7a4fed9b",
+        "bootVolume": false,
+        "systemVolume": false
+      },
+      {
+        "device": "\\\\?\\Volume{e2df1312-469d-4bac-a5da-d3730170b1d7}\\",
+        "driveLetter": null,
+        "fileSystem": "NTFS",
+        "label": "Image",
+        "serial": "f8e3a5ca",
+        "bootVolume": false,
+        "systemVolume": false
+      },
+      {
+        "device": "\\\\?\\Volume{82582f5c-be95-4c35-bd61-cfcf4d3d3ce8}\\",
+        "driveLetter": null,
+        "fileSystem": "NTFS",
+        "label": "DELLSUPPORT",
+        "serial": "0c5973ad",
+        "bootVolume": false,
+        "systemVolume": false
+      },
+      {
+        "device": "\\\\?\\Volume{c2205a00-535e-49e9-a640-4fc63c67fc8d}\\",
+        "driveLetter": null,
+        "fileSystem": "FAT32",
+        "label": "ESP",
+        "serial": "828a7041",
+        "bootVolume": false,
+        "systemVolume": true
+      }
+    ]
+  },
+  "nodeStatAttempt": {
+    "sourceC": "ROOT_METADATA_READ",
+    "threeUnmountedNtfsRoots": "EISDIR",
+    "disposition": "Node stat unsuitable for these volume-GUID directory roots; not proof of unavailable or inaccessible volumes."
+  },
+  "nativeMetadata": {
+    "method": "In-memory Reflection.Emit with only fixed kernel32 CreateFileW and GetFileInformationByHandle signatures; FILE_READ_ATTRIBUTES=128, sharing=7, OPEN_EXISTING=3, OPEN_REPARSE_POINT|BACKUP_SEMANTICS=0x02200000; handles closed.",
+    "roots": [
+      {
+        "root": "C:\\",
+        "attributes": 22,
+        "volumeSerial": "bec58120",
+        "fileId": "0005000000000005",
+        "linkCount": 1
+      },
+      {
+        "root": "\\\\?\\Volume{12dbd20e-1280-4ec0-abfa-22933ac79b60}\\",
+        "attributes": 22,
+        "volumeSerial": "7a4fed9b",
+        "fileId": "0005000000000005",
+        "linkCount": 1
+      },
+      {
+        "root": "\\\\?\\Volume{e2df1312-469d-4bac-a5da-d3730170b1d7}\\",
+        "attributes": 22,
+        "volumeSerial": "f8e3a5ca",
+        "fileId": "0005000000000005",
+        "linkCount": 1
+      },
+      {
+        "root": "\\\\?\\Volume{82582f5c-be95-4c35-bd61-cfcf4d3d3ce8}\\",
+        "attributes": 22,
+        "volumeSerial": "0c5973ad",
+        "fileId": "0005000000000005",
+        "linkCount": 1
+      }
+    ]
+  },
+  "assessment": {
+    "result": "FEASIBLE_FOR_ROOT_REVIEW_NOT_EXECUTED",
+    "candidateTarget": "\\\\?\\Volume{12dbd20e-1280-4ec0-abfa-22933ac79b60}\\",
+    "sourceVolume": "bec58120",
+    "targetVolume": "7a4fed9b",
+    "nativeVolumeIdentityDistinct": true,
+    "proposal": "Create one directory symbolic-link entry entirely inside owned runtime-boundary evidence fixtures, pointing to the already existing distinct-volume GUID root. Do not create a junction/mount/drive or write target. Send one fixed-helper READ_SET path through this link to a deliberately nonexistent child, expecting reparse-boundary refusal before acquiring any target bytes. Record link identity/target and helper response, then unlink only that owned entry.",
+    "claimScope": "Actual Windows cross-volume namespace escape attempt. Reparse refusal is expected earlier frozen path policy; this must not claim the native volumeSerial mismatch branch was exercised. Existing closed-response cross-slot volume substitution remains separate.",
+    "constraints": [
+      "All filesystem writes remain designated cca-mo1307-3c worktree",
+      "No VHD, VM, drive-letter assignment, volume mount, or existing root modification",
+      "No directory enumeration or unrelated file content reads",
+      "A malformed cross-volume link is an adversarial input expected to reject; no ordinary private-root success claim for target volume",
+      "No link created until parent root authorizes concrete witness"
+    ]
+  },
+  "writes": {
+    "volumeOrTarget": false,
+    "links": false,
+    "mounts": false,
+    "driveAssignments": false,
+    "onlyThisFeasibilityEvidence": true
+  }
+}

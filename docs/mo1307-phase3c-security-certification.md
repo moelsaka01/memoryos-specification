@@ -1,0 +1,160 @@
+# MO-1307 Phase 3C security and governance certification
+
+Disposition: PASS. The 496 selected primary controls and supplementary witnesses pass within the scopes below. Independent review closed the actual cross-volume coverage gap. No substantive production security defect has been established. The enclosing certification commit is gated on the accompanying final-validation receipt and final staged diff check.
+
+This audit concerns exact B2 `976d4a04d75dadc02e30215dd5a8ddeaa2352df8`, whose sole parent is I2 `198da12a6b67da0104e54f98d2c8fbecbbf4a840`. It does not replace Phase 3A runtime certification or Phase 3B supply-chain certification, authenticate a human decision, or authorize a release. No production bytes were edited.
+
+## Identity, authority and method
+
+The designated workspace is `C:\Users\melsa\Documents\Codex\cca-mo1307-3c`, on `codex/mo1307-phase3c-security`, initially clean. B2 tree is `c887b19bb0ded845a99d4de5c729337b8b544eb5`; the bound I2 tree is `299e1c4dddf01a23d5d6679a3250b839f719009f`. B2's change is confined to its integration binding/evidence. All 2,489 bound members were verified for byte length and SHA-256; all 89 shipped package source members retain their exact bytes. The distribution manifest hash is `sha256:587a8f27cfb700e91c70bf291bba985459818f6ef20793ecc09c96b3f3524c62`.
+
+Contract Freeze 1, Phase 1, Phase 2A, Phase 2B, both scoped publication/finalization corrections, Phase 2C final, Phase 2D integration and B2 binding/evidence were read and assessed by the assigned reviewers. `authority-byte-identities.json` identifies the exact authorities; `b2-byte-verification.json` identifies the complete candidate closure. B2's binding hash is `sha256:98e42e983891ed4ac0365b6dd950421aa0834b9af532589cc855fbfadb9c3a68`.
+
+The audit used Windows and pinned Node v24.21.0 x64, SHA-256 `ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32`. The fixed native helper hash is `ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b`. Its launcher is `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`, file version 10.0.26100.8972, hash `8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e`.
+
+Four independent workstreams authored finite adversarial mutations and reviewed production source. They did not simply rerun Phase 2B tests. Graph reconstruction uses a separate canonical serializer and graph oracle. Existing fixtures serve as exact, dependency-checked inputs. Two previously written output-construction tests were reused after checking their B2 dependency bytes; they are supplementary and excluded from independent corpus counts.
+
+The 22-entry closed attack-surface inventory assigns a trust level, parser/validator and reviewer to CLI, byte API, configuration, candidate, manifest, authority, raw sources, claims, grants, dependencies, history, qualifications, providers, decisions, tags, helper wire, PowerShell launch, worker messages, publication capability, output filesystem, stdout/stderr and package/runtime boundary.
+
+## Findings and evidence interpretation
+
+The closed primary corpus has **496 unique selected cases: 381 expected rejections and 115 accepted or behavioral controls**. Its workstreams are root 157, trust/graph 96, governance 115 and runtime boundary 128. Every selected row records expected and observed acceptance, code, stage, exit interpretation and publication state. All match. `negative-corpus.json` is the primary index; original receipts remain authoritative for detailed behavioral assertions.
+
+A byte/internal call has no observed OS process exit. Those receipts record a mapped frozen exit, or harness success for an accepted behavioral control. Only explicitly labeled public CLI rows record observed CLI exit status. A native helper can exit zero after returning a valid ERROR frame; its product mapping is distinct. Schema/type rejection, representation rejection, semantic rejection, public API behavior, native helper behavior and private defensive seams are explicitly distinguished. A count-limit probe admitted to subsequent schema validation is not represented as a semantically accepted evidence document.
+
+Supplementary receipts cover actual two-phase root identity replacement, synthetic native volume-identity substitution, safe-root/environment determinism, and two dependency-checked output-construction boundaries. The independently reviewed actual different-volume escape is a fifth supplementary receipt and is not silently added to the 496 primary cases. Runtime closure has 128 primary cases plus three supplementary witnesses; the other two supplementary receipts cover determinism and the two reused output boundaries.
+
+Trust remains rooted in an independently chosen operator authority pin. Evidence, configuration, manifests and claims cannot elect a replacement root. Full self-consistent higher-level rewrites fail under the original pin. Tests cover every one of the eight raw configuration-source files introduced by the accepted Phase 2B lineage correction, omission of real bytes and removal of required source use. Explicitly supplying a new independent operator pin in synthetic semantic tests is labeled; it does not prove organizational authentication or infer that an opaque legacy test actually ran.
+
+Grant/candidate/dependency checks reject identity, type, scope, authority, assumptions and applicability substitutions. Selective reuse accepts an unchanged security dependency after an irrelevant documentation change and invalidates the relevant artifact claim; changing runtime while retaining old security dependencies rejects. Historical/metadata dates do not add a generic wall-clock expiration or latest-file selection.
+
+The independently reconstructed READY and selective-reuse graphs each have 54 nodes/114 edges; MO-1306 has 164 nodes/832 edges. Exactly six normative node types and five edge types occur; no SOURCE alias is introduced. Defensive graph tests include self/two-node/long cycles, dangling/unreachable/wrong-root/type/duplicate/conflicting identities, exact 2,048 nodes/8,192 edges and +1 refusal. Public callers cannot submit arbitrary graph edges. Nonsemantic object/private input permutations preserve normative results; reversing a contract-sorted manifest array rejects.
+
+Original MO-1306 integrated output remains exactly 303,620 bytes, READY_WITH_QUALIFICATIONS, with 22 gates, 12 historical negative/unclosed projections and all ten disclosures. Its readiness digest is `sha256:e5addcc82bed243a59d31fa72068e1e2e672581f2c501eb8e9bacb5fbf3b2490`; proof digest is `sha256:410c64d7ed4dcbaefc105e2fa784aaf2d106075759bb43ef20b96bd2456a1421`. All seven qualification codes are exercised. Removing each of the ten disclosures, changing impact, fabricating resolution and promoting hosted/live provider status reject in their stated layers. The text projection retains all ten disclosures, twelve historical rows, five provider rows and both required human actions.
+
+Provider implementation, validation, execution and support remain independent. The eight-way blocker/CNE/qualification matrix confirms blocker > mandatory CNE > release qualification > READY while retaining every finding. The three supported states APPROVE, REJECT and DEFER never change readiness. APPROVE against NOT_READY/CNE remains contrary to readiness. Actor and timestamp strings never change NOT_VERIFIED_BY_MEMORYOS. Supplied tag observations produce only their contracted findings. Source review of all 28 shipped JavaScript/PowerShell members found no release, tag, push, merge, deployment or repository-setting action.
+
+Full result recomputation rejects forged vectors, history, providers, qualifications, readiness, candidate/profile/stage and stale proof, including structurally valid lists with recomputed outer self-hashes. Metadata-only raw changes under a newly explicit reviewed pin may preserve readiness but change proof. Operational failures do not become normative CNE/NOT_READY/qualified readiness.
+
+Prototype review classified 19 grouped high-risk lookup sites. CLI dispatch and exits use own-property checks; parser/options/snapshot dictionaries use null prototypes; logical identity tables use Map/Set. The public API rejects inherited authority, getters, unknown/non-enumerable/symbol fields, shared memory and proxied bytes. Trusted launch excludes hostile preload/loader execution; this is not a sandbox against a host already running arbitrary JavaScript that replaces built-ins.
+
+Parsing and resource probes include duplicate keys, UTF-8/BOM/surrogates/controls, unsafe numbers, canonical form, fixed input-byte caps, JSON depth 16, 131,072 values, 4,096-character strings, 64-character keys, 64 members, 128 manifest files, 8 MiB aggregate evidence and each relevant +1. Bounded claims/grants/history/qualification list admission is tested separately from semantic validity. Result construction admits 4 MiB and rejects +1; text admits 128 KiB and rejects +1. A machine result is complete or refused, never silently stripped of blockers or disclosures. All 21 fixed errors and exits are audited. A single diagnostic record is at most 1,024 bytes; stderr 4,096 bytes is an outer ceiling, not a requirement to emit repeated records. Unsolicited worker output and +1 overflow refuse.
+
+Native controls cover lexical paths, file/directory symlinks, junctions, hardlinks, wrong type, native root replacement and fixed helper frames. Helper wire 2.0 is one canonical length-prefixed frame plus EOF, closed fields, exact operation/session/sequence and canonical base64. Fixed PowerShell executable/script/argv and a sanitized environment defeat PATH, PowerShell 7, script, flag and environment substitution; no execution-policy state is persistently changed. Actual worker policy tests deny fs/process/network imports and fetch/WebSocket. Actual supervised helper observations confirm one helper and quiescence; overlap and malformed/late/duplicate/cancelled worker results refuse. Ignored auxiliary fields on the trusted fixed worker's outer OK wrapper are not a caller-selected evaluator capability.
+
+The additional native cross-volume witness used an owned directory symlink on volume bec58120 toward existing NTFS volume 7a4fed9b. The fixed helper returned FILESYSTEM_BOUNDARY, assigned acquisition stage and mapped public exit 20, in about 1.58 seconds, with one helper, no worker, confirmed exit/quiescence and no publication. The response contained no acquired file bytes. Only target-root metadata was read; no target enumeration, content read, write, mount, drive assignment or new volume occurred. Before/after target metadata matched and the owned link was removed nonrecursively. The raw error frame has no branch telemetry; source ordering supports the earlier reparse refusal. Different filesystem volumes do not imply different physical disks.
+
+Publication tests reject unbranded/foreign/reused capabilities, root/session/sequence/token substitution, second stage/finalize, collisions and pending-byte changes. Finite Windows queued-rename tests use synthetic native inspection frames and the real fs.rename operation. They prove one rename, no false timeout/cancel terminal result after admission, no cleanup mutation while settling and retained final bytes after commit. A post-commit output transport error is OUTPUT and may leave COMMITTED_FINAL_RETAINED; the corpus records that explicit exception to no-publication. These tests do not claim an end-to-end native publication capacity campaign.
+
+Two fresh public API processes in different safe roots, sessions and poisoned environments produce identical 59,987-byte results and both digests, with empty stderr and no sentinel disclosure. Synthetic sentinel literals are intentionally present in engineering fixtures; no real provider credentials or accounts were used. Permitted supplier metadata and logical identifiers are not a general-purpose secret-redaction service.
+
+## Retained failures and separate review
+
+The original root corpus retains one native Verify command outer five-second engineering wait with insufficient transport observation. One bounded 35-second-guard diagnostic observed USAGE/LAUNCH/10, empty stdout and completion in about 1.48 seconds. This closes dispatch observation, not product timing certification.
+
+The runtime first attempt retains a raw UNC helper seven-second engineering guard failure, with no valid frame or forbidden-path acceptance. The continuation used a 20-second protocol-only outer guard; the product's frozen five-second helper supervisor was unchanged. That original attempt does not establish console cleanup or its timing cause. Subsequent actual supervised witnesses have their own quiescence evidence. Neither failure is rewritten into an original PASS.
+
+Trust/graph retains an earlier-phase duplicate-dependency expectation correction and an empty-history fixture mutation mistake. Governance retains two earlier-phase duplicate-ID expectation corrections. Governance has 115 unique selected cases and 117 attempted executions; historical attempts are not inflated into independent selected coverage. Fifteen derived boilerplate pin notes were corrected after review without changing original receipts/harnesses, outcomes or case counts. The initial corpus assembly normalization mistake is retained separately. The new volume witness also retains two failed engineering preflights: an absent metadata executable path before link creation, and an equivalent Windows readlink spelling assertion before product-helper launch. The second owned link was removed nonrecursively before the corrected attempt. Neither preflight is a product failure or relabeled original PASS. No finding required a production edit.
+
+Separate read-only source and integration reviews checked hidden input, trust transitions, unbound evidence, implicit authority, prototypes, loops, mutations, release actions and secret exposure. The integration reviewer independently rehashed all 7,406 historical files, verified selected counts and retained failure semantics, and initially identified the missing actual different-volume witness as a coverage gap. That original review remains immutable. The separate integration-review-addendum.json closes the gap with a real native witness and independently decoded raw frames. It preserves the untested native downstream volumeSerial branch limitation.
+
+Historical preservation covers **7,406 distinct tracked MO-1306/MO-1307 evidence files, 130,292,162 bytes**, compared to B2 Git blobs. The additional 2,348 B2 evidence rows and 2,307 prior preservation rows overlap this set and are not additive. Stopped 2C, environment blocker, contract defect, corrections, all five failed Phase 2D native campaign parents, MO-1306 attempts and original failed Phase 2D error-priority probe remain byte-identical. The original probe still says INTEGRATION_DEFECT_REPRODUCED.
+
+## Limitations carried forward
+
+- MO-1306 native completion remains **NOT_ESTABLISHED**. Phase 3C did not rerun or resolve that timing problem; Phase 3A owns it.
+- GitHub hosted execution is not certified. GitLab, Jenkins and Azure remain contract-only, not live-certified. No provider axis is promoted by this audit.
+- Human decision authenticity remains NOT_VERIFIED_BY_MEMORYOS. Readiness, supplied tags and approvals do not authorize autonomous release operations.
+- An admitted non-cancellable rename may remain pending indefinitely. There is no hard finite post-admission bound, second mutation, retry storm, background server or cross-run task. The availability limitation is not solved.
+- Native security assumes private immutable roots and a trusted installed OS/runtime. Excluded privileged concurrent namespace attackers, hostile kernel behavior and a kernel no-replace guarantee are not certified.
+- Zero production network functionality, sanitized environments and worker policy denial do not establish an OS-wide network sandbox. There is no hard aggregate RSS sandbox claim.
+- The actual different-volume escape refused with FILESYSTEM_BOUNDARY. The earlier native reparse guard explains that result from source ordering, without independent branch telemetry. Synthetic volumeSerial substitution and source review separately cover identity mismatch. Native execution of the downstream volumeSerial mismatch branch and ordinary acquisition on the other volume are not implied.
+- Phase 3A full runtime/process/resource certification and Phase 3B full package/supply-chain certification remain separate. The 89-member source-manifest audit proves the engineering artifacts here are excluded from that shipped set.
+
+## Required 71-item disposition
+
+Paths below are relative to the repository. Evidence names are relative to `repositories/cca-conformance/evidence/mo1307/phase3c/`.
+
+| # | Item | Result and evidence |
+|---|---|---|
+| 1 | Baseline | PASS; designated workspace/branch, exact HEAD/parent, initially clean; baseline.json. |
+| 2 | B2 | Exact 976d4a04d75dadc02e30215dd5a8ddeaa2352df8; 2,489 bound members PASS. |
+| 3 | Candidate identity | B2/I2 trees and package/runtime/helper hashes above; production-baseline.json. |
+| 4 | Attack surfaces | 22 closed entries; attack-surface-inventory.json. |
+| 5 | Trust root | PASS; independent operator pin, substitution/self-authorization refuse. |
+| 6 | Authority grants | PASS; exact type/candidate/dependency/scope/authority closure. |
+| 7 | Raw lineage | PASS; all eight corrected sources and self-consistent metadata attacks. |
+| 8 | Candidate substitution | PASS; source/tree/archive/profile/stage/component mutations. |
+| 9 | Dependencies | PASS; relevant invalidation and irrelevant-change reuse distinguished. |
+| 10 | Staleness | PASS; dependency/scope/authority based; no generic expiry. |
+| 11 | Reuse | PASS; explicit pinned conditions; no latest behavior. |
+| 12 | DAG nodes/edges | PASS; six/five types; independent 54/114 and 164/832 reconstruction. |
+| 13 | Cycle/dangling | PASS; cycles, dangling, unreachable, roots/types/duplicates and limits. |
+| 14 | Graph determinism | PASS; nonsemantic order preserved; sorted manifest order enforced. |
+| 15 | History | PASS; rewrite/removal/fabricated resolution defenses. |
+| 16 | Qualifications | PASS; all seven codes, impact and binding controls. |
+| 17 | MO-1306 qualifications | READY_WITH_QUALIFICATIONS, all ten disclosures retained. |
+| 18 | Provider axes | PASS; independent axes; no truthy/ordinal/promotion bypass. |
+| 19 | Readiness precedence | PASS; eight combinations, full finding retention. |
+| 20 | Result integrity | PASS; independent verification and full recomputation. |
+| 21 | Proof binding | PASS; raw audit binding, stale proof and recomputed self-hash defenses. |
+| 22 | Human decisions | PASS; APPROVE/REJECT/DEFER never authenticate or change readiness. |
+| 23 | False release authority | PASS; no tag/push/merge/release/deployment/settings effects. |
+| 24 | Tag observations | PASS; supplied evidence only, wrong-state/target/type controls. |
+| 25 | CLI dispatch | PASS; 14 unsupported variants through parser and native entrypoint. |
+| 26 | Prototype audit | PASS; 19 grouped high-risk lookup sites and byte-input controls. |
+| 27 | Parser | PASS; canonical/duplicate/type/depth/size/Unicode boundaries. |
+| 28 | Paths | PASS; actual different-volume escape refused and independently reviewed; native downstream volumeSerial branch not claimed. |
+| 29 | Helper wire | PASS; wire 2.0 frame/session/sequence/shape/base64/replay controls. |
+| 30 | PowerShell | PASS; fixed system executable/script/argv and sanitized environment. |
+| 31 | Worker | PASS; fixed selection, messages, deadlines, output and actual import denials. |
+| 32 | Process | PASS security scope; overlap refusal and observed supervised quiescence; 3A separate. |
+| 33 | Network | PASS scoped zero product network; no OS-wide sandbox claim. |
+| 34 | Environment | PASS; launch refusal/sanitization and poisoned environment determinism. |
+| 35 | Secrets/logs | PASS scoped sentinels and fixed diagnostics; no real credentials. |
+| 36 | Publication capability | PASS; branded, bound, single-use authority and token negatives. |
+| 37 | Finalization | PASS; four states, one rename, retained commit; finite queued native operation. |
+| 38 | Resources | PASS bounded admission and +1 controls; layers stated above. |
+| 39 | Availability | Admitted indefinitely pending rename limitation preserved, not solved. |
+| 40 | TOCTOU | PASS scoped identity replacement; immutable/private root precondition preserved. |
+| 41 | Operational/normative | PASS; operational errors never manufactured into readiness outcomes. |
+| 42 | Error priority | PASS; nine phases and representative public multi-failure probes. |
+| 43 | Error catalog | PASS; 21 fixed codes/stages/mapped exits and bounded diagnostics. |
+| 44 | Output bounds | PASS; 4 MiB result, 128 KiB text, 4,096-byte stderr ceiling; no truncation success. |
+| 45 | Determinism | PASS; roots/sessions/environment and nonsemantic insertion order. |
+| 46 | Package boundary | PASS source manifests; 89 exact members, no engineering artifacts. |
+| 47 | Release claims | PASS scoped claims; no hosted/live/authentication/release/sandbox overclaim. |
+| 48 | MO-1306 native | NOT_ESTABLISHED, preserved and not retried here. |
+| 49 | Historical preservation | PASS; 7,406 files/130,292,162 bytes, original failures retained. |
+| 50 | Negative corpus | PASS; 496 selected = 381 rejections + 115 accepted/behavioral controls. |
+| 51 | Independent review | PASS; separate read-only review, actual-volume addendum and final report review complete. |
+| 52 | Production defects | None established; no production patch. |
+| 53 | Certification | PASS within frozen scope; certification-receipt.json and final-validation.json gate the single commit. |
+| 54 | Evidence | repositories/cca-conformance/evidence/mo1307/phase3c/; manifest and receipt. |
+| 55 | Report | docs/mo1307-phase3c-security-certification.md (this file). |
+| 56 | Workspace verification | PASS; read-only workspace verifier and final-validation.json; commit prohibited if final check fails. |
+| 57 | git diff --check | PASS tracked and temporary-index candidate checks in final-validation.json; actual final staged check enforced before commit. |
+| 58 | Production changes | None; all 89 source package members rehashed before commit. |
+| 59 | Commit hash | Resolve the single enclosing certification commit from Git; actual hash supplied in final handoff, with no self-reference. |
+| 60 | Commit parent | Must be exactly B2 976d4a04d75dadc02e30215dd5a8ddeaa2352df8. |
+| 61 | Final Git status | Must be clean after that commit; checked externally after creation. |
+| 62 | Push | None. |
+| 63 | Tag | None. |
+| 64 | Linux/Ubuntu/WSL | Not used. |
+| 65 | VM | Not used. |
+| 66 | Provider accounts | Not used. |
+| 67 | Duration | Start 2026-09-29T09:15:48Z; closure checkpoints recorded in checkpoints.json. |
+| 68 | 90-minute checkpoint | Target 10:45:48Z; closure completed before target as recorded in checkpoints.json. |
+| 69 | Two-hour checkpoint | 11:15:48Z; not reached. |
+| 70 | Hard stop | 12:15:48Z; compliant, with closure time/duration in checkpoints.json and final handoff. |
+| 71 | Phase 3D handoff | Integrate only this exact accepted evidence commit after final gates, with separately accepted 3A/3B; retain every limitation and original failure. |
+
+## Artifact map and handoff
+
+`baseline.json`, `b2-byte-verification.json`, `production-baseline.json` and `authority-byte-identities.json` bind the start and production bytes. `negative-corpus.json` indexes selected primary witnesses. Detailed receipts and source reviews are in `trust-graph/`, `governance/`, `runtime-boundary/` and `root-source-review.md`. `governance/historical-byte-preservation.json` carries every historical byte identity. `evidence-manifest.json` binds all newly created evidence, engineering tools and this report, excluding itself and its companion final-validation receipt to avoid self-reference.
+
+The certification receipt and final-validation receipt are pre-commit artifacts. They do not embed a guessed future commit hash. The final user handoff must resolve the actual enclosing commit, confirm its sole parent is B2, confirm exactly one new commit, confirm all changes are only this report/evidence/engineering-tool paths, and confirm clean Git status. No push or tag is permitted.
+
+If any substantive production defect is established, this certification stops as PRODUCT_DEFECT without patching. If mandatory coverage or final validation remains incomplete, no certification commit is authorized. When all gates pass, use exactly one commit with subject `cert(memoryos-1.3): certify MO-1307 security and governance`.
+
+Phase 3D may integrate the accepted Phase 3C security/governance evidence only after verifying its actual commit and B2 parent, alongside separately accepted Phase 3A and Phase 3B evidence. Preserve MO-1306 native NOT_ESTABLISHED unless separately resolved by its authorized runtime owner, all ten disclosures, original failed attempts, unauthenticated decisions, provider limitations, immutable-root assumptions and admitted rename availability. This handoff does not itself approve release, push, tag or deployment.

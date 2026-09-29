@@ -1,0 +1,8 @@
+{
+  "result": "FAIL",
+  "classification": "ENGINEERING_GIT_CR_AT_EOL_CLASSIFICATION",
+  "exit": 2,
+  "reason": "Setting -text preserved exact Windows terminal CRLF bytes but Git diff --check classified terminal CR as whitespace. No spaces/tabs or production changes were involved. Final-validation did not complete and no commit was created. Precommit receipt and manifest generated before failed staged check are retained here but were not accepted as a completed seal.",
+  "correction": "Keep exact executed bytes and default whitespace checks; add cr-at-eol to the tools-only whitespace attribute.",
+  "productDefect": false
+}

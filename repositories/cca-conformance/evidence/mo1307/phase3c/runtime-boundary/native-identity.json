@@ -1,0 +1,97 @@
+{
+  "kind": "MO1307Phase3CActualNativeIdentityReplacement",
+  "expected": {
+    "code": "MO1307_FILESYSTEM_BOUNDARY",
+    "stage": "CONFIGURATION",
+    "exit": 20
+  },
+  "actual": {
+    "code": "MO1307_FILESYSTEM_BOUNDARY",
+    "stage": "CONFIGURATION",
+    "exit": 20
+  },
+  "observations": [
+    {
+      "sequence": 1,
+      "root": {
+        "attributes": 16,
+        "byteLength": 4096,
+        "fileId": "006900000008cc63",
+        "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c\\runtime-boundary\\native-identity\\input",
+        "isDirectory": true,
+        "linkCount": 1,
+        "volumeSerial": "bec58120"
+      }
+    },
+    {
+      "sequence": 2,
+      "root": {
+        "attributes": 16,
+        "byteLength": 4096,
+        "fileId": "000e000000144681",
+        "finalPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c\\runtime-boundary\\native-identity\\input",
+        "isDirectory": true,
+        "linkCount": 1,
+        "volumeSerial": "bec58120"
+      }
+    }
+  ],
+  "noPublication": true,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 30111.9984,
+    "helpers": 2,
+    "workers": 0,
+    "helperUsedMs": 5306.5422,
+    "activeRole": null,
+    "cleanupConfirmed": true,
+    "publication": null,
+    "terminalCode": null,
+    "terminalAt": null,
+    "cleanupDeadline": null,
+    "events": [
+      {
+        "type": "start",
+        "at": 118.0668,
+        "role": "helper",
+        "deadline": 5117.9592,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 135.8514,
+        "role": "helper",
+        "pid": 23780,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 2833.9762,
+        "role": "helper",
+        "ordinal": 1
+      },
+      {
+        "type": "start",
+        "at": 2872.1799,
+        "role": "helper",
+        "deadline": 7872.1323,
+        "ordinal": 2
+      },
+      {
+        "type": "observation",
+        "at": 2892.6288,
+        "role": "helper",
+        "pid": 14048,
+        "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+      },
+      {
+        "type": "quiescent",
+        "at": 5462.6817,
+        "role": "helper",
+        "ordinal": 2
+      }
+    ]
+  },
+  "scope": "Controlled identity replacement between two actual native acquisition phases, within owned fixtures. No privileged concurrent namespace attacker claim.",
+  "result": "PASS"
+}

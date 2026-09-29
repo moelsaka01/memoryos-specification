@@ -1,0 +1,1800 @@
+{
+  "started": "2026-09-29T09:24:34.671Z",
+  "rows": [
+    {
+      "id": "wire-valid-control",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 11.575300000000027
+    },
+    {
+      "id": "wire-request-wrong-version",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.817700000000002
+    },
+    {
+      "id": "wire-request-wrong-operation",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.216600000000028
+    },
+    {
+      "id": "wire-request-unknown-field",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.8990000000000009
+    },
+    {
+      "id": "wire-request-invalid-session",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.3552000000000248
+    },
+    {
+      "id": "wire-request-invalid-sequence",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.2286000000000286
+    },
+    {
+      "id": "wire-request-output-read-set",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 3.5
+    },
+    {
+      "id": "wire-duplicate-key",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.634399999999971
+    },
+    {
+      "id": "wire-noncanonical",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTEGRITY",
+        "stage": "ACQUISITION",
+        "exit": 13,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTEGRITY",
+        "stage": "ACQUISITION",
+        "exit": 13,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.6770000000000209
+    },
+    {
+      "id": "wire-truncated-header",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.22750000000002046
+    },
+    {
+      "id": "wire-truncated-body",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.3225999999999658
+    },
+    {
+      "id": "wire-extra-frame",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.351099999999974
+    },
+    {
+      "id": "wire-trailing-byte",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.3113999999999919
+    },
+    {
+      "id": "wire-debug-stdout",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.19389999999998508
+    },
+    {
+      "id": "wire-oversize-length",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "ACQUISITION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.2452000000000112
+    },
+    {
+      "id": "wire-response-wrong-session",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 2.3741999999999734
+    },
+    {
+      "id": "wire-response-wrong-sequence",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 2.2554999999999836
+    },
+    {
+      "id": "wire-response-wrong-operation",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.5172000000000025
+    },
+    {
+      "id": "wire-response-unknown-field",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.3799000000000206
+    },
+    {
+      "id": "wire-response-bad-base64",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.941500000000019
+    },
+    {
+      "id": "wire-response-noncanonical-base64",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.550899999999956
+    },
+    {
+      "id": "wire-response-wrong-path",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 2.95920000000001
+    },
+    {
+      "id": "wire-response-hardlink-record",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.5179999999999154
+    },
+    {
+      "id": "wire-response-reparse-record",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.4062999999999874
+    },
+    {
+      "id": "wire-response-wrong-type",
+      "layer": "HELPER_WIRE_JS",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.979600000000005
+    },
+    {
+      "id": "wire-cross-session-replay",
+      "layer": "HELPER_SEQUENCE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 3.9429999999999836
+    },
+    {
+      "id": "sequence-helper-overlap",
+      "layer": "HELPER_SEQUENCE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.522299999999973
+    },
+    {
+      "id": "sequence-worker-before-quiescence",
+      "layer": "HELPER_SEQUENCE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.5715000000000146
+    },
+    {
+      "id": "relative-28",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 3.9190999999999576
+    },
+    {
+      "id": "relative-29",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.18459999999993215
+    },
+    {
+      "id": "relative-30",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.2437999999999647
+    },
+    {
+      "id": "relative-31",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.2217000000000553
+    },
+    {
+      "id": "relative-32",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.17300000000000182
+    },
+    {
+      "id": "relative-33",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.43489999999997053
+    },
+    {
+      "id": "relative-34",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.18860000000006494
+    },
+    {
+      "id": "relative-35",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.1065000000000964
+    },
+    {
+      "id": "relative-36",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.11969999999996617
+    },
+    {
+      "id": "relative-37",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.12149999999996908
+    },
+    {
+      "id": "relative-38",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.11349999999993088
+    },
+    {
+      "id": "relative-39",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.20450000000005275
+    },
+    {
+      "id": "relative-40",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.11599999999998545
+    },
+    {
+      "id": "relative-41",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.4512999999999465
+    },
+    {
+      "id": "relative-42",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.5677000000000589
+    },
+    {
+      "id": "relative-43",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.19060000000001764
+    },
+    {
+      "id": "root-44",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.6050999999999931
+    },
+    {
+      "id": "root-45",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.1248000000000502
+    },
+    {
+      "id": "root-46",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.11039999999991323
+    },
+    {
+      "id": "root-47",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.13009999999997035
+    },
+    {
+      "id": "root-48",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.11580000000003565
+    },
+    {
+      "id": "root-49",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.10749999999995907
+    },
+    {
+      "id": "root-50",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.18659999999999854
+    },
+    {
+      "id": "path-alternate-slash-case",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.9198999999999842
+    },
+    {
+      "id": "path-case-collision",
+      "layer": "WINDOWS_LEXICAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.3310000000000173
+    },
+    {
+      "id": "path-identity-replacement",
+      "layer": "IDENTITY_RECORD",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.592200000000048
+    },
+    {
+      "id": "fixed-powershell-launch",
+      "layer": "SOURCE_AND_LAUNCH_SPEC",
+      "expected": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 2.5511000000000195
+    },
+    {
+      "id": "launch-env-NODE_OPTIONS",
+      "layer": "LAUNCH_REFUSAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.4331999999999425
+    },
+    {
+      "id": "launch-env-NODE_PATH",
+      "layer": "LAUNCH_REFUSAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.15420000000005984
+    },
+    {
+      "id": "launch-env-node_options",
+      "layer": "LAUNCH_REFUSAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.12869999999998072
+    },
+    {
+      "id": "launch-flag---import",
+      "layer": "LAUNCH_REFUSAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.32720000000006166
+    },
+    {
+      "id": "launch-flag---require",
+      "layer": "LAUNCH_REFUSAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.13479999999992742
+    },
+    {
+      "id": "launch-flag---loader",
+      "layer": "LAUNCH_REFUSAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.18259999999997945
+    },
+    {
+      "id": "launch-flag---inspect",
+      "layer": "LAUNCH_REFUSAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.30890000000010787
+    },
+    {
+      "id": "launch-flag---eval",
+      "layer": "LAUNCH_REFUSAL",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_USAGE",
+        "stage": "LAUNCH",
+        "exit": 10,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.12860000000000582
+    },
+    {
+      "id": "launch-unrelated-env-no-semantic-control",
+      "layer": "LAUNCH_REFUSAL",
+      "expected": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.32779999999991105
+    },
+    {
+      "id": "worker-wrong-message-type",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 15.961999999999989
+    },
+    {
+      "id": "worker-wrong-status",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 3.991999999999962
+    },
+    {
+      "id": "worker-malformed-result",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 13.369400000000041
+    },
+    {
+      "id": "worker-duplicate-result",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 2.232400000000098
+    },
+    {
+      "id": "worker-oversized-message",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 2.037300000000073
+    },
+    {
+      "id": "worker-unknown-error",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.3355000000000246
+    },
+    {
+      "id": "worker-result-after-cancellation",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_CANCELLED",
+        "stage": "EVALUATION",
+        "exit": 30,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_CANCELLED",
+        "stage": "EVALUATION",
+        "exit": 30,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 3.1216000000000577
+    },
+    {
+      "id": "worker-unexpected-stdout-secret",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_INTERNAL",
+        "stage": "EVALUATION",
+        "exit": 22,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 3.1383999999999332
+    },
+    {
+      "id": "worker-stream-4097-limit",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "EVALUATION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_RESOURCE_LIMIT",
+        "stage": "EVALUATION",
+        "exit": 28,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 1.5888000000001057
+    },
+    {
+      "id": "worker-fixed-selection-isolation",
+      "layer": "WORKER_SUPERVISOR_DOUBLE",
+      "expected": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 2.057800000000043
+    },
+    {
+      "id": "publication-unbranded-capability",
+      "layer": "PUBLICATION_CAPABILITY",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 2.1988999999999805
+    },
+    {
+      "id": "publication-foreign-token",
+      "layer": "PUBLICATION_CAPABILITY",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 0.5557999999999765
+    },
+    {
+      "id": "publication-wrong-root",
+      "layer": "PUBLICATION_CAPABILITY",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 8.836599999999976
+    },
+    {
+      "id": "publication-capability-reuse",
+      "layer": "PUBLICATION_CAPABILITY",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 31.37760000000003
+    },
+    {
+      "id": "publication-second-stage",
+      "layer": "PUBLICATION_STATE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 58.71609999999998
+    },
+    {
+      "id": "publication-pre-TIMEOUT",
+      "layer": "PUBLICATION_STATE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_TIMEOUT",
+        "stage": "PUBLICATION",
+        "exit": 29,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_TIMEOUT",
+        "stage": "PUBLICATION",
+        "exit": 29,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 58.97589999999991
+    },
+    {
+      "id": "publication-pre-CANCELLED",
+      "layer": "PUBLICATION_STATE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_CANCELLED",
+        "stage": "PUBLICATION",
+        "exit": 30,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_CANCELLED",
+        "stage": "PUBLICATION",
+        "exit": 30,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 29.10609999999997
+    },
+    {
+      "id": "publication-pending-substitution",
+      "layer": "PUBLICATION_BYTES",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 142.24990000000003
+    },
+    {
+      "id": "publication-final-collision",
+      "layer": "PUBLICATION_BYTES",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 50.643100000000004
+    },
+    {
+      "id": "publication-observed-identity-change",
+      "layer": "PUBLICATION_IDENTITY_DOUBLE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_OUTPUT",
+        "stage": "PUBLICATION",
+        "exit": 21,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 47.470800000000054
+    },
+    {
+      "id": "publication-deadline-equality",
+      "layer": "PUBLICATION_STATE",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_TIMEOUT",
+        "stage": "PUBLICATION",
+        "exit": 29,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_TIMEOUT",
+        "stage": "PUBLICATION",
+        "exit": 29,
+        "noPublication": true
+      },
+      "result": "PASS",
+      "elapsedMs": 33.66110000000003
+    },
+    {
+      "id": "publication-native-queued-single-rename",
+      "layer": "NATIVE_RENAME_WITH_SYNTHETIC_INSPECTION",
+      "expected": {
+        "accepted": true,
+        "noPublication": false,
+        "phase": "COMMITTED",
+        "renames": 1,
+        "earlyTerminal": false,
+        "transportError": "MO1307_OUTPUT",
+        "finalRetained": true
+      },
+      "actual": {
+        "accepted": true,
+        "noPublication": false,
+        "phase": "COMMITTED",
+        "renames": 1,
+        "earlyTerminal": false,
+        "transportError": "MO1307_OUTPUT",
+        "finalRetained": true,
+        "namespaceVerified": true,
+        "timeoutFlag": true,
+        "cancelFlag": true,
+        "dispositionDeadline": 3674.5497
+      },
+      "result": "PASS",
+      "elapsedMs": 333.3397
+    },
+    {
+      "id": "native-ordinary-handle-control",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "expected": {
+        "accepted": true,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0
+      },
+      "actual": {
+        "accepted": true,
+        "error": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "OK",
+        "frameBytes": 904,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "result": "PASS",
+      "elapsedMs": 5821.6233
+    },
+    {
+      "id": "native-traversal",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 253,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "result": "PASS",
+      "elapsedMs": 2850.4651000000003
+    },
+    {
+      "id": "native-drive-relative",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true,
+        "helperExit": 0,
+        "stderrBytes": 0,
+        "status": "ERROR",
+        "frameBytes": 253,
+        "session": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sequence": 3
+      },
+      "result": "PASS",
+      "elapsedMs": 3857.141600000001
+    },
+    {
+      "id": "native-unc",
+      "layer": "NATIVE_WINDOWS_HELPER",
+      "expected": {
+        "accepted": false,
+        "error": "MO1307_FILESYSTEM_BOUNDARY",
+        "stage": "ACQUISITION",
+        "exit": 20,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "error": "UNKNOWN",
+        "stage": null,
+        "exit": null,
+        "noPublication": true
+      },
+      "result": "FAIL",
+      "elapsedMs": 7059.036000000002
+    }
+  ]
+}

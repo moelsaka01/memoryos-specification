@@ -1,0 +1,30 @@
+{
+  "kind": "MO1307Phase3CActualWindowsWrongVolumeEscape",
+  "baseline": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "started": "2026-09-29T09:45:35.776Z",
+  "expected": {
+    "helperStatus": "ERROR",
+    "code": "MO1307_FILESYSTEM_BOUNDARY",
+    "stage": "ACQUISITION",
+    "mappedPublicExit": 20,
+    "noPublication": true,
+    "exitConfirmed": true,
+    "quiescent": true
+  },
+  "actual": null,
+  "result": "FAIL",
+  "scope": "Actual Windows directory symlink escape from the owned C: fixture toward an already existing distinct NTFS volume GUID root. Expected rejection occurs at the earlier reparse policy; native volumeSerial-mismatch branch is not claimed.",
+  "targetContentRead": false,
+  "targetDirectoryEnumerated": false,
+  "targetWrites": false,
+  "mountCreated": false,
+  "driveAssigned": false,
+  "newVolumeCreated": false,
+  "productChanged": false,
+  "failure": {
+    "code": "ENOENT",
+    "message": "Engineering witness assertion or metadata failure"
+  },
+  "finalMetadataError": "ENOENT",
+  "finished": "2026-09-29T09:45:35.783Z"
+}

@@ -1,0 +1,23 @@
+{
+  "kind": "MO1307Phase3CWrongVolumeEngineeringAttempt",
+  "result": "FAIL",
+  "classification": "HARNESS_READLINK_NATIVE_SPELLING",
+  "error": "ERR_ASSERTION",
+  "suppliedTarget": "\\\\?\\Volume{12dbd20e-1280-4ec0-abfa-22933ac79b60}\\",
+  "observedTarget": "\\??\\Volume{12dbd20e-1280-4ec0-abfa-22933ac79b60}",
+  "linkPath": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c\\runtime-boundary\\native-cross-volume-2\\foreign",
+  "linkIdentity": {
+    "device": "3200614688",
+    "inode": "75153818782031166",
+    "linkCount": "1"
+  },
+  "productHelperLaunched": false,
+  "targetContentRead": false,
+  "targetWrites": false,
+  "diagnosis": "Windows readlink exposes native NT namespace spelling and omits trailing slash; strict spelling comparison was a harness overconstraint, not a product refusal or target change.",
+  "cleanup": {
+    "ownedEntryRemoved": true,
+    "nonrecursive": true,
+    "confirmedAbsent": true
+  }
+}

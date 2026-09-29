@@ -1,0 +1,277 @@
+{
+  "kind": "MO1307Phase3CIndependentIntegrationReview",
+  "version": "1.0.0",
+  "reviewedAt": "2026-09-29T09:41:52.521Z",
+  "baseline": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "reviewer": "trust-graph independent subagent",
+  "mode": "READ_ONLY_INTEGRATION_REVIEW_WITH_EVIDENCE_REPORT",
+  "result": "REVIEW_COMPLETE_WITH_COVERAGE_GAP",
+  "certificationRecommendation": "BLOCKED_COVERAGE_PENDING_ACTUAL_WINDOWS_WRONG_VOLUME_WITNESS",
+  "productionDefectEstablished": false,
+  "productionEdits": false,
+  "testsRerun": false,
+  "counts": {
+    "selectedUniquePrimaryControls": 496,
+    "expectedRejections": 381,
+    "acceptedOrBehavioralControls": 115,
+    "groups": {
+      "root": {
+        "selectedUniqueControls": 157,
+        "expectedRejections": 114,
+        "acceptedOrBehavioralControls": 43,
+        "selectedAssertionsMatched": 157
+      },
+      "trust-graph": {
+        "selectedUniqueControls": 96,
+        "expectedRejections": 87,
+        "acceptedOrBehavioralControls": 9,
+        "selectedAssertionsMatched": 96
+      },
+      "governance": {
+        "selectedUniqueControls": 115,
+        "expectedRejections": 71,
+        "acceptedOrBehavioralControls": 44,
+        "selectedAssertionsMatched": 115
+      },
+      "runtime-boundary": {
+        "selectedUniqueControls": 128,
+        "expectedRejections": 109,
+        "acceptedOrBehavioralControls": 19,
+        "selectedAssertionsMatched": 128
+      }
+    },
+    "supplementaryExcludedFromPrimary": [
+      {
+        "receipt": "runtime-boundary/native-identity.json",
+        "scope": "Actual two-phase native root identity replacement"
+      },
+      {
+        "receipt": "runtime-boundary/volume-identity.json",
+        "scope": "Closed native-response volume substitution on Windows; no physical other-volume fixture"
+      },
+      {
+        "receipt": "safe-root-environment-determinism.json",
+        "scope": "Two fresh public API processes; one determinism comparison"
+      },
+      {
+        "receipt": "output-construction-boundaries.json",
+        "scope": "Two exact-B2 existing output construction regressions, not independent corpus"
+      }
+    ],
+    "meaning": "Counts describe selected uniquely identified controls with matched assertions, not 496 semantic acceptance claims or 496 distinct production entrypoints. Earlier failed observations and narrow corrections are not added again."
+  },
+  "findings": [
+    {
+      "id": "IR-01",
+      "classification": "COUNT_AND_LAYER_SCOPE",
+      "result": "PASS",
+      "finding": "157 root + 96 trust/graph + 115 governance + 128 runtime = 496 unique selected primary controls. Runtime base selects89 first-run passes and23 continuation cases, replacing the failed native-unc observation once, plus16 supplement cases. Two identity witnesses, the two-process determinism comparison, and two reused output-construction regressions remain supplementary."
+    },
+    {
+      "id": "IR-02",
+      "classification": "RETAINED_FAILURE_DISPOSITIONS",
+      "result": "PASS",
+      "finding": "Root Verify original insufficient five-second engineering observation remains FAIL; one35s outer diagnostic returned USAGE/LAUNCH/10 with empty stdout in1482.5888ms. Runtime original native-unc seven-second guard failure remains FAIL; its timing cause and historical console quiescence are not inferred. The20s continuation is direct helper protocol testing, not certification under frozen5000ms supervision. Governance retains original two duplicate-ID expected-stage failures and corrects only their test expectation. Trust retains both harness/fixture development attempts. Corpus assembler initial helper-exit normalization assertion and original source are preserved separately."
+    },
+    {
+      "id": "IR-03",
+      "classification": "ACCEPTANCE_AND_PUBLICATION_MEANING",
+      "result": "PASS_WITH_SCOPED_MEANING",
+      "finding": "Composite native CLI unknown-command rows correctly say product accept=false with USAGE/LAUNCH/10, despite raw harness assertion success. Byte/internal no-publication is absence of publication authority, not an observed native no-write test. Raw helper exit0 transports an ERROR frame and is distinct from mapped product exit20. Accepted worker-denial and boundary controls denote successful assertions, not accepted user evidence. The queued native rename control explicitly retains COMMITTED_FINAL_RETAINED; its source receipt records exactly one rename, no false early terminal, OUTPUT transport failure and retained final bytes. Final-collision no-publication means no new publication and preserved prior bytes."
+    },
+    {
+      "id": "IR-04",
+      "classification": "REPORTING_NOTE_CORRECTION",
+      "result": "RESOLVED",
+      "finding": "Fifteen derived governance notes incorrectly described a fresh operator pin. Source shows12 raw-integrity mutations retain original trust/authority/manifest, and3 rebuilt-metadata cases retain original independent trust pin. accepted-corpus notes now match source; derived-note-correction records before/after hashes. Original three receipts and original harness match their recorded hashes. Cases, outcomes and production bytes did not change.",
+      "correctedNotes": 15
+    },
+    {
+      "id": "IR-05",
+      "classification": "HISTORICAL_PRESERVATION",
+      "result": "PASS",
+      "finding": "Independently rehashed every current file named by the7406-row history ledger:7406 unique paths,130292162 bytes,zero length/hash mismatches. The ledger also records exact B2 Git blob checks. The2348 B2-bound evidence rows and2307 earlier preservation rows are overlapping subsets and are not added to7406. Five Phase2D native parents remain FAIL; prior priority defect stays INTEGRATION_DEFECT_REPRODUCED; MO1306 native completion remains NOT_ESTABLISHED."
+    },
+    {
+      "id": "IR-06",
+      "classification": "RELEASE_AND_CERTIFICATION_CLAIMS",
+      "result": "PASS_FOR_REVIEWED_ARTIFACTS",
+      "finding": "Reviewed governance and source inventories preserve all ten MO1306 disclosures, seven qualification codes, independent provider axes and unauthenticated external decisions. No readiness/APPROVE/tag data creates release authority. Inventory binds28 shipped script/module sources with no tag, push, merge, release, deployment or repository-setting mutation. Permitted output staging/rename is scoped to result publication. Root/runtime review does not claim OS-wide network isolation, aggregate RSS sandbox, finite admitted-rename settlement, privileged hostile-namespace protection, or full3A/3B certification."
+    },
+    {
+      "id": "IR-07",
+      "classification": "REQUIRED_NATIVE_FILESYSTEM_COVERAGE",
+      "result": "BLOCKED_COVERAGE",
+      "requirement": "User request section29 requires actual Windows tests and separately lists wrong volume; section56 requires filesystem PASS before certification.",
+      "evidence": "Actual native symlink/junction/reparse/hardlink/type/path refusals and actual two-phase root identity replacement pass. volume-identity.json is explicitly CLOSED_NATIVE_IDENTITY_RESPONSE_CROSS_SLOT_VALIDATION_ON_WINDOWS with physicalOtherVolume=false. windows-inspect.ps1:246 compares every opened component volumeSerial with the drive serial; line208 rejects reparse attributes.",
+      "finding": "This establishes tested native filesystem controls, source review and synthetic cross-slot volume-identity refusal. It does not establish the separately requested actual wrong-volume witness. Keep narrower tested scope PASS and physical wrong-volume UNTESTED. Without a safe authorized actual witness, overall complete certification and the prescribed certification commit are unsupported. This is a coverage gap, not an established production security defect.",
+      "followup": "Parent is assessing read-only native-volume feasibility. Do not infer authorization to create or mount a volume, use a VM, or write outside the designated workspace. Any later witness requires its own exact evidence and disposition."
+    }
+  ],
+  "verification": {
+    "sourceBindingChecks": [
+      {
+        "inventory": "governance/release-effect-inventory.json",
+        "members": 28,
+        "mismatches": []
+      },
+      {
+        "inventory": "runtime-boundary/source-review.json",
+        "members": 26,
+        "mismatches": []
+      }
+    ],
+    "historyCurrentFiles": {
+      "count": 7406,
+      "unique": 7406,
+      "totalBytes": 130292162,
+      "mismatches": []
+    },
+    "noteCorrectionMatches": true,
+    "originalCorrectionSources": [
+      {
+        "path": "corpus-attempt1.json",
+        "matches": true
+      },
+      {
+        "path": "corpus-correction.json",
+        "matches": true
+      },
+      {
+        "path": "corpus-supplement.json",
+        "matches": true
+      },
+      {
+        "path": "governance-attempt1.mjs.data",
+        "matches": true
+      }
+    ]
+  },
+  "reviewedArtifactBindings": [
+    {
+      "path": "negative-corpus.json",
+      "byteLength": 326748,
+      "sha256": "6cafc2c9c05f84a572d13f3441942bda298faa9af7365f3a1a96bed32e001497"
+    },
+    {
+      "path": "corpus-assembly-disposition.json",
+      "byteLength": 667,
+      "sha256": "22bb5cefd543cc6b98fcf7ca770aafbed8b3b1c913a45647f4bf9ec349c2aa4c"
+    },
+    {
+      "path": "assemble-corpus-attempt1.mjs.data",
+      "byteLength": 4477,
+      "sha256": "b9363526f840215e4691809e64cd2300a850c47a8090c61b3949d97f73d4cdaa"
+    },
+    {
+      "path": "root-source-review.md",
+      "byteLength": 8114,
+      "sha256": "559e77a5b1a8043c834e8535de19b125c4710dfc335a67b045d043dacd01cdf0"
+    },
+    {
+      "path": "root-corpus-results.json",
+      "byteLength": 1586115,
+      "sha256": "6c01c10b45b2afac42c16b55c2e946e47f5acf24c9e1f1a0f6b5e71eabb170a0"
+    },
+    {
+      "path": "dispatch-native-diagnostic.json",
+      "byteLength": 744,
+      "sha256": "942569695afbe099e8d09d1766c809704b0f08f6c96e7b738a9f001d3e6104a1"
+    },
+    {
+      "path": "governance/accepted-corpus.json",
+      "byteLength": 134648,
+      "sha256": "3f56fe137c2a708ff1e926af88417f363d5d766d3c3261a38904f1891d3d470a"
+    },
+    {
+      "path": "governance/development-disposition.json",
+      "byteLength": 1199,
+      "sha256": "a918a5ceefc86d87cc6cde4816fdee8af646d00aaee238c974a91aaaec917cbf"
+    },
+    {
+      "path": "governance/derived-note-correction.json",
+      "byteLength": 7922,
+      "sha256": "3f54c3f307c21d860731d63153426ad1d097ecf3f6cbdd0ba894eb8fee395efa"
+    },
+    {
+      "path": "governance/historical-byte-preservation.json",
+      "byteLength": 2516623,
+      "sha256": "ada30ec82cc3b61cda2b0fcdc3ec130db741a7b108d9ade61958917baca7aecb"
+    },
+    {
+      "path": "governance/release-effect-inventory.json",
+      "byteLength": 21617,
+      "sha256": "a7e3efc74a348a587ca662e0b8910ef7f159b781c42162e21e6cb85c07a94a35"
+    },
+    {
+      "path": "governance/report.md",
+      "byteLength": 12421,
+      "sha256": "b8c6cbe2674bb13905b5dd2dacc1a95366e1024772d2777d36e2c2efd1712555"
+    },
+    {
+      "path": "runtime-boundary/closure.json",
+      "byteLength": 74963,
+      "sha256": "29780d79f9969a12badca864d4ef836d13c16edb2cefb5960d1ea9c35318f14c"
+    },
+    {
+      "path": "runtime-boundary/source-review.json",
+      "byteLength": 17860,
+      "sha256": "87fb56ebebef25325036ce18e8d61e996b7e779f949d2a0db00d5d08450d3467"
+    },
+    {
+      "path": "runtime-boundary/run-1/FAILED.json",
+      "byteLength": 401,
+      "sha256": "a34bb673a58d0a0800c09d10cd1f87db5e5abf91c143c4d0eb4f53a5e8691240"
+    },
+    {
+      "path": "runtime-boundary/run-1/corpus.partial.json",
+      "byteLength": 44841,
+      "sha256": "6dd9e2cf5c6b597c34f6c47bd6866a42320eb7a964c34870e21766ed7d8405f0"
+    },
+    {
+      "path": "runtime-boundary/run-2/receipt.json",
+      "byteLength": 18233,
+      "sha256": "6aa1d9e3df480df7381d31b20d6a91a95ab97d000afc7acc5bb2bb500a4fc4dc"
+    },
+    {
+      "path": "runtime-boundary/supplement.json",
+      "byteLength": 6400,
+      "sha256": "ec4c2e6764947ce5cf8695f53051d81031b6da187272676c81ede9dce9e2b779"
+    },
+    {
+      "path": "runtime-boundary/native-identity.json",
+      "byteLength": 2558,
+      "sha256": "52e90f998387659641881acca2a5a4993dad998ec63405f518a3aefc5c301742"
+    },
+    {
+      "path": "runtime-boundary/volume-identity.json",
+      "byteLength": 784,
+      "sha256": "1a1a2d8271876894f9f9fa81adfd57f9c6b3c1894bda46e224483a8b449683c2"
+    },
+    {
+      "path": "trust-graph/receipt.json",
+      "byteLength": 60903,
+      "sha256": "e96940e989c4f4f5fa066597209843a51b99953f6352fd287b20547eb380085d"
+    },
+    {
+      "path": "trust-graph/review.md",
+      "byteLength": 10800,
+      "sha256": "8f11f3c480f19b0edb427a09761d5fb13a816bc26603fb4d307c0dee308c6b16"
+    },
+    {
+      "path": "safe-root-environment-determinism.json",
+      "byteLength": 1182,
+      "sha256": "3fbb37574f3c024c698dd08427e59ebfd8d4b918b1fe4fefda6d783275e19117"
+    },
+    {
+      "path": "output-construction-boundaries.json",
+      "byteLength": 1043,
+      "sha256": "da3b90b003b53065e22fc91b7f4f235d249399ecd7c3a65d42ed5cbbafac754d"
+    }
+  ],
+  "limitations": [
+    "This read-only follow-up validates integrated claims and evidence consistency; it does not repeat primary security campaigns.",
+    "An overall certification decision belongs to the parent after disposition of the actual Windows wrong-volume coverage gap.",
+    "No privileged concurrent namespace adversary, OS-wide network isolation, hard aggregate RSS limit, MO1306 native completion, hosted/provider execution, or bounded admitted rename settlement is promoted by this review."
+  ]
+}

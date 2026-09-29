@@ -1,0 +1,59 @@
+{
+  "kind": "MO1307Phase3CFinalReportByteNormalizationAttestation",
+  "version": "1.0.0",
+  "reviewedAt": "2026-09-29T09:59:32.689Z",
+  "baseline": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "reviewer": "trust-graph independent subagent",
+  "result": "PASS_BYTE_NORMALIZATION_ONLY",
+  "mode": "READ_ONLY_REPORT_AND_ATTRIBUTE_REVIEW",
+  "testsExecuted": false,
+  "productionChangesByReviewer": false,
+  "priorAttestationsChanged": false,
+  "previousAttestation": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/final-report-attestation.json",
+    "byteLength": 3926,
+    "sha256": "02761ef48f677fd53aad5c924d31a31a405d16344883547571efe224c706174f"
+  },
+  "oldReport": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c/sealing-attempt1/report-before-lf-normalization.md.data",
+    "byteLength": 25240,
+    "sha256": "74387013a3ff20077d8efe2b3f6e5bac9fdfc505d0ce25ebe362515aade5050f"
+  },
+  "currentReport": {
+    "path": "docs/mo1307-phase3c-security-certification.md",
+    "byteLength": 25239,
+    "sha256": "54cd32ac64c62c0dc7141de8014238597c0656c2dd913226158e56a438eef5ca"
+  },
+  "comparison": {
+    "equalAfterCRLFToLF": true,
+    "oldByteLength": 25240,
+    "currentByteLength": 25239,
+    "removedCarriageReturnByteOffsetsZeroBased": [
+      25238
+    ],
+    "oldCRCount": 1,
+    "currentCRCount": 0,
+    "oldLFCount": 160,
+    "currentLFCount": 160,
+    "proseChanged": false,
+    "meaning": "Exactly one trailing CRLF became LF. All other report bytes and all prose are identical to the previously reviewed report."
+  },
+  "engineeringAttribute": {
+    "binding": {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c/.gitattributes",
+      "byteLength": 83,
+      "sha256": "0318515e080dc038550aaccd35765e539e480e6e04e63e6e351aaaca4a38bbe0"
+    },
+    "rule": "* -text",
+    "scope": "Only repositories/cca-conformance/tools/mo1307-phase3c/ and its descendants. The directory-local attribute has no scope over repositories/memoryos-readiness/ production files, other engineering directories, or docs/.",
+    "purpose": "Keep the bytes of executed engineering harnesses identical when staged and committed, preserving existing exact-byte source/evidence bindings.",
+    "observedGitAttributes": {
+      "repositories/cca-conformance/tools/mo1307-phase3c/trust-graph.mjs": "text: unset",
+      "repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary/native-wrong-volume.mjs": "text: unset",
+      "repositories/memoryos-readiness/src/runtime.mjs": "text: unset under its separate pre-existing attribute scope",
+      "docs/mo1307-phase3c-security-certification.md": "text: auto"
+    }
+  },
+  "conclusion": "The prior read-only content/evidence-consistency conclusion applies to the current LF-normalized report. No new production security concern arises from this report-only newline normalization or the engineering-subtree byte-preservation attribute. Archived old report hashes to the exact prior attestation. Parent staged-blob identity and final-validation gates remain required; this attestation does not claim those later checks or a commit have occurred.",
+  "editingCeasesAfterThisAttestation": true
+}

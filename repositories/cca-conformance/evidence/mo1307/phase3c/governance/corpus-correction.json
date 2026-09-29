@@ -1,0 +1,63 @@
+{
+  "kind": "MO1307Phase3CGovernanceCorpus",
+  "version": "1.0.0",
+  "started": "2026-09-29T09:26:30.564Z",
+  "finished": "2026-09-29T09:26:30.990Z",
+  "baseline": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "runtime": {
+    "version": "v24.21.0",
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "surfaceScope": "Integrated source and byte API only. Byte surfaces have no publication authority; no native execution claim.",
+  "count": 2,
+  "passed": 2,
+  "mismatches": 0,
+  "records": [
+    {
+      "id": "HISTORY-DUPLICATE-SEMANTIC",
+      "layer": "SORTED_UNIQUE_REPRESENTATION",
+      "surface": "INTEGRATED_FIXED_WORKER_FUNCTION",
+      "note": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "expected": {
+        "accept": false,
+        "code": "MO1307_INPUT",
+        "stage": "INTEGRITY",
+        "exit": 12,
+        "publication": "NONE_BYTE_SURFACE"
+      },
+      "actual": {
+        "accept": false,
+        "code": "MO1307_INPUT",
+        "stage": "INTEGRITY",
+        "exit": 12,
+        "reference": "envelope.history",
+        "diagnostic": "{\"code\":\"MO1307_INPUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":\"envelope.history\",\"stage\":\"INTEGRITY\",\"version\":\"1.0.0\"}\n",
+        "publication": "NONE_BYTE_SURFACE"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "QUALIFICATION-duplicate-conflict",
+      "layer": "SEMANTIC_OR_SORTED_UNIQUE",
+      "surface": "INTEGRATED_FIXED_WORKER_FUNCTION",
+      "note": "Fresh test-only operator pin permits cross-field checks; no real certificate is issued.",
+      "expected": {
+        "accept": false,
+        "code": "MO1307_INPUT",
+        "stage": "INTEGRITY",
+        "exit": 12,
+        "publication": "NONE_BYTE_SURFACE"
+      },
+      "actual": {
+        "accept": false,
+        "code": "MO1307_INPUT",
+        "stage": "INTEGRITY",
+        "exit": 12,
+        "reference": "envelope.provider.github",
+        "diagnostic": "{\"code\":\"MO1307_INPUT\",\"kind\":\"MemoryOSReadinessError\",\"reference\":\"envelope.provider.github\",\"stage\":\"INTEGRITY\",\"version\":\"1.0.0\"}\n",
+        "publication": "NONE_BYTE_SURFACE"
+      },
+      "result": "PASS"
+    }
+  ]
+}

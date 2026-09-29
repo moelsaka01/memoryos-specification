@@ -1,0 +1,176 @@
+{
+  "kind": "MO1307Phase3CIndependentIntegrationReviewAddendum",
+  "version": "1.0.0",
+  "reviewedAt": "2026-09-29T09:51:44.115Z",
+  "baseline": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "reviewer": "trust-graph independent subagent",
+  "mode": "READ_ONLY_NATIVE_WITNESS_REVIEW",
+  "result": "PASS_SCOPED_ACTUAL_WINDOWS_WRONG_VOLUME_ESCAPE",
+  "supersedesOnly": {
+    "review": "trust-graph/integration-review.json",
+    "finding": "IR-07",
+    "priorDisposition": "BLOCKED_COVERAGE_PENDING_ACTUAL_WINDOWS_WRONG_VOLUME_WITNESS",
+    "disposition": "RESOLVED_BY_ADDITIONAL_ACTUAL_NATIVE_WITNESS",
+    "originalReviewChanged": false
+  },
+  "certificationRecommendation": "Previously identified wrong-volume coverage gap is closed for the requested bounded filesystem security audit. Overall certification remains conditional on parent final validation and all other acceptance gates.",
+  "productionDefectEstablished": false,
+  "productionEdits": false,
+  "testsRerun": false,
+  "assessment": {
+    "requiredScope": "User section29 actual Windows wrong-volume negative, interpreted as a real attempted escape to another filesystem volume. The user does not require bypassing earlier frozen guards solely to reach every downstream defensive branch.",
+    "actualObservation": "Owned directory symbolic link on source volume bec58120 targeted existing NTFS volume GUID12dbd20e-1280-4ec0-abfa-22933ac79b60 with independently observed volumeSerial7a4fed9b. A real fixed-helper READ_SET attempted the path through that link and returned an ERROR frame with MO1307_FILESYSTEM_BOUNDARY, empty files and roots. Fixed supervisor recorded one helper, no worker, exit confirmed and quiescence. The link was removed nonrecursively; target root metadata was unchanged.",
+    "observedVsMappedError": {
+      "observedInWire": {
+        "status": "ERROR",
+        "code": "MO1307_FILESYSTEM_BOUNDARY"
+      },
+      "assignedOperationStage": "ACQUISITION",
+      "mappedPublicExit": 20,
+      "observedPublicCliExit": false,
+      "noPublication": true
+    },
+    "rejectionPoint": "The ERROR frame contains no branch telemetry. Native reparse refusal is supported by source ordering: Open-Native opens with OPEN_REPARSE_POINT|BACKUP_SEMANTICS at windows-inspect.ps1:188; Read-Identity rejects reparse attributes at208; Open-Chain calls that before comparing volumeSerial at246. This is a source-supported explanation of the observed rejection, not independently traced branch execution.",
+    "separateLayers": "The existing synthetic cross-slot volumeSerial substitution still separately proves response identity-change refusal. Native source review confirms component-volume comparison. These are kept distinct from the actual cross-volume namespace escape witness.",
+    "limits": [
+      "Native execution of the downstream volumeSerial mismatch branch remains unproven.",
+      "Successful ordinary acquisition on the other volume is not claimed.",
+      "Distinct volume serials prove different filesystem volumes, not separate physical disks.",
+      "Only root metadata was read on the target volume; no contents/enumeration/target write, new volume, mount or drive assignment was part of the witness.",
+      "No privileged concurrent namespace attacker or protection beyond the frozen private immutable-root assumption is certified."
+    ],
+    "whyGapCloses": "Earlier review had only source review and supplied identities, so actual Windows wrong-volume coverage was absent. This additional witness supplies a genuine different-volume target and an actual production native-helper rejection. Refusal at an earlier mandatory guard is the correct boundary behavior, rather than a reason to bypass that guard or demand an artificial deeper branch."
+  },
+  "verification": {
+    "rawFrames": {
+      "request": {
+        "byteLength": 471,
+        "bodyLength": 467,
+        "sha256": "c64171204ed3f3ff6094bfe93e27596533ca794caa592e10b3f184c1bbe4ab6e",
+        "canonicalBody": true,
+        "agreesWithRecordedObject": true
+      },
+      "response": {
+        "byteLength": 253,
+        "bodyLength": 249,
+        "sha256": "bfce1712ce0ef0a25c7cdc519e107a702b07ef703cf6a20ebcb53ebfc6f7c04e",
+        "canonicalBody": true,
+        "agreesWithRecordedObject": true
+      }
+    },
+    "helperBindingMatchesCurrentBytes": true,
+    "requestResponseSessionSequenceOperationMatch": true,
+    "sourceTargetVolumeSerialDistinct": true,
+    "targetMetadataBeforeAfterEqual": true,
+    "ownedLinkNowAbsent": true,
+    "helperElapsedMs": 1575.2864999999997,
+    "supervisorHelperDeadlineMs": 5000,
+    "supervisorOneHelperNoWorkerAndQuiescent": true,
+    "publicationState": null,
+    "selectedPrimaryRuntimeCount": 128,
+    "supplementaryRuntimeWitnesses": 3,
+    "totalRuntimeWitnesses": 131,
+    "primaryOverallCountUnchanged": 496
+  },
+  "retainedFailures": [
+    {
+      "path": "runtime-boundary/wrong-volume-attempt1/receipt.json",
+      "result": "FAIL",
+      "disposition": "Engineering metadata executable path ENOENT before link creation or helper launch; no security pass inferred."
+    },
+    {
+      "path": "runtime-boundary/wrong-volume-attempt2/receipt.json",
+      "result": "FAIL",
+      "disposition": "Engineering exact readlink spelling assertion before helper launch. Windows exposed equivalent NT namespace spelling. Original source and link cleanup retained; no product failure or original pass inferred."
+    }
+  ],
+  "reportReview": {
+    "path": "docs/mo1307-phase3c-security-certification.md",
+    "stateReviewed": "DRAFT_PENDING_FINAL_NATIVE_VOLUME_REVIEW",
+    "finding": "Full draft accurately scopes496 primary cases, supplementary witnesses, retained failures, historical count overlap, mapped versus OS exits, committed publication exception, source/package claims and required limitations. It correctly withholds certification pending this addendum and final validation. Final status/hash attestation is separate after parent updates the draft."
+  },
+  "reviewedArtifactBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/integration-review.json",
+      "byteLength": 13553,
+      "sha256": "e9c21b57d797bb1d033c0cdddf8671349a3947df6b38b96a2b477531e60a23a4"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/native-wrong-volume.json",
+      "byteLength": 7538,
+      "sha256": "40da6473d7cd34803c747725eca46b26d749d5ca2d1838ed180573df3251f70c"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/volume-feasibility.json",
+      "byteLength": 5021,
+      "sha256": "2e518882c5cae67e3f20bc7860c1adc455a4116f08035521d2d3f186dba94663"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/volume-identity.json",
+      "byteLength": 784,
+      "sha256": "1a1a2d8271876894f9f9fa81adfd57f9c6b3c1894bda46e224483a8b449683c2"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/closure.json",
+      "byteLength": 75912,
+      "sha256": "57b73a6598c4eb7f9c617b94641b21165fa9d6ac8aebca464b7dd644b9f9b773"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/source-review.json",
+      "byteLength": 18310,
+      "sha256": "081f07835853a661b3551d0d5eb0aad0dd417b6d0ffa29524969faff86036219"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/file-manifest.json",
+      "byteLength": 11379,
+      "sha256": "04e59c9060f4d397d8aa784fbd743617cbca4d168ed563511bbbc44082046069"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/wrong-volume-attempt1/receipt.json",
+      "byteLength": 1054,
+      "sha256": "1d1c7b5c5b6335fd4e1b5c31efd3f57bc7ebd8478ccd81633b989837c9375170"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/wrong-volume-attempt1/harness-original.mjs",
+      "byteLength": 5742,
+      "sha256": "a3ff693abca450529c43ce37ad2f4b785e2da7986f16d5744ce6ff4b33ca72cb"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/wrong-volume-attempt2/receipt.json",
+      "byteLength": 986,
+      "sha256": "441885b24f5f43ddf9a2f5ad8ff176614a3f56d387869ccd5327fb7ec1d74971"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/wrong-volume-attempt2/harness-original.mjs",
+      "byteLength": 6433,
+      "sha256": "6379d9593c7832335e79e7a86b866359c626b91f44224a8143a7017b703bc99e"
+    }
+  ],
+  "reviewedSourceBindings": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary/native-wrong-volume.mjs",
+      "byteLength": 6734,
+      "sha256": "682d1bdbb7af4b37bb4ad9720e94c0cb46e9c2542b22854bde5cccaedc4374cf"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary/volume-root-metadata.ps1",
+      "byteLength": 3098,
+      "sha256": "f970cc845cd32dd5810a3301913bf7bcef3f577cd741ffeda5eb8b70c93bde1c"
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 29771,
+      "sha256": "ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+      "byteLength": 6250,
+      "sha256": "ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/runtime.mjs",
+      "byteLength": 16904,
+      "sha256": "012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    }
+  ]
+}

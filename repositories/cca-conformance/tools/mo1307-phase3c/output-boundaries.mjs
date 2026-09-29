@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+const ev='repositories/cca-conformance/evidence/mo1307/phase3c';
+const target='repositories/cca-conformance/tests/mo1307_phase2a_result_test.mjs';
+const r=spawnSync(process.execPath,['--test','--test-name-pattern','result boundary:|text boundary:',target],{windowsHide:true,encoding:'utf8',timeout:60000,maxBuffer:2*1024*1024});
+fs.writeFileSync(ev+'/output-construction-boundaries.stdout.txt',r.stdout,{flag:'wx'});fs.writeFileSync(ev+'/output-construction-boundaries.stderr.txt',r.stderr,{flag:'wx'});
+const hash=p=>'sha256:'+createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const receipt={result:r.status===0?'PASS':'FAIL',exit:r.status,error:r.error?.code??null,scope:'Supplementary exact-B2 bounded private result/text construction regression: 4 MiB/+1 and128 KiB/+1. Not counted as new independent corpus. Primary source inspection/root corpus and fresh proof negatives remain independent.',dependencies:'All 2489 I2 bound members and all89 shipped package members verified before reuse. Production remains exact B2.',test:{path:target,sha256:hash(target)},stdout:{path:ev+'/output-construction-boundaries.stdout.txt',sha256:hash(ev+'/output-construction-boundaries.stdout.txt')},stderr:{path:ev+'/output-construction-boundaries.stderr.txt',sha256:hash(ev+'/output-construction-boundaries.stderr.txt')}};
+fs.writeFileSync(ev+'/output-construction-boundaries.json',JSON.stringify(receipt,null,2)+'\n',{flag:'wx'});console.log(JSON.stringify(receipt));

@@ -1,0 +1,138 @@
+{
+  "kind": "MO1307Phase3CClosedAttackSurfaceInventory",
+  "count": 22,
+  "surfaces": [
+    {
+      "id": 1,
+      "surface": "CLI",
+      "trust": "Untrusted argv; separate operator trust pins",
+      "validator": "cli-args.parseCliArgs / validateLaunch"
+    },
+    {
+      "id": 2,
+      "surface": "Byte API",
+      "trust": "Untrusted detached input bytes; explicit operator pins",
+      "validator": "api-input.snapshotApiInput / foundation / fixed worker"
+    },
+    {
+      "id": 3,
+      "surface": "Configuration",
+      "trust": "Untrusted, closed profile/stage/file selectors",
+      "validator": "parseCanonical / Configuration / cross-binding"
+    },
+    {
+      "id": 4,
+      "surface": "Candidate",
+      "trust": "Untrusted content; independently pinned digest",
+      "validator": "Candidate / validateCandidate / authority closure"
+    },
+    {
+      "id": 5,
+      "surface": "Manifest",
+      "trust": "Untrusted paths and byte declarations; root-pinned digest",
+      "validator": "Manifest / validateManifest / native acquisition"
+    },
+    {
+      "id": 6,
+      "surface": "Authority input",
+      "trust": "Trusted only through independent exact raw digest pin",
+      "validator": "authority schema / verifyEvidence"
+    },
+    {
+      "id": 7,
+      "surface": "Evidence source files",
+      "trust": "Opaque untrusted bytes; no semantic execution",
+      "validator": "native handle read / manifest length and hash / lineage"
+    },
+    {
+      "id": 8,
+      "surface": "Claims",
+      "trust": "Untrusted normalized assertions",
+      "validator": "Evidence schema / granted claim digest / semantic cross-fields"
+    },
+    {
+      "id": 9,
+      "surface": "Grants",
+      "trust": "Trusted-root-scoped authorization",
+      "validator": "Grant schema / exact source,scope,dependencies,applicability"
+    },
+    {
+      "id": 10,
+      "surface": "Dependencies",
+      "trust": "Untrusted explicit identities",
+      "validator": "component closure and stale checks"
+    },
+    {
+      "id": 11,
+      "surface": "History",
+      "trust": "Authority-pinned immutable outcomes",
+      "validator": "evidence-history and qualification cross references"
+    },
+    {
+      "id": 12,
+      "surface": "Qualifications",
+      "trust": "Closed authority-bound disclosures",
+      "validator": "qualification schema / seven predicates / union completeness"
+    },
+    {
+      "id": 13,
+      "surface": "Provider state",
+      "trust": "Independent assertion axes",
+      "validator": "provider schemas / exact minima / promotion constraints"
+    },
+    {
+      "id": 14,
+      "surface": "Human decision",
+      "trust": "External unauthenticated claim",
+      "validator": "verifyReadiness / checkDecisionBinding"
+    },
+    {
+      "id": 15,
+      "surface": "Tag observation",
+      "trust": "Supplied whole-candidate fact; no live Git authority",
+      "validator": "TagObservation / stage-specific conditions"
+    },
+    {
+      "id": 16,
+      "surface": "Helper wire",
+      "trust": "Private child bytes untrusted until validated",
+      "validator": "framing / strict J / exact session sequence operation schemas"
+    },
+    {
+      "id": 17,
+      "surface": "PowerShell launch",
+      "trust": "Fixed trusted native inspection capability",
+      "validator": "helper-transport fixed exe and packaged script; restricted env"
+    },
+    {
+      "id": 18,
+      "surface": "Worker message",
+      "trust": "Fixed worker result still admitted defensively",
+      "validator": "runtime message admission and exit settlement"
+    },
+    {
+      "id": 19,
+      "surface": "Publication token/capability",
+      "trust": "Private branded single-use authority",
+      "validator": "WeakMap/WeakSet membership and phase/root/session checks"
+    },
+    {
+      "id": 20,
+      "surface": "Output filesystem",
+      "trust": "Exclusive private immutable root; native observations",
+      "validator": "Windows identity chain / pending stage / one admitted rename"
+    },
+    {
+      "id": 21,
+      "surface": "stdout/stderr",
+      "trust": "Unreliable bounded output sink",
+      "validator": "writeSummary / writeDiagnostic fixed projection"
+    },
+    {
+      "id": 22,
+      "surface": "Package/runtime boundary",
+      "trust": "Trusted provisioned runtime and immutable shipped source",
+      "validator": "package exports / source manifest / launch policy"
+    }
+  ]
+}

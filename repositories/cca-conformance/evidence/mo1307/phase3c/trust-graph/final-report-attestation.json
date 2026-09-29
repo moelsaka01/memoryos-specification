@@ -1,0 +1,62 @@
+{
+  "kind": "MO1307Phase3CFinalReportIndependentAttestation",
+  "version": "1.0.0",
+  "reviewedAt": "2026-09-29T09:54:35.245Z",
+  "baseline": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "reviewer": "trust-graph independent subagent",
+  "result": "PASS_CONTENT_AND_EVIDENCE_CONSISTENCY_CONDITIONAL_ON_FINAL_VALIDATION",
+  "report": {
+    "path": "docs/mo1307-phase3c-security-certification.md",
+    "byteLength": 25240,
+    "sha256": "74387013a3ff20077d8efe2b3f6e5bac9fdfc505d0ce25ebe362515aade5050f"
+  },
+  "readCompletely": true,
+  "testsExecuted": false,
+  "productionChanges": false,
+  "priorReviewsChanged": false,
+  "conclusions": [
+    "Report accurately states496 selected primary controls:381 expected rejections and115 accepted or behavioral controls, with supplementary witnesses outside that count.",
+    "Report distinguishes byte/internal mappings, actual public CLI exits, helper ERROR-frame transport and harness assertion success. It preserves the committed-file publication exception.",
+    "Actual cross-volume witness is accurately scoped to a different filesystem volume, with fixed-helper error observed and earlier reparse guard inferred from source ordering; downstream native volumeSerial mismatch branch and successful other-volume acquisition remain unclaimed.",
+    "Initial missing-witness review and both failed native-witness engineering preflights remain visible and unrewritten.",
+    "History counts and overlapping subsets, operator-pin semantics, source/package scope, provider limitations, unauthenticated decisions, no autonomous release authority, MO1306 native NOT_ESTABLISHED and admitted unbounded rename availability are accurately retained.",
+    "No new unsupported security or governance certification claim was found in the final report within its stated frozen scope."
+  ],
+  "finalGates": {
+    "status": "PARENT_VALIDATION_REQUIRED",
+    "finalValidationReceiptPresentAtReview": false,
+    "checkpointsReceiptPresentAtReview": false,
+    "meaning": "This is a read-only content and evidence consistency attestation. It does not independently attest the later final-validation receipt, staged diff check, actual commit identity/parent, final clean Git status or final elapsed time. Those are explicit parent gates. If any gate fails, the report must not be used to create a certification commit."
+  },
+  "indexNote": "At review time negative-corpus.json retains the four earlier supplementary pointers; the fifth actual native wrong-volume witness is bound in runtime closure, the addendum and this report. This does not change the496 primary rows. Parent was advised to add the fifth metadata pointer if desired before sealing.",
+  "priorReviewBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/integration-review.json",
+      "byteLength": 13553,
+      "sha256": "e9c21b57d797bb1d033c0cdddf8671349a3947df6b38b96a2b477531e60a23a4"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/trust-graph/integration-review-addendum.json",
+      "byteLength": 9690,
+      "sha256": "b90f285df3076c792e2ffd656af9e8b75a323bb216ee0673c994eabb644b0915"
+    }
+  ],
+  "supportingBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/native-wrong-volume.json",
+      "byteLength": 7538,
+      "sha256": "40da6473d7cd34803c747725eca46b26d749d5ca2d1838ed180573df3251f70c"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/closure.json",
+      "byteLength": 75912,
+      "sha256": "57b73a6598c4eb7f9c617b94641b21165fa9d6ac8aebca464b7dd644b9f9b773"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/negative-corpus.json",
+      "byteLength": 326748,
+      "sha256": "6cafc2c9c05f84a572d13f3441942bda298faa9af7365f3a1a96bed32e001497"
+    }
+  ],
+  "editingCeasesAfterThisAttestation": true
+}

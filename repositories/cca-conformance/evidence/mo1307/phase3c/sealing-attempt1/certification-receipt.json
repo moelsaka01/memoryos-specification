@@ -1,0 +1,171 @@
+{
+  "kind": "MO1307Phase3CSecurityCertification",
+  "version": "1.0.0",
+  "result": "PASS",
+  "scope": "Security/trust/evidence-graph/governance audit of exact B2 under frozen assumptions; no release authorization or 3A/3B replacement",
+  "baseline": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+  "baselineParent": "198da12a6b67da0104e54f98d2c8fbecbbf4a840",
+  "productionDefectEstablished": false,
+  "productionChanges": false,
+  "acceptance": [
+    {
+      "control": "trust root",
+      "result": "PASS"
+    },
+    {
+      "control": "grants",
+      "result": "PASS"
+    },
+    {
+      "control": "raw-source lineage",
+      "result": "PASS"
+    },
+    {
+      "control": "candidate/dependency",
+      "result": "PASS"
+    },
+    {
+      "control": "staleness/reuse",
+      "result": "PASS"
+    },
+    {
+      "control": "DAG",
+      "result": "PASS"
+    },
+    {
+      "control": "history",
+      "result": "PASS"
+    },
+    {
+      "control": "qualifications",
+      "result": "PASS"
+    },
+    {
+      "control": "provider promotion defenses",
+      "result": "PASS"
+    },
+    {
+      "control": "result/proof integrity",
+      "result": "PASS"
+    },
+    {
+      "control": "decision governance",
+      "result": "PASS"
+    },
+    {
+      "control": "tag governance",
+      "result": "PASS"
+    },
+    {
+      "control": "dispatch/prototype",
+      "result": "PASS"
+    },
+    {
+      "control": "filesystem",
+      "result": "PASS"
+    },
+    {
+      "control": "helper protocol",
+      "result": "PASS"
+    },
+    {
+      "control": "PowerShell launch",
+      "result": "PASS"
+    },
+    {
+      "control": "worker/process boundary",
+      "result": "PASS"
+    },
+    {
+      "control": "network/environment",
+      "result": "PASS"
+    },
+    {
+      "control": "secret/log",
+      "result": "PASS"
+    },
+    {
+      "control": "publication/finalization",
+      "result": "PASS"
+    },
+    {
+      "control": "resource limits",
+      "result": "PASS"
+    },
+    {
+      "control": "error priority/catalog",
+      "result": "PASS"
+    },
+    {
+      "control": "determinism",
+      "result": "PASS"
+    },
+    {
+      "control": "release-claim audit",
+      "result": "PASS"
+    },
+    {
+      "control": "historical preservation",
+      "result": "PASS"
+    },
+    {
+      "control": "independent review",
+      "result": "PASS"
+    },
+    {
+      "control": "workspace verification",
+      "result": "PASS"
+    },
+    {
+      "control": "git diff --check",
+      "result": "PASS"
+    },
+    {
+      "control": "production unchanged",
+      "result": "PASS"
+    }
+  ],
+  "primaryCorpus": {
+    "unique": 496,
+    "expectedRejections": 381,
+    "acceptedOrBehavioralControls": 115
+  },
+  "attackSurfaces": 22,
+  "historicalFiles": 7406,
+  "packageMembers": 89,
+  "additionalWitnesses": "supplementary-witnesses.json",
+  "independentReview": "trust-graph/integration-review.json",
+  "independentGapClosure": "trust-graph/integration-review-addendum.json",
+  "reportReview": "governance/final-report-review.json",
+  "finalValidation": "final-validation.json",
+  "report": "docs/mo1307-phase3c-security-certification.md",
+  "createdAt": "2026-09-29T09:55:19.361Z",
+  "commit": {
+    "status": "PRE_COMMIT_RECEIPT",
+    "requiredSubject": "cert(memoryos-1.3): certify MO-1307 security and governance",
+    "requiredParent": "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+    "requiredNewCommits": 1,
+    "hash": "RESOLVE_FROM_ENCLOSING_GIT_COMMIT_NO_SELF_REFERENCE",
+    "postCommitCleanStatus": "VERIFY_AFTER_COMMIT"
+  },
+  "prohibitions": {
+    "push": false,
+    "tag": false,
+    "linux": false,
+    "ubuntu": false,
+    "wsl": false,
+    "vm": false,
+    "providerAccounts": false
+  },
+  "limitations": [
+    "MO1306 native completion NOT_ESTABLISHED",
+    "GitHub hosted not certified; GitLab/Jenkins/Azure not live-certified",
+    "Human decisions NOT_VERIFIED_BY_MEMORYOS; no autonomous release authority",
+    "Admitted non-cancellable rename can remain pending indefinitely",
+    "Private immutable roots and trusted OS/runtime required; no privileged namespace attacker guarantee",
+    "No OS-wide network isolation or hard aggregate RSS sandbox",
+    "Actual cross-volume escape rejected; native downstream volumeSerial mismatch branch not exercised",
+    "Full runtime and supply-chain certifications belong separately to 3A and 3B"
+  ],
+  "handoff": "Integrate the actual single accepted 3C commit with sole B2 parent alongside separately accepted 3A/3B; preserve every historical failure and stated limitation; no release/push/tag authorization."
+}
