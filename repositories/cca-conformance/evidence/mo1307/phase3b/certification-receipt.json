@@ -1,0 +1,23 @@
+{
+  "kind":"MO1307Phase3BPackageCertification",
+  "version":"1.0.0",
+  "createdUtc":"2026-09-29T00:00:00Z",
+  "baseline":{"commit":"976d4a04d75dadc02e30215dd5a8ddeaa2352df8","parent":"198da12a6b67da0104e54f98d2c8fbecbbf4a840","branch":"codex/mo1307-phase3b-package","cleanBefore":true},
+  "candidate":{"package":"memoryos-readiness@0.1.0","contract":"memoryos.readiness@1.0.0","archive":"memoryos-readiness-0.1.0.tgz","byteLength":112154,"sha256":"6335c3ae18d9ab2ba1af3523d3dd4458ca832ed37fdce868729409277533744b","sha512":"3d71acca28fc89b7292bf0ea0024041fe51ee1191c38713a98aeaca8db1dd94cc9068a118a5a5326b2cf0311a8b3a8cff8eeb0e31499dc7260b4d8ea5e4521fe","memberCount":89},
+  "allowlist":{"state":"PASS","members":89,"contractMembers":53,"unexpected":0,"missing":0,"unsafePaths":0,"nonRegular":0},
+  "tar":{"state":"PASS","regularMembers":89,"memberOrdering":"npm deterministic order observed","uid":0,"gid":0,"mode":"0644","mtime":499162500,"pax":false,"pathPrefix":"package/"},
+  "bindings":{"distributionManifest":"PASS; 88 bound rows excluding recursive self-row","contractManifest":"PASS; 53 exact contract members","sbom":{"spdxVersion":"SPDX-2.3","packages":1,"files":87,"relationships":88,"state":"PASS","selfExclusions":["distribution-manifest.json","sbom.spdx.json"]}},
+  "dependencies":{"productionNpm":0,"runtimeClosure":"PASS; static imports resolve only to approved package files or allowed Node built-ins; no ambient node_modules/source-worktree dependency"},
+  "platform":{"node":{"version":"24.21.0","sha256":"ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32","state":"PASS"},"npm":{"version":"11.19.0","role":"engineering and offline install only"},"powershell":{"version":"Windows PowerShell 5.1","role":"external platform runtime; packaged helpers/windows-inspect.ps1 sha256 ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"}},
+  "schemas":{"count":52,"state":"PASS","fixtureAuthority":"Phase 2D retained 464 positive and 12 negative fixtures; Phase 3B confirms shipped schema closure, not Phase 3A runtime behavior"},
+  "reproducibility":{"state":"PASS","assemblyA":"fresh copied B2 source","assemblyB":"independently fresh copied B2 source","byteIdentical":true},
+  "offlineInstall":{"state":"PASS","flags":["--offline","--ignore-scripts","--no-audit","--no-fund"],"emptyExplicitCache":true,"installedFiles":89,"sourceIndependent":true,"publicApiSmoke":"PASS","closedCliParsing":"PASS (expected MO1307_USAGE exit 10)","persistence":"PASS"},
+  "validators":{"runtime":"Node 24.21.0; PowerShell 5.1; shell hash utilities","thirdPartyPythonValidators":"not used","schemaStrategy":"package-internal canonical/binding validation; no remote schema fetch"},
+  "licenses":{"firstParty":"UNLICENSED/NOASSERTION as declared; no blanket grant inferred","notices":["LICENSE-NOTICE.md","NOTICES.md"],"thirdPartyProductionComponents":0},
+  "advisory":{"date":"2026-09-29","scope":["Node 24.21.0","npm 11.19.0 engineering tooling","Windows PowerShell 5.1 platform runtime"],"sources":["https://nodejs.org/en/blog/release","https://nodejs.org/en/blog/vulnerability/july-2026-security-releases","https://learn.microsoft.com/en-us/powershell/scripting/windows-powershell/update-notification-message"],"finding":"No unresolved package-specific production dependency advisory. Node July 2026 HTTP/2 findings require Phase 3D/runtime threat-scope reconciliation; Node 24.21.0 was released after that notice. This bounded review is not a zero-vulnerability claim.","openFindings":["Phase 3D must make the final cross-phase advisory disposition; Phase 3B does not accept risk."]},
+  "tamperControls":{"state":"PASS","observed":["archive byte hash mismatch","missing member rejected","extra member rejected","distribution manifest tamper rejected","SBOM tamper rejected","schema mismatch rejected","runtime import/source-worktree dependency rejected","unexpected production dependency rejected","installed-file mutation detection via before/after inventory","unsafe tar path rejected","wrong tar member type rejected","provenance receipt byte tamper detected","wrong manifest length/hash binding rejected"],"plannedPhase3D":[]},
+  "provenance":{"b2":"976d4a04d75dadc02e30215dd5a8ddeaa2352df8","i2":"198da12a6b67da0104e54f98d2c8fbecbbf4a840","source":"repositories/memoryos-readiness","archiveSha256":"6335c3ae18d9ab2ba1af3523d3dd4458ca832ed37fdce868729409277533744b","assemblies":2,"noFutureCommitHash":true},
+  "productionChanges":false,
+  "releaseReady":"QUALIFIED_PHASE3B_PASS_PENDING_PHASE3D",
+  "finalReleaseAuthorization":false
+}
