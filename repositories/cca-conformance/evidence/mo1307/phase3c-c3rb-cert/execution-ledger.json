@@ -1,0 +1,124 @@
+{
+  "kind": "MO1307Phase3CC3RBExecutionLedger",
+  "candidate": "defe93989efc6501b1a730b82e79e705884b269b",
+  "startedAt": "2026-09-29T23:10:24.577Z",
+  "result": "FAILED/INCOMPLETE",
+  "stages": [
+    {
+      "id": "01-authority-dependency-binding",
+      "tool": "binding.mjs",
+      "status": "PASS",
+      "startedAt": "2026-09-29T23:10:24.584Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert\\binding.mjs"
+        ],
+        "cwd": "C:\\m7c"
+      },
+      "pid": 21308,
+      "finishedAt": "2026-09-29T23:10:42.115Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "02-native-source-review",
+      "tool": "helper-review.ps1",
+      "powershell": true,
+      "status": "FAIL",
+      "startedAt": "2026-09-29T23:10:42.118Z",
+      "command": {
+        "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7c\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert\\helper-review.ps1"
+        ],
+        "cwd": "C:\\m7c"
+      },
+      "pid": 28324,
+      "finishedAt": "2026-09-29T23:10:44.163Z",
+      "actual": {
+        "code": 1,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "03-root-negative-corpus",
+      "tool": "root-corpus.mjs",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "04-trust-graph-corpus",
+      "tool": "trust-graph.mjs",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "05-governance-primary",
+      "tool": "governance.mjs",
+      "args": [
+        "primary"
+      ],
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "06-governance-supplement",
+      "tool": "governance.mjs",
+      "args": [
+        "supplement"
+      ],
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "07-deadline-cleanup-environment",
+      "tool": "deadline-cleanup.mjs",
+      "args": [
+        "attempt-1"
+      ],
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "08-native-equivalence",
+      "tool": "equivalence.mjs",
+      "args": [
+        "--output",
+        "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/equivalence/attempt2"
+      ],
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "09-consumer-protocol",
+      "tool": "protocol.mjs",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "10-native-toctou",
+      "tool": "toctou-boundaries.mjs",
+      "status": "NOT_RUN"
+    }
+  ],
+  "firstFailure": {
+    "stage": "02-native-source-review",
+    "actual": {
+      "code": 1,
+      "signal": null
+    },
+    "stdout": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/02-native-source-review.stdout.txt",
+    "stderr": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/02-native-source-review.stderr.txt"
+  },
+  "finishedAt": "2026-09-29T23:10:44.164Z"
+}

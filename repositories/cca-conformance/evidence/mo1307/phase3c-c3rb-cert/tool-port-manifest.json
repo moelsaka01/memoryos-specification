@@ -1,0 +1,276 @@
+{
+  "createdAt": "2026-09-29T23:03:05.232Z",
+  "ports": [
+    {
+      "sourceCommit": "191f34748141afca2027e8e9db0c6f1b6a9c84c0",
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c/root-corpus.mjs",
+        "byteLength": 13801,
+        "sha256": "sha256:1f6094c8c9996c33f5fe65f39212561ddc8c818d5234deb4619f80ede5357c1e"
+      },
+      "originalCopy": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/originals/root-corpus.mjs.data",
+        "byteLength": 13801,
+        "sha256": "sha256:1f6094c8c9996c33f5fe65f39212561ddc8c818d5234deb4619f80ede5357c1e"
+      },
+      "ported": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/root-corpus.mjs",
+        "byteLength": 13895,
+        "sha256": "sha256:1487dea3e6a14818c20976d02cf0492bfe5f1e59e107e9513c613ec5fc66e030"
+      },
+      "replacements": [
+        {
+          "from": "repositories/cca-conformance/evidence/mo1307/phase3c",
+          "to": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert",
+          "all": true
+        },
+        {
+          "from": "if(!pass){failure=true;console.log(JSON.stringify(rows.at(-1)));}",
+          "to": "fs.writeFileSync(ev+'/root-progress.json',JSON.stringify({rows},null,2)+'\\n');if(!pass){failure=true;console.log(JSON.stringify(rows.at(-1)));break;}",
+          "all": false
+        }
+      ]
+    },
+    {
+      "sourceCommit": "191f34748141afca2027e8e9db0c6f1b6a9c84c0",
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c/trust-graph.mjs",
+        "byteLength": 29583,
+        "sha256": "sha256:678563a70717c214d8b54386e84e139b10115606249001be469b07bb34a977dc"
+      },
+      "originalCopy": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/originals/trust-graph.mjs.data",
+        "byteLength": 29583,
+        "sha256": "sha256:678563a70717c214d8b54386e84e139b10115606249001be469b07bb34a977dc"
+      },
+      "ported": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/trust-graph.mjs",
+        "byteLength": 29593,
+        "sha256": "sha256:7ce7a218e181dff1737cd4dd4033cc27be938ca76c489ed06b919bcb9b4a7ce0"
+      },
+      "replacements": [
+        {
+          "from": "repositories/cca-conformance/evidence/mo1307/phase3c",
+          "to": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert",
+          "all": true
+        },
+        {
+          "from": "baseline:'976d4a04d75dadc02e30215dd5a8ddeaa2352df8'",
+          "to": "baseline:'defe93989efc6501b1a730b82e79e705884b269b'",
+          "all": true
+        }
+      ]
+    },
+    {
+      "sourceCommit": "191f34748141afca2027e8e9db0c6f1b6a9c84c0",
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c/governance.mjs",
+        "byteLength": 34746,
+        "sha256": "sha256:05764768aadd46365c3182e6fa90fee242af3e1b48c2f442da8a95a54e2ff1f5"
+      },
+      "originalCopy": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/originals/governance.mjs.data",
+        "byteLength": 34746,
+        "sha256": "sha256:05764768aadd46365c3182e6fa90fee242af3e1b48c2f442da8a95a54e2ff1f5"
+      },
+      "ported": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/governance.mjs",
+        "byteLength": 34874,
+        "sha256": "sha256:4f10c156b5a397c1a0afbc61cd8c57c873424f1b0bf57a79d14d4d68be5d8327"
+      },
+      "replacements": [
+        {
+          "from": "repositories/cca-conformance/evidence/mo1307/phase3c",
+          "to": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert",
+          "all": true
+        },
+        {
+          "from": "assert.equal(root.toLowerCase(),'c:\\\\users\\\\melsa\\\\documents\\\\codex\\\\cca-mo1307-3c');",
+          "to": "assert.equal(root.toLowerCase(),'c:\\\\m7c');",
+          "all": false
+        },
+        {
+          "from": "if(!pass)console.log(JSON.stringify(rec));",
+          "to": "fs.writeFileSync(path.join(dest,'progress-'+runMode+'.json'),JSON.stringify({records},null,2)+'\\n');if(!pass){console.log(JSON.stringify(rec));throw new Error('STOP mandatory governance mismatch '+id);}",
+          "all": false
+        },
+        {
+          "from": "baseline:'976d4a04d75dadc02e30215dd5a8ddeaa2352df8'",
+          "to": "baseline:'defe93989efc6501b1a730b82e79e705884b269b'",
+          "all": true
+        }
+      ]
+    },
+    {
+      "sourceCommit": "f4ed5873969ab6b627941dc20d5823c5e853b9fe",
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/helper-review.ps1",
+        "byteLength": 19077,
+        "sha256": "sha256:bed5b7e3416cd4cf90daf9ce5b76a603f3cae4fe915b977c03ccd6c22d81f912"
+      },
+      "originalCopy": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/originals/helper-review.ps1.data",
+        "byteLength": 19077,
+        "sha256": "sha256:bed5b7e3416cd4cf90daf9ce5b76a603f3cae4fe915b977c03ccd6c22d81f912"
+      },
+      "ported": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/helper-review.ps1",
+        "byteLength": 19025,
+        "sha256": "sha256:93e07c712150d44e342610bc5492f31742392cdc26a9faf5aa2ada88cb2f8094"
+      },
+      "replacements": [
+        {
+          "from": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh",
+          "to": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert",
+          "all": true
+        },
+        {
+          "from": "tools/mo1307-phase3c-refresh",
+          "to": "tools/mo1307-phase3c-c3rb-cert",
+          "all": true
+        },
+        {
+          "from": "C:\\Users\\melsa\\Documents\\Codex\\r3c",
+          "to": "C:\\m7c",
+          "all": true
+        }
+      ]
+    },
+    {
+      "sourceCommit": "f4ed5873969ab6b627941dc20d5823c5e853b9fe",
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/deadline-cleanup.mjs",
+        "byteLength": 24171,
+        "sha256": "sha256:8706a27482f3e6c62cbafccbf796095c1466c36ab9d12592a060bec3f291de55"
+      },
+      "originalCopy": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/originals/deadline-cleanup.mjs.data",
+        "byteLength": 24171,
+        "sha256": "sha256:8706a27482f3e6c62cbafccbf796095c1466c36ab9d12592a060bec3f291de55"
+      },
+      "ported": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/deadline-cleanup.mjs",
+        "byteLength": 24173,
+        "sha256": "sha256:f9d265eb51597ec0ba891691d09109bdd8b9f36afc62472095a167d26c9b486f"
+      },
+      "replacements": [
+        {
+          "from": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh",
+          "to": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert",
+          "all": true
+        }
+      ]
+    },
+    {
+      "sourceCommit": "f4ed5873969ab6b627941dc20d5823c5e853b9fe",
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/equivalence.mjs",
+        "byteLength": 27228,
+        "sha256": "sha256:54355e05671bc2f300a3d1250e76d13d5a4529fe4e196ad399b91e1c8aa78ad8"
+      },
+      "originalCopy": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/originals/equivalence.mjs.data",
+        "byteLength": 27228,
+        "sha256": "sha256:54355e05671bc2f300a3d1250e76d13d5a4529fe4e196ad399b91e1c8aa78ad8"
+      },
+      "ported": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/equivalence.mjs",
+        "byteLength": 27340,
+        "sha256": "sha256:5a382134e922af2e7be77c1f0595b723cd4bb5801da1a7713d34037aef603b13"
+      },
+      "replacements": [
+        {
+          "from": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh",
+          "to": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert",
+          "all": true
+        },
+        {
+          "from": "tools/mo1307-phase3c-refresh",
+          "to": "tools/mo1307-phase3c-c3rb-cert",
+          "all": true
+        },
+        {
+          "from": "for(const c of cases){fs.mkdirSync",
+          "to": "for(const c of cases){fs.writeFileSync(output+'/active-case.json',JSON.stringify({name:c.name,expectedCode:c.expectedCode})+'\\n');fs.mkdirSync",
+          "all": false
+        }
+      ]
+    },
+    {
+      "sourceCommit": "f4ed5873969ab6b627941dc20d5823c5e853b9fe",
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/protocol.mjs",
+        "byteLength": 3252,
+        "sha256": "sha256:63b929ea339de0ec2437b51db4977531710875daa5ac5180073e16aa4514d327"
+      },
+      "originalCopy": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/originals/protocol.mjs.data",
+        "byteLength": 3252,
+        "sha256": "sha256:63b929ea339de0ec2437b51db4977531710875daa5ac5180073e16aa4514d327"
+      },
+      "ported": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/protocol.mjs",
+        "byteLength": 3390,
+        "sha256": "sha256:20789384d92e4d21f0e83fdc0de4b47862a4b9adba02578e649d6d00ee9d3c4a"
+      },
+      "replacements": [
+        {
+          "from": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh",
+          "to": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert",
+          "all": true
+        },
+        {
+          "from": "tools/mo1307-phase3c-refresh",
+          "to": "tools/mo1307-phase3c-c3rb-cert",
+          "all": true
+        },
+        {
+          "from": "rows.push({id:name,scope:",
+          "to": "rows.push({id:name,scope:",
+          "all": false
+        },
+        {
+          "from": "assert.ok(caught,name+' must reject');",
+          "to": "fs.appendFileSync(ev+'/protocol-observations.jsonl',JSON.stringify({id:name,expected:'MO1307_INPUT',actual:caught?.code??null})+'\\n');assert.ok(caught,name+' must reject');",
+          "all": false
+        }
+      ]
+    },
+    {
+      "sourceCommit": "f4ed5873969ab6b627941dc20d5823c5e853b9fe",
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-refresh/toctou-boundaries.mjs",
+        "byteLength": 5791,
+        "sha256": "sha256:0bfaa2e3aefe6b6f554c4597cb6e59f435e95852b6ba6768ca8ee1f15fa9b1f3"
+      },
+      "originalCopy": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/originals/toctou-boundaries.mjs.data",
+        "byteLength": 5791,
+        "sha256": "sha256:0bfaa2e3aefe6b6f554c4597cb6e59f435e95852b6ba6768ca8ee1f15fa9b1f3"
+      },
+      "ported": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/toctou-boundaries.mjs",
+        "byteLength": 5910,
+        "sha256": "sha256:da955f4b6b7eee3f779ac841096cf213a812afa1ca0847084835fc328c8e98d4"
+      },
+      "replacements": [
+        {
+          "from": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh",
+          "to": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert",
+          "all": true
+        },
+        {
+          "from": "tools/mo1307-phase3c-refresh",
+          "to": "tools/mo1307-phase3c-c3rb-cert",
+          "all": true
+        },
+        {
+          "from": "const dir=path.join(scratch,mode);",
+          "to": "fs.writeFileSync(out+'/active-case.json',JSON.stringify({id:mode,expectedCode:'MO1307_FILESYSTEM_BOUNDARY'})+'\\n');const dir=path.join(scratch,mode);",
+          "all": false
+        }
+      ]
+    }
+  ],
+  "scope": "Engineering path relocation, current outer candidate labels, durable observations and fail-fast only. No production or negative predicate change."
+}

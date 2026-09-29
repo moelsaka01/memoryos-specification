@@ -1,0 +1,29 @@
+{
+  "kind": "IndependentPhase3CFailureReportReview",
+  "scope": "Read-only report/receipt/remaining-inventory/preservation audit only",
+  "result": "CONSISTENT_FAILED_INCOMPLETE_NO_PROMOTION",
+  "certificationAccepted": false,
+  "counts": {
+    "freshNotRun": 460,
+    "negativeFreshNotRun": 349,
+    "behavioralFreshNotRun": 111,
+    "reuseEligibleNotAdopted": 91,
+    "negativeReuseEligible": 77,
+    "behavioralReuseEligible": 14,
+    "currentCorpusPass": 0,
+    "currentCorpusFail": 0,
+    "mandatoryOutsideCorpusGateFailures": 1
+  },
+  "reviewed": [
+    "docs/mo1307-phase3c-c3rb-certification.md",
+    "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/certification-receipt.json",
+    "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/remaining-inventory.json",
+    "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/preservation.json"
+  ],
+  "wordingCorrections": [
+    "Do not claim future clean status before commit.",
+    "Binding also uses engineering Git subprocesses.",
+    "Binding reads historical evidence; distinguish it from product acquisition."
+  ],
+  "noGateRetry": true
+}

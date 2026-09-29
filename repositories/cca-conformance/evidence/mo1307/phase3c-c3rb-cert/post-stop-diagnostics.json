@@ -1,0 +1,39 @@
+{
+  "kind": "PostStopPreservationDiagnostics",
+  "whitespace": {
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--check"
+    ],
+    "exitCode": 2,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/staged-whitespace.stdout.txt",
+      "byteLength": 4032,
+      "sha256": "sha256:6bb0d2855444b26b24cc036ed4dc59f678dcecd4e3a69145715e0a90f5ac383f"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/staged-whitespace.stderr.txt",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "disposition": "PRESERVE_EXACT_PREEXECUTION_SEALED_TOOL_AND_HISTORICAL_SOURCE_BYTES; NOT_A_PASS"
+  },
+  "processQuery": {
+    "command": "Get-CimInstance Win32_Process filtered to recorded engineering stage PIDs",
+    "result": "ACCESS_DENIED_IN_SANDBOX",
+    "externalQuiescenceEstablished": false,
+    "recordedEngineeringChildCloseEvents": true,
+    "productHelperLaunched": false
+  },
+  "reportPreparation": {
+    "syntaxErrorDraft": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/report-generator-syntax-error.mjs.data",
+      "byteLength": 15968,
+      "sha256": "sha256:c7b6e1745060618fe19aa662844d41f81048807ccb51a75703d309b10ffbc2c3"
+    },
+    "correctedOnlyReportGeneration": true,
+    "certificationRerun": false
+  }
+}

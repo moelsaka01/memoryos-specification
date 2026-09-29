@@ -1,0 +1,153 @@
+{
+  "kind": "MO1307Phase3CC3RBCertificationFailureReceipt",
+  "version": "1.0.0",
+  "createdAt": "2026-09-29T23:14:48.440Z",
+  "result": "FAILED/INCOMPLETE",
+  "candidate": "defe93989efc6501b1a730b82e79e705884b269b",
+  "candidateTree": "54c8ca8acc388d8dcb5d8d76e119b434dcc1a9bb",
+  "mainIntegrationAuthority": "4a1de6f00788e3c52a647d6f25aa1dbd2d5d5d97",
+  "historical3CR": "f4ed5873969ab6b627941dc20d5823c5e853b9fe",
+  "historical3CRRewritten": false,
+  "worktree": "C:\\m7c",
+  "branch": "codex/mo1307-phase3c-c3rb-cert",
+  "firstFailure": {
+    "status": "INCOMPLETE",
+    "failedGate": "02-native-source-review",
+    "expected": {
+      "exitCode": 0,
+      "completedMechanicalSourceReview": true
+    },
+    "actual": {
+      "exitCode": 1,
+      "completedMechanicalSourceReview": false,
+      "errorType": "CommandNotFoundException",
+      "unresolvedCommand": "git",
+      "source": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/helper-review.ps1:22"
+    },
+    "classification": "CERTIFICATION_HARNESS_LAUNCH_ENVIRONMENT_FAILURE",
+    "causalLimit": "The observed failure is Git command resolution in the engineering review PowerShell. No product security defect established; no root-cause repair, environment change or retry performed after failure.",
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/02-native-source-review.stderr.txt",
+      "byteLength": 533,
+      "sha256": "sha256:0f1a546f462c26a9d3a06fc78dcd3f591998d73b925bca2fb37984453648bb92"
+    },
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/02-native-source-review.stdout.txt",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "exactError": "& : The term 'git' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the \r\nspelling of the name, or if a path was included, verify that the path is correct and try again.\r\nAt C:\\m7c\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert\\helper-review.ps1:22 char:12\r\n+     $v = & git -C $RepoRoot @Arguments\r\n+            ~~~\r\n    + CategoryInfo          : ObjectNotFound: (git:String) [], ParentContainsErrorRecordException\r\n    + FullyQualifiedErrorId : CommandNotFoundException\r\n \r\n"
+  },
+  "stages": {
+    "passed": 1,
+    "failed": 1,
+    "notRun": 8
+  },
+  "bindingSubchecksPassed": 6,
+  "controls": {
+    "allControls": 551,
+    "negativeControls": 426,
+    "selectedFreshNotRun": 460,
+    "reuseEligibleNotAdopted": 91,
+    "freshControlsExecuted": 0,
+    "currentControlsAccepted": 0
+  },
+  "acceptedCurrentSecurityControls": 0,
+  "productionSecurityDefectEstablished": false,
+  "productionChanged": false,
+  "historicalReceiptState": "PRESERVED_ACCEPTED_FOR_ITS_EXACT_CANDIDATE_AND_SCOPE",
+  "freshCertificationAccepted": false,
+  "helperLimitMs": 5000,
+  "H": "NOT_ESTABLISHED",
+  "trustResult": "Exact candidate/receipt/source/fixture integrity and dependency equality verified; no organizational authentication inferred.",
+  "sourceBinding": {
+    "shippedMembers": 89,
+    "distributionRows": 88,
+    "fixtureFiles": 583,
+    "reviewedDependencies": 181,
+    "helper": {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 30210,
+      "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+    },
+    "distribution": {
+      "path": "repositories/memoryos-readiness/distribution-manifest.json",
+      "byteLength": 12631,
+      "sha256": "sha256:5802973c276d10f48db51f842101cd664fbc21e13a74b344a9e0b421746ffc09"
+    },
+    "sbom": {
+      "path": "repositories/memoryos-readiness/sbom.spdx.json",
+      "byteLength": 47328,
+      "sha256": "sha256:7997bb939027132d307864750331ba70c0538a7590aea2773cafa5e3759aabaa"
+    }
+  },
+  "nativeFilesystemFreshnessTOCTOU": "NOT_CERTIFIED_CURRENT_GENERATION_SOURCE_REVIEW_INCOMPLETE_AND_EXECUTIONS_NOT_RUN",
+  "protocol": "NOT_RUN",
+  "processTopology": "NOT_RUN_PRODUCT_HELPER_NOT_LAUNCHED",
+  "deadlinesCancellationCleanup": "NOT_RUN",
+  "environmentNetworkSecrets": "STATIC_OBSERVATIONS_ONLY_NOT_CERTIFIED_CURRENT_GENERATION",
+  "resources": "NOT_RUN",
+  "governance": "NOT_RUN",
+  "failurePolicy": {
+    "stoppedAtFirstMandatoryFailure": true,
+    "retries": 0,
+    "failureConvertedToHistoricalQualification": false,
+    "additionalCertificationAfterFailure": false
+  },
+  "preservation": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/preservation.json",
+    "byteLength": 742,
+    "sha256": "sha256:52ab71b0f221b5a5e37c0c88957e46cd1b166d2b3bf223b9e8153159e4da9501"
+  },
+  "remaining": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/remaining-inventory.json",
+    "byteLength": 407415,
+    "sha256": "sha256:654095dd9c587aaf66378eee57b91a53e42319c4546426a8aad18b8e62ad3a36"
+  },
+  "executionLedger": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/execution-ledger.json",
+    "byteLength": 3260,
+    "sha256": "sha256:9681b8b75600b3b0aea550daa4dfaca950534e856a4dd9d496b22eedab6e66d7"
+  },
+  "planSeal": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/pre-execution-seal.json",
+    "byteLength": 8004,
+    "sha256": "sha256:3b22e133a83abc52db51e9c0054a77ef263673cec00009c6e82ae66b9d59f6d0"
+  },
+  "commit": {
+    "soleParent": "defe93989efc6501b1a730b82e79e705884b269b",
+    "scope": "Conformance-only failed-generation evidence, tools and report",
+    "identity": "Containing commit; exact hash reported externally after creation to avoid self-reference."
+  },
+  "phase3DHandoff": null,
+  "phase3DDisposition": "NO_ACCEPTED_HANDOFF; do not consume this failed generation as accepted Phase 3C input.",
+  "prohibitions": {
+    "C3S": false,
+    "F22": false,
+    "phase3A": false,
+    "phase3B": false,
+    "phase3D": false,
+    "productionChange": false,
+    "push": false,
+    "tag": false,
+    "merge": false,
+    "publish": false,
+    "deploy": false,
+    "approval": false
+  },
+  "postStopDiagnostics": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/post-stop-diagnostics.json",
+    "byteLength": 1430,
+    "sha256": "sha256:018ecfb780700db8afc4e8dd93358a6bb0f02611dee0f0712fa4c0c68ca24246"
+  },
+  "finalReportReview": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/final-report-review.json",
+    "byteLength": 1135,
+    "sha256": "sha256:96d7f6162563d6d72da17f7ac2f53c3e4965142aa91f77ee4521cc2055a1219c"
+  },
+  "report": {
+    "path": "docs/mo1307-phase3c-c3rb-certification.md",
+    "byteLength": 9860,
+    "sha256": "sha256:2f1188f97e172b3de581075421cc9644b695e6348c1775244fa821be4d266208"
+  }
+}

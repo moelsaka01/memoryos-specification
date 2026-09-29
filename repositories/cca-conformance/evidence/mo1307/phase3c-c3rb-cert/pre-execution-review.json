@@ -1,0 +1,28 @@
+{
+  "result": "READY_FOR_SINGLE_EXECUTION",
+  "certificationResult": false,
+  "reviewer": "Independent historical harness subagent",
+  "fixes": [
+    {
+      "issue": "Seal/setup errors could escape without a ledger",
+      "correction": "Create complete NOT_RUN ledger first; catch seal/setup errors and preserve FAILED/INCOMPLETE."
+    },
+    {
+      "issue": "Historical observer guard could leave driver launching later tests",
+      "correction": "Observer finally stops held driver on guard/error; captures handles only for current direct PowerShell children and their consoles, checks process creation identity, and performs bounded owned cleanup. No other streams are targeted."
+    }
+  ],
+  "productionChanged": false,
+  "finiteCorpusChanged": false,
+  "oldDeadlineTool": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/deadline-observer-preseal-original.mjs.data",
+    "byteLength": 24173,
+    "sha256": "sha256:f9d265eb51597ec0ba891691d09109bdd8b9f36afc62472095a167d26c9b486f"
+  },
+  "newDeadlineTool": {
+    "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/deadline-cleanup.mjs",
+    "byteLength": 25586,
+    "sha256": "sha256:4ed7423a1843cfc10e5573aeb39c8ce9814c98885e3dc695155bd97edcedd3e0"
+  },
+  "staleCommentDisclosure": "Inherited equivalence explanatory text says r3c; all actual cwd/scratch/output paths resolve C:/m7c. No writes to r3c."
+}

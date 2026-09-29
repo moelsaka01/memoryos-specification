@@ -1,0 +1,67 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+import assert from 'node:assert/strict';
+const root='C:/m7c', old='C:/Users/melsa/Documents/Codex/cca-mo1307-3c', hist='C:/Users/melsa/Documents/Codex/r3c';
+const candidate='defe93989efc6501b1a730b82e79e705884b269b', history='f4ed5873969ab6b627941dc20d5823c5e853b9fe', integration='4a1de6f00788e3c52a647d6f25aa1dbd2d5d5d97';
+const name='phase3c-c3rb-cert', ev='repositories/cca-conformance/evidence/mo1307/'+name, td='repositories/cca-conformance/tools/mo1307-'+name;
+const oe='repositories/cca-conformance/evidence/mo1307/phase3c', he=oe+'-refresh';
+const sha=b=>'sha256:'+createHash('sha256').update(b).digest('hex');
+const read=(r,p)=>fs.readFileSync(path.join(r,p));
+const json=(r,p)=>JSON.parse(read(r,p));
+const pin=(r,p)=>{const b=read(r,p);return{path:p,byteLength:b.length,sha256:sha(b)}};
+const git=(...a)=>execFileSync('git',a,{cwd:root,windowsHide:true,encoding:'utf8',maxBuffer:32*1024*1024}).trim();
+assert.equal(git('rev-parse','HEAD'),candidate);assert.equal(git('diff','--name-only'),'');
+assert.ok(!fs.existsSync(path.join(root,ev,'campaign-plan.json')));fs.mkdirSync(path.join(root,ev),{recursive:true});fs.mkdirSync(path.join(root,td,'originals'),{recursive:true});
+const save=(p,v)=>{const b=Buffer.from(typeof v==='string'?v:JSON.stringify(v,null,2)+'\n');if(fs.existsSync(path.join(root,p))){assert.deepEqual(read(root,p),b,'preparation may only reuse identical partial output '+p);return;}fs.writeFileSync(path.join(root,p),b,{flag:'wx'});};
+const ports=[];
+function port(base,source,dest,kind){
+ const raw=read(base,source);save(td+'/originals/'+dest+'.data',raw.toString());let s=raw.toString();
+ const replacements=[];const replace=(a,b,all=false)=>{assert.ok(s.includes(a),'missing port anchor '+dest+' '+a);replacements.push({from:a,to:b,all});s=all?s.split(a).join(b):s.replace(a,b);};
+ if(kind==='original')replace(oe,ev,true);else replace(he,ev,true);
+ if(kind==='refresh'&&s.includes('tools/mo1307-phase3c-refresh'))replace('tools/mo1307-phase3c-refresh', 'tools/mo1307-'+name,true);
+ if(dest==='root-corpus.mjs')replace("if(!pass){failure=true;console.log(JSON.stringify(rows.at(-1)));}","fs.writeFileSync(ev+'/root-progress.json',JSON.stringify({rows},null,2)+'\\n');if(!pass){failure=true;console.log(JSON.stringify(rows.at(-1)));break;}");
+ if(dest==='trust-graph.mjs')replace("baseline:'976d4a04d75dadc02e30215dd5a8ddeaa2352df8'","baseline:'"+candidate+"'",true);
+ if(dest==='governance.mjs'){
+  replace("assert.equal(root.toLowerCase(),'c:\\\\users\\\\melsa\\\\documents\\\\codex\\\\cca-mo1307-3c');","assert.equal(root.toLowerCase(),'c:\\\\m7c');");
+  replace("if(!pass)console.log(JSON.stringify(rec));","fs.writeFileSync(path.join(dest,'progress-'+runMode+'.json'),JSON.stringify({records},null,2)+'\\n');if(!pass){console.log(JSON.stringify(rec));throw new Error('STOP mandatory governance mismatch '+id);}");
+  replace("baseline:'976d4a04d75dadc02e30215dd5a8ddeaa2352df8'","baseline:'"+candidate+"'",true);
+ }
+ if(dest==='helper-review.ps1')replace('C:\\Users\\melsa\\Documents\\Codex\\r3c','C:\\m7c',true);
+ if(dest==='protocol.mjs'){
+  replace("rows.push({id:name,scope:","rows.push({id:name,scope:");
+  replace("assert.ok(caught,name+' must reject');", "fs.appendFileSync(ev+'/protocol-observations.jsonl',JSON.stringify({id:name,expected:'MO1307_INPUT',actual:caught?.code??null})+'\\n');assert.ok(caught,name+' must reject');");
+ }
+ if(dest==='equivalence.mjs'){
+  replace("for(const c of cases){fs.mkdirSync", "for(const c of cases){fs.writeFileSync(output+'/active-case.json',JSON.stringify({name:c.name,expectedCode:c.expectedCode})+'\\n');fs.mkdirSync");
+ }
+ if(dest==='toctou-boundaries.mjs')replace("const dir=path.join(scratch,mode);", "fs.writeFileSync(out+'/active-case.json',JSON.stringify({id:mode,expectedCode:'MO1307_FILESYSTEM_BOUNDARY'})+'\\n');const dir=path.join(scratch,mode);");
+ save(td+'/'+dest,s);ports.push({sourceCommit:base===hist?history:'191f34748141afca2027e8e9db0c6f1b6a9c84c0',source:pin(base,source),originalCopy:pin(root,td+'/originals/'+dest+'.data'),ported:pin(root,td+'/'+dest),replacements});
+}
+for(const n of ['root-corpus.mjs','trust-graph.mjs','governance.mjs'])port(old,'repositories/cca-conformance/tools/mo1307-phase3c/'+n,n,'original');
+for(const n of ['helper-review.ps1','deadline-cleanup.mjs','equivalence.mjs','protocol.mjs','toctou-boundaries.mjs'])port(hist,'repositories/cca-conformance/tools/mo1307-phase3c-refresh/'+n,n,'refresh');
+save(td+'/.gitattributes','* -text\n');save(ev+'/.gitattributes','* -text\n');
+save(ev+'/tool-port-manifest.json',{createdAt:new Date().toISOString(),ports,scope:'Engineering path relocation, current outer candidate labels, durable observations and fail-fast only. No production or negative predicate change.'});
+const corpus=json(hist,he+'/targeted-negative-corpus.json');
+save(ev+'/frozen-authoritative-corpus.json',{authorityCommit:history,source:pin(hist,he+'/targeted-negative-corpus.json'),inventory:corpus});
+const origCorpus=json(old,oe+'/negative-corpus.json');save(ev+'/original-authoritative-corpus.json',{authorityCommit:'191f34748141afca2027e8e9db0c6f1b6a9c84c0',source:pin(old,oe+'/negative-corpus.json'),inventory:origCorpus});
+const stagePlans={root:json(old,oe+'/root-corpus-plan.json'),trust:json(old,oe+'/trust-graph/receipt.json').cases.map(r=>({id:r.id,name:r.name,expected:r.expected})),governance:json(old,oe+'/governance/accepted-corpus.json').records.map(r=>({id:r.id,expected:r.expected,sourceReceipt:r.sourceReceipt})),deadline:json(hist,he+'/deadline-cleanup/attempt-2/receipt.json').cases.map(r=>({id:r.id,layer:r.layer,expected:'PASS according to pinned harness assertions'})),equivalence:json(hist,he+'/equivalence/attempt2/campaign.json').cases,protocol:json(hist,he+'/protocol-subset.json').rows.map(r=>({id:r.id,expected:r.code??'OK',negative:r.negative})),toctou:json(hist,he+'/toctou-boundaries/attempt2/receipt.json').rows.map(r=>({id:r.id,expected:r.code}))};
+save(ev+'/frozen-execution-cases.json',stagePlans);
+const node=path.join(old,'.cache/mo1307-phase3c-runtime/node.exe');
+const stages=[
+ {id:'01-authority-dependency-binding',tool:'binding.mjs'},
+ {id:'02-native-source-review',tool:'helper-review.ps1',powershell:true},
+ {id:'03-root-negative-corpus',tool:'root-corpus.mjs'},
+ {id:'04-trust-graph-corpus',tool:'trust-graph.mjs'},
+ {id:'05-governance-primary',tool:'governance.mjs',args:['primary']},
+ {id:'06-governance-supplement',tool:'governance.mjs',args:['supplement']},
+ {id:'07-deadline-cleanup-environment',tool:'deadline-cleanup.mjs',args:['attempt-1']},
+ {id:'08-native-equivalence',tool:'equivalence.mjs',args:['--output',ev+'/equivalence/attempt2']},
+ {id:'09-consumer-protocol',tool:'protocol.mjs'},
+ {id:'10-native-toctou',tool:'toctou-boundaries.mjs'}
+];
+fs.mkdirSync(path.join(root,ev,'deadline-cleanup'));
+save(ev+'/campaign-plan.json',{kind:'MO1307Phase3CC3RBCertificationPlan',frozenAt:new Date().toISOString(),candidate,integrationAuthority:integration,historical3CR:history,original3C:'191f34748141afca2027e8e9db0c6f1b6a9c84c0',workspace:root,branch:git('branch','--show-current'),node:{...pin(old,'.cache/mo1307-phase3c-runtime/node.exe'),absolute:node,requiredVersion:'v24.21.0',requiredSha256:'sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'},stages,stopPolicy:'First mandatory failure seals FAILED/INCOMPLETE. Never launch another certification stage. No retries. All unexecuted cases retained; failed current observation cannot be replaced by reuse.',inventory:pin(root,ev+'/frozen-authoritative-corpus.json'),executionCases:pin(root,ev+'/frozen-execution-cases.json'),reusePolicy:'551 unique accepted historical controls remain the finite scope. Reexecute root157/trust96/governance115 and targeted native/protocol/deadline witnesses in fixed order. Only unchanged controls not selected for fresh execution may reuse committed accepted inner proofs after exact candidate, source, fixture, receipt and dependency validation. Historical PASS is never a fresh observed PASS. No dependent scope is certified after failure.',helperLimitMs:5000,H:'NOT_ESTABLISHED',engineeringGuards:'Inherited 15000/20000ms raw-helper oracle guards are instrumentation only; product launch transport retains 5000ms.',attemptNaming:'equivalence/attempt2 and toctou/attempt2 are inherited directory spellings, each is the sole fresh attempt in this new namespace; no prior current attempt exists.',prohibited:['C3S','F22','helper optimization','replacement H characterization','Phase 3A','Phase 3B','Phase 3D','push','tag','production edits']});
+save(ev+'/setup.json',{managedWorktree:{result:'FAILED_BEFORE_CERTIFICATION',reason:'Historical long paths exceeded managed worktree checkout path'},fallback:{path:root,method:'git -c core.longpaths=true worktree add',result:'PASS'},preFreezePreparation:{result:'SOURCE_PORT_ANCHOR_CORRECTED',error:'missing port anchor deadline-cleanup.mjs tools/mo1307-phase3c-refresh',reason:'Deadline tool has no self-path literal; replacement made conditional before any certification execution. Existing partial tool files checked byte-identical; no negative predicate changed.'},notACertificationRetry:true});
+console.log(JSON.stringify({prepared:root,tools:ports.length,stages:stages.length,controls:corpus.rows.length}));

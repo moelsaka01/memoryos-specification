@@ -1,0 +1,28 @@
+{
+  "status": "INCOMPLETE",
+  "failedGate": "02-native-source-review",
+  "expected": {
+    "exitCode": 0,
+    "completedMechanicalSourceReview": true
+  },
+  "actual": {
+    "exitCode": 1,
+    "completedMechanicalSourceReview": false,
+    "errorType": "CommandNotFoundException",
+    "unresolvedCommand": "git",
+    "source": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert/helper-review.ps1:22"
+  },
+  "classification": "CERTIFICATION_HARNESS_LAUNCH_ENVIRONMENT_FAILURE",
+  "causalLimit": "The observed failure is Git command resolution in the engineering review PowerShell. No product security defect established; no root-cause repair, environment change or retry performed after failure.",
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/02-native-source-review.stderr.txt",
+    "byteLength": 533,
+    "sha256": "sha256:0f1a546f462c26a9d3a06fc78dcd3f591998d73b925bca2fb37984453648bb92"
+  },
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/02-native-source-review.stdout.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "exactError": "& : The term 'git' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the \r\nspelling of the name, or if a path was included, verify that the path is correct and try again.\r\nAt C:\\m7c\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert\\helper-review.ps1:22 char:12\r\n+     $v = & git -C $RepoRoot @Arguments\r\n+            ~~~\r\n    + CategoryInfo          : ObjectNotFound: (git:String) [], ParentContainsErrorRecordException\r\n    + FullyQualifiedErrorId : CommandNotFoundException\r\n \r\n"
+}

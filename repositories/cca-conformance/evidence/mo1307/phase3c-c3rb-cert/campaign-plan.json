@@ -1,0 +1,102 @@
+{
+  "kind": "MO1307Phase3CC3RBCertificationPlan",
+  "frozenAt": "2026-09-29T23:03:05.288Z",
+  "candidate": "defe93989efc6501b1a730b82e79e705884b269b",
+  "integrationAuthority": "4a1de6f00788e3c52a647d6f25aa1dbd2d5d5d97",
+  "historical3CR": "f4ed5873969ab6b627941dc20d5823c5e853b9fe",
+  "original3C": "191f34748141afca2027e8e9db0c6f1b6a9c84c0",
+  "workspace": "C:/m7c",
+  "branch": "codex/mo1307-phase3c-c3rb-cert",
+  "node": {
+    "path": ".cache/mo1307-phase3c-runtime/node.exe",
+    "byteLength": 93580104,
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32",
+    "absolute": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+    "requiredVersion": "v24.21.0",
+    "requiredSha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "stages": [
+    {
+      "id": "01-authority-dependency-binding",
+      "tool": "binding.mjs"
+    },
+    {
+      "id": "02-native-source-review",
+      "tool": "helper-review.ps1",
+      "powershell": true
+    },
+    {
+      "id": "03-root-negative-corpus",
+      "tool": "root-corpus.mjs"
+    },
+    {
+      "id": "04-trust-graph-corpus",
+      "tool": "trust-graph.mjs"
+    },
+    {
+      "id": "05-governance-primary",
+      "tool": "governance.mjs",
+      "args": [
+        "primary"
+      ]
+    },
+    {
+      "id": "06-governance-supplement",
+      "tool": "governance.mjs",
+      "args": [
+        "supplement"
+      ]
+    },
+    {
+      "id": "07-deadline-cleanup-environment",
+      "tool": "deadline-cleanup.mjs",
+      "args": [
+        "attempt-1"
+      ]
+    },
+    {
+      "id": "08-native-equivalence",
+      "tool": "equivalence.mjs",
+      "args": [
+        "--output",
+        "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/equivalence/attempt2"
+      ]
+    },
+    {
+      "id": "09-consumer-protocol",
+      "tool": "protocol.mjs"
+    },
+    {
+      "id": "10-native-toctou",
+      "tool": "toctou-boundaries.mjs"
+    }
+  ],
+  "stopPolicy": "First mandatory failure seals FAILED/INCOMPLETE. Never launch another certification stage. No retries. All unexecuted cases retained; failed current observation cannot be replaced by reuse.",
+  "inventory": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/frozen-authoritative-corpus.json",
+    "byteLength": 309134,
+    "sha256": "sha256:4796f267b35083ab68435ce8a5077762582f0fd0a6ea09513b5e99b91777d11f"
+  },
+  "executionCases": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/frozen-execution-cases.json",
+    "byteLength": 131550,
+    "sha256": "sha256:5e06564edefcbd12d16e7825cdc8602478e77aa966567e4afff2a6a67331d090"
+  },
+  "reusePolicy": "551 unique accepted historical controls remain the finite scope. Reexecute root157/trust96/governance115 and targeted native/protocol/deadline witnesses in fixed order. Only unchanged controls not selected for fresh execution may reuse committed accepted inner proofs after exact candidate, source, fixture, receipt and dependency validation. Historical PASS is never a fresh observed PASS. No dependent scope is certified after failure.",
+  "helperLimitMs": 5000,
+  "H": "NOT_ESTABLISHED",
+  "engineeringGuards": "Inherited 15000/20000ms raw-helper oracle guards are instrumentation only; product launch transport retains 5000ms.",
+  "attemptNaming": "equivalence/attempt2 and toctou/attempt2 are inherited directory spellings, each is the sole fresh attempt in this new namespace; no prior current attempt exists.",
+  "prohibited": [
+    "C3S",
+    "F22",
+    "helper optimization",
+    "replacement H characterization",
+    "Phase 3A",
+    "Phase 3B",
+    "Phase 3D",
+    "push",
+    "tag",
+    "production edits"
+  ]
+}

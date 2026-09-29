@@ -1,0 +1,17 @@
+{
+  "managedWorktree": {
+    "result": "FAILED_BEFORE_CERTIFICATION",
+    "reason": "Historical long paths exceeded managed worktree checkout path"
+  },
+  "fallback": {
+    "path": "C:/m7c",
+    "method": "git -c core.longpaths=true worktree add",
+    "result": "PASS"
+  },
+  "preFreezePreparation": {
+    "result": "SOURCE_PORT_ANCHOR_CORRECTED",
+    "error": "missing port anchor deadline-cleanup.mjs tools/mo1307-phase3c-refresh",
+    "reason": "Deadline tool has no self-path literal; replacement made conditional before any certification execution. Existing partial tool files checked byte-identical; no negative predicate changed."
+  },
+  "notACertificationRetry": true
+}
