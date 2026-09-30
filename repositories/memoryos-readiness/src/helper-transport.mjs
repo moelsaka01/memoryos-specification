@@ -16,7 +16,7 @@ export function helperLaunchSpecification() {
   return Object.freeze({ executable: WINDOWS_INSTALLATION.powershell,
     args: Object.freeze(['-NoLogo', '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', SCRIPT]),
     options: Object.freeze({ cwd: DIRECTORY, env: Object.freeze({ SystemRoot: WINDOWS_INSTALLATION.windowsDirectory,
-      WINDIR: WINDOWS_INSTALLATION.windowsDirectory }), windowsHide: true, detached: false,
+      WINDIR: WINDOWS_INSTALLATION.windowsDirectory }), windowsHide: true, detached: true,
       shell: false, stdio: Object.freeze(['pipe', 'pipe', 'pipe']) }) });
 }
 
@@ -33,9 +33,9 @@ function transport(supervisor, launch) {
       const request = decodeHelperRequest(frame);
       const detached = Buffer.from(frame);
       return supervisor.runOwned('helper', lease => {
-        // Hidden pipes still create an attributable Windows console host here.
-        // The fixed helper natively detaches and confirms that host's exit
-        // before emitting any valid response. It launches no other children.
+        // DETACHED_PROCESS starts without an inherited console. If PowerShell
+        // allocates one, the helper binds its current window owner and confirms exit
+        // after detaching, before any valid response. The child remains referenced.
         const child = launch(specification.executable, [...specification.args], {
           ...specification.options, env: { ...specification.options.env }, stdio: [...specification.options.stdio],
         });
@@ -94,7 +94,7 @@ function transport(supervisor, launch) {
         for (const stream of [child.stdin, child.stdout, child.stderr]) stream.on('error', () => rejected('INTERNAL'));
         child.once('error', () => rejected('INTERNAL'));
         child.once('close', code => { processClosed = true; processCode = code; finish(); });
-        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT' });
+        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_CURRENT_CONSOLE_WINDOW_AND_CONFIRMED_HOST_EXIT' });
         child.stdin.end(detached);
         return { completion, closed, quiescence: () => consoleQuiescent, abandon: () => child.unref?.(), terminate: () => {
           child.stdin.destroy(); child.stdout.destroy(); child.stderr.destroy();

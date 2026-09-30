@@ -134,15 +134,31 @@ failures and ambiguous native failures never become absence. Existing output
 or final destinations produce a closed error; the supervisor maps publication
 errors to OUTPUT. No identity is invented for an absent file/directory.
 
-The hidden PowerShell process may own a headless console even with redirected
-pipes. Startup captures those byte transports, checks that the console has only
-the helper as a member, and uses a fixed Toolhelp32 snapshot to identify its sole
-child as conhost.exe with parent PID equal to the helper PID. It opens that
-process, verifies the native image is the actual system conhost.exe, detaches
-with `FreeConsole`, and, if necessary, terminates only that positively identified
-owned process through its held native handle. A wait of at most 1,000 ms must
-confirm termination. This exact owned-console cleanup was explicitly authorized
-for resumed Phase 2C. It is not an arbitrary process-termination facility.
+The fixed hidden PowerShell launch uses `detached: true` with redirected pipes.
+On the pinned Node/libuv Windows implementation this requests `DETACHED_PROCESS`,
+so the helper does not inherit another process's console. It does not claim that
+PowerShell cannot allocate a console. The supervisor retains the child reference,
+process-exit checks, transport EOF requirements, cancellation and fixed deadlines.
+Detached launch does not inherit libuv's parent-exit job coupling; that changed
+boundary requires explicit validation and is not an added cleanup guarantee.
+
+Startup captures the byte transports and accepts either native no-console absence
+or sole-helper console membership. For an attached console it requires a nonzero
+`GetConsoleWindow`, obtains its owner with `GetWindowThreadProcessId`, and opens
+that process with query/synchronize rights only. It verifies the handle PID and
+exact system conhost.exe image, repeats current window/owner and sole-membership
+observations, then confirms that the retained object is still live. A missing
+window, changed association, access failure or ambiguity fails closed. No
+historical parent-process lifetime is claimed or used.
+
+The helper then calls `FreeConsole` and waits at most 1,000 ms for natural exit
+of the SAME retained host object, followed by native helper console absence.
+It never calls `TerminateProcess` on a host. A client joining after the last
+membership observation cannot authorize termination of that client's console;
+a host that remains alive instead produces silent exit 22. All native handles
+and the fixed four-byte membership buffer are released. This replaces the old
+numeric-parent Toolhelp assumption under the final engineering authorization;
+the higher-level attribution, quiescence and resource requirements are unchanged.
 
 Every valid frame, including an ERROR frame, is emitted only after this startup
 console proof. A proof failure exits 22 without a frame or diagnostic. The
