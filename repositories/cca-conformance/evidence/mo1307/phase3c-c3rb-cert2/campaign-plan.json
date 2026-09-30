@@ -1,0 +1,130 @@
+{
+  "kind": "MO1307Phase3CC3RBSecondFreshGeneration",
+  "frozenAt": "2026-09-29T23:55:31.217Z",
+  "candidate": "defe93989efc6501b1a730b82e79e705884b269b",
+  "integrationAuthority": "4a1de6f00788e3c52a647d6f25aa1dbd2d5d5d97",
+  "historical3CR": "f4ed5873969ab6b627941dc20d5823c5e853b9fe",
+  "preservedFailedGeneration": "2fe26d371a394f631d0d1d25d979bfaba7265015",
+  "accepted3B": "702c1b6381f6112a50ac844831d195275dac3350",
+  "workspace": "C:\\m7c2",
+  "branch": "codex/mo1307-phase3c-c3rb-cert2",
+  "node": {
+    "absolute": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+    "version": "v24.21.0",
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "engineeringGit": {
+    "absolute": "C:/Program Files/Git/cmd/git.exe",
+    "byteLength": 46920,
+    "sha256": "sha256:7b7971dd13f0c3a284e538601f2f9770b3a87dfaccb5fb52d68141c67ed22364",
+    "version": "git version 2.55.0.windows.3"
+  },
+  "stages": [
+    {
+      "id": "01-authority-dependency-binding",
+      "tool": "binding.mjs"
+    },
+    {
+      "id": "02-native-source-review",
+      "tool": "helper-review.ps1",
+      "powershell": true,
+      "args": [
+        "-GitExecutable",
+        "C:/Program Files/Git/cmd/git.exe"
+      ]
+    },
+    {
+      "id": "03-root-negative-corpus",
+      "tool": "root-corpus.mjs"
+    },
+    {
+      "id": "04-trust-graph-corpus",
+      "tool": "trust-graph.mjs"
+    },
+    {
+      "id": "05-governance-primary",
+      "tool": "governance.mjs",
+      "args": [
+        "primary"
+      ]
+    },
+    {
+      "id": "06-governance-supplement",
+      "tool": "governance.mjs",
+      "args": [
+        "supplement"
+      ]
+    },
+    {
+      "id": "07-runtime-boundary",
+      "tool": "runtime-boundary.mjs"
+    },
+    {
+      "id": "08-runtime-supplement",
+      "tool": "runtime-boundary-supplement.mjs"
+    },
+    {
+      "id": "09-deadline-cleanup-environment",
+      "tool": "deadline-cleanup.mjs",
+      "args": [
+        "attempt-1"
+      ]
+    },
+    {
+      "id": "10-native-equivalence",
+      "tool": "equivalence.mjs",
+      "args": [
+        "--output",
+        "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/equivalence/attempt1"
+      ]
+    },
+    {
+      "id": "11-consumer-protocol",
+      "tool": "protocol.mjs"
+    },
+    {
+      "id": "12-native-toctou",
+      "tool": "toctou-boundaries.mjs"
+    },
+    {
+      "id": "13-complete-inventory-reconciliation",
+      "tool": "reconcile.mjs"
+    }
+  ],
+  "controls": 551,
+  "rejections": 426,
+  "allControlsRequireNewExecution": true,
+  "reuseFromFailedGeneration": false,
+  "readOnlyHistoricalAuthorityIsNotCurrentPass": true,
+  "controlMap": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/current-control-map.json",
+    "byteLength": 451785,
+    "sha256": "sha256:48aceca6174e71f0c1994c060ebdfd46a2b8e78d70d6313f8ea89b3db1c91208"
+  },
+  "frozenCases": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/frozen-execution-cases.json",
+    "byteLength": 131586,
+    "sha256": "sha256:e9eebf044d23e95a893370d11c6031a73d2d6e781b26985928b0121763410a60"
+  },
+  "runtimeCases": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/runtime-control-mapping.json",
+    "byteLength": 37897,
+    "sha256": "sha256:2cea5995a300d459549e0ca70171cc0a7562e216b4b287fd42ae39aa741709dd"
+  },
+  "harnessValidation": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/receipt.json",
+    "byteLength": 12831,
+    "sha256": "sha256:26b267f94cfaff4e200ce317e3c917d32d492f43852625a356c05b2cf0336271"
+  },
+  "stopPolicy": "Execute once. First mandatory failure STOP; no retry, replacement, corpus expansion or in-campaign repair. Remaining controls NOT_RUN. Only owned cleanup, preservation and reporting may continue.",
+  "limits": {
+    "helperMs": 5000,
+    "aggregateHelperActiveMs": 20000,
+    "workerApiMs": 10000,
+    "cliMs": 30000,
+    "cleanupMs": 2000,
+    "H": "NOT_ESTABLISHED"
+  },
+  "engineeringGuardScope": "Historical raw-helper equivalence 20000ms and resource observation15000ms guards remain explicitly engineering-only; product transport enforces unchanged5000ms. No replacement H characterization.",
+  "scope": "Phase3C only; no product edits,3A,3B,3D,network acquisition,hosted providers,push or tag."
+}

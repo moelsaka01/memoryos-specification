@@ -1,0 +1,45 @@
+{
+  "id": "powershell-exact",
+  "result": "PASS_ENGINEERING_ONLY",
+  "command": {
+    "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\m7c2\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert2\\helper-review.ps1",
+      "-GitExecutable",
+      "C:/Program Files/Git/cmd/git.exe",
+      "-ValidateOnly",
+      "-ValidationManifest",
+      "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\exact-manifest.json"
+    ]
+  },
+  "expected": {
+    "exitCode": 0,
+    "errorOrResult": "PASS_ENGINEERING_ONLY",
+    "noFallback": true,
+    "noCertification": true
+  },
+  "actual": {
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "containsExpectedText": true,
+    "noFallback": true,
+    "noCertification": true
+  },
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/powershell-exact.stdout.txt",
+    "byteLength": 234,
+    "sha256": "sha256:1c3e242ae35b6a47d54ca04be9c4aeb2a243232dedbb8f2f527937eb2c3039a0"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/powershell-exact.stderr.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

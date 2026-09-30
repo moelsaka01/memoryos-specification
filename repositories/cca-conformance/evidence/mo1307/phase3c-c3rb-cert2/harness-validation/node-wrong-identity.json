@@ -1,0 +1,36 @@
+{
+  "id": "node-wrong-identity",
+  "result": "PASS_ENGINEERING_ONLY",
+  "command": {
+    "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+    "args": [
+      "C:\\m7c2\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert2\\git-toolchain.mjs",
+      "--validate-only",
+      "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\wrong-identity-manifest.json"
+    ]
+  },
+  "expected": {
+    "exitCode": 1,
+    "errorOrResult": "ENGINEERING_GIT_IDENTITY",
+    "noFallback": true,
+    "noCertification": true
+  },
+  "actual": {
+    "exitCode": 1,
+    "signal": null,
+    "error": null,
+    "containsExpectedText": true,
+    "noFallback": true,
+    "noCertification": true
+  },
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/node-wrong-identity.stdout.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/node-wrong-identity.stderr.txt",
+    "byteLength": 169,
+    "sha256": "sha256:4affeab9e5d593705f9c97a85a6e20a1d80e63888ba7e25a0c9f2bdf31e488f7"
+  }
+}

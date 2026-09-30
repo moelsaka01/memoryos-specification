@@ -1,0 +1,48 @@
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {execFileSync} from 'node:child_process';
+const root='C:/m7c2',prior='C:/m7c',hist='C:/Users/melsa/Documents/Codex/r3c',old='C:/Users/melsa/Documents/Codex/cca-mo1307-3c',draft=path.dirname(new URL(import.meta.url).pathname).replace(/^\/([A-Z]:)/,'$1');
+const gitExe='C:/Program Files/Git/cmd/git.exe',candidate='defe93989efc6501b1a730b82e79e705884b269b',name='phase3c-c3rb-cert2',ev='repositories/cca-conformance/evidence/mo1307/'+name,td='repositories/cca-conformance/tools/mo1307-'+name,oldtd=td.slice(0,-1),he='repositories/cca-conformance/evidence/mo1307/phase3c-refresh',oe='repositories/cca-conformance/evidence/mo1307/phase3c';
+const sha=b=>'sha256:'+createHash('sha256').update(b).digest('hex'),read=(r,p)=>fs.readFileSync(path.join(r,p)),json=(r,p)=>JSON.parse(read(r,p)),pin=(r,p)=>{const b=read(r,p);return{path:p,byteLength:b.length,sha256:sha(b)}};
+assert.equal(sha(fs.readFileSync(gitExe)),'sha256:7b7971dd13f0c3a284e538601f2f9770b3a87dfaccb5fb52d68141c67ed22364');
+const git=(r,...a)=>execFileSync(gitExe,a,{cwd:r,windowsHide:true,encoding:'utf8',timeout:60000,maxBuffer:128*1024*1024}).trim();
+assert.equal(git(root,'rev-parse','HEAD'),candidate);assert.equal(git(root,'status','--porcelain=v1'),'');assert.equal(git(prior,'rev-parse','HEAD'),'2fe26d371a394f631d0d1d25d979bfaba7265015');assert.equal(git(prior,'status','--porcelain=v1'),'');
+fs.mkdirSync(path.join(root,td,'originals'),{recursive:true});fs.mkdirSync(path.join(root,ev,'harness-validation'),{recursive:true});fs.mkdirSync(path.join(root,ev,'deadline-cleanup'));
+const save=(p,v)=>fs.writeFileSync(path.join(root,p),Buffer.isBuffer(v)?v:typeof v==='string'?v:JSON.stringify(v,null,2)+'\n',{flag:'wx'});
+const toolchain={kind:'MO1307Phase3CEngineeringToolchain',resolvedBeforeHarnessChange:true,git:{absolute:gitExe,byteLength:46920,sha256:'sha256:7b7971dd13f0c3a284e538601f2f9770b3a87dfaccb5fb52d68141c67ed22364',version:'git version 2.55.0.windows.3'},core:{absolute:'C:/Program Files/Git/mingw64/bin/git.exe',byteLength:4383048,sha256:'sha256:1a0043555d254618f2d56c936c3d9a1fbfb878bc878416a133c346bc7835eda9'},discovery:{mechanism:'Direct literal path already observed in prior repository environment tool inventory; literal Get-Item/Get-FileHash/Authenticode and absolute --version/--exec-path probes outside certification; no ambient command lookup in this restart.',execPath:'C:/Program Files/Git/mingw64/libexec/git-core',authenticode:{status:'Valid',signer:'CN=Johannes Schindelin, O=Johannes Schindelin, L=Bruehl, C=DE',thumbprint:'3E9627155B7A6F29856321EE56D7FC25CF808407'},authorization:'Preexisting Git for Windows repository tooling used to create/read local worktrees. User explicitly authorizes resolving and binding that engineering tool. Signature/hash do not authenticate MemoryOS organizational approval.',network:false,download:false,globalPathChange:false},node:{absolute:path.join(old,'.cache/mo1307-phase3c-runtime/node.exe'),version:'v24.21.0',sha256:'sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32'}};
+save(td+'/engineering-toolchain.json',toolchain);save(ev+'/git-resolution.json',toolchain);
+for(const f of ['git-toolchain.mjs','git-toolchain.ps1'])save(td+'/'+f,read(draft,f));
+const ports=[];
+for(const f of ['binding.mjs','helper-review.ps1','root-corpus.mjs','trust-graph.mjs','governance.mjs','deadline-cleanup.mjs','equivalence.mjs','protocol.mjs','toctou-boundaries.mjs','run.mjs']){
+ const raw=read(prior,oldtd+'/'+f);save(td+'/originals/'+f+'.data',raw);let s=raw.toString().replaceAll('\r\n','\n').replaceAll('phase3c-c3rb-cert','phase3c-c3rb-cert2').replaceAll('C:\\m7c','C:\\m7c2').replaceAll('c:\\\\m7c','c:\\\\m7c2');
+ const changes=['new isolated output/tool namespace and worktree','LF-normalized fresh engineering copy; original byte copy retained'];
+ if(f==='binding.mjs'){
+  s="import {gitExecute} from './git-toolchain.mjs';\n"+s;s=s.replace("execFileSync('git',","gitExecute(");changes.push('all Git calls use shared manifest-bound absolute executable');
+  s=s.replace("reuseIsExplicitNotFreshExecution:true","historicalBindingIsNotFreshExecution:true");
+ }
+ if(f==='governance.mjs'){
+  s="import {gitExecute} from './git-toolchain.mjs';\n"+s;
+  s=s.replace("const g=spawnSync('git',","const gitBytes=gitExecute(");
+  s=s.replace("});assert.equal(g.status,0,g.stderr);","});const g={stdout:gitBytes};");changes.push('nonexecuted historical mode also removes ambient Git dependency');
+ }
+ if(f==='helper-review.ps1'){
+  s=s.replace("param([string] $RepoRoot = 'C:\\m7c2', [switch] $Verify)","param([string] $RepoRoot = 'C:\\m7c2', [switch] $Verify, [Parameter(Mandatory=$true)][string] $GitExecutable, [switch] $ValidateOnly, [string] $ValidationManifest)");
+  const anchor="$ErrorActionPreference = 'Stop'";
+  s=s.replace(anchor,anchor+"\n. (Join-Path $PSScriptRoot 'git-toolchain.ps1')\n$toolchainManifest = Join-Path $PSScriptRoot 'engineering-toolchain.json'\nif ($ValidationManifest) { if (-not $ValidateOnly) { throw 'ENGINEERING_GIT_MANIFEST: override allowed only in engineering validation' }; $toolchainManifest = $ValidationManifest }\n$gitValidation = Initialize-EngineeringGit $GitExecutable $toolchainManifest\nif ($ValidateOnly) { $gitValidation | ConvertTo-Json -Compress; exit 0 }");
+  s=s.replace("$v = & git -C $RepoRoot @Arguments\n    Assert-Review ($LASTEXITCODE -eq 0) ('git failed: ' + ($Arguments -join ' '))","$v = Invoke-EngineeringGit (@('-C', $RepoRoot) + $Arguments)");changes.push('explicit mandatory GitExecutable parameter; pre/post length/hash, version, safe absolute argument-array invocation; validate-only returns before source review');
+ }
+ if(f==='run.mjs'){
+  s=s.replace("path.resolve(td,stage.tool)]:", "path.resolve(td,stage.tool),...(stage.args??[])]:");
+  s=s.replace("PATH:process.env.PATH", "");changes.push('no inherited PATH; PowerShell receives sealed GitExecutable argument');
+ }
+ s=s.trimEnd()+'\n';save(td+'/'+f,s);ports.push({name:f,sourceCommit:'2fe26d371a394f631d0d1d25d979bfaba7265015',source:pin(prior,oldtd+'/'+f),original:pin(root,td+'/originals/'+f+'.data'),current:pin(root,td+'/'+f),changes});
+}
+save(td+'/.gitattributes','* text eol=lf\n*.data -text -diff\noriginals/* -text -diff\n');save(ev+'/.gitattributes','* -text\n*.data -diff\n');
+save(ev+'/harness-correction.json',{result:'PREPARED_NOT_CERTIFICATION',previousFailure:{commit:'2fe26d371a394f631d0d1d25d979bfaba7265015',path:'C:/m7c',classification:'CERTIFICATION_HARNESS_ENGINEERING_TOOL_RESOLUTION_FAILURE',gate:'native source-review',expectedExit:0,actualExit:1,site:'helper-review.ps1:22',receipt:pin(prior,'repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert/certification-receipt.json')},toolchain:pin(root,td+'/engineering-toolchain.json'),ports,productChanges:false,priorRowsPromoted:false});
+const corpus=json(hist,he+'/targeted-negative-corpus.json');assert.equal(corpus.rows.length,551);assert.equal(corpus.rows.filter(r=>r.negative).length,426);
+save(ev+'/authoritative-corpus.json',{authorityCommit:'f4ed5873969ab6b627941dc20d5823c5e853b9fe',source:pin(hist,he+'/targeted-negative-corpus.json'),historicalInventory:corpus});
+save(ev+'/original-authoritative-corpus.json',{authorityCommit:'191f34748141afca2027e8e9db0c6f1b6a9c84c0',source:pin(old,oe+'/negative-corpus.json'),historicalInventory:json(old,oe+'/negative-corpus.json')});
+const executionCases={root:json(old,oe+'/root-corpus-plan.json'),trust:json(old,oe+'/trust-graph/receipt.json').cases.map(r=>({id:r.id,name:r.name,expected:r.expected})),governance:json(old,oe+'/governance/accepted-corpus.json').records.map(r=>({id:r.id,expected:r.expected,sourceReceipt:r.sourceReceipt})),deadline:json(hist,he+'/deadline-cleanup/attempt-2/receipt.json').cases.map(r=>({id:r.id,layer:r.layer,expected:'PASS according to sealed inherited assertions'})),equivalence:json(hist,he+'/equivalence/attempt2/campaign.json').cases,protocol:json(hist,he+'/protocol-subset.json').rows.map(r=>({id:r.id,expected:r.code??'OK',negative:r.negative})),toctou:json(hist,he+'/toctou-boundaries/attempt2/receipt.json').rows.map(r=>({id:r.id,expected:r.code}))};
+save(ev+'/frozen-execution-cases.json',executionCases);
+const previousFiles=git(prior,'ls-tree','-r','--name-only','2fe26d371a394f631d0d1d25d979bfaba7265015','--','docs/mo1307-phase3c-c3rb-certification.md','repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert','repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert').split('\n').filter(Boolean).map(p=>pin(prior,p));
+save(ev+'/previous-failure-preservation-baseline.json',{root:prior,commit:'2fe26d371a394f631d0d1d25d979bfaba7265015',status:'CLEAN',files:previousFiles});
+save(ev+'/setup.json',{candidate,branch:git(root,'branch','--show-current'),worktree:root,managedCreation:'FAILED historical long paths; no certification executed',fallback:'New short C:/m7c2 via exact Git and command-scoped core.longpaths=true',phase3B:'702c1b6381f6112a50ac844831d195275dac3350 retained; no phase3B activity',noProductionChange:true});
+console.log(JSON.stringify({prepared:root,ports:ports.length,controls:551,rejections:426}));

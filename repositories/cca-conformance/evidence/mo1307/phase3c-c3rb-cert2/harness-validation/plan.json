@@ -1,0 +1,78 @@
+{
+  "kind": "EngineeringGitHarnessValidationPlan",
+  "frozenAt": "2026-09-29T23:51:50.433Z",
+  "scope": "Engineering-only preparation; not any of551 product security controls",
+  "caseCount": 8,
+  "cases": [
+    {
+      "id": "exact",
+      "expectedExit": 0,
+      "expectedText": "PASS_ENGINEERING_ONLY",
+      "manifest": {
+        "path": "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\exact-manifest.json",
+        "byteLength": 1617,
+        "sha256": "sha256:7ed6b7a61c3e212bc466fd7550c3280463ae784eeed6369f4ce6f4e5cba27406"
+      }
+    },
+    {
+      "id": "missing",
+      "expectedExit": 1,
+      "expectedText": "ENGINEERING_GIT_MISSING",
+      "manifest": {
+        "path": "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\missing-manifest.json",
+        "byteLength": 328,
+        "sha256": "sha256:e9035ab2e1ad921b86a1bba5417151ead399a8ca1add94e0a76963b99400526a"
+      }
+    },
+    {
+      "id": "wrong-identity",
+      "expectedExit": 1,
+      "expectedText": "ENGINEERING_GIT_IDENTITY",
+      "manifest": {
+        "path": "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\wrong-identity-manifest.json",
+        "byteLength": 423,
+        "sha256": "sha256:cbc852b6f1b7f59c79453f49374cb0b6455057a66e5cc7f3998cc5b7d2e89bf7"
+      }
+    },
+    {
+      "id": "not-executable",
+      "expectedExit": 1,
+      "expectedText": "ENGINEERING_GIT_EXECUTION",
+      "manifest": {
+        "path": "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\not-executable-manifest.json",
+        "byteLength": 315,
+        "sha256": "sha256:039e436c8d52aa18a32166c227d6b38ac0f60cf873d0a4171b93ab4398b7d1f4"
+      }
+    }
+  ],
+  "implementations": [
+    "PowerShell helper-review ValidateOnly",
+    "Node git-toolchain validate-only"
+  ],
+  "sources": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert2/helper-review.ps1",
+      "byteLength": 19533,
+      "sha256": "sha256:cee77f8172b49addb0e8b6e6382952819fa4ca13e848d79b6127f63ba5b7b667"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert2/git-toolchain.ps1",
+      "byteLength": 2730,
+      "sha256": "sha256:435744aa0e28f8aac37ca1a3f699b0561dc610830b8d48c67868dbef154875bd"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert2/git-toolchain.mjs",
+      "byteLength": 2500,
+      "sha256": "sha256:c364abdde5ec45b9d01a1203e8b86d3c86bf74fcf2befc406edc324285924e05"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert2/engineering-toolchain.json",
+      "byteLength": 1617,
+      "sha256": "sha256:7ed6b7a61c3e212bc466fd7550c3280463ae784eeed6369f4ce6f4e5cba27406"
+    }
+  ],
+  "poisonPath": "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\poison",
+  "expectedFallbackMarker": false,
+  "productCodeImported": false,
+  "sourceReviewExecuted": false
+}

@@ -1,0 +1,50 @@
+{
+  "kind": "MO1307Phase3CCert2FirstFailure",
+  "classification": "CERTIFICATION_HARNESS_ENGINEERING_GIT_EXIT_STATUS_FAILURE",
+  "stage": "02-native-source-review",
+  "source": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert2/git-toolchain.ps1:22",
+  "expected": {
+    "outerPowerShellExitCode": 0,
+    "completedSourceReview": true
+  },
+  "actual": {
+    "outerPowerShellExitCode": 1,
+    "signal": null,
+    "completedSourceReview": false,
+    "error": "ENGINEERING_GIT_EXIT:",
+    "gitExitValueReported": false
+  },
+  "startedAt": "2026-09-29T23:56:01.208Z",
+  "finishedAt": "2026-09-29T23:56:02.944Z",
+  "command": {
+    "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\m7c2\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert2\\helper-review.ps1",
+      "-GitExecutable",
+      "C:/Program Files/Git/cmd/git.exe"
+    ],
+    "cwd": "C:\\m7c2"
+  },
+  "pid": 27048,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/02-native-source-review.stdout.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/02-native-source-review.stderr.txt",
+    "byteLength": 437,
+    "sha256": "sha256:f3f4f7a6758366e6a860b5929b0ec4fb9ad5670a08ea745f43afbecf08382252"
+  },
+  "exactStderr": "ENGINEERING_GIT_EXIT: \r\nAt C:\\m7c2\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert2\\git-toolchain.ps1:22 char:60\r\n+ ... TEXITCODE -ne 0) { throw ('ENGINEERING_GIT_EXIT: ' + $LASTEXITCODE) }\r\n+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\r\n    + CategoryInfo          : OperationStopped: (ENGINEERING_GIT_EXIT: :String) [], RuntimeException\r\n    + FullyQualifiedErrorId : ENGINEERING_GIT_EXIT: \r\n \r\n",
+  "interpretation": "The mandatory engineering wrapper raised ENGINEERING_GIT_EXIT with an empty suffix. Exit 1 is the outer PowerShell stage exit, not an established Git process exit. The underlying cause was not investigated or repaired after stop.",
+  "productDefectEstablished": false,
+  "retry": false,
+  "repairAfterStop": false
+}

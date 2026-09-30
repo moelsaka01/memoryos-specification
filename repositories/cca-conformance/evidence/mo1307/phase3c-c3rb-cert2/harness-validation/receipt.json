@@ -1,0 +1,335 @@
+{
+  "kind": "EngineeringGitHarnessValidation",
+  "result": "PASS_ENGINEERING_ONLY",
+  "productCertification": false,
+  "cases": [
+    {
+      "id": "powershell-exact",
+      "result": "PASS_ENGINEERING_ONLY",
+      "command": {
+        "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7c2\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert2\\helper-review.ps1",
+          "-GitExecutable",
+          "C:/Program Files/Git/cmd/git.exe",
+          "-ValidateOnly",
+          "-ValidationManifest",
+          "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\exact-manifest.json"
+        ]
+      },
+      "expected": {
+        "exitCode": 0,
+        "errorOrResult": "PASS_ENGINEERING_ONLY",
+        "noFallback": true,
+        "noCertification": true
+      },
+      "actual": {
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "containsExpectedText": true,
+        "noFallback": true,
+        "noCertification": true
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/powershell-exact.stdout.txt",
+        "byteLength": 234,
+        "sha256": "sha256:1c3e242ae35b6a47d54ca04be9c4aeb2a243232dedbb8f2f527937eb2c3039a0"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/powershell-exact.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "id": "powershell-missing",
+      "result": "PASS_ENGINEERING_ONLY",
+      "command": {
+        "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7c2\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert2\\helper-review.ps1",
+          "-GitExecutable",
+          "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\absent-git.exe",
+          "-ValidateOnly",
+          "-ValidationManifest",
+          "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\missing-manifest.json"
+        ]
+      },
+      "expected": {
+        "exitCode": 1,
+        "errorOrResult": "ENGINEERING_GIT_MISSING",
+        "noFallback": true,
+        "noCertification": true
+      },
+      "actual": {
+        "exitCode": 1,
+        "signal": null,
+        "error": null,
+        "containsExpectedText": true,
+        "noFallback": true,
+        "noCertification": true
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/powershell-missing.stdout.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/powershell-missing.stderr.txt",
+        "byteLength": 509,
+        "sha256": "sha256:e0c8a10c9354bf724b5ae1cccb1c7b91ab0676766fc11745ebc90fb56d3e9756"
+      }
+    },
+    {
+      "id": "powershell-wrong-identity",
+      "result": "PASS_ENGINEERING_ONLY",
+      "command": {
+        "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7c2\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert2\\helper-review.ps1",
+          "-GitExecutable",
+          "C:/Program Files/Git/cmd/git.exe",
+          "-ValidateOnly",
+          "-ValidationManifest",
+          "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\wrong-identity-manifest.json"
+        ]
+      },
+      "expected": {
+        "exitCode": 1,
+        "errorOrResult": "ENGINEERING_GIT_IDENTITY",
+        "noFallback": true,
+        "noCertification": true
+      },
+      "actual": {
+        "exitCode": 1,
+        "signal": null,
+        "error": null,
+        "containsExpectedText": true,
+        "noFallback": true,
+        "noCertification": true
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/powershell-wrong-identity.stdout.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/powershell-wrong-identity.stderr.txt",
+        "byteLength": 512,
+        "sha256": "sha256:5154ab168f2122834eaffc2090d0a9f026123ef9a5aa3b8c6ae52b2f5c4c0077"
+      }
+    },
+    {
+      "id": "powershell-not-executable",
+      "result": "PASS_ENGINEERING_ONLY",
+      "command": {
+        "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7c2\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert2\\helper-review.ps1",
+          "-GitExecutable",
+          "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\not-an-executable.exe",
+          "-ValidateOnly",
+          "-ValidationManifest",
+          "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\not-executable-manifest.json"
+        ]
+      },
+      "expected": {
+        "exitCode": 1,
+        "errorOrResult": "ENGINEERING_GIT_EXECUTION",
+        "noFallback": true,
+        "noCertification": true
+      },
+      "actual": {
+        "exitCode": 1,
+        "signal": null,
+        "error": null,
+        "containsExpectedText": true,
+        "noFallback": true,
+        "noCertification": true
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/powershell-not-executable.stdout.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/powershell-not-executable.stderr.txt",
+        "byteLength": 516,
+        "sha256": "sha256:f1c8d126533b887a37267b19b27b18b83557ce12789eead905a5280929d21286"
+      }
+    },
+    {
+      "id": "node-exact",
+      "result": "PASS_ENGINEERING_ONLY",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c2\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert2\\git-toolchain.mjs",
+          "--validate-only",
+          "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\exact-manifest.json"
+        ]
+      },
+      "expected": {
+        "exitCode": 0,
+        "errorOrResult": "PASS_ENGINEERING_ONLY",
+        "noFallback": true,
+        "noCertification": true
+      },
+      "actual": {
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "containsExpectedText": true,
+        "noFallback": true,
+        "noCertification": true
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/node-exact.stdout.txt",
+        "byteLength": 265,
+        "sha256": "sha256:6245fbb280c2ad226722b54711504d81fda1243ea2bfd930d4361f757681ac43"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/node-exact.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "id": "node-missing",
+      "result": "PASS_ENGINEERING_ONLY",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c2\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert2\\git-toolchain.mjs",
+          "--validate-only",
+          "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\missing-manifest.json"
+        ]
+      },
+      "expected": {
+        "exitCode": 1,
+        "errorOrResult": "ENGINEERING_GIT_MISSING",
+        "noFallback": true,
+        "noCertification": true
+      },
+      "actual": {
+        "exitCode": 1,
+        "signal": null,
+        "error": null,
+        "containsExpectedText": true,
+        "noFallback": true,
+        "noCertification": true
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/node-missing.stdout.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/node-missing.stderr.txt",
+        "byteLength": 148,
+        "sha256": "sha256:509020de1bb13339149d7a6ffcec13b2954f61789a58591a2fdc51ae17ef8bf5"
+      }
+    },
+    {
+      "id": "node-wrong-identity",
+      "result": "PASS_ENGINEERING_ONLY",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c2\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert2\\git-toolchain.mjs",
+          "--validate-only",
+          "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\wrong-identity-manifest.json"
+        ]
+      },
+      "expected": {
+        "exitCode": 1,
+        "errorOrResult": "ENGINEERING_GIT_IDENTITY",
+        "noFallback": true,
+        "noCertification": true
+      },
+      "actual": {
+        "exitCode": 1,
+        "signal": null,
+        "error": null,
+        "containsExpectedText": true,
+        "noFallback": true,
+        "noCertification": true
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/node-wrong-identity.stdout.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/node-wrong-identity.stderr.txt",
+        "byteLength": 169,
+        "sha256": "sha256:4affeab9e5d593705f9c97a85a6e20a1d80e63888ba7e25a0c9f2bdf31e488f7"
+      }
+    },
+    {
+      "id": "node-not-executable",
+      "result": "PASS_ENGINEERING_ONLY",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c2\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert2\\git-toolchain.mjs",
+          "--validate-only",
+          "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\not-executable-manifest.json"
+        ]
+      },
+      "expected": {
+        "exitCode": 1,
+        "errorOrResult": "ENGINEERING_GIT_EXECUTION",
+        "noFallback": true,
+        "noCertification": true
+      },
+      "actual": {
+        "exitCode": 1,
+        "signal": null,
+        "error": null,
+        "containsExpectedText": true,
+        "noFallback": true,
+        "noCertification": true
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/node-not-executable.stdout.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/node-not-executable.stderr.txt",
+        "byteLength": 153,
+        "sha256": "sha256:1d0310f0d6f2763354e8faa97bf7988410f30d66af6f7be30c2158ea22aa0aa9"
+      }
+    }
+  ],
+  "failure": null,
+  "negativeCases": 6,
+  "noAmbientPathFallback": true,
+  "sourceReviewOrProductExecution": false
+}

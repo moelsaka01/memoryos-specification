@@ -1,0 +1,45 @@
+{
+  "id": "powershell-wrong-identity",
+  "result": "PASS_ENGINEERING_ONLY",
+  "command": {
+    "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\m7c2\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert2\\helper-review.ps1",
+      "-GitExecutable",
+      "C:/Program Files/Git/cmd/git.exe",
+      "-ValidateOnly",
+      "-ValidationManifest",
+      "C:\\m7c2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert2\\harness-validation\\wrong-identity-manifest.json"
+    ]
+  },
+  "expected": {
+    "exitCode": 1,
+    "errorOrResult": "ENGINEERING_GIT_IDENTITY",
+    "noFallback": true,
+    "noCertification": true
+  },
+  "actual": {
+    "exitCode": 1,
+    "signal": null,
+    "error": null,
+    "containsExpectedText": true,
+    "noFallback": true,
+    "noCertification": true
+  },
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/powershell-wrong-identity.stdout.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2/harness-validation/powershell-wrong-identity.stderr.txt",
+    "byteLength": 512,
+    "sha256": "sha256:5154ab168f2122834eaffc2090d0a9f026123ef9a5aa3b8c6ae52b2f5c4c0077"
+  }
+}
