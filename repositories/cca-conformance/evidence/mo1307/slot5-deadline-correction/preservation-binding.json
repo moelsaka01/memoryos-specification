@@ -1,0 +1,60 @@
+{
+  "schema": "memoryos.mo1307.slot5-deadline-correction-preservation-binding.v1",
+  "status": "PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER",
+  "evidenceCommit": "08a65ad87bb36095c08c5bd8ac9682f9f9581918",
+  "evidenceTree": "2f65fcaa2349bc6ac4cea55279aa644586b0dfa9",
+  "parent": "f1a78f64c13ad4ff06b8d31dc923331ad46ffe96",
+  "branch": "codex/mo1307-slot5-deadline",
+  "productionTree": "6a0bf13aaf40e20b68e469989b5a34ef74cf2903",
+  "productionSourceIdentity": "sha256:8ade4e1b48b1cb4ab990462a2d40a97507a9800dda6c3cab3aded161573d440f",
+  "productionBlobs": {
+    "helper": {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "gitBlob": "7ca55b8713108465099ecfce9796e06e3db67bd2",
+      "sha256": "97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+    },
+    "helperReadme": {
+      "path": "repositories/memoryos-readiness/helpers/README.md",
+      "gitBlob": "9dc17a8dceb28846c656399cab7568cd2fce6b5a"
+    },
+    "distributionManifest": {
+      "path": "repositories/memoryos-readiness/distribution-manifest.json",
+      "gitBlob": "d8e229c317a9e87974667b33026aef0a12afd2cf"
+    },
+    "sbom": {
+      "path": "repositories/memoryos-readiness/sbom.spdx.json",
+      "gitBlob": "7c6f08fe9947bd4fe44744860cfa1abb520f063c"
+    }
+  },
+  "validation": {
+    "toolTree": "e4c59e208ed3ab3c46af8c97b2a75c5d7885c673",
+    "evidenceTree": "3f5f97317c6e2d80aec1363e0dda121e83050f82",
+    "finalDispositionBlob": "ddc03aaf07b838297cf33e2fcdfa7924bbf92ebe",
+    "finalDispositionSha256": "81e8019a900e6e56e4e37ea5edcea7ecc5b2a7570a3c0a9359f1e0d60302b03d",
+    "equivalenceSecurityReceiptSha256": "d49ba067010739aa9875110fa17e1f07f285b9fc2fdd1c291d52b4b2487d9743",
+    "boundedPerformanceReceiptSha256": "78b0c70d1f524c3ac74cb21e1f8938d1b5b1161e99ed1f7bf9f1611d277da92f",
+    "nativeFilesystemReceiptSha256": "da4a0885677dfc538f3250950594fc19341ebb56c627ce07f4bbcd9ba10ea536",
+    "generationStoppedSha256": "4cf451bb529198e2bb852430fbe660b2e686e39ab3204a8a5a51960051b6972d"
+  },
+  "result": {
+    "equivalenceSecurity": "PASS",
+    "boundedCheckOutput": "2/2 PASS",
+    "nativeFilesystem": "14 PASS / 1 FAIL / 20 NOT_RUN; 18/39 helper invocations",
+    "firstFailure": "case 15, invocation 018, READ_SET missing leaf, ETIMEDOUT/SIGTERM at 5021.0304 ms, zero response/stderr",
+    "toctou": "NOT_RUN",
+    "coherentRegressionGeneration": "NOT_RUN",
+    "phase3ACertification": "NOT_RUN"
+  },
+  "candidate": null,
+  "acceptedCandidate": false,
+  "historicalAcceptance": {
+    "phase3B": "702c1b6381f6112a50ac844831d195275dac3350",
+    "phase3C": "b02fc0226a1a2d800185a02071674ca80bdf4a1d"
+  },
+  "actions": {
+    "push": false,
+    "tag": false,
+    "phase3D": false,
+    "retry": false
+  }
+}
