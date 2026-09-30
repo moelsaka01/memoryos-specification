@@ -145,7 +145,7 @@ test('R13 launch uses only fixed executable/script/environment and no shell', ()
   assert.deepEqual(Object.keys(specification.options.env).sort(), ['SystemRoot', 'WINDIR']);
   assert.deepEqual(specification.args.slice(0, 6), ['-NoLogo', '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File']);
   assert.equal(specification.options.shell, false); assert.equal(specification.options.windowsHide, true);
-  assert.equal(specification.options.detached, true);
+  assert.equal(specification.options.detached, false);
 });
 for (const [name, options, expected] of [
   ['trailing byte', { stdout: Buffer.concat([response, Buffer.from('x')]) }, 'INPUT'],

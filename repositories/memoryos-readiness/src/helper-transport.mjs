@@ -16,7 +16,7 @@ export function helperLaunchSpecification() {
   return Object.freeze({ executable: WINDOWS_INSTALLATION.powershell,
     args: Object.freeze(['-NoLogo', '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', SCRIPT]),
     options: Object.freeze({ cwd: DIRECTORY, env: Object.freeze({ SystemRoot: WINDOWS_INSTALLATION.windowsDirectory,
-      WINDIR: WINDOWS_INSTALLATION.windowsDirectory }), windowsHide: true, detached: true,
+      WINDIR: WINDOWS_INSTALLATION.windowsDirectory }), windowsHide: true, detached: false,
       shell: false, stdio: Object.freeze(['pipe', 'pipe', 'pipe']) }) });
 }
 
@@ -33,9 +33,9 @@ function transport(supervisor, launch) {
       const request = decodeHelperRequest(frame);
       const detached = Buffer.from(frame);
       return supervisor.runOwned('helper', lease => {
-        // DETACHED_PROCESS starts without an inherited console. If PowerShell
-        // allocates one, the helper binds its current window owner and confirms exit
-        // after detaching, before any valid response. The child remains referenced.
+        // The fixed non-detached launch preserves PowerShell's binary pipes.
+        // Before any valid response, the helper must prove native console absence
+        // or bind its current window owner and confirm exit after detaching.
         const child = launch(specification.executable, [...specification.args], {
           ...specification.options, env: { ...specification.options.env }, stdio: [...specification.options.stdio],
         });

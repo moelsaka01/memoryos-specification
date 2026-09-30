@@ -134,13 +134,15 @@ failures and ambiguous native failures never become absence. Existing output
 or final destinations produce a closed error; the supervisor maps publication
 errors to OUTPUT. No identity is invented for an absent file/directory.
 
-The fixed hidden PowerShell launch uses `detached: true` with redirected pipes.
-On the pinned Node/libuv Windows implementation this requests `DETACHED_PROCESS`,
-so the helper does not inherit another process's console. It does not claim that
-PowerShell cannot allocate a console. The supervisor retains the child reference,
-process-exit checks, transport EOF requirements, cancellation and fixed deadlines.
-Detached launch does not inherit libuv's parent-exit job coupling; that changed
-boundary requires explicit validation and is not an added cleanup guarantee.
+The fixed hidden PowerShell launch uses `detached: false`, `shell: false` and
+three redirected binary pipes. A finite native launch diagnostic found that
+`detached: true` exited 0 without a recorded script-entry witness or output;
+with `detached: false`, the script entered and echoed the complete request through
+valid pipes. The internal PowerShell early-exit branch is not established.
+The supervisor retains the child reference, process-exit checks, transport EOF
+requirements, cancellation and fixed deadlines. This launch change does not
+establish ownership or quiescence; the unchanged native startup proof below
+remains mandatory, including refusal of an unattributable windowless console.
 
 Startup captures the byte transports and accepts either native no-console absence
 or sole-helper console membership. For an attached console it requires a nonzero

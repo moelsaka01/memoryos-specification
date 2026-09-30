@@ -77,7 +77,7 @@ function runHelper(frame) {
   assert.deepEqual(specification.options.env, cleanEnv);
   assert.equal(specification.options.shell, false);
   assert.equal(specification.options.windowsHide, true);
-  assert.equal(specification.options.detached, true);
+  assert.equal(specification.options.detached, false);
   const child = spawnSync(specification.executable, [...specification.args], {
     ...specification.options, env: { ...specification.options.env }, stdio: [...specification.options.stdio],
     input: frame, encoding: null, timeout: D.limits.helperDeadlineMs,

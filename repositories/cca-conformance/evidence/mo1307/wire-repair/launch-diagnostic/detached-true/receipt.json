@@ -1,0 +1,114 @@
+{
+  "name": "detached-true",
+  "detached": true,
+  "result": "OBSERVATION_RECORDED",
+  "launch": {
+    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\m7fix\\repositories\\cca-conformance\\tools\\mo1307-wire-repair\\launch-probe.ps1",
+      "C:\\m7fix\\repositories\\cca-conformance\\evidence\\mo1307\\wire-repair\\launch-diagnostic\\detached-true\\private-probe"
+    ],
+    "options": {
+      "cwd": "C:\\m7fix\\repositories\\memoryos-readiness\\",
+      "env": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true,
+      "detached": true,
+      "shell": false,
+      "stdio": [
+        "pipe",
+        "pipe",
+        "pipe"
+      ]
+    }
+  },
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/wire-repair/launch-diagnostic/detached-true/request.bin",
+    "byteLength": 350,
+    "sha256": "sha256:2c945ed527c248ca442e03330711b93026d914849715099f269f5398cd433328"
+  },
+  "events": [
+    {
+      "event": "spawn",
+      "atMs": 15.597800000000007
+    },
+    {
+      "event": "stdout-end",
+      "atMs": 129.75
+    },
+    {
+      "event": "stdin-end-callback",
+      "atMs": 130.0661
+    },
+    {
+      "event": "stdin-finish",
+      "atMs": 130.08819999999997
+    },
+    {
+      "event": "stdout-close",
+      "atMs": 130.822
+    },
+    {
+      "event": "stdin-close",
+      "atMs": 130.84089999999998
+    },
+    {
+      "event": "stderr-end",
+      "atMs": 130.93099999999998
+    },
+    {
+      "event": "stderr-close",
+      "atMs": 131.02819999999997
+    },
+    {
+      "event": "exit",
+      "atMs": 132.68880000000001,
+      "code": 0,
+      "signal": null
+    },
+    {
+      "event": "process-close",
+      "atMs": 132.73669999999998,
+      "code": 0,
+      "signal": null
+    }
+  ],
+  "startedAt": "2026-09-30T12:39:48.087Z",
+  "productHelperInvoked": false,
+  "pid": 25112,
+  "exit": 0,
+  "signal": null,
+  "elapsedMs": 132.79159999999996,
+  "streams": {
+    "stdinFinish": true,
+    "stdinClose": true,
+    "stdoutEnd": true,
+    "stdoutClose": true,
+    "stderrEnd": true,
+    "stderrClose": true
+  },
+  "stdoutTotalBytes": 0,
+  "stderrTotalBytes": 0,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/wire-repair/launch-diagnostic/detached-true/stdout.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/wire-repair/launch-diagnostic/detached-true/stderr.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "captureTruncated": false,
+  "entryMarkerExists": false,
+  "stateExists": false,
+  "observation": "NO_SCRIPT_ENTRY_ZERO_EXIT"
+}
