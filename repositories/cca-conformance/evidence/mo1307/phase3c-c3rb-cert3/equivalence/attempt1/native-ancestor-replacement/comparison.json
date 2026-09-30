@@ -1,0 +1,156 @@
+{
+  "name": "native-ancestor-replacement",
+  "result": "PASS",
+  "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+  "tags": [
+    "ancestor identity changes where safely testable"
+  ],
+  "mutation": "ancestor-replace",
+  "exactResponseEqual": true,
+  "code": "MO1307_FILESYSTEM_BOUNDARY",
+  "status": "ERROR",
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/native-ancestor-replacement/request.bin",
+    "byteLength": 363,
+    "sha256": "sha256:88aab6d2ea4886119257d70ddd6d76085ba401a6dc5f9174f99ab8ddadbacf84"
+  },
+  "b2": {
+    "code": 0,
+    "signal": null,
+    "pid": 23184,
+    "elapsedMs": 1391.2565999999933,
+    "exitMs": 1391.2410999999993,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/native-ancestor-replacement/b2.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/native-ancestor-replacement/b2.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/native-ancestor-replacement/b2-instrumented.ps1",
+      "byteLength": 33446,
+      "sha256": "sha256:5a63b185d915c27e00bdcc09f1389cdfd0651ad152f279031d2003266e3f30bc"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\m7c3\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert3\\equivalence\\attempt1\\native-ancestor-replacement\\b2-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "candidate": {
+    "code": 0,
+    "signal": null,
+    "pid": 19404,
+    "elapsedMs": 1406.614499999996,
+    "exitMs": 1406.5978000000032,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/native-ancestor-replacement/candidate.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/native-ancestor-replacement/candidate.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/native-ancestor-replacement/candidate-instrumented.ps1",
+      "byteLength": 33892,
+      "sha256": "sha256:539cbb4b57f7e9ea3f354ef46dbb45296fe7f2ffccdbc88814f21ae4e40d0aeb"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\m7c3\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert3\\equivalence\\attempt1\\native-ancestor-replacement\\candidate-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "nativeObservationCountsEqual": true,
+  "telemetry": {
+    "b2": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 10,
+        "initial:GetFileInformationByHandle": 13,
+        "post-read:Open-Native": 5,
+        "initial:GetFinalPathNameByHandleW": 13,
+        "post-read:GetFileInformationByHandle": 11,
+        "post-read:GetFinalPathNameByHandleW": 11,
+        "initial:Read-Identity": 13,
+        "initial:Assert-SameIdentity": 6,
+        "post-read:Read-Identity": 11,
+        "initial:Open-Native": 13
+      },
+      "mutations": 1,
+      "mutation": "ancestor-replace",
+      "workingSet64": 106057728,
+      "peakWorkingSet64": 122429440,
+      "managedBytes": 24938816,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/native-ancestor-replacement/b2-telemetry.json",
+        "byteLength": 492,
+        "sha256": "sha256:e17f1dc5203097102207ff5a9a7ba1bee9982f172fd27e53e78f07129c11e1d1"
+      }
+    },
+    "candidate": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 10,
+        "initial:GetFileInformationByHandle": 13,
+        "post-read:Open-Native": 5,
+        "initial:GetFinalPathNameByHandleW": 13,
+        "post-read:GetFileInformationByHandle": 11,
+        "post-read:GetFinalPathNameByHandleW": 11,
+        "initial:Read-Identity": 13,
+        "initial:Assert-SameIdentity": 6,
+        "post-read:Read-Identity": 11,
+        "initial:Open-Native": 13
+      },
+      "mutations": 1,
+      "mutation": "ancestor-replace",
+      "workingSet64": 106168320,
+      "peakWorkingSet64": 120086528,
+      "managedBytes": 21322360,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/native-ancestor-replacement/candidate-telemetry.json",
+        "byteLength": 492,
+        "sha256": "sha256:b1de27ab49f5579b02348d323b46e0dfb616c5f38e32cd964fa493adc2a17d7e"
+      }
+    }
+  }
+}

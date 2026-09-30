@@ -1,0 +1,91 @@
+{
+  "id": "powershell-nested-initialize-and-invoke-no-path-no-pathext",
+  "result": "PASS_ENGINEERING_ONLY",
+  "command": {
+    "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.ps1",
+      "-Manifest",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\nested-initialize-and-invoke-no-path-no-pathext.manifest.json",
+      "-Request",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\nested-initialize-and-invoke-no-path-no-pathext.request.json"
+    ],
+    "env": {
+      "SystemRoot": "C:\\Windows",
+      "WINDIR": "C:\\Windows"
+    }
+  },
+  "expected": {
+    "id": "nested-initialize-and-invoke-no-path-no-pathext",
+    "mode": "initialize-and-invoke",
+    "arguments": [
+      "--version"
+    ],
+    "exit": 0,
+    "stdout": "git version 2.55.0.windows.3\n",
+    "stderr": "",
+    "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\nested-initialize-and-invoke-no-path-no-pathext.manifest.json",
+    "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\nested-initialize-and-invoke-no-path-no-pathext.request.json"
+  },
+  "outer": {
+    "exitCode": 0,
+    "signal": null,
+    "error": null
+  },
+  "observed": {
+    "kind": "EngineeringGitProcessCapture",
+    "engine": "System.Diagnostics.Process",
+    "executable": "C:/Program Files/Git/cmd/git.exe",
+    "arguments": [
+      "--version"
+    ],
+    "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+    "startedAt": "2026-09-30T00:23:07.8010693Z",
+    "classification": "GIT_SUCCEEDED",
+    "code": "OK",
+    "actualExitCode": 0,
+    "child": {
+      "started": true,
+      "exitObserved": true,
+      "outputComplete": true,
+      "stdoutComplete": true,
+      "stderrComplete": true,
+      "timedOut": false,
+      "outputLimitExceeded": false,
+      "exitCode": 0,
+      "pid": 13164,
+      "startError": null,
+      "wrapperError": null,
+      "stdoutBase64": "Z2l0IHZlcnNpb24gMi41NS4wLndpbmRvd3MuMwo=",
+      "stderrBase64": ""
+    },
+    "ambientPathFallback": false,
+    "limits": {
+      "timeoutMs": 60000,
+      "eachEngineeringDrainOrKillGuardMs": 2000,
+      "processTreeCleanupEstablished": false,
+      "maxBytesPerStream": 67108864,
+      "productDeadlineEvidence": false,
+      "maximumEngineeringPostTimeoutGuards": 3
+    },
+    "finishedAt": "2026-09-30T00:23:07.9765998Z"
+  },
+  "problem": null,
+  "stdout": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\powershell-nested-initialize-and-invoke-no-path-no-pathext.stdout.txt",
+    "byteLength": 894,
+    "sha256": "sha256:ac23f5bb5b6396e164c09b14a4bb73f07f005f92873dfda46fd8f772b8442c62"
+  },
+  "stderr": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\powershell-nested-initialize-and-invoke-no-path-no-pathext.stderr.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "noFallback": true
+}

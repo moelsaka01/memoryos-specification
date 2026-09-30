@@ -1,0 +1,236 @@
+{
+  "kind": "EngineeringExitCaptureCauseAndRepair",
+  "priorCommit": "f35dfcbfa99691eda26a9668e43e07914a83df8d",
+  "cause": "Certification env omitted PATHEXT while prior validation supplied .CMD;.EXE. In controlled exact old-wrapper reproduction PowerShell call operator produced no native output/status without .EXE, leaving explicitly reset global LASTEXITCODE null; concatenation produced an empty suffix. Scope/nesting/pipeline variants passed when only PATHEXT=.EXE was added. Historical child exit remains unobserved; historical outer PowerShell exit1 was wrapper throw.",
+  "rootCauseEvidence": [
+    "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/engineering-preparation/exit-scope-audit/environment-receipt.json",
+    "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/engineering-preparation/exit-scope-audit/complete-chains-receipt.json"
+  ],
+  "correction": "PowerShell exact ProcessStartInfo.FileName, UseShellExecute=false, explicit Process.ExitCode, independently drained bounded stdout/stderr bytes; Node explicit spawnSync.status with bounded buffers. Identity validation, fail-closed unobserved exits and immutable per-invocation captures. No implicit native invocation or LASTEXITCODE in repaired PS wrapper.",
+  "classification": {
+    "GitFailed": "Numeric observed nonzero child exit, complete stdout/stderr",
+    "wrapperFailed": "Missing/mismatched/unexecutable tool, unobserved exit, incomplete/capped/timed-out capture or audit failure",
+    "PowerShellFailed": "Outer PowerShell startup/parser/runtime exit without a completed source-review result",
+    "sourceReviewFailed": "SOURCE_REVIEW_FAILED assertion after successful engineering Git calls"
+  },
+  "preparation": {
+    "firstFixtureCheck": "Preserved failed engineering stderr expectation caused by sandbox Git dubious-ownership refusal; wrapper correctly captured numeric128 and all442 stderr bytes. No product/control run.",
+    "finalFiniteValidation": "18/18 PASS_ENGINEERING_ONLY with repository-independent controlled error; explicit exits0/1/6 and exact stdout/stderr; missing/wrong/nonexe/cap refusal; noPATH/noPATHEXT and poisonedPATH tests"
+  },
+  "engineeringLimitScope": "Per-call PS60s and bounded64MiB per stream; Node60s and128MiB buffer. PS2s per cleanup/drain guard (up to3), not a product deadline or verified descendant-tree cleanup claim.",
+  "ports": [
+    {
+      "file": "binding.mjs",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\binding.mjs.data",
+        "byteLength": 8011,
+        "sha256": "sha256:4a557c6fd461fafba6844b9b37d6ad3ae25f9058594fe5a7a69256401059eb7d"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\binding.mjs",
+        "byteLength": 8011,
+        "sha256": "sha256:2773df7f0bdd1bd78882acd951ba96fbd9816fc1e05f45d54ee6a1c031b83d27"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "deadline-cleanup.mjs",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\deadline-cleanup.mjs.data",
+        "byteLength": 25584,
+        "sha256": "sha256:15e5b3550ae6469067a7a48602a96be3c28e8a017c792d6bc4d4a068f7c3a60a"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\deadline-cleanup.mjs",
+        "byteLength": 25584,
+        "sha256": "sha256:65fbb22495eebf88eaf8fc0eedfe087c14ecdf43af6220446c16ac5667ce7b5c"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "equivalence.mjs",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\equivalence.mjs.data",
+        "byteLength": 27350,
+        "sha256": "sha256:96d3a069e3f0b44d19da1bfa4b512dd8a2349efbd56073bdd4f4c67ee827e9f5"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\equivalence.mjs",
+        "byteLength": 27350,
+        "sha256": "sha256:99c3c2d56db823e7e71b57533c5c47f7ab64637d892ec973d3a4a6e163ff5d98"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "git-toolchain.mjs",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\git-toolchain.mjs.data",
+        "byteLength": 2500,
+        "sha256": "sha256:c364abdde5ec45b9d01a1203e8b86d3c86bf74fcf2befc406edc324285924e05"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\git-toolchain.mjs",
+        "byteLength": 10303,
+        "sha256": "sha256:a8def45ab2f364db06402a5c87e74a8299dbb807d607579d9dace24ec629aee2"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "git-toolchain.ps1",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\git-toolchain.ps1.data",
+        "byteLength": 2730,
+        "sha256": "sha256:435744aa0e28f8aac37ca1a3f699b0561dc610830b8d48c67868dbef154875bd"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\git-toolchain.ps1",
+        "byteLength": 4705,
+        "sha256": "sha256:3556ca607b03214dc2a54f7d7004872b8cef65e587e5d16b01882e09c40cad7f"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "governance.mjs",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\governance.mjs.data",
+        "byteLength": 34919,
+        "sha256": "sha256:909308e997c235008eeb00dfaa75680fc20b53511b067d8bb2dd6720ac149a31"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\governance.mjs",
+        "byteLength": 34919,
+        "sha256": "sha256:0ed8082b38c5f20b6c8711ec987291e91c650c78e2a3586e8d471146f6e82a93"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "helper-review.ps1",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\helper-review.ps1.data",
+        "byteLength": 19533,
+        "sha256": "sha256:cee77f8172b49addb0e8b6e6382952819fa4ca13e848d79b6127f63ba5b7b667"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\helper-review.ps1",
+        "byteLength": 19533,
+        "sha256": "sha256:4c3b9628873c898ea7c19ba6000233f9a02e922b9bdeb0766ebb4d3d2d4b8a19"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "protocol.mjs",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\protocol.mjs.data",
+        "byteLength": 3391,
+        "sha256": "sha256:749897f8ef6d81fc4e18d1885b36843a3af5d38d0e25ecde1e21f0770ee0a5a9"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\protocol.mjs",
+        "byteLength": 4181,
+        "sha256": "sha256:e631a733f629c2a53704e94a51dbf048c3d0eeb065fc37f1fa93b88b0298e12d"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "reconcile.mjs",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\reconcile.mjs.data",
+        "byteLength": 2847,
+        "sha256": "sha256:195a8b9893d95f49307f92a83949d4065369416b2dec8b2aef54b9b6d38c9efb"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\reconcile.mjs",
+        "byteLength": 2847,
+        "sha256": "sha256:9950f2337b365edfd8066a74adb5fe02aaee502a28bf1a3c31686c9b4b82afd0"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "root-corpus.mjs",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\root-corpus.mjs.data",
+        "byteLength": 13895,
+        "sha256": "sha256:44f8a78f0457f56f4b7ac6e9cd46782f79931b58ce1f7c7a104a594941f2000d"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\root-corpus.mjs",
+        "byteLength": 13895,
+        "sha256": "sha256:af05498fd440ccd2d20213ffad3e1ffd99366c99e01076302d64370d6f8f2b4c"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "run.mjs",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\run.mjs.data",
+        "byteLength": 3019,
+        "sha256": "sha256:c9367b614dc0032f0be8de28255df211d3f4b71b20f2e4e8923be7ec804a1e24"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\run.mjs",
+        "byteLength": 3019,
+        "sha256": "sha256:4ca3ffc1bce7c2044c6f8fda977c09b3495c8875c62aeb0011bbe04f92bb7ca3"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "runtime-boundary-supplement.mjs",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\runtime-boundary-supplement.mjs.data",
+        "byteLength": 7900,
+        "sha256": "sha256:3b5fc0c0888b941a81cc802333a1501ecf491546c797579bdf404fab8a936a13"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\runtime-boundary-supplement.mjs",
+        "byteLength": 7900,
+        "sha256": "sha256:ea08c12b2327c02bd8bc73241970baf0cb0f4dbc88a8be087e62812072d661ac"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "runtime-boundary.mjs",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\runtime-boundary.mjs.data",
+        "byteLength": 31600,
+        "sha256": "sha256:753bd089d5cb5d9054831d841566a28ff28dd66a5eca75447e07940181a36ae5"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\runtime-boundary.mjs",
+        "byteLength": 31600,
+        "sha256": "sha256:8e86450d57fb07c8cb28f687c77d4f302621f62d6e0a5fbc5025e989e6bb5e9f"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "toctou-boundaries.mjs",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\toctou-boundaries.mjs.data",
+        "byteLength": 5911,
+        "sha256": "sha256:8a8d13a460cd657715e1828092ca5f9fe0ddb023ee0f91a7176e745f993dc25b"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\toctou-boundaries.mjs",
+        "byteLength": 6506,
+        "sha256": "sha256:2fdc1ed7457b73c10d066c6cd2536912b6f6a8542ef2f60d080de87f09e05ce4"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    },
+    {
+      "file": "trust-graph.mjs",
+      "original": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\originals\\trust-graph.mjs.data",
+        "byteLength": 29595,
+        "sha256": "sha256:2d5003b6619f8ab504b5201afa97e4a99f3824fbd7a0232751dba9e322168f01"
+      },
+      "current": {
+        "path": "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\trust-graph.mjs",
+        "byteLength": 29595,
+        "sha256": "sha256:ed0aa7b984659f9c1991a3fec5ec34cfa9533ee4843ca73f887dec3b8c55852d"
+      },
+      "scope": "Engineering namespace/capture/progress edits only; expected predicates preserved"
+    }
+  ],
+  "productCodeChanged": false,
+  "gitDiscoveryRepeated": false,
+  "globalPathChanged": false
+}

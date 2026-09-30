@@ -1,0 +1,154 @@
+{
+  "name": "changed-ancestor-identity",
+  "result": "PASS",
+  "scope": "ENGINEERING_FRESH_OBSERVATION_OR_EXPECTATION_MUTATION",
+  "tags": [
+    "ancestor identity changes"
+  ],
+  "mutation": "ancestor-id",
+  "exactResponseEqual": true,
+  "code": "MO1307_FILESYSTEM_BOUNDARY",
+  "status": "ERROR",
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/changed-ancestor-identity/request.bin",
+    "byteLength": 361,
+    "sha256": "sha256:af6edc793c60caa9122b2e5f138d3cda042fb0aa9fe09fa3803b3ff7d8d8a8e3"
+  },
+  "b2": {
+    "code": 0,
+    "signal": null,
+    "pid": 27756,
+    "elapsedMs": 1530.75,
+    "exitMs": 1530.7318000000087,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/changed-ancestor-identity/b2.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/changed-ancestor-identity/b2.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/changed-ancestor-identity/b2-instrumented.ps1",
+      "byteLength": 33025,
+      "sha256": "sha256:a152daf64a8463356d508191de73b2bf5658d8e6d1f7a87710373314819dffdc"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\m7c3\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert3\\equivalence\\attempt1\\changed-ancestor-identity\\b2-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "candidate": {
+    "code": 0,
+    "signal": null,
+    "pid": 17536,
+    "elapsedMs": 1527.3399000000063,
+    "exitMs": 1527.306700000001,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/changed-ancestor-identity/candidate.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/changed-ancestor-identity/candidate.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/changed-ancestor-identity/candidate-instrumented.ps1",
+      "byteLength": 33471,
+      "sha256": "sha256:db6c44a14afc9ac630b309f4bcd14adea4baeb04fa178bdff4a5b4d8f038fe82"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\m7c3\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert3\\equivalence\\attempt1\\changed-ancestor-identity\\candidate-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "nativeObservationCountsEqual": true,
+  "telemetry": {
+    "b2": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 1,
+        "initial:GetFileInformationByHandle": 13,
+        "initial:GetFinalPathNameByHandleW": 13,
+        "post-read:GetFileInformationByHandle": 1,
+        "post-read:GetFinalPathNameByHandleW": 1,
+        "initial:Read-Identity": 13,
+        "initial:Assert-SameIdentity": 6,
+        "post-read:Read-Identity": 1,
+        "initial:Open-Native": 13
+      },
+      "mutations": 1,
+      "mutation": "ancestor-id",
+      "workingSet64": 105766912,
+      "peakWorkingSet64": 113664000,
+      "managedBytes": 26764768,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/changed-ancestor-identity/b2-telemetry.json",
+        "byteLength": 457,
+        "sha256": "sha256:7c805ce373ba9d57006a9ee2236c909730f3f9f82c46888ef692295b2ef8c2a2"
+      }
+    },
+    "candidate": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 1,
+        "initial:GetFileInformationByHandle": 13,
+        "initial:GetFinalPathNameByHandleW": 13,
+        "post-read:GetFileInformationByHandle": 1,
+        "post-read:GetFinalPathNameByHandleW": 1,
+        "initial:Read-Identity": 13,
+        "initial:Assert-SameIdentity": 6,
+        "post-read:Read-Identity": 1,
+        "initial:Open-Native": 13
+      },
+      "mutations": 1,
+      "mutation": "ancestor-id",
+      "workingSet64": 104632320,
+      "peakWorkingSet64": 108994560,
+      "managedBytes": 29562008,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/changed-ancestor-identity/candidate-telemetry.json",
+        "byteLength": 457,
+        "sha256": "sha256:cc7360ff283a8eca6277868794a3abedb3e9d7fea9307d01d3f9a7eb21f4586b"
+      }
+    }
+  }
+}

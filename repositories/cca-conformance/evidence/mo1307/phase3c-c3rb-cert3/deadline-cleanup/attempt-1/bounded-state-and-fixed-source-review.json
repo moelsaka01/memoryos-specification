@@ -1,0 +1,131 @@
+{
+  "id": "bounded-state-and-fixed-source-review",
+  "layer": "SOURCE_REVIEW_MECHANICAL_DEPENDENCY_BINDING",
+  "result": "PASS",
+  "elapsedMs": 12.497499999997672,
+  "detail": {
+    "bindings": [
+      {
+        "relative": "src/helper-transport.mjs",
+        "oldSha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+        "newSha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+        "equal": true
+      },
+      {
+        "relative": "src/helper-protocol.mjs",
+        "oldSha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+        "newSha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+        "equal": true
+      },
+      {
+        "relative": "src/runtime.mjs",
+        "oldSha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+        "newSha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+        "equal": true
+      },
+      {
+        "relative": "src/windows-paths.mjs",
+        "oldSha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029",
+        "newSha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029",
+        "equal": true
+      },
+      {
+        "relative": "src/cli-args.mjs",
+        "oldSha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7",
+        "newSha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7",
+        "equal": true
+      },
+      {
+        "relative": "src/errors.mjs",
+        "oldSha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac",
+        "newSha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac",
+        "equal": true
+      },
+      {
+        "relative": "src/constants.mjs",
+        "oldSha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9",
+        "newSha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9",
+        "equal": true
+      },
+      {
+        "relative": "helpers/windows-inspect.ps1",
+        "oldSha256": "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b",
+        "newSha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8",
+        "equal": false
+      }
+    ],
+    "readSetBodyIdentical": true,
+    "requestLocalCollections": [
+      "rootChains <=3 roots",
+      "responseRoots <=3",
+      "responseFiles <=128 files",
+      "nativeFiles <=128 native ids",
+      "data <=maxBytes+1 per file",
+      "chunks bounded by maxBytes and response ceiling"
+    ],
+    "limits": {
+      "aggregateEvidenceBytes": 8388608,
+      "apiDeadlineMs": 10000,
+      "assumptions": 32,
+      "authorityBytes": 1048576,
+      "authoritySources": 32,
+      "blockers": 128,
+      "candidateBytes": 524288,
+      "candidateComponents": 1024,
+      "claims": 64,
+      "cleanupAllowanceMs": 2000,
+      "cliDeadlineMs": 30000,
+      "configurationBytes": 16384,
+      "decisionActorCodeUnits": 128,
+      "decisionBytes": 8192,
+      "decisionReasonCodeUnits": 1024,
+      "dependenciesPerClaim": 1024,
+      "engineeringAggregateRssBytes": 536870912,
+      "envelopeBytes": 262144,
+      "errorRecordBytes": 1024,
+      "fullPathCodeUnits": 240,
+      "gates": 128,
+      "grants": 64,
+      "graphEdges": 8192,
+      "graphNodes": 2048,
+      "helperAggregateDeadlineMs": 20000,
+      "helperChainComponents": 120,
+      "helperDeadlineMs": 5000,
+      "helperRequestBytes": 65536,
+      "helperRequestPaths": 128,
+      "helperRequests": 9,
+      "helperResponseBytes": 16777216,
+      "helperVerifyRequests": 4,
+      "historyDispositionChars": 256,
+      "historyRecords": 128,
+      "jsonDepth": 16,
+      "jsonSummaryBytes": 1024,
+      "jsonValues": 131072,
+      "keyCodeUnits": 64,
+      "manifestBytes": 262144,
+      "manifestFiles": 128,
+      "metadataCodeUnits": 256,
+      "objectMembers": 64,
+      "qualifications": 128,
+      "rawSourceBytes": 2097152,
+      "relativePathChars": 180,
+      "resultBytes": 4194304,
+      "sourceKindChars": 128,
+      "sourceVersionChars": 64,
+      "stderrBytes": 4096,
+      "stringCodeUnits": 4096,
+      "tagNameChars": 128,
+      "temporaryOutputBytes": 4194304,
+      "textStdoutBytes": 131072,
+      "workerOldHeapMiB": 128,
+      "workerYoungHeapMiB": 16
+    },
+    "findings": [
+      "No new cache, path-keyed global table or cross-request memory: helper processes one frame then exits. Existing script native field stores emitted Win32 delegate type only.",
+      "No deadline-dependent helper branch or debug/timing output; parent admission/finish checkpoints and terminal error preserve timeout mapping.",
+      "READ_SET control body and owned-chain disposal are byte-identical old/new. Optimization changes pure path validation cost, not allocation structure.",
+      "Helper imports/calls expose only existing native filesystem, identity, console/process cleanup primitives. No added network/provider capability."
+    ],
+    "scope": "Source review and bounded representative measurements, not aggregate RSS certification."
+  }
+}

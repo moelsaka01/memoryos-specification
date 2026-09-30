@@ -1,0 +1,23 @@
+param([string]$Manifest, [string]$Request)
+Set-StrictMode -Version 2.0
+$ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'git-toolchain.ps1')
+$script:EngineeringGit = [IO.File]::ReadAllText($Manifest) | ConvertFrom-Json
+$requestData = [IO.File]::ReadAllText($Request) | ConvertFrom-Json
+$global:LASTEXITCODE = 73
+function Nested-Caller {
+    if ($requestData.mode -eq 'initialize-and-invoke') {
+        $null = Initialize-EngineeringGit $script:EngineeringGit.git.absolute $Manifest
+        $null = Invoke-EngineeringGit ([string[]]$requestData.arguments)
+        return $script:LastEngineeringGitCapture
+    }
+    return Get-EngineeringGitCapture ([string[]]$requestData.arguments) 10000 $requestData.maxBytes
+}
+try {
+    $result = Nested-Caller
+    [Console]::Out.WriteLine(($result | ConvertTo-Json -Depth 15 -Compress))
+    if ($result.classification -eq 'GIT_SUCCEEDED') { exit 0 } else { exit 1 }
+} catch {
+    [Console]::Error.WriteLine($_.Exception.Message)
+    exit 2
+}

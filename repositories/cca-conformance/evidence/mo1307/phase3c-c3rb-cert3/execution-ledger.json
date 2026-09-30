@@ -1,0 +1,340 @@
+{
+  "kind": "MO1307Phase3CC3RBExecutionLedger",
+  "candidate": "defe93989efc6501b1a730b82e79e705884b269b",
+  "startedAt": "2026-09-30T00:29:17.369Z",
+  "result": "EXECUTION_PASSED_PENDING_INDEPENDENT_REVIEW_AND_SEAL",
+  "stages": [
+    {
+      "id": "01-authority-dependency-binding",
+      "tool": "binding.mjs",
+      "status": "PASS",
+      "startedAt": "2026-09-30T00:29:17.398Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\binding.mjs"
+        ],
+        "cwd": "C:\\m7c3"
+      },
+      "pid": 24708,
+      "finishedAt": "2026-09-30T00:29:31.087Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "02-native-source-review",
+      "tool": "helper-review.ps1",
+      "powershell": true,
+      "args": [
+        "-GitExecutable",
+        "C:/Program Files/Git/cmd/git.exe"
+      ],
+      "status": "PASS",
+      "startedAt": "2026-09-30T00:29:31.090Z",
+      "command": {
+        "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\helper-review.ps1",
+          "-GitExecutable",
+          "C:/Program Files/Git/cmd/git.exe"
+        ],
+        "cwd": "C:\\m7c3"
+      },
+      "pid": 6668,
+      "finishedAt": "2026-09-30T00:29:39.171Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "03-root-negative-corpus",
+      "tool": "root-corpus.mjs",
+      "status": "PASS",
+      "startedAt": "2026-09-30T00:29:39.172Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\root-corpus.mjs"
+        ],
+        "cwd": "C:\\m7c3"
+      },
+      "pid": 1488,
+      "finishedAt": "2026-09-30T00:30:02.607Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "04-trust-graph-corpus",
+      "tool": "trust-graph.mjs",
+      "status": "PASS",
+      "startedAt": "2026-09-30T00:30:02.608Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\trust-graph.mjs"
+        ],
+        "cwd": "C:\\m7c3"
+      },
+      "pid": 13744,
+      "finishedAt": "2026-09-30T00:30:35.214Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "05-governance-primary",
+      "tool": "governance.mjs",
+      "args": [
+        "primary"
+      ],
+      "status": "PASS",
+      "startedAt": "2026-09-30T00:30:35.215Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\governance.mjs",
+          "primary"
+        ],
+        "cwd": "C:\\m7c3"
+      },
+      "pid": 24380,
+      "finishedAt": "2026-09-30T00:31:05.191Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "06-governance-supplement",
+      "tool": "governance.mjs",
+      "args": [
+        "supplement"
+      ],
+      "status": "PASS",
+      "startedAt": "2026-09-30T00:31:05.191Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\governance.mjs",
+          "supplement"
+        ],
+        "cwd": "C:\\m7c3"
+      },
+      "pid": 20128,
+      "finishedAt": "2026-09-30T00:31:16.140Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "07-runtime-boundary",
+      "tool": "runtime-boundary.mjs",
+      "status": "PASS",
+      "startedAt": "2026-09-30T00:31:16.141Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\runtime-boundary.mjs"
+        ],
+        "cwd": "C:\\m7c3"
+      },
+      "pid": 19016,
+      "finishedAt": "2026-09-30T00:31:17.667Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "08-runtime-supplement",
+      "tool": "runtime-boundary-supplement.mjs",
+      "status": "PASS",
+      "startedAt": "2026-09-30T00:31:17.668Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\runtime-boundary-supplement.mjs"
+        ],
+        "cwd": "C:\\m7c3"
+      },
+      "pid": 9152,
+      "finishedAt": "2026-09-30T00:31:19.491Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "09-deadline-cleanup-environment",
+      "tool": "deadline-cleanup.mjs",
+      "args": [
+        "attempt-1"
+      ],
+      "status": "PASS",
+      "startedAt": "2026-09-30T00:31:19.492Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\deadline-cleanup.mjs",
+          "attempt-1"
+        ],
+        "cwd": "C:\\m7c3"
+      },
+      "pid": 1104,
+      "finishedAt": "2026-09-30T00:31:54.305Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "10-native-equivalence",
+      "tool": "equivalence.mjs",
+      "args": [
+        "--output",
+        "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1"
+      ],
+      "status": "PASS",
+      "startedAt": "2026-09-30T00:31:54.306Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\equivalence.mjs",
+          "--output",
+          "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1"
+        ],
+        "cwd": "C:\\m7c3"
+      },
+      "pid": 15828,
+      "finishedAt": "2026-09-30T00:35:08.130Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "11-consumer-protocol",
+      "tool": "protocol.mjs",
+      "status": "PASS",
+      "startedAt": "2026-09-30T00:35:08.131Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\protocol.mjs"
+        ],
+        "cwd": "C:\\m7c3"
+      },
+      "pid": 1652,
+      "finishedAt": "2026-09-30T00:35:09.581Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "12-native-toctou",
+      "tool": "toctou-boundaries.mjs",
+      "status": "PASS",
+      "startedAt": "2026-09-30T00:35:09.581Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\toctou-boundaries.mjs"
+        ],
+        "cwd": "C:\\m7c3"
+      },
+      "pid": 9152,
+      "finishedAt": "2026-09-30T00:35:16.536Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    },
+    {
+      "id": "13-complete-inventory-reconciliation",
+      "tool": "reconcile.mjs",
+      "status": "PASS",
+      "startedAt": "2026-09-30T00:35:16.536Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+        "args": [
+          "C:\\m7c3\\repositories\\cca-conformance\\tools\\mo1307-phase3c-c3rb-cert3\\reconcile.mjs"
+        ],
+        "cwd": "C:\\m7c3"
+      },
+      "pid": 28252,
+      "finishedAt": "2026-09-30T00:35:18.723Z",
+      "actual": {
+        "code": 0,
+        "signal": null
+      },
+      "expected": {
+        "exitCode": 0,
+        "allMandatoryCases": "PASS"
+      }
+    }
+  ],
+  "firstFailure": null,
+  "finishedAt": "2026-09-30T00:35:18.724Z"
+}

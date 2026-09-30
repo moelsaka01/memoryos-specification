@@ -1,0 +1,33 @@
+// Finite engineering preparation. No product imports, source review or certification.
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {spawnSync} from 'node:child_process';import {fileURLToPath} from 'node:url';
+const draft=path.dirname(fileURLToPath(import.meta.url)),out=path.join(draft,'capture-validation-final');
+const read=p=>fs.readFileSync(p),sha=b=>'sha256:'+createHash('sha256').update(b).digest('hex'),pin=p=>{const b=read(p);return{path:p,byteLength:b.length,sha256:sha(b)}};
+fs.mkdirSync(out);const save=(p,v)=>fs.writeFileSync(path.join(out,p),JSON.stringify(v,null,2)+'\n',{flag:'wx'});
+const manifest=JSON.parse(read(path.join(draft,'engineering-toolchain.json')));
+const poison=path.join(out,'poison'),marker=path.join(poison,'fallback-used.txt');fs.mkdirSync(poison);fs.writeFileSync(path.join(poison,'git.cmd'),'@echo fallback>"'+marker+'"\r\n@exit /b 0\r\n');
+const nonexe=path.join(out,'not-an-executable.exe');fs.writeFileSync(nonexe,'MO1307 engineering non-executable fixture\n');
+const config=path.join(out,'empty.config');fs.writeFileSync(config,'');
+const cases=[
+ {id:'zero-exact-streams-no-path-no-pathext',arguments:['--version'],exit:0,stdout:'git version 2.55.0.windows.3\n',stderr:''},
+ {id:'zero-poison-path-cmd-only',arguments:['--version'],poison:true,exit:0,stdout:'git version 2.55.0.windows.3\n',stderr:''},
+ {id:'nested-initialize-and-invoke-no-path-no-pathext',mode:'initialize-and-invoke',arguments:['--version'],exit:0,stdout:'git version 2.55.0.windows.3\n',stderr:''},
+ {id:'exact-nonzero-one',arguments:['config','--file',config,'--get','mo1307.absent'],exit:1,stdout:'',stderr:''},
+ {id:'exact-nonzero-stderr',arguments:['config','--file',config,'--get-regexp','['],exit:6,stdout:'',stderr:'error: invalid key pattern: [\n'},
+ {id:'missing-executable',arguments:['--version'],variant:'missing',code:'ENGINEERING_GIT_MISSING'},
+ {id:'wrong-identity',arguments:['--version'],variant:'wrong',code:'ENGINEERING_GIT_IDENTITY'},
+ {id:'non-executable',arguments:['--version'],variant:'nonexe',code:'ENGINEERING_GIT_EXECUTION'},
+ {id:'bounded-output-refusal',arguments:['--version'],maxBytes:1,code:'ENGINEERING_GIT_OUTPUT_LIMIT'}
+];
+for(const c of cases){const m=structuredClone(manifest);m.captureDirectory=path.join(out,'captures',c.id);if(c.variant==='missing')m.git.absolute=path.join(out,'absent-git.exe');if(c.variant==='wrong')m.git.sha256='sha256:'+'0'.repeat(64);if(c.variant==='nonexe'){m.git={absolute:nonexe,byteLength:read(nonexe).length,sha256:sha(read(nonexe)),version:'unreachable'};m.core=null;}c.manifest=path.join(out,c.id+'.manifest.json');save(c.id+'.manifest.json',m);c.request=path.join(out,c.id+'.request.json');save(c.id+'.request.json',{mode:c.mode??'capture',arguments:c.arguments,maxBytes:c.maxBytes??65536});}
+save('plan.json',{kind:'EngineeringGitExitCaptureValidationPlan',frozenAt:new Date().toISOString(),productCertification:false,sourceReview:false,productImports:false,implementations:['PowerShell explicit Process.ExitCode','Node explicit spawnSync.status'],caseCount:cases.length*2,cases,sourceFiles:['git-toolchain.ps1','engineering-process.cs','identity-functions.ps1','git-toolchain.mjs','capture-driver.ps1','capture-driver.mjs','validate-capture-final.mjs'].map(p=>pin(path.join(draft,p))),environment:{normal:{SystemRoot:'C:\\Windows',WINDIR:'C:\\Windows'},poison:{PATH:poison,PATHEXT:'.CMD'}},outerTimeoutMs:20000,outerMaxBufferBytes:1048576});
+const rows=[];let firstFailure=null;
+for(const implementation of ['powershell','node']){for(const c of cases){
+ const exe=implementation==='powershell'?'C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe':manifest.node.absolute;
+ const args=implementation==='powershell'?['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(draft,'capture-driver.ps1'),'-Manifest',c.manifest,'-Request',c.request]:[path.join(draft,'capture-driver.mjs'),c.manifest,c.request];
+ const env={SystemRoot:'C:\\Windows',WINDIR:'C:\\Windows',...(c.poison?{PATH:poison,PATHEXT:'.CMD'}:{})};
+ const r=spawnSync(exe,args,{cwd:'C:/Users/melsa/Documents/Codex/cca-workspace',env,shell:false,windowsHide:true,timeout:20000,maxBuffer:1048576});
+ const id=implementation+'-'+c.id;fs.writeFileSync(path.join(out,id+'.stdout.txt'),r.stdout??Buffer.alloc(0));fs.writeFileSync(path.join(out,id+'.stderr.txt'),r.stderr??Buffer.alloc(0));
+ let observed=null,problem=null;try{assert.ifError(r.error);observed=JSON.parse(r.stdout.toString());assert.equal(r.stderr.length,0);assert.equal(r.status,c.exit===0?0:1);assert.equal(observed.ambientPathFallback,false);assert.equal(fs.existsSync(marker),false);if(c.code){assert.equal(observed.code,c.code);assert.match(observed.classification,/^WRAPPER_FAIL/);}else{assert.equal(observed.actualExitCode,c.exit);const child=implementation==='powershell'?observed.child:observed;assert.equal(child.outputComplete,true);assert.deepEqual(Buffer.from(child.stdoutBase64,'base64'),Buffer.from(c.stdout));assert.deepEqual(Buffer.from(child.stderrBase64,'base64'),Buffer.from(c.stderr));}}catch(e){problem=e.message;}
+ const row={id,result:problem?'FAIL_ENGINEERING_ONLY':'PASS_ENGINEERING_ONLY',command:{executable:exe,args,env},expected:c,outer:{exitCode:r.status,signal:r.signal,error:r.error?.message??null},observed,problem,stdout:pin(path.join(out,id+'.stdout.txt')),stderr:pin(path.join(out,id+'.stderr.txt')),noFallback:!fs.existsSync(marker)};rows.push(row);save(id+'.json',row);console.log(JSON.stringify({id,result:row.result,problem}));if(problem){firstFailure=row;break;}
+}if(firstFailure)break;}
+save('receipt.json',{kind:'EngineeringGitExitCaptureValidation',result:firstFailure?'FAIL_ENGINEERING_ONLY':'PASS_ENGINEERING_ONLY',productCertification:false,sourceReviewOrProductExecution:false,rows,firstFailure,noAmbientPathFallback:rows.every(r=>r.noFallback),caseCount:rows.length,expectedCaseCount:18,gitDiscoveryRepeated:false});process.exitCode=firstFailure?1:0;

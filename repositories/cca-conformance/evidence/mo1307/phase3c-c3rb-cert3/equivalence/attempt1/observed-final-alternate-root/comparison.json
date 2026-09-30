@@ -1,0 +1,157 @@
+{
+  "name": "observed-final-alternate-root",
+  "result": "PASS",
+  "scope": "ENGINEERING_NATIVE_FINAL_PATH_VALUE_PERTURBATION",
+  "tags": [
+    "wrong final path",
+    "lexical-equivalence"
+  ],
+  "mutation": "observed-alternate-root",
+  "exactResponseEqual": true,
+  "code": "MO1307_FILESYSTEM_BOUNDARY",
+  "status": "ERROR",
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-alternate-root/request.bin",
+    "byteLength": 365,
+    "sha256": "sha256:4509f50c7c2b543a7458b4f321b023517add8fb37c2846c240f925df7bfb8ca4"
+  },
+  "b2": {
+    "code": 0,
+    "signal": null,
+    "pid": 17692,
+    "elapsedMs": 1499.828999999998,
+    "exitMs": 1499.8139999999985,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-alternate-root/b2.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-alternate-root/b2.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-alternate-root/b2-instrumented.ps1",
+      "byteLength": 33041,
+      "sha256": "sha256:38c182f021486d2e35f011dd6680a38102706d1cac8a76f1f3ffa3c56a3654ee"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\m7c3\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert3\\equivalence\\attempt1\\observed-final-alternate-root\\b2-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "candidate": {
+    "code": 0,
+    "signal": null,
+    "pid": 20256,
+    "elapsedMs": 1423.6885000000038,
+    "exitMs": 1423.6736999999994,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-alternate-root/candidate.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-alternate-root/candidate.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-alternate-root/candidate-instrumented.ps1",
+      "byteLength": 33487,
+      "sha256": "sha256:4556550d8476a98dbb899dbb91a3c1fb1187df2f99cdd4ef7689ab1bdfa00593"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\m7c3\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert3\\equivalence\\attempt1\\observed-final-alternate-root\\candidate-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "nativeObservationCountsEqual": true,
+  "telemetry": {
+    "b2": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 12,
+        "initial:GetFileInformationByHandle": 13,
+        "post-read:Open-Native": 6,
+        "initial:GetFinalPathNameByHandleW": 13,
+        "post-read:GetFileInformationByHandle": 13,
+        "post-read:GetFinalPathNameByHandleW": 13,
+        "initial:Read-Identity": 13,
+        "initial:Assert-SameIdentity": 6,
+        "post-read:Read-Identity": 13,
+        "initial:Open-Native": 13
+      },
+      "mutations": 1,
+      "mutation": "observed-alternate-root",
+      "workingSet64": 105672704,
+      "peakWorkingSet64": 113541120,
+      "managedBytes": 31678984,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-alternate-root/b2-telemetry.json",
+        "byteLength": 499,
+        "sha256": "sha256:2ab1aa288f655943157807bf05c1b06d9dc3622833cd4db1efe422c562835739"
+      }
+    },
+    "candidate": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 12,
+        "initial:GetFileInformationByHandle": 13,
+        "post-read:Open-Native": 6,
+        "initial:GetFinalPathNameByHandleW": 13,
+        "post-read:GetFileInformationByHandle": 13,
+        "post-read:GetFinalPathNameByHandleW": 13,
+        "initial:Read-Identity": 13,
+        "initial:Assert-SameIdentity": 6,
+        "post-read:Read-Identity": 13,
+        "initial:Open-Native": 13
+      },
+      "mutations": 1,
+      "mutation": "observed-alternate-root",
+      "workingSet64": 105570304,
+      "peakWorkingSet64": 113426432,
+      "managedBytes": 27401608,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-alternate-root/candidate-telemetry.json",
+        "byteLength": 499,
+        "sha256": "sha256:26e97586c96a3af22dc6beb1a8a4e0ee68583e68180cf1ed7434814c67fd9a0f"
+      }
+    }
+  }
+}

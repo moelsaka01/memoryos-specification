@@ -1,0 +1,157 @@
+{
+  "name": "observed-final-bad-prefix",
+  "result": "PASS",
+  "scope": "ENGINEERING_NATIVE_FINAL_PATH_VALUE_PERTURBATION",
+  "tags": [
+    "wrong final path",
+    "lexical-equivalence"
+  ],
+  "mutation": "observed-bad-prefix",
+  "exactResponseEqual": true,
+  "code": "MO1307_FILESYSTEM_BOUNDARY",
+  "status": "ERROR",
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-bad-prefix/request.bin",
+    "byteLength": 361,
+    "sha256": "sha256:b384253246306eed2540eb68a4ad3afb03fc0947a4eb273f9f78fab200e0b2fa"
+  },
+  "b2": {
+    "code": 0,
+    "signal": null,
+    "pid": 25364,
+    "elapsedMs": 1410.017399999997,
+    "exitMs": 1410.0041999999958,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-bad-prefix/b2.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-bad-prefix/b2.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-bad-prefix/b2-instrumented.ps1",
+      "byteLength": 33033,
+      "sha256": "sha256:0765c0508b6ea7003460c74ced499900bd3a7f791ffa54bc9f32e97acf36606d"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\m7c3\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert3\\equivalence\\attempt1\\observed-final-bad-prefix\\b2-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "candidate": {
+    "code": 0,
+    "signal": null,
+    "pid": 12304,
+    "elapsedMs": 1384.5478999999905,
+    "exitMs": 1384.5167999999976,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-bad-prefix/candidate.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-bad-prefix/candidate.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-bad-prefix/candidate-instrumented.ps1",
+      "byteLength": 33479,
+      "sha256": "sha256:77c44cfe976edc152e6551d155636250378c063c624a4e0ac04febe406cbd19a"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\m7c3\\repositories\\cca-conformance\\evidence\\mo1307\\phase3c-c3rb-cert3\\equivalence\\attempt1\\observed-final-bad-prefix\\candidate-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "nativeObservationCountsEqual": true,
+  "telemetry": {
+    "b2": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 12,
+        "initial:GetFileInformationByHandle": 13,
+        "post-read:Open-Native": 6,
+        "initial:GetFinalPathNameByHandleW": 13,
+        "post-read:GetFileInformationByHandle": 13,
+        "post-read:GetFinalPathNameByHandleW": 13,
+        "initial:Read-Identity": 13,
+        "initial:Assert-SameIdentity": 6,
+        "post-read:Read-Identity": 13,
+        "initial:Open-Native": 13
+      },
+      "mutations": 1,
+      "mutation": "observed-bad-prefix",
+      "workingSet64": 105832448,
+      "peakWorkingSet64": 113688576,
+      "managedBytes": 31428984,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-bad-prefix/b2-telemetry.json",
+        "byteLength": 495,
+        "sha256": "sha256:f846c766561de75ea5d29913dff5241a3dc184d3d2d5302e7ce703953017d8ee"
+      }
+    },
+    "candidate": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 12,
+        "initial:GetFileInformationByHandle": 13,
+        "post-read:Open-Native": 6,
+        "initial:GetFinalPathNameByHandleW": 13,
+        "post-read:GetFileInformationByHandle": 13,
+        "post-read:GetFinalPathNameByHandleW": 13,
+        "initial:Read-Identity": 13,
+        "initial:Assert-SameIdentity": 6,
+        "post-read:Read-Identity": 13,
+        "initial:Open-Native": 13
+      },
+      "mutations": 1,
+      "mutation": "observed-bad-prefix",
+      "workingSet64": 106242048,
+      "peakWorkingSet64": 120098816,
+      "managedBytes": 21586432,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/observed-final-bad-prefix/candidate-telemetry.json",
+        "byteLength": 495,
+        "sha256": "sha256:d465a5265afbd6bfeb08950673c200ea097f8ba6cc2d9e84194b7ed13ea05201"
+      }
+    }
+  }
+}

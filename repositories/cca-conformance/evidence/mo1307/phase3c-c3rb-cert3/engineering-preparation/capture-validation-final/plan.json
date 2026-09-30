@@ -1,0 +1,168 @@
+{
+  "kind": "EngineeringGitExitCaptureValidationPlan",
+  "frozenAt": "2026-09-30T00:23:04.044Z",
+  "productCertification": false,
+  "sourceReview": false,
+  "productImports": false,
+  "implementations": [
+    "PowerShell explicit Process.ExitCode",
+    "Node explicit spawnSync.status"
+  ],
+  "caseCount": 18,
+  "cases": [
+    {
+      "id": "zero-exact-streams-no-path-no-pathext",
+      "arguments": [
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "git version 2.55.0.windows.3\n",
+      "stderr": "",
+      "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\zero-exact-streams-no-path-no-pathext.manifest.json",
+      "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\zero-exact-streams-no-path-no-pathext.request.json"
+    },
+    {
+      "id": "zero-poison-path-cmd-only",
+      "arguments": [
+        "--version"
+      ],
+      "poison": true,
+      "exit": 0,
+      "stdout": "git version 2.55.0.windows.3\n",
+      "stderr": "",
+      "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\zero-poison-path-cmd-only.manifest.json",
+      "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\zero-poison-path-cmd-only.request.json"
+    },
+    {
+      "id": "nested-initialize-and-invoke-no-path-no-pathext",
+      "mode": "initialize-and-invoke",
+      "arguments": [
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "git version 2.55.0.windows.3\n",
+      "stderr": "",
+      "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\nested-initialize-and-invoke-no-path-no-pathext.manifest.json",
+      "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\nested-initialize-and-invoke-no-path-no-pathext.request.json"
+    },
+    {
+      "id": "exact-nonzero-one",
+      "arguments": [
+        "config",
+        "--file",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\empty.config",
+        "--get",
+        "mo1307.absent"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "",
+      "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\exact-nonzero-one.manifest.json",
+      "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\exact-nonzero-one.request.json"
+    },
+    {
+      "id": "exact-nonzero-stderr",
+      "arguments": [
+        "config",
+        "--file",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\empty.config",
+        "--get-regexp",
+        "["
+      ],
+      "exit": 6,
+      "stdout": "",
+      "stderr": "error: invalid key pattern: [\n",
+      "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\exact-nonzero-stderr.manifest.json",
+      "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\exact-nonzero-stderr.request.json"
+    },
+    {
+      "id": "missing-executable",
+      "arguments": [
+        "--version"
+      ],
+      "variant": "missing",
+      "code": "ENGINEERING_GIT_MISSING",
+      "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\missing-executable.manifest.json",
+      "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\missing-executable.request.json"
+    },
+    {
+      "id": "wrong-identity",
+      "arguments": [
+        "--version"
+      ],
+      "variant": "wrong",
+      "code": "ENGINEERING_GIT_IDENTITY",
+      "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\wrong-identity.manifest.json",
+      "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\wrong-identity.request.json"
+    },
+    {
+      "id": "non-executable",
+      "arguments": [
+        "--version"
+      ],
+      "variant": "nonexe",
+      "code": "ENGINEERING_GIT_EXECUTION",
+      "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\non-executable.manifest.json",
+      "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\non-executable.request.json"
+    },
+    {
+      "id": "bounded-output-refusal",
+      "arguments": [
+        "--version"
+      ],
+      "maxBytes": 1,
+      "code": "ENGINEERING_GIT_OUTPUT_LIMIT",
+      "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\bounded-output-refusal.manifest.json",
+      "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\bounded-output-refusal.request.json"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\git-toolchain.ps1",
+      "byteLength": 4705,
+      "sha256": "sha256:3556ca607b03214dc2a54f7d7004872b8cef65e587e5d16b01882e09c40cad7f"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\engineering-process.cs",
+      "byteLength": 5588,
+      "sha256": "sha256:6f1e29d4b03a12d8be17c3b94a1782644597dc356cdd1b27a26d58c950e277b5"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\identity-functions.ps1",
+      "byteLength": 1146,
+      "sha256": "sha256:a97e2d0190c4d3ca09194b9bdd2022797e6bfa1107875f4d015b8c84d0b42762"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\git-toolchain.mjs",
+      "byteLength": 10303,
+      "sha256": "sha256:a8def45ab2f364db06402a5c87e74a8299dbb807d607579d9dace24ec629aee2"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.ps1",
+      "byteLength": 988,
+      "sha256": "sha256:48b65fe5c4aed07ba6b28eca1643035f1bb27bc3dbdf9b0b74b5ad659ae12389"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.mjs",
+      "byteLength": 737,
+      "sha256": "sha256:0bf04f0c36cfc1ea8a78b8b795b7a7e32f4db370d88474227fb7dfb66b53132c"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\validate-capture-final.mjs",
+      "byteLength": 6039,
+      "sha256": "sha256:0f8f8d0dceb0cc9b2a37f86bcf368ed5df43fb8359e37d3f1c3fc04402fe2bf8"
+    }
+  ],
+  "environment": {
+    "normal": {
+      "SystemRoot": "C:\\Windows",
+      "WINDIR": "C:\\Windows"
+    },
+    "poison": {
+      "PATH": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\poison",
+      "PATHEXT": ".CMD"
+    }
+  },
+  "outerTimeoutMs": 20000,
+  "outerMaxBufferBytes": 1048576
+}

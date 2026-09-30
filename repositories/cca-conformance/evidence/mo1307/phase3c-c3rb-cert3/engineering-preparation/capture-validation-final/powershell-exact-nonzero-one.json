@@ -1,0 +1,98 @@
+{
+  "id": "powershell-exact-nonzero-one",
+  "result": "PASS_ENGINEERING_ONLY",
+  "command": {
+    "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.ps1",
+      "-Manifest",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\exact-nonzero-one.manifest.json",
+      "-Request",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\exact-nonzero-one.request.json"
+    ],
+    "env": {
+      "SystemRoot": "C:\\Windows",
+      "WINDIR": "C:\\Windows"
+    }
+  },
+  "expected": {
+    "id": "exact-nonzero-one",
+    "arguments": [
+      "config",
+      "--file",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\empty.config",
+      "--get",
+      "mo1307.absent"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "",
+    "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\exact-nonzero-one.manifest.json",
+    "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\exact-nonzero-one.request.json"
+  },
+  "outer": {
+    "exitCode": 1,
+    "signal": null,
+    "error": null
+  },
+  "observed": {
+    "kind": "EngineeringGitProcessCapture",
+    "engine": "System.Diagnostics.Process",
+    "executable": "C:/Program Files/Git/cmd/git.exe",
+    "arguments": [
+      "config",
+      "--file",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\empty.config",
+      "--get",
+      "mo1307.absent"
+    ],
+    "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+    "startedAt": "2026-09-30T00:23:08.8331604Z",
+    "classification": "GIT_FAILED",
+    "code": "ENGINEERING_GIT_EXIT",
+    "actualExitCode": 1,
+    "child": {
+      "started": true,
+      "exitObserved": true,
+      "outputComplete": true,
+      "stdoutComplete": true,
+      "stderrComplete": true,
+      "timedOut": false,
+      "outputLimitExceeded": false,
+      "exitCode": 1,
+      "pid": 17352,
+      "startError": null,
+      "wrapperError": null,
+      "stdoutBase64": "",
+      "stderrBase64": ""
+    },
+    "ambientPathFallback": false,
+    "limits": {
+      "timeoutMs": 10000,
+      "eachEngineeringDrainOrKillGuardMs": 2000,
+      "processTreeCleanupEstablished": false,
+      "maxBytesPerStream": 65536,
+      "productDeadlineEvidence": false,
+      "maximumEngineeringPostTimeoutGuards": 3
+    },
+    "finishedAt": "2026-09-30T00:23:09.0753695Z"
+  },
+  "problem": null,
+  "stdout": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\powershell-exact-nonzero-one.stdout.txt",
+    "byteLength": 1011,
+    "sha256": "sha256:9f6860685d4a5227ad04f3c261f0b4a968af28fde439734c5220267872d7d8c9"
+  },
+  "stderr": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\powershell-exact-nonzero-one.stderr.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "noFallback": true
+}

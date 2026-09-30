@@ -1,0 +1,2243 @@
+{
+  "kind": "MO1307Phase3CTrustGraphAudit",
+  "version": "1.0.0",
+  "started": "2026-09-30T00:30:03.672Z",
+  "finished": "2026-09-30T00:30:34.998Z",
+  "baseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "runtime": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+    "version": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "counts": {
+    "cases": 96,
+    "pass": 96,
+    "fail": 0,
+    "negative": 87
+  },
+  "publicationScope": "All cases use byte API/pure internal validators, which possess no filesystem publication interface; no product publication is possible. Internal graph negatives are defensive seam tests, not public graph inputs.",
+  "cases": [
+    {
+      "id": "TG-001",
+      "name": "independent graph reconstruction ready and released MO-1306",
+      "layer": "independent-oracle",
+      "expected": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 485.1639,
+      "evidence": [
+        {
+          "bundle": "ready",
+          "nodes": 54,
+          "edges": 114,
+          "graphDigest": "sha256:2b1bd4809825f6c1fe8dfecd4f285c79ffef10dfc1a422b481c631a7052ac5f8",
+          "authorityIdentityDigest": "sha256:b54a619f6feee1c652eeb36e70dddff7096154c3ab36ff23242d1450097308dd"
+        },
+        {
+          "bundle": "mo1306-qualified",
+          "nodes": 164,
+          "edges": 832,
+          "graphDigest": "sha256:a038400f19788ad7398ac56ca023a0d63a0429062783021d552bf68b6c35bd07",
+          "authorityIdentityDigest": "sha256:25f1d13374328d6839c744e97d7ac5ff10c571886b0fbf17450a441e8b56ab27"
+        },
+        {
+          "bundle": "selective-reuse",
+          "nodes": 54,
+          "edges": 114,
+          "graphDigest": "sha256:667107265287402a8ffc47c7d67f6e341b7cf95567f5910a0b08f8069e3a25e2",
+          "authorityIdentityDigest": "sha256:1d6982bd48b42ca254388bdcafcf1e5f4d6046e4c57de86eacf0afc75c63c860"
+        }
+      ]
+    },
+    {
+      "id": "TG-002",
+      "name": "authority digest substitution",
+      "layer": "trust-bootstrap",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "CONFIGURATION",
+        "exit": 16,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "CONFIGURATION",
+        "exit": 16,
+        "reference": "authority",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 15.673700000000053,
+      "surface": "public-byte-api"
+    },
+    {
+      "id": "TG-003",
+      "name": "self-authorized complete rewritten root retains operator pin",
+      "layer": "trust-bootstrap",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "CONFIGURATION",
+        "exit": 16,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "CONFIGURATION",
+        "exit": 16,
+        "reference": "authority",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 8.446500000000015,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-004",
+      "name": "configuration attempts to choose trust root",
+      "layer": "schema",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_CONFIGURATION",
+        "stage": "CONFIGURATION",
+        "exit": 11,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_CONFIGURATION",
+        "stage": "CONFIGURATION",
+        "exit": 11,
+        "reference": "config",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 17.709299999999985,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-005",
+      "name": "manifest attempts to choose trust root",
+      "layer": "schema",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "reference": "manifest",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 17.420100000000048,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-006",
+      "name": "claim attempts to choose trust root",
+      "layer": "schema",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "INTEGRITY",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "INTEGRITY",
+        "exit": 12,
+        "reference": "envelope.security",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 28.51319999999987,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-007",
+      "name": "authority source byte substitution under frozen root",
+      "layer": "raw-byte-integrity",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "reference": "authority.fixture",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 28.96479999999997,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-008",
+      "name": "authority source digest substitution with manifest rebind",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "reference": "authority.fixture",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 47.193700000000035,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-009",
+      "name": "wrong evidence type selected by gate",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "reference": "grant.artifact",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 46.96630000000005,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-010",
+      "name": "wrong provider claim selected by grant",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "reference": "grant.provider.github",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 50.795500000000175,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-011",
+      "name": "grant claim digest substitution",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "reference": "grant.security",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 49.58619999999996,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-012",
+      "name": "grant envelope source substitution",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "reference": "grant.security",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 51.315700000000106,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-013",
+      "name": "grant source set omission versus envelope",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "AUTHORITY",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "AUTHORITY",
+        "exit": 12,
+        "reference": "source.missing",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 51.33879999999999,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-014",
+      "name": "grant authority source set omitted",
+      "layer": "schema",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "reference": "authority",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 15.796399999999721,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-015",
+      "name": "grant dependency set substitution",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "reference": "grant.security",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 48.82900000000018,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-016",
+      "name": "grant scope escalation",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_STALE_EVIDENCE",
+        "stage": "AUTHORITY",
+        "exit": 19,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_STALE_EVIDENCE",
+        "stage": "AUTHORITY",
+        "exit": 19,
+        "reference": "envelope.security",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 53.32540000000017,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-017",
+      "name": "grant wildcard-like scope",
+      "layer": "schema",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "reference": "authority",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 14.675699999999779,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-018",
+      "name": "grant omitted while slot references it",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "AUTHORITY",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "AUTHORITY",
+        "exit": 12,
+        "reference": "grant.security",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 51.30280000000039,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-019",
+      "name": "duplicate grant ID",
+      "layer": "schema",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "reference": "authority",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 33.29880000000003,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-020",
+      "name": "same normalized grant under new ID",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "AUTHORITY",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "AUTHORITY",
+        "exit": 12,
+        "reference": "grant.zcopy",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 145.7184000000002,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-021",
+      "name": "claim scope independently escalated",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_STALE_EVIDENCE",
+        "stage": "AUTHORITY",
+        "exit": 19,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_STALE_EVIDENCE",
+        "stage": "AUTHORITY",
+        "exit": 19,
+        "reference": "envelope.security",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 124.86649999999963,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-022",
+      "name": "claim assumption added without grant approval",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_STALE_EVIDENCE",
+        "stage": "AUTHORITY",
+        "exit": 19,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_STALE_EVIDENCE",
+        "stage": "AUTHORITY",
+        "exit": 19,
+        "reference": "envelope.security",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 144.10559999999987,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-023",
+      "name": "manifest arrays reversed are rejected, not treated nonsemantic",
+      "layer": "schema",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "reference": "manifest",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 26.264400000000023,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-024",
+      "name": "candidate source commit substitution",
+      "layer": "candidate-pin",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "CONFIGURATION",
+        "exit": 14,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "CONFIGURATION",
+        "exit": 14,
+        "reference": "candidate",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 16.463300000000345,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-025",
+      "name": "candidate source tree substitution",
+      "layer": "candidate-pin",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "CONFIGURATION",
+        "exit": 14,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "CONFIGURATION",
+        "exit": 14,
+        "reference": "candidate",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 12.405099999999948,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-026",
+      "name": "candidate archive digest substitution",
+      "layer": "candidate-pin",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "CONFIGURATION",
+        "exit": 14,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "CONFIGURATION",
+        "exit": 14,
+        "reference": "candidate",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 9.035200000000259,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-027",
+      "name": "candidate distribution length substitution",
+      "layer": "candidate-pin",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "CONFIGURATION",
+        "exit": 14,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "CONFIGURATION",
+        "exit": 14,
+        "reference": "candidate",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 15.257799999999406,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-028",
+      "name": "candidate component identity substitution",
+      "layer": "candidate-pin",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "CONFIGURATION",
+        "exit": 14,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "CONFIGURATION",
+        "exit": 14,
+        "reference": "candidate",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 16.38839999999982,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-029",
+      "name": "candidate component changed with new candidate pin but old authority",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "AUTHORITY",
+        "exit": 14,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "AUTHORITY",
+        "exit": 14,
+        "reference": "candidate",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 29.636500000000524,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-030",
+      "name": "candidate profile substitution",
+      "layer": "schema",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_PROFILE_MISMATCH",
+        "stage": "CONFIGURATION",
+        "exit": 25,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_PROFILE_MISMATCH",
+        "stage": "CONFIGURATION",
+        "exit": 25,
+        "reference": "candidate",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 18.86569999999938,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-031",
+      "name": "configuration stage substitution",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_CONFIGURATION",
+        "stage": "CONFIGURATION",
+        "exit": 11,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_CONFIGURATION",
+        "stage": "CONFIGURATION",
+        "exit": 11,
+        "reference": "config",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 29.012499999999818,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-032",
+      "name": "whole-candidate claim origin substitution",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "AUTHORITY",
+        "exit": 14,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "AUTHORITY",
+        "exit": 14,
+        "reference": "envelope.binding",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 101.80869999999959,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-033",
+      "name": "dependency digest changed under reviewed grant",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_STALE_EVIDENCE",
+        "stage": "AUTHORITY",
+        "exit": 19,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_STALE_EVIDENCE",
+        "stage": "AUTHORITY",
+        "exit": 19,
+        "reference": "envelope.security",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 81.22729999999956,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-034",
+      "name": "required dependency omitted consistently from envelope manifest grant",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "reference": "grant.security",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 66.98099999999977,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-035",
+      "name": "dependency unknown ID",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "AUTHORITY",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "AUTHORITY",
+        "exit": 12,
+        "reference": "absent",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 62.13200000000052,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-036",
+      "name": "duplicate dependency ID",
+      "layer": "schema",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "reference": "authority",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 23.644000000000233,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-037",
+      "name": "conflicting duplicate dependency ID",
+      "layer": "schema",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "CONFIGURATION",
+        "exit": 12,
+        "reference": "authority",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 32.30839999999989,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-038",
+      "name": "current-origin claim falsely marked reused",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_STALE_EVIDENCE",
+        "stage": "AUTHORITY",
+        "exit": 19,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_STALE_EVIDENCE",
+        "stage": "AUTHORITY",
+        "exit": 19,
+        "reference": "envelope.security",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 87.92019999999957,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-039",
+      "name": "whole candidate reuse refused",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "AUTHORITY",
+        "exit": 14,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "AUTHORITY",
+        "exit": 14,
+        "reference": "envelope.binding",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 78.98309999999947,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-040",
+      "name": "old-origin evidence marked current",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "AUTHORITY",
+        "exit": 14,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "AUTHORITY",
+        "exit": 14,
+        "reference": "envelope.security",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 103.99319999999989,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-041",
+      "name": "same filename changed raw bytes",
+      "layer": "raw-byte-integrity",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "reference": "fixture.source",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 43.41190000000097,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-042",
+      "name": "corrected MO-1306 raw configuration source 0 tamper with claim and normalized authority unchanged",
+      "layer": "raw-byte-integrity",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "reference": "configuration-source.0",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 248.38450000000012,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-043",
+      "name": "corrected MO-1306 raw configuration source 1 tamper with claim and normalized authority unchanged",
+      "layer": "raw-byte-integrity",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "reference": "configuration-source.1",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 143.49029999999948,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-044",
+      "name": "corrected MO-1306 raw configuration source 2 tamper with claim and normalized authority unchanged",
+      "layer": "raw-byte-integrity",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "reference": "configuration-source.2",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 193.5554000000011,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-045",
+      "name": "corrected MO-1306 raw configuration source 3 tamper with claim and normalized authority unchanged",
+      "layer": "raw-byte-integrity",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "reference": "configuration-source.3",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 235.91339999999946,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-046",
+      "name": "corrected MO-1306 raw configuration source 4 tamper with claim and normalized authority unchanged",
+      "layer": "raw-byte-integrity",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "reference": "configuration-source.4",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 147.7583999999988,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-047",
+      "name": "corrected MO-1306 raw configuration source 5 tamper with claim and normalized authority unchanged",
+      "layer": "raw-byte-integrity",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "reference": "configuration-source.5",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 144.4390999999996,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-048",
+      "name": "corrected MO-1306 raw configuration source 6 tamper with claim and normalized authority unchanged",
+      "layer": "raw-byte-integrity",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "reference": "configuration-source.6",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 151.45789999999943,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-049",
+      "name": "corrected MO-1306 raw configuration source 7 tamper with claim and normalized authority unchanged",
+      "layer": "raw-byte-integrity",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "reference": "configuration-source.7",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 163.03009999999995,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-050",
+      "name": "raw source change plus self-consistent manifest/envelopes/root rejected by original operator pin",
+      "layer": "trust-bootstrap",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "CONFIGURATION",
+        "exit": 16,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "CONFIGURATION",
+        "exit": 16,
+        "reference": "authority",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 55.6862000000001,
+      "surface": "public-byte-api"
+    },
+    {
+      "id": "TG-051",
+      "name": "manifest source digest rebind cannot avoid raw bytes",
+      "layer": "raw-byte-integrity",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INTEGRITY",
+        "stage": "INTEGRITY",
+        "exit": 13,
+        "reference": "configuration-source.0",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 140.8799999999992,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-052",
+      "name": "raw source omitted despite exact normalized metadata",
+      "layer": "source-admission",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "ACQUISITION",
+        "exit": 12,
+        "reference": "manifest",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 88.33749999999964,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-053",
+      "name": "lineage removed from all corrected claims leaves unused raw source",
+      "layer": "raw-source-consumption",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_EVIDENCE_AUTHORITY",
+        "stage": "AUTHORITY",
+        "exit": 16,
+        "reference": "configuration-source.0",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 408.8737000000001,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-054",
+      "name": "metadata-only old/future dates preserve readiness and graph but rebind proof",
+      "layer": "freshness-proof",
+      "expected": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 660.7368000000006,
+      "evidence": [
+        {
+          "date": "0001-01-01T00:00:00Z",
+          "proofBindingDigest": "sha256:10bdf36021f0be66e5cd36bd90af6b125fe572e83ce5bc71bc0bed870652df67"
+        },
+        {
+          "date": "9999-12-31T23:59:59Z",
+          "proofBindingDigest": "sha256:a0bf4d758752e70cc10dec99b5d8de6ca2d0b6b0e6a9df5df99b8a2a6f81cc9e"
+        },
+        {
+          "date": "opaque-not-a-clock",
+          "proofBindingDigest": "sha256:f0f6ee02c6ac71aa3e33571414c015103c013a8fe8cf226cb0eda0cc795b0468"
+        }
+      ]
+    },
+    {
+      "id": "TG-055",
+      "name": "new independent reviewed source bytes may preserve readiness but must change raw proof",
+      "layer": "trusted-re-review-not-authentication",
+      "expected": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 295.21810000000005,
+      "evidence": {
+        "qualification": "New operator root pin represents explicit trusted review. Runtime cannot authenticate reviewer or infer legacy truth.",
+        "proofBefore": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157",
+        "proofAfter": "sha256:597d43b735ed37913ce13b2bd6aae00396288dd402e50ba92eff2af99ad860bd"
+      }
+    },
+    {
+      "id": "TG-056",
+      "name": "selective reuse after documentation change preserves unaffected security claim",
+      "layer": "dependency-reuse",
+      "expected": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 349.1855999999989,
+      "evidence": {
+        "unaffected": "sha256:1ed12dabed09a74a8eede407aab6bb8e65aea050ca6fbc02b427ab10345db58d",
+        "changed": "sha256:9c261acb639341c49c62690c7f48146ea40aff6e50dc067b1122a97b2f6af2d4",
+        "reused": 14
+      }
+    },
+    {
+      "id": "TG-057",
+      "name": "relevant dependency changed then old security evidence reused",
+      "layer": "semantic-authority",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_STALE_EVIDENCE",
+        "stage": "AUTHORITY",
+        "exit": 19,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_STALE_EVIDENCE",
+        "stage": "AUTHORITY",
+        "exit": 19,
+        "reference": "envelope.security",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 87.01609999999891,
+      "surface": "fixed-integrated-worker"
+    },
+    {
+      "id": "TG-058",
+      "name": "unrelated root assumption addition does not invalidate current claims",
+      "layer": "dependency-reuse",
+      "expected": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 137.41419999999925
+    },
+    {
+      "id": "TG-059",
+      "name": "graph self cycle",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_GRAPH_CYCLE",
+        "stage": "GRAPH",
+        "exit": 17,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_GRAPH_CYCLE",
+        "stage": "GRAPH",
+        "exit": 17,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 3.074300000000221
+    },
+    {
+      "id": "TG-060",
+      "name": "graph two-node cycle",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_GRAPH_CYCLE",
+        "stage": "GRAPH",
+        "exit": 17,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_GRAPH_CYCLE",
+        "stage": "GRAPH",
+        "exit": 17,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 3.4704000000001543
+    },
+    {
+      "id": "TG-061",
+      "name": "graph long cycle",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_GRAPH_CYCLE",
+        "stage": "GRAPH",
+        "exit": 17,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_GRAPH_CYCLE",
+        "stage": "GRAPH",
+        "exit": 17,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 5.048999999999069
+    },
+    {
+      "id": "TG-062",
+      "name": "graph dangling edge",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 4.905399999999645
+    },
+    {
+      "id": "TG-063",
+      "name": "graph dangling node removed",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 6.235999999998967
+    },
+    {
+      "id": "TG-064",
+      "name": "graph wrong node type SOURCE",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 6.364900000000489
+    },
+    {
+      "id": "TG-065",
+      "name": "graph wrong edge type",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 3.387699999999313
+    },
+    {
+      "id": "TG-066",
+      "name": "graph duplicate ID",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 5.305000000000291
+    },
+    {
+      "id": "TG-067",
+      "name": "graph conflicting ID",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 3.6392999999989115
+    },
+    {
+      "id": "TG-068",
+      "name": "graph unreachable normative claim",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 9.817300000002433
+    },
+    {
+      "id": "TG-069",
+      "name": "graph wrong root",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 5.635399999999208
+    },
+    {
+      "id": "TG-070",
+      "name": "graph wrong authority root endpoint",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 10.032200000001467
+    },
+    {
+      "id": "TG-071",
+      "name": "graph duplicate edge",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_INPUT",
+        "stage": "GRAPH",
+        "exit": 12,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 8.18579999999929
+    },
+    {
+      "id": "TG-072",
+      "name": "graph wrong expected candidate",
+      "layer": "defensive-internal-graph",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "GRAPH",
+        "exit": 14,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_CANDIDATE_MISMATCH",
+        "stage": "GRAPH",
+        "exit": 14,
+        "reference": "candidate",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 7.99120000000039
+    },
+    {
+      "id": "TG-073",
+      "name": "graph exact 2048 nodes",
+      "layer": "internal-boundary",
+      "expected": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 235.7992000000013,
+      "evidence": {
+        "nodes": 2048,
+        "edges": 2048
+      }
+    },
+    {
+      "id": "TG-074",
+      "name": "graph 2049 nodes rejected before expansion",
+      "layer": "internal-boundary",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_GRAPH_LIMIT",
+        "stage": "GRAPH",
+        "exit": 18,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_GRAPH_LIMIT",
+        "stage": "GRAPH",
+        "exit": 18,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 8.337599999998929
+    },
+    {
+      "id": "TG-075",
+      "name": "graph exact 8192 edges",
+      "layer": "internal-boundary",
+      "expected": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 379.6281999999992,
+      "evidence": {
+        "nodes": 1040,
+        "edges": 8192
+      }
+    },
+    {
+      "id": "TG-076",
+      "name": "graph 8193 edges rejected",
+      "layer": "internal-boundary",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_GRAPH_LIMIT",
+        "stage": "GRAPH",
+        "exit": 18,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_GRAPH_LIMIT",
+        "stage": "GRAPH",
+        "exit": 18,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 9.11960000000181
+    },
+    {
+      "id": "TG-077",
+      "name": "2048-node cyclic chain bounded rejection",
+      "layer": "internal-cycle-resource",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_GRAPH_CYCLE",
+        "stage": "GRAPH",
+        "exit": 17,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_GRAPH_CYCLE",
+        "stage": "GRAPH",
+        "exit": 17,
+        "reference": null,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 93.75410000000193
+    },
+    {
+      "id": "TG-078",
+      "name": "internal nonsemantic claim collection permutation graph identity",
+      "layer": "graph-determinism",
+      "expected": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 72.86130000000048,
+      "evidence": {
+        "graphDigest": "sha256:2b1bd4809825f6c1fe8dfecd4f285c79ffef10dfc1a422b481c631a7052ac5f8"
+      }
+    },
+    {
+      "id": "TG-079",
+      "name": "verify rejects independently self-hashed result gate vector",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 466.0219999999972
+    },
+    {
+      "id": "TG-080",
+      "name": "verify rejects independently self-hashed result blockers",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 489.6861000000026
+    },
+    {
+      "id": "TG-081",
+      "name": "verify rejects independently self-hashed result CNE reasons",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 510.35909999999785
+    },
+    {
+      "id": "TG-082",
+      "name": "verify rejects independently self-hashed result qualifications",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 430.7034999999996
+    },
+    {
+      "id": "TG-083",
+      "name": "verify rejects independently self-hashed result history",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 1744.8665
+    },
+    {
+      "id": "TG-084",
+      "name": "verify rejects independently self-hashed result provider state",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 316.95140000000174
+    },
+    {
+      "id": "TG-085",
+      "name": "verify rejects independently self-hashed result readiness state",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 511.4916999999987
+    },
+    {
+      "id": "TG-086",
+      "name": "verify rejects independently self-hashed result candidate",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 343.8208999999988
+    },
+    {
+      "id": "TG-087",
+      "name": "verify rejects independently self-hashed result profile",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 404.8112000000001
+    },
+    {
+      "id": "TG-088",
+      "name": "verify rejects independently self-hashed result stage",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 418.14120000000185
+    },
+    {
+      "id": "TG-089",
+      "name": "verify rejects independently self-hashed result graph",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 411.41669999999795
+    },
+    {
+      "id": "TG-090",
+      "name": "verify rejects independently self-hashed result authority identity",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 336.9989000000023
+    },
+    {
+      "id": "TG-091",
+      "name": "verify rejects independently self-hashed result raw audit",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 377.84360000000015
+    },
+    {
+      "id": "TG-092",
+      "name": "verify rejects independently self-hashed result required human actions",
+      "layer": "public-result-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 410.60789999999906
+    },
+    {
+      "id": "TG-093",
+      "name": "verify rejects altered readinessDigest",
+      "layer": "public-result-identity",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 417.54149999999936
+    },
+    {
+      "id": "TG-094",
+      "name": "verify rejects altered proofBindingDigest",
+      "layer": "public-result-identity",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 384.7714999999989
+    },
+    {
+      "id": "TG-095",
+      "name": "stale proof cannot verify metadata-recomputed result",
+      "layer": "public-proof-recomputation",
+      "expected": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": false,
+        "code": "MO1307_RESULT_MISMATCH",
+        "stage": "VERIFICATION",
+        "exit": 26,
+        "reference": "result",
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 694.7861000000012
+    },
+    {
+      "id": "TG-096",
+      "name": "public independent calls and input object insertion order yield identical bytes",
+      "layer": "public-determinism",
+      "expected": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "actual": {
+        "accepted": true,
+        "code": null,
+        "stage": null,
+        "exit": 0,
+        "noPublication": true
+      },
+      "pass": true,
+      "durationMs": 1238.9860000000008,
+      "evidence": {
+        "resultBytes": 59987,
+        "resultSha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7",
+        "readinessDigest": "sha256:7dc59aef2472df2959b88aa6532740bc03c7dacd4c5b8763c9a1306d80ac4532",
+        "proofBindingDigest": "sha256:397770af834aa5fe0fe0958075e059a03f2f7fdd383a66ed7027dd5c19a8f157"
+      }
+    }
+  ]
+}

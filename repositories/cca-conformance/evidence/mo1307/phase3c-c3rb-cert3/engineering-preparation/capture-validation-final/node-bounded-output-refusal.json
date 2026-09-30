@@ -1,0 +1,111 @@
+{
+  "id": "node-bounded-output-refusal",
+  "result": "PASS_ENGINEERING_ONLY",
+  "command": {
+    "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+    "args": [
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.mjs",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\bounded-output-refusal.manifest.json",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\bounded-output-refusal.request.json"
+    ],
+    "env": {
+      "SystemRoot": "C:\\Windows",
+      "WINDIR": "C:\\Windows"
+    }
+  },
+  "expected": {
+    "id": "bounded-output-refusal",
+    "arguments": [
+      "--version"
+    ],
+    "maxBytes": 1,
+    "code": "ENGINEERING_GIT_OUTPUT_LIMIT",
+    "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\bounded-output-refusal.manifest.json",
+    "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\bounded-output-refusal.request.json"
+  },
+  "outer": {
+    "exitCode": 1,
+    "signal": null,
+    "error": null
+  },
+  "observed": {
+    "kind": "EngineeringGitProcessCapture",
+    "invocationId": "155de5c1-545e-46a8-bd19-45143276b55e",
+    "startedAt": "2026-09-30T00:23:25.091Z",
+    "wrapperProcessId": 23636,
+    "productCertification": false,
+    "ambientPathFallback": false,
+    "shell": false,
+    "classification": "WRAPPER_FAILURE",
+    "code": "ENGINEERING_GIT_OUTPUT_LIMIT",
+    "actualExitCode": null,
+    "signal": "SIGTERM",
+    "childProcessId": 15156,
+    "outputComplete": false,
+    "command": {
+      "executable": "C:/Program Files/Git/cmd/git.exe",
+      "arguments": [
+        "--version"
+      ],
+      "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace"
+    },
+    "bounds": {
+      "timeoutMs": 10000,
+      "maxBufferBytes": 1,
+      "retainedBytesPerStreamMaximum": 1
+    },
+    "environment": {
+      "SystemRoot": "C:\\Windows",
+      "WINDIR": "C:\\Windows"
+    },
+    "identityBefore": {
+      "git": {
+        "absolute": "C:/Program Files/Git/cmd/git.exe",
+        "byteLength": 46920,
+        "sha256": "sha256:7b7971dd13f0c3a284e538601f2f9770b3a87dfaccb5fb52d68141c67ed22364"
+      },
+      "core": {
+        "absolute": "C:/Program Files/Git/mingw64/bin/git.exe",
+        "byteLength": 4383048,
+        "sha256": "sha256:1a0043555d254618f2d56c936c3d9a1fbfb878bc878416a133c346bc7835eda9"
+      }
+    },
+    "receivedBytes": {
+      "stdout": 29,
+      "stderr": 0
+    },
+    "retainedPrefixesOnly": true,
+    "executionError": {
+      "code": "ENOBUFS",
+      "message": "spawnSync C:/Program Files/Git/cmd/git.exe ENOBUFS"
+    },
+    "identityAfter": {
+      "git": {
+        "absolute": "C:/Program Files/Git/cmd/git.exe",
+        "byteLength": 46920,
+        "sha256": "sha256:7b7971dd13f0c3a284e538601f2f9770b3a87dfaccb5fb52d68141c67ed22364"
+      },
+      "core": {
+        "absolute": "C:/Program Files/Git/mingw64/bin/git.exe",
+        "byteLength": 4383048,
+        "sha256": "sha256:1a0043555d254618f2d56c936c3d9a1fbfb878bc878416a133c346bc7835eda9"
+      }
+    },
+    "finishedAt": "2026-09-30T00:23:25.255Z",
+    "evidencePath": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\captures\\bounded-output-refusal\\2026-09-30T00-23-25.091Z-23636-155de5c1-545e-46a8-bd19-45143276b55e.json",
+    "stdoutBase64": "Zw==",
+    "stderrBase64": ""
+  },
+  "problem": null,
+  "stdout": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\node-bounded-output-refusal.stdout.txt",
+    "byteLength": 1836,
+    "sha256": "sha256:16d24593ee2dd816c44b070b209257f957ae9bbf72edbf4d4fbdf68b536a8bae"
+  },
+  "stderr": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\node-bounded-output-refusal.stderr.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "noFallback": true
+}

@@ -1,0 +1,9 @@
+import fs from 'node:fs';
+import {gitCapture,validateToolchain,gitExecute} from './git-toolchain.mjs';
+const manifest=JSON.parse(fs.readFileSync(process.argv[2])),request=JSON.parse(fs.readFileSync(process.argv[3]));
+try {
+ if(request.mode==='initialize-and-invoke'){validateToolchain(manifest);gitExecute(request.arguments,{timeout:10000,maxBuffer:request.maxBytes},manifest);}
+ const r=gitCapture(request.arguments,{timeout:10000,maxBuffer:request.maxBytes},manifest);
+ console.log(JSON.stringify({...r,stdoutBase64:r.stdout.toString('base64'),stderrBase64:r.stderr.toString('base64'),stdout:undefined,stderr:undefined}));
+ process.exitCode=r.classification==='GIT_SUCCESS'?0:1;
+}catch(e){console.error(e.message);process.exitCode=2;}

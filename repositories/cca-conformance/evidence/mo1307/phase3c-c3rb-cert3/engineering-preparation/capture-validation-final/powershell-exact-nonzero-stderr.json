@@ -1,0 +1,98 @@
+{
+  "id": "powershell-exact-nonzero-stderr",
+  "result": "PASS_ENGINEERING_ONLY",
+  "command": {
+    "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.ps1",
+      "-Manifest",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\exact-nonzero-stderr.manifest.json",
+      "-Request",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\exact-nonzero-stderr.request.json"
+    ],
+    "env": {
+      "SystemRoot": "C:\\Windows",
+      "WINDIR": "C:\\Windows"
+    }
+  },
+  "expected": {
+    "id": "exact-nonzero-stderr",
+    "arguments": [
+      "config",
+      "--file",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\empty.config",
+      "--get-regexp",
+      "["
+    ],
+    "exit": 6,
+    "stdout": "",
+    "stderr": "error: invalid key pattern: [\n",
+    "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\exact-nonzero-stderr.manifest.json",
+    "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\exact-nonzero-stderr.request.json"
+  },
+  "outer": {
+    "exitCode": 1,
+    "signal": null,
+    "error": null
+  },
+  "observed": {
+    "kind": "EngineeringGitProcessCapture",
+    "engine": "System.Diagnostics.Process",
+    "executable": "C:/Program Files/Git/cmd/git.exe",
+    "arguments": [
+      "config",
+      "--file",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\empty.config",
+      "--get-regexp",
+      "["
+    ],
+    "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+    "startedAt": "2026-09-30T00:23:10.0413137Z",
+    "classification": "GIT_FAILED",
+    "code": "ENGINEERING_GIT_EXIT",
+    "actualExitCode": 6,
+    "child": {
+      "started": true,
+      "exitObserved": true,
+      "outputComplete": true,
+      "stdoutComplete": true,
+      "stderrComplete": true,
+      "timedOut": false,
+      "outputLimitExceeded": false,
+      "exitCode": 6,
+      "pid": 14048,
+      "startError": null,
+      "wrapperError": null,
+      "stdoutBase64": "",
+      "stderrBase64": "ZXJyb3I6IGludmFsaWQga2V5IHBhdHRlcm46IFsK"
+    },
+    "ambientPathFallback": false,
+    "limits": {
+      "timeoutMs": 10000,
+      "eachEngineeringDrainOrKillGuardMs": 2000,
+      "processTreeCleanupEstablished": false,
+      "maxBytesPerStream": 65536,
+      "productDeadlineEvidence": false,
+      "maximumEngineeringPostTimeoutGuards": 3
+    },
+    "finishedAt": "2026-09-30T00:23:10.3932314Z"
+  },
+  "problem": null,
+  "stdout": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\powershell-exact-nonzero-stderr.stdout.txt",
+    "byteLength": 1046,
+    "sha256": "sha256:43aa2732ebe23e3907c82039470504840e3c58aec9bcef903b0609552abe0c70"
+  },
+  "stderr": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\powershell-exact-nonzero-stderr.stderr.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "noFallback": true
+}

@@ -1,0 +1,572 @@
+{
+  "kind": "EngineeringGitExitCaptureValidation",
+  "result": "FAIL_ENGINEERING_ONLY",
+  "productCertification": false,
+  "sourceReviewOrProductExecution": false,
+  "rows": [
+    {
+      "id": "powershell-zero-exact-streams-no-path-no-pathext",
+      "result": "PASS_ENGINEERING_ONLY",
+      "command": {
+        "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.ps1",
+          "-Manifest",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\zero-exact-streams-no-path-no-pathext.manifest.json",
+          "-Request",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\zero-exact-streams-no-path-no-pathext.request.json"
+        ],
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows"
+        }
+      },
+      "expected": {
+        "id": "zero-exact-streams-no-path-no-pathext",
+        "arguments": [
+          "--version"
+        ],
+        "exit": 0,
+        "stdout": "git version 2.55.0.windows.3\n",
+        "stderr": "",
+        "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\zero-exact-streams-no-path-no-pathext.manifest.json",
+        "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\zero-exact-streams-no-path-no-pathext.request.json"
+      },
+      "outer": {
+        "exitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      "observed": {
+        "kind": "EngineeringGitProcessCapture",
+        "engine": "System.Diagnostics.Process",
+        "executable": "C:/Program Files/Git/cmd/git.exe",
+        "arguments": [
+          "--version"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+        "startedAt": "2026-09-30T00:22:03.7242649Z",
+        "classification": "GIT_SUCCEEDED",
+        "code": "OK",
+        "actualExitCode": 0,
+        "child": {
+          "started": true,
+          "exitObserved": true,
+          "outputComplete": true,
+          "stdoutComplete": true,
+          "stderrComplete": true,
+          "timedOut": false,
+          "outputLimitExceeded": false,
+          "exitCode": 0,
+          "pid": 15824,
+          "startError": null,
+          "wrapperError": null,
+          "stdoutBase64": "Z2l0IHZlcnNpb24gMi41NS4wLndpbmRvd3MuMwo=",
+          "stderrBase64": ""
+        },
+        "ambientPathFallback": false,
+        "limits": {
+          "timeoutMs": 10000,
+          "eachEngineeringDrainOrKillGuardMs": 2000,
+          "processTreeCleanupEstablished": false,
+          "maxBytesPerStream": 65536,
+          "productDeadlineEvidence": false,
+          "maximumEngineeringPostTimeoutGuards": 3
+        },
+        "finishedAt": "2026-09-30T00:22:03.9783091Z"
+      },
+      "problem": null,
+      "stdout": {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-zero-exact-streams-no-path-no-pathext.stdout.txt",
+        "byteLength": 891,
+        "sha256": "sha256:df6e4d266668568965eaf3433678f2d120564313a0891853f1bee05acd7329ba"
+      },
+      "stderr": {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-zero-exact-streams-no-path-no-pathext.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "noFallback": true
+    },
+    {
+      "id": "powershell-zero-poison-path-cmd-only",
+      "result": "PASS_ENGINEERING_ONLY",
+      "command": {
+        "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.ps1",
+          "-Manifest",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\zero-poison-path-cmd-only.manifest.json",
+          "-Request",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\zero-poison-path-cmd-only.request.json"
+        ],
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows",
+          "PATH": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\poison",
+          "PATHEXT": ".CMD"
+        }
+      },
+      "expected": {
+        "id": "zero-poison-path-cmd-only",
+        "arguments": [
+          "--version"
+        ],
+        "poison": true,
+        "exit": 0,
+        "stdout": "git version 2.55.0.windows.3\n",
+        "stderr": "",
+        "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\zero-poison-path-cmd-only.manifest.json",
+        "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\zero-poison-path-cmd-only.request.json"
+      },
+      "outer": {
+        "exitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      "observed": {
+        "kind": "EngineeringGitProcessCapture",
+        "engine": "System.Diagnostics.Process",
+        "executable": "C:/Program Files/Git/cmd/git.exe",
+        "arguments": [
+          "--version"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+        "startedAt": "2026-09-30T00:22:04.9212057Z",
+        "classification": "GIT_SUCCEEDED",
+        "code": "OK",
+        "actualExitCode": 0,
+        "child": {
+          "started": true,
+          "exitObserved": true,
+          "outputComplete": true,
+          "stdoutComplete": true,
+          "stderrComplete": true,
+          "timedOut": false,
+          "outputLimitExceeded": false,
+          "exitCode": 0,
+          "pid": 4544,
+          "startError": null,
+          "wrapperError": null,
+          "stdoutBase64": "Z2l0IHZlcnNpb24gMi41NS4wLndpbmRvd3MuMwo=",
+          "stderrBase64": ""
+        },
+        "ambientPathFallback": false,
+        "limits": {
+          "timeoutMs": 10000,
+          "eachEngineeringDrainOrKillGuardMs": 2000,
+          "processTreeCleanupEstablished": false,
+          "maxBytesPerStream": 65536,
+          "productDeadlineEvidence": false,
+          "maximumEngineeringPostTimeoutGuards": 3
+        },
+        "finishedAt": "2026-09-30T00:22:05.1539373Z"
+      },
+      "problem": null,
+      "stdout": {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-zero-poison-path-cmd-only.stdout.txt",
+        "byteLength": 890,
+        "sha256": "sha256:375bea487c8feea48033ee0047d25b44cfc694d63e28951583c2a82231ca183a"
+      },
+      "stderr": {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-zero-poison-path-cmd-only.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "noFallback": true
+    },
+    {
+      "id": "powershell-nested-initialize-and-invoke-no-path-no-pathext",
+      "result": "PASS_ENGINEERING_ONLY",
+      "command": {
+        "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.ps1",
+          "-Manifest",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\nested-initialize-and-invoke-no-path-no-pathext.manifest.json",
+          "-Request",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\nested-initialize-and-invoke-no-path-no-pathext.request.json"
+        ],
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows"
+        }
+      },
+      "expected": {
+        "id": "nested-initialize-and-invoke-no-path-no-pathext",
+        "mode": "initialize-and-invoke",
+        "arguments": [
+          "--version"
+        ],
+        "exit": 0,
+        "stdout": "git version 2.55.0.windows.3\n",
+        "stderr": "",
+        "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\nested-initialize-and-invoke-no-path-no-pathext.manifest.json",
+        "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\nested-initialize-and-invoke-no-path-no-pathext.request.json"
+      },
+      "outer": {
+        "exitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      "observed": {
+        "kind": "EngineeringGitProcessCapture",
+        "engine": "System.Diagnostics.Process",
+        "executable": "C:/Program Files/Git/cmd/git.exe",
+        "arguments": [
+          "--version"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+        "startedAt": "2026-09-30T00:22:06.3222412Z",
+        "classification": "GIT_SUCCEEDED",
+        "code": "OK",
+        "actualExitCode": 0,
+        "child": {
+          "started": true,
+          "exitObserved": true,
+          "outputComplete": true,
+          "stdoutComplete": true,
+          "stderrComplete": true,
+          "timedOut": false,
+          "outputLimitExceeded": false,
+          "exitCode": 0,
+          "pid": 12624,
+          "startError": null,
+          "wrapperError": null,
+          "stdoutBase64": "Z2l0IHZlcnNpb24gMi41NS4wLndpbmRvd3MuMwo=",
+          "stderrBase64": ""
+        },
+        "ambientPathFallback": false,
+        "limits": {
+          "timeoutMs": 60000,
+          "eachEngineeringDrainOrKillGuardMs": 2000,
+          "processTreeCleanupEstablished": false,
+          "maxBytesPerStream": 67108864,
+          "productDeadlineEvidence": false,
+          "maximumEngineeringPostTimeoutGuards": 3
+        },
+        "finishedAt": "2026-09-30T00:22:06.4939817Z"
+      },
+      "problem": null,
+      "stdout": {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-nested-initialize-and-invoke-no-path-no-pathext.stdout.txt",
+        "byteLength": 894,
+        "sha256": "sha256:6530a2bc126e965cd737385ef7bacb8117799aae59a9aeb301e30212f317862c"
+      },
+      "stderr": {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-nested-initialize-and-invoke-no-path-no-pathext.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "noFallback": true
+    },
+    {
+      "id": "powershell-exact-nonzero-one",
+      "result": "PASS_ENGINEERING_ONLY",
+      "command": {
+        "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.ps1",
+          "-Manifest",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\exact-nonzero-one.manifest.json",
+          "-Request",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\exact-nonzero-one.request.json"
+        ],
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows"
+        }
+      },
+      "expected": {
+        "id": "exact-nonzero-one",
+        "arguments": [
+          "config",
+          "--file",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\empty.config",
+          "--get",
+          "mo1307.absent"
+        ],
+        "exit": 1,
+        "stdout": "",
+        "stderr": "",
+        "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\exact-nonzero-one.manifest.json",
+        "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\exact-nonzero-one.request.json"
+      },
+      "outer": {
+        "exitCode": 1,
+        "signal": null,
+        "error": null
+      },
+      "observed": {
+        "kind": "EngineeringGitProcessCapture",
+        "engine": "System.Diagnostics.Process",
+        "executable": "C:/Program Files/Git/cmd/git.exe",
+        "arguments": [
+          "config",
+          "--file",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\empty.config",
+          "--get",
+          "mo1307.absent"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+        "startedAt": "2026-09-30T00:22:07.3290084Z",
+        "classification": "GIT_FAILED",
+        "code": "ENGINEERING_GIT_EXIT",
+        "actualExitCode": 1,
+        "child": {
+          "started": true,
+          "exitObserved": true,
+          "outputComplete": true,
+          "stdoutComplete": true,
+          "stderrComplete": true,
+          "timedOut": false,
+          "outputLimitExceeded": false,
+          "exitCode": 1,
+          "pid": 26256,
+          "startError": null,
+          "wrapperError": null,
+          "stdoutBase64": "",
+          "stderrBase64": ""
+        },
+        "ambientPathFallback": false,
+        "limits": {
+          "timeoutMs": 10000,
+          "eachEngineeringDrainOrKillGuardMs": 2000,
+          "processTreeCleanupEstablished": false,
+          "maxBytesPerStream": 65536,
+          "productDeadlineEvidence": false,
+          "maximumEngineeringPostTimeoutGuards": 3
+        },
+        "finishedAt": "2026-09-30T00:22:07.5644625Z"
+      },
+      "problem": null,
+      "stdout": {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-exact-nonzero-one.stdout.txt",
+        "byteLength": 1005,
+        "sha256": "sha256:d64982eb1c46f47b8ee57a9f04e5fabca605d5c8561c123db7e2dde4ede9305d"
+      },
+      "stderr": {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-exact-nonzero-one.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "noFallback": true
+    },
+    {
+      "id": "powershell-exact-nonzero-stderr",
+      "result": "FAIL_ENGINEERING_ONLY",
+      "command": {
+        "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.ps1",
+          "-Manifest",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\exact-nonzero-stderr.manifest.json",
+          "-Request",
+          "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\exact-nonzero-stderr.request.json"
+        ],
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows"
+        }
+      },
+      "expected": {
+        "id": "exact-nonzero-stderr",
+        "arguments": [
+          "rev-parse",
+          "--verify",
+          "MO1307_NONEXISTENT_ENGINEERING_REF"
+        ],
+        "exit": 128,
+        "stdout": "",
+        "stderr": "fatal: Needed a single revision\n",
+        "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\exact-nonzero-stderr.manifest.json",
+        "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\exact-nonzero-stderr.request.json"
+      },
+      "outer": {
+        "exitCode": 1,
+        "signal": null,
+        "error": null
+      },
+      "observed": {
+        "kind": "EngineeringGitProcessCapture",
+        "engine": "System.Diagnostics.Process",
+        "executable": "C:/Program Files/Git/cmd/git.exe",
+        "arguments": [
+          "rev-parse",
+          "--verify",
+          "MO1307_NONEXISTENT_ENGINEERING_REF"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+        "startedAt": "2026-09-30T00:22:08.4723140Z",
+        "classification": "GIT_FAILED",
+        "code": "ENGINEERING_GIT_EXIT",
+        "actualExitCode": 128,
+        "child": {
+          "started": true,
+          "exitObserved": true,
+          "outputComplete": true,
+          "stdoutComplete": true,
+          "stderrComplete": true,
+          "timedOut": false,
+          "outputLimitExceeded": false,
+          "exitCode": 128,
+          "pid": 8208,
+          "startError": null,
+          "wrapperError": null,
+          "stdoutBase64": "",
+          "stderrBase64": "ZmF0YWw6IGRldGVjdGVkIGR1YmlvdXMgb3duZXJzaGlwIGluIHJlcG9zaXRvcnkgYXQgJ0M6L1VzZXJzL21lbHNhL0RvY3VtZW50cy9Db2RleC9jY2Etd29ya3NwYWNlJwonQzovVXNlcnMvbWVsc2EvRG9jdW1lbnRzL0NvZGV4L2NjYS13b3Jrc3BhY2UnIGlzIG93bmVkIGJ5OgoJQlVJTFRJTi9BZG1pbmlzdHJhdG9ycyAoUy0xLTUtMzItNTQ0KQpidXQgdGhlIGN1cnJlbnQgdXNlciBpczoKCURFU0tUT1AtNUlWR0I1Sy9Db2RleFNhbmRib3hPZmZsaW5lIChTLTEtNS0yMS0zMDk1MzIzMzIxLTEyOTc4MTA5NTUtMjc2NTI3MzA3MC0xMDEyKQpUbyBhZGQgYW4gZXhjZXB0aW9uIGZvciB0aGlzIGRpcmVjdG9yeSwgY2FsbDoKCglnaXQgY29uZmlnIC0tZ2xvYmFsIC0tYWRkIHNhZmUuZGlyZWN0b3J5IEM6L1VzZXJzL21lbHNhL0RvY3VtZW50cy9Db2RleC9jY2Etd29ya3NwYWNlCg=="
+        },
+        "ambientPathFallback": false,
+        "limits": {
+          "timeoutMs": 10000,
+          "eachEngineeringDrainOrKillGuardMs": 2000,
+          "processTreeCleanupEstablished": false,
+          "maxBytesPerStream": 65536,
+          "productDeadlineEvidence": false,
+          "maximumEngineeringPostTimeoutGuards": 3
+        },
+        "finishedAt": "2026-09-30T00:22:08.6802623Z"
+      },
+      "problem": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ Buffer(442) [Uint8Array] [\n- Buffer(32) [Uint8Array] [\n    102,\n    97,\n    116,\n    97,\n    108,\n    58,\n    32,\n+   100,\n-   78,\n    101,\n+   116,\n    101,\n+   99,\n+   116,\n+   101,\n    100,\n+   32,\n+   100,\n+   117,\n+   98,\n+   105,\n+   111,\n+   117,\n+   115,\n+   32,\n+   111,\n+   119,\n+   110,\n    101,\n+   114,\n+   115,\n+   104,\n+   105,\n+   112,\n+   32,\n+   105,\n+   110,\n+   32,\n+   114,\n+   101,\n+   112,\n+   111,\n+   115,\n+   105,\n+   116,\n+   111,\n+   114,\n+   121,\n+   32,\n+   97,\n+   116,\n+   32,\n+   39,\n+   67,\n+   58,\n+   47,\n+   85,\n+   115,\n+   101,\n+   114,\n+   115,\n+   47,\n+   109,\n+   101,\n+   108,\n+   115,\n+   97,\n+   47,\n+   68,\n+   111,\n+   99,\n+   117,\n+   109,\n+   101,\n+   110,\n+   116,\n+   115,\n+   47,\n+   67,\n+   111,\n    100,\n+   101,\n+   120,\n+   47,\n+   99,\n+   99,\n+   97,\n+   45,\n+   119,\n+   111,\n+   114,\n+   107,\n+   115,\n+   112,\n+   97,\n+   99,\n+   101,\n+   39,\n+   10,\n+   39,\n+   67,\n+   58,\n+   47,\n+   85,\n+   115,\n+   101,\n+   114,\n+   115,\n+   47,\n+   109,\n+   101,\n+   108,\n+   115,\n+   97,\n+   47,\n+   68,\n+   111,\n+   99,\n+   117,\n+   109,\n+   101,\n+   110,\n+   116,\n+   115,\n+   47,\n+   67,\n+   111,\n+   100,\n+   101,\n+   120,\n+   47,\n+   99,\n+   99,\n+   97,\n+   45,\n+   119,\n+   111,\n+   114,\n+   107,\n+   115,\n+   112,\n+   97,\n+   99,\n+   101,\n+   39,\n    32,\n+   105,\n+   115,\n+   32,\n+   111,\n+   119,\n+   110,\n+   101,\n+   100,\n+   32,\n+   98,\n+   121,\n+   58,\n+   10,\n+   9,\n+   66,\n+   85,\n+   73,\n+   76,\n+   84,\n+   73,\n+   78,\n+   47,\n+   65,\n+   100,\n+   109,\n+   105,\n+   110,\n+   105,\n+   115,\n+   116,\n+   114,\n    97,\n+   116,\n+   111,\n+   114,\n+   115,\n    32,\n+   40,\n+   83,\n+   45,\n+   49,\n+   45,\n+   53,\n+   45,\n+   51,\n+   50,\n+   45,\n+   53,\n+   52,\n+   52,\n+   41,\n+   10,\n+   98,\n+   117,\n+   116,\n+   32,\n+   116,\n+   104,\n+   101,\n+   32,\n+   99,\n+   117,\n+   114,\n+   114,\n+   101,\n+   110,\n+   116,\n+   32,\n+   117,\n    115,\n+   101,\n+   114,\n+   32,\n    105,\n+   115,\n+   58,\n+   10,\n+   9,\n+   68,\n+   69,\n+   83,\n+   75,\n+   84,\n+   79,\n+   80,\n+   45,\n+   53,\n+   73,\n+   86,\n+   71,\n+   66,\n+   53,\n+   75,\n+   47,\n+   67,\n+   111,\n+   100,\n+   101,\n+   120,\n+   83,\n+   97,\n    110,\n+   100,\n+   98,\n+   111,\n+   120,\n+   79,\n+   102,\n+   102,\n-   103,\n    108,\n+   105,\n+   110,\n    101,\n    32,\n+   40,\n+   83,\n+   45,\n+   49,\n+   45,\n+   53,\n+   45,\n+   50,\n+   49,\n+   45,\n+   51,\n+   48,\n+   57,\n+   53,\n+   51,\n+   50,\n+   51,\n+   51,\n+   50,\n+   49,\n+   45,\n+   49,\n+   50,\n+   57,\n+   55,\n+   56,\n+   49,\n+   48,\n+   57,\n+   53,\n+   53,\n+   45,\n+   50,\n+   55,\n+   54,\n+   53,\n+   50,\n+   55,\n+   51,\n+   48,\n+   55,\n+   48,\n+   45,\n+   49,\n+   48,\n+   49,\n+   50,\n+   41,\n+   10,\n+   84,\n+   111,\n+   32,\n+   97,\n+   100,\n+   100,\n+   32,\n+   97,\n+   110,\n+   32,\n+   101,\n+   120,\n+   99,\n+   101,\n+   112,\n+   116,\n+   105,\n+   111,\n+   110,\n+   32,\n+   102,\n+   111,\n    114,\n+   32,\n+   116,\n+   104,\n+   105,\n+   115,\n+   32,\n+   100,\n+   105,\n+   114,\n    101,\n+   99,\n+   116,\n+   111,\n+   114,\n+   121,\n+   44,\n+   32,\n+   99,\n+   97,\n+   108,\n+   108,\n+   58,\n+   10,\n+   10,\n+   9,\n+   103,\n-   118,\n    105,\n+   116,\n+   32,\n+   99,\n+   111,\n+   110,\n+   102,\n+   105,\n+   103,\n+   32,\n+   45,\n+   45,\n+   103,\n+   108,\n+   111,\n+   98,\n+   97,\n+   108,\n+   32,\n+   45,\n+   45,\n+   97,\n+   100,\n+   100,\n+   32,\n    115,\n+   97,\n+   102,\n+   101,\n+   46,\n+   100,\n    105,\n+   114,\n+   101,\n+   99,\n+   116,\n    111,\n+   114,\n+   121,\n+   32,\n+   67,\n+   58,\n+   47,\n+   85,\n+   115,\n+   101,\n+   114,\n+   115,\n+   47,\n+   109,\n+   101,\n+   108,\n+   115,\n+   97,\n+   47,\n+   68,\n+   111,\n+   99,\n+   117,\n+   109,\n+   101,\n    110,\n+   116,\n+   115,\n+   47,\n+   67,\n+   111,\n+   100,\n+   101,\n+   120,\n+   47,\n+   99,\n+   99,\n+   97,\n+   45,\n+   119,\n+   111,\n+   114,\n+   107,\n+   115,\n+   112,\n+   97,\n+   99,\n+   101,\n    10\n  ]\n",
+      "stdout": {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-exact-nonzero-stderr.stdout.txt",
+        "byteLength": 1509,
+        "sha256": "sha256:36a6c8a55c07ede05c806593c2f3bb1503f6b45f9d73e5534466ae7d30f4d732"
+      },
+      "stderr": {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-exact-nonzero-stderr.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "noFallback": true
+    }
+  ],
+  "firstFailure": {
+    "id": "powershell-exact-nonzero-stderr",
+    "result": "FAIL_ENGINEERING_ONLY",
+    "command": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.ps1",
+        "-Manifest",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\exact-nonzero-stderr.manifest.json",
+        "-Request",
+        "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\exact-nonzero-stderr.request.json"
+      ],
+      "env": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      }
+    },
+    "expected": {
+      "id": "exact-nonzero-stderr",
+      "arguments": [
+        "rev-parse",
+        "--verify",
+        "MO1307_NONEXISTENT_ENGINEERING_REF"
+      ],
+      "exit": 128,
+      "stdout": "",
+      "stderr": "fatal: Needed a single revision\n",
+      "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\exact-nonzero-stderr.manifest.json",
+      "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\exact-nonzero-stderr.request.json"
+    },
+    "outer": {
+      "exitCode": 1,
+      "signal": null,
+      "error": null
+    },
+    "observed": {
+      "kind": "EngineeringGitProcessCapture",
+      "engine": "System.Diagnostics.Process",
+      "executable": "C:/Program Files/Git/cmd/git.exe",
+      "arguments": [
+        "rev-parse",
+        "--verify",
+        "MO1307_NONEXISTENT_ENGINEERING_REF"
+      ],
+      "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+      "startedAt": "2026-09-30T00:22:08.4723140Z",
+      "classification": "GIT_FAILED",
+      "code": "ENGINEERING_GIT_EXIT",
+      "actualExitCode": 128,
+      "child": {
+        "started": true,
+        "exitObserved": true,
+        "outputComplete": true,
+        "stdoutComplete": true,
+        "stderrComplete": true,
+        "timedOut": false,
+        "outputLimitExceeded": false,
+        "exitCode": 128,
+        "pid": 8208,
+        "startError": null,
+        "wrapperError": null,
+        "stdoutBase64": "",
+        "stderrBase64": "ZmF0YWw6IGRldGVjdGVkIGR1YmlvdXMgb3duZXJzaGlwIGluIHJlcG9zaXRvcnkgYXQgJ0M6L1VzZXJzL21lbHNhL0RvY3VtZW50cy9Db2RleC9jY2Etd29ya3NwYWNlJwonQzovVXNlcnMvbWVsc2EvRG9jdW1lbnRzL0NvZGV4L2NjYS13b3Jrc3BhY2UnIGlzIG93bmVkIGJ5OgoJQlVJTFRJTi9BZG1pbmlzdHJhdG9ycyAoUy0xLTUtMzItNTQ0KQpidXQgdGhlIGN1cnJlbnQgdXNlciBpczoKCURFU0tUT1AtNUlWR0I1Sy9Db2RleFNhbmRib3hPZmZsaW5lIChTLTEtNS0yMS0zMDk1MzIzMzIxLTEyOTc4MTA5NTUtMjc2NTI3MzA3MC0xMDEyKQpUbyBhZGQgYW4gZXhjZXB0aW9uIGZvciB0aGlzIGRpcmVjdG9yeSwgY2FsbDoKCglnaXQgY29uZmlnIC0tZ2xvYmFsIC0tYWRkIHNhZmUuZGlyZWN0b3J5IEM6L1VzZXJzL21lbHNhL0RvY3VtZW50cy9Db2RleC9jY2Etd29ya3NwYWNlCg=="
+      },
+      "ambientPathFallback": false,
+      "limits": {
+        "timeoutMs": 10000,
+        "eachEngineeringDrainOrKillGuardMs": 2000,
+        "processTreeCleanupEstablished": false,
+        "maxBytesPerStream": 65536,
+        "productDeadlineEvidence": false,
+        "maximumEngineeringPostTimeoutGuards": 3
+      },
+      "finishedAt": "2026-09-30T00:22:08.6802623Z"
+    },
+    "problem": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ Buffer(442) [Uint8Array] [\n- Buffer(32) [Uint8Array] [\n    102,\n    97,\n    116,\n    97,\n    108,\n    58,\n    32,\n+   100,\n-   78,\n    101,\n+   116,\n    101,\n+   99,\n+   116,\n+   101,\n    100,\n+   32,\n+   100,\n+   117,\n+   98,\n+   105,\n+   111,\n+   117,\n+   115,\n+   32,\n+   111,\n+   119,\n+   110,\n    101,\n+   114,\n+   115,\n+   104,\n+   105,\n+   112,\n+   32,\n+   105,\n+   110,\n+   32,\n+   114,\n+   101,\n+   112,\n+   111,\n+   115,\n+   105,\n+   116,\n+   111,\n+   114,\n+   121,\n+   32,\n+   97,\n+   116,\n+   32,\n+   39,\n+   67,\n+   58,\n+   47,\n+   85,\n+   115,\n+   101,\n+   114,\n+   115,\n+   47,\n+   109,\n+   101,\n+   108,\n+   115,\n+   97,\n+   47,\n+   68,\n+   111,\n+   99,\n+   117,\n+   109,\n+   101,\n+   110,\n+   116,\n+   115,\n+   47,\n+   67,\n+   111,\n    100,\n+   101,\n+   120,\n+   47,\n+   99,\n+   99,\n+   97,\n+   45,\n+   119,\n+   111,\n+   114,\n+   107,\n+   115,\n+   112,\n+   97,\n+   99,\n+   101,\n+   39,\n+   10,\n+   39,\n+   67,\n+   58,\n+   47,\n+   85,\n+   115,\n+   101,\n+   114,\n+   115,\n+   47,\n+   109,\n+   101,\n+   108,\n+   115,\n+   97,\n+   47,\n+   68,\n+   111,\n+   99,\n+   117,\n+   109,\n+   101,\n+   110,\n+   116,\n+   115,\n+   47,\n+   67,\n+   111,\n+   100,\n+   101,\n+   120,\n+   47,\n+   99,\n+   99,\n+   97,\n+   45,\n+   119,\n+   111,\n+   114,\n+   107,\n+   115,\n+   112,\n+   97,\n+   99,\n+   101,\n+   39,\n    32,\n+   105,\n+   115,\n+   32,\n+   111,\n+   119,\n+   110,\n+   101,\n+   100,\n+   32,\n+   98,\n+   121,\n+   58,\n+   10,\n+   9,\n+   66,\n+   85,\n+   73,\n+   76,\n+   84,\n+   73,\n+   78,\n+   47,\n+   65,\n+   100,\n+   109,\n+   105,\n+   110,\n+   105,\n+   115,\n+   116,\n+   114,\n    97,\n+   116,\n+   111,\n+   114,\n+   115,\n    32,\n+   40,\n+   83,\n+   45,\n+   49,\n+   45,\n+   53,\n+   45,\n+   51,\n+   50,\n+   45,\n+   53,\n+   52,\n+   52,\n+   41,\n+   10,\n+   98,\n+   117,\n+   116,\n+   32,\n+   116,\n+   104,\n+   101,\n+   32,\n+   99,\n+   117,\n+   114,\n+   114,\n+   101,\n+   110,\n+   116,\n+   32,\n+   117,\n    115,\n+   101,\n+   114,\n+   32,\n    105,\n+   115,\n+   58,\n+   10,\n+   9,\n+   68,\n+   69,\n+   83,\n+   75,\n+   84,\n+   79,\n+   80,\n+   45,\n+   53,\n+   73,\n+   86,\n+   71,\n+   66,\n+   53,\n+   75,\n+   47,\n+   67,\n+   111,\n+   100,\n+   101,\n+   120,\n+   83,\n+   97,\n    110,\n+   100,\n+   98,\n+   111,\n+   120,\n+   79,\n+   102,\n+   102,\n-   103,\n    108,\n+   105,\n+   110,\n    101,\n    32,\n+   40,\n+   83,\n+   45,\n+   49,\n+   45,\n+   53,\n+   45,\n+   50,\n+   49,\n+   45,\n+   51,\n+   48,\n+   57,\n+   53,\n+   51,\n+   50,\n+   51,\n+   51,\n+   50,\n+   49,\n+   45,\n+   49,\n+   50,\n+   57,\n+   55,\n+   56,\n+   49,\n+   48,\n+   57,\n+   53,\n+   53,\n+   45,\n+   50,\n+   55,\n+   54,\n+   53,\n+   50,\n+   55,\n+   51,\n+   48,\n+   55,\n+   48,\n+   45,\n+   49,\n+   48,\n+   49,\n+   50,\n+   41,\n+   10,\n+   84,\n+   111,\n+   32,\n+   97,\n+   100,\n+   100,\n+   32,\n+   97,\n+   110,\n+   32,\n+   101,\n+   120,\n+   99,\n+   101,\n+   112,\n+   116,\n+   105,\n+   111,\n+   110,\n+   32,\n+   102,\n+   111,\n    114,\n+   32,\n+   116,\n+   104,\n+   105,\n+   115,\n+   32,\n+   100,\n+   105,\n+   114,\n    101,\n+   99,\n+   116,\n+   111,\n+   114,\n+   121,\n+   44,\n+   32,\n+   99,\n+   97,\n+   108,\n+   108,\n+   58,\n+   10,\n+   10,\n+   9,\n+   103,\n-   118,\n    105,\n+   116,\n+   32,\n+   99,\n+   111,\n+   110,\n+   102,\n+   105,\n+   103,\n+   32,\n+   45,\n+   45,\n+   103,\n+   108,\n+   111,\n+   98,\n+   97,\n+   108,\n+   32,\n+   45,\n+   45,\n+   97,\n+   100,\n+   100,\n+   32,\n    115,\n+   97,\n+   102,\n+   101,\n+   46,\n+   100,\n    105,\n+   114,\n+   101,\n+   99,\n+   116,\n    111,\n+   114,\n+   121,\n+   32,\n+   67,\n+   58,\n+   47,\n+   85,\n+   115,\n+   101,\n+   114,\n+   115,\n+   47,\n+   109,\n+   101,\n+   108,\n+   115,\n+   97,\n+   47,\n+   68,\n+   111,\n+   99,\n+   117,\n+   109,\n+   101,\n    110,\n+   116,\n+   115,\n+   47,\n+   67,\n+   111,\n+   100,\n+   101,\n+   120,\n+   47,\n+   99,\n+   99,\n+   97,\n+   45,\n+   119,\n+   111,\n+   114,\n+   107,\n+   115,\n+   112,\n+   97,\n+   99,\n+   101,\n    10\n  ]\n",
+    "stdout": {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-exact-nonzero-stderr.stdout.txt",
+      "byteLength": 1509,
+      "sha256": "sha256:36a6c8a55c07ede05c806593c2f3bb1503f6b45f9d73e5534466ae7d30f4d732"
+    },
+    "stderr": {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-exact-nonzero-stderr.stderr.txt",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "noFallback": true
+  },
+  "noAmbientPathFallback": true,
+  "caseCount": 5,
+  "expectedCaseCount": 18,
+  "gitDiscoveryRepeated": false
+}

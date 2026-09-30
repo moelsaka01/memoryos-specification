@@ -1,0 +1,252 @@
+{
+    "kind":  "MO1307Phase3CRefreshHelperDeltaReview",
+    "version":  "1.0.0",
+    "result":  "PASS",
+    "scope":  "Fresh static helper delta and dependency boundary review; dynamic tests are separate evidence.",
+    "provenance":  {
+                       "executionKind":  "STATIC_SOURCE_PARSE_ONLY",
+                       "parserVersion":  "5.1.26100.9444",
+                       "script":  {
+                                      "path":  "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert3/helper-review.ps1",
+                                      "byteLength":  19533,
+                                      "sha256":  "sha256:4c3b9628873c898ea7c19ba6000233f9a02e922b9bdeb0766ebb4d3d2d4b8a19"
+                                  },
+                       "sourceBasisCommit":  "defe93989efc6501b1a730b82e79e705884b269b",
+                       "preOptimizationCommit":  "976d4a04d75dadc02e30215dd5a8ddeaa2352df8",
+                       "original3CWorkspace":  "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c",
+                       "nativeHelperRuns":  0,
+                       "runtimeCertification":  false,
+                       "packageCertification":  false,
+                       "historicalEvidenceReusedAsCurrentExecution":  false
+                   },
+    "oldHelper":  {
+                      "path":  "repositories/cca-conformance/evidence/mo1307/phase3a-readset-correction/oracle/b2-windows-inspect.ps1",
+                      "byteLength":  29771,
+                      "sha256":  "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+                  },
+    "original3CHelper":  {
+                             "path":  "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+                             "byteLength":  29771,
+                             "sha256":  "sha256:ba2ffa58f253c3b8135772a880b5d306f20de56efa58e384907122f088b4a21b"
+                         },
+    "candidateHelper":  {
+                            "path":  "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+                            "byteLength":  30210,
+                            "sha256":  "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+                        },
+    "mechanicalProof":  {
+                            "deletedExecutableStatement":  "Assert-Root $observed",
+                            "removedStatementOccurrences":  1,
+                            "addedCommentLines":  6,
+                            "deletedLines":  1,
+                            "executableTokensAfterDeletion":  5256,
+                            "candidateExecutableTokens":  5256,
+                            "remainingTokenSequenceIdentical":  true,
+                            "oldParseErrors":  0,
+                            "newParseErrors":  0,
+                            "nativeInvocationSites":  19,
+                            "changedNativeCalls":  0,
+                            "freshNativeObservationsRemoved":  0,
+                            "additionalProductionCachesOrMetadata":  0,
+                            "dynamicCommandSites":  0
+                        },
+    "unchangedSharedSources":  [
+                                   {
+                                       "binding":  {
+                                                       "path":  "repositories/memoryos-readiness/contracts/definitions.json",
+                                                       "byteLength":  16555,
+                                                       "sha256":  "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e"
+                                                   },
+                                       "baselineGitBlob":  "42c357de07bf05b4fe028aa4c824aab7438b6af1",
+                                       "currentGitBlob":  "42c357de07bf05b4fe028aa4c824aab7438b6af1",
+                                       "unchanged":  true
+                                   },
+                                   {
+                                       "binding":  {
+                                                       "path":  "repositories/memoryos-readiness/src/helper-protocol.mjs",
+                                                       "byteLength":  17308,
+                                                       "sha256":  "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+                                                   },
+                                       "baselineGitBlob":  "5bac2473bcf1e65beed67d173d06741506463ce2",
+                                       "currentGitBlob":  "5bac2473bcf1e65beed67d173d06741506463ce2",
+                                       "unchanged":  true
+                                   },
+                                   {
+                                       "binding":  {
+                                                       "path":  "repositories/memoryos-readiness/src/helper-transport.mjs",
+                                                       "byteLength":  6250,
+                                                       "sha256":  "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55"
+                                                   },
+                                       "baselineGitBlob":  "1eb27842cbebdd69368394b148fe26baaffa514b",
+                                       "currentGitBlob":  "1eb27842cbebdd69368394b148fe26baaffa514b",
+                                       "unchanged":  true
+                                   },
+                                   {
+                                       "binding":  {
+                                                       "path":  "repositories/memoryos-readiness/src/runtime.mjs",
+                                                       "byteLength":  16904,
+                                                       "sha256":  "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+                                                   },
+                                       "baselineGitBlob":  "46c95fce6489205d74c30b51036d4c6ea342f486",
+                                       "currentGitBlob":  "46c95fce6489205d74c30b51036d4c6ea342f486",
+                                       "unchanged":  true
+                                   },
+                                   {
+                                       "binding":  {
+                                                       "path":  "repositories/memoryos-readiness/src/acquisition.mjs",
+                                                       "byteLength":  6409,
+                                                       "sha256":  "sha256:1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+                                                   },
+                                       "baselineGitBlob":  "4d943ae95ab4f78031d78753080f4c5a1aefafed",
+                                       "currentGitBlob":  "4d943ae95ab4f78031d78753080f4c5a1aefafed",
+                                       "unchanged":  true
+                                   },
+                                   {
+                                       "binding":  {
+                                                       "path":  "repositories/memoryos-readiness/src/publication.mjs",
+                                                       "byteLength":  13610,
+                                                       "sha256":  "sha256:dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+                                                   },
+                                       "baselineGitBlob":  "6b3ceb99698f4f93b79d2d3fa237ac30f2cb783b",
+                                       "currentGitBlob":  "6b3ceb99698f4f93b79d2d3fa237ac30f2cb783b",
+                                       "unchanged":  true
+                                   },
+                                   {
+                                       "binding":  {
+                                                       "path":  "repositories/memoryos-readiness/src/windows-paths.mjs",
+                                                       "byteLength":  5990,
+                                                       "sha256":  "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+                                                   },
+                                       "baselineGitBlob":  "b947a2c3a82b5cc7d7f9103db5cbd9202ec58e59",
+                                       "currentGitBlob":  "b947a2c3a82b5cc7d7f9103db5cbd9202ec58e59",
+                                       "unchanged":  true
+                                   },
+                                   {
+                                       "binding":  {
+                                                       "path":  "repositories/memoryos-readiness/src/cli.mjs",
+                                                       "byteLength":  4448,
+                                                       "sha256":  "sha256:3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+                                                   },
+                                       "baselineGitBlob":  "3df086f8b936c88e69a47234f0d07620539260ab",
+                                       "currentGitBlob":  "3df086f8b936c88e69a47234f0d07620539260ab",
+                                       "unchanged":  true
+                                   }
+                               ],
+    "nativeCallSites":  [
+                            {
+                                "method":  "GetConsoleProcessList",
+                                "line":  134,
+                                "text":  "$script:native::GetConsoleProcessList($buffer, 1)"
+                            },
+                            {
+                                "method":  "CreateToolhelp32Snapshot",
+                                "line":  140,
+                                "text":  "$script:native::CreateToolhelp32Snapshot(2, 0)"
+                            },
+                            {
+                                "method":  "Process32FirstW",
+                                "line":  143,
+                                "text":  "$script:native::Process32FirstW($snapshot, $buffer)"
+                            },
+                            {
+                                "method":  "Process32NextW",
+                                "line":  155,
+                                "text":  "$script:native::Process32NextW($snapshot, $buffer)"
+                            },
+                            {
+                                "method":  "OpenProcess",
+                                "line":  158,
+                                "text":  "$script:native::OpenProcess(0x101001, $false, $owner)"
+                            },
+                            {
+                                "method":  "QueryFullProcessImageNameW",
+                                "line":  161,
+                                "text":  "$script:native::QueryFullProcessImageNameW($consoleHandle, 0, $image, [ref] $imageLength)"
+                            },
+                            {
+                                "method":  "FreeConsole",
+                                "line":  164,
+                                "text":  "$script:native::FreeConsole()"
+                            },
+                            {
+                                "method":  "WaitForSingleObject",
+                                "line":  168,
+                                "text":  "$script:native::WaitForSingleObject($consoleHandle, 0)"
+                            },
+                            {
+                                "method":  "TerminateProcess",
+                                "line":  170,
+                                "text":  "$script:native::TerminateProcess($consoleHandle, 0)"
+                            },
+                            {
+                                "method":  "WaitForSingleObject",
+                                "line":  171,
+                                "text":  "$script:native::WaitForSingleObject($consoleHandle, 0)"
+                            },
+                            {
+                                "method":  "WaitForSingleObject",
+                                "line":  173,
+                                "text":  "$script:native::WaitForSingleObject($consoleHandle, 1000)"
+                            },
+                            {
+                                "method":  "GetConsoleProcessList",
+                                "line":  174,
+                                "text":  "$script:native::GetConsoleProcessList($buffer, 1)"
+                            },
+                            {
+                                "method":  "CloseHandle",
+                                "line":  178,
+                                "text":  "$script:native::CloseHandle($consoleHandle)"
+                            },
+                            {
+                                "method":  "CloseHandle",
+                                "line":  179,
+                                "text":  "$script:native::CloseHandle($snapshot)"
+                            },
+                            {
+                                "method":  "CreateFileW",
+                                "line":  188,
+                                "text":  "$script:native::CreateFileW($Path, $access, $sharing, [IntPtr]::Zero, 3, 0x02200000, [IntPtr]::Zero)"
+                            },
+                            {
+                                "method":  "GetFileInformationByHandle",
+                                "line":  200,
+                                "text":  "$script:native::GetFileInformationByHandle($Handle, $buffer)"
+                            },
+                            {
+                                "method":  "GetFileType",
+                                "line":  210,
+                                "text":  "$script:native::GetFileType($Handle)"
+                            },
+                            {
+                                "method":  "GetFinalPathNameByHandleW",
+                                "line":  212,
+                                "text":  "$script:native::GetFinalPathNameByHandleW($Handle, $final, 512, 0)"
+                            },
+                            {
+                                "method":  "CreateFileW",
+                                "line":  267,
+                                "text":  "$script:native::CreateFileW($Path, 128, 7, [IntPtr]::Zero, 3, 0x02200000, [IntPtr]::Zero)"
+                            }
+                        ],
+    "limits":  {
+                   "helperDeadlineMs":  5000,
+                   "helperAggregateDeadlineMs":  20000,
+                   "cliDeadlineMs":  30000,
+                   "apiDeadlineMs":  10000,
+                   "cleanupAllowanceMs":  2000,
+                   "helperRequests":  9,
+                   "helperVerifyRequests":  4
+               },
+    "preserved":  [
+                      "GetFileInformationByHandle, GetFileType and GetFinalPathNameByHandleW execute on every successful Read-Identity invocation; unchanged earlier fail-fast rejections can exit before later observations.",
+                      "Same native prefix, count, ordinary-disk, type, reparse, hardlink and volume checks remain in their original order.",
+                      "The observed native finalPath remains returned unchanged, then all seven identity fields are compared case-sensitively after reading.",
+                      "Parent lifetime, fixed helper launch, sanitized environment, request framing, serializer and error codes are unchanged."
+                  ],
+    "errorEquivalence":  "The removed observed-path parser and the retained full-path mismatch check both fail MO1307_FILESYSTEM_BOUNDARY; no side effect occurs between them. A matching observed path has the validated expected path grammar under OrdinalIgnoreCase.",
+    "limitations":  [
+                        "Token equality and call-site data are mechanically checked; control/data-flow argument is explicit source review below.",
+                        "Static source review does not claim native race coverage, measured deadlines, runtime certification or package certification."
+                    ]
+}

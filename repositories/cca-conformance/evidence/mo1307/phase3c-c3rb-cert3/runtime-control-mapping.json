@@ -1,0 +1,1229 @@
+{
+  "kind": "MO1307Phase3CCert2RuntimeDraftMapping",
+  "status": "DRAFT_ONLY_NOT_EXECUTED",
+  "candidate": "defe93989efc6501b1a730b82e79e705884b269b",
+  "root": "C:/m7c2",
+  "evidence": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert2",
+  "toolDirectory": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert2",
+  "sources": [
+    {
+      "commit": "f4ed5873969ab6b627941dc20d5823c5e853b9fe",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-refresh/targeted-negative-corpus.json",
+      "byteLength": 290371,
+      "sha256": "sha256:9258b9a4f0e35d6ba7926f44f76a54309d006849d04672ae6f552d2ae961e919"
+    },
+    {
+      "commit": "191f34748141afca2027e8e9db0c6f1b6a9c84c0",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c/runtime-boundary/closure.json",
+      "byteLength": 75912,
+      "sha256": "sha256:57b73a6598c4eb7f9c617b94641b21165fa9d6ac8aebca464b7dd644b9f9b773"
+    },
+    {
+      "commit": "191f34748141afca2027e8e9db0c6f1b6a9c84c0",
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary.mjs",
+      "byteLength": 26573,
+      "sha256": "sha256:c41f7f7928676e5821ba0cd4a56830cf0f5c935c121b7bb98820fc85b9c3e526"
+    },
+    {
+      "commit": "191f34748141afca2027e8e9db0c6f1b6a9c84c0",
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c/runtime-boundary/runtime-boundary-supplement.mjs",
+      "byteLength": 5407,
+      "sha256": "sha256:29a71c60c3c4691d505520adfda7aa2f7826fdb025d8c3a4e2bc5771879c125b"
+    }
+  ],
+  "gitExecutable": {
+    "path": "C:/Program Files/Git/cmd/git.exe",
+    "byteLength": 46920,
+    "sha256": "sha256:7b7971dd13f0c3a284e538601f2f9770b3a87dfaccb5fb52d68141c67ed22364"
+  },
+  "outputs": [
+    {
+      "path": "runtime-boundary.mjs",
+      "byteLength": 31600,
+      "sha256": "sha256:753bd089d5cb5d9054831d841566a28ff28dd66a5eca75447e07940181a36ae5"
+    },
+    {
+      "path": "runtime-boundary-supplement.mjs",
+      "byteLength": 7901,
+      "sha256": "sha256:56ea4a9f9c0176229030615e487aca63a9f5c9e77ed2d144824ee51e792d40ed"
+    }
+  ],
+  "main": {
+    "controls": 76,
+    "mapping": [
+      {
+        "id": "runtime-boundary:wire-request-wrong-version",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-request-wrong-version",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-request-wrong-operation",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-request-wrong-operation",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-request-unknown-field",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-request-unknown-field",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-request-invalid-session",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-request-invalid-session",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-request-invalid-sequence",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-request-invalid-sequence",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-request-output-read-set",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-request-output-read-set",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-duplicate-key",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-duplicate-key",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-noncanonical",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-noncanonical",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INTEGRITY",
+          "stage": "ACQUISITION",
+          "exit": 13,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-truncated-header",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-truncated-header",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-truncated-body",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-truncated-body",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-extra-frame",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-extra-frame",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-trailing-byte",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-trailing-byte",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-debug-stdout",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-debug-stdout",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_RESOURCE_LIMIT",
+          "stage": "ACQUISITION",
+          "exit": 28,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-oversize-length",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-oversize-length",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_RESOURCE_LIMIT",
+          "stage": "ACQUISITION",
+          "exit": 28,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-response-wrong-path",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-response-wrong-path",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-response-hardlink-record",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-response-hardlink-record",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-response-reparse-record",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-response-reparse-record",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-response-wrong-type",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-response-wrong-type",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:wire-cross-session-replay",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "wire-cross-session-replay",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:sequence-helper-overlap",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "sequence-helper-overlap",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:sequence-worker-before-quiescence",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "sequence-worker-before-quiescence",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-28",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-28",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-29",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-29",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-30",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-30",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-31",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-31",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-32",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-32",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-33",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-33",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-34",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-34",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-35",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-35",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-36",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-36",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-37",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-37",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-38",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-38",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-39",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-39",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-40",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-40",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-41",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-41",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-42",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-42",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:relative-43",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "relative-43",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:root-44",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "root-44",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:root-45",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "root-45",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:root-46",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "root-46",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:root-47",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "root-47",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:root-48",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "root-48",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:root-49",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "root-49",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:root-50",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "root-50",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:path-alternate-slash-case",
+        "negative": false,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "path-alternate-slash-case",
+        "expected": {
+          "accepted": true,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:path-case-collision",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "path-case-collision",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:path-identity-replacement",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "path-identity-replacement",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_FILESYSTEM_BOUNDARY",
+          "stage": "ACQUISITION",
+          "exit": 20,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:fixed-powershell-launch",
+        "negative": false,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "fixed-powershell-launch",
+        "expected": {
+          "accepted": true,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:launch-env-NODE_OPTIONS",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "launch-env-NODE_OPTIONS",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_USAGE",
+          "stage": "LAUNCH",
+          "exit": 10,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:launch-env-NODE_PATH",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "launch-env-NODE_PATH",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_USAGE",
+          "stage": "LAUNCH",
+          "exit": 10,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:launch-env-node_options",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "launch-env-node_options",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_USAGE",
+          "stage": "LAUNCH",
+          "exit": 10,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:launch-flag---inspect",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "launch-flag---inspect",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_USAGE",
+          "stage": "LAUNCH",
+          "exit": 10,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:launch-flag---eval",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "launch-flag---eval",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_USAGE",
+          "stage": "LAUNCH",
+          "exit": 10,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:launch-unrelated-env-no-semantic-control",
+        "negative": false,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "launch-unrelated-env-no-semantic-control",
+        "expected": {
+          "accepted": true,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:worker-wrong-message-type",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "worker-wrong-message-type",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INTERNAL",
+          "stage": "EVALUATION",
+          "exit": 22,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:worker-wrong-status",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "worker-wrong-status",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INTERNAL",
+          "stage": "EVALUATION",
+          "exit": 22,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:worker-malformed-result",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "worker-malformed-result",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INTERNAL",
+          "stage": "EVALUATION",
+          "exit": 22,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:worker-duplicate-result",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "worker-duplicate-result",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INTERNAL",
+          "stage": "EVALUATION",
+          "exit": 22,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:worker-oversized-message",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "worker-oversized-message",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INTERNAL",
+          "stage": "EVALUATION",
+          "exit": 22,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:worker-unknown-error",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "worker-unknown-error",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INTERNAL",
+          "stage": "EVALUATION",
+          "exit": 22,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:worker-result-after-cancellation",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "worker-result-after-cancellation",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_CANCELLED",
+          "stage": "EVALUATION",
+          "exit": 30,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:worker-unexpected-stdout-secret",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "worker-unexpected-stdout-secret",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_INTERNAL",
+          "stage": "EVALUATION",
+          "exit": 22,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:worker-stream-4097-limit",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "worker-stream-4097-limit",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_RESOURCE_LIMIT",
+          "stage": "EVALUATION",
+          "exit": 28,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:worker-fixed-selection-isolation",
+        "negative": false,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "worker-fixed-selection-isolation",
+        "expected": {
+          "accepted": true,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:publication-unbranded-capability",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "publication-unbranded-capability",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_OUTPUT",
+          "stage": "PUBLICATION",
+          "exit": 21,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:publication-foreign-token",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "publication-foreign-token",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_OUTPUT",
+          "stage": "PUBLICATION",
+          "exit": 21,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:publication-wrong-root",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "publication-wrong-root",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_OUTPUT",
+          "stage": "PUBLICATION",
+          "exit": 21,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:publication-capability-reuse",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "publication-capability-reuse",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_OUTPUT",
+          "stage": "PUBLICATION",
+          "exit": 21,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:publication-second-stage",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "publication-second-stage",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_OUTPUT",
+          "stage": "PUBLICATION",
+          "exit": 21,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:publication-pre-TIMEOUT",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "publication-pre-TIMEOUT",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_TIMEOUT",
+          "stage": "PUBLICATION",
+          "exit": 29,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:publication-pre-CANCELLED",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "publication-pre-CANCELLED",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_CANCELLED",
+          "stage": "PUBLICATION",
+          "exit": 30,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:publication-pending-substitution",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "publication-pending-substitution",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_OUTPUT",
+          "stage": "PUBLICATION",
+          "exit": 21,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:publication-final-collision",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "publication-final-collision",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_OUTPUT",
+          "stage": "PUBLICATION",
+          "exit": 21,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:publication-observed-identity-change",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "publication-observed-identity-change",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_OUTPUT",
+          "stage": "PUBLICATION",
+          "exit": 21,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:publication-deadline-equality",
+        "negative": true,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "publication-deadline-equality",
+        "expected": {
+          "accepted": false,
+          "error": "MO1307_TIMEOUT",
+          "stage": "PUBLICATION",
+          "exit": 29,
+          "noPublication": true
+        }
+      },
+      {
+        "id": "runtime-boundary:publication-native-queued-single-rename",
+        "negative": false,
+        "sourceReceipt": "run-1/corpus.partial.json",
+        "sourceCase": "publication-native-queued-single-rename",
+        "expected": {
+          "accepted": true,
+          "noPublication": false,
+          "phase": "COMMITTED",
+          "renames": 1,
+          "earlyTerminal": false,
+          "transportError": "MO1307_OUTPUT",
+          "finalRetained": true
+        }
+      }
+    ]
+  },
+  "supplement": {
+    "controls": 15,
+    "mapping": [
+      {
+        "id": "runtime-boundary:helper-request-frame-ceiling-plus-one",
+        "negative": true,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "helper-request-frame-ceiling-plus-one",
+        "expected": {
+          "accepted": false,
+          "code": "MO1307_RESOURCE_LIMIT",
+          "stage": "ACQUISITION",
+          "exit": 28
+        }
+      },
+      {
+        "id": "runtime-boundary:helper-response-frame-ceiling-plus-one",
+        "negative": true,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "helper-response-frame-ceiling-plus-one",
+        "expected": {
+          "accepted": false,
+          "code": "MO1307_RESOURCE_LIMIT",
+          "stage": "ACQUISITION",
+          "exit": 28
+        }
+      },
+      {
+        "id": "runtime-boundary:helper-session-shape-5",
+        "negative": true,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "helper-session-shape-5",
+        "expected": {
+          "accepted": false,
+          "code": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12
+        }
+      },
+      {
+        "id": "runtime-boundary:helper-session-shape-63",
+        "negative": true,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "helper-session-shape-63",
+        "expected": {
+          "accepted": false,
+          "code": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12
+        }
+      },
+      {
+        "id": "runtime-boundary:helper-session-shape-65",
+        "negative": true,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "helper-session-shape-65",
+        "expected": {
+          "accepted": false,
+          "code": "MO1307_INPUT",
+          "stage": "ACQUISITION",
+          "exit": 12
+        }
+      },
+      {
+        "id": "runtime-boundary:actual-worker-policy-node:fs",
+        "negative": false,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "actual-worker-policy-node:fs",
+        "expected": {
+          "accepted": true,
+          "denied": true,
+          "exit": 0
+        }
+      },
+      {
+        "id": "runtime-boundary:actual-worker-policy-node:child_process",
+        "negative": false,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "actual-worker-policy-node:child_process",
+        "expected": {
+          "accepted": true,
+          "denied": true,
+          "exit": 0
+        }
+      },
+      {
+        "id": "runtime-boundary:actual-worker-policy-node:http",
+        "negative": false,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "actual-worker-policy-node:http",
+        "expected": {
+          "accepted": true,
+          "denied": true,
+          "exit": 0
+        }
+      },
+      {
+        "id": "runtime-boundary:actual-worker-policy-node:https",
+        "negative": false,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "actual-worker-policy-node:https",
+        "expected": {
+          "accepted": true,
+          "denied": true,
+          "exit": 0
+        }
+      },
+      {
+        "id": "runtime-boundary:actual-worker-policy-node:net",
+        "negative": false,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "actual-worker-policy-node:net",
+        "expected": {
+          "accepted": true,
+          "denied": true,
+          "exit": 0
+        }
+      },
+      {
+        "id": "runtime-boundary:actual-worker-policy-node:dns",
+        "negative": false,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "actual-worker-policy-node:dns",
+        "expected": {
+          "accepted": true,
+          "denied": true,
+          "exit": 0
+        }
+      },
+      {
+        "id": "runtime-boundary:actual-worker-policy-fetch",
+        "negative": false,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "actual-worker-policy-fetch",
+        "expected": {
+          "accepted": true,
+          "denied": true,
+          "exit": 0
+        }
+      },
+      {
+        "id": "runtime-boundary:actual-worker-policy-WebSocket",
+        "negative": false,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "actual-worker-policy-WebSocket",
+        "expected": {
+          "accepted": true,
+          "denied": true,
+          "exit": 0
+        }
+      },
+      {
+        "id": "runtime-boundary:supervisor-helper-worker-overlap-refusal",
+        "negative": false,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "supervisor-helper-worker-overlap-refusal",
+        "expected": {
+          "accepted": true,
+          "secondError": "MO1307_INTERNAL",
+          "firstError": "MO1307_INTERNAL",
+          "helpers": 1,
+          "workers": 0
+        }
+      },
+      {
+        "id": "runtime-boundary:worker-result-after-deadline-equality",
+        "negative": true,
+        "sourceReceipt": "supplement.json",
+        "sourceCase": "worker-result-after-deadline-equality",
+        "expected": {
+          "accepted": false,
+          "code": "MO1307_TIMEOUT",
+          "stage": "EVALUATION",
+          "exit": 29
+        }
+      }
+    ]
+  },
+  "patches": [
+    "Fresh root/output names and candidate labels only.",
+    "Main stops before original native-helper fixture setup; its24 native controls are in refreshed equivalence.",
+    "Main preserves86 declared original ordinal positions while executing exactly76; skipped7 protocol and3 launch rows are executed by refresh.",
+    "Supplement executes15 selected rows; skipped actual-fixed-transport-poisoned-parent is represented by current combined poison control.",
+    "Supplement flattened by one tool directory level; relative imports/URLs adjusted to same production files.",
+    "Expected predicates preserved byte-for-byte at every selected control; frozen outcomes asserted before execution.",
+    "Every observed row is written before immediate mismatch stop; pending IDs retained.",
+    "No case imported from historical failed7s guard; full main native section trimmed."
+  ],
+  "preservedScope": [
+    "H52-style alias is path-alternate-slash-case, unchanged",
+    "Wrong-volume physical fixture is historical supplementary evidence, not one of these91; refresh wrong-volume mapping remains synthetic and must not be promoted",
+    "Native queued rename remains native rename with synthetic inspection; no stronger syscall/security claim"
+  ],
+  "noTestsExecuted": true,
+  "noProductionEdits": true
+}

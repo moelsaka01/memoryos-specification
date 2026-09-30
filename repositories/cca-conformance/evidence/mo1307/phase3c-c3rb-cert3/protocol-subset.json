@@ -1,0 +1,126 @@
+{
+  "kind": "MO1307Phase3CRefreshConsumerProtocol",
+  "result": "PASS",
+  "sources": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3c-c3rb-cert3/protocol.mjs",
+      "byteLength": 4181,
+      "sha256": "sha256:e631a733f629c2a53704e94a51dbf048c3d0eeb065fc37f1fa93b88b0298e12d"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/canonical.mjs",
+      "byteLength": 6813,
+      "sha256": "sha256:b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/ordinary/request.bin",
+      "byteLength": 344,
+      "sha256": "sha256:2918641581378e0617d731fca18ae90d0c1e1afb23e6c226f13cd355eafd45d8"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/equivalence/attempt1/ordinary/candidate.stdout.bin",
+      "byteLength": 751,
+      "sha256": "sha256:47d66431cfc3a5286d587379ab2ce6f69155c8d8cd2bacde4b3e63aa150a2961"
+    }
+  ],
+  "rows": [
+    {
+      "id": "response-wrong-version",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-wrong-session",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-wrong-sequence",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-wrong-operation",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-unknown-field",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-malformed-base64",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-noncanonical-base64",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-truncated-frame",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-extra-frame",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-trailing-bytes",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "cross-session-response-replay",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "sequence-entry-bypass",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "native-frame-control",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": false,
+      "result": "PASS"
+    }
+  ],
+  "count": 13,
+  "negativeCount": 12,
+  "scope": "Native malformed requests are separately exercised in the equivalence campaign. Cross-session ownership is enforced by the JS consumer/sequence; each one-shot helper echoes a syntactically valid session and does not own cross-process session history."
+}

@@ -1,0 +1,83 @@
+{
+  "id": "node-missing-executable",
+  "result": "PASS_ENGINEERING_ONLY",
+  "command": {
+    "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+    "args": [
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.mjs",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\missing-executable.manifest.json",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\missing-executable.request.json"
+    ],
+    "env": {
+      "SystemRoot": "C:\\Windows",
+      "WINDIR": "C:\\Windows"
+    }
+  },
+  "expected": {
+    "id": "missing-executable",
+    "arguments": [
+      "--version"
+    ],
+    "variant": "missing",
+    "code": "ENGINEERING_GIT_MISSING",
+    "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\missing-executable.manifest.json",
+    "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\missing-executable.request.json"
+  },
+  "outer": {
+    "exitCode": 1,
+    "signal": null,
+    "error": null
+  },
+  "observed": {
+    "kind": "EngineeringGitProcessCapture",
+    "invocationId": "5dc5dee9-225c-482f-b8b0-cfc4c015d8e4",
+    "startedAt": "2026-09-30T00:23:22.005Z",
+    "wrapperProcessId": 17180,
+    "productCertification": false,
+    "ambientPathFallback": false,
+    "shell": false,
+    "classification": "WRAPPER_FAILURE",
+    "code": "ENGINEERING_GIT_MISSING",
+    "actualExitCode": null,
+    "signal": null,
+    "childProcessId": null,
+    "outputComplete": false,
+    "command": {
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\absent-git.exe",
+      "arguments": [
+        "--version"
+      ],
+      "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace"
+    },
+    "bounds": {
+      "timeoutMs": 10000,
+      "maxBufferBytes": 65536,
+      "retainedBytesPerStreamMaximum": 65536
+    },
+    "environment": {
+      "SystemRoot": "C:\\Windows",
+      "WINDIR": "C:\\Windows"
+    },
+    "wrapperError": {
+      "name": "Error",
+      "code": "ENGINEERING_GIT_MISSING",
+      "message": "ENGINEERING_GIT_MISSING: ENOENT"
+    },
+    "finishedAt": "2026-09-30T00:23:22.007Z",
+    "evidencePath": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\captures\\missing-executable\\2026-09-30T00-23-22.005Z-17180-5dc5dee9-225c-482f-b8b0-cfc4c015d8e4.json",
+    "stdoutBase64": "",
+    "stderrBase64": ""
+  },
+  "problem": null,
+  "stdout": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\node-missing-executable.stdout.txt",
+    "byteLength": 1165,
+    "sha256": "sha256:92405aa4c02c27e4d364522d07f3724b702c30d766127a569777fcfea244bf0a"
+  },
+  "stderr": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\node-missing-executable.stderr.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "noFallback": true
+}

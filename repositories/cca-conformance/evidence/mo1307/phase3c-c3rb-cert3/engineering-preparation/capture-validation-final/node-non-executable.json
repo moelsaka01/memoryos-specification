@@ -1,0 +1,101 @@
+{
+  "id": "node-non-executable",
+  "result": "PASS_ENGINEERING_ONLY",
+  "command": {
+    "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-mo1307-3c\\.cache\\mo1307-phase3c-runtime\\node.exe",
+    "args": [
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.mjs",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\non-executable.manifest.json",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\non-executable.request.json"
+    ],
+    "env": {
+      "SystemRoot": "C:\\Windows",
+      "WINDIR": "C:\\Windows"
+    }
+  },
+  "expected": {
+    "id": "non-executable",
+    "arguments": [
+      "--version"
+    ],
+    "variant": "nonexe",
+    "code": "ENGINEERING_GIT_EXECUTION",
+    "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\non-executable.manifest.json",
+    "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\non-executable.request.json"
+  },
+  "outer": {
+    "exitCode": 1,
+    "signal": null,
+    "error": null
+  },
+  "observed": {
+    "kind": "EngineeringGitProcessCapture",
+    "invocationId": "d392f4a7-2e15-4c8b-af51-de521597234e",
+    "startedAt": "2026-09-30T00:23:24.078Z",
+    "wrapperProcessId": 13868,
+    "productCertification": false,
+    "ambientPathFallback": false,
+    "shell": false,
+    "classification": "WRAPPER_FAILURE",
+    "code": "ENGINEERING_GIT_EXECUTION",
+    "actualExitCode": null,
+    "signal": null,
+    "childProcessId": null,
+    "outputComplete": false,
+    "command": {
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\not-an-executable.exe",
+      "arguments": [
+        "--version"
+      ],
+      "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace"
+    },
+    "bounds": {
+      "timeoutMs": 10000,
+      "maxBufferBytes": 65536,
+      "retainedBytesPerStreamMaximum": 65536
+    },
+    "environment": {
+      "SystemRoot": "C:\\Windows",
+      "WINDIR": "C:\\Windows"
+    },
+    "identityBefore": {
+      "git": {
+        "absolute": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\not-an-executable.exe",
+        "byteLength": 42,
+        "sha256": "sha256:8e5566adfeb64a77fa0877d42610223ee974d71839967e7bba428e1dd34db481"
+      }
+    },
+    "receivedBytes": {
+      "stdout": 0,
+      "stderr": 0
+    },
+    "retainedPrefixesOnly": false,
+    "executionError": {
+      "code": "UNKNOWN",
+      "message": "spawnSync C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\not-an-executable.exe UNKNOWN"
+    },
+    "identityAfter": {
+      "git": {
+        "absolute": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\not-an-executable.exe",
+        "byteLength": 42,
+        "sha256": "sha256:8e5566adfeb64a77fa0877d42610223ee974d71839967e7bba428e1dd34db481"
+      }
+    },
+    "finishedAt": "2026-09-30T00:23:24.086Z",
+    "evidencePath": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\captures\\non-executable\\2026-09-30T00-23-24.078Z-13868-d392f4a7-2e15-4c8b-af51-de521597234e.json",
+    "stdoutBase64": "",
+    "stderrBase64": ""
+  },
+  "problem": null,
+  "stdout": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\node-non-executable.stdout.txt",
+    "byteLength": 1839,
+    "sha256": "sha256:d7a920f65ae466df6da1ddd25b6b78e41a4c9783b471df4b3a1dcce490bc2464"
+  },
+  "stderr": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation-final\\node-non-executable.stderr.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "noFallback": true
+}

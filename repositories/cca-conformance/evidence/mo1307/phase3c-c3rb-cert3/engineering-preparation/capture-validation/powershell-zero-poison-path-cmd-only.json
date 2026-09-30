@@ -1,0 +1,93 @@
+{
+  "id": "powershell-zero-poison-path-cmd-only",
+  "result": "PASS_ENGINEERING_ONLY",
+  "command": {
+    "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-driver.ps1",
+      "-Manifest",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\zero-poison-path-cmd-only.manifest.json",
+      "-Request",
+      "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\zero-poison-path-cmd-only.request.json"
+    ],
+    "env": {
+      "SystemRoot": "C:\\Windows",
+      "WINDIR": "C:\\Windows",
+      "PATH": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\poison",
+      "PATHEXT": ".CMD"
+    }
+  },
+  "expected": {
+    "id": "zero-poison-path-cmd-only",
+    "arguments": [
+      "--version"
+    ],
+    "poison": true,
+    "exit": 0,
+    "stdout": "git version 2.55.0.windows.3\n",
+    "stderr": "",
+    "manifest": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\zero-poison-path-cmd-only.manifest.json",
+    "request": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\zero-poison-path-cmd-only.request.json"
+  },
+  "outer": {
+    "exitCode": 0,
+    "signal": null,
+    "error": null
+  },
+  "observed": {
+    "kind": "EngineeringGitProcessCapture",
+    "engine": "System.Diagnostics.Process",
+    "executable": "C:/Program Files/Git/cmd/git.exe",
+    "arguments": [
+      "--version"
+    ],
+    "cwd": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace",
+    "startedAt": "2026-09-30T00:22:04.9212057Z",
+    "classification": "GIT_SUCCEEDED",
+    "code": "OK",
+    "actualExitCode": 0,
+    "child": {
+      "started": true,
+      "exitObserved": true,
+      "outputComplete": true,
+      "stdoutComplete": true,
+      "stderrComplete": true,
+      "timedOut": false,
+      "outputLimitExceeded": false,
+      "exitCode": 0,
+      "pid": 4544,
+      "startError": null,
+      "wrapperError": null,
+      "stdoutBase64": "Z2l0IHZlcnNpb24gMi41NS4wLndpbmRvd3MuMwo=",
+      "stderrBase64": ""
+    },
+    "ambientPathFallback": false,
+    "limits": {
+      "timeoutMs": 10000,
+      "eachEngineeringDrainOrKillGuardMs": 2000,
+      "processTreeCleanupEstablished": false,
+      "maxBytesPerStream": 65536,
+      "productDeadlineEvidence": false,
+      "maximumEngineeringPostTimeoutGuards": 3
+    },
+    "finishedAt": "2026-09-30T00:22:05.1539373Z"
+  },
+  "problem": null,
+  "stdout": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-zero-poison-path-cmd-only.stdout.txt",
+    "byteLength": 890,
+    "sha256": "sha256:375bea487c8feea48033ee0047d25b44cfc694d63e28951583c2a82231ca183a"
+  },
+  "stderr": {
+    "path": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\phase3c-third\\capture-validation\\powershell-zero-poison-path-cmd-only.stderr.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "noFallback": true
+}
