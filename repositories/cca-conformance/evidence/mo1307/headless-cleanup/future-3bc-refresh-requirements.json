@@ -1,0 +1,212 @@
+{
+  "kind": "MO1307HeadlessCleanupFutureRefreshRequirements",
+  "status": "FUTURE_ONLY_BLOCKED_AT_MINIMUM_SMOKE",
+  "candidate": null,
+  "sourceIdentity": "sha256:9b7108d2f25f1d89d97ccf23cfe5aa0b1c852454012297f7364beb7f220acc4f",
+  "priorSelection": {
+    "path": "repositories/cca-conformance/evidence/mo1307/wire-repair/future-3bc-refresh-requirements.json",
+    "byteLength": 17480,
+    "sha256": "sha256:721a6ef289845d478e09a7d791451e48f480c4ae055a3cb49999b35e99ca543e"
+  },
+  "acceptedHistorical": {
+    "phase3B": "702c1b6381f6112a50ac844831d195275dac3350",
+    "phase3C": "b02fc0226a1a2d800185a02071674ca80bdf4a1d"
+  },
+  "changedShippedMembers": [
+    "helpers/windows-inspect.ps1",
+    "helpers/README.md",
+    "src/helper-transport.mjs",
+    "distribution-manifest.json",
+    "sbom.spdx.json"
+  ],
+  "phase3B": {
+    "futureCandidateBoundRequirements": [
+      "Recompute and bind exact source89-member inventory and source Git blobs to the new candidate.",
+      "Recompute runtime import closure, distribution88 entries and SPDX87 file bindings plus package verification code; rebind unchanged contract53/schema semantics by exact dependency proof.",
+      "Produce two independent fresh deterministic offline archives from the candidate and verify equal archive bytes and all safe regular member bytes against source.",
+      "Perform a fresh offline installation from the newly selected archive with empty install cache, scripts/audit/fund/network fallback disabled, and zero production dependencies.",
+      "Verify all89 installed members against new source and archive before and after installed-context smoke; record persistence and source independence for the new installation.",
+      "Bind new installed public-name API-ready vector and closed invalid-CLI-dispatch smoke. These smoke controls contain no native helper execution and cannot establish console cleanup.",
+      "Create candidate/archive/distribution/SBOM/helper provenance, bounded advisory dependency record, preservation evidence and separate fresh review/seal/acceptance records."
+    ],
+    "artifactBoundTamperControls": [
+      "archive-byte-tamper",
+      "missing-member",
+      "unexpected-member",
+      "unsafe-tar-path",
+      "nonregular-tar-member",
+      "duplicate-member",
+      "missing-tar-terminator",
+      "trailing-tar-data",
+      "helper-tamper",
+      "distribution-hash-tamper",
+      "distribution-length-tamper",
+      "sbom-checksum-tamper",
+      "extra-package-file",
+      "missing-package-file",
+      "provenance-byte-tamper",
+      "installed-helper-mutation"
+    ],
+    "otherHistoricalTamperControlsForDependencyReview": [
+      "schema-tamper",
+      "unexpected-production-dependency",
+      "external-runtime-import",
+      "source-worktree-import",
+      "network-builtin-import",
+      "runtime-identity-mismatch"
+    ],
+    "reconciliation": "New helper, README and transport policy bytes invalidate source/archive/install/metadata identities. Refresh exact89 members, two reproducible archives, fresh offline install and equality before/after installed smoke, runtime closure, distribution, SBOM, provenance and16 artifact controls;6 other controls require exact dependency closure. No current execution."
+  },
+  "phase3C": {
+    "affectedPrimaryIds": [
+      "runtime-boundary:wire-valid-control",
+      "runtime-boundary:wire-response-wrong-session",
+      "runtime-boundary:wire-response-wrong-sequence",
+      "runtime-boundary:wire-response-wrong-operation",
+      "runtime-boundary:wire-response-unknown-field",
+      "runtime-boundary:wire-response-bad-base64",
+      "runtime-boundary:wire-response-noncanonical-base64",
+      "runtime-boundary:fixed-powershell-launch",
+      "runtime-boundary:native-ordinary-handle-control",
+      "runtime-boundary:native-traversal",
+      "runtime-boundary:native-drive-relative",
+      "runtime-boundary:native-unc",
+      "runtime-boundary:native-device",
+      "runtime-boundary:native-ads",
+      "runtime-boundary:native-reserved",
+      "runtime-boundary:native-wrong-type",
+      "runtime-boundary:native-missing-input",
+      "runtime-boundary:native-oversized-file",
+      "runtime-boundary:native-unknown-field",
+      "runtime-boundary:native-wrong-version",
+      "runtime-boundary:native-wrong-operation",
+      "runtime-boundary:native-hardlink",
+      "runtime-boundary:native-file-symlink",
+      "runtime-boundary:native-junction",
+      "runtime-boundary:native-directory-symlink",
+      "runtime-boundary:native-wire-duplicate-key",
+      "runtime-boundary:native-wire-noncanonical",
+      "runtime-boundary:native-wire-truncated-length",
+      "runtime-boundary:native-wire-oversized-length",
+      "runtime-boundary:native-wire-extra-frame",
+      "runtime-boundary:native-wire-trailing-bytes",
+      "runtime-boundary:native-wire-debug-prefix",
+      "runtime-boundary:fixed-helper-environment-poison",
+      "refresh:equivalence-mixed-case-root",
+      "refresh:equivalence-unicode-root",
+      "refresh:equivalence-mo1306-exact",
+      "refresh:equivalence-ready-exact",
+      "refresh:equivalence-wrong-root",
+      "refresh:equivalence-malformed-request",
+      "refresh:equivalence-wrong-session",
+      "refresh:equivalence-wrong-sequence",
+      "refresh:equivalence-changed-identity",
+      "refresh:equivalence-wrong-volume",
+      "refresh:equivalence-changed-ancestor-identity",
+      "refresh:equivalence-changed-size-observation",
+      "refresh:equivalence-changed-link-observation",
+      "refresh:equivalence-changed-attributes-observation",
+      "refresh:equivalence-wrong-final-path",
+      "refresh:equivalence-changed-final-expectation",
+      "refresh:equivalence-native-file-replacement",
+      "refresh:equivalence-native-size-mutation",
+      "refresh:equivalence-native-reparse-mutation",
+      "refresh:equivalence-native-ancestor-replacement",
+      "refresh:equivalence-observed-final-ads",
+      "refresh:equivalence-observed-final-trailing-dot",
+      "refresh:equivalence-observed-final-trailing-space",
+      "refresh:equivalence-observed-final-separator",
+      "refresh:equivalence-observed-final-control",
+      "refresh:equivalence-observed-final-alternate-root",
+      "refresh:equivalence-observed-final-bad-prefix",
+      "refresh:equivalence-dot-path-alias",
+      "refresh:equivalence-backslash-relative",
+      "refresh:equivalence-forward-separator-root",
+      "refresh:equivalence-truncated-frame",
+      "refresh:equivalence-publication-check_output-4",
+      "refresh:equivalence-publication-check_output-4-traversal",
+      "refresh:equivalence-publication-check_output-5",
+      "refresh:equivalence-publication-check_output-5-traversal",
+      "refresh:equivalence-publication-inspect_output_root-6",
+      "refresh:equivalence-publication-inspect_output_root-6-traversal",
+      "refresh:equivalence-publication-check_stage_root-7",
+      "refresh:equivalence-publication-check_stage_root-7-traversal",
+      "refresh:equivalence-publication-inspect_pending-8",
+      "refresh:equivalence-publication-inspect_pending-8-traversal",
+      "refresh:equivalence-publication-check_finalization-9",
+      "refresh:equivalence-publication-check_finalization-9-traversal",
+      "refresh:protocol-response-wrong-version",
+      "refresh:protocol-response-truncated-frame",
+      "refresh:protocol-response-extra-frame",
+      "refresh:protocol-response-trailing-bytes",
+      "refresh:protocol-sequence-entry-bypass",
+      "refresh:before-read-replacement",
+      "refresh:held-to-fresh-replacement",
+      "refresh:deadline-timeout-exact-mapping",
+      "refresh:deadline-late-native-success-refused",
+      "refresh:deadline-crash-closed-transport",
+      "refresh:helper-path-count129",
+      "refresh:deadline-resource-native-declared-file-cap"
+    ],
+    "counts": {
+      "equivalence": 67,
+      "protocol": 12,
+      "toctou": 2,
+      "deadlineCleanup": 6,
+      "fixedLaunch": 1,
+      "total": 88
+    },
+    "dependentNativeRawWitnesses": [
+      "fixed-native-timely",
+      "timeout-exact-mapping",
+      "late-native-success-refused",
+      "crash-closed-transport",
+      "fixed-launch-combined-environment-poison",
+      "resource-native-path-cap129",
+      "resource-native-request-prefix-cap",
+      "resource-native-declared-file-cap",
+      "resource-native-observed-file-cap",
+      "resource-sample-corrected"
+    ],
+    "sourceAuditRefresh": [
+      {
+        "record": "helper-delta-review.json",
+        "requirement": "Replace the obsolete one-deleted-statement token-equality proof and unchanged-helper-transport assertion with an exact C3RB-to-new-candidate delta proof."
+      },
+      {
+        "record": "network-secrets-source.json",
+        "requirement": "Refresh fixedLaunch, nativeBoundary, diagnostic and deadline bindings. The historical fixedLaunch explicitly records detached:false; nativeBoundary API counts and console-policy text describe the superseded mechanism."
+      },
+      {
+        "record": "call-site-dominance.json",
+        "requirement": "Rebind helper hash and shifted line references; independently establish that native filesystem calls, checks, read/held/fresh order and disposal remain unchanged."
+      },
+      {
+        "record": "deadline-cleanup/attempt-1/bounded-state-and-fixed-source-review.json",
+        "requirement": "Refresh exact helper/transport source bindings and changed native console/process primitive inventory while preserving all limits."
+      },
+      {
+        "record": "deadline-cleanup/attempt-1/campaign.json and boundary-closure.json",
+        "requirement": "Fresh candidate launch/topology and observer/cleanup provenance. Existing native timing or process observations cannot certify a different launch topology."
+      },
+      {
+        "record": "governance release-effect inventory",
+        "requirement": "Fresh manual source/effect review of changed helper and helper-transport, following governance.mjs history-mode inventory shape. This is a source-review obligation, not an additional selected primary control."
+      },
+      {
+        "record": "binding.json, pre-execution-seal.json, final-seal.json and certification receipt",
+        "requirement": "Future candidate-specific source/tool/fixture/output and package identities; preserve historical records in place and create separate new records."
+      }
+    ],
+    "newHeadlessSecurityMatrix": {
+      "path": "repositories/cca-conformance/tools/mo1307-headless-cleanup/security-manifest.json",
+      "byteLength": 3976,
+      "sha256": "sha256:ee98bbcce47b8c3c39f56934417f69680ea54a81f807c29a5aa8585ab30b54ef"
+    },
+    "replacementRule": "Replace obsolete HWND/host PID ownership/image/open/termination/wait additional cases with the new fifteen-category headless matrix and explicit native-versus-simulation scope. Removed host primitives are not tested termination paths. Add managed streams, GetStdHandle/GetFileType overload, sole membership, self-detach/final absence, scoped authority and exact candidate bindings. Ten raw witnesses remain dependent evidence, not added primary IDs.",
+    "remainingHistoricalControls": 463,
+    "reuseRule": "Individual unchanged executed-code, fixture, expectation and environment dependency proof is mandatory. Refresh every result dependent on native frames, helper instrumentation, topology/cleanup observations, source hash or package identity. No blanket reuse and no automatic551 rerun."
+  },
+  "executionPerformed": false,
+  "admission": "Only after future new-candidate Phase3A acceptance; never execute these refreshes as part of this stopped generation."
+}

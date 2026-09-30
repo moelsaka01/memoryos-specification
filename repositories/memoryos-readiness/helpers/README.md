@@ -43,8 +43,9 @@ the correction document gives their exact shapes.
 
 Successful evaluate uses nine fresh helper invocations; verify uses four. Every
 invocation has one request. They are serial, without skipped/repeated slots or
-automatic retry. The helper and its possible console host must be confirmed
-gone and transports closed before any next helper or evaluation worker. One
+automatic retry. The helper must establish native console absence, then its
+process and all transports must close before any next helper or evaluation worker.
+The headless path does not claim termination of an unidentified console host. One
 supervisor, at most one helper and its possible console host preserve the three
 attributable OS-role ceiling. Evaluation is one worker thread, never a second
 process, with no helper/worker overlap.
@@ -72,7 +73,7 @@ never a public clock override or normative readiness input.
 Each helper has 5,000 ms, with a new explicit **20,000 ms aggregate helper-active
 ceiling** preserving the original four-times-five-second upper bound. Active
 time starts before launch and includes startup, native work, framing/EOF waits
-and confirmed process/console termination. The CLI's 30,000 ms deadline remains
+and confirmed helper termination, helper console absence and transport closure. The CLI's 30,000 ms deadline remains
 absolute for helper acquisition and final rename admission; each helper deadline is the earliest of its own five seconds, remaining
 aggregate budget and overall deadline. Equality is TIMEOUT. The API deadline
 remains 10,000 ms; cleanup is at most 2,000 ms after failure, never success grace.
@@ -134,37 +135,41 @@ failures and ambiguous native failures never become absence. Existing output
 or final destinations produce a closed error; the supervisor maps publication
 errors to OUTPUT. No identity is invented for an absent file/directory.
 
-The fixed hidden PowerShell launch uses `detached: false`, `shell: false` and
-three redirected binary pipes. A finite native launch diagnostic found that
-`detached: true` exited 0 without a recorded script-entry witness or output;
-with `detached: false`, the script entered and echoed the complete request through
-valid pipes. The internal PowerShell early-exit branch is not established.
-The supervisor retains the child reference, process-exit checks, transport EOF
-requirements, cancellation and fixed deadlines. This launch change does not
-establish ownership or quiescence; the unchanged native startup proof below
-remains mandatory, including refusal of an unattributable windowless console.
+The fixed hidden PowerShell launch retains `detached: false`, `shell: false` and
+three redirected binary pipes. The fixed executable, argv, package cwd and two
+trusted environment entries remain unchanged. The supervisor retains the child
+reference, process-exit checks, complete transport settlement, cancellation and
+fixed deadlines. No host exit is inferred from the launch mode.
 
-Startup captures the byte transports and accepts either native no-console absence
-or sole-helper console membership. For an attached console it requires a nonzero
-`GetConsoleWindow`, obtains its owner with `GetWindowThreadProcessId`, and opens
-that process with query/synchronize rights only. It verifies the handle PID and
-exact system conhost.exe image, repeats current window/owner and sole-membership
-observations, then confirms that the retained object is still live. A missing
-window, changed association, access failure or ambiguity fails closed. No
-historical parent-process lifetime is claimed or used.
+The [scoped headless cleanup correction](../../../docs/mo1307-headless-cleanup-correction.md)
+replaces the prior mandatory host-attribution/termination predicate for this
+supported path. Startup saves all three standard streams and requires non-null,
+readable stdin and writable stdout/stderr. Fixed `GetStdHandle` selectors and
+`GetFileType` require three actual pipe handles; borrowed standard handles are
+not independently closed or promoted to host authority.
 
-The helper then calls `FreeConsole` and waits at most 1,000 ms for natural exit
-of the SAME retained host object, followed by native helper console absence.
-It never calls `TerminateProcess` on a host. A client joining after the last
-membership observation cannot authorize termination of that client's console;
-a host that remains alive instead produces silent exit 22. All native handles
-and the fixed four-byte membership buffer are released. This replaces the old
-numeric-parent Toolhelp assumption under the final engineering authorization;
-the higher-level attribution, quiescence and resource requirements are unchanged.
+Bounded `GetConsoleProcessList` checking accepts native no-console absence
+(count zero with error 6), or exactly one client whose PID is the helper itself.
+Extra clients, overflow, unrelated membership and other API failures reject.
+Membership is topology evidence only. When attached, `FreeConsole` detaches only
+the helper, followed by a required count-zero/error-6 absence observation. The
+fixed four-byte buffer is always released. No HWND, numeric ancestry, guessed
+PID, process-handle lookup or host termination is used. No host process is opened,
+waited on or terminated. The former 1,000 ms host-wait limit is inapplicable
+without an identified host; no replacement wait or larger allowance is added.
 
-Every valid frame, including an ERROR frame, is emitted only after this startup
-console proof. A proof failure exits 22 without a frame or diagnostic. The
-supervisor still must confirm helper termination and complete transport EOF.
-Failure before a validated frame cannot assert console quiescence and remains
-terminal. Bounded external observation records any remaining owned process;
-no next phase is admitted from an unconfirmed cleanup observation.
+Every valid response, including an ERROR frame, follows the startup pipe,
+membership and helper-console-absence checks. The unchanged supervisor then
+requires helper process termination, stdin finish/closure, stdout/stderr EOF
+and closure, no active helper role, and no helper/helper or helper/worker overlap
+before a transition. All of this remains inside the existing helper/aggregate/
+overall bounds; terminal cleanup remains at most 2,000 ms and is never success
+grace. A response alone never admits the next operation.
+
+This establishes bounded quiescence of the helper and its owned transports; it
+does not claim that an unidentified conhost process terminated. A client joining
+after an observed membership check cannot authorize any destructive host action.
+The existing optional-host/process ceiling still requires native certification.
+Actual startup-security failures remain silent exit 22 with no response frame or
+diagnostic. A missing valid frame cannot establish the startup proof or permit
+retry/transition. No debug output, wire/schema change or extra capability exists.

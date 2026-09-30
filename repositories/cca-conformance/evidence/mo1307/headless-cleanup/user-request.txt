@@ -1,0 +1,582 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3A
+
+FINAL CONSOLE CLEANUP CORRECTION
+THEN VALIDATE AND CERTIFY
+
+Current Phase 3A status:
+
+FAILED / INCOMPLETE
+
+Phase 3B ACCEPTED:
+
+702c1b6381f6112a50ac844831d195275dac3350
+
+Phase 3C ACCEPTED:
+
+b02fc0226a1a2d800185a02071674ca80bdf4a1d
+
+Do not rerun either accepted stream now.
+
+==================================================
+1. NEW ESTABLISHED FACT
+==================================================
+
+The instrumented startup execution established the exact current failure:
+
+STARTUP_HOST_ATTRIBUTION_FAILURE
+
+Diagnostic:
+
+S12.01
+
+Observed:
+
+GetConsoleWindow() == 0
+
+while:
+
+GetConsoleProcessList returned exactly one attached client:
+
+the helper itself.
+
+Script entry succeeded.
+
+Startup reached S12.
+
+Cleanup S22 completed.
+
+Therefore the selected GetConsoleWindow-based ownership design is incompatible with the actual supported helper launch topology.
+
+Do not diagnose this again.
+
+Do not retry it.
+
+==================================================
+2. AUTHORITY CONSEQUENCE
+==================================================
+
+GetConsoleWindow is NOT itself a frozen MO-1307 security requirement.
+
+Historical parent-lifetime proof is also NOT explicitly required by the Freeze.
+
+The higher-level frozen requirements are:
+
+- at most one optional console host,
+- no unauthorized process termination,
+- helper/host quiescence before transition,
+- bounded cleanup,
+- bounded transport EOF,
+- no helper/helper overlap,
+- no helper/worker overlap,
+- fail-closed behavior.
+
+Do not preserve an implementation mechanism that cannot operate in the supported launch topology merely because a previous correction used it.
+
+==================================================
+3. OBJECTIVE
+==================================================
+
+Implement the smallest scoped correction that satisfies the HIGHER-LEVEL frozen cleanup/quiescence invariant for the actual headless helper launch.
+
+Then:
+
+VALIDATE
+→ REGRESS
+→ RUN PHASE 3A A-O.
+
+No more broad architecture research.
+
+==================================================
+4. HEADLESS LAUNCH FACT
+==================================================
+
+The actual helper launch has now demonstrated:
+
+- redirected stdin/stdout/stderr,
+- hidden/headless execution,
+- helper enters successfully,
+- console membership reports only the helper,
+- GetConsoleWindow returns 0.
+
+Treat this combination as the actual supported topology that the correction must handle.
+
+Do NOT equate:
+
+GetConsoleWindow == 0
+
+with:
+
+"no console object exists"
+
+unless documented authority establishes that.
+
+But also do NOT require a window handle that this topology does not expose.
+
+==================================================
+5. CORRECTION PRINCIPLE
+==================================================
+
+The corrected helper must never terminate a console-host process unless ownership is positively established.
+
+Therefore, when no positively attributable host object can be established:
+
+DO NOT guess a conhost PID.
+
+DO NOT use stale numeric PPID attribution.
+
+DO NOT use GetConsoleWindow as a mandatory prerequisite.
+
+DO NOT terminate an unproven process.
+
+Instead, satisfy cleanup through the narrowest permitted fail-closed/headless lifecycle behavior supported by the frozen contract.
+
+==================================================
+6. REQUIRED GOVERNANCE DECISION
+==================================================
+
+Mechanically resolve the previously authorized console-cleanup procedure against the higher-level Freeze.
+
+Adopt the following rule ONLY if supported by the controlling authority:
+
+For a supported headless invocation where:
+
+- current console membership contains only the helper,
+- no positively attributable host object is available,
+- helper stdin/stdout/stderr are valid product pipes,
+- no additional attached client is observed,
+- helper execution and transport remain bounded,
+
+host termination is NOT attempted.
+
+The supervisor instead requires:
+
+- helper process termination,
+- complete stdout EOF,
+- complete stderr EOF,
+- stdin closure,
+- no active helper role,
+- no worker overlap,
+- all known owned handles/streams closed,
+- transition only after bounded quiescence.
+
+The result must NOT claim:
+
+"conhost termination confirmed"
+
+when no host object was identified.
+
+It may claim only the exact bounded quiescence property supported by the evidence.
+
+If the existing correction-level authorization literally forbids this interpretation, make a SCOPED correction to that authorization while preserving the higher-level security invariant.
+
+Do not modify unrelated Freeze semantics.
+
+==================================================
+7. SECURITY RULE
+==================================================
+
+The corrected behavior must be strictly safer than guessing ownership.
+
+If host ownership is unavailable:
+
+no host termination authority exists.
+
+That is preferable to terminating an unrelated system conhost based on stale PID ancestry.
+
+Any ambiguity must fail closed with respect to destructive process action.
+
+==================================================
+8. CURRENT MEMBERSHIP CHECK
+==================================================
+
+Retain bounded current console membership checking for topology purposes.
+
+If GetConsoleProcessList observes:
+
+only helper:
+eligible for the supported headless path.
+
+additional attached client:
+reject/fail closed unless existing frozen authority explicitly permits it.
+
+overflow:
+reject/fail closed.
+
+API failure:
+reject/fail closed.
+
+Do not interpret membership as conhost ownership.
+
+==================================================
+9. REMOVE UNSOUND ATTRIBUTION
+==================================================
+
+Remove the current dependence on:
+
+numeric Toolhelp PPID as termination authority
+
+and
+
+GetConsoleWindow as host ownership authority.
+
+Do not replace either with another speculative ownership guess.
+
+Any actual positively owned host path may remain only if ownership can be established using already supported authority.
+
+Otherwise use the non-destructive headless cleanup path.
+
+==================================================
+10. STARTUP FAILURE SEMANTICS
+==================================================
+
+Preserve silent exit 22 for actual startup-security failures.
+
+However, the supported headless topology described above must not fail solely because:
+
+GetConsoleWindow == 0.
+
+Do not add debug stdout.
+
+Wire protocol remains unchanged.
+
+==================================================
+11. PRODUCT FILES
+==================================================
+
+Make the smallest required production changes.
+
+Likely scope:
+
+repositories/memoryos-readiness/helpers/windows-inspect.ps1
+
+repositories/memoryos-readiness/helpers/README.md
+
+and derived:
+
+distribution-manifest.json
+
+sbom.spdx.json
+
+Modify helper-transport.mjs only if strictly required.
+
+Prefer keeping:
+
+detached:false
+
+because detached:true has already been demonstrated to suppress script execution/output in this environment.
+
+==================================================
+12. FIRST VALIDATION
+==================================================
+
+After implementation:
+
+run exactly ONE minimum successful helper wire smoke.
+
+Require:
+
+script executes
+
+valid request consumed
+
+valid framed response
+
+expected exit
+
+stdout exact
+
+stderr exact
+
+transport settlement
+
+helper termination
+
+stream EOF
+
+cleanup/quiescence evidence.
+
+If it fails:
+
+STOP with concrete blocker.
+
+Do not redesign again.
+
+==================================================
+13. FINITE SECURITY VALIDATION
+==================================================
+
+If the smoke passes, run the finite console/startup security matrix.
+
+At minimum:
+
+A. normal headless successful startup
+
+B. sole-helper membership
+
+C. extra attached client refusal
+
+D. membership overflow refusal
+
+E. membership API failure
+
+F. no speculative conhost termination
+
+G. wrong/ambiguous ownership cannot trigger TerminateProcess
+
+H. helper crash
+
+I. helper timeout
+
+J. late output
+
+K. pipe closure
+
+L. final helper quiescence
+
+M. worker non-overlap
+
+N. unchanged silent exit-22 behavior for real startup failures
+
+O. unchanged deadline behavior.
+
+Any destructive process action must have explicit ownership evidence.
+
+==================================================
+14. REGRESSIONS
+==================================================
+
+If security validation passes:
+
+run the required:
+
+107-test regression campaign
+
+native filesystem regression suite
+
+TOCTOU controls
+
+protocol controls
+
+deadline/cleanup controls
+
+package integrity checks.
+
+At first mandatory regression failure:
+
+STOP.
+
+==================================================
+15. NEW CANDIDATE
+==================================================
+
+If all validation passes:
+
+create a NEW production candidate.
+
+Do not reuse unaccepted candidate identities.
+
+Recompute:
+
+helper hash
+
+distribution manifest
+
+SBOM
+
+package/member identities
+
+candidate binding.
+
+==================================================
+16. PHASE 3A CERTIFICATION
+==================================================
+
+Then immediately run a FRESH Phase 3A certification generation.
+
+Fresh worktree.
+
+Fresh package.
+
+Fresh offline installation.
+
+Verify all members.
+
+Seal full A-O inventory.
+
+Execute once from A through O.
+
+No historical PASS promotion.
+
+No retry.
+
+At first mandatory failure:
+
+STOP.
+
+If all A-O pass:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE.
+
+==================================================
+17. RESOURCE LIMITS
+==================================================
+
+Do not change:
+
+helper:
+5000 ms
+
+aggregate:
+20000 ms
+
+CLI:
+30000 ms
+
+API/worker:
+10000 ms
+
+cleanup:
+2000 ms
+
+native wait where still applicable:
+1000 ms
+
+H remains:
+
+NOT_ESTABLISHED.
+
+==================================================
+18. AFTER 3A PASS
+==================================================
+
+If Phase 3A is accepted:
+
+STOP before Phase 3D.
+
+Return the exact new candidate.
+
+Then Phase 3B and Phase 3C refreshes will run IN PARALLEL.
+
+Existing accepted C3RB certifications remain preserved historical acceptance.
+
+==================================================
+19. EXPECTED 3B REFRESH
+==================================================
+
+Refresh candidate-bound:
+
+archive
+
+member inventory
+
+distribution manifest
+
+SBOM
+
+reproducibility
+
+offline installation
+
+installed equality
+
+runtime closure
+
+installed smoke
+
+affected tamper controls
+
+provenance.
+
+Reuse only unchanged dependency-closed evidence.
+
+==================================================
+20. EXPECTED 3C REFRESH
+==================================================
+
+Reconcile the final diff against the existing affected scope.
+
+Current expected baseline:
+
+67 equivalence
+
+12 protocol
+
+2 TOCTOU
+
+6 deadline/cleanup
+
+1 fixed-launch
+
+plus:
+
+new console/headless security controls
+
+source review
+
+candidate binding.
+
+Do not blindly rerun all 551 controls unless dependency closure requires it.
+
+==================================================
+21. NO MORE RESEARCH LOOPS
+==================================================
+
+Do not return:
+
+UNRESOLVED
+
+REQUIRES_DIFFERENT_PROOF
+
+LIFETIME_PROOF_INSUFFICIENT
+
+or another broad architecture task.
+
+This task is:
+
+IMPLEMENT
+→ SMOKE
+→ SECURITY VALIDATE
+→ REGRESS
+→ CERTIFY 3A.
+
+==================================================
+22. FINAL OUTCOMES
+==================================================
+
+Return only:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+or
+
+PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER
+
+A blocker must be an actual implementation/test/certification failure.
+
+==================================================
+23. FINAL REPORT
+==================================================
+
+Report:
+
+1. exact cleanup-rule correction,
+2. authority basis,
+3. production diff,
+4. wire smoke,
+5. security validation,
+6. regressions,
+7. new candidate,
+8. package/install,
+9. A-O results,
+10. receipt,
+11. Phase 3A status,
+12. commits/bindings,
+13. 3B refresh scope,
+14. 3C refresh scope,
+15. repository status,
+16. next action.
+
+No push.
+No tag.
+No Phase 3D.

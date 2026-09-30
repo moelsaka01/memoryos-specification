@@ -97,15 +97,10 @@ function Initialize-Native {
         @('GetFileInformationByHandle', [bool], [Type[]] @([Microsoft.Win32.SafeHandles.SafeFileHandle], [IntPtr])),
         @('GetFinalPathNameByHandleW', [uint32], [Type[]] @([Microsoft.Win32.SafeHandles.SafeFileHandle], [Text.StringBuilder], [uint32], [uint32])),
         @('GetFileType', [uint32], [Type[]] @([Microsoft.Win32.SafeHandles.SafeFileHandle])),
+        @('GetStdHandle', [IntPtr], [Type[]] @([int32])),
+        @('GetFileType', [uint32], [Type[]] @([IntPtr])),
         @('GetConsoleProcessList', [uint32], [Type[]] @([IntPtr], [uint32])),
-        @('GetConsoleWindow', [IntPtr], [Type[]] @()),
-        @('GetWindowThreadProcessId', [uint32], [Type[]] @([IntPtr], [uint32].MakeByRefType()), 'user32.dll'),
-        @('GetProcessId', [uint32], [Type[]] @([IntPtr])),
-        @('OpenProcess', [IntPtr], [Type[]] @([uint32], [bool], [uint32])),
-        @('QueryFullProcessImageNameW', [bool], [Type[]] @([IntPtr], [uint32], [Text.StringBuilder], [uint32].MakeByRefType())),
-        @('FreeConsole', [bool], [Type[]] @()),
-        @('WaitForSingleObject', [uint32], [Type[]] @([IntPtr], [uint32])),
-        @('CloseHandle', [bool], [Type[]] @([IntPtr]))
+        @('FreeConsole', [bool], [Type[]] @())
     )
     $dllConstructor = [Runtime.InteropServices.DllImportAttribute].GetConstructor([Type[]] @([string]))
     $fields = [Reflection.FieldInfo[]] @(
@@ -127,45 +122,26 @@ function Initialize-Native {
     Confirm-ConsoleQuiescence
 }
 function Confirm-ConsoleQuiescence {
+    # Standard handles are borrowed from this process, not newly owned handles.
+    # Only the fixed redirected product pipes admit the headless lifecycle path.
+    foreach ($selector in @(-10, -11, -12)) {
+        $standardHandle = $script:native::GetStdHandle($selector)
+        if ($standardHandle -eq [IntPtr]::Zero -or $standardHandle -eq [IntPtr]::new(-1) -or
+            $script:native::GetFileType($standardHandle) -ne 3) { Reject-Protocol 'MO1307_INTERNAL' }
+    }
     $buffer = [Runtime.InteropServices.Marshal]::AllocHGlobal(4)
-    $consoleHandle = [IntPtr]::Zero
     try {
         $count = $script:native::GetConsoleProcessList($buffer, 1)
         $nativeError = [Runtime.InteropServices.Marshal]::GetLastWin32Error()
         if ($count -eq 0 -and $nativeError -eq 6) { return }
         if ($count -ne 1 -or [Runtime.InteropServices.Marshal]::ReadInt32($buffer) -ne $PID) { Reject-Protocol 'MO1307_INTERNAL' }
-        # Bind the current console window's owner, never historical numeric PPID.
-        # Missing/headless windows are ambiguous and fail before request parsing.
-        $window = $script:native::GetConsoleWindow()
-        if ($window -eq [IntPtr]::Zero) { Reject-Protocol 'MO1307_INTERNAL' }
-        $owner = [uint32] 0
-        if ($script:native::GetWindowThreadProcessId($window, [ref] $owner) -eq 0 -or $owner -eq 0 -or $owner -eq $PID) { Reject-Protocol 'MO1307_INTERNAL' }
-        # Query and synchronize only: no process-termination capability is acquired.
-        $consoleHandle = $script:native::OpenProcess(0x101000, $false, $owner)
-        if ($consoleHandle -eq [IntPtr]::Zero -or $script:native::GetProcessId($consoleHandle) -ne $owner) { Reject-Protocol 'MO1307_INTERNAL' }
-        $image = [Text.StringBuilder]::new(512); $imageLength = [uint32] 512
-        if (-not $script:native::QueryFullProcessImageNameW($consoleHandle, 0, $image, [ref] $imageLength)) { Reject-Protocol 'MO1307_INTERNAL' }
-        $systemDirectory = [Environment]::GetFolderPath([Environment+SpecialFolder]::System)
-        if (-not [string]::Equals($image.ToString(), $systemDirectory + '\conhost.exe', [StringComparison]::OrdinalIgnoreCase)) { Reject-Protocol 'MO1307_INTERNAL' }
-        # A second current association, followed by a live-object check, closes
-        # discovery/open PID replacement without asserting historical ancestry.
-        $currentOwner = [uint32] 0
-        if ($script:native::GetConsoleWindow() -ne $window -or
-            $script:native::GetWindowThreadProcessId($window, [ref] $currentOwner) -eq 0 -or $currentOwner -ne $owner) { Reject-Protocol 'MO1307_INTERNAL' }
-        $count = $script:native::GetConsoleProcessList($buffer, 1)
-        if ($count -ne 1 -or [Runtime.InteropServices.Marshal]::ReadInt32($buffer) -ne $PID -or
-            $script:native::GetProcessId($consoleHandle) -ne $owner -or
-            $script:native::WaitForSingleObject($consoleHandle, 0) -ne 258) { Reject-Protocol 'MO1307_INTERNAL' }
+        # Membership is topology evidence only. Detach this helper without
+        # discovering, opening, terminating or claiming exit of any host process.
         if (-not $script:native::FreeConsole()) { Reject-Protocol 'MO1307_INTERNAL' }
-        # Detach only self and observe natural exit of the SAME held host object.
-        # A late joining client can make this fail closed, never authorize killing
-        # its console. No TerminateProcess or PID-based process kill is available.
-        if ($script:native::WaitForSingleObject($consoleHandle, 1000) -ne 0) { Reject-Protocol 'MO1307_INTERNAL' }
         $remaining = $script:native::GetConsoleProcessList($buffer, 1)
         $nativeError = [Runtime.InteropServices.Marshal]::GetLastWin32Error()
         if ($remaining -ne 0 -or $nativeError -ne 6) { Reject-Protocol 'MO1307_INTERNAL' }
     } finally {
-        if ($consoleHandle -ne [IntPtr]::Zero) { [void] $script:native::CloseHandle($consoleHandle) }
         [Runtime.InteropServices.Marshal]::FreeHGlobal($buffer)
     }
 }
@@ -337,14 +313,20 @@ function Invoke-Inspection($Request, $Roots) {
 }
 
 
-# Save redirected byte transports before detaching the private console. Every
-# valid response (including ERROR) proves owned-console quiescence. Startup
-# failure emits no frame and no diagnostic; parent treats exit as unconfirmed.
+# Save all redirected transports before self-detachment. A valid response proves
+# this helper's startup pipe/membership/console-absence checks, not host exit.
+# The supervisor separately requires process termination and complete pipe EOF.
+# Actual startup-security failure remains silent exit 22 without a frame.
 try {
     if ($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1 -or
         -not [Environment]::Is64BitProcess) { exit 22 }
     $stdin = [Console]::OpenStandardInput()
     $savedStdout = [Console]::OpenStandardOutput()
+    $savedStderr = [Console]::OpenStandardError()
+    if ([object]::ReferenceEquals($stdin, [IO.Stream]::Null) -or
+        [object]::ReferenceEquals($savedStdout, [IO.Stream]::Null) -or
+        [object]::ReferenceEquals($savedStderr, [IO.Stream]::Null) -or
+        -not $stdin.CanRead -or -not $savedStdout.CanWrite -or -not $savedStderr.CanWrite) { exit 22 }
     Initialize-Native
 } catch { exit 22 }
 
