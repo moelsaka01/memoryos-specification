@@ -129,6 +129,13 @@ are native values. Every chain component must share its checked drive volume.
 Every held handle is rechecked and its path is reopened for all-seven-field
 identity comparison before success. All handles close before the response.
 
+The [N15 native absence correction](../../../docs/mo1307-n15-correction.md)
+emits `CreateFileW` with one authoritative `DllImportAttribute` on `DefineMethod`,
+so its `SetLastError=true` takes effect on Windows PowerShell 5.1. The fixed
+entry point, Unicode/Winapi signature and safe-handle return are retained;
+the declared exact-spelling flag now takes effect. The other native bindings
+and all boundary predicates are unchanged.
+
 Native absence admits only `ERROR_FILE_NOT_FOUND` for the exact leaf beneath
 an already checked parent chain. Missing ancestors, access denial, sharing
 failures and ambiguous native failures never become absence. Existing output

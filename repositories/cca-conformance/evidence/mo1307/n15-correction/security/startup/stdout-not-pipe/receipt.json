@@ -1,0 +1,106 @@
+{
+  "name": "stdout-not-pipe",
+  "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+  "expectedExit": 22,
+  "accepted": false,
+  "result": "PASS",
+  "nativeProductHelper": false,
+  "realHostProof": false,
+  "events": [
+    {
+      "event": "stdin-finish",
+      "elapsedMs": 18.61620000000039
+    },
+    {
+      "event": "stdin-close",
+      "elapsedMs": 18.704900000000634
+    },
+    {
+      "event": "stderr-end",
+      "elapsedMs": 778.4044000000004
+    },
+    {
+      "event": "stdout-end",
+      "elapsedMs": 778.6229000000012
+    },
+    {
+      "event": "stdout-close",
+      "elapsedMs": 778.9573000000009
+    },
+    {
+      "event": "stderr-close",
+      "elapsedMs": 778.9780000000001
+    },
+    {
+      "event": "exit",
+      "elapsedMs": 790.2007000000003,
+      "code": 22,
+      "signal": null
+    }
+  ],
+  "pid": 21028,
+  "exitCode": 22,
+  "exitSignal": null,
+  "elapsedMs": 790.2536000000009,
+  "proof": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/security/startup/stdout-not-pipe/proof.json",
+    "byteLength": 573,
+    "sha256": "sha256:091b4d9ea8bf87389fcf713667d7065f86de10f86da6ed3b9c361482a84bc1dc"
+  },
+  "observed": {
+    "configuredErrorContext": null,
+    "nativeLastErrorSet": false,
+    "membershipCalls": 0,
+    "freeConsoleCalls": 0,
+    "kind": "MO1307ExtractedHeadlessStartupSimulation",
+    "scenario": "stdout-not-pipe",
+    "accepted": false,
+    "failure": "MO1307_INTERNAL",
+    "failureType": "System.InvalidOperationException",
+    "events": [
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -10
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          10
+        ]
+      },
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -11
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          11
+        ]
+      }
+    ],
+    "detached": false,
+    "productionFunctionUnmodified": true,
+    "nativeProcessOperationsPerformed": false,
+    "realHostIdentityProof": false
+  },
+  "closed": true,
+  "timedOut": false,
+  "cleanupExpired": false,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/security/startup/stdout-not-pipe/stdout.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/security/startup/stdout-not-pipe/stderr.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdoutBytes": 0,
+  "stderrBytes": 0
+}

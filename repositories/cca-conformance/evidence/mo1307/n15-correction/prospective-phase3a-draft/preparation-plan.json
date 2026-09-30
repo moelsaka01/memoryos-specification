@@ -1,0 +1,97 @@
+{
+  "kind": "MO1307N15FuturePhase3ADraft",
+  "status": "SCRATCH_ONLY_NOT_EXECUTED",
+  "candidate": null,
+  "worktree": "C:/m7n1",
+  "branch": "codex/mo1307-phase3a-n15",
+  "tools": "repositories/cca-conformance/tools/mo1307-phase3a-n15",
+  "evidence": "repositories/cca-conformance/evidence/mo1307/phase3a-n15",
+  "cache": ".cache/m7n1",
+  "validationRoot": "C:/m7fix",
+  "validationEvidence": "repositories/cca-conformance/evidence/mo1307/n15-correction",
+  "mandatoryValidation": {
+    "n15": 1,
+    "remainingSelectedRegressions": 106,
+    "totalSelectedRegressions": 107,
+    "nativeFilesystemCases": 35,
+    "nativeFilesystemHelperInvocations": 39,
+    "securityCategories": 19,
+    "toctou": 2
+  },
+  "activationRequired": {
+    "kind": "MO1307N15Phase3AActivation",
+    "status": "CANDIDATE_BOUND_AFTER_ALL_VALIDATION_PASS",
+    "candidate": null,
+    "packageTree": null,
+    "worktree": "C:/m7n1",
+    "branch": "codex/mo1307-phase3a-n15",
+    "validationManifest": "record(validation-source.json)",
+    "validationReceipts": [
+      "record(n15-correction/n15/receipt.json)",
+      "record(n15-correction/native-filesystem/receipt.json)",
+      "record(n15-correction/security/receipt.json)",
+      "record(n15-correction/regressions/receipt.json)",
+      "record(n15-correction/toctou/receipt.json)"
+    ],
+    "validationSupport": [
+      "record(n15-correction/correction-decision.json)",
+      "record(n15-correction/security-dependency-review.json)",
+      "record(n15-correction/native-binding-metadata/receipt.json)"
+    ],
+    "authorityBindings": [
+      "record(n15-correction/authorization.txt)",
+      "record(docs/mo1307-n15-correction.md)",
+      "record(final-headless/authorization.txt)",
+      "record(docs/mo1307-final-headless-correction-addendum.md)"
+    ]
+  },
+  "requiredEvidence": [
+    "activation.json",
+    "recovered-inventory.json",
+    "recovered-inventory.original.json.data",
+    "authority-inputs/**39",
+    "tooling-adaptation.json",
+    "prior-generation-binding.json",
+    "cleanup-authority-review.json",
+    "harness-review.json"
+  ],
+  "orders": {
+    "preparation": [
+      "activate exact candidate after all correction gatesPASS",
+      "prepare.mjs",
+      "method.mjs",
+      "complete25-file independent static review",
+      "campaign.mjs seal"
+    ],
+    "execution": [
+      "campaign.mjs run — A-O exactly once until first mandatory failure",
+      "campaign.mjs close"
+    ]
+  },
+  "limitsMs": {
+    "helper": 5000,
+    "aggregate": 20000,
+    "cli": 30000,
+    "apiWorker": 10000,
+    "cleanup": 2000
+  },
+  "H": "NOT_ESTABLISHED",
+  "epsilon": 0,
+  "performed": {
+    "candidate": false,
+    "worktree": false,
+    "package": false,
+    "installation": false,
+    "helper": false,
+    "tests": false,
+    "certification": false,
+    "phase3B": false,
+    "phase3C": false,
+    "phase3D": false
+  },
+  "notes": [
+    "Complete toolkit25-file ordered walk must equal independent review; manifest itself included by finalreview/seal.",
+    "The unexecuted old final-headless scratch remains untouched. Candidate placeholders are rejected by runtime preparation.",
+    "Parent owns activation/candidate. No historical outcome promotion or repeated N15 in the same validation count."
+  ]
+}

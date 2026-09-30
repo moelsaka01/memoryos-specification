@@ -1,0 +1,31 @@
+{
+  "kind": "MO1307N15PreflightOnlyHarnessCorrection",
+  "status": "FIRST_NATIVE_INVOCATION_STILL_PENDING",
+  "oldDriver": {
+    "path": "repositories/cca-conformance/tools/mo1307-n15-correction/reproduce.mjs",
+    "byteLength": 11885,
+    "sha256": "sha256:2887cb31d7900aba964d67df33d69b96f47502e5f706c7c9dff00e87a68c04b3"
+  },
+  "newDriver": {
+    "path": "repositories/cca-conformance/tools/mo1307-n15-correction/reproduce-native.mjs",
+    "byteLength": 12935,
+    "sha256": "sha256:24154d54a26102677cf6469d89a2bc8e20e9e32bf310d5d24f254ce13f158fd4"
+  },
+  "preservedPreflight": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/reproduction/receipt.json",
+    "byteLength": 2040,
+    "sha256": "sha256:d425de9fe7fe1734b03b8b48a9bc1f1f9300c70a0a9aa81c727a1f68004caa0c"
+  },
+  "actualNativeInvocationsBeforeCorrection": 0,
+  "nativeReproductionAllowanceRemaining": 1,
+  "preflightCause": "decodeHelperRequest returns frozen null-prototype records. deepStrictEqual against a newly constructed plain object incorrectly required a different prototype despite identical root keys/values.",
+  "correction": "Require exactly one root with exact id/path keys and exact scalar values; preserve decoder validation, request bytes, native helper copy, fixture, predicates, launch and bounds.",
+  "sourceOrFixtureModified": false,
+  "originalPreparationReusedByExactBytes": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/reproduction-preparation/preparation.json",
+    "byteLength": 33807,
+    "sha256": "sha256:6f4e8701bd301d39171dbb39c107b0e3116762223b099ab07c3ed9d6a0f2afb2"
+  },
+  "noRetryOfExecutedCase": true,
+  "oldReceiptPreserved": true
+}

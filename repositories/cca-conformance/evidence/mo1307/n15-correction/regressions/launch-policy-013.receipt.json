@@ -1,0 +1,68 @@
+{
+  "id": "launch-policy-013",
+  "suite": "launch-policy",
+  "file": "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs",
+  "testName": "LP11 public package exports cannot expose launch override",
+  "suiteNames": [
+    "LP01 exact trusted Windows PowerShell 5.1 executable",
+    "LP02 exact fixed argument ordering and Bypass value",
+    "LP03 fixed packaged helper path from module location",
+    "LP04 no encoded command, expression or shell authority",
+    "LP05 caller object cannot supply executable, script or policy",
+    "LP06 launch specification and nested authority are immutable",
+    "LP07 ambient PATH, system-root, policy and script poisons cannot select launch",
+    "LP08 actual transport calls spawn with fixed array and sanitized environment",
+    "LP09 CLI cannot select --script",
+    "LP09 CLI cannot select --execution-policy",
+    "LP09 CLI cannot select --powershell",
+    "LP10 no persistent policy or registry mutation code is introduced",
+    "LP11 public package exports cannot expose launch override"
+  ],
+  "sourceSuiteTests": 13,
+  "args": [
+    "--test",
+    "--test-reporter=tap",
+    "--test-concurrency=1",
+    "--test-name-pattern=^LP11 public package exports cannot expose launch override$",
+    "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs"
+  ],
+  "expectedTests": 1,
+  "outerGuardMs": 90000,
+  "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+  "pid": 17232,
+  "exitCode": 0,
+  "signal": null,
+  "error": null,
+  "elapsedMs": 2515.688399999999,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/regressions/launch-policy-013.stdout.txt",
+    "byteLength": 301,
+    "sha256": "sha256:42176456a9e0e19a1e415e00357e0cf8d365007d383f4b413f38ce39c33dbcea"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/regressions/launch-policy-013.stderr.txt",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "result": "PASS",
+  "tests": {
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "testNames": [
+    "LP11 public package exports cannot expose launch override"
+  ],
+  "selected": [
+    {
+      "status": "ok",
+      "name": "LP11 public package exports cannot expose launch override",
+      "directive": null
+    }
+  ],
+  "excludedRegistrations": [],
+  "passed": true
+}

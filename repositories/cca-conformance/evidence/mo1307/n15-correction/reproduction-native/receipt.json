@@ -1,0 +1,165 @@
+{
+  "kind": "MO1307N15OneReproductionReceipt",
+  "result": "BOUNDARY_FAILURE_CAPTURED",
+  "row": {
+    "result": "BOUNDARY_FAILURE_CAPTURED",
+    "invocations": 1,
+    "diagnosticOnly": true,
+    "events": [
+      {
+        "name": "stdinFinish",
+        "value": null,
+        "elapsedMs": 1344.4071000000004
+      },
+      {
+        "name": "stdinClose",
+        "value": null,
+        "elapsedMs": 1345.3870000000006
+      },
+      {
+        "name": "stdoutEnd",
+        "value": null,
+        "elapsedMs": 1939.683000000001
+      },
+      {
+        "name": "stderrEnd",
+        "value": null,
+        "elapsedMs": 1939.9084000000003
+      },
+      {
+        "name": "stderrClose",
+        "value": null,
+        "elapsedMs": 1940.072400000001
+      },
+      {
+        "name": "stdoutClose",
+        "value": null,
+        "elapsedMs": 1940.0849999999991
+      },
+      {
+        "name": "exit",
+        "value": {
+          "code": 0,
+          "signal": null
+        },
+        "elapsedMs": 1949.2554000000018
+      },
+      {
+        "name": "processClose",
+        "value": null,
+        "elapsedMs": 1949.287400000001
+      }
+    ],
+    "state": {
+      "stdinFinish": true,
+      "stdinClose": true,
+      "stdoutEnd": true,
+      "stdoutClose": true,
+      "stderrEnd": true,
+      "stderrClose": true,
+      "exit": true,
+      "processClose": true
+    },
+    "startedAt": "2026-09-30T16:24:27.343Z",
+    "pid": 22840,
+    "exitCode": 0,
+    "signal": null,
+    "elapsedMs": 1949.4324000000015,
+    "terminalReason": null,
+    "cleanupElapsedMs": null,
+    "totalBytes": {
+      "stdout": 257,
+      "stderr": 651
+    },
+    "response": {
+      "code": "MO1307_FILESYSTEM_BOUNDARY",
+      "files": [],
+      "kind": "MemoryOSReadinessHelperResponse",
+      "operation": "CHECK_OUTPUT",
+      "roots": [],
+      "sequence": 4,
+      "session": "0000000000000000000000000000000000000000000000000000000000000000",
+      "status": "ERROR",
+      "version": "2.0.0"
+    },
+    "diagnostic": {
+      "kind": "MO1307N15BoundaryFailure",
+      "code": "MO1307_FILESYSTEM_BOUNDARY",
+      "caller": "Assert-NativeAbsent",
+      "stack": [
+        [
+          "Reject-Protocol",
+          18
+        ],
+        [
+          "Assert-NativeAbsent",
+          306
+        ],
+        [
+          "Invoke-Inspection",
+          373
+        ],
+        [
+          "<ScriptBlock>",
+          510
+        ]
+      ],
+      "locals": {
+        "Path": "C:\\m7fix\\.cache\\mo1307\\phase1\\native-foundation-27340\\native-output",
+        "nativeError": 203,
+        "handleIsInvalid": true
+      },
+      "nativeErrorOwner": "Assert-NativeAbsent",
+      "nativeErrorMeaning": "Original caller-local cached error only; no diagnostic native error read",
+      "createFileSetLastError": false,
+      "exceptionConstruction": "Unchanged System.InvalidOperationException(ErrorCode) throw follows this capture",
+      "failureOnly": true
+    },
+    "sourceCallStack": [
+      {
+        "name": "Reject-Protocol",
+        "generatedLine": 18,
+        "sourceLine": null
+      },
+      {
+        "name": "Assert-NativeAbsent",
+        "generatedLine": 306,
+        "sourceLine": 234
+      },
+      {
+        "name": "Invoke-Inspection",
+        "generatedLine": 373,
+        "sourceLine": 301
+      },
+      {
+        "name": "<ScriptBlock>",
+        "generatedLine": 510,
+        "sourceLine": 438
+      }
+    ],
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/reproduction-native/stdout.bin",
+      "byteLength": 257,
+      "sha256": "sha256:fff1847390ac11e6f01e2c25934d042e3382a9ac17f3bab17c8fb2fb1c1ea00e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/reproduction-native/stderr.bin",
+      "byteLength": 651,
+      "sha256": "sha256:0f63c822a73d38ab984e0f9d31f4590a52f4ce1ec305066f469a80f20ca4edb5"
+    }
+  },
+  "failure": null,
+  "sourceUnchanged": true,
+  "fixturesUnchanged": true,
+  "candidate": null,
+  "productValidationPassed": false,
+  "certification": false,
+  "retries": 0,
+  "seal": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/reproduction-native/seal.json",
+    "byteLength": 38156,
+    "sha256": "sha256:b5ff86720ffdeacd6884f4f916e7506dbf600a29e68e9b48ecc6872af51b6110"
+  },
+  "scope": "One copied retained CHECK_OUTPUT request, same existing fixture parent, exact original source outside three reversible failure-observation additions. No product PASS or current candidate acceptance.",
+  "finishedAt": "2026-09-30T16:24:29.424Z"
+}

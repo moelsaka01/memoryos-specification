@@ -1,0 +1,131 @@
+{
+  "kind": "MO1307N15StoppedGenerationAudit",
+  "result": "PASS_PRESERVATION_AUDIT",
+  "outcome": "PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER",
+  "sourceIdentity": "sha256:6e0e5f1984b1de1b835879471c3858897ba30d3206fa504fb7f9a7aa2cfca690",
+  "sourceMembersVerified": 89,
+  "sealedInputsVerified": 735,
+  "prerequisitesVerified": 11,
+  "regressionRawOutputsVerified": 200,
+  "historicalPriorTaskFilesVerified": 446,
+  "existingTrackedAuthorityToolEvidenceTestChanges": [],
+  "firstMandatoryFailure": {
+    "id": "native-foundation-018",
+    "testName": "N17 native CLI evaluates and publishes exact integrated result",
+    "sourceLine": 250,
+    "observedProductExit": 21,
+    "expectedProductExit": 0,
+    "productCode": "MO1307_OUTPUT",
+    "productStage": "PUBLICATION",
+    "reference": null,
+    "testRunnerExit": 1,
+    "testRunnerSignal": null,
+    "testRunnerError": null,
+    "testDurationMs": 6770.5848,
+    "commandElapsedMs": 9543.097000000009,
+    "lowerLevelRuntimeBranch": "NOT_CAPTURED"
+  },
+  "staticFixtureFinding": {
+    "result": "UNDECLARED_CASE_ORDER_PRECONDITION_DEPENDENCY",
+    "attemptDefinition": "mo1307_phase1_native_test.mjs:27 per-process PID directory",
+    "missingSetup": "N17 lines243-250 does not create attempt before launching CLI; exact-name fresh-process selection excludes N15 and N16.",
+    "priorCreators": [
+      "runHelper creates attempt at line87",
+      "N15 creates children recursively at line207",
+      "later outputRoot creates attempt at line259"
+    ],
+    "noBeforeHookOrImportedTopLevelCreator": true,
+    "relationToObservedFailure": "Consistent with missing-parent publication refusal; inner CLI/test-process PID and helper frames were not retained, so precise runtime branch is not asserted.",
+    "notCorrectedOrRerun": true
+  },
+  "n15Classification": "N15_FILESYSTEM_BOUNDARY_DEFECT",
+  "validation": {
+    "n15": "PASS",
+    "nativeFilesystem": {
+      "passed": 35,
+      "failed": 0,
+      "invocations": 39
+    },
+    "security": {
+      "passed": 19,
+      "engineeringDoubleProcesses": 15
+    },
+    "regressions": {
+      "passed": 99,
+      "failed": 1,
+      "notRun": 7
+    },
+    "packageIntegrity": "PASS_89_MEMBERS_53_CONTRACT_ZERO_EXTERNAL_DEPENDENCIES",
+    "toctou": "NOT_RUN_2_CONTROLS"
+  },
+  "candidate": null,
+  "archive": null,
+  "installation": null,
+  "phase3A": "FAILED_INCOMPLETE",
+  "allAO": "NOT_RUN",
+  "newExecutionsAfterFailure": 0,
+  "retries": 0,
+  "bindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/validation-source.json",
+      "byteLength": 196945,
+      "sha256": "sha256:7f4d47dbeaaea587e89847a99b47b210aaee0312fc80ed08782ed3567212e2a8"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/correction-decision.json",
+      "byteLength": 22697,
+      "sha256": "sha256:87ccfc79e43a82f186c99d832a23b5af56e44b360ba4953ed043813d1c143c32"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/n15/receipt.json",
+      "byteLength": 5553,
+      "sha256": "sha256:07e9d8677de8394c8eb4d5e7ee49321ef511704f461ee38c2a52f0a9e0519227"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/native-filesystem/receipt.json",
+      "byteLength": 30331,
+      "sha256": "sha256:33c76fe6888f9f5a8ca5c2f03e0ae1cd315d600e97be1ef5b468211bea422033"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/security/receipt.json",
+      "byteLength": 98395,
+      "sha256": "sha256:2264ab99dffa42efe29bd6866936addd7f832ebf9fa2e7c010872f29d2a0f484"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/regressions/receipt.json",
+      "byteLength": 381429,
+      "sha256": "sha256:d5a1151761b04db8f42957a1a5c30d62224bcd9a3c1fb620e190051c1489df7f"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/generation-stopped.json",
+      "byteLength": 353,
+      "sha256": "sha256:6f314dd267ff18ac665ca7bca5782dbeb396888e7ecc7cd4bee9d7a95b26c734"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/regressions/native-foundation-018.receipt.json",
+      "byteLength": 3506,
+      "sha256": "sha256:7f821fdaa0bce07d05cce2a725f1ff08d6762501d61642d612ccada1f7e0f8d1"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/regressions/native-foundation-018.stdout.txt",
+      "byteLength": 979,
+      "sha256": "sha256:ffd6ea6fda2217bafa03936845e3c40b8489207bd11e86baa78dd873f39a45de"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/regressions/native-foundation-018.stderr.txt",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/future-3bc-refresh-requirements.json",
+      "byteLength": 72343,
+      "sha256": "sha256:9c8b4a85d2dfb59e12a6a52ba167209b22cb761eb57af35bea7a22e3d63cfda4"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/prospective-phase3a-draft/UNACTIVATED-DRAFT-STATUS.json",
+      "byteLength": 14520,
+      "sha256": "sha256:083346fd65a00be63263ce110540a4d6fe249c933fc45d552268f494e7556f6a"
+    }
+  ],
+  "auditedAt": "2026-09-30T16:51:42.664Z"
+}

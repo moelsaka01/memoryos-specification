@@ -1,0 +1,137 @@
+{
+  "id": "B",
+  "name": "sole-helper-membership",
+  "kind": "N15_SOURCE_GATE_AND_EXTRACTED_FUNCTION",
+  "result": "PASS",
+  "startedAt": "2026-09-30T16:38:00.966Z",
+  "startupCases": [
+    {
+      "name": "sole-helper",
+      "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+      "expectedExit": 0,
+      "accepted": true,
+      "result": "PASS",
+      "nativeProductHelper": false,
+      "realHostProof": false,
+      "events": [
+        {
+          "event": "stdin-finish",
+          "elapsedMs": 21.958399999999983
+        },
+        {
+          "event": "stdin-close",
+          "elapsedMs": 22.572799999999916
+        },
+        {
+          "event": "stdout-end",
+          "elapsedMs": 789.9743999999998
+        },
+        {
+          "event": "stderr-end",
+          "elapsedMs": 790.3131999999998
+        },
+        {
+          "event": "stderr-close",
+          "elapsedMs": 790.7695999999999
+        },
+        {
+          "event": "stdout-close",
+          "elapsedMs": 790.7940999999998
+        },
+        {
+          "event": "exit",
+          "elapsedMs": 799.8030999999999,
+          "code": 0,
+          "signal": null
+        }
+      ],
+      "pid": 7880,
+      "exitCode": 0,
+      "exitSignal": null,
+      "elapsedMs": 799.9702999999997,
+      "proof": {
+        "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/security/startup/sole-helper/proof.json",
+        "byteLength": 693,
+        "sha256": "sha256:322908d9c2ef2f2910dfa165ffcdd5db16f1d7436eae051c8728c78cf7c0210f"
+      },
+      "observed": {
+        "configuredErrorContext": null,
+        "nativeLastErrorSet": false,
+        "membershipCalls": 1,
+        "freeConsoleCalls": 1,
+        "kind": "MO1307ExtractedHeadlessStartupSimulation",
+        "scenario": "sole-helper",
+        "accepted": true,
+        "failure": null,
+        "failureType": null,
+        "events": [
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -10
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              10
+            ]
+          },
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -11
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              11
+            ]
+          },
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -12
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              12
+            ]
+          },
+          {
+            "name": "GetConsoleProcessList",
+            "arguments": [
+              1
+            ]
+          },
+          {
+            "name": "FreeConsole",
+            "arguments": []
+          }
+        ],
+        "detached": true,
+        "productionFunctionUnmodified": true,
+        "nativeProcessOperationsPerformed": false,
+        "realHostIdentityProof": false
+      },
+      "closed": true,
+      "timedOut": false,
+      "cleanupExpired": false,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/security/startup/sole-helper/stdout.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/security/startup/sole-helper/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdoutBytes": 0,
+      "stderrBytes": 0
+    }
+  ]
+}
