@@ -1,0 +1,40 @@
+{
+  "order": [
+    "retained-exact-slot5-former-failure",
+    "retained-exact-slot4-pass-comparator"
+  ],
+  "oneExecutionEach": true,
+  "retries": 0,
+  "warmups": 0,
+  "helperDeadlineMs": 5000,
+  "frozenDeadlineRelation": "elapsedMs < 5000",
+  "uninstrumentedCandidate": {
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 29153,
+    "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+  },
+  "exactRetainedRequests": [
+    {
+      "id": "retained-exact-slot5-former-failure",
+      "sequence": 5,
+      "input": {
+        "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/native-filesystem/003.request.bin",
+        "byteLength": 294,
+        "sha256": "sha256:71a9040815c137ac0980f9e985c1a03e23dfd57873f5940ba393f36d64113dad"
+      },
+      "expectedRequestSha256": "sha256:71a9040815c137ac0980f9e985c1a03e23dfd57873f5940ba393f36d64113dad"
+    },
+    {
+      "id": "retained-exact-slot4-pass-comparator",
+      "sequence": 4,
+      "input": {
+        "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/native-filesystem/002.request.bin",
+        "byteLength": 294,
+        "sha256": "sha256:9ebe7421a723770cf6950694b0fea840123c5916c1d66ca141ab37a81933ef29"
+      },
+      "expectedRequestSha256": "sha256:9ebe7421a723770cf6950694b0fea840123c5916c1d66ca141ab37a81933ef29"
+    }
+  ],
+  "stopRule": "If the first formerly failing witness fails or reaches 5000 ms, do not execute the comparator.",
+  "cacheState": "Ordinary OS cache state is uncontrolled; there is no cache flush, deliberate helper warmup, or replacement execution. Slot 5 is the first helper launch in this correction validation generation."
+}

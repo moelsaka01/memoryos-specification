@@ -129,6 +129,15 @@ are native values. Every chain component must share its checked drive volume.
 Every held handle is rechecked and its path is reopened for all-seven-field
 identity comparison before success. All handles close before the response.
 
+Every path admitted to native chain acquisition is lexically checked once at
+the closed request boundary: a root passes `Assert-Root`; a file path also passes
+`Assert-Relative` and the combined-length bound; inspection derives only a
+shorter parent or appends the fixed pending name under its existing bound.
+`Open-Chain` therefore consumes only those already checked, request-local paths
+and does not repeat the pure normalization and segment scan. All native opens,
+initial identities, held-handle rechecks, fresh reopens, final-path comparisons
+and seven-field equality checks remain fresh and unchanged.
+
 The [N15 native absence correction](../../../docs/mo1307-n15-correction.md)
 emits `CreateFileW` with one authoritative `DllImportAttribute` on `DefineMethod`,
 so its `SetLastError=true` takes effect on Windows PowerShell 5.1. The fixed

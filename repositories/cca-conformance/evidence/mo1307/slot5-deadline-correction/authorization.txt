@@ -1,0 +1,536 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3A
+
+SLOT-5 CHECK_OUTPUT DEADLINE CORRECTION
+THEN COMPLETE VALIDATION AND CERTIFICATION
+
+Current Phase 3A status:
+
+FAILED / INCOMPLETE
+
+Accepted Phase 3B remains:
+
+702c1b6381f6112a50ac844831d195275dac3350
+
+Accepted Phase 3C remains:
+
+b02fc0226a1a2d800185a02071674ca80bdf4a1d
+
+Do not rerun either accepted stream now.
+
+==================================================
+1. CLOSED ISSUES
+==================================================
+
+Treat these as CLOSED unless directly contradicted by new evidence:
+
+- headless cleanup authority correction
+- post-detach witness correction
+- initial-zero fail-closed behavior
+- N15 CreateFileW SetLastError defect
+- N17 fixture setup defect
+- J floating-point cleanup relation
+
+Do not reopen them.
+
+==================================================
+2. CURRENT FAILURE
+==================================================
+
+The current validation generation stopped at:
+
+native-filesystem
+case 2
+slot 5
+operation CHECK_OUTPUT
+
+Expected:
+
+normal bounded completion
+
+Observed:
+
+ETIMEDOUT
+SIGTERM
+zero response bytes
+zero stderr bytes
+
+Elapsed:
+
+5024.2634 ms
+
+Frozen helper whole-lifecycle deadline:
+
+5000 ms
+
+Difference:
+
+approximately 24.2634 ms over the deadline
+
+Only:
+
+1 filesystem case PASS
+1 filesystem case FAIL
+33 filesystem cases NOT_RUN
+
+3 / 39 helper invocations executed.
+
+TOCTOU controls remain NOT_RUN.
+
+No Phase 3A A-O certification started.
+
+==================================================
+3. OBJECTIVE
+==================================================
+
+Repair ONLY the concrete CHECK_OUTPUT deadline failure.
+
+This task is:
+
+ANALYZE EXACT PATH
+→ SELECT ONE TARGETED OPTIMIZATION
+→ IMPLEMENT
+→ VALIDATE EQUIVALENCE/SECURITY
+→ COMPLETE REGRESSIONS
+→ RUN PHASE 3A A-O
+
+Do not start another open-ended characterization campaign.
+
+Do not redesign the 5000-ms deadline.
+
+Do not invent replacement H.
+
+==================================================
+4. NO DEADLINE CHANGE
+==================================================
+
+The following remain frozen:
+
+helper lifecycle:
+5000 ms
+
+aggregate helper:
+20000 ms
+
+CLI:
+30000 ms
+
+API/worker:
+10000 ms
+
+cleanup:
+2000 ms
+
+H:
+NOT_ESTABLISHED
+
+Do not add:
+
+grace periods
+epsilon
+retry
+deadline extension
+special-case timeout forgiveness.
+
+5024.2634 ms is a failure.
+
+==================================================
+5. EXACT PATH ANALYSIS
+==================================================
+
+Inspect the exact failing slot-5 CHECK_OUTPUT path.
+
+Map only the operations that occur for this request:
+
+request decode
+
+root/path validation
+
+output path derivation
+
+native CreateFileW/open logic
+
+absence/presence classification
+
+final-path/identity checks where applicable
+
+metadata acquisition
+
+canonical response creation
+
+response serialization
+
+transport write
+
+helper settlement.
+
+Use existing retained evidence and static code first.
+
+Do not run a broad benchmark campaign.
+
+==================================================
+6. COMPARE AGAINST PASSING CHECK_OUTPUT
+==================================================
+
+Compare the failing case against:
+
+- N15 CHECK_OUTPUT cases that now PASS,
+- any earlier passing CHECK_OUTPUT/ABSENT observations,
+- any passing CHECK_OUTPUT/PRESENT case using the same helper path.
+
+Determine the exact additional work performed by the failing slot.
+
+Do not attribute the 24 ms excess to randomness without evidence.
+
+==================================================
+7. OPTIMIZATION SELECTION
+==================================================
+
+Select exactly ONE implementation-local optimization.
+
+It must:
+
+- preserve all filesystem security predicates,
+- preserve final-path/identity requirements,
+- preserve absence semantics,
+- preserve wire bytes,
+- preserve helper topology,
+- preserve cleanup,
+- preserve the 5000-ms lifecycle deadline.
+
+Examples of potentially valid optimization classes include:
+
+- remove duplicated path/root validation,
+- avoid repeated canonicalization already proven earlier in the same request,
+- reuse an already held/native observation where the contract permits reuse,
+- eliminate redundant metadata retrieval,
+- eliminate avoidable response construction work,
+- eliminate repeated fixed-string/canonicalization work.
+
+Do NOT remove a required fresh security observation.
+
+Do NOT cache across requests.
+
+==================================================
+8. REQUIRED DECISION
+==================================================
+
+Before editing, identify:
+
+1. exact function/file,
+2. redundant or avoidable work,
+3. why it is not security-authoritative work,
+4. expected mechanism of latency reduction,
+5. exact invariants preserved.
+
+Then implement the smallest correction.
+
+Do not combine multiple optimizations.
+
+==================================================
+9. PRODUCT CORRECTION IDENTITY
+==================================================
+
+This is a production correction if production bytes change.
+
+Create a new correction identity.
+
+Do not rewrite C3RB.
+
+Do not reuse any previous unaccepted candidate identity.
+
+Keep all prior failed attempts preserved.
+
+==================================================
+10. EQUIVALENCE VALIDATION
+==================================================
+
+Before performance validation, prove:
+
+exact CHECK_OUTPUT response equivalence
+
+exact error mapping
+
+exact ABSENT/PRESENT semantics
+
+exact canonical bytes
+
+unchanged filesystem boundary rejection
+
+unchanged final-path behavior
+
+unchanged TOCTOU requirements
+
+unchanged helper protocol.
+
+If any equivalence/security check fails:
+
+STOP.
+
+==================================================
+11. BOUNDED PERFORMANCE VALIDATION
+==================================================
+
+After equivalence passes, run a very small finite witness.
+
+Do NOT characterize distributions.
+
+Use exactly:
+
+- the previously failing CHECK_OUTPUT case,
+- one representative passing CHECK_OUTPUT case.
+
+One execution each.
+
+No retries.
+
+No warmup substitution.
+
+The purpose is only to verify that the targeted correction materially affects the intended path and still satisfies the 5000-ms product limit.
+
+If the formerly failing case still exceeds 5000 ms:
+
+STOP.
+
+Do not start another optimization chain automatically.
+
+==================================================
+12. FILESYSTEM / TOCTOU VALIDATION
+==================================================
+
+If bounded validation passes:
+
+run the complete native filesystem suite.
+
+Require:
+
+35 / 35 PASS
+
+Then run both TOCTOU controls.
+
+Require:
+
+2 / 2 PASS
+
+Preserve the N15 SetLastError correction.
+
+Preserve all boundary negatives.
+
+==================================================
+13. COMPLETE REGRESSION GENERATION
+==================================================
+
+If filesystem and TOCTOU pass:
+
+run a NEW coherent validation generation for the final candidate.
+
+Execute the complete required regression inventory.
+
+Do not promote historical PASS rows.
+
+Include:
+
+107 regression callbacks
+
+publication/finalization
+
+protocol
+
+deadline/cancellation
+
+cleanup/topology
+
+filesystem
+
+TOCTOU
+
+startup/security
+
+package integrity.
+
+At first mandatory failure:
+
+STOP.
+
+==================================================
+14. CREATE FINAL CANDIDATE
+==================================================
+
+If all validation passes:
+
+create the new candidate identity.
+
+Bind exact:
+
+production tree
+
+helper
+
+transport if changed
+
+README/spec
+
+distribution manifest
+
+SBOM
+
+89 production members
+
+headless authority
+
+N15 correction
+
+N17 correction
+
+slot-5 deadline correction
+
+security validation
+
+regression validation.
+
+==================================================
+15. PHASE 3A CERTIFICATION
+==================================================
+
+Immediately run a fresh complete Phase 3A generation.
+
+Fresh isolated worktree.
+
+Fresh package.
+
+Fresh offline installation.
+
+Verify installed members.
+
+Seal A-O.
+
+Execute once from A through O.
+
+No retries.
+
+No historical PASS promotion.
+
+==================================================
+16. A-O
+==================================================
+
+A
+MO-1306 evaluate / verify / API
+
+B
+READY
+
+C
+NOT_READY
+
+D
+COULD_NOT_EVALUATE
+
+E
+REST
+
+F
+seven human decisions
+
+G
+complete supplied-tag inventory
+
+H
+helper deadline/cancellation
+
+I
+worker deadline/cancellation
+
+J
+cleanup/process topology
+
+K
+finalization
+
+L
+filesystem/native controls
+
+M
+environment isolation
+
+N
+byte determinism
+
+O
+final MO-1306 confirmation
+
+==================================================
+17. SUCCESS
+==================================================
+
+If all A-O pass:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+Create:
+
+accepted receipt
+
+accepted evidence commit
+
+candidate binding
+
+Phase 3D handoff input.
+
+Do not start Phase 3D.
+
+==================================================
+18. AFTER PHASE 3A ACCEPTANCE
+==================================================
+
+Return the exact candidate.
+
+Then we will run, in parallel:
+
+Phase 3B scoped refresh
+
+Phase 3C scoped refresh.
+
+Existing accepted C3RB 3B/3C receipts remain historical accepted evidence.
+
+==================================================
+19. FAILURE
+==================================================
+
+If any mandatory correction validation, regression, or A-O step fails:
+
+return:
+
+PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER
+
+with the exact first failure.
+
+Do not launch another investigation automatically.
+
+==================================================
+20. FINAL REPORT
+==================================================
+
+Report:
+
+1. exact slot-5 cause,
+2. selected optimization,
+3. production diff,
+4. equivalence/security result,
+5. bounded performance witness,
+6. filesystem result,
+7. TOCTOU result,
+8. complete regression result,
+9. final candidate identity,
+10. package/install identity,
+11. A-O results,
+12. Phase 3A receipt/status,
+13. commits/bindings,
+14. exact 3B refresh scope,
+15. exact 3C refresh scope,
+16. repository status,
+17. next action.
+
+No push.
+No tag.
+No Phase 3D.

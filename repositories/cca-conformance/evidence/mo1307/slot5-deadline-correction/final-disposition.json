@@ -1,0 +1,117 @@
+{
+  "schema": "memoryos.mo1307.slot5-deadline-correction-disposition.v1",
+  "recordedAt": "2026-09-30T23:45:38.6059311+04:00",
+  "status": "PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER",
+  "firstMandatoryFailure": {
+    "stage": "native-filesystem",
+    "caseIndex": 15,
+    "case": "missing leaf is INPUT rather than absent success",
+    "invocationIndex": "018",
+    "operation": "READ_SET",
+    "sequence": 3,
+    "expected": "ERROR/MO1307_INPUT within the frozen 5000 ms whole-helper lifecycle deadline",
+    "observed": {
+      "durationMs": 5021.030400000003,
+      "exitCode": null,
+      "signal": "SIGTERM",
+      "error": "ETIMEDOUT",
+      "requestBytes": 370,
+      "responseBytes": 0,
+      "stderrBytes": 0,
+      "requestSha256": "bc7fc31df72889016b27af48de1693cddadf3181d2f763d78d1ddec73b24c5ee",
+      "responseSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "classification": "WHOLE_HELPER_LIFECYCLE_DID_NOT_SETTLE_BEFORE_5000_MS",
+    "stageLocalization": "NOT_ESTABLISHED",
+    "retryCount": 0,
+    "receipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/slot5-deadline-correction/native-filesystem/receipt.json",
+      "sha256": "da4a0885677dfc538f3250950594fc19341ebb56c627ce07f4bbcd9ba10ea536"
+    },
+    "stop": {
+      "path": "repositories/cca-conformance/evidence/mo1307/slot5-deadline-correction/generation-stopped.json",
+      "sha256": "4cf451bb529198e2bb852430fbe660b2e686e39ab3204a8a5a51960051b6972d"
+    }
+  },
+  "correction": {
+    "baseCommit": "f1a78f64c13ad4ff06b8d31dc923331ad46ffe96",
+    "sourceIdentity": "sha256:8ade4e1b48b1cb4ab990462a2d40a97507a9800dda6c3cab3aded161573d440f",
+    "validationSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/slot5-deadline-correction/validation-source.json",
+      "sha256": "bddc52e472f8847f9f2e511804e6a746c4b951455bcfeae63655a1ebab73d3ab"
+    },
+    "optimization": "Remove the duplicate pure lexical Assert-Root pass at the closed Open-Chain boundary.",
+    "productionMembersChanged": [
+      {
+        "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "sha256": "97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+      },
+      {
+        "path": "repositories/memoryos-readiness/helpers/README.md",
+        "sha256": "9f890d617c48e0a92bcb4ef9e1186da1134d185989342b79eeda61a32c8a99aa"
+      },
+      {
+        "path": "repositories/memoryos-readiness/distribution-manifest.json",
+        "sha256": "40f4035e255f3cfc7b06d8805627451718bccf5f83ffb487768d181842fdd0d3"
+      },
+      {
+        "path": "repositories/memoryos-readiness/sbom.spdx.json",
+        "sha256": "2b952cc7f4c57988644b3e4be32a0a97dfb0834ad024a396c645549faff71287"
+      }
+    ],
+    "candidateIdentity": null,
+    "candidateCreated": false
+  },
+  "completedGates": {
+    "equivalenceSecurity": {
+      "result": "PASS",
+      "rows": 5,
+      "helperExecutions": 0,
+      "receiptSha256": "d49ba067010739aa9875110fa17e1f07f285b9fc2fdd1c291d52b4b2487d9743"
+    },
+    "boundedPerformance": {
+      "result": "PASS",
+      "executions": 2,
+      "retries": 0,
+      "warmups": 0,
+      "slot5Ms": 1649.1446,
+      "slot4Ms": 943.1091000000001,
+      "receiptSha256": "78b0c70d1f524c3ac74cb21e1f8938d1b5b1161e99ed1f7bf9f1611d277da92f"
+    },
+    "nativeFilesystem": {
+      "result": "FAIL",
+      "passed": 14,
+      "failed": 1,
+      "notRun": 20,
+      "helperInvocations": 18,
+      "expectedCases": 35,
+      "expectedHelperInvocations": 39
+    }
+  },
+  "notRun": {
+    "remainingNativeFilesystemCases": 20,
+    "remainingNativeFilesystemInvocations": 21,
+    "toctouControls": 2,
+    "freshRegressionCallbacks": 107,
+    "freshSecurityCategories": 19,
+    "coherentPackageIntegrity": true,
+    "candidateCreation": true,
+    "phase3ACertificationAO": true,
+    "phase3BRefresh": true,
+    "phase3CRefresh": true,
+    "phase3D": true
+  },
+  "preservedHistoricalAcceptance": {
+    "phase3B": "702c1b6381f6112a50ac844831d195275dac3350",
+    "phase3C": "b02fc0226a1a2d800185a02071674ca80bdf4a1d"
+  },
+  "prohibitedActionsObserved": {
+    "historicalPassPromotion": false,
+    "retryUntilPass": false,
+    "deadlineChange": false,
+    "push": false,
+    "tag": false,
+    "phase3DStarted": false
+  },
+  "nextAction": "A separately authorized task must decide how to address the newly exposed READ_SET missing-leaf lifecycle deadline failure. This stopped generation cannot be resumed or retried."
+}

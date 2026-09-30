@@ -197,10 +197,9 @@ function Read-Identity($Handle, [string] $Path, [bool] $Directory) {
         $observed = $final.ToString()
         if (-not $observed.StartsWith('\\?\', [StringComparison]::Ordinal)) { Reject-Protocol 'MO1307_FILESYSTEM_BOUNDARY' }
         $observed = $observed.Substring(4)
-        # Request decoding and the caller validate the full expected path before
-        # Open-Chain constructs its component paths. Those immutable strings
-        # remain in the request-local chain entries through both held-handle and
-        # fresh-handle checks.
+        # Open-Chain validates the full expected path before constructing its
+        # component paths. Those immutable strings remain in the request-local
+        # chain entries through both held-handle and fresh-handle checks.
         # Equality to that validated path also proves the newly retrieved final
         # path's lexical boundary; do not repeat pure segment parsing here.
         # Native final-path retrieval and this comparison remain fresh each time.
@@ -215,6 +214,7 @@ function Assert-SameIdentity($Before, $After) {
     }
 }
 function Open-Chain([string] $Path, [bool] $Directory, [bool] $InputLeaf = $false) {
+    Assert-Root $Path
     $paths = [Collections.Generic.List[string]]::new()
     $paths.Add($Path.Substring(0, 3))
     if ($Path.Length -gt 3) {

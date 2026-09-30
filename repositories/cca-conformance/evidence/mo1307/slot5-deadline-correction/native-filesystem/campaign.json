@@ -1,0 +1,90 @@
+{
+  "attemptName": "slot5-deadline-correction-native-filesystem",
+  "source": {
+    "path": "repositories/cca-conformance/evidence/mo1307/slot5-deadline-correction/validation-source.json",
+    "byteLength": 46929,
+    "sha256": "sha256:bddc52e472f8847f9f2e511804e6a746c4b951455bcfeae63655a1ebab73d3ab"
+  },
+  "sourceIdentity": "sha256:8ade4e1b48b1cb4ab990462a2d40a97507a9800dda6c3cab3aded161573d440f",
+  "componentOrigin": {
+    "commit": "defe93989efc6501b1a730b82e79e705884b269b",
+    "path": "repositories/cca-conformance/tools/mo1307-phase2c-final-native/helper-filesystem.mjs"
+  },
+  "helperSha256": "97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127",
+  "policy": "Finite predeclared ordered tests; stop on first unexpected result; preserve every invocation; no automatic retry.",
+  "cases": [
+    "native READ_SET same-handle bytes and seven-field identity",
+    "native CHECK_OUTPUT slots4/5 full stable drive-parent chains",
+    "native INSPECT_OUTPUT_ROOT and CHECK_STAGE_ROOT stable full chain",
+    "native INSPECT_PENDING and CHECK_FINALIZATION stable full chain/final absence",
+    "existing output rejected by native absence",
+    "existing final rejected by native absence",
+    "changed pending identity observed natively",
+    "existing absolute target outside the declared input root rejected without read",
+    "traversal native request rejection",
+    "ADS native request rejection",
+    "drive-relative native request rejection",
+    "UNC native request rejection",
+    "device native request rejection",
+    "missing ancestor rejected",
+    "missing leaf is INPUT rather than absent success",
+    "directory used as file rejected",
+    "hardlinked input rejected",
+    "file symlink rejected",
+    "directory symlink ancestor rejected",
+    "junction ancestor rejected",
+    "2MiB read and canonical base64 chunks within fixed deadline",
+    "per-file decoded cap rejection",
+    "existing pending exclusive creation refuses overwrite",
+    "existing native short alias rejected for wrong final handle path",
+    "wrong version rejects",
+    "wrong session rejects",
+    "wrong sequence rejects",
+    "wrong operation rejects",
+    "unknown field rejects",
+    "duplicate key rejects",
+    "noncanonical body rejects",
+    "truncated frame rejects",
+    "extra frame rejects",
+    "trailing bytes rejects",
+    "oversized request rejects"
+  ],
+  "shortAlias": {
+    "alias": "C:\\PROGRA~1",
+    "canonicalPath": "C:\\Program Files",
+    "applicable": true,
+    "reason": "DISTINCT_EXISTING_ALIAS"
+  },
+  "expectedHelperInvocations": 39,
+  "timeoutMs": 5000,
+  "responseBytes": 16777216,
+  "nativeWindowsOnly": true,
+  "launch": {
+    "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\m7fix\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+    ],
+    "options": {
+      "cwd": "C:\\m7fix\\repositories\\memoryos-readiness\\",
+      "env": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true,
+      "detached": false,
+      "shell": false,
+      "stdio": [
+        "pipe",
+        "pipe",
+        "pipe"
+      ]
+    }
+  },
+  "launchSourceSha256": "e320a36d203a4635e13930663a7f075a064c2211e753700da4fff8ae81e477a1"
+}
