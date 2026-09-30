@@ -1,0 +1,150 @@
+{
+  "kind": "MO1307HeadlessSecurityMatrix",
+  "candidate": null,
+  "candidateStatus": "NOT_YET_CANDIDATE",
+  "once": true,
+  "stopOnFirstUnexpectedFailure": true,
+  "retry": false,
+  "additionalRealProductHelpers": 0,
+  "limits": {
+    "helperMs": 5000,
+    "aggregateMs": 20000,
+    "cliMs": 30000,
+    "apiWorkerMs": 10000,
+    "cleanupMs": 2000,
+    "nativeWaitWhereApplicableMs": 1000,
+    "stderrBytes": 4096
+  },
+  "scope": {
+    "A_B": "One preceding actual minimum-wire smoke; no replay. A valid production frame establishes that the startup gate accepted either console absence or sole membership followed by self-detach; it does not independently identify which branch ran. Sole membership branch behavior is separately exercised with an exact-function double. No host-object proof.",
+    "nativeDoubles": "Exact extracted Confirm-ConsoleQuiescence function; deterministic substituted native returns. This is branch validation, not real OS ownership/host-termination proof.",
+    "transportDoubles": "Production transport and supervisor with in-memory child/stream doubles and injected monotonic clock; no OS process or real-time scheduling claim.",
+    "host": "No host PID discovery, process open, or termination authority exists; do not claim conhost exit."
+  },
+  "items": [
+    {
+      "id": "A",
+      "name": "normal-headless-startup",
+      "kind": "prior-real-smoke",
+      "cases": []
+    },
+    {
+      "id": "B",
+      "name": "sole-helper-membership",
+      "kind": "prior-real-smoke-and-extracted-function",
+      "cases": [
+        "sole-helper",
+        "no-console"
+      ]
+    },
+    {
+      "id": "C",
+      "name": "extra-client-refusal",
+      "kind": "extracted-function",
+      "cases": [
+        "extra-client"
+      ]
+    },
+    {
+      "id": "D",
+      "name": "membership-overflow-refusal",
+      "kind": "extracted-function",
+      "cases": [
+        "overflow"
+      ]
+    },
+    {
+      "id": "E",
+      "name": "membership-api-failure",
+      "kind": "extracted-function",
+      "cases": [
+        "initial-list-error"
+      ]
+    },
+    {
+      "id": "F",
+      "name": "no-speculative-host-termination",
+      "kind": "static-extracted-native-imports",
+      "cases": []
+    },
+    {
+      "id": "G",
+      "name": "wrong-or-ambiguous-owner-no-termination",
+      "kind": "static-no-host-authority-and-extracted-function",
+      "cases": [
+        "unrelated-sole-client"
+      ]
+    },
+    {
+      "id": "H",
+      "name": "helper-crash",
+      "kind": "production-transport-double",
+      "cases": [
+        "crash"
+      ]
+    },
+    {
+      "id": "I",
+      "name": "helper-timeout",
+      "kind": "production-transport-double",
+      "cases": [
+        "timeout"
+      ]
+    },
+    {
+      "id": "J",
+      "name": "late-output-cannot-restore-success",
+      "kind": "production-transport-double",
+      "cases": [
+        "late-output"
+      ]
+    },
+    {
+      "id": "K",
+      "name": "pipe-closure",
+      "kind": "production-transport-and-startup-doubles",
+      "cases": [
+        "delayed-pipe-close",
+        "stdin-invalid",
+        "stdout-invalid",
+        "stderr-invalid",
+        "stdin-not-pipe",
+        "stdout-not-pipe",
+        "stderr-not-pipe"
+      ]
+    },
+    {
+      "id": "L",
+      "name": "final-helper-quiescence",
+      "kind": "production-transport-and-startup-doubles",
+      "cases": [
+        "quiescence",
+        "detach-failure",
+        "final-console-present",
+        "final-absence-wrong-error"
+      ]
+    },
+    {
+      "id": "M",
+      "name": "worker-non-overlap",
+      "kind": "production-supervisor-double",
+      "cases": [
+        "worker-overlap"
+      ]
+    },
+    {
+      "id": "N",
+      "name": "silent-exit22",
+      "kind": "retained-fault-double-receipts",
+      "cases": []
+    },
+    {
+      "id": "O",
+      "name": "unchanged-deadlines",
+      "kind": "production-supervisor-double-and-constants",
+      "cases": [
+        "deadline-boundaries"
+      ]
+    }
+  ]
+}

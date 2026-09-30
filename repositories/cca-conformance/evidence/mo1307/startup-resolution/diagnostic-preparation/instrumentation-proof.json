@@ -1,0 +1,644 @@
+{
+  "kind": "MO1307FullStartupTraceInstrumentationProof",
+  "result": "PASS",
+  "reversibleAdditions": true,
+  "source": {
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 27901,
+    "sha256": "sha256:158a4008131ede42458ba60a8166e63abad180443031ea05bf75c3180a2ad846"
+  },
+  "generator": {
+    "path": "repositories/cca-conformance/tools/mo1307-startup-resolution/instrument.mjs",
+    "byteLength": 24956,
+    "sha256": "sha256:f3c97c7844538eb86d05f22119a29a41aaead86eeeb44bb5c7296138ce954fef"
+  },
+  "diagnosticCopy": {
+    "path": "repositories/cca-conformance/evidence/mo1307/startup-resolution/diagnostic-preparation/instrumented.ps1",
+    "byteLength": 39072,
+    "sha256": "sha256:23e91ad663c1b6159106e8446ec5011da2aa8052772e3b704130658801601802"
+  },
+  "inverseSha256": "sha256:158a4008131ede42458ba60a8166e63abad180443031ea05bf75c3180a2ad846",
+  "exactInverseEquality": true,
+  "unchangedOutsideSelectedRegions": true,
+  "ids": [
+    {
+      "id": "T007.1",
+      "operation": "AssemblyName construction",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T007.2",
+      "operation": "Dynamic assembly construction",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T007.3",
+      "operation": "Dynamic module construction",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T007.4",
+      "operation": "Native type builder construction",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T009.1",
+      "operation": "DllImport constructor resolution",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T008",
+      "operation": "Create native type",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T009.0",
+      "operation": "Construct eight fixed signature definitions",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T009.2",
+      "operation": "Resolve DllImport field SetLastError",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T009.3",
+      "operation": "Resolve DllImport field ExactSpelling",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T009.4",
+      "operation": "Resolve DllImport field CharSet",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T009.11",
+      "operation": "Select fixed library and define PInvoke method for CreateFileW",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 1
+    },
+    {
+      "id": "T009.21",
+      "operation": "Select fixed library and define PInvoke method for GetFileInformationByHandle",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 2
+    },
+    {
+      "id": "T009.31",
+      "operation": "Select fixed library and define PInvoke method for GetFinalPathNameByHandleW",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 3
+    },
+    {
+      "id": "T009.41",
+      "operation": "Select fixed library and define PInvoke method for GetFileType(SafeFileHandle)",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 4
+    },
+    {
+      "id": "T009.51",
+      "operation": "Select fixed library and define PInvoke method for GetStdHandle",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 5
+    },
+    {
+      "id": "T009.61",
+      "operation": "Select fixed library and define PInvoke method for GetFileType(IntPtr)",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 6
+    },
+    {
+      "id": "T009.71",
+      "operation": "Select fixed library and define PInvoke method for GetConsoleProcessList",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 7
+    },
+    {
+      "id": "T009.81",
+      "operation": "Select fixed library and define PInvoke method for FreeConsole",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 8
+    },
+    {
+      "id": "T009.12",
+      "operation": "Set PreserveSig implementation flags for CreateFileW",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 1
+    },
+    {
+      "id": "T009.22",
+      "operation": "Set PreserveSig implementation flags for GetFileInformationByHandle",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 2
+    },
+    {
+      "id": "T009.32",
+      "operation": "Set PreserveSig implementation flags for GetFinalPathNameByHandleW",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 3
+    },
+    {
+      "id": "T009.42",
+      "operation": "Set PreserveSig implementation flags for GetFileType(SafeFileHandle)",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 4
+    },
+    {
+      "id": "T009.52",
+      "operation": "Set PreserveSig implementation flags for GetStdHandle",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 5
+    },
+    {
+      "id": "T009.62",
+      "operation": "Set PreserveSig implementation flags for GetFileType(IntPtr)",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 6
+    },
+    {
+      "id": "T009.72",
+      "operation": "Set PreserveSig implementation flags for GetConsoleProcessList",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 7
+    },
+    {
+      "id": "T009.82",
+      "operation": "Set PreserveSig implementation flags for FreeConsole",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 8
+    },
+    {
+      "id": "T009.13",
+      "operation": "Construct DllImport attribute for CreateFileW",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 1
+    },
+    {
+      "id": "T009.23",
+      "operation": "Construct DllImport attribute for GetFileInformationByHandle",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 2
+    },
+    {
+      "id": "T009.33",
+      "operation": "Construct DllImport attribute for GetFinalPathNameByHandleW",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 3
+    },
+    {
+      "id": "T009.43",
+      "operation": "Construct DllImport attribute for GetFileType(SafeFileHandle)",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 4
+    },
+    {
+      "id": "T009.53",
+      "operation": "Construct DllImport attribute for GetStdHandle",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 5
+    },
+    {
+      "id": "T009.63",
+      "operation": "Construct DllImport attribute for GetFileType(IntPtr)",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 6
+    },
+    {
+      "id": "T009.73",
+      "operation": "Construct DllImport attribute for GetConsoleProcessList",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 7
+    },
+    {
+      "id": "T009.83",
+      "operation": "Construct DllImport attribute for FreeConsole",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 8
+    },
+    {
+      "id": "T009.14",
+      "operation": "Attach DllImport attribute for CreateFileW",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 1
+    },
+    {
+      "id": "T009.24",
+      "operation": "Attach DllImport attribute for GetFileInformationByHandle",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 2
+    },
+    {
+      "id": "T009.34",
+      "operation": "Attach DllImport attribute for GetFinalPathNameByHandleW",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 3
+    },
+    {
+      "id": "T009.44",
+      "operation": "Attach DllImport attribute for GetFileType(SafeFileHandle)",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 4
+    },
+    {
+      "id": "T009.54",
+      "operation": "Attach DllImport attribute for GetStdHandle",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 5
+    },
+    {
+      "id": "T009.64",
+      "operation": "Attach DllImport attribute for GetFileType(IntPtr)",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 6
+    },
+    {
+      "id": "T009.74",
+      "operation": "Attach DllImport attribute for GetConsoleProcessList",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 7
+    },
+    {
+      "id": "T009.84",
+      "operation": "Attach DllImport attribute for FreeConsole",
+      "status": "INSTRUMENTED",
+      "definitionOrdinal": 8
+    },
+    {
+      "id": "T015.1a",
+      "operation": "GetStdHandle for stdin",
+      "status": "INSTRUMENTED",
+      "selector": -10
+    },
+    {
+      "id": "T015.1b",
+      "operation": "Zero-handle guard for stdin",
+      "status": "INSTRUMENTED",
+      "selector": -10
+    },
+    {
+      "id": "T015.1c",
+      "operation": "Invalid-minus-one guard for stdin",
+      "status": "INSTRUMENTED",
+      "selector": -10
+    },
+    {
+      "id": "T015.1d",
+      "operation": "GetFileType pipe guard for stdin",
+      "status": "INSTRUMENTED",
+      "selector": -10
+    },
+    {
+      "id": "T015.2a",
+      "operation": "GetStdHandle for stdout",
+      "status": "INSTRUMENTED",
+      "selector": -11
+    },
+    {
+      "id": "T015.2b",
+      "operation": "Zero-handle guard for stdout",
+      "status": "INSTRUMENTED",
+      "selector": -11
+    },
+    {
+      "id": "T015.2c",
+      "operation": "Invalid-minus-one guard for stdout",
+      "status": "INSTRUMENTED",
+      "selector": -11
+    },
+    {
+      "id": "T015.2d",
+      "operation": "GetFileType pipe guard for stdout",
+      "status": "INSTRUMENTED",
+      "selector": -11
+    },
+    {
+      "id": "T015.3a",
+      "operation": "GetStdHandle for stderr",
+      "status": "INSTRUMENTED",
+      "selector": -12
+    },
+    {
+      "id": "T015.3b",
+      "operation": "Zero-handle guard for stderr",
+      "status": "INSTRUMENTED",
+      "selector": -12
+    },
+    {
+      "id": "T015.3c",
+      "operation": "Invalid-minus-one guard for stderr",
+      "status": "INSTRUMENTED",
+      "selector": -12
+    },
+    {
+      "id": "T015.3d",
+      "operation": "GetFileType pipe guard for stderr",
+      "status": "INSTRUMENTED",
+      "selector": -12
+    },
+    {
+      "id": "T015",
+      "operation": "Invoke current pipe/membership/self-detach startup function",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T010",
+      "operation": "Allocate four-byte native membership buffer",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T011",
+      "operation": "Initial membership call",
+      "status": "INSTRUMENTED",
+      "native": true
+    },
+    {
+      "id": "T018",
+      "operation": "Post-detach membership call",
+      "status": "INSTRUMENTED",
+      "native": true
+    },
+    {
+      "id": "T012",
+      "operation": "Reuse immediately captured membership result and Win32 error",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T019",
+      "operation": "Reuse immediately captured membership result and Win32 error",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T013.1",
+      "operation": "Native no-console absence branch",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T013.2",
+      "operation": "Sole membership count guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T014",
+      "operation": "Read sole member and require self PID",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T016",
+      "operation": "Decision to detach current helper after sole membership passes",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T017",
+      "operation": "Self-detach result",
+      "status": "INSTRUMENTED",
+      "native": true
+    },
+    {
+      "id": "T020.1",
+      "operation": "Final membership count must be zero",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T020.2",
+      "operation": "Final absence error must be six",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T021",
+      "operation": "No owned native process handles exist; standard handles are borrowed and never closed",
+      "status": "NOT_APPLICABLE"
+    },
+    {
+      "id": "T022",
+      "operation": "Free four-byte membership buffer",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T002.1",
+      "operation": "PowerShell major version",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T002.2",
+      "operation": "PowerShell minor version",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T003",
+      "operation": "64-bit process architecture",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T004",
+      "operation": "Acquire managed stdin",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T005",
+      "operation": "Acquire managed stdout",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T006.1",
+      "operation": "Acquire managed stderr",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T006.2",
+      "operation": "stdin Stream.Null guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T006.3",
+      "operation": "stdout Stream.Null guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T006.4",
+      "operation": "stderr Stream.Null guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T006.5",
+      "operation": "stdin readability guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T006.6",
+      "operation": "stdout writability guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T006.7",
+      "operation": "stderr writability guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T007",
+      "operation": "Invoke native initialization and console startup gates",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T023",
+      "operation": "Completed all startup gates",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T025",
+      "operation": "Outer startup catch preserves unconditional exit22 and first failure before cleanup",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T024.1",
+      "operation": "Pre-read major version guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T024.2",
+      "operation": "Pre-read minor version guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T024.3",
+      "operation": "Pre-read architecture guard",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T024.4",
+      "operation": "Allocate first four-byte request header (contents unobserved)",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T024.5",
+      "operation": "Initialize first request-read counter",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T024",
+      "operation": "First actual stdin.Read call site reached once; no request contents recorded",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T001",
+      "operation": "Script entry with self PID before original executable prelude",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T001.1",
+      "operation": "Original Set-StrictMode, ErrorActionPreference and static protocol-state initialization",
+      "status": "INSTRUMENTED"
+    },
+    {
+      "id": "T002",
+      "operation": "Coverage group; see concrete executed sub-IDs",
+      "status": "GROUP",
+      "emits": false
+    },
+    {
+      "id": "T006",
+      "operation": "Coverage group; see concrete executed sub-IDs",
+      "status": "GROUP",
+      "emits": false
+    },
+    {
+      "id": "T009",
+      "operation": "Coverage group; see concrete executed sub-IDs",
+      "status": "GROUP",
+      "emits": false
+    },
+    {
+      "id": "T013",
+      "operation": "Coverage group; see concrete executed sub-IDs",
+      "status": "GROUP",
+      "emits": false
+    },
+    {
+      "id": "T020",
+      "operation": "Coverage group; see concrete executed sub-IDs",
+      "status": "GROUP",
+      "emits": false
+    }
+  ],
+  "stderr": {
+    "productCapBytes": 4096,
+    "totalMaximumBytes": 4096,
+    "ordinaryBudgetBytes": 3000,
+    "calculatedFullCoverageMaximumBytes": 2825,
+    "reservedCriticalBytes": 1096,
+    "criticalFailureMaximumBytes": 950,
+    "cleanupMaximumBytes": 54,
+    "overflowMaximumBytes": 81,
+    "eventFormat": [
+      "id",
+      "elapsedMsInteger",
+      "scalar",
+      "win32ErrorOrNull",
+      "meaningful_0or1",
+      "passed_0or1"
+    ],
+    "failureKind": "MO1307StartupTraceFailure",
+    "overflowKind": "MO1307StartupTraceOverflow",
+    "failureExceptionDepth": 2,
+    "exceptionTypeMaximumCharacters": 64,
+    "exceptionMessageMaximumCharacters": 64,
+    "diagnosticStreamSavedBeforeDetach": true,
+    "JSONCmdlets": false
+  },
+  "semantics": {
+    "exactOriginalNativeCallsAndOrder": true,
+    "originalGetLastWin32ErrorConsumersUseImmediateCachedResult": true,
+    "shortCircuitPreserved": true,
+    "firstFailureCapturedBeforeFinally": true,
+    "cleanupCannotReplaceFirstFailure": true,
+    "originalExit22Preserved": true,
+    "stdoutAndWireUnchanged": true,
+    "requestContentsUnobserved": true,
+    "noNativeHandleClosedByDiagnostics": true
+  },
+  "replacements": [
+    {
+      "id": "INITIALIZE",
+      "beforeSha256": "sha256:625738e5f2c2f307292567e45a3d755708c126d096ee9ea1128c60973499b652",
+      "afterSha256": "sha256:0a3eff1363bb3ccbb535ddc852f2ec5b5ce71e051bc1a37554a802340e57734d",
+      "beforeByteLength": 2459,
+      "afterByteLength": 4044
+    },
+    {
+      "id": "CONSOLE",
+      "beforeSha256": "sha256:1ac3f9afbd5f0179acca028c54800214565d810583f1eb5253bf87699a3d4c7b",
+      "afterSha256": "sha256:bc984fea3a70372faae47e2d0bc950a70644e3a7c13be0c103407055827e9276",
+      "beforeByteLength": 1495,
+      "afterByteLength": 4308
+    },
+    {
+      "id": "STARTUP",
+      "beforeSha256": "sha256:192697f12c1e2c9d9252608f0c4b786f6e93c3f3c6d1fc04b60cddca8fc1a56c",
+      "afterSha256": "sha256:767043e6aa7f226dff47727294715e985c2000de890481dd7847e99fbef18be2",
+      "beforeByteLength": 650,
+      "afterByteLength": 1827
+    },
+    {
+      "id": "PRE_READ_HEADER",
+      "beforeSha256": "sha256:989c6438c426f494c67a1b306dd6bfbe5abfcef0feeaeadb5a5dfeb87d5020ac",
+      "afterSha256": "sha256:a75db7beb229e54de25ade526b3d8101eba38a54a082f8f76d2f2df777c6138f",
+      "beforeByteLength": 200,
+      "afterByteLength": 660
+    },
+    {
+      "id": "FIRST_READ_MARKER",
+      "beforeSha256": "sha256:6c78eb4542d01a9c99db1fb0779b8ccf4134fb497a2c64d94486e28362e7dcad",
+      "afterSha256": "sha256:232aaa04cff7e91227a04c4c8b1a60a1d92c52a2d64f95a8020657b43e6633a6",
+      "beforeByteLength": 55,
+      "afterByteLength": 131
+    },
+    {
+      "id": "PRELUDE",
+      "beforeSha256": "sha256:341a4bef028b0ddb29ba4adb46f3b21cfe0eb88af0ff7a98543d2e761181c316",
+      "afterSha256": "sha256:d25f4f4abea5794903f8d468f5b94d6c4e4a8220cd0e4d55b0dddb596b5f87b2",
+      "beforeByteLength": 375,
+      "afterByteLength": 5435
+    }
+  ],
+  "preparationOnly": true,
+  "helperExecutions": 0
+}

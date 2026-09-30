@@ -1,0 +1,702 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3A
+
+ONE-SHOT STARTUP RESOLUTION
+THEN VALIDATE AND CERTIFY
+
+Phase 3A is the only remaining blocker.
+
+Accepted Phase 3B:
+
+702c1b6381f6112a50ac844831d195275dac3350
+
+Accepted Phase 3C:
+
+b02fc0226a1a2d800185a02071674ca80bdf4a1d
+
+Do not rerun either accepted stream now.
+
+Current production authority:
+
+C3RB
+defe93989efc6501b1a730b82e79e705884b269b
+
+Current headless-cleanup implementation is UNACCEPTED.
+
+==================================================
+1. CURRENT FAILURE
+==================================================
+
+The latest headless-cleanup implementation removed:
+
+numeric PPID ownership
+GetConsoleWindow ownership
+host opening/termination
+
+and introduced:
+
+three-pipe validation
+bounded membership
+self-detachment
+final helper-console absence
+non-destructive headless cleanup.
+
+Its single authorized minimum wire smoke still failed:
+
+exit:
+22
+
+stdout:
+0 bytes
+
+stderr:
+0 bytes
+
+elapsed:
+1325.9159 ms
+
+No response frame.
+
+No retry occurred.
+
+The exact internal startup guard is currently unknown.
+
+==================================================
+2. OBJECTIVE
+==================================================
+
+Resolve the remaining silent startup failure in ONE engineering task.
+
+This task is authorized to:
+
+DIAGNOSE
+→ REPAIR
+→ SMOKE
+→ SECURITY VALIDATE
+→ REGRESS
+→ CERTIFY PHASE 3A
+
+without returning for another broad design cycle.
+
+Do not reopen architecture research.
+
+==================================================
+3. PRESERVE HISTORY
+==================================================
+
+Preserve all previous failed generations and correction attempts.
+
+Do not rewrite:
+
+C3RB
+previous Phase 3A receipts
+J failure
+G failure
+console-ownership attempts
+detached-launch failure
+GetConsoleWindow diagnosis
+headless-cleanup failure.
+
+They remain historical evidence.
+
+==================================================
+4. FULL STARTUP TRACE COPY
+==================================================
+
+Create ONE engineering-only diagnostic copy of the CURRENT headless-cleanup helper.
+
+Instrument EVERY startup operation that can:
+
+throw
+return false
+return zero
+produce an invalid count
+produce an unexpected Win32 result
+or reach silent exit 22.
+
+Do not instrument only selected suspected paths.
+
+The purpose is to ensure the next run identifies the exact first failure.
+
+==================================================
+5. TRACE REQUIREMENTS
+==================================================
+
+Use bounded STDERR-only diagnostics.
+
+Never write diagnostics to stdout.
+
+Preserve normal production stdout framing.
+
+Give every startup statement/group a stable identifier.
+
+At minimum include:
+
+T001 script entry
+
+T002 PowerShell version
+
+T003 architecture
+
+T004 stdin pipe acquisition
+
+T005 stdout pipe acquisition
+
+T006 stderr/pipe assumptions if applicable
+
+T007 native dynamic assembly initialization
+
+T008 native type creation
+
+T009 native method resolution
+
+T010 native buffer allocation
+
+T011 initial console membership call
+
+T012 initial console membership return/count/error
+
+T013 membership validation
+
+T014 self PID validation
+
+T015 any topology predicate
+
+T016 FreeConsole decision
+
+T017 FreeConsole result/error
+
+T018 post-detach membership call
+
+T019 post-detach count/error
+
+T020 final topology predicate
+
+T021 cleanup handles
+
+T022 FreeHGlobal
+
+T023 startup completion
+
+T024 first request-read reached
+
+T025 outer startup catch.
+
+Also instrument every currently reachable branch between these groups.
+
+==================================================
+6. DIAGNOSTIC DATA
+==================================================
+
+For each event retain only bounded engineering metadata:
+
+trace ID
+operation
+boolean/native return
+numeric count
+PID where relevant
+Win32 error where meaningful
+exception type
+exception HResult
+bounded exception message
+elapsed monotonic time.
+
+Do not record:
+
+request contents
+file contents
+secrets
+environment dumps
+arbitrary memory.
+
+==================================================
+7. EXACTLY ONE DIAGNOSTIC EXECUTION
+==================================================
+
+Run the same minimum wire-smoke case exactly ONCE against the diagnostic helper copy.
+
+No retry.
+
+No second diagnostic case.
+
+No statistical repetition.
+
+Capture:
+
+last successful trace ID
+first failing trace ID
+exception/native details
+exit
+stdout
+stderr
+elapsed
+transport state
+cleanup state.
+
+==================================================
+8. IMMEDIATE ROOT-CAUSE DECISION
+==================================================
+
+Do not stop merely because the failure is identified.
+
+After the one diagnostic execution:
+
+determine the concrete cause.
+
+Classify it as one of:
+
+STARTUP_PIPE_DEFECT
+
+STARTUP_NATIVE_BINDING_DEFECT
+
+STARTUP_CONSOLE_MEMBERSHIP_DEFECT
+
+STARTUP_DETACH_DEFECT
+
+STARTUP_POST_DETACH_PROOF_DEFECT
+
+STARTUP_CLEANUP_DEFECT
+
+STARTUP_EXCEPTION_DEFECT
+
+STARTUP_IMPLEMENTATION_CONFLICT
+
+If the cause is a mechanical implementation defect and a bounded repair exists:
+
+IMPLEMENT IT IMMEDIATELY.
+
+Do not ask for another design prompt.
+
+==================================================
+9. REPAIR RULES
+==================================================
+
+The repair must be the smallest possible correction.
+
+Do not restore:
+
+numeric PPID ownership
+GetConsoleWindow ownership
+speculative conhost termination
+detached:true
+
+unless direct evidence proves one is required and sound.
+
+Preserve:
+
+wire 2.0.0
+schemas
+three pipes
+shell:false
+windowsHide behavior where applicable
+detached:false
+readiness semantics
+tag semantics
+decision semantics
+filesystem security
+TOCTOU security
+resource ceilings
+human authority separation.
+
+==================================================
+10. IMPORTANT HEADLESS SEMANTICS
+==================================================
+
+Do not require a condition that the actual supported Windows launch cannot provide.
+
+Do not silently convert uncertainty into success.
+
+The supported headless path must:
+
+avoid destructive action against unowned processes
+
+validate permitted current topology
+
+perform helper-controlled detach where required
+
+prove the exact postcondition actually required by the corrected cleanup specification
+
+settle stdin/stdout/stderr/process
+
+reach bounded quiescence.
+
+If the current correction specification requires an impossible or self-contradictory postcondition, identify that as:
+
+STARTUP_IMPLEMENTATION_CONFLICT
+
+and stop with the exact contradiction.
+
+Do not begin another research phase.
+
+==================================================
+11. POST-REPAIR WIRE SMOKE
+==================================================
+
+After the repair, run the minimum native wire smoke exactly ONCE.
+
+Require:
+
+script startup success
+
+first request read reached
+
+request consumed
+
+valid framed response
+
+correct stdout
+
+expected stderr behavior
+
+correct process exit
+
+transport settlement
+
+required cleanup/quiescence.
+
+If it fails:
+
+STOP.
+
+Return PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER with the exact traced/observed failure.
+
+Do not perform another diagnostic cycle.
+
+==================================================
+12. SECURITY VALIDATION
+==================================================
+
+If the repaired wire smoke passes:
+
+run the prepared finite headless/startup security matrix.
+
+Cover at minimum:
+
+normal headless success
+
+three valid pipes
+
+sole-helper membership
+
+extra attached client refusal
+
+membership overflow
+
+membership API failure
+
+detach failure
+
+post-detach invalid state
+
+helper crash
+
+helper timeout
+
+late output
+
+pipe closure
+
+quiescence
+
+worker non-overlap
+
+real startup refusal remains exit 22
+
+no speculative host termination
+
+deadlines unchanged.
+
+At first failure:
+
+STOP.
+
+==================================================
+13. REGRESSION VALIDATION
+==================================================
+
+If security validation passes:
+
+run:
+
+107-test regression campaign
+
+native filesystem regressions
+
+TOCTOU regressions
+
+protocol controls
+
+deadline/cancellation controls
+
+cleanup controls
+
+package integrity.
+
+At first mandatory failure:
+
+STOP.
+
+==================================================
+14. NEW CANDIDATE
+==================================================
+
+If all implementation validation passes:
+
+create the new candidate identity.
+
+Recompute and bind:
+
+helper
+
+transport if changed
+
+README/spec
+
+distribution manifest
+
+SBOM
+
+all 89 package members
+
+candidate tree
+
+validation evidence.
+
+Do not reuse any unaccepted candidate identity.
+
+==================================================
+15. FRESH PHASE 3A CERTIFICATION
+==================================================
+
+Immediately perform a fresh Phase 3A generation.
+
+Fresh isolated worktree.
+
+Fresh package.
+
+Fresh offline installation.
+
+Verify exact installed members.
+
+Seal full A-O inventory.
+
+Execute once from A through O.
+
+No historical PASS promotion.
+
+No case retries.
+
+At first mandatory failure:
+
+STOP.
+
+==================================================
+16. A-O
+==================================================
+
+A
+MO-1306 evaluate / verify / API
+
+B
+READY
+
+C
+NOT_READY
+
+D
+COULD_NOT_EVALUATE
+
+E
+REST
+
+F
+seven human decisions
+
+G
+complete supplied-tag inventory
+
+H
+helper deadline/cancellation
+
+I
+worker deadline/cancellation
+
+J
+cleanup/process topology
+
+K
+finalization
+
+L
+filesystem/native controls
+
+M
+environment isolation
+
+N
+byte determinism
+
+O
+final MO-1306 confirmation
+
+==================================================
+17. ACCEPTANCE
+==================================================
+
+If all mandatory A-O cases pass:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+Create:
+
+accepted receipt
+evidence
+commit
+binding
+Phase 3D handoff input.
+
+Do NOT execute Phase 3D.
+
+==================================================
+18. RESOURCE LIMITS
+==================================================
+
+Unchanged:
+
+helper:
+5000 ms
+
+aggregate helper:
+20000 ms
+
+CLI:
+30000 ms
+
+API/worker:
+10000 ms
+
+cleanup:
+2000 ms
+
+H:
+NOT_ESTABLISHED
+
+No deadline change.
+
+==================================================
+19. AFTER PHASE 3A ACCEPTANCE
+==================================================
+
+If 3A passes on new bytes:
+
+report exact new candidate.
+
+Then we will run in parallel:
+
+Phase 3B scoped refresh
+
+Phase 3C scoped refresh.
+
+Existing accepted C3RB 3B/3C remain preserved historical accepted evidence.
+
+==================================================
+20. 3B EXPECTED REFRESH
+==================================================
+
+Candidate-bound refresh:
+
+archive
+
+member inventory
+
+manifest
+
+SBOM
+
+reproducibility
+
+offline installation
+
+installed equality
+
+runtime closure
+
+installed smoke
+
+affected tamper controls
+
+provenance/binding.
+
+==================================================
+21. 3C EXPECTED REFRESH
+==================================================
+
+Start from the previously identified affected scope:
+
+67 equivalence
+
+12 protocol
+
+2 TOCTOU
+
+6 deadline/cleanup
+
+1 fixed-launch
+
+plus:
+
+headless/startup controls
+
+source review
+
+candidate binding
+
+supporting native witnesses.
+
+Reconcile exact scope against the final diff.
+
+==================================================
+22. FINAL OUTCOME
+==================================================
+
+Return ONLY:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+or
+
+PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER
+
+No:
+
+UNRESOLVED
+MORE_RESEARCH_REQUIRED
+DIFFERENT_PROOF_REQUIRED
+ARCHITECTURE_REVIEW_REQUIRED.
+
+==================================================
+23. FINAL REPORT
+==================================================
+
+Report:
+
+1. first failing trace ID,
+2. exact root cause,
+3. exact repair,
+4. repaired wire-smoke result,
+5. security-validation result,
+6. regression result,
+7. new candidate identity,
+8. package/install identity,
+9. A-O results,
+10. certification receipt,
+11. Phase 3A status,
+12. commits/bindings,
+13. exact 3B refresh scope,
+14. exact 3C refresh scope,
+15. repository status,
+16. next action.
+
+No push.
+No tag.
+No Phase 3D.

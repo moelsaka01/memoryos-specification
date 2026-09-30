@@ -1,0 +1,95 @@
+{
+  "kind": "MO1307OneShotStartupRootCauseDecision",
+  "outcome": "PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER",
+  "classification": "STARTUP_IMPLEMENTATION_CONFLICT",
+  "observedStageClassification": "STARTUP_POST_DETACH_PROOF_DEFECT",
+  "firstFailingTraceId": "T018",
+  "lastSuccessfulBeforeFailure": "T017",
+  "rejectingPredicateId": "T020.2",
+  "successfulCleanupId": "T022",
+  "diagnostic": {
+    "path": "repositories/cca-conformance/evidence/mo1307/startup-resolution/diagnostic/receipt.json",
+    "byteLength": 42545,
+    "sha256": "sha256:99dbc2fb5f76f1ab12ab8e3324d25abc1c97bd641f9246b80b98de1e592aa1d9"
+  },
+  "diagnosis": {
+    "path": "repositories/cca-conformance/evidence/mo1307/startup-resolution/diagnostic/diagnosis.json",
+    "byteLength": 14230,
+    "sha256": "sha256:1c766494b1f67c9499e6d1d5f4e5baff2cad42d78ffeb3183b4adff1e697993c"
+  },
+  "rawTrace": {
+    "path": "repositories/cca-conformance/evidence/mo1307/startup-resolution/diagnostic/stderr.data",
+    "byteLength": 2552,
+    "sha256": "sha256:92863e9426f0aaf9f701ac029064a088e90eee278a69606a1be2dca561c91070"
+  },
+  "sealedSpecification": {
+    "path": "docs/mo1307-headless-cleanup-correction.md",
+    "byteLength": 13253,
+    "sha256": "sha256:dbca55d6094ec6bbfaa51cf85b850cc2b01ca0a3b0d80e56f9c29ad1c4930da0"
+  },
+  "newUserAuthority": {
+    "path": "repositories/cca-conformance/evidence/mo1307/startup-resolution/user-request.txt",
+    "byteLength": 12520,
+    "sha256": "sha256:a620d8de90e289195a00ec45953413ae77b7ce25883c8e822ca93badce8f1e5f"
+  },
+  "controllingInstruction": "Latest request section10 requires STOP when the current correction specification requires an impossible or self-contradictory postcondition. No implicit amendment of that literal predicate is made.",
+  "exactObservedCause": "The helper reached successful self-detachment after three native pipes and sole-self membership. Its subsequent GetConsoleProcessList returned0 with cached203. The sealed requirement insists on0+ERROR_INVALID_HANDLE6, so T020.2 rejected before startup completion/request read.",
+  "exactConflict": "Specification required behavior4, lines89-92, requires FreeConsole success AND a subsequent zero/error6 observation, rejecting every other result. The permitted observed launch produces successful detach then zero/error203; it cannot pass that literal required predicate in this execution. The API documentation supplies no detached-state guarantee of error6.",
+  "limitsOfInference": "The origin of cached203 is unestablished. It is neither a proved newly produced native ERROR_ENVVAR_NOT_FOUND nor a proved stale error. A single trace does not establish universal impossibility on all Windows configurations.",
+  "repair": {
+    "applied": false,
+    "productionDiff": [],
+    "reason": "No evidenced mechanical correction preserving the literal sealed predicate was established. Relying only on FreeConsole success, allowing203 or dropping the error check changes that predicate; setting last-error6 would fabricate its witness. Section10 selects STOP, not a silent predicate amendment.",
+    "proposedActionsNotTaken": [
+      "Drop post-detach check",
+      "Whitelist203",
+      "Preset last-error6",
+      "Restore HWND/PPID/host termination",
+      "Use detached:true"
+    ]
+  },
+  "nativeFacts": {
+    "pid": 22748,
+    "stdinFileType": 3,
+    "stdoutFileType": 3,
+    "stderrFileType": 3,
+    "initialMembershipCount": 1,
+    "initialMemberPid": 22748,
+    "freeConsole": true,
+    "postMembershipCount": 0,
+    "cachedWin32Error": 203,
+    "startupCompleted": false,
+    "firstRequestReadReached": false,
+    "exception": {
+      "type": "System.InvalidOperationException",
+      "hresult": -2146233079,
+      "message": "MO1307_INTERNAL"
+    }
+  },
+  "sources": [
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/console/freeconsole",
+      "supports": "Successful FreeConsole detaches the caller; already-unattached requests also succeed."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/console/getconsoleprocesslist",
+      "supports": "Zero is failure; API docs do not promise error6 for the detached state."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/dotnet/api/system.runtime.interopservices.dllimportattribute.setlasterror?view=netframework-4.8.1",
+      "supports": ".NET Framework does not clear the last error before each P/Invoke, so values can persist; this does not prove the origin of203 in this run."
+    }
+  ],
+  "independentReview": [
+    "inventory_authority",
+    "harness_adaptation"
+  ],
+  "diagnosticInvocations": 1,
+  "diagnosticRetries": 0,
+  "postRepairSmokeInvocations": 0,
+  "candidate": null,
+  "sourceIdentity": "sha256:9b7108d2f25f1d89d97ccf23cfe5aa0b1c852454012297f7364beb7f220acc4f",
+  "sourceUnchanged": true,
+  "helperSha256": "sha256:158a4008131ede42458ba60a8166e63abad180443031ea05bf75c3180a2ad846",
+  "createdUtc": "2026-09-30T14:17:40.021529+00:00"
+}
