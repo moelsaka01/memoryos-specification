@@ -1,0 +1,127 @@
+{
+  "kind": "MO1307N17CorrectionFinalDisposition",
+  "outcome": "PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER",
+  "classification": "N17_FIXTURE_SETUP_DEFECT",
+  "n17Cause": "N17 omitted its per-process attempt parent even though the frozen publication contract requires an existing parent chain and production creates only the absent output root nonrecursively.",
+  "correction": "The fixture adds only await fs.mkdir(attempt, { recursive: true }); after READY pins and before output selection. It creates no output, pending, final or expected bytes; all89 production members remain unchanged.",
+  "sourceIdentity": "sha256:6e0e5f1984b1de1b835879471c3858897ba30d3206fa504fb7f9a7aa2cfca690",
+  "productionTree": "fa367d1ce9e55872213e35a47d419b17b70d9b1e",
+  "validationSource": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/validation-source.json",
+    "byteLength": 197379,
+    "sha256": "sha256:b1e6a656082bd0ed8d63ea587b6d205f5a2016c941452c6b4eddfbda638239ab"
+  },
+  "validation": {
+    "n17": {
+      "result": "PASS",
+      "executions": 1,
+      "selectedPasses": 1,
+      "exactResult": true,
+      "finalOnly": true,
+      "outerSettlementEvents": 8,
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/n17/receipt.json",
+        "byteLength": 6975,
+        "sha256": "sha256:805202c0d4285296a4fd2a309ac0ed2d9f18de8f1155da5c5770f6778efee804"
+      }
+    },
+    "publication": {
+      "result": "PASS",
+      "supplementalPasses": 5,
+      "selectedCallbackPasses": 12,
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/publication/receipt.json",
+        "byteLength": 71537,
+        "sha256": "sha256:bb466a8b2a5d9ba194f446d9a01faacad8eef0129dded16100614f5ef307c1ce"
+      }
+    },
+    "regressionInventory": {
+      "total": 107,
+      "passed": 13,
+      "failed": 0,
+      "notRun": 94,
+      "historicalPassPromoted": 0
+    },
+    "nativeFilesystem": {
+      "result": "FAIL",
+      "passed": 1,
+      "failed": 1,
+      "notRun": 33,
+      "completedInvocations": 3,
+      "plannedInvocations": 39,
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/native-filesystem/receipt.json",
+        "byteLength": 8007,
+        "sha256": "sha256:b7a853083aa512d14f4e889abb660a42bf0d42a2cdfe09a531dd4a098d373b44"
+      }
+    },
+    "security": "NOT_RUN_19_CONTROLS",
+    "remainingRegressions": "NOT_RUN_94_CALLBACKS",
+    "packageIntegrity": "NOT_RUN",
+    "toctou": "NOT_RUN_2_CONTROLS"
+  },
+  "firstMandatoryFailure": {
+    "stage": "native-filesystem",
+    "case": "native CHECK_OUTPUT slots4/5 full stable drive-parent chains",
+    "invocation": 3,
+    "operation": "CHECK_OUTPUT",
+    "sequence": 5,
+    "deadlineMs": 5000,
+    "observedDurationMs": 5024.2634,
+    "error": "ETIMEDOUT",
+    "signal": "SIGTERM",
+    "exitCode": null,
+    "responseBytes": 0,
+    "stderrBytes": 0,
+    "requestSha256": "sha256:71a9040815c137ac0980f9e985c1a03e23dfd57873f5940ba393f36d64113dad",
+    "runtimeCauseBeyondObservedTimeout": "NOT_ESTABLISHED"
+  },
+  "stopReceipt": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/generation-stopped.json",
+    "byteLength": 353,
+    "sha256": "sha256:d888ddd6d476060aeb2128c0d77a6a638b106aee1e07548b53b7622cc65cb366"
+  },
+  "phase3AStatus": "FAILED_INCOMPLETE",
+  "candidate": null,
+  "packageArchive": null,
+  "installedPackage": null,
+  "ao": [
+    { "step": "A", "result": "NOT_RUN" },
+    { "step": "B", "result": "NOT_RUN" },
+    { "step": "C", "result": "NOT_RUN" },
+    { "step": "D", "result": "NOT_RUN" },
+    { "step": "E", "result": "NOT_RUN" },
+    { "step": "F", "result": "NOT_RUN" },
+    { "step": "G", "result": "NOT_RUN" },
+    { "step": "H", "result": "NOT_RUN" },
+    { "step": "I", "result": "NOT_RUN" },
+    { "step": "J", "result": "NOT_RUN" },
+    { "step": "K", "result": "NOT_RUN" },
+    { "step": "L", "result": "NOT_RUN" },
+    { "step": "M", "result": "NOT_RUN" },
+    { "step": "N", "result": "NOT_RUN" },
+    { "step": "O", "result": "NOT_RUN" }
+  ],
+  "acceptedPhase3AReceipt": null,
+  "phase3DInput": null,
+  "preservedBase": "56a3d93a0c7fdb42e93e16ec1f6c13c81770c11b",
+  "acceptedHistorical3B": "702c1b6381f6112a50ac844831d195275dac3350",
+  "acceptedHistorical3C": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+  "historicalAcceptancePromoted": false,
+  "futureRefreshScope": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n15-correction/future-3bc-refresh-requirements.json",
+    "byteLength": 72343,
+    "sha256": "sha256:9c8b4a85d2dfb59e12a6a52ba167209b22cb761eb57af35bea7a22e3d63cfda4"
+  },
+  "independentAudit": "repositories/cca-conformance/evidence/mo1307/n17-correction/independent-failure-audit.json",
+  "preservationCommitBinding": "repositories/cca-conformance/evidence/mo1307/n17-correction/preservation-binding.json",
+  "preservationOnly": true,
+  "nextAction": "Do not resume or retry this stopped generation. A separate authorization must decide how to investigate the native slot-5 helper timeout and seal any future generation.",
+  "noRetry": true,
+  "noFurtherProductExecution": true,
+  "noPhase3B": true,
+  "noPhase3C": true,
+  "noPhase3D": true,
+  "noPush": true,
+  "noTag": true
+}

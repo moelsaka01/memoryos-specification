@@ -243,6 +243,7 @@ test('N16 native helper rejects hostile operation extra fields and oversized fra
 test('N17 native CLI evaluates and publishes exact integrated result', async () => {
   const input = path.join(cwd, 'repositories/cca-conformance/fixtures/mo1307/bundles/ready');
   const pins = JSON.parse(await fs.readFile(path.join(input, 'pins.json')));
+  await fs.mkdir(attempt, { recursive: true });
   const out = path.join(attempt, 'cli-integrated-ready');
   const argv = ['evaluate', '--input-root', input, '--config', 'configuration.json', '--authority', 'authority.json',
     '--authority-sha256', pins.trustedAuthorityDigest, '--candidate-sha256', pins.expectedCandidateDigest, '--output-root', out];

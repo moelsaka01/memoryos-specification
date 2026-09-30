@@ -1,0 +1,157 @@
+{
+  "kind": "MO1307N17CorrectionEngineeringReceipt",
+  "suite": "native-filesystem",
+  "result": "FAIL",
+  "attemptName": "n17-correction-native-filesystem",
+  "runtime": {
+    "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+    "version": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "fulfills": [
+    "N17-generation-filesystem-boundary-preservation",
+    "complete-native-filesystem-regression"
+  ],
+  "duplicateNativeFilesystemRunRequired": false,
+  "rows": [
+    {
+      "name": "native READ_SET same-handle bytes and seven-field identity",
+      "outcome": "PASS",
+      "durationMs": 2175.4392,
+      "detail": {
+        "roots": [
+          {
+            "id": "input",
+            "identity": {
+              "attributes": 16,
+              "byteLength": 0,
+              "fileId": "00110000000923e7",
+              "finalPath": "C:\\m7fix\\.cache\\mo1307-n17-correction\\filesystem-11876\\input",
+              "isDirectory": true,
+              "linkCount": 1,
+              "volumeSerial": "bec58120"
+            }
+          }
+        ],
+        "file": {
+          "attributes": 32,
+          "byteLength": 6,
+          "fileId": "00110000000923ec",
+          "finalPath": "C:\\m7fix\\.cache\\mo1307-n17-correction\\filesystem-11876\\input\\a.bin",
+          "isDirectory": false,
+          "linkCount": 1,
+          "volumeSerial": "bec58120"
+        }
+      }
+    },
+    {
+      "name": "native CHECK_OUTPUT slots4/5 full stable drive-parent chains",
+      "outcome": "FAIL",
+      "durationMs": 8839.5656,
+      "error": "AssertionError [ERR_ASSERTION]: ifError got unwanted exception: spawnSync C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe ETIMEDOUT\n    at run (file:///C:/m7fix/repositories/cca-conformance/tools/mo1307-n17-correction/native-filesystem.mjs:58:10)\n    at Object.spawnSync (node:internal/child_process:1160:20)\n    at spawnSync (node:child_process:928:24)\n    at run (file:///C:/m7fix/repositories/cca-conformance/tools/mo1307-n17-correction/native-filesystem.mjs:48:17)\n    at okay (file:///C:/m7fix/repositories/cca-conformance/tools/mo1307-n17-correction/native-filesystem.mjs:68:39)\n    at file:///C:/m7fix/repositories/cca-conformance/tools/mo1307-n17-correction/native-filesystem.mjs:86:17\n    at check (file:///C:/m7fix/repositories/cca-conformance/tools/mo1307-n17-correction/native-filesystem.mjs:65:123)\n    at file:///C:/m7fix/repositories/cca-conformance/tools/mo1307-n17-correction/native-filesystem.mjs:84:5\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
+    }
+  ],
+  "invocations": [
+    {
+      "index": "001",
+      "durationMs": 1429.7701,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "requestBytes": 347,
+      "responseBytes": 701,
+      "stderrBytes": 0,
+      "requestSha256": "da34a9c8281d1c4bb989c928d52ab5286949a7a35ed7d14ce826c7175711a200",
+      "responseSha256": "fb74d2f15a88e55de3be2f0f1be1d21da22c5436091dd6d6e519814e013db877"
+    },
+    {
+      "index": "002",
+      "durationMs": 2145.5731,
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "requestBytes": 294,
+      "responseBytes": 1079,
+      "stderrBytes": 0,
+      "requestSha256": "9ebe7421a723770cf6950694b0fea840123c5916c1d66ca141ab37a81933ef29",
+      "responseSha256": "b70262607df5ce92259649f4e6f104bbd1286123499764dca0761484bcaaf061"
+    },
+    {
+      "index": "003",
+      "durationMs": 5024.2634,
+      "exitCode": null,
+      "signal": "SIGTERM",
+      "error": "ETIMEDOUT",
+      "requestBytes": 294,
+      "responseBytes": 0,
+      "stderrBytes": 0,
+      "requestSha256": "71a9040815c137ac0980f9e985c1a03e23dfd57873f5940ba393f36d64113dad",
+      "responseSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "passed": 1,
+  "failed": 1,
+  "stopped": true,
+  "failure": "AssertionError [ERR_ASSERTION]: ifError got unwanted exception: spawnSync C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe ETIMEDOUT\n    at run (file:///C:/m7fix/repositories/cca-conformance/tools/mo1307-n17-correction/native-filesystem.mjs:58:10)\n    at Object.spawnSync (node:internal/child_process:1160:20)\n    at spawnSync (node:child_process:928:24)\n    at run (file:///C:/m7fix/repositories/cca-conformance/tools/mo1307-n17-correction/native-filesystem.mjs:48:17)\n    at okay (file:///C:/m7fix/repositories/cca-conformance/tools/mo1307-n17-correction/native-filesystem.mjs:68:39)\n    at file:///C:/m7fix/repositories/cca-conformance/tools/mo1307-n17-correction/native-filesystem.mjs:86:17\n    at check (file:///C:/m7fix/repositories/cca-conformance/tools/mo1307-n17-correction/native-filesystem.mjs:65:123)\n    at file:///C:/m7fix/repositories/cca-conformance/tools/mo1307-n17-correction/native-filesystem.mjs:84:5\n    at ModuleJob.run (node:internal/modules/esm/module_job:561:25)\n    at async node:internal/modules/esm/loader:647:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)",
+  "notRun": [
+    "native INSPECT_OUTPUT_ROOT and CHECK_STAGE_ROOT stable full chain",
+    "native INSPECT_PENDING and CHECK_FINALIZATION stable full chain/final absence",
+    "existing output rejected by native absence",
+    "existing final rejected by native absence",
+    "changed pending identity observed natively",
+    "existing absolute target outside the declared input root rejected without read",
+    "traversal native request rejection",
+    "ADS native request rejection",
+    "drive-relative native request rejection",
+    "UNC native request rejection",
+    "device native request rejection",
+    "missing ancestor rejected",
+    "missing leaf is INPUT rather than absent success",
+    "directory used as file rejected",
+    "hardlinked input rejected",
+    "file symlink rejected",
+    "directory symlink ancestor rejected",
+    "junction ancestor rejected",
+    "2MiB read and canonical base64 chunks within fixed deadline",
+    "per-file decoded cap rejection",
+    "existing pending exclusive creation refuses overwrite",
+    "existing native short alias rejected for wrong final handle path",
+    "wrong version rejects",
+    "wrong session rejects",
+    "wrong sequence rejects",
+    "wrong operation rejects",
+    "unknown field rejects",
+    "duplicate key rejects",
+    "noncanonical body rejects",
+    "truncated frame rejects",
+    "extra frame rejects",
+    "trailing bytes rejects",
+    "oversized request rejects"
+  ],
+  "shortAlias": {
+    "alias": "C:\\PROGRA~1",
+    "canonicalPath": "C:\\Program Files",
+    "applicable": true,
+    "reason": "DISTINCT_EXISTING_ALIAS"
+  },
+  "limitations": [
+    "Internal native component checks execute in every real helper; deterministic adversarial concurrent namespace mutation is excluded by private immutable-root precondition.",
+    "Cross-slot equality rejection belongs to protocol/publication tests; this witness records actual native changes.",
+    "No other-volume fixture created; reparse mount/junction and final-handle-path validation remain fixed native checks.",
+    "Conditional short-alias applicability was inspected and bound before this generation; it is never reported PASS when absent."
+  ],
+  "source": {
+    "path": "repositories/cca-conformance/evidence/mo1307/n17-correction/validation-source.json",
+    "byteLength": 197379,
+    "sha256": "sha256:b1e6a656082bd0ed8d63ea587b6d205f5a2016c941452c6b4eddfbda638239ab"
+  },
+  "sourceIdentity": "sha256:6e0e5f1984b1de1b835879471c3858897ba30d3206fa504fb7f9a7aa2cfca690",
+  "acceptedCandidate": null,
+  "sourcesUnchanged": true,
+  "sourceFailure": null,
+  "finishedUtc": "2026-09-30T18:50:15.510Z",
+  "retries": 0,
+  "certificationAcceptance": false
+}

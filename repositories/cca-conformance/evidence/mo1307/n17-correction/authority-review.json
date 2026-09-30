@@ -1,0 +1,426 @@
+{
+  "kind": "MO1307N17AuthorityAndFixtureReview",
+  "result": "PASS_STATIC",
+  "classification": "N17_FIXTURE_SETUP_DEFECT",
+  "reviewScope": "Read-only authority/source/retained evidence review, with this new reporting artifact only. No product/helper/test/diagnostic execution.",
+  "baseCommit": "56a3d93a0c7fdb42e93e16ec1f6c13c81770c11b",
+  "authorization": {
+    "path": "C:/Users/melsa/.codex/attachments/6b83295f-67de-4f18-9ec6-f03e0426ef9c/Pasted text.txt",
+    "byteLength": 9525,
+    "sha256": "sha256:0f75207273bb19714c39c0528ce748b8d3fe5e8d9019cbb6191f25e0e998bb42"
+  },
+  "authorities": [
+    {
+      "binding": {
+        "path": "C:/m7fix/docs/mo1307-contract-freeze-1.md",
+        "byteLength": 110295,
+        "sha256": "sha256:831899163c36595ee38291eb6dd3fcff0ea0c6cc041a99f16933a11a6cdc17f8"
+      },
+      "immutableCommit": "56a3d93a0c7fdb42e93e16ec1f6c13c81770c11b",
+      "immutableBlobSha256": "sha256:831899163c36595ee38291eb6dd3fcff0ea0c6cc041a99f16933a11a6cdc17f8",
+      "locations": [
+        {
+          "lines": [
+            1070,
+            1080
+          ],
+          "meaning": "Private ordinary roots and every ancestor; output-root is a new leaf."
+        },
+        {
+          "lines": [
+            1102,
+            1107
+          ],
+          "meaning": "Operator supplies private immutable roots; publication only in exclusively created output directory."
+        },
+        {
+          "lines": [
+            1120,
+            1137
+          ],
+          "meaning": "CHECK_OUTPUT supplies existing parent chain and precedes exclusive output mkdir."
+        },
+        {
+          "lines": [
+            1360,
+            1393
+          ],
+          "meaning": "Exclusive output directory, fixed pending/final names, exact bytes, single actual rename commit; retain owned evidence on failure."
+        }
+      ]
+    },
+    {
+      "binding": {
+        "path": "C:/m7fix/docs/mo1307-phase2c-publication-inspection-correction.md",
+        "byteLength": 28935,
+        "sha256": "sha256:cf6d7be0892e0a376213c134ba368d522bf57d8e19baa85232163ee2edde5a3f"
+      },
+      "immutableCommit": "56a3d93a0c7fdb42e93e16ec1f6c13c81770c11b",
+      "immutableBlobSha256": "sha256:cf6d7be0892e0a376213c134ba368d522bf57d8e19baa85232163ee2edde5a3f",
+      "locations": [
+        {
+          "lines": [
+            40,
+            53
+          ],
+          "meaning": "Slot4 before worker and slot5 before mkdir both require output absence plus complete parent chain."
+        },
+        {
+          "lines": [
+            95,
+            105
+          ],
+          "meaning": "Existing checked parent explicitly required; missing ancestor is failure, never absence."
+        },
+        {
+          "lines": [
+            119,
+            125
+          ],
+          "meaning": "Caller observes existing parent; product creates only output root and pending/final transition."
+        }
+      ]
+    },
+    {
+      "binding": {
+        "path": "C:/m7fix/docs/mo1307-phase2c-finalization-boundary-correction.md",
+        "byteLength": 20727,
+        "sha256": "sha256:e5a7ef021cf217a7239a8568aa3172b4b58661d53ec82ff827b56530ee581b10"
+      },
+      "immutableCommit": "56a3d93a0c7fdb42e93e16ec1f6c13c81770c11b",
+      "immutableBlobSha256": "sha256:e5a7ef021cf217a7239a8568aa3172b4b58661d53ec82ff827b56530ee581b10",
+      "locations": [
+        {
+          "lines": [
+            43,
+            67
+          ],
+          "meaning": "One admitted rename settles; postsettlement exact namespace and timely stdout required for success; failure/overrun maps OUTPUT and retains evidence."
+        }
+      ]
+    }
+  ],
+  "firstSetupDifference": {
+    "requiredRoot": "--output-root = attempt/cli-integrated-ready, initially absent",
+    "requiredParent": "attempt = <worktree>/.cache/mo1307/phase1/native-foundation-${process.pid}, ordinary existing private directory before slot4",
+    "n17Original": {
+      "commit": "56a3d93a0c7fdb42e93e16ec1f6c13c81770c11b",
+      "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+      "byteLength": 24274,
+      "sha256": "sha256:f24dbc94bbd796dd4d3d320df85d58d158558fa73f19f8ee94ebdff59ff16712",
+      "lines": [
+        243,
+        257
+      ],
+      "omission": "The selected N17 callback reads pins then constructs output and launches CLI without establishing attempt. No before/beforeEach hook exists. Imports do not create this fixture directory."
+    },
+    "caseOrderDependency": [
+      {
+        "lines": [
+          27,
+          27
+        ],
+        "fact": "attempt is derived from this test process PID."
+      },
+      {
+        "lines": [
+          73,
+          92
+        ],
+        "fact": "runHelper mkdirSync(attempt) at line87 occurs only after a prior helper call."
+      },
+      {
+        "lines": [
+          205,
+          207
+        ],
+        "fact": "N15 recursively creates input/result beneath attempt."
+      },
+      {
+        "lines": [
+          258,
+          260
+        ],
+        "fact": "Later outputRoot helper explicitly creates attempt; N17 does not call it."
+      }
+    ],
+    "adapter": {
+      "binding": {
+        "path": "C:/m7fix/repositories/cca-conformance/tools/mo1307-n15-correction/regressions.mjs",
+        "byteLength": 14283,
+        "sha256": "sha256:0e89e3a47e9d2e857f2c14badd63274dc245c3e583558cfefe89bb30dc5ab009"
+      },
+      "lines": [
+        118,
+        126
+      ],
+      "fact": "Each exact named callback runs in a fresh process; N15/N16 callbacks are not selected in N17 process."
+    },
+    "classificationBasis": "Frozen semantics explicitly assign an already-existing parent as a precondition. N17 fails to establish that environmental precondition when run independently; expected successful publication remains valid once setup is complete."
+  },
+  "implementation": {
+    "requiredParentSource": "helpers/windows-inspect.ps1:315-322 selects and opens the full parent chain before testing output-leaf absence.",
+    "exclusiveRootSource": "src/publication.mjs:158-179 checks parent, then fs.mkdir(root,{recursive:false,mode:0o700}); it cannot create caller ancestors.",
+    "errorMapping": [
+      {
+        "source": "src/acquisition.mjs:24-25,81",
+        "condition": "Any ERROR response to pre-worker slot4 CHECK_OUTPUT maps OUTPUT/PUBLICATION; reported PUBLICATION does not prove worker or createPublication executed."
+      },
+      {
+        "source": "src/publication.mjs:13-22,158-179",
+        "condition": "Non-timeout/non-cancelled creation/admission/inspection errors, existing destination, missing parent or mkdir error map OUTPUT."
+      },
+      {
+        "source": "src/publication.mjs:182-225",
+        "condition": "Invalid token/state/bytes/size, unsafe or changed native chain, pending collision/write/reread failures map OUTPUT; pre-admission TIMEOUT/CANCELLED preserved."
+      },
+      {
+        "source": "src/publication.mjs:229-289,100-149",
+        "condition": "Bad pending bytes/identity/final absence, failed rename, namespace verification failure, post-admission late/cancelled disposition or summary failure maps OUTPUT while retaining observed commit state/evidence."
+      },
+      {
+        "source": "src/errors.mjs:7-25,30-33; Freeze section16 OUTPUT row",
+        "condition": "ReadinessError serializes fixed MO1307_OUTPUT/PUBLICATION/reference:null and errorExit selects21."
+      }
+    ],
+    "expectedSuccess": "Exact frozen READY summary and59987-byte result; single final file, no pending; committed namespace verified, full summary/normal settlement and cleanup. Nine native helpers and one worker in integrated evaluate."
+  },
+  "historicalPassingComparison": {
+    "scope": "One historical integrated READY evaluation on byte-identical bin/orchestration/publication path; helper/transport historical differences are not promoted or called current validation.",
+    "candidate": "defe93989efc6501b1a730b82e79e705884b269b",
+    "receipt": {
+      "path": "C:/m7a2/repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/semantics/B-ready/evaluate/receipt.json",
+      "byteLength": 1979,
+      "sha256": "sha256:7458c8e07a31f2de1542a269b0b32d6bf3c4bdc0c2644c2b03a82a80d48d7592"
+    },
+    "invocation": {
+      "path": "C:/m7a2/repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/semantics/B-ready/evaluate/invocation.json",
+      "byteLength": 3180,
+      "sha256": "sha256:8133339f46e43d62d21e09a14021016026f650bf8e43cd56772bb6d7ddd36298"
+    },
+    "observation": {
+      "path": "C:/m7a2/repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/semantics/B-ready/evaluate/observation.json",
+      "byteLength": 40950,
+      "sha256": "sha256:7cd6283d78141e5f9d33b442f958298555a571c98644a1d0a775d11b74c963a0"
+    },
+    "baseline": {
+      "path": "C:/m7a2/repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/baseline.json",
+      "byteLength": 32222,
+      "sha256": "sha256:1e18db3d0676647bfe6aa5e7ffcb6b087eb0a44ebb9dd2e478285cc55ef4f355"
+    },
+    "preparedVectors": {
+      "path": "C:/m7a2/repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/vectors-prepared.json",
+      "byteLength": 135084,
+      "sha256": "sha256:492ca5bccf23949115eb3ee4f626f305998748afb31c6ef021762cce75d5b82c"
+    },
+    "setupSource": {
+      "path": "C:/m7a2/repositories/cca-conformance/tools/mo1307-phase3a-c3rb-restart/prepare.mjs",
+      "byteLength": 11505,
+      "sha256": "sha256:cc68fd156385318884e09bb4f43255eb1bb73ac951beb663a9593314e31fa80c"
+    },
+    "setupLine": 73,
+    "setup": "Explicit mkdirSync(parent,{recursive:true}) before CLI uses absent parent/primary output.",
+    "preparedParent": "C:\\m7a2\\.cache\\m7a2\\v1\\p",
+    "output": "C:\\m7a2\\.cache\\m7a2\\v1\\p\\primary",
+    "readyFixtureMembersEqual": 27,
+    "codeEquality": [
+      {
+        "member": "bin/memoryos-readiness.mjs",
+        "current": {
+          "path": "C:/m7fix/repositories/memoryos-readiness/bin/memoryos-readiness.mjs",
+          "byteLength": 854,
+          "sha256": "sha256:2aa002a153e87b5127cf26001c9a1bb774142838c0faf7c324c040013e988321"
+        },
+        "historicalInstalled": {
+          "path": "C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/bin/memoryos-readiness.mjs",
+          "byteLength": 854,
+          "sha256": "sha256:2aa002a153e87b5127cf26001c9a1bb774142838c0faf7c324c040013e988321"
+        },
+        "historicalBaselineBinding": {
+          "path": "bin/memoryos-readiness.mjs",
+          "byteLength": 854,
+          "sha256": "sha256:2aa002a153e87b5127cf26001c9a1bb774142838c0faf7c324c040013e988321"
+        },
+        "byteIdentical": true
+      },
+      {
+        "member": "src/cli.mjs",
+        "current": {
+          "path": "C:/m7fix/repositories/memoryos-readiness/src/cli.mjs",
+          "byteLength": 4448,
+          "sha256": "sha256:3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+        },
+        "historicalInstalled": {
+          "path": "C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/src/cli.mjs",
+          "byteLength": 4448,
+          "sha256": "sha256:3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+        },
+        "historicalBaselineBinding": {
+          "path": "src/cli.mjs",
+          "byteLength": 4448,
+          "sha256": "sha256:3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+        },
+        "byteIdentical": true
+      },
+      {
+        "member": "src/acquisition.mjs",
+        "current": {
+          "path": "C:/m7fix/repositories/memoryos-readiness/src/acquisition.mjs",
+          "byteLength": 6409,
+          "sha256": "sha256:1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+        },
+        "historicalInstalled": {
+          "path": "C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/src/acquisition.mjs",
+          "byteLength": 6409,
+          "sha256": "sha256:1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+        },
+        "historicalBaselineBinding": {
+          "path": "src/acquisition.mjs",
+          "byteLength": 6409,
+          "sha256": "sha256:1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+        },
+        "byteIdentical": true
+      },
+      {
+        "member": "src/helper-protocol.mjs",
+        "current": {
+          "path": "C:/m7fix/repositories/memoryos-readiness/src/helper-protocol.mjs",
+          "byteLength": 17308,
+          "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+        },
+        "historicalInstalled": {
+          "path": "C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/src/helper-protocol.mjs",
+          "byteLength": 17308,
+          "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+        },
+        "historicalBaselineBinding": {
+          "path": "src/helper-protocol.mjs",
+          "byteLength": 17308,
+          "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+        },
+        "byteIdentical": true
+      },
+      {
+        "member": "src/publication.mjs",
+        "current": {
+          "path": "C:/m7fix/repositories/memoryos-readiness/src/publication.mjs",
+          "byteLength": 13610,
+          "sha256": "sha256:dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+        },
+        "historicalInstalled": {
+          "path": "C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/src/publication.mjs",
+          "byteLength": 13610,
+          "sha256": "sha256:dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+        },
+        "historicalBaselineBinding": {
+          "path": "src/publication.mjs",
+          "byteLength": 13610,
+          "sha256": "sha256:dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+        },
+        "byteIdentical": true
+      },
+      {
+        "member": "src/windows-paths.mjs",
+        "current": {
+          "path": "C:/m7fix/repositories/memoryos-readiness/src/windows-paths.mjs",
+          "byteLength": 5990,
+          "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+        },
+        "historicalInstalled": {
+          "path": "C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/src/windows-paths.mjs",
+          "byteLength": 5990,
+          "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+        },
+        "historicalBaselineBinding": {
+          "path": "src/windows-paths.mjs",
+          "byteLength": 5990,
+          "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+        },
+        "byteIdentical": true
+      },
+      {
+        "member": "src/errors.mjs",
+        "current": {
+          "path": "C:/m7fix/repositories/memoryos-readiness/src/errors.mjs",
+          "byteLength": 1823,
+          "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+        },
+        "historicalInstalled": {
+          "path": "C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/src/errors.mjs",
+          "byteLength": 1823,
+          "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+        },
+        "historicalBaselineBinding": {
+          "path": "src/errors.mjs",
+          "byteLength": 1823,
+          "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+        },
+        "byteIdentical": true
+      },
+      {
+        "member": "src/runtime.mjs",
+        "current": {
+          "path": "C:/m7fix/repositories/memoryos-readiness/src/runtime.mjs",
+          "byteLength": 16904,
+          "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+        },
+        "historicalInstalled": {
+          "path": "C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/src/runtime.mjs",
+          "byteLength": 16904,
+          "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+        },
+        "historicalBaselineBinding": {
+          "path": "src/runtime.mjs",
+          "byteLength": 16904,
+          "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+        },
+        "byteIdentical": true
+      }
+    ],
+    "observed": {
+      "result": "PASS",
+      "exit": 0,
+      "stderrBytes": 0,
+      "resultBytes": 59987,
+      "resultSha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7",
+      "helpers": 9,
+      "workers": 1,
+      "cleanupConfirmed": true,
+      "activeRole": null,
+      "publication": {
+        "phase": "COMMITTED",
+        "admitted": true,
+        "deadlineExpiredAfterAdmission": false,
+        "cancelledAfterAdmission": false,
+        "namespaceVerified": true,
+        "dispositionDeadline": 15340.3934
+      }
+    },
+    "historicalPassPromoted": false
+  },
+  "retainedFailureLimits": {
+    "observed": "Selector native-foundation-018 / N17 expectedexit0 actual21, MO1307_OUTPUT/PUBLICATION.",
+    "exactRuntimeRefusalBranchEstablished": false,
+    "innerTestProcessPidRetained": false,
+    "nativeRequestFramesRetained": false,
+    "qualification": "Parent-setup omission is proved from contract and source. The prior invocation exact filesystem state or refusal branch must not be asserted from its sanitized error alone."
+  },
+  "fixtureCorrectionReview": {
+    "result": "PASS_STATIC",
+    "current": {
+      "path": "C:/m7fix/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+      "byteLength": 24322,
+      "sha256": "sha256:d11533eaf8d9e54a9c50500aa8cbf0e15575b298544b506f0bfbce5b6387b6f7"
+    },
+    "exactOneLineAdded": "  await fs.mkdir(attempt, { recursive: true });",
+    "position": "After pins read and before out construction/CLI launch.",
+    "inverseEqualsBaseExactly": true,
+    "onlyEnvironmentalParentCreated": true,
+    "outputRootCreatedByFixture": false,
+    "finalOrPendingPrepopulated": false,
+    "expectedSummaryOrResultChanged": false,
+    "productionChangedByThisCorrection": false,
+    "validationNotPerformedByReviewer": true
+  },
+  "acceptanceClaim": false
+}
