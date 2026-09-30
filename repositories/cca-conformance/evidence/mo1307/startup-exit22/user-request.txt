@@ -1,0 +1,433 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3A
+
+STARTUP EXIT-22 ROOT-CAUSE CAPTURE
+THEN TARGETED REPAIR
+
+Current Phase 3A status:
+
+FAILED / INCOMPLETE
+
+Accepted Phase 3B remains:
+
+702c1b6381f6112a50ac844831d195275dac3350
+
+Accepted Phase 3C remains:
+
+b02fc0226a1a2d800185a02071674ca80bdf4a1d
+
+Do not rerun 3B or 3C.
+
+Current production authority remains:
+
+C3RB
+defe93989efc6501b1a730b82e79e705884b269b
+
+The recent console-correction candidates remain UNACCEPTED.
+
+==================================================
+1. CURRENT BLOCKER
+==================================================
+
+The detached-launch experiment established:
+
+detached:true
+
+caused PowerShell to exit 0 without script-entry/output.
+
+That issue is closed.
+
+The launch was restored to:
+
+detached:false
+
+The first repaired-helper wire smoke then produced:
+
+exit:
+22
+
+stdout:
+0 bytes
+
+stderr:
+0 bytes
+
+elapsed:
+1075.518 ms
+
+transport:
+MO1307_INTERNAL
+
+cleanup:
+unconfirmed
+
+This is now the sole blocker.
+
+==================================================
+2. OBJECTIVE
+==================================================
+
+Identify the exact startup branch or exception that causes silent exit 22.
+
+Do NOT perform another broad architecture investigation.
+
+Do NOT redesign console ownership.
+
+Do NOT run Phase 3A certification yet.
+
+Perform exactly ONE engineering-only instrumented startup execution.
+
+Then use the captured evidence to determine the concrete repair.
+
+==================================================
+3. ENGINEERING-ONLY DIAGNOSTIC COPY
+==================================================
+
+Create a diagnostic copy of the currently intended helper implementation.
+
+Do not modify the production candidate used for certification.
+
+The diagnostic copy may add bounded stderr-only startup diagnostics.
+
+STDOUT MUST remain untouched.
+
+Do not emit protocol frames from diagnostics.
+
+Do not change startup control flow except for observation.
+
+Do not suppress failures.
+
+Do not convert exit 22 into success.
+
+==================================================
+4. INSTRUMENTATION
+==================================================
+
+Instrument every startup operation that can lead to silent exit 22.
+
+Assign stable diagnostic identifiers.
+
+At minimum cover:
+
+S01 PowerShell version check
+
+S02 architecture check
+
+S03 OpenStandardInput
+
+S04 OpenStandardOutput
+
+S05 native assembly/binding initialization
+
+S06 native type creation
+
+S07 AllocHGlobal
+
+S08 first GetConsoleProcessList
+
+S09 Toolhelp snapshot creation
+
+S10 Process32FirstW
+
+S11 Process32NextW traversal
+
+S12 child/host attribution
+
+S13 OpenProcess
+
+S14 QueryFullProcessImageNameW
+
+S15 system conhost image comparison
+
+S16 FreeConsole
+
+S17 initial host wait
+
+S18 TerminateProcess if applicable
+
+S19 bounded host wait
+
+S20 final GetConsoleProcessList
+
+S21 CloseHandle / cleanup
+
+S22 FreeHGlobal
+
+S23 outer startup catch.
+
+For each failure record only bounded engineering information:
+
+diagnostic ID
+operation
+native return value
+Win32 error where applicable
+exception type
+exception HResult
+exception message bounded to a safe maximum
+relevant numeric counts/IDs
+elapsed monotonic time.
+
+No secret/file contents.
+
+No request contents.
+
+==================================================
+5. OUTER CATCH
+==================================================
+
+The existing silent production catch must remain silent in production.
+
+In the diagnostic copy only, change the catch from opaque:
+
+exit 22
+
+to:
+
+emit bounded startup diagnostic to STDERR
+then exit 22.
+
+Do not emit diagnostics to stdout.
+
+Do not change the exit code.
+
+==================================================
+6. EXECUTION
+==================================================
+
+Execute exactly ONE invocation using the same minimum successful wire-smoke request that just failed.
+
+Use:
+
+detached:false
+
+and the same fixed PowerShell/runtime configuration intended for the repaired product.
+
+No retry.
+
+No second sample.
+
+No alternate case.
+
+No certification campaign.
+
+==================================================
+7. REQUIRED RESULT
+==================================================
+
+Capture:
+
+whether script entry occurred
+last successful startup diagnostic ID
+first failed diagnostic ID
+native return values
+Win32 error
+exception type/HResult/message if caught
+process exit
+stdout bytes
+stderr bytes
+elapsed time
+transport result
+cleanup result.
+
+If the run unexpectedly succeeds:
+
+STOP.
+
+Do not run it again.
+
+Report that the blocker was not reproduced and preserve the observation.
+
+==================================================
+8. ROOT-CAUSE CLASSIFICATION
+==================================================
+
+After the single run classify exactly:
+
+STARTUP_RUNTIME_CHECK_FAILURE
+
+STARTUP_STDIO_FAILURE
+
+STARTUP_NATIVE_BINDING_FAILURE
+
+STARTUP_MEMORY_FAILURE
+
+STARTUP_CONSOLE_ENUMERATION_FAILURE
+
+STARTUP_HOST_ATTRIBUTION_FAILURE
+
+STARTUP_PROCESS_HANDLE_FAILURE
+
+STARTUP_IMAGE_IDENTITY_FAILURE
+
+STARTUP_DETACH_FAILURE
+
+STARTUP_HOST_WAIT_FAILURE
+
+STARTUP_FINAL_CONSOLE_PROOF_FAILURE
+
+STARTUP_CLEANUP_EXCEPTION
+
+STARTUP_OTHER_EXCEPTION
+
+STARTUP_FAILURE_NOT_REPRODUCED
+
+Use the captured diagnostic evidence, not inference.
+
+==================================================
+9. TARGETED REPAIR
+==================================================
+
+If a concrete cause is captured and the repair is clear:
+
+implement the smallest production correction necessary.
+
+Do not redesign unrelated startup logic.
+
+Do not alter:
+
+wire 2.0.0
+request/response schema
+readiness semantics
+tag semantics
+decision semantics
+resource limits
+cleanup limits
+human authority separation.
+
+If the failure is caused by the new console-ownership implementation, repair only that exact issue.
+
+If the failure proves the selected console-ownership design itself cannot function under the frozen platform, report:
+
+PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER
+
+with the exact captured reason.
+
+==================================================
+10. VALIDATION AFTER REPAIR
+==================================================
+
+If repaired:
+
+first rerun the minimum wire smoke ONCE.
+
+Require:
+
+valid framed response
+correct stdout
+correct stderr behavior
+expected exit
+confirmed transport settlement
+required cleanup.
+
+If that fails:
+
+STOP.
+
+If it passes:
+
+run the finite console/security validation.
+
+Then run:
+
+107-test regression campaign
+
+native filesystem regressions
+
+TOCTOU regressions
+
+required protocol/deadline/cleanup checks.
+
+If any mandatory validation fails:
+
+STOP.
+
+==================================================
+11. PHASE 3A CERTIFICATION
+==================================================
+
+If and only if all implementation validation passes:
+
+create a fresh new candidate.
+
+Fresh package.
+
+Fresh offline installation.
+
+Verify exact installed members.
+
+Seal full A-O inventory.
+
+Run Phase 3A ONCE from A through O.
+
+No historical PASS promotion.
+
+No retry.
+
+At first mandatory failure:
+
+STOP.
+
+If all A-O pass:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE.
+
+==================================================
+12. AFTER 3A
+==================================================
+
+If Phase 3A becomes accepted:
+
+do not start Phase 3D.
+
+Return the exact candidate and dependency impact.
+
+Then we will run:
+
+Phase 3B scoped refresh
+
+and
+
+Phase 3C scoped refresh
+
+in parallel.
+
+Existing accepted C3RB 3B/3C evidence remains preserved.
+
+==================================================
+13. FINAL OUTCOMES
+==================================================
+
+Return only:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+or
+
+PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER
+
+No further broad research classification.
+
+==================================================
+14. FINAL REPORT
+==================================================
+
+Report:
+
+1. exact captured startup failure,
+2. diagnostic ID,
+3. native/exception evidence,
+4. concrete repair,
+5. wire-smoke result,
+6. security validation,
+7. regressions,
+8. new candidate identity,
+9. A-O results,
+10. Phase 3A status,
+11. commit/binding identities,
+12. exact 3B refresh scope,
+13. exact 3C refresh scope,
+14. repository status.
+
+No push.
+No tag.
+No Phase 3D.
