@@ -1,0 +1,329 @@
+{
+  "kind": "MO1307FinalHeadlessSecurityMatrix",
+  "candidate": null,
+  "candidateStatus": "NOT_YET_CANDIDATE",
+  "once": true,
+  "noRetry": true,
+  "stopOnFirstUnexpectedFailure": true,
+  "additionalRealProductHelpers": 0,
+  "limits": {
+    "helperMs": 5000,
+    "aggregateMs": 20000,
+    "cliMs": 30000,
+    "apiWorkerMs": 10000,
+    "cleanupMs": 2000,
+    "stderrBytes": 4096
+  },
+  "scope": {
+    "nativeSmoke": "Exactly one unmodified production helper and fixed launch. A valid matching response plus exact source gate establishes positive sole-PID membership, successful self-FreeConsole and request consumption; there is no alternative success branch or post-detach membership query. No diagnostic invocation.",
+    "nativeDoubles": "Exact extracted Confirm-ConsoleQuiescence; controlled native returns/throws validate code branches. These do not claim forced live OS failures, live host identity or host exit.",
+    "zeroErrors": "All zero returns reject without reading LastError. Cases6,5,203 carry configured unconsumed error contexts; no native last-error value is synthesized or treated as an absence witness.",
+    "transportDoubles": "Production transport/supervisor with in-memory child/stream doubles and injected monotonic time; no OS process or real-time scheduling proof.",
+    "host": "No host discovery/open/wait/termination and no console allocation/attachment; no unidentified host death claim."
+  },
+  "items": [
+    {
+      "id": "A",
+      "name": "normal-headless-startup",
+      "kind": "ONE_PRIOR_REAL_SMOKE",
+      "cases": []
+    },
+    {
+      "id": "B",
+      "name": "sole-helper-membership",
+      "kind": "REAL_SMOKE_SOURCE_GATE_AND_EXTRACTED_FUNCTION",
+      "cases": [
+        "sole-helper"
+      ]
+    },
+    {
+      "id": "C",
+      "name": "invalid-pipe-state-refusal",
+      "kind": "EXACT_FUNCTION_NATIVE_DOUBLE",
+      "cases": [
+        "stdin-invalid",
+        "stdout-invalid",
+        "stderr-invalid",
+        "stdin-not-pipe",
+        "stdout-not-pipe",
+        "stderr-not-pipe"
+      ]
+    },
+    {
+      "id": "D",
+      "name": "extra-attached-client-refusal",
+      "kind": "EXACT_FUNCTION_NATIVE_DOUBLE",
+      "cases": [
+        "extra-client"
+      ]
+    },
+    {
+      "id": "E",
+      "name": "initial-membership-failure-refusal",
+      "kind": "EXACT_FUNCTION_NATIVE_DOUBLE",
+      "cases": [
+        "initial-zero-error6",
+        "initial-zero-error5",
+        "initial-zero-error203"
+      ]
+    },
+    {
+      "id": "F",
+      "name": "membership-overflow-refusal",
+      "kind": "EXACT_FUNCTION_NATIVE_DOUBLE",
+      "cases": [
+        "overflow"
+      ]
+    },
+    {
+      "id": "G",
+      "name": "membership-mismatch-refusal",
+      "kind": "EXACT_FUNCTION_NATIVE_DOUBLE",
+      "cases": [
+        "unrelated-sole-client"
+      ]
+    },
+    {
+      "id": "H",
+      "name": "no-speculative-host-lookup",
+      "kind": "EXACT_SOURCE_REVIEW",
+      "cases": []
+    },
+    {
+      "id": "I",
+      "name": "no-speculative-host-termination",
+      "kind": "EXACT_SOURCE_REVIEW",
+      "cases": []
+    },
+    {
+      "id": "J",
+      "name": "no-console-reattachment-or-allocation",
+      "kind": "EXACT_SOURCE_REVIEW",
+      "cases": []
+    },
+    {
+      "id": "K",
+      "name": "helper-crash-handling",
+      "kind": "PRODUCTION_TRANSPORT_DOUBLE",
+      "cases": [
+        "crash"
+      ]
+    },
+    {
+      "id": "L",
+      "name": "FreeConsole-false-or-throw-silent22",
+      "kind": "EXACT_FUNCTION_NATIVE_DOUBLE",
+      "cases": [
+        "detach-failure",
+        "detach-throw"
+      ]
+    },
+    {
+      "id": "M",
+      "name": "timeout-handling",
+      "kind": "PRODUCTION_TRANSPORT_DOUBLE",
+      "cases": [
+        "timeout"
+      ]
+    },
+    {
+      "id": "N",
+      "name": "silent-exit22-aggregation",
+      "kind": "RETAINED_REFUSAL_PROOFS_NO_RERUN",
+      "cases": []
+    },
+    {
+      "id": "O",
+      "name": "late-output-refusal",
+      "kind": "PRODUCTION_TRANSPORT_DOUBLE",
+      "cases": [
+        "late-output"
+      ]
+    },
+    {
+      "id": "P",
+      "name": "stream-and-process-closure",
+      "kind": "PRODUCTION_TRANSPORT_DOUBLE",
+      "cases": [
+        "delayed-pipe-close"
+      ]
+    },
+    {
+      "id": "Q",
+      "name": "no-active-helper-after-settlement",
+      "kind": "PRODUCTION_TRANSPORT_DOUBLE",
+      "cases": [
+        "quiescence"
+      ]
+    },
+    {
+      "id": "R",
+      "name": "helper-helper-and-helper-worker-nonoverlap",
+      "kind": "PRODUCTION_SUPERVISOR_DOUBLE",
+      "cases": [
+        "helper-overlap",
+        "worker-overlap"
+      ]
+    },
+    {
+      "id": "S",
+      "name": "deadline-preservation",
+      "kind": "PRODUCTION_SUPERVISOR_DOUBLE_AND_CONSTANTS",
+      "cases": [
+        "deadline-boundaries"
+      ]
+    }
+  ],
+  "startupScenarios": [
+    {
+      "name": "sole-helper",
+      "accepted": true,
+      "expectedExit": 0,
+      "expectedFailure": null,
+      "membershipCalls": 1,
+      "freeConsoleCalls": 1,
+      "detached": true,
+      "configuredErrorContext": null
+    },
+    {
+      "name": "stdin-invalid",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "MO1307_INTERNAL",
+      "membershipCalls": 0,
+      "freeConsoleCalls": 0,
+      "detached": false,
+      "configuredErrorContext": null
+    },
+    {
+      "name": "stdout-invalid",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "MO1307_INTERNAL",
+      "membershipCalls": 0,
+      "freeConsoleCalls": 0,
+      "detached": false,
+      "configuredErrorContext": null
+    },
+    {
+      "name": "stderr-invalid",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "MO1307_INTERNAL",
+      "membershipCalls": 0,
+      "freeConsoleCalls": 0,
+      "detached": false,
+      "configuredErrorContext": null
+    },
+    {
+      "name": "stdin-not-pipe",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "MO1307_INTERNAL",
+      "membershipCalls": 0,
+      "freeConsoleCalls": 0,
+      "detached": false,
+      "configuredErrorContext": null
+    },
+    {
+      "name": "stdout-not-pipe",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "MO1307_INTERNAL",
+      "membershipCalls": 0,
+      "freeConsoleCalls": 0,
+      "detached": false,
+      "configuredErrorContext": null
+    },
+    {
+      "name": "stderr-not-pipe",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "MO1307_INTERNAL",
+      "membershipCalls": 0,
+      "freeConsoleCalls": 0,
+      "detached": false,
+      "configuredErrorContext": null
+    },
+    {
+      "name": "extra-client",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "MO1307_INTERNAL",
+      "membershipCalls": 1,
+      "freeConsoleCalls": 0,
+      "detached": false,
+      "configuredErrorContext": null
+    },
+    {
+      "name": "initial-zero-error6",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "MO1307_INTERNAL",
+      "membershipCalls": 1,
+      "freeConsoleCalls": 0,
+      "detached": false,
+      "configuredErrorContext": 6
+    },
+    {
+      "name": "initial-zero-error5",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "MO1307_INTERNAL",
+      "membershipCalls": 1,
+      "freeConsoleCalls": 0,
+      "detached": false,
+      "configuredErrorContext": 5
+    },
+    {
+      "name": "initial-zero-error203",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "MO1307_INTERNAL",
+      "membershipCalls": 1,
+      "freeConsoleCalls": 0,
+      "detached": false,
+      "configuredErrorContext": 203
+    },
+    {
+      "name": "overflow",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "MO1307_INTERNAL",
+      "membershipCalls": 1,
+      "freeConsoleCalls": 0,
+      "detached": false,
+      "configuredErrorContext": null
+    },
+    {
+      "name": "unrelated-sole-client",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "MO1307_INTERNAL",
+      "membershipCalls": 1,
+      "freeConsoleCalls": 0,
+      "detached": false,
+      "configuredErrorContext": null
+    },
+    {
+      "name": "detach-failure",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "MO1307_INTERNAL",
+      "membershipCalls": 1,
+      "freeConsoleCalls": 1,
+      "detached": false,
+      "configuredErrorContext": null
+    },
+    {
+      "name": "detach-throw",
+      "accepted": false,
+      "expectedExit": 22,
+      "expectedFailure": "ENGINEERING_FREECONSOLE_THROW",
+      "membershipCalls": 1,
+      "freeConsoleCalls": 1,
+      "detached": false,
+      "configuredErrorContext": null
+    }
+  ]
+}

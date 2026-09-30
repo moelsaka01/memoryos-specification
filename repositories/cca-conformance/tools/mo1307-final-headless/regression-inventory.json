@@ -1,0 +1,190 @@
+{
+  "kind": "MO1307FinalHeadlessExactRegressionInventory",
+  "status": "STATIC_DECLARATION_NOT_EXECUTED",
+  "total": 107,
+  "testFilesUnchanged": true,
+  "selection": "One exact anchored escaped test name per fresh process; every selected callback executes once. Nonmatching registrations are excluded by Node test-name-pattern; their reported skips do not represent mandatory tests.",
+  "discovery": "Read-only source extraction of literal top-level test calls, plus the four finite loop expansions declared in these source-bound files. No import or test discovery execution.",
+  "topLevelReview": "No helper, worker or test execution outside selected callbacks. Package suite creates only its scratch directory. No hooks, nested tests, skip/only declarations or cross-test state dependencies were found.",
+  "suites": [
+    {
+      "id": "package-tests",
+      "file": "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs",
+      "expectedTests": 8,
+      "source": {
+        "path": "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs",
+        "byteLength": 4004,
+        "sha256": "sha256:416769604d5faeb1b4c086e49a09ba907f56bc59a78099368df751a23669cc68"
+      },
+      "names": [
+        "package metadata and deterministic nonrecursive bindings",
+        "unexpected member is rejected without refreshing the binding",
+        "changed shipped source fails exact distribution binding",
+        "schema drift cannot be hidden by rebuilding manifests",
+        "constants drift cannot be hidden by rebuilding manifests",
+        "dependencies, lifecycle hooks, extra exports and traversal allowlist are rejected",
+        "network and external imports are rejected before manifest regeneration",
+        "missing fixed helper and mutated manifest rows are rejected"
+      ]
+    },
+    {
+      "id": "launch-policy",
+      "file": "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs",
+      "expectedTests": 13,
+      "source": {
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs",
+        "byteLength": 4624,
+        "sha256": "sha256:8fdbf1dc83592b1d83e0aad5342598217536ba4b8bad2aef2fa0d766eb821613"
+      },
+      "names": [
+        "LP01 exact trusted Windows PowerShell 5.1 executable",
+        "LP02 exact fixed argument ordering and Bypass value",
+        "LP03 fixed packaged helper path from module location",
+        "LP04 no encoded command, expression or shell authority",
+        "LP05 caller object cannot supply executable, script or policy",
+        "LP06 launch specification and nested authority are immutable",
+        "LP07 ambient PATH, system-root, policy and script poisons cannot select launch",
+        "LP08 actual transport calls spawn with fixed array and sanitized environment",
+        "LP09 CLI cannot select --script",
+        "LP09 CLI cannot select --execution-policy",
+        "LP09 CLI cannot select --powershell",
+        "LP10 no persistent policy or registry mutation code is introduced",
+        "LP11 public package exports cannot expose launch override"
+      ]
+    },
+    {
+      "id": "runtime",
+      "file": "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs",
+      "expectedTests": 36,
+      "source": {
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs",
+        "byteLength": 16914,
+        "sha256": "sha256:41ac036c712de739362a5d79504f4c35e12dadb9102fec59d722759f9888823c"
+      },
+      "names": [
+        "R01 api exact absolute deadline and equality",
+        "R01 cli exact absolute deadline and equality",
+        "R02 earlier cancellation stays terminal after deadline",
+        "R03 timeout wins simultaneous first cancellation observation",
+        "R04 preaborted signal prevents any launch",
+        "R05 monotonic decreasing clock rejects",
+        "R06 API cannot launch helper",
+        "R07 helper deadline includes all active time; equality rejects",
+        "R08 aggregate deadline does not reset across helpers",
+        "R09 worker time is excluded from helper aggregate but inside overall",
+        "R10 helper overlap is terminal and cleans prior owned role",
+        "R11 helper and worker cannot overlap",
+        "R12 frame alone cannot advance before actual close",
+        "R13 launch uses only fixed executable/script/environment and no shell",
+        "R14 helper trailing byte fails closed",
+        "R14 helper extra frame fails closed",
+        "R14 helper debug stdout fails closed",
+        "R14 helper truncated frame fails closed",
+        "R14 helper oversized prefix fails closed",
+        "R14 helper stderr overflow fails closed",
+        "R14 helper nonzero exit fails closed",
+        "R15 cancellation in launch terminates and ignores later valid frame",
+        "R16 cancellation during transport cleans child",
+        "R17 fixed actual worker has empty environment and exact heap intent",
+        "R18 successful worker result waits for termination",
+        "R19 actual worker crash fails closed",
+        "R19 actual worker duplicate fails closed",
+        "R19 actual worker stdout fails closed",
+        "R20 cancellation actually terminates CPU-bound worker thread",
+        "R21 production worker executes accepted 2A/2B and confirms quiescence",
+        "R22 adapter matches closed 2A handoff; operational/session fields excluded",
+        "R23 verify evidence seam excludes result and decision bytes",
+        "R24 malformed decision uses dedicated mismatch, cap uses resource",
+        "R25 actual worker policy denies filesystem/network/process/module escape imports",
+        "R26 cancellation preempts pending publication promise without another role",
+        "R27 late publication promise cannot restore terminal success"
+      ]
+    },
+    {
+      "id": "protocol-publication-correction",
+      "file": "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs",
+      "expectedTests": 24,
+      "source": {
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs",
+        "byteLength": 16808,
+        "sha256": "sha256:07564080e458e97eb9d35154b2f44eff6d566df437cdcc9ca0ca701165133d1f"
+      },
+      "names": [
+        "C2C01 corrected limits leave all byte ceilings unchanged",
+        "C2C02 every required observation has a canonical closed framed representation",
+        "C2C03 old wire version missing session unknown fields and arbitrary operations reject",
+        "C2C04 operation sequence and fixed output leaf authority are closed",
+        "C2C05 bounded frames reject trailing requests responses and alternate session",
+        "C2C06 complete acquisition then terminated worker then five publication requests",
+        "C2C07 helper completion cannot substitute for fully quiescent exit",
+        "C2C08 helper and worker overlap and repeated worker transition are terminal",
+        "C2C09 verify remains four reads followed by worker and cannot publish",
+        "C2C10 request failure abort and transport failure permit no retry",
+        "C2C11 full component chains reject missing ancestors wrong paths reparse and hardlinks",
+        "C2C12 acquisition parent cannot be reused after native identity change",
+        "C2C13 path and cross-invocation session substitutions terminate assessment",
+        "C2C14 capability branding root binding and single claim exclude substitution",
+        "C2C15 unclaimed out-of-order or concurrent inspection cannot be retried",
+        "C2C16 bridge requires exact transport fields and confirmed process quiescence",
+        "C2C17 per-invocation deadline includes response parsing and process exit",
+        "C2C18 aggregate helper budget cannot silently multiply with sequential invocations",
+        "C2C19 overall CLI deadline and nonmonotonic clock fail without grace",
+        "C2C20 framed publication performs exact five observations and one final rename",
+        "C2C21 cancellation after each publication inspection is terminal and retains incomplete attempt",
+        "C2C22 immediate pre-rename checkpoint blocks timeout after final native observation",
+        "C2C23 final native pending identity comparison rejects stale replacement and retains bytes",
+        "C2C24 mismatched branded capability and legacy callback cannot create an output root"
+      ]
+    },
+    {
+      "id": "timer-lifetime",
+      "file": "repositories/cca-conformance/tests/mo1307_phase2c_timer_lifetime_test.mjs",
+      "expectedTests": 1,
+      "source": {
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_timer_lifetime_test.mjs",
+        "byteLength": 522,
+        "sha256": "sha256:fd9e2afa341b15e010d8027b2e7f1076b8490803ca54d3c7ad0169c288a039f7"
+      },
+      "names": [
+        "N24-C invocation timers clear after success, write/rename failure and pre/post-admission cancellation including a stalled write; no server, watcher or cross-run callbacks"
+      ]
+    },
+    {
+      "id": "native-foundation",
+      "file": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+      "expectedTests": 25,
+      "source": {
+        "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+        "byteLength": 24274,
+        "sha256": "sha256:f24dbc94bbd796dd4d3d320df85d58d158558fa73f19f8ee94ebdff59ff16712"
+      },
+      "names": [
+        "N01 pinned native runtime and fixed PowerShell installation",
+        "N02 closed CLI commands and defaults",
+        "N03 prototype-sensitive and invented commands reject as usage",
+        "N04 duplicate unknown missing extra flags reject",
+        "N05 forbidden runtime environment and Node options reject before I/O",
+        "N04b inspectable configuration path failures select lowest logical ID",
+        "N06 relative lexical boundaries and hostile spellings",
+        "N07 absolute roots full paths overlap and case aliases",
+        "N08 identity policy rejects any reparse flag hardlink wrong type and changes",
+        "N09 helper canonical round-trip and closed operation fields",
+        "N10 helper frame prefix truncation trailing data and caps",
+        "N11 helper sorted explicit allowlist path and per-file boundaries",
+        "N12 acquisition needs four serial exits and invalid overlap or retry is terminal",
+        "N13 helper response exact snapshot identity and base64 validation",
+        "N14 helper decoded aggregate boundary and +1",
+        "N15 native fixed PowerShell snapshots and checked inspection sanitization",
+        "N16 native helper rejects hostile operation extra fields and oversized frame",
+        "N17 native CLI evaluates and publishes exact integrated result",
+        "N18 publication exclusive create exact pending and single-file commit",
+        "N19 existing final destination never replaced and pending retained",
+        "N20 pending collision and mutation fail closed without cleanup",
+        "N21 publication byte ceiling boundary and +1 before write",
+        "N22 branded framed inspection required and identity change rejects",
+        "N23 primitive late checkpoint prevents rename and retains pending",
+        "N24 foundation retains no-network and fixed orchestration boundaries"
+      ]
+    }
+  ]
+}

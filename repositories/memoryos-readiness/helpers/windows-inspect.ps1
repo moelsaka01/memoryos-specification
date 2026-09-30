@@ -132,15 +132,12 @@ function Confirm-ConsoleQuiescence {
     $buffer = [Runtime.InteropServices.Marshal]::AllocHGlobal(4)
     try {
         $count = $script:native::GetConsoleProcessList($buffer, 1)
-        $nativeError = [Runtime.InteropServices.Marshal]::GetLastWin32Error()
-        if ($count -eq 0 -and $nativeError -eq 6) { return }
+        # Every failed initial observation, including zero/error 6, fails closed.
         if ($count -ne 1 -or [Runtime.InteropServices.Marshal]::ReadInt32($buffer) -ne $PID) { Reject-Protocol 'MO1307_INTERNAL' }
         # Membership is topology evidence only. Detach this helper without
         # discovering, opening, terminating or claiming exit of any host process.
         if (-not $script:native::FreeConsole()) { Reject-Protocol 'MO1307_INTERNAL' }
-        $remaining = $script:native::GetConsoleProcessList($buffer, 1)
-        $nativeError = [Runtime.InteropServices.Marshal]::GetLastWin32Error()
-        if ($remaining -ne 0 -or $nativeError -ne 6) { Reject-Protocol 'MO1307_INTERNAL' }
+        # Successful self-detachment is the transition; do not query membership again.
     } finally {
         [Runtime.InteropServices.Marshal]::FreeHGlobal($buffer)
     }

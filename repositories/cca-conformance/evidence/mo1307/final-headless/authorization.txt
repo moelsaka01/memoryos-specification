@@ -1,0 +1,621 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3A
+
+AUTHORIZED FINAL HEADLESS CORRECTION
+IMPLEMENT → VALIDATE → CERTIFY
+
+Main MO-1307 governance has returned:
+
+POST_DETACH_WITNESS_CORRECTION_AUTHORIZED
+
+This is now controlling prospective authority for the Phase 3A repair.
+
+Do not reopen the resolved post-detach question.
+
+==================================================
+1. CURRENT AUTHORITIES
+==================================================
+
+Current production authority:
+
+C3RB
+defe93989efc6501b1a730b82e79e705884b269b
+
+Accepted Phase 3B for C3RB:
+
+702c1b6381f6112a50ac844831d195275dac3350
+
+Accepted Phase 3C for C3RB:
+
+b02fc0226a1a2d800185a02071674ca80bdf4a1d
+
+Both remain accepted historical/current C3RB evidence.
+
+Do not rerun them during this task.
+
+Phase 3A remains FAILED / INCOMPLETE.
+
+==================================================
+2. AUTHORIZED POST-DETACH RULE
+==================================================
+
+For the branch entered after a successful bounded console-membership observation identifying exactly the current helper PID:
+
+1. Preserve all three actual product-pipe checks.
+
+2. Preserve the existing bounded membership admission checks.
+
+3. Require self-only FreeConsole() to return nonzero.
+
+4. Successful FreeConsole establishes the helper's documented detachment transition.
+
+5. REMOVE the subsequent GetConsoleProcessList call.
+
+6. REMOVE the entire:
+
+count == 0 && error == 6
+
+post-detachment predicate.
+
+7. Do NOT substitute:
+
+error 203
+another error
+preset LastError
+another undocumented absence witness.
+
+8. Permit no subsequent console allocation, console attachment or console-creating fallback.
+
+9. Preserve silent startup exit 22 if FreeConsole fails or startup throws.
+
+10. Detachment alone does NOT authorize transition.
+
+The supervisor must still establish within existing limits:
+
+valid framed response
+helper process termination
+stdout EOF
+stderr EOF
+stdin completion/closure
+all three stream closures
+owned-resource closure
+no active helper role
+no helper/helper overlap
+no helper/worker overlap
+bounded quiescence.
+
+No unidentified console-host death may be claimed.
+
+==================================================
+3. PRESERVE HISTORY
+==================================================
+
+Do not rewrite or delete:
+
+the sealed headless-cleanup specification
+
+its failed implementation
+
+T018
+
+the 0/error203 observation
+
+previous Phase 3A generations
+
+J history
+
+G history
+
+console ownership experiments
+
+detached-launch experiment
+
+GetConsoleWindow failure.
+
+Create a NEW prospective specification addendum superseding only the affected post-detach item and dependent wording.
+
+==================================================
+4. INITIAL-ZERO ROUTE
+==================================================
+
+Main governance explicitly did NOT authorize broadening the separate initial:
+
+GetConsoleProcessList() == 0
+
+route.
+
+Microsoft's documented contract treats return 0 as failure and directs callers to GetLastError.
+
+Therefore, for this new candidate, resolve the initial-zero route conservatively:
+
+INITIAL GetConsoleProcessList == 0 MUST FAIL CLOSED with silent startup exit 22.
+
+Do NOT interpret:
+
+0/error6
+
+as positive proof of "no console."
+
+Do NOT treat any other error as successful absence.
+
+Do NOT add a new API merely to rescue this branch.
+
+The successful supported headless path for this correction is:
+
+positive bounded membership observation
+→ exactly helper PID
+→ successful FreeConsole
+→ no second membership query
+→ normal helper request processing
+→ supervisor-enforced termination/EOF/quiescence.
+
+Record this initial-zero correction explicitly in the prospective specification addendum.
+
+If repository authority contains an explicit higher-priority requirement that absolutely mandates accepting initial 0/error6 as success, STOP before implementation and report the exact conflict.
+
+Otherwise proceed.
+
+==================================================
+5. IMPLEMENTATION
+==================================================
+
+Implement the smallest production correction.
+
+Expected scope:
+
+repositories/memoryos-readiness/helpers/windows-inspect.ps1
+
+repositories/memoryos-readiness/helpers/README.md
+
+repositories/memoryos-readiness/src/helper-transport.mjs
+only for terminology/observation semantics if executable behavior does not need change
+
+repositories/memoryos-readiness/distribution-manifest.json
+
+repositories/memoryos-readiness/sbom.spdx.json
+
+plus the new prospective correction addendum and required conformance tooling/evidence.
+
+Keep:
+
+detached:false
+
+fixed PowerShell executable
+
+shell:false
+
+three pipes
+
+wire 2.0.0
+
+existing request/response behavior.
+
+Do not restore:
+
+numeric PPID ownership
+
+GetConsoleWindow ownership
+
+host PID guessing
+
+TerminateProcess against an unidentified host
+
+post-detach GetConsoleProcessList
+
+initial-zero success.
+
+==================================================
+6. FIRST SMOKE
+==================================================
+
+After implementation, run exactly ONE minimum native helper wire smoke.
+
+Require:
+
+positive sole-helper membership
+
+FreeConsole success
+
+no second membership query
+
+first request read reached
+
+valid request consumed
+
+valid response frame
+
+expected stdout
+
+expected stderr
+
+expected process exit
+
+stdin/stdout/stderr settlement
+
+helper termination
+
+no active helper role
+
+required quiescence.
+
+If this fails:
+
+STOP with PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER.
+
+Do not begin another architecture investigation.
+
+==================================================
+7. SECURITY MATRIX
+==================================================
+
+If smoke passes, run the finite corrected startup/headless security matrix.
+
+At minimum:
+
+A normal-headless-startup
+
+B sole-helper membership
+
+C invalid pipe state refusal
+
+D extra attached client refusal
+
+E initial GetConsoleProcessList failure, including prior 0/error6 route, must fail closed
+
+F membership overflow refusal
+
+G membership mismatch refusal
+
+H no speculative host lookup
+
+I no speculative host termination
+
+J no console reattachment/allocation after detach
+
+K helper crash handling
+
+L actual FreeConsole failure → silent exit22
+
+M timeout handling
+
+N silent-exit22 aggregation reconciled to new predicates
+
+O late-output refusal
+
+P stream/process closure
+
+Q no active helper after settlement
+
+R helper/worker non-overlap
+
+S deadline preservation.
+
+Remove obsolete expectations that require:
+
+post-detach GetConsoleProcessList
+
+post-detach error6
+
+host death when no host object was identified.
+
+Preserve those old cases historically.
+
+==================================================
+8. SECURITY ACCEPTANCE
+==================================================
+
+Require all mandatory corrected startup/security cases to pass.
+
+No retry-until-pass.
+
+At first mandatory failure:
+
+STOP.
+
+==================================================
+9. REGRESSIONS
+==================================================
+
+If startup/security validation passes, run all required affected regressions:
+
+107-test regression campaign
+
+native filesystem regressions
+
+two TOCTOU controls
+
+protocol controls
+
+deadline/cancellation controls
+
+cleanup/topology controls
+
+package integrity checks.
+
+Reconcile certification J with the corrected cleanup authority.
+
+The closed J floating-point correction remains:
+
+cleanupDeadline === terminalAt + 2000
+
+with zero epsilon/tolerance/slack.
+
+Do not reopen that issue.
+
+At first mandatory regression failure:
+
+STOP.
+
+==================================================
+10. NEW CANDIDATE
+==================================================
+
+If all correction validation passes:
+
+create a NEW candidate identity.
+
+Do not reuse any previous unaccepted candidate identity.
+
+Recompute and bind:
+
+production tree
+
+helper
+
+transport if changed
+
+README/spec
+
+distribution manifest
+
+SBOM
+
+all 89 package members
+
+correction authority
+
+security validation
+
+regression validation.
+
+==================================================
+11. FRESH PHASE 3A CERTIFICATION
+==================================================
+
+Immediately perform a NEW complete Phase 3A generation against the accepted new candidate.
+
+Fresh short isolated worktree.
+
+Fresh package.
+
+Fresh offline installation.
+
+Verify exact installed members.
+
+Seal the complete A-O inventory.
+
+Execute exactly once from A through O.
+
+No historical PASS promotion.
+
+No case retry.
+
+No replacement execution.
+
+At first mandatory failure:
+
+STOP.
+
+==================================================
+12. A-O
+==================================================
+
+A
+MO-1306 evaluate / verify / API
+
+B
+READY
+
+C
+NOT_READY
+
+D
+COULD_NOT_EVALUATE
+
+E
+REST
+
+F
+seven human decisions
+
+G
+complete supplied-tag inventory
+
+H
+helper deadline/cancellation
+
+I
+worker deadline/cancellation
+
+J
+cleanup/process topology under the corrected authority
+
+K
+finalization
+
+L
+filesystem/native controls
+
+M
+environment isolation
+
+N
+byte determinism
+
+O
+final MO-1306 confirmation
+
+==================================================
+13. RESOURCE AUTHORITY
+==================================================
+
+Unchanged:
+
+helper:
+5000 ms
+
+aggregate helper:
+20000 ms
+
+CLI:
+30000 ms
+
+API/worker:
+10000 ms
+
+cleanup:
+2000 ms
+
+H:
+NOT_ESTABLISHED
+
+No deadline redesign.
+
+==================================================
+14. SUCCESS
+==================================================
+
+If all mandatory A-O certification requirements pass:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+Create:
+
+immutable certification receipt
+
+certification evidence
+
+accepted Phase 3A commit
+
+candidate binding
+
+Phase 3D handoff input.
+
+Do NOT start Phase 3D.
+
+==================================================
+15. AFTER 3A ACCEPTANCE
+==================================================
+
+Because candidate bytes changed, report the exact final candidate and exact dependency refresh scope.
+
+We will then launch in PARALLEL:
+
+Phase 3B scoped refresh
+
+Phase 3C scoped refresh.
+
+The accepted C3RB 3B/3C commits remain preserved historical acceptance.
+
+==================================================
+16. EXPECTED 3B REFRESH
+==================================================
+
+At minimum reconcile candidate-bound:
+
+archive identity
+
+member inventory
+
+distribution manifest
+
+SBOM
+
+two-assembly reproducibility
+
+offline installation
+
+installed equality
+
+runtime closure
+
+installed smoke
+
+affected tamper controls
+
+provenance/binding.
+
+Reuse only dependency-closed unchanged evidence.
+
+==================================================
+17. EXPECTED 3C REFRESH
+==================================================
+
+Start from the existing affected scope:
+
+67 equivalence
+
+12 protocol
+
+2 TOCTOU
+
+6 deadline/cleanup
+
+1 fixed-launch
+
+plus:
+
+corrected headless/startup controls
+
+source review
+
+candidate binding
+
+supporting native witnesses.
+
+Reconcile exact scope against the FINAL accepted diff.
+
+Do not automatically rerun all 551 if dependency closure permits scoped reuse.
+
+==================================================
+18. FINAL OUTCOMES
+==================================================
+
+Return only:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+or
+
+PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER
+
+A blocker must be an actual implementation, validation, regression or certification failure.
+
+No broad architecture/research response.
+
+==================================================
+19. FINAL REPORT
+==================================================
+
+Report:
+
+1. prospective authority addendum,
+2. initial-zero disposition,
+3. exact production correction,
+4. smoke result,
+5. startup/security matrix,
+6. regression results,
+7. new candidate identity,
+8. package/install identity,
+9. A-O results,
+10. certification receipt,
+11. Phase 3A status,
+12. commits/bindings,
+13. exact 3B refresh scope,
+14. exact 3C refresh scope,
+15. repository status,
+16. next action.
+
+No push.
+No tag.
+No Phase 3D.

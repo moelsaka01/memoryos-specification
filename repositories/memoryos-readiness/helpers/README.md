@@ -43,7 +43,7 @@ the correction document gives their exact shapes.
 
 Successful evaluate uses nine fresh helper invocations; verify uses four. Every
 invocation has one request. They are serial, without skipped/repeated slots or
-automatic retry. The helper must establish native console absence, then its
+automatic retry. The helper must establish sole-helper membership and successful self-detachment, then its
 process and all transports must close before any next helper or evaluation worker.
 The headless path does not claim termination of an unidentified console host. One
 supervisor, at most one helper and its possible console host preserve the three
@@ -73,7 +73,7 @@ never a public clock override or normative readiness input.
 Each helper has 5,000 ms, with a new explicit **20,000 ms aggregate helper-active
 ceiling** preserving the original four-times-five-second upper bound. Active
 time starts before launch and includes startup, native work, framing/EOF waits
-and confirmed helper termination, helper console absence and transport closure. The CLI's 30,000 ms deadline remains
+and confirmed helper termination, prior self-detachment and transport closure. The CLI's 30,000 ms deadline remains
 absolute for helper acquisition and final rename admission; each helper deadline is the earliest of its own five seconds, remaining
 aggregate budget and overall deadline. Equality is TIMEOUT. The API deadline
 remains 10,000 ms; cleanup is at most 2,000 ms after failure, never success grace.
@@ -141,25 +141,28 @@ trusted environment entries remain unchanged. The supervisor retains the child
 reference, process-exit checks, complete transport settlement, cancellation and
 fixed deadlines. No host exit is inferred from the launch mode.
 
-The [scoped headless cleanup correction](../../../docs/mo1307-headless-cleanup-correction.md)
+The [scoped headless cleanup correction](../../../docs/mo1307-headless-cleanup-correction.md),
+as prospectively amended by the [final headless correction addendum](../../../docs/mo1307-final-headless-correction-addendum.md),
 replaces the prior mandatory host-attribution/termination predicate for this
 supported path. Startup saves all three standard streams and requires non-null,
 readable stdin and writable stdout/stderr. Fixed `GetStdHandle` selectors and
 `GetFileType` require three actual pipe handles; borrowed standard handles are
 not independently closed or promoted to host authority.
 
-Bounded `GetConsoleProcessList` checking accepts native no-console absence
-(count zero with error 6), or exactly one client whose PID is the helper itself.
-Extra clients, overflow, unrelated membership and other API failures reject.
-Membership is topology evidence only. When attached, `FreeConsole` detaches only
-the helper, followed by a required count-zero/error-6 absence observation. The
-fixed four-byte buffer is always released. No HWND, numeric ancestry, guessed
+Bounded `GetConsoleProcessList` checking requires exactly one client whose PID
+is the helper itself. Initial count zero always fails closed, including error 6;
+no error value proves successful absence. Extra clients, overflow, unrelated
+membership and API failures reject. Membership is topology evidence only.
+`FreeConsole` must successfully detach only the helper. Its success establishes
+that detachment transition; there is no second membership query or post-detach
+error predicate. No subsequent console allocation, attachment or console-creating
+fallback is permitted. The fixed four-byte buffer is always released. No HWND, numeric ancestry, guessed
 PID, process-handle lookup or host termination is used. No host process is opened,
 waited on or terminated. The former 1,000 ms host-wait limit is inapplicable
 without an identified host; no replacement wait or larger allowance is added.
 
 Every valid response, including an ERROR frame, follows the startup pipe,
-membership and helper-console-absence checks. The unchanged supervisor then
+sole-helper membership and successful self-detachment checks. The unchanged supervisor then
 requires helper process termination, stdin finish/closure, stdout/stderr EOF
 and closure, no active helper role, and no helper/helper or helper/worker overlap
 before a transition. All of this remains inside the existing helper/aggregate/

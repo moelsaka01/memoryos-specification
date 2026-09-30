@@ -34,7 +34,7 @@ function transport(supervisor, launch) {
       const detached = Buffer.from(frame);
       return supervisor.runOwned('helper', lease => {
         // The fixed non-detached launch preserves PowerShell's binary pipes.
-        // A valid response proves startup pipes and helper console absence.
+        // A valid response proves startup pipes, sole membership and self-detachment.
         // Process/pipe closure is separate; no unidentified host exit is claimed.
         const child = launch(specification.executable, [...specification.args], {
           ...specification.options, env: { ...specification.options.env }, stdio: [...specification.options.stdio],
@@ -51,7 +51,7 @@ function transport(supervisor, launch) {
         };
         const finish = () => {
           if (!processClosed || !outputClosed || !errorClosed || !inputClosed) return;
-          // A validated frame can prove prior helper console absence even
+          // A validated frame can prove prior helper self-detachment even
           // after terminal cancellation; it can NEVER restore success.
           let responseBytes;
           try {
@@ -59,7 +59,7 @@ function transport(supervisor, launch) {
               responseBytes = Buffer.concat(chunks, total);
               decodeHelperResponse(responseBytes, request); consoleQuiescent = true;
             }
-          } catch { /* No console proof from malformed/partial transport. */ }
+          } catch { /* No self-detachment proof from malformed/partial transport. */ }
           resolveClosed();
           try {
             if (streamFailure) throw streamFailure;
@@ -94,7 +94,7 @@ function transport(supervisor, launch) {
         for (const stream of [child.stdin, child.stdout, child.stderr]) stream.on('error', () => rejected('INTERNAL'));
         child.once('error', () => rejected('INTERNAL'));
         child.once('close', code => { processClosed = true; processCode = code; finish(); });
-        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_CONSOLE_ABSENCE_AND_CLOSED_PROCESS_PIPES' });
+        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES' });
         child.stdin.end(detached);
         return { completion, closed, quiescence: () => consoleQuiescent, abandon: () => child.unref?.(), terminate: () => {
           child.stdin.destroy(); child.stdout.destroy(); child.stderr.destroy();

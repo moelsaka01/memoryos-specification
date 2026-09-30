@@ -1,0 +1,32 @@
+TAP version 13
+# Subtest: N15 native fixed PowerShell snapshots and checked inspection sanitization
+not ok 1 - N15 native fixed PowerShell snapshots and checked inspection sanitization
+  ---
+  duration_ms: 5560.5353
+  type: 'test'
+  location: 'C:\\m7fix\\repositories\\cca-conformance\\tests\\mo1307_phase1_native_test.mjs:205:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'ERROR' !== 'ABSENT'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'ABSENT'
+  actual: 'ERROR'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/m7fix/repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs:219:12)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6635.926

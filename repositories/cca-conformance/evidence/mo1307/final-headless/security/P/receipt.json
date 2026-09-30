@@ -1,0 +1,62 @@
+{
+  "id": "P",
+  "name": "stream-and-process-closure",
+  "kind": "PRODUCTION_TRANSPORT_DOUBLE",
+  "result": "PASS",
+  "startedAt": "2026-09-30T15:40:23.713Z",
+  "lifecycle": {
+    "name": "delayed-pipe-close",
+    "kind": "PRODUCTION_TRANSPORT_WITH_IN_MEMORY_CHILD",
+    "snapshot": {
+      "kind": "cli",
+      "deadline": 30000,
+      "helpers": 1,
+      "workers": 0,
+      "helperUsedMs": 0,
+      "activeRole": null,
+      "cleanupConfirmed": true,
+      "publication": null,
+      "terminalCode": null,
+      "terminalAt": null,
+      "cleanupDeadline": null,
+      "events": [
+        {
+          "type": "start",
+          "at": 0,
+          "role": "helper",
+          "deadline": 5000,
+          "ordinal": 1
+        },
+        {
+          "type": "observation",
+          "at": 0,
+          "role": "helper",
+          "pid": 700000001,
+          "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+        },
+        {
+          "type": "quiescent",
+          "at": 0,
+          "role": "helper",
+          "ordinal": 1
+        }
+      ]
+    },
+    "state": {
+      "processClosed": true,
+      "stdinClosed": true,
+      "stdoutClosed": true,
+      "stderrClosed": true,
+      "kills": 0
+    },
+    "events": [
+      "stdin-finish",
+      "stdout-end",
+      "stderr-end",
+      "stdin-close",
+      "stdout-close",
+      "process-close",
+      "stderr-close"
+    ]
+  }
+}
