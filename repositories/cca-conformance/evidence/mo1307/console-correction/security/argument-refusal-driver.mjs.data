@@ -1,0 +1,182 @@
+// Finite console correction security validation. Root invokes ONCE after review.
+// First helper: exact unmodified production launch and genuine wire2.0 request.
+// Later fault cases execute an exact extracted function with an engineering double.
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash,randomBytes} from 'node:crypto';
+import {spawn,spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {createSupervisor} from '../../../memoryos-readiness/src/runtime.mjs';
+import {createHelperTransportForTesting,helperLaunchSpecification} from '../../../memoryos-readiness/src/helper-transport.mjs';
+import {encodeHelperRequest,decodeHelperResponse} from '../../../memoryos-readiness/src/helper-protocol.mjs';
+import {DEFINITIONS} from '../../../memoryos-readiness/src/constants.mjs';
+const root=fileURLToPath(new URL('../../../../',import.meta.url)),T=path.dirname(fileURLToPath(import.meta.url));
+const candidate='865978ff56229b60cca77bdb797987fc7d49aa4e';
+const packageRoot=path.join(root,'repositories/memoryos-readiness');
+const evidenceBase=path.join(root,'repositories/cca-conformance/evidence/mo1307');
+const E=path.join(evidenceBase,'console-correction/security');
+assert.equal(process.argv.length,2,'One fixed generation; no alternate receipt directory or retry selection');
+assert.ok(E.startsWith(evidenceBase+path.sep));assert.equal(fs.existsSync(E),false,'Validation receipts cannot be reused or overwritten');
+fs.mkdirSync(E,{recursive:true});
+const hash=bytes=>'sha256:'+createHash('sha256').update(bytes).digest('hex');
+const record=file=>{const bytes=fs.readFileSync(file);return{path:path.relative(root,file).replaceAll('\\','/'),byteLength:bytes.length,sha256:hash(bytes)};};
+const put=(name,bytes)=>{const file=path.join(E,name);fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,bytes,{flag:'wx'});return record(file);};
+const write=(name,value)=>put(name,Buffer.from(JSON.stringify(value,null,2)+'\n'));
+const err=e=>({name:e.name,code:e.code??null,message:e.message,stack:e.stack});
+const sourceFiles=JSON.parse(fs.readFileSync(path.join(packageRoot,'package.json'))).files;
+const sourceBindings=()=>sourceFiles.map(name=>record(path.join(packageRoot,name)));
+const before=sourceBindings(),rows=[];
+const launch=helperLaunchSpecification(),L=DEFINITIONS.limits;
+const helperPath=path.join(packageRoot,'helpers/windows-inspect.ps1'),helperText=fs.readFileSync(helperPath,'utf8');
+const functionStart=helperText.indexOf('function Confirm-ConsoleQuiescence {');
+const functionEnd=helperText.indexOf('function Open-Native(',functionStart);
+const rejectStart=helperText.indexOf('function Reject-Protocol('),rejectEnd=helperText.indexOf('function Assert-Keys(',rejectStart);
+assert.ok(functionStart>=0&&functionEnd>functionStart&&rejectStart>=0&&rejectEnd>rejectStart);
+const extracted=helperText.slice(rejectStart,rejectEnd)+helperText.slice(functionStart,functionEnd);
+const extractedFile=path.join(E,'extracted-console-function.ps1');
+put('extracted-console-function.ps1',Buffer.from(extracted));
+const nativeSource=helperText.slice(helperText.indexOf('function Initialize-Native {'),functionStart);
+const doubleFile=path.join(T,'console-native-double.ps1'),parentFile=path.join(T,'console-parent.mjs'),parentObserver=path.join(T,'console-parent-observer.py'),hostObserver=path.join(T,'console-host-observer.py');
+const python='C:/Users/melsa/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe';
+const simulations=[
+ {name:'no-console',accepted:true,detached:false,opened:false},
+ {name:'valid-optional-host',accepted:true,detached:true,opened:true},
+ ...['initial-list-error','extra-client','unrelated-sole-client','missing-window','missing-owner','owner-is-helper','access-denied'].map(name=>({name,accepted:false,detached:false,opened:false})),
+ ...['opened-pid-replaced','image-query-denied','wrong-image','same-basename-wrong-directory','window-replaced','owner-replaced','client-added-before-detach','sole-client-replaced','rechecked-pid-replaced','held-object-already-exited','liveness-wait-failure','detach-failure'].map(name=>({name,accepted:false,detached:false,opened:true})),
+ ...['natural-exit-timeout','natural-exit-wait-failure','client-attaches-after-final-check','final-console-present','final-absence-wrong-error'].map(name=>({name,accepted:false,detached:true,opened:true}))
+];
+const order=['normal-native-startup','actual-optional-host','owned-parent-interruption',...simulations.map(x=>x.name)];
+write('manifest.json',{kind:'MO1307ConsoleCorrectionSecurityManifest',candidate,createdAt:new Date().toISOString(),order,simulations,
+ nativeCases:['normal-native-startup','actual-optional-host','owned-parent-interruption'],simulatedCases:simulations.map(x=>x.name),
+ sourceBindings:before,toolBindings:['console-security.mjs','console-native-double.ps1','console-parent.mjs','console-parent-observer.py','console-host-observer.py'].map(name=>record(path.join(T,name))),
+ extractedFunction:record(extractedFile),actualFunctionTextUnmodified:true,productionCodeInjection:false,
+ limits:{helperDeadlineMs:L.helperDeadlineMs,helperAggregateDeadlineMs:L.helperAggregateDeadlineMs,cliDeadlineMs:L.cliDeadlineMs,apiDeadlineMs:L.apiDeadlineMs,cleanupAllowanceMs:L.cleanupAllowanceMs,nativeConsoleNaturalExitWaitMs:1000},
+ policy:{once:true,retry:false,stopOnFirstUnexpectedFailure:true,normalRealStartupFirst:true,noBroadKill:true,noPidBasedHelperKill:true,noCertification:true},
+ scope:{PIDReplacement:'Deterministic substituted native return values cover rejected discovery/open/revalidation races; no live PID-reuse experiment or universal OS-race proof.',silent22:'Fault processes must produce zero stdout and stderr and exit22 using the exact extracted rejection function plus matching startup disposition.',termination:'Forceful console termination is absent. Natural-exit timeout/wait failure are covered.',deadline:'Constants unchanged; normal native transport uses actual supervisor clocks and frozen helper budget. Fault doubles do not simulate elapsed OS time or certify native failure deadlines.'}});
+let failure=null;
+async function run(name,kind,action){
+ const row={name,kind,result:'FAIL',startedAt:new Date().toISOString()},at=performance.now();
+ try{await action(row);assert.deepEqual(sourceBindings(),before,'Production bytes changed during security validation');row.result='PASS';}
+ catch(error){row.failure=err(error);throw error;}
+ finally{row.elapsedMs=performance.now()-at;rows.push(row);write(name+'/receipt.json',row);}
+}
+const scratch=path.join(root,'.cache/mo1307-console-correction-security');
+const request=()=>({kind:'MemoryOSReadinessHelperRequest',version:'2.0.0',session:randomBytes(32).toString('hex'),sequence:3,operation:'READ_SET',roots:[{id:'input',path:path.join(scratch,'input')}],files:[{id:'small',maxBytes:2097152,path:'small.bin',root:'input'}]});
+try{
+ assert.equal(fs.existsSync(python),true,'Fixed Python runtime must exist');assert.equal(hash(fs.readFileSync(python)),'sha256:4278cf2a296f31737cae77cafeeb3dc71683094cf3b8fd6f3f02c968687e771c');write('engineering-runtime.json',{python:record(python),node:record(process.execPath),pythonBytecodeDisabled:true});
+ assert.equal(process.platform,'win32');assert.equal(process.arch,'x64');assert.equal(process.version,'v24.21.0');
+ assert.equal(hash(fs.readFileSync(process.execPath)),'sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32');
+ const git=spawnSync('C:/Program Files/Git/cmd/git.exe',['-c','safe.directory='+root.replaceAll('\\','/').replace(/\/$/,''),'rev-parse','HEAD'],{cwd:root,windowsHide:true,encoding:'utf8'});
+ assert.ifError(git.error);assert.equal(git.status,0,git.stderr);assert.equal(git.stdout.trim(),candidate);
+ const candidateTree='d9e5d6e407adb59157ee811c90918c9b065b14e1';
+ const gitChecked=(...args)=>{const r=spawnSync('C:/Program Files/Git/cmd/git.exe',['-c','safe.directory='+root.replaceAll('\\','/').replace(/\/$/,''),...args],{cwd:root,windowsHide:true,encoding:'utf8'});assert.ifError(r.error);assert.equal(r.status,0,r.stderr);return r.stdout.trim();};
+ assert.equal(gitChecked('rev-parse',candidate+':repositories/memoryos-readiness'),candidateTree);
+ gitChecked('diff','--quiet',candidate,'--','repositories/memoryos-readiness');
+ assert.equal(hash(fs.readFileSync(helperPath)),'sha256:658db95495072c003a849941af5d92c0761b6aa0f6f08b4911f5022a80da2688');
+ assert.equal(hash(fs.readFileSync(path.join(packageRoot,'src/helper-transport.mjs'))),'sha256:2de2ddb25a072ac6f2bf2873a6bdc9f172e41f342f5ba16127c7291906a7cd68');
+ write('candidate-binding.json',{candidate,packageTree:candidateTree,workingPackageDiffFromCandidate:false,helper:record(helperPath),transport:record(path.join(packageRoot,'src/helper-transport.mjs')),members:before});
+ assert.equal(launch.options.detached,true);assert.equal(launch.options.windowsHide,true);assert.equal(launch.options.shell,false);assert.deepEqual([...launch.options.stdio],['pipe','pipe','pipe']);
+ assert.deepEqual({...launch.options.env},{SystemRoot:'C:\\Windows',WINDIR:'C:\\Windows'});
+ for(const [name,value]of Object.entries({helperDeadlineMs:5000,helperAggregateDeadlineMs:20000,cliDeadlineMs:30000,apiDeadlineMs:10000,cleanupAllowanceMs:2000}))assert.equal(L[name],value,name);
+ assert.doesNotMatch(nativeSource,/@\(\s*'(?:TerminateProcess|CreateToolhelp32Snapshot|Process32FirstW|Process32NextW)'/);
+ assert.doesNotMatch(extracted,/\$script:native::(?:TerminateProcess|CreateToolhelp32Snapshot|Process32FirstW|Process32NextW)\s*\(/);
+ assert.match(extracted,/OpenProcess\(0x101000,\s*\$false,\s*\$owner\)/);
+ assert.match(extracted,/WaitForSingleObject\(\$consoleHandle,\s*1000\)/);
+ assert.match(helperText,/Initialize-Native\s*\r?\n\}\s*catch\s*\{\s*exit 22\s*\}/);
+ assert.equal(fs.existsSync(scratch),false,'Fresh validation scratch required');fs.mkdirSync(path.join(scratch,'input'),{recursive:true});fs.writeFileSync(path.join(scratch,'input/small.bin'),'{}\n',{flag:'wx'});
+ await run('normal-native-startup','REAL_FIXED_PRODUCTION_HELPER',async row=>{
+  const req=request(),frame=encodeHelperRequest(req);row.request=put(row.name+'/request.bin',frame);row.launch=launch;
+  const sup=createSupervisor({kind:'cli'}),events=[],capture={stdout:[],stderr:[],stdoutBytes:0,stderrBytes:0};let childCount=0,result,problem=null,code=null;
+  const transport=createHelperTransportForTesting(sup,(executable,args,options)=>{
+   assert.equal(executable,launch.executable);assert.deepEqual(args,[...launch.args]);assert.deepEqual(options,{...launch.options,env:{...launch.options.env},stdio:[...launch.options.stdio]});
+   childCount++;const child=spawn(executable,args,options);row.pid=child.pid;
+   for(const [label,stream]of [['stdin',child.stdin],['stdout',child.stdout],['stderr',child.stderr]])stream.once('close',()=>events.push({event:'close',stream:label,at:performance.now()}));
+   child.stdout.on('data',bytes=>{capture.stdoutBytes+=bytes.length;if(capture.stdoutBytes<=L.helperResponseBytes)capture.stdout.push(Buffer.from(bytes));});
+   child.stderr.on('data',bytes=>{capture.stderrBytes+=bytes.length;if(capture.stderrBytes<=L.stderrBytes)capture.stderr.push(Buffer.from(bytes));});
+   child.once('close',(exit,signal)=>{code=exit;events.push({event:'process-close',exit,signal,at:performance.now()});});
+   return child;
+  });
+  const at=performance.now();
+  try{result=await transport.exchange(frame);}catch(error){problem=error;}
+  finally{
+   try{await sup.dispose();}catch(error){problem??=error;}
+   row.elapsedProductMs=performance.now()-at;row.snapshot=sup.snapshot();row.events=events;row.exitCode=code;
+   row.stdout=put(row.name+'/stdout.data',Buffer.concat(capture.stdout));row.stderr=put(row.name+'/stderr.data',Buffer.concat(capture.stderr));row.stdoutTotalBytes=capture.stdoutBytes;row.stderrTotalBytes=capture.stderrBytes;
+   row.captureTruncated=capture.stdoutBytes>L.helperResponseBytes||capture.stderrBytes>L.stderrBytes;
+  }
+  if(problem)throw problem;
+  assert.equal(childCount,1);assert.equal(code,0);assert.equal(result.exitConfirmed,true);assert.equal(capture.stderrBytes,0);assert.equal(row.captureTruncated,false);
+  const decoded=decodeHelperResponse(result.responseBytes,req);row.response={status:decoded.status,version:decoded.version,sequence:decoded.sequence,operation:decoded.operation,fileCount:decoded.files.length};
+  assert.equal(decoded.status,'OK');assert.deepEqual(Buffer.from(decoded.files[0].bytes.join(''),'base64'),Buffer.from('{}\n'));
+  assert.equal(row.snapshot.helpers,1);assert.equal(row.snapshot.workers,0);assert.equal(row.snapshot.activeRole,null);assert.equal(row.snapshot.cleanupConfirmed,true);assert.equal(row.snapshot.terminalCode,null);
+  assert.ok(row.snapshot.helperUsedMs<5000);assert.ok(row.elapsedProductMs<5000);assert.deepEqual(events.filter(x=>x.event==='close').map(x=>x.stream).sort(),['stderr','stdin','stdout']);
+  row.sourceUnmodified=true;row.spawnForwardedUnchanged=true;row.hostProof='Validated production frame proves the helper completed its production console-quiescence gate; no independent observer claims host identity.';
+ });
+ await run('actual-optional-host','REAL_UNMODIFIED_HELPER_EXPLICIT_NEW_CONSOLE',async row=>{
+  const req=request(),frame=encodeHelperRequest(req);row.request=put(row.name+'/request.bin',frame);write(row.name+'/launch.json',launch);
+  const dir=path.join(E,row.name),args=['-B',hostObserver,path.join(dir,'launch.json'),path.join(dir,'request.bin'),dir];
+  row.engineeringInvocation={executable:python,args,testOnlyMode:'CREATE_NEW_CONSOLE + SW_HIDE; same fixed production executable, argv, cwd, environment and three pipes'};
+  const r=spawnSync(python,args,{cwd:root,env:{...launch.options.env},windowsHide:true,shell:false,encoding:null,timeout:15000,maxBuffer:65536});
+  row.observerStdout=put(row.name+'/observer.stdout.data',r.stdout??Buffer.alloc(0));row.observerStderr=put(row.name+'/observer.stderr.data',r.stderr??Buffer.alloc(0));row.exit=r.status;row.signal=r.signal;row.launchError=r.error?.code??null;
+  if(fs.existsSync(path.join(dir,'proof.json'))){row.proof=record(path.join(dir,'proof.json'));row.observation=JSON.parse(fs.readFileSync(path.join(dir,'proof.json')));}
+  if(fs.existsSync(path.join(dir,'stdout.data')))row.stdout=record(path.join(dir,'stdout.data'));
+  if(fs.existsSync(path.join(dir,'stderr.data')))row.stderr=record(path.join(dir,'stderr.data'));
+  assert.ifError(r.error);assert.equal(r.signal,null);assert.equal(r.status,0);assert.equal(row.observation?.result,'PASS');
+  const decoded=decodeHelperResponse(fs.readFileSync(path.join(dir,'stdout.data')),req);
+  assert.equal(decoded.status,'OK');assert.deepEqual(Buffer.from(decoded.files[0].bytes.join(''),'base64'),Buffer.from('{}\n'));assert.equal(fs.readFileSync(path.join(dir,'stderr.data')).length,0);
+  assert.equal(row.observation.creationFlags,16);assert.equal(row.observation.helperTerminationByObserver,false);assert.equal(row.observation.hostTerminationByObserver,false);assert.equal(row.observation.processWaitCompleted,true);assert.equal(row.observation.stdoutEof,true);assert.equal(row.observation.stderrEof,true);assert.equal(row.observation.stdinClosed,true);
+  row.response={version:decoded.version,status:decoded.status,sequence:decoded.sequence,operation:decoded.operation};
+  row.hostProof='Explicit CREATE_NEW_CONSOLE gives this engineering launch its console; a validated response follows exact production HWND/held-object revalidation, self-detachment, natural-host-exit wait and final absence. No separate observer host-identity claim.';
+ });
+ await run('owned-parent-interruption','REAL_DETACHED_HELPER_OWNED_PARENT_INTERRUPTION',async row=>{
+  const frame=encodeHelperRequest(request());row.request=put(row.name+'/request.bin',frame);
+  const dir=path.join(E,row.name),args=['-B',parentObserver,process.execPath,parentFile,path.join(dir,'request.bin'),dir];
+  row.engineeringInvocation={executable:python,args};
+  const r=spawnSync(python,args,{cwd:root,env:{...launch.options.env},windowsHide:true,shell:false,encoding:null,timeout:20000,maxBuffer:65536});
+  row.stdout=put(row.name+'/observer.stdout.data',r.stdout??Buffer.alloc(0));row.stderr=put(row.name+'/observer.stderr.data',r.stderr??Buffer.alloc(0));row.exit=r.status;row.signal=r.signal;row.launchError=r.error?.code??null;
+  if(fs.existsSync(path.join(dir,'proof.json'))){row.proof=record(path.join(dir,'proof.json'));row.observation=JSON.parse(fs.readFileSync(path.join(dir,'proof.json')));}
+  assert.ifError(r.error);assert.equal(r.signal,null);assert.equal(r.status,0);assert.equal(row.observation?.result,'PASS');assert.equal(row.observation.heldHelperHandle,true);assert.equal(row.observation.helperSignalAtHandleRelease,0);
+ });
+ for(const simulation of simulations)await run(simulation.name,'EXTRACTED_FUNCTION_NATIVE_DOUBLE',async row=>{
+  write(row.name+'/scenario.json',simulation);
+  const dir=path.join(E,row.name),proofPath=path.join(dir,'proof.json');
+  const args=['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',doubleFile,'-ScenarioPath',path.join(dir,'scenario.json'),'-ExtractedPath',extractedFile,'-ProofPath',proofPath];
+  row.engineeringInvocation={executable:launch.executable,args,notProductLaunch:true};
+  const r=spawnSync(launch.executable,args,{cwd:root,env:{...launch.options.env},windowsHide:true,shell:false,encoding:null,timeout:15000,maxBuffer:65536});
+  row.exit=r.status;row.signal=r.signal;row.launchError=r.error?.code??null;row.stdout=put(row.name+'/stdout.data',r.stdout??Buffer.alloc(0));row.stderr=put(row.name+'/stderr.data',r.stderr??Buffer.alloc(0));
+  assert.ifError(r.error);assert.equal(r.signal,null);assert.equal(r.status,simulation.accepted?0:22);
+  assert.equal(r.stdout.length,0,'Simulated startup stdout must be silent');assert.equal(r.stderr.length,0,'Simulated startup stderr must be silent');
+  const proof=JSON.parse(fs.readFileSync(proofPath));row.proof=record(proofPath);row.observation=proof;
+  assert.equal(proof.accepted,simulation.accepted);assert.equal(proof.detached,simulation.detached);assert.equal(proof.productionFunctionUnmodified,true);assert.equal(proof.nativeProcessOperationsPerformed,false);
+  if(!simulation.accepted)assert.equal(proof.failure,'MO1307_INTERNAL');
+  const calls=proof.events;
+  const opens=calls.filter(x=>x.name==='OpenProcess'),closes=calls.filter(x=>x.name==='CloseHandle'),frees=calls.filter(x=>x.name==='FreeConsole');
+  assert.equal(closes.length,simulation.opened?1:0,'Every acquired simulated handle closes exactly once');
+  assert.ok(opens.length<=1);assert.ok(frees.length<=1);
+  for(const x of opens){assert.equal(x.arguments[0],0x101000);assert.equal(x.arguments[1],false);assert.equal(x.arguments[2],42420);}
+  for(const x of calls.filter(x=>['GetProcessId','QueryFullProcessImageNameW','WaitForSingleObject','CloseHandle'].includes(x.name)))assert.equal(x.arguments[0],424242,'All identity/wait/disposition use one retained object');
+  if(simulation.name==='no-console')assert.deepEqual(calls.map(x=>x.name),['GetConsoleProcessList']);
+  if(simulation.name==='valid-optional-host'){
+   assert.equal(frees.length,1);assert.equal(calls.filter(x=>x.name==='GetProcessId').length,2);assert.equal(calls.filter(x=>x.name==='GetConsoleWindow').length,2);assert.equal(calls.filter(x=>x.name==='GetWindowThreadProcessId').length,2);
+   const live=calls.findIndex(x=>x.name==='WaitForSingleObject'&&x.arguments[1]===0),detach=calls.findIndex(x=>x.name==='FreeConsole'),settled=calls.findIndex(x=>x.name==='WaitForSingleObject'&&x.arguments[1]===1000);
+   assert.ok(live>=0&&live<detach&&detach<settled);assert.equal(calls.filter(x=>x.name==='GetConsoleProcessList').length,3);
+  }
+  if(!simulation.detached&&simulation.name!=='detach-failure')assert.equal(frees.length,0,'Unproved association never detaches');
+  row.deadlineScope='Native return-value simulation only; fixed1000ms wait argument checked, no simulated elapsed-time claim.';
+ });
+}catch(error){failure=err(error);}
+finally{
+ let unchanged=false;
+ try{assert.deepEqual(sourceBindings(),before);unchanged=true;}catch(error){failure??=err(error);}
+ const result=failure?'FAIL':'PASS';
+ write('receipt.json',{kind:'MO1307ConsoleCorrectionSecurityReceipt',candidate,result,createdAt:new Date().toISOString(),failure,
+ cases:rows,completed:rows.filter(x=>x.result==='PASS').map(x=>x.name),unexecuted:order.filter(name=>!rows.some(x=>x.name===name)),
+ productionUnchanged:unchanged,sourceBindings:before,manifest:record(path.join(E,'manifest.json')),
+ realNativeCaseCount:rows.filter(x=>x.kind.startsWith('REAL_')).length,simulatedCaseCount:rows.filter(x=>x.kind==='EXTRACTED_FUNCTION_NATIVE_DOUBLE').length,
+ noCertification:true,noRetries:true,stopOnFirstUnexpectedFailure:true,noConsoleTerminationCapability:true,
+ limitsUnchanged:{helperMs:5000,aggregateMs:20000,cliMs:30000,apiMs:10000,cleanupMs:2000},
+ limitations:['Simulated return values validate extracted production control flow, not Windows API semantics or live PID-reuse behavior.','The parent interruption case retains a helper handle but does not independently observe host identity or stream events after parent death.','No existing Phase3A,3B,3C receipt is refreshed by this security validation.']});
+ console.log(JSON.stringify({result,candidate,completed:rows.filter(x=>x.result==='PASS').length,firstFailure:rows.find(x=>x.result==='FAIL')?.name??(failure?'PREFLIGHT':null),receipt:path.join(E,'receipt.json')}));
+ process.exitCode=failure?1:0;
+}

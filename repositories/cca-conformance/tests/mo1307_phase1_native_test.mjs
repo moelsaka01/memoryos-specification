@@ -8,6 +8,7 @@ import { spawnSync } from 'node:child_process';
 import { DEFINITIONS as D } from '../../memoryos-readiness/src/constants.mjs';
 import { canonicalBytes } from '../../memoryos-readiness/src/canonical.mjs';
 import { ReadinessError } from '../../memoryos-readiness/src/errors.mjs';
+import { helperLaunchSpecification } from '../../memoryos-readiness/src/helper-transport.mjs';
 import { validateRelativeFile, validateAbsoluteRoot, resolveContained, assertDistinctRoots,
   assertDistinctFiles, validateIdentityRecord, assertStableIdentity, assertComponentChain } from '../../memoryos-readiness/src/windows-paths.mjs';
 import { parseCliArgs, validateLaunch } from '../../memoryos-readiness/src/cli-args.mjs';
@@ -70,9 +71,17 @@ function rawFrame(value) {
 }
 let helperAttempt = 0;
 function runHelper(frame) {
-  const child = spawnSync(powershell, ['-NoLogo', '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', helper], {
-    input: frame, env: cleanEnv, encoding: null, timeout: D.limits.helperDeadlineMs,
-    maxBuffer: D.limits.helperResponseBytes, windowsHide: true,
+  const specification = helperLaunchSpecification();
+  assert.equal(specification.executable, powershell);
+  assert.deepEqual(specification.args, ['-NoLogo', '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', helper]);
+  assert.deepEqual(specification.options.env, cleanEnv);
+  assert.equal(specification.options.shell, false);
+  assert.equal(specification.options.windowsHide, true);
+  assert.equal(specification.options.detached, true);
+  const child = spawnSync(specification.executable, [...specification.args], {
+    ...specification.options, env: { ...specification.options.env }, stdio: [...specification.options.stdio],
+    input: frame, encoding: null, timeout: D.limits.helperDeadlineMs,
+    maxBuffer: D.limits.helperResponseBytes,
   });
   helperAttempt += 1;
   mkdirSync(attempt, { recursive: true });
