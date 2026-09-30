@@ -1,0 +1,122 @@
+{
+  "step": "G",
+  "generation": "FINAL_FINITE_CERTIFICATION",
+  "startedAt": "2026-09-30T00:02:03.626Z",
+  "planned": [
+    {
+      "name": "post-tag-ready",
+      "stage": "POST_TAG_VERIFICATION",
+      "readiness": "READY",
+      "checkCode": null
+    },
+    {
+      "name": "pre-tag-present",
+      "stage": "PRE_TAG_READINESS",
+      "readiness": "NOT_READY",
+      "checkCode": "TAG_PRESENCE"
+    },
+    {
+      "name": "post-tag-absent",
+      "stage": "POST_TAG_VERIFICATION",
+      "readiness": "NOT_READY",
+      "checkCode": "TAG_PRESENCE"
+    },
+    {
+      "name": "post-tag-lightweight",
+      "stage": "POST_TAG_VERIFICATION",
+      "readiness": "NOT_READY",
+      "checkCode": "TAG_ANNOTATION"
+    },
+    {
+      "name": "post-tag-wrong-target",
+      "stage": "POST_TAG_VERIFICATION",
+      "readiness": "NOT_READY",
+      "checkCode": "TAG_TARGET"
+    },
+    {
+      "name": "post-tag-wrong-name",
+      "stage": "POST_TAG_VERIFICATION",
+      "readiness": "NOT_READY",
+      "checkCode": "TAG_NAME",
+      "derivedD11": true
+    }
+  ],
+  "noRetry": true,
+  "sourceBindings": [
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-restart/common.mjs",
+        "byteLength": 3171,
+        "sha256": "sha256:3ac8389716a5773d99c077a8dd2442692b91a9ba041866b96091d8e6e9e0b388"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/tags/executed-sources/common.mjs.data",
+        "byteLength": 3171,
+        "sha256": "sha256:3ac8389716a5773d99c077a8dd2442692b91a9ba041866b96091d8e6e9e0b388"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-restart/decisions-tags.mjs",
+        "byteLength": 19369,
+        "sha256": "sha256:eb8401b51dead7c99b07ba95f13ef0a226611458e7c1b7d248f563ebec0167f9"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/tags/executed-sources/decisions-tags.mjs.data",
+        "byteLength": 19369,
+        "sha256": "sha256:eb8401b51dead7c99b07ba95f13ef0a226611458e7c1b7d248f563ebec0167f9"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-restart/observer-entry.mjs",
+        "byteLength": 7834,
+        "sha256": "sha256:b3c7c5b5a838011b02c978cb51d46ddf7e2a16e27cecb78bbd88eccdfbad96c2"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/tags/executed-sources/observer-entry.mjs.data",
+        "byteLength": 7834,
+        "sha256": "sha256:b3c7c5b5a838011b02c978cb51d46ddf7e2a16e27cecb78bbd88eccdfbad96c2"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-restart/runtime-observer.mjs",
+        "byteLength": 331,
+        "sha256": "sha256:3d89cd943126931be84f3af59ad8cff3acf40bfdab180e3771b4f8cbbe59fa85"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/tags/executed-sources/runtime-observer.mjs.data",
+        "byteLength": 331,
+        "sha256": "sha256:3d89cd943126931be84f3af59ad8cff3acf40bfdab180e3771b4f8cbbe59fa85"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-restart/transport-observer.mjs",
+        "byteLength": 975,
+        "sha256": "sha256:8e7480c4c39662dfceaffd7f5fb799e1beb42e6d919898677762b111ccfd226f"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/tags/executed-sources/transport-observer.mjs.data",
+        "byteLength": 975,
+        "sha256": "sha256:8e7480c4c39662dfceaffd7f5fb799e1beb42e6d919898677762b111ccfd226f"
+      }
+    },
+    {
+      "source": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-restart/errors-observer.mjs",
+        "byteLength": 298,
+        "sha256": "sha256:096d79449c2c2c397516a7ace42169a2d3ea001f102ee4599b6dec69cb031006"
+      },
+      "preserved": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/tags/executed-sources/errors-observer.mjs.data",
+        "byteLength": 298,
+        "sha256": "sha256:096d79449c2c2c397516a7ace42169a2d3ea001f102ee4599b6dec69cb031006"
+      }
+    }
+  ],
+  "qualifiedChoice": "MO1306 primary A is authoritative qualified result; no additional qualified evaluate.",
+  "preTagReadyChoice": "Accepted READY primary B supplies fresh PRE_TAG_READINESS with missing-tag success; no duplicate evaluate.",
+  "noGitSubprocessForTagObservation": true
+}

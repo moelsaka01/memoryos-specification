@@ -1,0 +1,364 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3A
+
+RESTART AFTER CERTIFICATION-HARNESS FAILURE AT J
+
+This is a restart of ONLY the failed Phase 3A workstream.
+
+Phase 3B has already been ACCEPTED and must not be rerun.
+
+Phase 3C is being repaired independently in another parallel chat.
+
+Do not perform Phase 3B.
+Do not perform Phase 3C.
+Do not perform Phase 3D.
+
+==================================================
+1. AUTHORITATIVE CANDIDATE
+==================================================
+
+Production authority remains exact C3RB:
+
+defe93989efc6501b1a730b82e79e705884b269b
+
+Integration/evidence authority:
+
+4a1de6f00788e3c52a647d6f25aa1dbd2d5d5d97
+
+Do not use C3S.
+
+Do not modify production.
+
+==================================================
+2. PRESERVE THE FAILED GENERATION
+==================================================
+
+The previous fresh Phase 3A generation is immutable historical/current failed certification evidence.
+
+Certification evidence commit:
+
+7c2882480a4deebf39cae6b8afe42794f000539e
+
+Its result remains:
+
+A PASS
+B PASS
+C PASS
+D PASS
+E PASS
+F PASS
+G PASS
+H PASS
+I PASS
+J FAIL
+K-O NOT_RUN
+
+Do not rewrite or delete that failure.
+
+The exact J failure was:
+
+expected:
+2000
+
+observed arithmetic result:
+2000.000000000001
+
+at:
+
+cleanup-topology.mjs:27
+
+This was a certification-harness assertion failure.
+
+It was NOT:
+
+MO1307_TIMEOUT
+product exit 29
+a failed cleanup observation
+a helper deadline violation
+a production defect.
+
+The underlying retained H timeout record had:
+
+terminalAt = 6474.1113 ms
+cleanupDeadline = 8474.1113 ms
+
+The intended allowance is exactly:
+
+2000 ms
+
+==================================================
+3. PURPOSE
+==================================================
+
+Determine and implement the smallest certification-harness correction necessary to represent the frozen 2000-ms cleanup allowance without introducing binary floating-point subtraction artifacts.
+
+Then execute a NEW complete finite Phase 3A certification generation against exact installed C3RB.
+
+Do NOT simply resume at J.
+
+The repaired harness requires a fresh sealed A-O certification generation.
+
+==================================================
+4. HARNESS CORRECTION RULE
+==================================================
+
+First inspect the exact checker and data provenance.
+
+Determine:
+
+- how terminalAt is represented,
+- how cleanupDeadline is represented,
+- where cleanupDeadline is computed,
+- whether both values derive from the frozen exact 2000-ms allowance,
+- why subtraction produced 2000.000000000001.
+
+The correction must address numeric representation only.
+
+It MUST NOT:
+
+increase the 2000-ms allowance,
+introduce timing slack,
+weaken cleanup semantics,
+change product code,
+change any deadline,
+change helper behavior,
+change expected certification outcomes.
+
+Preferred correction characteristics:
+
+- compare the intended deadline relation robustly,
+- or use an exact representation/unit for the allowance,
+- or use another mechanically justified comparison that distinguishes floating-point representation error from actual timing excess.
+
+Do not use an arbitrary broad tolerance.
+
+If an epsilon/ULP mechanism is required, justify it from IEEE-754 representation bounds and keep it many orders of magnitude below any meaningful timing allowance.
+
+The frozen semantic requirement remains exactly:
+
+2000 ms.
+
+==================================================
+5. HARNESS CORRECTION VALIDATION
+==================================================
+
+Before rerunning certification, validate the repaired checker with bounded synthetic cases.
+
+At minimum prove:
+
+exact 2000-ms relation:
+PASS
+
+the historical representation:
+2000.000000000001 equivalent relation:
+PASS only because it represents the same exact intended allowance
+
+actual over-limit value materially greater than representation error:
+FAIL
+
+actual under/invalid relation:
+FAIL where required.
+
+Do not modify product code for this validation.
+
+Record the harness correction separately from certification results.
+
+==================================================
+6. NEW CERTIFICATION WORKTREE / GENERATION
+==================================================
+
+Use an isolated Phase 3A worktree rooted at exact C3RB.
+
+Do not overwrite the prior:
+
+C:\m7a
+
+generation.
+
+Use a new short path, for example:
+
+C:\m7a2
+
+and a new branch.
+
+Verify exact:
+
+candidate
+tree
+Node
+PowerShell
+package
+helper
+schemas
+certification tooling.
+
+==================================================
+7. INSTALLED ARTIFACT
+==================================================
+
+Freshly pack exact C3RB.
+
+Fresh offline installation.
+
+Verify all 89 installed members exactly before execution.
+
+Use the actual installed CLI/API/native runtime.
+
+No workspace-source substitution.
+
+==================================================
+8. SEALED A-O INVENTORY
+==================================================
+
+Seal the complete Phase 3A inventory before execution:
+
+A MO-1306 evaluate/verify/API
+
+B READY
+
+C NOT_READY
+
+D COULD_NOT_EVALUATE
+
+E REST
+
+F seven human decisions
+
+G complete supplied-tag inventory
+
+H helper deadline/cancellation controls
+
+I worker deadline/cancellation controls
+
+J cleanup/process topology
+
+K finalization
+
+L filesystem/native controls
+
+M environment isolation
+
+N byte determinism
+
+O final MO-1306 confirmation
+
+Do not promote prior A-I PASS observations into the new generation.
+
+They remain historical corroboration only.
+
+==================================================
+9. EXECUTION RULE
+==================================================
+
+Execute the new sealed certification once.
+
+No retries.
+
+No retry-until-pass.
+
+No adaptive cases.
+
+No diagnostic campaign during execution.
+
+At first mandatory failure:
+
+STOP.
+
+Preserve subsequent cases as NOT_RUN.
+
+==================================================
+10. RESOURCE AUTHORITY
+==================================================
+
+Frozen limits remain:
+
+helper:
+5000 ms
+
+aggregate helper-active:
+20000 ms
+
+CLI:
+30000 ms
+
+API/worker:
+10000 ms
+
+failure cleanup:
+2000 ms
+
+H remains:
+
+NOT_ESTABLISHED
+
+Do not change any of these.
+
+==================================================
+11. SUCCESS
+==================================================
+
+Phase 3A is accepted only if the entire mandatory A-O inventory passes.
+
+If accepted, create the immutable Phase 3A certification evidence/receipt/commit required by repository convention.
+
+Produce a precise Phase 3D handoff.
+
+Do not start Phase 3D.
+
+==================================================
+12. FAILURE
+==================================================
+
+If any mandatory case fails:
+
+STOP.
+
+Do not diagnose or repair within the certification run.
+
+Report Phase 3A FAILED/INCOMPLETE.
+
+The already accepted Phase 3B remains accepted.
+
+The independent Phase 3C stream remains unaffected.
+
+==================================================
+13. PROHIBITIONS
+==================================================
+
+No production changes.
+No C3S.
+No helper optimization.
+No deadline characterization.
+No new H.
+No Phase 3B.
+No Phase 3C.
+No Phase 3D.
+No push.
+No tag.
+
+==================================================
+14. FINAL REPORT
+==================================================
+
+Report:
+
+1. exact harness defect,
+2. exact harness correction,
+3. proof that 2000-ms semantics were not weakened,
+4. correction validation,
+5. candidate identity,
+6. package/install identity,
+7. sealed A-O inventory,
+8. A-O results,
+9. first failure if any,
+10. resource observations,
+11. cleanup/process observations,
+12. CLI/API parity,
+13. determinism,
+14. certification receipt,
+15. certification commit,
+16. Phase 3A ACCEPTED or FAILED/INCOMPLETE,
+17. repository status,
+18. exact handoff to Phase 3D if accepted.
+
+STOP after Phase 3A.

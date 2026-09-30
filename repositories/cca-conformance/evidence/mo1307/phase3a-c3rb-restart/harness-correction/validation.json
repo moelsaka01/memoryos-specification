@@ -1,0 +1,558 @@
+{
+  "kind": "MO1307Phase3ACleanupAllowanceSyntheticValidation",
+  "version": "1.0.0",
+  "result": "PASS",
+  "createdAt": "2026-09-29T23:50:08.001Z",
+  "purpose": "Before-certification numeric assertion correction validation; separate from A-O runtime evidence",
+  "candidate": "defe93989efc6501b1a730b82e79e705884b269b",
+  "checker": {
+    "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-restart/cleanup-topology.mjs",
+    "byteLength": 6355,
+    "sha256": "sha256:e57514210301c35c1226c62d09db6393f52f78069554dd4912e192ffbf1a4188"
+  },
+  "validator": {
+    "path": "repositories/cca-conformance/tools/mo1307-phase3a-c3rb-restart/validate-correction.mjs",
+    "sha256": "sha256:9ee0da81501cfa883063d304e6cdb451cec2996018b01a7532333b065305c7c0"
+  },
+  "extractedActualCheckerSnippet": "\nassert.ok(Number.isFinite(H.timeoutCleanupTiming.terminalAtMs)&&H.timeoutCleanupTiming.terminalAtMs>=0);\nassert.ok(Number.isFinite(H.timeoutCleanupTiming.cleanupDeadlineAtMs)&&H.timeoutCleanupTiming.cleanupDeadlineAtMs>H.timeoutCleanupTiming.terminalAtMs);\nassert.equal(H.timeoutCleanupTiming.cleanupDeadlineAtMs,H.timeoutCleanupTiming.terminalAtMs+2000);\n",
+  "oldHistoricalFailure": {
+    "accepted": false,
+    "error": {
+      "name": "AssertionError",
+      "code": "ERR_ASSERTION",
+      "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 2000.000000000001\n- 2000\n      ^\n"
+    }
+  },
+  "frozenAllowanceMs": 2000,
+  "epsilonMs": 0,
+  "toleranceMs": 0,
+  "productExecutions": 0,
+  "helperExecutions": 0,
+  "caseCount": 25,
+  "cases": [
+    {
+      "id": "zero-terminal-exact",
+      "terminal": {
+        "type": "number",
+        "value": "0",
+        "ieee754Hex": "0x0000000000000000"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "2000",
+        "ieee754Hex": "0x409f400000000000"
+      },
+      "expectedAccepted": true,
+      "accepted": true,
+      "error": null,
+      "result": "PASS"
+    },
+    {
+      "id": "integer-exact",
+      "terminal": {
+        "type": "number",
+        "value": "100",
+        "ieee754Hex": "0x4059000000000000"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "2100",
+        "ieee754Hex": "0x40a0680000000000"
+      },
+      "expectedAccepted": true,
+      "accepted": true,
+      "error": null,
+      "result": "PASS"
+    },
+    {
+      "id": "binary-fraction-exact",
+      "terminal": {
+        "type": "number",
+        "value": "0.125",
+        "ieee754Hex": "0x3fc0000000000000"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "2000.125",
+        "ieee754Hex": "0x409f408000000000"
+      },
+      "expectedAccepted": true,
+      "accepted": true,
+      "error": null,
+      "result": "PASS"
+    },
+    {
+      "id": "historical-represented-forward-relation",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "8474.1113",
+        "ieee754Hex": "0x40c08d0e3f141206"
+      },
+      "expectedAccepted": true,
+      "accepted": true,
+      "error": null,
+      "result": "PASS"
+    },
+    {
+      "id": "historical-json-roundtrip",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "8474.1113",
+        "ieee754Hex": "0x40c08d0e3f141206"
+      },
+      "expectedAccepted": true,
+      "accepted": true,
+      "error": null,
+      "result": "PASS"
+    },
+    {
+      "id": "actual-over-one-millisecond",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "8475.1113",
+        "ieee754Hex": "0x40c08d8e3f141206"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 8475.1113\n- 8474.1113\n     ^\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "actual-under-one-millisecond",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "8473.1113",
+        "ieee754Hex": "0x40c08c8e3f141206"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 8473.1113\n- 8474.1113\n     ^\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "actual-over-one-microsecond",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "8474.1123",
+        "ieee754Hex": "0x40c08d0e5fd8adac"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 8474.1123\n- 8474.1113\n         ^\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "actual-under-one-microsecond",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "8474.1103",
+        "ieee754Hex": "0x40c08d0e1e4f7660"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 8474.1103\n- 8474.1113\n         ^\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "actual-over-one-nanosecond",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "8474.111301",
+        "ieee754Hex": "0x40c08d0e3f1c7582"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 8474.111301\n- 8474.1113\n           ^\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "actual-under-one-nanosecond",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "8474.111299",
+        "ieee754Hex": "0x40c08d0e3f0bae8a"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 8474.111299\n- 8474.1113\n          ^\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "next-representable-deadline-over",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "8474.111300000002",
+        "ieee754Hex": "0x40c08d0e3f141207"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 8474.111300000002\n- 8474.1113\n           ^\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "next-representable-deadline-under",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "8474.111299999999",
+        "ieee754Hex": "0x40c08d0e3f141205"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 8474.111299999999\n- 8474.1113\n          ^\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "non-increasing",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Number.isFinite(H.timeoutCleanupTiming.cleanupDeadlineAtMs)&&H.timeoutCleanupTiming.cleanupDeadlineAtMs>H.timeoutCleanupTiming.terminalAtMs)\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "negative-terminal",
+      "terminal": {
+        "type": "number",
+        "value": "-1",
+        "ieee754Hex": "0xbff0000000000000"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "1999",
+        "ieee754Hex": "0x409f3c0000000000"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Number.isFinite(H.timeoutCleanupTiming.terminalAtMs)&&H.timeoutCleanupTiming.terminalAtMs>=0)\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "infinite-terminal",
+      "terminal": {
+        "type": "number",
+        "value": "Infinity",
+        "ieee754Hex": "0x7ff0000000000000"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "Infinity",
+        "ieee754Hex": "0x7ff0000000000000"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Number.isFinite(H.timeoutCleanupTiming.terminalAtMs)&&H.timeoutCleanupTiming.terminalAtMs>=0)\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "infinite-deadline",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "Infinity",
+        "ieee754Hex": "0x7ff0000000000000"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Number.isFinite(H.timeoutCleanupTiming.cleanupDeadlineAtMs)&&H.timeoutCleanupTiming.cleanupDeadlineAtMs>H.timeoutCleanupTiming.terminalAtMs)\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "negative-infinity-terminal",
+      "terminal": {
+        "type": "number",
+        "value": "-Infinity",
+        "ieee754Hex": "0xfff0000000000000"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "8474.1113",
+        "ieee754Hex": "0x40c08d0e3f141206"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Number.isFinite(H.timeoutCleanupTiming.terminalAtMs)&&H.timeoutCleanupTiming.terminalAtMs>=0)\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "nan-terminal",
+      "terminal": {
+        "type": "number",
+        "value": "NaN",
+        "ieee754Hex": "0x7ff8000000000000"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "8474.1113",
+        "ieee754Hex": "0x40c08d0e3f141206"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Number.isFinite(H.timeoutCleanupTiming.terminalAtMs)&&H.timeoutCleanupTiming.terminalAtMs>=0)\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "nan-deadline",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "NaN",
+        "ieee754Hex": "0x7ff8000000000000"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Number.isFinite(H.timeoutCleanupTiming.cleanupDeadlineAtMs)&&H.timeoutCleanupTiming.cleanupDeadlineAtMs>H.timeoutCleanupTiming.terminalAtMs)\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "null-terminal",
+      "terminal": {
+        "type": "object",
+        "value": "null",
+        "ieee754Hex": null
+      },
+      "deadline": {
+        "type": "number",
+        "value": "2000",
+        "ieee754Hex": "0x409f400000000000"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Number.isFinite(H.timeoutCleanupTiming.terminalAtMs)&&H.timeoutCleanupTiming.terminalAtMs>=0)\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "null-deadline",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "object",
+        "value": "null",
+        "ieee754Hex": null
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Number.isFinite(H.timeoutCleanupTiming.cleanupDeadlineAtMs)&&H.timeoutCleanupTiming.cleanupDeadlineAtMs>H.timeoutCleanupTiming.terminalAtMs)\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "string-terminal",
+      "terminal": {
+        "type": "string",
+        "value": "6474.1113",
+        "ieee754Hex": null
+      },
+      "deadline": {
+        "type": "number",
+        "value": "8474.1113",
+        "ieee754Hex": "0x40c08d0e3f141206"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Number.isFinite(H.timeoutCleanupTiming.terminalAtMs)&&H.timeoutCleanupTiming.terminalAtMs>=0)\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "string-deadline",
+      "terminal": {
+        "type": "number",
+        "value": "6474.1113",
+        "ieee754Hex": "0x40b94a1c7e28240b"
+      },
+      "deadline": {
+        "type": "string",
+        "value": "8474.1113",
+        "ieee754Hex": null
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Number.isFinite(H.timeoutCleanupTiming.cleanupDeadlineAtMs)&&H.timeoutCleanupTiming.cleanupDeadlineAtMs>H.timeoutCleanupTiming.terminalAtMs)\n"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": "rounded-away-non-increasing",
+      "terminal": {
+        "type": "number",
+        "value": "18446744073709552000",
+        "ieee754Hex": "0x43f0000000000000"
+      },
+      "deadline": {
+        "type": "number",
+        "value": "18446744073709552000",
+        "ieee754Hex": "0x43f0000000000000"
+      },
+      "expectedAccepted": false,
+      "accepted": false,
+      "error": {
+        "name": "AssertionError",
+        "code": "ERR_ASSERTION",
+        "message": "The expression evaluated to a falsy value:\n\n  assert.ok(Number.isFinite(H.timeoutCleanupTiming.cleanupDeadlineAtMs)&&H.timeoutCleanupTiming.cleanupDeadlineAtMs>H.timeoutCleanupTiming.terminalAtMs)\n"
+      },
+      "result": "PASS"
+    }
+  ],
+  "proof": {
+    "historicalTerminal": {
+      "type": "number",
+      "value": "6474.1113",
+      "ieee754Hex": "0x40b94a1c7e28240b"
+    },
+    "historicalDeadline": {
+      "type": "number",
+      "value": "8474.1113",
+      "ieee754Hex": "0x40c08d0e3f141206"
+    },
+    "subtractedDifference": 2000.000000000001,
+    "excessDifferenceMs": 9.094947017729282e-13,
+    "excessExact": "2^-40 ms",
+    "deadlineUlpMs": 1.8189894035458565e-12,
+    "forwardRelation": true,
+    "bothAdjacentRepresentableWrongDeadlinesRejected": true,
+    "observedEventDeadlineComparisonsUnchanged": true
+  }
+}

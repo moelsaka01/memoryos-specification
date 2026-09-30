@@ -1,0 +1,97 @@
+{
+  "kind": "MO1307Phase3AHarnessNumericRepresentationCorrection",
+  "version": "1.0.0",
+  "candidate": "defe93989efc6501b1a730b82e79e705884b269b",
+  "previousFailedGeneration": "7c2882480a4deebf39cae6b8afe42794f000539e",
+  "scope": "Certification harness numeric representation only",
+  "previousFailedResultPreserved": "A-I PASS; J FAIL; K-O NOT_RUN",
+  "sources": [
+    {
+      "gitSource": "7c2882480a4deebf39cae6b8afe42794f000539e:repositories/cca-conformance/tools/mo1307-phase3a-c3rb-cert/cleanup-topology.mjs",
+      "snapshot": "harness-correction/previous-checker.mjs.data",
+      "byteLength": 6010,
+      "sha256": "sha256:e2982c9e6fab987bac51f345f92b81bbe75237a4c33d0f98469220b978615a47"
+    },
+    {
+      "gitSource": "defe93989efc6501b1a730b82e79e705884b269b:repositories/memoryos-readiness/src/runtime.mjs",
+      "snapshot": "harness-correction/candidate-runtime.mjs.data",
+      "byteLength": 16904,
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    {
+      "gitSource": "defe93989efc6501b1a730b82e79e705884b269b:repositories/memoryos-readiness/contracts/definitions.json",
+      "snapshot": "harness-correction/candidate-definitions.json.data",
+      "byteLength": 16555,
+      "sha256": "sha256:b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e"
+    },
+    {
+      "gitSource": "7c2882480a4deebf39cae6b8afe42794f000539e:repositories/cca-conformance/tools/mo1307-phase3a-c3rb-cert/runtime-controls-run.py",
+      "snapshot": "harness-correction/previous-observer.py.data",
+      "byteLength": 12297,
+      "sha256": "sha256:91ac9c869abe4b30e724f7d2232758f7ef048a1a7224d2bd9cea9cc05e9e976c"
+    },
+    {
+      "gitSource": "7c2882480a4deebf39cae6b8afe42794f000539e:repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/runtime-H/helper-timeout.json",
+      "snapshot": "harness-correction/previous-H-helper-timeout.json.data",
+      "byteLength": 1478,
+      "sha256": "sha256:d740a6b142c66bbcaf5879c97470b47c8a73bf647cc5682e1fd038abf841c575"
+    },
+    {
+      "gitSource": "7c2882480a4deebf39cae6b8afe42794f000539e:repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/runtime-H/external-proof.json",
+      "snapshot": "harness-correction/previous-H-external-proof.json.data",
+      "byteLength": 44566,
+      "sha256": "sha256:127e5e0e49be07f3d6f93ebf8f65880a010dde84eeddb1b768cc7fc32224b30b"
+    },
+    {
+      "gitSource": "7c2882480a4deebf39cae6b8afe42794f000539e:repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/steps/J.json",
+      "snapshot": "harness-correction/previous-J-failure.json.data",
+      "byteLength": 2624,
+      "sha256": "sha256:af11ba1442b82e11015dba555dc3b52b3840d681b416792224e9ba365b58e0ee"
+    },
+    {
+      "gitSource": "7c2882480a4deebf39cae6b8afe42794f000539e:repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-cert/certification-receipt.json",
+      "snapshot": "harness-correction/previous-certification-receipt.json.data",
+      "byteLength": 323670,
+      "sha256": "sha256:8c216030a88b2e491ad878b471c61981ad05eaed6a5a146179f66940b4c93776"
+    }
+  ],
+  "provenance": [
+    "runtime.mjs: terminalAt=readNow(), native performance.now() returns binary64 Number",
+    "runtime.mjs: terminalCleanupDeadline=dispositionDeadline ?? terminalAt+L.cleanupAllowanceMs; helper-timeout has no publication override",
+    "definitions.json: cleanupAllowanceMs is exactly 2000",
+    "supervisor snapshot preserves both Numbers; JSON roundtrip preserves their binary64 values",
+    "runtime-controls-run.py copies fields directly and already checks cleanupDeadline==terminalAt+2000",
+    "J previously subtracted these two represented values then asserted exact difference equality"
+  ],
+  "oldCheck": "assert.equal(H.timeoutCleanupTiming.cleanupDeadlineAtMs-H.timeoutCleanupTiming.terminalAtMs,2000);",
+  "newCheck": "/* BEGIN exact cleanup allowance relation */\nassert.ok(Number.isFinite(H.timeoutCleanupTiming.terminalAtMs)&&H.timeoutCleanupTiming.terminalAtMs>=0);\nassert.ok(Number.isFinite(H.timeoutCleanupTiming.cleanupDeadlineAtMs)&&H.timeoutCleanupTiming.cleanupDeadlineAtMs>H.timeoutCleanupTiming.terminalAtMs);\nassert.equal(H.timeoutCleanupTiming.cleanupDeadlineAtMs,H.timeoutCleanupTiming.terminalAtMs+2000);\n/* END exact cleanup allowance relation */",
+  "historicalNumbers": {
+    "terminalAt": 6474.1113,
+    "cleanupDeadline": 8474.1113,
+    "terminalBits": "0x40b94a1c7e28240b",
+    "deadlineBits": "0x40c08d0e3f141206",
+    "terminalExactRational": "7118360653865995/1099511627776",
+    "deadlineExactRational": "2329345977354499/274877906944",
+    "excessDifferenceExactRationalMs": "1/1099511627776",
+    "excessDifferenceMs": 9.094947017729282e-13,
+    "deadlineUlpMs": 1.8189894035458565e-12,
+    "explanation": "Addition of exactly 2000 to the represented terminal is a midpoint; IEEE-754 round-to-nearest ties-to-even selects the stored deadline. Subtraction exposes that earlier rounding."
+  },
+  "semanticProof": {
+    "allowanceMs": 2000,
+    "relation": "deadline === terminal + 2000",
+    "epsilonMs": 0,
+    "toleranceMs": 0,
+    "timingSlackMs": 0,
+    "forwardRelationMatchesProduct": true,
+    "nonFiniteNegativeOrNonIncreasingRejected": true,
+    "observationEventAtOrBeforeRecordedDeadlineChecksUnchanged": true,
+    "productChanged": false,
+    "helperChanged": false,
+    "expectedOutcomesChanged": false,
+    "limitsChanged": false,
+    "replacementHelperBoundH": "NOT_ESTABLISHED"
+  },
+  "certificationAcceptance": false,
+  "syntheticValidationSeparate": true
+}

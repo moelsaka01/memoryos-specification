@@ -1,0 +1,4 @@
+
+assert.ok(Number.isFinite(H.timeoutCleanupTiming.terminalAtMs)&&H.timeoutCleanupTiming.terminalAtMs>=0);
+assert.ok(Number.isFinite(H.timeoutCleanupTiming.cleanupDeadlineAtMs)&&H.timeoutCleanupTiming.cleanupDeadlineAtMs>H.timeoutCleanupTiming.terminalAtMs);
+assert.equal(H.timeoutCleanupTiming.cleanupDeadlineAtMs,H.timeoutCleanupTiming.terminalAtMs+2000);

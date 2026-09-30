@@ -1,0 +1,775 @@
+{
+  "kind": "MO1307Phase3ARestartPostClosureReportingSummary",
+  "purpose": "Reporting from already closed retained evidence; adds no certification observation or acceptance.",
+  "result": "FAILED/INCOMPLETE",
+  "receipt": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/certification-receipt.json",
+    "byteLength": 283268,
+    "sha256": "sha256:65f58b06e200e397059222f6fc56cff299fe7e83c3f2148230dfdfb36d9fa975"
+  },
+  "seal": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/campaign-seal.json",
+    "byteLength": 258321,
+    "sha256": "sha256:cdf096debb39143f2fa2a525d4173042852cac8d356f11829188740509d7a297"
+  },
+  "inventory": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/recovered-inventory.json",
+    "byteLength": 68277,
+    "sha256": "sha256:ae927858aed6c9ddc255ed0efb9fb74160ffbd899f9780aa6c3f9109ae51b784"
+  },
+  "correction": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/harness-correction/provenance-and-correction.json",
+    "byteLength": 5548,
+    "sha256": "sha256:994e27355440118af950cfb229cb2b00c183fb7f4374057a3449a4f5abe97fc6"
+  },
+  "validation": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/harness-correction/validation.json",
+    "byteLength": 17100,
+    "sha256": "sha256:3a748e0775270a49a63e7569339c86963e4ddb2a1f0fd339071641da94399128"
+  },
+  "independentNumericReview": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3a-c3rb-restart/harness-correction/independent-review.json",
+    "byteLength": 12106,
+    "sha256": "sha256:0bf2f8211f072a9b8625e7501f2596b47a401fee325fc8dd2cb052787da21fb8"
+  },
+  "steps": [
+    {
+      "step": "A",
+      "result": "PASS"
+    },
+    {
+      "step": "B",
+      "result": "PASS"
+    },
+    {
+      "step": "C",
+      "result": "PASS"
+    },
+    {
+      "step": "D",
+      "result": "PASS"
+    },
+    {
+      "step": "E",
+      "result": "PASS"
+    },
+    {
+      "step": "F",
+      "result": "PASS"
+    },
+    {
+      "step": "G",
+      "result": "FAIL"
+    },
+    {
+      "step": "H",
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "I",
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "J",
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "K",
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "L",
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "M",
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "N",
+      "result": "NOT_RUN"
+    },
+    {
+      "step": "O",
+      "result": "NOT_RUN"
+    }
+  ],
+  "firstFailure": {
+    "step": "G",
+    "case": "post-tag-lightweight",
+    "operation": "verify",
+    "expectedExit": 0,
+    "actualExit": 22,
+    "productError": {
+      "name": "ReadinessError",
+      "code": "MO1307_INTERNAL",
+      "stage": "ACQUISITION",
+      "reference": null,
+      "message": "MO1307_INTERNAL",
+      "stack": "ReadinessError: MO1307_INTERNAL\n    at fail (file:///C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/src/errors.mjs:21:61)\n    at finish (file:///C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/src/helper-transport.mjs:66:85)\n    at ChildProcess.<anonymous> (file:///C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/src/helper-transport.mjs:96:81)\n    at ChildProcess.wrapper (node:events:639:12)\n    at ChildProcess.emit (node:events:526:24)\n    at maybeClose (node:internal/child_process:1141:16)\n    at ChildProcess._handle.onexit (node:internal/child_process:306:5)"
+    },
+    "harnessAssertion": {
+      "name": "AssertionError",
+      "code": "ERR_ASSERTION",
+      "stage": null,
+      "reference": null,
+      "message": "{\"code\":\"MO1307_INTERNAL\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n22 !== 0\n",
+      "stack": "AssertionError [ERR_ASSERTION]: {\"code\":\"MO1307_INTERNAL\",\"kind\":\"MemoryOSReadinessError\",\"reference\":null,\"stage\":\"ACQUISITION\",\"version\":\"1.0.0\"}\n\n\n22 !== 0\n\n    at invoke (file:///C:/m7a2/repositories/cca-conformance/tools/mo1307-phase3a-c3rb-restart/decisions-tags.mjs:82:64)\n    at file:///C:/m7a2/repositories/cca-conformance/tools/mo1307-phase3a-c3rb-restart/decisions-tags.mjs:204:35\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+    },
+    "request": {
+      "ordinal": 3,
+      "enteredAt": 2855.1933,
+      "priorChargedMs": 2737.3663000000006,
+      "requestBytes": 2103,
+      "spawnAt": 2855.5986,
+      "pid": 14416,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\m7a2\\.cache\\m7a2\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\m7a2\\.cache\\m7a2\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "exitAt": 3568.6408,
+      "exitCode": 22,
+      "exitSignal": null,
+      "closeAt": 3568.7007,
+      "rejectedAt": 3569.4038,
+      "disposition": "REJECTED",
+      "error": {
+        "name": "ReadinessError",
+        "code": "MO1307_INTERNAL",
+        "stage": "ACQUISITION",
+        "reference": null,
+        "message": "MO1307_INTERNAL",
+        "stack": "ReadinessError: MO1307_INTERNAL\n    at fail (file:///C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/src/errors.mjs:21:61)\n    at finish (file:///C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/src/helper-transport.mjs:66:85)\n    at ChildProcess.<anonymous> (file:///C:/m7a2/.cache/m7a2/install/node_modules/memoryos-readiness/src/helper-transport.mjs:96:81)\n    at ChildProcess.wrapper (node:events:639:12)\n    at ChildProcess.emit (node:events:526:24)\n    at maybeClose (node:internal/child_process:1141:16)\n    at ChildProcess._handle.onexit (node:internal/child_process:306:5)"
+      },
+      "terminalAt": 3569.409,
+      "durationMs": 714.2157000000002,
+      "chargedAfterMs": 2737.3663000000006,
+      "chargedThisExchangeMs": 0,
+      "sequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 19,
+      "rootCount": 1,
+      "requestSha256": "sha256:9aaad6de821f5d2779b778b6c3ba60c26cd307ffd58a3d10719ba8e0e0aca6cc",
+      "startTime": "2026-09-30T00:03:48.123Z",
+      "terminalTime": "2026-09-30T00:03:48.838Z",
+      "responseAcceptedByTransport": false,
+      "responseArrived": false,
+      "responseComplete": false,
+      "responseSha256": null,
+      "transportClosed": true
+    },
+    "supervisor": {
+      "kind": "cli",
+      "deadline": 30083.5922,
+      "helpers": 3,
+      "workers": 0,
+      "helperUsedMs": 2737.3663000000006,
+      "activeRole": "helper",
+      "cleanupConfirmed": false,
+      "publication": null,
+      "terminalCode": "MO1307_INTERNAL",
+      "terminalAt": 3569.1211,
+      "cleanupDeadline": 5569.1211,
+      "events": [
+        {
+          "type": "start",
+          "at": 90.506,
+          "role": "helper",
+          "deadline": 5090.4224,
+          "ordinal": 1
+        },
+        {
+          "type": "observation",
+          "at": 103.0576,
+          "role": "helper",
+          "pid": 25880,
+          "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+        },
+        {
+          "type": "quiescent",
+          "at": 1470.0704,
+          "role": "helper",
+          "ordinal": 1
+        },
+        {
+          "type": "start",
+          "at": 1485.5426,
+          "role": "helper",
+          "deadline": 6485.5267,
+          "ordinal": 2
+        },
+        {
+          "type": "observation",
+          "at": 1497.5438,
+          "role": "helper",
+          "pid": 21484,
+          "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+        },
+        {
+          "type": "quiescent",
+          "at": 2843.2579,
+          "role": "helper",
+          "ordinal": 2
+        },
+        {
+          "type": "start",
+          "at": 2855.5587,
+          "role": "helper",
+          "deadline": 7855.543900000001,
+          "ordinal": 3
+        },
+        {
+          "type": "observation",
+          "at": 2865.4986,
+          "role": "helper",
+          "pid": 14416,
+          "consolePolicy": "HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT"
+        },
+        {
+          "type": "terminal",
+          "at": 3569.1432,
+          "code": "MO1307_INTERNAL",
+          "stage": "ACQUISITION"
+        },
+        {
+          "type": "cleanup",
+          "at": 3569.3639,
+          "role": "helper",
+          "confirmed": false
+        }
+      ]
+    },
+    "productLifecycleElapsedMs": 3486.3997,
+    "harnessElapsedMs": 5305.919200000004,
+    "allFailedRequestStreamsClosed": true,
+    "diagnosisAttempted": false,
+    "repairAttempted": false,
+    "retry": false
+  },
+  "resources": {
+    "nativeCliObservations": 25,
+    "nativeCliExits": {
+      "27": 3,
+      "0": 14,
+      "2": 2,
+      "3": 4,
+      "4": 1,
+      "22": 1
+    },
+    "helperRequests": 144,
+    "resolvedRequests": 143,
+    "rejectedRequests": 1,
+    "workerAdmissions": 24,
+    "maximumRecordedChargedHelperMs": 3608.848299999999,
+    "maximumRecordedExchangeDurationMs": 3610.0493,
+    "maximumRecordedAggregateHelperMs": 17113.027200000004,
+    "maximumRecordedCliLifecycleMs": 17675.997499999998,
+    "transportClosedRequests": 144,
+    "requestsWithAllThreeStreamCloseEvents": 144,
+    "requestExitCodes": {
+      "0": 143,
+      "22": 1
+    },
+    "note": "Retained observations only; no new timings, execution, deadline characterization, or inferred finite bound. Rejected request charged delta is recorded separately from its observed duration."
+  },
+  "topology": {
+    "result": "PASS",
+    "allKnownObjectsSignaled": true,
+    "maximumRawProcesses": 4,
+    "maximumProductRoles": 3,
+    "maximumHelpers": 1,
+    "maximumHelperConsoles": 1,
+    "peakSampledProductWorkingSetBytes": 200560640,
+    "peakSampledRawWorkingSetBytes": 208789504,
+    "hardOsRssEnforcement": false,
+    "sampleCount": 117,
+    "maximumSampleGapMs": 124.2228,
+    "identityOrSnapshotFailures": 1,
+    "observationErrors": [
+      {
+        "event": "candidate_identity_unknown",
+        "qpc": 2211218047044,
+        "nativeUtc100ns": 134351999717231657,
+        "utc": "2026-09-29T23:59:31.717992+00:00",
+        "pid": 15512,
+        "parentPid": 24312,
+        "error": {
+          "operation": "QueryFullProcessImageNameW",
+          "winerror": 31
+        }
+      }
+    ],
+    "scope": "One already-authorized semantic invocation. Helper/console process-object exits are proved by held handles. No process is terminated by observer. Node-parented console born before observer readiness and product entry is reported separately as engineering bootstrap; raw count retained. Worker thread serialization must additionally be verified from production supervisor events. Sampling may miss unknown short-lived descendants; measured overhead excludes serialization/flush."
+  },
+  "cliApiParity": {
+    "coreSteps": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "decisionCases": [
+      {
+        "name": "ready-approve",
+        "result": "PASS",
+        "nativeVerifyExit": 0,
+        "expectedError": null,
+        "decision": {
+          "decision": "APPROVE",
+          "consistency": "CONSISTENT",
+          "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+        },
+        "computedReadinessUnchanged": true,
+        "primaryStep": "B"
+      },
+      {
+        "name": "ready-reject",
+        "result": "PASS",
+        "nativeVerifyExit": 0,
+        "expectedError": null,
+        "decision": {
+          "decision": "REJECT",
+          "consistency": "CONSISTENT",
+          "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+        },
+        "computedReadinessUnchanged": true,
+        "primaryStep": "B"
+      },
+      {
+        "name": "qualified-approve",
+        "result": "PASS",
+        "nativeVerifyExit": 0,
+        "expectedError": null,
+        "decision": {
+          "decision": "APPROVE",
+          "consistency": "CONSISTENT",
+          "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+        },
+        "computedReadinessUnchanged": true,
+        "primaryStep": "A"
+      },
+      {
+        "name": "not-ready-attempted-approve",
+        "result": "PASS",
+        "nativeVerifyExit": 0,
+        "expectedError": null,
+        "decision": {
+          "decision": "APPROVE",
+          "consistency": "CONTRARY_TO_READINESS",
+          "authenticity": "NOT_VERIFIED_BY_MEMORYOS"
+        },
+        "computedReadinessUnchanged": true,
+        "primaryStep": "C"
+      },
+      {
+        "name": "candidate-mismatch",
+        "result": "PASS",
+        "nativeVerifyExit": 27,
+        "expectedError": "MO1307_DECISION_MISMATCH",
+        "decision": null,
+        "computedReadinessUnchanged": true,
+        "primaryStep": "B"
+      },
+      {
+        "name": "readiness-mismatch",
+        "result": "PASS",
+        "nativeVerifyExit": 27,
+        "expectedError": "MO1307_DECISION_MISMATCH",
+        "decision": null,
+        "computedReadinessUnchanged": true,
+        "primaryStep": "B"
+      },
+      {
+        "name": "proof-mismatch",
+        "result": "PASS",
+        "nativeVerifyExit": 27,
+        "expectedError": "MO1307_DECISION_MISMATCH",
+        "decision": null,
+        "computedReadinessUnchanged": true,
+        "primaryStep": "B"
+      }
+    ],
+    "fullyCompletedNewTagCases": [
+      {
+        "name": "post-tag-ready",
+        "result": "PASS",
+        "stage": "POST_TAG_VERIFICATION",
+        "readiness": "READY",
+        "checkCode": null,
+        "nativeEvaluateExit": 0,
+        "nativeVerifyExit": 0,
+        "exactApiParity": true
+      },
+      {
+        "name": "pre-tag-present",
+        "result": "PASS",
+        "stage": "PRE_TAG_READINESS",
+        "readiness": "NOT_READY",
+        "checkCode": "TAG_PRESENCE",
+        "nativeEvaluateExit": 3,
+        "nativeVerifyExit": 0,
+        "exactApiParity": true
+      },
+      {
+        "name": "post-tag-absent",
+        "result": "PASS",
+        "stage": "POST_TAG_VERIFICATION",
+        "readiness": "NOT_READY",
+        "checkCode": "TAG_PRESENCE",
+        "nativeEvaluateExit": 3,
+        "nativeVerifyExit": 0,
+        "exactApiParity": true
+      }
+    ],
+    "lightweightEvaluation": "PASS; native verify failed before API parity",
+    "sameGenerationPreAbsent": "Already represented by B; not a prior-generation observation",
+    "wrongTargetAndWrongName": "NOT_RUN"
+  },
+  "determinism": "N NOT_RUN; exact parity of completed cases is not a completed determinism certification",
+  "helperIdentity": {
+    "path": "helpers/windows-inspect.ps1",
+    "byteLength": 30210,
+    "sha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+  },
+  "schemaIdentities": [
+    {
+      "path": "schemas/assessment-1.0.0.schema.json",
+      "byteLength": 111,
+      "sha256": "sha256:773b9d56360d4a19145ee39b53280bb762bcb74ea4cb2807d703d12f25a8568c"
+    },
+    {
+      "path": "schemas/assumption-1.0.0.schema.json",
+      "byteLength": 111,
+      "sha256": "sha256:ce27f9be6367c67fd8e89e8d63d366a2b4b3f9f383a456c6afda6059fc85b565"
+    },
+    {
+      "path": "schemas/audit-1.0.0.schema.json",
+      "byteLength": 106,
+      "sha256": "sha256:eae09ceabc8e2168803a86393e8bd726858ee93fa29085a65993f93a15760819"
+    },
+    {
+      "path": "schemas/authority-1.0.0.schema.json",
+      "byteLength": 110,
+      "sha256": "sha256:28090b4c3e0ad932c6d730074821dc7af93807718ecebd922d0fa79442c8c166"
+    },
+    {
+      "path": "schemas/authority-source-1.0.0.schema.json",
+      "byteLength": 116,
+      "sha256": "sha256:c4e76103c0cd8dcb3d8bfc28233aecf3842ede119add74107b11aad3cdcba892"
+    },
+    {
+      "path": "schemas/blocker-1.0.0.schema.json",
+      "byteLength": 108,
+      "sha256": "sha256:c020e225b6108e6dda23c9b7d917d3bb5fdf5b85c447d6163e9ce68a4db5fab1"
+    },
+    {
+      "path": "schemas/candidate-1.0.0.schema.json",
+      "byteLength": 110,
+      "sha256": "sha256:265ee28abecb976c8216f509bd4f8f5eb60b10b41fcd976858258fa2abe2b957"
+    },
+    {
+      "path": "schemas/claim-1.0.0.schema.json",
+      "byteLength": 106,
+      "sha256": "sha256:3c3ab7dad3ee5ae25769c0c84f25767ae37d4c1a0ceb7f549ba86c9acdd5f352"
+    },
+    {
+      "path": "schemas/cne-reason-1.0.0.schema.json",
+      "byteLength": 110,
+      "sha256": "sha256:45ba361684b6c8ffe0d4850dcbab22c376fd59f0f7639f2d25cba15f0fdecf49"
+    },
+    {
+      "path": "schemas/code-1.0.0.schema.json",
+      "byteLength": 105,
+      "sha256": "sha256:c4c3ee22c6481a1fef69497210c0327c6b5c61553a3e5e089a59f3b76b540d84"
+    },
+    {
+      "path": "schemas/component-1.0.0.schema.json",
+      "byteLength": 110,
+      "sha256": "sha256:fc4f35ef9d0167b699b2310f0e3a5dd34a2705de93f2d8bf5c1c5babea11aa8e"
+    },
+    {
+      "path": "schemas/configuration-1.0.0.schema.json",
+      "byteLength": 114,
+      "sha256": "sha256:80511fe12f10aca88ed6d7206d5bc561e00cdc0fdef7a58afe17db27b497c7b5"
+    },
+    {
+      "path": "schemas/contract-manifest-1.0.0.schema.json",
+      "byteLength": 117,
+      "sha256": "sha256:0ca35fbafd3d5bcd3ccbfa2b066a13ad54b693555c146a1d495c59e8ded42302"
+    },
+    {
+      "path": "schemas/decision-projection-1.0.0.schema.json",
+      "byteLength": 119,
+      "sha256": "sha256:b444b1ee6a5b8c933a3566e7faa7a68259cb149303b8e67984b2e5ec07d4075a"
+    },
+    {
+      "path": "schemas/dependency-1.0.0.schema.json",
+      "byteLength": 111,
+      "sha256": "sha256:0be69194601ce78dc37ff0a1f30fa46ff1d2a1b9c32317797d4b68a409861eea"
+    },
+    {
+      "path": "schemas/derived-qualification-1.0.0.schema.json",
+      "byteLength": 121,
+      "sha256": "sha256:665d9a9c3749ed0a886d58a19ec8c81696e93a373df10edb635a6edeffa9a14c"
+    },
+    {
+      "path": "schemas/digest-1.0.0.schema.json",
+      "byteLength": 107,
+      "sha256": "sha256:a01d44321afc286b3805f5de4ad7cb4dd60efbf9e209d872ec59edab8820ad76"
+    },
+    {
+      "path": "schemas/distribution-manifest-1.0.0.schema.json",
+      "byteLength": 121,
+      "sha256": "sha256:b3940e289676341a81f2863accf8989a7ed3c690b48b1366eddb978798320586"
+    },
+    {
+      "path": "schemas/error-1.0.0.schema.json",
+      "byteLength": 106,
+      "sha256": "sha256:6cb67bcf429d037871dc61e36779d6e15a7e36e04b955d3e00354ca9803b65a6"
+    },
+    {
+      "path": "schemas/evidence-1.0.0.schema.json",
+      "byteLength": 109,
+      "sha256": "sha256:60d6d4d266b4922cbeefbe451958ec1abc73d86073e0c287b928aaf98c20b8c6"
+    },
+    {
+      "path": "schemas/file-member-1.0.0.schema.json",
+      "byteLength": 111,
+      "sha256": "sha256:5b8d3a04e21d5093807e72e7c53999123d83aa78a892cdc3a073c116db27db59"
+    },
+    {
+      "path": "schemas/gate-definition-1.0.0.schema.json",
+      "byteLength": 115,
+      "sha256": "sha256:e02d27ed14eff9ace68ebbf72eb1ea792688a8134f5b41ae67955b048642d37f"
+    },
+    {
+      "path": "schemas/gate-result-1.0.0.schema.json",
+      "byteLength": 111,
+      "sha256": "sha256:cbfc9891347afec3f3dbc6c95d27f7274e425340934cf326f47ed22b0237f259"
+    },
+    {
+      "path": "schemas/grant-1.0.0.schema.json",
+      "byteLength": 106,
+      "sha256": "sha256:01fabc2ee8ac1d4915489642a05e3674caa6ba65d262e3794f250d6caeca26ad"
+    },
+    {
+      "path": "schemas/graph-1.0.0.schema.json",
+      "byteLength": 106,
+      "sha256": "sha256:59900f67dc53b5fe2124adec263534b121c8d61ea7037d1b1ec0d0b17ddd06d2"
+    },
+    {
+      "path": "schemas/history-1.0.0.schema.json",
+      "byteLength": 108,
+      "sha256": "sha256:6a3c3c8859ace61f382675ba6d13ea53c83cd468e507fc85f292a8b28e64ea32"
+    },
+    {
+      "path": "schemas/history-projection-1.0.0.schema.json",
+      "byteLength": 118,
+      "sha256": "sha256:52af97dd6a6b2a9daa57b99a346c039cea0200144a3b4aed28770faf3371a460"
+    },
+    {
+      "path": "schemas/human-decision-1.0.0.schema.json",
+      "byteLength": 114,
+      "sha256": "sha256:13b6036fb35db9b2633d6dee1798adcccf558694301a8b55ac1241bbc45bcc82"
+    },
+    {
+      "path": "schemas/id-1.0.0.schema.json",
+      "byteLength": 103,
+      "sha256": "sha256:364342bc9972e0901a5b05f1dc84e8aa90617afc397d7b056c7fe0d564b51263"
+    },
+    {
+      "path": "schemas/identity-1.0.0.schema.json",
+      "byteLength": 109,
+      "sha256": "sha256:19440bf404254f418c5eacdc5d0cb479d3808d2b95e2e2704a323b5915f93108"
+    },
+    {
+      "path": "schemas/integer-1.0.0.schema.json",
+      "byteLength": 108,
+      "sha256": "sha256:7a8a6c2204db56802077fba49b9a03787ad4d4be8e07809950bdd427d5270d21"
+    },
+    {
+      "path": "schemas/manifest-1.0.0.schema.json",
+      "byteLength": 109,
+      "sha256": "sha256:ff5a3822707d15c803325b5c41387320e626595ba1627ec74f53363b08c2ff4d"
+    },
+    {
+      "path": "schemas/manifest-entry-1.0.0.schema.json",
+      "byteLength": 114,
+      "sha256": "sha256:3040c1613e8dc2898b6c2b37f6dab57a4836b9bc93337d343898ed1a10bae6bc"
+    },
+    {
+      "path": "schemas/normalized-authority-1.0.0.schema.json",
+      "byteLength": 120,
+      "sha256": "sha256:733e689add594ccb261ae0e622fc8ae4e3ae6606e3ddc1d845d0445d17cdf44f"
+    },
+    {
+      "path": "schemas/normalized-authority-source-1.0.0.schema.json",
+      "byteLength": 126,
+      "sha256": "sha256:d85cc121db700854ff8d167757b5a8087ccfdb184504b4ecf722018c8d10b81c"
+    },
+    {
+      "path": "schemas/normalized-grant-1.0.0.schema.json",
+      "byteLength": 116,
+      "sha256": "sha256:cf67227dfcde597cf706cd584513ca6f52c22595985aeb4f5f99e4a2a9797047"
+    },
+    {
+      "path": "schemas/normalized-slot-1.0.0.schema.json",
+      "byteLength": 115,
+      "sha256": "sha256:5edf7393cabdfd4a0b94518575f2d8815cbeac0dc5585e64cfa85c74489e28af"
+    },
+    {
+      "path": "schemas/product-version-1.0.0.schema.json",
+      "byteLength": 115,
+      "sha256": "sha256:89232556d0128a0da610580f5a5bae821f4fd36ea93d9378a56ce3fed758af18"
+    },
+    {
+      "path": "schemas/proof-binding-1.0.0.schema.json",
+      "byteLength": 113,
+      "sha256": "sha256:ebc12795220250cf47e5264faaacf45f78abc176e8f426b0ce506906c0b88b9f"
+    },
+    {
+      "path": "schemas/provider-detail-1.0.0.schema.json",
+      "byteLength": 115,
+      "sha256": "sha256:8efacbe3f41fb5e186c9f764157d2524c91f1753280443946c6b87aecf12afcd"
+    },
+    {
+      "path": "schemas/qualification-1.0.0.schema.json",
+      "byteLength": 114,
+      "sha256": "sha256:b22237b94c636209d63b0dcdf256b63fa1869109eb06fed9095bda7b8187c69e"
+    },
+    {
+      "path": "schemas/relative-file-1.0.0.schema.json",
+      "byteLength": 113,
+      "sha256": "sha256:8d68f38409f550398b3c7333224bd28c4281de28d6cf77bea20711a175f435fd"
+    },
+    {
+      "path": "schemas/result-1.0.0.schema.json",
+      "byteLength": 107,
+      "sha256": "sha256:f9592abbdcaf104613fe383f0120a130c72e060184978dca19014146cee14de4"
+    },
+    {
+      "path": "schemas/revision-1.0.0.schema.json",
+      "byteLength": 109,
+      "sha256": "sha256:e72340eda5d07fbeec25c831e1e0af6c62e5c484a246f568405e13cbc7b15e0e"
+    },
+    {
+      "path": "schemas/semantic-contract-1.0.0.schema.json",
+      "byteLength": 117,
+      "sha256": "sha256:016898c9d4276fb8555524976b8d169b06c0800a61b588ab215332ff58523d5d"
+    },
+    {
+      "path": "schemas/shared-1.0.0.schema.json",
+      "byteLength": 90965,
+      "sha256": "sha256:d5bd0ea081ef981740a64160e35d301696a51bb1dbfffd0fc3c53a310ab49a4e"
+    },
+    {
+      "path": "schemas/slot-1.0.0.schema.json",
+      "byteLength": 105,
+      "sha256": "sha256:03c145b78db6f78dee87b46afbed0dcc2afe2f9cc3dc04e26b90fbb4fdf9cab1"
+    },
+    {
+      "path": "schemas/string-1.0.0.schema.json",
+      "byteLength": 107,
+      "sha256": "sha256:4b2f4bd5684000066419e2973ad3e5f2730fa56a4b7b5f0a1c31927895257c4b"
+    },
+    {
+      "path": "schemas/summary-1.0.0.schema.json",
+      "byteLength": 108,
+      "sha256": "sha256:b0b868cde08a9a03e87ead8bcfd7980241bf1e5228d4fc1d5e9766cdb6b4ed45"
+    },
+    {
+      "path": "schemas/tag-name-1.0.0.schema.json",
+      "byteLength": 108,
+      "sha256": "sha256:d5db6abb9e0caeba9098ff3efcc89d1d504592f72c319908915b121345ed2970"
+    },
+    {
+      "path": "schemas/tag-observation-1.0.0.schema.json",
+      "byteLength": 115,
+      "sha256": "sha256:a5a0ffd56666fd06d0ef014ff6f6ea186cd6c37410d5f3efc3534975517558c8"
+    },
+    {
+      "path": "schemas/timestamp-1.0.0.schema.json",
+      "byteLength": 110,
+      "sha256": "sha256:cc505464fa1d6643920b008f7ba100c70bdd1cbf547db4ac2f3cdb9fd4e07447"
+    },
+    {
+      "path": "src/schema-data.mjs",
+      "byteLength": 98556,
+      "sha256": "sha256:467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+    },
+    {
+      "path": "src/schema.mjs",
+      "byteLength": 4308,
+      "sha256": "sha256:9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+    }
+  ],
+  "integrity": {
+    "result": "PASS",
+    "sourceUnchanged": true,
+    "installedUnchanged": true,
+    "installedMembers": 89,
+    "historicalFiles": 2527,
+    "historicalChanged": [],
+    "integrityFailures": [],
+    "productionDiff": "",
+    "noProductionMutation": true
+  },
+  "priorGenerationPreserved": {
+    "kind": "MO1307Phase3APriorFailedGenerationBinding",
+    "previousCommit": "7c2882480a4deebf39cae6b8afe42794f000539e",
+    "previousWorktree": "C:/m7a",
+    "result": "FAILED/INCOMPLETE",
+    "completed": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G",
+      "H",
+      "I"
+    ],
+    "failed": "J",
+    "notRun": [
+      "K",
+      "L",
+      "M",
+      "N",
+      "O"
+    ],
+    "preservedReadOnly": true,
+    "observationsReusedInNewCertification": false,
+    "currentCandidate": "defe93989efc6501b1a730b82e79e705884b269b",
+    "currentTree": "54c8ca8acc388d8dcb5d8d76e119b434dcc1a9bb",
+    "inventoryDefinitionReuseOnly": true,
+    "inventorySha256": "sha256:ae927858aed6c9ddc255ed0efb9fb74160ffbd899f9780aa6c3f9109ae51b784"
+  },
+  "postClosureProductExecutions": 0
+}
