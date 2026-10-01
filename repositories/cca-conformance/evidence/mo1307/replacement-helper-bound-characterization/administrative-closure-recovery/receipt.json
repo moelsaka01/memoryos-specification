@@ -1,0 +1,201 @@
+{
+  "kind": "MO1307ReplacementBoundAdministrativeClosureRecovery",
+  "version": "1.0.0",
+  "result": "PASS",
+  "status": "POST_SEAL_ADMINISTRATIVE_INVENTORY_RECOVERY",
+  "createdAtUtc": "2026-10-01T11:40:12.055Z",
+  "disposition": "H_NOT_ESTABLISHED",
+  "Hms": null,
+  "scope": "Evidence packaging only after the sealed closure completed validation and failed while parsing Git porcelain for its changed-file inventory.",
+  "preflight1": {
+    "result": "PASS",
+    "mode": "PREFLIGHT",
+    "executedSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/replacement-helper-bound-characterization/administrative-closure-recovery/recover.mjs",
+      "byteLength": 11700,
+      "sha256": "sha256:f5a46a91b3830e405477492176d6e38b8321e6d72ab59454aebcf3d038a65619"
+    },
+    "changedPaths": 199,
+    "disposition": "H_NOT_ESTABLISHED",
+    "Hms": null,
+    "evidenceWrites": 0,
+    "nativeHelperExecutions": 0,
+    "workerThreads": 0
+  },
+  "attempt1": {
+    "command": "C:/Users/melsa/Documents/Codex/cca-workspace/.cache/mo1304-phase3-toolchain/node-v24.21.0-win-x64/node.exe repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/closure.mjs",
+    "exitCode": 1,
+    "completedValidation": {
+      "path": "repositories/cca-conformance/evidence/mo1307/replacement-helper-bound-characterization/final-validation/attempt-1/receipt.json",
+      "byteLength": 4769,
+      "sha256": "sha256:d89a1223bf4ce23643f2379cba2272b4ed4690a9ee58f9daeb7b557bf2c4efad"
+    },
+    "rawStatusBeforeRecovery": {
+      "path": "repositories/cca-conformance/evidence/mo1307/replacement-helper-bound-characterization/final-validation/attempt-1/status-before-recovery.bin",
+      "byteLength": 23966,
+      "sha256": "sha256:5650f577afd68a78ba90167cc19bc58aa350e88c77002a223ba165c2e8e8ca3e"
+    },
+    "failure": {
+      "code": "ERR_ASSERTION",
+      "source": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/closure.mjs:19-21",
+      "commonSource": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/common.mjs:28",
+      "cause": "common.str() trimmed the leading worktree-status space before closure.mjs applied fixed-column porcelain parsing.",
+      "firstRawEntry": " M .gitattributes",
+      "derivedInvalidEntry": {
+        "status": "M ",
+        "path": "gitattributes"
+      },
+      "assertionDiagnosticEntries": [
+        {
+          "status": "M ",
+          "path": "gitattributes"
+        },
+        {
+          "status": "??",
+          "path": "docs/mo1307-replacement-helper-bound-characterization.md"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/analyze.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/bind-preservation.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/campaign.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/closure.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/common.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/engineering-supervisor.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/fixtures.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/independent-recompute.py"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/prospective-cli.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/prospective-publication.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/prospective-runtime.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/prospective-sequence.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/retained-generate-fixtures.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/seal.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/verify-evidence.mjs"
+        },
+        {
+          "status": "??",
+          "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/write-report.mjs"
+        }
+      ]
+    },
+    "closureSource": {
+      "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/closure.mjs",
+      "byteLength": 4679,
+      "sha256": "sha256:1a162256963e23d7f81c508290ffce87df6b05c3da5f90e1e9123fe6b07c756e"
+    },
+    "commonSource": {
+      "path": "repositories/cca-conformance/tools/mo1307-replacement-helper-bound-characterization/common.mjs",
+      "byteLength": 7606,
+      "sha256": "sha256:4080daa5d823e9460514ef1912d37c15006a0ae465685a6de67129ea7680331c"
+    },
+    "changedFileInventoryWritten": false,
+    "validationReceiptPreservedByteForByte": true
+  },
+  "recovery": {
+    "source": {
+      "path": "repositories/cca-conformance/evidence/mo1307/replacement-helper-bound-characterization/administrative-closure-recovery/recover-hardened.mjs",
+      "byteLength": 14669,
+      "sha256": "sha256:8150a9c2d45f39a5ee489e58fe8493a9dc3c7a6b214d71f9a9cc1499221bb32c"
+    },
+    "method": "Parse NUL-terminated git status --porcelain=v1 -z bytes without trimming, validate the unchanged sealed evidence, write this recovery receipt, then write the self-excluding inventory last.",
+    "readOnlyEvidenceVerifier": {
+      "kind": "MO1307ReplacementBoundReadOnlyVerification",
+      "result": "PASS",
+      "disposition": "H_NOT_ESTABLISHED",
+      "Hms": null,
+      "counts": {
+        "planned": 1544,
+        "actualHelperLaunches": 4,
+        "derivation": 4,
+        "holdout": 0,
+        "sequenceControlsPassed": 0,
+        "sequenceControlsAttempted": 0,
+        "sequenceHelperLaunches": 0,
+        "workerThreads": 0
+      },
+      "seal": {
+        "path": "repositories/cca-conformance/evidence/mo1307/replacement-helper-bound-characterization/plan-seal.json",
+        "byteLength": 31051,
+        "sha256": "sha256:be99529c79b38b1f5a2b3af2cb349cde5fb258a1949d7cce660518832d3ed785"
+      },
+      "nativeHelperExecutions": 0,
+      "workerThreads": 0
+    },
+    "recoverySourceSyntax": {
+      "result": "PASS",
+      "stdout": "",
+      "stderr": ""
+    },
+    "gitDiffCheck": {
+      "result": "PASS",
+      "stdout": "",
+      "stderr": "warning: in the working copy of '.gitattributes', CRLF will be replaced by LF the next time Git touches it\n"
+    },
+    "inventoryPath": "repositories/cca-conformance/evidence/mo1307/replacement-helper-bound-characterization/changed-file-inventory.json",
+    "inventorySelfExclusion": "The inventory is written last and excludes only its own hash to keep the binding acyclic."
+  },
+  "counts": {
+    "campaignNativeHelperExecutions": 4,
+    "recoveryNativeHelperExecutions": 0,
+    "campaignWorkerThreads": 0,
+    "recoveryWorkerThreads": 0
+  },
+  "campaignRerun": false,
+  "helperRetry": false,
+  "manualSampleSubstitution": false,
+  "HRecomputed": false,
+  "campaignResultChanged": false,
+  "sealedCampaignArtifactsChanged": false,
+  "sealedToolSourcesChanged": false,
+  "productionChanges": false,
+  "contractChanges": false,
+  "certification": false,
+  "phase3A": false,
+  "phase3B": false,
+  "phase3C": false,
+  "phase3D": false,
+  "push": false,
+  "tag": false
+}

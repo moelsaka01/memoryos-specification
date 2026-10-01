@@ -1,0 +1,199 @@
+{
+  "kind": "MO1307ReplacementBoundLaunch",
+  "version": "1.0.0",
+  "phase": "derivation",
+  "planRef": {
+    "globalOrdinal": 1,
+    "phase": "derivation",
+    "phaseOrdinal": 1,
+    "round": 0,
+    "classId": 1,
+    "sampleId": "d-r00-c01"
+  },
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/replacement-helper-bound-characterization/requests/class-01.bin",
+    "byteLength": 371,
+    "sha256": "sha256:12c4c730b1d5b5ff68e13dd64285776ca83755425b8fd313944071f630170d08"
+  },
+  "expected": {
+    "status": "OK",
+    "code": null,
+    "operation": "READ_SET",
+    "sequence": 3,
+    "session": "1527ef5b2446b5ea2781a41df6471ef326f1f5afa20667a7c2184f5eca2086f5",
+    "files": [
+      {
+        "id": "leaf",
+        "root": "input",
+        "relative": "leaf.data",
+        "maxBytes": 4096,
+        "path": "C:\\m7h\\.cache\\mo1307-replacement-helper-bound-characterization\\fixtures\\class-01\\leaf.data",
+        "byteLength": 53,
+        "sha256": "sha256:f24fc3c6dcf16b81cdb6bc87cc8f1c1ae33cf2ea1ea6087bba2e1e5660ec7a77",
+        "identity": {
+          "volumeSerial": "bec58120",
+          "fileId": "000800000018a3ec",
+          "linkCount": 1,
+          "byteLength": 53,
+          "attributes": 32,
+          "isDirectory": false,
+          "finalPath": "C:\\m7h\\.cache\\mo1307-replacement-helper-bound-characterization\\fixtures\\class-01\\leaf.data"
+        }
+      }
+    ],
+    "mode": "SEALED_READ_SET",
+    "roots": [
+      {
+        "id": "input",
+        "path": "C:\\m7h\\.cache\\mo1307-replacement-helper-bound-characterization\\fixtures\\class-01",
+        "state": {
+          "path": "C:\\m7h\\.cache\\mo1307-replacement-helper-bound-characterization\\fixtures\\class-01",
+          "exists": true,
+          "type": "DIRECTORY",
+          "volumeSerial": "bec58120",
+          "fileId": "000800000018a3eb",
+          "linkCount": 1,
+          "byteLength": 0,
+          "mode": "41b6",
+          "realPath": "C:\\m7h\\.cache\\mo1307-replacement-helper-bound-characterization\\fixtures\\class-01"
+        },
+        "identity": {
+          "volumeSerial": "bec58120",
+          "fileId": "000800000018a3eb",
+          "linkCount": 1,
+          "byteLength": 0,
+          "attributes": 16,
+          "isDirectory": true,
+          "finalPath": "C:\\m7h\\.cache\\mo1307-replacement-helper-bound-characterization\\fixtures\\class-01"
+        }
+      }
+    ],
+    "aggregateBytes": 53
+  },
+  "result": "PASS",
+  "error": null,
+  "startedAtUtc": "2026-10-01T11:16:35.178Z",
+  "endedAtUtc": "2026-10-01T11:16:39.254Z",
+  "Sns": "4070169200",
+  "E_ns": "4073104900",
+  "Sms": 4070.1692,
+  "Ems": 4073.1049,
+  "QcandidateNs": "2935700",
+  "limitNs": "20000000000",
+  "response": {
+    "byteLength": 813,
+    "sha256": "sha256:c674ea5210ac8658a989d145d8cd09659e04f83b03219cdd7b9defd8e8951c01",
+    "projection": {
+      "status": "OK",
+      "code": null,
+      "operation": "READ_SET",
+      "sequence": 3,
+      "session": "1527ef5b2446b5ea2781a41df6471ef326f1f5afa20667a7c2184f5eca2086f5",
+      "roots": [
+        {
+          "id": "input",
+          "identity": {
+            "attributes": 16,
+            "byteLength": 0,
+            "fileId": "000800000018a3eb",
+            "finalPath": "C:\\m7h\\.cache\\mo1307-replacement-helper-bound-characterization\\fixtures\\class-01",
+            "isDirectory": true,
+            "linkCount": 1,
+            "volumeSerial": "bec58120"
+          }
+        }
+      ],
+      "files": [
+        {
+          "id": "leaf",
+          "identity": {
+            "attributes": 32,
+            "byteLength": 53,
+            "fileId": "000800000018a3ec",
+            "finalPath": "C:\\m7h\\.cache\\mo1307-replacement-helper-bound-characterization\\fixtures\\class-01\\leaf.data",
+            "isDirectory": false,
+            "linkCount": 1,
+            "volumeSerial": "bec58120"
+          },
+          "byteLength": 53,
+          "sha256": "sha256:f24fc3c6dcf16b81cdb6bc87cc8f1c1ae33cf2ea1ea6087bba2e1e5660ec7a77"
+        }
+      ]
+    }
+  },
+  "stderr": {
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "rawFailure": null,
+  "child": {
+    "attemptOrdinal": 1,
+    "pid": 4032,
+    "spawnEvent": true,
+    "spawnError": null,
+    "exit": {
+      "code": 0,
+      "signal": null
+    },
+    "close": {
+      "code": 0,
+      "signal": null
+    },
+    "pipes": {
+      "stdinClose": true,
+      "stdoutClose": true,
+      "stderrClose": true,
+      "stdinFinish": true,
+      "stdoutEnd": true,
+      "stderrEnd": true
+    }
+  },
+  "supervisor": {
+    "mode": "ENGINEERING_EVIDENCE_ONLY",
+    "phase": "derivation",
+    "originNs": "44718635627600",
+    "completedNs": "44722705796800",
+    "durationNs": "4070169200",
+    "limitNs": "20000000000",
+    "launches": 1,
+    "terminalCode": null,
+    "terminalAtNs": null,
+    "cleanupDeadlineNs": null,
+    "transportCleanupConfirmed": true,
+    "events": [
+      {
+        "type": "start",
+        "atNs": "44718635778900",
+        "originNs": "44718635627600",
+        "limitNs": "20000000000"
+      },
+      {
+        "type": "observation",
+        "atNs": "44718653927900",
+        "pid": 4032,
+        "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+      },
+      {
+        "type": "quiescent",
+        "atNs": "44722705828100",
+        "completedNs": "44722705796800"
+      }
+    ]
+  },
+  "security": {
+    "freshProcess": true,
+    "oneCanonicalFrame": true,
+    "eofAndAllPipes": true,
+    "stderrZero": true,
+    "noRetry": true,
+    "noOverlap": true,
+    "checkedHandleAndToctou": "UNCHANGED_PRODUCTION_HELPER",
+    "failClosed": true,
+    "lateSuccessRecovery": false,
+    "transportSelfDetachAndQuiescence": true,
+    "cleanupWithin2000": true,
+    "humanAuthoritySeparated": true
+  },
+  "productionChanges": false,
+  "certification": false
+}
