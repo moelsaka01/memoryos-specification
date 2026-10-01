@@ -93,7 +93,7 @@ const limits = {
   relativePathChars:180,fullPathCodeUnits:240,resultBytes:4194304,textStdoutBytes:131072,
   jsonSummaryBytes:1024,errorRecordBytes:1024,stderrBytes:4096,decisionBytes:8192,temporaryOutputBytes:4194304,
   workerOldHeapMiB:128,workerYoungHeapMiB:16,engineeringAggregateRssBytes:536870912,
-  cliDeadlineMs:30000,apiDeadlineMs:10000,helperRequestPaths:128,helperDeadlineMs:8000,
+  cliDeadlineMs:30000,apiDeadlineMs:10000,helperRequestPaths:128,helperDeadlineMs:9000,
   cleanupAllowanceMs:2000,helperRequestBytes:65536,helperResponseBytes:16777216,helperRequests:9,
   helperVerifyRequests:4,helperAggregateDeadlineMs:20000,helperChainComponents:120,
   metadataCodeUnits:256,decisionReasonCodeUnits:1024,decisionActorCodeUnits:128,

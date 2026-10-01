@@ -70,13 +70,13 @@ Invalid admission, failed response, timeout or cancellation terminally prevents
 retry. The optional monotonic clock is a trusted internal supervisor/test seam,
 never a public clock override or normative readiness input.
 
-Each helper has the prospective `PROSPECTIVE_HELPER_BOUND@1.0.0` whole-lifecycle
-bound of 8,000 ms. Success requires completion strictly before 8,000 ms;
+Each helper has the prospective `PROSPECTIVE_HELPER_BOUND@2.0.0` whole-lifecycle
+bound of 9,000 ms. Success requires completion strictly before 9,000 ms;
 equality or later is TIMEOUT. The independent **20,000 ms aggregate helper-active
 ceiling** remains unchanged. Active
 time starts before launch and includes startup, native work, framing/EOF waits
 and confirmed helper termination, prior self-detachment and transport closure. The CLI's 30,000 ms deadline remains
-absolute for helper acquisition and final rename admission; each helper deadline is the earliest of its own eight seconds, remaining
+absolute for helper acquisition and final rename admission; each helper deadline is the earliest of its own nine seconds, remaining
 aggregate budget and overall deadline. Equality is TIMEOUT. The API deadline
 remains 10,000 ms; cleanup is at most 2,000 ms after failure, never success grace.
 The supervisor enforces process/worker deadlines and confirms helper and transport termination.

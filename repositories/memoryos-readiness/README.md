@@ -33,7 +33,7 @@ overlap. Sessions use 32 random bytes encoded as 64 lowercase hex characters,
 serve operational correlation only, and never enter normative result bytes.
 
 The supervisor enforces absolute monotonic API10s/CLI30s/evaluation10s deadlines,
-the prospective whole-helper 8s bound and aggregate helper-active20s limit. Before rename admission, failed
+the prospective whole-helper 9s bound and aggregate helper-active20s limit. Before rename admission, failed
 cleanup is at most2s, equality is timeout, and cancellation is terminal.
 An admitted non-cancellable rename is awaited without a finite settlement claim;
 deadline/cancellation observations are recorded until it settles. One shared
