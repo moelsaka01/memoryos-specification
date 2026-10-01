@@ -1,0 +1,509 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3A
+
+READ_SET MISSING-LEAF LIFECYCLE RESOLUTION
+
+Current Phase 3A status:
+
+FAILED / INCOMPLETE
+
+Accepted Phase 3B remains:
+
+702c1b6381f6112a50ac844831d195275dac3350
+
+Accepted Phase 3C remains:
+
+b02fc0226a1a2d800185a02071674ca80bdf4a1d
+
+Do not rerun either accepted stream now.
+
+==================================================
+1. CURRENT ESTABLISHED STATE
+==================================================
+
+The previous slot-5 correction removed one redundant lexical Assert-Root call from Open-Chain.
+
+Its validation established:
+
+equivalence/security:
+5/5 PASS
+
+bounded performance:
+
+former failing slot 5:
+1649.1446 ms PASS
+
+representative slot 4:
+943.1091 ms PASS
+
+The complete filesystem campaign then reached:
+
+14 PASS
+1 FAIL
+20 NOT_RUN
+
+The new first failure was:
+
+case 15:
+"missing leaf is INPUT rather than absent success"
+
+helper invocation:
+018
+
+operation family:
+READ_SET
+
+result:
+ETIMEDOUT
+SIGTERM
+
+stdout:
+0 bytes
+
+stderr:
+0 bytes
+
+elapsed:
+5021.0304 ms
+
+Frozen whole-helper lifecycle limit:
+
+5000 ms
+
+Difference:
+
+21.0304 ms over limit
+
+TOCTOU, full regressions and Phase 3A A-O were not run.
+
+==================================================
+2. OBJECTIVE
+==================================================
+
+Do NOT immediately optimize the missing-leaf case.
+
+First determine whether this timeout is caused by:
+
+A. common fixed helper lifecycle cost,
+
+B. missing-leaf-specific acquisition/path work,
+
+C. process startup/PowerShell/native initialization,
+
+D. cleanup/process settlement,
+
+E. another concrete shared component.
+
+Then make at most ONE targeted correction.
+
+This task must not become another timing-characterization campaign.
+
+==================================================
+3. NO CASE-BY-CASE WHACK-A-MOLE
+==================================================
+
+Do not select an optimization merely because case 15 failed.
+
+We have now seen different valid helper paths cross the same 5000-ms whole-lifecycle boundary.
+
+The correction must target an established cost center.
+
+Do not:
+
+increase the deadline
+
+add grace
+
+retry
+
+special-case case 15
+
+weaken filesystem checks
+
+skip the missing-leaf case.
+
+==================================================
+4. ONE STAGE-TIMING OBSERVATION
+==================================================
+
+Authorize exactly ONE engineering-only instrumented execution of the failing case.
+
+Use a diagnostic helper copy.
+
+Do not modify candidate production for this measurement.
+
+Capture cumulative monotonic timestamps for:
+
+T0 helper process start/observer launch
+
+T1 script entry
+
+T2 runtime/native initialization complete
+
+T3 request read complete
+
+T4 request parse/schema complete
+
+T5 root validation complete
+
+T6 per-file acquisition begins
+
+T7 missing-leaf branch reached
+
+T8 acquisition work complete
+
+T9 response object complete
+
+T10 canonical serialization complete
+
+T11 first response byte written
+
+T12 response write complete
+
+T13 helper exit initiated
+
+T14 process/transport settlement complete where observable externally.
+
+Also capture:
+
+number of files processed before missing leaf
+
+native calls performed
+
+path/root validations performed
+
+reopens/freshness checks performed
+
+response size if any.
+
+Exactly one execution.
+
+No retry.
+
+No second sample.
+
+No alternate input.
+
+==================================================
+5. INTERPRETATION
+==================================================
+
+Classify the observation exactly one of:
+
+COMMON_STARTUP_COST_DOMINANT
+
+MISSING_LEAF_ACQUISITION_COST_DOMINANT
+
+COMMON_ACQUISITION_COST_DOMINANT
+
+SERIALIZATION_COST_DOMINANT
+
+SETTLEMENT_COST_DOMINANT
+
+NO_SINGLE_DOMINANT_COST
+
+DIAGNOSTIC_INCOMPLETE
+
+Use the measured intervals.
+
+Do not infer a latency distribution.
+
+==================================================
+6. TARGETED CORRECTION
+==================================================
+
+If one concrete avoidable cost is established, make exactly ONE correction.
+
+It must preserve:
+
+fresh final-path checks
+
+identity checks
+
+held-handle checks
+
+reopens
+
+TOCTOU
+
+filesystem boundaries
+
+missing-leaf INPUT semantics
+
+wire 2.0.0
+
+response bytes
+
+process topology
+
+cleanup
+
+all deadlines.
+
+Examples of valid correction classes:
+
+remove duplicated work
+
+reuse request-local immutable computation
+
+avoid repeated root canonicalization already proven for the same request
+
+avoid duplicate native setup within one helper lifecycle
+
+avoid unnecessary object/string construction
+
+avoid unnecessary post-work after the missing-leaf outcome is already determined, but only where the contract permits immediate deterministic failure.
+
+Do not remove required fresh security observations.
+
+==================================================
+7. IMPORTANT MISSING-LEAF SEMANTICS
+==================================================
+
+Recover the authoritative semantics for:
+
+"missing leaf is INPUT rather than absent success"
+
+Determine exactly when the result becomes irrevocably known.
+
+If the contract allows immediate deterministic INPUT once the required path predicate fails:
+
+do not continue unrelated file acquisition after that outcome is fixed.
+
+If the contract requires completing other observations first:
+
+preserve them.
+
+Do not guess.
+
+==================================================
+8. IF COMMON STARTUP COST DOMINATES
+==================================================
+
+If startup/native initialization is the dominant avoidable cost:
+
+optimize the common startup path rather than the missing-leaf branch.
+
+Any optimization must remain request-local and preserve topology.
+
+Do not introduce:
+
+persistent helpers
+
+helper pools
+
+services
+
+additional processes
+
+cross-request caches.
+
+==================================================
+9. IF NO DEFENSIBLE OPTIMIZATION EXISTS
+==================================================
+
+If the single observation shows no removable implementation-local cost large enough to justify correction:
+
+STOP.
+
+Return:
+
+PHASE3A_5000MS_LIFECYCLE_BLOCKER
+
+This classification means:
+
+exact current implementation cannot be defensibly optimized further from the available evidence while preserving the frozen contract.
+
+Do not invent H.
+
+Do not continue case-by-case optimization.
+
+==================================================
+10. VALIDATION AFTER CORRECTION
+==================================================
+
+If a correction is implemented:
+
+A. exact equivalence/security validation
+
+B. run the failing missing-leaf case once
+
+C. run one previously fast filesystem case once
+
+If either fails or exceeds 5000 ms:
+
+STOP.
+
+==================================================
+11. FULL FILESYSTEM / TOCTOU
+==================================================
+
+If bounded validation passes:
+
+run a NEW complete native filesystem generation.
+
+Require:
+
+35/35 PASS
+
+Then:
+
+2/2 TOCTOU PASS
+
+No historical PASS promotion.
+
+No retries.
+
+==================================================
+12. COMPLETE REGRESSION VALIDATION
+==================================================
+
+If filesystem and TOCTOU pass:
+
+run a fresh coherent complete regression/security generation.
+
+Include:
+
+107 regression callbacks
+
+19 startup/security categories
+
+filesystem
+
+TOCTOU
+
+protocol
+
+deadline/cancellation
+
+cleanup/topology
+
+publication/finalization
+
+package integrity.
+
+At first mandatory failure:
+
+STOP.
+
+==================================================
+13. FINAL CANDIDATE
+==================================================
+
+If all validation passes:
+
+create the new candidate identity.
+
+Bind:
+
+production tree
+
+helper
+
+README/spec
+
+manifest
+
+SBOM
+
+all 89 members
+
+headless correction
+
+N15 correction
+
+N17 fixture correction
+
+slot-5 correction
+
+new lifecycle correction
+
+complete validation evidence.
+
+==================================================
+14. PHASE 3A CERTIFICATION
+==================================================
+
+Immediately run a fresh complete Phase 3A A-O generation.
+
+Fresh worktree.
+
+Fresh package.
+
+Fresh offline installation.
+
+Verify installed members.
+
+Seal inventory.
+
+Execute once.
+
+No retry.
+
+No historical PASS promotion.
+
+==================================================
+15. SUCCESS
+==================================================
+
+If A-O all pass:
+
+return:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+with:
+
+accepted receipt
+
+candidate commit/binding
+
+exact Phase 3B refresh scope
+
+exact Phase 3C refresh scope.
+
+Do not start Phase 3D.
+
+==================================================
+16. ALLOWED FINAL OUTCOMES
+==================================================
+
+Return only one of:
+
+PHASE3A_ACCEPTED_NEW_CANDIDATE
+
+PHASE3A_CONCRETE_IMPLEMENTATION_BLOCKER
+
+PHASE3A_5000MS_LIFECYCLE_BLOCKER
+
+The third outcome is important.
+
+If reached, do not begin another optimization loop.
+
+==================================================
+17. FINAL REPORT
+==================================================
+
+Report:
+
+1. diagnostic timing breakdown,
+2. dominant-cost classification,
+3. exact missing-leaf semantic authority,
+4. targeted correction if any,
+5. equivalence/security result,
+6. bounded validation,
+7. filesystem result,
+8. TOCTOU result,
+9. complete regressions/security,
+10. candidate identity,
+11. A-O results,
+12. Phase 3A status,
+13. commits/bindings,
+14. exact 3B refresh scope,
+15. exact 3C refresh scope,
+16. repository status,
+17. next action.
+
+No push.
+No tag.
+No Phase 3D.

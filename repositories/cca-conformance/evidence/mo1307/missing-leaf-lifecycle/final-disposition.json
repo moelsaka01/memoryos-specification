@@ -1,0 +1,245 @@
+{
+  "schema": "memoryos.mo1307.missing-leaf-lifecycle-disposition.v1",
+  "recordedAt": "2026-10-01T12:51:58.0272223+04:00",
+  "outcome": "PHASE3A_5000MS_LIFECYCLE_BLOCKER",
+  "phase3A": "FAILED / INCOMPLETE",
+  "authority": {
+    "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/authorization.txt",
+    "byteLength": 9787,
+    "sha256": "sha256:71338a908f76fddeae0618e75e39ccb64d61eb94650db91da88da3f6b4136eac",
+    "stopRule": "If the single observation shows no removable implementation-local cost large enough to justify correction, stop with PHASE3A_5000MS_LIFECYCLE_BLOCKER."
+  },
+  "source": {
+    "baseHead": "0599476f53815a4ccd05e0ba3cac600396ca201c",
+    "branch": "codex/mo1307-missing-leaf-lifecycle",
+    "productionTree": "6a0bf13aaf40e20b68e469989b5a34ef74cf2903",
+    "productionSourceIdentity": "sha256:8ade4e1b48b1cb4ab990462a2d40a97507a9800dda6c3cab3aded161573d440f",
+    "helper": {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 29153,
+      "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+    },
+    "productionMutation": false,
+    "productionSubtreeClean": true
+  },
+  "missingLeafSemanticAuthority": {
+    "operation": "READ_SET",
+    "predicate": "During the checked drive-to-parent traversal, the declared terminal non-directory component is opened with OPEN_EXISTING, the handle is invalid, the immediately captured GetLastWin32Error value is ERROR_FILE_NOT_FOUND (2), and InputLeaf is true.",
+    "irrevocableResult": "ERROR/MO1307_INPUT",
+    "implementation": "Open-Native throws MO1307_INPUT immediately for that exact terminal-leaf predicate. Missing ancestors and every other native-open failure remain MO1307_FILESYSTEM_BOUNDARY.",
+    "requiredAfterDecision": [
+      "dispose already-held handles",
+      "construct the canonical error response",
+      "write the frozen 2.0.0 frame",
+      "exit and settle all process pipes"
+    ],
+    "notRequiredAfterDecision": [
+      "unrelated file acquisition",
+      "leaf identity or content read",
+      "held-handle stability check",
+      "fresh reopen",
+      "final root stability pass"
+    ],
+    "observedCountersAtDecision": {
+      "filesAttempted": 1,
+      "filesProcessed": 0,
+      "createFileW": 13,
+      "lastErrorReads": 13,
+      "successfulHandles": 12,
+      "stablePasses": 0,
+      "heldChecks": 0,
+      "freshReopens": 0,
+      "handleDisposals": 0
+    },
+    "observedHandleDisposalsAfterUnwind": 13
+  },
+  "diagnostic": {
+    "authorizedHelperExecutions": 1,
+    "actualHelperExecutions": 1,
+    "retries": 0,
+    "secondSamples": 0,
+    "alternateInputs": 0,
+    "diagnosticCopyOnly": true,
+    "productionValidation": false,
+    "certification": false,
+    "request": {
+      "byteLength": 370,
+      "sha256": "sha256:bc7fc31df72889016b27af48de1693cddadf3181d2f763d78d1ddec73b24c5ee"
+    },
+    "response": {
+      "byteLength": 239,
+      "sha256": "sha256:f613a4ff5e77ede05ac444f4c44670cebd60aa7ac097abb7db1e472511a6f2ea",
+      "status": "ERROR",
+      "code": "MO1307_INPUT",
+      "exactExpectedBytes": true
+    },
+    "process": {
+      "exitCode": 0,
+      "signal": null,
+      "transport": "RESOLVED",
+      "exitConfirmed": true,
+      "allProcessAndPipeTerminalStatesObserved": true
+    },
+    "originalReceipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-observation/receipt.json",
+      "byteLength": 8910,
+      "sha256": "sha256:e8340e6930d45c5f98cdc724142d6d6c4f00fb35013deecf0da43156fbfee158",
+      "result": "DIAGNOSTIC_INCOMPLETE",
+      "reason": "Post-run observer parser expected comma-separated counter fields after PowerShell emitted a space-separated key=value snapshot. The sealed raw lifecycle evidence is complete."
+    },
+    "offlineAnalysisCorrection": {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-analysis-correction/analysis.json",
+      "byteLength": 11186,
+      "sha256": "sha256:be67dbf6ea2911c2468a23fcc76863f02a6e0c2c437f43637a92d811b83993b8",
+      "result": "PASS",
+      "helperExecutionsAdded": 0,
+      "rawEvidenceChanged": false,
+      "classification": "COMMON_STARTUP_COST_DOMINANT"
+    }
+  },
+  "timing": {
+    "totalMs": 3167.0189,
+    "frozenLimitMs": 5000,
+    "marginMs": 1832.9811,
+    "withinFrozenLimit": true,
+    "classification": "COMMON_STARTUP_COST_DOMINANT",
+    "distributionClaim": false,
+    "buckets": [
+      {
+        "name": "COMMON_STARTUP_COST_DOMINANT",
+        "start": "T0",
+        "end": "T5",
+        "durationMs": 2925.5674,
+        "percentOfLifecycle": 92.376064
+      },
+      {
+        "name": "COMMON_ACQUISITION_COST_DOMINANT",
+        "start": "T5",
+        "end": "T6",
+        "durationMs": 108.2718,
+        "percentOfLifecycle": 3.418729
+      },
+      {
+        "name": "MISSING_LEAF_ACQUISITION_COST_DOMINANT",
+        "start": "T6",
+        "end": "T8",
+        "durationMs": 62.8985,
+        "percentOfLifecycle": 1.986048
+      },
+      {
+        "name": "SERIALIZATION_COST_DOMINANT",
+        "start": "T8",
+        "end": "T12",
+        "durationMs": 37.6287,
+        "percentOfLifecycle": 1.188143
+      },
+      {
+        "name": "SETTLEMENT_COST_DOMINANT",
+        "start": "T12",
+        "end": "T14",
+        "durationMs": 32.6525,
+        "percentOfLifecycle": 1.031017
+      }
+    ],
+    "cumulativeMs": {
+      "T0": 0,
+      "T1": 2006.5929,
+      "T2": 2403.8607,
+      "T3": 2420.2622,
+      "T4": 2846.8357,
+      "T5": 2925.5674,
+      "T6": 3033.8392,
+      "T7": 3037.7677,
+      "T8": 3096.7377,
+      "T9": 3101.7868,
+      "T10": 3116.1173,
+      "T11": 3133.9842,
+      "T12": 3134.3664,
+      "T13": 3134.6943,
+      "T14": 3167.0189
+    }
+  },
+  "costAssessment": {
+    "concreteAvoidableCostEstablished": false,
+    "targetedCorrection": null,
+    "productionFilesChanged": [],
+    "reasoning": [
+      "T0-T1 is 2006.5929 ms and occurs before the first instrumented statement; it bundles required fresh-process and PowerShell-engine startup with diagnostic-copy load and parse, so it isolates no removable production operation.",
+      "T1-T2 combines required native binding and stream/console security checks with diagnostic overhead and does not isolate removable work.",
+      "T3-T4 is required canonical request parsing and schema validation.",
+      "Acquisition, serialization, and settlement are each small and contain no measured dominant redundancy.",
+      "Persistent helpers, pools, services, additional processes, and cross-request caches are outside the frozen topology and expressly prohibited."
+    ],
+    "stopRequired": true,
+    "anotherOptimizationLoopAuthorized": false
+  },
+  "validation": {
+    "postCorrectionEquivalenceSecurity": "NOT_RUN_NO_CORRECTION_STOP_REQUIRED",
+    "boundedMissingLeaf": "NOT_RUN_NO_CORRECTION_STOP_REQUIRED",
+    "boundedPreviouslyFastFilesystem": "NOT_RUN_NO_CORRECTION_STOP_REQUIRED",
+    "newCompleteNativeFilesystem35": "NOT_RUN_STOP_REQUIRED",
+    "toctou2": "NOT_RUN_STOP_REQUIRED",
+    "completeRegressionCallbacks107": "NOT_RUN_STOP_REQUIRED",
+    "securityCategories19": "NOT_RUN_STOP_REQUIRED",
+    "protocolControls": "NOT_RUN_STOP_REQUIRED",
+    "deadlineCancellationControls": "NOT_RUN_STOP_REQUIRED",
+    "cleanupTopologyControls": "NOT_RUN_STOP_REQUIRED",
+    "publicationFinalizationControls": "NOT_RUN_STOP_REQUIRED",
+    "packageIntegrity": "NOT_RUN_STOP_REQUIRED",
+    "preservedPrecedingGeneration": {
+      "equivalenceSecurity": "5/5 PASS",
+      "boundedPerformance": "2/2 PASS (slot 5: 1649.1446 ms; slot 4: 943.1091 ms)",
+      "nativeFilesystem": "14 PASS / 1 FAIL / 20 NOT_RUN",
+      "firstFailure": "case 15, invocation 018, READ_SET missing leaf, ETIMEDOUT/SIGTERM at 5021.0304 ms with zero stdout/stderr",
+      "historicalPassPromotion": false
+    }
+  },
+  "candidate": {
+    "created": false,
+    "identity": null,
+    "binding": null
+  },
+  "phase3ACertification": {
+    "freshWorktree": "NOT_RUN_STOP_REQUIRED",
+    "freshPackage": "NOT_RUN_STOP_REQUIRED",
+    "freshOfflineInstallation": "NOT_RUN_STOP_REQUIRED",
+    "installedMemberVerification": "NOT_RUN_STOP_REQUIRED",
+    "sealedInventory": "NOT_RUN_STOP_REQUIRED",
+    "cases": {
+      "A": "NOT_RUN",
+      "B": "NOT_RUN",
+      "C": "NOT_RUN",
+      "D": "NOT_RUN",
+      "E": "NOT_RUN",
+      "F": "NOT_RUN",
+      "G": "NOT_RUN",
+      "H": "NOT_RUN",
+      "I": "NOT_RUN",
+      "J": "NOT_RUN",
+      "K": "NOT_RUN",
+      "L": "NOT_RUN",
+      "M": "NOT_RUN",
+      "N": "NOT_RUN",
+      "O": "NOT_RUN"
+    },
+    "receipt": null
+  },
+  "preservedHistoricalAcceptance": {
+    "phase3B": "702c1b6381f6112a50ac844831d195275dac3350",
+    "phase3C": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+    "rerun": false
+  },
+  "refreshScope": {
+    "phase3B": "NOT_APPLICABLE_UNTIL_A_NEW_CANDIDATE_EXISTS",
+    "phase3C": "NOT_APPLICABLE_UNTIL_A_NEW_CANDIDATE_EXISTS"
+  },
+  "actions": {
+    "retryUntilPass": false,
+    "historicalPassPromotion": false,
+    "deadlineChange": false,
+    "push": false,
+    "tag": false,
+    "phase3DStarted": false
+  },
+  "nextAction": "Stop this correction loop. A separately authorized contract or architecture decision is required before any new Phase 3A candidate work; do not begin another case-by-case optimization loop from this evidence."
+}

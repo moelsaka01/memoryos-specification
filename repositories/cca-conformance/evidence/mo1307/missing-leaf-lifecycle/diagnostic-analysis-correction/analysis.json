@@ -1,0 +1,358 @@
+{
+  "kind": "MO1307MissingLeafLifecycleOfflineAnalysisCorrection",
+  "result": "PASS",
+  "classification": "COMMON_STARTUP_COST_DOMINANT",
+  "helperExecutionsAdded": 0,
+  "totalAuthorizedHelperExecutions": 1,
+  "retries": 0,
+  "alternateInputs": 0,
+  "originalReceipt": {
+    "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-observation/receipt.json",
+    "byteLength": 8910,
+    "sha256": "sha256:e8340e6930d45c5f98cdc724142d6d6c4f00fb35013deecf0da43156fbfee158"
+  },
+  "originalStopped": {
+    "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-observation/stopped.json",
+    "byteLength": 1602,
+    "sha256": "sha256:f89d3d17c27db6e4b62f43ca0e112732b1946cf97d4d8e08f8c4df80c2be5125"
+  },
+  "seal": {
+    "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-observation/seal.json",
+    "byteLength": 26621,
+    "sha256": "sha256:4ad0e7993a25d8103546a96f1d71eb0ca348f78002576671ff944046f97a1eef"
+  },
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-observation/stdout.bin",
+    "byteLength": 239,
+    "sha256": "sha256:f613a4ff5e77ede05ac444f4c44670cebd60aa7ac097abb7db1e472511a6f2ea"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-observation/stderr.txt",
+    "byteLength": 1653,
+    "sha256": "sha256:1735a51fc33aa4877029aa53a2a2f8e49e5228f919e4b3353cde84ca6fd4ed37"
+  },
+  "parserCorrection": {
+    "originalFailure": "Observer expected comma-separated snapshot fields after PowerShell emitted one space-separated key=value string.",
+    "correction": "Parse the already sealed snapshot payload with a closed ASCII key=integer grammar. No helper, request, fixture, deadline, or measured byte changed.",
+    "rawEvidenceComplete": true,
+    "originalDiagnosticIncompleteReceiptPreserved": true
+  },
+  "lifecycle": {
+    "totalMs": 3167.0189,
+    "withinFrozen5000Ms": true,
+    "marginMs": 1832.9811,
+    "adjacentIntervals": [
+      {
+        "start": "T0",
+        "end": "T1",
+        "durationMs": 2006.5929
+      },
+      {
+        "start": "T1",
+        "end": "T2",
+        "durationMs": 397.2678
+      },
+      {
+        "start": "T2",
+        "end": "T3",
+        "durationMs": 16.4015
+      },
+      {
+        "start": "T3",
+        "end": "T4",
+        "durationMs": 426.5735
+      },
+      {
+        "start": "T4",
+        "end": "T5",
+        "durationMs": 78.7317
+      },
+      {
+        "start": "T5",
+        "end": "T6",
+        "durationMs": 108.2718
+      },
+      {
+        "start": "T6",
+        "end": "T7",
+        "durationMs": 3.9285
+      },
+      {
+        "start": "T7",
+        "end": "T8",
+        "durationMs": 58.97
+      },
+      {
+        "start": "T8",
+        "end": "T9",
+        "durationMs": 5.0491
+      },
+      {
+        "start": "T9",
+        "end": "T10",
+        "durationMs": 14.3305
+      },
+      {
+        "start": "T10",
+        "end": "T11",
+        "durationMs": 17.8669
+      },
+      {
+        "start": "T11",
+        "end": "T12",
+        "durationMs": 0.3822
+      },
+      {
+        "start": "T12",
+        "end": "T13",
+        "durationMs": 0.3279
+      },
+      {
+        "start": "T13",
+        "end": "T14",
+        "durationMs": 32.3246
+      }
+    ],
+    "buckets": [
+      {
+        "name": "COMMON_STARTUP_COST_DOMINANT",
+        "start": "T0",
+        "end": "T5",
+        "durationMs": 2925.5674,
+        "percentOfLifecycle": 92.376064
+      },
+      {
+        "name": "COMMON_ACQUISITION_COST_DOMINANT",
+        "start": "T5",
+        "end": "T6",
+        "durationMs": 108.2718,
+        "percentOfLifecycle": 3.418729
+      },
+      {
+        "name": "MISSING_LEAF_ACQUISITION_COST_DOMINANT",
+        "start": "T6",
+        "end": "T8",
+        "durationMs": 62.8985,
+        "percentOfLifecycle": 1.986048
+      },
+      {
+        "name": "SERIALIZATION_COST_DOMINANT",
+        "start": "T8",
+        "end": "T12",
+        "durationMs": 37.6287,
+        "percentOfLifecycle": 1.188143
+      },
+      {
+        "name": "SETTLEMENT_COST_DOMINANT",
+        "start": "T12",
+        "end": "T14",
+        "durationMs": 32.6525,
+        "percentOfLifecycle": 1.031017
+      }
+    ],
+    "cumulativeMs": {
+      "T0": 0,
+      "T1": 2006.5929,
+      "T2": 2403.8607,
+      "T3": 2420.2622,
+      "T4": 2846.8357,
+      "T5": 2925.5674,
+      "T6": 3033.8392,
+      "T7": 3037.7677,
+      "T8": 3096.7377,
+      "T9": 3101.7868,
+      "T10": 3116.1173,
+      "T11": 3133.9842,
+      "T12": 3134.3664,
+      "T13": 3134.6943,
+      "T14": 3167.0189
+    }
+  },
+  "counters": {
+    "atDecisionT7": {
+      "rootValidations": 1,
+      "relativeValidations": 1,
+      "segmentValidations": 6,
+      "openChains": 2,
+      "chainComponents": 13,
+      "filesAttempted": 1,
+      "filesProcessed": 0,
+      "createFileW": 13,
+      "lastErrorReads": 13,
+      "getFileInformationByHandle": 12,
+      "getFinalPathNameByHandleW": 12,
+      "getFileType": 15,
+      "getStdHandle": 3,
+      "getConsoleProcessList": 1,
+      "freeConsole": 1,
+      "stablePasses": 0,
+      "heldChecks": 0,
+      "freshReopens": 0,
+      "handleDisposals": 0,
+      "successfulHandles": 12,
+      "responseBytes": 0
+    },
+    "afterUnwindT8": {
+      "rootValidations": 1,
+      "relativeValidations": 1,
+      "segmentValidations": 6,
+      "openChains": 2,
+      "chainComponents": 13,
+      "filesAttempted": 1,
+      "filesProcessed": 0,
+      "createFileW": 13,
+      "lastErrorReads": 13,
+      "getFileInformationByHandle": 12,
+      "getFinalPathNameByHandleW": 12,
+      "getFileType": 15,
+      "getStdHandle": 3,
+      "getConsoleProcessList": 1,
+      "freeConsole": 1,
+      "stablePasses": 0,
+      "heldChecks": 0,
+      "freshReopens": 0,
+      "handleDisposals": 13,
+      "successfulHandles": 12,
+      "responseBytes": 0
+    },
+    "afterSerializationT10": {
+      "rootValidations": 1,
+      "relativeValidations": 1,
+      "segmentValidations": 6,
+      "openChains": 2,
+      "chainComponents": 13,
+      "filesAttempted": 1,
+      "filesProcessed": 0,
+      "createFileW": 13,
+      "lastErrorReads": 13,
+      "getFileInformationByHandle": 12,
+      "getFinalPathNameByHandleW": 12,
+      "getFileType": 15,
+      "getStdHandle": 3,
+      "getConsoleProcessList": 1,
+      "freeConsole": 1,
+      "stablePasses": 0,
+      "heldChecks": 0,
+      "freshReopens": 0,
+      "handleDisposals": 13,
+      "successfulHandles": 12,
+      "responseBytes": 239
+    },
+    "nativeImportedCalls": 57
+  },
+  "response": {
+    "byteLength": 239,
+    "sha256": "sha256:f613a4ff5e77ede05ac444f4c44670cebd60aa7ac097abb7db1e472511a6f2ea",
+    "status": "ERROR",
+    "code": "MO1307_INPUT",
+    "files": 0,
+    "roots": 0
+  },
+  "transport": {
+    "outcome": "RESOLVED",
+    "exitConfirmed": true,
+    "responseBytes": 239
+  },
+  "process": {
+    "exitCode": 0,
+    "signal": null,
+    "states": {
+      "stdinFinished": true,
+      "stdinClosed": true,
+      "stdoutEnded": true,
+      "stdoutClosed": true,
+      "stderrEnded": true,
+      "stderrClosed": true,
+      "processExited": true,
+      "processClosed": true
+    }
+  },
+  "invariants": {
+    "sourceUnchanged": true,
+    "fixtureUnchanged": true,
+    "packageMembers": 89,
+    "stdoutExactExpectedBytes": true,
+    "noLatencyDistributionClaim": true,
+    "diagnosticOnly": true,
+    "productValidation": false,
+    "certification": false
+  },
+  "bindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-observation/receipt.json",
+      "byteLength": 8910,
+      "sha256": "sha256:e8340e6930d45c5f98cdc724142d6d6c4f00fb35013deecf0da43156fbfee158"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-observation/stopped.json",
+      "byteLength": 1602,
+      "sha256": "sha256:f89d3d17c27db6e4b62f43ca0e112732b1946cf97d4d8e08f8c4df80c2be5125"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-observation/seal.json",
+      "byteLength": 26621,
+      "sha256": "sha256:4ad0e7993a25d8103546a96f1d71eb0ca348f78002576671ff944046f97a1eef"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-observation/invocation-start.json",
+      "byteLength": 854,
+      "sha256": "sha256:733473b0692efbfb02f6a5c6941403072f4b787c62b2b7c83e379170d402fbbd"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-observation/stdout.bin",
+      "byteLength": 239,
+      "sha256": "sha256:f613a4ff5e77ede05ac444f4c44670cebd60aa7ac097abb7db1e472511a6f2ea"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-observation/stderr.txt",
+      "byteLength": 1653,
+      "sha256": "sha256:1735a51fc33aa4877029aa53a2a2f8e49e5228f919e4b3353cde84ca6fd4ed37"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-preparation-2/preparation.json",
+      "byteLength": 42999,
+      "sha256": "sha256:6ff3d61e51e243658f29dc1ca655857d5ea834aed30ead9695f73ccda12854d0"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-missing-leaf-lifecycle/classification-rules.json",
+      "byteLength": 2043,
+      "sha256": "sha256:94b2959b2012a5a9df7858a38ad7424ad000fc4b09eb7a962d818c5833da23f9"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-missing-leaf-lifecycle/observe.mjs",
+      "byteLength": 25808,
+      "sha256": "sha256:2304946c5f827c45655e75811bcfe32bb849c8048763f5bfbbdd9ce71da7e811"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-missing-leaf-lifecycle/analyze.mjs",
+      "byteLength": 13510,
+      "sha256": "sha256:d6c91ad7c949f435c71989f471a3b2e77fb7f3eae4040b96303572c93bcde0b6"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/authorization.txt",
+      "byteLength": 9787,
+      "sha256": "sha256:71338a908f76fddeae0618e75e39ccb64d61eb94650db91da88da3f6b4136eac"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-preparation-2/request.bin",
+      "byteLength": 370,
+      "sha256": "sha256:bc7fc31df72889016b27af48de1693cddadf3181d2f763d78d1ddec73b24c5ee"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/missing-leaf-lifecycle/diagnostic-preparation-2/expected-response.bin",
+      "byteLength": 239,
+      "sha256": "sha256:f613a4ff5e77ede05ac444f4c44670cebd60aa7ac097abb7db1e472511a6f2ea"
+    },
+    {
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "byteLength": 29153,
+      "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/slot5-deadline-correction/validation-source.json",
+      "byteLength": 46929,
+      "sha256": "sha256:bddc52e472f8847f9f2e511804e6a746c4b951455bcfeae63655a1ebab73d3ab"
+    }
+  ],
+  "analyzedUtc": "2026-10-01T08:49:43.104Z"
+}
