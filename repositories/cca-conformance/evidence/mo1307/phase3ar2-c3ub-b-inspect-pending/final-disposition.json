@@ -1,0 +1,84 @@
+{
+  "kind": "MO1307Phase3AR2BInspectPendingFinalDisposition",
+  "version": "1.0.0",
+  "recordedAt": "2026-10-01T17:14:16.7622166Z",
+  "result": "PHASE3AR2_CONCRETE_BLOCKER",
+  "diagnosticClassification": "DIAGNOSTIC_INCOMPLETE",
+  "diagnosticAttempt": "repositories/cca-conformance/evidence/mo1307/phase3ar2-c3ub-b-inspect-pending/diagnostic-attempt-failure.json",
+  "decision": {
+    "operationSpecificCorrection": "NOT_ESTABLISHED",
+    "resourceBoundCorrection": "NOT_SELECTED",
+    "helperDeadlineMs": 9000,
+    "helperAggregateDeadlineMs": 20000,
+    "cliDeadlineMs": 30000,
+    "apiWorkerDeadlineMs": 10000,
+    "cleanupAllowanceMs": 2000,
+    "H": "NOT_ESTABLISHED",
+    "reason": "No useful lifecycle timing was captured. Selecting or changing a production implementation or bound would exceed the evidence and the user's authority."
+  },
+  "budgetRelationship": {
+    "formula": "min(CLI origin + 30000 ms, helper launch + 9000 ms, helper launch + (20000 ms - prior accepted helper-active time))",
+    "preservedPriorHelperActiveMs": 19297.744300000002,
+    "preservedRemainingAggregateMs": 702.2556999999982,
+    "preservedSupervisorLeaseMs": 702.2262999999984,
+    "preservedT0PreSpawnWindowMs": 702.1706999999988,
+    "selectedPreservedConstraint": "HELPER_AGGREGATE_20000_MS",
+    "conclusion": "A per-helper-only increase cannot change the preserved B ordinal-8 deadline while the aggregate remains 20000 ms."
+  },
+  "BValidation": {
+    "result": "NOT_RUN",
+    "reason": "Diagnostic incomplete; no evidence-supported correction exists to validate. The preserved B result remains FAIL/MO1307_TIMEOUT with no accepted response."
+  },
+  "candidate": {
+    "name": "C3UB",
+    "commit": "91c07b1e93f65ab6252024984073c171ff5d7648",
+    "production": "C3U",
+    "productionCommit": "34f42c50abfa1c440416c4cdf7f643f784585588",
+    "productionTree": "302cf1a506e974b2102a78be1b9c920ac80105b2",
+    "authority": "PROSPECTIVE_HELPER_BOUND@2.0.0",
+    "changed": false,
+    "accepted": false
+  },
+  "freshAO": {
+    "run": false,
+    "A": "NOT_RUN",
+    "B": "NOT_RUN",
+    "C": "NOT_RUN",
+    "D": "NOT_RUN",
+    "E": "NOT_RUN",
+    "F": "NOT_RUN",
+    "G": "NOT_RUN",
+    "H": "NOT_RUN",
+    "I": "NOT_RUN",
+    "J": "NOT_RUN",
+    "K": "NOT_RUN",
+    "L": "NOT_RUN",
+    "M": "NOT_RUN",
+    "N": "NOT_RUN",
+    "O": "NOT_RUN",
+    "reason": "Exact B was not resolved and did not pass. No result from the preserved failed generation was promoted."
+  },
+  "preservedPhase3A": {
+    "generationCommit": "789d92f94638ddbe63d38dc957746bf1f7d308c2",
+    "A": "PASS",
+    "B": "FAIL",
+    "CThroughO": "NOT_RUN",
+    "receipt": "repositories/cca-conformance/evidence/mo1307/phase3ar2-c3ub/certification-receipt.json",
+    "receiptSha256": "sha256:d967309b9d209369ff41076fcc22e1c2bead643b0300d7cc0a9fba16e195e9ae",
+    "receiptResult": "PHASE3AR2_FAILED_INCOMPLETE"
+  },
+  "accepted3BR2": {
+    "commit": "4d92f0f21c9c3aad8202f4558d61b9229c7214fc",
+    "effect": "NONE",
+    "touched": false
+  },
+  "phase3CR2": {
+    "workPerformed": false,
+    "deltaRequiredNow": "NONE",
+    "reason": "There is no accepted new Phase 3A candidate to carry into 3CR2."
+  },
+  "phase3D": "NOT_RUN",
+  "push": false,
+  "tag": false,
+  "nextAction": "Stop. A new explicit authority grant is required before correcting the prototype-sensitive observer preflight and allowing another diagnostic sample."
+}
