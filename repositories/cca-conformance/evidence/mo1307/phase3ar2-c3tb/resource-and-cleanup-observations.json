@@ -1,0 +1,343 @@
+{
+  "limits": {
+    "helperWholeLifecycleMs": 8000,
+    "helperSuccess": "elapsedMs < 8000",
+    "helperTimeout": "elapsedMs >= 8000",
+    "aggregateHelperActiveMs": 20000,
+    "cliRenameAdmissionMs": 30000,
+    "apiWorkerMs": 10000,
+    "failureCleanupMs": 2000
+  },
+  "replacementHelperBoundH": "NOT_ESTABLISHED",
+  "native": [
+    {
+      "binding": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-c3tb/semantics/A-mo1306-qualified/evaluate/observation.json",
+        "byteLength": 18308,
+        "sha256": "sha256:616b2f40473abb6218e08b7039c351473f23533009d953da4f92e0c46c90a9f9"
+      },
+      "pid": 18652,
+      "exit": 29,
+      "productLifecycleElapsedMs": 12632.226200000001,
+      "maxRssKiB": 53608,
+      "requests": [
+        {
+          "ordinal": 1,
+          "sequence": 1,
+          "operation": "READ_SET",
+          "fileCount": 2,
+          "pid": 23132,
+          "disposition": "RESOLVED",
+          "error": null,
+          "durationMs": 2338.3253,
+          "chargedThisExchangeMs": 2337.4223,
+          "exitCode": 0,
+          "exitSignal": null,
+          "transportClosed": true,
+          "responseComplete": true,
+          "responseAcceptedByTransport": true
+        },
+        {
+          "ordinal": 2,
+          "sequence": 2,
+          "operation": "READ_SET",
+          "fileCount": 2,
+          "pid": 22712,
+          "disposition": "RESOLVED",
+          "error": null,
+          "durationMs": 1977.8017,
+          "chargedThisExchangeMs": 1977.3176000000003,
+          "exitCode": 0,
+          "exitSignal": null,
+          "transportClosed": true,
+          "responseComplete": true,
+          "responseAcceptedByTransport": true
+        },
+        {
+          "ordinal": 3,
+          "sequence": 3,
+          "operation": "READ_SET",
+          "fileCount": 65,
+          "pid": 7628,
+          "disposition": "REJECTED",
+          "error": {
+            "name": "ReadinessError",
+            "code": "MO1307_TIMEOUT",
+            "stage": "ACQUISITION",
+            "reference": null,
+            "message": "MO1307_TIMEOUT",
+            "stack": "ReadinessError: MO1307_TIMEOUT\n    at checkpoint (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-c3tb/install/node_modules/memoryos-readiness/src/runtime.mjs:72:34)\n    at Timeout.<anonymous> (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-c3tb/install/node_modules/memoryos-readiness/src/runtime.mjs:81:13)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)"
+          },
+          "durationMs": 8041.987399999999,
+          "chargedThisExchangeMs": 0,
+          "exitCode": null,
+          "exitSignal": "SIGTERM",
+          "transportClosed": true,
+          "responseComplete": false,
+          "responseAcceptedByTransport": false
+        }
+      ],
+      "supervisors": [
+        {
+          "started": 95.6382,
+          "createdAt": 99.8811,
+          "kind": "cli",
+          "snapshot": {
+            "kind": "cli",
+            "deadline": 30095.6382,
+            "helpers": 3,
+            "workers": 0,
+            "helperUsedMs": 4314.7399000000005,
+            "activeRole": "helper",
+            "cleanupConfirmed": false,
+            "publication": null,
+            "terminalCode": "MO1307_TIMEOUT",
+            "terminalAt": 12699.9073,
+            "cleanupDeadline": 14699.9073,
+            "events": [
+              {
+                "type": "start",
+                "at": 105.2402,
+                "role": "helper",
+                "deadline": 8105.1369,
+                "ordinal": 1
+              },
+              {
+                "type": "observation",
+                "at": 121.5641,
+                "role": "helper",
+                "pid": 23132,
+                "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+              },
+              {
+                "type": "quiescent",
+                "at": 2442.5705,
+                "role": "helper",
+                "ordinal": 1
+              },
+              {
+                "type": "start",
+                "at": 2489.6189,
+                "role": "helper",
+                "deadline": 10489.5966,
+                "ordinal": 2
+              },
+              {
+                "type": "observation",
+                "at": 2506.2271,
+                "role": "helper",
+                "pid": 22712,
+                "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+              },
+              {
+                "type": "quiescent",
+                "at": 4466.9455,
+                "role": "helper",
+                "ordinal": 2
+              },
+              {
+                "type": "start",
+                "at": 4689.2421,
+                "role": "helper",
+                "deadline": 12689.1309,
+                "ordinal": 3
+              },
+              {
+                "type": "observation",
+                "at": 4711.8874,
+                "role": "helper",
+                "pid": 7628,
+                "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+              },
+              {
+                "type": "terminal",
+                "at": 12699.9806,
+                "code": "MO1307_TIMEOUT",
+                "stage": "ACQUISITION"
+              },
+              {
+                "type": "cleanup",
+                "at": 12724.4058,
+                "role": "helper",
+                "confirmed": false
+              }
+            ]
+          }
+        }
+      ],
+      "events": [
+        {
+          "ordinal": 1,
+          "type": "stream-finish",
+          "at": 1294.2944,
+          "stream": "stdin"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-close",
+          "at": 1295.1013,
+          "stream": "stdin"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-end",
+          "at": 2423.1882,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-end",
+          "at": 2423.5246,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-finish",
+          "at": 2423.6246,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-finish",
+          "at": 2423.7328,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-close",
+          "at": 2423.8599,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-close",
+          "at": 2423.9075,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 1,
+          "type": "process-exit",
+          "at": 2438.826,
+          "pid": 23132,
+          "code": 0,
+          "signal": null
+        },
+        {
+          "ordinal": 1,
+          "type": "process-close",
+          "at": 2438.9214,
+          "pid": 23132,
+          "code": 0,
+          "signal": null
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-finish",
+          "at": 3407.4643,
+          "stream": "stdin"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-close",
+          "at": 3407.5725,
+          "stream": "stdin"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-end",
+          "at": 4446.5439,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-finish",
+          "at": 4446.7796,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-close",
+          "at": 4446.9963,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-end",
+          "at": 4447.1457,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-finish",
+          "at": 4447.2999,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-close",
+          "at": 4447.4674,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 2,
+          "type": "process-exit",
+          "at": 4462.7745,
+          "pid": 22712,
+          "code": 0,
+          "signal": null
+        },
+        {
+          "ordinal": 2,
+          "type": "process-close",
+          "at": 4462.8139,
+          "pid": 22712,
+          "code": 0,
+          "signal": null
+        },
+        {
+          "ordinal": 3,
+          "type": "stream-finish",
+          "at": 5658.1759,
+          "stream": "stdin"
+        },
+        {
+          "ordinal": 3,
+          "type": "stream-close",
+          "at": 5658.3146,
+          "stream": "stdin"
+        },
+        {
+          "ordinal": 3,
+          "type": "stream-close",
+          "at": 12701.58,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 3,
+          "type": "stream-close",
+          "at": 12701.6177,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 3,
+          "type": "process-exit",
+          "at": 12723.2583,
+          "pid": 7628,
+          "code": null,
+          "signal": "SIGTERM"
+        },
+        {
+          "ordinal": 3,
+          "type": "process-close",
+          "at": 12723.3687,
+          "pid": 7628,
+          "code": null,
+          "signal": "SIGTERM"
+        }
+      ]
+    }
+  ],
+  "externalTopology": null,
+  "cleanupControls": null,
+  "notes": "Observed product cleanup confirmation is distinct from held-process-object external cleanup proof; unexecuted controls make no certification claim."
+}

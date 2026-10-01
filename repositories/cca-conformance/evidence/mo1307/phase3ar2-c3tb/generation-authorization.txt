@@ -1,0 +1,413 @@
+MEMORYOS 1.3
+MO-1307
+PHASE 3AR2
+
+FRESH FULL INSTALLED-RUNTIME CERTIFICATION
+AGAINST C3TB
+
+You are the independent Phase 3AR2 workstream.
+
+Phase 3BR2 and Phase 3CR2 are running simultaneously in separate chats.
+
+Your authority is ONLY Phase 3AR2.
+
+Do not perform Phase 3BR2.
+Do not perform Phase 3CR2.
+Do not perform Phase 3D.
+
+==================================================
+1. REQUIRED WORKTREE
+==================================================
+
+Operate only in:
+
+C:\Users\melsa\Documents\Codex\3ar2
+
+Before doing anything verify:
+
+worktree:
+C:\Users\melsa\Documents\Codex\3ar2
+
+branch:
+codex/mo1307-phase3ar2-c3tb
+
+HEAD:
+119e68bdcf0ffc906b4ca03a912aadcb25908346
+
+working tree:
+CLEAN
+
+If any of these differ:
+
+STOP BEFORE EXECUTION.
+
+Do not modify another worktree.
+
+==================================================
+2. CERTIFICATION CANDIDATE
+==================================================
+
+Exact candidate:
+
+C3TB
+119e68bdcf0ffc906b4ca03a912aadcb25908346
+
+Production commit:
+
+C3T
+65e24b2debdd70ecb8e52fbccbd6c101621f1917
+
+Production tree:
+
+324bf600b6cbfaa8564db27fce2d999711270cb8
+
+Helper SHA-256:
+
+97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127
+
+Canonical package inventory:
+
+89 members
+
+Inventory SHA-256:
+
+2869cc0745fc555d5338f35634e7738b49cb628f6693dd92c5868f36ec113729
+
+Do not certify C3RB.
+
+Do not use historical failed Phase 3A generations as current PASS evidence.
+
+==================================================
+3. CURRENT DEADLINE AUTHORITY
+==================================================
+
+Current authoritative helper bound:
+
+PROSPECTIVE_HELPER_BOUND@1.0.0
+
+Value:
+
+8000 ms
+
+Success requires:
+
+complete whole-helper lifecycle < 8000 ms
+
+Timeout occurs at:
+
+>= 8000 ms
+
+Historical characterization remains:
+
+H = NOT_ESTABLISHED
+
+Do not call 8000 ms H.
+
+Other limits remain:
+
+aggregate helper:
+20000 ms
+
+CLI:
+30000 ms
+
+API/worker:
+10000 ms
+
+cleanup:
+2000 ms
+
+No retry.
+No grace.
+No late-success recovery.
+
+==================================================
+4. INCLUDED CORRECTIONS
+==================================================
+
+C3TB includes authorized corrections for:
+
+- final headless cleanup behavior
+- post-detach witness correction
+- initial-zero fail-closed behavior
+- CreateFileW SetLastError metadata correction
+- redundant Open-Chain Assert-Root removal
+- prospective 8000-ms helper bound
+
+Do not reopen their design questions.
+
+Do not revive failed experimental variants.
+
+==================================================
+5. FRESH INSTALLED CERTIFICATION
+==================================================
+
+This must be a completely fresh Phase 3A certification generation.
+
+Create fresh certification/evidence namespace under this worktree.
+
+Freshly package exact C3TB.
+
+Perform fresh offline installation.
+
+Verify exact installed members before execution.
+
+Certification must execute installed:
+
+CLI
+API
+native helper
+worker
+publication/finalization
+
+surfaces as required by authority.
+
+Do not substitute workspace source execution for installed-runtime certification.
+
+==================================================
+6. RUNTIME AUTHORITY
+==================================================
+
+Use the repository-authorized Windows runtime/toolchain.
+
+Expected environment includes:
+
+Windows 11 x64
+Node 24.21.0 win-x64
+Windows PowerShell 5.1
+
+Verify the exact pinned identities before execution.
+
+No network dependency.
+No provider accounts.
+No hosted execution.
+
+==================================================
+7. SEAL COMPLETE A-O INVENTORY
+==================================================
+
+Before executing certification, recover and seal the complete authoritative Phase 3A inventory.
+
+A.
+MO-1306 evaluate / verify / API parity
+
+B.
+READY evaluate / verify / API parity
+
+C.
+NOT_READY evaluate / verify / API parity
+
+D.
+COULD_NOT_EVALUATE evaluate / verify / API parity
+
+E.
+REST evaluate / verify / API parity
+
+F.
+Seven human-decision vectors
+
+G.
+Complete supplied-tag observation inventory
+
+H.
+Helper deadline/cancellation controls using strict <8000 semantics
+
+I.
+Worker deadline/cancellation controls
+
+J.
+Cleanup/process topology under current corrected authority
+
+K.
+Finalization
+
+L.
+Filesystem/native controls
+
+M.
+Environment isolation
+
+N.
+Byte determinism
+
+O.
+Final MO-1306 confirmation
+
+Use repository authority for exact cases.
+
+Do not invent cases.
+Do not omit mandatory cases.
+
+==================================================
+8. EXECUTION RULE
+==================================================
+
+Execute the sealed campaign exactly once.
+
+No retry.
+
+No case retry.
+
+No replacement execution.
+
+No warmup substitution.
+
+No adaptive expansion.
+
+No historical PASS promotion.
+
+Expected semantic nonzero exits are valid PASS observations only when they exactly match the authoritative expected semantic result.
+
+==================================================
+9. FAILURE RULE
+==================================================
+
+At the first mandatory failure:
+
+STOP PHASE 3AR2.
+
+Preserve:
+
+- exact case
+- expected result
+- actual result
+- request/helper ordinal where available
+- resource clocks
+- process state
+- cleanup state
+- completed inventory
+- remaining NOT_RUN inventory
+
+Do not diagnose or repair inside the certification generation.
+
+Do not modify production.
+
+Do not affect 3BR2 or 3CR2.
+
+Return:
+
+PHASE3AR2_FAILED_INCOMPLETE
+
+==================================================
+10. RESOURCE REQUIREMENTS
+==================================================
+
+Verify exactly:
+
+helper lifecycle:
+< 8000 ms
+
+helper aggregate:
+<= 20000 ms
+
+CLI:
+<= 30000 ms
+
+API/worker:
+<= 10000 ms
+
+cleanup:
+existing <= 2000 ms semantics
+
+8000 ms equality:
+TIMEOUT
+
+No retry.
+No late success.
+No helper/helper overlap.
+No helper/worker overlap.
+
+==================================================
+11. SUCCESS RULE
+==================================================
+
+Phase 3AR2 is accepted only if the complete mandatory A-O inventory passes.
+
+If accepted create:
+
+- immutable Phase 3AR2 certification receipt
+- evidence
+- certification commit
+- exact candidate binding
+- Phase 3D handoff
+
+Return:
+
+PHASE3AR2_ACCEPTED
+
+Do NOT perform Phase 3D.
+
+==================================================
+12. HISTORICAL PRESERVATION
+==================================================
+
+Preserve all historical Phase 3A evidence including:
+
+original Phase 3A
+
+3A-R
+
+C3RB generations
+
+J failure
+
+G failure
+
+console/startup correction work
+
+N15
+
+N17
+
+lifecycle characterization
+
+H_NOT_ESTABLISHED
+
+None may be promoted into current certification evidence.
+
+==================================================
+13. INDEPENDENCE
+==================================================
+
+3BR2 and 3CR2 are independent parallel streams.
+
+Do not wait for them.
+
+Do not modify their worktrees.
+
+Do not inspect or mutate:
+
+C:\Users\melsa\Documents\Codex\3br2
+
+C:\Users\melsa\Documents\Codex\3cr2
+
+Your accepted result, if achieved, must remain valid independently until Phase 3D.
+
+==================================================
+14. FINAL REPORT
+==================================================
+
+Report:
+
+1. verified worktree/branch/HEAD
+2. exact candidate
+3. runtime identities
+4. package/archive identity
+5. offline installation
+6. installed-member verification
+7. sealed A-O inventory identity
+8. A-O result table
+9. first failure if any
+10. helper/resource observations
+11. cleanup/process results
+12. CLI/API parity
+13. determinism
+14. certification receipt
+15. PHASE3AR2_ACCEPTED or PHASE3AR2_FAILED_INCOMPLETE
+16. commit
+17. repository status
+18. exact Phase 3D handoff if accepted
+
+No push.
+No tag.
+No Phase 3D.
