@@ -95,7 +95,7 @@ const limits = {
   workerOldHeapMiB:128,workerYoungHeapMiB:16,engineeringAggregateRssBytes:536870912,
   cliDeadlineMs:30000,apiDeadlineMs:10000,helperRequestPaths:128,helperDeadlineMs:9000,
   cleanupAllowanceMs:2000,helperRequestBytes:65536,helperResponseBytes:16777216,helperRequests:9,
-  helperVerifyRequests:4,helperAggregateDeadlineMs:20000,helperChainComponents:120,
+  helperVerifyRequests:4,helperAggregateDeadlineMs:28000,helperChainComponents:120,
   metadataCodeUnits:256,decisionReasonCodeUnits:1024,decisionActorCodeUnits:128,
   sourceKindChars:128,sourceVersionChars:64,historyDispositionChars:256,tagNameChars:128,
 };

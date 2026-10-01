@@ -72,8 +72,9 @@ never a public clock override or normative readiness input.
 
 Each helper has the prospective `PROSPECTIVE_HELPER_BOUND@2.0.0` whole-lifecycle
 bound of 9,000 ms. Success requires completion strictly before 9,000 ms;
-equality or later is TIMEOUT. The independent **20,000 ms aggregate helper-active
-ceiling** remains unchanged. Active
+equality or later is TIMEOUT. The independent
+`PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0` authority sets a **28,000 ms aggregate
+helper-active ceiling**. Active
 time starts before launch and includes startup, native work, framing/EOF waits
 and confirmed helper termination, prior self-detachment and transport closure. The CLI's 30,000 ms deadline remains
 absolute for helper acquisition and final rename admission; each helper deadline is the earliest of its own nine seconds, remaining
