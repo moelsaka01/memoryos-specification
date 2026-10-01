@@ -1,0 +1,144 @@
+{
+  "controls": [
+    {
+      "name": "archive-byte-tamper",
+      "result": "PASS",
+      "observedError": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'a67ed34972e6bef7f12033e0131dbe05d61bfd88877a4d33487f203590ba6178'\n- 'e110515ad9e2acbf9c20c556c0159a45422b1c8e9ecf09e637940cc3fe1bfa9d'\n",
+      "expectedRejection": "Mismatch required"
+    },
+    {
+      "name": "missing-member",
+      "result": "PASS",
+      "observedError": "MEMBER_COUNT\n\n88 !== 89\n",
+      "expectedRejection": "MEMBER_COUNT"
+    },
+    {
+      "name": "unexpected-member",
+      "result": "PASS",
+      "observedError": "MEMBER_COUNT\n\n90 !== 89\n",
+      "expectedRejection": "MEMBER_COUNT"
+    },
+    {
+      "name": "unsafe-tar-path",
+      "result": "PASS",
+      "observedError": "UNSAFE_PATH",
+      "expectedRejection": "UNSAFE_PATH"
+    },
+    {
+      "name": "nonregular-tar-member",
+      "result": "PASS",
+      "observedError": "NONREGULAR\n\n'2' !== '0'\n",
+      "expectedRejection": "NONREGULAR"
+    },
+    {
+      "name": "duplicate-member",
+      "result": "PASS",
+      "observedError": "DUPLICATE\n\n88 !== 89\n",
+      "expectedRejection": "DUPLICATE"
+    },
+    {
+      "name": "missing-tar-terminator",
+      "result": "PASS",
+      "observedError": "TAR_TERMINATOR",
+      "expectedRejection": "TAR_TERMINATOR"
+    },
+    {
+      "name": "trailing-tar-data",
+      "result": "PASS",
+      "observedError": "TRAILING_TAR_DATA",
+      "expectedRejection": "Mismatch required"
+    },
+    {
+      "name": "helper-tamper",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_SBOM_BINDING",
+      "expectedRejection": "SBOM_BINDING",
+      "target": "helpers/windows-inspect.ps1",
+      "before": {
+        "path": "helpers/windows-inspect.ps1",
+        "byteLength": 29153,
+        "sha256": "97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+      },
+      "after": {
+        "path": "helpers/windows-inspect.ps1",
+        "byteLength": 29176,
+        "sha256": "3244d7a629b14089aa6968aab1b6e8b3bd9779173e27f1428524b0777c17a081"
+      }
+    },
+    {
+      "name": "distribution-hash-tamper",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_DISTRIBUTION_BINDING",
+      "expectedRejection": "DISTRIBUTION_BINDING",
+      "target": "distribution-manifest.json",
+      "before": {
+        "path": "distribution-manifest.json",
+        "byteLength": 12631,
+        "sha256": "91dc9624de1b89b5d83bdf795ccbc0f745b41d958fc8c1dd7abb997f0f88d73c"
+      },
+      "after": {
+        "path": "distribution-manifest.json",
+        "byteLength": 12631,
+        "sha256": "42b3dc6facd2fa84077b8621732a803b91b36e9a9e4798d46560092058e00f2f"
+      }
+    },
+    {
+      "name": "distribution-length-tamper",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_DISTRIBUTION_BINDING",
+      "expectedRejection": "DISTRIBUTION_BINDING",
+      "target": "distribution-manifest.json",
+      "before": {
+        "path": "distribution-manifest.json",
+        "byteLength": 12631,
+        "sha256": "91dc9624de1b89b5d83bdf795ccbc0f745b41d958fc8c1dd7abb997f0f88d73c"
+      },
+      "after": {
+        "path": "distribution-manifest.json",
+        "byteLength": 12631,
+        "sha256": "2f75d22e58d14d988adba089db3055ef608a5d0df533aec7c92f24f13e4da1ae"
+      }
+    },
+    {
+      "name": "sbom-checksum-tamper",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_SBOM_BINDING",
+      "expectedRejection": "SBOM_BINDING",
+      "target": "sbom.spdx.json",
+      "before": {
+        "path": "sbom.spdx.json",
+        "byteLength": 47328,
+        "sha256": "1510fdb9c0366023b4e49b81ce20cceeb1527a1dfaa2f7b4ded52a9bff737fda"
+      },
+      "after": {
+        "path": "sbom.spdx.json",
+        "byteLength": 47328,
+        "sha256": "be74424165c3988a4aa6348cab0d73f9e319b35e14893190b147602ca8278160"
+      }
+    },
+    {
+      "name": "extra-package-file",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_UNEXPECTED_MEMBER",
+      "expectedRejection": "UNEXPECTED_MEMBER"
+    },
+    {
+      "name": "missing-package-file",
+      "result": "PASS",
+      "observedError": "MO1307_PACKAGE_MISSING_MEMBER",
+      "expectedRejection": "MISSING_MEMBER"
+    },
+    {
+      "name": "provenance-byte-tamper",
+      "result": "PASS",
+      "observedError": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '190de2e0946624b5f7b66fd8b8f3c37befeec6886e72f4d0bd1195aba3d60159'\n- '16060a7d4799ef222f9ddcb69ec93508635a683898455667d9359c4302b51365'\n",
+      "expectedRejection": "Mismatch required"
+    },
+    {
+      "name": "installed-helper-mutation",
+      "result": "PASS",
+      "observedError": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      byteLength: 468,\n      path: 'LICENSE-NOTICE.md',\n      sha256: '38242c10d734faf4cdf2ca223760a4ade3ab44516cd42989e95dbf6e66f15413'\n...\n    {\n+     byteLength: 29183,\n-     byteLength: 29153,\n      path: 'helpers/windows-inspect.ps1',\n+     sha256: '413f3fd8cda1249dd6d02037524348e7431df070ee24996aa15de688136e11b8'\n-     sha256: '97ef5ae9ce7ab390548b04",
+      "expectedRejection": "Mismatch required"
+    }
+  ]
+}

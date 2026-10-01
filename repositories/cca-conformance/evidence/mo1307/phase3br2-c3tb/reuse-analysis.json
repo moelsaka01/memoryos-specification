@@ -1,0 +1,87 @@
+{
+  "result": "PASS",
+  "historicalAcceptedPhase3B": "702c1b6381f6112a50ac844831d195275dac3350",
+  "historicalCandidate": "defe93989efc6501b1a730b82e79e705884b269b",
+  "currentCandidateBinding": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+  "currentProduction": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+  "packageComparison": {
+    "changedMembers": [
+      "README.md",
+      "contracts/contract.json",
+      "contracts/definitions.json",
+      "distribution-manifest.json",
+      "helpers/README.md",
+      "helpers/windows-inspect.ps1",
+      "sbom.spdx.json",
+      "src/constants.mjs",
+      "src/helper-transport.mjs"
+    ],
+    "changedCount": 9,
+    "unchangedCount": 80,
+    "wholePackageResultNotReused": true
+  },
+  "freshRequiredArtifactControls": [
+    "archive-byte-tamper",
+    "missing-member",
+    "unexpected-member",
+    "unsafe-tar-path",
+    "nonregular-tar-member",
+    "duplicate-member",
+    "missing-tar-terminator",
+    "trailing-tar-data",
+    "helper-tamper",
+    "distribution-hash-tamper",
+    "distribution-length-tamper",
+    "sbom-checksum-tamper",
+    "extra-package-file",
+    "missing-package-file",
+    "provenance-byte-tamper",
+    "installed-helper-mutation"
+  ],
+  "dependencyProofOnlyControls": [
+    "schema-tamper",
+    "unexpected-production-dependency",
+    "external-runtime-import",
+    "source-worktree-import",
+    "network-builtin-import",
+    "runtime-identity-mismatch"
+  ],
+  "dependencyProof": {
+    "packageChecker": {
+      "current": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+        "byteLength": 11498,
+        "sha256": "93384260641418e591ab6bf8b6fa9ec3e2b3623cd35a615c854e125b7243eb40"
+      },
+      "historical": {
+        "commit": "702c1b6381f6112a50ac844831d195275dac3350",
+        "path": "repositories/cca-conformance/tools/mo1307-phase1/package.mjs",
+        "byteLength": 11498,
+        "sha256": "93384260641418e591ab6bf8b6fa9ec3e2b3623cd35a615c854e125b7243eb40"
+      },
+      "byteEqual": true
+    },
+    "schemasUnchanged": true,
+    "schemaDataUnchanged": true,
+    "packageMetadataUnchanged": true,
+    "importTargetUnchanged": true,
+    "nodeExact": true,
+    "positiveCurrentPackageCheck": "PASS"
+  },
+  "historicalFixtureResults": {
+    "reused": false,
+    "reason": "Generated definitions/constants changed; complete fixture-result dependency closure is not identical and fixtures are outside the selected artifact refresh."
+  },
+  "providerScope": {
+    "retained": true,
+    "reason": "Provider accounts and hosted execution remain outside Phase 3BR2; no provider conclusion promoted."
+  },
+  "advisory": {
+    "retainedOpenOnly": true,
+    "reason": "Exact Node bytes, zero network imports/topology and zero production dependencies remain bound; applicability remains NOT_ESTABLISHED."
+  },
+  "licensing": {
+    "retained": true,
+    "reason": "LICENSE-NOTICE.md, NOTICES.md and package.json are byte-identical to C3RB; UNLICENSED/NOASSERTION remains."
+  }
+}

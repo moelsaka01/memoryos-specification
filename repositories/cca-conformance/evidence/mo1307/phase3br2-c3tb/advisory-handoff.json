@@ -1,0 +1,516 @@
+{
+  "kind": "MO1307Phase3BR2AdvisoryHandoff",
+  "version": "1.0.0",
+  "createdUtc": "2026-10-01T14:25:41.685Z",
+  "candidateBinding": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+  "productionCandidate": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+  "archive": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3br2-c3tb/memoryos-readiness-0.1.0.tgz",
+    "byteLength": 113230,
+    "sha256": "e110515ad9e2acbf9c20c556c0159a45422b1c8e9ecf09e637940cc3fe1bfa9d"
+  },
+  "result": "OPEN_ADVISORY_HANDOFF",
+  "handling": "PASS",
+  "reviewScope": "Authorized existing repository evidence and exact current runtime boundary only. No new upstream retrieval or current vulnerability census. Historical review is not a fresh same-date scan.",
+  "sources": [
+    {
+      "commit": "702c1b6381f6112a50ac844831d195275dac3350",
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3b-c3rb-cert/advisory-handoff.json",
+      "byteLength": 21557,
+      "sha256": "799926f53e173c7a56a8763b27f807dab02df37f6f6a210dfd354ea7ddf4e51f"
+    },
+    {
+      "commit": "4a1de6f00788e3c52a647d6f25aa1dbd2d5d5d97",
+      "path": "repositories/cca-conformance/evidence/mo1305-phase3br/advisory-snapshot.json",
+      "byteLength": 39694,
+      "sha256": "98a188acf3f0b1e717eb26124047d7c94da7072dbdd6d3699ce831c3d63efeb1"
+    }
+  ],
+  "historical3BFinding": {
+    "component": "Node.js",
+    "version": "24.21.0",
+    "advisory": "Original Phase 3B Node July 2026 HTTP/2 findings",
+    "url": "https://nodejs.org/en/blog/vulnerability/july-2026-security-releases",
+    "identifiers": "Original Phase 3B receipt did not retain individual advisory/CVE identifiers; none are invented here.",
+    "productNetworkBoundary": "MemoryOS Readiness declares topology.network=false; the package is offline, has no external production npm dependencies, and does not import Node HTTP/2 or other listed network built-ins.",
+    "reachabilityEvidenceAvailable": {
+      "definitions": {
+        "path": "repositories/memoryos-readiness/contracts/definitions.json",
+        "byteLength": 16555,
+        "sha256": "b621c0d17f2018ff8e73675878278f2fda10c2ad1f987a89747ebfb54b66e13e"
+      },
+      "runtimeSources": [
+        {
+          "path": "repositories/memoryos-readiness/bin/memoryos-readiness.mjs",
+          "byteLength": 854,
+          "sha256": "2aa002a153e87b5127cf26001c9a1bb774142838c0faf7c324c040013e988321"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/acquisition.mjs",
+          "byteLength": 6409,
+          "sha256": "1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/api-input.mjs",
+          "byteLength": 7030,
+          "sha256": "57cd2e2309efac7f0c890b82ff4ca3f70f8cb324512611eba9b303e2da32e194"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/canonical.mjs",
+          "byteLength": 6813,
+          "sha256": "b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/cli-args.mjs",
+          "byteLength": 4280,
+          "sha256": "107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/cli.mjs",
+          "byteLength": 4448,
+          "sha256": "3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/constants.mjs",
+          "byteLength": 16791,
+          "sha256": "987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/errors.mjs",
+          "byteLength": 1823,
+          "sha256": "71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/evidence-graph.mjs",
+          "byteLength": 10839,
+          "sha256": "cc8a353da76fef3c8610085c6b0237021cdfedb4879d5bfe3ad4ae749166673c"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/evidence-history.mjs",
+          "byteLength": 13155,
+          "sha256": "16c5377d07bbc894f8aaa26495e7f215e5a2d2b80b73fdf36254393a7e7769bc"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/evidence-verifier.mjs",
+          "byteLength": 17846,
+          "sha256": "684d088b6578f463a7ed1b6e40cde63ec5de2bf039458050b9ebce4494ded3a0"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/foundation.mjs",
+          "byteLength": 22098,
+          "sha256": "19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+          "byteLength": 17308,
+          "sha256": "96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+          "byteLength": 6250,
+          "sha256": "ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/index.mjs",
+          "byteLength": 1179,
+          "sha256": "10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/integration.mjs",
+          "byteLength": 2959,
+          "sha256": "c73e278db2b2cdd5b38e3e9a6046ba529aafe92af5abfee4e0ced8b0ec02c64e"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/output.mjs",
+          "byteLength": 2386,
+          "sha256": "eea2e7f6dc23f88b8afdca19b273939a020ccc145ec78d4f701983e0d8449aca"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/projections.mjs",
+          "byteLength": 2750,
+          "sha256": "43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/publication.mjs",
+          "byteLength": 13610,
+          "sha256": "dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/readiness-core.mjs",
+          "byteLength": 19885,
+          "sha256": "7891139345e71030709adf2fdb1ff93342a74282980d1b09d1535e44fa0ef1cd"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/readiness-result.mjs",
+          "byteLength": 5303,
+          "sha256": "847525fb9be50cc956c5859e8accd271806db61fdf083e9b5165bd8cf91d9fea"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/runtime.mjs",
+          "byteLength": 16904,
+          "sha256": "012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/schema-data.mjs",
+          "byteLength": 98556,
+          "sha256": "467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/schema.mjs",
+          "byteLength": 4308,
+          "sha256": "9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/windows-paths.mjs",
+          "byteLength": 5990,
+          "sha256": "7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/worker-entry.mjs",
+          "byteLength": 681,
+          "sha256": "958dfaf21e7ed62d6214a09f7624b7c4c799aeddbdcd11daac8625a439ab35a7"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/worker-policy.mjs",
+          "byteLength": 1260,
+          "sha256": "29e0ccb0bb366199857753abd11c08f8cdec72bfe43672ef6ba9e8784e5b0831"
+        }
+      ],
+      "networkImports": [],
+      "helper": {
+        "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "byteLength": 30210,
+        "sha256": "35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8"
+      },
+      "inspection": "Static package source boundary only; Node contains HTTP/2 internally. No dynamic exploitability or release-level risk conclusion follows."
+    },
+    "status": "OPEN_PHASE3D_DISPOSITION_REQUIRED",
+    "riskAccepted": false,
+    "affectsMO1307Claim": false,
+    "remainingPhase3DRequirement": "Identify and reconcile the original July 2026 HTTP/2 advisories against exact Node 24.21.0, the accepted Phase 3A-R runtime and Phase 3C-R security inputs, product network boundary and reachable attack surface. Document final applicability/disposition and any necessary authority decision; do not infer affectedness from bundled HTTP/2 or close this item from the helper change."
+  },
+  "earlierMO1305Snapshot": {
+    "date": "2026-09-25",
+    "sourceRetrieval": {
+      "byteLength": 299514,
+      "httpStatus": 200,
+      "retrieval": "direct public HTTPS; selected fields retained, complete upstream body not redistributed",
+      "retrievedAtUtc": "2026-09-25T12:36:32Z",
+      "sha256": "84e269f64dc8d83be44fee6801d68bd675e9466de3046e32ebe7b7e047df6a22",
+      "url": "https://nodejs.org/en/blog/vulnerability/july-2026-security-releases"
+    },
+    "records": [
+      {
+        "advisory": "CVE-2026-56846",
+        "applicability": "Selected same-major release follows the official fixed release.",
+        "component": "node",
+        "disposition": "FIXED_VERSION_SELECTED",
+        "fixedVersion": "24.18.1",
+        "publishedDate": "2026-07-29",
+        "severity": "High",
+        "severityAuthority": "Node.js Project",
+        "source": "https://nodejs.org/en/blog/vulnerability/july-2026-security-releases",
+        "version": "24.21.0"
+      },
+      {
+        "advisory": "CVE-2026-56848",
+        "applicability": "Selected same-major release follows the official fixed release.",
+        "component": "node",
+        "disposition": "FIXED_VERSION_SELECTED",
+        "fixedVersion": "24.18.1",
+        "publishedDate": "2026-07-29",
+        "severity": "High",
+        "severityAuthority": "Node.js Project",
+        "source": "https://nodejs.org/en/blog/vulnerability/july-2026-security-releases",
+        "version": "24.21.0"
+      },
+      {
+        "advisory": "CVE-2026-58043",
+        "applicability": "Selected same-major release follows the official fixed release.",
+        "component": "node",
+        "disposition": "FIXED_VERSION_SELECTED",
+        "fixedVersion": "24.18.1",
+        "publishedDate": "2026-07-29",
+        "severity": "High",
+        "severityAuthority": "Node.js Project",
+        "source": "https://nodejs.org/en/blog/vulnerability/july-2026-security-releases",
+        "version": "24.21.0"
+      },
+      {
+        "advisory": "CVE-2026-56850",
+        "applicability": "Selected same-major release follows the official fixed release.",
+        "component": "node",
+        "disposition": "FIXED_VERSION_SELECTED",
+        "fixedVersion": "24.18.1",
+        "publishedDate": "2026-07-29",
+        "severity": "Medium",
+        "severityAuthority": "Node.js Project",
+        "source": "https://nodejs.org/en/blog/vulnerability/july-2026-security-releases",
+        "version": "24.21.0"
+      },
+      {
+        "advisory": "CVE-2026-58040",
+        "applicability": "Selected same-major release follows the official fixed release.",
+        "component": "node",
+        "disposition": "FIXED_VERSION_SELECTED",
+        "fixedVersion": "24.18.1",
+        "publishedDate": "2026-07-29",
+        "severity": "Medium",
+        "severityAuthority": "Node.js Project",
+        "source": "https://nodejs.org/en/blog/vulnerability/july-2026-security-releases",
+        "version": "24.21.0"
+      },
+      {
+        "advisory": "CVE-2026-58041",
+        "applicability": "Selected same-major release follows the official fixed release.",
+        "component": "node",
+        "disposition": "FIXED_VERSION_SELECTED",
+        "fixedVersion": "24.18.1",
+        "publishedDate": "2026-07-29",
+        "severity": "Medium",
+        "severityAuthority": "Node.js Project",
+        "source": "https://nodejs.org/en/blog/vulnerability/july-2026-security-releases",
+        "version": "24.21.0"
+      },
+      {
+        "advisory": "CVE-2026-58042",
+        "applicability": "Selected same-major release follows the official fixed release.",
+        "component": "node",
+        "disposition": "FIXED_VERSION_SELECTED",
+        "fixedVersion": "24.18.1",
+        "publishedDate": "2026-07-29",
+        "severity": "Medium",
+        "severityAuthority": "Node.js Project",
+        "source": "https://nodejs.org/en/blog/vulnerability/july-2026-security-releases",
+        "version": "24.21.0"
+      },
+      {
+        "advisory": "CVE-2026-58045",
+        "applicability": "Selected same-major release follows the official fixed release.",
+        "component": "node",
+        "disposition": "FIXED_VERSION_SELECTED",
+        "fixedVersion": "24.18.1",
+        "publishedDate": "2026-07-29",
+        "severity": "Medium",
+        "severityAuthority": "Node.js Project",
+        "source": "https://nodejs.org/en/blog/vulnerability/july-2026-security-releases",
+        "version": "24.21.0"
+      },
+      {
+        "advisory": "CVE-2026-56847",
+        "applicability": "Selected same-major release follows the official fixed release.",
+        "component": "node",
+        "disposition": "FIXED_VERSION_SELECTED",
+        "fixedVersion": "24.18.1",
+        "publishedDate": "2026-07-29",
+        "severity": "Low",
+        "severityAuthority": "Node.js Project",
+        "source": "https://nodejs.org/en/blog/vulnerability/july-2026-security-releases",
+        "version": "24.21.0"
+      },
+      {
+        "advisory": "CVE-2026-58039",
+        "applicability": "Selected same-major release follows the official fixed release.",
+        "component": "node",
+        "disposition": "FIXED_VERSION_SELECTED",
+        "fixedVersion": "24.18.1",
+        "publishedDate": "2026-07-29",
+        "severity": "Low",
+        "severityAuthority": "Node.js Project",
+        "source": "https://nodejs.org/en/blog/vulnerability/july-2026-security-releases",
+        "version": "24.21.0"
+      },
+      {
+        "advisory": "CVE-2026-58044",
+        "applicability": "Selected same-major release follows the official fixed release.",
+        "component": "node",
+        "disposition": "FIXED_VERSION_SELECTED",
+        "fixedVersion": "24.18.1",
+        "publishedDate": "2026-07-29",
+        "severity": "Low",
+        "severityAuthority": "Node.js Project",
+        "source": "https://nodejs.org/en/blog/vulnerability/july-2026-security-releases",
+        "version": "24.21.0"
+      }
+    ],
+    "scope": "Historical attributed claims only; they do not identify the HTTP/2 subset or resolve the MO-1307 handoff."
+  },
+  "exactHttp2CveIdentity": "NOT ESTABLISHED",
+  "finalApplicability": "NOT ESTABLISHED",
+  "currentAdvisoryCensus": "NOT ESTABLISHED",
+  "H": "NOT_ESTABLISHED",
+  "riskAccepted": false,
+  "zeroVulnerabilityClaim": false,
+  "exactRuntime": {
+    "classification": "EXACT_DEPENDENCY_REBOUND",
+    "path": "C:/Users/melsa/Documents/Codex/cca-workspace/.cache/mo1304-phase3-toolchain/node-v24.21.0-win-x64/node.exe",
+    "version": "24.21.0",
+    "byteLength": 93580104,
+    "sha256": "ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32",
+    "componentVersions": {
+      "node": "24.21.0",
+      "acorn": "8.18.0",
+      "ada": "4.0.0",
+      "amaro": "1.1.11",
+      "ares": "1.34.8",
+      "brotli": "1.2.0",
+      "cldr": "48.0",
+      "icu": "78.3",
+      "llhttp": "9.4.3",
+      "merve": "1.2.2",
+      "modules": "137",
+      "napi": "10",
+      "nbytes": "0.1.4",
+      "ncrypto": "0.0.1",
+      "nghttp2": "1.70.0",
+      "nghttp3": "",
+      "ngtcp2": "",
+      "openssl": "3.5.8",
+      "simdjson": "4.6.7",
+      "simdutf": "6.4.0",
+      "sqlite": "3.53.4",
+      "tz": "2026c",
+      "undici": "7.29.1",
+      "unicode": "17.0",
+      "uv": "1.52.1",
+      "uvwasi": "0.0.23",
+      "v8": "13.6.233.17-node.53",
+      "zlib": "1.3.2.1-motley-8002e91",
+      "zstd": "1.5.7"
+    },
+    "provenanceBindings": [
+      {
+        "path": "repositories/cca-conformance/evidence/mo1305-phase3br/toolchain.json",
+        "historical": {
+          "commit": "702c1b6381f6112a50ac844831d195275dac3350",
+          "byteLength": 1989,
+          "sha256": "459a65487019220b62610cb5d896c5a60d89becde94111556dbb346f187c5334"
+        },
+        "current": {
+          "byteLength": 1989,
+          "sha256": "459a65487019220b62610cb5d896c5a60d89becde94111556dbb346f187c5334"
+        },
+        "byteEqual": true
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1305-phase1-aux/toolchain-provenance.json",
+        "historical": {
+          "commit": "702c1b6381f6112a50ac844831d195275dac3350",
+          "byteLength": 1493,
+          "sha256": "393718596a5647106508313a98d9804c76274a719c0c286894270b89278cdbf0"
+        },
+        "current": {
+          "byteLength": 1493,
+          "sha256": "393718596a5647106508313a98d9804c76274a719c0c286894270b89278cdbf0"
+        },
+        "byteEqual": true
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1305-phase1-aux/toolchain/SHASUMS256.txt",
+        "historical": {
+          "commit": "702c1b6381f6112a50ac844831d195275dac3350",
+          "byteLength": 3171,
+          "sha256": "f410428039e2c922a14058df067a4482691c9304a5c01a75847f9f3f2d3307f6"
+        },
+        "current": {
+          "byteLength": 3171,
+          "sha256": "f410428039e2c922a14058df067a4482691c9304a5c01a75847f9f3f2d3307f6"
+        },
+        "byteEqual": true
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1305-phase1-aux/toolchain/SHASUMS256.txt.asc",
+        "historical": {
+          "commit": "702c1b6381f6112a50ac844831d195275dac3350",
+          "byteLength": 3449,
+          "sha256": "dd0fe71660e64f4dc01342664835509c84679d8a87ab4d76cc2f15fdda82ea3e"
+        },
+        "current": {
+          "byteLength": 3449,
+          "sha256": "dd0fe71660e64f4dc01342664835509c84679d8a87ab4d76cc2f15fdda82ea3e"
+        },
+        "byteEqual": true
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1305-phase1-aux/toolchain/nodejs-pubring.kbx",
+        "historical": {
+          "commit": "702c1b6381f6112a50ac844831d195275dac3350",
+          "byteLength": 95960,
+          "sha256": "610b8d249da3d5733f5a128def2dd0294dbbf5b5713e6ca2529db8db419dee00"
+        },
+        "current": {
+          "byteLength": 95960,
+          "sha256": "610b8d249da3d5733f5a128def2dd0294dbbf5b5713e6ca2529db8db419dee00"
+        },
+        "byteEqual": true
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1305-phase1-aux/toolchain/signature-verified.stderr",
+        "historical": {
+          "commit": "702c1b6381f6112a50ac844831d195275dac3350",
+          "byteLength": 365,
+          "sha256": "bb8606c1fe1dd9152df6185bd35df5c074b85a2f3c6639f0bf0fece49736f3b5"
+        },
+        "current": {
+          "byteLength": 365,
+          "sha256": "bb8606c1fe1dd9152df6185bd35df5c074b85a2f3c6639f0bf0fece49736f3b5"
+        },
+        "byteEqual": true
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1305-phase1-aux/toolchain/signature-verified.stdout",
+        "historical": {
+          "commit": "702c1b6381f6112a50ac844831d195275dac3350",
+          "byteLength": 371,
+          "sha256": "5d9d4a142b0e963369d58904a57d56718bd1872858f6687dea8dcd5a13499550"
+        },
+        "current": {
+          "byteLength": 371,
+          "sha256": "5d9d4a142b0e963369d58904a57d56718bd1872858f6687dea8dcd5a13499550"
+        },
+        "byteEqual": true
+      }
+    ],
+    "provenanceAcquisitionRepeated": false
+  },
+  "packageBoundary": {
+    "candidateBinding": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+    "productionCandidate": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+    "topologyNetwork": false,
+    "externalProductionDependencies": 0,
+    "builtins": [
+      "node:child_process",
+      "node:crypto",
+      "node:fs/promises",
+      "node:module",
+      "node:path",
+      "node:perf_hooks",
+      "node:url",
+      "node:util",
+      "node:worker_threads"
+    ],
+    "closure": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3br2-c3tb/runtime-closure.json",
+      "byteLength": 22744,
+      "sha256": "d4a3897acb1a41b4fb86b051a54a9f8545379074da6d0ab04f2fca937b1bc9c9"
+    },
+    "definitions": {
+      "path": "repositories/memoryos-readiness/contracts/definitions.json",
+      "byteLength": 16555,
+      "sha256": "4457989aded2dd4a6ff58dc1b14fafa12b9e3f597d1e8dfe40698e8289c60a66"
+    },
+    "limitation": "Static package closure does not establish runtime exploitability, not-affected status or risk acceptance."
+  },
+  "phase3DHandoff": "Integrate the immutable Phase 3BR2 receipt and refresh commit for exact C3TB 119e68bdcf0ffc906b4ca03a912aadcb25908346 with independently accepted exact-C3TB Phase 3AR2 and Phase 3CR2 receipts. Bind the fresh 89-member archive by exact byte length and SHA-256, C3T 65e24b2debdd70ecb8e52fbccbd6c101621f1917, production tree 324bf600b6cbfaa8564db27fce2d999711270cb8, and PROSPECTIVE_HELPER_BOUND@1.0.0. Preserve historical Phase 3B 702c1b6381f6112a50ac844831d195275dac3350 unchanged as C3RB-only history, H = NOT_ESTABLISHED, the open Node HTTP/2 advisory, licensing and provider/platform qualifications, and the separation of human risk acceptance and release authorization. No Phase 3D action was performed here.",
+  "qualifications": [
+    "First-party licensing remains UNLICENSED/NOASSERTION; no product license or publication grant.",
+    "Bounded existing-evidence advisory review; exact HTTP/2 identification and final applicability remain open.",
+    "Provider accounts, hosted execution and non-Windows platforms remain outside this Phase 3BR2 scope."
+  ],
+  "notApplicable": [
+    "Provider accounts and hosted execution are outside the frozen Phase 3BR2 scope.",
+    "Non-Windows platform certification is outside this Windows package/toolchain refresh."
+  ],
+  "humanRiskAcceptance": false,
+  "finalReleaseAuthorization": false
+}

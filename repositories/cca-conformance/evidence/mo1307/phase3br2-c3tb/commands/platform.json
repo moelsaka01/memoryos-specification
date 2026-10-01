@@ -1,0 +1,27 @@
+{
+  "name": "platform",
+  "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+  "args": [
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-Command",
+    "$v=Get-ItemProperty -LiteralPath 'HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion'; [pscustomobject]@{caption=$v.ProductName;displayVersion=$v.DisplayVersion;version=[Environment]::OSVersion.Version.ToString();build=$v.CurrentBuildNumber;architecture=[Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString();powershell=$PSVersionTable.PSVersion.ToString()} | ConvertTo-Json -Compress"
+  ],
+  "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3br2\\",
+  "startedUtc": "2026-10-01T14:22:20.114Z",
+  "elapsedMs": 959.9765999999945,
+  "status": 0,
+  "signal": null,
+  "error": null,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3br2-c3tb/logs/platform.stdout.txt",
+    "byteLength": 147,
+    "sha256": "24a24e919be651419709736dc6071568d39a1f9b600a32af18eb83132d8efd0f"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3br2-c3tb/logs/platform.stderr.txt",
+    "byteLength": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}
