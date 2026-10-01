@@ -1,0 +1,718 @@
+{
+  "kind": "MO1307Phase3CR2C3TBExecutionLedger",
+  "version": "1.0.0",
+  "candidate": {
+    "branch": "codex/mo1307-phase3cr2-c3tb",
+    "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+    "helper": {
+      "byteLength": 29153,
+      "gitBlob": "7ca55b8713108465099ecfce9796e06e3db67bd2",
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+    },
+    "implementation": {
+      "commit": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+      "parent": "79ef47e608c67edc70f3e9f51d494b169794f903",
+      "role": "C3T",
+      "tree": "d21f46bc31ccd7a9f80a5e494b3d09116d125522"
+    },
+    "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+    "role": "C3TB",
+    "soleParent": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+    "tree": "5e0088965d4eac4002165fe0190f275c257985ba"
+  },
+  "generation": {
+    "id": "phase3cr2-c3tb-g2",
+    "mode": "FRESH_AFTER_FAILED_GENERATION",
+    "ordinal": 2,
+    "resumesPriorAttempt": false
+  },
+  "preflight": {
+    "campaignPlan": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/campaign-plan.json",
+      "byteLength": 82460,
+      "sha256": "sha256:d8c220944784c51551526df7e1692009422ebb30bf2ad099d4fb50e176b5349e"
+    },
+    "seal": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/pre-execution-seal.json",
+      "byteLength": 81656,
+      "sha256": "sha256:03b7f7cdaa8625b8964c620c18d0798dd9bc1878aa77e729c4a2e160e2d31215"
+    },
+    "priorFailedGeneration": {
+      "id": "phase3cr2-c3tb",
+      "ordinal": 1,
+      "status": "FAILED_INCOMPLETE",
+      "outcome": "PHASE3CR2_FAILED_INCOMPLETE",
+      "resumable": false,
+      "firstFailure": {
+        "ordinal": 4,
+        "stage": "DEADLINE_CLEANUP_SELECTED_7"
+      },
+      "tools": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb",
+        "fileCount": 15,
+        "digest": "sha256:9abb9d879a5b29724b42a8efa31f66579d104c336ef4ed2f2e304a77ff7c1e19"
+      },
+      "evidence": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb",
+        "fileCount": 194,
+        "digest": "sha256:2ce1063de146fb4c1bb153175271ff19e0a6db5d9d759abe0e137e4b00b8224f"
+      },
+      "artifacts": {
+        "failedPreflight": {
+          "byteLength": 2825,
+          "gitBlob": "917ee48540ca6b314e83e6f99aebb51c4f647f4e",
+          "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/failed-preflight-attempt-1.json",
+          "sha256": "sha256:9b083a24a4b4f829ea581869f56ca836d55e79b6a819a11388978e2dababc038"
+        },
+        "ledger": {
+          "byteLength": 14630,
+          "gitBlob": "218450c0da81983f1fef5e27a3b4cbee7e7a5ed3",
+          "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/execution-ledger.json",
+          "sha256": "sha256:5190aec3b5a0a2cd31b8537f5ba030ee4ca5d6b3eb26bb640d075d68e67bc8f2"
+        },
+        "plan": {
+          "byteLength": 20763,
+          "gitBlob": "515b389eb4c48f8b57193800de64d054382d92c1",
+          "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/campaign-plan.json",
+          "sha256": "sha256:fe56fb04025970e221275cf2a72937ccbedcdf744e152a0d4f4543815932c87d"
+        },
+        "seal": {
+          "byteLength": 19962,
+          "gitBlob": "886c71a8568aec7041b282241ff6f447f2a75ca0",
+          "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/pre-execution-seal.json",
+          "sha256": "sha256:495a9230a63a9b73588277cf84f93b38978b7bb49999c79175a9d642aff64006"
+        },
+        "start": {
+          "byteLength": 7014,
+          "gitBlob": "ccfa91603ca78a929730e27541d63d39299de209",
+          "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/execution-start.json",
+          "sha256": "sha256:65476c0cc136944ec8c67379c8404d316d7ef5a7f32bc211994dd8e4212a0af4"
+        }
+      }
+    },
+    "harnessValidation": {
+      "cases": [
+        {
+          "actual": "PASS",
+          "expected": "PASS",
+          "id": "authorized-current-c3tb-diff",
+          "result": "PASS"
+        },
+        {
+          "actual": "PASS",
+          "expected": "PASS",
+          "id": "historical-c3rb-baseline",
+          "result": "PASS"
+        },
+        {
+          "actual": "FAIL",
+          "expected": "FAIL",
+          "id": "unexpected-synthetic-executable-change",
+          "result": "PASS"
+        },
+        {
+          "actual": "FAIL",
+          "expected": "FAIL",
+          "id": "unexpected-security-policy-change",
+          "result": "PASS"
+        },
+        {
+          "actual": "PASS",
+          "expected": "PASS",
+          "id": "comment-only-difference",
+          "result": "PASS"
+        },
+        {
+          "actual": "MOVE_TO_FRESH",
+          "expected": "MOVE_TO_FRESH",
+          "id": "reuse-dependency-mismatch",
+          "result": "PASS"
+        }
+      ],
+      "evidence": {
+        "byteLength": 4613,
+        "gitBlob": "bb0c49a8b04104e3b7bda8dd1aba1d16164565fb",
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2-harness-validation/validation.json",
+        "sha256": "sha256:f7b5c9511fa1f8d73ee2e4a8adb737e67377ebec5ac03e67be8054714ea8683e"
+      },
+      "executionCounts": {
+        "certificationCampaign": 0,
+        "helper": 0,
+        "network": 0,
+        "product": 0,
+        "securityCampaign": 0
+      },
+      "kind": "MO1307Phase3CR2DependencyAwareSourceReviewHarnessValidation",
+      "result": "PASS",
+      "version": "1.0.0"
+    },
+    "pinCorrection": {
+      "cause": "CONTROL_MAP_VS_CONTROL_RESULTS_IDENTITY_FIELD_TRANSPOSITION",
+      "controlIdsChanged": false,
+      "correctedExpectedSha256": "sha256:0c490f5d4afa76b673c64d320308a2d1ca841a4330072b532964b0054d027131",
+      "dependencyMappingsChanged": false,
+      "expectedOutcomesChanged": false,
+      "historicalControlMap": {
+        "byteLength": 530142,
+        "gitBlob": "bf6bbaeb118fcfc38384530cee3d2942ac39fc47",
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/current-control-map.json",
+        "sha256": "sha256:0c490f5d4afa76b673c64d320308a2d1ca841a4330072b532964b0054d027131"
+      },
+      "objectBytesChanged": false,
+      "oldExpectedSha256": "sha256:9131759b75fc9407fd25467ef7656b0d6948711daecdf58234f1c4b09f9b9433",
+      "result": "PASS",
+      "scope": "CERTIFICATION_TOOLING_IDENTITY_PIN_ONLY",
+      "selectionChanged": false,
+      "staleExpectedResolvedTo": {
+        "byteLength": 3057635,
+        "gitBlob": "50551f4cde0c1f5107126f9459c8b4e447226dfd",
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/current-control-results.json",
+        "sha256": "sha256:9131759b75fc9407fd25467ef7656b0d6948711daecdf58234f1c4b09f9b9433"
+      }
+    },
+    "zeroExecution": {
+      "acceptedPhase3CAuthorityChain": "PASS",
+      "c3tbIdentity": "PASS",
+      "candidateSpecificControls": {
+        "accounted": 2,
+        "expected": 2
+      },
+      "caseFoldDistinctAuthorityPairCount": 1,
+      "caseSensitiveControlIds": true,
+      "certificationClaims": 0,
+      "dependencyReuseCandidates": {
+        "accounted": 462,
+        "expected": 462
+      },
+      "exactIdDuplicates": 0,
+      "harnessValidation": "PASS",
+      "helperExecutions": 0,
+      "helperIdentity": "PASS",
+      "historicalControlMapIdentity": "PASS",
+      "historicalInventory": {
+        "accounted": 551,
+        "expected": 551
+      },
+      "networkExecutions": 0,
+      "omissions": 0,
+      "priorFailedGenerationClosure": "PASS",
+      "productExecutions": 0,
+      "productionTreeIdentity": "PASS",
+      "refreshMapCardinality": "PASS",
+      "result": "PASS",
+      "securityExecutions": 0,
+      "selectedFreshHistoricalControls": {
+        "accounted": 89,
+        "expected": 89
+      },
+      "selectedReuseOverlap": 0
+    },
+    "finalizedToolSetDigest": "sha256:338da32c0b9c500bf19adaa9d7c5adb5fda8be0646ffb9319eff8a6de5c1a646"
+  },
+  "runtime": {
+    "path": ".cache/mo1307-phase3cr2-runtime/node.exe",
+    "byteLength": 93580104,
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "startedAt": "2026-10-01T17:14:30.446Z",
+  "result": "FAILED_INCOMPLETE",
+  "outcome": "PHASE3CR2_FAILED_INCOMPLETE",
+  "firstFailure": {
+    "stage": "CASE_SENSITIVE_RECONCILIATION",
+    "ordinal": 9,
+    "actual": {
+      "code": 1,
+      "signal": null,
+      "error": null
+    },
+    "integrity": {
+      "result": "PASS"
+    },
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/09-case-sensitive-reconciliation.stdout.txt",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/09-case-sensitive-reconciliation.stderr.txt",
+      "byteLength": 772,
+      "sha256": "sha256:1e9c3027b36b79c0525376baf9277d1c162e8a7b896c5d7552f630fba2939646"
+    },
+    "resultRecord": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/09-case-sensitive-reconciliation.result.json",
+      "byteLength": 1665,
+      "sha256": "sha256:d02a1bcb46df9cab2406108550c70604cfbe7ffc17d8d98d7c9d0cf4f35b7ff3"
+    }
+  },
+  "stages": [
+    {
+      "ordinal": 1,
+      "id": "DEPENDENCY_REUSE_PROOF_462",
+      "mandatory": true,
+      "tool": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/reuse-proof.mjs",
+      "args": [],
+      "status": "PASS",
+      "startedAt": "2026-10-01T17:14:30.452Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\.cache\\mo1307-phase3cr2-runtime\\node.exe",
+        "args": [
+          "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\tools\\mo1307-phase3cr2-c3tb-g2\\reuse-proof.mjs"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\",
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows"
+        }
+      },
+      "pid": 23348,
+      "finishedAt": "2026-10-01T17:14:34.307Z",
+      "actual": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      },
+      "integrity": {
+        "result": "PASS"
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/01-dependency-reuse-proof-462.stdout.txt",
+        "byteLength": 170,
+        "sha256": "sha256:a9d27e5a9f3fc1ab0fc9f60751942daa30277167e3c85e1346c766f142ef66e5"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/01-dependency-reuse-proof-462.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "exitCode": 0,
+        "signal": null,
+        "mandatoryOutcome": "PASS",
+        "postStageImmutableInputCheck": "PASS"
+      },
+      "resultRecord": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/01-dependency-reuse-proof-462.result.json",
+        "byteLength": 1658,
+        "sha256": "sha256:8bba2e0d5ba9bd5433043f63561780d4bbd2b76955efc3c53ed4875b3ebf9f8e"
+      }
+    },
+    {
+      "ordinal": 2,
+      "id": "HEADLESS_SMOKE",
+      "mandatory": true,
+      "tool": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/headless-smoke.mjs",
+      "args": [],
+      "status": "PASS",
+      "startedAt": "2026-10-01T17:14:34.311Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\.cache\\mo1307-phase3cr2-runtime\\node.exe",
+        "args": [
+          "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\tools\\mo1307-phase3cr2-c3tb-g2\\headless-smoke.mjs"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\",
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows"
+        }
+      },
+      "pid": 22228,
+      "finishedAt": "2026-10-01T17:14:38.002Z",
+      "actual": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      },
+      "integrity": {
+        "result": "PASS"
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/02-headless-smoke.stdout.txt",
+        "byteLength": 247,
+        "sha256": "sha256:da3ae433ea71ae919cb4213dad058fb60f7d3ab2c15df3cf14eceaf3e1ade08e"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/02-headless-smoke.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "exitCode": 0,
+        "signal": null,
+        "mandatoryOutcome": "PASS",
+        "postStageImmutableInputCheck": "PASS"
+      },
+      "resultRecord": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/02-headless-smoke.result.json",
+        "byteLength": 1625,
+        "sha256": "sha256:c23d7ae8a2db04e2dd42a58110753a826794bcc5a27641feb102d1e6e915ba13"
+      }
+    },
+    {
+      "ordinal": 3,
+      "id": "HEADLESS_SECURITY_A_TO_S_19",
+      "mandatory": true,
+      "tool": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/headless-security.mjs",
+      "args": [],
+      "status": "PASS",
+      "startedAt": "2026-10-01T17:14:38.003Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\.cache\\mo1307-phase3cr2-runtime\\node.exe",
+        "args": [
+          "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\tools\\mo1307-phase3cr2-c3tb-g2\\headless-security.mjs"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\",
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows"
+        }
+      },
+      "pid": 24064,
+      "finishedAt": "2026-10-01T17:14:48.873Z",
+      "actual": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      },
+      "integrity": {
+        "result": "PASS"
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/03-headless-security-a-to-s-19.stdout.txt",
+        "byteLength": 187,
+        "sha256": "sha256:7bc9d6f04c1f5276fbd48ec52fb895439734f45454c7c08efd3e15c5ef3ca234"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/03-headless-security-a-to-s-19.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "exitCode": 0,
+        "signal": null,
+        "mandatoryOutcome": "PASS",
+        "postStageImmutableInputCheck": "PASS"
+      },
+      "resultRecord": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/03-headless-security-a-to-s-19.result.json",
+        "byteLength": 1667,
+        "sha256": "sha256:ad7c45c7e906909028e1ce5e28f7ddd5cce76582da6d12425a88e2a261bc08bd"
+      }
+    },
+    {
+      "ordinal": 4,
+      "id": "DEADLINE_CLEANUP_SELECTED_7",
+      "mandatory": true,
+      "tool": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/deadline-cleanup.mjs",
+      "args": [
+        "attempt-1"
+      ],
+      "status": "PASS",
+      "startedAt": "2026-10-01T17:14:48.874Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\.cache\\mo1307-phase3cr2-runtime\\node.exe",
+        "args": [
+          "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\tools\\mo1307-phase3cr2-c3tb-g2\\deadline-cleanup.mjs",
+          "attempt-1"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\",
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows"
+        }
+      },
+      "pid": 15620,
+      "finishedAt": "2026-10-01T17:15:38.978Z",
+      "actual": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      },
+      "integrity": {
+        "result": "PASS"
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/04-deadline-cleanup-selected-7.stdout.txt",
+        "byteLength": 180,
+        "sha256": "sha256:726101bc6beab0ec29781d338e5cac8f9a208a720cacfc55bbd32bc0d9da25b7"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/04-deadline-cleanup-selected-7.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "exitCode": 0,
+        "signal": null,
+        "mandatoryOutcome": "PASS",
+        "postStageImmutableInputCheck": "PASS"
+      },
+      "resultRecord": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/04-deadline-cleanup-selected-7.result.json",
+        "byteLength": 1685,
+        "sha256": "sha256:e7531e715ce7f3209bc57a379bc87570236c8edde8f7f27d56161c95103bbb70"
+      }
+    },
+    {
+      "ordinal": 5,
+      "id": "EQUIVALENCE_SELECTED_67",
+      "mandatory": true,
+      "tool": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/equivalence.mjs",
+      "args": [
+        "--output",
+        "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1"
+      ],
+      "status": "PASS",
+      "startedAt": "2026-10-01T17:15:38.981Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\.cache\\mo1307-phase3cr2-runtime\\node.exe",
+        "args": [
+          "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\tools\\mo1307-phase3cr2-c3tb-g2\\equivalence.mjs",
+          "--output",
+          "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\",
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows"
+        }
+      },
+      "pid": 20304,
+      "finishedAt": "2026-10-01T17:19:25.408Z",
+      "actual": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      },
+      "integrity": {
+        "result": "PASS"
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/05-equivalence-selected-67.stdout.txt",
+        "byteLength": 6486,
+        "sha256": "sha256:0442e879694db49f5fa7c06139d35bb2d86b0effa31cf4cc91d5d45288dc3eba"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/05-equivalence-selected-67.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "exitCode": 0,
+        "signal": null,
+        "mandatoryOutcome": "PASS",
+        "postStageImmutableInputCheck": "PASS"
+      },
+      "resultRecord": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/05-equivalence-selected-67.result.json",
+        "byteLength": 1761,
+        "sha256": "sha256:fe22890f18e7e1e9e46aaf3c69aedaa37c37a8daa166e1acd46e16d518a3dca0"
+      }
+    },
+    {
+      "ordinal": 6,
+      "id": "NATIVE_LAST_ERROR_METADATA",
+      "mandatory": true,
+      "tool": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/native-last-error.mjs",
+      "args": [],
+      "status": "PASS",
+      "startedAt": "2026-10-01T17:19:25.411Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\.cache\\mo1307-phase3cr2-runtime\\node.exe",
+        "args": [
+          "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\tools\\mo1307-phase3cr2-c3tb-g2\\native-last-error.mjs"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\",
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows"
+        }
+      },
+      "pid": 4944,
+      "finishedAt": "2026-10-01T17:19:30.134Z",
+      "actual": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      },
+      "integrity": {
+        "result": "PASS"
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/06-native-last-error-metadata.stdout.txt",
+        "byteLength": 181,
+        "sha256": "sha256:69af865602ccb4a2f3ab6c55d9664c3e7ce00fa28d46269ab8fb97a33aba0213"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/06-native-last-error-metadata.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "exitCode": 0,
+        "signal": null,
+        "mandatoryOutcome": "PASS",
+        "postStageImmutableInputCheck": "PASS"
+      },
+      "resultRecord": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/06-native-last-error-metadata.result.json",
+        "byteLength": 1663,
+        "sha256": "sha256:a5cfde6f7fb34dd1a70ffbcab34f73432e526098e296ca0d04e974b657918991"
+      }
+    },
+    {
+      "ordinal": 7,
+      "id": "PROTOCOL_SELECTED_12",
+      "mandatory": true,
+      "tool": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/protocol.mjs",
+      "args": [],
+      "status": "PASS",
+      "startedAt": "2026-10-01T17:19:30.136Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\.cache\\mo1307-phase3cr2-runtime\\node.exe",
+        "args": [
+          "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\tools\\mo1307-phase3cr2-c3tb-g2\\protocol.mjs"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\",
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows"
+        }
+      },
+      "pid": 24876,
+      "finishedAt": "2026-10-01T17:19:32.736Z",
+      "actual": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      },
+      "integrity": {
+        "result": "PASS"
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/07-protocol-selected-12.stdout.txt",
+        "byteLength": 29,
+        "sha256": "sha256:9f16b81672e786a8358104be474de9e83f154529295175165a13f308e555013a"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/07-protocol-selected-12.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "exitCode": 0,
+        "signal": null,
+        "mandatoryOutcome": "PASS",
+        "postStageImmutableInputCheck": "PASS"
+      },
+      "resultRecord": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/07-protocol-selected-12.result.json",
+        "byteLength": 1636,
+        "sha256": "sha256:4af38e094d99eefa1b834eebbb6a79ae1259c212d16e345503a9d1e3ba663b68"
+      }
+    },
+    {
+      "ordinal": 8,
+      "id": "TOCTOU_BOUNDARIES_SELECTED_2",
+      "mandatory": true,
+      "tool": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/toctou-boundaries.mjs",
+      "args": [],
+      "status": "PASS",
+      "startedAt": "2026-10-01T17:19:32.739Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\.cache\\mo1307-phase3cr2-runtime\\node.exe",
+        "args": [
+          "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\tools\\mo1307-phase3cr2-c3tb-g2\\toctou-boundaries.mjs"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\",
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows"
+        }
+      },
+      "pid": 25992,
+      "finishedAt": "2026-10-01T17:19:41.946Z",
+      "actual": {
+        "code": 0,
+        "signal": null,
+        "error": null
+      },
+      "integrity": {
+        "result": "PASS"
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/08-toctou-boundaries-selected-2.stdout.txt",
+        "byteLength": 28,
+        "sha256": "sha256:ea6d7106f82b69c4e7636b4e65fca275b223891c218567f97556ced7aefab147"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/08-toctou-boundaries-selected-2.stderr.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "expected": {
+        "exitCode": 0,
+        "signal": null,
+        "mandatoryOutcome": "PASS",
+        "postStageImmutableInputCheck": "PASS"
+      },
+      "resultRecord": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/08-toctou-boundaries-selected-2.result.json",
+        "byteLength": 1669,
+        "sha256": "sha256:205522e92050c47ec450e9427a0c1a97df9b43ef94a151955e8c5185f7e53206"
+      }
+    },
+    {
+      "ordinal": 9,
+      "id": "CASE_SENSITIVE_RECONCILIATION",
+      "mandatory": true,
+      "tool": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/reconcile.mjs",
+      "args": [],
+      "status": "FAIL",
+      "startedAt": "2026-10-01T17:19:41.949Z",
+      "command": {
+        "executable": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\.cache\\mo1307-phase3cr2-runtime\\node.exe",
+        "args": [
+          "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\tools\\mo1307-phase3cr2-c3tb-g2\\reconcile.mjs"
+        ],
+        "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\",
+        "env": {
+          "SystemRoot": "C:\\Windows",
+          "WINDIR": "C:\\Windows"
+        }
+      },
+      "pid": 15156,
+      "finishedAt": "2026-10-01T17:19:48.152Z",
+      "actual": {
+        "code": 1,
+        "signal": null,
+        "error": null
+      },
+      "integrity": {
+        "result": "PASS"
+      },
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/09-case-sensitive-reconciliation.stdout.txt",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/09-case-sensitive-reconciliation.stderr.txt",
+        "byteLength": 772,
+        "sha256": "sha256:1e9c3027b36b79c0525376baf9277d1c162e8a7b896c5d7552f630fba2939646"
+      },
+      "expected": {
+        "exitCode": 0,
+        "signal": null,
+        "mandatoryOutcome": "PASS",
+        "postStageImmutableInputCheck": "PASS"
+      },
+      "resultRecord": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/stage-logs/09-case-sensitive-reconciliation.result.json",
+        "byteLength": 1665,
+        "sha256": "sha256:d02a1bcb46df9cab2406108550c70604cfbe7ffc17d8d98d7c9d0cf4f35b7ff3"
+      }
+    }
+  ],
+  "finishedAt": "2026-10-01T17:19:48.156Z"
+}

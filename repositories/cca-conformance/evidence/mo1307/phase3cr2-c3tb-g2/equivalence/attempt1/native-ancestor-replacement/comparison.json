@@ -1,0 +1,156 @@
+{
+  "name": "native-ancestor-replacement",
+  "result": "PASS",
+  "scope": "ENGINEERING_CONTROLLED_FILESYSTEM_MUTATION",
+  "tags": [
+    "ancestor identity changes where safely testable"
+  ],
+  "mutation": "ancestor-replace",
+  "exactResponseEqual": true,
+  "code": "MO1307_FILESYSTEM_BOUNDARY",
+  "status": "ERROR",
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/native-ancestor-replacement/request.bin",
+    "byteLength": 395,
+    "sha256": "sha256:b992916824c98c40515134e395a049c6443d9a9ef08a30cd93545c4ba9559840"
+  },
+  "reference": {
+    "code": 0,
+    "signal": null,
+    "pid": 26056,
+    "elapsedMs": 1593.6138000000064,
+    "exitMs": 1593.5982999999978,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/native-ancestor-replacement/reference.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/native-ancestor-replacement/reference.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/native-ancestor-replacement/reference-instrumented.ps1",
+      "byteLength": 33104,
+      "sha256": "sha256:d9effa9945f54c50bc5f3b631a349c6565fbbe9fac5a3635fafe978d6d1e9fdd"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3cr2-c3tb-g2\\equivalence\\attempt1\\native-ancestor-replacement\\reference-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "candidate": {
+    "code": 0,
+    "signal": null,
+    "pid": 23952,
+    "elapsedMs": 2443.8914000000077,
+    "exitMs": 2443.8657000000094,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/native-ancestor-replacement/candidate.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/native-ancestor-replacement/candidate.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/native-ancestor-replacement/candidate-instrumented.ps1",
+      "byteLength": 33121,
+      "sha256": "sha256:ed34e2239e524929e5891d7f9ccaae4c17b98afe06ef9df5d25af10f5801e6e2"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3cr2-c3tb-g2\\equivalence\\attempt1\\native-ancestor-replacement\\candidate-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "nativeObservationCountsEqual": true,
+  "telemetry": {
+    "reference": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 18,
+        "initial:GetFileInformationByHandle": 21,
+        "post-read:Open-Native": 9,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 19,
+        "post-read:GetFinalPathNameByHandleW": 19,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 19,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "ancestor-replace",
+      "workingSet64": 99762176,
+      "peakWorkingSet64": 113012736,
+      "managedBytes": 13033104,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/native-ancestor-replacement/reference-telemetry.json",
+        "byteLength": 492,
+        "sha256": "sha256:5125d8d78de2cd732c3766c58a4e738f850c7f49f0dbfb6998be090d3c7cc7ea"
+      }
+    },
+    "candidate": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 18,
+        "initial:GetFileInformationByHandle": 21,
+        "post-read:Open-Native": 9,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 19,
+        "post-read:GetFinalPathNameByHandleW": 19,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 19,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "ancestor-replace",
+      "workingSet64": 128569344,
+      "peakWorkingSet64": 131248128,
+      "managedBytes": 50496240,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/native-ancestor-replacement/candidate-telemetry.json",
+        "byteLength": 493,
+        "sha256": "sha256:e073d91cc2604c8014d56509ce96c0b736043400801029da995af6655f59ab8b"
+      }
+    }
+  }
+}

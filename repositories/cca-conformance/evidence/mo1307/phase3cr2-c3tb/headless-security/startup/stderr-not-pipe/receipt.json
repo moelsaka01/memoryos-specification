@@ -1,0 +1,121 @@
+{
+  "name": "stderr-not-pipe",
+  "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+  "expectedExit": 22,
+  "accepted": false,
+  "result": "PASS",
+  "nativeProductHelper": false,
+  "realHostProof": false,
+  "events": [
+    {
+      "event": "stdin-finish",
+      "elapsedMs": 18.462000000000444
+    },
+    {
+      "event": "stdin-close",
+      "elapsedMs": 18.524500000000444
+    },
+    {
+      "event": "stdout-end",
+      "elapsedMs": 805.4822999999997
+    },
+    {
+      "event": "stdout-close",
+      "elapsedMs": 805.7577000000001
+    },
+    {
+      "event": "stderr-end",
+      "elapsedMs": 805.8798999999999
+    },
+    {
+      "event": "stderr-close",
+      "elapsedMs": 805.9597000000003
+    },
+    {
+      "event": "exit",
+      "elapsedMs": 817.5799999999999,
+      "code": 22,
+      "signal": null
+    }
+  ],
+  "pid": 15460,
+  "exitCode": 22,
+  "exitSignal": null,
+  "elapsedMs": 817.6639999999998,
+  "proof": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/headless-security/startup/stderr-not-pipe/proof.json",
+    "byteLength": 809,
+    "sha256": "sha256:57962442aa86c7ab6a8471d45d6207a2948db123e33cc40878d3e4d6ec4b8302"
+  },
+  "observed": {
+    "candidateCommit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+    "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+    "helperDeadlineMs": 8000,
+    "configuredErrorContext": null,
+    "nativeLastErrorSet": false,
+    "membershipCalls": 0,
+    "freeConsoleCalls": 0,
+    "kind": "MO1307Phase3CR2ExtractedHeadlessStartupSimulation",
+    "scenario": "stderr-not-pipe",
+    "accepted": false,
+    "failure": "MO1307_INTERNAL",
+    "failureType": "System.InvalidOperationException",
+    "events": [
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -10
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          10
+        ]
+      },
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -11
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          11
+        ]
+      },
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -12
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          12
+        ]
+      }
+    ],
+    "detached": false,
+    "productionFunctionUnmodified": true,
+    "nativeProcessOperationsPerformed": false,
+    "realHostIdentityProof": false
+  },
+  "closed": true,
+  "timedOut": false,
+  "cleanupExpired": false,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/headless-security/startup/stderr-not-pipe/stdout.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/headless-security/startup/stderr-not-pipe/stderr.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdoutBytes": 0,
+  "stderrBytes": 0
+}

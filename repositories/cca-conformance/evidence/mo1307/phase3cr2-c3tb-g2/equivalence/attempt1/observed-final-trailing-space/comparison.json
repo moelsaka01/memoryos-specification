@@ -1,0 +1,157 @@
+{
+  "name": "observed-final-trailing-space",
+  "result": "PASS",
+  "scope": "ENGINEERING_NATIVE_FINAL_PATH_VALUE_PERTURBATION",
+  "tags": [
+    "wrong final path",
+    "lexical-equivalence"
+  ],
+  "mutation": "observed-trailing-space",
+  "exactResponseEqual": true,
+  "code": "MO1307_FILESYSTEM_BOUNDARY",
+  "status": "ERROR",
+  "request": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/observed-final-trailing-space/request.bin",
+    "byteLength": 397,
+    "sha256": "sha256:a63b4a828b97fbe89fae36441ecbee4dc41929ce8e1f69634aa3d1a791cfbbe9"
+  },
+  "reference": {
+    "code": 0,
+    "signal": null,
+    "pid": 18628,
+    "elapsedMs": 1485.4114999999874,
+    "exitMs": 1485.3843000000052,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/observed-final-trailing-space/reference.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/observed-final-trailing-space/reference.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/observed-final-trailing-space/reference-instrumented.ps1",
+      "byteLength": 32699,
+      "sha256": "sha256:963dc17ed10639bba1780b44864ca9f4c59e6a461044a906a078ea35504101ad"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3cr2-c3tb-g2\\equivalence\\attempt1\\observed-final-trailing-space\\reference-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "candidate": {
+    "code": 0,
+    "signal": null,
+    "pid": 26580,
+    "elapsedMs": 1609.7754999999888,
+    "exitMs": 1609.7509999999893,
+    "closeObserved": true,
+    "pipesClosed": true,
+    "engineeringGuardExpired": false,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/observed-final-trailing-space/candidate.stdout.bin",
+      "byteLength": 253,
+      "sha256": "sha256:621bc0e9ad9c6eca582fdd8f3bfc7e1b9f96dfb8a9917334dde0955c3333bc5e"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/observed-final-trailing-space/candidate.stderr.bin",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "helperSource": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/observed-final-trailing-space/candidate-instrumented.ps1",
+      "byteLength": 32716,
+      "sha256": "sha256:2c8060ab7843e576db2d40a75c27670c4356302c58ef6bf9c4564ea39e943e15"
+    },
+    "launch": {
+      "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3cr2-c3tb-g2\\equivalence\\attempt1\\observed-final-trailing-space\\candidate-instrumented.ps1"
+      ],
+      "environment": {
+        "SystemRoot": "C:\\Windows",
+        "WINDIR": "C:\\Windows"
+      },
+      "windowsHide": true
+    },
+    "timingIsEngineeringOnly": true
+  },
+  "nativeObservationCountsEqual": true,
+  "telemetry": {
+    "reference": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 20,
+        "initial:GetFileInformationByHandle": 21,
+        "post-read:Open-Native": 10,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 21,
+        "post-read:GetFinalPathNameByHandleW": 21,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 21,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "observed-trailing-space",
+      "workingSet64": 115900416,
+      "peakWorkingSet64": 119783424,
+      "managedBytes": 16393400,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/observed-final-trailing-space/reference-telemetry.json",
+        "byteLength": 501,
+        "sha256": "sha256:bd172294555d77a87d1fa60eca73ea41ce88b129db38d60e716ccdeedc8de5d2"
+      }
+    },
+    "candidate": {
+      "phase": "post-read",
+      "counters": {
+        "post-read:Assert-SameIdentity": 20,
+        "initial:GetFileInformationByHandle": 21,
+        "post-read:Open-Native": 10,
+        "initial:GetFinalPathNameByHandleW": 21,
+        "post-read:GetFileInformationByHandle": 21,
+        "post-read:GetFinalPathNameByHandleW": 21,
+        "initial:Read-Identity": 21,
+        "initial:Assert-SameIdentity": 10,
+        "post-read:Read-Identity": 21,
+        "initial:Open-Native": 21
+      },
+      "mutations": 1,
+      "mutation": "observed-trailing-space",
+      "workingSet64": 113688576,
+      "peakWorkingSet64": 113688576,
+      "managedBytes": 27566040,
+      "source": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/observed-final-trailing-space/candidate-telemetry.json",
+        "byteLength": 501,
+        "sha256": "sha256:deb5519b0322239b9257e8516e07ed30289ea1abf7b115bf11cde3448147fe1a"
+      }
+    }
+  }
+}

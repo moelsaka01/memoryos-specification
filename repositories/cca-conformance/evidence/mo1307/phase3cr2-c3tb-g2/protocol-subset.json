@@ -1,0 +1,195 @@
+{
+  "kind": "MO1307Phase3CR2RefreshConsumerProtocol",
+  "candidate": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+  "result": "PASS",
+  "failure": null,
+  "sources": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/protocol.mjs",
+      "byteLength": 5795,
+      "sha256": "sha256:0ba20f0826bc4d0608f3c3e57c39287a4a59e237293bb2fb5f8979cc0d2880c7"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "path": "repositories/memoryos-readiness/src/canonical.mjs",
+      "byteLength": 6813,
+      "sha256": "sha256:b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/ordinary/request.bin",
+      "byteLength": 376,
+      "sha256": "sha256:57a4780d8a8bb667b6d3a8f4d22d4ddeb379dd2052ecfb537239126b1a40126d"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/ordinary/candidate.stdout.bin",
+      "byteLength": 815,
+      "sha256": "sha256:78722187348f64a8b039ab7aff358df78e650291866d89d0984c27b19df7aa70"
+    }
+  ],
+  "rows": [
+    {
+      "id": "response-wrong-version",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-wrong-session",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-wrong-sequence",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-wrong-operation",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-unknown-field",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-malformed-base64",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-noncanonical-base64",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-truncated-frame",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-extra-frame",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "response-trailing-bytes",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "cross-session-response-replay",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "sequence-entry-bypass",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": true,
+      "code": "MO1307_INPUT",
+      "result": "PASS"
+    },
+    {
+      "id": "native-frame-control",
+      "scope": "CURRENT_JS_CONSUMER_OF_FRESH_NATIVE_FRAME",
+      "negative": false,
+      "result": "PASS"
+    }
+  ],
+  "caseAccounting": [
+    {
+      "ordinal": 1,
+      "id": "response-wrong-version",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 2,
+      "id": "response-wrong-session",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 3,
+      "id": "response-wrong-sequence",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 4,
+      "id": "response-wrong-operation",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 5,
+      "id": "response-unknown-field",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 6,
+      "id": "response-malformed-base64",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 7,
+      "id": "response-noncanonical-base64",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 8,
+      "id": "response-truncated-frame",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 9,
+      "id": "response-extra-frame",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 10,
+      "id": "response-trailing-bytes",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 11,
+      "id": "cross-session-response-replay",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 12,
+      "id": "sequence-entry-bypass",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 13,
+      "id": "native-frame-control",
+      "status": "PASS"
+    }
+  ],
+  "count": 13,
+  "negativeCount": 12,
+  "scope": "Native malformed requests are separately exercised in the equivalence campaign. Cross-session ownership is enforced by the JS consumer/sequence; each one-shot helper echoes a syntactically valid session and does not own cross-process session history."
+}

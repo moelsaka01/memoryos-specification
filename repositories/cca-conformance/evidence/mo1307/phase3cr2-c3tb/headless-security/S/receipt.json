@@ -1,0 +1,207 @@
+{
+  "id": "S",
+  "name": "deadline-preservation",
+  "kind": "PRODUCTION_SUPERVISOR_DOUBLE_AND_CONSTANTS",
+  "result": "PASS",
+  "startedAt": "2026-10-01T15:46:43.583Z",
+  "boundaries": [
+    {
+      "kind": "api",
+      "deadline": 10000,
+      "helpers": 0,
+      "workers": 0,
+      "helperUsedMs": 0,
+      "activeRole": null,
+      "cleanupConfirmed": true,
+      "publication": null,
+      "terminalCode": "MO1307_TIMEOUT",
+      "terminalAt": 10000,
+      "cleanupDeadline": 12000,
+      "events": [
+        {
+          "type": "terminal",
+          "at": 10000,
+          "code": "MO1307_TIMEOUT",
+          "stage": "EVALUATION"
+        }
+      ]
+    },
+    {
+      "kind": "cli",
+      "deadline": 30000,
+      "helpers": 0,
+      "workers": 0,
+      "helperUsedMs": 0,
+      "activeRole": null,
+      "cleanupConfirmed": true,
+      "publication": null,
+      "terminalCode": "MO1307_TIMEOUT",
+      "terminalAt": 30000,
+      "cleanupDeadline": 32000,
+      "events": [
+        {
+          "type": "terminal",
+          "at": 30000,
+          "code": "MO1307_TIMEOUT",
+          "stage": "EVALUATION"
+        }
+      ]
+    },
+    {
+      "kind": "cli",
+      "deadline": 30000,
+      "helpers": 1,
+      "workers": 0,
+      "helperUsedMs": 7999,
+      "activeRole": null,
+      "cleanupConfirmed": true,
+      "publication": null,
+      "terminalCode": null,
+      "terminalAt": null,
+      "cleanupDeadline": null,
+      "events": [
+        {
+          "type": "start",
+          "at": 0,
+          "role": "helper",
+          "deadline": 8000,
+          "ordinal": 1
+        },
+        {
+          "type": "quiescent",
+          "at": 7999,
+          "role": "helper",
+          "ordinal": 1
+        }
+      ]
+    },
+    {
+      "kind": "cli",
+      "deadline": 30000,
+      "helpers": 1,
+      "workers": 0,
+      "helperUsedMs": 0,
+      "activeRole": null,
+      "cleanupConfirmed": true,
+      "publication": null,
+      "terminalCode": "MO1307_TIMEOUT",
+      "terminalAt": 8000,
+      "cleanupDeadline": 10000,
+      "events": [
+        {
+          "type": "start",
+          "at": 0,
+          "role": "helper",
+          "deadline": 8000,
+          "ordinal": 1
+        },
+        {
+          "type": "terminal",
+          "at": 8000,
+          "code": "MO1307_TIMEOUT",
+          "stage": "ACQUISITION"
+        },
+        {
+          "type": "cleanup",
+          "at": 8000,
+          "role": "helper",
+          "confirmed": true
+        }
+      ]
+    },
+    {
+      "kind": "cli",
+      "deadline": 30000,
+      "helpers": 3,
+      "workers": 0,
+      "helperUsedMs": 15998,
+      "activeRole": null,
+      "cleanupConfirmed": true,
+      "publication": null,
+      "terminalCode": "MO1307_TIMEOUT",
+      "terminalAt": 20000,
+      "cleanupDeadline": 22000,
+      "events": [
+        {
+          "type": "start",
+          "at": 0,
+          "role": "helper",
+          "deadline": 8000,
+          "ordinal": 1
+        },
+        {
+          "type": "quiescent",
+          "at": 7999,
+          "role": "helper",
+          "ordinal": 1
+        },
+        {
+          "type": "start",
+          "at": 7999,
+          "role": "helper",
+          "deadline": 15999,
+          "ordinal": 2
+        },
+        {
+          "type": "quiescent",
+          "at": 15998,
+          "role": "helper",
+          "ordinal": 2
+        },
+        {
+          "type": "start",
+          "at": 15998,
+          "role": "helper",
+          "deadline": 20000,
+          "ordinal": 3
+        },
+        {
+          "type": "terminal",
+          "at": 20000,
+          "code": "MO1307_TIMEOUT",
+          "stage": "ACQUISITION"
+        },
+        {
+          "type": "cleanup",
+          "at": 20000,
+          "role": "helper",
+          "confirmed": true
+        }
+      ]
+    },
+    {
+      "kind": "api",
+      "deadline": 10000,
+      "helpers": 0,
+      "workers": 1,
+      "helperUsedMs": 0,
+      "activeRole": null,
+      "cleanupConfirmed": true,
+      "publication": null,
+      "terminalCode": "MO1307_TIMEOUT",
+      "terminalAt": 10000,
+      "cleanupDeadline": 12000,
+      "events": [
+        {
+          "type": "start",
+          "at": 0,
+          "role": "worker",
+          "deadline": 10000,
+          "ordinal": 1
+        },
+        {
+          "type": "terminal",
+          "at": 10000,
+          "code": "MO1307_TIMEOUT",
+          "stage": "EVALUATION"
+        },
+        {
+          "type": "cleanup",
+          "at": 10000,
+          "role": "worker",
+          "confirmed": true
+        }
+      ]
+    }
+  ]
+}

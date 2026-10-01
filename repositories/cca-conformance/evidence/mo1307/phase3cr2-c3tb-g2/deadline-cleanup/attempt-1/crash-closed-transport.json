@@ -1,0 +1,68 @@
+{
+  "id": "crash-closed-transport",
+  "layer": "ACTUAL_FIXED_HELPER_OWNED_PROCESS_KILL",
+  "result": "PASS",
+  "elapsedMs": 2235.1273,
+  "detail": {
+    "accepted": false,
+    "errorCode": "MO1307_INTERNAL",
+    "mappedPublicExit": 22,
+    "lateNativeOK": false,
+    "noSecretEcho": true,
+    "exactFixedLaunch": true,
+    "poisonedKeys": [],
+    "snapshot": {
+      "kind": "cli",
+      "deadline": 47711.898,
+      "helpers": 1,
+      "workers": 0,
+      "helperUsedMs": 0,
+      "activeRole": "helper",
+      "cleanupConfirmed": false,
+      "publication": null,
+      "terminalCode": "MO1307_INTERNAL",
+      "terminalAt": 19946.646,
+      "cleanupDeadline": 21946.646,
+      "events": [
+        {
+          "type": "start",
+          "at": 17714.1335,
+          "role": "helper",
+          "deadline": 25714.0825,
+          "ordinal": 1
+        },
+        {
+          "type": "observation",
+          "at": 17730.3678,
+          "role": "helper",
+          "pid": 24628,
+          "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+        },
+        {
+          "type": "terminal",
+          "at": 19946.6703,
+          "code": "MO1307_INTERNAL",
+          "stage": "ACQUISITION"
+        },
+        {
+          "type": "cleanup",
+          "at": 19946.7457,
+          "role": "helper",
+          "confirmed": false
+        }
+      ]
+    },
+    "observation": {
+      "name": "crash-closed-transport",
+      "pid": 24628,
+      "startedAt": 17730.1766,
+      "closedAt": 19944.9151,
+      "exitCode": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "crashRequestedAt": 19931.0551
+    }
+  }
+}

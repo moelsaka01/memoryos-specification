@@ -1,0 +1,147 @@
+{
+  "kind": "MO1307Phase3CR2DependencyAwareSourceReviewManifest",
+  "version": "1.0.0",
+  "productRoot": "repositories/memoryos-readiness",
+  "identity": {
+    "historical": {
+      "role": "C3RB",
+      "commit": "defe93989efc6501b1a730b82e79e705884b269b",
+      "rootTree": "54c8ca8acc388d8dcb5d8d76e119b434dcc1a9bb",
+      "productTree": "e726c38b44bb7b0402d510ccfdab0f9f6a584939"
+    },
+    "implementation": {
+      "role": "C3T",
+      "commit": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+      "parent": "79ef47e608c67edc70f3e9f51d494b169794f903",
+      "rootTree": "d21f46bc31ccd7a9f80a5e494b3d09116d125522",
+      "productTree": "324bf600b6cbfaa8564db27fce2d999711270cb8"
+    },
+    "handoff": {
+      "role": "C3TB",
+      "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+      "parent": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+      "rootTree": "5e0088965d4eac4002165fe0190f275c257985ba",
+      "productTree": "324bf600b6cbfaa8564db27fce2d999711270cb8"
+    },
+    "historicalAcceptedPhase3C": "b02fc0226a1a2d800185a02071674ca80bdf4a1d"
+  },
+  "handoffAuthority": {
+    "binding": {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/binding.json",
+      "gitBlob": "995c36fc429a0d04e42ad375f91aa00a0516b2b1",
+      "sha256": "sha256:dde0766b80e65bc3426a6c2bdc3208bdd1b8ecd7ca17aa2594449cfe6ccb7175"
+    },
+    "bindingVerification": {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/binding-verification.json",
+      "gitBlob": "cf6e3e9499164fcff5ca015659ca6e0795d7cb1b",
+      "sha256": "sha256:f322d1ba53a9ab18fc3638b367fb770b5c2d47a1dd5ffbe7ae06ad82373555d1"
+    },
+    "refreshMap": {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/phase3c-refresh-map.json",
+      "gitBlob": "863cd3d67d52ca2118f5de42b497db5f03279b03",
+      "sha256": "sha256:ada9532c868c69d7b6b951535f8f4a501c728a24057da6423308d5540192c16b"
+    }
+  },
+  "authorization": {
+    "AUTHORIZED_HEADLESS_CORRECTION": {
+      "id": "FINAL_HEADLESS_POST_DETACH_INITIAL_ZERO",
+      "implementation": "b11ab5874249e0938f2753594a294511b14d2aae",
+      "binding": "b73f4bd6ce71228372614889d9c6da1b778df49d",
+      "freshReviews": ["HEADLESS_AND_STARTUP_CORRECTIONS", "SOURCE_SECURITY_REVIEW"]
+    },
+    "AUTHORIZED_NATIVE_LASTERROR_CORRECTION": {
+      "id": "CREATEFILEW_SET_LAST_ERROR",
+      "implementation": "c9cd73df2f4c48afeab6059b31eca61830e1633c",
+      "binding": "56a3d93a0c7fdb42e93e16ec1f6c13c81770c11b",
+      "freshReviews": ["NATIVE_API_PARITY", "SOURCE_SECURITY_REVIEW"]
+    },
+    "AUTHORIZED_OPEN_CHAIN_CORRECTION": {
+      "id": "OPEN_CHAIN_REDUNDANT_ASSERT_ROOT_REMOVAL",
+      "implementation": "08a65ad87bb36095c08c5bd8ac9682f9f9581918",
+      "binding": "0599476f53815a4ccd05e0ba3cac600396ca201c",
+      "freshReviews": ["FILESYSTEM_AND_TOCTOU_CORRECTIONS", "SOURCE_SECURITY_REVIEW"]
+    },
+    "AUTHORIZED_DEADLINE_CORRECTION": {
+      "id": "PROSPECTIVE_HELPER_BOUND@1.0.0",
+      "implementation": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+      "binding": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+      "freshReviews": ["DEADLINE_CONSTANT_BINDING", "STRICT_TIMEOUT_EQUALITY", "TIMEOUT_MAPPING", "LATE_SUCCESS_REFUSAL", "SEQUENCE_NO_PARTIAL_SUCCESS", "SEPARATE_CLEANUP_TIMING", "SOURCE_SECURITY_REVIEW"]
+    },
+    "DERIVED_METADATA_CHANGE": {
+      "id": "GENERATED_PACKAGE_BINDING",
+      "freshReviews": ["GENERATED_CONTRACT_CONSISTENCY", "CANDIDATE_BINDING", "SOURCE_SECURITY_REVIEW"]
+    },
+    "DOCUMENTATION_ONLY": {
+      "id": "EXPLICIT_NON_EXECUTABLE_PROJECTION",
+      "freshReviews": ["SOURCE_SECURITY_REVIEW"]
+    }
+  },
+  "expectedDiff": {
+    "byteLength": 223468,
+    "sha256": "sha256:d40f1dffbfa5e17ce8e4017d340d14bb91ebe149cc5b8ec5ba79258de041de67",
+    "hunkCount": 28,
+    "categoryCounts": {
+      "AUTHORIZED_HEADLESS_CORRECTION": 9,
+      "AUTHORIZED_NATIVE_LASTERROR_CORRECTION": 2,
+      "AUTHORIZED_OPEN_CHAIN_CORRECTION": 1,
+      "AUTHORIZED_DEADLINE_CORRECTION": 2,
+      "DERIVED_METADATA_CHANGE": 3,
+      "DOCUMENTATION_ONLY": 11,
+      "UNEXPECTED_CHANGE": 0
+    }
+  },
+  "files": [
+    {"path":"repositories/memoryos-readiness/README.md","oldBlob":"5fc1fb28e3e60b6d00be3886bfe1302bfebe80bf","newBlob":"0ea6569f33449f140883b0d42dfe7b3ff775acaf"},
+    {"path":"repositories/memoryos-readiness/contracts/contract.json","oldBlob":"504fac180b64c8c30769a3de2712309e992b3265","newBlob":"6cf45e598a1c89fadfacd87c5946f8eabc7422c4"},
+    {"path":"repositories/memoryos-readiness/contracts/definitions.json","oldBlob":"42c357de07bf05b4fe028aa4c824aab7438b6af1","newBlob":"018b527079b4add389a929da2ee57bcb013ebe2f"},
+    {"path":"repositories/memoryos-readiness/distribution-manifest.json","oldBlob":"919620d7dce379e86746218d7413087274b939a7","newBlob":"6b3c09d1819a2428fc97f220fdf5c9ca76179d1a"},
+    {"path":"repositories/memoryos-readiness/helpers/README.md","oldBlob":"8c72cb70ab4b89f11ed682fd95926ea907cb76cb","newBlob":"a673048381a186fdb838abd2c2ebb426cd98296b"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldBlob":"827e0479295319871e2f79a434ebd0a3a478a144","newBlob":"7ca55b8713108465099ecfce9796e06e3db67bd2"},
+    {"path":"repositories/memoryos-readiness/sbom.spdx.json","oldBlob":"fd13cdfc6c9b50860b9ff2f86a8f5447265054de","newBlob":"af3e33e4feb4b146e626e7d67b06b442f7cc4d70"},
+    {"path":"repositories/memoryos-readiness/src/constants.mjs","oldBlob":"697706ee5fae5ff95caab270a60d26ffb73674e7","newBlob":"971ec72042b2d2c60ebafc303bae49f106919ab7"},
+    {"path":"repositories/memoryos-readiness/src/helper-transport.mjs","oldBlob":"1eb27842cbebdd69368394b148fe26baaffa514b","newBlob":"1fda7eb5f24d2107c4ad078fd60185a8f6d8e5a9"}
+  ],
+  "unchangedSecurityDependencies": [
+    {"path":"repositories/memoryos-readiness/src/runtime.mjs","gitBlob":"46c95fce6489205d74c30b51036d4c6ea342f486","sha256":"sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"},
+    {"path":"repositories/memoryos-readiness/src/helper-protocol.mjs","gitBlob":"5bac2473bcf1e65beed67d173d06741506463ce2","sha256":"sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"}
+  ],
+  "hunks": [
+    {"path":"repositories/memoryos-readiness/README.md","oldStart":36,"oldCount":1,"newStart":36,"newCount":1,"category":"DOCUMENTATION_ONLY","securityCritical":false,"commentOnly":false,"contentSha256":"sha256:775373ac4fc1838ca24b5824e99da65ea3b53f0cd2273288b774d47feda93c24"},
+    {"path":"repositories/memoryos-readiness/contracts/contract.json","oldStart":1,"oldCount":1,"newStart":1,"newCount":1,"category":"DERIVED_METADATA_CHANGE","securityCritical":false,"commentOnly":false,"contentSha256":"sha256:ff176961eda77f26d5e02e1e4ecb351bd4363cf9ac873501af50091560b5b8d2"},
+    {"path":"repositories/memoryos-readiness/contracts/definitions.json","oldStart":1,"oldCount":1,"newStart":1,"newCount":1,"category":"AUTHORIZED_DEADLINE_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:8f059eeb5458a88f38c6424c7b915af972f1b74d1c2fca2bd3982cb0ecc6d8b8"},
+    {"path":"repositories/memoryos-readiness/distribution-manifest.json","oldStart":1,"oldCount":1,"newStart":1,"newCount":1,"category":"DERIVED_METADATA_CHANGE","securityCritical":false,"commentOnly":false,"contentSha256":"sha256:f92ba00bf8ad2f840d4a58b98424cc92daee9a97d03f00e81ef311200bdc8789"},
+    {"path":"repositories/memoryos-readiness/helpers/README.md","oldStart":46,"oldCount":2,"newStart":46,"newCount":3,"category":"DOCUMENTATION_ONLY","securityCritical":false,"commentOnly":false,"contentSha256":"sha256:00141c63366262012b6a9c7ce05ae45a0679a190f9e7e871fe255dd3ccfbe467"},
+    {"path":"repositories/memoryos-readiness/helpers/README.md","oldStart":72,"oldCount":2,"newStart":73,"newCount":4,"category":"DOCUMENTATION_ONLY","securityCritical":false,"commentOnly":false,"contentSha256":"sha256:4cf1aa61aaddbae972b03934aa056d80b666b7990bf6aa386d5ef4074a5e93b7"},
+    {"path":"repositories/memoryos-readiness/helpers/README.md","oldStart":75,"oldCount":2,"newStart":78,"newCount":2,"category":"DOCUMENTATION_ONLY","securityCritical":false,"commentOnly":false,"contentSha256":"sha256:7867b63d97306934ac65169b64d8d69fc961f039345df0aee4f5accba8f576ec"},
+    {"path":"repositories/memoryos-readiness/helpers/README.md","oldStart":130,"oldCount":0,"newStart":134,"newCount":16,"category":"DOCUMENTATION_ONLY","securityCritical":false,"commentOnly":false,"contentSha256":"sha256:c92f7051fc3be97fa977f069e20b2114cc3ee4b9e3a2620bf2d809c9e7432461"},
+    {"path":"repositories/memoryos-readiness/helpers/README.md","oldStart":137,"oldCount":16,"newStart":156,"newCount":41,"category":"DOCUMENTATION_ONLY","securityCritical":false,"commentOnly":false,"contentSha256":"sha256:3a9bcb913bd083274cd7c59e316dc4f787c679e5cb4e07daa3bb1edf3e1cb6db"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldStart":99,"oldCount":0,"newStart":100,"newCount":2,"category":"AUTHORIZED_HEADLESS_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:2aaea37c93db1033d3302c0643d28fe3422b948c32c23a5f6881f8b2e6269f0c"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldStart":101,"oldCount":9,"newStart":103,"newCount":1,"category":"AUTHORIZED_HEADLESS_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:f183f893551231d1c0c54d728fc57704cb56eea85deaffc7f96a9e78bd4c76df"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldStart":117,"oldCount":4,"newStart":111,"newCount":13,"category":"AUTHORIZED_NATIVE_LASTERROR_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:5890541072ba3f50252b3a1aece14447e9b17a69059e47ef34d2f0244055089d"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldStart":122,"oldCount":2,"newStart":125,"newCount":15,"category":"AUTHORIZED_NATIVE_LASTERROR_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:84872f1da2b6c48ed281939d13081540224239d6f76338473d9fabb8a4f85081"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldStart":130,"oldCount":3,"newStart":146,"newCount":8,"category":"AUTHORIZED_HEADLESS_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:7750a8de026f01acf6d60d4653de6def3e2931e342488b3ef1b50c1f04a7e53e"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldStart":135,"oldCount":2,"newStart":156,"newCount":1,"category":"AUTHORIZED_HEADLESS_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:47c5e2cf1a37c9889131665c43a41bc390632d96b901aadab61dae44d2251efd"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldStart":138,"oldCount":26,"newStart":158,"newCount":2,"category":"AUTHORIZED_HEADLESS_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:87b57e5fe84f87561ee69040194865da3f0318295c0f8a24dcfa5f0aa0e60ad8"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldStart":165,"oldCount":12,"newStart":161,"newCount":1,"category":"AUTHORIZED_HEADLESS_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:125e4c36f33d39010b050e10b02232a8b8139ea68a79b17e8acac666cca5c6ef"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldStart":178,"oldCount":2,"newStart":162,"newCount":0,"category":"AUTHORIZED_HEADLESS_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:75d3526bfb248026177478b13aead361de5710dbf5fb0f804969dbe227b3835d"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldStart":217,"oldCount":3,"newStart":200,"newCount":4,"category":"DOCUMENTATION_ONLY","securityCritical":false,"commentOnly":true,"topicalAuthorization":"AUTHORIZED_OPEN_CHAIN_CORRECTION","contentSha256":"sha256:338da88fa58f0e44da81fb7653beeca7cd4df6452bff91a30978e75330a763a7"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldStart":234,"oldCount":1,"newStart":217,"newCount":0,"category":"AUTHORIZED_OPEN_CHAIN_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:c69c8fc19827cc25666c56a8fef43466c7d1257a147cda2061fcf5e36c8e891b"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldStart":351,"oldCount":3,"newStart":334,"newCount":4,"category":"DOCUMENTATION_ONLY","securityCritical":false,"commentOnly":true,"topicalAuthorization":"AUTHORIZED_HEADLESS_CORRECTION","contentSha256":"sha256:e92d6b5aa3e6e1f9798f12e093a74d17fab801fa31aa6bb69c047253ae77e123"},
+    {"path":"repositories/memoryos-readiness/helpers/windows-inspect.ps1","oldStart":358,"oldCount":0,"newStart":343,"newCount":5,"category":"AUTHORIZED_HEADLESS_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:b5fb1f73882c3aecfce76dd36592e5a5c74893ff557cd8735d32e12469144f84"},
+    {"path":"repositories/memoryos-readiness/sbom.spdx.json","oldStart":1,"oldCount":1,"newStart":1,"newCount":1,"category":"DERIVED_METADATA_CHANGE","securityCritical":false,"commentOnly":false,"contentSha256":"sha256:f9bdb526458c25e3aa7525b0d1978b2fbba0ce97690fd0089c2a8843e139b22e"},
+    {"path":"repositories/memoryos-readiness/src/constants.mjs","oldStart":3,"oldCount":1,"newStart":3,"newCount":1,"category":"AUTHORIZED_DEADLINE_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:8c3bc4ed38ea95d159aa0a3642723355cdde232f59d05f29b8160e037c592c1b"},
+    {"path":"repositories/memoryos-readiness/src/helper-transport.mjs","oldStart":36,"oldCount":3,"newStart":36,"newCount":3,"category":"DOCUMENTATION_ONLY","securityCritical":false,"commentOnly":true,"contentSha256":"sha256:7c07e2c8f89bf0926bb05da5d17746cf737e821ce85c0fa09f9e05181b0310d1"},
+    {"path":"repositories/memoryos-readiness/src/helper-transport.mjs","oldStart":54,"oldCount":1,"newStart":54,"newCount":1,"category":"DOCUMENTATION_ONLY","securityCritical":false,"commentOnly":true,"contentSha256":"sha256:6294a5093d6df393bc97112bb6cf660a1b76c081eea4baf03eb09d2957eec038"},
+    {"path":"repositories/memoryos-readiness/src/helper-transport.mjs","oldStart":62,"oldCount":1,"newStart":62,"newCount":1,"category":"DOCUMENTATION_ONLY","securityCritical":false,"commentOnly":true,"contentSha256":"sha256:f2093a825678738dab7e940b82690bc78579c016ff8293ca91dd622f254deb73"},
+    {"path":"repositories/memoryos-readiness/src/helper-transport.mjs","oldStart":97,"oldCount":1,"newStart":97,"newCount":1,"category":"AUTHORIZED_HEADLESS_CORRECTION","securityCritical":true,"commentOnly":false,"contentSha256":"sha256:ddc7d2ffdf298aa9b926e09233e389dd429171d0c1f8c54dc5529bfab154928c"}
+  ],
+  "reuse": {
+    "kind": "MO1307Phase3CR2DependencyReuse",
+    "historicalInventory": 551,
+    "selectedFreshHistoricalControls": 89,
+    "reusedHistoricalControls": 462,
+    "candidateSpecificSupplementalControls": 2,
+    "omittedHistoricalControls": 0,
+    "mismatchDisposition": "MOVE_TO_FRESH"
+  }
+}

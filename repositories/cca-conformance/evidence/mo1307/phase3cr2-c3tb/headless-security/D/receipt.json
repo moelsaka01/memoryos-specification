@@ -1,0 +1,136 @@
+{
+  "id": "D",
+  "name": "extra-attached-client-refusal",
+  "kind": "EXACT_FUNCTION_NATIVE_DOUBLE",
+  "result": "PASS",
+  "startedAt": "2026-10-01T15:46:35.372Z",
+  "startupCases": [
+    {
+      "name": "extra-client",
+      "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+      "expectedExit": 22,
+      "accepted": false,
+      "result": "PASS",
+      "nativeProductHelper": false,
+      "realHostProof": false,
+      "events": [
+        {
+          "event": "stdin-finish",
+          "elapsedMs": 20.261100000000624
+        },
+        {
+          "event": "stdin-close",
+          "elapsedMs": 20.31920000000082
+        },
+        {
+          "event": "stdout-end",
+          "elapsedMs": 766.2039000000004
+        },
+        {
+          "event": "stderr-end",
+          "elapsedMs": 766.3104000000003
+        },
+        {
+          "event": "stderr-close",
+          "elapsedMs": 766.4908000000005
+        },
+        {
+          "event": "stdout-close",
+          "elapsedMs": 766.5017000000007
+        },
+        {
+          "event": "exit",
+          "elapsedMs": 776.4791000000005,
+          "code": 22,
+          "signal": null
+        }
+      ],
+      "pid": 16600,
+      "exitCode": 22,
+      "exitSignal": null,
+      "elapsedMs": 776.5688,
+      "proof": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/headless-security/startup/extra-client/proof.json",
+        "byteLength": 855,
+        "sha256": "sha256:dc10551f9513f49fd6d42e891c4478c913ad77d68fc3edc1fdc2c5d312e86b7d"
+      },
+      "observed": {
+        "candidateCommit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+        "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+        "helperDeadlineMs": 8000,
+        "configuredErrorContext": null,
+        "nativeLastErrorSet": false,
+        "membershipCalls": 1,
+        "freeConsoleCalls": 0,
+        "kind": "MO1307Phase3CR2ExtractedHeadlessStartupSimulation",
+        "scenario": "extra-client",
+        "accepted": false,
+        "failure": "MO1307_INTERNAL",
+        "failureType": "System.InvalidOperationException",
+        "events": [
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -10
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              10
+            ]
+          },
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -11
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              11
+            ]
+          },
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -12
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              12
+            ]
+          },
+          {
+            "name": "GetConsoleProcessList",
+            "arguments": [
+              1
+            ]
+          }
+        ],
+        "detached": false,
+        "productionFunctionUnmodified": true,
+        "nativeProcessOperationsPerformed": false,
+        "realHostIdentityProof": false
+      },
+      "closed": true,
+      "timedOut": false,
+      "cleanupExpired": false,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/headless-security/startup/extra-client/stdout.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/headless-security/startup/extra-client/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdoutBytes": 0,
+      "stderrBytes": 0
+    }
+  ]
+}

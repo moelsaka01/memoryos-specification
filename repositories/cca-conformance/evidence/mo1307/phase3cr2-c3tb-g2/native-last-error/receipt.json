@@ -1,0 +1,299 @@
+{
+  "kind": "MO1307Phase3CR2NativeLastErrorReceipt",
+  "version": "1.0.0",
+  "candidate": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+  "candidateTree": "5e0088965d4eac4002165fe0190f275c257985ba",
+  "implementation": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+  "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+  "result": "PASS",
+  "failure": null,
+  "count": 1,
+  "caseAccounting": [
+    {
+      "ordinal": 1,
+      "id": "createfile-setlasterror-effective-metadata-and-source-semantics",
+      "status": "PASS"
+    }
+  ],
+  "source": {
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 29153,
+    "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+  },
+  "sourceGit": {
+    "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+    "blob": "7ca55b8713108465099ecfce9796e06e3db67bd2"
+  },
+  "driver": {
+    "path": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/native-last-error.mjs",
+    "byteLength": 18172,
+    "sha256": "sha256:99912ad2ab3e471e104cd9fd859bad3dce44b989cf270d19417ee60995b47592"
+  },
+  "runtime": {
+    "node": {
+      "path": ".cache/mo1307-phase3cr2-runtime/node.exe",
+      "byteLength": 93580104,
+      "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+    },
+    "powershell": {
+      "path": "../../../../../Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+      "byteLength": 495616,
+      "sha256": "sha256:8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e"
+    }
+  },
+  "generatedScript": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/native-last-error/initialize-native.metadata.ps1",
+    "byteLength": 5325,
+    "sha256": "sha256:613718f16e07d5f5b27f8b0c59d73f8d89e73c61765d0609caab8c5da52026b4"
+  },
+  "metadataProcess": {
+    "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+    "args": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3cr2-c3tb-g2\\native-last-error\\initialize-native.metadata.ps1"
+    ],
+    "env": {
+      "SystemRoot": "C:\\Windows",
+      "WINDIR": "C:\\Windows"
+    },
+    "boundedMs": 10000,
+    "exit": 0,
+    "signal": null,
+    "error": null,
+    "elapsedMs": 1000.4472000000001,
+    "stdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/native-last-error/powershell.stdout.data",
+      "byteLength": 3162,
+      "sha256": "sha256:cbc2235da0741d79e0a7dc35db1f0f892febf151f2b110538037da52341c8c94"
+    },
+    "stderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/native-last-error/powershell.stderr.data",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "result": "PASS",
+    "metadata": [
+      {
+        "key": "CreateFileW:System.String,System.UInt32,System.UInt32,System.IntPtr,System.UInt32,System.UInt32,System.IntPtr",
+        "name": "CreateFileW",
+        "returnType": "Microsoft.Win32.SafeHandles.SafeFileHandle",
+        "parameterTypes": [
+          "System.String",
+          "System.UInt32",
+          "System.UInt32",
+          "System.IntPtr",
+          "System.UInt32",
+          "System.UInt32",
+          "System.IntPtr"
+        ],
+        "library": "kernel32.dll",
+        "entryPoint": "CreateFileW",
+        "charSet": 3,
+        "callingConvention": 1,
+        "preserveSig": true,
+        "setLastError": true,
+        "exactSpelling": true,
+        "pinvokeImpl": true,
+        "implementationFlags": 128
+      },
+      {
+        "key": "FreeConsole:",
+        "name": "FreeConsole",
+        "returnType": "System.Boolean",
+        "parameterTypes": [],
+        "library": "kernel32.dll",
+        "entryPoint": "FreeConsole",
+        "charSet": 3,
+        "callingConvention": 1,
+        "preserveSig": true,
+        "setLastError": false,
+        "exactSpelling": false,
+        "pinvokeImpl": true,
+        "implementationFlags": 128
+      },
+      {
+        "key": "GetConsoleProcessList:System.IntPtr,System.UInt32",
+        "name": "GetConsoleProcessList",
+        "returnType": "System.UInt32",
+        "parameterTypes": [
+          "System.IntPtr",
+          "System.UInt32"
+        ],
+        "library": "kernel32.dll",
+        "entryPoint": "GetConsoleProcessList",
+        "charSet": 3,
+        "callingConvention": 1,
+        "preserveSig": true,
+        "setLastError": false,
+        "exactSpelling": false,
+        "pinvokeImpl": true,
+        "implementationFlags": 128
+      },
+      {
+        "key": "GetFileInformationByHandle:Microsoft.Win32.SafeHandles.SafeFileHandle,System.IntPtr",
+        "name": "GetFileInformationByHandle",
+        "returnType": "System.Boolean",
+        "parameterTypes": [
+          "Microsoft.Win32.SafeHandles.SafeFileHandle",
+          "System.IntPtr"
+        ],
+        "library": "kernel32.dll",
+        "entryPoint": "GetFileInformationByHandle",
+        "charSet": 3,
+        "callingConvention": 1,
+        "preserveSig": true,
+        "setLastError": false,
+        "exactSpelling": false,
+        "pinvokeImpl": true,
+        "implementationFlags": 128
+      },
+      {
+        "key": "GetFileType:Microsoft.Win32.SafeHandles.SafeFileHandle",
+        "name": "GetFileType",
+        "returnType": "System.UInt32",
+        "parameterTypes": [
+          "Microsoft.Win32.SafeHandles.SafeFileHandle"
+        ],
+        "library": "kernel32.dll",
+        "entryPoint": "GetFileType",
+        "charSet": 3,
+        "callingConvention": 1,
+        "preserveSig": true,
+        "setLastError": false,
+        "exactSpelling": false,
+        "pinvokeImpl": true,
+        "implementationFlags": 128
+      },
+      {
+        "key": "GetFileType:System.IntPtr",
+        "name": "GetFileType",
+        "returnType": "System.UInt32",
+        "parameterTypes": [
+          "System.IntPtr"
+        ],
+        "library": "kernel32.dll",
+        "entryPoint": "GetFileType",
+        "charSet": 3,
+        "callingConvention": 1,
+        "preserveSig": true,
+        "setLastError": false,
+        "exactSpelling": false,
+        "pinvokeImpl": true,
+        "implementationFlags": 128
+      },
+      {
+        "key": "GetFinalPathNameByHandleW:Microsoft.Win32.SafeHandles.SafeFileHandle,System.Text.StringBuilder,System.UInt32,System.UInt32",
+        "name": "GetFinalPathNameByHandleW",
+        "returnType": "System.UInt32",
+        "parameterTypes": [
+          "Microsoft.Win32.SafeHandles.SafeFileHandle",
+          "System.Text.StringBuilder",
+          "System.UInt32",
+          "System.UInt32"
+        ],
+        "library": "kernel32.dll",
+        "entryPoint": "GetFinalPathNameByHandleW",
+        "charSet": 3,
+        "callingConvention": 1,
+        "preserveSig": true,
+        "setLastError": false,
+        "exactSpelling": false,
+        "pinvokeImpl": true,
+        "implementationFlags": 128
+      },
+      {
+        "key": "GetStdHandle:System.Int32",
+        "name": "GetStdHandle",
+        "returnType": "System.IntPtr",
+        "parameterTypes": [
+          "System.Int32"
+        ],
+        "library": "kernel32.dll",
+        "entryPoint": "GetStdHandle",
+        "charSet": 3,
+        "callingConvention": 1,
+        "preserveSig": true,
+        "setLastError": false,
+        "exactSpelling": false,
+        "pinvokeImpl": true,
+        "implementationFlags": 128
+      }
+    ]
+  },
+  "reflectedMethodCount": 8,
+  "exactMethodKeys": [
+    "CreateFileW:System.String,System.UInt32,System.UInt32,System.IntPtr,System.UInt32,System.UInt32,System.IntPtr",
+    "FreeConsole:",
+    "GetConsoleProcessList:System.IntPtr,System.UInt32",
+    "GetFileInformationByHandle:Microsoft.Win32.SafeHandles.SafeFileHandle,System.IntPtr",
+    "GetFileType:Microsoft.Win32.SafeHandles.SafeFileHandle",
+    "GetFileType:System.IntPtr",
+    "GetFinalPathNameByHandleW:Microsoft.Win32.SafeHandles.SafeFileHandle,System.Text.StringBuilder,System.UInt32,System.UInt32",
+    "GetStdHandle:System.Int32"
+  ],
+  "exactExpectedMetadata": true,
+  "createFileW": {
+    "key": "CreateFileW:System.String,System.UInt32,System.UInt32,System.IntPtr,System.UInt32,System.UInt32,System.IntPtr",
+    "name": "CreateFileW",
+    "returnType": "Microsoft.Win32.SafeHandles.SafeFileHandle",
+    "parameterTypes": [
+      "System.String",
+      "System.UInt32",
+      "System.UInt32",
+      "System.IntPtr",
+      "System.UInt32",
+      "System.UInt32",
+      "System.IntPtr"
+    ],
+    "library": "kernel32.dll",
+    "entryPoint": "CreateFileW",
+    "charSet": 3,
+    "callingConvention": 1,
+    "preserveSig": true,
+    "setLastError": true,
+    "exactSpelling": true,
+    "pinvokeImpl": true,
+    "implementationFlags": 128
+  },
+  "otherSevenExpectedUnchangedMetadata": true,
+  "sourceAssertions": {
+    "exactInitializeNativeExtraction": true,
+    "inertConfirmConsoleQuiescenceStub": true,
+    "extractedNativeApiInvocations": 0,
+    "immediateLastErrorCaptureCallSites": [
+      {
+        "function": "Open-Native",
+        "createFileWLine": 171,
+        "getLastWin32ErrorLine": 172,
+        "adjacentPhysicalLines": true
+      },
+      {
+        "function": "Assert-NativeAbsent",
+        "createFileWLine": 250,
+        "getLastWin32ErrorLine": 251,
+        "adjacentPhysicalLines": true
+      }
+    ],
+    "allGetLastWin32ErrorCallSitesCovered": true,
+    "error2Comparisons": 2,
+    "error2OnlyMissingLeafSemantics": true,
+    "openNativeMissingInputLeafMapsTo": "MO1307_INPUT",
+    "openNativeMissingAncestorMapsTo": "MO1307_FILESYSTEM_BOUNDARY",
+    "assertNativeAbsentAcceptsOnlyErrorFileNotFound": true,
+    "allOtherOpenFailuresMapTo": "MO1307_FILESYSTEM_BOUNDARY",
+    "generatedScriptNativeApiInvocationCallSites": 0,
+    "generatedScriptHelperRequestConstructions": 0
+  },
+  "sourceUnchanged": true,
+  "nativeApiInvocations": 0,
+  "helperRequests": 0,
+  "engineeringMetadataProcesses": 1,
+  "retries": 0,
+  "certification": false,
+  "scope": "Exact current C3TB Initialize-Native metadata reflection with an inert Confirm-ConsoleQuiescence stub, plus static call-site proof. No emitted native API is invoked and no helper request is constructed."
+}

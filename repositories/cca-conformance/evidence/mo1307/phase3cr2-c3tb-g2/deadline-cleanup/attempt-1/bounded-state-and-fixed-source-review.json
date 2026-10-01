@@ -1,0 +1,1140 @@
+{
+  "id": "bounded-state-and-fixed-source-review",
+  "layer": "SOURCE_REVIEW_MECHANICAL_DEPENDENCY_BINDING",
+  "result": "PASS",
+  "elapsedMs": 17635.530600000002,
+  "detail": {
+    "bindings": [
+      {
+        "relative": "src/helper-transport.mjs",
+        "oldSha256": "sha256:ad5d31c3ca4fc34920e011a013d9616262200df6e5363788357a7dd93896aa55",
+        "newSha256": "sha256:e320a36d203a4635e13930663a7f075a064c2211e753700da4fff8ae81e477a1",
+        "equal": false
+      },
+      {
+        "relative": "src/helper-protocol.mjs",
+        "oldSha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+        "newSha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+        "equal": true
+      },
+      {
+        "relative": "src/runtime.mjs",
+        "oldSha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+        "newSha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+        "equal": true
+      },
+      {
+        "relative": "src/windows-paths.mjs",
+        "oldSha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029",
+        "newSha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029",
+        "equal": true
+      },
+      {
+        "relative": "src/cli-args.mjs",
+        "oldSha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7",
+        "newSha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7",
+        "equal": true
+      },
+      {
+        "relative": "src/errors.mjs",
+        "oldSha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac",
+        "newSha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac",
+        "equal": true
+      },
+      {
+        "relative": "src/constants.mjs",
+        "oldSha256": "sha256:987bae3266af3816bfcb31bf5d7594a60ce27d588b03145c68e78aa14267ece9",
+        "newSha256": "sha256:e4ac8f64d2d0d610d1ff00e46da5a4773dbcbd5e33d0cc5cd83b317be2c7a409",
+        "equal": false
+      },
+      {
+        "relative": "helpers/windows-inspect.ps1",
+        "oldSha256": "sha256:35381850f1ef8c322e528156ebd8779071ad3288cdccd4d0ebab51ce6f9c6ac8",
+        "newSha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127",
+        "equal": false
+      }
+    ],
+    "definitionsProjection": {
+      "allFieldsExceptHelperDeadlineMsEqual": true,
+      "historicalHelperDeadlineMs": 5000,
+      "currentHelperDeadlineMs": 8000
+    },
+    "rawHistoricalSourceEqualityRequired": false,
+    "dependencyAwareSourceReview": true,
+    "sourceDeltaReview": {
+      "kind": "MO1307Phase3CR2DependencyAwareSourceReview",
+      "version": "1.0.0",
+      "result": "PASS",
+      "mode": "ACTUAL_CAMPAIGN",
+      "candidate": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+      "candidateTree": "5e0088965d4eac4002165fe0190f275c257985ba",
+      "candidateImplementation": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+      "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+      "historicalBaseline": "defe93989efc6501b1a730b82e79e705884b269b",
+      "historicalProductTree": "e726c38b44bb7b0402d510ccfdab0f9f6a584939",
+      "authorizedDiff": {
+        "result": "PASS",
+        "from": "defe93989efc6501b1a730b82e79e705884b269b",
+        "to": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+        "byteLength": 223468,
+        "sha256": "sha256:d40f1dffbfa5e17ce8e4017d340d14bb91ebe149cc5b8ec5ba79258de041de67",
+        "changedFileCount": 9,
+        "hunkCount": 28,
+        "categoryCounts": {
+          "AUTHORIZED_HEADLESS_CORRECTION": 9,
+          "AUTHORIZED_NATIVE_LASTERROR_CORRECTION": 2,
+          "AUTHORIZED_OPEN_CHAIN_CORRECTION": 1,
+          "AUTHORIZED_DEADLINE_CORRECTION": 2,
+          "DERIVED_METADATA_CHANGE": 3,
+          "DOCUMENTATION_ONLY": 11,
+          "UNEXPECTED_CHANGE": 0
+        },
+        "unexpectedChangeCount": 0,
+        "allHunksClassified": true,
+        "noUnauthorizedSourceDelta": true,
+        "securityCriticalHunkCount": 14,
+        "everySecurityCriticalHunkReviewed": true,
+        "hunks": [
+          {
+            "id": "repositories/memoryos-readiness/README.md@-36,1+36,1",
+            "path": "repositories/memoryos-readiness/README.md",
+            "header": "@@ -36 +36 @@ The supervisor enforces absolute monotonic API10s/CLI30s/evaluation10s deadlines",
+            "category": "DOCUMENTATION_ONLY",
+            "topicalAuthorization": null,
+            "securityCritical": false,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:775373ac4fc1838ca24b5824e99da65ea3b53f0cd2273288b774d47feda93c24",
+            "freshReviews": [
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/contracts/contract.json@-1,1+1,1",
+            "path": "repositories/memoryos-readiness/contracts/contract.json",
+            "header": "@@ -1 +1 @@",
+            "category": "DERIVED_METADATA_CHANGE",
+            "topicalAuthorization": null,
+            "securityCritical": false,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:ff176961eda77f26d5e02e1e4ecb351bd4363cf9ac873501af50091560b5b8d2",
+            "freshReviews": [
+              "GENERATED_CONTRACT_CONSISTENCY",
+              "CANDIDATE_BINDING",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/contracts/definitions.json@-1,1+1,1",
+            "path": "repositories/memoryos-readiness/contracts/definitions.json",
+            "header": "@@ -1 +1 @@",
+            "category": "AUTHORIZED_DEADLINE_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:8f059eeb5458a88f38c6424c7b915af972f1b74d1c2fca2bd3982cb0ecc6d8b8",
+            "freshReviews": [
+              "DEADLINE_CONSTANT_BINDING",
+              "STRICT_TIMEOUT_EQUALITY",
+              "TIMEOUT_MAPPING",
+              "LATE_SUCCESS_REFUSAL",
+              "SEQUENCE_NO_PARTIAL_SUCCESS",
+              "SEPARATE_CLEANUP_TIMING",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/distribution-manifest.json@-1,1+1,1",
+            "path": "repositories/memoryos-readiness/distribution-manifest.json",
+            "header": "@@ -1 +1 @@",
+            "category": "DERIVED_METADATA_CHANGE",
+            "topicalAuthorization": null,
+            "securityCritical": false,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:f92ba00bf8ad2f840d4a58b98424cc92daee9a97d03f00e81ef311200bdc8789",
+            "freshReviews": [
+              "GENERATED_CONTRACT_CONSISTENCY",
+              "CANDIDATE_BINDING",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/README.md@-46,2+46,3",
+            "path": "repositories/memoryos-readiness/helpers/README.md",
+            "header": "@@ -46,2 +46,3 @@ invocation has one request. They are serial, without skipped/repeated slots or",
+            "category": "DOCUMENTATION_ONLY",
+            "topicalAuthorization": null,
+            "securityCritical": false,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:00141c63366262012b6a9c7ce05ae45a0679a190f9e7e871fe255dd3ccfbe467",
+            "freshReviews": [
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/README.md@-72,2+73,4",
+            "path": "repositories/memoryos-readiness/helpers/README.md",
+            "header": "@@ -72,2 +73,4 @@ never a public clock override or normative readiness input.",
+            "category": "DOCUMENTATION_ONLY",
+            "topicalAuthorization": null,
+            "securityCritical": false,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:4cf1aa61aaddbae972b03934aa056d80b666b7990bf6aa386d5ef4074a5e93b7",
+            "freshReviews": [
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/README.md@-75,2+78,2",
+            "path": "repositories/memoryos-readiness/helpers/README.md",
+            "header": "@@ -75,2 +78,2 @@ time starts before launch and includes startup, native work, framing/EOF waits",
+            "category": "DOCUMENTATION_ONLY",
+            "topicalAuthorization": null,
+            "securityCritical": false,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:7867b63d97306934ac65169b64d8d69fc961f039345df0aee4f5accba8f576ec",
+            "freshReviews": [
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/README.md@-130,0+134,16",
+            "path": "repositories/memoryos-readiness/helpers/README.md",
+            "header": "@@ -130,0 +134,16 @@ identity comparison before success. All handles close before the response.",
+            "category": "DOCUMENTATION_ONLY",
+            "topicalAuthorization": null,
+            "securityCritical": false,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:c92f7051fc3be97fa977f069e20b2114cc3ee4b9e3a2620bf2d809c9e7432461",
+            "freshReviews": [
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/README.md@-137,16+156,41",
+            "path": "repositories/memoryos-readiness/helpers/README.md",
+            "header": "@@ -137,16 +156,41 @@ errors to OUTPUT. No identity is invented for an absent file/directory.",
+            "category": "DOCUMENTATION_ONLY",
+            "topicalAuthorization": null,
+            "securityCritical": false,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:3a9bcb913bd083274cd7c59e316dc4f787c679e5cb4e07daa3bb1edf3e1cb6db",
+            "freshReviews": [
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/windows-inspect.ps1@-99,0+100,2",
+            "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+            "header": "@@ -99,0 +100,2 @@ function Initialize-Native {",
+            "category": "AUTHORIZED_HEADLESS_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:2aaea37c93db1033d3302c0643d28fe3422b948c32c23a5f6881f8b2e6269f0c",
+            "freshReviews": [
+              "HEADLESS_AND_STARTUP_CORRECTIONS",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/windows-inspect.ps1@-101,9+103,1",
+            "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+            "header": "@@ -101,9 +103 @@ function Initialize-Native {",
+            "category": "AUTHORIZED_HEADLESS_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:f183f893551231d1c0c54d728fc57704cb56eea85deaffc7f96a9e78bd4c76df",
+            "freshReviews": [
+              "HEADLESS_AND_STARTUP_CORRECTIONS",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/windows-inspect.ps1@-117,4+111,13",
+            "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+            "header": "@@ -117,4 +111,13 @@ function Initialize-Native {",
+            "category": "AUTHORIZED_NATIVE_LASTERROR_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:5890541072ba3f50252b3a1aece14447e9b17a69059e47ef34d2f0244055089d",
+            "freshReviews": [
+              "NATIVE_API_PARITY",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/windows-inspect.ps1@-122,2+125,15",
+            "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+            "header": "@@ -122,2 +125,15 @@ function Initialize-Native {",
+            "category": "AUTHORIZED_NATIVE_LASTERROR_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:84872f1da2b6c48ed281939d13081540224239d6f76338473d9fabb8a4f85081",
+            "freshReviews": [
+              "NATIVE_API_PARITY",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/windows-inspect.ps1@-130,3+146,8",
+            "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+            "header": "@@ -130,3 +146,8 @@ function Confirm-ConsoleQuiescence {",
+            "category": "AUTHORIZED_HEADLESS_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:7750a8de026f01acf6d60d4653de6def3e2931e342488b3ef1b50c1f04a7e53e",
+            "freshReviews": [
+              "HEADLESS_AND_STARTUP_CORRECTIONS",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/windows-inspect.ps1@-135,2+156,1",
+            "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+            "header": "@@ -135,2 +156 @@ function Confirm-ConsoleQuiescence {",
+            "category": "AUTHORIZED_HEADLESS_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:47c5e2cf1a37c9889131665c43a41bc390632d96b901aadab61dae44d2251efd",
+            "freshReviews": [
+              "HEADLESS_AND_STARTUP_CORRECTIONS",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/windows-inspect.ps1@-138,26+158,2",
+            "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+            "header": "@@ -138,26 +158,2 @@ function Confirm-ConsoleQuiescence {",
+            "category": "AUTHORIZED_HEADLESS_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:87b57e5fe84f87561ee69040194865da3f0318295c0f8a24dcfa5f0aa0e60ad8",
+            "freshReviews": [
+              "HEADLESS_AND_STARTUP_CORRECTIONS",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/windows-inspect.ps1@-165,12+161,1",
+            "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+            "header": "@@ -165,12 +161 @@ function Confirm-ConsoleQuiescence {",
+            "category": "AUTHORIZED_HEADLESS_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:125e4c36f33d39010b050e10b02232a8b8139ea68a79b17e8acac666cca5c6ef",
+            "freshReviews": [
+              "HEADLESS_AND_STARTUP_CORRECTIONS",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/windows-inspect.ps1@-178,2+162,0",
+            "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+            "header": "@@ -178,2 +162,0 @@ function Confirm-ConsoleQuiescence {",
+            "category": "AUTHORIZED_HEADLESS_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:75d3526bfb248026177478b13aead361de5710dbf5fb0f804969dbe227b3835d",
+            "freshReviews": [
+              "HEADLESS_AND_STARTUP_CORRECTIONS",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/windows-inspect.ps1@-217,3+200,4",
+            "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+            "header": "@@ -217,3 +200,4 @@ function Read-Identity($Handle, [string] $Path, [bool] $Directory) {",
+            "category": "DOCUMENTATION_ONLY",
+            "topicalAuthorization": "AUTHORIZED_OPEN_CHAIN_CORRECTION",
+            "securityCritical": false,
+            "commentOnly": true,
+            "executableEquivalent": true,
+            "executableBeforeSha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "executableAfterSha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "contentSha256": "sha256:338da88fa58f0e44da81fb7653beeca7cd4df6452bff91a30978e75330a763a7",
+            "freshReviews": [
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/windows-inspect.ps1@-234,1+217,0",
+            "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+            "header": "@@ -234 +217,0 @@ function Open-Chain([string] $Path, [bool] $Directory, [bool] $InputLeaf = $fals",
+            "category": "AUTHORIZED_OPEN_CHAIN_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:c69c8fc19827cc25666c56a8fef43466c7d1257a147cda2061fcf5e36c8e891b",
+            "freshReviews": [
+              "FILESYSTEM_AND_TOCTOU_CORRECTIONS",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/windows-inspect.ps1@-351,3+334,4",
+            "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+            "header": "@@ -351,3 +334,4 @@ function Invoke-Inspection($Request, $Roots) {",
+            "category": "DOCUMENTATION_ONLY",
+            "topicalAuthorization": "AUTHORIZED_HEADLESS_CORRECTION",
+            "securityCritical": false,
+            "commentOnly": true,
+            "executableEquivalent": true,
+            "executableBeforeSha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "executableAfterSha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "contentSha256": "sha256:e92d6b5aa3e6e1f9798f12e093a74d17fab801fa31aa6bb69c047253ae77e123",
+            "freshReviews": [
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/helpers/windows-inspect.ps1@-358,0+343,5",
+            "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+            "header": "@@ -358,0 +343,5 @@ try {",
+            "category": "AUTHORIZED_HEADLESS_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:b5fb1f73882c3aecfce76dd36592e5a5c74893ff557cd8735d32e12469144f84",
+            "freshReviews": [
+              "HEADLESS_AND_STARTUP_CORRECTIONS",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/sbom.spdx.json@-1,1+1,1",
+            "path": "repositories/memoryos-readiness/sbom.spdx.json",
+            "header": "@@ -1 +1 @@",
+            "category": "DERIVED_METADATA_CHANGE",
+            "topicalAuthorization": null,
+            "securityCritical": false,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:f9bdb526458c25e3aa7525b0d1978b2fbba0ce97690fd0089c2a8843e139b22e",
+            "freshReviews": [
+              "GENERATED_CONTRACT_CONSISTENCY",
+              "CANDIDATE_BINDING",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/src/constants.mjs@-3,1+3,1",
+            "path": "repositories/memoryos-readiness/src/constants.mjs",
+            "header": "@@ -3 +3 @@ function freeze(x){if(x && typeof x===\"object\"){for(const v of Object.values(x))",
+            "category": "AUTHORIZED_DEADLINE_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:8c3bc4ed38ea95d159aa0a3642723355cdde232f59d05f29b8160e037c592c1b",
+            "freshReviews": [
+              "DEADLINE_CONSTANT_BINDING",
+              "STRICT_TIMEOUT_EQUALITY",
+              "TIMEOUT_MAPPING",
+              "LATE_SUCCESS_REFUSAL",
+              "SEQUENCE_NO_PARTIAL_SUCCESS",
+              "SEPARATE_CLEANUP_TIMING",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/src/helper-transport.mjs@-36,3+36,3",
+            "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+            "header": "@@ -36,3 +36,3 @@ function transport(supervisor, launch) {",
+            "category": "DOCUMENTATION_ONLY",
+            "topicalAuthorization": null,
+            "securityCritical": false,
+            "commentOnly": true,
+            "executableEquivalent": true,
+            "executableBeforeSha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "executableAfterSha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "contentSha256": "sha256:7c07e2c8f89bf0926bb05da5d17746cf737e821ce85c0fa09f9e05181b0310d1",
+            "freshReviews": [
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/src/helper-transport.mjs@-54,1+54,1",
+            "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+            "header": "@@ -54 +54 @@ function transport(supervisor, launch) {",
+            "category": "DOCUMENTATION_ONLY",
+            "topicalAuthorization": null,
+            "securityCritical": false,
+            "commentOnly": true,
+            "executableEquivalent": true,
+            "executableBeforeSha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "executableAfterSha256": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "contentSha256": "sha256:6294a5093d6df393bc97112bb6cf660a1b76c081eea4baf03eb09d2957eec038",
+            "freshReviews": [
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/src/helper-transport.mjs@-62,1+62,1",
+            "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+            "header": "@@ -62 +62 @@ function transport(supervisor, launch) {",
+            "category": "DOCUMENTATION_ONLY",
+            "topicalAuthorization": null,
+            "securityCritical": false,
+            "commentOnly": true,
+            "executableEquivalent": true,
+            "executableBeforeSha256": "sha256:fef462bf2b1133bbc07a78f101e9004c5e24a84e3ad47ef22c2466eb81d424b6",
+            "executableAfterSha256": "sha256:fef462bf2b1133bbc07a78f101e9004c5e24a84e3ad47ef22c2466eb81d424b6",
+            "contentSha256": "sha256:f2093a825678738dab7e940b82690bc78579c016ff8293ca91dd622f254deb73",
+            "freshReviews": [
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          },
+          {
+            "id": "repositories/memoryos-readiness/src/helper-transport.mjs@-97,1+97,1",
+            "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+            "header": "@@ -97 +97 @@ function transport(supervisor, launch) {",
+            "category": "AUTHORIZED_HEADLESS_CORRECTION",
+            "topicalAuthorization": null,
+            "securityCritical": true,
+            "commentOnly": false,
+            "executableEquivalent": null,
+            "executableBeforeSha256": null,
+            "executableAfterSha256": null,
+            "contentSha256": "sha256:ddc7d2ffdf298aa9b926e09233e389dd429171d0c1f8c54dc5529bfab154928c",
+            "freshReviews": [
+              "HEADLESS_AND_STARTUP_CORRECTIONS",
+              "SOURCE_SECURITY_REVIEW"
+            ],
+            "reviewed": true
+          }
+        ]
+      },
+      "dependencySelection": {
+        "result": "PASS",
+        "changedDependencies": {
+          "result": "PASS",
+          "count": 9,
+          "disposition": "FRESH_REVIEW_REQUIRED_AND_MAPPED",
+          "rows": [
+            {
+              "path": "repositories/memoryos-readiness/README.md",
+              "oldBlob": "5fc1fb28e3e60b6d00be3886bfe1302bfebe80bf",
+              "newBlob": "0ea6569f33449f140883b0d42dfe7b3ff775acaf",
+              "categories": [
+                "DOCUMENTATION_ONLY"
+              ],
+              "freshReviews": [
+                "SOURCE_SECURITY_REVIEW"
+              ],
+              "hunkCount": 1,
+              "disposition": "FRESH_REVIEW_REQUIRED_AND_MAPPED"
+            },
+            {
+              "path": "repositories/memoryos-readiness/contracts/contract.json",
+              "oldBlob": "504fac180b64c8c30769a3de2712309e992b3265",
+              "newBlob": "6cf45e598a1c89fadfacd87c5946f8eabc7422c4",
+              "categories": [
+                "DERIVED_METADATA_CHANGE"
+              ],
+              "freshReviews": [
+                "CANDIDATE_BINDING",
+                "GENERATED_CONTRACT_CONSISTENCY",
+                "SOURCE_SECURITY_REVIEW"
+              ],
+              "hunkCount": 1,
+              "disposition": "FRESH_REVIEW_REQUIRED_AND_MAPPED"
+            },
+            {
+              "path": "repositories/memoryos-readiness/contracts/definitions.json",
+              "oldBlob": "42c357de07bf05b4fe028aa4c824aab7438b6af1",
+              "newBlob": "018b527079b4add389a929da2ee57bcb013ebe2f",
+              "categories": [
+                "AUTHORIZED_DEADLINE_CORRECTION"
+              ],
+              "freshReviews": [
+                "DEADLINE_CONSTANT_BINDING",
+                "LATE_SUCCESS_REFUSAL",
+                "SEPARATE_CLEANUP_TIMING",
+                "SEQUENCE_NO_PARTIAL_SUCCESS",
+                "SOURCE_SECURITY_REVIEW",
+                "STRICT_TIMEOUT_EQUALITY",
+                "TIMEOUT_MAPPING"
+              ],
+              "hunkCount": 1,
+              "disposition": "FRESH_REVIEW_REQUIRED_AND_MAPPED"
+            },
+            {
+              "path": "repositories/memoryos-readiness/distribution-manifest.json",
+              "oldBlob": "919620d7dce379e86746218d7413087274b939a7",
+              "newBlob": "6b3c09d1819a2428fc97f220fdf5c9ca76179d1a",
+              "categories": [
+                "DERIVED_METADATA_CHANGE"
+              ],
+              "freshReviews": [
+                "CANDIDATE_BINDING",
+                "GENERATED_CONTRACT_CONSISTENCY",
+                "SOURCE_SECURITY_REVIEW"
+              ],
+              "hunkCount": 1,
+              "disposition": "FRESH_REVIEW_REQUIRED_AND_MAPPED"
+            },
+            {
+              "path": "repositories/memoryos-readiness/helpers/README.md",
+              "oldBlob": "8c72cb70ab4b89f11ed682fd95926ea907cb76cb",
+              "newBlob": "a673048381a186fdb838abd2c2ebb426cd98296b",
+              "categories": [
+                "DOCUMENTATION_ONLY"
+              ],
+              "freshReviews": [
+                "SOURCE_SECURITY_REVIEW"
+              ],
+              "hunkCount": 5,
+              "disposition": "FRESH_REVIEW_REQUIRED_AND_MAPPED"
+            },
+            {
+              "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+              "oldBlob": "827e0479295319871e2f79a434ebd0a3a478a144",
+              "newBlob": "7ca55b8713108465099ecfce9796e06e3db67bd2",
+              "categories": [
+                "AUTHORIZED_HEADLESS_CORRECTION",
+                "AUTHORIZED_NATIVE_LASTERROR_CORRECTION",
+                "AUTHORIZED_OPEN_CHAIN_CORRECTION",
+                "DOCUMENTATION_ONLY"
+              ],
+              "freshReviews": [
+                "FILESYSTEM_AND_TOCTOU_CORRECTIONS",
+                "HEADLESS_AND_STARTUP_CORRECTIONS",
+                "NATIVE_API_PARITY",
+                "SOURCE_SECURITY_REVIEW"
+              ],
+              "hunkCount": 13,
+              "disposition": "FRESH_REVIEW_REQUIRED_AND_MAPPED"
+            },
+            {
+              "path": "repositories/memoryos-readiness/sbom.spdx.json",
+              "oldBlob": "fd13cdfc6c9b50860b9ff2f86a8f5447265054de",
+              "newBlob": "af3e33e4feb4b146e626e7d67b06b442f7cc4d70",
+              "categories": [
+                "DERIVED_METADATA_CHANGE"
+              ],
+              "freshReviews": [
+                "CANDIDATE_BINDING",
+                "GENERATED_CONTRACT_CONSISTENCY",
+                "SOURCE_SECURITY_REVIEW"
+              ],
+              "hunkCount": 1,
+              "disposition": "FRESH_REVIEW_REQUIRED_AND_MAPPED"
+            },
+            {
+              "path": "repositories/memoryos-readiness/src/constants.mjs",
+              "oldBlob": "697706ee5fae5ff95caab270a60d26ffb73674e7",
+              "newBlob": "971ec72042b2d2c60ebafc303bae49f106919ab7",
+              "categories": [
+                "AUTHORIZED_DEADLINE_CORRECTION"
+              ],
+              "freshReviews": [
+                "DEADLINE_CONSTANT_BINDING",
+                "LATE_SUCCESS_REFUSAL",
+                "SEPARATE_CLEANUP_TIMING",
+                "SEQUENCE_NO_PARTIAL_SUCCESS",
+                "SOURCE_SECURITY_REVIEW",
+                "STRICT_TIMEOUT_EQUALITY",
+                "TIMEOUT_MAPPING"
+              ],
+              "hunkCount": 1,
+              "disposition": "FRESH_REVIEW_REQUIRED_AND_MAPPED"
+            },
+            {
+              "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+              "oldBlob": "1eb27842cbebdd69368394b148fe26baaffa514b",
+              "newBlob": "1fda7eb5f24d2107c4ad078fd60185a8f6d8e5a9",
+              "categories": [
+                "AUTHORIZED_HEADLESS_CORRECTION",
+                "DOCUMENTATION_ONLY"
+              ],
+              "freshReviews": [
+                "HEADLESS_AND_STARTUP_CORRECTIONS",
+                "SOURCE_SECURITY_REVIEW"
+              ],
+              "hunkCount": 4,
+              "disposition": "FRESH_REVIEW_REQUIRED_AND_MAPPED"
+            }
+          ]
+        },
+        "reusedDependencies": {
+          "result": "PASS",
+          "action": "REUSE_EXACT",
+          "count": 462,
+          "negativeCount": 352,
+          "rowsSha256": "sha256:823cc703c2480b7acb61a92d176d16de63166e9fd341a21155f78ed2ec38f6e4",
+          "failures": [],
+          "phase": "SEALED_CAMPAIGN",
+          "movedToFresh": [],
+          "unresolved": [],
+          "mismatches": [],
+          "movedToFreshBeforeSeal": 0,
+          "postSealAdaptiveMoveAllowed": false
+        }
+      },
+      "securitySemantics": {
+        "result": "PASS",
+        "checks": [
+          {
+            "id": "initial-console-query-failure-fails-closed",
+            "result": "PASS",
+            "evidence": "The sole success predicate is count=1 and member PID=self; zero and API failures have no success branch."
+          },
+          {
+            "id": "positive-sole-helper-membership",
+            "result": "PASS",
+            "evidence": "A one-PID buffer must report exactly the helper PID."
+          },
+          {
+            "id": "freeconsole-required",
+            "result": "PASS",
+            "evidence": "FreeConsole is called exactly once and false rejects."
+          },
+          {
+            "id": "no-post-detach-second-membership-query",
+            "result": "PASS",
+            "evidence": "The only membership query precedes FreeConsole."
+          },
+          {
+            "id": "no-numeric-ppid-ownership",
+            "result": "PASS",
+            "evidence": "No process snapshot or numeric parent-PID ownership predicate exists."
+          },
+          {
+            "id": "no-getconsolewindow-ownership",
+            "result": "PASS",
+            "evidence": "No console-window ownership inference exists."
+          },
+          {
+            "id": "no-speculative-conhost-termination",
+            "result": "PASS",
+            "evidence": "No host discovery, opening, waiting, or termination primitive exists."
+          },
+          {
+            "id": "startup-standard-streams-are-pipes",
+            "result": "PASS",
+            "evidence": "All three borrowed standard handles must be pipes and the saved streams must have the required direction."
+          },
+          {
+            "id": "console-policy-exact",
+            "result": "PASS",
+            "evidence": "The transport advertises only the self-detachment plus closed-process/pipes policy."
+          },
+          {
+            "id": "supervisor-process-pipe-quiescence-required",
+            "result": "PASS",
+            "evidence": "Validated response, process/pipe closure, and owner quiescence are all required."
+          },
+          {
+            "id": "createfilew-setlasterror-effective",
+            "result": "PASS",
+            "evidence": "CreateFileW receives one complete DllImport attribute with SetLastError and ExactSpelling true."
+          },
+          {
+            "id": "open-chain-redundant-assert-root-only",
+            "result": "PASS",
+            "evidence": "Root validation remains at request admission and is not redundantly repeated inside Open-Chain."
+          },
+          {
+            "id": "prospective-helper-bound-strict",
+            "result": "PASS",
+            "evidence": "The generated 8,000 ms bound is prospective and equality times out."
+          },
+          {
+            "id": "fixed-launch-is-nondetached-piped",
+            "result": "PASS",
+            "evidence": "The fixed launch is non-detached, shell-free, and uses three pipes."
+          },
+          {
+            "id": "helper-capability-surface-not-expanded",
+            "result": "PASS",
+            "evidence": "The helper adds no network, provider, diagnostic, or clock capability."
+          }
+        ],
+        "failedChecks": []
+      },
+      "commentHandling": {
+        "method": "PER_HUNK_LANGUAGE_AWARE_EXECUTABLE_PROJECTION_NO_GLOBAL_SOURCE_ELISION",
+        "commentOnlyHunkCount": 5,
+        "allCommentOnlyExecutableProjectionsEqual": true,
+        "globallyStrippedSourceEqualityUsed": false
+      },
+      "unchangedSourceReview": {
+        "result": "PASS",
+        "readSetBodyByteIdentical": true,
+        "dependencies": [
+          {
+            "path": "repositories/memoryos-readiness/src/runtime.mjs",
+            "gitBlob": "46c95fce6489205d74c30b51036d4c6ea342f486",
+            "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+            "equal": true
+          },
+          {
+            "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+            "gitBlob": "5bac2473bcf1e65beed67d173d06741506463ce2",
+            "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+            "equal": true
+          }
+        ]
+      },
+      "baselineReview": {
+        "result": "PASS",
+        "candidate": "defe93989efc6501b1a730b82e79e705884b269b",
+        "candidateTree": "54c8ca8acc388d8dcb5d8d76e119b434dcc1a9bb",
+        "productionTree": "e726c38b44bb7b0402d510ccfdab0f9f6a584939",
+        "changedFileCount": 0,
+        "exactHistoricalBlobs": 9,
+        "identity": {
+          "role": "C3RB",
+          "commit": "defe93989efc6501b1a730b82e79e705884b269b",
+          "rootTree": "54c8ca8acc388d8dcb5d8d76e119b434dcc1a9bb",
+          "productTree": "e726c38b44bb7b0402d510ccfdab0f9f6a584939"
+        }
+      },
+      "handoffAuthority": {
+        "result": "PASS",
+        "binding": {
+          "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/binding.json",
+          "byteLength": 27189,
+          "sha256": "sha256:dde0766b80e65bc3426a6c2bdc3208bdd1b8ecd7ca17aa2594449cfe6ccb7175",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "995c36fc429a0d04e42ad375f91aa00a0516b2b1"
+        },
+        "bindingVerification": {
+          "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/binding-verification.json",
+          "byteLength": 1155,
+          "sha256": "sha256:f322d1ba53a9ab18fc3638b367fb770b5c2d47a1dd5ffbe7ae06ad82373555d1",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "cf6e3e9499164fcff5ca015659ca6e0795d7cb1b"
+        },
+        "refreshMap": {
+          "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/phase3c-refresh-map.json",
+          "byteLength": 21293,
+          "sha256": "sha256:ada9532c868c69d7b6b951535f8f4a501c728a24057da6423308d5540192c16b",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "863cd3d67d52ca2118f5de42b497db5f03279b03"
+        }
+      },
+      "sourcePins": [
+        {
+          "path": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/source-review-manifest.json",
+          "byteLength": 15053,
+          "sha256": "sha256:a63b3e9f5d85211035141983c9fce6724d4e6e3a41384fbdd29952496d7ec331",
+          "gitBlob": "704efd2c83c82dee839d4ad2b9b3e8c9909f05c1"
+        },
+        {
+          "path": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/source-review-lib.mjs",
+          "byteLength": 43537,
+          "sha256": "sha256:d0145595413860b6450f2aa1551a5c62cb6bdcb32c3534a0f8ca07250a09f9b6",
+          "gitBlob": "0e0fb52cd3c56237668b6c47f242f46050caf0e0"
+        },
+        {
+          "path": "repositories/memoryos-readiness/README.md",
+          "byteLength": 6022,
+          "sha256": "sha256:630e47271992519eba8776c730f8d2800b3ad8d9e3cf67b582cc9efc86d1c418",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "0ea6569f33449f140883b0d42dfe7b3ff775acaf"
+        },
+        {
+          "path": "repositories/memoryos-readiness/contracts/contract.json",
+          "byteLength": 7981,
+          "sha256": "sha256:c86fabf739d8073ec8fa39a17795f904d5c429da7858dafe25583d2ca4b4efdc",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "6cf45e598a1c89fadfacd87c5946f8eabc7422c4"
+        },
+        {
+          "path": "repositories/memoryos-readiness/contracts/definitions.json",
+          "byteLength": 16555,
+          "sha256": "sha256:4457989aded2dd4a6ff58dc1b14fafa12b9e3f597d1e8dfe40698e8289c60a66",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "018b527079b4add389a929da2ee57bcb013ebe2f"
+        },
+        {
+          "path": "repositories/memoryos-readiness/distribution-manifest.json",
+          "byteLength": 12631,
+          "sha256": "sha256:91dc9624de1b89b5d83bdf795ccbc0f745b41d958fc8c1dd7abb997f0f88d73c",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "6b3c09d1819a2428fc97f220fdf5c9ca76179d1a"
+        },
+        {
+          "path": "repositories/memoryos-readiness/helpers/README.md",
+          "byteLength": 13560,
+          "sha256": "sha256:038e931e9919d652291ba43651071e8aa9bf8204d49789ebbf5b1a7a715e0f44",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "a673048381a186fdb838abd2c2ebb426cd98296b"
+        },
+        {
+          "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+          "byteLength": 29153,
+          "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "7ca55b8713108465099ecfce9796e06e3db67bd2"
+        },
+        {
+          "path": "repositories/memoryos-readiness/sbom.spdx.json",
+          "byteLength": 47328,
+          "sha256": "sha256:1510fdb9c0366023b4e49b81ce20cceeb1527a1dfaa2f7b4ded52a9bff737fda",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "af3e33e4feb4b146e626e7d67b06b442f7cc4d70"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/constants.mjs",
+          "byteLength": 16791,
+          "sha256": "sha256:e4ac8f64d2d0d610d1ff00e46da5a4773dbcbd5e33d0cc5cd83b317be2c7a409",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "971ec72042b2d2c60ebafc303bae49f106919ab7"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/helper-transport.mjs",
+          "byteLength": 6268,
+          "sha256": "sha256:e320a36d203a4635e13930663a7f075a064c2211e753700da4fff8ae81e477a1",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "1fda7eb5f24d2107c4ad078fd60185a8f6d8e5a9"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/runtime.mjs",
+          "byteLength": 16904,
+          "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "46c95fce6489205d74c30b51036d4c6ea342f486"
+        },
+        {
+          "path": "repositories/memoryos-readiness/src/helper-protocol.mjs",
+          "byteLength": 17308,
+          "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "5bac2473bcf1e65beed67d173d06741506463ce2"
+        },
+        {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/dependency-reuse.json",
+          "byteLength": 6226317,
+          "sha256": "sha256:330376873bd1358379c383da3ad8844185f715a928729fbb7755c5710a49a861"
+        }
+      ],
+      "productionExecuted": false,
+      "helperExecuted": false,
+      "securityControlExecuted": false,
+      "certificationClaims": 0,
+      "productionChanged": false,
+      "identity": {
+        "historical": {
+          "role": "C3RB",
+          "commit": "defe93989efc6501b1a730b82e79e705884b269b",
+          "rootTree": "54c8ca8acc388d8dcb5d8d76e119b434dcc1a9bb",
+          "productTree": "e726c38b44bb7b0402d510ccfdab0f9f6a584939"
+        },
+        "implementation": {
+          "role": "C3T",
+          "commit": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+          "parent": "79ef47e608c67edc70f3e9f51d494b169794f903",
+          "rootTree": "d21f46bc31ccd7a9f80a5e494b3d09116d125522",
+          "productTree": "324bf600b6cbfaa8564db27fce2d999711270cb8"
+        },
+        "handoff": {
+          "role": "C3TB",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "parent": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+          "rootTree": "5e0088965d4eac4002165fe0190f275c257985ba",
+          "productTree": "324bf600b6cbfaa8564db27fce2d999711270cb8"
+        },
+        "head": "119e68bdcf0ffc906b4ca03a912aadcb25908346"
+      }
+    },
+    "readSetBodyIdentical": true,
+    "referenceProvenance": {
+      "sealedArtifact": {
+        "commit": "c9cd73df2f4c48afeab6059b31eca61830e1633c",
+        "gitBlob": "527fea7b9f12ba345f5b4f57511263485e79e303",
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\evidence\\mo1307\\n15-correction\\native-filesystem\\helper.ps1.data",
+        "byteLength": 29136,
+        "sha256": "sha256:f9d68d43cba57b5fc64e6bca13605ccf82f6afa9e1b0ac110bf9e4357bdbce69"
+      },
+      "productionSource": {
+        "commit": "c9cd73df2f4c48afeab6059b31eca61830e1633c",
+        "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+        "gitBlob": "527fea7b9f12ba345f5b4f57511263485e79e303",
+        "byteLength": 29136,
+        "sha256": "sha256:f9d68d43cba57b5fc64e6bca13605ccf82f6afa9e1b0ac110bf9e4357bdbce69"
+      },
+      "copy": {
+        "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3cr2-c3tb-g2\\deadline-cleanup\\attempt-1\\reference-helper.ps1",
+        "byteLength": 29136,
+        "sha256": "sha256:f9d68d43cba57b5fc64e6bca13605ccf82f6afa9e1b0ac110bf9e4357bdbce69"
+      },
+      "sameGitBlob": true,
+      "role": "SEALED_CORRECTED_PRODUCTION_HELPER_COMPARISON_SOURCE",
+      "diagnosticEvidencePromoted": false
+    },
+    "requestLocalCollections": [
+      "rootChains <=3 roots",
+      "responseRoots <=3",
+      "responseFiles <=128 files",
+      "nativeFiles <=128 native ids",
+      "data <=maxBytes+1 per file",
+      "chunks bounded by maxBytes and response ceiling"
+    ],
+    "limits": {
+      "aggregateEvidenceBytes": 8388608,
+      "apiDeadlineMs": 10000,
+      "assumptions": 32,
+      "authorityBytes": 1048576,
+      "authoritySources": 32,
+      "blockers": 128,
+      "candidateBytes": 524288,
+      "candidateComponents": 1024,
+      "claims": 64,
+      "cleanupAllowanceMs": 2000,
+      "cliDeadlineMs": 30000,
+      "configurationBytes": 16384,
+      "decisionActorCodeUnits": 128,
+      "decisionBytes": 8192,
+      "decisionReasonCodeUnits": 1024,
+      "dependenciesPerClaim": 1024,
+      "engineeringAggregateRssBytes": 536870912,
+      "envelopeBytes": 262144,
+      "errorRecordBytes": 1024,
+      "fullPathCodeUnits": 240,
+      "gates": 128,
+      "grants": 64,
+      "graphEdges": 8192,
+      "graphNodes": 2048,
+      "helperAggregateDeadlineMs": 20000,
+      "helperChainComponents": 120,
+      "helperDeadlineMs": 8000,
+      "helperRequestBytes": 65536,
+      "helperRequestPaths": 128,
+      "helperRequests": 9,
+      "helperResponseBytes": 16777216,
+      "helperVerifyRequests": 4,
+      "historyDispositionChars": 256,
+      "historyRecords": 128,
+      "jsonDepth": 16,
+      "jsonSummaryBytes": 1024,
+      "jsonValues": 131072,
+      "keyCodeUnits": 64,
+      "manifestBytes": 262144,
+      "manifestFiles": 128,
+      "metadataCodeUnits": 256,
+      "objectMembers": 64,
+      "qualifications": 128,
+      "rawSourceBytes": 2097152,
+      "relativePathChars": 180,
+      "resultBytes": 4194304,
+      "sourceKindChars": 128,
+      "sourceVersionChars": 64,
+      "stderrBytes": 4096,
+      "stringCodeUnits": 4096,
+      "tagNameChars": 128,
+      "temporaryOutputBytes": 4194304,
+      "textStdoutBytes": 131072,
+      "workerOldHeapMiB": 128,
+      "workerYoungHeapMiB": 16
+    },
+    "findings": [
+      "All nine C3RB-to-C3TB changed product members and all 28 unified-zero hunks match exact old/new blobs and per-hunk fingerprints; no unexpected source delta exists.",
+      "Every changed dependency is mapped to a required fresh review, and all 14 security-critical hunks are mechanically reviewed.",
+      "All 462 reuse rows remain REUSED_EXACT with every exercised facet equal; moved-to-fresh, unresolved and mismatch sets are empty.",
+      "Console startup fails closed, admits only positive sole-helper membership, requires FreeConsole, performs no post-detach membership query, PPID/window ownership inference or speculative host termination, and still requires process-and-pipe quiescence.",
+      "Five comment-only executable-file hunks are classified DOCUMENTATION_ONLY with equal per-hunk executable projections; no global source comment elision or normalization is used."
+    ],
+    "scope": "Source review and bounded representative measurements, not aggregate RSS certification."
+  }
+}

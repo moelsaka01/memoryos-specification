@@ -1,0 +1,74 @@
+{
+  "kind": "MO1307ReadSetEngineeringInstrumentation",
+  "original": {
+    "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+    "byteLength": 29153,
+    "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+  },
+  "copy": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/equivalence/attempt1/observed-final-trailing-dot/candidate-instrumented.ps1",
+    "byteLength": 32712,
+    "sha256": "sha256:95d79f36fe392011cd7ccbdb2fa113c25140b8242ae90657bc583440d571f304"
+  },
+  "reversibleAdditions": true,
+  "blocks": [
+    {
+      "needle": "function Reject-Protocol",
+      "insertedBytes": 366,
+      "sha256": "sha256:9e5b787281dd7ff23ef61b157792cfae7cdf9f911175bbe08f2441fb99a6be59"
+    },
+    {
+      "needle": "    $access = [uint32] 128",
+      "insertedBytes": 63,
+      "sha256": "sha256:08751dcbbf6078cb106d5280d768bbddc274186ecbc71db2971634559a4b3192"
+    },
+    {
+      "needle": "    $buffer = [Runtime.InteropServices.Marshal]::AllocHGlobal(52)",
+      "insertedBytes": 65,
+      "sha256": "sha256:aae88955a11327510b0d2a9046b10de6e844bc8bdef71e0aacdbf317af9fe97c"
+    },
+    {
+      "needle": "        if (-not $script:native::GetFileInformationByHandle($Handle, $buffer))",
+      "insertedBytes": 82,
+      "sha256": "sha256:e830f88a6d2fe3ad442f92c1f48398d971efc5ab25537bd1260a3abb1a891116"
+    },
+    {
+      "needle": "        $count = $script:native::GetFinalPathNameByHandleW($Handle, $final, 512, 0)",
+      "insertedBytes": 81,
+      "sha256": "sha256:f1dda78e879d2f46ad5fb91d064c1c45322198eb557c451f574056cf4ab6c514"
+    },
+    {
+      "needle": "    foreach ($key in @('attributes', 'byteLength', 'fileId', 'finalPath', 'isDirectory', 'linkCount', 'volumeSerial'))",
+      "insertedBytes": 939,
+      "sha256": "sha256:3c93b08716816ce29195588cd4fc4be949e758bd154219ef145db2ad58710522"
+    },
+    {
+      "needle": "        if (-not $observed.StartsWith('\\\\?\\', [StringComparison]::Ordinal))",
+      "insertedBytes": 750,
+      "sha256": "sha256:424a8c0fc656a0593c3d9f17c39c6a90f2163ba07029700ccd8cb57e52fbb640"
+    },
+    {
+      "needle": "                Assert-ChainStable $chain",
+      "insertedBytes": 82,
+      "sha256": "sha256:082a9cdbd1c53dada74df153ec18051dcbd46cfbfb62a548c2fffc0e29d91464"
+    },
+    {
+      "needle": "                $encoded = [Convert]::ToBase64String($data, 0, $used)",
+      "insertedBytes": 80,
+      "sha256": "sha256:ca70f110ffe67a193d15dac68f66cd46d6295c470063ef3755cb5095a96dfbc2"
+    },
+    {
+      "needle": "        foreach ($chain in $rootChains.Values) { Assert-ChainStable $chain }",
+      "insertedBytes": 74,
+      "sha256": "sha256:2f7f3eac53c2550a99c5aea011ed21444b46494c0f1f974fc1ba3f948f5f13d0"
+    },
+    {
+      "needle": "exit 0",
+      "insertedBytes": 977,
+      "sha256": "sha256:f6b039d3c0282faf84a27564703f961d53f70685e4197da7fd14f61bce2c1372"
+    }
+  ],
+  "productionHooks": false,
+  "mutation": "observed-trailing-dot",
+  "securityObservationCallsRetained": true
+}

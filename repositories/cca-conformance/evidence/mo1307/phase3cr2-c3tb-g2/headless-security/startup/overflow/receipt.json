@@ -1,0 +1,127 @@
+{
+  "name": "overflow",
+  "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+  "expectedExit": 22,
+  "accepted": false,
+  "result": "PASS",
+  "nativeProductHelper": false,
+  "realHostProof": false,
+  "events": [
+    {
+      "event": "stdin-finish",
+      "elapsedMs": 16.743000000000393
+    },
+    {
+      "event": "stdin-close",
+      "elapsedMs": 16.80119999999988
+    },
+    {
+      "event": "stdout-end",
+      "elapsedMs": 545.0484000000006
+    },
+    {
+      "event": "stderr-end",
+      "elapsedMs": 545.1657000000005
+    },
+    {
+      "event": "stderr-close",
+      "elapsedMs": 545.3306000000002
+    },
+    {
+      "event": "stdout-close",
+      "elapsedMs": 545.3422
+    },
+    {
+      "event": "exit",
+      "elapsedMs": 552.4354000000003,
+      "code": 22,
+      "signal": null
+    }
+  ],
+  "pid": 26224,
+  "exitCode": 22,
+  "exitSignal": null,
+  "elapsedMs": 552.473,
+  "proof": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/headless-security/startup/overflow/proof.json",
+    "byteLength": 851,
+    "sha256": "sha256:6ba007fda0e5c6e9d117244fea0e34b70ca246a1d42265ff86cb773ee790ea11"
+  },
+  "observed": {
+    "candidateCommit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+    "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+    "helperDeadlineMs": 8000,
+    "configuredErrorContext": null,
+    "nativeLastErrorSet": false,
+    "membershipCalls": 1,
+    "freeConsoleCalls": 0,
+    "kind": "MO1307Phase3CR2ExtractedHeadlessStartupSimulation",
+    "scenario": "overflow",
+    "accepted": false,
+    "failure": "MO1307_INTERNAL",
+    "failureType": "System.InvalidOperationException",
+    "events": [
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -10
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          10
+        ]
+      },
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -11
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          11
+        ]
+      },
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -12
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          12
+        ]
+      },
+      {
+        "name": "GetConsoleProcessList",
+        "arguments": [
+          1
+        ]
+      }
+    ],
+    "detached": false,
+    "productionFunctionUnmodified": true,
+    "nativeProcessOperationsPerformed": false,
+    "realHostIdentityProof": false
+  },
+  "closed": true,
+  "timedOut": false,
+  "cleanupExpired": false,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/headless-security/startup/overflow/stdout.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/headless-security/startup/overflow/stderr.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdoutBytes": 0,
+  "stderrBytes": 0
+}

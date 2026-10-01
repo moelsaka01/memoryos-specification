@@ -1,0 +1,74 @@
+{
+  "status": "INCOMPLETE",
+  "rows": [
+    {
+      "id": "before-read-replacement",
+      "result": "PASS",
+      "negative": true,
+      "code": "MO1307_FILESYSTEM_BOUNDARY",
+      "exactResponseEquivalent": true,
+      "scope": "ENGINEERING_CONTROLLED_NATIVE_FILESYSTEM_MUTATION",
+      "request": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/toctou-boundaries/attempt1/before-read-replacement/request.bin",
+        "byteLength": 376,
+        "sha256": "sha256:1786b317ac0eabbcc196dc62a5892bc54cca912b33a5c3c803c5a9fd41e8838a"
+      },
+      "runs": [
+        {
+          "code": 0,
+          "signal": null,
+          "pid": 524,
+          "closeObserved": true,
+          "stdout": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/toctou-boundaries/attempt1/before-read-replacement/reference.stdout.bin",
+            "byteLength": 253,
+            "sha256": "sha256:bfce1712ce0ef0a25c7cdc519e107a702b07ef703cf6a20ebcb53ebfc6f7c04e"
+          },
+          "stderr": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/toctou-boundaries/attempt1/before-read-replacement/reference.stderr.bin",
+            "byteLength": 0,
+            "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "helper": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/toctou-boundaries/attempt1/before-read-replacement/reference-instrumented.ps1",
+            "byteLength": 30049,
+            "sha256": "sha256:d57857a6794bbdb64237459d772fcc09aa92322fcc5c9fce511a16f44f2122ea"
+          }
+        },
+        {
+          "code": 0,
+          "signal": null,
+          "pid": 17156,
+          "closeObserved": true,
+          "stdout": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/toctou-boundaries/attempt1/before-read-replacement/candidate.stdout.bin",
+            "byteLength": 253,
+            "sha256": "sha256:bfce1712ce0ef0a25c7cdc519e107a702b07ef703cf6a20ebcb53ebfc6f7c04e"
+          },
+          "stderr": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/toctou-boundaries/attempt1/before-read-replacement/candidate.stderr.bin",
+            "byteLength": 0,
+            "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "helper": {
+            "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/toctou-boundaries/attempt1/before-read-replacement/candidate-instrumented.ps1",
+            "byteLength": 30066,
+            "sha256": "sha256:8857e7d4e1566ae281264830dbb637ac97de9e1cc56c60052257e967a89a1b01"
+          }
+        }
+      ]
+    }
+  ],
+  "caseAccounting": [
+    {
+      "ordinal": 1,
+      "id": "before-read-replacement",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 2,
+      "id": "held-to-fresh-replacement",
+      "status": "NOT_RUN"
+    }
+  ]
+}

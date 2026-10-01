@@ -1,0 +1,920 @@
+{
+  "kind": "MO1307Phase3CR2RefreshDeadlineEnvironmentReceipt",
+  "result": "FAIL",
+  "failure": {
+    "code": "ERR_ASSERTION",
+    "message": "Expected values to be strictly equal:\n+ actual - expected\n... Skipped lines\n\n  \"import { spawn } from 'node:child_process';\\n\" +\n    \"import { fileURLToPath } from 'node:url';\\n\" +\n    \"import { DEFINITIONS } from './constants.mjs';\\n\" +\n    \"import { ReadinessError, fail } from './errors.mjs';\\n\" +\n    \"import { decodeHelperRequest, decodeHelperResponse } from './helper-protocol.mjs';\\n\" +\n...\n    '            }\\n' +\n+   '          } catch { /* No self-detachment proof from malformed/partial transport. */ }\\n' +\n-   '          } catch { /* No console proof from malformed/partial transport. */ }\\n' +\n    '          resolveClosed();\\n' +\n    '          try {\\n' +\n    '            if (streamFailure) throw streamFailure;\\n' +\n    \"            if (processCode !== 0 || !outputEnded || !errorEnded || !inputFinished) fail('INTERNAL', 'ACQUISITION');\\n\" +\n    '            lease.checkpoint();\\n' +\n...\n    \"        child.once('close', code => { processClosed = true; processCode = code; finish(); });\\n\" +\n+   \"        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES' });\\n\" +\n-   \"        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT' });\\n\" +\n    '        child.stdin.end(detached);\\n' +\n    '        return { completion, closed, quiescence: () => consoleQuiescent, abandon: () => child.unref?.(), terminate: () => {\\n' +\n    '          child.stdin.destroy(); child.stdout.destroy(); child.stderr.destroy();\\n' +\n    '          if (!processClosed) child.kill();\\n' +\n    '        } };\\n' +\n",
+    "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n... Skipped lines\n\n  \"import { spawn } from 'node:child_process';\\n\" +\n    \"import { fileURLToPath } from 'node:url';\\n\" +\n    \"import { DEFINITIONS } from './constants.mjs';\\n\" +\n    \"import { ReadinessError, fail } from './errors.mjs';\\n\" +\n    \"import { decodeHelperRequest, decodeHelperResponse } from './helper-protocol.mjs';\\n\" +\n...\n    '            }\\n' +\n+   '          } catch { /* No self-detachment proof from malformed/partial transport. */ }\\n' +\n-   '          } catch { /* No console proof from malformed/partial transport. */ }\\n' +\n    '          resolveClosed();\\n' +\n    '          try {\\n' +\n    '            if (streamFailure) throw streamFailure;\\n' +\n    \"            if (processCode !== 0 || !outputEnded || !errorEnded || !inputFinished) fail('INTERNAL', 'ACQUISITION');\\n\" +\n    '            lease.checkpoint();\\n' +\n...\n    \"        child.once('close', code => { processClosed = true; processCode = code; finish(); });\\n\" +\n+   \"        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES' });\\n\" +\n-   \"        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT' });\\n\" +\n    '        child.stdin.end(detached);\\n' +\n    '        return { completion, closed, quiescence: () => consoleQuiescent, abandon: () => child.unref?.(), terminate: () => {\\n' +\n    '          child.stdin.destroy(); child.stdout.destroy(); child.stderr.destroy();\\n' +\n    '          if (!processClosed) child.kill();\\n' +\n    '        } };\\n' +\n\n    at file:///C:/Users/melsa/Documents/Codex/3cr2/repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb/deadline-cleanup.mjs:220:275\n    at test (file:///C:/Users/melsa/Documents/Codex/3cr2/repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb/deadline-cleanup.mjs:157:270)\n    at file:///C:/Users/melsa/Documents/Codex/3cr2/repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb/deadline-cleanup.mjs:215:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+  },
+  "cases": [
+    {
+      "id": "fixed-native-timely",
+      "layer": "ACTUAL_FIXED_HELPER",
+      "result": "PASS",
+      "elapsedMs": 2077.5722,
+      "detail": {
+        "accepted": true,
+        "errorCode": null,
+        "mappedPublicExit": null,
+        "lateNativeOK": false,
+        "noSecretEcho": true,
+        "exactFixedLaunch": true,
+        "poisonedKeys": [],
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 30083.8897,
+          "helpers": 1,
+          "workers": 0,
+          "helperUsedMs": 2070.5549,
+          "activeRole": null,
+          "cleanupConfirmed": true,
+          "publication": null,
+          "terminalCode": null,
+          "terminalAt": null,
+          "cleanupDeadline": null,
+          "events": [
+            {
+              "type": "start",
+              "at": 88.7778,
+              "role": "helper",
+              "deadline": 8088.66,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 106.0368,
+              "role": "helper",
+              "pid": 10524,
+              "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+            },
+            {
+              "type": "quiescent",
+              "at": 2159.2271,
+              "role": "helper",
+              "ordinal": 1
+            }
+          ]
+        },
+        "observation": {
+          "name": "fixed-native-timely",
+          "pid": 10524,
+          "startedAt": 105.6093,
+          "closedAt": 2155.0153,
+          "exitCode": 0,
+          "stdoutBytes": 867,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 1961.2064
+        }
+      }
+    },
+    {
+      "id": "timeout-exact-mapping",
+      "layer": "ACTUAL_FIXED_HELPER_ENGINEERING_EOF_DELAY",
+      "result": "PASS",
+      "elapsedMs": 8026.4966,
+      "detail": {
+        "accepted": false,
+        "errorCode": "MO1307_TIMEOUT",
+        "mappedPublicExit": 29,
+        "lateNativeOK": false,
+        "noSecretEcho": true,
+        "exactFixedLaunch": true,
+        "poisonedKeys": [],
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 32161.8535,
+          "helpers": 1,
+          "workers": 0,
+          "helperUsedMs": 0,
+          "activeRole": "helper",
+          "cleanupConfirmed": false,
+          "publication": null,
+          "terminalCode": "MO1307_TIMEOUT",
+          "terminalAt": 10166.6912,
+          "cleanupDeadline": 12166.6912,
+          "events": [
+            {
+              "type": "start",
+              "at": 2162.9025,
+              "role": "helper",
+              "deadline": 10162.876,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 2178.2425,
+              "role": "helper",
+              "pid": 15376,
+              "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+            },
+            {
+              "type": "terminal",
+              "at": 10166.7429,
+              "code": "MO1307_TIMEOUT",
+              "stage": "ACQUISITION"
+            },
+            {
+              "type": "cleanup",
+              "at": 10187.8553,
+              "role": "helper",
+              "confirmed": false
+            }
+          ]
+        },
+        "observation": {
+          "name": "timeout-exact-mapping",
+          "pid": 15376,
+          "startedAt": 2178.1158,
+          "closedAt": 10185.1691,
+          "exitCode": null,
+          "stdoutBytes": 0,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null
+        }
+      }
+    },
+    {
+      "id": "late-native-success-refused",
+      "layer": "ACTUAL_FIXED_HELPER_FRAME_ENGINEERING_DELAYED_STREAM_DELIVERY",
+      "result": "PASS",
+      "elapsedMs": 8275.2614,
+      "detail": {
+        "accepted": false,
+        "errorCode": "MO1307_TIMEOUT",
+        "mappedPublicExit": 29,
+        "lateNativeOK": true,
+        "noSecretEcho": true,
+        "exactFixedLaunch": true,
+        "poisonedKeys": [],
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 40189.6937,
+          "helpers": 1,
+          "workers": 0,
+          "helperUsedMs": 0,
+          "activeRole": null,
+          "cleanupConfirmed": true,
+          "publication": null,
+          "terminalCode": "MO1307_TIMEOUT",
+          "terminalAt": 18199.2856,
+          "cleanupDeadline": 20199.2856,
+          "events": [
+            {
+              "type": "start",
+              "at": 10191.9602,
+              "role": "helper",
+              "deadline": 18191.8742,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 10205.2361,
+              "role": "helper",
+              "pid": 17912,
+              "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+            },
+            {
+              "type": "terminal",
+              "at": 18199.3248,
+              "code": "MO1307_TIMEOUT",
+              "stage": "ACQUISITION"
+            },
+            {
+              "type": "cleanup",
+              "at": 18463.9563,
+              "role": "helper",
+              "confirmed": true
+            }
+          ]
+        },
+        "observation": {
+          "name": "late-native-success-refused",
+          "pid": 17912,
+          "startedAt": 10204.7217,
+          "closedAt": 11508.959,
+          "exitCode": 0,
+          "stdoutBytes": 867,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 11484.3844,
+          "deliveredAt": 18461.9254
+        }
+      }
+    },
+    {
+      "id": "crash-closed-transport",
+      "layer": "ACTUAL_FIXED_HELPER_OWNED_PROCESS_KILL",
+      "result": "PASS",
+      "elapsedMs": 2241.863400000002,
+      "detail": {
+        "accepted": false,
+        "errorCode": "MO1307_INTERNAL",
+        "mappedPublicExit": 22,
+        "lateNativeOK": false,
+        "noSecretEcho": true,
+        "exactFixedLaunch": true,
+        "poisonedKeys": [],
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 48467.005900000004,
+          "helpers": 1,
+          "workers": 0,
+          "helperUsedMs": 0,
+          "activeRole": "helper",
+          "cleanupConfirmed": false,
+          "publication": null,
+          "terminalCode": "MO1307_INTERNAL",
+          "terminalAt": 20708.4675,
+          "cleanupDeadline": 22708.4675,
+          "events": [
+            {
+              "type": "start",
+              "at": 18468.779,
+              "role": "helper",
+              "deadline": 26468.7436,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 18485.6304,
+              "role": "helper",
+              "pid": 6556,
+              "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+            },
+            {
+              "type": "terminal",
+              "at": 20708.4814,
+              "code": "MO1307_INTERNAL",
+              "stage": "ACQUISITION"
+            },
+            {
+              "type": "cleanup",
+              "at": 20708.5254,
+              "role": "helper",
+              "confirmed": false
+            }
+          ]
+        },
+        "observation": {
+          "name": "crash-closed-transport",
+          "pid": 6556,
+          "startedAt": 18485.4915,
+          "closedAt": 20707.1566,
+          "exitCode": null,
+          "stdoutBytes": 0,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "crashRequestedAt": 20692.8576
+        }
+      }
+    },
+    {
+      "id": "fixed-launch-combined-environment-poison",
+      "layer": "ACTUAL_FIXED_HELPER",
+      "result": "PASS",
+      "elapsedMs": 1726.6913000000022,
+      "detail": {
+        "accepted": true,
+        "errorCode": null,
+        "mappedPublicExit": null,
+        "lateNativeOK": false,
+        "noSecretEcho": true,
+        "exactFixedLaunch": true,
+        "poisonedKeys": [
+          "ALL_PROXY",
+          "AWS_SECRET_ACCESS_KEY",
+          "AZURE_CLIENT_SECRET",
+          "GITHUB_TOKEN",
+          "HOME",
+          "HTTPS_PROXY",
+          "HTTP_PROXY",
+          "MEMORYOS_READINESS_HELPER",
+          "PATH",
+          "PATHEXT",
+          "POWERSHELL",
+          "POWERSHELL_EXECUTABLE",
+          "PSExecutionPolicyPreference",
+          "PSHOME",
+          "PSModulePath",
+          "SystemRoot",
+          "USERPROFILE",
+          "WINDIR"
+        ],
+        "snapshot": {
+          "kind": "cli",
+          "deadline": 50709.4562,
+          "helpers": 1,
+          "workers": 0,
+          "helperUsedMs": 1720.300800000001,
+          "activeRole": null,
+          "cleanupConfirmed": true,
+          "publication": null,
+          "terminalCode": null,
+          "terminalAt": null,
+          "cleanupDeadline": null,
+          "events": [
+            {
+              "type": "start",
+              "at": 20714.6305,
+              "role": "helper",
+              "deadline": 28714.6011,
+              "ordinal": 1
+            },
+            {
+              "type": "observation",
+              "at": 20730.4162,
+              "role": "helper",
+              "pid": 8076,
+              "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+            },
+            {
+              "type": "quiescent",
+              "at": 22434.913,
+              "role": "helper",
+              "ordinal": 1
+            }
+          ]
+        },
+        "observation": {
+          "name": "fixed-launch-combined-environment-poison",
+          "pid": 8076,
+          "startedAt": 20730.1662,
+          "closedAt": 22431.1023,
+          "exitCode": 0,
+          "stdoutBytes": 867,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 22402.6493
+        }
+      }
+    },
+    {
+      "id": "resource-request-path-cap128-129",
+      "layer": "PRODUCTION_JS_ADMISSION",
+      "result": "PASS",
+      "elapsedMs": 17.35780000000159,
+      "detail": {
+        "acceptedPathCount": 128,
+        "rejectedPathCount": 129
+      }
+    },
+    {
+      "id": "resource-native-path-cap129",
+      "layer": "ACTUAL_FIXED_HELPER_RAW_ENGINEERING_TRANSPORT",
+      "result": "PASS",
+      "elapsedMs": 1847.7187000000013,
+      "detail": {
+        "response": "MO1307_RESOURCE_LIMIT",
+        "observation": {
+          "name": "resource-native-path-cap129",
+          "pid": 23664,
+          "startedAt": 22478.6402,
+          "closedAt": 24299.871,
+          "exitCode": 0,
+          "stdoutBytes": 248,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 24259.017
+        },
+        "engineeringGuardMs": 15000,
+        "scriptBinding": {
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+          "byteLength": 29153,
+          "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+        }
+      }
+    },
+    {
+      "id": "resource-native-request-prefix-cap",
+      "layer": "ACTUAL_FIXED_HELPER_RAW_ENGINEERING_TRANSPORT",
+      "result": "PASS",
+      "elapsedMs": 1058.9873000000007,
+      "detail": {
+        "response": "MO1307_RESOURCE_LIMIT",
+        "observation": {
+          "name": "resource-native-request-prefix-cap",
+          "pid": 9948,
+          "startedAt": 24326.42,
+          "closedAt": 25366.0812,
+          "exitCode": 0,
+          "stdoutBytes": 248,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 25339.7207
+        },
+        "engineeringGuardMs": 15000,
+        "scriptBinding": {
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+          "byteLength": 29153,
+          "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+        }
+      }
+    },
+    {
+      "id": "resource-native-declared-file-cap",
+      "layer": "ACTUAL_FIXED_HELPER_RAW_ENGINEERING_TRANSPORT",
+      "result": "PASS",
+      "elapsedMs": 1478.2682999999997,
+      "detail": {
+        "response": "MO1307_RESOURCE_LIMIT",
+        "observation": {
+          "name": "resource-native-declared-file-cap",
+          "pid": 15992,
+          "startedAt": 25385.258,
+          "closedAt": 26844.4035,
+          "exitCode": 0,
+          "stdoutBytes": 248,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 26812.8628
+        },
+        "engineeringGuardMs": 15000,
+        "scriptBinding": {
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+          "byteLength": 29153,
+          "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+        }
+      }
+    },
+    {
+      "id": "resource-native-observed-file-cap",
+      "layer": "ACTUAL_FIXED_HELPER_RAW_ENGINEERING_TRANSPORT",
+      "result": "PASS",
+      "elapsedMs": 1330.4889000000003,
+      "detail": {
+        "response": "MO1307_RESOURCE_LIMIT",
+        "observation": {
+          "name": "resource-native-observed-file-cap",
+          "pid": 19592,
+          "startedAt": 26866.2838,
+          "closedAt": 28175.7252,
+          "exitCode": 0,
+          "stdoutBytes": 248,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 28149.7723
+        },
+        "engineeringGuardMs": 15000,
+        "scriptBinding": {
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+          "byteLength": 29153,
+          "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+        }
+      }
+    },
+    {
+      "id": "resource-sample-reference",
+      "layer": "SEALED_CORRECTED_PRODUCTION_REFERENCE_ENGINEERING_SCRIPT_SELECTION",
+      "result": "PASS",
+      "elapsedMs": 1320.8172999999988,
+      "detail": {
+        "response": "OK",
+        "observation": {
+          "name": "resource-sample-reference",
+          "pid": 10844,
+          "startedAt": 28194.8047,
+          "closedAt": 29500.1683,
+          "exitCode": 0,
+          "stdoutBytes": 867,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 29477.2843
+        },
+        "engineeringGuardMs": 15000,
+        "scriptBinding": {
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3cr2-c3tb\\deadline-cleanup\\attempt-1\\reference-helper.ps1",
+          "byteLength": 29136,
+          "sha256": "sha256:f9d68d43cba57b5fc64e6bca13605ccf82f6afa9e1b0ac110bf9e4357bdbce69"
+        }
+      }
+    },
+    {
+      "id": "resource-sample-corrected",
+      "layer": "ACTUAL_FIXED_HELPER_RAW_ENGINEERING_TRANSPORT",
+      "result": "PASS",
+      "elapsedMs": 1366.4375999999975,
+      "detail": {
+        "response": "OK",
+        "observation": {
+          "name": "resource-sample-corrected",
+          "pid": 11564,
+          "startedAt": 29516.7994,
+          "closedAt": 30864.7559,
+          "exitCode": 0,
+          "stdoutBytes": 867,
+          "stderrBytes": 0,
+          "streamsClosed": true,
+          "killRequestedAt": null,
+          "responseAt": 30840.1761
+        },
+        "engineeringGuardMs": 15000,
+        "scriptBinding": {
+          "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+          "byteLength": 29153,
+          "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+        }
+      }
+    },
+    {
+      "id": "deadline-sequence-no-partial-or-late-success",
+      "layer": "PRODUCTION_SEQUENCE_SYNTHETIC_CLOCK",
+      "result": "PASS",
+      "elapsedMs": 2.6260000000002037,
+      "detail": {
+        "deadlineMs": 8000,
+        "successRule": "elapsedMs < 8000",
+        "timeoutRule": "elapsedMs >= 8000",
+        "firstError": "MO1307_TIMEOUT",
+        "subsequentTerminalRefusal": "MO1307_INPUT"
+      }
+    },
+    {
+      "id": "launch-substitution-require",
+      "layer": "PRODUCTION_LAUNCH_ADMISSION",
+      "result": "PASS",
+      "elapsedMs": 0.2734999999993306,
+      "detail": {
+        "code": "MO1307_USAGE",
+        "noModuleExecuted": true
+      }
+    },
+    {
+      "id": "launch-substitution-import",
+      "layer": "PRODUCTION_LAUNCH_ADMISSION",
+      "result": "PASS",
+      "elapsedMs": 0.17519999999785796,
+      "detail": {
+        "code": "MO1307_USAGE",
+        "noModuleExecuted": true
+      }
+    },
+    {
+      "id": "launch-substitution-loader",
+      "layer": "PRODUCTION_LAUNCH_ADMISSION",
+      "result": "PASS",
+      "elapsedMs": 0.14400000000023283,
+      "detail": {
+        "code": "MO1307_USAGE",
+        "noModuleExecuted": true
+      }
+    },
+    {
+      "id": "secret-safe-error-projection",
+      "layer": "PRODUCTION_ERROR_SERIALIZATION",
+      "result": "PASS",
+      "elapsedMs": 0.6290000000008149,
+      "detail": {
+        "diagnostic": {
+          "code": "MO1307_INTERNAL",
+          "kind": "MemoryOSReadinessError",
+          "reference": null,
+          "stage": "EVALUATION",
+          "version": "1.0.0"
+        },
+        "sentinelAbsent": true
+      }
+    },
+    {
+      "id": "bounded-state-and-fixed-source-review",
+      "layer": "SOURCE_REVIEW_MECHANICAL_DEPENDENCY_BINDING",
+      "result": "FAIL",
+      "elapsedMs": 2118.5377999999982,
+      "error": {
+        "code": "ERR_ASSERTION",
+        "message": "Expected values to be strictly equal:\n+ actual - expected\n... Skipped lines\n\n  \"import { spawn } from 'node:child_process';\\n\" +\n    \"import { fileURLToPath } from 'node:url';\\n\" +\n    \"import { DEFINITIONS } from './constants.mjs';\\n\" +\n    \"import { ReadinessError, fail } from './errors.mjs';\\n\" +\n    \"import { decodeHelperRequest, decodeHelperResponse } from './helper-protocol.mjs';\\n\" +\n...\n    '            }\\n' +\n+   '          } catch { /* No self-detachment proof from malformed/partial transport. */ }\\n' +\n-   '          } catch { /* No console proof from malformed/partial transport. */ }\\n' +\n    '          resolveClosed();\\n' +\n    '          try {\\n' +\n    '            if (streamFailure) throw streamFailure;\\n' +\n    \"            if (processCode !== 0 || !outputEnded || !errorEnded || !inputFinished) fail('INTERNAL', 'ACQUISITION');\\n\" +\n    '            lease.checkpoint();\\n' +\n...\n    \"        child.once('close', code => { processClosed = true; processCode = code; finish(); });\\n\" +\n+   \"        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES' });\\n\" +\n-   \"        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT' });\\n\" +\n    '        child.stdin.end(detached);\\n' +\n    '        return { completion, closed, quiescence: () => consoleQuiescent, abandon: () => child.unref?.(), terminate: () => {\\n' +\n    '          child.stdin.destroy(); child.stdout.destroy(); child.stderr.destroy();\\n' +\n    '          if (!processClosed) child.kill();\\n' +\n    '        } };\\n' +\n",
+        "stack": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n... Skipped lines\n\n  \"import { spawn } from 'node:child_process';\\n\" +\n    \"import { fileURLToPath } from 'node:url';\\n\" +\n    \"import { DEFINITIONS } from './constants.mjs';\\n\" +\n    \"import { ReadinessError, fail } from './errors.mjs';\\n\" +\n    \"import { decodeHelperRequest, decodeHelperResponse } from './helper-protocol.mjs';\\n\" +\n...\n    '            }\\n' +\n+   '          } catch { /* No self-detachment proof from malformed/partial transport. */ }\\n' +\n-   '          } catch { /* No console proof from malformed/partial transport. */ }\\n' +\n    '          resolveClosed();\\n' +\n    '          try {\\n' +\n    '            if (streamFailure) throw streamFailure;\\n' +\n    \"            if (processCode !== 0 || !outputEnded || !errorEnded || !inputFinished) fail('INTERNAL', 'ACQUISITION');\\n\" +\n    '            lease.checkpoint();\\n' +\n...\n    \"        child.once('close', code => { processClosed = true; processCode = code; finish(); });\\n\" +\n+   \"        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES' });\\n\" +\n-   \"        lease.observe({ pid: child.pid ?? null, consolePolicy: 'HELPER_NATIVE_DETACH_AND_CONFIRMED_HOST_EXIT' });\\n\" +\n    '        child.stdin.end(detached);\\n' +\n    '        return { completion, closed, quiescence: () => consoleQuiescent, abandon: () => child.unref?.(), terminate: () => {\\n' +\n    '          child.stdin.destroy(); child.stdout.destroy(); child.stderr.destroy();\\n' +\n    '          if (!processClosed) child.kill();\\n' +\n    '        } };\\n' +\n\n    at file:///C:/Users/melsa/Documents/Codex/3cr2/repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb/deadline-cleanup.mjs:220:275\n    at test (file:///C:/Users/melsa/Documents/Codex/3cr2/repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb/deadline-cleanup.mjs:157:270)\n    at file:///C:/Users/melsa/Documents/Codex/3cr2/repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb/deadline-cleanup.mjs:215:11\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      }
+    }
+  ],
+  "caseAccounting": [
+    {
+      "ordinal": 1,
+      "id": "fixed-native-timely",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 2,
+      "id": "timeout-exact-mapping",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 3,
+      "id": "late-native-success-refused",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 4,
+      "id": "crash-closed-transport",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 5,
+      "id": "fixed-launch-combined-environment-poison",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 6,
+      "id": "resource-request-path-cap128-129",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 7,
+      "id": "resource-native-path-cap129",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 8,
+      "id": "resource-native-request-prefix-cap",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 9,
+      "id": "resource-native-declared-file-cap",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 10,
+      "id": "resource-native-observed-file-cap",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 11,
+      "id": "resource-sample-reference",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 12,
+      "id": "resource-sample-corrected",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 13,
+      "id": "deadline-sequence-no-partial-or-late-success",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 14,
+      "id": "launch-substitution-require",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 15,
+      "id": "launch-substitution-import",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 16,
+      "id": "launch-substitution-loader",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 17,
+      "id": "secret-safe-error-projection",
+      "status": "PASS"
+    },
+    {
+      "ordinal": 18,
+      "id": "bounded-state-and-fixed-source-review",
+      "status": "FAIL"
+    }
+  ],
+  "invocations": [
+    {
+      "name": "fixed-native-timely",
+      "pid": 10524,
+      "startedAt": 105.6093,
+      "closedAt": 2155.0153,
+      "exitCode": 0,
+      "stdoutBytes": 867,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 1961.2064
+    },
+    {
+      "name": "timeout-exact-mapping",
+      "pid": 15376,
+      "startedAt": 2178.1158,
+      "closedAt": 10185.1691,
+      "exitCode": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null
+    },
+    {
+      "name": "late-native-success-refused",
+      "pid": 17912,
+      "startedAt": 10204.7217,
+      "closedAt": 11508.959,
+      "exitCode": 0,
+      "stdoutBytes": 867,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 11484.3844,
+      "deliveredAt": 18461.9254
+    },
+    {
+      "name": "crash-closed-transport",
+      "pid": 6556,
+      "startedAt": 18485.4915,
+      "closedAt": 20707.1566,
+      "exitCode": null,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "crashRequestedAt": 20692.8576
+    },
+    {
+      "name": "fixed-launch-combined-environment-poison",
+      "pid": 8076,
+      "startedAt": 20730.1662,
+      "closedAt": 22431.1023,
+      "exitCode": 0,
+      "stdoutBytes": 867,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 22402.6493
+    },
+    {
+      "name": "resource-native-path-cap129",
+      "pid": 23664,
+      "startedAt": 22478.6402,
+      "closedAt": 24299.871,
+      "exitCode": 0,
+      "stdoutBytes": 248,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 24259.017
+    },
+    {
+      "name": "resource-native-request-prefix-cap",
+      "pid": 9948,
+      "startedAt": 24326.42,
+      "closedAt": 25366.0812,
+      "exitCode": 0,
+      "stdoutBytes": 248,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 25339.7207
+    },
+    {
+      "name": "resource-native-declared-file-cap",
+      "pid": 15992,
+      "startedAt": 25385.258,
+      "closedAt": 26844.4035,
+      "exitCode": 0,
+      "stdoutBytes": 248,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 26812.8628
+    },
+    {
+      "name": "resource-native-observed-file-cap",
+      "pid": 19592,
+      "startedAt": 26866.2838,
+      "closedAt": 28175.7252,
+      "exitCode": 0,
+      "stdoutBytes": 248,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 28149.7723
+    },
+    {
+      "name": "resource-sample-reference",
+      "pid": 10844,
+      "startedAt": 28194.8047,
+      "closedAt": 29500.1683,
+      "exitCode": 0,
+      "stdoutBytes": 867,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 29477.2843
+    },
+    {
+      "name": "resource-sample-corrected",
+      "pid": 11564,
+      "startedAt": 29516.7994,
+      "closedAt": 30864.7559,
+      "exitCode": 0,
+      "stdoutBytes": 867,
+      "stderrBytes": 0,
+      "streamsClosed": true,
+      "killRequestedAt": null,
+      "responseAt": 30840.1761
+    }
+  ],
+  "dependencies": [
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\memoryos-readiness\\src\\helper-transport.mjs",
+      "byteLength": 6268,
+      "sha256": "sha256:e320a36d203a4635e13930663a7f075a064c2211e753700da4fff8ae81e477a1",
+      "relative": "src/helper-transport.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\memoryos-readiness\\src\\helper-protocol.mjs",
+      "byteLength": 17308,
+      "sha256": "sha256:96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002",
+      "relative": "src/helper-protocol.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\memoryos-readiness\\src\\runtime.mjs",
+      "byteLength": 16904,
+      "sha256": "sha256:012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1",
+      "relative": "src/runtime.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\memoryos-readiness\\src\\windows-paths.mjs",
+      "byteLength": 5990,
+      "sha256": "sha256:7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029",
+      "relative": "src/windows-paths.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\memoryos-readiness\\src\\cli-args.mjs",
+      "byteLength": 4280,
+      "sha256": "sha256:107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7",
+      "relative": "src/cli-args.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\memoryos-readiness\\src\\errors.mjs",
+      "byteLength": 1823,
+      "sha256": "sha256:71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac",
+      "relative": "src/errors.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\memoryos-readiness\\src\\constants.mjs",
+      "byteLength": 16791,
+      "sha256": "sha256:e4ac8f64d2d0d610d1ff00e46da5a4773dbcbd5e33d0cc5cd83b317be2c7a409",
+      "relative": "src/constants.mjs"
+    },
+    {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\memoryos-readiness\\helpers\\windows-inspect.ps1",
+      "byteLength": 29153,
+      "sha256": "sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127",
+      "relative": "helpers/windows-inspect.ps1"
+    }
+  ],
+  "referenceProvenance": {
+    "sealedArtifact": {
+      "commit": "c9cd73df2f4c48afeab6059b31eca61830e1633c",
+      "gitBlob": "527fea7b9f12ba345f5b4f57511263485e79e303",
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\evidence\\mo1307\\n15-correction\\native-filesystem\\helper.ps1.data",
+      "byteLength": 29136,
+      "sha256": "sha256:f9d68d43cba57b5fc64e6bca13605ccf82f6afa9e1b0ac110bf9e4357bdbce69"
+    },
+    "productionSource": {
+      "commit": "c9cd73df2f4c48afeab6059b31eca61830e1633c",
+      "path": "repositories/memoryos-readiness/helpers/windows-inspect.ps1",
+      "gitBlob": "527fea7b9f12ba345f5b4f57511263485e79e303",
+      "byteLength": 29136,
+      "sha256": "sha256:f9d68d43cba57b5fc64e6bca13605ccf82f6afa9e1b0ac110bf9e4357bdbce69"
+    },
+    "copy": {
+      "path": "C:\\Users\\melsa\\Documents\\Codex\\3cr2\\repositories\\cca-conformance\\evidence\\mo1307\\phase3cr2-c3tb\\deadline-cleanup\\attempt-1\\reference-helper.ps1",
+      "byteLength": 29136,
+      "sha256": "sha256:f9d68d43cba57b5fc64e6bca13605ccf82f6afa9e1b0ac110bf9e4357bdbce69"
+    },
+    "sameGitBlob": true,
+    "role": "SEALED_CORRECTED_PRODUCTION_HELPER_COMPARISON_SOURCE",
+    "diagnosticEvidencePromoted": false
+  },
+  "productionChanged": false,
+  "runtime": {
+    "version": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "authority": {
+    "identity": "PROSPECTIVE_HELPER_BOUND@1.0.0",
+    "historicalH": "NOT_ESTABLISHED",
+    "success": "elapsedMs < 8000",
+    "timeout": "elapsedMs >= 8000"
+  },
+  "limits": {
+    "helperMs": 8000,
+    "aggregateHelperActiveMs": 20000,
+    "cliMs": 30000,
+    "apiWorkerMs": 10000,
+    "cleanupMs": 2000
+  },
+  "scope": "Security boundary controls only; no MO1306 runtime promotion. Timeout/crash without valid native frame leave conservative product cleanupConfirmed=false. External OS observer and full stream/process closures establish actual targeted no-survivor boundary."
+}

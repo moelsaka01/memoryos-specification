@@ -1,0 +1,217 @@
+{
+  "kind": "MO1307Phase3CR2CandidateSpecificControls",
+  "version": "1.0.0",
+  "generation": {
+    "id": "phase3cr2-c3tb-g4",
+    "ordinal": 4,
+    "mode": "RECONCILIATION_ONLY_FROM_IMMUTABLE_G2_AFTER_FAILED_G3",
+    "resumesPriorAttempt": false,
+    "sourceExecutionGeneration": "phase3cr2-c3tb-g2",
+    "priorRecoveryGeneration": "phase3cr2-c3tb-g3"
+  },
+  "sourceExecutionGeneration": "phase3cr2-c3tb-g2",
+  "reconciliationOnly": true,
+  "executionCounts": {
+    "helper": 0,
+    "worker": 0,
+    "product": 0,
+    "security": 0,
+    "native": 0,
+    "network": 0,
+    "certification": 0
+  },
+  "evidenceOrigin": {
+    "generation": "phase3cr2-c3tb-g4",
+    "sourceExecutionGeneration": "phase3cr2-c3tb-g2",
+    "executedInG4": 0,
+    "acceptedFromG2": 2,
+    "administrativeReconciliationOnly": true
+  },
+  "reconciledAt": "2026-10-01T18:39:37.656Z",
+  "result": "PASS",
+  "candidateRole": "C3TB",
+  "candidate": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+  "candidateImplementation": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+  "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+  "map": {
+    "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/phase3c-refresh-map.json",
+    "byteLength": 21293,
+    "sha256": "sha256:ada9532c868c69d7b6b951535f8f4a501c728a24057da6423308d5540192c16b",
+    "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+    "gitBlob": "863cd3d67d52ca2118f5de42b497db5f03279b03"
+  },
+  "count": 2,
+  "rows": [
+    {
+      "id": "candidate:prospective-bound-generated-contract-consistency",
+      "result": "PASS",
+      "scope": "CURRENT_C3TB_GENERATED_CONTRACT_AND_RUNTIME_RESOURCE_BINDING",
+      "checks": {
+        "consistencyValidation": "PASS",
+        "generatedResources": 7,
+        "packageMembers": 89,
+        "contractMembers": 53,
+        "schemaCount": 52,
+        "externalProductionDependencies": 0,
+        "helperDeadlineMs": 8000,
+        "generatedFieldsOtherThanHelperDeadlineEqualHistoricalProjection": true,
+        "runtimeResourcesBoundToC3TB": true
+      },
+      "evidence": [
+        {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/deadline-cleanup/attempt-1/receipt.json",
+          "byteLength": 83027,
+          "sha256": "sha256:eb594814a80fcd2c4985b7038fbf469f04e2d458e1023fefa263925bd28264ec"
+        },
+        {
+          "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/binding.json",
+          "byteLength": 27189,
+          "sha256": "sha256:dde0766b80e65bc3426a6c2bdc3208bdd1b8ecd7ca17aa2594449cfe6ccb7175",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "995c36fc429a0d04e42ad375f91aa00a0516b2b1"
+        },
+        {
+          "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/consistency-validation.json",
+          "byteLength": 2567,
+          "sha256": "sha256:8362dbf4418fe234226c773758a3e490f6d9d67738447940ce96c9dd1ca00346",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "e5da352d71e3949ddf72c34ac0ae5f157e0e1c1f"
+        }
+      ]
+    },
+    {
+      "id": "candidate:prospective-bound-package-and-binding-identity",
+      "result": "PASS",
+      "scope": "EXACT_C3TB_COMMIT_PACKAGE_TREE_AND_BINDING_ONLY_CHILD",
+      "checks": {
+        "candidateCommit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+        "soleParent": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+        "bindingOnlyChild": true,
+        "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+        "packageMembers": 89,
+        "packageIdentity": "sha256:2869cc0745fc555d5338f35634e7738b49cb628f6693dd92c5868f36ec113729",
+        "bindingVerification": "PASS",
+        "realHeadlessSmoke": "PASS",
+        "productionChangedDuringCampaign": false
+      },
+      "evidence": [
+        {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/headless-security/receipt.json",
+          "byteLength": 108638,
+          "sha256": "sha256:b810e4fed6394aa37bc4aed6f623f519cb38dcec7cd942d73e31bf090a2cdea3"
+        },
+        {
+          "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/headless-smoke/receipt.json",
+          "byteLength": 24331,
+          "sha256": "sha256:2dce8cfd74575a04fa17e40568d6de83abf04f7dacdb71407b8386b0b8bda6f8"
+        },
+        {
+          "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/binding-verification.json",
+          "byteLength": 1155,
+          "sha256": "sha256:f322d1ba53a9ab18fc3638b367fb770b5c2d47a1dd5ffbe7ae06ad82373555d1",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "cf6e3e9499164fcff5ca015659ca6e0795d7cb1b"
+        },
+        {
+          "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/binding.json",
+          "byteLength": 27189,
+          "sha256": "sha256:dde0766b80e65bc3426a6c2bdc3208bdd1b8ecd7ca17aa2594449cfe6ccb7175",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "995c36fc429a0d04e42ad375f91aa00a0516b2b1"
+        },
+        {
+          "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/candidate.json",
+          "byteLength": 20084,
+          "sha256": "sha256:38a20eecd128be0407b926ad3064d6e3f5e66ec62f96787c3a634e7992faf76d",
+          "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+          "gitBlob": "d4883d1c011828fb95a82ae3a9518456bd1cbbbc"
+        }
+      ]
+    }
+  ],
+  "candidatePins": {
+    "role": "C3TB",
+    "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+    "tree": "5e0088965d4eac4002165fe0190f275c257985ba",
+    "soleParent": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+    "implementationTree": "d21f46bc31ccd7a9f80a5e494b3d09116d125522",
+    "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+    "authority": {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/authority.json",
+      "byteLength": 1934,
+      "sha256": "sha256:ba8f9f085d8339348f69bd777fd0619b4d7594b9566b72cd0e5af6a3ed39b9b0",
+      "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+      "gitBlob": "07bbc8d2b081ddb59773e76888ce58b7f89c03f3"
+    },
+    "candidateRecord": {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/candidate.json",
+      "byteLength": 20084,
+      "sha256": "sha256:38a20eecd128be0407b926ad3064d6e3f5e66ec62f96787c3a634e7992faf76d",
+      "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+      "gitBlob": "d4883d1c011828fb95a82ae3a9518456bd1cbbbc"
+    },
+    "changedInventory": {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/changed-file-inventory.json",
+      "byteLength": 3947,
+      "sha256": "sha256:05a43964b8a218f39be13237237bcd3b8062da1cc2add1fb3facb1d7c0570955",
+      "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+      "gitBlob": "19f319d476d0f3456120bef3a5b8b2a0ea122b13"
+    },
+    "consistency": {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/consistency-validation.json",
+      "byteLength": 2567,
+      "sha256": "sha256:8362dbf4418fe234226c773758a3e490f6d9d67738447940ce96c9dd1ca00346",
+      "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+      "gitBlob": "e5da352d71e3949ddf72c34ac0ae5f157e0e1c1f"
+    },
+    "selectionMap": {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/phase3c-refresh-map.json",
+      "byteLength": 21293,
+      "sha256": "sha256:ada9532c868c69d7b6b951535f8f4a501c728a24057da6423308d5540192c16b",
+      "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+      "gitBlob": "863cd3d67d52ca2118f5de42b497db5f03279b03"
+    },
+    "binding": {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/binding.json",
+      "byteLength": 27189,
+      "sha256": "sha256:dde0766b80e65bc3426a6c2bdc3208bdd1b8ecd7ca17aa2594449cfe6ccb7175",
+      "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+      "gitBlob": "995c36fc429a0d04e42ad375f91aa00a0516b2b1"
+    },
+    "bindingVerification": {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-candidate/binding-verification.json",
+      "byteLength": 1155,
+      "sha256": "sha256:f322d1ba53a9ab18fc3638b367fb770b5c2d47a1dd5ffbe7ae06ad82373555d1",
+      "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+      "gitBlob": "cf6e3e9499164fcff5ca015659ca6e0795d7cb1b"
+    }
+  },
+  "supportingCounts": {
+    "dependencyReuse": 462,
+    "freshSelectedHistoricalControls": 89,
+    "freshSelectedNegativeControls": 74,
+    "freshSelectedHistoricalBySuite": {
+      "equivalence": 67,
+      "protocol": 12,
+      "deadline-cleanup": 7,
+      "toctou": 2,
+      "runtime-main": 1
+    },
+    "headlessRealHelperInvocations": 1,
+    "headlessCorrectionCases": 19,
+    "headlessStartupScenarios": 15,
+    "rawReceiptCases": {
+      "equivalence": 69,
+      "protocol": 13,
+      "toctou": 2,
+      "deadline-cleanup": 18
+    },
+    "freshExecutionWitnessesIncludingLiveRuntimeSmoke": 103,
+    "dependentSupportingRawCases": 10,
+    "freshlyExecutedReuseCandidateWitnesses": 4,
+    "nativeLastErrorMetadataCases": 1,
+    "sourceAndSecurityReviews": 12,
+    "candidateSpecificControls": 2
+  },
+  "historicalOutcomeAdopted": false
+}

@@ -1,0 +1,131 @@
+{
+  "name": "detach-throw",
+  "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+  "expectedExit": 22,
+  "accepted": false,
+  "result": "PASS",
+  "nativeProductHelper": false,
+  "realHostProof": false,
+  "events": [
+    {
+      "event": "stdin-finish",
+      "elapsedMs": 15.714500000000044
+    },
+    {
+      "event": "stdin-close",
+      "elapsedMs": 15.757799999999406
+    },
+    {
+      "event": "stdout-end",
+      "elapsedMs": 989.1002000000008
+    },
+    {
+      "event": "stdout-close",
+      "elapsedMs": 989.2492999999995
+    },
+    {
+      "event": "stderr-end",
+      "elapsedMs": 989.2819
+    },
+    {
+      "event": "stderr-close",
+      "elapsedMs": 989.3528999999999
+    },
+    {
+      "event": "exit",
+      "elapsedMs": 1003.3587000000007,
+      "code": 22,
+      "signal": null
+    }
+  ],
+  "pid": 6676,
+  "exitCode": 22,
+  "exitSignal": null,
+  "elapsedMs": 1003.5028999999995,
+  "proof": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/headless-security/startup/detach-throw/proof.json",
+    "byteLength": 907,
+    "sha256": "sha256:8d85fc029f15043ea4bd5bff5fb60ec39b5eab5a3963a4fb8c2c75340b898f49"
+  },
+  "observed": {
+    "candidateCommit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+    "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+    "helperDeadlineMs": 8000,
+    "configuredErrorContext": null,
+    "nativeLastErrorSet": false,
+    "membershipCalls": 1,
+    "freeConsoleCalls": 1,
+    "kind": "MO1307Phase3CR2ExtractedHeadlessStartupSimulation",
+    "scenario": "detach-throw",
+    "accepted": false,
+    "failure": "ENGINEERING_FREECONSOLE_THROW",
+    "failureType": "System.InvalidOperationException",
+    "events": [
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -10
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          10
+        ]
+      },
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -11
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          11
+        ]
+      },
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -12
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          12
+        ]
+      },
+      {
+        "name": "GetConsoleProcessList",
+        "arguments": [
+          1
+        ]
+      },
+      {
+        "name": "FreeConsole",
+        "arguments": []
+      }
+    ],
+    "detached": false,
+    "productionFunctionUnmodified": true,
+    "nativeProcessOperationsPerformed": false,
+    "realHostIdentityProof": false
+  },
+  "closed": true,
+  "timedOut": false,
+  "cleanupExpired": false,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/headless-security/startup/detach-throw/stdout.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/headless-security/startup/detach-throw/stderr.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdoutBytes": 0,
+  "stderrBytes": 0
+}

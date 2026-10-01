@@ -1,0 +1,109 @@
+{
+  "name": "stdout-not-pipe",
+  "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+  "expectedExit": 22,
+  "accepted": false,
+  "result": "PASS",
+  "nativeProductHelper": false,
+  "realHostProof": false,
+  "events": [
+    {
+      "event": "stdin-finish",
+      "elapsedMs": 11.492600000000039
+    },
+    {
+      "event": "stdin-close",
+      "elapsedMs": 11.521799999999985
+    },
+    {
+      "event": "stdout-end",
+      "elapsedMs": 494.587
+    },
+    {
+      "event": "stderr-end",
+      "elapsedMs": 494.66910000000007
+    },
+    {
+      "event": "stderr-close",
+      "elapsedMs": 494.7950999999998
+    },
+    {
+      "event": "stdout-close",
+      "elapsedMs": 494.8056999999999
+    },
+    {
+      "event": "exit",
+      "elapsedMs": 501.7984999999999,
+      "code": 22,
+      "signal": null
+    }
+  ],
+  "pid": 25384,
+  "exitCode": 22,
+  "exitSignal": null,
+  "elapsedMs": 501.83939999999984,
+  "proof": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/headless-security/startup/stdout-not-pipe/proof.json",
+    "byteLength": 727,
+    "sha256": "sha256:703dde731b94c68b58f3e8eaa35e813eb57b274e208be7feb72f13e270fb3e71"
+  },
+  "observed": {
+    "candidateCommit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+    "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+    "helperDeadlineMs": 8000,
+    "configuredErrorContext": null,
+    "nativeLastErrorSet": false,
+    "membershipCalls": 0,
+    "freeConsoleCalls": 0,
+    "kind": "MO1307Phase3CR2ExtractedHeadlessStartupSimulation",
+    "scenario": "stdout-not-pipe",
+    "accepted": false,
+    "failure": "MO1307_INTERNAL",
+    "failureType": "System.InvalidOperationException",
+    "events": [
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -10
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          10
+        ]
+      },
+      {
+        "name": "GetStdHandle",
+        "arguments": [
+          -11
+        ]
+      },
+      {
+        "name": "GetFileType",
+        "arguments": [
+          11
+        ]
+      }
+    ],
+    "detached": false,
+    "productionFunctionUnmodified": true,
+    "nativeProcessOperationsPerformed": false,
+    "realHostIdentityProof": false
+  },
+  "closed": true,
+  "timedOut": false,
+  "cleanupExpired": false,
+  "stdout": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/headless-security/startup/stdout-not-pipe/stdout.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb-g2/headless-security/startup/stdout-not-pipe/stderr.data",
+    "byteLength": 0,
+    "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stdoutBytes": 0,
+  "stderrBytes": 0
+}

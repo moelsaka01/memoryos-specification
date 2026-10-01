@@ -1,0 +1,130 @@
+{
+  "kind": "MO1307Phase3CR2DependencyAwareSourceReviewHarnessValidation",
+  "version": "1.0.0",
+  "result": "PASS",
+  "candidate": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+  "candidateTree": "5e0088965d4eac4002165fe0190f275c257985ba",
+  "candidateImplementation": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+  "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+  "historicalBaseline": "defe93989efc6501b1a730b82e79e705884b269b",
+  "caseCount": 6,
+  "caseIds": [
+    "authorized-current-c3tb-diff",
+    "historical-c3rb-baseline",
+    "unexpected-synthetic-executable-change",
+    "unexpected-security-policy-change",
+    "comment-only-difference",
+    "reuse-dependency-mismatch"
+  ],
+  "cases": [
+    {
+      "id": "authorized-current-c3tb-diff",
+      "expected": "PASS",
+      "actual": "PASS",
+      "result": "PASS",
+      "outcome": "AUTHORIZED_DIFF_ACCEPTED",
+      "diffSha256": "sha256:d40f1dffbfa5e17ce8e4017d340d14bb91ebe149cc5b8ec5ba79258de041de67",
+      "hunkCount": 28,
+      "categoryCounts": {
+        "AUTHORIZED_HEADLESS_CORRECTION": 9,
+        "AUTHORIZED_NATIVE_LASTERROR_CORRECTION": 2,
+        "AUTHORIZED_OPEN_CHAIN_CORRECTION": 1,
+        "AUTHORIZED_DEADLINE_CORRECTION": 2,
+        "DERIVED_METADATA_CHANGE": 3,
+        "DOCUMENTATION_ONLY": 11,
+        "UNEXPECTED_CHANGE": 0
+      },
+      "securitySemantics": "PASS"
+    },
+    {
+      "id": "historical-c3rb-baseline",
+      "expected": "PASS",
+      "actual": "PASS",
+      "result": "PASS",
+      "outcome": "HISTORICAL_BASELINE_ACCEPTED",
+      "candidate": "defe93989efc6501b1a730b82e79e705884b269b",
+      "candidateTree": "54c8ca8acc388d8dcb5d8d76e119b434dcc1a9bb",
+      "productionTree": "e726c38b44bb7b0402d510ccfdab0f9f6a584939",
+      "exactHistoricalBlobs": 9
+    },
+    {
+      "id": "unexpected-synthetic-executable-change",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "result": "PASS",
+      "outcome": "UNEXPECTED_SOURCE_DELTA_REJECTED",
+      "detectedCategory": "UNEXPECTED_CHANGE",
+      "failureCode": "PHASE3CR2_UNEXPECTED_SOURCE_DELTA",
+      "campaignOutcome": "PHASE3CR2_UNEXPECTED_SOURCE_DELTA"
+    },
+    {
+      "id": "unexpected-security-policy-change",
+      "expected": "FAIL",
+      "actual": "FAIL",
+      "result": "PASS",
+      "outcome": "SECURITY_POLICY_MUTATION_REJECTED",
+      "failedCheck": "console-policy-exact",
+      "failedChecks": [
+        "console-policy-exact"
+      ]
+    },
+    {
+      "id": "comment-only-difference",
+      "expected": "PASS",
+      "actual": "PASS",
+      "result": "PASS",
+      "outcome": "DOCUMENTATION_ONLY_EXECUTABLE_EQUIVALENT",
+      "category": "DOCUMENTATION_ONLY",
+      "executableEquivalent": true,
+      "executableBeforeSha256": "sha256:fef462bf2b1133bbc07a78f101e9004c5e24a84e3ad47ef22c2466eb81d424b6",
+      "executableAfterSha256": "sha256:fef462bf2b1133bbc07a78f101e9004c5e24a84e3ad47ef22c2466eb81d424b6"
+    },
+    {
+      "id": "reuse-dependency-mismatch",
+      "expected": "MOVE_TO_FRESH",
+      "actual": "MOVE_TO_FRESH",
+      "result": "PASS",
+      "outcome": "MOVE_TO_FRESH",
+      "action": "MOVE_TO_FRESH",
+      "detectorResult": "FAIL",
+      "mismatchCount": 2,
+      "mismatchIds": [
+        "row:synthetic-reuse-174:allExercisedFacetsEqual",
+        "row:synthetic-reuse-174:dependencyEquality"
+      ]
+    }
+  ],
+  "currentReviewSha256": "sha256:32b832ad56cb233607a6c079f6728a48c221b4d38232e940862a6933c85542ee",
+  "productExecuted": false,
+  "helperExecuted": false,
+  "securityControlExecuted": false,
+  "certificationClaims": 0,
+  "networkExecuted": false,
+  "executionCounts": {
+    "product": 0,
+    "helper": 0,
+    "securityCampaign": 0,
+    "certificationCampaign": 0,
+    "network": 0
+  },
+  "sources": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/source-review-manifest.json",
+      "byteLength": 15053,
+      "sha256": "sha256:a63b3e9f5d85211035141983c9fce6724d4e6e3a41384fbdd29952496d7ec331",
+      "gitBlob": "704efd2c83c82dee839d4ad2b9b3e8c9909f05c1"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/source-review-lib.mjs",
+      "byteLength": 43537,
+      "sha256": "sha256:d0145595413860b6450f2aa1551a5c62cb6bdcb32c3534a0f8ca07250a09f9b6",
+      "gitBlob": "0e0fb52cd3c56237668b6c47f242f46050caf0e0"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb-g2/validate-source-review.mjs",
+      "byteLength": 10994,
+      "sha256": "sha256:03d0b8f9a76a72ebeac5fa3ef5e86b4fd99d0f2840dc4e1ef15a5d4c053a4312",
+      "gitBlob": "bd41d574f6694ab3dcec95d3f3311a4ae511610b"
+    }
+  ]
+}

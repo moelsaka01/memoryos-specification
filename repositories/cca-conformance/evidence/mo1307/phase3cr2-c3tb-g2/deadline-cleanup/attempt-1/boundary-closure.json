@@ -1,0 +1,124 @@
+{
+  "result": "PASS",
+  "sourceUnchanged": true,
+  "observerExit": 0,
+  "nativeCoverage": [
+    {
+      "name": "fixed-native-timely",
+      "pid": 26348,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "timeout-exact-mapping",
+      "pid": 25904,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "late-native-success-refused",
+      "pid": 4108,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "crash-closed-transport",
+      "pid": 24628,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "fixed-launch-combined-environment-poison",
+      "pid": 16068,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "resource-native-path-cap129",
+      "pid": 23268,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "resource-native-request-prefix-cap",
+      "pid": 11908,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "resource-native-declared-file-cap",
+      "pid": 13128,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "resource-native-observed-file-cap",
+      "pid": 10380,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "resource-sample-reference",
+      "pid": 15156,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "resource-sample-corrected",
+      "pid": 19968,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    }
+  ],
+  "requiredObserved": [
+    {
+      "name": "timeout-exact-mapping",
+      "pid": 25904,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "late-native-success-refused",
+      "pid": 4108,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    },
+    {
+      "name": "crash-closed-transport",
+      "pid": 24628,
+      "seen": true,
+      "closed": true,
+      "streamsClosed": true
+    }
+  ],
+  "observedNativeProcessCount": 11,
+  "remainingOwnedProcesses": [],
+  "resourceComparisons": [
+    {
+      "name": "resource-sample-reference",
+      "pid": 15156,
+      "elapsedMs": 1155.7212,
+      "sampledWorkingSetMax": 105168896
+    },
+    {
+      "name": "resource-sample-corrected",
+      "pid": 19968,
+      "elapsedMs": 1204.482,
+      "sampledWorkingSetMax": 127709184
+    }
+  ],
+  "limitation": "Bounded CIM sampling is not exhaustive for short-lived helpers. The timeout, late-success and crash helpers must each be externally observed, and every launched helper must independently reach full process/stream closure with no attributable survivor."
+}

@@ -1,0 +1,73 @@
+{
+  "kind": "MO1307Phase3CR2C3TBFailedPreflightHistory",
+  "version": "1.0.0",
+  "status": "FAILED_SETUP",
+  "result": "FAIL",
+  "outcome": "PHASE3CR2_FAILED_INCOMPLETE",
+  "classification": "HISTORICAL_PRE_CAMPAIGN_PIN_MISMATCH",
+  "recordedRetrospectively": true,
+  "previousStopRewrittenAsPass": false,
+  "resumable": false,
+  "candidate": {
+    "role": "C3TB",
+    "commit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+    "branch": "codex/mo1307-phase3cr2-c3tb",
+    "headUnchanged": true,
+    "productionCommit": "65e24b2debdd70ecb8e52fbccbd6c101621f1917",
+    "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+    "productionChanged": false
+  },
+  "failure": {
+    "stage": "PREFLIGHT_CONTROL_MAP_IDENTITY",
+    "cause": "EXPECTED_SHA256_WAS_COPIED_FROM_CURRENT_CONTROL_RESULTS_INSTEAD_OF_CURRENT_CONTROL_MAP",
+    "failedTool": {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3cr2-c3tb/preflight.mjs",
+      "byteLength": 30587,
+      "sha256": "sha256:315adee0784cadd3ec5ad8884b09eda51ce421a74100778692d6a87afa1a4ae3",
+      "gitBlob": "db83ef24b7f702ed58838c2aadafce733f2f0c83"
+    }
+  },
+  "controlMap": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/current-control-map.json",
+    "historicalSourceCommit": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+    "acceptedPhase3CAuthority": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+    "oldExpectedSha256": "sha256:9131759b75fc9407fd25467ef7656b0d6948711daecdf58234f1c4b09f9b9433",
+    "actual": {
+      "byteLength": 530142,
+      "sha256": "sha256:0c490f5d4afa76b673c64d320308a2d1ca841a4330072b532964b0054d027131",
+      "gitBlob": "bf6bbaeb118fcfc38384530cee3d2942ac39fc47"
+    },
+    "objectChanged": false,
+    "intendedHistoricalObject": true
+  },
+  "misboundDigestSource": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3c-c3rb-cert3/current-control-results.json",
+    "historicalSourceCommit": "b02fc0226a1a2d800185a02071674ca80bdf4a1d",
+    "byteLength": 3057635,
+    "sha256": "sha256:9131759b75fc9407fd25467ef7656b0d6948711daecdf58234f1c4b09f9b9433",
+    "gitBlob": "50551f4cde0c1f5107126f9459c8b4e447226dfd"
+  },
+  "execution": {
+    "campaignExecutionStarted": false,
+    "freshControlsSelected": 89,
+    "freshControlsExecuted": 0,
+    "reuseCandidates": 462,
+    "reuseControlsCertified": 0,
+    "candidateSpecificControlsSelected": 2,
+    "candidateSpecificControls": "NOT_RUN",
+    "certificationClaims": 0
+  },
+  "artifacts": {
+    "campaignPlan": false,
+    "preExecutionSeal": false,
+    "executionStart": false,
+    "executionLedger": false,
+    "certificationReceipt": false
+  },
+  "claims": [],
+  "provenance": {
+    "source": "MO-1307_PHASE3CR2_PREFLIGHT_PIN_CORRECTION_BRIEF",
+    "originalMachineReceiptExisted": false,
+    "failureTimestampInvented": false
+  }
+}

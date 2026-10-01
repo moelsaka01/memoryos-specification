@@ -1,0 +1,136 @@
+{
+  "id": "G",
+  "name": "membership-mismatch-refusal",
+  "kind": "EXACT_FUNCTION_NATIVE_DOUBLE",
+  "result": "PASS",
+  "startedAt": "2026-10-01T15:46:40.178Z",
+  "startupCases": [
+    {
+      "name": "unrelated-sole-client",
+      "kind": "EXACT_EXTRACTED_FUNCTION_WITH_NATIVE_DOUBLE",
+      "expectedExit": 22,
+      "accepted": false,
+      "result": "PASS",
+      "nativeProductHelper": false,
+      "realHostProof": false,
+      "events": [
+        {
+          "event": "stdin-finish",
+          "elapsedMs": 21.62920000000122
+        },
+        {
+          "event": "stdin-close",
+          "elapsedMs": 21.681700000001
+        },
+        {
+          "event": "stderr-end",
+          "elapsedMs": 1019.2425000000003
+        },
+        {
+          "event": "stderr-close",
+          "elapsedMs": 1019.3965000000007
+        },
+        {
+          "event": "stdout-end",
+          "elapsedMs": 1019.4334000000017
+        },
+        {
+          "event": "stdout-close",
+          "elapsedMs": 1019.5048000000006
+        },
+        {
+          "event": "exit",
+          "elapsedMs": 1033.095800000001,
+          "code": 22,
+          "signal": null
+        }
+      ],
+      "pid": 2216,
+      "exitCode": 22,
+      "exitSignal": null,
+      "elapsedMs": 1033.1627000000008,
+      "proof": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/headless-security/startup/unrelated-sole-client/proof.json",
+        "byteLength": 864,
+        "sha256": "sha256:43f8640fa9d08d0f8e6b841b44092964c88a1af3025c9f3b4cc51016404504af"
+      },
+      "observed": {
+        "candidateCommit": "119e68bdcf0ffc906b4ca03a912aadcb25908346",
+        "productionTree": "324bf600b6cbfaa8564db27fce2d999711270cb8",
+        "helperDeadlineMs": 8000,
+        "configuredErrorContext": null,
+        "nativeLastErrorSet": false,
+        "membershipCalls": 1,
+        "freeConsoleCalls": 0,
+        "kind": "MO1307Phase3CR2ExtractedHeadlessStartupSimulation",
+        "scenario": "unrelated-sole-client",
+        "accepted": false,
+        "failure": "MO1307_INTERNAL",
+        "failureType": "System.InvalidOperationException",
+        "events": [
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -10
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              10
+            ]
+          },
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -11
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              11
+            ]
+          },
+          {
+            "name": "GetStdHandle",
+            "arguments": [
+              -12
+            ]
+          },
+          {
+            "name": "GetFileType",
+            "arguments": [
+              12
+            ]
+          },
+          {
+            "name": "GetConsoleProcessList",
+            "arguments": [
+              1
+            ]
+          }
+        ],
+        "detached": false,
+        "productionFunctionUnmodified": true,
+        "nativeProcessOperationsPerformed": false,
+        "realHostIdentityProof": false
+      },
+      "closed": true,
+      "timedOut": false,
+      "cleanupExpired": false,
+      "stdout": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/headless-security/startup/unrelated-sole-client/stdout.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3cr2-c3tb/headless-security/startup/unrelated-sole-client/stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stdoutBytes": 0,
+      "stderrBytes": 0
+    }
+  ]
+}
