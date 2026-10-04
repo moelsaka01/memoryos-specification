@@ -1,4 +1,5 @@
 import { argumentError } from "./errors.js";
+import { parseHistoryArguments } from "./history-arguments.js";
 import { parsePolicyArguments } from "./policy-arguments.js";
 
 const definitions = Object.freeze({
@@ -91,6 +92,7 @@ export function parseArguments(argv) {
 
   const command = tokens.shift();
   if (command === "policy") return parsePolicyArguments(tokens);
+  if (command === "history") return parseHistoryArguments(tokens);
   const definition = definitions[command];
   if (!definition) throw argumentError(`Unknown command ${command}. Run 'memoryos help'.`);
 
@@ -119,4 +121,4 @@ export function parseArguments(argv) {
   return { command, options, positionals };
 }
 
-export const commandNames = Object.freeze([...Object.keys(definitions), "policy"]);
+export const commandNames = Object.freeze([...Object.keys(definitions), "policy", "history"]);

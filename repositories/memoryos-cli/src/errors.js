@@ -23,6 +23,19 @@ export class CliError extends Error {
   }
 }
 
+// MO-1308 (Contract Freeze 1 §13.3, §14.1): a history error keeps the CLI exit
+// category and carries the full MO1308_ code as historyCode. The message is the
+// catalog's fixed text; no path, record content or exception detail is included.
+const historyCategoryCodes = Object.freeze({
+  1: "INVALID_ARGUMENTS", 2: "VALIDATION_FAILURE", 3: "VERIFICATION_FAILED", 4: "PACKAGE_ERROR", 5: "SDK_FAILURE",
+});
+export function historyCliError({ code, exitCode, message }) {
+  const exit = Object.hasOwn(historyCategoryCodes, exitCode) ? exitCode : ExitCode.sdkFailure;
+  const error = new CliError(exit, historyCategoryCodes[exit], message, [], { failureClass: exit === 1 ? "usage" : "operational" });
+  error.historyCode = code;
+  return error;
+}
+
 export function argumentError(message) {
   return new CliError(
     ExitCode.invalidArguments,

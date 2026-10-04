@@ -10,6 +10,13 @@ memoryos policy verify-identity IDENTITY --mode evaluation (--policy POLICY | --
 memoryos policy verify-outcome OUTCOME --mode artifact (--expected-identity IDENTITY | --expected-evaluation-identity-digest DIGEST) [--expected-outcome-digest DIGEST] [--json]
 memoryos policy verify-outcome OUTCOME --mode evaluation (--policy POLICY | --policy-set POLICY_SET) --package CANDIDATE [--regression-baseline BASELINE] [--expected-outcome-digest DIGEST] [--json]
 memoryos policy identities [--json]`,
+  history: `memoryos history init --ledger DIR --name NAME --workspace ID [--json]
+memoryos history append --ledger DIR --kind KIND (--record FILE | --identity FILE --outcome FILE | --run DIR) [--json]
+memoryos history tombstone --ledger DIR --target INDEX --reason REASON --authority-reference TEXT [--json]
+memoryos history verify --ledger DIR [--json]
+memoryos history query --ledger DIR [--kind KIND]... [--subject-type TYPE --subject VALUE] [--retention ANY|RETAINED|PURGED] [--from INDEX] [--limit N] [--json]
+memoryos history export --ledger DIR --output NEW-DIR [--json]
+memoryos history verify-export --export DIR [--json]`,
   observe: "memoryos observe --workspace FILE --snapshot FILE [--id ID] [--json]",
   trace: "memoryos trace PACKAGE --reflection ID [--id ID] [--json]",
   replay: "memoryos replay PACKAGE --trace ID [--action ACTION ...] [--id ID] [--json]",
@@ -36,6 +43,7 @@ Usage: memoryos COMMAND [OPTIONS]
 
 Commands:
   policy   Validate, evaluate, inspect, and verify Investigation Policies
+  history  Investigation History ledger (MO-1308; guarded until Phase 2)
   version  Show CLI and SDK versions
   help     Show command help
   observe  Observe an explicit Workspace snapshot

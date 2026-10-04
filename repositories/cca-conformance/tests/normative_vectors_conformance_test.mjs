@@ -503,9 +503,11 @@ test("adapter defaults, resource limits, and descriptor rejection use exact cont
 });
 
 test("CLI aliases and closed JSON result member sets are exact", async (t) => {
+  // MO-1308 adds the additive `history` namespace (Contract Freeze 1 §13.1, §13.3),
+  // outside the CCA-MOS-CLI-001 baseline CLI 1.0.0 command set, as MO-1301 added `policy`.
   assert.deepEqual(commandNames, [
     "version", "help", "observe", "trace", "replay", "compare", "regression",
-    "investigate", "verify", "import", "export", "inspect", "session", "policy",
+    "investigate", "verify", "import", "export", "inspect", "session", "policy", "history",
   ]);
   assert.deepEqual(parseArguments([]), { command: "help", options: {}, positionals: [] });
   assert.deepEqual(parseArguments(["--help"]), { command: "help", options: {}, positionals: [] });

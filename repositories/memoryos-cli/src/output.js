@@ -66,7 +66,7 @@ export function successEnvelope(command, result) {
 }
 
 export function errorEnvelope(command, error) {
-  return {
+  const envelope = {
     command,
     error: {
       code: error.code,
@@ -77,6 +77,8 @@ export function errorEnvelope(command, error) {
     ok: false,
     schemaVersion: "1.0",
   };
+  if (typeof error.historyCode === "string") envelope.error.historyCode = error.historyCode;
+  return envelope;
 }
 
 export function policySuccessEnvelope(command, result) {
@@ -106,6 +108,7 @@ export function humanError(command, error) {
     `MemoryOS ${command ?? "cli"} failed`,
     `code: ${error.code}`,
     `exitCode: ${error.exitCode}`,
+    ...(typeof error.historyCode === "string" ? [`historyCode: ${error.historyCode}`] : []),
     `message: ${error.message}`,
   ].join("\n") + "\n";
 }

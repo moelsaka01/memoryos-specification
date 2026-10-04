@@ -3,12 +3,14 @@ import { readFileSync, writeFileSync } from "node:fs";
 import {
   MEMORYOS_SDK_VERSION,
   MemoryOS,
+  MemoryOSHistoryError,
 } from "../../cca-studio/web/js/memoryos-sdk.js";
 
 import {
   CliError,
   ExitCode,
   argumentError,
+  historyCliError,
   packageError,
   validationError,
 } from "./errors.js";
@@ -160,6 +162,11 @@ export function executeCommand(parsed, io = {}) {
   }
   if (command === "session") {
     throw new Error("Session dispatch must be handled by main().");
+  }
+  if (command === "history") {
+    // MO-1308 Phase 1 guard: the grammar is validated; no ledger operation exists
+    // until Phase 2, so every history command fails closed with MO1308_INTERNAL.
+    throw historyCliError(new MemoryOSHistoryError("INTERNAL", "INTERNAL"));
   }
 
   const memory = newMemoryOS();

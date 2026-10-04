@@ -69,7 +69,9 @@ export async function main(argv, io = processIO) {
       ? evaluationExitCode(execution.decision)
       : ExitCode.success;
   } catch (cause) {
-    const command = policyRequested ? policyCommand() : (parsed?.command ?? argv[0] ?? "cli");
+    const command = policyRequested ? policyCommand()
+      : argv[0] === "history" ? (parsed?.subcommand === undefined ? "history" : `history ${parsed.subcommand}`)
+        : (parsed?.command ?? argv[0] ?? "cli");
     const error = policyRequested
       ? normalizePolicyError(cause, command)
       : normalizeError(cause, command);
