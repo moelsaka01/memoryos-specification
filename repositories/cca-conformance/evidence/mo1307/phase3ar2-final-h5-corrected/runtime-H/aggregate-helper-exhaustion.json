@@ -1,0 +1,245 @@
+{
+  "name": "aggregate-helper-exhaustion",
+  "started": 23490.0787,
+  "finished": 51828.0992,
+  "result": "PASS",
+  "elapsedMs": 28338.0213,
+  "error": {
+    "code": "MO1307_TIMEOUT",
+    "message": "MO1307_TIMEOUT"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 53490.1183,
+    "helpers": 5,
+    "workers": 1,
+    "helperUsedMs": 25169.347899999993,
+    "activeRole": "helper",
+    "cleanupConfirmed": false,
+    "publication": null,
+    "terminalCode": "MO1307_TIMEOUT",
+    "terminalAt": 51815.1382,
+    "cleanupDeadline": 53815.1382,
+    "events": [
+      {
+        "type": "start",
+        "at": 23491.3549,
+        "role": "helper",
+        "deadline": 32491.3241,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 23503.9043,
+        "role": "helper",
+        "pid": 19416,
+        "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+      },
+      {
+        "type": "quiescent",
+        "at": 29778.6674,
+        "role": "helper",
+        "ordinal": 1
+      },
+      {
+        "type": "start",
+        "at": 29779.64,
+        "role": "helper",
+        "deadline": 38779.628899999996,
+        "ordinal": 2
+      },
+      {
+        "type": "observation",
+        "at": 29788.8527,
+        "role": "helper",
+        "pid": 13588,
+        "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+      },
+      {
+        "type": "quiescent",
+        "at": 36120.4037,
+        "role": "helper",
+        "ordinal": 2
+      },
+      {
+        "type": "start",
+        "at": 36121.0502,
+        "role": "helper",
+        "deadline": 45121.0457,
+        "ordinal": 3
+      },
+      {
+        "type": "observation",
+        "at": 36128.9866,
+        "role": "helper",
+        "pid": 11360,
+        "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+      },
+      {
+        "type": "quiescent",
+        "at": 42430.0673,
+        "role": "helper",
+        "ordinal": 3
+      },
+      {
+        "type": "start",
+        "at": 42430.6438,
+        "role": "helper",
+        "deadline": 51430.6392,
+        "ordinal": 4
+      },
+      {
+        "type": "observation",
+        "at": 42440.0551,
+        "role": "helper",
+        "pid": 4348,
+        "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+      },
+      {
+        "type": "quiescent",
+        "at": 48662.858,
+        "role": "helper",
+        "ordinal": 4
+      },
+      {
+        "type": "start",
+        "at": 48663.5586,
+        "role": "worker",
+        "deadline": 53490.1183,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 48665.5498,
+        "role": "worker",
+        "threadId": 1,
+        "resourceLimits": {
+          "maxYoungGenerationSizeMb": 16,
+          "maxOldGenerationSizeMb": 128,
+          "codeRangeSizeMb": -1,
+          "stackSizeMb": 4
+        }
+      },
+      {
+        "type": "quiescent",
+        "at": 48968.2051,
+        "role": "worker",
+        "ordinal": 1
+      },
+      {
+        "type": "start",
+        "at": 48969.1303,
+        "role": "helper",
+        "deadline": 51799.77440000001,
+        "ordinal": 5
+      },
+      {
+        "type": "observation",
+        "at": 48982.111,
+        "role": "helper",
+        "pid": 22380,
+        "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+      },
+      {
+        "type": "terminal",
+        "at": 51815.1615,
+        "code": "MO1307_TIMEOUT",
+        "stage": "ACQUISITION"
+      },
+      {
+        "type": "cleanup",
+        "at": 51828.0394,
+        "role": "helper",
+        "confirmed": false
+      }
+    ]
+  },
+  "expectedError": "MO1307_TIMEOUT",
+  "engineeringElapsedEnvelope": {
+    "minMs": 28000,
+    "maxMs": 31000,
+    "productDeadlineOverride": false
+  },
+  "invocations": [
+    {
+      "ordinal": "006",
+      "pid": 19416,
+      "protocolSequence": 1,
+      "operation": "READ_SET"
+    },
+    {
+      "ordinal": "007",
+      "pid": 13588,
+      "protocolSequence": 2,
+      "operation": "READ_SET"
+    },
+    {
+      "ordinal": "008",
+      "pid": 11360,
+      "protocolSequence": 3,
+      "operation": "READ_SET"
+    },
+    {
+      "ordinal": "009",
+      "pid": 4348,
+      "protocolSequence": 4,
+      "operation": "CHECK_OUTPUT"
+    },
+    {
+      "ordinal": "010",
+      "pid": 22380,
+      "protocolSequence": 5,
+      "operation": "CHECK_OUTPUT"
+    }
+  ],
+  "workerObservations": [
+    {
+      "type": "start",
+      "caseName": "aggregate-helper-exhaustion",
+      "threadId": 1,
+      "at": 48665.2634,
+      "env": {},
+      "execArgv": [],
+      "resourceLimits": {
+        "maxOldGenerationSizeMb": 128,
+        "maxYoungGenerationSizeMb": 16
+      }
+    },
+    {
+      "type": "message",
+      "threadId": 1,
+      "at": 48965.1196
+    },
+    {
+      "type": "exit",
+      "threadId": 1,
+      "at": 48967.8138,
+      "code": 0
+    },
+    {
+      "type": "stream-end",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 48968.0387
+    },
+    {
+      "type": "stream-end",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 48968.1281
+    },
+    {
+      "type": "stream-close",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 48968.1756
+    },
+    {
+      "type": "stream-close",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 48968.1844
+    }
+  ]
+}

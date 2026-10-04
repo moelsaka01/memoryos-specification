@@ -1,0 +1,114 @@
+{
+  "name": "worker-cancellation",
+  "started": 10189.6155,
+  "finished": 10300.3853,
+  "result": "PASS",
+  "elapsedMs": 110.77059999999983,
+  "error": {
+    "code": "MO1307_CANCELLED",
+    "message": "MO1307_CANCELLED"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 40189.640100000004,
+    "helpers": 0,
+    "workers": 1,
+    "helperUsedMs": 0,
+    "activeRole": null,
+    "cleanupConfirmed": true,
+    "publication": null,
+    "terminalCode": "MO1307_CANCELLED",
+    "terminalAt": 10297.9133,
+    "cleanupDeadline": 12297.9133,
+    "events": [
+      {
+        "type": "start",
+        "at": 10189.8196,
+        "role": "worker",
+        "deadline": 20189.7973,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 10190.3499,
+        "role": "worker",
+        "threadId": 2,
+        "resourceLimits": {
+          "maxYoungGenerationSizeMb": 16,
+          "maxOldGenerationSizeMb": 128,
+          "codeRangeSizeMb": -1,
+          "stackSizeMb": 4
+        }
+      },
+      {
+        "type": "terminal",
+        "at": 10297.9418,
+        "code": "MO1307_CANCELLED",
+        "stage": "EVALUATION"
+      },
+      {
+        "type": "cleanup",
+        "at": 10300.3349,
+        "role": "worker",
+        "confirmed": true
+      }
+    ]
+  },
+  "expectedError": "MO1307_CANCELLED",
+  "engineeringElapsedEnvelope": {
+    "minMs": 100,
+    "maxMs": 2100,
+    "productDeadlineOverride": false
+  },
+  "invocations": [],
+  "workerObservations": [
+    {
+      "type": "start",
+      "caseName": "worker-cancellation",
+      "threadId": 2,
+      "at": 10190.231,
+      "env": {},
+      "execArgv": [],
+      "resourceLimits": {
+        "maxOldGenerationSizeMb": 128,
+        "maxYoungGenerationSizeMb": 16
+      }
+    },
+    {
+      "type": "termination-request",
+      "threadId": 2,
+      "at": 10298.0184
+    },
+    {
+      "type": "exit",
+      "threadId": 2,
+      "at": 10300.108,
+      "code": 1
+    },
+    {
+      "type": "stream-end",
+      "stream": "stdout",
+      "threadId": 2,
+      "at": 10300.1831
+    },
+    {
+      "type": "stream-end",
+      "stream": "stderr",
+      "threadId": 2,
+      "at": 10300.2287
+    },
+    {
+      "type": "stream-close",
+      "stream": "stdout",
+      "threadId": 2,
+      "at": 10300.3124
+    },
+    {
+      "type": "stream-close",
+      "stream": "stderr",
+      "threadId": 2,
+      "at": 10300.3182
+    }
+  ]
+}

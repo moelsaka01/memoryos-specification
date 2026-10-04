@@ -1,0 +1,496 @@
+{
+    "kind":  "MO1307HostEventWindow",
+    "version":  "1.0.0",
+    "startUtc":  "2026-10-04T17:47:12.2180000Z",
+    "endUtc":  "2026-10-04T17:57:55.5000000Z",
+    "logs":  [
+                 {
+                     "log":  "Microsoft-Windows-Windows Defender/Operational",
+                     "available":  true,
+                     "error":  null,
+                     "count":  0,
+                     "byProviderAndId":  [
+
+                                         ],
+                     "sample":  [
+
+                                ]
+                 },
+                 {
+                     "log":  "Microsoft-Windows-PowerShell/Operational",
+                     "available":  true,
+                     "error":  null,
+                     "count":  1279,
+                     "byProviderAndId":  [
+                                             {
+                                                 "key":  "Microsoft-Windows-PowerShell#4104",
+                                                 "count":  481
+                                             },
+                                             {
+                                                 "key":  "Microsoft-Windows-PowerShell#4100",
+                                                 "count":  207
+                                             },
+                                             {
+                                                 "key":  "Microsoft-Windows-PowerShell#40961",
+                                                 "count":  197
+                                             },
+                                             {
+                                                 "key":  "Microsoft-Windows-PowerShell#53504",
+                                                 "count":  197
+                                             },
+                                             {
+                                                 "key":  "Microsoft-Windows-PowerShell#40962",
+                                                 "count":  197
+                                             }
+                                         ],
+                     "sample":  [
+                                    {
+                                        "at":  "2026-10-04T17:57:53.3840351Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4100,
+                                        "level":  3,
+                                        "message":  "Error Message = System error.\r\n\r\n\r\nContext:\r\n        Severity = Warning\r\n        Host Name = ConsoleHost\r\n        Host Version = 5.1.26100.9444\r\n        Host ID = 6a8dc5e0-888d-4da5-bb7c-dc086a360c13\r\n        Host Application = C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoLogo -NoPro"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:52.6606687Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (2 of 2):\r\nd)\n                        if ($count -eq 0) { break }\n                        $used += $count\n                    }\n                } finally { $stream.Dispose(); $borrowed.Dispose() }\n                if ($used -gt $file.maxBytes) { Reject-Protocol \u0027MO1307_RESOU"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:52.6606476Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (1 of 2):\r\n# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\nSet-StrictMode -Version 2.0\n$ErrorActionPreference = \u0027Stop\u0027\n$requestCeiling = 65536\n$responseCeiling = 16777216\n$sequence = 1\n$operation = \u0027READ_SET\u0027\n$session = \u0027000000000000000000000"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:51.3372081Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4100,
+                                        "level":  3,
+                                        "message":  "Error Message = System error.\r\n\r\n\r\nContext:\r\n        Severity = Warning\r\n        Host Name = ConsoleHost\r\n        Host Version = 5.1.26100.9444\r\n        Host ID = 6a8dc5e0-888d-4da5-bb7c-dc086a360c13\r\n        Host Application = C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoLogo -NoPro"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:51.3208258Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (2 of 2):\r\nn\n        $identities = @($chain | ForEach-Object { $_.identity })\n        return [pscustomobject] @{ roots = @([pscustomobject] @{ id = $id; chain = $identities }); files = @(); status = $status }\n    } finally { Close-Chain $chain }\n}\n\n\n# Save all redirected tr"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:51.3207757Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (1 of 2):\r\n# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\nSet-StrictMode -Version 2.0\n$ErrorActionPreference = \u0027Stop\u0027\n$requestCeiling = 65536\n$responseCeiling = 16777216\n$sequence = 1\n$operation = \u0027READ_SET\u0027\n$session = \u0027000000000000000000000"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:50.0620948Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (2 of 2):\r\nquest.roots) {\n            $chain = Open-Chain $Roots[$root.id] $true\n            $rootChains.Add($root.id, $chain)\n            $responseRoots.Add([pscustomobject] @{ id = $root.id; identity = $chain[$chain.Count - 1].identity })\n        }\n        foreach ($file "
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:50.0620517Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (1 of 2):\r\n# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\nSet-StrictMode -Version 2.0\n$ErrorActionPreference = \u0027Stop\u0027\n$requestCeiling = 65536\n$responseCeiling = 16777216\n$sequence = 1\n$operation = \u0027READ_SET\u0027\n$session = \u0027000000000000000000000"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:49.2990130Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4100,
+                                        "level":  3,
+                                        "message":  "Error Message = System error.\r\n\r\n\r\nContext:\r\n        Severity = Warning\r\n        Host Name = ConsoleHost\r\n        Host Version = 5.1.26100.9444\r\n        Host ID = 6a8dc5e0-888d-4da5-bb7c-dc086a360c13\r\n        Host Application = C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoLogo -NoPro"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:48.6293899Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (3 of 3):\r\n-lt 4 -and ($roots.Count -ne 1 -or -not $roots.ContainsKey(\u0027input\u0027))) -or\n            ($sequence -eq 1 -and $ids -cne \u0027authority,config\u0027) -or\n            ($sequence -eq 2 -and $ids -cne \u0027candidate,manifest\u0027) -or\n            ($sequence -eq 4 -and $ids -cnotin @(\u0027r"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:48.6293727Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (2 of 3):\r\ndd($paths[$paths.Count - 1].TrimEnd(\u0027\\\u0027) + \u0027\\\u0027 + $part)\n        }\n    }\n    if ($paths.Count -gt 120) { Reject-Protocol \u0027MO1307_RESOURCE_LIMIT\u0027 }\n    $entries = [Collections.Generic.List[object]]::new()\n    try {\n        for ($index = 0; $index -lt $paths.Count; "
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:48.6293374Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (1 of 3):\r\n# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\nSet-StrictMode -Version 2.0\n$ErrorActionPreference = \u0027Stop\u0027\n$requestCeiling = 65536\n$responseCeiling = 16777216\n$sequence = 1\n$operation = \u0027READ_SET\u0027\n$session = \u0027000000000000000000000"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:47.2487554Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4100,
+                                        "level":  3,
+                                        "message":  "Error Message = System error.\r\n\r\n\r\nContext:\r\n        Severity = Warning\r\n        Host Name = ConsoleHost\r\n        Host Version = 5.1.26100.9444\r\n        Host ID = 6a8dc5e0-888d-4da5-bb7c-dc086a360c13\r\n        Host Application = C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoLogo -NoPro"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:47.1504953Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (3 of 3):\r\n { $code = \u0027MO1307_INTERNAL\u0027 } else { $code = \u0027MO1307_INPUT\u0027 }\n}\n\ntry {\n    $response = [pscustomobject] @{ code = $code; files = @(); kind = \u0027MemoryOSReadinessHelperResponse\u0027;\n        operation = $operation; roots = @(); sequence = $sequence; session = $session;"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:47.1504810Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (2 of 3):\r\neSerial) { Reject-Protocol \u0027MO1307_FILESYSTEM_BOUNDARY\u0027 }\n        }\n        return ,$entries\n    } catch { foreach ($entry in $entries) { $entry.handle.Dispose() }; throw }\n}\nfunction Close-Chain($Entries) { foreach ($entry in $Entries) { $entry.handle.Dispose() "
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:47.1504406Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (1 of 3):\r\n# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\nSet-StrictMode -Version 2.0\n$ErrorActionPreference = \u0027Stop\u0027\n$requestCeiling = 65536\n$responseCeiling = 16777216\n$sequence = 1\n$operation = \u0027READ_SET\u0027\n$session = \u0027000000000000000000000"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:45.6721163Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (2 of 2):\r\nRoots[$file.root].TrimEnd(\u0027\\\u0027) + \u0027\\\u0027 + $file.path.Replace(\u0027/\u0027, \u0027\\\u0027)\n            $chain = Open-Chain $full $false $true\n            try {\n                $rootChain = $rootChains[$file.root]\n                for ($index = 0; $index -lt $rootChain.Count; $index++) {"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:45.6720821Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (1 of 2):\r\n# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\nSet-StrictMode -Version 2.0\n$ErrorActionPreference = \u0027Stop\u0027\n$requestCeiling = 65536\n$responseCeiling = 16777216\n$sequence = 1\n$operation = \u0027READ_SET\u0027\n$session = \u0027000000000000000000000"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:45.1902042Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4100,
+                                        "level":  3,
+                                        "message":  "Error Message = System error.\r\n\r\n\r\nContext:\r\n        Severity = Warning\r\n        Host Name = ConsoleHost\r\n        Host Version = 5.1.26100.9444\r\n        Host ID = 6a8dc5e0-888d-4da5-bb7c-dc086a360c13\r\n        Host Application = C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoLogo -NoPro"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:44.3911350Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (3 of 3):\r\nrequest.files | Where-Object { $_.root -ceq $root.id }).Length -eq 0) { Reject-Protocol }\n        }\n    }\n    $nativeMode = $true\n    if ($operation -ceq \u0027READ_SET\u0027) { $nativeResult = Invoke-ReadSet $request $roots }\n    else { $nativeResult = Invoke-Inspection $"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:44.3911221Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (2 of 3):\r\nsDirectory }\n            catch { $handle.Dispose(); throw }\n            $entries.Add([pscustomobject] @{ path = $paths[$index]; directory = $isDirectory; handle = $handle; identity = $identity })\n            if ($index -gt 0 -and $identity.volumeSerial -cne $entr"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:44.3910900Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (1 of 3):\r\n# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\nSet-StrictMode -Version 2.0\n$ErrorActionPreference = \u0027Stop\u0027\n$requestCeiling = 65536\n$responseCeiling = 16777216\n$sequence = 1\n$operation = \u0027READ_SET\u0027\n$session = \u0027000000000000000000000"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:43.1968806Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (2 of 2):\r\nh -le 3) { Reject-Protocol \u0027MO1307_FILESYSTEM_BOUNDARY\u0027 }\n        $path = [IO.Path]::GetDirectoryName($root)\n        $id = \u0027output-parent\u0027; $status = \u0027ABSENT\u0027\n    } elseif ($pending) { $path = $root.TrimEnd(\u0027\\\u0027) + \u0027\\memoryos-readiness-result.json.pending\u0027; $id = "
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:43.1968558Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (1 of 2):\r\n# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\nSet-StrictMode -Version 2.0\n$ErrorActionPreference = \u0027Stop\u0027\n$requestCeiling = 65536\n$responseCeiling = 16777216\n$sequence = 1\n$operation = \u0027READ_SET\u0027\n$session = \u0027000000000000000000000"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:43.1557550Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4100,
+                                        "level":  3,
+                                        "message":  "Error Message = System error.\r\n\r\n\r\nContext:\r\n        Severity = Warning\r\n        Host Name = ConsoleHost\r\n        Host Version = 5.1.26100.9444\r\n        Host ID = 6a8dc5e0-888d-4da5-bb7c-dc086a360c13\r\n        Host Application = C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoLogo -NoPro"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:41.9129684Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (2 of 2):\r\naths,\n        # access denial, sharing errors and all ambiguous failures are boundary.\n        if (-not $handle.IsInvalid -or $nativeError -ne 2) { Reject-Protocol \u0027MO1307_FILESYSTEM_BOUNDARY\u0027 }\n    } finally { $handle.Dispose() }\n}\nfunction Invoke-ReadSet($Reque"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:41.9129372Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (1 of 2):\r\n# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\nSet-StrictMode -Version 2.0\n$ErrorActionPreference = \u0027Stop\u0027\n$requestCeiling = 65536\n$responseCeiling = 16777216\n$sequence = 1\n$operation = \u0027READ_SET\u0027\n$session = \u0027000000000000000000000"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:41.1085655Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4100,
+                                        "level":  3,
+                                        "message":  "Error Message = System error.\r\n\r\n\r\nContext:\r\n        Severity = Warning\r\n        Host Name = ConsoleHost\r\n        Host Version = 5.1.26100.9444\r\n        Host ID = 6a8dc5e0-888d-4da5-bb7c-dc086a360c13\r\n        Host Application = C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoLogo -NoPro"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:40.5995378Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (3 of 3):\r\n { Reject-Protocol }\n        $used += $count\n    }\n    if ($stdin.ReadByte() -ne -1) { Reject-Protocol }\n    $utf8 = [System.Text.UTF8Encoding]::new($false, $true)\n    $text = $utf8.GetString($body)\n    # Bound nesting before the system JSON parser. Quoted/escape"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:40.5995138Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (2 of 3):\r\nerter]::ToUInt32($raw, 40)\n        $fileId = [BitConverter]::ToUInt32($raw, 44).ToString(\u0027x8\u0027) + [BitConverter]::ToUInt32($raw, 48).ToString(\u0027x8\u0027)\n        if (($attributes -band 0x400) -ne 0 -or (($attributes -band 0x10) -ne 0) -ne $Directory -or\n            $lin"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:40.5994720Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (1 of 3):\r\n# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\nSet-StrictMode -Version 2.0\n$ErrorActionPreference = \u0027Stop\u0027\n$requestCeiling = 65536\n$responseCeiling = 16777216\n$sequence = 1\n$operation = \u0027READ_SET\u0027\n$session = \u0027000000000000000000000"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:39.1698365Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (2 of 2):\r\nly { Close-Chain $chain }\n        }\n        foreach ($chain in $rootChains.Values) { Assert-ChainStable $chain }\n        return [pscustomobject] @{ roots = $responseRoots.ToArray(); files = $responseFiles.ToArray(); status = \u0027OK\u0027 }\n    } finally { foreach ($chain"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:39.1698021Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (1 of 2):\r\n# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\nSet-StrictMode -Version 2.0\n$ErrorActionPreference = \u0027Stop\u0027\n$requestCeiling = 65536\n$responseCeiling = 16777216\n$sequence = 1\n$operation = \u0027READ_SET\u0027\n$session = \u0027000000000000000000000"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:39.0781470Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4100,
+                                        "level":  3,
+                                        "message":  "Error Message = System error.\r\n\r\n\r\nContext:\r\n        Severity = Warning\r\n        Host Name = ConsoleHost\r\n        Host Version = 5.1.26100.9444\r\n        Host ID = 6a8dc5e0-888d-4da5-bb7c-dc086a360c13\r\n        Host Application = C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoLogo -NoPro"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:37.8277936Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (3 of 3):\r\nOrdinalIgnoreCase) -or $b.StartsWith($a, [StringComparison]::OrdinalIgnoreCase)) {\n                Reject-Protocol \u0027MO1307_FILESYSTEM_BOUNDARY\u0027\n            }\n        }\n        $roots.Add($root.id, $rootPath); $prior = $root.id\n    }\n    $prior = $null\n    $seen ="
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:37.8277577Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (2 of 3):\r\nd this comparison remain fresh each time.\n        if (-not [string]::Equals($observed, $Path, [StringComparison]::OrdinalIgnoreCase)) { Reject-Protocol \u0027MO1307_FILESYSTEM_BOUNDARY\u0027 }\n        return [pscustomobject] @{ attributes = $attributes; byteLength = $lengt"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:37.8277285Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (1 of 3):\r\n# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\nSet-StrictMode -Version 2.0\n$ErrorActionPreference = \u0027Stop\u0027\n$requestCeiling = 65536\n$responseCeiling = 16777216\n$sequence = 1\n$operation = \u0027READ_SET\u0027\n$session = \u0027000000000000000000000"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:37.0428043Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4100,
+                                        "level":  3,
+                                        "message":  "Error Message = System error.\r\n\r\n\r\nContext:\r\n        Severity = Warning\r\n        Host Name = ConsoleHost\r\n        Host Version = 5.1.26100.9444\r\n        Host ID = 6a8dc5e0-888d-4da5-bb7c-dc086a360c13\r\n        Host Application = C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -NoLogo -NoPro"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:36.4452587Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (2 of 2):\r\nh = $root\n    $id = \u0027output\u0027\n    $status = \u0027OK\u0027\n    if ($Request.operation -ceq \u0027CHECK_OUTPUT\u0027) {\n        if ($root.Length -le 3) { Reject-Protocol \u0027MO1307_FILESYSTEM_BOUNDARY\u0027 }\n        $path = [IO.Path]::GetDirectoryName($root)\n        $id = \u0027output-parent\u0027; $s"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:57:36.4452382Z",
+                                        "provider":  "Microsoft-Windows-PowerShell",
+                                        "id":  4104,
+                                        "level":  3,
+                                        "message":  "Creating Scriptblock text (1 of 2):\r\n# Fixed MemoryOS readiness wire 2.0 checked native acquisition; PowerShell 5.1.\nSet-StrictMode -Version 2.0\n$ErrorActionPreference = \u0027Stop\u0027\n$requestCeiling = 65536\n$responseCeiling = 16777216\n$sequence = 1\n$operation = \u0027READ_SET\u0027\n$session = \u0027000000000000000000000"
+                                    }
+                                ]
+                 },
+                 {
+                     "log":  "Windows PowerShell",
+                     "available":  true,
+                     "error":  null,
+                     "count":  2268,
+                     "byProviderAndId":  [
+                                             {
+                                                 "key":  "PowerShell#600",
+                                                 "count":  1704
+                                             },
+                                             {
+                                                 "key":  "PowerShell#400",
+                                                 "count":  284
+                                             },
+                                             {
+                                                 "key":  "PowerShell#403",
+                                                 "count":  280
+                                             }
+                                         ],
+                     "sample":  [
+
+                                ]
+                 },
+                 {
+                     "log":  "System",
+                     "available":  true,
+                     "error":  null,
+                     "count":  8,
+                     "byProviderAndId":  [
+                                             {
+                                                 "key":  "Netwtw10#7003",
+                                                 "count":  4
+                                             },
+                                             {
+                                                 "key":  "Netwtw10#6062",
+                                                 "count":  2
+                                             },
+                                             {
+                                                 "key":  "Netwtw10#7021",
+                                                 "count":  2
+                                             }
+                                         ],
+                     "sample":  [
+                                    {
+                                        "at":  "2026-10-04T17:52:29.0578411Z",
+                                        "provider":  "Netwtw10",
+                                        "id":  6062,
+                                        "level":  3,
+                                        "message":  "6062 - Lso was triggered"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:52:28.2666633Z",
+                                        "provider":  "Netwtw10",
+                                        "id":  7021,
+                                        "level":  4,
+                                        "message":  "7021 - Connection telemetry fields and analysis usage"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:52:24.5578734Z",
+                                        "provider":  "Netwtw10",
+                                        "id":  7003,
+                                        "level":  4,
+                                        "message":  "7003 - Roam Complete"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:52:24.5578734Z",
+                                        "provider":  "Netwtw10",
+                                        "id":  7003,
+                                        "level":  4,
+                                        "message":  "7003 - Roam Complete"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:52:24.5558613Z",
+                                        "provider":  "Netwtw10",
+                                        "id":  7003,
+                                        "level":  4,
+                                        "message":  "7003 - Roam Complete"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:47:48.5687629Z",
+                                        "provider":  "Netwtw10",
+                                        "id":  6062,
+                                        "level":  3,
+                                        "message":  "6062 - Lso was triggered"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:47:48.2745871Z",
+                                        "provider":  "Netwtw10",
+                                        "id":  7003,
+                                        "level":  4,
+                                        "message":  "7003 - Roam Complete"
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:47:48.2745871Z",
+                                        "provider":  "Netwtw10",
+                                        "id":  7021,
+                                        "level":  4,
+                                        "message":  "7021 - Connection telemetry fields and analysis usage"
+                                    }
+                                ]
+                 },
+                 {
+                     "log":  "Application",
+                     "available":  true,
+                     "error":  null,
+                     "count":  4,
+                     "byProviderAndId":  [
+                                             {
+                                                 "key":  "Microsoft-Windows-Perflib#1008",
+                                                 "count":  3
+                                             },
+                                             {
+                                                 "key":  "VBScriptDeprecationAlert#4096",
+                                                 "count":  1
+                                             }
+                                         ],
+                     "sample":  [
+                                    {
+                                        "at":  "2026-10-04T17:48:48.7366807Z",
+                                        "provider":  "VBScriptDeprecationAlert",
+                                        "id":  4096,
+                                        "level":  3,
+                                        "message":  ""
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:47:13.0691286Z",
+                                        "provider":  "Microsoft-Windows-Perflib",
+                                        "id":  1008,
+                                        "level":  3,
+                                        "message":  "The Open procedure for service \"WmiApRpl\" in DLL \"C:\\Windows\\system32\\wbem\\wmiaprpl.dll\" failed with error code The device is not ready.. Performance data for this service will not be available."
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:47:12.8505734Z",
+                                        "provider":  "Microsoft-Windows-Perflib",
+                                        "id":  1008,
+                                        "level":  3,
+                                        "message":  "The Open procedure for service \"MSDTC\" in DLL \"C:\\Windows\\system32\\msdtcuiu.DLL\" failed with error code The system cannot find the file specified.. Performance data for this service will not be available."
+                                    },
+                                    {
+                                        "at":  "2026-10-04T17:47:12.8232751Z",
+                                        "provider":  "Microsoft-Windows-Perflib",
+                                        "id":  1008,
+                                        "level":  3,
+                                        "message":  "The Open procedure for service \"ESENT\" in DLL \"C:\\Windows\\system32\\esentprf.dll\" failed with error code Access is denied.. Performance data for this service will not be available."
+                                    }
+                                ]
+                 }
+             ],
+    "defenderStatusReadOnly":  {
+                                   "realTimeProtectionEnabled":  false,
+                                   "amRunningMode":  "Passive Mode",
+                                   "antivirusEnabled":  true
+                               },
+    "registeredAntivirusProducts":  [
+                                        {
+                                            "displayName":  "Windows Defender",
+                                            "productState":  393472
+                                        },
+                                        {
+                                            "displayName":  "McAfee VirusScan",
+                                            "productState":  462848
+                                        },
+                                        {
+                                            "displayName":  "McAfee",
+                                            "productState":  266240
+                                        }
+                                    ]
+}

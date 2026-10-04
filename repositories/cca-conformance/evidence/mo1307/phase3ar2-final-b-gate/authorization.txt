@@ -1,0 +1,395 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3AR2
+
+FINAL RESOURCE-BUDGET CORRECTION
+THEN FINAL PHASE 3A CERTIFICATION
+
+We are ending the diagnostic loop.
+
+The preserved B failure has now established the actual blocking resource:
+
+prior helper-active:
+19297.7443 ms
+
+remaining aggregate helper budget:
+702.2557 ms
+
+remaining supervisor lease:
+702.2263 ms
+
+T0-to-deadline window:
+702.1707 ms
+
+Therefore the failed INSPECT_PENDING helper could not possibly receive a normal execution window under the existing 20000-ms aggregate-helper budget.
+
+The 9000-ms per-helper deadline was NOT the limiting resource.
+
+==================================================
+1. FINAL RESOURCE AUTHORITY
+==================================================
+
+Preserve:
+
+PROSPECTIVE_HELPER_BOUND@2.0.0
+
+helper whole lifecycle:
+9000 ms
+
+success:
+< 9000 ms
+
+timeout:
+>= 9000 ms
+
+Adopt prospectively:
+
+PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0
+
+helper-active aggregate:
+28000 ms
+
+Preserve:
+
+CLI:
+30000 ms
+
+API/worker:
+10000 ms
+
+cleanup:
+2000 ms
+
+Historical:
+
+H = NOT_ESTABLISHED
+
+remains unchanged.
+
+Do not call 9000 or 28000 H.
+
+==================================================
+2. RATIONALE
+==================================================
+
+Fresh installed-runtime evidence proves that the old 20000-ms aggregate helper ceiling is incompatible with the required READY evaluation sequence.
+
+Before the next mandatory INSPECT_PENDING helper launched, valid prior helper activity had already consumed:
+
+19297.7443 ms
+
+leaving only:
+
+702.2557 ms
+
+The resulting timeout therefore does not establish that INSPECT_PENDING itself violates the 9000-ms helper bound.
+
+It establishes that the aggregate-helper ceiling prevents the required sequence from completing.
+
+The new aggregate ceiling is:
+
+28000 ms
+
+This preserves the existing 30000-ms CLI ceiling while reserving 2000 ms of the CLI envelope for non-helper orchestration/settlement work.
+
+Do not change the 30000-ms CLI ceiling.
+
+==================================================
+3. NO MORE DIAGNOSTICS
+==================================================
+
+Do not:
+
+repair the previous diagnostic observer
+
+run another INSPECT_PENDING diagnostic
+
+run characterization
+
+optimize helper startup
+
+optimize filesystem paths
+
+change helper topology
+
+change PowerShell architecture
+
+increase the per-helper bound again.
+
+The resource blocker is established.
+
+==================================================
+4. PRESERVE FAILED GENERATIONS
+==================================================
+
+Preserve:
+
+C3TB failed Phase 3AR2 generation
+
+C3UB failed Phase 3AR2 generation
+
+B failure
+
+failed diagnostic attempt
+
+all previous Phase 3A history.
+
+Do not rewrite them.
+
+==================================================
+5. CREATE FINAL CANDIDATE
+==================================================
+
+Create a new production candidate derived from C3UB.
+
+Change ONLY the aggregate helper-active authority from:
+
+20000
+
+to:
+
+28000 ms
+
+and regenerate all mechanically dependent definitions and metadata.
+
+Preserve:
+
+helper bound 9000
+
+CLI 30000
+
+API/worker 10000
+
+cleanup 2000
+
+all security and functional corrections already incorporated in C3UB.
+
+==================================================
+6. GENERATED CONSISTENCY
+==================================================
+
+Verify mechanically that:
+
+helperDeadlineMs = 9000
+
+helperAggregateMs = 28000
+
+cliDeadlineMs = 30000
+
+worker/API = 10000
+
+cleanup = 2000
+
+across every authoritative/runtime/generated consumer.
+
+Verify:
+
+wire version unchanged
+
+schemas unchanged except generated resource values where applicable
+
+manifest consistent
+
+SBOM consistent
+
+89 package members accounted for
+
+no new production dependency.
+
+==================================================
+7. EXACT B GATE BEFORE FULL CERTIFICATION
+==================================================
+
+Before another full A-O campaign, run exactly ONE bounded validation of:
+
+B / ready / evaluate
+
+against the new candidate.
+
+This is not certification.
+
+Require:
+
+expected READY result
+
+no helper timeout
+
+aggregate helper-active < 28000
+
+CLI lifecycle < 30000
+
+all required helpers accepted
+
+scheduled topology/RSS witness PASS
+
+required cleanup/settlement PASS.
+
+No retry.
+
+If B fails for any other reason:
+
+STOP and report the exact concrete blocker.
+
+Do not perform another diagnostic campaign.
+
+==================================================
+8. FINAL FRESH PHASE 3A
+==================================================
+
+If B validation passes:
+
+immediately create a completely fresh Phase 3A certification generation.
+
+Fresh package.
+
+Fresh offline installation.
+
+Verify all 89 installed members.
+
+Seal complete A-O inventory.
+
+Execute once from A through O.
+
+No historical PASS promotion.
+
+No retry.
+
+At first mandatory failure:
+
+STOP.
+
+==================================================
+9. A-O
+==================================================
+
+A:
+MO-1306 evaluate / verify / API
+
+B:
+READY
+
+C:
+NOT_READY
+
+D:
+COULD_NOT_EVALUATE
+
+E:
+REST
+
+F:
+seven human decisions
+
+G:
+complete tag inventory
+
+H:
+helper deadline/cancellation with 9000-ms helper and 28000-ms aggregate
+
+I:
+worker deadline/cancellation
+
+J:
+cleanup/process topology
+
+K:
+finalization
+
+L:
+filesystem/native
+
+M:
+environment isolation
+
+N:
+byte determinism
+
+O:
+final MO-1306 confirmation
+
+==================================================
+10. SUCCESS
+==================================================
+
+If A-O all pass:
+
+return:
+
+PHASE3AR2_ACCEPTED_FINAL_CANDIDATE
+
+Create:
+
+accepted receipt
+
+accepted certification commit
+
+candidate binding
+
+Phase 3D handoff.
+
+==================================================
+11. PHASE 3BR2
+==================================================
+
+Preserve accepted Phase 3BR2:
+
+4d92f0f21c9c3aad8202f4558d61b9229c7214fc
+
+Do NOT rerun the complete 3BR2 campaign.
+
+After final Phase 3A acceptance, report only the exact candidate/deadline metadata delta required to bind 3BR2 to the final candidate.
+
+==================================================
+12. PHASE 3CR2
+==================================================
+
+Do not perform 3CR2 work here.
+
+Its independent harness correction continues separately.
+
+After final Phase 3A acceptance, report the exact aggregate-budget delta that 3CR2 must include.
+
+==================================================
+13. FINAL OUTCOMES
+==================================================
+
+Return only:
+
+PHASE3AR2_ACCEPTED_FINAL_CANDIDATE
+
+or
+
+PHASE3AR2_CONCRETE_BLOCKER
+
+No:
+
+MORE_DIAGNOSTICS_REQUIRED
+
+MORE_CHARACTERIZATION_REQUIRED
+
+ARCHITECTURE_REVIEW_REQUIRED.
+
+==================================================
+14. FINAL REPORT
+==================================================
+
+Report:
+
+1. aggregate-budget authority
+2. exact files changed
+3. final candidate commit/binding
+4. exact resource constants
+5. B pre-certification result
+6. fresh A-O results
+7. helper/resource maxima
+8. certification receipt
+9. Phase 3A status
+10. exact 3BR2 delta
+11. exact 3CR2 delta
+12. repository status
+13. Phase 3D handoff if accepted
+
+No push.
+No tag.
+No Phase 3D.
+
+FINISH PHASE 3A.

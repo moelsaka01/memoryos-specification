@@ -1,0 +1,286 @@
+{
+  "kind": "MO1307Phase3AR2FinalH5RebindingStructuralValidation",
+  "version": "1.0.0",
+  "createdAt": "2026-10-04T18:07:07.210Z",
+  "result": "PASS",
+  "rename": {
+    "pattern": "phase3ar2-final-h4-corrected -> phase3ar2-final-h5-corrected; _H4_CORRECTED -> _H5_CORRECTED",
+    "fixtureRootsUnchanged": true
+  },
+  "byteIdenticalToH4": [
+    ".gitattributes",
+    "cleanup-topology.mjs",
+    "core.mjs",
+    "decisions-tags.mjs",
+    "determinism.mjs",
+    "errors-observer.mjs",
+    "finalization-lock.ps1",
+    "finalization.mjs",
+    "method.mjs",
+    "observer-entry.mjs",
+    "runtime-controls-observer.py",
+    "runtime-controls-worker.mjs",
+    "runtime-observer.mjs",
+    "security-worker.mjs",
+    "stage.mjs",
+    "topology_identity_policy.py",
+    "transport-observer.mjs"
+  ],
+  "renameOnly": [
+    "common.mjs",
+    "observe-command.py",
+    "recover-inventory.mjs",
+    "runtime-controls-run.py",
+    "runtime-controls.mjs"
+  ],
+  "edited": {
+    "campaign.mjs": {
+      "removed": [
+        {
+          "line": 13,
+          "text": "const dependencyPaths=['repositories/cca-conformance/tools/mo1307-phase2b/test-support.mjs','repositories/cca-conformance/tools/mo1307-phase1/package.mjs','repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs','docs/mo1307-contract-freeze-1.md','docs/mo1307-phase2c-publication-inspection-correction.md','docs/mo1307-phase2c-finalization-boundary-correction.md','docs/mo1307-prospective-helper-bound-v2-candidate.md','docs/mo1307-prospective-helper-aggregate-bound-v2-candidate.md','docs/mo1307-final-headless-correction-addendum.md','docs/mo1307-phase3ar2-final.md','docs/mo1307-phase3ar2-final-h-corrected.md','docs/mo1307-phase3ar2-final-h2-corrected.md','docs/mo1307-phase3ar2-final-h3-corrected.md','repositories/cca-conformance/evidence/mo1307/final-headless/authorization.txt','repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-v2-candidate/authority.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/authority.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3a-handoff.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3br2-binding-delta.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3cr2-aggregate-delta.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/changed-file-inventory.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/binding.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/binding-verification.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/candidate.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/consistency-validation.json'];"
+        },
+        {
+          "line": 36,
+          "text": "  h4RebindingEvidence:'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h4-rebinding'"
+        },
+        {
+          "line": 38,
+          "text": "const prerequisiteMemberCounts={historicalFailedBGateTools:7,historicalFailedBGateEvidence:28,topologyObserverCorrectionTools:3,topologyObserverCorrectionEvidence:6,correctedBGateTools:8,correctedBGateEvidence:28,preservedFailedFullTools:26,preservedFailedFullEvidence:374,hHarnessCorrectionTools:1,hHarnessCorrectionEvidence:6,preservedFailedHCorrectedTools:26,preservedFailedHCorrectedEvidence:407,h2HarnessCorrectionTools:5,h2HarnessCorrectionEvidence:9,preservedBlockedH2Tools:26,preservedBlockedH2Evidence:9,h3RebindingTools:2,h3RebindingEvidence:6,preservedFailedH3Tools:26,preservedFailedH3Evidence:48,h4RebindingTools:3,h4RebindingEvidence:6};"
+        },
+        {
+          "line": 79,
+          "text": "  assert.deepEqual(seal.h2HarnessCorrection,record(h2HarnessCorrectionReceiptPath));assert.deepEqual(seal.preservedFailedHCorrectedGeneration,record(preservedFailedHCorrectedReceiptPath));assert.deepEqual(seal.h2FailureClassifications,h2FailureClassifications);assert.deepEqual(seal.aggregateHelperEngineeringEnvelope,aggregateHelperEngineeringEnvelope);assert.equal(seal.eventOrderingRule,'MO1307_OBSERVER_EVENT_ORDERING@1.0.0');assert.deepEqual(seal.h2FixtureRoots,h2FixtureRoots);assert.deepEqual(seal.h3Rebinding,record(path.join(root,prerequisiteNamespaces.h3RebindingEvidence,'receipt.json')));assert.deepEqual(seal.preservedBlockedH2Generation,{path:prerequisiteNamespaces.preservedBlockedH2Evidence+'/certification-receipt.json',byteLength:13870,sha256:'sha256:a740a4b6e7032af7f7db0beeb3b42ceac33489bf43188906c4de917a849cd0c0'});assert.deepEqual(seal.h4Rebinding,record(path.join(root,prerequisiteNamespaces.h4RebindingEvidence,'receipt.json')));assert.deepEqual(seal.preservedFailedH3Generation,{path:prerequisiteNamespaces.preservedFailedH3Evidence+'/certification-receipt.json',byteLength:341736,sha256:'sha256:7726c012194463f6d5a90600b62309c5fad9afd83a116c25c9acca5be6d1302e'});assert.equal(seal.hostInstrumentation,'MO1307_HOST_INSTRUMENTATION@1.0.0');"
+        },
+        {
+          "line": 132,
+          "text": "    const summarize=(from,to)=>{const rows=samples.filter(s=>{const t=Date.parse(s.atUtc);return t>=from&&t<=to;});if(!rows.length)return {samples:0};const sums={};for(const r of rows)for(const t of r.topCpu??[])sums[t.n]=(sums[t.n]??0)+t.cpuMs;const cpu=rows.map(r=>r.cpuPct),perf=rows.map(r=>r.cpuPerformancePct).filter(v=>typeof v==='number');return {samples:rows.length,cpuPctAverage:+(cpu.reduce((a,b)=>a+b,0)/cpu.length).toFixed(1),cpuPctMax:Math.max(...cpu),cpuPerformancePctMin:perf.length?Math.min(...perf):null,availMBMin:Math.min(...rows.map(r=>r.availMB)),queueLengthMax:Math.max(...rows.map(r=>r.queueLength)),topProcessCpuMs:Object.entries(sums).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([name,cpuMs])=>({name,cpuMs:+cpuMs.toFixed(0)}))};};"
+        },
+        {
+          "line": 149,
+          "text": "  const toolRel=path.relative(root,T).replaceAll('\\\\','/'),allowedUntracked=[toolRel,rel,...Object.values(prerequisiteNamespaces),...h2FixtureRoots];assert.ok(statusLines.every(line=>line==='?? docs/mo1307-phase3ar2-final.md'||line==='?? docs/mo1307-phase3ar2-final-h-corrected.md'||line==='?? docs/mo1307-phase3ar2-final-h2-corrected.md'||line==='?? docs/mo1307-phase3ar2-final-h3-corrected.md'||allowedUntracked.some(prefix=>line.startsWith('?? '+prefix+'/'))),'Unexpected working-tree path before seal');"
+        },
+        {
+          "line": 161,
+          "text": "  const seal={kind:'MO1307Phase3AR2C3VBNativeInstalledCampaignSeal',version:'1.0.0',sealedAt:new Date().toISOString(),candidate:HEAD,productionCommit:'98b766f9218b209f52251147213839b9775f6da3',productionTree:'b9dabf54572e06c96bb5e48c4e20671f2cc24053',integrationAuthority:authority,helperAuthority,order:steps,inventory:record(inventoryPath),...bindings,limits:fixedLimits,historicalCharacterizationH:'NOT_ESTABLISHED',replacementHelperBoundH:'NOT_ESTABLISHED',hFailureClassification:'H_HARNESS_MARGIN_DEFECT',timelyHelperEngineeringEnvelope:{artificialEofDelayMs:0,maxMs:5000,deadlineMarginMs:4000},admittedRenameSettlement:'NO_FINITE_BOUND_ESTABLISHED',execution:fixedExecution,historicalEvidencePromoted:false,scope:'PHASE_3AR2_ONLY',preCertificationBGate:record(correctedBGateReceiptPath),preservedFailedPreCertificationBGate:record(historicalFailedBGateReceiptPath),topologyObserverCorrection:record(topologyObserverCorrectionReceiptPath),hHarnessCorrection:record(hHarnessCorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),h2HarnessCorrection:record(h2HarnessCorrectionReceiptPath),preservedFailedHCorrectedGeneration:record(preservedFailedHCorrectedReceiptPath),h2FailureClassifications,aggregateHelperEngineeringEnvelope,eventOrderingRule:'MO1307_OBSERVER_EVENT_ORDERING@1.0.0',h2FixtureRoots,h3Rebinding:record(path.join(root,prerequisiteNamespaces.h3RebindingEvidence,'receipt.json')),preservedBlockedH2Generation:record(path.join(root,prerequisiteNamespaces.preservedBlockedH2Evidence,'certification-receipt.json')),h4Rebinding:record(path.join(root,prerequisiteNamespaces.h4RebindingEvidence,'receipt.json')),preservedFailedH3Generation:record(path.join(root,prerequisiteNamespaces.preservedFailedH3Evidence,'certification-receipt.json')),hostInstrumentation:'MO1307_HOST_INSTRUMENTATION@1.0.0',preservedPhase3BR2:'4d92f0f21c9c3aad8202f4558d61b9229c7214fc',phase3BR2Rerun:false,preservedPhase3CR2:'7d2006c6e19bb50bffb6c710672be996e3c3590b',phase3CR2Rerun:false,phase3CR2ExecutedHere:false,phase3D:false};"
+        }
+      ],
+      "added": [
+        {
+          "line": 13,
+          "text": "const dependencyPaths=['repositories/cca-conformance/tools/mo1307-phase2b/test-support.mjs','repositories/cca-conformance/tools/mo1307-phase1/package.mjs','repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs','docs/mo1307-contract-freeze-1.md','docs/mo1307-phase2c-publication-inspection-correction.md','docs/mo1307-phase2c-finalization-boundary-correction.md','docs/mo1307-prospective-helper-bound-v2-candidate.md','docs/mo1307-prospective-helper-aggregate-bound-v2-candidate.md','docs/mo1307-final-headless-correction-addendum.md','docs/mo1307-phase3ar2-final.md','docs/mo1307-phase3ar2-final-h-corrected.md','docs/mo1307-phase3ar2-final-h2-corrected.md','docs/mo1307-phase3ar2-final-h3-corrected.md','docs/mo1307-phase3ar2-final-h4-corrected.md','repositories/cca-conformance/evidence/mo1307/final-headless/authorization.txt','repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-v2-candidate/authority.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/authority.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3a-handoff.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3br2-binding-delta.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/phase3cr2-aggregate-delta.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/changed-file-inventory.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/binding.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/binding-verification.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/candidate.json','repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/consistency-validation.json'];"
+        },
+        {
+          "line": 36,
+          "text": "  h4RebindingEvidence:'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h4-rebinding',"
+        },
+        {
+          "line": 37,
+          "text": "  preservedFailedH4Tools:'repositories/cca-conformance/tools/mo1307-phase3ar2-final-h4-corrected',"
+        },
+        {
+          "line": 38,
+          "text": "  preservedFailedH4Evidence:'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h4-corrected',"
+        },
+        {
+          "line": 39,
+          "text": "  h5RebindingTools:'repositories/cca-conformance/tools/mo1307-phase3ar2-final-h5-rebinding',"
+        },
+        {
+          "line": 40,
+          "text": "  h5RebindingEvidence:'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h5-rebinding'"
+        },
+        {
+          "line": 42,
+          "text": "const prerequisiteMemberCounts={historicalFailedBGateTools:7,historicalFailedBGateEvidence:28,topologyObserverCorrectionTools:3,topologyObserverCorrectionEvidence:6,correctedBGateTools:8,correctedBGateEvidence:28,preservedFailedFullTools:26,preservedFailedFullEvidence:374,hHarnessCorrectionTools:1,hHarnessCorrectionEvidence:6,preservedFailedHCorrectedTools:26,preservedFailedHCorrectedEvidence:407,h2HarnessCorrectionTools:5,h2HarnessCorrectionEvidence:9,preservedBlockedH2Tools:26,preservedBlockedH2Evidence:9,h3RebindingTools:2,h3RebindingEvidence:6,preservedFailedH3Tools:26,preservedFailedH3Evidence:48,h4RebindingTools:3,h4RebindingEvidence:6,preservedFailedH4Tools:27,preservedFailedH4Evidence:692,h5RebindingTools:3,h5RebindingEvidence:6};"
+        },
+        {
+          "line": 83,
+          "text": "  assert.deepEqual(seal.h2HarnessCorrection,record(h2HarnessCorrectionReceiptPath));assert.deepEqual(seal.preservedFailedHCorrectedGeneration,record(preservedFailedHCorrectedReceiptPath));assert.deepEqual(seal.h2FailureClassifications,h2FailureClassifications);assert.deepEqual(seal.aggregateHelperEngineeringEnvelope,aggregateHelperEngineeringEnvelope);assert.equal(seal.eventOrderingRule,'MO1307_OBSERVER_EVENT_ORDERING@1.0.0');assert.deepEqual(seal.h2FixtureRoots,h2FixtureRoots);assert.deepEqual(seal.h3Rebinding,record(path.join(root,prerequisiteNamespaces.h3RebindingEvidence,'receipt.json')));assert.deepEqual(seal.preservedBlockedH2Generation,{path:prerequisiteNamespaces.preservedBlockedH2Evidence+'/certification-receipt.json',byteLength:13870,sha256:'sha256:a740a4b6e7032af7f7db0beeb3b42ceac33489bf43188906c4de917a849cd0c0'});assert.deepEqual(seal.h4Rebinding,record(path.join(root,prerequisiteNamespaces.h4RebindingEvidence,'receipt.json')));assert.deepEqual(seal.preservedFailedH3Generation,{path:prerequisiteNamespaces.preservedFailedH3Evidence+'/certification-receipt.json',byteLength:341736,sha256:'sha256:7726c012194463f6d5a90600b62309c5fad9afd83a116c25c9acca5be6d1302e'});assert.equal(seal.hostInstrumentation,'MO1307_HOST_INSTRUMENTATION@1.0.0');assert.deepEqual(seal.h5Rebinding,record(path.join(root,prerequisiteNamespaces.h5RebindingEvidence,'receipt.json')));assert.deepEqual(seal.preservedFailedH4Generation,{path:prerequisiteNamespaces.preservedFailedH4Evidence+'/certification-receipt.json',byteLength:701088,sha256:'sha256:48284745bbc3016db931fa1fb94f7702a1609c08e7192e5d3914310c1b187c89'});"
+        },
+        {
+          "line": 136,
+          "text": "    const summarize=(from,to)=>{const rows=samples.filter(s=>{const t=Date.parse(s.atUtc);return t>=from&&t<=to;});if(!rows.length)return {samples:0};const sums={};for(const r of rows)for(const t of r.topCpu??[])sums[t.n]=(sums[t.n]??0)+t.cpuMs;const cpu=rows.map(r=>r.cpuPct),perf=rows.map(r=>r.cpuPerformancePct).filter(v=>typeof v==='number');return {samples:rows.length,cpuPctAverage:+(cpu.reduce((a,b)=>a+b,0)/cpu.length).toFixed(1),cpuPctMax:Math.max(...cpu),cpuPerformancePctMin:perf.length?Math.min(...perf):null,availMBMin:Math.min(...rows.map(r=>r.availMB)),queueLengthMax:Math.max(...rows.map(r=>r.queueLength)),diskQueueMax:Math.max(...rows.map(r=>r.diskQueue??0)),diskTimePctMax:Math.max(...rows.map(r=>r.diskTimePct??0)),watchProcessCpuMs:Object.entries(rows.reduce((a,r)=>{for(const w of r.watchCpu??[])a[w.n]=(a[w.n]??0)+w.cpuMs;return a;},{})).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([name,cpuMs])=>({name,cpuMs:+cpuMs.toFixed(0)})),topProcessCpuMs:Object.entries(sums).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([name,cpuMs])=>({name,cpuMs:+cpuMs.toFixed(0)}))};};"
+        },
+        {
+          "line": 153,
+          "text": "  const toolRel=path.relative(root,T).replaceAll('\\\\','/'),allowedUntracked=[toolRel,rel,...Object.values(prerequisiteNamespaces),...h2FixtureRoots];assert.ok(statusLines.every(line=>line==='?? docs/mo1307-phase3ar2-final.md'||line==='?? docs/mo1307-phase3ar2-final-h-corrected.md'||line==='?? docs/mo1307-phase3ar2-final-h2-corrected.md'||line==='?? docs/mo1307-phase3ar2-final-h3-corrected.md'||line==='?? docs/mo1307-phase3ar2-final-h4-corrected.md'||allowedUntracked.some(prefix=>line.startsWith('?? '+prefix+'/'))),'Unexpected working-tree path before seal');"
+        },
+        {
+          "line": 165,
+          "text": "  const seal={kind:'MO1307Phase3AR2C3VBNativeInstalledCampaignSeal',version:'1.0.0',sealedAt:new Date().toISOString(),candidate:HEAD,productionCommit:'98b766f9218b209f52251147213839b9775f6da3',productionTree:'b9dabf54572e06c96bb5e48c4e20671f2cc24053',integrationAuthority:authority,helperAuthority,order:steps,inventory:record(inventoryPath),...bindings,limits:fixedLimits,historicalCharacterizationH:'NOT_ESTABLISHED',replacementHelperBoundH:'NOT_ESTABLISHED',hFailureClassification:'H_HARNESS_MARGIN_DEFECT',timelyHelperEngineeringEnvelope:{artificialEofDelayMs:0,maxMs:5000,deadlineMarginMs:4000},admittedRenameSettlement:'NO_FINITE_BOUND_ESTABLISHED',execution:fixedExecution,historicalEvidencePromoted:false,scope:'PHASE_3AR2_ONLY',preCertificationBGate:record(correctedBGateReceiptPath),preservedFailedPreCertificationBGate:record(historicalFailedBGateReceiptPath),topologyObserverCorrection:record(topologyObserverCorrectionReceiptPath),hHarnessCorrection:record(hHarnessCorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),h2HarnessCorrection:record(h2HarnessCorrectionReceiptPath),preservedFailedHCorrectedGeneration:record(preservedFailedHCorrectedReceiptPath),h2FailureClassifications,aggregateHelperEngineeringEnvelope,eventOrderingRule:'MO1307_OBSERVER_EVENT_ORDERING@1.0.0',h2FixtureRoots,h3Rebinding:record(path.join(root,prerequisiteNamespaces.h3RebindingEvidence,'receipt.json')),preservedBlockedH2Generation:record(path.join(root,prerequisiteNamespaces.preservedBlockedH2Evidence,'certification-receipt.json')),h4Rebinding:record(path.join(root,prerequisiteNamespaces.h4RebindingEvidence,'receipt.json')),preservedFailedH3Generation:record(path.join(root,prerequisiteNamespaces.preservedFailedH3Evidence,'certification-receipt.json')),hostInstrumentation:'MO1307_HOST_INSTRUMENTATION@1.0.0',h5Rebinding:record(path.join(root,prerequisiteNamespaces.h5RebindingEvidence,'receipt.json')),preservedFailedH4Generation:record(path.join(root,prerequisiteNamespaces.preservedFailedH4Evidence,'certification-receipt.json')),preservedPhase3BR2:'4d92f0f21c9c3aad8202f4558d61b9229c7214fc',phase3BR2Rerun:false,preservedPhase3CR2:'7d2006c6e19bb50bffb6c710672be996e3c3590b',phase3CR2Rerun:false,phase3CR2ExecutedHere:false,phase3D:false};"
+        }
+      ]
+    },
+    "instrumentation.ps1": {
+      "removed": [
+        {
+          "line": 36,
+          "text": "      $record = [ordered]@{ atUtc = (Get-Date).ToUniversalTime().ToString('o'); tMs = [math]::Round($sw.Elapsed.TotalMilliseconds, 1); cpuPct = [math]::Round($cpu.NextValue(), 1); cpuPerformancePct = $perf; availMB = [int]$avail.NextValue(); queueLength = [int]$queue.NextValue(); processCount = $cur.Count; topCpu = $top }"
+        }
+      ],
+      "added": [
+        {
+          "line": 21,
+          "text": "  $diskQueue = $null; $diskTime = $null"
+        },
+        {
+          "line": 22,
+          "text": "  try { $diskQueue = New-Object Diagnostics.PerformanceCounter('PhysicalDisk', 'Avg. Disk Queue Length', '_Total'); $diskTime = New-Object Diagnostics.PerformanceCounter('PhysicalDisk', '% Disk Time', '_Total'); $null = $diskQueue.NextValue(); $null = $diskTime.NextValue() } catch {}"
+        },
+        {
+          "line": 23,
+          "text": "  $watchPattern = '^(MsMpEng|NisSrv|MpCmdRun|mc-|mfe|McAfee|mcshield|masvc|SearchIndexer|SearchProtocolHost|TiWorker|TrustedInstaller|MoUsoCoreWorker|WmiPrvSE|CompatTelRunner|svchost|System|dptf_helper)'"
+        },
+        {
+          "line": 38,
+          "text": "      $watch = @($rows | Where-Object { $_.n -match $watchPattern } | Group-Object n | ForEach-Object { [pscustomobject]@{ n = $_.Name; cpuMs = [math]::Round(($_.Group | Measure-Object cpuMs -Sum).Sum, 1) } })"
+        },
+        {
+          "line": 39,
+          "text": "      $dq = $null; $dt = $null; if ($diskQueue) { $dq = [math]::Round($diskQueue.NextValue(), 2); $dt = [math]::Round($diskTime.NextValue(), 1) }"
+        },
+        {
+          "line": 41,
+          "text": "      $record = [ordered]@{ atUtc = (Get-Date).ToUniversalTime().ToString('o'); tMs = [math]::Round($sw.Elapsed.TotalMilliseconds, 1); cpuPct = [math]::Round($cpu.NextValue(), 1); cpuPerformancePct = $perf; availMB = [int]$avail.NextValue(); queueLength = [int]$queue.NextValue(); processCount = $cur.Count; diskQueue = $dq; diskTimePct = $dt; watchCpu = $watch; topCpu = $top }"
+        }
+      ]
+    },
+    "prepare.mjs": {
+      "removed": [
+        {
+          "line": 70,
+          "text": "const allowedUntracked=[toolRel,rel,failedBGateToolRel,failedBGateRel,correctionToolRel,correctionRel,bGateToolRel,bGateRel,failedFullToolRel,failedFullRel,hCorrectionToolRel,hCorrectionRel,consumedToolRel,consumedRel,h2CorrectionToolRel,h2CorrectionRel,aggregateFixtureRel,inputFixtureRel,blockedH2ToolRel,blockedH2Rel,h3RebindingToolRel,h3RebindingRel,failedH3ToolRel,failedH3Rel,h4RebindingToolRel,h4RebindingRel];"
+        },
+        {
+          "line": 71,
+          "text": "assert.ok(statusLines.every(line=>line==='?? '+failedFullReportRel||line==='?? '+consumedReportRel||line==='?? '+blockedH2ReportRel||line==='?? '+failedH3ReportRel||allowedUntracked.some(prefix=>line.startsWith('?? '+prefix+'/'))),'Unexpected working-tree path before preparation');"
+        },
+        {
+          "line": 77,
+          "text": "assert.deepEqual(h2Correction.bindings.sourceBindings,record(path.join(h2CorrectionRoot,'source-bindings.json')));assert.deepEqual(h2Correction.bindings.authorization,record(path.join(h2CorrectionRoot,'authorization.txt')));const h3Rebinding=JSON.parse(fs.readFileSync(path.join(root,h3RebindingRel,'receipt.json'),'utf8')),h3Sources=JSON.parse(fs.readFileSync(path.join(root,h3RebindingRel,'source-bindings.json'),'utf8'));assert.equal(h3Rebinding.kind,'MO1307Phase3AR2FinalH3GenerationRebindingReceipt');assert.equal(h3Rebinding.result,'PASS');assert.deepEqual(h3Rebinding.bindings.sourceBindings,record(path.join(root,h3RebindingRel,'source-bindings.json')));assert.deepEqual(walk(path.join(root,failedH3ToolRel)).map(row=>({...row,path:failedH3ToolRel+'/'+row.path})),h3Sources.h3CampaignTools,'Preserved failed H3 tools changed');const h4Rebinding=JSON.parse(fs.readFileSync(path.join(root,h4RebindingRel,'receipt.json'),'utf8')),h4Sources=JSON.parse(fs.readFileSync(path.join(root,h4RebindingRel,'source-bindings.json'),'utf8'));assert.equal(h4Rebinding.kind,'MO1307Phase3AR2FinalH4GenerationRebindingReceipt');assert.equal(h4Rebinding.result,'PASS');assert.deepEqual(h4Rebinding.bindings.sourceBindings,record(path.join(root,h4RebindingRel,'source-bindings.json')));assert.deepEqual(walk(path.join(root,toolRel)).map(row=>({...row,path:toolRel+'/'+row.path})),h4Sources.h4CampaignTools,'H4 campaign tools changed after zero-product rebinding');assert.deepEqual(walk(path.join(root,h4RebindingToolRel)).map(row=>({...row,path:h4RebindingToolRel+'/'+row.path})),h4Sources.h4RebindingTools);assert.deepEqual(walk(path.join(root,failedH3Rel)).map(row=>({...row,path:failedH3Rel+'/'+row.path})),h4Sources.preservedFailedH3Generation.evidence,'Preserved failed H3 evidence changed');assert.deepEqual(record(path.join(root,failedH3ReportRel)),h4Sources.preservedFailedH3Generation.report);assert.deepEqual(walk(path.join(root,h3RebindingToolRel)).map(row=>({...row,path:h3RebindingToolRel+'/'+row.path})),h3Sources.h3RebindingTools);assert.deepEqual(walk(path.join(root,blockedH2ToolRel)).map(row=>({...row,path:blockedH2ToolRel+'/'+row.path})),h2Sources.h2CampaignTools,'Preserved H2 tools changed');assert.deepEqual(walk(path.join(root,h2CorrectionToolRel)).map(row=>({...row,path:h2CorrectionToolRel+'/'+row.path})),h2Sources.h2CorrectionTools);assert.deepEqual(walk(path.join(root,aggregateFixtureRel)).map(row=>({...row,path:aggregateFixtureRel+'/'+row.path})),h2Sources.aggregateFixture);assert.deepEqual(walk(path.join(root,inputFixtureRel)).map(row=>({...row,path:inputFixtureRel+'/'+row.path})),h2Sources.inputFixture);assert.equal(fs.existsSync(path.join(root,aggregateFixtureRel,'absent-output')),false);"
+        },
+        {
+          "line": 78,
+          "text": "assert.equal(hash(fs.readFileSync(path.join(h2CorrectionRoot,'authorization.txt'))),h2Correction.bindings.authorization.sha256);assert.deepEqual(h3Rebinding.bindings.authorization,record(path.join(root,h3RebindingRel,'authorization.txt')));const authorizationBytes=fs.readFileSync(path.join(root,h4RebindingRel,'authorization.txt'));assert.deepEqual(h4Rebinding.bindings.authorization,record(path.join(root,h4RebindingRel,'authorization.txt')));"
+        },
+        {
+          "line": 111,
+          "text": "write('pre-execution-gate.json',{result:'PASS',verifiedAt:startedAt,worktree:path.resolve(root),branch:'codex/mo1307-phase3ar2-c3ub',HEAD:C3VB,rootTree:'68e5c57dce89cb0819b1a94ae18d4e6b9b54713d',productionCommit:C3V,productionTree,initialGateObservedBeforeTooling:{worktree:'C:\\\\Users\\\\melsa\\\\Documents\\\\Codex\\\\3ar2',branch:'codex/mo1307-phase3ar2-c3ub',HEAD:C3VB,workingTree:'TRACKED_CLEAN_WITH_PRESERVED_FAILED_GENERATIONS_CORRECTIONS_AND_FRESH_UNTRACKED_H5_CORRECTED_AO_HARNESS'},currentTrackedDiff:'CLEAN',currentIndex:'CLEAN',currentUntrackedScope:'Preserved failed B/full/H-corrected generations, topology, H and H2 corrections, corrected one-shot B, sealed H2 fixtures, and fresh H2-corrected A-O tools only',statusLines,observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),h2HarnessCorrection:record(h2CorrectionReceiptPath),preservedFailedHCorrectedGeneration:record(consumedReceiptPath),preservedFailedHCorrectedReport:record(path.join(root,consumedReportRel)),h3Rebinding:record(path.join(root,h3RebindingRel,'receipt.json')),preservedBlockedH2Generation:record(path.join(root,blockedH2Rel,'certification-receipt.json')),h4Rebinding:record(path.join(root,h4RebindingRel,'receipt.json')),preservedFailedH3Generation:record(path.join(root,failedH3Rel,'certification-receipt.json')),preservedFailedFullGeneration:record(failedFullReceiptPath),preservedFailedFullReport:record(failedFullReportPath),preCertificationBGate:record(bGatePath),preservedFailedBGate:record(failedBGatePath)});"
+        },
+        {
+          "line": 112,
+          "text": "write('campaign-config.json',{generation:'PHASE3AR2_C3VB_FINAL_H5_CORRECTED_FRESH_FULL_INSTALLED_RUNTIME',startedAt,hardStopAt,engineeringGuardMinutes:180,productDeadlineAuthorities:[helperAuthority,integration],candidate:C3VB,productionCommit:C3V,productionTree,H:'NOT_ESTABLISHED',hFailureClassification:'H_HARNESS_MARGIN_DEFECT',h2FailureClassifications:h2Correction.classifications,timelyHelperEngineeringEnvelope:{artificialEofDelayMs:0,maxMs:5000,deadlineMarginMs:4000},aggregateHelperEngineeringEnvelope:h2Correction.aggregateControl,h2Fixtures:{aggregate:h2Sources.aggregateFixture,input:h2Sources.inputFixture},h2HarnessCorrection:record(h2CorrectionReceiptPath),preservedFailedHCorrectedGeneration:record(consumedReceiptPath),eventOrderingRule:'MO1307_OBSERVER_EVENT_ORDERING@1.0.0',h3Rebinding:record(path.join(root,h3RebindingRel,'receipt.json')),preservedBlockedH2Generation:record(path.join(root,blockedH2Rel,'certification-receipt.json')),h4Rebinding:record(path.join(root,h4RebindingRel,'receipt.json')),preservedFailedH3Generation:record(path.join(root,failedH3Rel,'certification-receipt.json')),nodeExecutable:process.execPath,helperSuccess:'elapsedMs < 9000',helperTimeout:'elapsedMs >= 9000',aggregateAccepted:'helperActiveMs < 28000',aggregateTimeout:'helperActiveMs >= 28000',observerIdentityPolicy:'MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0',observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),preservedFailedFullReport:record(failedFullReportPath),preCertificationBGate:record(bGatePath),preservedFailedPreCertificationBGate:record(failedBGatePath),noRetry:true});"
+        }
+      ],
+      "added": [
+        {
+          "line": 44,
+          "text": "const failedH4Rel='repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h4-corrected';"
+        },
+        {
+          "line": 45,
+          "text": "const failedH4ToolRel='repositories/cca-conformance/tools/mo1307-phase3ar2-final-h4-corrected';"
+        },
+        {
+          "line": 46,
+          "text": "const failedH4ReportRel='docs/mo1307-phase3ar2-final-h4-corrected.md';"
+        },
+        {
+          "line": 47,
+          "text": "const h5RebindingRel='repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h5-rebinding';"
+        },
+        {
+          "line": 48,
+          "text": "const h5RebindingToolRel='repositories/cca-conformance/tools/mo1307-phase3ar2-final-h5-rebinding';"
+        },
+        {
+          "line": 75,
+          "text": "const allowedUntracked=[toolRel,rel,failedBGateToolRel,failedBGateRel,correctionToolRel,correctionRel,bGateToolRel,bGateRel,failedFullToolRel,failedFullRel,hCorrectionToolRel,hCorrectionRel,consumedToolRel,consumedRel,h2CorrectionToolRel,h2CorrectionRel,aggregateFixtureRel,inputFixtureRel,blockedH2ToolRel,blockedH2Rel,h3RebindingToolRel,h3RebindingRel,failedH3ToolRel,failedH3Rel,h4RebindingToolRel,h4RebindingRel,failedH4ToolRel,failedH4Rel,h5RebindingToolRel,h5RebindingRel];"
+        },
+        {
+          "line": 76,
+          "text": "assert.ok(statusLines.every(line=>line==='?? '+failedFullReportRel||line==='?? '+consumedReportRel||line==='?? '+blockedH2ReportRel||line==='?? '+failedH3ReportRel||line==='?? '+failedH4ReportRel||allowedUntracked.some(prefix=>line.startsWith('?? '+prefix+'/'))),'Unexpected working-tree path before preparation');"
+        },
+        {
+          "line": 82,
+          "text": "assert.deepEqual(h2Correction.bindings.sourceBindings,record(path.join(h2CorrectionRoot,'source-bindings.json')));assert.deepEqual(h2Correction.bindings.authorization,record(path.join(h2CorrectionRoot,'authorization.txt')));const h3Rebinding=JSON.parse(fs.readFileSync(path.join(root,h3RebindingRel,'receipt.json'),'utf8')),h3Sources=JSON.parse(fs.readFileSync(path.join(root,h3RebindingRel,'source-bindings.json'),'utf8'));assert.equal(h3Rebinding.kind,'MO1307Phase3AR2FinalH3GenerationRebindingReceipt');assert.equal(h3Rebinding.result,'PASS');assert.deepEqual(h3Rebinding.bindings.sourceBindings,record(path.join(root,h3RebindingRel,'source-bindings.json')));assert.deepEqual(walk(path.join(root,failedH3ToolRel)).map(row=>({...row,path:failedH3ToolRel+'/'+row.path})),h3Sources.h3CampaignTools,'Preserved failed H3 tools changed');const h4Rebinding=JSON.parse(fs.readFileSync(path.join(root,h4RebindingRel,'receipt.json'),'utf8')),h4Sources=JSON.parse(fs.readFileSync(path.join(root,h4RebindingRel,'source-bindings.json'),'utf8'));assert.equal(h4Rebinding.kind,'MO1307Phase3AR2FinalH4GenerationRebindingReceipt');assert.equal(h4Rebinding.result,'PASS');assert.deepEqual(h4Rebinding.bindings.sourceBindings,record(path.join(root,h4RebindingRel,'source-bindings.json')));assert.deepEqual(walk(path.join(root,failedH4ToolRel)).map(row=>({...row,path:failedH4ToolRel+'/'+row.path})),h4Sources.h4CampaignTools,'Preserved failed H4 tools changed');const h5Rebinding=JSON.parse(fs.readFileSync(path.join(root,h5RebindingRel,'receipt.json'),'utf8')),h5Sources=JSON.parse(fs.readFileSync(path.join(root,h5RebindingRel,'source-bindings.json'),'utf8'));assert.equal(h5Rebinding.kind,'MO1307Phase3AR2FinalH5GenerationRebindingReceipt');assert.equal(h5Rebinding.result,'PASS');assert.deepEqual(h5Rebinding.bindings.sourceBindings,record(path.join(root,h5RebindingRel,'source-bindings.json')));assert.deepEqual(walk(path.join(root,toolRel)).map(row=>({...row,path:toolRel+'/'+row.path})),h5Sources.h5CampaignTools,'H5 campaign tools changed after zero-product rebinding');assert.deepEqual(walk(path.join(root,h5RebindingToolRel)).map(row=>({...row,path:h5RebindingToolRel+'/'+row.path})),h5Sources.h5RebindingTools);assert.deepEqual(walk(path.join(root,failedH4Rel)).map(row=>({...row,path:failedH4Rel+'/'+row.path})),h5Sources.preservedFailedH4Generation.evidence,'Preserved failed H4 evidence changed');assert.deepEqual(record(path.join(root,failedH4ReportRel)),h5Sources.preservedFailedH4Generation.report);assert.deepEqual(walk(path.join(root,h4RebindingToolRel)).map(row=>({...row,path:h4RebindingToolRel+'/'+row.path})),h4Sources.h4RebindingTools);assert.deepEqual(walk(path.join(root,failedH3Rel)).map(row=>({...row,path:failedH3Rel+'/'+row.path})),h4Sources.preservedFailedH3Generation.evidence,'Preserved failed H3 evidence changed');assert.deepEqual(record(path.join(root,failedH3ReportRel)),h4Sources.preservedFailedH3Generation.report);assert.deepEqual(walk(path.join(root,h3RebindingToolRel)).map(row=>({...row,path:h3RebindingToolRel+'/'+row.path})),h3Sources.h3RebindingTools);assert.deepEqual(walk(path.join(root,blockedH2ToolRel)).map(row=>({...row,path:blockedH2ToolRel+'/'+row.path})),h2Sources.h2CampaignTools,'Preserved H2 tools changed');assert.deepEqual(walk(path.join(root,h2CorrectionToolRel)).map(row=>({...row,path:h2CorrectionToolRel+'/'+row.path})),h2Sources.h2CorrectionTools);assert.deepEqual(walk(path.join(root,aggregateFixtureRel)).map(row=>({...row,path:aggregateFixtureRel+'/'+row.path})),h2Sources.aggregateFixture);assert.deepEqual(walk(path.join(root,inputFixtureRel)).map(row=>({...row,path:inputFixtureRel+'/'+row.path})),h2Sources.inputFixture);assert.equal(fs.existsSync(path.join(root,aggregateFixtureRel,'absent-output')),false);"
+        },
+        {
+          "line": 83,
+          "text": "assert.equal(hash(fs.readFileSync(path.join(h2CorrectionRoot,'authorization.txt'))),h2Correction.bindings.authorization.sha256);assert.deepEqual(h3Rebinding.bindings.authorization,record(path.join(root,h3RebindingRel,'authorization.txt')));assert.deepEqual(h4Rebinding.bindings.authorization,record(path.join(root,h4RebindingRel,'authorization.txt')));const authorizationBytes=fs.readFileSync(path.join(root,h5RebindingRel,'authorization.txt'));assert.deepEqual(h5Rebinding.bindings.authorization,record(path.join(root,h5RebindingRel,'authorization.txt')));"
+        },
+        {
+          "line": 116,
+          "text": "write('pre-execution-gate.json',{result:'PASS',verifiedAt:startedAt,worktree:path.resolve(root),branch:'codex/mo1307-phase3ar2-c3ub',HEAD:C3VB,rootTree:'68e5c57dce89cb0819b1a94ae18d4e6b9b54713d',productionCommit:C3V,productionTree,initialGateObservedBeforeTooling:{worktree:'C:\\\\Users\\\\melsa\\\\Documents\\\\Codex\\\\3ar2',branch:'codex/mo1307-phase3ar2-c3ub',HEAD:C3VB,workingTree:'TRACKED_CLEAN_WITH_PRESERVED_FAILED_GENERATIONS_CORRECTIONS_AND_FRESH_UNTRACKED_H5_CORRECTED_AO_HARNESS'},currentTrackedDiff:'CLEAN',currentIndex:'CLEAN',currentUntrackedScope:'Preserved failed B/full/H-corrected generations, topology, H and H2 corrections, corrected one-shot B, sealed H2 fixtures, and fresh H2-corrected A-O tools only',statusLines,observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),h2HarnessCorrection:record(h2CorrectionReceiptPath),preservedFailedHCorrectedGeneration:record(consumedReceiptPath),preservedFailedHCorrectedReport:record(path.join(root,consumedReportRel)),h3Rebinding:record(path.join(root,h3RebindingRel,'receipt.json')),preservedBlockedH2Generation:record(path.join(root,blockedH2Rel,'certification-receipt.json')),h4Rebinding:record(path.join(root,h4RebindingRel,'receipt.json')),preservedFailedH3Generation:record(path.join(root,failedH3Rel,'certification-receipt.json')),h5Rebinding:record(path.join(root,h5RebindingRel,'receipt.json')),preservedFailedH4Generation:record(path.join(root,failedH4Rel,'certification-receipt.json')),preservedFailedFullGeneration:record(failedFullReceiptPath),preservedFailedFullReport:record(failedFullReportPath),preCertificationBGate:record(bGatePath),preservedFailedBGate:record(failedBGatePath)});"
+        },
+        {
+          "line": 117,
+          "text": "write('campaign-config.json',{generation:'PHASE3AR2_C3VB_FINAL_H5_CORRECTED_FRESH_FULL_INSTALLED_RUNTIME',startedAt,hardStopAt,engineeringGuardMinutes:180,productDeadlineAuthorities:[helperAuthority,integration],candidate:C3VB,productionCommit:C3V,productionTree,H:'NOT_ESTABLISHED',hFailureClassification:'H_HARNESS_MARGIN_DEFECT',h2FailureClassifications:h2Correction.classifications,timelyHelperEngineeringEnvelope:{artificialEofDelayMs:0,maxMs:5000,deadlineMarginMs:4000},aggregateHelperEngineeringEnvelope:h2Correction.aggregateControl,h2Fixtures:{aggregate:h2Sources.aggregateFixture,input:h2Sources.inputFixture},h2HarnessCorrection:record(h2CorrectionReceiptPath),preservedFailedHCorrectedGeneration:record(consumedReceiptPath),eventOrderingRule:'MO1307_OBSERVER_EVENT_ORDERING@1.0.0',h3Rebinding:record(path.join(root,h3RebindingRel,'receipt.json')),preservedBlockedH2Generation:record(path.join(root,blockedH2Rel,'certification-receipt.json')),h4Rebinding:record(path.join(root,h4RebindingRel,'receipt.json')),preservedFailedH3Generation:record(path.join(root,failedH3Rel,'certification-receipt.json')),h5Rebinding:record(path.join(root,h5RebindingRel,'receipt.json')),preservedFailedH4Generation:record(path.join(root,failedH4Rel,'certification-receipt.json')),nodeExecutable:process.execPath,helperSuccess:'elapsedMs < 9000',helperTimeout:'elapsedMs >= 9000',aggregateAccepted:'helperActiveMs < 28000',aggregateTimeout:'helperActiveMs >= 28000',observerIdentityPolicy:'MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0',observerCorrection:record(correctionReceiptPath),hHarnessCorrection:record(hCorrectionReceiptPath),preservedFailedFullGeneration:record(failedFullReceiptPath),preservedFailedFullReport:record(failedFullReportPath),preCertificationBGate:record(bGatePath),preservedFailedPreCertificationBGate:record(failedBGatePath),noRetry:true});"
+        }
+      ]
+    },
+    "record-harness-review.mjs": {
+      "removed": [
+        {
+          "line": 44,
+          "text": "const h3RebindingReceiptPath=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h3-rebinding/receipt.json'),h3Rebinding=json(h3RebindingReceiptPath);const h4RebindingReceiptPath=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h4-rebinding/receipt.json'),h4Rebinding=json(h4RebindingReceiptPath);assert.equal(h4Rebinding.kind,'MO1307Phase3AR2FinalH4GenerationRebindingReceipt');assert.equal(h4Rebinding.result,'PASS');const failedH3ReceiptPath=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h3-corrected/certification-receipt.json');assert.equal(h3Rebinding.kind,'MO1307Phase3AR2FinalH3GenerationRebindingReceipt');assert.equal(h3Rebinding.result,'PASS');assert.equal(h2Sources.policy.sha256,correctionSources.policy.sha256);"
+        },
+        {
+          "line": 90,
+          "text": "  hHarnessCorrection:{classification:hCorrection.classification,receipt:record(hCorrectionReceiptPath),zeroProductValidation:hCorrection.zeroProductValidation,correctedControl:hCorrection.correctedControl,execution:hCorrection.execution},h2HarnessCorrection:{classifications:h2Correction.classifications,receipt:record(h2CorrectionReceiptPath),sourceBindings:record(h2CorrectionSourcesPath),zeroProductValidation:h2Correction.zeroProductValidation,aggregateControl:h2Correction.aggregateControl,execution:h2Correction.execution},preservedFailedHCorrectedGeneration:record(consumedReceiptPath),h3Rebinding:record(h3RebindingReceiptPath),h4Rebinding:record(h4RebindingReceiptPath),preservedFailedH3Generation:record(failedH3ReceiptPath),hostInstrumentation:{policy:'MO1307_HOST_INSTRUMENTATION@1.0.0',file:'instrumentation.ps1',decisive:false},preservedFailedFullGeneration:record(failedFullReceiptPath),correctedPreCertificationBGate:record(correctedReceiptPath),preservedFailedPreCertificationBGate:record(failedReceiptPath),"
+        }
+      ],
+      "added": [
+        {
+          "line": 44,
+          "text": "const h3RebindingReceiptPath=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h3-rebinding/receipt.json'),h3Rebinding=json(h3RebindingReceiptPath);const h4RebindingReceiptPath=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h4-rebinding/receipt.json'),h4Rebinding=json(h4RebindingReceiptPath);assert.equal(h4Rebinding.kind,'MO1307Phase3AR2FinalH4GenerationRebindingReceipt');assert.equal(h4Rebinding.result,'PASS');const failedH3ReceiptPath=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h3-corrected/certification-receipt.json');const h5RebindingReceiptPath=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h5-rebinding/receipt.json'),h5Rebinding=json(h5RebindingReceiptPath);assert.equal(h5Rebinding.kind,'MO1307Phase3AR2FinalH5GenerationRebindingReceipt');assert.equal(h5Rebinding.result,'PASS');const failedH4ReceiptPath=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h4-corrected/certification-receipt.json');assert.equal(h3Rebinding.kind,'MO1307Phase3AR2FinalH3GenerationRebindingReceipt');assert.equal(h3Rebinding.result,'PASS');assert.equal(h2Sources.policy.sha256,correctionSources.policy.sha256);"
+        },
+        {
+          "line": 90,
+          "text": "  hHarnessCorrection:{classification:hCorrection.classification,receipt:record(hCorrectionReceiptPath),zeroProductValidation:hCorrection.zeroProductValidation,correctedControl:hCorrection.correctedControl,execution:hCorrection.execution},h2HarnessCorrection:{classifications:h2Correction.classifications,receipt:record(h2CorrectionReceiptPath),sourceBindings:record(h2CorrectionSourcesPath),zeroProductValidation:h2Correction.zeroProductValidation,aggregateControl:h2Correction.aggregateControl,execution:h2Correction.execution},preservedFailedHCorrectedGeneration:record(consumedReceiptPath),h3Rebinding:record(h3RebindingReceiptPath),h4Rebinding:record(h4RebindingReceiptPath),preservedFailedH3Generation:record(failedH3ReceiptPath),h5Rebinding:record(h5RebindingReceiptPath),preservedFailedH4Generation:record(failedH4ReceiptPath),hostInstrumentation:{policy:'MO1307_HOST_INSTRUMENTATION@1.0.0',file:'instrumentation.ps1',decisive:false},preservedFailedFullGeneration:record(failedFullReceiptPath),correctedPreCertificationBGate:record(correctedReceiptPath),preservedFailedPreCertificationBGate:record(failedReceiptPath),"
+        }
+      ]
+    },
+    "security.mjs": {
+      "removed": [
+        {
+          "line": 166,
+          "text": "  const output=path.join(scratch,name),sequence=protocol.createHelperSequence('evaluate');"
+        }
+      ],
+      "added": [
+        {
+          "line": 166,
+          "text": "  const parent=path.join(scratch,name+'-parent'),output=path.join(parent,name),sequence=protocol.createHelperSequence('evaluate');fs.mkdirSync(parent);"
+        }
+      ]
+    }
+  },
+  "addedFiles": [],
+  "editPurpose": {
+    "prepare.mjs": "Bind the H5 rebinding receipt/tools/authorization; preserve and recheck the failed H4 generation, its tools and report; keep the H3/H4 bindings; allow the preserved H4 paths in the pre-preparation status check.",
+    "record-harness-review.mjs": "Bind the H5 rebinding receipt and the preserved failed H4 receipt in the review.",
+    "campaign.mjs": "Seal the failed H4 tools/evidence/report and the H5 rebinding as prerequisites; bind them in the seal; extend the instrumentation summary with disk and AV/indexer watch-list fields. Tool count stays 27.",
+    "security.mjs": "H_PUBLICATION_FIXTURE_PARENT_ISOLATION_DEFECT correction: publicationCase gives every case its own dedicated empty parent directory (scratch/<case>-parent) containing only the output directory, so the shared scratch directory can no longer change NTFS-reported size between the stable-identity inspections. No expectation, predicate or limit changes.",
+    "instrumentation.ps1": "Harness-only sampler extended with PhysicalDisk queue/time counters and a per-process CPU watch-list (Defender/McAfee/indexer/update/WMI/svchost). Still passive and read-only."
+  },
+  "correctedDefect": {
+    "classification": "H_PUBLICATION_FIXTURE_PARENT_ISOLATION_DEFECT",
+    "failedCase": "actual-publication-existing-final-preserved",
+    "step": "L"
+  },
+  "declaredWriteNamespaces": {
+    "common": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h5-corrected",
+    "cache": ".cache/phase3ar2-final-h5-corrected",
+    "report": "docs/mo1307-phase3ar2-final-h5-corrected.md",
+    "wrapper": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h5-corrected",
+    "observe": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h5-corrected"
+  },
+  "harnessLogicChanged": false,
+  "harnessFixtureLayoutChanged": true,
+  "instrumentationExtended": true,
+  "expectationsChanged": [],
+  "limitsChanged": false,
+  "productionChanged": false
+}

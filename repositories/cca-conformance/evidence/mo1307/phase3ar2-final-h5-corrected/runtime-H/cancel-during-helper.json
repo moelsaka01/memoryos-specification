@@ -1,0 +1,68 @@
+{
+  "name": "cancel-during-helper",
+  "started": 20655.8058,
+  "finished": 22178.5404,
+  "result": "PASS",
+  "elapsedMs": 1522.7355000000025,
+  "error": {
+    "code": "MO1307_CANCELLED",
+    "message": "MO1307_CANCELLED"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 50655.8326,
+    "helpers": 1,
+    "workers": 0,
+    "helperUsedMs": 0,
+    "activeRole": "helper",
+    "cleanupConfirmed": false,
+    "publication": null,
+    "terminalCode": "MO1307_CANCELLED",
+    "terminalAt": 22164.8454,
+    "cleanupDeadline": 24164.8454,
+    "events": [
+      {
+        "type": "start",
+        "at": 20656.5865,
+        "role": "helper",
+        "deadline": 29656.5649,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 20671.5201,
+        "role": "helper",
+        "pid": 6552,
+        "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+      },
+      {
+        "type": "terminal",
+        "at": 22164.9085,
+        "code": "MO1307_CANCELLED",
+        "stage": "ACQUISITION"
+      },
+      {
+        "type": "cleanup",
+        "at": 22178.4978,
+        "role": "helper",
+        "confirmed": false
+      }
+    ]
+  },
+  "expectedError": "MO1307_CANCELLED",
+  "engineeringElapsedEnvelope": {
+    "minMs": 1400,
+    "maxMs": 3500,
+    "productDeadlineOverride": false
+  },
+  "invocations": [
+    {
+      "ordinal": "004",
+      "pid": 6552,
+      "protocolSequence": 3,
+      "operation": "READ_SET"
+    }
+  ],
+  "workerObservations": []
+}

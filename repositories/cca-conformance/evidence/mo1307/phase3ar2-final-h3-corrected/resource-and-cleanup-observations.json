@@ -1,0 +1,375 @@
+{
+  "limits": {
+    "helperWholeLifecycleMs": 9000,
+    "helperSuccess": "elapsedMs < 9000",
+    "helperTimeout": "elapsedMs >= 9000",
+    "aggregateHelperActiveMs": 28000,
+    "aggregateSuccess": "helperActiveMs < 28000",
+    "aggregateTimeout": "helperActiveMs >= 28000",
+    "cliRenameAdmissionMs": 30000,
+    "apiWorkerMs": 10000,
+    "failureCleanupMs": 2000
+  },
+  "replacementHelperBoundH": "NOT_ESTABLISHED",
+  "hFailureClassification": "H_HARNESS_MARGIN_DEFECT",
+  "timelyHelperEngineeringEnvelope": {
+    "artificialEofDelayMs": 0,
+    "maxMs": 5000,
+    "deadlineMarginMs": 4000,
+    "productDeadlineMs": 9000
+  },
+  "hHarnessCorrection": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-harness-correction/receipt.json",
+    "byteLength": 2985,
+    "sha256": "sha256:18224586fd9fc363d62cdc5a3fd96996eb24808614cc745746db47d1991e811a"
+  },
+  "h2FailureClassifications": [
+    "H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT",
+    "H_OBSERVER_EVENT_ORDERING_DEFECT"
+  ],
+  "aggregateHelperEngineeringEnvelope": {
+    "artificialEofDelayMs": 5700,
+    "engineeringMinMs": 28000,
+    "engineeringMaxMs": 31000,
+    "maxHelperSlots": 5,
+    "publicationStateMutations": 0,
+    "expectedError": "MO1307_TIMEOUT",
+    "productAggregateDeadlineMs": 28000
+  },
+  "h2HarnessCorrection": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/receipt.json",
+    "byteLength": 9491,
+    "sha256": "sha256:c1bf0a503ef2c455123ad619f966482fbbe87c5c56273b10316872cec8adbcd6"
+  },
+  "native": [
+    {
+      "binding": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h3-corrected/semantics/A-mo1306-qualified/evaluate/observation.json",
+        "byteLength": 18612,
+        "sha256": "sha256:565b2071e61670e99fc3f0f4d78e7ba5231469178ed6cf9bfd3381f3231fb01f"
+      },
+      "pid": 21348,
+      "exit": 29,
+      "productLifecycleElapsedMs": 20274.4865,
+      "maxRssKiB": 53260,
+      "requests": [
+        {
+          "ordinal": 1,
+          "sequence": 1,
+          "operation": "READ_SET",
+          "fileCount": 2,
+          "pid": 19720,
+          "disposition": "RESOLVED",
+          "error": null,
+          "durationMs": 6027.5643,
+          "chargedThisExchangeMs": 6009.8575,
+          "exitCode": 0,
+          "exitSignal": null,
+          "transportClosed": true,
+          "responseComplete": true,
+          "responseAcceptedByTransport": true
+        },
+        {
+          "ordinal": 2,
+          "sequence": 2,
+          "operation": "READ_SET",
+          "fileCount": 2,
+          "pid": 12888,
+          "disposition": "RESOLVED",
+          "error": null,
+          "durationMs": 4685.673999999999,
+          "chargedThisExchangeMs": 4681,
+          "exitCode": 0,
+          "exitSignal": null,
+          "transportClosed": true,
+          "responseComplete": true,
+          "responseAcceptedByTransport": true
+        },
+        {
+          "ordinal": 3,
+          "sequence": 3,
+          "operation": "READ_SET",
+          "fileCount": 65,
+          "pid": 18284,
+          "disposition": "REJECTED",
+          "error": {
+            "name": "ReadinessError",
+            "code": "MO1307_TIMEOUT",
+            "stage": "ACQUISITION",
+            "reference": null,
+            "message": "MO1307_TIMEOUT",
+            "stack": "ReadinessError: MO1307_TIMEOUT\n    at checkpoint (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h3-corrected/install/node_modules/memoryos-readiness/src/runtime.mjs:72:34)\n    at Timeout.<anonymous> (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h3-corrected/install/node_modules/memoryos-readiness/src/runtime.mjs:81:13)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)"
+          },
+          "durationMs": 9058.1363,
+          "chargedThisExchangeMs": 0,
+          "exitCode": null,
+          "exitSignal": "SIGTERM",
+          "transportClosed": true,
+          "responseComplete": false,
+          "responseAcceptedByTransport": false
+        }
+      ],
+      "supervisors": [
+        {
+          "started": 305.0906,
+          "createdAt": 343.9049,
+          "kind": "cli",
+          "snapshot": {
+            "kind": "cli",
+            "deadline": 30305.0906,
+            "helpers": 3,
+            "workers": 0,
+            "helperUsedMs": 10690.8575,
+            "activeRole": "helper",
+            "cleanupConfirmed": false,
+            "publication": null,
+            "terminalCode": "MO1307_TIMEOUT",
+            "terminalAt": 20542.0701,
+            "cleanupDeadline": 22542.0701,
+            "events": [
+              {
+                "type": "start",
+                "at": 444.7994,
+                "role": "helper",
+                "deadline": 9444.5849,
+                "ordinal": 1
+              },
+              {
+                "type": "observation",
+                "at": 500.0109,
+                "role": "helper",
+                "pid": 19720,
+                "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+              },
+              {
+                "type": "quiescent",
+                "at": 6454.4598,
+                "role": "helper",
+                "ordinal": 1
+              },
+              {
+                "type": "start",
+                "at": 6643.4178,
+                "role": "helper",
+                "deadline": 15643.3017,
+                "ordinal": 2
+              },
+              {
+                "type": "observation",
+                "at": 6704.0827,
+                "role": "helper",
+                "pid": 12888,
+                "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+              },
+              {
+                "type": "quiescent",
+                "at": 11324.3176,
+                "role": "helper",
+                "ordinal": 2
+              },
+              {
+                "type": "start",
+                "at": 11527.1271,
+                "role": "helper",
+                "deadline": 20527.052799999998,
+                "ordinal": 3
+              },
+              {
+                "type": "observation",
+                "at": 11552.2649,
+                "role": "helper",
+                "pid": 18284,
+                "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+              },
+              {
+                "type": "terminal",
+                "at": 20542.1185,
+                "code": "MO1307_TIMEOUT",
+                "stage": "ACQUISITION"
+              },
+              {
+                "type": "cleanup",
+                "at": 20576.7806,
+                "role": "helper",
+                "confirmed": false
+              }
+            ]
+          }
+        }
+      ],
+      "events": [
+        {
+          "ordinal": 1,
+          "type": "stream-finish",
+          "at": 3103.5309,
+          "stream": "stdin"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-close",
+          "at": 3105.9585,
+          "stream": "stdin"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-end",
+          "at": 6416.6744,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-finish",
+          "at": 6417.3461,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-close",
+          "at": 6417.5886,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-end",
+          "at": 6417.7861,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-finish",
+          "at": 6417.9371,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 1,
+          "type": "stream-close",
+          "at": 6418.0555,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 1,
+          "type": "process-exit",
+          "at": 6446.3701,
+          "pid": 19720,
+          "code": 0,
+          "signal": null
+        },
+        {
+          "ordinal": 1,
+          "type": "process-close",
+          "at": 6446.5195,
+          "pid": 19720,
+          "code": 0,
+          "signal": null
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-finish",
+          "at": 8475.9275,
+          "stream": "stdin"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-close",
+          "at": 8476.1073,
+          "stream": "stdin"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-end",
+          "at": 11275.2393,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-end",
+          "at": 11275.5046,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-finish",
+          "at": 11275.5971,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-finish",
+          "at": 11275.8252,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-close",
+          "at": 11275.9427,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 2,
+          "type": "stream-close",
+          "at": 11275.9623,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 2,
+          "type": "process-exit",
+          "at": 11302.8216,
+          "pid": 12888,
+          "code": 0,
+          "signal": null
+        },
+        {
+          "ordinal": 2,
+          "type": "process-close",
+          "at": 11302.9383,
+          "pid": 12888,
+          "code": 0,
+          "signal": null
+        },
+        {
+          "ordinal": 3,
+          "type": "stream-finish",
+          "at": 13214.638,
+          "stream": "stdin"
+        },
+        {
+          "ordinal": 3,
+          "type": "stream-close",
+          "at": 13214.9097,
+          "stream": "stdin"
+        },
+        {
+          "ordinal": 3,
+          "type": "stream-close",
+          "at": 20543.325,
+          "stream": "stderr"
+        },
+        {
+          "ordinal": 3,
+          "type": "stream-close",
+          "at": 20543.3489,
+          "stream": "stdout"
+        },
+        {
+          "ordinal": 3,
+          "type": "process-exit",
+          "at": 20576.1527,
+          "pid": 18284,
+          "code": null,
+          "signal": "SIGTERM"
+        },
+        {
+          "ordinal": 3,
+          "type": "process-close",
+          "at": 20576.2192,
+          "pid": 18284,
+          "code": null,
+          "signal": "SIGTERM"
+        }
+      ]
+    }
+  ],
+  "externalTopology": null,
+  "cleanupControls": null,
+  "notes": "The <5000-ms timely-helper cap and the 5700-ms aggregate EOF delay are engineering envelopes, not product limits. Observed product cleanup confirmation is distinct from held-process-object external cleanup proof; unexecuted controls make no certification claim."
+}

@@ -1,0 +1,238 @@
+{
+  "kind": "MO1307Phase3AR2FinalH2IndependentStaticHarnessReview",
+  "version": "1.0.0",
+  "reviewedAt": "2026-10-04T10:37:16.800Z",
+  "reviewer": {
+    "role": "INDEPENDENT_READ_ONLY_STATIC_AUDITOR",
+    "agent": "Claude Code general-purpose subagent a789d51736cba6ddb (read-only instructions; no product, node, python, or tool execution)",
+    "disclosure": "The auditor ran one read-only git status; git may refresh its own index stat cache. No repository file was created, modified, or deleted."
+  },
+  "result": "PASS",
+  "answers": {
+    "Q1": {
+      "verdict": "PASS",
+      "evidence": "The diff bundle changes only harness files under tools/ (10 files). Product source under repositories/memoryos-readiness is untouched, and validate.mjs:79-98 pins it (89 members, tree hash, IDENTITY_KEYS, helper sha 97ef5ae9..., definitions.json limits 9000/28000/10000/30000/2000). runtime-controls.mjs leaves these unchanged: the strict 8000/8999/9000 checks (115-121), the receipt limits (147), the case-name list (143), all other run() options, and the aggregate error MO1307_TIMEOUT with minMs 28000 / maxMs 31000 and its validate block (129-134: helpers 5..9, workers 1, helperUsedMs>28000-9000, |atTimeout-28000|<100). Only eofDelayMs 4000->5700 changed, plus the slot loop: slot6 mkdir and slot8 pending write were replaced by assert slot<=5 (135). recover-inventory.mjs:340-351 replaces requiredMethod and asserts expected is still {code:'MO1307_TIMEOUT', clock:'28000 ms aggregate helper-active; worker excluded', workers:1}. The 80-case/ID assertions at 377-382 are unchanged. Line 418 normalizes only requiredMethod before the source-definition deepEqual at 420. topology_identity_policy.py is byte-identical to the consumed copy (validate.mjs:134-135), prepare.mjs:90-91 asserts its sha equals the canonical correctionSources.policy, and campaign.mjs fixedLimits is unchanged (validate.mjs:196-197)."
+    },
+    "Q2": {
+      "verdict": "PASS",
+      "evidence": "No harness write targets either fixture root or any ancestor. (1) runtime-controls.mjs:28-35 only reads the fixtures (readdirSync/lstat/readFileSync) and asserts absent-output is absent. Every write goes through write() into evidence/.../h2-corrected/runtime-<mode> (13, 18, 64, 80). The forbidden tokens fs.mkdirSync(outputRoot, path.join(outputRoot, and the like are absent (validate.mjs:251; record-harness-review.mjs:61). (2) runtime-controls-run.py:9-10,17 writes only under E/runtime-<MODE>. The observer writes only its --output, --ready and clock-bridge files there (309-333). (3) common.mjs put() asserts that targets start with E (line 34). prepare/decisions-tags/finalization/core only read fixtures/mo1307/bundles and copy them into .cache (prepare.mjs:149; decisions-tags work=path.join(cache,...)). security scratch lives in .cache. (4) validate.mjs:226-243 computes the write roots (evidence/h2-corrected, .cache/h2-corrected, the docs report). Their entry-mutated parents are evidence/mo1307, .cache and docs, none of which is a fixture ancestor. (5) Mutation is also detected fail-closed: runtime-controls.mjs:145 compares the fixtures before and after, campaign.mjs:129 rechecks seal.fixtureBindings (all of fixtures/mo1307) before every step, validateSeal (campaign.mjs:72) requires absent-output to stay absent, and close repeats the check (259). The helper READ_SET and CHECK_OUTPUT calls open fixture paths read-only; none of the identity keys are timestamps."
+    },
+    "Q3": {
+      "verdict": "PASS",
+      "evidence": "Consumed per-helper lifecycles (quiescent - start, consumed aggregate-helper-exhaustion.json): 4637.4, 4735.8, 4620.2, 4658.6, 4604.7 ms, i.e. EOF + 605-736 ms. With EOF 5700, L = 6305-6436, and four helpers charge about 22800 + 2652 = 25452 ms. Product runtime.mjs:114 sets helper deadline = min(CLI, launch+9000, launch+28000-helperUsedMs), and helperUsedMs is charged only on success (140). (a) Helper 4: three helpers = 18800, so its limit is min(9000, 9200) = 9000. L4 = 6360 gives 2640 ms margin. The aggregate rule would hit helper 4 only if the average L >= 7000, i.e. post-EOF overhead >= 1300 ms (observed <= 736). (b) Per-helper limit: 9000 - 6440 = 2560 ms margin. (c) Helper 5 cannot finish: remaining = 28000 - used4 <= 28000 - 4*5700 = 5200 < 5700 <= L5. Its selected deadline is about 2548 ms (< 9000, so last.deadline-last.at<9000 holds). It lands at case-relative 25452 + 315 (worker) + gaps + 2548 = 28330, before the CLI deadline at 30000 (1670 ms margin). Termination therefore comes from the unchanged 28000-ms aggregate rule during the slot-5 CHECK_OUTPUT. atTimeout = helperUsed4 + terminalAt - last.at = 28000 + timer latency (consumed helper-timeout latency 16.7 ms) < 100. helperUsedMs = 25452 > 19000. elapsedMs = 28.35-28.4 s, inside [28000, 31000). The harness-side createHelperSequence checkpoint (helper-protocol.mjs:192-194, 208) stays under 28000 at slot-4 complete and slot-5 begin (25.3-25.8 s)."
+    },
+    "Q4": {
+      "verdict": "PASS",
+      "evidence": "observer_event_ordering.py:12-32 advances lastSeenAt only when the snapshot entry is a dict and the held object's nativeTimes.exitTime100ns is a non-bool int equal to 0. Every other case returns the prior value; it never sets a later value or removes any check. The value is sample_start, and metrics() queries the held handle after sample_start (runtime-controls-observer.py:315, 484-486). exitTime==0 at query time therefore implies lastSeen < exit. The policy is unchanged, including its LIFETIME_CONTRADICTION returns (topology_identity_policy.py:121-128, 183-191), and the observer still counts every rejection in failures/unresolvedIdentityFailures (366-370, 403-437, 449-460), which runtime-controls-run.py:94 requires to be 0. The PID-reuse, parent, image, role, cross-session, initial-unknown and requery paths (380-460) are unchanged. validate_observer.py replays all 21 consumed terminated events exactly under the old rule (111-113). Under the new rule E/I PASS and F (LIFETIME_CONTRADICTION), G (PID reuse), H (NO_PRIOR_POSITIVE_IDENTITY) and cross-session FAIL (157-196). Loading: the observer starts with -I -S -B (runtime-controls-run.py:30). ORDERING_PATH = Path(__file__).resolve().parents[1]/'mo1307-phase3ar2-final-h2-harness-correction'/'observer_event_ordering.py' (observer.py:22) resolves to tools/<that dir>/observer_event_ordering.py, which exists. spec_from_file_location does not depend on sys.path or site. -B prevents __pycache__, which would otherwise break the 26/5 member counts. The module has no imports."
+    },
+    "Q5": {
+      "verdict": "PASS",
+      "evidence": "No undefined identifier, use before definition, wrong path or wrong count found. prepare.mjs: h2Correction, h2Sources and consumedReceiptPath are defined at 65-69 before use (later writes at 98-100); record/walk at 38-39 match validate.mjs walk/record semantics (same sort and relative path), so the deepEquals at 67 hold. Constants check out against the bytes: consumed receipt 463330 / 719ebafb...; consumed report 8233 / 55cb434e...; h-correction authorization 99e921a0... (all verified with sha256sum); consumed tools = 26 files and evidence = 407 files on disk. campaign.mjs:30 counts: preservedFailedHCorrectedTools 26, preservedFailedHCorrectedEvidence 407, h2HarnessCorrectionTools 5 (.gitattributes, observer_event_ordering.py, validate.mjs, validate_fixture.py, validate_observer.py), h2HarnessCorrectionEvidence 9 = validate.mjs outputNames (41, asserted at 384). validateSeal (71-72) compares against values validate.mjs writes: aggregateControl equals aggregateHelperEngineeringEnvelope (campaign.mjs:33 vs validate.mjs:40); execution has engineeringInterpreterInvocations 2 and retry false. seal.fixtureBindings comes from expectedSealBindings (55) and covers both H2 roots. Seal/run status allowlists include the h2FixtureRoots and both docs reports (101). recover-inventory.mjs:341 deepEquals the actual consumed requiredMethod shape (consumed recovered-inventory.json:1164-1170). record-harness-review.mjs:41-44 needs independent-review.json and bindings.independentReview, which validate.mjs:366 produces. Its mustContain/forbidden tokens (61-62) match the runtime-controls/observer bytes, and no stale-token or 8000 regex (72-78) is tripped by the new text (28000/31000 are digit-prefixed). The close acceptance asserts (campaign.mjs:258-259) sit inside the allPassed block after integrity-after.json and resource-and-cleanup-observations.json are written, the same position as the existing timely-helper asserts. They can throw only if a PASS runtime-H receipt contradicts itself (aggregate PASS without MO1307_TIMEOUT, or fixture before!=after), which runtime-controls.mjs:96,145 already excludes."
+    },
+    "Q6": {
+      "verdict": "PASS",
+      "evidence": "validate.mjs performs no repository write before line 359. It asserts the namespace is absent (76), then makes every assertion: sections 1-9 plus the gate check at 295. Only then does it mkdir and write into evidence/mo1307/phase3ar2-final-h2-harness-correction (359-383, 9 files), with a final self-consistency check at 384. In --check mode it writes nothing to the repo; MO1307_H2_PREFLIGHT_DIR may only be an empty directory outside the repo (347-357). Processes started: git with read-only rev-parse/branch/show/diff (58-75), and the pinned python twice with -I -S -B, cwd=os.tmpdir(), running the pure validators (261-272). validate_observer.py only reads the consumed log and the policy/rule modules. validate_fixture.py opens real fixture chains with FILE_READ_ATTRIBUTES only and writes only in a tempfile.mkdtemp sandbox, which it removes (81-128). No product, helper, worker, CLI, API, native observer or PowerShell is started, and no product module is imported."
+    },
+    "Q7": {
+      "verdict": "PASS",
+      "evidence": "No blocking harness-only failure mode found. The H-stage duration estimate is 52 s (aggregate starts 23.2 s into the driver and lasts 28.4 s), against driver_bound 85 s (runtime-controls-run.py:31), the observer timeout of 90 s and the stage guard of 110 s (stage.mjs:25). The observer log for the consumed run was 815 records / 2.16 MB against limits of 20000 / 32 MiB. The killed fifth helper follows the same cleanup and external-proof path that the consumed helper-timeout case passed (external-proof: completeProductObjectAssignment and allKnownObjectsSignaled true). downstream cleanup-topology checks only case names and the helper-timeout proofs, not aggregate slot counts. The input-fixture order assertion is the same under localeCompare and the default sort for these five names. Fixture bytes were verified: 5 x '{}\\n' (3 bytes), and fixture-root.json is present with absent-output missing."
+    }
+  },
+  "blockingFindings": [],
+  "nonBlockingObservations": [
+    "validate.mjs:278 requires the review document to carry a 'reviewedFiles' array deep-equal to the 37 current H2 file records in walk order; any later byte change to those 37 files invalidates this review.",
+    "validate.mjs:238: the second disjunct (under(writeRoot,p) && !ancestors(writeRoot).includes(p)) is always false (dead code). Isolation is still established by the first disjunct, the INSPECTED_PATH_RECEIVES_ENTRY_WRITES rule and the WRITE_ROOT_UNDER_FIXTURE check.",
+    "validate_fixture.py case B compares full identity chains that include %TEMP%, AppData and C:\\Users\\melsa. Concurrent temp-file activity by other processes could change the Temp directory's byteLength and make B fail spuriously; that would abort validate.mjs before any write (re-runnable), not the H2 generation.",
+    "In H2 the fifth helper is terminated before its response, so the product's slot-4/slot-5 parent-chain stability comparison (helper-protocol.mjs:222-226) is not exercised in this case. The fixture isolation is defense-in-depth, consistent with the authorized TIMEOUT expectation.",
+    "Pre-existing and unchanged by H2: a descendant first discovered after its kernel exit time (firstObservedAt > exitTime) would still be rejected as a lifetime contradiction. This is not plausible for helpers (>=5.7 s lifetime), and the corrected rule only ever lowers lastSeenAt.",
+    "The consumed exitTime100ns values are not tick-aligned, so the rule's assumption that exitTime is at or after a precise sample_start whenever the object reported exitTime==0 later in the sample is consistent with the data.",
+    "Margins at risk under heavy load: helper 4 hits the aggregate only if the average post-EOF overhead is >= 1300 ms (observed 605-736); the CLI deadline would take precedence only if worker plus gaps exceeded ~1.9 s (observed ~315 ms)."
+  ],
+  "reviewedFiles": [
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/.gitattributes",
+      "byteLength": 62,
+      "sha256": "sha256:c133ffcf8b8ec1beedc0aaf332d9894e66739f2f164e4675a29185d2bb5f446e"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/campaign.mjs",
+      "byteLength": 84546,
+      "sha256": "sha256:055d2b84168a6a47617ac28d423c8f18f5acb8f2925c022530c266ba339caa53"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/cleanup-topology.mjs",
+      "byteLength": 9638,
+      "sha256": "sha256:878c24839db418f361ecceb2099efd5aef6b39de22a4f64e92757f6c65007550"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/common.mjs",
+      "byteLength": 3806,
+      "sha256": "sha256:ab9ab80b5429c395ff8d2798c45d03df3e5baf2a55e547f7c8b8585f3ad40e4e"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/core.mjs",
+      "byteLength": 16833,
+      "sha256": "sha256:605c3e0908dddc030bc24bc6df95bc28249f29c9844e120271a3461a80ffc218"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/decisions-tags.mjs",
+      "byteLength": 19893,
+      "sha256": "sha256:fb555f43d03a9c309c647987b77d365da3b5f9e9d2148d6dbd47dc6634c8dbf5"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/determinism.mjs",
+      "byteLength": 4034,
+      "sha256": "sha256:9a513c4e7cd04971ea91aaec298ff037bf93c7fd45110d4465acef159864a54d"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/errors-observer.mjs",
+      "byteLength": 298,
+      "sha256": "sha256:096d79449c2c2c397516a7ace42169a2d3ea001f102ee4599b6dec69cb031006"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/finalization-lock.ps1",
+      "byteLength": 333,
+      "sha256": "sha256:4c44d3d7dd828e2cbfc56da506b4043f98466bba4edd2f3047f8bb07f184584e"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/finalization.mjs",
+      "byteLength": 19158,
+      "sha256": "sha256:462604bb1d25120cb5f2afea7ab914ab90990aaabc64a64f98ab5ec284e10032"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/method.mjs",
+      "byteLength": 4325,
+      "sha256": "sha256:9e6731f7303540215e941e64831ebccd63671fd93eb3cebfe1434712b849361b"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/observe-command.py",
+      "byteLength": 13230,
+      "sha256": "sha256:bbe071d25cbc59010f2d9e27229b9a727d9bea66c63a03525d9118a9b66ef823"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/observer-entry.mjs",
+      "byteLength": 7874,
+      "sha256": "sha256:f2afa7ef628c75a9f23b83f79d6f8a67c41338862e6cbf8237ada7e8d85663ad"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/prepare.mjs",
+      "byteLength": 35220,
+      "sha256": "sha256:8c2c839caea3db1e2fa042f936d81ff771f79f79bb59e85e9ee5c0dec5f858c8"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/record-harness-review.mjs",
+      "byteLength": 23229,
+      "sha256": "sha256:6dd33a36089f238a903723f93365d4d4ffb778560de3d1bc0e58f0ae19525610"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/recover-inventory.mjs",
+      "byteLength": 38217,
+      "sha256": "sha256:8bd313b43abfc66a9ced8294f9918eef2e3778db85f50aac3cc5f81d59c0bf51"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/runtime-controls-observer.py",
+      "byteLength": 29100,
+      "sha256": "sha256:32f36d2fd523bf88715845936791d3c8620e07ca734c467a96ea4f20d0cf4bda"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/runtime-controls-run.py",
+      "byteLength": 14871,
+      "sha256": "sha256:0bbad477d1cf6003c4006ea8ea9ee7e46260edab3afc223e6acdf103bf3ccf9a"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/runtime-controls-worker.mjs",
+      "byteLength": 732,
+      "sha256": "sha256:2b821e952367db693191360c7fd73b06fe3781ffec6b6f6ad3e207cd217fe197"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/runtime-controls.mjs",
+      "byteLength": 24119,
+      "sha256": "sha256:f384e599602d336b5af9e7fdc0663547afcdfcd84a197a4d7603e450569dd34d"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/runtime-observer.mjs",
+      "byteLength": 331,
+      "sha256": "sha256:3d89cd943126931be84f3af59ad8cff3acf40bfdab180e3771b4f8cbbe59fa85"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/security-worker.mjs",
+      "byteLength": 580,
+      "sha256": "sha256:f0a043149631cfa39fcc17c42dacad1af192404fcf2985249f28141b05d92f30"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/security.mjs",
+      "byteLength": 31450,
+      "sha256": "sha256:1c6638f7d8e3e379b86920b8d834f0a068014e202fdeb7e36236e5b1621daea3"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/stage.mjs",
+      "byteLength": 4039,
+      "sha256": "sha256:a3c7830ba88ac04c1c96e9ab5fde177de4509344d410d928d3f1f263437f1044"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/topology_identity_policy.py",
+      "byteLength": 13092,
+      "sha256": "sha256:83026a453c397b5fe56e82bad5bab64d3b580a419cef8869f93f4cbcd9649013"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-corrected/transport-observer.mjs",
+      "byteLength": 975,
+      "sha256": "sha256:8e7480c4c39662dfceaffd7f5fb799e1beb42e6d919898677762b111ccfd226f"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-harness-correction/.gitattributes",
+      "byteLength": 28,
+      "sha256": "sha256:26bad9181753fde43a21c90b5139cde8f9f518573034ccf66a504e8d7d914442"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-harness-correction/observer_event_ordering.py",
+      "byteLength": 1408,
+      "sha256": "sha256:b24e9f8f83bf78182ffb16dc6632df4b250c9a2af43d0f9c00ab81c5b8c67541"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-harness-correction/validate.mjs",
+      "byteLength": 48786,
+      "sha256": "sha256:b9e9bd012a141b43ff6eee21956b00e1ef857f1451317c8241ba7809b505e75c"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-harness-correction/validate_fixture.py",
+      "byteLength": 7285,
+      "sha256": "sha256:be1fedfed0239faebbcfe0c9797daab3bc1d48029fe122d387f99536b5c3ec3c"
+    },
+    {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-h2-harness-correction/validate_observer.py",
+      "byteLength": 13644,
+      "sha256": "sha256:5dee6ec7ca09831a411548507ea812a7b48086a5a4eb6a3ec4bbaaf999768e66"
+    },
+    {
+      "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected/fixture-root.json",
+      "byteLength": 540,
+      "sha256": "sha256:a17d3e4902da0da791701bc1adc489acc4dff58c732c8798f8d759e73706ab9d"
+    },
+    {
+      "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/authority.bin",
+      "byteLength": 3,
+      "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    },
+    {
+      "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/candidate.bin",
+      "byteLength": 3,
+      "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    },
+    {
+      "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/config.bin",
+      "byteLength": 3,
+      "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    },
+    {
+      "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/manifest.bin",
+      "byteLength": 3,
+      "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    },
+    {
+      "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/small.bin",
+      "byteLength": 3,
+      "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+    }
+  ]
+}

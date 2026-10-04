@@ -1,0 +1,322 @@
+MEMORYOS 1.3
+MO-1307 PHASE 3AR2
+
+FINAL TOPOLOGY-OBSERVER CORRECTION
+THEN B GATE
+THEN FINAL A-O
+
+Current final candidate:
+
+C3VB
+17fa84efe46d30e6f4be85fd2427485677a222a3
+
+Production:
+
+C3V
+98b766f9218b209f52251147213839b9775f6da3
+
+Production tree:
+
+b9dabf54572e06c96bb5e48c4e20671f2cc24053
+
+Resource authority:
+
+helper:
+9000 ms
+
+aggregate helper:
+28000 ms
+
+CLI:
+30000 ms
+
+API/worker:
+10000 ms
+
+cleanup:
+2000 ms
+
+Historical H:
+
+NOT_ESTABLISHED
+
+Do not change any of those values.
+
+==================================================
+1. CURRENT B RESULT
+==================================================
+
+The one-shot B gate was semantically successful.
+
+Product result:
+
+READY
+
+product exit:
+
+0
+
+Helpers:
+
+9 / 9 accepted
+
+Maximum helper lifecycle:
+
+3605.7423 ms
+
+Aggregate helper-active:
+
+19037.3309 ms
+
+CLI lifecycle:
+
+20252.2551 ms
+
+Cleanup:
+
+confirmed
+
+Publication:
+
+committed
+
+Topology maxima:
+
+3 product roles
+1 helper
+1 console
+
+The only gate failure was the observer.
+
+==================================================
+2. EXACT OBSERVER FAILURE
+==================================================
+
+One event was recorded as:
+
+candidate_identity_unknown
+
+for:
+
+PID 2540
+parent PID 2140
+
+operation:
+
+QueryFullProcessImageNameW
+
+Win32 error:
+
+31
+
+That same PID had already been positively identified as helper 3 and had already been signaled shortly before this later identity query.
+
+This produced:
+
+identityOrSnapshotFailures = 1
+
+observationErrors = 1
+
+which caused the topology witness to FAIL.
+
+==================================================
+3. OBJECTIVE
+==================================================
+
+Correct ONLY the topology observer semantics.
+
+Do not modify:
+
+production
+
+helper
+
+transport
+
+resource budgets
+
+wire protocol
+
+cleanup rules
+
+security rules.
+
+The correction must distinguish:
+
+A. inability to establish identity for a previously unknown process
+
+from
+
+B. inability to re-query image identity for a process whose identity was already positively established earlier in the same bounded observation and whose lifetime is already tracked.
+
+==================================================
+4. SECURITY RULE
+==================================================
+
+Do NOT weaken initial identity establishment.
+
+For a previously unknown candidate process:
+
+identity query failure must still fail closed.
+
+However, once a process has already been positively bound as:
+
+role
+PID
+parent
+image
+lifetime/observation identity
+
+within the same observer session,
+
+a later QueryFullProcessImageNameW failure after signal/termination activity must not automatically erase that previously established identity.
+
+The observer may classify that later failure as:
+
+POST_IDENTITY_REQUERY_UNAVAILABLE
+
+or equivalent
+
+instead of:
+
+candidate_identity_unknown
+
+ONLY if all of the following are true:
+
+1. prior positive identity exists in the same observer session,
+2. PID matches the previously bound process,
+3. role matches,
+4. no PID reuse/replacement evidence exists,
+5. signal/termination timing is consistent,
+6. no contradictory image/parent/lifetime evidence exists.
+
+If any condition fails:
+
+fail closed.
+
+==================================================
+5. SYNTHETIC HARNESS VALIDATION
+==================================================
+
+Before any product execution, validate the observer with zero product/helper runs.
+
+Required cases:
+
+A. unknown process + identity query failure
+=> FAIL
+
+B. previously authenticated helper + later re-query failure after signal
+=> ACCEPT as bounded post-identity observation issue
+
+C. same PID but contradictory parent
+=> FAIL
+
+D. same PID but contradictory image
+=> FAIL
+
+E. PID reuse/replacement evidence
+=> FAIL
+
+F. previously authenticated process exits cleanly and cannot be re-queried
+=> ACCEPT only as terminated known identity
+
+G. observation error unrelated to known terminated identity
+=> FAIL
+
+Do not globally ignore Win32 error 31.
+
+==================================================
+6. B GATE
+==================================================
+
+If synthetic validation passes:
+
+run the exact B / ready / evaluate gate once.
+
+Require:
+
+READY
+exit 0
+all required helpers accepted
+aggregate < 28000
+CLI < 30000
+cleanup confirmed
+publication committed
+topology witness PASS
+RSS witness PASS
+zero unresolved identity failures.
+
+No retry.
+
+If B fails:
+
+STOP.
+
+Return PHASE3AR2_CONCRETE_BLOCKER.
+
+==================================================
+7. FINAL A-O
+==================================================
+
+If B passes:
+
+immediately run one fresh complete Phase 3A generation against exact C3VB.
+
+Fresh package.
+Fresh offline install.
+Verify 89 installed members.
+Seal full A-O inventory.
+Execute once.
+
+No retry.
+No historical PASS promotion.
+
+At first mandatory failure:
+
+STOP.
+
+If A-O all pass:
+
+return:
+
+PHASE3AR2_ACCEPTED_FINAL_CANDIDATE
+
+==================================================
+8. 3BR2
+==================================================
+
+Preserve accepted Phase 3BR2:
+
+4d92f0f21c9c3aad8202f4558d61b9229c7214fc
+
+Do not rerun it here.
+
+==================================================
+9. 3CR2
+==================================================
+
+Do not perform 3CR2 work here.
+
+Its independent reconciliation recovery continues separately.
+
+==================================================
+10. FINAL REPORT
+==================================================
+
+Report:
+
+1. exact observer defect
+2. exact correction
+3. synthetic observer validation
+4. B result
+5. final A-O result
+6. Phase 3A status
+7. accepted receipt/commit if successful
+8. exact 3BR2 delta
+9. exact 3CR2 delta
+10. repository status
+11. Phase 3D handoff if accepted
+
+No push.
+No tag.
+No Phase 3D.

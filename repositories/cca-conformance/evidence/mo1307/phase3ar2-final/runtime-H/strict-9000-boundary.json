@@ -1,0 +1,35 @@
+{
+  "result": "PASS",
+  "authority": "PROSPECTIVE_HELPER_BOUND@2.0.0",
+  "relation": {
+    "success": "elapsedMs < 9000",
+    "timeout": "elapsedMs >= 9000",
+    "equality": "TIMEOUT"
+  },
+  "checks": [
+    {
+      "name": "former-equality-8000-now-success",
+      "elapsedMs": 8000,
+      "expected": "PASS",
+      "actual": "PASS",
+      "result": "PASS",
+      "installedRuntime": true
+    },
+    {
+      "name": "strict-before-9000",
+      "elapsedMs": 8999,
+      "expected": "PASS",
+      "actual": "PASS",
+      "result": "PASS",
+      "installedRuntime": true
+    },
+    {
+      "name": "equality-9000-timeout",
+      "elapsedMs": 9000,
+      "expected": "MO1307_TIMEOUT",
+      "actual": "MO1307_TIMEOUT",
+      "result": "PASS",
+      "installedRuntime": true
+    }
+  ]
+}

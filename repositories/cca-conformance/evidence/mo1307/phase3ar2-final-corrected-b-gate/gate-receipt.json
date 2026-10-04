@@ -1,0 +1,365 @@
+{
+  "kind": "MO1307Phase3AR2FinalCorrectedPreCertificationBGateReceipt",
+  "version": "1.0.0",
+  "result": "PASS",
+  "outcome": "PRE_CERTIFICATION_B_GATE_PASS",
+  "createdAt": "2026-10-01T20:28:12.844Z",
+  "startedAt": "2026-10-01T20:27:28.282Z",
+  "candidate": "17fa84efe46d30e6f4be85fd2427485677a222a3",
+  "productionCommit": "98b766f9218b209f52251147213839b9775f6da3",
+  "productionTree": "b9dabf54572e06c96bb5e48c4e20671f2cc24053",
+  "authorities": [
+    "PROSPECTIVE_HELPER_BOUND@2.0.0",
+    "PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0"
+  ],
+  "identityPolicy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+  "scope": "B/ready/evaluate only with the synthetically validated corrected topology observer; validation, not certification",
+  "certification": false,
+  "semanticInvocations": 1,
+  "noRetry": true,
+  "replacementExecutions": 0,
+  "diagnosticsRun": 0,
+  "priorFailedGatePreserved": true,
+  "syntheticCorrectionValidated": true,
+  "limits": {
+    "helperWholeLifecycleMs": 9000,
+    "helperSuccess": "elapsedMs < 9000",
+    "helperTimeout": "elapsedMs >= 9000",
+    "aggregateHelperActiveMs": 28000,
+    "aggregateSuccess": "helperActiveMs < 28000",
+    "aggregateTimeout": "helperActiveMs >= 28000",
+    "cliMs": 30000,
+    "apiWorkerMs": 10000,
+    "cleanupMs": 2000
+  },
+  "requirements": {
+    "expectedReadiness": "READY",
+    "noHelperTimeout": true,
+    "allHelpersAccepted": true,
+    "scheduledTopologyRssWitness": "PASS",
+    "zeroUnresolvedTopologyIdentities": true,
+    "correctedObserverPolicy": true,
+    "cleanupSettlement": "PASS"
+  },
+  "failure": null,
+  "details": {
+    "package": {
+      "identity": "sha256:0890ca4893ef76118eefbb2b5676ad084c60c70408d9e489f92aa33b74ba45b7",
+      "members": 89,
+      "archive": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/package/memoryos-readiness-0.1.0.tgz",
+        "byteLength": 113247,
+        "sha256": "sha256:8796c7a5aac727868b7b122229d2c1c490da32f2f55670c7ed8f8ff02182bbca"
+      }
+    },
+    "result": {
+      "path": ".cache/phase3ar2-final-corrected-b-gate/output-parent/ready-output/memoryos-readiness-result.json",
+      "byteLength": 59987,
+      "sha256": "sha256:8ec1375f09103b8d1b791985065c3589bdf8ba2a4ed661dcc081d48468049fa7"
+    },
+    "observation": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/observation.json",
+      "byteLength": 42833,
+      "sha256": "sha256:182ce13c15ddc9f95db67561dc2a1228d30e6690b953add92f7ada49f4850724"
+    },
+    "topology": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/topology/receipt.json",
+      "byteLength": 178884,
+      "sha256": "sha256:c3f415ae0e6105c5463546ca900fd38915fca8803eb5bead369d5ce6015155e6"
+    },
+    "topologyIdentity": {
+      "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+      "observerSession": "23508:778026634174:134353600768451333",
+      "unresolvedIdentityFailures": 0,
+      "acceptedPostIdentityRequeryUnavailableCount": 2,
+      "acceptedTerminatedKnownIdentityCount": 19,
+      "acceptedIdentityProofsConsistent": true
+    },
+    "correction": {
+      "authorization": {
+        "path": "../../../.codex/attachments/68250150-4313-40fa-84f8-a172c13d7516/Pasted text.txt",
+        "byteLength": 5967,
+        "sha256": "sha256:7604a8ea29a2423fd99a49a34724158e2ae9121531ea8e256f85bf44610f71a6"
+      },
+      "evidence": [
+        {
+          "path": "authorization.txt",
+          "byteLength": 5967,
+          "sha256": "sha256:7604a8ea29a2423fd99a49a34724158e2ae9121531ea8e256f85bf44610f71a6"
+        },
+        {
+          "path": "case-results.json",
+          "byteLength": 8371,
+          "sha256": "sha256:69f82678f882b3766cc5f133ffc3b657027189fc68cb76df540cf008f87375c9"
+        },
+        {
+          "path": "cases.json",
+          "byteLength": 15907,
+          "sha256": "sha256:d5f30cae32fe0018c414e7f1448c633a077972e6edfff0d232dcacd900804bbb"
+        },
+        {
+          "path": "receipt.json",
+          "byteLength": 5603,
+          "sha256": "sha256:dd1083bfd5592a7170b0b36b4d3e745210e7fc5a1822fa4abdc9dd4df14aa0b9"
+        },
+        {
+          "path": "source-bindings.json",
+          "byteLength": 1301,
+          "sha256": "sha256:bc9a6812c4ab33ca806838318021fbc8530e5e0ab744282dd83aa1e620069732"
+        },
+        {
+          "path": "zero-execution-proof.json",
+          "byteLength": 2402,
+          "sha256": "sha256:388a870f3f04e528f2469bad82b243f34af3845dd57127db3a0868cb75fc930b"
+        }
+      ],
+      "receipt": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/receipt.json",
+        "byteLength": 5603,
+        "sha256": "sha256:dd1083bfd5592a7170b0b36b4d3e745210e7fc5a1822fa4abdc9dd4df14aa0b9"
+      },
+      "sourceBindings": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/source-bindings.json",
+        "byteLength": 1301,
+        "sha256": "sha256:bc9a6812c4ab33ca806838318021fbc8530e5e0ab744282dd83aa1e620069732"
+      },
+      "zeroExecutionProof": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/zero-execution-proof.json",
+        "byteLength": 2402,
+        "sha256": "sha256:388a870f3f04e528f2469bad82b243f34af3845dd57127db3a0868cb75fc930b"
+      },
+      "canonicalObserver": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-topology-observer-correction/runtime-controls-observer.py",
+        "byteLength": 28582,
+        "sha256": "sha256:7b525e2b3ff09d6296a0ad3fa0e51eda0782cfb420a3f0759ddd5904c11aa4cd"
+      },
+      "canonicalPolicy": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-topology-observer-correction/topology_identity_policy.py",
+        "byteLength": 13092,
+        "sha256": "sha256:83026a453c397b5fe56e82bad5bab64d3b580a419cef8869f93f4cbcd9649013"
+      },
+      "canonicalValidator": {
+        "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-topology-observer-correction/synthetic-validation.py",
+        "byteLength": 14571,
+        "sha256": "sha256:cc91d7d2ac498d43885e0cf1e3be09bcfa45d5d2f62e09e4ab5955ee6e83ff91"
+      },
+      "preservedFailedGate": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-b-gate/gate-receipt.json",
+        "byteLength": 7140,
+        "sha256": "sha256:6236c0976bb13bc6a8705962b2729f1dbb581917f2556c85dc372ff0d42d34b5"
+      },
+      "preservedFailedTopology": {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-b-gate/topology/receipt.json",
+        "byteLength": 26064,
+        "sha256": "sha256:46501796f6b73e8d63c0b4e2287b412a0e0e61df51cd7f022204f1161d39fb78"
+      }
+    },
+    "helperUsedMs": 15054.459499999999,
+    "productLifecycleElapsedMs": 15527.7212,
+    "wrapperElapsedMs": 17681.361199999996,
+    "maxima": {
+      "requestDurationMs": 2084.8515,
+      "requestChargedMs": 2084.1454,
+      "productRoles": 3,
+      "helpers": 1,
+      "helperConsoles": 1,
+      "productWorkingSetBytes": 211570688
+    },
+    "publication": {
+      "phase": "COMMITTED",
+      "admitted": true,
+      "deadlineExpiredAfterAdmission": false,
+      "cancelledAfterAdmission": false,
+      "namespaceVerified": true,
+      "dispositionDeadline": 17795.360800000002
+    },
+    "cleanupConfirmed": true
+  },
+  "bindings": {
+    "authorization": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/authorization.txt",
+      "byteLength": 5967,
+      "sha256": "sha256:7604a8ea29a2423fd99a49a34724158e2ae9121531ea8e256f85bf44610f71a6"
+    },
+    "authorizationSource": {
+      "path": "../../../.codex/attachments/68250150-4313-40fa-84f8-a172c13d7516/Pasted text.txt",
+      "byteLength": 5967,
+      "sha256": "sha256:7604a8ea29a2423fd99a49a34724158e2ae9121531ea8e256f85bf44610f71a6"
+    },
+    "helperAuthority": {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-v2-candidate/authority.json",
+      "byteLength": 2318,
+      "sha256": "sha256:6d5e04401c6d8ead77901b0c0ec8ec3fbf17b353e5fa4cf39e17ad3e8d1a7788"
+    },
+    "aggregateAuthority": {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/authority.json",
+      "byteLength": 1556,
+      "sha256": "sha256:adba80ce3ca2b2d21c2374bd3f98267daa9aa4891e7e27d135664251c71bab73"
+    },
+    "historicalFailedGate": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-b-gate/gate-receipt.json",
+      "byteLength": 7140,
+      "sha256": "sha256:6236c0976bb13bc6a8705962b2729f1dbb581917f2556c85dc372ff0d42d34b5"
+    },
+    "historicalFailedTopology": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-b-gate/topology/receipt.json",
+      "byteLength": 26064,
+      "sha256": "sha256:46501796f6b73e8d63c0b4e2287b412a0e0e61df51cd7f022204f1161d39fb78"
+    },
+    "syntheticCorrectionEvidence": {
+      "root": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction",
+      "members": [
+        {
+          "path": "authorization.txt",
+          "byteLength": 5967,
+          "sha256": "sha256:7604a8ea29a2423fd99a49a34724158e2ae9121531ea8e256f85bf44610f71a6"
+        },
+        {
+          "path": "case-results.json",
+          "byteLength": 8371,
+          "sha256": "sha256:69f82678f882b3766cc5f133ffc3b657027189fc68cb76df540cf008f87375c9"
+        },
+        {
+          "path": "cases.json",
+          "byteLength": 15907,
+          "sha256": "sha256:d5f30cae32fe0018c414e7f1448c633a077972e6edfff0d232dcacd900804bbb"
+        },
+        {
+          "path": "receipt.json",
+          "byteLength": 5603,
+          "sha256": "sha256:dd1083bfd5592a7170b0b36b4d3e745210e7fc5a1822fa4abdc9dd4df14aa0b9"
+        },
+        {
+          "path": "source-bindings.json",
+          "byteLength": 1301,
+          "sha256": "sha256:bc9a6812c4ab33ca806838318021fbc8530e5e0ab744282dd83aa1e620069732"
+        },
+        {
+          "path": "zero-execution-proof.json",
+          "byteLength": 2402,
+          "sha256": "sha256:388a870f3f04e528f2469bad82b243f34af3845dd57127db3a0868cb75fc930b"
+        }
+      ]
+    },
+    "syntheticCorrectionReceipt": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/receipt.json",
+      "byteLength": 5603,
+      "sha256": "sha256:dd1083bfd5592a7170b0b36b4d3e745210e7fc5a1822fa4abdc9dd4df14aa0b9"
+    },
+    "syntheticCorrectionSourceBindings": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/source-bindings.json",
+      "byteLength": 1301,
+      "sha256": "sha256:bc9a6812c4ab33ca806838318021fbc8530e5e0ab744282dd83aa1e620069732"
+    },
+    "syntheticCorrectionZeroExecutionProof": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/zero-execution-proof.json",
+      "byteLength": 2402,
+      "sha256": "sha256:388a870f3f04e528f2469bad82b243f34af3845dd57127db3a0868cb75fc930b"
+    },
+    "canonicalCorrectedObserver": {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-topology-observer-correction/runtime-controls-observer.py",
+      "byteLength": 28582,
+      "sha256": "sha256:7b525e2b3ff09d6296a0ad3fa0e51eda0782cfb420a3f0759ddd5904c11aa4cd"
+    },
+    "canonicalIdentityPolicy": {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-topology-observer-correction/topology_identity_policy.py",
+      "byteLength": 13092,
+      "sha256": "sha256:83026a453c397b5fe56e82bad5bab64d3b580a419cef8869f93f4cbcd9649013"
+    },
+    "canonicalSyntheticValidator": {
+      "path": "repositories/cca-conformance/tools/mo1307-phase3ar2-final-topology-observer-correction/synthetic-validation.py",
+      "byteLength": 14571,
+      "sha256": "sha256:cc91d7d2ac498d43885e0cf1e3be09bcfa45d5d2f62e09e4ab5955ee6e83ff91"
+    },
+    "installed": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/installed-verification.json",
+      "byteLength": 32266,
+      "sha256": "sha256:38794cc55030b904735975f7d3c4468aa4776bb067fcbc6abcfe2c27a2c2ac50"
+    },
+    "invocation": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/invocation.json",
+      "byteLength": 10012,
+      "sha256": "sha256:81153582051cecad07dcbf657b93a70fef4b06db860d2eb22c0dfbd773ef4c3d"
+    },
+    "wrapperStdout": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/wrapper.stdout.data",
+      "byteLength": 170,
+      "sha256": "sha256:1a8af62a44557ad978f384668a9419cbb461dc8efa59dd2a823b2516abbb7ff7"
+    },
+    "wrapperStderr": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/wrapper.stderr.data",
+      "byteLength": 0,
+      "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observation": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/observation.json",
+      "byteLength": 42833,
+      "sha256": "sha256:182ce13c15ddc9f95db67561dc2a1228d30e6690b953add92f7ada49f4850724"
+    },
+    "observerReady": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/observation.json.observer-ready.json",
+      "byteLength": 406,
+      "sha256": "sha256:195a441e583480c8d090387a1b62089a5bc8d5cc0511317c48e6bfe0f5c4d83b"
+    },
+    "clockBridgeRequest": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/observation.json.observer-ready.json.clock-bridge.json",
+      "byteLength": 115,
+      "sha256": "sha256:fec2fb8b51131eac71b3ac430f6b56311c2a5fcd9e9e780810656022e65ac42b"
+    },
+    "clockBridgeAccepted": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/observation.json.observer-ready.json.clock-bridge-accepted.json",
+      "byteLength": 386,
+      "sha256": "sha256:ff1970802d18509a25b3490de55f2bf862a58cc410e4354d324df52e6d53b201"
+    },
+    "topology": {
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/topology/receipt.json",
+      "byteLength": 178884,
+      "sha256": "sha256:c3f415ae0e6105c5463546ca900fd38915fca8803eb5bead369d5ce6015155e6"
+    },
+    "topologyArtifacts": [
+      {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/topology/driver-launch.json",
+        "byteLength": 1640,
+        "sha256": "sha256:96430dcf2d9199777aaed651d48e53374957cd33bd486698195c0e20c61c9633"
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/topology/driver.stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/topology/driver.stdout.data",
+        "byteLength": 353,
+        "sha256": "sha256:7a28060c140535052dfe9ddf75eab9ec03f66db45767ab00d644f213397d16b8"
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/topology/observer.stderr.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/topology/observer.stdout.data",
+        "byteLength": 0,
+        "sha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/topology/observer.stop",
+        "byteLength": 31,
+        "sha256": "sha256:a50a03832ac849999bb7428b4cd71f7a12c558d2276d74752a301d39820bfe42"
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/topology/process-observation.jsonl",
+        "byteLength": 540377,
+        "sha256": "sha256:92a045532bfe910400726cf371d34f01b6855bbf36e9047ae83bec0ad7f9e25c"
+      },
+      {
+        "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/topology/receipt.json",
+        "byteLength": 178884,
+        "sha256": "sha256:c3f415ae0e6105c5463546ca900fd38915fca8803eb5bead369d5ce6015155e6"
+      }
+    ]
+  },
+  "fullCertificationStarted": false,
+  "push": false,
+  "tag": false
+}

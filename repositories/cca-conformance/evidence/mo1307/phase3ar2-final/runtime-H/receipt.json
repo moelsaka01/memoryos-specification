@@ -1,0 +1,454 @@
+{
+  "kind": "MO1307Phase3AR2C3VBRuntimeControls",
+  "mode": "H",
+  "timeOrigin": 1790887085912.674,
+  "clockBridge": {
+    "readyQpc": 784118995342,
+    "qpcFrequency": 10000000,
+    "performanceSeenAt": 268.4488,
+    "performanceBeforeWriteAt": 268.4729,
+    "qpcAcknowledged": 784120349726,
+    "offsetLowerMs": -78411766.4997,
+    "offsetUpperMs": -78411631.08539999,
+    "offsetBracketWidthMs": 135.41430000960827,
+    "method": "QPC-to-Node-performance offset bounded by ready/read and write/ack ordering; no wall-clock conversion or deadline grace."
+  },
+  "result": "FAIL",
+  "failure": {
+    "message": "Error: ReadinessError: MO1307_TIMEOUT\n    at checkpoint (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final/install/node_modules/memoryos-readiness/src/runtime.mjs:72:34)\n    at Timeout.<anonymous> (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final/install/node_modules/memoryos-readiness/src/runtime.mjs:81:13)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)\n    at run (file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final/runtime-controls.mjs:93:20)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final/runtime-controls.mjs:116:2",
+    "stack": "Error: Error: ReadinessError: MO1307_TIMEOUT\n    at checkpoint (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final/install/node_modules/memoryos-readiness/src/runtime.mjs:72:34)\n    at Timeout.<anonymous> (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final/install/node_modules/memoryos-readiness/src/runtime.mjs:81:13)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)\n    at run (file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final/runtime-controls.mjs:93:20)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final/runtime-controls.mjs:116:2\n    at run (file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final/runtime-controls.mjs:101:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final/runtime-controls.mjs:116:2",
+    "code": null
+  },
+  "cases": [
+    {
+      "name": "timely-helper",
+      "started": 312.4001,
+      "finished": 9349.3633,
+      "result": "FAIL",
+      "elapsedMs": 9036.9764,
+      "error": {
+        "code": "MO1307_TIMEOUT",
+        "message": "MO1307_TIMEOUT"
+      },
+      "detail": null,
+      "snapshot": {
+        "kind": "cli",
+        "deadline": 30312.6162,
+        "helpers": 1,
+        "workers": 0,
+        "helperUsedMs": 0,
+        "activeRole": "helper",
+        "cleanupConfirmed": false,
+        "publication": null,
+        "terminalCode": "MO1307_TIMEOUT",
+        "terminalAt": 9325.2043,
+        "cleanupDeadline": 11325.2043,
+        "events": [
+          {
+            "type": "start",
+            "at": 317.1342,
+            "role": "helper",
+            "deadline": 9317.097,
+            "ordinal": 1
+          },
+          {
+            "type": "observation",
+            "at": 335.7853,
+            "role": "helper",
+            "pid": 28556,
+            "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+          },
+          {
+            "type": "terminal",
+            "at": 9325.2521,
+            "code": "MO1307_TIMEOUT",
+            "stage": "ACQUISITION"
+          },
+          {
+            "type": "cleanup",
+            "at": 9348.7952,
+            "role": "helper",
+            "confirmed": false
+          }
+        ]
+      },
+      "expectedError": null,
+      "engineeringElapsedEnvelope": {
+        "minMs": 8000,
+        "maxMs": 9000,
+        "productDeadlineOverride": false
+      },
+      "invocations": [
+        {
+          "ordinal": "001",
+          "pid": 28556,
+          "protocolSequence": 3,
+          "operation": "READ_SET"
+        }
+      ],
+      "workerObservations": [],
+      "failure": "Error: ReadinessError: MO1307_TIMEOUT\n    at checkpoint (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final/install/node_modules/memoryos-readiness/src/runtime.mjs:72:34)\n    at Timeout.<anonymous> (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final/install/node_modules/memoryos-readiness/src/runtime.mjs:81:13)\n    at listOnTimeout (node:internal/timers:685:17)\n    at process.processTimers (node:internal/timers:618:7)\n    at run (file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final/runtime-controls.mjs:93:20)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final/runtime-controls.mjs:116:2"
+    }
+  ],
+  "strictBoundaryChecks": [
+    {
+      "name": "former-equality-8000-now-success",
+      "elapsedMs": 8000,
+      "expected": "PASS",
+      "actual": "PASS",
+      "result": "PASS",
+      "installedRuntime": true
+    },
+    {
+      "name": "strict-before-9000",
+      "elapsedMs": 8999,
+      "expected": "PASS",
+      "actual": "PASS",
+      "result": "PASS",
+      "installedRuntime": true
+    },
+    {
+      "name": "equality-9000-timeout",
+      "elapsedMs": 9000,
+      "expected": "MO1307_TIMEOUT",
+      "actual": "MO1307_TIMEOUT",
+      "result": "PASS",
+      "installedRuntime": true
+    }
+  ],
+  "invocations": [
+    {
+      "name": "timely-helper",
+      "ordinal": "001",
+      "helperInvocationOrdinal": 1,
+      "launch": {
+        "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "args": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-File",
+          "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final\\install\\node_modules\\memoryos-readiness\\helpers\\windows-inspect.ps1"
+        ],
+        "options": {
+          "cwd": "C:\\Users\\melsa\\Documents\\Codex\\3ar2\\.cache\\phase3ar2-final\\install\\node_modules\\memoryos-readiness\\",
+          "env": {
+            "SystemRoot": "C:\\Windows",
+            "WINDIR": "C:\\Windows"
+          },
+          "windowsHide": true,
+          "detached": false,
+          "shell": false,
+          "stdio": [
+            "pipe",
+            "pipe",
+            "pipe"
+          ]
+        }
+      },
+      "pid": 28556,
+      "startedAt": 335.4142,
+      "eofDelayMs": 8200,
+      "lateCleanup": false,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "killRequestedAt": 9325.6949,
+      "responseAt": null,
+      "closedAt": 9345.8362,
+      "exitAt": 9345.5238,
+      "exitCode": null,
+      "streamEvents": [
+        {
+          "id": "stdin",
+          "event": "finish",
+          "at": 8542.7565
+        },
+        {
+          "id": "stdin",
+          "event": "close",
+          "at": 8544.299
+        },
+        {
+          "id": "stderr",
+          "event": "close",
+          "at": 9326.6858
+        },
+        {
+          "id": "stdout",
+          "event": "close",
+          "at": 9326.7696
+        }
+      ],
+      "protocolSequence": 3,
+      "operation": "READ_SET",
+      "fileCount": 1,
+      "rootCount": 1,
+      "requestSha256": "sha256:db2575bca848bf6e7fbd841878df8880d3cdf70e414c46af8c716ee12de98b95",
+      "requestBytes": 414,
+      "exitSignal": "SIGTERM",
+      "transportClosed": true,
+      "responseSha256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "workerObservations": [],
+  "dependenciesBefore": [
+    {
+      "file": "helpers/windows-inspect.ps1",
+      "sha256": "97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+    },
+    {
+      "file": "src/acquisition.mjs",
+      "sha256": "1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+    },
+    {
+      "file": "src/api-input.mjs",
+      "sha256": "57cd2e2309efac7f0c890b82ff4ca3f70f8cb324512611eba9b303e2da32e194"
+    },
+    {
+      "file": "src/canonical.mjs",
+      "sha256": "b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "file": "src/cli-args.mjs",
+      "sha256": "107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+    },
+    {
+      "file": "src/cli.mjs",
+      "sha256": "3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+    },
+    {
+      "file": "src/constants.mjs",
+      "sha256": "98e8721dedc01b593aca81d524e076cc0fe3936a03955198ff2a91ca5c163be1"
+    },
+    {
+      "file": "src/errors.mjs",
+      "sha256": "71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "file": "src/evidence-graph.mjs",
+      "sha256": "cc8a353da76fef3c8610085c6b0237021cdfedb4879d5bfe3ad4ae749166673c"
+    },
+    {
+      "file": "src/evidence-history.mjs",
+      "sha256": "16c5377d07bbc894f8aaa26495e7f215e5a2d2b80b73fdf36254393a7e7769bc"
+    },
+    {
+      "file": "src/evidence-verifier.mjs",
+      "sha256": "684d088b6578f463a7ed1b6e40cde63ec5de2bf039458050b9ebce4494ded3a0"
+    },
+    {
+      "file": "src/foundation.mjs",
+      "sha256": "19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d"
+    },
+    {
+      "file": "src/helper-protocol.mjs",
+      "sha256": "96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "file": "src/helper-transport.mjs",
+      "sha256": "e320a36d203a4635e13930663a7f075a064c2211e753700da4fff8ae81e477a1"
+    },
+    {
+      "file": "src/index.mjs",
+      "sha256": "10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+    },
+    {
+      "file": "src/integration.mjs",
+      "sha256": "c73e278db2b2cdd5b38e3e9a6046ba529aafe92af5abfee4e0ced8b0ec02c64e"
+    },
+    {
+      "file": "src/output.mjs",
+      "sha256": "eea2e7f6dc23f88b8afdca19b273939a020ccc145ec78d4f701983e0d8449aca"
+    },
+    {
+      "file": "src/projections.mjs",
+      "sha256": "43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22"
+    },
+    {
+      "file": "src/publication.mjs",
+      "sha256": "dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+    },
+    {
+      "file": "src/readiness-core.mjs",
+      "sha256": "7891139345e71030709adf2fdb1ff93342a74282980d1b09d1535e44fa0ef1cd"
+    },
+    {
+      "file": "src/readiness-result.mjs",
+      "sha256": "847525fb9be50cc956c5859e8accd271806db61fdf083e9b5165bd8cf91d9fea"
+    },
+    {
+      "file": "src/runtime.mjs",
+      "sha256": "012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    {
+      "file": "src/schema-data.mjs",
+      "sha256": "467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+    },
+    {
+      "file": "src/schema.mjs",
+      "sha256": "9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+    },
+    {
+      "file": "src/windows-paths.mjs",
+      "sha256": "7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "file": "src/worker-entry.mjs",
+      "sha256": "958dfaf21e7ed62d6214a09f7624b7c4c799aeddbdcd11daac8625a439ab35a7"
+    },
+    {
+      "file": "src/worker-policy.mjs",
+      "sha256": "29e0ccb0bb366199857753abd11c08f8cdec72bfe43672ef6ba9e8784e5b0831"
+    }
+  ],
+  "dependenciesAfter": [
+    {
+      "file": "helpers/windows-inspect.ps1",
+      "sha256": "97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127"
+    },
+    {
+      "file": "src/acquisition.mjs",
+      "sha256": "1ecab53426287a92279153903785bd56a38d4a9840696dbdfb3a446a8e83b066"
+    },
+    {
+      "file": "src/api-input.mjs",
+      "sha256": "57cd2e2309efac7f0c890b82ff4ca3f70f8cb324512611eba9b303e2da32e194"
+    },
+    {
+      "file": "src/canonical.mjs",
+      "sha256": "b0e22be147436b7fd962c00825f9f5c1e581825653baa0af4a68a9832a0b9805"
+    },
+    {
+      "file": "src/cli-args.mjs",
+      "sha256": "107656c5f6d233b9f2717f59af8b09de4cc7909add43b4b465e9be02fc6f20a7"
+    },
+    {
+      "file": "src/cli.mjs",
+      "sha256": "3632c653e86e1315ac3b858137932b9750ed621526ad71d75c7f040935cfa5f2"
+    },
+    {
+      "file": "src/constants.mjs",
+      "sha256": "98e8721dedc01b593aca81d524e076cc0fe3936a03955198ff2a91ca5c163be1"
+    },
+    {
+      "file": "src/errors.mjs",
+      "sha256": "71a964678dbf300ecb2dad3a923a069a4e7eb211f0b6818481e94940dc90a5ac"
+    },
+    {
+      "file": "src/evidence-graph.mjs",
+      "sha256": "cc8a353da76fef3c8610085c6b0237021cdfedb4879d5bfe3ad4ae749166673c"
+    },
+    {
+      "file": "src/evidence-history.mjs",
+      "sha256": "16c5377d07bbc894f8aaa26495e7f215e5a2d2b80b73fdf36254393a7e7769bc"
+    },
+    {
+      "file": "src/evidence-verifier.mjs",
+      "sha256": "684d088b6578f463a7ed1b6e40cde63ec5de2bf039458050b9ebce4494ded3a0"
+    },
+    {
+      "file": "src/foundation.mjs",
+      "sha256": "19008f20e562376cd76161d26f18169bb46eded4e480b71d1832307e1db8280d"
+    },
+    {
+      "file": "src/helper-protocol.mjs",
+      "sha256": "96495c2eaec2f8ffb284f760387215cfaebfd11f4fee372ff5b0fc765b0b7002"
+    },
+    {
+      "file": "src/helper-transport.mjs",
+      "sha256": "e320a36d203a4635e13930663a7f075a064c2211e753700da4fff8ae81e477a1"
+    },
+    {
+      "file": "src/index.mjs",
+      "sha256": "10aba8aa5b7c23d82b2d365db4366a030e1223f66543605ef56a99886488c5d4"
+    },
+    {
+      "file": "src/integration.mjs",
+      "sha256": "c73e278db2b2cdd5b38e3e9a6046ba529aafe92af5abfee4e0ced8b0ec02c64e"
+    },
+    {
+      "file": "src/output.mjs",
+      "sha256": "eea2e7f6dc23f88b8afdca19b273939a020ccc145ec78d4f701983e0d8449aca"
+    },
+    {
+      "file": "src/projections.mjs",
+      "sha256": "43a8c5a6f59c6ee15f85406ae9da34a0fc9c9516a6e55116be9715a012e73d22"
+    },
+    {
+      "file": "src/publication.mjs",
+      "sha256": "dcba8a23b848ceede6c5a9deb10e46b2ef795ae9573755bc78d44abd5943236b"
+    },
+    {
+      "file": "src/readiness-core.mjs",
+      "sha256": "7891139345e71030709adf2fdb1ff93342a74282980d1b09d1535e44fa0ef1cd"
+    },
+    {
+      "file": "src/readiness-result.mjs",
+      "sha256": "847525fb9be50cc956c5859e8accd271806db61fdf083e9b5165bd8cf91d9fea"
+    },
+    {
+      "file": "src/runtime.mjs",
+      "sha256": "012b37fda3bb6a9cee8863e54e05d192459e1885357a20ad75e83cb15ae849e1"
+    },
+    {
+      "file": "src/schema-data.mjs",
+      "sha256": "467fa7479b88eff13d90cfb8d8984b26b5cd4b7cd1aadd8f5b3416c6ed3b6f11"
+    },
+    {
+      "file": "src/schema.mjs",
+      "sha256": "9b18aead5802688195a3539ef504395f374a8779580650eec7b03058100b98b7"
+    },
+    {
+      "file": "src/windows-paths.mjs",
+      "sha256": "7d39bd005571c40d06ca37a61a40f29b2095b52e3526bc8a2fa4f762d67c0029"
+    },
+    {
+      "file": "src/worker-entry.mjs",
+      "sha256": "958dfaf21e7ed62d6214a09f7624b7c4c799aeddbdcd11daac8625a439ab35a7"
+    },
+    {
+      "file": "src/worker-policy.mjs",
+      "sha256": "29e0ccb0bb366199857753abd11c08f8cdec72bfe43672ef6ba9e8784e5b0831"
+    }
+  ],
+  "noProductChanges": true,
+  "authorities": [
+    "PROSPECTIVE_HELPER_BOUND@2.0.0",
+    "PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0"
+  ],
+  "authorityBindings": [
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-bound-v2-candidate/authority.json",
+      "byteLength": 2318,
+      "sha256": "sha256:6d5e04401c6d8ead77901b0c0ec8ec3fbf17b353e5fa4cf39e17ad3e8d1a7788"
+    },
+    {
+      "path": "repositories/cca-conformance/evidence/mo1307/prospective-helper-aggregate-bound-v2-candidate/authority.json",
+      "byteLength": 1556,
+      "sha256": "sha256:adba80ce3ca2b2d21c2374bd3f98267daa9aa4891e7e27d135664251c71bab73"
+    }
+  ],
+  "historicalCharacterizationH": "NOT_ESTABLISHED",
+  "limits": {
+    "helperMs": 9000,
+    "aggregateMs": 28000,
+    "workerMs": 10000,
+    "cliMs": 30000,
+    "cleanupMs": 2000
+  },
+  "limitRelations": {
+    "helperSuccess": "elapsedMs < 9000",
+    "helperTimeout": "elapsedMs >= 9000",
+    "aggregateSuccess": "helperActiveMs < 28000",
+    "aggregateTimeout": "helperActiveMs >= 28000"
+  },
+  "limitations": [
+    "Delay controls are engineering-only seams; native helper response frames and native file identities are real.",
+    "No valid response exists for killed helper: product cleanupConfirmed remains false and is not relabeled. External retained process handles and transport events separately establish actual cleanup.",
+    "Worker control bytes are nonsemantic; worker timeout/cancellation use actual native Node threads.",
+    "Process sampler has blind spots between samples; production role guards enforce transitions.",
+    "Deterministic enforcement of the prospective 9000-ms helper and 28000-ms aggregate limits does not establish historical characterization H."
+  ]
+}

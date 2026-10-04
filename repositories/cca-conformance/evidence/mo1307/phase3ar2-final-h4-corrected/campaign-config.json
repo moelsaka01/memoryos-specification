@@ -1,0 +1,137 @@
+{
+  "generation": "PHASE3AR2_C3VB_FINAL_H4_CORRECTED_FRESH_FULL_INSTALLED_RUNTIME",
+  "startedAt": "2026-10-04T17:35:50.066Z",
+  "hardStopAt": "2026-10-04T20:35:50.067Z",
+  "engineeringGuardMinutes": 180,
+  "productDeadlineAuthorities": [
+    "PROSPECTIVE_HELPER_BOUND@2.0.0",
+    "PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0"
+  ],
+  "candidate": "17fa84efe46d30e6f4be85fd2427485677a222a3",
+  "productionCommit": "98b766f9218b209f52251147213839b9775f6da3",
+  "productionTree": "b9dabf54572e06c96bb5e48c4e20671f2cc24053",
+  "H": "NOT_ESTABLISHED",
+  "hFailureClassification": "H_HARNESS_MARGIN_DEFECT",
+  "h2FailureClassifications": [
+    "H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT",
+    "H_OBSERVER_EVENT_ORDERING_DEFECT"
+  ],
+  "timelyHelperEngineeringEnvelope": {
+    "artificialEofDelayMs": 0,
+    "maxMs": 5000,
+    "deadlineMarginMs": 4000
+  },
+  "aggregateHelperEngineeringEnvelope": {
+    "artificialEofDelayMs": 5700,
+    "engineeringMinMs": 28000,
+    "engineeringMaxMs": 31000,
+    "maxHelperSlots": 5,
+    "publicationStateMutations": 0,
+    "expectedError": "MO1307_TIMEOUT",
+    "productAggregateDeadlineMs": 28000
+  },
+  "h2Fixtures": {
+    "aggregate": [
+      {
+        "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected/fixture-root.json",
+        "byteLength": 540,
+        "sha256": "sha256:a17d3e4902da0da791701bc1adc489acc4dff58c732c8798f8d759e73706ab9d"
+      }
+    ],
+    "input": [
+      {
+        "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/authority.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/candidate.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/config.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/manifest.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      },
+      {
+        "path": "repositories/cca-conformance/fixtures/mo1307/phase3ar2-final-h2-corrected-input/small.bin",
+        "byteLength": 3,
+        "sha256": "sha256:ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+      }
+    ]
+  },
+  "h2HarnessCorrection": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/receipt.json",
+    "byteLength": 9491,
+    "sha256": "sha256:c1bf0a503ef2c455123ad619f966482fbbe87c5c56273b10316872cec8adbcd6"
+  },
+  "preservedFailedHCorrectedGeneration": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-corrected/certification-receipt.json",
+    "byteLength": 463330,
+    "sha256": "sha256:719ebafbbabe4c89f1502271310109dc8d6cb4efff8bc43da313b7dd7411e031"
+  },
+  "eventOrderingRule": "MO1307_OBSERVER_EVENT_ORDERING@1.0.0",
+  "h3Rebinding": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h3-rebinding/receipt.json",
+    "byteLength": 3476,
+    "sha256": "sha256:8d0658a948d65ea0f5284a77732d766a6cb6d1a9883bf59084a92dd873ceec53"
+  },
+  "preservedBlockedH2Generation": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-corrected/certification-receipt.json",
+    "byteLength": 13870,
+    "sha256": "sha256:a740a4b6e7032af7f7db0beeb3b42ceac33489bf43188906c4de917a849cd0c0"
+  },
+  "h4Rebinding": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h4-rebinding/receipt.json",
+    "byteLength": 3078,
+    "sha256": "sha256:56436c7dbf1ebebd8e5a1688a483f0a1745ca467421024c2ad73a9fab99ffd32"
+  },
+  "preservedFailedH3Generation": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h3-corrected/certification-receipt.json",
+    "byteLength": 341736,
+    "sha256": "sha256:7726c012194463f6d5a90600b62309c5fad9afd83a116c25c9acca5be6d1302e"
+  },
+  "nodeExecutable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+  "helperSuccess": "elapsedMs < 9000",
+  "helperTimeout": "elapsedMs >= 9000",
+  "aggregateAccepted": "helperActiveMs < 28000",
+  "aggregateTimeout": "helperActiveMs >= 28000",
+  "observerIdentityPolicy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+  "observerCorrection": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction/receipt.json",
+    "byteLength": 5603,
+    "sha256": "sha256:dd1083bfd5592a7170b0b36b4d3e745210e7fc5a1822fa4abdc9dd4df14aa0b9"
+  },
+  "hHarnessCorrection": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-harness-correction/receipt.json",
+    "byteLength": 2985,
+    "sha256": "sha256:18224586fd9fc363d62cdc5a3fd96996eb24808614cc745746db47d1991e811a"
+  },
+  "preservedFailedFullGeneration": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final/certification-receipt.json",
+    "byteLength": 337821,
+    "sha256": "sha256:c0b83b89a3216892460d668f8eef5426a60a4f787b2f93b01af58b4ec57fe0df"
+  },
+  "preservedFailedFullReport": {
+    "path": "docs/mo1307-phase3ar2-final.md",
+    "byteLength": 6946,
+    "sha256": "sha256:fb58c587aeb9bef5b92979e89ca3db7d3ffd8e43444f787c38563f147776591d"
+  },
+  "preCertificationBGate": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/gate-receipt.json",
+    "byteLength": 16683,
+    "sha256": "sha256:73b9da2caa1786039d60035c783745ee3a56814f63e64bb047e19275402f0983"
+  },
+  "preservedFailedPreCertificationBGate": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-b-gate/gate-receipt.json",
+    "byteLength": 7140,
+    "sha256": "sha256:6236c0976bb13bc6a8705962b2729f1dbb581917f2556c85dc372ff0d42d34b5"
+  },
+  "noRetry": true
+}

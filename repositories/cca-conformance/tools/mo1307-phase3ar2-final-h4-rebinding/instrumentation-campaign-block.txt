@@ -1,0 +1,40 @@
+// ---- MO-1307 harness-only host instrumentation (no product code, helper, package or setting is touched) ----
+// Best-effort and never decisive: any failure here is recorded and cannot change a step result. Outputs are written
+// only under the generation's own instrumentation/ directory with exclusive creation.
+const instrumentationDirectory='instrumentation';
+const powershellExecutable='C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe';
+const sleepMs=ms=>Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0,ms);
+const instrumentationPath=name=>path.join(E,instrumentationDirectory,name);
+function startInstrumentation(){
+  const state={startedAt:new Date().toISOString(),child:null,sampling:false,error:null};
+  try{
+    fs.mkdirSync(path.join(E,instrumentationDirectory),{recursive:true});
+    state.child=spawn(powershellExecutable,['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(T,'instrumentation.ps1'),'-Mode','Sample','-Out',instrumentationPath('host-samples.jsonl'),'-StopFile',instrumentationPath('stop.flag'),'-IntervalMs','2000'],{cwd:root,env,windowsHide:true,stdio:'ignore'});
+    state.child.on('error',e=>{state.error=e.message;});
+    if(state.child.pid===undefined)throw new Error('Sampler did not start');
+    for(let i=0;i<80;i++){if(fs.existsSync(instrumentationPath('host-samples.jsonl'))&&fs.statSync(instrumentationPath('host-samples.jsonl')).size>0){state.sampling=true;break;}sleepMs(250);}
+    if(!state.sampling)throw new Error('Sampler produced no sample within 20 s');
+    sleepMs(2000);
+  }catch(error){state.error=error.message;}
+  return state;
+}
+function finishInstrumentation(state,runFailure){
+  const out={kind:'MO1307HostInstrumentationDiagnosis',version:'1.0.0',purpose:'Harness-only host-load, helper-phase and event-log observations; never decisive for a step result.',startedAt:state.startedAt,samplerStarted:state.sampling,samplerError:state.error,runFailed:Boolean(runFailure)};
+  try{
+    try{if(state.child&&state.child.pid!==undefined){fs.writeFileSync(instrumentationPath('stop.flag'),'stop\n',{flag:'wx'});for(let i=0;i<40;i++){let alive=true;try{process.kill(state.child.pid,0);}catch{alive=false;}if(!alive)break;sleepMs(250);}try{process.kill(state.child.pid,0);try{state.child.kill();}catch{}out.samplerForcedStop=true;}catch{out.samplerForcedStop=false;}}}catch(error){out.samplerStopError=error.message;}
+    const finishedAt=new Date().toISOString();out.finishedAt=finishedAt;
+    const eventRun=spawnSync(powershellExecutable,['-NoLogo','-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(T,'instrumentation.ps1'),'-Mode','Events','-Out',instrumentationPath('host-events.json'),'-StartUtc',state.startedAt,'-EndUtc',finishedAt],{cwd:root,env,windowsHide:true,timeout:90000,encoding:'utf8'});
+    out.eventCollection={exit:eventRun.status,error:eventRun.error?.code??null,stderr:(eventRun.stderr??'').slice(0,500),output:fs.existsSync(instrumentationPath('host-events.json'))?record(instrumentationPath('host-events.json')):null};
+    const samples=fs.existsSync(instrumentationPath('host-samples.jsonl'))?fs.readFileSync(instrumentationPath('host-samples.jsonl'),'utf8').split('\n').filter(Boolean).map(line=>{try{return JSON.parse(line);}catch{return null;}}).filter(Boolean):[];
+    const summarize=(from,to)=>{const rows=samples.filter(s=>{const t=Date.parse(s.atUtc);return t>=from&&t<=to;});if(!rows.length)return {samples:0};const sums={};for(const r of rows)for(const t of r.topCpu??[])sums[t.n]=(sums[t.n]??0)+t.cpuMs;const cpu=rows.map(r=>r.cpuPct),perf=rows.map(r=>r.cpuPerformancePct).filter(v=>typeof v==='number');return {samples:rows.length,cpuPctAverage:+(cpu.reduce((a,b)=>a+b,0)/cpu.length).toFixed(1),cpuPctMax:Math.max(...cpu),cpuPerformancePctMin:perf.length?Math.min(...perf):null,availMBMin:Math.min(...rows.map(r=>r.availMB)),queueLengthMax:Math.max(...rows.map(r=>r.queueLength)),topProcessCpuMs:Object.entries(sums).sort((a,b)=>b[1]-a[1]).slice(0,6).map(([name,cpuMs])=>({name,cpuMs:+cpuMs.toFixed(0)}))};};
+    out.wholeRunSummary=summarize(Date.parse(state.startedAt),Date.parse(finishedAt));
+    out.steps=[];
+    for(const step of steps){const launchPath=path.join(E,'scheduler',step+'-launch.json'),receiptPath=path.join(E,'scheduler',step+'-receipt.json');if(!fs.existsSync(launchPath)||!fs.existsSync(receiptPath))continue;const launch=json(launchPath),receipt=json(receiptPath),from=Date.parse(launch.startedAt);out.steps.push({step,startedAt:launch.startedAt,elapsedMs:receipt.elapsedMs,result:receipt.result,host:summarize(from,from+receipt.elapsedMs+1000)});}
+    out.helperPhases=[];
+    const find=(dir)=>fs.readdirSync(dir,{withFileTypes:true}).flatMap(d=>d.isDirectory()?(d.name===instrumentationDirectory||d.name==='package'?[]:find(path.join(dir,d.name))):d.name==='observation.json'?[path.join(dir,d.name)]:[]);
+    for(const file of find(E)){try{const obs=json(file);const rows=(obs.requests??[]).map(q=>({ordinal:q.ordinal,sequence:q.sequence,operation:q.operation,disposition:q.disposition,spawnCallLatencyMs:q.spawnAt!=null&&q.enteredAt!=null?+(q.spawnAt-q.enteredAt).toFixed(1):null,spawnToFirstStdoutMs:q.stdoutFirstAt!=null&&q.spawnAt!=null?+(q.stdoutFirstAt-q.spawnAt).toFixed(1):null,firstStdoutToExitMs:q.exitAt!=null&&q.stdoutFirstAt!=null?+(q.exitAt-q.stdoutFirstAt).toFixed(1):null,exitToCloseMs:q.closeAt!=null&&q.exitAt!=null?+(q.closeAt-q.exitAt).toFixed(1):null,wholeLifecycleMs:q.durationMs,chargedThisExchangeMs:q.chargedThisExchangeMs,stdoutBytes:q.stdoutBytes,exitCode:q.exitCode,pid:q.pid}));const origin=obs.timeOrigin;out.helperPhases.push({observation:path.relative(root,file).replaceAll('\\','/'),productLifecycleElapsedMs:obs.productLifecycleElapsedMs,timeOrigin:origin,requests:rows});}catch(error){out.helperPhases.push({observation:path.relative(root,file).replaceAll('\\','/'),error:error.message});}}
+    if(runFailure){const probes=[];for(let i=0;i<3;i++){const at=performance.now(),r=spawnSync(powershellExecutable,['-NoLogo','-NoProfile','-NonInteractive','-Command','exit'],{cwd:root,env,windowsHide:true,timeout:30000});probes.push({exit:r.status,elapsedMs:+(performance.now()-at).toFixed(1)});}out.postFailureColdLaunchProbes=probes;}
+  }catch(error){out.instrumentationError={message:error.message,stack:error.stack};}
+  try{write(instrumentationDirectory+'/diagnosis.json',out);}catch{}
+}
+// ---- end instrumentation ----

@@ -1,0 +1,69 @@
+AUTONOMOUS MO-1307 PHASE 3 COMPLETION — LOCAL, NATIVE WINDOWS, NO PERMISSION PROMPTS NEEDED
+Worktree: C:\Users\melsa\Documents\Codex\3ar2. Read the repository's MO-1307 Phase 3 authority,
+the H2/H3 correction and rebinding evidence, and the H3 failure analysis before acting.
+
+STATE: 3BR2 ACCEPTED (4d92f0f2…), 3CR2 ACCEPTED (7d2006c6…). 3AR2 not accepted:
+H-corrected consumed, H2 blocked (operator), H3 failed step A (helper 3 READ_SET hit the
+9000 ms whole-lifecycle deadline under a uniform 3–5× host slowdown, classified environment ~70%).
+Candidate C3VB 17fa84ef…, production tree b9dabf54….
+
+GOAL: get 3AR2 accepted, then perform Phase 3D as the repository defines it, with all streams
+valid against the same final candidate. Work continuously; do not ask me for permission for
+anything permitted below.
+
+ATTEMPT SCHEDULE (max 4 generations):
+  h4 at helper limit 9000 ms → h5 10000 → h6 11000 → h7 12000 → stop and report.
+  Raise the limit ONLY when the failure is a per-helper whole-lifecycle timeout. For any other
+  failure, fix the cause and retry at the same limit (it still counts toward the 4).
+  I, the project owner, authorize these helper-limit amendments. Aggregate 28000, CLI 30000,
+  API/worker 10000 and cleanup 2000 stay unchanged unless analysis proves a raise is
+  mechanically required by the helper change; if so, stop and report instead.
+
+FOR EVERY LIMIT RAISE:
+  - Record an append-only authority amendment citing this message.
+  - If the limit lives in product code/config: create a new candidate commit (record new
+    candidate and tree hashes); otherwise record exactly where it lives.
+  - Update ONLY expectations that are arithmetically tied to the limit (boundary controls
+    N-1000/N-1 pass, N timeout; aggregate schedule margins). List every changed expectation
+    with old/new values and the reason. Change nothing else.
+  - Dependency analysis for 3BR2/3CR2 against the new candidate. If either depends on changed
+    bytes, re-verify it as a new append-only generation; otherwise record why it remains valid.
+
+DIAGNOSIS (required before every generation from h4 onward):
+  - Add harness-only instrumentation for step A and any failing step: per-helper phase timings,
+    process creation/startup latency, system CPU/memory load sampled during execution, and
+    Windows Defender/AMSI activity (e.g. Defender operational event log) in the run window.
+    No product code changes for instrumentation; it must pass the zero-product gate.
+  - You may run separate diagnostic executions of the slow helper path outside any
+    certification namespace to measure root cause; label them DIAGNOSTIC, never count them as
+    certification evidence.
+  - After any failure, state a root cause with evidence (not just "slow"), and what the next
+    generation changes to address it.
+
+RUN PROTOCOL FOR EVERY GENERATION:
+1. prepare, recover-inventory, method, record-harness-review, campaign seal; stop that
+   generation at the first non-zero exit (never re-run a step inside a namespace).
+2. Wait at least 10 minutes after prepare finishes.
+3. Zero-product environment check: 5 cold `powershell.exe -NoProfile -Command exit` launches,
+   all under 1200 ms; otherwise wait 5 minutes and re-check (record each check).
+4. campaign run, then campaign close. Long timeouts, poll sparingly.
+5. Classify any failure (product / harness / environment / authority) with evidence.
+
+YOU MAY, WITHOUT ASKING: create generations, fix evidenced harness defects (each independently
+reviewed by a sub-agent and passing a zero-product gate), make the authorized limit amendments
+above, create local commits, and after 3AR2 acceptance create its evidence commit, binding and
+handoff, then perform Phase 3D with local commits.
+
+NEVER (write a report and stop):
+- Change production code except the authorized helper-limit amendment.
+- Change any security/identity/filesystem predicate or unrelated expectation.
+- Edit, delete or rewrite existing evidence; promote historical PASS results.
+- Change antivirus/Defender/OS security settings.
+- git push, tag, PR, history rewrite, git clean/stash/reset --hard.
+- A failure classified as PRODUCT unrelated to the helper limit.
+- After h7 fails, or the 4-generation budget is used.
+
+LOG: append-only log at C:\Users\melsa\Documents\Codex\mo1307-autonomous-log.md (every
+generation, limit, diagnosis, command, result, classification, fix). Final report: what was
+accepted, candidate(s) and commits, limit finally used and why, root cause found, 3B/3C
+status, 3D outcome, anything needing my decision.

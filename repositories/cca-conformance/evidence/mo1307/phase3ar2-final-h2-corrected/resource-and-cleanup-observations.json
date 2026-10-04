@@ -1,0 +1,37 @@
+{
+  "replacementHelperBoundH": "NOT_ESTABLISHED",
+  "hFailureClassification": "H_HARNESS_MARGIN_DEFECT",
+  "timelyHelperEngineeringEnvelope": {
+    "artificialEofDelayMs": 0,
+    "maxMs": 5000,
+    "deadlineMarginMs": 4000,
+    "productDeadlineMs": 9000
+  },
+  "hHarnessCorrection": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h-harness-correction/receipt.json",
+    "byteLength": 2985,
+    "sha256": "sha256:18224586fd9fc363d62cdc5a3fd96996eb24808614cc745746db47d1991e811a"
+  },
+  "h2FailureClassifications": [
+    "H_AGGREGATE_FIXTURE_INPUT_ISOLATION_DEFECT",
+    "H_OBSERVER_EVENT_ORDERING_DEFECT"
+  ],
+  "aggregateHelperEngineeringEnvelope": {
+    "artificialEofDelayMs": 5700,
+    "engineeringMinMs": 28000,
+    "engineeringMaxMs": 31000,
+    "maxHelperSlots": 5,
+    "publicationStateMutations": 0,
+    "expectedError": "MO1307_TIMEOUT",
+    "productAggregateDeadlineMs": 28000
+  },
+  "h2HarnessCorrection": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h2-harness-correction/receipt.json",
+    "byteLength": 9491,
+    "sha256": "sha256:c1bf0a503ef2c455123ad619f966482fbbe87c5c56273b10316872cec8adbcd6"
+  },
+  "native": [],
+  "externalTopology": null,
+  "cleanupControls": null,
+  "notes": "The <5000-ms timely-helper cap and the 5700-ms aggregate EOF delay are engineering envelopes, not product limits. Observed product cleanup confirmation is distinct from held-process-object external cleanup proof; unexecuted controls make no certification claim."
+}

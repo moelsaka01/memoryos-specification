@@ -1,0 +1,240 @@
+{
+  "name": "aggregate-helper-exhaustion",
+  "started": 23238.7572,
+  "finished": 46817.952,
+  "result": "FAIL",
+  "elapsedMs": 23579.1962,
+  "error": {
+    "code": "MO1307_FILESYSTEM_BOUNDARY",
+    "message": "MO1307_FILESYSTEM_BOUNDARY"
+  },
+  "detail": null,
+  "snapshot": {
+    "kind": "cli",
+    "deadline": 53238.8048,
+    "helpers": 5,
+    "workers": 1,
+    "helperUsedMs": 23257.121600000013,
+    "activeRole": null,
+    "cleanupConfirmed": true,
+    "publication": null,
+    "terminalCode": null,
+    "terminalAt": null,
+    "cleanupDeadline": null,
+    "events": [
+      {
+        "type": "start",
+        "at": 23239.8814,
+        "role": "helper",
+        "deadline": 32239.8521,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 23248.7665,
+        "role": "helper",
+        "pid": 7668,
+        "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+      },
+      {
+        "type": "quiescent",
+        "at": 27877.2312,
+        "role": "helper",
+        "ordinal": 1
+      },
+      {
+        "type": "start",
+        "at": 27878.8078,
+        "role": "helper",
+        "deadline": 36878.793399999995,
+        "ordinal": 2
+      },
+      {
+        "type": "observation",
+        "at": 27888.9425,
+        "role": "helper",
+        "pid": 18636,
+        "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+      },
+      {
+        "type": "quiescent",
+        "at": 32614.6511,
+        "role": "helper",
+        "ordinal": 2
+      },
+      {
+        "type": "start",
+        "at": 32615.7171,
+        "role": "helper",
+        "deadline": 41615.7105,
+        "ordinal": 3
+      },
+      {
+        "type": "observation",
+        "at": 32629.122,
+        "role": "helper",
+        "pid": 2124,
+        "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+      },
+      {
+        "type": "quiescent",
+        "at": 37235.9358,
+        "role": "helper",
+        "ordinal": 3
+      },
+      {
+        "type": "start",
+        "at": 37236.345,
+        "role": "helper",
+        "deadline": 46236.3417,
+        "ordinal": 4
+      },
+      {
+        "type": "observation",
+        "at": 37246.1081,
+        "role": "helper",
+        "pid": 11136,
+        "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+      },
+      {
+        "type": "quiescent",
+        "at": 41894.9799,
+        "role": "helper",
+        "ordinal": 4
+      },
+      {
+        "type": "start",
+        "at": 41896.1996,
+        "role": "worker",
+        "deadline": 51896.1892,
+        "ordinal": 1
+      },
+      {
+        "type": "observation",
+        "at": 41898.9842,
+        "role": "worker",
+        "threadId": 1,
+        "resourceLimits": {
+          "maxYoungGenerationSizeMb": 16,
+          "maxOldGenerationSizeMb": 128,
+          "codeRangeSizeMb": -1,
+          "stackSizeMb": 4
+        }
+      },
+      {
+        "type": "quiescent",
+        "at": 42211.3357,
+        "role": "worker",
+        "ordinal": 1
+      },
+      {
+        "type": "start",
+        "at": 42211.8672,
+        "role": "helper",
+        "deadline": 51211.8609,
+        "ordinal": 5
+      },
+      {
+        "type": "observation",
+        "at": 42222.5894,
+        "role": "helper",
+        "pid": 18920,
+        "consolePolicy": "HELPER_SELF_DETACH_AND_CLOSED_PROCESS_PIPES"
+      },
+      {
+        "type": "quiescent",
+        "at": 46816.898,
+        "role": "helper",
+        "ordinal": 5
+      }
+    ]
+  },
+  "expectedError": "MO1307_TIMEOUT",
+  "engineeringElapsedEnvelope": {
+    "minMs": 28000,
+    "maxMs": 31000,
+    "productDeadlineOverride": false
+  },
+  "invocations": [
+    {
+      "ordinal": "006",
+      "pid": 7668,
+      "protocolSequence": 1,
+      "operation": "READ_SET"
+    },
+    {
+      "ordinal": "007",
+      "pid": 18636,
+      "protocolSequence": 2,
+      "operation": "READ_SET"
+    },
+    {
+      "ordinal": "008",
+      "pid": 2124,
+      "protocolSequence": 3,
+      "operation": "READ_SET"
+    },
+    {
+      "ordinal": "009",
+      "pid": 11136,
+      "protocolSequence": 4,
+      "operation": "CHECK_OUTPUT"
+    },
+    {
+      "ordinal": "010",
+      "pid": 18920,
+      "protocolSequence": 5,
+      "operation": "CHECK_OUTPUT"
+    }
+  ],
+  "workerObservations": [
+    {
+      "type": "start",
+      "caseName": "aggregate-helper-exhaustion",
+      "threadId": 1,
+      "at": 41898.7827,
+      "env": {},
+      "execArgv": [],
+      "resourceLimits": {
+        "maxOldGenerationSizeMb": 128,
+        "maxYoungGenerationSizeMb": 16
+      }
+    },
+    {
+      "type": "message",
+      "threadId": 1,
+      "at": 42208.8041
+    },
+    {
+      "type": "exit",
+      "threadId": 1,
+      "at": 42211.0209,
+      "code": 0
+    },
+    {
+      "type": "stream-end",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 42211.2055
+    },
+    {
+      "type": "stream-end",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 42211.2742
+    },
+    {
+      "type": "stream-close",
+      "stream": "stdout",
+      "threadId": 1,
+      "at": 42211.3121
+    },
+    {
+      "type": "stream-close",
+      "stream": "stderr",
+      "threadId": 1,
+      "at": 42211.3191
+    }
+  ],
+  "failure": "Error: ReadinessError: MO1307_FILESYSTEM_BOUNDARY\n    at fail (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/errors.mjs:21:61)\n    at boundary (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/windows-paths.mjs:16:39)\n    at assertStableIdentity (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/windows-paths.mjs:90:62)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:225:40\n    at Array.forEach (<anonymous>)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:225:15\n    at terminal (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:187:69)\n    at Object.complete (file:///C:/Users/melsa/Documents/Codex/3ar2/.cache/phase3ar2-final-h-corrected/install/node_modules/memoryos-readiness/src/helper-protocol.mjs:216:30)\n    at file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:128:377\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at run (file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:93:20)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async file:///C:/Users/melsa/Documents/Codex/3ar2/repositories/cca-conformance/tools/mo1307-phase3ar2-final-h-corrected/runtime-controls.mjs:122:2"
+}

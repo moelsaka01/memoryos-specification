@@ -1,0 +1,554 @@
+{
+  "allCasesMatchExpected": true,
+  "cases": {
+    "E": {
+      "actual": "PASS",
+      "checks": {
+        "absenceObservedAfterSignal": true,
+        "completePriorObjectProof": true,
+        "exactBoundParentPresent": true,
+        "exactlyOnePriorPidBinding": true,
+        "parentLifetimeCompatible": true,
+        "positiveObservationProvenance": true,
+        "qpcOrderingConsistent": true,
+        "retainedHandleSignaled": true,
+        "retainedObjectTimesMatchIdentity": true,
+        "roleMatchesPriorBinding": true,
+        "sameObserverSession": true,
+        "snapshotProvesPidAbsent": true,
+        "snapshotSucceeded": true
+      },
+      "classification": "TERMINATED_KNOWN_IDENTITY",
+      "expected": "PASS",
+      "id": "E",
+      "result": "PASS",
+      "title": "known process with consistent termination provenance (PID 2124 replay)"
+    },
+    "F": {
+      "actual": "FAIL",
+      "checks": {
+        "absenceObservedAfterSignal": true,
+        "completePriorObjectProof": true,
+        "exactBoundParentPresent": true,
+        "exactlyOnePriorPidBinding": true,
+        "parentLifetimeCompatible": true,
+        "positiveObservationProvenance": false,
+        "qpcOrderingConsistent": true,
+        "retainedHandleSignaled": true,
+        "retainedObjectTimesMatchIdentity": true,
+        "roleMatchesPriorBinding": true,
+        "sameObserverSession": true,
+        "snapshotProvesPidAbsent": true,
+        "snapshotSucceeded": true
+      },
+      "classification": "LIFETIME_CONTRADICTION",
+      "expected": "FAIL",
+      "id": "F",
+      "result": "PASS",
+      "title": "known process with contradictory lifetime"
+    },
+    "G": {
+      "actual": "FAIL",
+      "checks": {
+        "completePriorObjectProof": true,
+        "exactlyOnePriorPidBinding": false,
+        "sameObserverSession": true
+      },
+      "classification": "PID_REUSE_OR_REPLACEMENT_EVIDENCE",
+      "expected": "FAIL",
+      "id": "G",
+      "requeryVariant": {
+        "accepted": false,
+        "classification": "PID_REUSE_OR_REPLACEMENT_EVIDENCE"
+      },
+      "result": "PASS",
+      "title": "PID reuse"
+    },
+    "H": {
+      "actual": "FAIL",
+      "checks": {
+        "exactlyOnePriorPidBinding": false,
+        "probeObjectProofPreserved": true,
+        "probePidMatchesCandidate": true,
+        "queryErrorRecorded": true,
+        "queryOperationEligible": true
+      },
+      "classification": "NO_PRIOR_POSITIVE_IDENTITY",
+      "crossSessionVariant": {
+        "accepted": false,
+        "classification": "CROSS_SESSION_IDENTITY_REJECTED"
+      },
+      "expected": "FAIL",
+      "id": "H",
+      "result": "PASS",
+      "title": "unknown process (initial identity failure)"
+    },
+    "I": {
+      "actual": "PASS",
+      "checks": {
+        "completeNativeTimingProof": true,
+        "completePriorObjectProof": true,
+        "exactBoundParentPresent": true,
+        "exactlyOnePriorPidBinding": true,
+        "imageMatchesPriorBinding": true,
+        "observationTimingConsistent": true,
+        "parentLifetimeCompatible": true,
+        "parentMatchesPriorBinding": true,
+        "pidMatchesPriorBinding": true,
+        "probeObjectProofPreserved": true,
+        "probePidMatchesCandidate": true,
+        "queryErrorRecorded": true,
+        "queryOperationEligible": true,
+        "requeryOccurredAfterSignal": true,
+        "retainedHandleSignaled": true,
+        "roleMatchesPriorBinding": true,
+        "sameObserverSession": true,
+        "sameProcessCreationTime": true,
+        "sameProcessExitTime": true,
+        "snapshotConsistentWithBoundLifetime": true
+      },
+      "classification": "POST_IDENTITY_REQUERY_UNAVAILABLE",
+      "consumedDecision": {
+        "accepted": true,
+        "classification": "POST_IDENTITY_REQUERY_UNAVAILABLE"
+      },
+      "expected": "PASS",
+      "id": "I",
+      "oldRuleReplay": {
+        "accepted": true,
+        "classification": "POST_IDENTITY_REQUERY_UNAVAILABLE"
+      },
+      "pid": 21904,
+      "result": "PASS",
+      "title": "authorized post-termination unavailable requery with exact provenance"
+    }
+  },
+  "execution": {
+    "fileWrites": 0,
+    "helperRuns": 0,
+    "nativeObserverRuns": 0,
+    "processOperations": 0,
+    "productRuns": 0,
+    "workerRuns": 0
+  },
+  "expectedMatrix": {
+    "E": "PASS",
+    "F": "FAIL",
+    "G": "FAIL",
+    "H": "FAIL",
+    "I": "PASS"
+  },
+  "pid2124": {
+    "absenceObservedAt": {
+      "nativeUtc100ns": 134354256934526322,
+      "qpc": 1434192709803,
+      "utc": "2026-10-02T14:41:33.452599+00:00"
+    },
+    "consumedDecision": {
+      "accepted": false,
+      "classification": "LIFETIME_CONTRADICTION"
+    },
+    "consumedFailedCheck": [
+      "positiveObservationProvenance"
+    ],
+    "consumedLastSeenAt": {
+      "nativeUtc100ns": 134354256933797367,
+      "qpc": 1434191980813,
+      "utc": "2026-10-02T14:41:33.379673+00:00"
+    },
+    "consumedLastSeenMinusExit100ns": 8260,
+    "correctedLastSeenAt": {
+      "nativeUtc100ns": 134354256933145328,
+      "qpc": 1434191328762,
+      "utc": "2026-10-02T14:41:33.314463+00:00"
+    },
+    "diagnosis": "The consumed observer advanced lastSeenAt to a sample start taken after the held process object had already recorded its exit time (snapshot row still present, handle not yet signaled). The corrected rule advances lastSeenAt only while the exact held object reports exitTime100ns == 0.",
+    "exitMinusCorrectedLastSeen100ns": 643779,
+    "exitTime100ns": 134354256933789107,
+    "finalSamples": [
+      {
+        "heldObjectExitTime100ns": 0,
+        "sampleIndex": 590,
+        "snapshotEntryPresent": true,
+        "startedNativeUtc100ns": 134354256932463049,
+        "startedQpc": 1434190646486,
+        "threadCount": 24
+      },
+      {
+        "heldObjectExitTime100ns": 0,
+        "sampleIndex": 591,
+        "snapshotEntryPresent": true,
+        "startedNativeUtc100ns": 134354256933145328,
+        "startedQpc": 1434191328762,
+        "threadCount": 24
+      },
+      {
+        "heldObjectExitTime100ns": 134354256933789107,
+        "sampleIndex": 592,
+        "snapshotEntryPresent": true,
+        "startedNativeUtc100ns": 134354256933797367,
+        "startedQpc": 1434191980813,
+        "threadCount": 1
+      }
+    ],
+    "identity": {
+      "creationTime100ns": 134354256887763347,
+      "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "pid": 2124
+    },
+    "parentIdentity": {
+      "creationTime100ns": 134354256547209576,
+      "executable": "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe",
+      "pid": 28556
+    },
+    "role": "helper",
+    "signaledAt": {
+      "nativeUtc100ns": 134354256934524637,
+      "qpc": 1434192708125,
+      "utc": "2026-10-02T14:41:33.451694+00:00"
+    }
+  },
+  "policy": "MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0",
+  "replay": {
+    "oldRuleReproducesAllConsumedLastSeenAt": {
+      "mismatches": 0,
+      "rows": 21
+    },
+    "terminatedKnownIdentity": [
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 2128
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 29016
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 28108
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 21904
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 29272
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 21108
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 26696
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 10092
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 27240
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 12300
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 7668
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 26940
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 18636
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 3408
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 24332
+      },
+      {
+        "consumed": {
+          "accepted": false,
+          "classification": "LIFETIME_CONTRADICTION"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": false,
+          "classification": "LIFETIME_CONTRADICTION"
+        },
+        "pid": 2124
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 25916
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 11136
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 2828
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 18920
+      },
+      {
+        "consumed": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "correctedRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "oldRuleReplay": {
+          "accepted": true,
+          "classification": "TERMINATED_KNOWN_IDENTITY"
+        },
+        "pid": 20148
+      }
+    ]
+  },
+  "result": "PASS",
+  "rule": "MO1307_OBSERVER_EVENT_ORDERING@1.0.0",
+  "ruleUnitCases": {
+    "boolExitTimeDoesNotAdvance": true,
+    "exitedHeldObjectDoesNotAdvance": true,
+    "liveHeldObjectAdvances": true,
+    "missingNativeTimesDoesNotAdvance": true,
+    "missingSnapshotEntryDoesNotAdvance": true,
+    "nonIntegerExitTimeDoesNotAdvance": true,
+    "priorValuePreservedWhenNotLive": true
+  },
+  "security": {
+    "contradictoryLifetimeFailsClosed": true,
+    "crossSessionFailsClosed": true,
+    "initialUnknownIdentityFailsClosed": true,
+    "lifetimeContradictionGloballySuppressed": false,
+    "pidReuseFailsClosed": true,
+    "policyModified": false
+  }
+}

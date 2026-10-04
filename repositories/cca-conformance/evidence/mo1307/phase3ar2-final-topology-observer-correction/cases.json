@@ -1,0 +1,590 @@
+[
+  {
+    "context": {
+      "error": {
+        "nativeTimes": {
+          "creationTime100ns": 1000,
+          "exitTime100ns": 2000
+        },
+        "operation": "QueryFullProcessImageNameW",
+        "partialObjectProof": "OPEN_PROCESS_HANDLE_AND_GET_PROCESS_TIMES",
+        "pid": 100,
+        "winerror": 31
+      },
+      "knownRows": [
+        {
+          "firstObservedAt": {
+            "nativeUtc100ns": 500,
+            "qpc": 1
+          },
+          "identity": {
+            "creationTime100ns": 500,
+            "executable": "C:\\pinned\\node.exe",
+            "pid": 50
+          },
+          "lastSeenAt": {
+            "nativeUtc100ns": 1900,
+            "qpc": 200
+          },
+          "observerSession": "synthetic-observer-session-1",
+          "parentIdentity": null,
+          "role": "supervisor",
+          "signaledAt": null,
+          "times": {
+            "creationTime100ns": 500,
+            "exitTime100ns": 0
+          }
+        }
+      ],
+      "observerSession": "synthetic-observer-session-1",
+      "pid": 100,
+      "requeryAt": {
+        "nativeUtc100ns": 2200,
+        "qpc": 301
+      },
+      "snapshotEntry": {
+        "imageName": "powershell.exe",
+        "parentPid": 50,
+        "pid": 100,
+        "snapshotTime100ns": 1950
+      }
+    },
+    "description": "unknown process plus identity query failure",
+    "expectedAccepted": false,
+    "expectedClassification": "NO_PRIOR_POSITIVE_IDENTITY",
+    "id": "A",
+    "method": "query"
+  },
+  {
+    "context": {
+      "error": {
+        "nativeTimes": {
+          "creationTime100ns": 1000,
+          "exitTime100ns": 2000
+        },
+        "operation": "QueryFullProcessImageNameW",
+        "partialObjectProof": "OPEN_PROCESS_HANDLE_AND_GET_PROCESS_TIMES",
+        "pid": 100,
+        "winerror": 31
+      },
+      "knownRows": [
+        {
+          "firstObservedAt": {
+            "nativeUtc100ns": 500,
+            "qpc": 1
+          },
+          "identity": {
+            "creationTime100ns": 500,
+            "executable": "C:\\pinned\\node.exe",
+            "pid": 50
+          },
+          "lastSeenAt": {
+            "nativeUtc100ns": 1900,
+            "qpc": 200
+          },
+          "observerSession": "synthetic-observer-session-1",
+          "parentIdentity": null,
+          "role": "supervisor",
+          "signaledAt": null,
+          "times": {
+            "creationTime100ns": 500,
+            "exitTime100ns": 0
+          }
+        },
+        {
+          "firstObservedAt": {
+            "nativeUtc100ns": 1100,
+            "qpc": 100
+          },
+          "identity": {
+            "creationTime100ns": 1000,
+            "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "pid": 100
+          },
+          "lastSeenAt": {
+            "nativeUtc100ns": 1900,
+            "qpc": 200
+          },
+          "observerSession": "synthetic-observer-session-1",
+          "parentIdentity": {
+            "creationTime100ns": 500,
+            "executable": "C:\\pinned\\node.exe",
+            "pid": 50
+          },
+          "role": "helper",
+          "signaledAt": {
+            "nativeUtc100ns": 2100,
+            "qpc": 300
+          },
+          "times": {
+            "creationTime100ns": 1000,
+            "exitTime100ns": 2000
+          }
+        }
+      ],
+      "observerSession": "synthetic-observer-session-1",
+      "pid": 100,
+      "requeryAt": {
+        "nativeUtc100ns": 2200,
+        "qpc": 301
+      },
+      "snapshotEntry": {
+        "imageName": "powershell.exe",
+        "parentPid": 50,
+        "pid": 100,
+        "snapshotTime100ns": 1950
+      }
+    },
+    "description": "authenticated helper plus post-signal image re-query failure",
+    "expectedAccepted": true,
+    "expectedClassification": "POST_IDENTITY_REQUERY_UNAVAILABLE",
+    "id": "B",
+    "method": "query"
+  },
+  {
+    "context": {
+      "error": {
+        "nativeTimes": {
+          "creationTime100ns": 1000,
+          "exitTime100ns": 2000
+        },
+        "operation": "QueryFullProcessImageNameW",
+        "partialObjectProof": "OPEN_PROCESS_HANDLE_AND_GET_PROCESS_TIMES",
+        "pid": 100,
+        "winerror": 31
+      },
+      "knownRows": [
+        {
+          "firstObservedAt": {
+            "nativeUtc100ns": 500,
+            "qpc": 1
+          },
+          "identity": {
+            "creationTime100ns": 500,
+            "executable": "C:\\pinned\\node.exe",
+            "pid": 50
+          },
+          "lastSeenAt": {
+            "nativeUtc100ns": 1900,
+            "qpc": 200
+          },
+          "observerSession": "synthetic-observer-session-1",
+          "parentIdentity": null,
+          "role": "supervisor",
+          "signaledAt": null,
+          "times": {
+            "creationTime100ns": 500,
+            "exitTime100ns": 0
+          }
+        },
+        {
+          "firstObservedAt": {
+            "nativeUtc100ns": 1100,
+            "qpc": 100
+          },
+          "identity": {
+            "creationTime100ns": 1000,
+            "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "pid": 100
+          },
+          "lastSeenAt": {
+            "nativeUtc100ns": 1900,
+            "qpc": 200
+          },
+          "observerSession": "synthetic-observer-session-1",
+          "parentIdentity": {
+            "creationTime100ns": 500,
+            "executable": "C:\\pinned\\node.exe",
+            "pid": 50
+          },
+          "role": "helper",
+          "signaledAt": {
+            "nativeUtc100ns": 2100,
+            "qpc": 300
+          },
+          "times": {
+            "creationTime100ns": 1000,
+            "exitTime100ns": 2000
+          }
+        }
+      ],
+      "observerSession": "synthetic-observer-session-1",
+      "pid": 100,
+      "requeryAt": {
+        "nativeUtc100ns": 2200,
+        "qpc": 301
+      },
+      "snapshotEntry": {
+        "imageName": "powershell.exe",
+        "parentPid": 51,
+        "pid": 100,
+        "snapshotTime100ns": 1950
+      }
+    },
+    "description": "same PID with contradictory parent",
+    "expectedAccepted": false,
+    "expectedClassification": "PARENT_CONTRADICTION",
+    "id": "C",
+    "method": "query"
+  },
+  {
+    "context": {
+      "error": {
+        "nativeTimes": {
+          "creationTime100ns": 1000,
+          "exitTime100ns": 2000
+        },
+        "operation": "QueryFullProcessImageNameW",
+        "partialObjectProof": "OPEN_PROCESS_HANDLE_AND_GET_PROCESS_TIMES",
+        "pid": 100,
+        "winerror": 31
+      },
+      "knownRows": [
+        {
+          "firstObservedAt": {
+            "nativeUtc100ns": 500,
+            "qpc": 1
+          },
+          "identity": {
+            "creationTime100ns": 500,
+            "executable": "C:\\pinned\\node.exe",
+            "pid": 50
+          },
+          "lastSeenAt": {
+            "nativeUtc100ns": 1900,
+            "qpc": 200
+          },
+          "observerSession": "synthetic-observer-session-1",
+          "parentIdentity": null,
+          "role": "supervisor",
+          "signaledAt": null,
+          "times": {
+            "creationTime100ns": 500,
+            "exitTime100ns": 0
+          }
+        },
+        {
+          "firstObservedAt": {
+            "nativeUtc100ns": 1100,
+            "qpc": 100
+          },
+          "identity": {
+            "creationTime100ns": 1000,
+            "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "pid": 100
+          },
+          "lastSeenAt": {
+            "nativeUtc100ns": 1900,
+            "qpc": 200
+          },
+          "observerSession": "synthetic-observer-session-1",
+          "parentIdentity": {
+            "creationTime100ns": 500,
+            "executable": "C:\\pinned\\node.exe",
+            "pid": 50
+          },
+          "role": "helper",
+          "signaledAt": {
+            "nativeUtc100ns": 2100,
+            "qpc": 300
+          },
+          "times": {
+            "creationTime100ns": 1000,
+            "exitTime100ns": 2000
+          }
+        }
+      ],
+      "observerSession": "synthetic-observer-session-1",
+      "pid": 100,
+      "requeryAt": {
+        "nativeUtc100ns": 2200,
+        "qpc": 301
+      },
+      "snapshotEntry": {
+        "imageName": "conhost.exe",
+        "parentPid": 50,
+        "pid": 100,
+        "snapshotTime100ns": 1950
+      }
+    },
+    "description": "same PID with contradictory image",
+    "expectedAccepted": false,
+    "expectedClassification": "IMAGE_CONTRADICTION",
+    "id": "D",
+    "method": "query"
+  },
+  {
+    "context": {
+      "error": {
+        "nativeTimes": {
+          "creationTime100ns": 3000,
+          "exitTime100ns": 2000
+        },
+        "operation": "QueryFullProcessImageNameW",
+        "partialObjectProof": "OPEN_PROCESS_HANDLE_AND_GET_PROCESS_TIMES",
+        "pid": 100,
+        "winerror": 31
+      },
+      "knownRows": [
+        {
+          "firstObservedAt": {
+            "nativeUtc100ns": 500,
+            "qpc": 1
+          },
+          "identity": {
+            "creationTime100ns": 500,
+            "executable": "C:\\pinned\\node.exe",
+            "pid": 50
+          },
+          "lastSeenAt": {
+            "nativeUtc100ns": 1900,
+            "qpc": 200
+          },
+          "observerSession": "synthetic-observer-session-1",
+          "parentIdentity": null,
+          "role": "supervisor",
+          "signaledAt": null,
+          "times": {
+            "creationTime100ns": 500,
+            "exitTime100ns": 0
+          }
+        },
+        {
+          "firstObservedAt": {
+            "nativeUtc100ns": 1100,
+            "qpc": 100
+          },
+          "identity": {
+            "creationTime100ns": 1000,
+            "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "pid": 100
+          },
+          "lastSeenAt": {
+            "nativeUtc100ns": 1900,
+            "qpc": 200
+          },
+          "observerSession": "synthetic-observer-session-1",
+          "parentIdentity": {
+            "creationTime100ns": 500,
+            "executable": "C:\\pinned\\node.exe",
+            "pid": 50
+          },
+          "role": "helper",
+          "signaledAt": {
+            "nativeUtc100ns": 2100,
+            "qpc": 300
+          },
+          "times": {
+            "creationTime100ns": 1000,
+            "exitTime100ns": 2000
+          }
+        }
+      ],
+      "observerSession": "synthetic-observer-session-1",
+      "pid": 100,
+      "requeryAt": {
+        "nativeUtc100ns": 2200,
+        "qpc": 301
+      },
+      "snapshotEntry": {
+        "imageName": "powershell.exe",
+        "parentPid": 50,
+        "pid": 100,
+        "snapshotTime100ns": 1950
+      }
+    },
+    "description": "same PID with replacement creation identity",
+    "expectedAccepted": false,
+    "expectedClassification": "PID_REUSE_OR_REPLACEMENT_EVIDENCE",
+    "id": "E",
+    "method": "query"
+  },
+  {
+    "context": {
+      "knownRows": [
+        {
+          "firstObservedAt": {
+            "nativeUtc100ns": 500,
+            "qpc": 1
+          },
+          "identity": {
+            "creationTime100ns": 500,
+            "executable": "C:\\pinned\\node.exe",
+            "pid": 50
+          },
+          "lastSeenAt": {
+            "nativeUtc100ns": 1900,
+            "qpc": 200
+          },
+          "observerSession": "synthetic-observer-session-1",
+          "parentIdentity": null,
+          "role": "supervisor",
+          "signaledAt": null,
+          "times": {
+            "creationTime100ns": 500,
+            "exitTime100ns": 0
+          }
+        },
+        {
+          "firstObservedAt": {
+            "nativeUtc100ns": 1100,
+            "qpc": 100
+          },
+          "identity": {
+            "creationTime100ns": 1000,
+            "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "pid": 100
+          },
+          "lastSeenAt": {
+            "nativeUtc100ns": 1900,
+            "qpc": 200
+          },
+          "observerSession": "synthetic-observer-session-1",
+          "parentIdentity": {
+            "creationTime100ns": 500,
+            "executable": "C:\\pinned\\node.exe",
+            "pid": 50
+          },
+          "role": "helper",
+          "signaledAt": {
+            "nativeUtc100ns": 2100,
+            "qpc": 300
+          },
+          "times": {
+            "creationTime100ns": 1000,
+            "exitTime100ns": 2000
+          }
+        }
+      ],
+      "observedAt": {
+        "nativeUtc100ns": 2300,
+        "qpc": 302
+      },
+      "observerSession": "synthetic-observer-session-1",
+      "prior": {
+        "firstObservedAt": {
+          "nativeUtc100ns": 1100,
+          "qpc": 100
+        },
+        "identity": {
+          "creationTime100ns": 1000,
+          "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+          "pid": 100
+        },
+        "lastSeenAt": {
+          "nativeUtc100ns": 1900,
+          "qpc": 200
+        },
+        "observerSession": "synthetic-observer-session-1",
+        "parentIdentity": {
+          "creationTime100ns": 500,
+          "executable": "C:\\pinned\\node.exe",
+          "pid": 50
+        },
+        "role": "helper",
+        "signaledAt": {
+          "nativeUtc100ns": 2100,
+          "qpc": 300
+        },
+        "times": {
+          "creationTime100ns": 1000,
+          "exitTime100ns": 2000
+        }
+      },
+      "snapshotPids": [
+        50
+      ],
+      "snapshotSucceeded": true
+    },
+    "description": "authenticated process cleanly exited and absent after signal",
+    "expectedAccepted": true,
+    "expectedClassification": "TERMINATED_KNOWN_IDENTITY",
+    "id": "F",
+    "method": "absence"
+  },
+  {
+    "context": {
+      "error": {
+        "nativeTimes": {
+          "creationTime100ns": 1000,
+          "exitTime100ns": 2000
+        },
+        "operation": "OpenProcess",
+        "pid": 100,
+        "winerror": 31
+      },
+      "knownRows": [
+        {
+          "firstObservedAt": {
+            "nativeUtc100ns": 500,
+            "qpc": 1
+          },
+          "identity": {
+            "creationTime100ns": 500,
+            "executable": "C:\\pinned\\node.exe",
+            "pid": 50
+          },
+          "lastSeenAt": {
+            "nativeUtc100ns": 1900,
+            "qpc": 200
+          },
+          "observerSession": "synthetic-observer-session-1",
+          "parentIdentity": null,
+          "role": "supervisor",
+          "signaledAt": null,
+          "times": {
+            "creationTime100ns": 500,
+            "exitTime100ns": 0
+          }
+        },
+        {
+          "firstObservedAt": {
+            "nativeUtc100ns": 1100,
+            "qpc": 100
+          },
+          "identity": {
+            "creationTime100ns": 1000,
+            "executable": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "pid": 100
+          },
+          "lastSeenAt": {
+            "nativeUtc100ns": 1900,
+            "qpc": 200
+          },
+          "observerSession": "synthetic-observer-session-1",
+          "parentIdentity": {
+            "creationTime100ns": 500,
+            "executable": "C:\\pinned\\node.exe",
+            "pid": 50
+          },
+          "role": "helper",
+          "signaledAt": {
+            "nativeUtc100ns": 2100,
+            "qpc": 300
+          },
+          "times": {
+            "creationTime100ns": 1000,
+            "exitTime100ns": 2000
+          }
+        }
+      ],
+      "observerSession": "synthetic-observer-session-1",
+      "pid": 100,
+      "requeryAt": {
+        "nativeUtc100ns": 2200,
+        "qpc": 301
+      },
+      "snapshotEntry": {
+        "imageName": "powershell.exe",
+        "parentPid": 50,
+        "pid": 100,
+        "snapshotTime100ns": 1950
+      }
+    },
+    "description": "unrelated observation error",
+    "expectedAccepted": false,
+    "expectedClassification": "INELIGIBLE_UNRELATED_OBSERVATION_ERROR",
+    "id": "G",
+    "method": "query"
+  }
+]

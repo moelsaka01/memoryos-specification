@@ -1,0 +1,104 @@
+{
+  "kind": "MO1307Phase3AR2FinalHHarnessFailureAnalysis",
+  "version": "1.0.0",
+  "createdAt": "2026-10-02T14:23:12.464Z",
+  "result": "PASS",
+  "classification": "H_HARNESS_MARGIN_DEFECT",
+  "classificationCount": 1,
+  "classificationUniverse": [
+    "H_HARNESS_MARGIN_DEFECT",
+    "H_PRODUCT_DEADLINE_DEFECT",
+    "H_EXPECTATION_AUTHORITY_CONFLICT"
+  ],
+  "rejectedClassifications": {
+    "H_PRODUCT_DEADLINE_DEFECT": "Rejected: the installed runtime enforced the authorized strict boundary exactly at 8000, 8999, and 9000 ms.",
+    "H_EXPECTATION_AUTHORITY_CONFLICT": "Rejected: authority requires only elapsedMs < 9000 and imposes no 8000-ms real-time minimum; the independent deterministic edge controls match that authority."
+  },
+  "preservedGeneration": {
+    "result": "PHASE3AR2_CONCRETE_BLOCKER",
+    "steps": {
+      "A": "PASS",
+      "B": "PASS",
+      "C": "PASS",
+      "D": "PASS",
+      "E": "PASS",
+      "F": "PASS",
+      "G": "PASS",
+      "H": "FAIL",
+      "I": "NOT_RUN",
+      "J": "NOT_RUN",
+      "K": "NOT_RUN",
+      "L": "NOT_RUN",
+      "M": "NOT_RUN",
+      "N": "NOT_RUN",
+      "O": "NOT_RUN"
+    },
+    "resumed": false,
+    "rewritten": false,
+    "retried": false
+  },
+  "failedControl": {
+    "name": "timely-helper",
+    "expectedResult": "PASS",
+    "expectedElapsedMs": {
+      "minimumInclusive": 8000,
+      "maximumExclusive": 9000
+    },
+    "actualElapsedMs": 9036.9764,
+    "actualError": "MO1307_TIMEOUT",
+    "eofDelayMs": 8200,
+    "helperInvocationStartedAt": 335.4142,
+    "stdinFinishedAt": 8542.7565,
+    "selectedProductDeadlineAt": 9317.097,
+    "productTerminalEventAt": 9325.2521,
+    "postEofDeadlineMarginMs": 774.3405,
+    "responseObserved": false,
+    "exitSignal": "SIGTERM"
+  },
+  "deterministicBoundary": {
+    "result": "PASS",
+    "authority": "PROSPECTIVE_HELPER_BOUND@2.0.0",
+    "relation": {
+      "success": "elapsedMs < 9000",
+      "timeout": "elapsedMs >= 9000",
+      "equality": "TIMEOUT"
+    },
+    "checks": [
+      {
+        "name": "former-equality-8000-now-success",
+        "elapsedMs": 8000,
+        "expected": "PASS",
+        "actual": "PASS",
+        "result": "PASS",
+        "installedRuntime": true
+      },
+      {
+        "name": "strict-before-9000",
+        "elapsedMs": 8999,
+        "expected": "PASS",
+        "actual": "PASS",
+        "result": "PASS",
+        "installedRuntime": true
+      },
+      {
+        "name": "equality-9000-timeout",
+        "elapsedMs": 9000,
+        "expected": "MO1307_TIMEOUT",
+        "actual": "MO1307_TIMEOUT",
+        "result": "PASS",
+        "installedRuntime": true
+      }
+    ]
+  },
+  "diagnosis": "The harness intentionally withheld stdin EOF for 8200 ms and left only 774.3405 ms for native helper startup, request processing, response delivery, and exit before the immutable 9000-ms product deadline. The near-boundary harness envelope, not product deadline enforcement or authority interpretation, caused the failure.",
+  "correction": {
+    "eofDelayMs": 0,
+    "minMs": null,
+    "maxMs": 5000
+  },
+  "correctionRationale": "Remove the artificial EOF hold and require completion below 5000 ms, preserving at least 4000 ms of headroom beneath the immutable 9000-ms product deadline.",
+  "productionChange": false,
+  "authorityChange": false,
+  "limitChange": false,
+  "retry": false
+}

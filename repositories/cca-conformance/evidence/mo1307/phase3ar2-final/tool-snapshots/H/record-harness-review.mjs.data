@@ -1,0 +1,79 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {root,E,T,HEAD,C3V,authority,helperAuthority,json,record,walk,write,identity} from './common.mjs';
+
+// Materialize the delegated read-only static audit after every tool and input is
+// final, but before the seal or any A-O certification execution.
+assert.equal(process.argv.length,2);
+identity();
+for(const name of ['harness-review.json','campaign-seal.json','campaign-run-start.json'])assert.equal(fs.existsSync(path.join(E,name)),false);
+
+const identityPolicy='MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0';
+const failedReceiptPath=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-b-gate/gate-receipt.json');
+const correctionRoot=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-topology-observer-correction');
+const correctionReceiptPath=path.join(correctionRoot,'receipt.json');
+const correctionSourcesPath=path.join(correctionRoot,'source-bindings.json');
+const correctionZeroPath=path.join(correctionRoot,'zero-execution-proof.json');
+const correctedReceiptPath=path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-corrected-b-gate/gate-receipt.json');
+
+const inventoryValidation=json(path.join(E,'inventory-validation.json'));
+assert.equal(inventoryValidation.result,'PASS');assert.equal(inventoryValidation.candidate,HEAD);assert.equal(inventoryValidation.integrationAuthority,authority);assert.equal(inventoryValidation.totalCases,80);assert.equal(inventoryValidation.checks.allCasesNotRun,true);assert.equal(inventoryValidation.checks.historicalOutcomesPromoted,false);assert.equal(inventoryValidation.checks.observerCorrectionSyntheticCasesPassed,true);assert.equal(inventoryValidation.checks.correctedPreCertificationBGatePassedOnce,true);assert.equal(inventoryValidation.checks.failedPreCertificationBGatePreserved,true);
+const candidate=json(path.join(E,'candidate-identity.json'));
+assert.equal(candidate.C3VB,HEAD);assert.equal(candidate.C3V,C3V);assert.equal(candidate.members,89);assert.equal(candidate.externalProductionDependencies,0);assert.deepEqual(candidate.authorities,[helperAuthority,authority]);assert.equal(candidate.packageIdentity,'sha256:0890ca4893ef76118eefbb2b5676ad084c60c70408d9e489f92aa33b74ba45b7');assert.equal(candidate.helperSha256,'sha256:97ef5ae9ce7ab390548b04a2aefba9f922c3e1c6b9b80581c6c274f0b21f0127');
+
+const correctionNames=walk(correctionRoot).map(row=>row.path).sort();
+assert.deepEqual(correctionNames,['authorization.txt','case-results.json','cases.json','receipt.json','source-bindings.json','zero-execution-proof.json']);
+const correction=json(correctionReceiptPath),correctionSources=json(correctionSourcesPath),zero=json(correctionZeroPath);
+assert.equal(correction.kind,'MO1307Phase3AR2TopologyObserverSyntheticValidationReceipt');assert.equal(correction.result,'PASS');assert.equal(correction.policy,identityPolicy);assert.deepEqual(correction.cases.required,['A','B','C','D','E','F','G']);assert.equal(correction.cases.passed,7);assert.equal(correction.cases.allRequiredCasesPassed,true);assert.deepEqual(correction.cases.acceptedExactly,['B','F']);assert.deepEqual(correction.cases.failedClosedExactly,['A','C','D','E','G']);
+assert.deepEqual(correction.bindings.authorization,record(path.join(correctionRoot,'authorization.txt')));
+for(const field of ['semanticProductInvocations','productRuns','helperRuns','nativeObserverRuns'])assert.equal(correction.execution[field],0);
+for(const key of ['initialIdentityFailureStillFailsClosed','pidReuseFailsClosed','requiresExactCreationAndExitIdentity','requiresParentImageRoleAndLifetimeConsistency','requiresPriorPositiveIdentity','requiresSameObserverSession','toolhelpSnapshotClockIsPostCaptureUpperBound','unrelatedErrorsFailClosed'])assert.equal(correction.security[key],true,key);assert.equal(correction.security.win32Error31GloballyIgnored,false);assert.equal(correction.productionModified,false);assert.equal(correction.budgetsModified,false);assert.equal(correction.wireModified,false);assert.equal(correction.push,false);assert.equal(correction.tag,false);
+assert.deepEqual(zero.forbiddenAuditEvents,[]);for(const field of ['semanticProductInvocations','productRuns','helperRuns','nativeObserverRuns'])assert.equal(zero[field],0);
+assert.deepEqual(correctionSources.historicalFailedGate,record(failedReceiptPath));assert.deepEqual(correctionSources.historicalFailedTopology,record(path.join(root,'repositories/cca-conformance/evidence/mo1307/phase3ar2-final-b-gate/topology/receipt.json')));
+for(const [name,binding] of [['runtime-controls-observer.py',correctionSources.correctedObserver],['topology_identity_policy.py',correctionSources.policy]]){assert.deepEqual(record(path.join(root,'repositories/cca-conformance/tools/mo1307-phase3ar2-final-topology-observer-correction',name)),binding);for(const target of [path.join(T,name),path.join(root,'repositories/cca-conformance/tools/mo1307-phase3ar2-final-corrected-b-gate',name)]){const actual=record(target);assert.equal(actual.byteLength,binding.byteLength);assert.equal(actual.sha256,binding.sha256);}}
+
+const failed=json(failedReceiptPath),corrected=json(correctedReceiptPath);
+assert.equal(failed.result,'FAIL');assert.equal(failed.semanticInvocations,1);assert.equal(failed.fullCertificationStarted,false);
+assert.equal(corrected.kind,'MO1307Phase3AR2FinalCorrectedPreCertificationBGateReceipt');assert.equal(corrected.result,'PASS');assert.equal(corrected.outcome,'PRE_CERTIFICATION_B_GATE_PASS');assert.equal(corrected.candidate,HEAD);assert.equal(corrected.productionCommit,C3V);assert.deepEqual(corrected.authorities,[helperAuthority,authority]);assert.equal(corrected.identityPolicy,identityPolicy);assert.equal(corrected.certification,false);assert.equal(corrected.semanticInvocations,1);assert.equal(corrected.noRetry,true);assert.equal(corrected.fullCertificationStarted,false);assert.equal(corrected.priorFailedGatePreserved,true);assert.equal(corrected.syntheticCorrectionValidated,true);assert.equal(corrected.replacementExecutions,0);assert.equal(corrected.diagnosticsRun,0);assert.deepEqual(corrected.bindings.historicalFailedGate,record(failedReceiptPath));assert.deepEqual(corrected.bindings.syntheticCorrectionReceipt,record(correctionReceiptPath));assert.equal(corrected.requirements.expectedReadiness,'READY');assert.equal(corrected.requirements.allHelpersAccepted,true);assert.equal(corrected.requirements.scheduledTopologyRssWitness,'PASS');assert.equal(corrected.requirements.zeroUnresolvedTopologyIdentities,true);assert.equal(corrected.details.topologyIdentity.unresolvedIdentityFailures,0);assert.equal(corrected.details.topologyIdentity.acceptedIdentityProofsConsistent,true);assert.equal(corrected.details.cleanupConfirmed,true);assert.equal(corrected.details.publication.phase,'COMMITTED');assert.equal(corrected.limits.helperWholeLifecycleMs,9000);assert.equal(corrected.limits.aggregateHelperActiveMs,28000);assert.equal(corrected.limits.cliMs,30000);assert.equal(corrected.limits.apiWorkerMs,10000);assert.equal(corrected.limits.cleanupMs,2000);
+
+const toolRows=walk(T),reviewedModules=toolRows.map(row=>record(path.join(T,row.path)));
+assert.equal(reviewedModules.length,26);
+const texts=new Map(toolRows.filter(row=>/\.(?:mjs|py|ps1)$/.test(row.path)).map(row=>[row.path,fs.readFileSync(path.join(T,row.path),'utf8')]));
+const mustContain=(name,needle)=>assert.ok(texts.get(name)?.includes(needle),name+' missing '+needle);
+mustContain('common.mjs','codex/mo1307-phase3ar2-c3ub');
+mustContain('campaign.mjs','topology_identity_policy.py');mustContain('campaign.mjs',"helperWholeLifecycleMs:9000");mustContain('campaign.mjs',"aggregateHelperActiveMs:28000");mustContain('campaign.mjs',"historicalCharacterizationH:'NOT_ESTABLISHED'");mustContain('campaign.mjs','completedMandatoryCases===80');mustContain('campaign.mjs',"'PHASE3AR2_ACCEPTED_FINAL_CANDIDATE'");mustContain('campaign.mjs','Exact defect:');mustContain('campaign.mjs','Synthetic observer validation:');mustContain('campaign.mjs','Phase 3A status:');mustContain('campaign.mjs','Repository status:');
+mustContain('prepare.mjs','semanticOracleExecutions:0');mustContain('prepare.mjs','historicalPassPromoted:false');mustContain('prepare.mjs','phase3ar2-final-corrected-b-gate');
+mustContain('runtime-controls.mjs',"['former-equality-8000-now-success',8000,'PASS']");mustContain('runtime-controls.mjs',"['strict-before-9000',8999,'PASS']");mustContain('runtime-controls.mjs',"['equality-9000-timeout',9000,'MO1307_TIMEOUT']");mustContain('runtime-controls.mjs',"aggregateSuccess:'helperActiveMs < 28000'");mustContain('runtime-controls.mjs','eofDelayMs:4000');mustContain('runtime-controls.mjs','Math.abs(atTimeout-28000)<100');mustContain('runtime-controls.mjs','remainingAllowanceMs:28000-row.snapshot.helperUsedMs');mustContain('runtime-controls.mjs','aggregateMs:28000');mustContain('runtime-controls.mjs','DEFINITIONS.limits.helperAggregateDeadlineMs-DEFINITIONS.limits.helperDeadlineMs');mustContain('runtime-controls.mjs','authorityBindings');mustContain('runtime-controls.mjs',"historicalCharacterizationH:'NOT_ESTABLISHED'");
+mustContain('runtime-controls-run.py',"driver_bound=85 if MODE=='H' else 35");mustContain('runtime-controls-run.py',"'--timeout-seconds','90'");mustContain('runtime-controls-run.py',"'unresolvedIdentityFailures':final['unresolvedIdentityFailures']");
+mustContain('observe-command.py',"'MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0'");mustContain('observe-command.py',"'acceptedIdentityProofsConsistent':accepted_consistent");mustContain('observe-command.py',"'TERMINATE_EXACT_OWNED_DRIVER_HANDLE'");mustContain('observe-command.py',"'TERMINATE_EXACT_OWNED_OBSERVER_HANDLE'");mustContain('observe-command.py',"'WRAPPER_FAILURE'");mustContain('runtime-controls-run.py',"'TERMINATE_EXACT_OWNED_DRIVER_HANDLE'");mustContain('runtime-controls-run.py',"'TERMINATE_EXACT_OWNED_OBSERVER_HANDLE'");mustContain('runtime-controls-run.py',"'WRAPPER_FAILURE'");mustContain('core.mjs','assert.equal(wrapped.status,0');mustContain('core.mjs','assert.equal(driverLaunch.pid,observerReceipt.driverPid)');mustContain('core.mjs','assert.equal(observerReceipt.driverPid,observation.pid)');mustContain('core.mjs','q.chargedThisExchangeMs<9000');mustContain('core.mjs','assert.deepEqual(requestPids,helperPids)');mustContain('cleanup-topology.mjs','acceptedIdentityProofsConsistent');mustContain('stage.mjs',"guardMs=step==='H'?110000:50000");
+mustContain('decisions-tags.mjs','q.durationMs<9000');mustContain('finalization.mjs','entry.elapsedMs<9000');mustContain('security.mjs','helperDeadlineMs:9000');
+
+for(const [name,text] of texts){
+  if(name==='recover-inventory.mjs'||name==='record-harness-review.mjs')continue;
+  for(const stale of ['phase3a-c3rb-restart','phase3ar2-c3tb','PROSPECTIVE_HELPER_BOUND@1.0.0','119e68bdcf0ffc906b4ca03a912aadcb25908346','65e24b2debdd70ecb8e52fbccbd6c101621f1917','324bf600b6cbfaa8564db27fce2d999711270cb8','durationMs<5000','chargedThisExchangeMs<5000','helperDeadlineMs:5000','helperMs:5000','timeout:7000','eofDelayMs:9000,error','eofDelayMs:8250','originalKill(),9500'])assert.equal(text.includes(stale),false,name+' contains stale certification token '+stale);
+  if(name!=='runtime-controls.mjs')assert.equal(/(?<!\d)8000(?!\d)/u.test(text),false,name+' contains an active or unexplained old 8000-ms token');
+  if(!['prepare.mjs','recover-inventory.mjs','method.mjs','campaign.mjs'].includes(name))assert.equal(text.includes('phase3ar2-final-b-gate/gate-receipt.json'),false,name+' treats the failed B gate as active input');
+}
+
+write('harness-review.json',{
+  kind:'MO1307Phase3AR2C3VBIndependentStaticHarnessReview',version:'1.0.0',result:'PASS',reviewedAt:new Date().toISOString(),
+  reviewer:{role:'INDEPENDENT_READ_ONLY_STATIC_AUDITOR',task:'/root/full_harness_readiness/post_edit_static_review',materialization:'The delegated auditor performed the final read-only review; this deterministic preparation tool records those final reviewed bytes.'},
+  candidate:HEAD,productionCommit:C3V,authorities:[helperAuthority,authority],identityPolicy,
+  scope:'Final Phase 3AR2 C3VB harness and sealed-input preparation only; no product, helper, worker, publication, or A-O certification case was executed by this review.',
+  reviewedModules,
+  observerCorrection:{receipt:record(correctionReceiptPath),sourceBindings:record(correctionSourcesPath),zeroExecutionProof:record(correctionZeroPath),allRequiredCasesPassed:true,semanticProductInvocations:0},
+  correctedPreCertificationBGate:record(correctedReceiptPath),preservedFailedPreCertificationBGate:record(failedReceiptPath),
+  findings:[
+    'The exact worktree, C3VB/C3V identities, runtime, 89-member installed package, package identity, helper identity and both current authorities are asserted before execution.',
+    'The topology identity defect is preserved as a failed historical B receipt; the exact seven-case zero-product synthetic correction and the separate corrected one-shot B PASS are immutable prerequisites to sealing.',
+    'The final observer is byte-identical to the synthetically validated canonical observer and requires zero unresolved topology identities under MO1307_TOPOLOGY_IDENTITY_POLICY@1.0.0.',
+    'Prospective helper success is <9000 ms, aggregate helper-active success is <28000 ms, CLI is <30000 ms, API/worker is <10000 ms, and cleanup is <=2000 ms; historical characterization H remains NOT_ESTABLISHED.',
+    'The B lifecycle joins wrapper, driver launch, installed-bin PID, request PIDs, retained helper handles, exact responses, exact observation hooks and serialized helper/worker roles.',
+    'Close rechecks every sealed tool, external correction/B namespace, dependency, fixture, source member, installed member, prepared input and campaign-start binding before acceptance.',
+  ],
+  correctionsAppliedDuringReview:['zero-product A-G observer correction binding','corrected one-shot B gate binding','historical failed B separation','strict 9000-ms helper boundary','strict 28000-ms aggregate boundary','fail-safe wrapper cleanup','topology identity policy and accepted-proof checks','driver/request/native PID joins','definition-only wrong-name oracle','complete close seal-chain integrity'],
+  inventoryValidation:record(path.join(E,'inventory-validation.json')),observationMethod:record(path.join(E,'observation-method.json')),installedVerification:record(path.join(E,'installed-before.json')),
+  certificationCasesExecuted:0,semanticOracleExecutions:0,historicalEvidencePromoted:false,historicalCharacterizationH:'NOT_ESTABLISHED',noRetry:true,
+});
+console.log(JSON.stringify({result:'PASS',reviewedModules:reviewedModules.length,certificationCasesExecuted:0}));
