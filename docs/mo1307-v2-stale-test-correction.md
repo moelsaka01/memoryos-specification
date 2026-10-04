@@ -1,6 +1,15 @@
 # MO-1307 V2 stale-test correction
 
-Status: **PART 1 AUTHORED — PENDING PART 2 LOCAL VALIDATION AND BINDING**.
+Status: **BOUND — PASS_639**. Part 2 ran on the reference Windows host under
+the pinned Node v24.21.0: 25 files, 639 tests, 639 pass, 0 fail, exit 0.
+Evidence commit `32255d7a008b342b7122d94aa35ec9e1c94eeacd`; binding commit
+`1c3a4269fe9394de74e2a4a6ad76aed7d076fd19`
+([binding.json](../repositories/cca-conformance/evidence/mo1307/v2-stale-test-correction/binding.json)).
+The binding covers this record's Part 1 bytes at that commit (13387 bytes,
+`sha256:157e6dd1bd6253c0fa7e7574cb12ebfbe8a3e4956046ce25ae2ef5081baed28e`,
+git blob `38947ceed9b8e4ef3da876c744aa2f7c8358c4b4`); this status paragraph is
+a later documentation update (section 7.3, step 3) and changes no bound
+evidence. The sections below are the Part 1 record as bound.
 
 This is the separate, test-only, bound MO-1307 correction (V2) recorded in the
 [MO-1308 roadmap authority](mo1308-investigation-history.md) and
