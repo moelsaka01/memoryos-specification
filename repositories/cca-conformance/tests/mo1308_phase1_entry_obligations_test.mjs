@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 import { J as mo1306J } from '../../memoryos-ci/src/serialization.mjs';
 import { canonicalBytes as mo1307J } from '../../memoryos-readiness/src/canonical.mjs';
 import { canonicalize, mipDigest } from '../../cca-studio/web/js/mip-canonical.js';
@@ -153,22 +154,28 @@ const releasedSdkCopies = [
   'repositories/memoryos-vscode/runtime/vendor/repositories/cca-studio/web/js/memoryos-sdk.js',
 ];
 
-test('EO3 released SDK copies are byte-identical to the current source SDK', () => {
-  const source = fs.readFileSync(path.join(workspace, 'repositories/cca-studio/web/js/memoryos-sdk.js'));
-  for (const copy of releasedSdkCopies) assert.ok(fs.readFileSync(path.join(workspace, copy)).equals(source), copy);
+// EO3 as decided by the owner (Option A, docs/mo1302-vendored-runtime-check-correction.md):
+// released closures are pinned to their release, not to the moving current source.
+const MO1302_RELEASE_COMMIT = '7e07bd0db9ab10146f2e0e0bbd67a4c5850cf41d';
+function releasedBlob(file) {
+  const r = spawnSync('git', ['show', `${MO1302_RELEASE_COMMIT}:${file}`], { cwd: workspace, windowsHide: true, maxBuffer: 16 * 1024 * 1024 });
+  assert.equal(r.status, 0, String(r.stderr));
+  return r.stdout;
+}
+
+test('EO3 released SDK copies are byte-identical to the SDK released at memoryos-1.3-mo1302', () => {
+  const released = releasedBlob('repositories/cca-studio/web/js/memoryos-sdk.js');
+  for (const copy of releasedSdkCopies) assert.ok(fs.readFileSync(path.join(workspace, copy)).equals(released), copy);
 });
 
-test('EO3 the workspace verifier binds every MO-1302 vendored runtime file to its current source bytes', () => {
-  // This released-closure check recomputes current SDK and CLI source bytes (Freeze §18.2 item 4).
+test('EO3 the workspace verifier pins the MO-1302 vendored runtime to its release, not to current source', () => {
   const verifier = fs.readFileSync(path.join(workspace, 'tools/verify_workspace.py'), 'utf8');
-  assert.match(verifier, /if original\.read_bytes\(\) != vendored\.read_bytes\(\):/);
+  assert.doesNotMatch(verifier, /if original\.read_bytes\(\) != vendored\.read_bytes\(\):/);
+  assert.match(verifier, /MO-1302 vendored runtime source differs from released/);
+  assert.match(verifier, /MO-1302 distribution manifest differs from the released manifest/);
   const listed = [...verifier.slice(verifier.indexOf('MO1302_VENDOR_SOURCES = ('),
     verifier.indexOf(')', verifier.indexOf('MO1302_VENDOR_SOURCES = ('))).matchAll(/"([^"]+)"/g)].map(m => m[1]);
-  for (const required of ['repositories/cca-studio/web/js/memoryos-sdk.js', 'repositories/memoryos-cli/src/commands.js',
-    'repositories/memoryos-cli/src/main.js', 'repositories/memoryos-cli/src/help.js', 'repositories/memoryos-cli/src/version.js',
-    'repositories/memoryos-cli/package.json']) assert.ok(listed.includes(required), required);
   for (const source of listed) {
-    assert.ok(fs.readFileSync(path.join(workspace, source)).equals(
-      fs.readFileSync(path.join(workspace, MO1302_VENDOR_ROOT, source))), source);
+    assert.ok(fs.readFileSync(path.join(workspace, MO1302_VENDOR_ROOT, source)).equals(releasedBlob(source)), source);
   }
 });

@@ -11,7 +11,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
 | MemoryOS 1.2 | Released — v1.2.0 | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, and its official Conformance Suite |
 | MemoryOS 1.2.1 | Corrective restoration | Restores omitted intended v1.2 source, registered tests, fixtures, examples, documentation, frozen Standard and MIP publication assets, and corrected conformance provenance while preserving all v1.2 semantics and CSP fixes |
-| MemoryOS 1.3 | In development; MO-1301 through MO-1307 RELEASED | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, certified REST Gateway, qualified Provider-Neutral CI/CD Integration, and certified Release Governance and Readiness (V2 stale-test correction bound, 639/639); MO-1308 CONTRACT FREEZE 1 FROZEN / PHASE 1 STOPPED (AUTHORITY_CONFLICT, OWNER REVIEW) |
+| MemoryOS 1.3 | In development; MO-1301 through MO-1307 RELEASED | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, certified REST Gateway, qualified Provider-Neutral CI/CD Integration, and certified Release Governance and Readiness (V2 stale-test correction bound, 639/639); MO-1308 CONTRACT FREEZE 1 FROZEN / PHASE 1 IN DEVELOPMENT |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -124,7 +124,7 @@ in development; the MO-1307 V2 stale-test correction it depended on is bound.
 | MO-1305 | REST Gateway | CLOSED / CERTIFIED / RELEASED | Bounded REST/API integration |
 | MO-1306 | Provider-Neutral CI/CD Integration | CLOSED / QUALIFIED CERTIFICATION / RELEASED | Provider-neutral CI/CD integration with preserved provider limitations |
 | MO-1307 | Release Governance and Readiness | CLOSED / CERTIFIED / RELEASED (V2 STALE-TEST CORRECTION BOUND, 639/639) | Deterministic evidence-backed readiness; final release authorization remains human |
-| MO-1308 | Investigation History | CONTRACT FREEZE 1 FROZEN / PHASE 1 STOPPED (AUTHORITY_CONFLICT) | Durable investigation/evaluation history and traceability |
+| MO-1308 | Investigation History | CONTRACT FREEZE 1 FROZEN (AMENDMENT A1) / PHASE 1 IN DEVELOPMENT | Durable investigation/evaluation history and traceability |
 | MO-1309 | Cloud Dashboard | PLANNED / AUTHORITY PENDING | Cloud-facing dashboard experience |
 
 Later milestones must delegate to existing semantic authority rather than
@@ -353,15 +353,18 @@ platforms remain outside MO-1307.
 
 ### MO-1308: Investigation History
 
-Status: **CONTRACT FREEZE 1 FROZEN / PHASE 1 STOPPED — AUTHORITY_CONFLICT** (owner review).
+Status: **CONTRACT FREEZE 1 FROZEN (AMENDMENT A1) / PHASE 1 IN DEVELOPMENT**.
 
 The [Phase 1 entry obligations](docs/mo1308-phase1-entry-obligations.md)
 prove `J` equivalence and Regression report identity, and the MO-1307 V2
 dependency is satisfied, but the released-closure check fails:
 `tools/verify_workspace.py` binds the released MO-1302 Action's vendored
 runtime to the current `memoryos-sdk.js` and CLI source bytes, so the SDK and
-CLI changes the Freeze assigns to MO-1308 cannot be made without an owner
-decision. Phase 1 has stopped as the Freeze requires.
+CLI changes the Freeze assigns to MO-1308 could not be made without an owner
+decision. Phase 1 stopped as the Freeze requires. The owner chose Option A: the
+[workspace check correction](docs/mo1302-vendored-runtime-check-correction.md)
+pins the released MO-1302 Action to its release instead of to current source
+(Freeze Amendment A1), and Phase 1 resumed.
 
 The [MO-1308 authority](docs/mo1308-investigation-history.md) establishes
 durable, verifiable history of MemoryOS investigation and evaluation records:
@@ -415,11 +418,12 @@ The exact next task is:
 
 **MEMORYOS 1.3 MO-1308 PHASE 1 — FOUNDATION**
 
-Development on `mo1308/phase1` (from the bound V2 commit
-`1c3a4269fe9394de74e2a4a6ad76aed7d076fd19`) is stopped on the released-closure
-AUTHORITY_CONFLICT recorded in the
-[Phase 1 entry obligations](docs/mo1308-phase1-entry-obligations.md). The next
-task is the owner's decision on that conflict; Phase 1 resumes only after it.
+Development continues on `mo1308/phase1` (from the bound V2 commit
+`1c3a4269fe9394de74e2a4a6ad76aed7d076fd19`) after the owner resolved the
+released-closure conflict with the
+[workspace check correction](docs/mo1302-vendored-runtime-check-correction.md).
+B1 is made later on the reference Windows host and binds both the correction
+and Phase 1.
 
 ## IM-001: engineering foundation
 

@@ -1134,3 +1134,34 @@ The exact next tasks, in order:
 2. **MEMORYOS 1.3 MO-1308 PHASE 1 — FOUNDATION**, on `mo1308/phase1` created
    from the accepted Freeze commit: the section 18.1 Phase 1 deliverables and
    the section 18.2 entry obligations. B1 waits for task 1.
+
+## 24. Amendment A1 — released-closure workspace check (2026-10-04, owner-authorized)
+
+This amendment is append-only. The frozen text above is unchanged.
+
+**Finding.** Section 5.1 states that `tools/verify_workspace.py` "checks the
+recorded revision, not current source bytes". That is true of the v1.2.1
+Reference Implementation revision but incomplete: the MO-1302 distribution
+check also required every vendored Action file to equal the current SDK and
+CLI source. Phase 1 entry obligation 4 (section 18.2) therefore failed, and
+Phase 1 stopped as AUTHORITY_CONFLICT
+([Phase 1 entry obligations](mo1308-phase1-entry-obligations.md)).
+
+**Owner decision (Option A).** The workspace check is corrected so that each
+vendored MO-1302 Action file is pinned to its source bytes at tag
+`memoryos-1.3-mo1302` (tag object `773dd03829dd6b3632bf43a45578925b1498515d`,
+commit `7e07bd0db9ab10146f2e0e0bbd67a4c5850cf41d`) and to the Action's own
+released manifest, instead of to current source. It still fails if any bundled
+byte changes, a bundled file is added or removed, or the manifest no longer
+matches. Released Action bytes and the tag are unchanged, so R32 holds. The
+correction is a WORKSPACE_CHECK_CORRECTION recorded in
+[the correction record](mo1302-vendored-runtime-check-correction.md) and made
+as its own commit before further Phase 1 work.
+
+**Effect on this Freeze.** Section 5.1's statement is read with this
+correction. Under the corrected check, obligation 4 is satisfied in the cloud
+container for what can be checked there (released SDK copies and the MO-1302
+bundle equal their release bytes); the reference-host run of the full verifier
+confirms it at B1. Placement (H05) and dependency direction (H06) are
+unchanged: SDK and CLI source may now change as sections 5 and 13 assign. The
+correction is verified and bound as its own named item in the Phase 1 B1 run.

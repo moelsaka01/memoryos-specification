@@ -493,6 +493,51 @@ MO1302_VENDOR_SOURCES = (
     "repositories/memoryos-cli/src/session.js",
     "repositories/memoryos-cli/src/version.js",
 )
+# WORKSPACE_CHECK_CORRECTION (docs/mo1302-vendored-runtime-check-correction.md):
+# the released MO-1302 Action is pinned to its release, not to moving source.
+# Every value below is the exact blob at tag memoryos-1.3-mo1302
+# (tag object 773dd03829dd6b3632bf43a45578925b1498515d, commit
+# 7e07bd0db9ab10146f2e0e0bbd67a4c5850cf41d).
+MO1302_RELEASED_MANIFEST = (8342, "sha256:2e116b6518934c797e9c562670f2292462be11ee982c778b43f1aaf45a8986f9")
+MO1302_RELEASED_VENDOR_SOURCES = {
+    "repositories/cca-studio/package.json": (1922, "sha256:d2f3cb58f4b854c658b63512aa7ef11a0cbc82fd0b889b0d152fdeba707258f4", "7e7a391400d69595a526a050f6aea2d34f1fd0a5"),
+    "repositories/cca-studio/web/data/studio-snapshot.js": (10180, "sha256:0c1e3219e6ea16e0ba913ba089e9fff21813977e9f20d7f15396a7259c01a6b4", "395b86006160ad8bd54ef4da27a9cafec522e446"),
+    "repositories/cca-studio/web/js/cognitive-comparative-reconstruction.js": (11681, "sha256:9f41c7161673b1536c6748e95c062e8be650ada3a3d0c7cc2eb930e41e53a1c7", "053b6f14821b2cb7b880f3927211b5361d29a0aa"),
+    "repositories/cca-studio/web/js/cognitive-comparative-replay.js": (8004, "sha256:d50e3952a70ee3849b69929531313a7540e5c3b34f56c3d8ee3a712ac1fbf596", "e30a2156670848451d33b605f3424ce817dac2ad"),
+    "repositories/cca-studio/web/js/cognitive-evolution-controller.js": (2730, "sha256:880df2ac0dab286655052b7e8057682b8d57db1c47c3be2e77ca01c245a8752d", "65d3c482d4b96c75a847888a2aec1302ac9f8f25"),
+    "repositories/cca-studio/web/js/cognitive-evolution.js": (14080, "sha256:a417d84122642814efbb4862ac872a4ea58b1aebd8c73faed7c003a90b78b539", "2b8cb13ae72fe27a0de68fe86716e3811c2a6fda"),
+    "repositories/cca-studio/web/js/cognitive-investigation-explorer.js": (11511, "sha256:cdb0dac0fe6d4e9c29f270ff8d97021713ee28b9a245bc6a12978f85da63995a", "c22239d62c2cf3bb5ba7ec96ef9f4e10cc8fd22a"),
+    "repositories/cca-studio/web/js/cognitive-regression.js": (23419, "sha256:730c0740f54d75a1e007fee21bb5fe4ffb0f30de9b34e5c25a3651eb9500c3c4", "9ed206b706ffebe91118cdc56ba7b90b3e509d9b"),
+    "repositories/cca-studio/web/js/cognitive-replay.js": (6194, "sha256:2b02b5d7a5ad854c25e3f9bc676c8efd8de07a86e58242cdf1b95f79795d656a", "362c258c8885e40486ef02c3a70133ba74c8ad1a"),
+    "repositories/cca-studio/web/js/cognitive-trace.js": (25155, "sha256:c427986595c7a507cbc8863abc5eac3357baa905536f1fc22193ccbca13a2c9c", "4a982993defc8f723679e210de197d07b40f652a"),
+    "repositories/cca-studio/web/js/deterministic-sequence-alignment.js": (5239, "sha256:b1b6fa20bb56612deebded48ebf30104d6b083d61ed33fa26651648a9effdcfc", "323293ac32c5c0bd351fe1a9cd6fc752f3c92e1b"),
+    "repositories/cca-studio/web/js/investigation-core.js": (57631, "sha256:f6d960591daf0411d44ebc18ad5a3afad7fc87b1598421ae32011a902dfa8806", "5ecf8c9eb2e5998f1482f3046f0a762dd1715b81"),
+    "repositories/cca-studio/web/js/investigation-policy-contracts.js": (25861, "sha256:2448146319d18c2c7bc8113ece048cba25d5a793d450540767ff70d379522b10", "fae497dc9403f8a51c8d0228d02f480429dce113"),
+    "repositories/cca-studio/web/js/investigation-policy-engine.js": (62321, "sha256:97a62eaa58797f1d2d278ed450a9142c12b9e38d33c0a41acd36e926ac8094e3", "ce85d0cdf121b6f2b55f4e3cf07b41224d8423c7"),
+    "repositories/cca-studio/web/js/investigation-policy-integration.js": (28320, "sha256:65c6f6f1c32a6556a1993faecfd2e2735dc625e4e89bc293ad94615d842308dc", "390a017a9e750c5bf43544704a71877a93182b6e"),
+    "repositories/cca-studio/web/js/investigation-policy.js": (25396, "sha256:951e7d481888eeebd3ce66ed1ef3c16bd592d975952100a22852d13080a2a3b0", "29338acd2807543500329b4e0ed8a9d703e7b68c"),
+    "repositories/cca-studio/web/js/memory-investigation-package.js": (80144, "sha256:532830e1ec67cb8b069753f4d53e6a70cfc8786fca5a03b7146e4fcaee780f0c", "b5e919ea77e6928922e401a6380100e3face93f5"),
+    "repositories/cca-studio/web/js/memoryos-sdk.js": (25111, "sha256:3d476156394045abc0eca5bf57309a743b1d8a7f332cf0788c22ed57e41c9d94", "bb18774da14e0a806528b3e0067192fd7c968da0"),
+    "repositories/cca-studio/web/js/mip-canonical.js": (25607, "sha256:0dd9dbaed8c3fdf92600dec4d998fe290dd9b2b83344198711ec88f0ec95fa68", "a86aff4b14f206b5521433130843604fc28366b9"),
+    "repositories/cca-studio/web/js/observation-timeline.js": (4350, "sha256:ba3c99d78c8170794cca6d53ebeaa5802922ae145759f262d8843fac6440b060", "bd021277df4fcd63407794a4211c277d5b898836"),
+    "repositories/cca-studio/web/js/policy-canonical.js": (27453, "sha256:be5a633d421f4d3885df7d438ad633a515675e1d49cfae889fe8452bd40f02f0", "eeed32a8d7f434d030b3f411900ab1204473ec9f"),
+    "repositories/cca-studio/web/js/policy-fact-context.js": (57247, "sha256:1d1110d8ceb0c5bf9d90369c8cf6f8cc114effa58325f6471ea41e93f64000a8", "03c9f8c5e8a6061b2a744c92a28d908e02c12701"),
+    "repositories/cca-studio/web/js/regression-policy-fact-source.js": (34954, "sha256:05dd75bf4aeabd2da617add1c8e42922ca8f819d20c0032b0f03bf0db5aa30af", "82eb3749c9f1c0a5fff56bb9edead6f40113073f"),
+    "repositories/cca-studio/web/js/semantic-world.js": (11244, "sha256:1d49a1efc103f1b987a8efc239720736d7c6c2db08ceb8e0f9ee94f539665031", "dad024a746069b62ff7e679af0e6aadc1984003f"),
+    "repositories/cca-studio/web/js/studio-model.js": (41908, "sha256:c04f82c15a2eb8727e3c00c7365ab3403f569ea08eced7f5b75ee3b8a488a84a", "870d6ec3ca2bbae3aad349385a87aa07101a6a59"),
+    "repositories/memoryos-cli/package.json": (413, "sha256:d25a0e21883e916659f04ef1074c3ca069f6cc994641241eb350574a62406a02", "f1bcc07bf57389cb49c1a6d7ed95553a7a49ba16"),
+    "repositories/memoryos-cli/src/arguments.js": (4388, "sha256:de3d46d463d8ccff325aaa1e6163162917d48b950dcdaea6f736db39be2ba66b", "b2594dd84d043c8ebe373afafaa0a6fe2fc66ac2"),
+    "repositories/memoryos-cli/src/commands.js": (8439, "sha256:71d5ebe024d36a8f3fd16f973ddf01d4f217d6fc8b2635427b1a57e78e8cfa92", "3b8928eab4ba1c0676e870a05200270fe22f1139"),
+    "repositories/memoryos-cli/src/errors.js": (6005, "sha256:1af18cd3d261805b01d6600df013de895f257cfa88075e03c9faf9e7632e3359", "b3d048ee332740af2454a71e7c1becfd0b9371d1"),
+    "repositories/memoryos-cli/src/help.js": (3310, "sha256:2420f2318060b3789f34da13e60d1dd2b9021a6dff298a7004a1d4039444de1a", "92ad6c4837f59a74eebdee6ae8d4c734665a183f"),
+    "repositories/memoryos-cli/src/main.js": (2937, "sha256:cddef37e262da839fcd0ebf5b7efece7ed17b93533a433af08e788e7935091b9", "d3da1834c485ea0ca485f7b310a22bef7e60a2ce"),
+    "repositories/memoryos-cli/src/output.js": (4190, "sha256:7427907d2d7fcfcb0dfadc7b1e58150f3d4fe9009b272d62d718af61958bba86", "a1888786df4c2ba982d3df2eb35929c7b7ffbc8a"),
+    "repositories/memoryos-cli/src/policy-arguments.js": (9285, "sha256:1fa54a028ccc549b262a09ab4ed7165806b83b114d256e93794498102e745d99", "e2c8855f3612d8310c90155b73c700b563061242"),
+    "repositories/memoryos-cli/src/policy-commands.js": (10582, "sha256:2d6f1cfa4b676613064f5f80681f9f6c1828018808c78881d7a74e5387f97670", "38e488a7fc928b420ae7db10132e25ecf9bff3c0"),
+    "repositories/memoryos-cli/src/policy-publication.js": (3063, "sha256:b0172e84283a5c84e35ce3c6fd017bda8b9164a1b9c1f3300982c4eca3a3ac23", "5e3a7fe89edf6b35ab38841d6d0b4d910fe216c7"),
+    "repositories/memoryos-cli/src/session.js": (7086, "sha256:a3d92b5c963b86eac9b70fe360d86409565743a1cd580a1b9541316ce0ac6b1b", "30cae72c49725b049b37cb903b33999a7144de02"),
+    "repositories/memoryos-cli/src/version.js": (45, "sha256:11c277d8fdf8d63733afe9c90cfa0f40e42a94f6a3062e297b6366bc5adc48c6", "f63d7584add6553d0e0e25c8eafaff9f238e9cc3"),
+}
 MO1302_CONTRACT_IDENTITIES = {
     "deterministicFactSourceRegistry": {
         "registryDigest": (
@@ -836,13 +881,25 @@ def validate_mo1302_distribution(root: Path, errors: list[str]) -> None:
         if absent:
             errors.append("MO-1302 Action root lacks listed production files: " + ", ".join(absent))
 
+    released_manifest_length, released_manifest_digest = MO1302_RELEASED_MANIFEST
+    if (
+        len(manifest_bytes) != released_manifest_length
+        or f"sha256:{sha256(manifest_bytes)}" != released_manifest_digest
+    ):
+        errors.append("MO-1302 distribution manifest differs from the released manifest")
+    if set(MO1302_RELEASED_VENDOR_SOURCES) != set(MO1302_VENDOR_SOURCES):
+        errors.append("MO-1302 released vendored runtime pins do not cover the vendored sources")
     for source in MO1302_VENDOR_SOURCES:
-        original = root.joinpath(*source.split("/"))
         vendored = action_root.joinpath("dist", "vendor", *source.split("/"))
         try:
-            if original.read_bytes() != vendored.read_bytes():
-                errors.append(f"MO-1302 vendored runtime source differs from '{source}'")
-        except OSError as exception:
+            vendored_bytes = vendored.read_bytes()
+            released_length, released_digest, _released_blob = MO1302_RELEASED_VENDOR_SOURCES[source]
+            if (
+                len(vendored_bytes) != released_length
+                or f"sha256:{sha256(vendored_bytes)}" != released_digest
+            ):
+                errors.append(f"MO-1302 vendored runtime source differs from released '{source}'")
+        except (OSError, KeyError) as exception:
             errors.append(f"invalid MO-1302 vendored runtime source '{source}': {exception}")
 
 

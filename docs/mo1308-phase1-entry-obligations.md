@@ -1,6 +1,6 @@
 # MO-1308 Phase 1 entry obligations
 
-Status: **OBLIGATIONS 1–3 PROVEN; OBLIGATION 4 FAILED — PHASE 1 STOPPED (AUTHORITY_CONFLICT)**.
+Status: **OBLIGATIONS 1–3 PROVEN; OBLIGATION 4 FAILED, THEN RESOLVED BY OWNER DECISION (OPTION A, section "Resolution") — PHASE 1 RESUMED**.
 
 [Contract Freeze 1](mo1308-contract-freeze-1.md) section 18.2 lists four
 obligations that must hold before any Phase 1 binding (B1): "If any fails,
@@ -160,3 +160,18 @@ partially.
   `1c3a4269fe9394de74e2a4a6ad76aed7d076fd19` (13387 bytes,
   `sha256:157e6dd1…`). The later status update on this branch is
   documentation and is recorded in that file.
+
+## Resolution (2026-10-04)
+
+The owner chose **Option A**. The MO-1302 vendored-runtime workspace check now
+pins each bundled file to its source at tag `memoryos-1.3-mo1302` and to the
+Action's released manifest, instead of to current source. It is recorded as a
+WORKSPACE_CHECK_CORRECTION in
+[the correction record](mo1302-vendored-runtime-check-correction.md), made as
+its own commit, and amends the Freeze through
+[Amendment A1](mo1308-contract-freeze-1.md) (section 24). The EO3 assertions in
+the entry-obligations test now check the decided rule: released SDK copies and
+the MO-1302 bundle equal their release bytes, and the verifier no longer
+compares against current source. Obligation 4 is satisfied here for what the
+cloud container can check; the reference-host B1 run confirms it with the full
+verifier. Phase 1 resumes.
