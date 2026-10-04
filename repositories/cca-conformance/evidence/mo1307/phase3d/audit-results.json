@@ -1,0 +1,268 @@
+{
+  "acceptedGenerationVectors": {
+    "cases": 80,
+    "receipt": {
+      "byteLength": 952326,
+      "path": "repositories/cca-conformance/evidence/mo1307/phase3ar2-final-h5-corrected/certification-receipt.json",
+      "sha256": "sha256:00ed29190ddef245304e1b48615cc6461d474c13075d99fc4e5327b103dda88f"
+    },
+    "steps": "A-O"
+  },
+  "candidate": "17fa84efe46d30e6f4be85fd2427485677a222a3",
+  "conformanceSuite": {
+    "c3tbBaselineFailing": [
+      "C2C01",
+      "C2C17",
+      "NRT01",
+      "R07",
+      "R09"
+    ],
+    "c3tbBaselineLog": {
+      "byteLength": 9794,
+      "path": "(external) 3br2-baseline-tests.txt",
+      "sha256": "sha256:d96dcb26a52001a14910185949d9bed8f8c9ce37b793d4bb376ed765dc647dac"
+    },
+    "cancelled": 0,
+    "classification": "TEST_EXPECTATION_STALE_AFTER_AUTHORIZED_LIMIT_AMENDMENT_OR_ONE_SHOT_WITNESS (not product defects; no tracked test was edited)",
+    "fail": 7,
+    "failingTests": {
+      "C2C01": "Asserts helperDeadlineMs 5000 / helperAggregateDeadlineMs 20000; superseded by authorized 8000 (C3T) then 9000 (C3V) and 28000. Fails identically at the accepted C3TB baseline.",
+      "C2C17": "Hardcodes the 5000-ms per-helper boundary; superseded by the authorized helper bound. Fails identically at the accepted C3TB baseline.",
+      "C2C18": "Hardcodes the 4 x 4999 ms / 20000-ms aggregate schedule; superseded by the authorized 28000-ms aggregate (C3V). Passed at C3TB (aggregate 20000), fails at C3VB by arithmetic.",
+      "NRT01": "One-shot Phase 2C witness: its wx write of evidence/mo1307/phase2c-resumed/runtime/native-worker-deadline.json hits EEXIST on re-run (file preserved from the original run); the worker was terminated at 10013 ms as expected.",
+      "R07": "Hardcodes now = 5000 helper deadline; superseded. Fails identically at the accepted C3TB baseline.",
+      "R08": "Hardcodes the 20000-ms aggregate boundary; superseded by 28000 (C3V). Passed at C3TB, fails at C3VB by arithmetic.",
+      "R09": "Hardcodes the 5000/20000 helper/aggregate schedule; superseded. Fails identically at the accepted C3TB baseline."
+    },
+    "files": 25,
+    "log": {
+      "byteLength": 70529,
+      "path": "(external) 3ar2-mo1307-tests.txt",
+      "sha256": "sha256:c1ad35d1f19c2bc634af611f131ed71855e33f1570fc155df9853d6111dc35a1"
+    },
+    "node": "v24.21.0",
+    "pass": 632,
+    "runner": "node --test --test-concurrency=1 tests/mo1307_*_test.mjs",
+    "skipped": 0,
+    "suiteFiles": [
+      {
+        "byteLength": 15781,
+        "path": "repositories/cca-conformance/tests/mo1307_phase1_core_test.mjs",
+        "sha256": "sha256:22e44750d048f2935c2448d7ebf90b45f2f01b381b0c7e198c8102d0a83f88ce"
+      },
+      {
+        "byteLength": 18579,
+        "path": "repositories/cca-conformance/tests/mo1307_phase1_fixtures_test.mjs",
+        "sha256": "sha256:7b0bd4802119ef6dc2b7fddb0c19197f18e00521feafa1d6cb598683098f9535"
+      },
+      {
+        "byteLength": 24322,
+        "path": "repositories/cca-conformance/tests/mo1307_phase1_native_test.mjs",
+        "sha256": "sha256:d11533eaf8d9e54a9c50500aa8cbf0e15575b298544b506f0bfbce5b6387b6f7"
+      },
+      {
+        "byteLength": 4004,
+        "path": "repositories/cca-conformance/tests/mo1307_phase1_package_test.mjs",
+        "sha256": "sha256:416769604d5faeb1b4c086e49a09ba907f56bc59a78099368df751a23669cc68"
+      },
+      {
+        "byteLength": 38528,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2a_core_test.mjs",
+        "sha256": "sha256:c311fc1348de27a881ae2363967fb868275bbf5fc110cdc0ef9f97583e8416c4"
+      },
+      {
+        "byteLength": 6680,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2a_result_test.mjs",
+        "sha256": "sha256:271ee05f8c4a6fb4a7e9b842fe1e9c18e719ee5c84a2eedfee10d0ba23ba499f"
+      },
+      {
+        "byteLength": 18579,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2b_authority_test.mjs",
+        "sha256": "sha256:a03c90fa27aa5781d987af8013b9f3f79ab6241e9b1f74f7129bdbd55bf702ce"
+      },
+      {
+        "byteLength": 3568,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2b_fixture_lineage_test.mjs",
+        "sha256": "sha256:ad9d0a23e502660690ced2b5b4b505718e01e51a7a4d5928472d00cd7ac1956d"
+      },
+      {
+        "byteLength": 15176,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2b_graph_test.mjs",
+        "sha256": "sha256:7acf90ee30f99fe6836a3299c393a951253ab37bae5b183288418554025d1171"
+      },
+      {
+        "byteLength": 26861,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2b_history_test.mjs",
+        "sha256": "sha256:ff31986afe51d8098f16330bb9a5902f907c3ee606ea0be09c1d90d30486e5f5"
+      },
+      {
+        "byteLength": 8526,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2b_limits_test.mjs",
+        "sha256": "sha256:8bed8a76cf5578807e30f0f4f819749c3605702454a9ae4f93ffa825def56016"
+      },
+      {
+        "byteLength": 6913,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2b_projection_test.mjs",
+        "sha256": "sha256:d5b7d643d7bb9ec92d2a60080ded94d025bbd5236b190829afb09b91718ea91f"
+      },
+      {
+        "byteLength": 1551,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2b_review_test.mjs",
+        "sha256": "sha256:82670767f3574c027ec2e9ca174400635acbe75daf4c2fcc4485721bd9ca172d"
+      },
+      {
+        "byteLength": 3109,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_api_bootstrap_test.mjs",
+        "sha256": "sha256:3ab3dab4b5e52c15048a54ad43ddfec2c08d9298b468de1cd8c9a543ada9bd59"
+      },
+      {
+        "byteLength": 16808,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs",
+        "sha256": "sha256:07564080e458e97eb9d35154b2f44eff6d566df437cdcc9ca0ca701165133d1f"
+      },
+      {
+        "byteLength": 17108,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_finalization_test.mjs",
+        "sha256": "sha256:63bebd85b33ce9d23442c347b6e322ec0f8b47733152d2da680fd2d8de8ad420"
+      },
+      {
+        "byteLength": 4624,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_launch_policy_test.mjs",
+        "sha256": "sha256:8fdbf1dc83592b1d83e0aad5342598217536ba4b8bad2aef2fa0d766eb821613"
+      },
+      {
+        "byteLength": 1535,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_native_runtime_test.mjs",
+        "sha256": "sha256:210f3d45654d2e19289819f6827e4de35512793fb10f906c0ab711c11eb8ec46"
+      },
+      {
+        "byteLength": 13727,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_publication_test.mjs",
+        "sha256": "sha256:2e8ca8e7f801e08c0c52c6b3cebb14bb0c1a2f3781ceadcc1eb8dd738b09405c"
+      },
+      {
+        "byteLength": 10000,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs",
+        "sha256": "sha256:23fadc6cfb598ae12cf8b9b3d43fdf357edd3ff4cea0b9bad45e0c09a0f25dfa"
+      },
+      {
+        "byteLength": 16914,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs",
+        "sha256": "sha256:41ac036c712de739362a5d79504f4c35e12dadb9102fec59d722759f9888823c"
+      },
+      {
+        "byteLength": 7629,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_supplement_test.mjs",
+        "sha256": "sha256:1e21f3fe57777288220ca83075206789fa0040e32b609748eb0c8d2948fe9ce2"
+      },
+      {
+        "byteLength": 11988,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_surfaces_test.mjs",
+        "sha256": "sha256:51d20c049f9d81a861aab602c8f9e134d51a21061cd34474a1356bc35268adea"
+      },
+      {
+        "byteLength": 522,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2c_timer_lifetime_test.mjs",
+        "sha256": "sha256:fd9e2afa341b15e010d8027b2e7f1076b8490803ca54d3c7ad0169c288a039f7"
+      },
+      {
+        "byteLength": 21419,
+        "path": "repositories/cca-conformance/tests/mo1307_phase2d_semantic_test.mjs",
+        "sha256": "sha256:cdafa7e803805a6637cc5949bac24f40cf1deeeb1095a2ac471713cebb756d8e"
+      }
+    ],
+    "todo": 0,
+    "total": 639
+  },
+  "contract": {
+    "evidenceTypes": 14,
+    "gateIds": [
+      "artifact",
+      "binding",
+      "history",
+      "provenance",
+      "provider.azure",
+      "provider.azure.live",
+      "provider.generic",
+      "provider.github",
+      "provider.github.hosted",
+      "provider.gitlab",
+      "provider.gitlab.live",
+      "provider.jenkins",
+      "provider.jenkins.live",
+      "resources",
+      "rest.contract",
+      "sbom",
+      "scope",
+      "security",
+      "semantic",
+      "supply",
+      "tag",
+      "windows"
+    ],
+    "gateStates": [
+      "SATISFIED",
+      "SATISFIED_WITH_QUALIFICATION",
+      "BLOCKED",
+      "NOT_REQUIRED",
+      "NOT_APPLICABLE",
+      "COULD_NOT_EVALUATE"
+    ],
+    "gates": 22,
+    "graphEdgeTypes": [
+      "ASSESSES",
+      "ACCEPTS",
+      "AUTHORIZES",
+      "ROOTED_IN",
+      "DEPENDS_ON"
+    ],
+    "graphNodeTypes": [
+      "ASSESSMENT",
+      "CANDIDATE",
+      "GRANT",
+      "CLAIM",
+      "DEPENDENCY",
+      "AUTHORITY"
+    ],
+    "limits": {
+      "apiDeadlineMs": 10000,
+      "cleanupAllowanceMs": 2000,
+      "cliDeadlineMs": 30000,
+      "graphEdges": 8192,
+      "graphNodes": 2048,
+      "helperAggregateDeadlineMs": 28000,
+      "helperDeadlineMs": 9000,
+      "helperRequests": 9,
+      "helperVerifyRequests": 4
+    },
+    "operationalErrors": 21,
+    "qualificationCodes": [
+      "BOUNDED_ADVISORY_REVIEW",
+      "ENVIRONMENT_LIMITATION",
+      "HISTORICAL_UNRESOLVED_PRESERVED",
+      "HOSTED_NOT_CERTIFIED",
+      "PLATFORM_NOT_REQUIRED",
+      "PROVIDER_NOT_LIVE_CERTIFIED",
+      "SAME_HOST_REMOTE_ONLY"
+    ],
+    "readinessStates": [
+      "READY",
+      "READY_WITH_QUALIFICATIONS",
+      "NOT_READY",
+      "COULD_NOT_EVALUATE"
+    ]
+  },
+  "hostLatencyDisclosure": {
+    "deadlineMs": 9000,
+    "helperLifecyclesObservedInAcceptedGeneration": 184,
+    "marginAtMaxMs": 4928.285,
+    "maxMs": 4071.7149999999997,
+    "medianMs": 1501.6546999999991,
+    "minMs": 1154.165,
+    "note": "Heavy-tailed host latency is a retained environment qualification: helper lifecycles are dominated by PowerShell startup/script load. A prior generation observed 8912 ms of 9000 ms, and another failed at the deadline. The accepted generation passed with the observed margin; this is not a claim about worst-case host latency.",
+    "p90Ms": 2140.8197999999998
+  },
+  "kind": "MO1307Phase3DFinalAudit",
+  "result": "PASS_WITH_DISCLOSED_STALE_TEST_BASELINE",
+  "version": "1.0.0"
+}
