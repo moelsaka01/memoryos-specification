@@ -32,8 +32,9 @@ function capability({ state = ready(), output = root, exchange, checkpoint = () 
 async function owned(name) { await fs.mkdir(attempt, { recursive: true }); return path.join(attempt, name); }
 
 test('C2C01 corrected limits leave all byte ceilings unchanged', () => {
+  // V2: PROSPECTIVE_HELPER_BOUND@2.0.0 (34f42c5) and PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0 (98b766f).
   assert.equal(D.limits.helperRequests, 9); assert.equal(D.limits.helperVerifyRequests, 4);
-  assert.equal(D.limits.helperDeadlineMs, 5000); assert.equal(D.limits.helperAggregateDeadlineMs, 20000);
+  assert.equal(D.limits.helperDeadlineMs, 9000); assert.equal(D.limits.helperAggregateDeadlineMs, 28000);
   assert.equal(D.limits.helperChainComponents, 120);
   assert.equal(D.limits.helperRequestBytes, 65536); assert.equal(D.limits.helperResponseBytes, 16777216);
   assert.equal(D.limits.cliDeadlineMs, 30000); assert.equal(D.limits.apiDeadlineMs, 10000);
@@ -162,16 +163,18 @@ test('C2C16 bridge requires exact transport fields and confirmed process quiesce
   }
 });
 test('C2C17 per-invocation deadline includes response parsing and process exit', () => {
+  // V2: whole-helper deadline 9000 ms, equality is TIMEOUT (PROSPECTIVE_HELPER_BOUND@2.0.0, 34f42c5).
   for (const boundary of ['complete', 'exit']) {
     let now = 0; const state = sequence('evaluate', { now: () => now }), req = request(); state.begin(req);
-    if (boundary === 'exit') { now = 4999; state.complete(encodeHelperResponse(response(req), req)); }
-    now = 5000; code(() => boundary === 'complete' ? state.complete(encodeHelperResponse(response(req), req)) : state.helperExited(), 'TIMEOUT');
+    if (boundary === 'exit') { now = 8999; state.complete(encodeHelperResponse(response(req), req)); }
+    now = 9000; code(() => boundary === 'complete' ? state.complete(encodeHelperResponse(response(req), req)) : state.helperExited(), 'TIMEOUT');
     code(() => state.begin(req));
   }
 });
 test('C2C18 aggregate helper budget cannot silently multiply with sequential invocations', () => {
+  // V2: 4 x 6999 ms + 4 ms reaches the 28000-ms aggregate exactly (PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0, 98b766f).
   let now = 0; const state = sequence('evaluate', { now: () => now });
-  for (let n = 1; n <= 4; n++) { const req = request(n, 'evaluate', root); state.begin(req); now += 4999;
+  for (let n = 1; n <= 4; n++) { const req = request(n, 'evaluate', root); state.begin(req); now += 6999;
     state.complete(encodeHelperResponse(response(req), req)); state.helperExited(); }
   state.beginWorker(); state.endWorker(); const next = request(5, 'evaluate', root); state.begin(next);
   now += 4; code(() => state.complete(encodeHelperResponse(response(next), next)), 'TIMEOUT');

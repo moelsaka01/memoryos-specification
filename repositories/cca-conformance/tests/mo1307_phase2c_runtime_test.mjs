@@ -85,34 +85,38 @@ test('R06 API cannot launch helper', async () => {
   });
 });
 test('R07 helper deadline includes all active time; equality rejects', async () => {
+  // V2: whole-helper deadline 9000 ms (PROSPECTIVE_HELPER_BOUND@2.0.0, 34f42c5).
   let now = 0;
   await withSupervisor({ kind: 'cli', now: () => now }, async supervisor => {
     await assert.rejects(supervisor.runOwned('helper', () => {
-      now = 5000; return { completion: Promise.resolve(), closed: Promise.resolve(), terminate() {} };
+      now = 9000; return { completion: Promise.resolve(), closed: Promise.resolve(), terminate() {} };
     }), code('TIMEOUT'));
     assert.equal(supervisor.snapshot().cleanupConfirmed, true);
   });
 });
 test('R08 aggregate deadline does not reset across helpers', async () => {
+  // V2: aggregate helper-active deadline 28000 ms (PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0, 98b766f).
   let now = 0;
   await withSupervisor({ kind: 'cli', now: () => now }, async supervisor => {
     for (let i = 0; i < 4; i += 1) await supervisor.runOwned('helper', () => {
-      now += 4999; return { completion: Promise.resolve(), closed: Promise.resolve(), terminate() {} };
+      now += 6999; return { completion: Promise.resolve(), closed: Promise.resolve(), terminate() {} };
     });
-    assert.equal(supervisor.snapshot().helperUsedMs, 19996);
+    assert.equal(supervisor.snapshot().helperUsedMs, 27996);
     await assert.rejects(supervisor.runOwned('helper', lease => {
-      assert.equal(lease.deadline, 20000); now = 20000;
+      assert.equal(lease.deadline, 28000); now = 28000;
       return { completion: Promise.resolve(), closed: Promise.resolve(), terminate() {} };
     }), code('TIMEOUT'));
   });
 });
 test('R09 worker time is excluded from helper aggregate but inside overall', async () => {
+  // V2: second helper lease = min(30000, 9010 + 9000, 9010 + 28000 - 10) = 18010
+  // (PROSPECTIVE_HELPER_BOUND@2.0.0, 34f42c5; PROSPECTIVE_HELPER_AGGREGATE_BOUND@2.0.0, 98b766f).
   let now = 0;
   await withSupervisor({ kind: 'cli', now: () => now }, async supervisor => {
     await supervisor.runOwned('helper', () => { now = 10; return { completion: Promise.resolve(), closed: Promise.resolve(), terminate() {} }; });
     await supervisor.runOwned('worker', lease => { assert.equal(lease.deadline, 10010); now = 9010; return { completion: Promise.resolve(), closed: Promise.resolve(), terminate() {} }; });
     assert.equal(supervisor.snapshot().helperUsedMs, 10);
-    await supervisor.runOwned('helper', lease => { assert.equal(lease.deadline, 14010); return { completion: Promise.resolve(), closed: Promise.resolve(), terminate() {} }; });
+    await supervisor.runOwned('helper', lease => { assert.equal(lease.deadline, 18010); return { completion: Promise.resolve(), closed: Promise.resolve(), terminate() {} }; });
   });
 });
 test('R10 helper overlap is terminal and cleans prior owned role', async () => {
