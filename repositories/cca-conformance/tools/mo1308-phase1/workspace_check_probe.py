@@ -27,11 +27,17 @@ MANIFEST = f"{ACTION.as_posix()}/distribution-manifest.json"
 
 
 def prepare(root: Path) -> None:
+    """Copy the released Action and seed each source path with its released bytes.
+
+    Seeding from the release (the vendored copy) reproduces the state of the
+    original experiment, where source equalled the release, independently of
+    later legitimate source changes in the workspace.
+    """
     shutil.copytree(WORKSPACE / ACTION, root / ACTION)
     for source in vw.MO1302_VENDOR_SOURCES:
         target = root / source
         target.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(WORKSPACE / source, target)
+        shutil.copyfile(WORKSPACE / ACTION / "dist" / "vendor" / source, target)
 
 
 def append_byte(root: Path, relative: str) -> None:
