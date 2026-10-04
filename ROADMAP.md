@@ -11,7 +11,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
 | MemoryOS 1.2 | Released — v1.2.0 | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, and its official Conformance Suite |
 | MemoryOS 1.2.1 | Corrective restoration | Restores omitted intended v1.2 source, registered tests, fixtures, examples, documentation, frozen Standard and MIP publication assets, and corrected conformance provenance while preserving all v1.2 semantics and CSP fixes |
-| MemoryOS 1.3 | In development; MO-1301 through MO-1307 RELEASED | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, certified REST Gateway, qualified Provider-Neutral CI/CD Integration, and certified Release Governance and Readiness (7 disclosed stale tests); MO-1308 CONTRACT FREEZE 1 PROPOSED / PENDING OWNER APPROVAL |
+| MemoryOS 1.3 | In development; MO-1301 through MO-1307 RELEASED | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, certified REST Gateway, qualified Provider-Neutral CI/CD Integration, and certified Release Governance and Readiness (7 disclosed stale tests); MO-1308 CONTRACT FREEZE 1 FROZEN / PHASE 1 NEXT (after the MO-1307 V2 correction) |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -111,8 +111,9 @@ Its Phase 1, 2 and 3 work is complete and bound by the
 [Phase 3D final certification](docs/mo1307-phase3d-certification.md), and
 MO-1307 is released at annotated tag `memoryos-1.3-mo1307`.
 MO-1308's [roadmap authority](docs/mo1308-investigation-history.md) establishes
-Investigation History scope and owner decisions; its proposed
-[Contract Freeze 1](docs/mo1308-contract-freeze-1.md) awaits owner approval.
+Investigation History scope and owner decisions; its
+[Contract Freeze 1](docs/mo1308-contract-freeze-1.md) is frozen, and Phase 1 is
+next after the MO-1307 V2 stale-test correction.
 
 | Milestone | Title | Status | Architectural layer |
 |---|---|---|---|
@@ -123,14 +124,14 @@ Investigation History scope and owner decisions; its proposed
 | MO-1305 | REST Gateway | CLOSED / CERTIFIED / RELEASED | Bounded REST/API integration |
 | MO-1306 | Provider-Neutral CI/CD Integration | CLOSED / QUALIFIED CERTIFICATION / RELEASED | Provider-neutral CI/CD integration with preserved provider limitations |
 | MO-1307 | Release Governance and Readiness | CLOSED / CERTIFIED / RELEASED (7 DISCLOSED STALE TESTS; CORRECTION PENDING) | Deterministic evidence-backed readiness; final release authorization remains human |
-| MO-1308 | Investigation History | CONTRACT FREEZE 1 PROPOSED / PENDING OWNER APPROVAL | Durable investigation/evaluation history and traceability |
+| MO-1308 | Investigation History | CONTRACT FREEZE 1 FROZEN / PHASE 1 NEXT (AFTER THE MO-1307 V2 CORRECTION) | Durable investigation/evaluation history and traceability |
 | MO-1309 | Cloud Dashboard | PLANNED / AUTHORITY PENDING | Cloud-facing dashboard experience |
 
 Later milestones must delegate to existing semantic authority rather than
 silently reimplementing MemoryOS semantics. The MO-1306 freeze and scope
 correction retain their released scope. MO-1307 is released after Phase 3D
-certification. MO-1308 has its authority and a proposed Contract Freeze pending
-owner approval; MO-1309 still requires its own authority and freeze. Unrelated proposals
+certification. MO-1308 has its authority and a frozen Contract Freeze 1;
+MO-1309 still requires its own authority and freeze. Unrelated proposals
 elsewhere in this document remain proposals.
 
 ### Released history and authority
@@ -291,7 +292,7 @@ dispositions. Helper host latency remains a retained environment qualification.
 After human review, the owner created annotated tag `memoryos-1.3-mo1307`
 (tag object `a3042f3bded41ec71deff8dac71691e9a595460b`), peeling exactly to BF
 `1dd1e8c82fe0ed5a32a894744392f2c279f89d4c`, as recorded in the
-[MO-1308 Contract Freeze 1 proposal](docs/mo1308-contract-freeze-1.md) section
+[MO-1308 Contract Freeze 1](docs/mo1308-contract-freeze-1.md) section
 1.2. The release is certified with the 7 disclosed stale tests. A separate,
 test-only, bound MO-1307 correction of those tests (`NRT01` becomes a
 preserved-evidence check, not a re-execution) follows the tag and must be
@@ -347,7 +348,7 @@ platforms remain outside MO-1307.
 
 ### MO-1308: Investigation History
 
-Status: **CONTRACT FREEZE 1 PROPOSED / PENDING OWNER APPROVAL**.
+Status: **CONTRACT FREEZE 1 FROZEN / PHASE 1 NEXT** (after the MO-1307 V2 correction).
 
 The [MO-1308 authority](docs/mo1308-investigation-history.md) establishes
 durable, verifiable history of MemoryOS investigation and evaluation records:
@@ -366,15 +367,26 @@ retention is append-only with governed tombstones that may purge original
 bytes while the entry and record digest remain; v1 surfaces are the JavaScript
 SDK and CLI only; portability is the `MemoryOSHistoryExport` bundle only;
 ingestion uses neither `windows-inspect.ps1` nor `verifyReadiness`. The
-authority's decision register left 34 entries OPEN. The
-[Contract Freeze 1 proposal](docs/mo1308-contract-freeze-1.md) verifies the
-CCA-MEMORYOS-1.0 Standard source at `moelsaka01/cca-specifications` `bdf8fd4`
-(all pinned documents and 218 requirement statements match), reviews SP-004 and
-the AR-001 constitution (they support and constrain the approved ledger and do
-not contradict it), proposes 25 technical resolutions and leaves 7 owner
-decisions (H06, H13, H20, H23, H26, H40, H54). Nothing is frozen until the owner
-approves it. No implementation, schema, package or evidence exists. The MO-1307
-stale-test correction must be complete before the MO-1308 Phase 1 binding.
+authority's decision register left 34 entries OPEN.
+[Contract Freeze 1](docs/mo1308-contract-freeze-1.md), approved by the owner on
+2026-10-04, closes all 55 entries. It verifies the CCA-MEMORYOS-1.0 Standard
+source at `moelsaka01/cca-specifications` `bdf8fd4` (all pinned documents and
+218 requirement statements match) and finds that SP-004 and the AR-001
+constitution support and constrain the approved ledger without contradicting
+it. It freezes 25 technical resolutions and seven owner decisions: a pure SDK
+with the CLI owning the file store; stored checkpoints as the Standard's full
+nine-field projection, never a restore source; operator-command tombstones
+with a closed reason list, each a ledger entry; purged bytes never re-added;
+one ledger per Workspace; no per-entry timestamp; and a Node-only file store
+under an explicit owner risk acceptance limited to local single-user v1 (a
+concurrent directory swap is detected after the fact, not prevented; existing
+ledger content is never overwritten or replaced; every later read fails
+closed), which must be re-reviewed before any multi-user, shared-storage or
+cloud use, including MO-1309. No implementation, schema, package or evidence
+exists. Phase 1 must first prove that MO-1306/MO-1307 `J` equals canonical JSON
+plus one trailing newline on every existing fixture and that
+`inspectRegressionReport` verifies report identity; the MO-1307 stale-test
+correction must be complete before the MO-1308 Phase 1 binding.
 
 ### MO-1309: Cloud Dashboard
 
@@ -388,13 +400,14 @@ Freeze.
 
 The exact next task is:
 
-**MEMORYOS 1.3 MO-1308 CONTRACT FREEZE 1 — OWNER REVIEW AND APPROVAL**
+**MEMORYOS 1.3 MO-1307 V2 — TEST-ONLY STALE-TEST CORRECTION**
 
-The owner decides H06, H13, H20, H23, H26, H40 and H54 and approves or amends
-each proposed resolution; one documentation commit on `mo1308/freeze` then
-records the decisions and marks the Freeze FROZEN. Separately, the test-only
-MO-1307 stale-test correction runs under its own authorization and must be
-complete before the MO-1308 Phase 1 binding.
+Correct and bind the 7 disclosed stale MO-1307 tests (`NRT01` becomes a
+preserved-evidence check, not a re-execution) with no production, contract,
+limit or evidence change. After it is bound, **MEMORYOS 1.3 MO-1308 PHASE 1 —
+FOUNDATION** follows on `mo1308/phase1` from the frozen Contract Freeze 1
+commit; its binding (B1) waits for the V2 correction and the Freeze's Phase 1
+entry obligations.
 
 ## IM-001: engineering foundation
 

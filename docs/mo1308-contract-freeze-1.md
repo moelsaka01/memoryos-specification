@@ -2,14 +2,16 @@
 
 ## 1. Authority, status, baseline and scope
 
-Status: **PROPOSED — PENDING OWNER APPROVAL**.
+Status: **FROZEN — CONTRACT FREEZE 1**.
 
-Nothing in this document is frozen until the owner approves it. Every resolution
-below is a proposal. Each formerly OPEN register entry is classified as
-**FREEZE_PROPOSED** (a technical resolution consistent with existing authority)
-or **OWNER_DECISION_REQUIRED** (a policy, product or risk choice, with options
-and a recommendation). Where a FREEZE_PROPOSED shape depends on an owner
-decision, the dependency is stated.
+The owner approved this Freeze on 2026-10-04 (section 1.3). Every resolution
+below is frozen. Resolutions marked **FROZEN** are the technical resolutions
+proposed in commit `aa3503652e3040f41ecd00a9afbbeea744d24605` and approved as
+written; resolutions marked **RESOLVED_BY_OWNER** record the owner's decision on
+a policy, product or risk choice. No register entry remains OPEN or awaiting a
+decision. After this Freeze, implementation may resolve private details only;
+any change to public behavior, shapes, identities, errors, limits or the
+accepted risk returns to owner review (CCA-ENG-2.0).
 
 This document follows the [MO-1308 roadmap authority](mo1308-investigation-history.md)
 (commit `0c1b7d33866c94d41027ebd222cc3dd5cf836508`) and its 55-entry register.
@@ -18,6 +20,10 @@ evidence, tag, pull request or `main` update, in this repository or in
 `moelsaka01/cca-specifications`.
 
 ### 1.1 Baseline
+
+The proposal baseline below was taken for commit
+`aa3503652e3040f41ecd00a9afbbeea744d24605`. The approval commit is its
+single-parent child on `mo1308/freeze`; `main` is unchanged.
 
 | Check (2026-10-04) | Result |
 |---|---|
@@ -42,6 +48,26 @@ stale tests. The V2 stale-test correction follows after the tag as a
 separate, test-only, bound MO-1307 correction, and **must be complete before
 the MO-1308 Phase 1 binding**. This document records that dependency and does
 not perform V2.
+
+### 1.3 Owner approval record (2026-10-04)
+
+The owner approved all 25 technical resolutions as written and decided the
+seven remaining items:
+
+| ID | Owner decision | Section |
+|---|---|---|
+| H06 | Option B: the SDK performs no file I/O; the CLI owns the file store, following ARCHITECTURE §5 and the MO-1301 precedent. | 5.2 |
+| H13 | Option A: a stored `INVESTIGATION_CHECKPOINT` contains the Standard's full nine-field checkpoint, including the transition log, so "MIP-backed only" is verifiable from stored bytes. It remains a record only, never a restore source (H14). | 7.2 |
+| H20 | Tombstones are authorized by an operator command with a closed reason list and a free-text authority reference. Every tombstone is itself a ledger entry. | 10.1 |
+| H23 | Purged bytes can never be re-added. | 10.5 |
+| H26 | One ledger per Workspace; records belong to it intrinsically or by operator declaration. No ledgers without a Workspace. | 8.1 |
+| H40 | Option A (Node-only file store), accepted as an explicit owner risk acceptance limited to local single-user v1, with mandatory re-review before any multi-user, shared-storage or cloud use (including MO-1309). No PowerShell helper and no new compiled helper. | 9.4 |
+| H54 | No timestamp is stored per entry, diagnostic or otherwise. | 8.4 |
+
+The owner also directed four records without resolution: the Standard's
+registry-versus-section wording observation (section 22.1), the absent
+`cca-specifications` branch (section 22.1), the Phase 1 entry obligations
+(section 18.2), and the MO-1307 V2 dependency (sections 1.2 and 18.2).
 
 ## 2. CCA-MEMORYOS-1.0 Standard source verification (H31)
 
@@ -195,8 +221,8 @@ authority named by CCA-MIP-1.0. It governs "all conforming work."
 | CCA-ENG-2.0: Architecture → Specification → Review → Freeze → Implementation → Verification → Release; after freeze, public behavior may not change. | Supports this Freeze-before-implementation process. |
 | ARCHITECTURE §13 database exclusion | The constitution is technology-independent and neither requires nor forbids a file ledger. |
 
-**AR-001 supports and constrains V4; it does not contradict it.** No item is
-OWNER_DECISION_REQUIRED because of a contradiction. The constraints are
+**AR-001 supports and constrains V4; it does not contradict it.** No owner
+decision was needed because of a contradiction. The constraints are
 applied in sections 5–8.
 
 ## 4. Terms
@@ -213,7 +239,7 @@ applied in sections 5–8.
 
 ## 5. Architecture, placement and dependency direction (H04–H06)
 
-### 5.1 H05 — placement: FREEZE_PROPOSED
+### 5.1 H05 — placement: FROZEN
 
 The history authority is a set of dependency-free, browser-safe ES modules in
 `repositories/cca-studio/web/js/`, beside the other SDK-reachable authorities:
@@ -244,15 +270,23 @@ current source bytes, and MO-1301 already extended `memoryos-sdk.js` after
 v1.2.1. Phase 1 must still confirm, on the reference Windows host, that no
 released inventory check recomputes current SDK bytes.
 
-### 5.2 H06 — dependency direction: OWNER_DECISION_REQUIRED
+### 5.2 H06 — dependency direction: RESOLVED_BY_OWNER (option B)
 
-| Option | Description | Consequence |
-|---|---|---|
-| **B (recommended)** | The history authority and the SDK facade are pure (bytes in, bytes out; no filesystem). The CLI owns the file store and all file transport. | Matches ARCHITECTURE §5 exactly: the CLI "performs file and terminal transport" and consumes only the SDK; the SDK owns no I/O and stays browser-safe. Mirrors MO-1301 (`policy-publication.js` in the CLI). Durable ledgers are created and appended only through the CLI. JavaScript SDK callers get pure operations, including producing a checkpoint record file (section 7.2) for the CLI to append. |
-| A | Pure authority, plus a Node-only file Provider exported through a new Node-specific SDK entry point. | Gives Node SDK callers durable storage directly, but adds a Node-specific SDK surface and an ARCHITECTURE §5 change. |
-| C | History store inside the CLI only, with no SDK surface. | Contradicts V7 (JS SDK is a v1 surface); checkpoint records could not be produced. |
+The history authority and the SDK facade are pure (bytes in, bytes out; no
+filesystem). The CLI owns the file store and all file transport. This matches
+ARCHITECTURE §5: the CLI "performs file and terminal transport" and consumes
+only the SDK, and the SDK owns no I/O and stays browser-safe. It mirrors
+MO-1301 (`policy-publication.js` in the CLI). Durable ledgers are created and
+appended only through the CLI. JavaScript SDK callers get pure operations,
+including producing a checkpoint record file (section 7.2) for the CLI to
+append.
 
-Dependency direction under B:
+Not selected: a Node-only file Provider exported through a new Node-specific
+SDK entry point (adds a Node-specific SDK surface and an ARCHITECTURE §5
+change); a CLI-only store with no SDK surface (contradicts V7 and would leave
+no way to produce checkpoint records).
+
+Dependency direction:
 
 ```text
 MIP-001 module, Policy modules, Regression module, mip-canonical.js
@@ -273,7 +307,7 @@ takes explicit bytes and returns bytes. The CLI file store is a Provider-style
 realization of the ledger contract: it never defines identities, shapes or
 verification (AR-006, SP-004 §8).
 
-### 5.4 H04 — ARCHITECTURE and ambiguity-register text: FREEZE_PROPOSED
+### 5.4 H04 — ARCHITECTURE and ambiguity-register text: FROZEN
 
 Applied in the Phase 1 commit, after Freeze approval, not in this document:
 
@@ -296,7 +330,7 @@ approval.
 
 ## 6. Versions, primitive types and canonical bytes (H37)
 
-### 6.1 H37: FREEZE_PROPOSED
+### 6.1 H37: FROZEN
 
 All MO-1308 identities use the Standard's `D` and `JCS` (section 2.5) through
 the existing `cca-studio/web/js/mip-canonical.js`. MO-1308 adds no new
@@ -349,37 +383,41 @@ with no trailing LF.
 INTRINSIC: the record's own Workspace identity must equal the ledger
 Workspace, otherwise `WORKSPACE_MISMATCH`. DECLARED: the record has no Workspace
 identity in its owner's shape, so the operator's choice of ledger is the
-association, recorded as `DECLARED`. This depends on H26.
+association, recorded as `DECLARED` (H26).
 
 `recordDigest = D("MEMORYOS-HISTORY-RECORD-1.0", recordKind,
 JCS(members))`, where `members` is the name-sorted list of
 `{name, byteLength, sha256}` and `sha256` is the `Digest` of the member's exact
 bytes.
 
-### 7.2 H13 — checkpoint record form: OWNER_DECISION_REQUIRED
+### 7.2 H13 — checkpoint record form: RESOLVED_BY_OWNER (option A)
 
-| Option | Content of `checkpoint.json` | Verifiable at admission |
-|---|---|---|
-| **A (recommended)** | `JCS` of the Standard's exact nine-member public Core checkpoint projection (section 2.5), including the complete `transitionLog` | Every transition identity, prefix digest, log digest and count; checkpoint identifier; transition 0 `CREATED` with `sourceKind` `mip` and the ledger Workspace; transition 1 `PACKAGE_IMPORTED` whose package passes the MIP-001 verifier. `stateDigest` is retained as issued by the Core, not re-derived. |
-| B | The eight metadata members the SDK's public `Checkpoint` exposes (no `transitionLog`) | Only the checkpoint identifier. MIP-backed status and log integrity cannot be checked from bytes. |
+`checkpoint.json` is the `JCS` of the Standard's exact nine-member public Core
+checkpoint projection (section 2.5), including the complete `transitionLog`.
+Admission verifies every transition identity, prefix digest, log digest and
+count; the checkpoint identifier; transition 0 `CREATED` with `sourceKind`
+`mip` and the ledger Workspace; and transition 1 `PACKAGE_IMPORTED` whose
+package passes the MIP-001 verifier. `stateDigest` is retained as issued by the
+Core, not re-derived. The Standard defines "any public Core checkpoint
+projection" as this exact value, so the record is a Standard-defined shape, and
+the "MIP-backed only" rule (V5) is checkable from stored bytes. The record
+stores investigation content (the imported package and navigation payloads),
+which governed tombstones can purge (section 10).
 
-Recommendation A: the Standard defines "any public Core checkpoint projection"
-as this exact value, so a record that carries it is Standard-defined rather
-than a new shape, and only A makes the "MIP-backed only" rule (V5) checkable
-from stored bytes. A stores investigation content (the imported package and
-navigation payloads); that is covered by tombstones (section 10).
+Not selected: the eight metadata members of the SDK's public `Checkpoint` (only
+the checkpoint identifier would be verifiable).
 
-Under either option:
+In addition:
 - the record is produced only by the SDK function `createHistoryCheckpointRecord(checkpoint)`
   from a Checkpoint issued by the same SDK instance for a MIP-backed
   investigation; a native investigation is rejected (`RECORD_INVALID`);
-- the record is **never a restoration source** (H14); no MO-1308 operation
-  passes it to `restore` or to any Core;
+- the record is **a record only, never a restore source** (H14); no MO-1308
+  operation passes it to `restore` or to any Core;
 - writing the record file is the SDK caller's act. The CLI `session` command
   still never serializes or restores checkpoints (CCA-MOS-CLI-009), and the
   CLI `history append` reads and verifies a record file without restoring it.
 
-### 7.3 H12 — admission per kind: FREEZE_PROPOSED
+### 7.3 H12 — admission per kind: FROZEN
 
 Each kind has exactly one admission method. The method's name is recorded in
 the entry as `admission`, so consumers (including MO-1309) see exactly what
@@ -388,7 +426,7 @@ was checked.
 | Record kind | `admission` value | Checks (all must pass) |
 |---|---|---|
 | `MIP_PACKAGE` | `MIP_001_VERIFIED` | The existing MIP-001 verifier accepts the bytes; package Workspace equals ledger Workspace. |
-| `INVESTIGATION_CHECKPOINT` | `CORE_LOG_VERIFIED_STATE_ISSUED` (option A) or `CORE_IDENTIFIER_VERIFIED` (option B) | As in section 7.2. |
+| `INVESTIGATION_CHECKPOINT` | `CORE_LOG_VERIFIED_STATE_ISSUED` | As in section 7.2. |
 | `POLICY_EVALUATION` | `SDK_POLICY_ARTIFACTS_VERIFIED` | The SDK's detached `verifyEvaluationIdentityArtifact` and `verifyPolicyEvaluationOutcomeArtifact` accept the two members, and the outcome cross-binds the identity. |
 | `REGRESSION_REPORT` | `SDK_REGRESSION_REPORT_INSPECTED` | The SDK's existing `inspectRegressionReport` accepts the report; both Workspace identifiers equal the ledger Workspace. Phase 1 must confirm that this inspection checks the report's identity; if it does not, Phase 1 stops as AUTHORITY_CONFLICT. Regression is never recomputed. |
 | `CICD_RUN` | `MO1306_BUNDLE_INTEGRITY_VERIFIED` | MO-1306 Freeze §9 bundle rules: completion marker present; exact cardinality (6 or 4) and basenames; canonical `J`; artifact-manifest sizes and digests; marker manifest digest; `runId` consistency; result, projection and exit agreement per MO-1306 §8; when present, the two normative SDK artifacts pass the POLICY_EVALUATION checks. MO-1306 distribution and runtime digests are retained as recorded, not re-verified. |
@@ -401,7 +439,7 @@ Failed admission creates no entry (V5 excludes INGESTION_REJECTED) and returns
 A record whose `(recordKind, recordDigest)` already appears in the ledger is
 rejected with `RECORD_DUPLICATE`, so one artifact gives one entry.
 
-### 7.4 H16 — decision-claim binding: FREEZE_PROPOSED
+### 7.4 H16 — decision-claim binding: FROZEN
 
 A `HUMAN_DECISION_CLAIM` is admitted only if the ledger already contains a
 `READINESS_RESULT` entry with equal `candidateDigest`, `readinessDigest` and
@@ -411,7 +449,7 @@ verifies a decision only against a result it has recomputed; an orphan claim
 would be an unbound, approval-shaped record. Rejected: optional or unchecked
 binding. Error: `DECISION_UNBOUND`.
 
-### 7.5 H17 — retained bytes for Policy and Regression: FREEZE_PROPOSED
+### 7.5 H17 — retained bytes for Policy and Regression: FROZEN
 
 POLICY_EVALUATION retains exactly the two SDK artifact bytes (identity and
 outcome), the same normative pair MO-1306 bundles. REGRESSION_REPORT retains
@@ -421,20 +459,21 @@ inputs; larger privacy surface).
 
 ## 8. Entries, ledger identity, ordering and scope (H26, H36, H39, H54)
 
-### 8.1 H26 — ledger scope: OWNER_DECISION_REQUIRED
+### 8.1 H26 — ledger scope: RESOLVED_BY_OWNER
 
-| Option | Description |
-|---|---|
-| **A (recommended)** | One ledger has exactly one `workspaceIdentifier`. INTRINSIC records must match it; DECLARED records are associated by the operator's choice of ledger and labelled `DECLARED`. |
-| B | A ledger has no Workspace; each entry has an optional Workspace subject. |
+One ledger per Workspace. Every ledger has exactly one `workspaceIdentifier`.
+A record belongs to it either **intrinsically** (`INTRINSIC`: the record's own
+Workspace identity must equal the ledger Workspace) or **by operator
+declaration** (`DECLARED`: the record has no Workspace identity of its own, and
+the operator's choice of ledger is the association). There are no ledgers
+without a Workspace, and no entry without the ledger's Workspace. This follows
+AR-001 ADR-001/002 (Workspace as root and consistency boundary) and MemoryOS's
+one-Workspace-per-investigation rule.
 
-Recommendation A: AR-001 ADR-001/002 make the Workspace the root and
-consistency boundary, and MemoryOS binds every investigation to one Workspace.
-B would create records that belong to no Workspace. The policy question is
-whether operator-declared association is acceptable for readiness, CI and
-decision records, which have no Workspace identity of their own.
+Not selected: a ledger with no Workspace and optional per-entry Workspace
+subjects.
 
-### 8.2 H36 — identities: FREEZE_PROPOSED
+### 8.2 H36 — identities: FROZEN
 
 ```text
 MemoryOSHistoryLedger {
@@ -483,26 +522,25 @@ used only inside the Core. Rejected: a caller-chosen ledger identifier
 kind's subject source fields to the owner's published schema without changing
 them.
 
-### 8.3 H39 — ordering: FREEZE_PROPOSED
+### 8.3 H39 — ordering: FROZEN
 
 Order is the append index only. One append adds exactly one entry; there are
 no batches in v1. Rejected: batches with tie-break rules (no v1 need; adds
 partial-batch failure modes).
 
-### 8.4 H54 — observed time: OWNER_DECISION_REQUIRED
+### 8.4 H54 — observed time: RESOLVED_BY_OWNER
 
-Recommendation: **no time in any MO-1308-authored structure in v1.** Wall-clock
-time is not authoritative (H38), and the authority requires byte-identical
-ledgers for equivalent histories. Producer timestamps inside retained record
-bytes (for example a decision claim's `timestamp`) stay as producer data.
-Alternative: a diagnostic `observedAt` field stored outside identities. It
-would break byte-identical ledgers and add host-time disclosure; MO-1309
-timelines would then depend on it. This is a product choice because MO-1309
-may want time ordering.
+**No timestamp is stored per entry, diagnostic or otherwise.** No
+MO-1308-authored structure contains a time. Wall-clock time is not
+authoritative (H38), and equivalent histories must produce byte-identical
+ledgers. Producer timestamps inside retained record bytes (for example a
+decision claim's `timestamp`) remain the producer's data and are neither added
+nor interpreted by MO-1308. MO-1309 cannot rely on MO-1308 for time ordering;
+order is the append index (H39).
 
 ## 9. Store, publication, concurrency and platform (H40–H42, H45)
 
-### 9.1 H42 — layout: FREEZE_PROPOSED
+### 9.1 H42 — layout: FROZEN
 
 ```text
 <ledger-root>/
@@ -516,7 +554,7 @@ There is no head file, no segment and no seal: the head is the highest
 contiguous index. No MO-1308 file is ever modified. The only deletion is record
 member removal under a committed tombstone (section 10).
 
-### 9.2 Append protocol: FREEZE_PROPOSED
+### 9.2 Append protocol: FROZEN
 
 1. Read and verify the whole entry chain (section 11).
 2. Admit the record (section 7) and build entry `n = entryCount`.
@@ -533,7 +571,7 @@ member removal under a committed tombstone (section 10).
 A crash before step 4 leaves only staging files or unreferenced record
 members. They are never history; `verify` lists them and never deletes them.
 
-### 9.3 H41 — concurrency: FREEZE_PROPOSED
+### 9.3 H41 — concurrency: FROZEN
 
 Optimistic and lock-free: exclusive creation of `entries/<n>.json` is the
 single serialization point. A writer that loses the race gets
@@ -541,33 +579,42 @@ single serialization point. A writer that loses the race gets
 crashed writer leaves a stale lock, and breaking it safely needs time-based
 rules, which wall-clock non-authority excludes).
 
-### 9.4 H40 — store mechanism on Windows: OWNER_DECISION_REQUIRED
+### 9.4 H40 — store mechanism on Windows: RESOLVED_BY_OWNER (option A, risk accepted)
 
-MO-1306 (`check-paths.ps1`) and MO-1307 (`windows-inspect.ps1`) both use a
-Windows PowerShell helper for path, reparse-point and identity checks. V3
-prefers a non-PowerShell mechanism. Node alone cannot open handle-relative paths
-or open a directory without following reparse points, so a Node-only design
-**detects** rather than **prevents** a race that swaps an intermediate
-directory.
+The v1 store is **Node-only**. There is **no PowerShell helper and no new
+compiled helper**. The mechanism is: `lstat` of every path component (no
+symlink, junction or other reparse point); `realpath` equality with the
+canonical root; exclusive creation (`wx`) of every new name; hard-link
+publication, which never replaces an existing name; handle `fstat` versus path
+`lstat` identity comparison after writing; fail closed on any difference.
 
-| Option | Protection | Cost |
-|---|---|---|
-| **A (recommended, with explicit risk acceptance)** | Node-only: `lstat` of every path component (no symlink, junction or other reparse point); `realpath` equality with the canonical root; exclusive creation (`wx`) of every new name; hard-link publication (never replaces); handle `fstat` versus path `lstat` identity comparison after writing; fail closed on any difference. | **Weaker than MO-1306/MO-1307**: a concurrent local process that can modify the ledger root's ancestor chain could redirect a *new* file to another writable directory between check and create. The impact is bounded: no existing file is ever overwritten, only content MO-1308 was given is written, and the identity check fails the operation afterwards. Needs the owner's explicit risk acceptance as a disclosed qualification. |
-| B | A MO-1306-style PowerShell path-check helper (not `windows-inspect.ps1`), batched once per command | Same protection class as predecessors. Inherits PowerShell start-up latency (MO-1307 observed 8912 ms of 9000 ms on the reference host) and the deadline flake risk. |
-| C | A new native, non-PowerShell helper (for example C++ from the existing CMake toolchain) | Prevention-level protection without PowerShell; adds a compiled binary to build, distribute, review and certify. |
+Context: MO-1306 (`check-paths.ps1`) and MO-1307 (`windows-inspect.ps1`) use a
+Windows PowerShell helper for path, reparse-point and identity checks. Node
+alone cannot open handle-relative paths or open a directory without following
+reparse points, so this store is weaker than its predecessors in one respect.
 
-Recommendation A, because the residual risk is limited to creating a new file
-elsewhere and every read re-verifies. If the owner does not accept that
-qualification, B is the proven fallback and C is the strongest option.
+**Owner risk acceptance (recorded exactly):**
+
+1. A concurrent directory swap is **detected after the fact, not prevented**.
+2. The store can **never overwrite or replace existing ledger content**.
+3. **Every subsequent read fails closed.**
+4. The acceptance applies to **local single-user v1 only**. It **MUST be
+   re-reviewed before any multi-user, shared-storage or cloud use, including
+   MO-1309.**
+
+This is a disclosed qualification of every MO-1308 v1 certification and
+release claim. Not selected: a MO-1306-style PowerShell path-check helper
+(PowerShell start-up latency, observed at 8912 ms of 9000 ms on the reference
+host); a new compiled non-PowerShell helper (new binary to build, distribute,
+review and certify).
 
 ### 9.5 Cancellation and time
 
-No MO-1308 operation uses timers or deadlines: no child process exists under
-option A, and work is bounded by section 14's limits. Ctrl-C before the commit
-point publishes nothing. If option B is chosen, Freeze must add a helper
-deadline and cleanup rule following MO-1306.
+No MO-1308 operation uses timers or deadlines: the store starts no child
+process, and work is bounded by section 14's limits. Ctrl-C before the commit
+point publishes nothing.
 
-### 9.6 H45 — platform: FREEZE_PROPOSED
+### 9.6 H45 — platform: FROZEN
 
 The certified platform is native Windows 11 x64 with the existing pinned Node
 toolchain, following MO-1306 and MO-1307, with no Linux, WSL or VM gate. The
@@ -577,24 +624,25 @@ Ubuntu/macOS (no certification precedent for this surface).
 
 ## 10. Tombstones and retention (H20–H23)
 
-### 10.1 H20 — tombstone governance: OWNER_DECISION_REQUIRED
+### 10.1 H20 — tombstone governance: RESOLVED_BY_OWNER
 
-Recommendation: an operator-invoked CLI command with
+Tombstones are authorized only by the operator command
+`memoryos history tombstone` (section 13.3), which requires:
 
 - a closed `TombstoneReason`: `PRIVACY_REQUEST`, `LEGAL_REQUIREMENT`,
   `SECURITY_INCIDENT`, `DATA_MINIMIZATION`, `OPERATOR_CORRECTION`;
-- a mandatory opaque `AuthorityReference` (1–256 printable ASCII) naming the
+- a mandatory free-text `AuthorityReference` (1–256 printable ASCII) naming the
   external decision (for example a ticket or decision-record identifier),
   never fetched or validated;
 - `authenticity: "NOT_VERIFIED_BY_MEMORYOS"`, as for MO-1307 decision claims.
 
-Rules: the target must be a RECORD entry with retained bytes; one tombstone per
-target; a tombstone cannot target a tombstone. Alternatives: require an
-external decision-record digest (stronger binding; needs a record format MO-1308
-does not have); a two-step propose and confirm flow (more friction; the second
-step adds no authority MemoryOS can verify).
+**Every tombstone is itself a ledger entry** (`entryType: "TOMBSTONE"`,
+section 8.2), appended and chained like any other entry. Rules: the target must
+be a RECORD entry with retained bytes; one tombstone per target; a tombstone
+cannot target a tombstone. Not selected: an external decision-record digest; a
+two-step propose and confirm flow.
 
-### 10.2 Purge protocol: FREEZE_PROPOSED
+### 10.2 Purge protocol: FROZEN
 
 The tombstone entry is committed first (section 9.2). Then every member of the
 target record is deleted. If a crash interrupts deletion, `verify` reports
@@ -602,30 +650,29 @@ target record is deleted. If a crash interrupts deletion, `verify` reports
 members without appending a new entry. A member referenced by another retained
 entry is impossible because duplicates are rejected (section 7.3).
 
-### 10.3 H21 — retention period: FREEZE_PROPOSED
+### 10.3 H21 — retention period: FROZEN
 
 No automatic expiry in v1. Bytes are removed only by a governed tombstone (V6).
 Reasoning: V6 approves only governed tombstones, and age-based expiry would need
 an authoritative clock (H38). Rejected: operator-configured periods (a new,
 unapproved mechanism).
 
-### 10.4 H22 — purged entries: FREEZE_PROPOSED
+### 10.4 H22 — purged entries: FROZEN
 
 The chain still verifies (V6). Content verification of a purged record reports
 `retention: "PURGED"` and is never reported as verified. Queries show the
 entry and its tombstone. Exports include both entries but no member bytes.
 
-### 10.5 H23 — re-supply after purge: OWNER_DECISION_REQUIRED
+### 10.5 H23 — re-supply after purge: RESOLVED_BY_OWNER
 
-Recommendation: **never.** A `(recordKind, recordDigest)` whose entry is
-tombstoned cannot be admitted again in that ledger (`RECORD_PURGED`), so a
-privacy purge cannot be undone by re-appending the same bytes. Alternative:
-allow re-supply as a new entry, which keeps the chain intact but makes a purge
-reversible by anyone holding the bytes.
+**Purged bytes can never be re-added.** A `(recordKind, recordDigest)` whose
+entry is tombstoned cannot be admitted again in that ledger
+(`RECORD_PURGED`), so a privacy purge cannot be undone by re-appending the same
+bytes. Not selected: re-supply as a new entry.
 
 ## 11. Verification and query (H27, H28)
 
-### 11.1 Verification: FREEZE_PROPOSED
+### 11.1 Verification: FROZEN
 
 `verify` reads the descriptor, every entry in index order and every retained
 member. It checks: descriptor shape and `ledgerIdentifier`; contiguous indices
@@ -647,7 +694,7 @@ MemoryOSHistoryVerification {
 
 The last three fields are disclosed anomalies that do not break integrity.
 
-### 11.2 H27 — query: FREEZE_PROPOSED
+### 11.2 H27 — query: FROZEN
 
 A query first verifies the entry chain (not member bytes), then filters:
 
@@ -674,11 +721,11 @@ Results sort by index ascending. Tombstone entries match on their target's kind
 and subjects. Rejected: free-text or expression queries (unbounded, and
 nondeterministic matching risk).
 
-### 11.3 H28 — cross-ledger queries: FREEZE_PROPOSED
+### 11.3 H28 — cross-ledger queries: FROZEN
 
 Excluded from v1. Consumers may query several ledgers or exports independently.
 
-## 12. Export (H25): FREEZE_PROPOSED
+## 12. Export (H25): FROZEN
 
 `export` writes a complete ledger copy to a new directory:
 
@@ -712,14 +759,14 @@ This bundle and the query result are the MO-1309 forward interface (H49).
 
 ## 13. SDK and CLI interfaces (H29 reaffirmed, H30)
 
-### 13.1 Versions: FREEZE_PROPOSED
+### 13.1 Versions: FROZEN
 
 The JavaScript SDK and CLI move from `1.1.0` to `1.2.0` (additive, following
 MO-1301's 1.0 → 1.1). This is not a CCA-MEMORYOS-1.0 baseline CLI (1.0.0)
 claim (CCA-MOS-CLI-001), and released packages keep their vendored 1.1.0
 closures. Every MO-1308 artifact declares its own version (CCA-MOS-VER-001).
 
-### 13.2 SDK (pure, under H06 option B)
+### 13.2 SDK (pure, H06)
 
 Exported functions, each returning new immutable values or `Uint8Array`
 snapshots and throwing `MemoryOSHistoryError {code, stage}`:
@@ -740,7 +787,7 @@ MemoryOS#createHistoryCheckpointRecord(checkpoint) -> Uint8Array   // instance m
 `members` maps `recordDigest` to retained members. Phase 1 fixes exact
 argument shapes without adding behavior.
 
-### 13.3 CLI (`memoryos history`): FREEZE_PROPOSED
+### 13.3 CLI (`memoryos history`): FROZEN
 
 ```text
 memoryos history init    --ledger DIR --name NAME --workspace ID [--json]
@@ -769,7 +816,7 @@ code (section 14).
 
 ## 14. Errors (H43) and limits (H44)
 
-### 14.1 Error catalog: FREEZE_PROPOSED
+### 14.1 Error catalog: FROZEN
 
 Wire codes are prefixed `MO1308_`. Stages: `USAGE`, `ACQUISITION`,
 `VERIFICATION`, `ADMISSION`, `PUBLICATION`, `INTERNAL`.
@@ -779,7 +826,7 @@ Wire codes are prefixed `MO1308_`. Stages: `USAGE`, `ACQUISITION`,
 | USAGE | 1 | Invalid command, flag or argument |
 | RECORD_INVALID | 2 | Admission check failed, wrong members, unknown kind via SDK, native checkpoint |
 | RECORD_DUPLICATE | 2 | Same `(recordKind, recordDigest)` already in the ledger |
-| RECORD_PURGED | 2 | Re-supply of a purged record (if H23 recommendation is approved) |
+| RECORD_PURGED | 2 | Re-supply of a purged record (H23) |
 | WORKSPACE_MISMATCH | 2 | INTRINSIC Workspace differs from the ledger Workspace |
 | DECISION_UNBOUND | 2 | No matching READINESS_RESULT entry (H16) |
 | TOMBSTONE_INVALID | 2 | Target missing, already tombstoned, a tombstone, or purged |
@@ -799,14 +846,14 @@ Wire codes are prefixed `MO1308_`. Stages: `USAGE`, `ACQUISITION`,
 Stderr and JSON errors carry no path, record content, exception message or
 stack.
 
-### 14.2 Limits: FREEZE_PROPOSED
+### 14.2 Limits: FROZEN
 
 | Limit | Value | Basis |
 |---|---|---|
 | Entries per ledger | 100,000 | Linear verification bound |
 | Entry file | 16,384 bytes | Fixed-size shapes |
 | Ledger descriptor | 1,024 bytes | |
-| Per-kind member limits | Section 7.1 | Reused: MIP-001 import default (16 MiB), MO-1301 outcome limit (4,060), MO-1306 bundle (49,152), MO-1307 result and decision (4,194,304 and 8,192). Proposed without predecessor limit: Regression report 16 MiB, checkpoint 32 MiB (option A) |
+| Per-kind member limits | Section 7.1 | Reused: MIP-001 import default (16 MiB), MO-1301 outcome limit (4,060), MO-1306 bundle (49,152), MO-1307 result and decision (4,194,304 and 8,192). Set by this Freeze without predecessor limit: Regression report 16 MiB, checkpoint 32 MiB (H13) |
 | Subjects per entry | 16 | |
 | Query page | 1–1,000 entries | |
 | CLI JSON stdout | 4,194,304 bytes | |
@@ -817,14 +864,14 @@ Any limit change after approval returns to owner review.
 
 ## 15. Security and privacy (H07–H09)
 
-### 15.1 H07 — authenticity: FREEZE_PROPOSED
+### 15.1 H07 — authenticity: FROZEN
 
 Integrity only in v1. Ledgers and exports carry no signatures; authenticity is
 `NOT_VERIFIED_BY_MEMORYOS`. Reasoning: MIP-001, MO-1306 and MO-1307 establish
 integrity, not origin, and MO-1307 accepts no key material. Rejected:
 signatures (need a key-management authority that does not exist).
 
-### 15.2 H08 — confidentiality at rest: FREEZE_PROPOSED
+### 15.2 H08 — confidentiality at rest: FROZEN
 
 No encryption and no ACL changes by MO-1308 in v1. Access control is the
 operator's filesystem responsibility, and this is disclosed in the CLI
@@ -832,7 +879,7 @@ documentation. Reasoning: SP-004 §8 assigns encryption to Providers, and no
 key authority exists. Purge by tombstone is the v1 privacy control.
 Rejected: built-in encryption.
 
-### 15.3 H09 — data classes: FREEZE_PROPOSED
+### 15.3 H09 — data classes: FROZEN
 
 MO-1308-authored structures (descriptor, entries, verification, query, export
 manifest, marker, errors) contain only: identifiers and names, digests, byte
@@ -844,7 +891,7 @@ bytes are the producer's exact bytes and may contain the producer's own fields
 (for example a decision claim's actor), which MO-1308 neither adds nor
 interprets.
 
-## 16. Distribution and supply chain (H46): FREEZE_PROPOSED
+## 16. Distribution and supply chain (H46): FROZEN
 
 No new package and no new third-party dependency. Changes are confined to new
 modules in `cca-studio/web/js`, additive changes to `memoryos-sdk.js`, and the
@@ -872,10 +919,10 @@ tags stay byte-identical. Rejected: a standalone installable package (section
 | MO1308-R14 | History never grants approval or readiness; no MO-1307 gate consumes it. | Audit |
 | MO1308-R15 | The entry commit point is exclusive creation of `entries/<n>.json`; losers get LEDGER_CONFLICT. | Concurrency tests |
 | MO1308-R16 | Interruption before the commit point publishes nothing. | Fault injection at every step |
-| MO1308-R17 | Filesystem checks per the approved H40 option; failures are FILESYSTEM_BOUNDARY. | Windows link/junction/race tests |
+| MO1308-R17 | Filesystem checks per H40 (Node-only, section 9.4); failures are FILESYSTEM_BOUNDARY; the store never overwrites or replaces existing content. | Windows link/junction/race tests |
 | MO1308-R18 | Tombstones follow section 10; the chain verifies after purge. | Vectors |
 | MO1308-R19 | Purged content is never reported as verified. | Vectors |
-| MO1308-R20 | Re-supply follows the approved H23 rule. | Vectors |
+| MO1308-R20 | A purged record can never be re-added (H23). | Vectors |
 | MO1308-R21 | `verify` checks every section 11.1 rule and fails closed. | Tamper corpus (single-byte flips per structure) |
 | MO1308-R22 | Queries verify the chain before answering and sort by index. | Vectors |
 | MO1308-R23 | Exports are byte-identical for equal ledgers; `verify-export` fails closed. | Vectors |
@@ -884,21 +931,24 @@ tags stay byte-identical. Rejected: a standalone installable package (section
 | MO1308-R26 | Section 14.2 limits are enforced. | Boundary vectors |
 | MO1308-R27 | SDK and CLI produce identical bytes for the same operations. | Parity tests |
 | MO1308-R28 | The history authority imports no SDK, Core, fs, network or predecessor package. | Architecture test |
-| MO1308-R29 | SDK history functions perform no I/O (option B). | Architecture test |
+| MO1308-R29 | SDK history functions perform no I/O (H06). | Architecture test |
 | MO1308-R30 | `session` still never serializes or restores checkpoints (CCA-MOS-CLI-009). | Regression test |
 | MO1308-R31 | All existing suites pass unchanged, with the V2 MO-1307 correction applied first. | Full regression |
 | MO1308-R32 | Released packages, vendored closures and tags are byte-identical. | Closure audit |
 | MO1308-R33 | No new third-party dependency. | Supply audit |
 | MO1308-R34 | SDK/CLI declare 1.2.0; no CCA-MEMORYOS-1.0 baseline claim changes. | Version tests |
+| MO1308-R35 | No MO-1308-authored structure contains a timestamp (H54). | Data-class audit |
+| MO1308-R36 | Every ledger has exactly one Workspace; every entry is INTRINSIC or DECLARED (H26). | Vectors |
+| MO1308-R37 | No MO-1308 operation launches PowerShell or any helper process (H40). | Static and runtime audit |
 
 ## 18. Phase plan, streams and certification (H02, H47)
 
-### 18.1 Phases: FREEZE_PROPOSED
+### 18.1 Phases: FROZEN
 
 | Phase | Owner paths | Deliverable | One-shot |
 |---|---|---|---|
-| 0B Freeze approval | `docs/` | This document approved and marked FROZEN | No |
-| (V2) MO-1307 stale-test correction | `repositories/cca-conformance` MO-1307 tests only | Test-only bound correction; prerequisite for B1 | Per its own authority |
+| 0B Freeze approval | `docs/` | This document approved and marked FROZEN (complete) | No |
+| (V2) MO-1307 stale-test correction | `repositories/cca-conformance` MO-1307 tests only | Test-only bound correction after the tag; prerequisite for B1 | Per its own authority |
 | 1 Foundation | `cca-studio/web/js/memoryos-history-contract.js`, guarded SDK signatures, guarded CLI grammar, fixtures, ARCHITECTURE/ambiguity text (section 5.4), equivalence vectors (R03), Regression inspection confirmation | Binding B1 | No |
 | 2A Ledger core | `memoryos-history-ledger.js` | Identities, chain, verify, query, export model | No |
 | 2B Admission | `memoryos-history-admission.js` | Seven admission methods | No |
@@ -923,7 +973,24 @@ SDK signatures, 2C runs after 2A and 2B. Accepted streams are preserved and a
 failed stream restarts alone. Branches follow V9 (`mo1308/phase1`,
 `mo1308/phase2a-ledger`, …).
 
-### 18.2 H47 — certification applicability: FREEZE_PROPOSED
+### 18.2 Phase 1 entry obligations and dependency
+
+These must be proven before any Phase 1 binding (B1). If any fails, Phase 1
+stops and returns to owner review as AUTHORITY_CONFLICT; it is not worked
+around.
+
+1. **J equivalence (R03):** MO-1306 and MO-1307 `J` serialization equals the
+   Standard's canonical JSON (`JCS`) plus one trailing newline on every
+   existing MO-1306 and MO-1307 canonical fixture in this repository.
+2. **Regression identity:** `inspectRegressionReport` actually verifies a
+   Regression report's identity, so that REGRESSION_REPORT admission (section
+   7.3) checks integrity rather than shape alone.
+3. **Dependency:** the MO-1307 test-only stale-test correction (V2) is complete
+   and bound.
+4. **Released-closure check (section 5.1):** on the reference Windows host, no
+   released inventory check recomputes current `memoryos-sdk.js` bytes.
+
+### 18.3 H47 — certification applicability: FROZEN
 
 3A applies because the Windows file store is the main risk. 3B applies as a
 closure and supply audit, not package certification, because no package is
@@ -935,70 +1002,71 @@ generations are preserved and never promoted.
 | ID | Subject | Disposition |
 |---|---|---|
 | H01 | Authority | RESOLVED_BY_OWNER (reaffirmed) |
-| H02 | Phases and streams | FREEZE_PROPOSED (§18) |
+| H02 | Phases and streams | FROZEN (§18; entry obligations §18.2) |
 | H03 | File-based ledger | RESOLVED_BY_OWNER (V4; reaffirmed; supported by SP-004/AR-001, §3) |
-| H04 | ARCHITECTURE text | FREEZE_PROPOSED (§5.4) |
-| H05 | Placement | FREEZE_PROPOSED (§5.1) |
-| H06 | Dependency direction | **OWNER_DECISION_REQUIRED** (§5.2; recommend B) |
-| H07 | Authenticity | FREEZE_PROPOSED (§15.1) |
-| H08 | Confidentiality | FREEZE_PROPOSED (§15.2) |
-| H09 | Data classes | FREEZE_PROPOSED (§15.3) |
+| H04 | ARCHITECTURE text | FROZEN (§5.4) |
+| H05 | Placement | FROZEN (§5.1) |
+| H06 | Dependency direction | RESOLVED_BY_OWNER (§5.2; option B) |
+| H07 | Authenticity | FROZEN (§15.1) |
+| H08 | Confidentiality | FROZEN (§15.2) |
+| H09 | Data classes | FROZEN (§15.3) |
 | H10, H11 | Record kinds and exclusions | RESOLVED_BY_OWNER (V5; reaffirmed) |
-| H12 | Admission | FREEZE_PROPOSED (§7.3; checkpoint row depends on H13) |
-| H13 | Checkpoint record form | **OWNER_DECISION_REQUIRED** (§7.2; recommend A) |
+| H12 | Admission | FROZEN (§7.3; checkpoint row depends on H13) |
+| H13 | Checkpoint record form | RESOLVED_BY_OWNER (§7.2; option A) |
 | H14 | Not a restore source | RESOLVED_BY_OWNER (accepted 2026-10-04; consistent with the Standard, which permits restoration but lets the SDK keep checkpoints opaque) |
 | H15 | Claim authenticity | RESOLVED_BY_PREDECESSOR (reaffirmed) |
-| H16 | Claim binding | FREEZE_PROPOSED (§7.4) |
-| H17 | Retained bytes | FREEZE_PROPOSED (§7.5) |
+| H16 | Claim binding | FROZEN (§7.4) |
+| H17 | Retained bytes | FROZEN (§7.5) |
 | H18, H19 | Native exclusion; tombstone model | RESOLVED_BY_OWNER (reaffirmed) |
-| H20 | Tombstone governance | **OWNER_DECISION_REQUIRED** (§10.1) |
-| H21 | Retention period | FREEZE_PROPOSED (§10.3) |
-| H22 | Purged entries | FREEZE_PROPOSED (§10.4) |
-| H23 | Re-supply | **OWNER_DECISION_REQUIRED** (§10.5; recommend never) |
+| H20 | Tombstone governance | RESOLVED_BY_OWNER (§10.1) |
+| H21 | Retention period | FROZEN (§10.3) |
+| H22 | Purged entries | FROZEN (§10.4) |
+| H23 | Re-supply | RESOLVED_BY_OWNER (§10.5; never) |
 | H24 | No MIP extension | RESOLVED_BY_OWNER (reaffirmed) |
-| H25 | Export | FREEZE_PROPOSED (§12) |
-| H26 | Ledger scope | **OWNER_DECISION_REQUIRED** (§8.1; recommend per-Workspace) |
-| H27, H28 | Query; cross-ledger | FREEZE_PROPOSED (§11) |
+| H25 | Export | FROZEN (§12) |
+| H26 | Ledger scope | RESOLVED_BY_OWNER (§8.1; one ledger per Workspace) |
+| H27, H28 | Query; cross-ledger | FROZEN (§11) |
 | H29 | Surfaces | RESOLVED_BY_OWNER (reaffirmed) |
-| H30 | CLI grammar and exits | FREEZE_PROPOSED (§13.3) |
+| H30 | CLI grammar and exits | FROZEN (§13.3) |
 | H31 | Standard source | RESOLVED (§2) |
 | H32, H33 | MO-1307 tag timing; ROADMAP | RESOLVED_BY_OWNER; superseded by the tag fact (§1.2) |
 | H34 | MO-1307 tag target | RESOLVED_BY_OWNER (tag at BF; V2 after the tag, before MO-1308 B1) |
 | H35 | Stale tests | RESOLVED_BY_OWNER (V2; dependency) |
-| H36 | Identities | FREEZE_PROPOSED (§8.2) |
-| H37 | Canonicalization | FREEZE_PROPOSED (§6.1) |
+| H36 | Identities | FROZEN (§8.2) |
+| H37 | Canonicalization | FROZEN (§6.1) |
 | H38 | Wall clock not authoritative | RESOLVED_BY_PREDECESSOR (reaffirmed) |
-| H39 | Ordering | FREEZE_PROPOSED (§8.3) |
-| H40 | Store mechanism | **OWNER_DECISION_REQUIRED** (§9.4; recommend A with risk acceptance) |
-| H41 | Concurrency | FREEZE_PROPOSED (§9.3) |
-| H42 | Layout | FREEZE_PROPOSED (§9.1) |
-| H43 | Errors | FREEZE_PROPOSED (§14.1) |
-| H44 | Limits | FREEZE_PROPOSED (§14.2) |
-| H45 | Platform | FREEZE_PROPOSED (§9.6) |
-| H46 | Distribution | FREEZE_PROPOSED (§16) |
-| H47 | Certification | FREEZE_PROPOSED (§18.2) |
+| H39 | Ordering | FROZEN (§8.3) |
+| H40 | Store mechanism | RESOLVED_BY_OWNER (§9.4; Node-only, explicit risk acceptance for local single-user v1) |
+| H41 | Concurrency | FROZEN (§9.3) |
+| H42 | Layout | FROZEN (§9.1) |
+| H43 | Errors | FROZEN (§14.1) |
+| H44 | Limits | FROZEN (§14.2) |
+| H45 | Platform | FROZEN (§9.6) |
+| H46 | Distribution | FROZEN (§16) |
+| H47 | Certification | FROZEN (§18.3) |
 | H48–H53, H55 | Separation, MO-1309, conformance, logs, TransitionLog, branches, readiness runtime | Reaffirmed as recorded in the authority |
-| H54 | Observed time | **OWNER_DECISION_REQUIRED** (§8.4; recommend none) |
+| H54 | Observed time | RESOLVED_BY_OWNER (§8.4; no timestamp) |
 
-Of the 34 entries OPEN after the authority, H31 and H34 are now resolved. Of
-the remaining 32: **25 FREEZE_PROPOSED and 7 OWNER_DECISION_REQUIRED** (H06,
-H13, H20, H23, H26, H40, H54).
+Of the 34 entries OPEN after the authority, H31 and H34 were resolved before
+the proposal; of the remaining 32, **25 are FROZEN as proposed and 7 are
+RESOLVED_BY_OWNER** (H06, H13, H20, H23, H26, H40, H54). **All 55 entries are
+closed: zero remain OPEN and zero await an owner decision.**
 
-## 20. Owner decisions required — summary
+## 20. Owner decisions — summary
 
-| ID | Options | Recommendation |
-|---|---|---|
-| H06 | B: pure SDK, CLI owns files · A: Node SDK entry with file Provider · C: CLI only | **B** |
-| H13 | A: full Standard nine-member checkpoint projection · B: eight-member SDK metadata | **A** |
-| H20 | Operator command with closed reasons and opaque reference · external decision digest · two-step | **Operator command, closed reasons, opaque reference** |
-| H23 | Never re-admit purged digest · allow re-supply as new entry | **Never** |
-| H26 | Per-Workspace ledger with INTRINSIC/DECLARED association · Workspace-less ledger | **Per-Workspace** |
-| H40 | A: Node-only detection (weaker than predecessors, bounded impact) · B: PowerShell check helper · C: new native helper | **A with explicit risk acceptance**; else B |
-| H54 | No time · diagnostic `observedAt` outside identities | **No time** |
+| ID | Decision |
+|---|---|
+| H06 | Option B: pure SDK, the CLI owns the file store |
+| H13 | Option A: full Standard nine-field checkpoint, record only, never a restore source |
+| H20 | Operator command, closed reason list, free-text authority reference; every tombstone is a ledger entry |
+| H23 | Purged bytes can never be re-added |
+| H26 | One ledger per Workspace; INTRINSIC or DECLARED association; no Workspace-less ledgers |
+| H40 | Node-only store; explicit risk acceptance for local single-user v1; re-review before multi-user, shared-storage or cloud use including MO-1309; no PowerShell or compiled helper |
+| H54 | No timestamp per entry, diagnostic or otherwise |
 
 ## 21. Testing strategy
 
-Freeze adopts R01–R34 as the requirement inventory. Test classes: closed-shape
+Freeze adopts R01–R37 as the requirement inventory. Test classes: closed-shape
 and version negatives; `D`/`JCS` golden vectors and the R03 equivalence set;
 determinism with independently varied volatile inputs; a per-kind admission
 matrix (valid, forged, stale, wrong Workspace, wrong members, oversized,
@@ -1021,28 +1089,48 @@ Development tests in Phases 1–2 are not one-shot; Phase 3 campaigns are.
 | CCA-MOS-CLI-001 baseline CLI 1.0.0 exact command set versus a new `history` namespace | RESOLVED BY PRECEDENT | Additive CLI/SDK 1.2.0 outside the baseline claim, as MO-1301 did for 1.1.0 (§13.1). |
 | CCA-MOS-CLI-009 versus durable checkpoint records | RESOLVED | The SDK caller writes the record; the CLI never serializes or restores a checkpoint (§7.2). |
 | Standard permits a fresh Core to restore a public checkpoint value versus H14 | CONSISTENT (narrower) | MO-1308 records are never passed to `restore` (H14). |
-| Standard registry text versus section prose differ in wording for 109 of 114 CCA-MOS requirements; no stated precedence | STANDARD-INTERNAL OBSERVATION | No semantic conflict found for the requirements MO-1308 relies on. Recommend the Standard owner record a precedence rule; outside MO-1308. |
+| Standard registry text versus section prose differ in wording for 109 of 114 CCA-MOS requirements; no stated precedence | STANDARD-INTERNAL OBSERVATION | Recorded for future errata in `cca-specifications` (§22.1); MO-1308 assumes no precedence rule; no semantic conflict for the requirements it relies on. |
 | Owner-described branch `release/memoryos-v1.2.1-publications` not present on remote | FACT DISCREPANCY | Content verified at `main` `bdf8fd4`; no effect. |
 | SP-004 is Draft; this repository implements it in `cca-core` | INFORMATIONAL | SP-004 does not govern MO-1308 records; its Provider pattern is adopted (§3.1). |
-| V3 non-PowerShell preference versus predecessors' PowerShell-based path protection | RISK TRADE-OFF | H40 owner decision (§9.4). |
-| ARCHITECTURE §5 and §13 do not describe MO-1308 | EXPECTED | Text proposed (§5.4) for Phase 1. |
+| V3 non-PowerShell preference versus predecessors' PowerShell-based path protection | ACCEPTED RISK | H40: Node-only store under explicit owner risk acceptance for local single-user v1; re-review required before multi-user, shared-storage or cloud use including MO-1309 (§9.4). |
+| ARCHITECTURE §5 and §13 do not describe MO-1308 | EXPECTED | Frozen text (§5.4) applied in Phase 1. |
 
 Released documents, inventories, evidence, packages and tags are unchanged.
 
-## 23. Validation and exact next task
+### 22.1 Owner-directed records (not resolved by MO-1308)
 
-Validation for this proposal: `git diff --check`; every relative link in the
-changed documents resolves to a tracked path; the changed-path set is exactly
-this document and ROADMAP.md; Standard checks in section 2 were recomputed by
-script from the blobs at `bdf8fd4`.
+1. **Standard-level observation for future errata in `cca-specifications`:**
+   the CCA-MEMORYOS-1.0 registry `requirement` text and the `### <ID>` section
+   prose are worded differently for 109 of 114 CCA-MOS requirements, and the
+   Standard states no precedence rule between them. MO-1308 assumes no
+   precedence rule. No semantic conflict was found for the requirements
+   MO-1308 relies on (CCA-MOS-LIFE-003, -009, -011, CCA-MOS-CLI-001, -009 and
+   the checkpoint projection). Any erratum belongs to the Standard's own
+   change process (CCA-MOS-VER), not to MO-1308.
+2. **Absent branch:** `release/memoryos-v1.2.1-publications` does not exist on
+   the `moelsaka01/cca-specifications` remote; only `main` (`bdf8fd4`) does.
+   No action.
+3. **Phase 1 entry obligations:** section 18.2.
+4. **Dependency:** the MO-1307 test-only stale-test correction (V2) must
+   complete before the MO-1308 Phase 1 binding (sections 1.2, 18.2).
 
-The exact next task is:
+## 23. Validation and exact next tasks
 
-**MEMORYOS 1.3 MO-1308 CONTRACT FREEZE 1 — OWNER REVIEW AND APPROVAL**
+Validation for this approval commit: `git diff --check`; every relative link
+in the changed documents resolves to a tracked path; the changed-path set is
+exactly this document and ROADMAP.md; a scripted check that no register entry
+is OPEN or awaiting an owner decision. The Standard checks in section 2 were
+recomputed by script from the blobs at `bdf8fd4` for the proposal and are
+unchanged.
 
-The owner decides H06, H13, H20, H23, H26, H40 and H54 (section 20), and
-approves or amends each FREEZE_PROPOSED resolution. A single documentation
-commit then records the decisions and changes this document's status to FROZEN.
-After that, the MO-1307 V2 stale-test correction runs under its own
-authorization, and MO-1308 Phase 1 may begin on `mo1308/phase1`. Phase 1
-binding (B1) waits for V2.
+The exact next tasks, in order:
+
+1. **MEMORYOS 1.3 MO-1307 V2 — TEST-ONLY STALE-TEST CORRECTION.** Correct
+   the 7 disclosed stale tests (`C2C01`, `C2C17`, `C2C18`, `R07`, `R08`, `R09`
+   to the owner-authorized 9000/28000 ms bounds; `NRT01` to a
+   preserved-evidence check, not a re-execution), with no production,
+   contract, limit or evidence change, and bind it. It runs under its own
+   authorization.
+2. **MEMORYOS 1.3 MO-1308 PHASE 1 — FOUNDATION**, on `mo1308/phase1` created
+   from the accepted Freeze commit: the section 18.1 Phase 1 deliverables and
+   the section 18.2 entry obligations. B1 waits for task 1.
