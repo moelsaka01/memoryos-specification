@@ -540,8 +540,12 @@ test("CLI aliases and closed JSON result member sets are exact", async (t) => {
 });
 
 test("SDK bindings expose the complete projection and common semantic operation families", async () => {
+  // MO-1308 adds the JavaScript-only createHistoryCheckpointRecord (Contract Freeze 1
+  // §13.2, V7). It is outside the CCA-MOS-SDK-004 common operation contract, so the
+  // C++/Python parity list below is unchanged.
   assert.deepEqual(Object.getOwnPropertyNames(MemoryOS.prototype).sort(), [
     "capturePolicyFactContext", "captureRegressionPolicyFacts", "constructor",
+    "createHistoryCheckpointRecord",
     "evaluatePolicy", "evaluatePolicySet", "exportPackage", "importPackage",
     "inspectPolicyFactContext", "inspectRegressionPolicyFactSource",
     "inspectRegressionReport", "investigate", "observe", "openWorkspace",

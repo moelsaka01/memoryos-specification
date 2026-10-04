@@ -18,6 +18,17 @@ import {
   MemoryOSRegressionReportInspection,
   createMemoryOSPolicyIntegration,
 } from "./investigation-policy-integration.js";
+import {
+  MEMORYOS_HISTORY_LIMITS as HISTORY_LIMITS,
+  MemoryOSHistoryError,
+  RECORD_KINDS as HISTORY_RECORD_KINDS,
+  TOMBSTONE_REASONS as HISTORY_TOMBSTONE_REASONS,
+  isAuthorityReference as isHistoryAuthorityReference,
+  isDigest as isHistoryDigest,
+  isLedgerName as isHistoryLedgerName,
+  isWorkspaceIdentifier as isHistoryWorkspaceIdentifier,
+  validateQuery as validateHistoryQuery,
+} from "./memoryos-history-contract.js";
 
 export const MEMORYOS_SDK_VERSION = "1.1.0";
 
@@ -33,6 +44,7 @@ export {
   MemoryOSPreparedPolicy,
   MemoryOSRegressionPolicyFactSourceInspection,
   MemoryOSRegressionReportInspection,
+  MemoryOSHistoryError,
 };
 
 const PRIVATE = Symbol("MemoryOS SDK private construction");
@@ -780,4 +792,129 @@ export class MemoryOS {
   restore(checkpoint) {
     return this.#binding().restore(checkpoint);
   }
+
+  // MO-1308 Contract Freeze 1 §13.2. Phase 1 guard: the argument shape is checked,
+  // then the call fails closed until Phase 2 implements checkpoint records.
+  createHistoryCheckpointRecord(checkpoint) {
+    const binding = this.#binding();
+    if (!weakMapGet(checkpointValues, checkpoint) || weakMapGet(checkpointBindings, checkpoint) !== binding) {
+      historyGuardFail("USAGE", "USAGE");
+    }
+    return historyGuardFail("INTERNAL", "INTERNAL");
+  }
+}
+
+// MO-1308 Investigation History (Contract Freeze 1 §13.2), Phase 1 guarded surface.
+// Each function checks its frozen argument shape and then fails closed with
+// MO1308_INTERNAL: Phase 1 implements no identity, chain, admission, query or
+// export, and a complete-looking result would falsely claim that it did. The
+// SDK performs no file I/O (H06); `ledger` and `admission` are branded values
+// that only the Phase 2 history authority will issue.
+const historyLedgers = new WeakSet();
+const historyAdmissions = new WeakSet();
+
+function historyGuardFail(code, stage) {
+  throw new MemoryOSHistoryError(code, stage);
+}
+function historyArgument(value, keys) {
+  if (value === null || typeof value !== "object" || Array.isArray(value)
+      || ![Object.prototype, null].includes(Object.getPrototypeOf(value))) historyGuardFail("USAGE", "USAGE");
+  const actual = Object.keys(value).sort();
+  const expected = [...keys].sort();
+  if (actual.length !== expected.length || actual.some((key, index) => key !== expected[index])) {
+    historyGuardFail("USAGE", "USAGE");
+  }
+  return value;
+}
+const isHistoryBytes = (value) => value instanceof Uint8Array && !(value.buffer instanceof SharedArrayBuffer);
+function historyBytes(value) {
+  if (!isHistoryBytes(value)) historyGuardFail("USAGE", "USAGE");
+}
+function historyByteList(value) {
+  if (!Array.isArray(value) || !value.every(isHistoryBytes)) historyGuardFail("USAGE", "USAGE");
+}
+function historyMembers(value) {
+  if (!Array.isArray(value) || value.length === 0) historyGuardFail("USAGE", "USAGE");
+  for (const member of value) {
+    historyArgument(member, ["name", "bytes"]);
+    if (typeof member.name !== "string") historyGuardFail("USAGE", "USAGE");
+    historyBytes(member.bytes);
+  }
+}
+function historyMemberMap(value) {
+  if (!(value instanceof Map)) historyGuardFail("USAGE", "USAGE");
+  for (const [recordDigest, members] of value) {
+    if (!isHistoryDigest(recordDigest)) historyGuardFail("USAGE", "USAGE");
+    historyMembers(members);
+  }
+}
+function historyLedger(value) {
+  if (!historyLedgers.has(value)) historyGuardFail("USAGE", "USAGE");
+}
+
+export function createHistoryLedger(input) {
+  const { ledgerName, workspaceIdentifier } = historyArgument(input, ["ledgerName", "workspaceIdentifier"]);
+  if (!isHistoryLedgerName(ledgerName) || !isHistoryWorkspaceIdentifier(workspaceIdentifier)) historyGuardFail("USAGE", "USAGE");
+  return historyGuardFail("INTERNAL", "INTERNAL");
+}
+
+export function admitHistoryRecord(input) {
+  const { recordKind, members, ledger } = historyArgument(input, ["recordKind", "members", "ledger"]);
+  if (!HISTORY_RECORD_KINDS.includes(recordKind)) historyGuardFail("RECORD_INVALID", "ADMISSION");
+  historyMembers(members);
+  historyLedger(ledger);
+  return historyGuardFail("INTERNAL", "INTERNAL");
+}
+
+export function appendHistoryEntry(input) {
+  const { ledger, admission } = historyArgument(input, ["ledger", "admission"]);
+  historyLedger(ledger);
+  if (!historyAdmissions.has(admission)) historyGuardFail("USAGE", "USAGE");
+  return historyGuardFail("INTERNAL", "INTERNAL");
+}
+
+export function tombstoneHistoryEntry(input) {
+  const { ledger, targetIndex, reason, authorityReference } = historyArgument(input,
+    ["ledger", "targetIndex", "reason", "authorityReference"]);
+  if (!Number.isSafeInteger(targetIndex) || targetIndex < 0 || targetIndex > HISTORY_LIMITS.maximumIndex
+      || !HISTORY_TOMBSTONE_REASONS.includes(reason) || !isHistoryAuthorityReference(authorityReference)) {
+    historyGuardFail("USAGE", "USAGE");
+  }
+  historyLedger(ledger);
+  return historyGuardFail("INTERNAL", "INTERNAL");
+}
+
+export function verifyHistoryLedger(input) {
+  const { descriptorBytes, entries, members } = historyArgument(input, ["descriptorBytes", "entries", "members"]);
+  historyBytes(descriptorBytes);
+  historyByteList(entries);
+  historyMemberMap(members);
+  return historyGuardFail("INTERNAL", "INTERNAL");
+}
+
+export function queryHistoryLedger(input) {
+  const { descriptorBytes, entries, query } = historyArgument(input, ["descriptorBytes", "entries", "query"]);
+  historyBytes(descriptorBytes);
+  historyByteList(entries);
+  validateHistoryQuery(query);
+  return historyGuardFail("INTERNAL", "INTERNAL");
+}
+
+export function buildHistoryExport(input) {
+  const { descriptorBytes, entries, members } = historyArgument(input, ["descriptorBytes", "entries", "members"]);
+  historyBytes(descriptorBytes);
+  historyByteList(entries);
+  historyMemberMap(members);
+  return historyGuardFail("INTERNAL", "INTERNAL");
+}
+
+export function verifyHistoryExport(input) {
+  const { files } = historyArgument(input, ["files"]);
+  if (!Array.isArray(files)) historyGuardFail("USAGE", "USAGE");
+  for (const file of files) {
+    historyArgument(file, ["path", "bytes"]);
+    if (typeof file.path !== "string") historyGuardFail("USAGE", "USAGE");
+    historyBytes(file.bytes);
+  }
+  return historyGuardFail("INTERNAL", "INTERNAL");
 }
