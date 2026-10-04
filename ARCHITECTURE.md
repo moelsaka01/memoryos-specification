@@ -168,6 +168,11 @@ same authority. It traverses only validated report differences and returns
 canonical pointers to their existing digests; it never reloads or executes an
 investigation.
 
+MO-1308 adds the Investigation History authority inside the same JavaScript
+boundary. It admits records only through their owning authorities, binds them
+into an append-only, hash-chained ledger, and never re-derives their
+semantics. It performs no filesystem, network or Runtime access.
+
 Studio no longer imports the Investigation Core directly. Its only public
 investigation dependency is the in-process JavaScript MemoryOS SDK facade,
 which forwards every state-changing operation, regression request, and
@@ -213,6 +218,8 @@ to the Core; it does not compare their bytes, rendering, or layout itself.
 The MO-1207 `investigate` command passes one validated regression report and an
 explicit query to the SDK. It does not filter, match, replay, or resolve
 evidence locally.
+The `history` namespace owns the MO-1308 file store at an explicit
+operator-supplied location.
 
 The complete downstream direction is:
 
@@ -379,6 +386,11 @@ excluded.
 Names, categories, reserved directories, and interfaces do not authorize
 those features. Crossing one of these boundaries requires a separately
 approved architecture.
+
+MO-1308 is the separately approved exception for a local, file-based,
+append-only Investigation History ledger. It does not authorize a database
+engine, embedded storage library, server process, network service, cloud store
+or general persistence for any other component.
 
 ## 14. Remaining decisions
 
