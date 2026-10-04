@@ -1,0 +1,66 @@
+{
+  "kind": "MO1307V2StaleTestCorrectionReceipt",
+  "version": "1.0.0",
+  "authoringCommit": "7ca4dfba5d455d58ff511b7aeb5fcf107c1a412a",
+  "baseCommit": "1dd1e8c82fe0ed5a32a894744392f2c279f89d4c",
+  "runtime": {
+    "version": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "sha256": "sha256:ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32"
+  },
+  "runner": "node --test --test-concurrency=1 tests/mo1307_*_test.mjs (cwd repositories/cca-conformance, via cmd redirection)",
+  "files": 25,
+  "tests": 639,
+  "pass": 639,
+  "fail": 0,
+  "cancelled": 0,
+  "skipped": 0,
+  "exitCode": 0,
+  "log": {
+    "path": "repositories/cca-conformance/evidence/mo1307/v2-stale-test-correction/tests.log",
+    "byteLength": 62440,
+    "sha256": "sha256:d8478f10bc1b778e496bd3320e6ce9659e019a3265728152abb3baedd336bed8"
+  },
+  "correctedTests": [
+    "C2C01",
+    "C2C17",
+    "C2C18",
+    "R07",
+    "R08",
+    "R09",
+    "NRT01"
+  ],
+  "correctedFiles": [
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs",
+      "baseBlob": "be6c23c6f09a542302eccf5fb59e1b7471e00b38",
+      "blob": "ce5e0b2e624f4715d33d697fd9d137c45ba363d0",
+      "byteLength": 17137,
+      "sha256": "sha256:448bdde0e0612789724e33cbcb7d7ee227a8c89824d0ab0bd702c46e74f91cc3"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs",
+      "baseBlob": "380c37d163d0fba4fe9ea4c49424c4db6ca41db0",
+      "blob": "9b68ea77317ffeca3130a0dcf838ba35ce3a37f3",
+      "byteLength": 17281,
+      "sha256": "sha256:4c9b55fd78dfa673e3f6737b1053578f35f921629add74cf27e678eeb6910f47"
+    },
+    {
+      "path": "repositories/cca-conformance/tests/mo1307_phase2c_native_runtime_test.mjs",
+      "baseBlob": "f92bea420a21e9f10832c808a6c5848d4f05a287",
+      "blob": "bb9bca86e1357c01fdcbffde2b50ff85f76510ed",
+      "byteLength": 1931,
+      "sha256": "sha256:c3e4d47b0bf7de4690b677649378f9a824d1c47104c264dd017c2822efd4b6af"
+    }
+  ],
+  "witness": {
+    "path": "repositories/cca-conformance/evidence/mo1307/phase2c-resumed/runtime/native-worker-deadline.json",
+    "byteLength": 1294,
+    "sha256": "sha256:0013e3067f58da39ff58074035ad920cfe7b4960df470816b1af0d5318a222b4",
+    "gitBlob": "72e9283fa898ad4dfe11cb366f6f64285af75514",
+    "unchanged": true
+  },
+  "productionChanged": false,
+  "result": "PASS_639"
+}
