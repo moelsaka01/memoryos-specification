@@ -1,0 +1,183 @@
+{
+    "kind":  "MO1308Phase2AG2Receipt",
+    "streamHead":  "fc0c51522cab08d084910335c4a84faeb714406f",
+    "runtime":  {
+                    "nodeVersion":  "v24.21.0",
+                    "platform":  "win32",
+                    "arch":  "x64",
+                    "nodeSha256":  "ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32",
+                    "python":  "Python 3.14.4"
+                },
+    "items":  [
+                  {
+                      "id":  1,
+                      "name":  "LEDGER_CORE",
+                      "command":  "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe --test --test-concurrency=1 tests/mo1308_phase2a_ledger_test.mjs",
+                      "cwd":  "repositories/cca-conformance",
+                      "exitCode":  0,
+                      "expected":  "25/25",
+                      "counts":  {
+                                     "tests":  25,
+                                     "pass":  25,
+                                     "fail":  0,
+                                     "cancelled":  0,
+                                     "skipped":  0
+                                 },
+                      "seconds":  4.3,
+                      "result":  "PASS",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2a-g2/ledger.log",
+                                  "byteLength":  2670,
+                                  "sha256":  "ce4755e7c9d57cafc6f755067edfa9e36d30db79a042ee6e78938bed0570ab14"
+                              }
+                  },
+                  {
+                      "id":  2,
+                      "name":  "MO1308_SUITES",
+                      "command":  "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe --test --test-concurrency=1 tests/mo1308_*_test.mjs",
+                      "cwd":  "repositories/cca-conformance",
+                      "exitCode":  0,
+                      "expected":  "44/44",
+                      "counts":  {
+                                     "tests":  44,
+                                     "pass":  44,
+                                     "fail":  0,
+                                     "cancelled":  0,
+                                     "skipped":  0
+                                 },
+                      "seconds":  32.9,
+                      "result":  "PASS",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2a-g2/mo1308.log",
+                                  "byteLength":  4348,
+                                  "sha256":  "4a383016dae44fa8092d208d45753168fd54ad5f0b11b17664faa3a0fc2e63b8"
+                              }
+                  },
+                  {
+                      "id":  3,
+                      "name":  "CCA_STUDIO",
+                      "command":  "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe --test tests/memory_studio_web_test.mjs tests/memory_studio_integration_test.mjs tests/mip_canonical_test.mjs tests/memory_investigation_package_test.mjs tests/mip_schema_conformance_test.mjs tests/mip_adversarial_conformance_test.mjs tests/mip_ordering_conformance_test.mjs tests/mip_derived_edge_conformance_test.mjs tests/mip_pipeline_conformance_test.mjs tests/ai_runtime_adapter_test.mjs tests/investigation_core_test.mjs tests/memoryos_sdk_test.mjs tests/cognitive_regression_test.mjs tests/cognitive_investigation_explorer_test.mjs tests/policy_canonical_test.mjs tests/investigation_policy_contracts_test.mjs tests/investigation_policy_test.mjs tests/policy_fact_context_test.mjs tests/regression_policy_fact_source_test.mjs tests/investigation_policy_engine_test.mjs tests/memoryos_policy_sdk_test.mjs tests/memoryos_history_contract_test.mjs tests/memoryos_history_sdk_guard_test.mjs",
+                      "cwd":  "repositories/cca-studio",
+                      "exitCode":  0,
+                      "expected":  "358/358",
+                      "counts":  {
+                                     "tests":  358,
+                                     "pass":  358,
+                                     "fail":  0,
+                                     "cancelled":  0,
+                                     "skipped":  0
+                                 },
+                      "seconds":  27.6,
+                      "result":  "PASS",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2a-g2/studio.log",
+                                  "byteLength":  34321,
+                                  "sha256":  "72020768329af8958b6a43cef3916b7a510ad660b3a921725fadfaace153af4b"
+                              }
+                  },
+                  {
+                      "id":  4,
+                      "name":  "MEMORYOS_CLI",
+                      "command":  "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe --test --test-concurrency=1 tests/*.test.mjs",
+                      "cwd":  "repositories/memoryos-cli",
+                      "exitCode":  0,
+                      "expected":  "45/45",
+                      "counts":  {
+                                     "tests":  45,
+                                     "pass":  45,
+                                     "fail":  0,
+                                     "cancelled":  0,
+                                     "skipped":  0
+                                 },
+                      "seconds":  136,
+                      "result":  "PASS",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2a-g2/cli.log",
+                                  "byteLength":  4009,
+                                  "sha256":  "6aadb45957361d38df10436f6e81dfc21415287a73cef4ed810bbc539c434cae"
+                              }
+                  },
+                  {
+                      "id":  5,
+                      "name":  "MO1307_REGRESSION",
+                      "command":  "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe --test --test-concurrency=1 tests/mo1307_*_test.mjs",
+                      "cwd":  "repositories/cca-conformance",
+                      "exitCode":  0,
+                      "expected":  "639/639",
+                      "counts":  {
+                                     "tests":  639,
+                                     "pass":  639,
+                                     "fail":  0,
+                                     "cancelled":  0,
+                                     "skipped":  0
+                                 },
+                      "seconds":  110.1,
+                      "result":  "PASS",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2a-g2/mo1307.log",
+                                  "byteLength":  62423,
+                                  "sha256":  "0dffa2f72afb89269a8e4b3f55b8ec1e03ad618c7cc03a2c0ba37a1dd055b191"
+                              }
+                  },
+                  {
+                      "id":  6,
+                      "name":  "WORKSPACE_VERIFIER",
+                      "command":  "python tools\\verify_workspace.py --root .",
+                      "cwd":  ".",
+                      "exitCode":  0,
+                      "expected":  "exit 0",
+                      "noMo1302Error":  true,
+                      "noMo1304Error":  true,
+                      "seconds":  0.7,
+                      "result":  "PASS",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2a-g2/verify.log",
+                                  "byteLength":  73,
+                                  "sha256":  "dd2902c4d2c987610b52c28cff15662688a88107d692491f58409fac4203ba26"
+                              }
+                  },
+                  {
+                      "id":  7,
+                      "name":  "CTEST",
+                      "result":  "DEFERRED_TOOLCHAIN_ABSENT",
+                      "reason":  "The reference Windows host has no C++ toolchain; owner-authorized deferral (Freeze Amendment A3). A full CTest run including cca.workspace.verify is a mandatory precondition of any MO-1308 Phase 3 certification run."
+                  },
+                  {
+                      "id":  8,
+                      "name":  "CHARACTERIZATION",
+                      "command":  "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe --expose-gc repositories\\cca-conformance\\tools\\mo1308-phase2a\\characterize.mjs",
+                      "cwd":  ".",
+                      "exitCode":  0,
+                      "expected":  null,
+                      "seconds":  128.5,
+                      "result":  "PASS",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2a-g2/characterization.json",
+                                  "byteLength":  826,
+                                  "sha256":  "e39e1779e092cc12a2d7f886892c60512407dc299bb0bdac89e1152229e650c6"
+                              },
+                      "stderr":  {
+                                     "path":  "repositories/cca-conformance/evidence/mo1308/phase2a-g2/characterization.stderr.log",
+                                     "byteLength":  354,
+                                     "sha256":  "cc74b7c902370aa99f1abb6752acd314734d986c6340c5128c849e1b08520e01"
+                                 }
+                  },
+                  {
+                      "id":  "CLEAN_TREE",
+                      "command":  "git status --porcelain",
+                      "expected":  "empty",
+                      "porcelain":  [
+
+                                    ],
+                      "result":  "PASS"
+                  }
+              ],
+    "characterizationValidity":  "6 measured operations, every one with a recorded value, none failed",
+    "amendmentNote":  "This stream changes the Phase 1 contract module and fixtures under Amendment A4.1 (item 3 re-runs them).",
+    "rerun":  "none: one run, no retry, no test or production edits",
+    "supersedes":  "d9249b83e3bd50ec23c15a55507f1d5503d05e30 (generation 1, FAILED_PRESERVED, left unchanged)",
+    "windowsOnlyTests":  "not applicable to stream 2A",
+    "streamBranchHead":  "fc0c51522cab08d084910335c4a84faeb714406f",
+    "generation":  2,
+    "result":  "PASS"
+}
