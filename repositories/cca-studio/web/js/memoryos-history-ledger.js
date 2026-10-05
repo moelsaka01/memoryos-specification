@@ -186,6 +186,19 @@ function buildVerification(chain, members) {
   };
 }
 
+// Amendment A4.1: admission of a decision claim re-verifies the referenced readiness result's retained bytes, so the
+// verified ledger keeps a snapshot of exactly those members (retained READINESS_RESULT records only, copied).
+function readinessMembersOf(chain, members) {
+  const kept = new Map();
+  for (const entry of chain.entries) {
+    if (entry.entryType !== "RECORD" || entry.record.recordKind !== "READINESS_RESULT"
+        || chain.tombstoneIndexByTarget.has(entry.index)) continue;
+    kept.set(entry.record.recordDigest, members.get(entry.record.recordDigest)
+      .map((member) => ({ name: member.name, bytes: copyBytes(member.bytes) })));
+  }
+  return kept;
+}
+
 // Returns the verified ledger value: the frozen MemoryOSHistoryVerification, branded by this module.
 export function verifyHistoryLedger(input) {
   const { descriptorBytes, entries, members } = requireObject(input, ["descriptorBytes", "entries", "members"]);
@@ -193,7 +206,7 @@ export function verifyHistoryLedger(input) {
   const chain = verifyChain(descriptorBytes, entries);
   const verification = validateVerification(buildVerification(chain, members));
   const ledger = deepFreeze(verification);
-  ledgerStates.set(ledger, deepFreeze({ ...chain, descriptor: chain.descriptor }));
+  ledgerStates.set(ledger, deepFreeze({ ...chain, descriptor: chain.descriptor, readinessMembers: readinessMembersOf(chain, members) }));
   return ledger;
 }
 
@@ -208,6 +221,13 @@ function stateOf(ledger) {
 // The parsed, frozen MemoryOSHistoryEntry values of a verified ledger (public Freeze shape).
 export function historyLedgerEntries(ledger) {
   return stateOf(ledger).entries;
+}
+
+// What admission needs from a verified ledger (Amendment A4.1): its Workspace, its entries, and the retained bytes of
+// its READINESS_RESULT records, keyed by recordDigest. Plain data, so admission stays independent of this module.
+export function historyLedgerView(ledger) {
+  const state = stateOf(ledger);
+  return Object.freeze({ workspaceIdentifier: state.descriptor.workspaceIdentifier, entries: state.entries, members: state.readinessMembers });
 }
 
 // ---- Append and tombstone entry construction (Freeze §8.2, §10.1) ----
@@ -255,6 +275,16 @@ export function appendHistoryEntry(input) {
       historyFail("WORKSPACE_MISMATCH", "ADMISSION");
     }
   }
+  if (record.recordKind === "HUMAN_DECISION_CLAIM") {
+    // Amendment A4.1: a claim is stored only against a retained READINESS_RESULT entry carrying its three digests; the
+    // stored decisionConsistency was computed by admission from that result's verified bytes and is never guessed here.
+    const subject = (type) => record.subjects.find((candidate) => candidate.type === type)?.value;
+    const bound = state.entries.some((entry) => entry.entryType === "RECORD" && entry.record.recordKind === "READINESS_RESULT"
+      && !state.tombstoneIndexByTarget.has(entry.index)
+      && ["PROOF_BINDING_DIGEST", "READINESS_CANDIDATE_DIGEST", "READINESS_DIGEST"].every((type) => (
+        entry.record.subjects.find((candidate) => candidate.type === type)?.value === subject(type))));
+    if (!bound) historyFail("DECISION_UNBOUND", "ADMISSION");
+  }
   const existing = state.recordIndexByKey.get(recordKey(record.recordKind, record.recordDigest));
   if (existing !== undefined) {
     historyFail(state.tombstoneIndexByTarget.has(existing) ? "RECORD_PURGED" : "RECORD_DUPLICATE", "ADMISSION");
@@ -287,15 +317,6 @@ export function tombstoneHistoryEntry(input) {
 }
 
 // ---- Query (Freeze §11.2) ----
-
-// BLOCKED_AUTHORITY (see docs/mo1308-phase2a-ledger.md): `decisionConsistency` needs the
-// decision claim's `decision` and the readiness result's `readiness`, which are member
-// bytes. The frozen query signature carries no members and entries store none of those
-// values, so the value cannot be derived. This module fails closed rather than emit a
-// value that would misstate R13; it never guesses.
-function decisionConsistencyUnavailable() {
-  return historyFail("INTERNAL", "INTERNAL");
-}
 
 export function queryHistoryLedger(input) {
   const { descriptorBytes, entries: entryBytesList, query } = requireObject(input, ["descriptorBytes", "entries", "query"]);
@@ -334,12 +355,12 @@ export function queryHistoryLedger(input) {
       };
     }
     const { record } = entry;
-    if (record.recordKind === "HUMAN_DECISION_CLAIM") decisionConsistencyUnavailable();
     return {
       index: entry.index, entryDigest: entry.entryDigest, entryType: "RECORD", recordKind: record.recordKind,
       recordDigest: record.recordDigest, admission: record.admission, workspaceAssociation: record.workspaceAssociation,
       subjects: record.subjects.map((subject) => ({ type: subject.type, value: subject.value })),
-      retention: retentionOf(entry), tombstoneIndex: tombstoneIndexByTarget.get(entry.index) ?? null, decisionConsistency: null,
+      retention: retentionOf(entry), tombstoneIndex: tombstoneIndexByTarget.get(entry.index) ?? null,
+      decisionConsistency: record.decisionConsistency, // stored at admission (Amendment A4.1), never recomputed
     };
   });
   return deepFreeze(validateQueryResult({

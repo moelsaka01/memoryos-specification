@@ -38,9 +38,9 @@ const MEMBER_BYTES = { 'package.mip': 2048, 'checkpoint.json': 900, 'regression-
   'memoryos-readiness-result.json': 1200, 'evaluation-identity.json': 400, 'policy-outcome.json': 410 };
 
 // Oracle-side record builder: members -> record object of a RECORD entry.
-function recordOf(recordKind, memberBytes, subjects, workspaceAssociation, admission) {
+function recordOf(recordKind, memberBytes, subjects, workspaceAssociation, admission, decisionConsistency = null) {
   const members = Object.keys(memberBytes).sort().map(name => ({ name, byteLength: memberBytes[name].length, sha256: sha(memberBytes[name]) }));
-  return { recordKind, recordDigest: D('MEMORYOS-HISTORY-RECORD-1.0', recordKind, jcs(members)), admission, members, workspaceAssociation,
+  return { recordKind, recordDigest: D('MEMORYOS-HISTORY-RECORD-1.0', recordKind, jcs(members)), admission, members, workspaceAssociation, decisionConsistency,
     subjects: [...subjects].sort((a, b) => (a.type < b.type ? -1 : a.type > b.type ? 1 : a.value < b.value ? -1 : 1)) };
 }
 const bytesOf = text => enc.encode(text);
@@ -56,11 +56,11 @@ const readiness = tag => {
     { type: 'PROOF_BINDING_DIGEST', value: sha(bytesOf('p' + tag)) }, { type: 'READINESS_CANDIDATE_DIGEST', value: sha(bytesOf('c' + tag)) },
     { type: 'READINESS_DIGEST', value: sha(bytesOf('r' + tag)) }], 'DECLARED', 'MO1307_SELF_DIGESTS_RECOMPUTED') };
 };
-const decision = tag => {
-  const memberBytes = { 'human-decision.json': bytesOf('decision-' + tag) };
+const decision = (tag, consistency = 'CONSISTENT', variant = '') => {
+  const memberBytes = { 'human-decision.json': bytesOf('decision-' + tag + variant) };
   return { memberBytes, record: recordOf('HUMAN_DECISION_CLAIM', memberBytes, [
     { type: 'PROOF_BINDING_DIGEST', value: sha(bytesOf('p' + tag)) }, { type: 'READINESS_CANDIDATE_DIGEST', value: sha(bytesOf('c' + tag)) },
-    { type: 'READINESS_DIGEST', value: sha(bytesOf('r' + tag)) }], 'DECLARED', 'MO1307_DECISION_CLAIM_BOUND') };
+    { type: 'READINESS_DIGEST', value: sha(bytesOf('r' + tag)) }], 'DECLARED', 'MO1307_DECISION_CLAIM_BOUND', consistency) };
 };
 const policy = tag => {
   const memberBytes = { 'evaluation-identity.json': bytesOf('identity-' + tag), 'policy-outcome.json': bytesOf('outcome-' + tag) };
@@ -355,17 +355,76 @@ test('L13 query verifies the chain before answering and rejects malformed querie
   assert.equal(call(driver.entries).entries.length, 4);
 });
 
-test('L14 BLOCKER-1: decisionConsistency cannot be derived from the frozen query inputs; the module fails closed', () => {
-  // Freeze §7.4 and §11.2 require a derived `CONSISTENT` | `CONTRARY_TO_READINESS` value, which depends on the claim's
-  // `decision` and the readiness result's `readiness` (MO-1307 §13). The frozen `queryHistoryLedger` input carries no
-  // member bytes and entries store neither value. The module therefore refuses to answer a page that contains a
-  // HUMAN_DECISION_CLAIM entry instead of guessing; this test pins that refusal until the owner resolves the defect.
+test('L14 decisionConsistency is stored at admission, returned by query without member bytes, and covered by the entry identity (Amendment A4.1)', () => {
+  const driver = sampleLedger();                      // 0 mip, 1 policy, 2 readiness c, 3 mip
+  driver.add(decision('c', 'CONTRARY_TO_READINESS')); // 4
+  driver.add(decision('c', 'CONSISTENT', '-second'));  // 5 (the same readiness digests, different claim bytes)
+  const all = driver.query();
+  const stored = all.entries.filter(e => e.recordKind === 'HUMAN_DECISION_CLAIM');
+  assert.deepEqual(stored.map(e => [e.index, e.decisionConsistency]), [[4, 'CONTRARY_TO_READINESS'], [5, 'CONSISTENT']]);
+  assert.ok(all.entries.filter(e => e.recordKind !== 'HUMAN_DECISION_CLAIM').every(e => e.decisionConsistency === null));
+  // The stored value is a member of the entry record, so the entry digest covers it.
+  const entry = JSON.parse(dec.decode(driver.entries[4]));
+  assert.equal(entry.record.decisionConsistency, 'CONTRARY_TO_READINESS');
+  const { entryDigest, ...rest } = entry;
+  assert.equal(entryDigest, D('MEMORYOS-HISTORY-ENTRY-1.0', jcs(rest)));
+  const flipped = structuredClone(entry); flipped.record.decisionConsistency = 'CONSISTENT';
+  assert.throws(() => verifyHistoryLedger({ ...driver.input(), entries: [...driver.entries.slice(0, 4), enc.encode(jcs(flipped)), driver.entries[5]] }), code('LEDGER_CORRUPT'));
+  // A query needs no member bytes and never recomputes: it answers from entries alone.
+  assert.equal(queryHistoryLedger({ descriptorBytes: driver.descriptorBytes, entries: driver.entries,
+    query: { kind: 'MemoryOSHistoryQuery', version: '1.0.0', recordKinds: ['HUMAN_DECISION_CLAIM'], subject: null, retention: 'ANY', fromIndex: 0, limit: 10 } }).entries.length, 2);
+  // The value survives a later purge of the claim and of the readiness result.
+  driver.tombstone(4);
+  driver.tombstone(2);
+  const after = driver.query({ recordKinds: ['HUMAN_DECISION_CLAIM'] });
+  assert.deepEqual(after.entries.map(e => [e.index, e.retention, e.decisionConsistency]), [[4, 'PURGED', 'CONTRARY_TO_READINESS'], [5, 'RETAINED', 'CONSISTENT'], [6, null, null]]);
+  assert.equal(driver.ledger().entryCount, 8);
+  // Tombstone entries never carry a value.
+  assert.ok(driver.query().entries.filter(e => e.entryType === 'TOMBSTONE').every(e => e.decisionConsistency === null));
+});
+
+test('L14b a claim is rejected, never stored with a guessed value, when its readiness result is absent, purged or in another ledger (Amendment A4.1)', () => {
+  const driver = sampleLedger();                      // readiness result "c" at index 2
+  const before = driver.entries.length;
+  const claim = decision('c', 'CONSISTENT');
+  const ledger = driver.ledger();
+  // Absent: digests that match no READINESS_RESULT entry.
+  assert.throws(() => appendHistoryEntry({ ledger, admission: decision('zzz').record }), code('DECISION_UNBOUND', 'ADMISSION'));
+  // Present only in another ledger (another Workspace): absent here.
+  const other = new Driver('other-workspace', 'other.history');
+  other.add(readiness('x'));
+  assert.throws(() => appendHistoryEntry({ ledger, admission: decision('x').record }), code('DECISION_UNBOUND'));
+  // A partially matching result does not bind.
+  const partial = structuredClone(claim.record);
+  partial.subjects = partial.subjects.map(s => (s.type === 'READINESS_DIGEST' ? { ...s, value: sha(bytesOf('other')) } : s)).sort((a, b) => (a.type < b.type ? -1 : 1));
+  assert.throws(() => appendHistoryEntry({ ledger, admission: partial }), code('DECISION_UNBOUND'));
+  // Purged: the referenced result's bytes are gone, so it cannot be re-verified and does not bind.
+  driver.tombstone(2);
+  assert.throws(() => appendHistoryEntry({ ledger: driver.ledger(), admission: claim.record }), code('DECISION_UNBOUND'));
+  // A claim record without a stored value, or with an unknown value, is not a record at all.
+  for (const value of [null, 'APPROVED', 'consistent']) {
+    assert.throws(() => appendHistoryEntry({ ledger: sampleLedger().ledger(), admission: { ...claim.record, decisionConsistency: value } }), code('RECORD_INVALID', 'ADMISSION'), String(value));
+  }
+  // A value on a record that is not a claim is rejected.
+  assert.throws(() => appendHistoryEntry({ ledger, admission: { ...mip('q').record, decisionConsistency: 'CONSISTENT' } }), code('RECORD_INVALID'));
+  assert.equal(driver.entries.length, before + 1, 'only the tombstone was added: no claim entry exists');
+  assert.equal(driver.query({ recordKinds: ['HUMAN_DECISION_CLAIM'] }).entries.length, 0);
+});
+
+test('L14c historyLedgerView gives admission the Workspace, the entries and only retained readiness bytes (Amendment A4.1)', () => {
   const driver = sampleLedger();
-  driver.add(decision('c'));
-  assert.throws(() => driver.query({ recordKinds: ['HUMAN_DECISION_CLAIM'] }), code('INTERNAL', 'INTERNAL'));
-  assert.throws(() => driver.query(), code('INTERNAL', 'INTERNAL'));
-  assert.deepEqual(driver.query({ recordKinds: ['MIP_PACKAGE'] }).entries.map(e => e.index), [0, 3], 'pages without a claim are answered');
-  assert.equal(driver.ledger().entryCount, 5, 'verify, append and export are unaffected');
+  const view = ledgerModule.historyLedgerView(driver.ledger());
+  assert.equal(view.workspaceIdentifier, WORKSPACE);
+  assert.equal(view.entries.length, 4);
+  const readinessDigest = JSON.parse(dec.decode(driver.entries[2])).record.recordDigest;
+  assert.deepEqual([...view.members.keys()], [readinessDigest]);
+  assert.deepEqual(new Uint8Array(view.members.get(readinessDigest)[0].bytes), readiness('c').memberBytes['memoryos-readiness-result.json']);
+  const original = driver.members.get(readinessDigest)[0].bytes;
+  original[0] ^= 1; // mutating the caller's array afterwards must not change the snapshot
+  assert.notEqual(view.members.get(readinessDigest)[0].bytes[0], original[0], 'the view holds a snapshot');
+  original[0] ^= 1;
+  driver.tombstone(2);
+  assert.equal(ledgerModule.historyLedgerView(driver.ledger()).members.size, 0, 'a purged result has no bytes');
 });
 
 test('L15 export is complete, deterministic and verifiable (R23)', () => {
