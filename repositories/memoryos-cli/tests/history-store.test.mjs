@@ -12,7 +12,7 @@ import * as contract from "../../cca-studio/web/js/memoryos-history-contract.js"
 import { executeHistoryCommand } from "../src/history-commands.js";
 import { parseHistoryArguments } from "../src/history-arguments.js";
 import {
-  STORE_LAYOUT, STORE_LIMITS, STORE_MEMBER_NAMES, STORE_POLICY_MEMBERS, STORE_RECORD_FILE_MEMBER, STORE_RUN_MAX, createHistoryStore,
+  STORE_LAYOUT, STORE_LIMITS, STORE_MEMBER_NAMES, STORE_POLICY_MEMBERS, STORE_RECORD_FILE_MEMBER, STORE_RUN_MAX, STORE_SNAPSHOT_ATTEMPTS, createHistoryStore,
 } from "../src/history-store.js";
 import { createHistoryEngineDouble } from "./support/history-engine-double.mjs";
 
@@ -695,4 +695,95 @@ test("T19 nothing outside the SDK facade and the contract is imported by the his
     const specifiers = [...readFileSync(join(here, "../src", name), "utf8").matchAll(/^import\s[\s\S]+?from\s+"([^"]+)";$/gmu)].map((match) => match[1]);
     assert.ok(specifiers.every((specifier) => !/memoryos-sdk|memoryos-history|cca-studio/u.test(specifier)), `${name}: ${specifiers}`);
   }
+});
+
+// ---- Consistent snapshot (found by W08b on the Windows host; platform independent) ----
+// An fs whose directory listings are observed and can trigger a concurrent writer at an exact point of a read.
+// The writer is a second store on the real fs; no production seam is involved (the store takes `fs` by design).
+function listingFs(onListing) {
+  const counts = { entries: 0, records: 0 };
+  const api = { ...nodeFs, counts };
+  api.readdirSync = (path, ...rest) => {
+    const text = String(path).split("\\").join("/");
+    const kind = text.endsWith("/entries") ? "entries" : text.endsWith("/records") ? "records" : null;
+    if (kind !== null) { counts[kind] += 1; onListing(kind, counts[kind]); }
+    return nodeFs.readdirSync(path, ...rest);
+  };
+  return api;
+}
+const purge = (store, ledger, targetIndex) => store.tombstone(ledger, { targetIndex, reason: "PRIVACY_REQUEST", authorityReference: `R-${targetIndex}` });
+
+test("T20 a purge committed between the entry listing and the member listing never produces RECORD_BYTES_MISMATCH: the read is repeated on a consistent snapshot (section 10.2, found by W08b)", (t) => {
+  assert.equal(STORE_SNAPSHOT_ATTEMPTS, 8);
+  const operations = {
+    verify: (store, ledger) => { const result = store.verify(ledger); assert.deepEqual([result.entryCount, result.purgePending, result.purgedRecords], [3, [], 1]); },
+    append: (store, ledger) => assert.equal(store.append(ledger, mip("after")).index, 3),
+    export: (store, ledger, root) => assert.equal(store.exportLedger(ledger, join(root, "export")).entryCount, 3),
+    tombstone: (store, ledger) => assert.equal(purge(store, ledger, 1).index, 3),
+    query: (store, ledger) => assert.equal(store.query(ledger, { kind: "MemoryOSHistoryQuery", version: "1.0.0", recordKinds: [], subject: null, retention: "ANY", fromIndex: 0, limit: 10 }).entries.length, 2, "the stable second pass answers (the purged record is listed once, its tombstone is not a result row)"),
+  };
+  for (const [name, operation] of Object.entries(operations)) {
+    const { root, ledger, store } = newLedger(t);
+    store.append(ledger, mip("one"));
+    store.append(ledger, mip("two"));
+    let injected = false;
+    // Members are listed after the entries; a query lists no members, so its writer strikes before the closing re-listing.
+    const racing = listingFs((kind, count) => {
+      if (!injected && (name === "query" ? kind === "entries" && count === 2 : kind === "records")) { injected = true; purge(store, ledger, 0); }
+    });
+    operation(createHistoryStore({ engine, fs: racing }), ledger, root);
+    assert.ok(injected, `${name}: the purge was injected`);
+    assert.equal(racing.counts.entries, 4, `${name}: the first pass was discarded and a second, stable pass followed`);
+    assert.equal(store.verify(ledger).entryCount, name === "append" || name === "tombstone" ? 4 : 3, `${name}: the ledger is consistent afterwards`);
+  }
+});
+
+test("T21 when writers overtake every pass the read fails with LEDGER_CONFLICT after exactly the fixed number of passes, never with an integrity code, and publishes nothing", (t) => {
+  for (const name of ["verify", "append", "export", "tombstone"]) {
+    const { root, ledger, store } = newLedger(t);
+    store.append(ledger, mip("seed"));
+    let writers = 0;
+    const racing = listingFs((kind) => { if (kind === "records") { writers += 1; store.append(ledger, mip(`writer ${writers}`)); } });
+    const reader = createHistoryStore({ engine, fs: racing });
+    const attempt = {
+      verify: () => reader.verify(ledger), append: () => reader.append(ledger, mip("never")),
+      export: () => reader.exportLedger(ledger, join(root, "export")), tombstone: () => purge(reader, ledger, 0),
+    }[name];
+    assert.throws(attempt, (error) => code("LEDGER_CONFLICT", "ACQUISITION")(error) && error.exitCode === 4, name);
+    assert.equal(racing.counts.records, STORE_SNAPSHOT_ATTEMPTS, `${name}: exactly the fixed number of passes`);
+    assert.equal(racing.counts.entries, 2 * STORE_SNAPSHOT_ATTEMPTS, `${name}: each pass lists the entries twice`);
+    assert.equal(readdirSync(join(ledger, "entries")).length, 1 + writers, `${name}: only the other writers published`);
+    assert.equal(nodeFs.existsSync(join(root, "export")), false, `${name}: nothing was exported`);
+  }
+});
+
+test("T22 on a stable snapshot every mismatch is reported exactly as before: corruption of a quiescent ledger is an integrity error found in a single pass", (t) => {
+  const { ledger, store } = newLedger(t);
+  store.append(ledger, mip("one"));
+  store.append(ledger, mip("two"));
+  const hex = readdirSync(join(ledger, "records"))[0];
+  const member = join(ledger, "records", hex, "package.mip");
+  const bytes = readFileSync(member);
+  const observed = listingFs(() => {});
+  const probe = createHistoryStore({ engine, fs: observed });
+  const expectOnce = (label, expected) => {
+    observed.counts.entries = 0;
+    observed.counts.records = 0;
+    assert.throws(() => probe.verify(ledger), code(expected), label);
+    assert.deepEqual([observed.counts.entries, observed.counts.records], [2, 1], `${label}: one pass only (no retry)`);
+  };
+  const flipped = Buffer.from(bytes); flipped[0] ^= 1;
+  writeFileSync(member, flipped);
+  expectOnce("member bytes changed", "RECORD_BYTES_MISMATCH");
+  writeFileSync(member, bytes);
+  rmSync(member);
+  expectOnce("member missing from a retained record", "RECORD_BYTES_MISMATCH");
+  writeFileSync(member, bytes);
+  const entry = join(ledger, "entries", "00000000000000000001.json");
+  const entryBytes = readFileSync(entry);
+  const damaged = Buffer.from(entryBytes); damaged[10] ^= 1;
+  writeFileSync(entry, damaged);
+  assert.throws(() => probe.verify(ledger), (error) => error instanceof contract.MemoryOSHistoryError && error.exitCode === 3);
+  writeFileSync(entry, entryBytes);
+  assert.equal(probe.verify(ledger).entryCount, 2, "restored: a quiescent ledger is read in one pass");
 });

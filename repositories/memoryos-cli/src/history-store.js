@@ -45,6 +45,11 @@ export const STORE_LIMITS = Object.freeze({
   exportFiles: 400_000,
   stdoutBytes: 4_194_304, // CLI JSON stdout
 });
+// A read that combines the entry listing with member listings is repeated when an entry was committed while it ran.
+// Eight passes: a pass is overtaken only by a writer's commit, so a few suffice for a purge (one tombstone) plus a
+// burst of appends, while sustained writing is cut off after at most eight scans with LEDGER_CONFLICT (the caller
+// may simply retry). A quiescent ledger is always read in exactly one pass.
+export const STORE_SNAPSHOT_ATTEMPTS = 8;
 export const STORE_MEMBER_NAMES = Object.freeze(Object.keys(STORE_LIMITS.memberBytes).sort());
 // What each CLI append input becomes (section 13.3): a single named member, or a bundle directory.
 export const STORE_RECORD_FILE_MEMBER = Object.freeze({
@@ -190,7 +195,8 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
 
   // ---- Reading a whole ledger (sections 9.1, 11.1) ----
 
-  function readLedger(root, { members }) {
+  // One pass over the ledger. `seen.entryNames` records the entry listing this pass is based on, as soon as it exists.
+  function readLedgerOnce(root, { members }, seen) {
     const top = listDirectory(root);
     const names = new Set([STORE_LAYOUT.descriptor, STORE_LAYOUT.entries, STORE_LAYOUT.records, STORE_LAYOUT.pending]);
     if (top === null || !top.includes(STORE_LAYOUT.descriptor)) fail("LEDGER_NOT_FOUND", "ACQUISITION");
@@ -199,6 +205,7 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
     const descriptorBytes = readFileBytes(join(root, STORE_LAYOUT.descriptor), STORE_LIMITS.descriptorBytes);
 
     const entryNames = listDirectory(join(root, STORE_LAYOUT.entries)) ?? [];
+    seen.entryNames = entryNames;
     if (entryNames.length > STORE_LIMITS.entries) fail("RESOURCE_LIMIT", "VERIFICATION");
     entryNames.forEach((name, index) => {
       if (!ENTRY_NAME.test(name) || name !== entryFile(index)) fail("LEDGER_CORRUPT", "VERIFICATION"); // gap, extra or foreign file
@@ -211,14 +218,51 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
         if (!HEX64.test(hex)) fail("LEDGER_CORRUPT", "VERIFICATION");
         const files = listDirectory(join(root, STORE_LAYOUT.records, hex)) ?? [];
         if (files.length === 0) continue; // a purged record's emptied directory
-        memberMap.set(`sha256:${hex}`, files.map((name) => {
+        const read = [];
+        for (const name of files) {
           if (!Object.hasOwn(STORE_LIMITS.memberBytes, name)) fail("LEDGER_CORRUPT", "VERIFICATION");
-          return { name, bytes: readFileBytes(join(root, STORE_LAYOUT.records, hex, name), STORE_LIMITS.memberBytes[name]) };
-        }));
+          const path = join(root, STORE_LAYOUT.records, hex, name);
+          try {
+            read.push({ name, bytes: readFileBytes(path, STORE_LIMITS.memberBytes[name]) });
+          } catch (error) {
+            // A member that vanished between the directory listing and its read is absent, exactly as if it had
+            // been listed a moment later (a purge deletes members). The engine decides what an absent member
+            // means: a retained record's missing member is RECORD_BYTES_MISMATCH on a stable snapshot.
+            if (!(isFailure(error) && error.code === "MO1308_IO" && guarded("ACQUISITION", () => lstat(path)) === null)) throw error;
+          }
+        }
+        if (read.length > 0) memberMap.set(`sha256:${hex}`, read);
       }
     }
     const pending = listDirectory(join(root, STORE_LAYOUT.pending)) ?? [];
     return { descriptorBytes, entries, members: memberMap, pendingArtifacts: pending.length };
+  }
+
+  // A consistent snapshot (section 10.2 purge ordering): the entry listing, the member listings and the entry
+  // listing again. Entries are only ever added, so an unchanged listing means no entry was committed during the
+  // read, and a purge (which follows its tombstone entry) cannot have completed unseen. A pass whose listing
+  // changed, including one that failed part-way, is discarded and repeated from the start. Anything observed on
+  // a stable listing is reported exactly as it was found. When every pass is overtaken by a writer the read
+  // fails with LEDGER_CONFLICT (a concurrency error, exit category 4), never with an integrity-class code.
+  function readLedger(root, options) {
+    for (let attempt = 0; attempt < STORE_SNAPSHOT_ATTEMPTS; attempt += 1) {
+      const seen = { entryNames: null };
+      let state = null;
+      let failure = null;
+      try {
+        state = readLedgerOnce(root, options, seen);
+      } catch (error) {
+        if (seen.entryNames === null) throw error; // before the entry listing: nothing here can be a race
+        failure = error;
+      }
+      const again = listDirectory(join(root, STORE_LAYOUT.entries)) ?? [];
+      const stable = again.length === seen.entryNames.length && again.every((name, index) => name === seen.entryNames[index]);
+      if (stable) {
+        if (failure !== null) throw failure;
+        return state;
+      }
+    }
+    return fail("LEDGER_CONFLICT", "ACQUISITION");
   }
 
   const verifyLedger = (state) => engine.verifyHistoryLedger({
