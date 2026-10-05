@@ -1,6 +1,8 @@
 # MO-1308 Phase 2C persistence and publication
 
-Status: **DEVELOPMENT COMPLETE IN THE CLOUD, ADOPTED BY AMENDMENT A4.2 — NOT BOUND; WINDOWS-HOST TESTS PENDING**.
+Status: **DEVELOPMENT COMPLETE (CLOUD, THEN THE WINDOWS HOST), ADOPTED BY AMENDMENT A4.2 — NOT BOUND**. Generation 1 of the local run
+(`2c5cf474`) is `FAILED_PRESERVED` (section 7). The Windows-host tests were written on the Windows host and found a product race,
+fixed in section 5a; a Freeze amendment for the new error mapping is proposed there.
 
 This record describes Stream 2C of [MO-1308 Contract Freeze 1](mo1308-contract-freeze-1.md)
 (section 18.1, with Amendments A1–A3) on branch `mo1308/phase2c-store`, created from
@@ -15,8 +17,9 @@ imports nothing from `memoryos-history-ledger.js` or `memoryos-history-admission
 |---|---|
 | `repositories/memoryos-cli/src/history-store.js` | The Node-only file store: layout (§9.1), append protocol (§9.2), optimistic concurrency (§9.3), path and link mechanism (§9.4), tombstone purge (§10.2), export and verify-export reading and writing (§12) |
 | `repositories/memoryos-cli/src/history-commands.js` | `executeHistoryCommand(parsed, {engine})`: the seven `memoryos history` subcommands (§13.3) turned into store operations, with the exit mapping of §14.1 |
-| `repositories/memoryos-cli/tests/history-store.test.mjs` | 21 tests (T01–T19, T12b, T13b) |
-| `repositories/memoryos-cli/tests/support/` | A conforming stand-in for the SDK history functions and a concurrent-appender worker, test-only |
+| `repositories/memoryos-cli/tests/history-store.test.mjs` | 24 tests (T01–T22, T12b, T13b; T20–T22 are the snapshot regression tests of section 5a) |
+| `repositories/memoryos-cli/tests/history-store-windows.test.mjs` | 12 native-Windows (NTFS) tests W01–W08c (section 5b); skipped, never passed, on other platforms |
+| `repositories/memoryos-cli/tests/support/` | A conforming stand-in for the SDK history functions, a concurrent-appender worker and a Windows concurrency worker, test-only |
 
 The store is built against the frozen SDK signatures only (§13.2): `createHistoryLedger`,
 `verifyHistoryLedger`, `admitHistoryRecord`, `appendHistoryEntry`,
@@ -42,7 +45,7 @@ header. Verification against the real functions is Stream 2D's integrated suite.
 | §9.3 concurrency | Lock-free: exclusive creation of `entries/<n>.json` is the only serialization point (R15) |
 | §9.4 mechanism (H40) | `lstat` of every path component (no symlink or junction), `realpath` equality with the canonical root, `wx` for every new name, hard-link publication that never replaces a name, handle `fstat` versus path `lstat` identity after writing, fail closed (`FILESYSTEM_BOUNDARY`). No PowerShell helper and no new compiled helper; the store starts no process (R37) |
 | §9.5 | No timer, deadline, clock or randomness; staging names are `role.counter` |
-| §10.2 purge | The tombstone entry is committed first, then every member of the target record is deleted; an interrupted purge is `purgePending` and re-running the same command finishes it without a new entry |
+| §10.2 purge | The tombstone entry is committed first, then every member of the target record is deleted; an interrupted purge is `purgePending` and re-running the same command finishes it without a new entry. Every read takes a consistent snapshot (section 5a) so that a purge racing a read is never reported as corruption |
 | §11.1 anomalies | `verify` discloses staging files (`pendingArtifacts`) and unreferenced records, never deletes them; any extra, missing or foreign file fails closed |
 | §12 export | A new directory; every file written exclusively; the completion marker is created last (the commit point); `verify-export` reads every file and checks it through the engine |
 | §13.3 CLI | `init`, `append` (`--record`, `--identity`/`--outcome`, `--run`), `tombstone`, `verify`, `query` (kinds ordered strictly ascending, Amendment A2), `export`, `verify-export`; `verify`, `query` and `verify-export` never write |
@@ -94,8 +97,8 @@ frozen constants rather than importing the contract (ARCHITECTURE §5); T01 pins
 
 ## 5. Tests
 
-`repositories/memoryos-cli/tests/history-store.test.mjs`, 21 tests. In the cloud container
-(Linux, Node v22.22.0): 21/21. They cover: constant pinning; layout; append, member and
+`repositories/memoryos-cli/tests/history-store.test.mjs`, 24 tests (T01–T19 with T12b and T13b were 21/21 in the cloud
+container, Linux, Node v22.22.0; T20–T22 were added with the snapshot fix, section 5a). They cover: constant pinning; layout; append, member and
 commit ordering with a byte-for-byte immutability snapshot; rejected appends changing
 nothing; the commit race (in-process hook and six real concurrent processes); fault
 injection at **every** mutating step of an append and of a tombstone purge (nothing
@@ -111,19 +114,88 @@ comparison); that is not a committed test.
 
 | Suite | Result |
 |---|---|
-| `memoryos-cli` `npm test` | 66/66 (45 existing + 21 new) |
+| `memoryos-cli` `npm test` | 81/81 on Windows (45 existing + 24 store + 12 Windows); the cloud figure was 66/66 before sections 5a and 5b (45 + 21) |
 | `cca-conformance` `tests/mo1308_*_test.mjs` | 19/19 (Phase 1; the 2A and 2B suites live on their own branches), with tag `memoryos-1.3-mo1302` fetched locally |
 | `cca-studio` `npm test` | 358/358 (the contract and fixture tests declare the 54-case A4.1 fixtures) |
 | `tools/verify_workspace.py` | Only the pre-existing Linux `MO-1304 … INSTALL_TOOLCHAIN` error |
 
-**Tests that need the Windows host and are not claimed here:**
+## 5a. Product race found on the Windows host: a purge racing a read (classified: product, found by W08b)
 
-1. Directory junctions and other reparse points as ledger root, ancestor, `entries`, `records`, `.pending` and members (T11 exercises symlinks only; on Windows, symlink creation needs a privilege and the test skips without it).
-2. Hard-link publication, `fsync` and exclusive-create semantics on NTFS, including a link-count and file-index (`ino`) comparison that is only meaningful there.
-3. The case-insensitive `realpath` comparison (`win32` branch, untested on Linux) and drive-letter, UNC and long-path forms.
-4. `O_NOFOLLOW` does not exist on Windows; there the component and identity checks are the only guard.
-5. The concurrent-appender and directory-swap races on NTFS, antivirus or indexer interference, and sharing violations (3A one-shot campaign).
-6. The whole suite under the pinned Node v24.21.0.
+**Finding.** `readLedger` listed the entries, then later listed the members. A tombstone commits its entry first and deletes
+the target's members afterwards (section 10.2). A read whose entry listing preceded the tombstone and whose member
+listing followed the deletions saw a retained record with no member, and the engine reported `RECORD_BYTES_MISMATCH`
+(exit 3, integrity class) on a valid ledger. Re-running succeeded. It affected `verify`, `append`, `export` and
+`tombstone` (all read members). It is platform independent (it reproduces deterministically on any platform with an
+injected purge), was never fatal (fail closed, nothing written) and was found on Windows by W08b (three tombstone
+processes and three appenders). Classification: **product defect (non-atomic read), not a test or environment fault.**
+
+**Fix (development decision of the owner: Option A).** `readLedger` now takes a consistent snapshot: it reads the entry
+listing, the descriptor, the entries and the members, then lists the entries again. Entries are only ever added, so an
+unchanged listing means no entry was committed during the read, and a purge (which follows its tombstone entry) cannot
+have completed unseen. A pass whose listing changed, including one that failed part-way (an error observed on a
+changing ledger is not trusted), is discarded and repeated from the start.
+
+- **Retry bound: `STORE_SNAPSHOT_ATTEMPTS = 8` passes.** A pass is overtaken only by another writer's entry commit. One
+  purge is one tombstone entry, so a purge plus a short burst of appends is absorbed with headroom; sustained writing is
+  cut off after at most eight scans (each a full read of the ledger) instead of looping without bound. A quiescent
+  ledger is always read in exactly one pass (T22 counts the listings). The loop is bounded and deterministic for a
+  quiescent ledger; it uses no clock, timer, sleep, helper or process (R35–R37).
+- **Error mapping.** When all eight passes are overtaken the read fails with the existing `LEDGER_CONFLICT` (stage
+  `ACQUISITION`, exit category 4, a concurrency code, which callers already retry), never with `RECORD_BYTES_MISMATCH`
+  or any integrity code. Nothing is published by a failed append, tombstone or export.
+- **Stable snapshots are unchanged.** Anything observed with the entry listing unchanged is reported exactly as before
+  (T22: member bytes changed, member missing from a retained record, a damaged entry; each is found in a single pass).
+- **A vanishing member.** A member listed in a record directory but gone by the time it is read (a purge unlinking it) is
+  treated as absent, exactly as if it had been listed a moment later; the engine then decides. On a stable snapshot a
+  retained record's missing member is still `RECORD_BYTES_MISMATCH`; a purged or purge-pending record is fine. Previously
+  this window produced `IO`.
+
+**Contract-visible changes (propose as a Freeze amendment, A4.4 or later).** (1) `LEDGER_CONFLICT`, defined for an append
+that lost the entry commit race (§9.3, §14.1), is now also the result of any store read (`verify`, `query`, `export`,
+`tombstone`, `append`) that could not obtain a consistent snapshot in eight passes, with stage `ACQUISITION`; the
+message text is unchanged and fixed. (2) The `IO` result for a member that vanished between listing and read no longer
+occurs; it is absent-member handling as described. No other code, shape, layout or limit changes. The engine, the
+format and the commit protocol are untouched.
+
+**Tests.** T20 injects a purge between the entry listing and the member listing (no production seam: the store takes
+`fs` by design, so the test supplies a listing-aware `fs` and a second store as the concurrent writer) and shows that
+`verify`, `append`, `export`, `tombstone` and `query` return correct results after exactly one discarded pass. T21
+overtakes every pass and shows `LEDGER_CONFLICT`, stage `ACQUISITION`, exit 4, exactly eight passes, nothing published.
+T22 shows real corruption of a quiescent ledger is still the integrity error, found in one pass. Run against the
+pre-fix store, T20, T21 and T22 fail. W08b passes without tolerating `RECORD_BYTES_MISMATCH` (section 5b).
+
+## 5b. Windows-host tests (`history-store-windows.test.mjs`, 12 tests)
+
+Written on the reference Windows host and run with the pinned Node v24.21.0; on any other platform they are skipped
+(never passed). They replace the former "host-only, not claimed" list. Each asserts the frozen H40 behaviour: a link is
+refused, a swap is detected after the fact, no existing content is overwritten or replaced, every later read fails
+closed.
+
+| Test | What it proves |
+|---|---|
+| W01 | Junctions and directory symlinks as ledger root, ancestor, `entries`, `records`, `.pending` or a record directory, a dangling junction, and init at or under one: `FILESYSTEM_BOUNDARY` on every operation; no ledger or outside file changed |
+| W01b | An app-execution alias (`IO_REPARSE_TAG_APPEXECLINK`, neither junction nor symlink) is refused as an input file; skipped, and reported as NOT_RUN, on a host without one |
+| W02 | A junction swapped in for a record directory during an append: detected, the decoy survives, no entry committed, reads fail closed |
+| W03 | The `entries` directory swapped for a junction at the commit point: detected after the fact, the real entries unchanged, reads fail closed, the ledger verifies once restored |
+| W04 | NTFS hard links: one link and a distinct file index for every published file; a hard link never replaces an existing name (also differing in case); a rival writer's entry survives; an unremoved staging link is only an anomaly |
+| W05 | Exclusive create: an existing name in any case is refused; staging names held open by another process are skipped, never opened or replaced |
+| W05b | A sharing violation (another process holds a ledger file with no sharing) is a typed `IO` failure that changes nothing; releasing restores service |
+| W06 | Any casing of the real path is accepted (the `win32` case-insensitive realpath branch); case-only renames inside a ledger are corruption; an 8.3 short alias is refused and creates nothing |
+| W07 | Drive-letter, `/`, `..`, UNC (`\\localhost\C$\…`) and long (over 300 characters, no prefix) forms work end to end; the `\\?\` and `\\.\` forms are refused with `FILESYSTEM_BOUNDARY` and create nothing |
+| W08 | Ten real appender processes and two readers: one entry per index, a verifying chain, readers never see an integrity or boundary failure |
+| W08b | Three tombstone processes and three appenders: one tombstone per target, every purge finished, a verifying chain; the only tolerated failure is the retried `LEDGER_CONFLICT` |
+| W08c | A junction swapper racing three appender processes: the race is exercised, the outside sentinel is untouched, the ledger only verifies or fails closed with a typed error (`LEDGER_CORRUPT` and `RECORD_BYTES_MISMATCH` are allowed here and only here, because the swap itself puts a foreign name in the ledger root and hides the members) |
+
+The mutation checks run during development (each removed condition fails a test): the component link check (W01–W03), the
+post-write canonical check (W03), the case-insensitive comparison (W06), exclusive create (W05, W08) and IO handling
+(W05, W08).
+
+**Known limitations (accepted, recorded).** (1) The `\\?\` and `\\.\` prefixed forms are refused with
+`FILESYSTEM_BOUNDARY`: `realpath` strips the prefix, so the canonical form never equals the given one. It fails closed and
+creates nothing; W07 pins it. (2) Only symlinks, directory junctions and app-execution aliases can be created or found
+unprivileged on a host; other reparse-point kinds (WIM, cloud-files placeholders, deduplication) cannot be planted, so they
+remain covered only by the rule that Node's `lstat` is the sole detector (K11, H40). (3) `O_NOFOLLOW` does not exist on
+Windows; the component and identity checks are the only guard (H40), exactly as accepted.
 
 ## 6. Characterization (Freeze §14.2, Amendment A2 item 4)
 
@@ -154,18 +226,26 @@ kept and classified if any expected result is not met.
 
 | # | Item | Expected |
 |---|---|---|
-| 1 | `memoryos-cli` `tests/history-store.test.mjs` | 21/21, with any symlink-privilege skip recorded as such |
-| 2 | `memoryos-cli` `npm test` | 66/66 |
-| 3 | `cca-conformance` `tests/mo1308_*_test.mjs` | 19/19 |
-| 4 | `cca-studio` `npm test` | 358/358 |
-| 5 | `tests/mo1307_*_test.mjs` | 639/639 |
-| 6 | `python tools\verify_workspace.py --root .` | exit 0, pass line only |
-| 7 | CTest | `DEFERRED_TOOLCHAIN_ABSENT` (Amendment A3; mandatory before Phase 3) |
-| 8 | Characterization | recorded |
-| 9 | Clean tree | empty |
+| 1 | `memoryos-cli` `tests/history-store.test.mjs` | 24/24, 0 skipped (a symlink-privilege skip would be recorded as NOT_RUN and the receipt could not be PASS) |
+| 2 | `memoryos-cli` `tests/history-store-windows.test.mjs` | 12/12, 0 skipped (W01b needs an app-execution alias; a skip is NOT_RUN and the receipt cannot be PASS) |
+| 3 | `memoryos-cli` `npm test` | 81/81 |
+| 4 | `cca-conformance` `tests/mo1308_*_test.mjs` | 19/19 |
+| 5 | `cca-studio` `npm test` | 358/358 |
+| 6 | `tests/mo1307_*_test.mjs` | 639/639 |
+| 7 | `python tools\verify_workspace.py --root .` | exit 0, pass line only |
+| 8 | CTest | `DEFERRED_TOOLCHAIN_ABSENT` (Amendment A3; mandatory before Phase 3) |
+| 9 | Characterization | completes with exit 0 and a recorded value for every measured operation (a failed operation records no value and makes the tool exit non-zero) |
+| 10 | Clean tree | empty |
+
+**Generation history.** Generation 1 (evidence commit `2c5cf474`, `FAILED_PRESERVED`) passed its items but failed the
+characterization: `characterize.mjs` predated Amendment A4.1 (entries without `decisionConsistency`), so every measured
+operation returned an error while the tool exited 0 (a test-tooling fault). Generation 1 stays exactly as committed, with
+no binding commit. The tool now follows A4.1 and exits non-zero on any failed operation; the Windows tests of section 5b
+and the snapshot fix of section 5a are new. Generation 2 is a new run, one run, recorded under
+`repositories/cca-conformance/evidence/mo1308/phase2c-g2/`; generation 1's directory is never overwritten.
 
 Evidence commit (single-parent child of `$C`, adding only
-`repositories/cca-conformance/evidence/mo1308/phase2c/`, raw logs under the
+`repositories/cca-conformance/evidence/mo1308/phase2c-g2/`, raw logs under the
 `evidence/mo1308/**` `-text` rule) and a binding-only commit, as Phase 1. The receipt must
-disclose the H40 qualification and the section 5 list of host-only tests. No `main`
-update, no tag.
+disclose the H40 qualification, the known limitations of section 5b, the snapshot fix of section 5a (contract-visible
+`LEDGER_CONFLICT` mapping) and every Windows test run versus NOT_RUN. No `main` update, no tag.
