@@ -97,8 +97,22 @@ host-only.
 
 `repositories/cca-conformance/tools/mo1308-phase2a/characterize.mjs` measures generate,
 query, verify, export and verify-export at the frozen limit (100,000 entries). Values are
-recorded, not pass/fail; the cloud numbers are in the report, the reference-host numbers
-are recorded at binding.
+recorded, not pass/fail. Cloud values (Linux, Node v22.22.0, one run, 100,000 entries
+of 3 subjects each, one retained member each):
+
+| Operation | Time | Heap delta |
+|---|---:|---:|
+| Generate 100,000 entries (identities included) | 14.1 s | 61.7 MiB |
+| Query page of 1,000 (chain verify + filter) | 18.9 s | 183.5 MiB |
+| Query with a subject filter over the full ledger | 18.1 s | 180.4 MiB |
+| Verify (chain and members) | 21.2 s | 230.6 MiB |
+| Build export (verify + manifest) | 32.7 s | 279.6 MiB |
+| Verify export | 33.5 s | 469.3 MiB |
+
+Every operation is linear in the entry count (about 0.2 ms per entry for a chain
+verify). A query or an append must verify the whole chain first (§11.2, §9.2), so each
+takes about 19–21 s at the 100,000-entry ceiling; a Freeze consequence, not a defect.
+The reference-host numbers are recorded at binding.
 
 ## 7. Local binding plan (one run, reference Windows host)
 
