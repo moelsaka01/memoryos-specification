@@ -1,0 +1,273 @@
+{
+    "kind":  "MO1308Phase2CG2Receipt",
+    "streamHead":  "f12ab6118beb96bce08fdc1e51389bd2ed559eb7",
+    "runtime":  {
+                    "nodeVersion":  "v24.21.0",
+                    "platform":  "win32",
+                    "arch":  "x64",
+                    "nodeSha256":  "ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32",
+                    "python":  "Python 3.14.4"
+                },
+    "items":  [
+                  {
+                      "id":  1,
+                      "name":  "HISTORY_STORE",
+                      "command":  "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe --test --test-concurrency=1 tests/history-store.test.mjs",
+                      "cwd":  "repositories/memoryos-cli",
+                      "exitCode":  0,
+                      "expected":  "24/24",
+                      "counts":  {
+                                     "tests":  24,
+                                     "pass":  24,
+                                     "fail":  0,
+                                     "cancelled":  0,
+                                     "skipped":  0
+                                 },
+                      "seconds":  9.4,
+                      "result":  "PASS",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2c-g2/history-store.log",
+                                  "byteLength":  3293,
+                                  "sha256":  "d6915939a33511ea091f7e48cbe9e2c4ed1b86e89f34e2a548ede1da603c802f"
+                              }
+                  },
+                  {
+                      "id":  2,
+                      "name":  "HISTORY_STORE_WINDOWS",
+                      "command":  "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe --test --test-concurrency=1 tests/history-store-windows.test.mjs",
+                      "cwd":  "repositories/memoryos-cli",
+                      "exitCode":  1,
+                      "expected":  "12/12",
+                      "counts":  {
+                                     "tests":  12,
+                                     "pass":  11,
+                                     "fail":  1,
+                                     "cancelled":  0,
+                                     "skipped":  0
+                                 },
+                      "seconds":  25.7,
+                      "result":  "FAILED",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2c-g2/history-store-windows.log",
+                                  "byteLength":  2990,
+                                  "sha256":  "1eca00509313efbbf25b98799ea177a01fff07227f1fe6f810ac12059549ea00"
+                              },
+                      "classification":  {
+                                             "evidence":  "history-store-windows.log, cli.log",
+                                             "class":  "test (assertion over-strict) / environment, root cause not reproduced",
+                                             "cause":  "W08 failed at its assertion \"every record was committed\" (29 !== 30) in both runs (item 2 and the same test inside item 3). The assertions that precede it passed in both runs: winning indices are exactly 0..n-1 each once, and every failed attempt carried only MO1308_LEDGER_CONFLICT or MO1308_IO. The frozen behaviour does not guarantee that every writer commits: a losing writer gets LEDGER_CONFLICT or a typed IO error and the test worker stops after an IO error or after 200 conflicts, leaving its record uncommitted (a legal fail-closed outcome with no corruption). The preserved log does not record which of the two occurred, so the exact trigger is not determinable from the evidence. The invariant assertions after it (chain verifies, entry count, reader failures) were not reached. Diagnostic runs in a development worktree (not part of this generation) did not reproduce it: 14 runs of the same 10-writer/2-reader scenario in two worktrees and 12 runs under triple load all committed 30/30. No product defect is evidenced; not fixed, not rerun."
+                                         }
+                  },
+                  {
+                      "id":  3,
+                      "name":  "MEMORYOS_CLI",
+                      "command":  "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe --test --test-concurrency=1 tests/*.test.mjs",
+                      "cwd":  "repositories/memoryos-cli",
+                      "exitCode":  1,
+                      "expected":  "81/81",
+                      "counts":  {
+                                     "tests":  81,
+                                     "pass":  80,
+                                     "fail":  1,
+                                     "cancelled":  0,
+                                     "skipped":  0
+                                 },
+                      "seconds":  189.8,
+                      "result":  "FAILED",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2c-g2/cli.log",
+                                  "byteLength":  10055,
+                                  "sha256":  "f93445ee3fc8bcfaf4a39ef69f929eb72db93c3774466e71c83241e8a3d6af82"
+                              },
+                      "classification":  {
+                                             "evidence":  "cli.log",
+                                             "class":  "test (assertion over-strict) / environment, root cause not reproduced",
+                                             "cause":  "The single failing test of the 81 is the same W08 (see item 2)."
+                                         }
+                  },
+                  {
+                      "id":  4,
+                      "name":  "MO1308_SUITES",
+                      "command":  "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe --test --test-concurrency=1 tests/mo1308_*_test.mjs",
+                      "cwd":  "repositories/cca-conformance",
+                      "exitCode":  0,
+                      "expected":  "19/19",
+                      "counts":  {
+                                     "tests":  19,
+                                     "pass":  19,
+                                     "fail":  0,
+                                     "cancelled":  0,
+                                     "skipped":  0
+                                 },
+                      "seconds":  36.2,
+                      "result":  "PASS",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2c-g2/mo1308.log",
+                                  "byteLength":  1800,
+                                  "sha256":  "2da2adca0327582af5ef56dd9344f168d6668a42fce40567e8f8f8747c6efce8"
+                              }
+                  },
+                  {
+                      "id":  5,
+                      "name":  "CCA_STUDIO",
+                      "command":  "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe --test tests/memory_studio_web_test.mjs tests/memory_studio_integration_test.mjs tests/mip_canonical_test.mjs tests/memory_investigation_package_test.mjs tests/mip_schema_conformance_test.mjs tests/mip_adversarial_conformance_test.mjs tests/mip_ordering_conformance_test.mjs tests/mip_derived_edge_conformance_test.mjs tests/mip_pipeline_conformance_test.mjs tests/ai_runtime_adapter_test.mjs tests/investigation_core_test.mjs tests/memoryos_sdk_test.mjs tests/cognitive_regression_test.mjs tests/cognitive_investigation_explorer_test.mjs tests/policy_canonical_test.mjs tests/investigation_policy_contracts_test.mjs tests/investigation_policy_test.mjs tests/policy_fact_context_test.mjs tests/regression_policy_fact_source_test.mjs tests/investigation_policy_engine_test.mjs tests/memoryos_policy_sdk_test.mjs tests/memoryos_history_contract_test.mjs tests/memoryos_history_sdk_guard_test.mjs",
+                      "cwd":  "repositories/cca-studio",
+                      "exitCode":  0,
+                      "expected":  "358/358",
+                      "counts":  {
+                                     "tests":  358,
+                                     "pass":  358,
+                                     "fail":  0,
+                                     "cancelled":  0,
+                                     "skipped":  0
+                                 },
+                      "seconds":  34.1,
+                      "result":  "PASS",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2c-g2/studio.log",
+                                  "byteLength":  34323,
+                                  "sha256":  "283e2621c9359fa147aee1a65a68f2f142ed5e43938747d798eb62e996752d65"
+                              }
+                  },
+                  {
+                      "id":  6,
+                      "name":  "MO1307_REGRESSION",
+                      "command":  "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe --test --test-concurrency=1 tests/mo1307_*_test.mjs",
+                      "cwd":  "repositories/cca-conformance",
+                      "exitCode":  0,
+                      "expected":  "639/639",
+                      "counts":  {
+                                     "tests":  639,
+                                     "pass":  639,
+                                     "fail":  0,
+                                     "cancelled":  0,
+                                     "skipped":  0
+                                 },
+                      "seconds":  126.4,
+                      "result":  "PASS",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2c-g2/mo1307.log",
+                                  "byteLength":  62456,
+                                  "sha256":  "fa1a86faff76f699a229460b59bbb0e0ecd8327fc012b183204e38b43b804626"
+                              }
+                  },
+                  {
+                      "id":  7,
+                      "name":  "WORKSPACE_VERIFIER",
+                      "command":  "python tools\\verify_workspace.py --root .",
+                      "cwd":  ".",
+                      "exitCode":  0,
+                      "expected":  "exit 0",
+                      "noMo1302Error":  true,
+                      "noMo1304Error":  true,
+                      "seconds":  0.9,
+                      "result":  "PASS",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2c-g2/verify.log",
+                                  "byteLength":  73,
+                                  "sha256":  "caf66ce76754603eaafc5d10fab67354a6f85f370511aed8656c41204613dfcf"
+                              }
+                  },
+                  {
+                      "id":  8,
+                      "name":  "CTEST",
+                      "result":  "DEFERRED_TOOLCHAIN_ABSENT",
+                      "reason":  "The reference Windows host has no C++ toolchain; owner-authorized deferral (Freeze Amendment A3). A full CTest run including cca.workspace.verify is a mandatory precondition of any MO-1308 Phase 3 certification run."
+                  },
+                  {
+                      "id":  9,
+                      "name":  "CHARACTERIZATION",
+                      "command":  "C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe --expose-gc repositories\\cca-conformance\\tools\\mo1308-phase2c\\characterize.mjs",
+                      "cwd":  ".",
+                      "exitCode":  0,
+                      "expected":  null,
+                      "seconds":  2041.1,
+                      "result":  "PASS",
+                      "log":  {
+                                  "path":  "repositories/cca-conformance/evidence/mo1308/phase2c-g2/characterization.json",
+                                  "byteLength":  1078,
+                                  "sha256":  "aa8963793e2d89579b9efed3df9ea6f5c33beea3ab4891db131d82215f72f852"
+                              },
+                      "stderr":  {
+                                     "path":  "repositories/cca-conformance/evidence/mo1308/phase2c-g2/characterization.stderr.log",
+                                     "byteLength":  467,
+                                     "sha256":  "b5ca9f83cba8575f7cb1c86aae473888d1cea30ae253221da3651624e2efaffd"
+                                 }
+                  },
+                  {
+                      "id":  "CLEAN_TREE",
+                      "command":  "git status --porcelain",
+                      "expected":  "empty",
+                      "porcelain":  [
+
+                                    ],
+                      "result":  "PASS"
+                  }
+              ],
+    "windowsTests":  [
+                         {
+                             "result":  "PASS",
+                             "test":  "W01"
+                         },
+                         {
+                             "result":  "PASS",
+                             "test":  "W01b"
+                         },
+                         {
+                             "result":  "PASS",
+                             "test":  "W02"
+                         },
+                         {
+                             "result":  "PASS",
+                             "test":  "W03"
+                         },
+                         {
+                             "result":  "PASS",
+                             "test":  "W04"
+                         },
+                         {
+                             "result":  "PASS",
+                             "test":  "W05"
+                         },
+                         {
+                             "result":  "PASS",
+                             "test":  "W05b"
+                         },
+                         {
+                             "result":  "PASS",
+                             "test":  "W06"
+                         },
+                         {
+                             "result":  "PASS",
+                             "test":  "W07"
+                         },
+                         {
+                             "result":  "FAIL",
+                             "test":  "W08"
+                         },
+                         {
+                             "result":  "PASS",
+                             "test":  "W08b"
+                         },
+                         {
+                             "result":  "PASS",
+                             "test":  "W08c"
+                         }
+                     ],
+    "generation":  2,
+    "characterizationValidity":  "6 measured operations, every one recorded ok, none failed",
+    "snapshotFix":  "readLedger consistent snapshot, STORE_SNAPSHOT_ATTEMPTS=8, exhaustion = LEDGER_CONFLICT at ACQUISITION (contract-visible; Freeze amendment proposed in Phase 2C section 5a)",
+    "windowsTestsNotRun":  [
+
+                           ],
+    "rerun":  "none: one run, no retry, no test or production edits",
+    "streamBranchHead":  "f12ab6118beb96bce08fdc1e51389bd2ed559eb7",
+    "symlinkCapability":  "Unprivileged symlink and junction creation verified; skipped 0 in every log",
+    "supersedes":  "2c5cf47468c997075ed9d8adfb0c01cc1d10c9f2 (generation 1, FAILED_PRESERVED, left unchanged)",
+    "h40Qualification":  "O_NOFOLLOW does not exist on Windows; component and identity checks are the only guard (Phase 2C section 5b limitation 3).",
+    "knownLimitations":  [
+                             "\\\\?\\ and \\\\.\\ prefixed path forms are refused with FILESYSTEM_BOUNDARY (fail closed, nothing created); pinned by W07",
+                             "Reparse-point kinds that cannot be planted unprivileged (WIM, cloud files, deduplication) are covered only by the lstat rule (K11)"
+                         ],
+    "result":  "FAILED_PRESERVED"
+}
