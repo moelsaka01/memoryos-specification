@@ -325,12 +325,15 @@ export function validateEntry(value, { code = "LEDGER_CORRUPT", stage = "VERIFIC
   if (value.entryType === "RECORD") {
     if (value.tombstone !== null) historyFail(code, stage);
     const record = value.record;
-    exactKeys(record, ["recordKind", "recordDigest", "admission", "members", "workspaceAssociation", "subjects"], code, stage);
+    exactKeys(record, ["recordKind", "recordDigest", "admission", "members", "workspaceAssociation", "subjects", "decisionConsistency"], code, stage);
     if (!RECORD_KINDS.includes(record.recordKind) || !isDigest(record.recordDigest)
         || record.admission !== ADMISSION_BY_KIND[record.recordKind]
         || record.workspaceAssociation !== WORKSPACE_ASSOCIATION_BY_KIND[record.recordKind]) historyFail(code, stage);
     validateMembers(record.recordKind, record.members, code, stage);
     validateSubjects(record.recordKind, record.subjects, code, stage);
+    // Amendment A4.1: stored at admission; non-null exactly for a HUMAN_DECISION_CLAIM, never null there.
+    if (record.recordKind === "HUMAN_DECISION_CLAIM" ? !DECISION_CONSISTENCY.includes(record.decisionConsistency)
+      : record.decisionConsistency !== null) historyFail(code, stage);
   } else {
     if (value.record !== null) historyFail(code, stage);
     const tombstone = value.tombstone;
@@ -396,6 +399,8 @@ export function validateQueryResult(value, { code = "INTERNAL", stage = "INTERNA
         || !nullOr(entry.retention, (retention) => RETENTION_STATES.includes(retention))
         || !nullOr(entry.tombstoneIndex, isIndex)
         || !nullOr(entry.decisionConsistency, (consistency) => DECISION_CONSISTENCY.includes(consistency))) historyFail(code, stage);
+    // Amendment A4.1: the stored value of a claim record entry; null for every other entry and every tombstone.
+    if ((entry.entryType === "RECORD" && entry.recordKind === "HUMAN_DECISION_CLAIM") === (entry.decisionConsistency === null)) historyFail(code, stage);
     if (!Array.isArray(entry.subjects) || entry.subjects.length > MEMORYOS_HISTORY_LIMITS.subjectsPerEntry) historyFail(code, stage);
     for (const subject of entry.subjects) {
       exactKeys(subject, ["type", "value"], code, stage);

@@ -6,12 +6,15 @@ const clone = v => JSON.parse(JSON.stringify(v));
 const ledger = { kind: 'MemoryOSHistoryLedger', version: '1.0.0', ledgerName: 'workspace-investigation.history', workspaceIdentifier: 'workspace-investigation' };
 const recordEntry = { kind: 'MemoryOSHistoryEntry', version: '1.0.0', ledgerIdentifier: d(1), index: 0, previousEntryDigest: d(2), entryType: 'RECORD',
   record: { recordKind: 'MIP_PACKAGE', recordDigest: d(3), admission: 'MIP_001_VERIFIED', members: [{ name: 'package.mip', byteLength: 2048, sha256: d(4) }],
-    workspaceAssociation: 'INTRINSIC', subjects: [{ type: 'MIP_PACKAGE_DIGEST', value: d(5) }, { type: 'MIP_PACKAGE_IDENTIFIER', value: 'mip-reference-complete' }, { type: 'WORKSPACE', value: 'workspace-investigation' }] },
+    workspaceAssociation: 'INTRINSIC', subjects: [{ type: 'MIP_PACKAGE_DIGEST', value: d(5) }, { type: 'MIP_PACKAGE_IDENTIFIER', value: 'mip-reference-complete' }, { type: 'WORKSPACE', value: 'workspace-investigation' }], decisionConsistency: null },
   tombstone: null, entryDigest: d(6) };
 const cicdFailure = { ...clone(recordEntry), index: 1, previousEntryDigest: d(6), entryDigest: d(7),
   record: { recordKind: 'CICD_RUN', recordDigest: d(8), admission: 'MO1306_BUNDLE_INTEGRITY_VERIFIED',
     members: ['memoryos-ci-artifacts.json', 'memoryos-ci-complete.json', 'memoryos-ci-evidence.json', 'memoryos-ci-result.json'].map((name, i) => ({ name, byteLength: 512 + i, sha256: d(16 + i) })),
-    workspaceAssociation: 'DECLARED', subjects: [{ type: 'CICD_RUN_ID', value: '3f1c2a64-9e2b-4c55-8a1d-6f0b7e9c2d10' }] } };
+    workspaceAssociation: 'DECLARED', subjects: [{ type: 'CICD_RUN_ID', value: '3f1c2a64-9e2b-4c55-8a1d-6f0b7e9c2d10' }], decisionConsistency: null } };
+const claimEntry = { ...clone(recordEntry), index: 3, previousEntryDigest: d(9), entryDigest: d(14),
+  record: { recordKind: 'HUMAN_DECISION_CLAIM', recordDigest: d(15), admission: 'MO1307_DECISION_CLAIM_BOUND', members: [{ name: 'human-decision.json', byteLength: 300, sha256: d(16) }],
+    workspaceAssociation: 'DECLARED', subjects: [{ type: 'PROOF_BINDING_DIGEST', value: d(17) }, { type: 'READINESS_CANDIDATE_DIGEST', value: d(18) }, { type: 'READINESS_DIGEST', value: d(19) }], decisionConsistency: 'CONTRARY_TO_READINESS' } };
 const tombstone = { kind: 'MemoryOSHistoryEntry', version: '1.0.0', ledgerIdentifier: d(1), index: 2, previousEntryDigest: d(7), entryType: 'TOMBSTONE', record: null,
   tombstone: { targetIndex: 0, targetEntryDigest: d(6), targetRecordDigest: d(3), reason: 'PRIVACY_REQUEST', authorityReference: 'PRIV-2026-0042', authenticity: 'NOT_VERIFIED_BY_MEMORYOS' }, entryDigest: d(9) };
 const query = { kind: 'MemoryOSHistoryQuery', version: '1.0.0', recordKinds: ['MIP_PACKAGE'], subject: { type: 'WORKSPACE', value: 'workspace-investigation' }, retention: 'ANY', fromIndex: 0, limit: 100 };
@@ -28,6 +31,8 @@ const add = (id, validator, value, expect) => cases.push({ id, validator, value,
 add('ledger-valid', 'validateLedgerDescriptor', ledger, 'VALID');
 add('entry-record-valid', 'validateEntry', recordEntry, 'VALID');
 add('entry-cicd-failure-valid', 'validateEntry', cicdFailure, 'VALID');
+add('entry-claim-contrary-valid', 'validateEntry', claimEntry, 'VALID');
+add('entry-claim-consistent-valid', 'validateEntry', { ...clone(claimEntry), record: { ...clone(claimEntry.record), decisionConsistency: 'CONSISTENT' } }, 'VALID');
 add('entry-tombstone-valid', 'validateEntry', tombstone, 'VALID');
 add('query-valid', 'validateQuery', query, 'VALID');
 add('verification-valid', 'validateVerification', verification, 'VALID');
@@ -54,6 +59,10 @@ bad('entry-subject-not-for-kind', 'validateEntry', recordEntry, v => { v.record.
 bad('entry-subjects-unsorted', 'validateEntry', recordEntry, v => { v.record.subjects.reverse(); }, 'MO1308_LEDGER_CORRUPT');
 bad('entry-subjects-duplicate', 'validateEntry', recordEntry, v => { v.record.subjects.push(clone(v.record.subjects[2])); }, 'MO1308_LEDGER_CORRUPT');
 bad('entry-cicd-five-members', 'validateEntry', cicdFailure, v => { v.record.members.splice(1, 1); }, 'MO1308_LEDGER_CORRUPT');
+bad('entry-claim-consistency-null', 'validateEntry', claimEntry, v => { v.record.decisionConsistency = null; }, 'MO1308_LEDGER_CORRUPT');
+bad('entry-claim-consistency-unknown', 'validateEntry', claimEntry, v => { v.record.decisionConsistency = 'APPROVED'; }, 'MO1308_LEDGER_CORRUPT');
+bad('entry-record-consistency-set', 'validateEntry', recordEntry, v => { v.record.decisionConsistency = 'CONSISTENT'; }, 'MO1308_LEDGER_CORRUPT');
+bad('entry-record-consistency-missing', 'validateEntry', recordEntry, v => { delete v.record.decisionConsistency; }, 'MO1308_LEDGER_CORRUPT');
 bad('entry-digest-uppercase', 'validateEntry', recordEntry, v => { v.entryDigest = 'sha256:' + 'AB'.repeat(32); }, 'MO1308_LEDGER_CORRUPT');
 bad('tombstone-unknown-reason', 'validateEntry', tombstone, v => { v.tombstone.reason = 'EXPIRED'; }, 'MO1308_LEDGER_CORRUPT');
 bad('tombstone-authenticity', 'validateEntry', tombstone, v => { v.tombstone.authenticity = 'VERIFIED'; }, 'MO1308_LEDGER_CORRUPT');
@@ -68,6 +77,8 @@ bad('query-version', 'validateQuery', query, v => { v.version = '1.1.0'; }, 'MO1
 bad('query-kinds-duplicate', 'validateQuery', query, v => { v.recordKinds = ['MIP_PACKAGE', 'MIP_PACKAGE']; }, 'MO1308_QUERY_INVALID');
 bad('query-kinds-unsorted', 'validateQuery', query, v => { v.recordKinds = ['MIP_PACKAGE', 'CICD_RUN']; }, 'MO1308_QUERY_INVALID');
 bad('query-result-subjects-duplicate', 'validateQueryResult', queryResult, v => { v.entries[0].subjects.push(clone(v.entries[0].subjects[2])); }, 'MO1308_INTERNAL');
+bad('query-result-claim-consistency-null', 'validateQueryResult', queryResult, v => { v.entries[0].recordKind = 'HUMAN_DECISION_CLAIM'; v.entries[0].admission = 'MO1307_DECISION_CLAIM_BOUND'; v.entries[0].workspaceAssociation = 'DECLARED'; v.entries[0].decisionConsistency = null; }, 'MO1308_INTERNAL');
+bad('query-result-record-consistency-set', 'validateQueryResult', queryResult, v => { v.entries[0].decisionConsistency = 'CONSISTENT'; }, 'MO1308_INTERNAL');
 bad('verification-unsorted-pending', 'validateVerification', verification, v => { v.purgePending = [3, 1]; }, 'MO1308_LEDGER_CORRUPT');
 bad('export-path-traversal', 'validateExportManifest', exportManifest, v => { v.files.push({ path: 'records/../x', byteLength: 1, sha256: d(13) }); }, 'MO1308_EXPORT_CORRUPT');
 bad('export-unsorted', 'validateExportManifest', exportManifest, v => { v.files.reverse(); }, 'MO1308_EXPORT_CORRUPT');
