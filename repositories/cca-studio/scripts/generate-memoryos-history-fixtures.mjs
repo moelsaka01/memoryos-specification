@@ -34,6 +34,7 @@ add('verification-valid', 'validateVerification', verification, 'VALID');
 add('query-result-valid', 'validateQueryResult', queryResult, 'VALID');
 add('export-manifest-valid', 'validateExportManifest', exportManifest, 'VALID');
 add('export-complete-valid', 'validateExportComplete', exportComplete, 'VALID');
+add('query-multiple-kinds-valid', 'validateQuery', { ...query, recordKinds: ['CICD_RUN', 'MIP_PACKAGE'] }, 'VALID');
 const bad = (id, validator, base, mutate, expect) => { const v = clone(base); mutate(v); add(id, validator, v, expect); };
 bad('ledger-extra-member', 'validateLedgerDescriptor', ledger, v => { v.createdAt = 'x'; }, 'MO1308_LEDGER_CORRUPT');
 bad('ledger-no-workspace', 'validateLedgerDescriptor', ledger, v => { delete v.workspaceIdentifier; }, 'MO1308_LEDGER_CORRUPT');
@@ -51,6 +52,7 @@ bad('entry-member-name', 'validateEntry', recordEntry, v => { v.record.members[0
 bad('entry-member-oversize', 'validateEntry', recordEntry, v => { v.record.members[0].byteLength = 16777217; }, 'MO1308_LEDGER_CORRUPT');
 bad('entry-subject-not-for-kind', 'validateEntry', recordEntry, v => { v.record.subjects = [{ type: 'CICD_RUN_ID', value: 'x' }]; }, 'MO1308_LEDGER_CORRUPT');
 bad('entry-subjects-unsorted', 'validateEntry', recordEntry, v => { v.record.subjects.reverse(); }, 'MO1308_LEDGER_CORRUPT');
+bad('entry-subjects-duplicate', 'validateEntry', recordEntry, v => { v.record.subjects.push(clone(v.record.subjects[2])); }, 'MO1308_LEDGER_CORRUPT');
 bad('entry-cicd-five-members', 'validateEntry', cicdFailure, v => { v.record.members.splice(1, 1); }, 'MO1308_LEDGER_CORRUPT');
 bad('entry-digest-uppercase', 'validateEntry', recordEntry, v => { v.entryDigest = 'sha256:' + 'AB'.repeat(32); }, 'MO1308_LEDGER_CORRUPT');
 bad('tombstone-unknown-reason', 'validateEntry', tombstone, v => { v.tombstone.reason = 'EXPIRED'; }, 'MO1308_LEDGER_CORRUPT');
@@ -63,6 +65,9 @@ bad('query-limit-1001', 'validateQuery', query, v => { v.limit = 1001; }, 'MO130
 bad('query-retention', 'validateQuery', query, v => { v.retention = 'ALL'; }, 'MO1308_QUERY_INVALID');
 bad('query-unknown-kind', 'validateQuery', query, v => { v.recordKinds = ['NATIVE_INVESTIGATION']; }, 'MO1308_QUERY_INVALID');
 bad('query-version', 'validateQuery', query, v => { v.version = '1.1.0'; }, 'MO1308_QUERY_INVALID');
+bad('query-kinds-duplicate', 'validateQuery', query, v => { v.recordKinds = ['MIP_PACKAGE', 'MIP_PACKAGE']; }, 'MO1308_QUERY_INVALID');
+bad('query-kinds-unsorted', 'validateQuery', query, v => { v.recordKinds = ['MIP_PACKAGE', 'CICD_RUN']; }, 'MO1308_QUERY_INVALID');
+bad('query-result-subjects-duplicate', 'validateQueryResult', queryResult, v => { v.entries[0].subjects.push(clone(v.entries[0].subjects[2])); }, 'MO1308_INTERNAL');
 bad('verification-unsorted-pending', 'validateVerification', verification, v => { v.purgePending = [3, 1]; }, 'MO1308_LEDGER_CORRUPT');
 bad('export-path-traversal', 'validateExportManifest', exportManifest, v => { v.files.push({ path: 'records/../x', byteLength: 1, sha256: d(13) }); }, 'MO1308_EXPORT_CORRUPT');
 bad('export-unsorted', 'validateExportManifest', exportManifest, v => { v.files.reverse(); }, 'MO1308_EXPORT_CORRUPT');

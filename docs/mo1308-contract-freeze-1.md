@@ -1165,3 +1165,36 @@ bundle equal their release bytes); the reference-host run of the full verifier
 confirms it at B1. Placement (H05) and dependency direction (H06) are
 unchanged: SDK and CLI source may now change as sections 5 and 13 assign. The
 correction is verified and bound as its own named item in the Phase 1 B1 run.
+
+## 25. Amendment A2 — Phase 1 open points (2026-10-05, owner-authorized)
+
+This amendment is append-only. The frozen text above, and Amendment A1, are
+unchanged; where this amendment and section 13.3 or 8.2 differ, this amendment
+governs. It records the owner's decisions on the four open points of the
+[Phase 1 foundation record](mo1308-phase1-foundation.md) section 5.
+
+1. **CLI query flags are required (section 13.3).** `memoryos history query`
+   requires `--retention`, `--from` and `--limit`; there are no defaults. A
+   missing flag is a grammar error: `MO1308_USAGE`, exit 1, the fixed message,
+   no echoed input. The grammar line becomes
+   `memoryos history query --ledger DIR [--kind KIND]... [--subject-type TYPE --subject VALUE] --retention ANY|RETAINED|PURGED --from INDEX --limit N [--json]`.
+   `--kind` and `--subject-type`/`--subject` stay optional (`recordKinds` empty
+   means all kinds; `subject` null means no subject filter). A repeated
+   `--kind` with the same value cannot form a strictly ascending
+   `recordKinds` and is also a usage error; ordering the kinds is left to the
+   phase that builds the query (2C).
+2. **Argument shapes confirmed (section 13.2).** `ledger` and `admission` are
+   branded, immutable values issued only by the history code; `members` is a
+   `Map` from record digest to `[{name, bytes}]`; export files are
+   `[{path, bytes}]`, exactly as Phase 1 fixed them.
+3. **`subjects` and `query.recordKinds` are strictly ascending (sections 8.2
+   and 12).** `subjects` is strictly ascending by `(type, value)` in UTF-16
+   code-unit order, and `query.recordKinds` strictly ascending in that order,
+   with no duplicates, like every other set in the contract. A duplicate or
+   unordered element is rejected by the existing shape validation: an entry
+   (`MO1308_LEDGER_CORRUPT` on verification), a query (`MO1308_QUERY_INVALID`),
+   and the subjects of a query result entry (the result validator's own code).
+4. **Characterization scope (section 14.2).** Phase 1 measures the decoder and
+   the validators only; each later phase measures what it builds.
+
+No other rule, limit, error code or exit code changes.

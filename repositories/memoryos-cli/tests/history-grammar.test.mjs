@@ -68,7 +68,7 @@ test("every valid history command fails closed and writes nothing", async (t) =>
     ["history", "append", "--ledger", ledger, "--kind", "CICD_RUN", "--run", root],
     ["history", "tombstone", "--ledger", ledger, "--target", "0", "--reason", "PRIVACY_REQUEST", "--authority-reference", "PRIV-2026-0042"],
     ["history", "verify", "--ledger", ledger],
-    ["history", "query", "--ledger", ledger],
+    ["history", "query", "--ledger", ledger, "--retention", "ANY", "--from", "0", "--limit", "1"],
     ["history", "query", "--ledger", ledger, "--kind", "MIP_PACKAGE", "--kind", "CICD_RUN", "--subject-type", "WORKSPACE",
       "--subject", "workspace-investigation", "--retention", "PURGED", "--from", "99999", "--limit", "1000"],
     ["history", "export", "--ledger", ledger, "--output", output],
@@ -82,6 +82,7 @@ test("every valid history command fails closed and writes nothing", async (t) =>
 test("history grammar rejects malformed commands with MO1308_USAGE", async (t) => {
   const root = await scratch(t);
   const ledger = join(root, "private-ledger-path"), file = join(root, "record.json");
+  const QUERY_REQUIRED = ["--retention", "ANY", "--from", "0", "--limit", "1"];
   const invalid = [
     ["history"],
     ["history", "unknown", "--ledger", ledger],
@@ -106,14 +107,20 @@ test("history grammar rejects malformed commands with MO1308_USAGE", async (t) =
     ["history", "tombstone", "--ledger", ledger, "--target", "0", "--reason", "EXPIRED", "--authority-reference", "x"],
     ["history", "tombstone", "--ledger", ledger, "--target", "0", "--reason", "PRIVACY_REQUEST", "--authority-reference", "x".repeat(257)],
     ["history", "tombstone", "--ledger", ledger, "--target", "0", "--reason", "PRIVACY_REQUEST", "--authority-reference", "ticket é"],
-    ["history", "query", "--ledger", ledger, "--kind", "NATIVE"],
-    ["history", "query", "--ledger", ledger, "--subject-type", "WORKSPACE"],
-    ["history", "query", "--ledger", ledger, "--subject", "w"],
-    ["history", "query", "--ledger", ledger, "--subject-type", "UNKNOWN", "--subject", "w"],
-    ["history", "query", "--ledger", ledger, "--retention", "ALL"],
-    ["history", "query", "--ledger", ledger, "--from", "100000"],
-    ["history", "query", "--ledger", ledger, "--limit", "0"],
-    ["history", "query", "--ledger", ledger, "--limit", "1001"],
+    ["history", "query", "--ledger", ledger],
+    ["history", "query", "--ledger", ledger, "--from", "0", "--limit", "1"],
+    ["history", "query", "--ledger", ledger, "--retention", "ANY", "--limit", "1"],
+    ["history", "query", "--ledger", ledger, "--retention", "ANY", "--from", "0"],
+    ["history", "query", "--ledger", ledger, "--kind", "MIP_PACKAGE", "--subject-type", "WORKSPACE", "--subject", "w"],
+    ["history", "query", "--ledger", ledger, ...QUERY_REQUIRED, "--kind", "NATIVE"],
+    ["history", "query", "--ledger", ledger, ...QUERY_REQUIRED, "--kind", "CICD_RUN", "--kind", "CICD_RUN"],
+    ["history", "query", "--ledger", ledger, ...QUERY_REQUIRED, "--subject-type", "WORKSPACE"],
+    ["history", "query", "--ledger", ledger, ...QUERY_REQUIRED, "--subject", "w"],
+    ["history", "query", "--ledger", ledger, ...QUERY_REQUIRED, "--subject-type", "UNKNOWN", "--subject", "w"],
+    ["history", "query", "--ledger", ledger, "--retention", "ALL", "--from", "0", "--limit", "1"],
+    ["history", "query", "--ledger", ledger, "--retention", "ANY", "--from", "100000", "--limit", "1"],
+    ["history", "query", "--ledger", ledger, "--retention", "ANY", "--from", "0", "--limit", "0"],
+    ["history", "query", "--ledger", ledger, "--retention", "ANY", "--from", "0", "--limit", "1001"],
     ["history", "export", "--ledger", ledger],
     ["history", "verify-export"],
   ];

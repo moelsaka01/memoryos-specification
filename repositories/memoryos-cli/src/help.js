@@ -14,7 +14,7 @@ memoryos policy identities [--json]`,
 memoryos history append --ledger DIR --kind KIND (--record FILE | --identity FILE --outcome FILE | --run DIR) [--json]
 memoryos history tombstone --ledger DIR --target INDEX --reason REASON --authority-reference TEXT [--json]
 memoryos history verify --ledger DIR [--json]
-memoryos history query --ledger DIR [--kind KIND]... [--subject-type TYPE --subject VALUE] [--retention ANY|RETAINED|PURGED] [--from INDEX] [--limit N] [--json]
+memoryos history query --ledger DIR [--kind KIND]... [--subject-type TYPE --subject VALUE] --retention ANY|RETAINED|PURGED --from INDEX --limit N [--json]
 memoryos history export --ledger DIR --output NEW-DIR [--json]
 memoryos history verify-export --export DIR [--json]`,
   observe: "memoryos observe --workspace FILE --snapshot FILE [--id ID] [--json]",

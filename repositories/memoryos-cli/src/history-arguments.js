@@ -1,6 +1,7 @@
 // MO-1308 `memoryos history` grammar (Contract Freeze 1 §13.3), Phase 1.
 // This file validates the closed grammar only. It reads no file, builds no
-// query or record, and chooses no default for an omitted option.
+// query or record, and chooses no default: every option a command requires
+// (including the query --retention, --from and --limit, Amendment A2) must be given.
 import { CliError, ExitCode } from "./errors.js";
 
 // The fixed MO1308_USAGE message (Freeze §14.1); errors echo no input.
@@ -39,7 +40,8 @@ export const historyDefinitions = Object.freeze({
   },
   verify: { required: ["ledger"], options: { ledger: "value", json: "flag" } },
   query: {
-    required: ["ledger"],
+    // Amendment A2: --retention, --from and --limit are required; there are no defaults.
+    required: ["ledger", "retention", "from", "limit"],
     options: {
       ledger: "value", kind: "repeat", "subject-type": "value", subject: "value",
       retention: "value", from: "value", limit: "value", json: "flag",
@@ -113,14 +115,16 @@ export function parseHistoryArguments(tokens) {
     index(options.target, 99_999);
     usage(!HISTORY_TOMBSTONE_REASONS.includes(options.reason) || !AUTHORITY_REFERENCE.test(options["authority-reference"]));
   } else if (subcommand === "query") {
-    for (const kind of options.kind ?? []) usage(!HISTORY_RECORD_KINDS.includes(kind));
+    const kinds = options.kind ?? [];
+    for (const kind of kinds) usage(!HISTORY_RECORD_KINDS.includes(kind));
+    usage(new Set(kinds).size !== kinds.length); // Amendment A2: query.recordKinds has no duplicates
     usage((options["subject-type"] === undefined) !== (options.subject === undefined));
     if (options["subject-type"] !== undefined) {
       usage(!HISTORY_SUBJECT_TYPES.includes(options["subject-type"]) || !options.subject.isWellFormed());
     }
-    if (options.retention !== undefined) usage(!HISTORY_RETENTION_FILTERS.includes(options.retention));
-    if (options.from !== undefined) index(options.from, 99_999);
-    if (options.limit !== undefined) usage(index(options.limit, 1000) < 1);
+    usage(!HISTORY_RETENTION_FILTERS.includes(options.retention));
+    index(options.from, 99_999);
+    usage(index(options.limit, 1000) < 1);
   }
   return { command: "history", subcommand, options, positionals: [] };
 }

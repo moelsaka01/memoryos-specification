@@ -121,7 +121,15 @@ test('WC11 every other verifier check reports exactly as before the correction',
     };
     const replaced = /^error: MO-1302 vendored runtime source differs from '[^']+'$/u;
     const before = run(base), after = run(path.join(workspace, 'tools/verify_workspace.py'));
+    // The verifier prints its pass line only when it found no error, so a tree whose current source was
+    // edited (the replaced rule fires in `before`) differs there. Compare the error lines exactly and tie
+    // the pass line to the absence of errors, on every host.
+    const errorLines = lines => lines.filter(line => line.startsWith('error: '));
+    const passLines = lines => lines.filter(line => line.startsWith('CCA workspace verification passed: '));
     assert.deepEqual(after.filter(line => replaced.test(line)), []);
-    assert.deepEqual(after, before.filter(line => !replaced.test(line)));
+    assert.deepEqual(errorLines(after), errorLines(before).filter(line => !replaced.test(line)));
+    assert.equal(passLines(after).length, errorLines(after).length === 0 ? 1 : 0);
+    assert.deepEqual(after.filter(line => !line.startsWith('error: ') && !line.startsWith('CCA workspace verification passed: ')),
+      before.filter(line => !line.startsWith('error: ') && !line.startsWith('CCA workspace verification passed: ')));
   } finally { fs.rmSync(directory, { recursive: true, force: true }); }
 });

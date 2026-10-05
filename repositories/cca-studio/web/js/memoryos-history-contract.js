@@ -299,6 +299,14 @@ function validateMembers(recordKind, members, code, stage) {
   if (rule.totalBytes !== null && total > rule.totalBytes) historyFail(code, stage);
 }
 
+// Amendment A2: subjects are strictly ascending by (type, value), with no duplicates.
+function subjectsStrictlyAscending(subjects, code, stage) {
+  for (let index = 1; index < subjects.length; index += 1) {
+    const left = subjects[index - 1], right = subjects[index];
+    if (before(right.type, left.type) || (right.type === left.type && !before(left.value, right.value))) historyFail(code, stage);
+  }
+}
+
 function validateSubjects(recordKind, subjects, code, stage) {
   if (!Array.isArray(subjects) || subjects.length > MEMORYOS_HISTORY_LIMITS.subjectsPerEntry) historyFail(code, stage);
   const allowed = new Set(SUBJECT_SOURCES[recordKind].map((source) => source.type));
@@ -306,11 +314,7 @@ function validateSubjects(recordKind, subjects, code, stage) {
     exactKeys(subject, ["type", "value"], code, stage);
     if (!allowed.has(subject.type) || !isWellFormedText(subject.value)) historyFail(code, stage);
   }
-  // Freeze §8.2: subjects sort by (type, value); the Freeze does not require uniqueness.
-  for (let index = 1; index < subjects.length; index += 1) {
-    const left = subjects[index - 1], right = subjects[index];
-    if (before(right.type, left.type) || (right.type === left.type && before(right.value, left.value))) historyFail(code, stage);
-  }
+  subjectsStrictlyAscending(subjects, code, stage);
 }
 
 export function validateEntry(value, { code = "LEDGER_CORRUPT", stage = "VERIFICATION" } = {}) {
@@ -343,6 +347,8 @@ export function validateQuery(value, { code = "QUERY_INVALID", stage = "USAGE" }
   exactKeys(value, ["kind", "version", "recordKinds", "subject", "retention", "fromIndex", "limit"], code, stage);
   kindAndVersion(value, MEMORYOS_HISTORY_KINDS.query, code, stage);
   if (!Array.isArray(value.recordKinds) || value.recordKinds.some((kind) => !RECORD_KINDS.includes(kind))) historyFail(code, stage);
+  // Amendment A2: recordKinds are strictly ascending (no duplicates), like every other set.
+  strictlyAscending(value.recordKinds, (kind) => kind, code, stage);
   if (value.subject !== null) {
     exactKeys(value.subject, ["type", "value"], code, stage);
     if (!SUBJECT_TYPES.includes(value.subject.type) || !isWellFormedText(value.subject.value)) historyFail(code, stage);
@@ -395,6 +401,7 @@ export function validateQueryResult(value, { code = "INTERNAL", stage = "INTERNA
       exactKeys(subject, ["type", "value"], code, stage);
       if (!SUBJECT_TYPES.includes(subject.type) || !isWellFormedText(subject.value)) historyFail(code, stage);
     }
+    subjectsStrictlyAscending(entry.subjects, code, stage);
   }
   strictlyAscending(value.entries, (entry) => entry.index, code, stage);
   return value;

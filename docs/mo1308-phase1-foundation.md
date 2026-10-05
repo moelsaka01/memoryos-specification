@@ -1,10 +1,10 @@
 # MO-1308 Phase 1 foundation
 
-Status: **DEVELOPMENT COMPLETE IN THE CLOUD — PENDING B1 ON THE REFERENCE WINDOWS HOST**.
+Status: **DEVELOPMENT COMPLETE IN THE CLOUD, AMENDED BY OWNER AMENDMENT A2 — PENDING B1 ON THE REFERENCE WINDOWS HOST**.
 
 This record describes the Phase 1 deliverables of
 [MO-1308 Contract Freeze 1](mo1308-contract-freeze-1.md) (section 18.1, with
-Amendment A1) on branch `mo1308/phase1`. It is development evidence from the
+Amendments A1 and A2) on branch `mo1308/phase1`. It is development evidence from the
 cloud container (Linux, Node v22.22.0), not certification. B1 binds it later on
 the reference Windows host under the pinned Node v24.21.0.
 
@@ -19,7 +19,8 @@ the reference Windows host under the pinned Node v24.21.0.
 | `6fc08a75` | Contract module, shape fixtures and generator, contract tests |
 | `c6a57193` | Guarded SDK history entry points; conformance prototype list |
 | `9c2757e7` | Guarded CLI grammar; conformance CLI command list |
-| the commit adding this record | ARCHITECTURE and ambiguity text; characterization tool; this record |
+| `ee0ecc52` | ARCHITECTURE and ambiguity text; characterization tool; this record |
+| the Amendment A2 commit | Owner Amendment A2 ([Freeze §25](mo1308-contract-freeze-1.md)): required query flags, strictly ascending `subjects` and `recordKinds`, regenerated fixtures, tests, this record |
 
 ## 2. Deliverables mapped to the Freeze
 
@@ -28,8 +29,8 @@ the reference Windows host under the pinned Node v24.21.0.
 | §5.1 contract module | `repositories/cca-studio/web/js/memoryos-history-contract.js`: shape kinds, D domains, record kinds, admission and Workspace association per kind, member rules and per-kind limits, subject types and the §8.2 subject-source binding, tombstone reasons, retention and consistency enums, layout names, §14.1 error catalog (`MemoryOSHistoryError`), §14.2 limits, strict JCS byte decoder, shape validators |
 | §8.2 subject-source binding | `SUBJECT_SOURCES`: each kind's subject types bound to the owner's published field (MIP `manifest`/`integrity`, Core checkpoint fields, Policy outcome `evaluationIdentityDigest` and the owner verifier's `outcomeDigest`, Regression `identifier`, MO-1306 `runId`/`semantic.*`, MO-1307 readiness and decision digests) |
 | §13.2 guarded SDK signatures | `memoryos-sdk.js` exports the eight functions and `MemoryOSHistoryError`, plus `MemoryOS#createHistoryCheckpointRecord`. Each checks its frozen argument shape, then fails closed with `MO1308_INTERNAL` (MO-1307 Phase 1 guard precedent). No file I/O (H06). SDK version stays 1.1.0 until 2D |
-| §13.3 guarded CLI grammar | `memoryos-cli/src/history-arguments.js` validates the seven subcommands; `commands.js` fails every valid command closed with `MO1308_INTERNAL` (exit 5); usage errors are `MO1308_USAGE` (exit 1). JSON errors add `error.historyCode`; messages are the catalog's fixed text |
-| Fixtures | `cca-studio/tests/fixtures/memoryos-history/1.0.0/shape-cases.json` (41 cases: 9 valid, 32 invalid; synthetic digests, not identity vectors) and its generator `cca-studio/scripts/generate-memoryos-history-fixtures.mjs` |
+| §13.3 guarded CLI grammar | `memoryos-cli/src/history-arguments.js` validates the seven subcommands (query requires `--retention`, `--from` and `--limit`, A2); `commands.js` fails every valid command closed with `MO1308_INTERNAL` (exit 5); usage errors are `MO1308_USAGE` (exit 1). JSON errors add `error.historyCode`; messages are the catalog's fixed text |
+| Fixtures | `cca-studio/tests/fixtures/memoryos-history/1.0.0/shape-cases.json` (46 cases: 10 valid, 36 invalid, after Amendment A2; synthetic digests, not identity vectors) and its generator `cca-studio/scripts/generate-memoryos-history-fixtures.mjs` |
 | §5.4 ARCHITECTURE and ambiguity text | Applied verbatim to ARCHITECTURE §5 (`cca-studio`, `memoryos-cli`) and §13, and to CCA-A016 |
 | R03 equivalence vectors | EO1 in `cca-conformance/tests/mo1308_phase1_entry_obligations_test.mjs` |
 | Regression inspection confirmation | EO2 in the same test |
@@ -58,7 +59,7 @@ files against the frozen grammar; 2D replaces the SDK guards and sets 1.2.0.
 | R36 one Workspace per ledger | Descriptor requires exactly one non-empty `workspaceIdentifier` |
 | R37 no helper process | Contract, SDK and grammar audits |
 
-## 4. Tests in the cloud container
+## 4. Tests in the cloud container, and after Amendment A2 on the reference host
 
 | Suite | Result |
 |---|---|
@@ -67,6 +68,10 @@ files against the frozen grammar; 2D replaces the SDK guards and sets 1.2.0.
 | `memoryos-cli` `npm test` | 45/45 (baseline 38) |
 | `cca-conformance` normative vectors, compatibility, MO-1301 integration, reference implementation, MO-1302 Action foundation, component evidence, boundary contract | All pass (two pinned lists updated, below) |
 | `tools/verify_workspace.py` | Only the pre-existing Linux `MO-1304 … INSTALL_TOOLCHAIN` error; no MO-1302 error |
+
+After Amendment A2 (reference Windows host, Node v24.21.0, Python 3.14.4): `cca-conformance` `tests/mo1308_*_test.mjs` 19/19 (WC11 corrected, below), `cca-studio` `npm test` 358/358 (the fixture test now declares 46 cases), `memoryos-cli` `npm test` 45/45, and `tools/verify_workspace.py` passes with exit 0 in the Phase 1 worktree.
+
+**WC11 correction (Windows-only defect, found in Amendment A2).** WC11 compared the verifier's whole output before and after the correction. The verifier prints its pass line only when it finds no error. In the cloud the unrelated MO-1304 error always suppressed that line, so the comparison held; on a host with the MO-1304 toolchain, the pre-correction verifier reports the replaced rule's error for the edited SDK and CLI source and prints no pass line, and the corrected verifier prints it. WC11 now compares the error lines exactly (minus the replaced rule's message), requires the pass line exactly when the corrected verifier has no error, and compares every other output line exactly. No assertion was removed.
 
 Pinned-list updates, both as MO-1301 did for its additions: the
 CCA-MEMORYOS-1.0 conformance test's exact `MemoryOS.prototype` list gains
@@ -78,30 +83,36 @@ Needs the Windows host: the 122 native MO-1307 tests that cannot run on
 Linux; the pinned Node binary check; `verify_workspace.py` without the MO-1304
 toolchain error; the CTest run; and the reference-host characterization.
 
-## 5. Open points for the owner
+## 5. Open points for the owner — decided by Amendment A2
 
-1. **CLI query defaults (before Phase 2C).** §13.3 makes `--retention`,
-   `--from` and `--limit` optional, but `MemoryOSHistoryQuery` requires
-   `retention`, `fromIndex` and `limit`, and the Freeze names no defaults. The
-   Phase 1 grammar validates the flags without choosing defaults. Phase 2C
-   cannot build a query without a decision.
-2. **Argument shapes fixed by Phase 1** (§13.2 delegates this): `ledger` and
-   `admission` are branded, immutable values issued only by the history
-   authority (public fields are the frozen shape; verified state is private, as
-   for the SDK `Checkpoint`); `members` is a `Map` from record digest to
+The owner decided all four points on 2026-10-05
+([Freeze §25](mo1308-contract-freeze-1.md)):
+
+1. **CLI query flags.** `--retention`, `--from` and `--limit` are required;
+   there are no defaults. A missing flag is `MO1308_USAGE`, exit 1, the fixed
+   message, no echoed input. The grammar, help text and tests are updated. A
+   repeated identical `--kind` is also a usage error (it cannot form strictly
+   ascending `recordKinds`).
+2. **Argument shapes.** Confirmed as Phase 1 fixed them: `ledger` and
+   `admission` are branded, immutable values issued only by the history code
+   (public fields are the frozen shape; verified state is private, as for the
+   SDK `Checkpoint`); `members` is a `Map` from record digest to
    `[{name, bytes}]`; export files are `[{path, bytes}]`.
-3. **Literal readings, recorded.** `subjects` must be non-decreasing by
-   `(type, value)` (the Freeze says "sorts" and does not require uniqueness);
-   `query.recordKinds` may contain duplicates (the Freeze sets no rule); lists
-   that are sets by construction (member names, indices, digests, export paths,
-   result indices) are strictly ascending.
-4. **Characterization scope.** Phase 1 can only characterize the decoder and
-   validators. In the cloud, generate-plus-decode-plus-validate of 100,000
+3. **Sets.** `subjects` (by `(type, value)`) and `query.recordKinds` are
+   strictly ascending with no duplicates, like every other set (member names,
+   indices, digests, export paths, result indices). The validators reject
+   duplicates and misordering with the existing codes (`MO1308_LEDGER_CORRUPT`
+   for entries, `MO1308_QUERY_INVALID` for queries; query-result entry
+   subjects use the result validator's code, `MO1308_INTERNAL` by default).
+   The generator adds one valid case (two kinds in order) and four invalid cases
+   (duplicate entry subjects, duplicate and unordered `recordKinds`, duplicate
+   query-result subjects); the fixtures were regenerated reproducibly.
+4. **Characterization scope.** Accepted: Phase 1 measures the decoder and
+   validators only. In the cloud, generate-plus-decode-plus-validate of 100,000
    maximal (16,383-byte) entries took about 69 s (about 0.7 ms per entry,
    generation included); a 1,000-entry query page is 423,335 bytes, within the
    4 MiB CLI limit. Ledger, admission, query and export characterization falls
    to the phases that implement them.
-
 ## 6. B1 local binding plan (one run binds the correction and Phase 1)
 
 Reference Windows 11 x64 host; `node.exe` v24.21.0 with SHA-256
@@ -134,7 +145,7 @@ New-Item -ItemType Directory $logs | Out-Null
 | 5 | cca-studio | `cmd /d /c "cd repositories\cca-studio && `"$node`" --test <the package.json test list> > $logs\studio.log 2>&1"` (or `npm test`) | 358/358 |
 | 6 | memoryos-cli | `cmd /d /c "cd repositories\memoryos-cli && `"$node`" --test --test-concurrency=1 tests/*.test.mjs > $logs\cli.log 2>&1"` | 45/45 |
 | 7 | Released-copy check (Freeze §18.2 item 4) | included in items 1–2 (EO3, WC08, WC09); also `git diff --quiet 7e07bd0d HEAD -- .github/actions/memoryos-policy-gate` | exit 0 |
-| 8 | Workspace verifier | `python tools\verify_workspace.py --root . > $logs\verify.log 2>&1` | exit 0, no output; **no MO-1302 and no MO-1304 error** |
+| 8 | Workspace verifier | `python tools\verify_workspace.py --root . > $logs\verify.log 2>&1` (real Python 3.14 at `C:Python314`, first on PATH; not the Windows Store stub) | exit 0, only the pass line `CCA workspace verification passed: ...`; **no MO-1302 and no MO-1304 error** |
 | 9 | CTest | `cmake --preset default`, `cmake --build --preset default`, `ctest --preset default --output-on-failure > $logs\ctest.log 2>&1` (at minimum `ctest --preset default -R cca.workspace.verify`) | all pass, including `cca.workspace.verify` |
 | 10 | Characterization (§14.2) | `& $node --expose-gc repositories\cca-conformance\tools\mo1308-phase1\characterize.mjs > $logs\characterization.json` | completes; values recorded, not pass/fail |
 | 11 | Clean tree afterwards | `git status --porcelain` | empty |
