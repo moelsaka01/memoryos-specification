@@ -142,11 +142,19 @@ kept and classified if any expected result is not met.
 | 5 | `tests/mo1307_*_test.mjs` | 639/639 |
 | 6 | `python tools\verify_workspace.py --root .` | exit 0, pass line only |
 | 7 | CTest | `DEFERRED_TOOLCHAIN_ABSENT` (Amendment A3; mandatory before Phase 3) |
-| 8 | Characterization | recorded |
+| 8 | Characterization | completes with exit 0 and a recorded value for every measured operation (a failed operation records no value and makes the tool exit non-zero) |
 | 9 | Clean tree | empty |
 
+**Generation history.** Generation 1 (evidence commit `d9249b83`, `FAILED_PRESERVED`) passed items 1 to 6 and failed
+item 8: `characterize.mjs` predated Amendment A4.1 and built entries without `decisionConsistency`, so the contract
+rejected the ledger at the first query (a test-tooling fault, not a product or environment fault). Generation 1 stays
+exactly as committed. The tool now generates A4.1 entries (`decisionConsistency` is `null` for every record it builds,
+because it builds only `MIP_PACKAGE` records) and exits non-zero if any measured operation returns an error. Tooling
+only: no production file and no test assertion changed. Generation 2 is a new run, one run, recorded under
+`repositories/cca-conformance/evidence/mo1308/phase2a-g2/`; generation 1's directory is never overwritten.
+
 Evidence commit (single-parent child of `$A`, adding only
-`repositories/cca-conformance/evidence/mo1308/phase2a/`, raw logs under the
+`repositories/cca-conformance/evidence/mo1308/phase2a/` (generation 2: `phase2a-g2/`), raw logs under the
 `evidence/mo1308/**` `-text` rule) and a binding-only commit, as Phase 1. The receipt
 records that this stream changes the Phase 1 contract module and fixtures under
 Amendment A4.1 (item 3 re-runs them). No `main` update, no tag.
