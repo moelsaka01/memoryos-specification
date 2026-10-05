@@ -588,7 +588,7 @@ test("T16 commands: arguments become store operations, inputs are read through t
   assert.deepEqual(Object.keys(run("init", "--ledger", ledger, "--name", "workspace.history", "--workspace", "workspace-investigation").result), ["ledgerIdentifier"]);
   const file = join(root, "package.mip");
   writeFileSync(file, "package bytes");
-  assert.deepEqual(Object.keys(run("append", "--ledger", ledger, "--kind", "MIP_PACKAGE", "--record", file).result).sort(), ["entryDigest", "index"]);
+  assert.deepEqual(Object.keys(run("append", "--ledger", ledger, "--kind", "MIP_PACKAGE", "--record", file).result).sort(), ["entryDigest", "index"], "Amendment A4.2: append result");
   writeFileSync(join(root, "identity.json"), "identity");
   writeFileSync(join(root, "outcome.json"), "outcome");
   assert.equal(run("append", "--ledger", ledger, "--kind", "POLICY_EVALUATION", "--identity", join(root, "identity.json"), "--outcome", join(root, "outcome.json")).result.index, 1);
@@ -600,9 +600,13 @@ test("T16 commands: arguments become store operations, inputs are read through t
   assert.equal(run("query", "--ledger", ledger, "--retention", "ANY", "--from", "0", "--limit", "10").result.entries.length, 3);
   const queried = run("query", "--ledger", ledger, "--kind", "POLICY_EVALUATION", "--kind", "MIP_PACKAGE", "--retention", "RETAINED", "--from", "0", "--limit", "10").result;
   assert.deepEqual(queried.query.recordKinds, ["MIP_PACKAGE", "POLICY_EVALUATION"], "the kinds are ordered strictly ascending by the command layer (Amendment A2)");
-  assert.equal(run("tombstone", "--ledger", ledger, "--target", "0", "--reason", "PRIVACY_REQUEST", "--authority-reference", "P-1").result.index, 3);
+  const tombstoned = run("tombstone", "--ledger", ledger, "--target", "0", "--reason", "PRIVACY_REQUEST", "--authority-reference", "P-1").result;
+  assert.equal(tombstoned.index, 3);
+  assert.deepEqual(Object.keys(tombstoned).sort(), ["entryDigest", "index"], "Amendment A4.2: tombstone result");
   const exported = join(root, "export");
-  assert.equal(run("export", "--ledger", ledger, "--output", exported).result.entryCount, 4);
+  const exportResult = run("export", "--ledger", ledger, "--output", exported).result;
+  assert.deepEqual(Object.keys(exportResult).sort(), ["entryCount", "headDigest", "ledgerIdentifier"], "Amendment A4.2: export result");
+  assert.equal(exportResult.entryCount, 4);
   assert.equal(run("verify-export", "--export", exported).result.entryCount, 4);
 
   const errorOf = (...argv) => { try { run(...argv); } catch (error) { return error; } return assert.fail("expected an error"); };

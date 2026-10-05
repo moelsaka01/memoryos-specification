@@ -1,6 +1,6 @@
 # MO-1308 Phase 2C persistence and publication
 
-Status: **DEVELOPMENT COMPLETE IN THE CLOUD — NOT BOUND; WINDOWS-HOST TESTS PENDING**.
+Status: **DEVELOPMENT COMPLETE IN THE CLOUD, ADOPTED BY AMENDMENT A4.2 — NOT BOUND; WINDOWS-HOST TESTS PENDING**.
 
 This record describes Stream 2C of [MO-1308 Contract Freeze 1](mo1308-contract-freeze-1.md)
 (section 18.1, with Amendments A1–A3) on branch `mo1308/phase2c-store`, created from
@@ -52,6 +52,20 @@ header. Verification against the real functions is Stream 2D's integrated suite.
 Requirements touched: R06, R09, R15, R16, R17 (Linux half), R18, R19, R20 (store side),
 R21 (store layout side), R22, R23, R25 (code and exit mapping), R37.
 
+## 2a. Amendment A4
+
+- **A4.2 (K1 adopted).** [Amendment A4.2](mo1308-contract-freeze-1.md) freezes the success
+  results exactly as K1 chose them: `init` `{ledgerIdentifier}`, `append` and `tombstone`
+  `{index, entryDigest}`, `export` `{ledgerIdentifier, entryCount, headDigest}`, `verify` and
+  `verify-export` the Verification, `query` the QueryResult. **No shape needed any
+  adjustment.** T16 now pins the exact key set of each.
+- **A4.1 (entry shape).** The `record` shape gains `decisionConsistency`. The store is
+  indifferent (it writes the bytes the engine returns), but the stand-in engine and the
+  contract module in this branch follow it: the same contract commit as in Streams 2A and
+  2B, and the stand-in's admission carries a trusted `decisionConsistency` (the real
+  admission computes it, Stream 2B). No store code changed.
+- **A4.3.** K1–K11 are accepted as written.
+
 ## 3. Interface for Stream 2D
 
 `commands.js` keeps the single SDK import (an existing architecture test requires it) and
@@ -99,7 +113,7 @@ comparison); that is not a committed test.
 |---|---|
 | `memoryos-cli` `npm test` | 66/66 (45 existing + 21 new) |
 | `cca-conformance` `tests/mo1308_*_test.mjs` | 19/19 (Phase 1; the 2A and 2B suites live on their own branches), with tag `memoryos-1.3-mo1302` fetched locally |
-| `cca-studio` `npm test` | unchanged (no studio file is touched) |
+| `cca-studio` `npm test` | 358/358 (the contract and fixture tests declare the 54-case A4.1 fixtures) |
 | `tools/verify_workspace.py` | Only the pre-existing Linux `MO-1304 … INSTALL_TOOLCHAIN` error |
 
 **Tests that need the Windows host and are not claimed here:**

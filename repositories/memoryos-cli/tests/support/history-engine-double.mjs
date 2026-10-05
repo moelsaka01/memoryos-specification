@@ -3,7 +3,7 @@
 // 2B, integrated in Stream 2D, and until then the SDK functions fail closed. This double implements the
 // frozen byte formats and rules just far enough to drive the file store: identities, the chain, member
 // verification, tombstones, a filter-only query and the export model. Admission here trusts the member
-// names and sizes (it is NOT the 2B admission), and records carry only a WORKSPACE subject.
+// names and sizes (it is NOT the 2B admission), and records carry only a WORKSPACE subject and a trusted decisionConsistency.
 import crypto from "node:crypto";
 
 import {
@@ -106,7 +106,9 @@ export function createHistoryEngineDouble() {
           HUMAN_DECISION_CLAIM: "MO1307_DECISION_CLAIM_BOUND" }[recordKind],
         workspaceAssociation: ["MIP_PACKAGE", "INVESTIGATION_CHECKPOINT", "REGRESSION_REPORT"].includes(recordKind) ? "INTRINSIC" : "DECLARED",
         subjects: ["MIP_PACKAGE", "INVESTIGATION_CHECKPOINT", "REGRESSION_REPORT"].includes(recordKind)
-          ? [{ type: "WORKSPACE", value: state.descriptor.workspaceIdentifier }] : [] });
+          ? [{ type: "WORKSPACE", value: state.descriptor.workspaceIdentifier }] : [],
+        // Amendment A4.1: the real admission computes this from the claim and the readiness result; the stand-in trusts it.
+        decisionConsistency: recordKind === "HUMAN_DECISION_CLAIM" ? "CONSISTENT" : null });
       admissionBrand.add(admission);
       return admission;
     },
@@ -133,7 +135,7 @@ export function createHistoryEngineDouble() {
         entries: page.map((entry) => ({ index: entry.index, entryDigest: entry.entryDigest, entryType: "RECORD", recordKind: entry.record.recordKind,
           recordDigest: entry.record.recordDigest, admission: entry.record.admission, workspaceAssociation: entry.record.workspaceAssociation,
           subjects: entry.record.subjects, retention: state.tombstoned.has(entry.index) ? "PURGED" : "RETAINED",
-          tombstoneIndex: state.tombstoned.get(entry.index) ?? null, decisionConsistency: null })),
+          tombstoneIndex: state.tombstoned.get(entry.index) ?? null, decisionConsistency: entry.record.decisionConsistency })),
         nextIndex: matches.length > query.limit ? matches[query.limit].index : null };
     },
     buildHistoryExport({ descriptorBytes, entries, members }) {
