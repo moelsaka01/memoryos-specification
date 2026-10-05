@@ -16,7 +16,7 @@ function maximalEntry(index) {
     { type: 'WORKSPACE', value: 'w'.repeat(1) }];
   const entry = { kind: 'MemoryOSHistoryEntry', version: '1.0.0', ledgerIdentifier: digest(1), index, previousEntryDigest: digest(index + 2),
     entryType: 'RECORD', record: { recordKind: 'MIP_PACKAGE', recordDigest: digest(index + 3), admission: 'MIP_001_VERIFIED',
-      members: [{ name: 'package.mip', byteLength: 16_777_216, sha256: digest(index + 4) }], workspaceAssociation: 'INTRINSIC', subjects },
+      members: [{ name: 'package.mip', byteLength: 16_777_216, sha256: digest(index + 4) }], workspaceAssociation: 'INTRINSIC', subjects, decisionConsistency: null },
     tombstone: null, entryDigest: digest(index + 5) };
   // Pad the identifier subject so the canonical entry is as close as possible to the entry-file limit.
   const size = new TextEncoder().encode(canonicalize(entry)).length;

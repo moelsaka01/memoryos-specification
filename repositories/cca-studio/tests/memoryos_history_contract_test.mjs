@@ -91,7 +91,7 @@ test("MO-1308 shape fixtures validate exactly as declared", async () => {
   const bytes = new Uint8Array(await readFile(fixtureURL));
   const fixture = decodeHistoryBytes(bytes, { maxBytes: 1 << 20 });
   assert.equal(fixture.kind, "MemoryOSHistoryShapeFixtures");
-  assert.equal(fixture.cases.length, 46);
+  assert.equal(fixture.cases.length, 54);
   for (const { id, validator, value, expect } of fixture.cases) {
     if (expect === "VALID") assert.equal(contract[validator](value), value, id);
     else assert.throws(() => contract[validator](value), historyError(expect), id);
