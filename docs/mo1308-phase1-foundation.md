@@ -145,7 +145,7 @@ New-Item -ItemType Directory $logs | Out-Null
 | 5 | cca-studio | `cmd /d /c "cd repositories\cca-studio && `"$node`" --test <the package.json test list> > $logs\studio.log 2>&1"` (or `npm test`) | 358/358 |
 | 6 | memoryos-cli | `cmd /d /c "cd repositories\memoryos-cli && `"$node`" --test --test-concurrency=1 tests/*.test.mjs > $logs\cli.log 2>&1"` | 45/45 |
 | 7 | Released-copy check (Freeze §18.2 item 4) | included in items 1–2 (EO3, WC08, WC09); also `git diff --quiet 7e07bd0d HEAD -- .github/actions/memoryos-policy-gate` | exit 0 |
-| 8 | Workspace verifier | `python tools\verify_workspace.py --root . > $logs\verify.log 2>&1` (real Python 3.14 at `C:Python314`, first on PATH; not the Windows Store stub) | exit 0, only the pass line `CCA workspace verification passed: ...`; **no MO-1302 and no MO-1304 error** |
+| 8 | Workspace verifier | `python tools\verify_workspace.py --root . > $logs\verify.log 2>&1` (real Python 3.14 at `C:\Python314`, first on PATH; not the Windows Store stub) | exit 0, only the pass line `CCA workspace verification passed: ...`; **no MO-1302 and no MO-1304 error** |
 | 9 | CTest | `cmake --preset default`, `cmake --build --preset default`, `ctest --preset default --output-on-failure > $logs\ctest.log 2>&1` (at minimum `ctest --preset default -R cca.workspace.verify`) | all pass, including `cca.workspace.verify` |
 | 10 | Characterization (§14.2) | `& $node --expose-gc repositories\cca-conformance\tools\mo1308-phase1\characterize.mjs > $logs\characterization.json` | completes; values recorded, not pass/fail |
 | 11 | Clean tree afterwards | `git status --porcelain` | empty |
