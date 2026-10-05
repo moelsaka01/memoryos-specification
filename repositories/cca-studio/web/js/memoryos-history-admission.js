@@ -148,6 +148,7 @@ const recordDigestOf = (recordKind, memberList) => mipDigest(DOMAINS.record, rec
 function indexLedger(ledger) {
   if (!isObject(ledger) || !Object.hasOwn(ledger, "workspaceIdentifier") || !Array.isArray(ledger.entries)
       || !isWorkspaceIdentifier(ledger.workspaceIdentifier)) historyFail("USAGE", "USAGE");
+  if (Object.hasOwn(ledger, "members") && !(ledger.members instanceof Map)) historyFail("USAGE", "USAGE");
   const records = new Map();
   const purged = new Set();
   const readiness = [];
@@ -160,11 +161,12 @@ function indexLedger(ledger) {
     records.set(`${entry.record.recordKind}\n${entry.record.recordDigest}`, entry.index);
     if (entry.record.recordKind === "READINESS_RESULT") {
       const subject = (type) => entry.record.subjects.find((candidate) => candidate.type === type)?.value;
-      readiness.push({ candidateDigest: subject("READINESS_CANDIDATE_DIGEST"), readinessDigest: subject("READINESS_DIGEST"),
+      readiness.push({ index: entry.index, recordDigest: entry.record.recordDigest, members: entry.record.members,
+        candidateDigest: subject("READINESS_CANDIDATE_DIGEST"), readinessDigest: subject("READINESS_DIGEST"),
         proofBindingDigest: subject("PROOF_BINDING_DIGEST") });
     }
   }
-  return { workspaceIdentifier: ledger.workspaceIdentifier, records, purged, readiness };
+  return { workspaceIdentifier: ledger.workspaceIdentifier, records, purged, readiness, members: ledger.members ?? new Map() };
 }
 
 // ---- MIP_PACKAGE: MIP_001_VERIFIED ----
@@ -181,6 +183,92 @@ function admitMipPackage(members, ledger) {
     { type: "MIP_PACKAGE_IDENTIFIER", value: manifest.packageIdentifier },
     { type: "WORKSPACE", value: workspace },
   ];
+}
+
+// ---- Incremental SHA-256 (Amendment A4.5) ----
+// The Standard's log digest is D(domain, id, "[" + t0 + "," + ... + "," + ti + "]") for every prefix. SHA-256 is a
+// streaming hash, so the state after "[t0,...,ti" is reused for the next prefix: absorb each transition once and
+// finish a copy of the state with "]". Total work is linear in the log size and every digest is byte-identical to
+// hashing the whole prefix (proved against the quadratic construction in the Phase 2B tests).
+const SHA256_K = Object.freeze([
+  0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+  0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+  0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+  0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+  0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+  0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+  0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+  0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+]);
+const SHA256_INITIAL = Object.freeze([0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19]);
+const rotr = (value, count) => ((value >>> count) | (value << (32 - count))) >>> 0;
+const SHA256_WORDS = new Uint32Array(64); // scratch, overwritten by every block
+
+function sha256Compress(state, block, offset) {
+  const w = SHA256_WORDS;
+  for (let i = 0; i < 16; i += 1) {
+    const at = offset + i * 4;
+    w[i] = ((block[at] << 24) | (block[at + 1] << 16) | (block[at + 2] << 8) | block[at + 3]) >>> 0;
+  }
+  for (let i = 16; i < 64; i += 1) {
+    const s0 = rotr(w[i - 15], 7) ^ rotr(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+    const s1 = rotr(w[i - 2], 17) ^ rotr(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+    w[i] = (w[i - 16] + s0 + w[i - 7] + s1) >>> 0;
+  }
+  let [a, b, c, d, e, f, g, h] = state;
+  for (let i = 0; i < 64; i += 1) {
+    const t1 = (h + (rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25)) + ((e & f) ^ (~e & g)) + SHA256_K[i] + w[i]) >>> 0;
+    const t2 = ((rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22)) + ((a & b) ^ (a & c) ^ (b & c))) >>> 0;
+    h = g; g = f; f = e; e = (d + t1) >>> 0; d = c; c = b; b = a; a = (t1 + t2) >>> 0;
+  }
+  state[0] = (state[0] + a) >>> 0; state[1] = (state[1] + b) >>> 0; state[2] = (state[2] + c) >>> 0; state[3] = (state[3] + d) >>> 0;
+  state[4] = (state[4] + e) >>> 0; state[5] = (state[5] + f) >>> 0; state[6] = (state[6] + g) >>> 0; state[7] = (state[7] + h) >>> 0;
+}
+
+class Sha256Stream {
+  constructor(from = null) {
+    this.state = from === null ? Uint32Array.from(SHA256_INITIAL) : Uint32Array.from(from.state);
+    this.buffer = from === null ? new Uint8Array(64) : Uint8Array.from(from.buffer);
+    this.buffered = from === null ? 0 : from.buffered;
+    this.length = from === null ? 0 : from.length;
+  }
+
+  update(bytes) {
+    this.length += bytes.length;
+    let offset = 0;
+    if (this.buffered > 0) {
+      const take = Math.min(64 - this.buffered, bytes.length);
+      this.buffer.set(bytes.subarray(0, take), this.buffered);
+      this.buffered += take;
+      offset = take;
+      if (this.buffered < 64) return this;
+      sha256Compress(this.state, this.buffer, 0);
+      this.buffered = 0;
+    }
+    for (; offset + 64 <= bytes.length; offset += 64) sha256Compress(this.state, bytes, offset);
+    this.buffer.set(bytes.subarray(offset), 0);
+    this.buffered = bytes.length - offset;
+    return this;
+  }
+
+  clone() {
+    return new Sha256Stream(this);
+  }
+
+  // The digest of everything absorbed so far; the stream itself is left unchanged.
+  hex() {
+    const copy = this.clone();
+    const padding = new Uint8Array(((copy.buffered < 56 ? 56 : 120) - copy.buffered) + 8);
+    padding[0] = 0x80;
+    const bits = this.length * 8;
+    const view = new DataView(padding.buffer);
+    view.setUint32(padding.length - 8, Math.floor(bits / 0x1_0000_0000));
+    view.setUint32(padding.length - 4, bits >>> 0);
+    const length = copy.length;
+    copy.update(padding);
+    copy.length = length;
+    return Array.from(copy.state, (word) => word.toString(16).padStart(8, "0")).join("");
+  }
 }
 
 // ---- INVESTIGATION_CHECKPOINT: CORE_LOG_VERIFIED_STATE_ISSUED (H13 option A) ----
@@ -215,7 +303,11 @@ function admitCheckpoint(members, ledger) {
   guard(transitions.length >= 2 && transitions.length <= MAX_TRANSITIONS && checkpoint.transitionCount === transitions.length);
 
   // Every transition identity, the published prefix-digest chain, the log digest and the count.
-  const materials = [];
+  // Amendment A4.5: one pass. `logStream` holds the state after "MIP-1" NUL domain NUL id NUL "[" and the transitions
+  // so far; each prefix digest finishes a copy with "]".
+  const logStream = new Sha256Stream()
+    .update(utf8Encode(`MIP-1\0INVESTIGATION-CORE-LOG-1.0\0${investigationIdentifier}\0[`));
+  const closing = utf8Encode("]");
   let priorDigest = mipDigest("INVESTIGATION-CORE-LOG-1.0", investigationIdentifier, "[]");
   transitions.forEach((transition, index) => {
     guard(hasExactKeys(transition, TRANSITION_KEYS) && transition.version === CORE_VERSION
@@ -226,9 +318,9 @@ function admitCheckpoint(members, ledger) {
       investigationIdentifier, index, kind: transition.kind, payload: transition.payload, previousLogDigest: transition.previousLogDigest,
     }));
     guard(transition.identifier === identifier);
-    materials.push(canonicalize({ identifier, index, investigationIdentifier, kind: transition.kind,
-      payload: transition.payload, previousLogDigest: transition.previousLogDigest }));
-    priorDigest = mipDigest("INVESTIGATION-CORE-LOG-1.0", investigationIdentifier, `[${materials.join(",")}]`);
+    logStream.update(utf8Encode(`${index === 0 ? "" : ","}${canonicalize({ identifier, index, investigationIdentifier, kind: transition.kind,
+      payload: transition.payload, previousLogDigest: transition.previousLogDigest })}`));
+    priorDigest = `sha256:${logStream.clone().update(closing).hex()}`;
   });
   guard(log.digest === priorDigest && checkpoint.transitionLogDigest === priorDigest);
   // The checkpoint identifier; the state digest is retained as the Core issued it, not re-derived.
@@ -541,8 +633,9 @@ function admitCicdRun(members) {
 // Canonical J, kind and version, and recomputation of readinessDigest and proofBindingDigest (MO-1307
 // Freeze section 14). This is not a MO-1307 verification: no evidence graph, input or gate is re-derived.
 
-function admitReadinessResult(members) {
-  const result = parseJBytes(members.byName.get("memoryos-readiness-result.json"), "MO1307", 4_194_304);
+// The self-digest checks of the MO1307_SELF_DIGESTS_RECOMPUTED method; returns the parsed result.
+function checkReadinessResultBytes(bytes) {
+  const result = parseJBytes(bytes, "MO1307", 4_194_304);
   guard(hasExactKeys(result, ["assessment", "audit", "kind", "proofBindingDigest", "readinessDigest", "version"])
     && result.kind === "MemoryOSReadinessResult" && result.version === "1.0.0"
     && isObject(result.assessment) && isObject(result.audit)
@@ -553,6 +646,11 @@ function admitReadinessResult(members) {
   const proofBindingDigest = digestOfBytes(jBytes({ kind: "MemoryOSReadinessProofBinding", version: "1.0.0",
     readinessDigest, audit: result.audit }));
   guard(result.proofBindingDigest === proofBindingDigest);
+  return result;
+}
+
+function admitReadinessResult(members) {
+  const result = checkReadinessResultBytes(members.byName.get("memoryos-readiness-result.json"));
   return [
     { type: "PROOF_BINDING_DIGEST", value: result.proofBindingDigest },
     { type: "READINESS_CANDIDATE_DIGEST", value: result.assessment.candidateDigest },
@@ -562,7 +660,8 @@ function admitReadinessResult(members) {
 
 // ---- HUMAN_DECISION_CLAIM: MO1307_DECISION_CLAIM_BOUND ----
 // The exact MO-1307 section 13 shape, authenticity NOT_VERIFIED_BY_MEMORYOS, bound (H16) to a
-// READINESS_RESULT entry already in the ledger. Consistency is a derived query value, never stored here.
+// READINESS_RESULT entry already in the ledger. Amendment A4.1: admission also computes `decisionConsistency` from the
+// claim and from the referenced result's retained bytes, re-verified here, and returns it to be stored in the entry.
 
 function validUtcTimestamp(text) {
   if (!/^[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])T(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]Z$/u.test(text)) return false;
@@ -579,14 +678,32 @@ function admitDecisionClaim(members, ledger) {
     && isBounded(claim.reason, 1024) && nullOr(claim.actor, (actor) => isString(actor) && actor.length <= 128)
     && nullOr(claim.timestamp, (timestamp) => isString(timestamp) && validUtcTimestamp(timestamp))
     && nullOr(claim.attestation, isDigestValue));
-  const bound = ledger.readiness.some((entry) => entry.candidateDigest === claim.candidateDigest
-    && entry.readinessDigest === claim.readinessDigest && entry.proofBindingDigest === claim.proofBindingDigest);
-  if (!bound) historyFail("DECISION_UNBOUND", "ADMISSION");
-  return [
+  // The referenced result: a retained entry with the claim's three digests and available bytes. Absent (including a
+  // result that exists only in another ledger) or purged means unbound: nothing is computed and nothing is guessed.
+  const reference = ledger.readiness.find((entry) => !ledger.purged.has(entry.index)
+    && entry.candidateDigest === claim.candidateDigest && entry.readinessDigest === claim.readinessDigest
+    && entry.proofBindingDigest === claim.proofBindingDigest && ledger.members.has(entry.recordDigest));
+  if (reference === undefined) historyFail("DECISION_UNBOUND", "ADMISSION");
+  const retained = ledger.members.get(reference.recordDigest);
+  guard(Array.isArray(retained));
+  // The retained bytes must be exactly what the entry recorded, and must verify as a readiness result.
+  if (retained.length !== reference.members.length || reference.members.some((expected) => {
+    const found = retained.find((candidate) => candidate.name === expected.name);
+    return !isObject(found) || !isBytes(found.bytes) || found.bytes.byteLength !== expected.byteLength || digestOfBytes(found.bytes) !== expected.sha256;
+  })) historyFail("RECORD_BYTES_MISMATCH", "ADMISSION");
+  const result = checkReadinessResultBytes(retained.find((candidate) => candidate.name === "memoryos-readiness-result.json").bytes);
+  guard(result.assessment.candidateDigest === claim.candidateDigest && result.readinessDigest === claim.readinessDigest
+    && result.proofBindingDigest === claim.proofBindingDigest);
+  const readiness = result.assessment.readiness;
+  guard(["READY", "READY_WITH_QUALIFICATIONS", "NOT_READY", "COULD_NOT_EVALUATE"].includes(readiness));
+  // MO-1307 section 13: APPROVE is contrary to a readiness that is not READY or READY_WITH_QUALIFICATIONS; REJECT and DEFER never are.
+  const decisionConsistency = claim.decision === "APPROVE" && !["READY", "READY_WITH_QUALIFICATIONS"].includes(readiness)
+    ? "CONTRARY_TO_READINESS" : "CONSISTENT";
+  return { decisionConsistency, subjects: [
     { type: "PROOF_BINDING_DIGEST", value: claim.proofBindingDigest },
     { type: "READINESS_CANDIDATE_DIGEST", value: claim.candidateDigest },
     { type: "READINESS_DIGEST", value: claim.readinessDigest },
-  ];
+  ] };
 }
 
 const METHODS = Object.freeze({
@@ -623,9 +740,11 @@ export function admitHistoryRecord(input) {
   const existing = ledger.records.get(`${recordKind}\n${recordDigest}`);
   if (existing !== undefined) historyFail(ledger.purged.has(existing) ? "RECORD_PURGED" : "RECORD_DUPLICATE", "ADMISSION");
 
-  const subjects = sortedSubjects(METHODS[recordKind](members, ledger));
+  const outcome = METHODS[recordKind](members, ledger);
+  const subjects = sortedSubjects(Array.isArray(outcome) ? outcome : outcome.subjects);
   const record = { recordKind, recordDigest, admission: ADMISSION_BY_KIND[recordKind], members: memberList,
-    workspaceAssociation: WORKSPACE_ASSOCIATION_BY_KIND[recordKind], subjects };
+    workspaceAssociation: WORKSPACE_ASSOCIATION_BY_KIND[recordKind], subjects,
+    decisionConsistency: Array.isArray(outcome) ? null : outcome.decisionConsistency };
   // Final shape check against the frozen entry shape; a failure here is an internal defect, never a verdict.
   try {
     validateEntry(JSON.parse(canonicalize({ kind: KINDS.entry, version: VERSION, ledgerIdentifier: recordDigest, index: 0,
@@ -637,3 +756,6 @@ export function admitHistoryRecord(input) {
     subjects: Object.freeze(subjects.map(Object.freeze)) });
 }
 
+
+// Exposed only so the tests can prove the incremental hash against the standard one (Amendment A4.5).
+export const __sha256ForTests = () => new Sha256Stream();

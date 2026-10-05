@@ -32,26 +32,29 @@ const base = JSON.parse(JSON.stringify(core.checkpoint('characterize')));
 const asBytes = value => new Uint8Array(enc.encode(canonicalize(value)));
 measure(`INVESTIGATION_CHECKPOINT, 2 transitions, ${asBytes(base).length} bytes`, record('INVESTIGATION_CHECKPOINT', 'checkpoint.json', asBytes(base)));
 
-// Many transitions: the Standard's prefix-digest chain hashes every prefix, so cost grows with the count.
+// Many transitions. Amendment A4.5 made checkpoint admission linear; the checkpoints are built here with native
+// incremental hashing so that generating them is not the cost being measured.
 function withTransitions(count) {
   const value = structuredClone(base);
   const id = value.investigationIdentifier;
+  const kinds = ['TRACE_SELECTED', 'REPLAY_PREPARED', 'REPLAY_ACTION', 'EVOLUTION_ENTERED', 'RETURNED_TO_WORLD', 'VERIFIED'];
   for (let index = 2; index < count; index += 1) {
-    value.transitionLog.transitions.push({ kind: 'RETURNED_TO_WORLD', version: '1.0.0', investigationIdentifier: id, index, payload: {}, previousLogDigest: '', identifier: '' });
+    value.transitionLog.transitions.push({ kind: kinds[index % kinds.length], version: '1.0.0', investigationIdentifier: id, index, payload: index % 7 === 0 ? { step: index } : {}, previousLogDigest: '', identifier: '' });
   }
-  let prior = mipDigest('INVESTIGATION-CORE-LOG-1.0', id, '[]');
-  const materials = [];
+  const D = (domain, ...parts) => { const h = crypto.createHash('sha256').update('MIP-1').update(Buffer.from([0])).update(domain); for (const part of parts) h.update(Buffer.from([0])).update(part); return h; };
+  let prior = 'sha256:' + D('INVESTIGATION-CORE-LOG-1.0', id, '[]').digest('hex');
+  const running = D('INVESTIGATION-CORE-LOG-1.0', id, '[');
   value.transitionLog.transitions.forEach((transition, index) => {
     transition.previousLogDigest = prior;
-    transition.identifier = mipDigest('INVESTIGATION-CORE-TRANSITION-1.0', canonicalize({ investigationIdentifier: id, index, kind: transition.kind, payload: transition.payload, previousLogDigest: prior }));
-    materials.push(canonicalize({ identifier: transition.identifier, index, investigationIdentifier: id, kind: transition.kind, payload: transition.payload, previousLogDigest: prior }));
-    prior = mipDigest('INVESTIGATION-CORE-LOG-1.0', id, `[${materials.join(',')}]`);
+    transition.identifier = 'sha256:' + D('INVESTIGATION-CORE-TRANSITION-1.0', canonicalize({ investigationIdentifier: id, index, kind: transition.kind, payload: transition.payload, previousLogDigest: prior })).digest('hex');
+    running.update((index === 0 ? '' : ',') + canonicalize({ identifier: transition.identifier, index, investigationIdentifier: id, kind: transition.kind, payload: transition.payload, previousLogDigest: prior }));
+    prior = 'sha256:' + running.copy().update(']').digest('hex');
   });
   value.transitionLog.digest = prior; value.transitionLogDigest = prior; value.transitionCount = count;
-  value.identifier = mipDigest('INVESTIGATION-CORE-CHECKPOINT-1.0', id, prior, value.stateDigest);
+  value.identifier = 'sha256:' + D('INVESTIGATION-CORE-CHECKPOINT-1.0', id, prior, value.stateDigest).digest('hex');
   return value;
 }
-for (const count of [100, 1000, 3000]) {
+for (const count of [100, 1000, 3000, 10000]) {
   const bytes = asBytes(withTransitions(count));
   measure(`INVESTIGATION_CHECKPOINT, ${count} transitions, ${bytes.length} bytes`, record('INVESTIGATION_CHECKPOINT', 'checkpoint.json', bytes));
 }

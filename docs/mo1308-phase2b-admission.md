@@ -1,6 +1,6 @@
 # MO-1308 Phase 2B admission
 
-Status: **DEVELOPMENT COMPLETE IN THE CLOUD — NOT BOUND**.
+Status: **DEVELOPMENT COMPLETE IN THE CLOUD, AMENDED BY A4.1 AND A4.5 — NOT BOUND**.
 
 This record describes Stream 2B of [MO-1308 Contract Freeze 1](mo1308-contract-freeze-1.md)
 (section 18.1, with Amendments A1–A3) on branch `mo1308/phase2b-ingest`, created from
@@ -34,7 +34,10 @@ transitively; no history code reaches it directly.
 | `REGRESSION_REPORT` | `SDK_REGRESSION_REPORT_INSPECTED` | `parseDetachedCognitiveRegressionReport` (the module behind `inspectRegressionReport`: closed shape and identifier recomputation); both Workspaces equal the ledger Workspace. Regression is never recomputed |
 | `CICD_RUN` | `MO1306_BUNDLE_INTEGRITY_VERIFIED` | MO-1306 §9 rules that need no installation: exact cardinality (6 or 4) and basenames; canonical `J`; the four closed MO-1306 shapes; artifact-manifest sizes, digests and basename order; marker manifest digest; `runId` consistency; result/projection/exit agreement and the error catalog (§8); result–evidence cross-hashes; input-role order; and, when present, the two normative artifacts through the Policy checks with the result's `semantic` digests, `artifactKind`, `semanticDigest` and `decision` |
 | `READINESS_RESULT` | `MO1307_SELF_DIGESTS_RECOMPUTED` | Canonical `J` with MO-1307's limits; top-level members, `kind`, `version`; recomputation of `readinessDigest` and `proofBindingDigest` per MO-1307 §14 |
-| `HUMAN_DECISION_CLAIM` | `MO1307_DECISION_CLAIM_BOUND` | Canonical `J`; the exact MO-1307 §13 shape and value rules; `authenticity` `NOT_VERIFIED_BY_MEMORYOS`; binding (H16) to a `READINESS_RESULT` entry with equal `candidateDigest`, `readinessDigest` and `proofBindingDigest` (`DECISION_UNBOUND`) |
+| `HUMAN_DECISION_CLAIM` | `MO1307_DECISION_CLAIM_BOUND` | Canonical `J`; the exact MO-1307 §13 shape and value rules; `authenticity` `NOT_VERIFIED_BY_MEMORYOS`; binding (H16) to a retained `READINESS_RESULT` entry with equal `candidateDigest`, `readinessDigest` and `proofBindingDigest`. **Amendment A4.1:** the referenced result's retained bytes are checked against the entry, re-verified with the readiness self-digest rules, and `decisionConsistency` is computed from the claim and the result (section 3a) |
+
+The returned record carries `decisionConsistency` (A4.1): `null` for every kind except
+`HUMAN_DECISION_CLAIM`.
 
 Every kind also enforces its exact member name set (`RECORD_INVALID`), the per-kind
 member and total byte limits (`RESOURCE_LIMIT`), duplicates (`RECORD_DUPLICATE`) and
@@ -49,12 +52,48 @@ admission changes nothing), R10, R11, R12 (admission side), R13 (binding; consis
 is never stored), R20, R24, R26 (per-kind limits), R28, R29, R35, R37. R14, R15–R19,
 R21–R23, R25–R27 belong to other streams.
 
+## 3a. Amendment A4.1: `decisionConsistency` at admission
+
+[Amendment A4.1](mo1308-contract-freeze-1.md) moves the derivation of `decisionConsistency` to
+admission. For a `HUMAN_DECISION_CLAIM`, admission finds the retained `READINESS_RESULT`
+entry whose three digests equal the claim's, reads its retained bytes, requires them to equal
+the entry's recorded member length and digest, re-verifies them (canonical `J`, both
+self-digests, closed `readiness` set, the claim's three digests), and computes:
+`APPROVE` with `NOT_READY` or `COULD_NOT_EVALUATE` is `CONTRARY_TO_READINESS`; every other
+pair is `CONSISTENT`. Absent or purged result or unavailable bytes: `DECISION_UNBOUND`;
+recorded bytes that differ: `RECORD_BYTES_MISMATCH`; a result that does not verify or does
+not carry the claim's digests: `RECORD_INVALID`. Nothing is stored for a rejected claim.
+Interpretation **J2 is superseded**: a purged readiness result no longer binds a new claim.
+
+The ledger view gains the optional member `members`, a `Map` from record digest to the
+retained `[{name, bytes}]` of `READINESS_RESULT` records; Stream 2A's `historyLedgerView`
+supplies it. Without it no claim can be admitted. The contract module's closed `record`
+shape gains `decisionConsistency` in a commit identical to the one in Streams 2A and 2C.
+
+## 3b. Amendment A4.5: linear checkpoint admission
+
+The Standard's prefix digest `D(LOG, id, "[" + t0 + "," + … + ti + "]")` was re-hashed from the
+start for every transition. SHA-256 is a streaming hash, so the module now keeps one
+running state per log (`"MIP-1" NUL domain NUL id NUL "["` and the transitions so far) and
+finishes a copy with `"]"` for each prefix: each transition is absorbed once. The module
+carries its own incremental SHA-256 (the canonical module's hash cannot be resumed). All
+digests, errors and subjects are unchanged.
+
+Proof of identical results: B28 pins the incremental hash to the standard one for every
+length 0–300, random splits, clones and the NIST vectors; B29 runs 29 corpus and tampered
+variants through the new code and through a **verbatim copy of the previous algorithm**
+(`tests/support/mo1308-legacy-checkpoint-oracle.mjs`) and compares accept/reject, error
+code and stage, and subjects; B30 does so for generated checkpoints of 2, 5, 64, 500, 2,500
+and 10,000 transitions (the oracle uses native hashing so 10,000 finishes; the 10,000 case
+alone takes about two minutes) and checks that a forged prefix digest at the deepest
+transition is rejected identically and that 10,001 transitions are refused.
+
 ## 3. Interface for Stream 2D
 
 Admission is independent of Stream 2A, so `ledger` is plain data, not a 2A object:
-`{ workspaceIdentifier, entries }` with the parsed, frozen `MemoryOSHistoryEntry` values
-(the facade builds it from 2A's verified ledger: its public `workspaceIdentifier` and
-`historyLedgerEntries(ledger)`). The facade applies the SDK `admission` brand
+`{ workspaceIdentifier, entries, members }` with the parsed, frozen `MemoryOSHistoryEntry`
+values and the retained readiness bytes (the facade builds it from 2A's verified ledger with
+`historyLedgerView(ledger)`). The facade applies the SDK `admission` brand
 (the Phase 1 guard already keeps the `historyAdmissions` set) and hands the record to
 2A's `appendHistoryEntry`. Admission validates the view with the contract's
 `validateEntry` and fails `USAGE` on a malformed view or call.
@@ -64,7 +103,7 @@ Admission is independent of Stream 2A, so `ledger` is plain data, not a 2A objec
 | # | Point | Reading implemented |
 |---|---|---|
 | J1 | Ledger input | Plain `{workspaceIdentifier, entries}` view (section 3), a private detail needed to keep 2A and 2B independent |
-| J2 | Claim bound to a purged readiness result (§7.4) | The entry still exists in the ledger, so it still binds. Literal reading of "already contains a READINESS_RESULT entry" |
+| J2 | Claim bound to a purged readiness result (§7.4) | **Superseded by A4.1**: a purged result has no retained bytes to verify, so it does not bind (`DECISION_UNBOUND`) |
 | J3 | Order of checks | Call shape, kind, member names and limits, then duplicate/purged (cheap, bytes are digest-identical), then the owner's verification |
 | J4 | Error for each failure class | Malformed call or view `USAGE`; unknown kind (SDK guard precedent), wrong member set, any owner failure `RECORD_INVALID`; byte limits `RESOURCE_LIMIT`; Workspace `WORKSPACE_MISMATCH`; claim `DECISION_UNBOUND` |
 | J5 | `POLICY_EVALUATION` and the SDK | The history authority may not import the SDK or the Core, and the SDK's detached verifiers sit behind a Core-owned integration object. Admission composes the same Policy-module functions those verifiers call. Equivalence with the SDK verifiers is proved differentially (B07), not assumed |
@@ -87,12 +126,12 @@ Admission is independent of Stream 2A, so `ledger` is plain data, not a 2A objec
   states.
 - **Identity is integrity, not origin** (H07): a self-consistent forged Regression report
   or checkpoint is admitted.
-- **Checkpoint cost.** The Standard's prefix-digest chain hashes every prefix, so the cost
-  grows with the transition count; see section 7.
+- **Checkpoint cost.** Resolved by A4.5; see sections 3b and 7.
+- **Accepted limits (A4.4).** The first two bullets above are recorded by Amendment A4.4 as known limits, not defects.
 
 ## 6. Tests
 
-`repositories/cca-conformance/tests/mo1308_phase2b_admission_test.mjs` (25 tests, B01–B25).
+`repositories/cca-conformance/tests/mo1308_phase2b_admission_test.mjs` (30 tests, B01–B30).
 Positive corpus: the repository's reference MIP, a Core checkpoint, every released
 Policy and Policy Set artifact pair, a Core regression report, all 217 real MO-1306
 bundles under `evidence/mo1306` (completed and operational-failure), all 16 released
@@ -102,11 +141,11 @@ digests), shape and limit boundaries, and differential tests against the owners
 (SDK verifiers, `inspectRegressionReport`, MO-1306 `parseJSON` and `checkResult`,
 MO-1307 `parseCanonical`). The module's key conditions were mutation-checked during
 development (each removed condition fails a test); that is not a committed test. In the
-cloud container (Linux, Node v22.22.0): 25/25.
+cloud container (Linux, Node v22.22.0): 30/30.
 
 | Suite | Result |
 |---|---|
-| `cca-conformance` `tests/mo1308_*_test.mjs` | 44/44 (19 Phase 1 + 25 here), with tag `memoryos-1.3-mo1302` fetched locally (without it WC07 fails as an environment defect, not a product defect) |
+| `cca-conformance` `tests/mo1308_*_test.mjs` | 49/49 (19 Phase 1 + 30 here), with tag `memoryos-1.3-mo1302` fetched locally (without it WC07 fails as an environment defect, not a product defect) |
 | `cca-studio` `npm test` | 358/358 (unchanged) |
 | `memoryos-cli` `npm test` | 45/45 (unchanged) |
 | `tools/verify_workspace.py` | Only the pre-existing Linux `MO-1304 … INSTALL_TOOLCHAIN` error |
@@ -126,24 +165,22 @@ of the reference MIP, checkpoints of 2, 100, 1,000 and 3,000 transitions and rea
 results of increasing size. Values are recorded, not pass/fail. Cloud values (Linux,
 Node v22.22.0, one run):
 
-| Admission | Input | Time | Heap delta |
-|---|---:|---:|---:|
-| `MIP_PACKAGE` (reference) | 19,519 B | 72 ms | 3.6 MiB |
-| `INVESTIGATION_CHECKPOINT`, 2 transitions | 20,853 B | 30 ms | 1.3 MiB |
-| `INVESTIGATION_CHECKPOINT`, 100 transitions | 49,561 B | 169 ms | 5.3 MiB |
-| `INVESTIGATION_CHECKPOINT`, 1,000 transitions | 314,162 B | 5,643 ms | 3.1 MiB |
-| `INVESTIGATION_CHECKPOINT`, 3,000 transitions | 904,162 B | 49,019 ms | 28.9 MiB |
-| `READINESS_RESULT` | 64,098 B | 20 ms | 4.6 MiB |
-| `READINESS_RESULT` | 2,109,499 B | 207 ms | 19.8 MiB |
-| `READINESS_RESULT` | 4,158,999 B (near the 4 MiB limit) | 372 ms | 16.9 MiB |
+| Admission | Input | Before A4.5 | After A4.5 | Heap delta (after) |
+|---|---:|---:|---:|---:|
+| `MIP_PACKAGE` (reference) | 19,519 B | 72 ms | 57 ms | 3.8 MiB |
+| `INVESTIGATION_CHECKPOINT`, 2 transitions | 20,853 B | 30 ms | 41 ms | 3.5 MiB |
+| `INVESTIGATION_CHECKPOINT`, 100 transitions | 49 KB | 169 ms | 53 ms | 2.0 MiB |
+| `INVESTIGATION_CHECKPOINT`, 1,000 transitions | 313 KB | 5,643 ms | 140 ms | 4.7 MiB |
+| `INVESTIGATION_CHECKPOINT`, 3,000 transitions | 900 KB | 49,019 ms | **294 ms** | 12.5 MiB |
+| `INVESTIGATION_CHECKPOINT`, 10,000 transitions | 2.95 MB | (extrapolated: minutes) | **937 ms** | 33.9 MiB |
+| `READINESS_RESULT` | 64,098 B | 20 ms | 15 ms | 4.6 MiB |
+| `READINESS_RESULT` | 2,109,499 B | 207 ms | 213 ms | 19.9 MiB |
+| `READINESS_RESULT` | 4,158,999 B (near the 4 MiB limit) | 372 ms | 404 ms | 16.6 MiB |
 
-**Finding for the owner (no change made).** Checkpoint admission is quadratic in the
-transition count, because the Standard's published prefix-digest chain hashes every
-prefix (the Core pays the same cost when it builds a log). Extrapolating the measured
-growth (49 s at 3,000), a checkpoint at the Core's 10,000-transition policy needs
-several minutes in pure JavaScript. The Freeze fixes only the 32 MiB byte limit
-(§14.2); a lower transition ceiling for history checkpoints would be a limit change and
-returns to owner review. Not measured here: a 16 MiB MIP (no valid package of that size
+The checkpoint finding is **closed by Amendment A4.5**: admission is now linear (3,000
+transitions: 49 s to 0.3 s; the Core's 10,000-transition policy: under a second), with no
+limit change. (The transition shape of the checkpoints measured after A4.5 differs
+slightly from those measured before, which does not affect the trend.) Not measured here: a 16 MiB MIP (no valid package of that size
 exists to hash) and a 32 MiB checkpoint.
 
 ## 8. Local binding plan (one run, reference Windows host)
@@ -154,8 +191,8 @@ kept and classified if any expected result is not met.
 
 | # | Item | Expected |
 |---|---|---|
-| 1 | `tests/mo1308_phase2b_admission_test.mjs` | 25/25 |
-| 2 | `tests/mo1308_*_test.mjs` | 44/44 |
+| 1 | `tests/mo1308_phase2b_admission_test.mjs` | 30/30 (B30 alone runs about two minutes) |
+| 2 | `tests/mo1308_*_test.mjs` | 49/49 |
 | 3 | `cca-studio` `npm test` | 358/358 |
 | 4 | `memoryos-cli` `npm test` | 45/45 |
 | 5 | `tests/mo1307_*_test.mjs` | 639/639 |

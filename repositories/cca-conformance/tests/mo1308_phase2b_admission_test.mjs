@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { admitHistoryRecord } from '../../cca-studio/web/js/memoryos-history-admission.js';
+import { legacyAdmitCheckpoint } from './support/mo1308-legacy-checkpoint-oracle.mjs';
 import { MemoryOSHistoryError, validateEntry } from '../../cca-studio/web/js/memoryos-history-contract.js';
 import { canonicalize, mipDigest } from '../../cca-studio/web/js/mip-canonical.js';
 import { MemoryOS } from '../../cca-studio/web/js/memoryos-sdk.js';
@@ -46,12 +47,12 @@ function recordEntry(index, recordKind, recordDigest, subjects, extra = {}) {
       HUMAN_DECISION_CLAIM: 'MO1307_DECISION_CLAIM_BOUND' }[recordKind],
     members: [{ name: { MIP_PACKAGE: 'package.mip', READINESS_RESULT: 'memoryos-readiness-result.json' }[recordKind] ?? 'package.mip', byteLength: 1, sha256: d(counter++) }],
     workspaceAssociation: ['READINESS_RESULT', 'HUMAN_DECISION_CLAIM', 'POLICY_EVALUATION', 'CICD_RUN'].includes(recordKind) ? 'DECLARED' : 'INTRINSIC',
-    subjects }, tombstone: null, entryDigest: d(counter++), ...extra };
+    subjects, decisionConsistency: recordKind === 'HUMAN_DECISION_CLAIM' ? 'CONSISTENT' : null }, tombstone: null, entryDigest: d(counter++), ...extra };
 }
 const tombstoneEntry = (index, targetIndex) => ({ kind: 'MemoryOSHistoryEntry', version: '1.0.0', ledgerIdentifier: d(1), index, previousEntryDigest: d(2),
   entryType: 'TOMBSTONE', record: null, tombstone: { targetIndex, targetEntryDigest: d(3), targetRecordDigest: d(4), reason: 'PRIVACY_REQUEST',
     authorityReference: 'P-1', authenticity: 'NOT_VERIFIED_BY_MEMORYOS' }, entryDigest: d(counter++) });
-const view = (entries = [], workspaceIdentifier = WS) => ({ workspaceIdentifier, entries });
+const view = (entries = [], workspaceIdentifier = WS, retained = null) => ({ workspaceIdentifier, entries, ...(retained === null ? {} : { members: retained }) });
 const subjectsOf = readinessLike => [
   { type: 'PROOF_BINDING_DIGEST', value: readinessLike.proofBindingDigest },
   { type: 'READINESS_CANDIDATE_DIGEST', value: readinessLike.candidateDigest },
@@ -59,9 +60,9 @@ const subjectsOf = readinessLike => [
 const admit = (recordKind, memberObject, ledger = view()) => admitHistoryRecord({ recordKind, members: members(memberObject), ledger });
 
 // ---- Independent oracle for the record ----
-function expectedRecord(recordKind, memberObject, admission, association, subjects) {
+function expectedRecord(recordKind, memberObject, admission, association, subjects, decisionConsistency = null) {
   const list = Object.keys(memberObject).sort().map(name => ({ name, byteLength: memberObject[name].length, sha256: sha(memberObject[name]) }));
-  return { recordKind, recordDigest: D('MEMORYOS-HISTORY-RECORD-1.0', recordKind, jcs(list)), admission, members: list, workspaceAssociation: association,
+  return { recordKind, recordDigest: D('MEMORYOS-HISTORY-RECORD-1.0', recordKind, jcs(list)), admission, members: list, workspaceAssociation: association, decisionConsistency,
     subjects: [...subjects].sort((a, b) => (a.type < b.type ? -1 : a.type > b.type ? 1 : a.value < b.value ? -1 : a.value > b.value ? 1 : 0)) };
 }
 
@@ -544,12 +545,24 @@ test('B14 READINESS_RESULT J parsing agrees with the MO-1307 parser on structura
 function decisionFor(readinessName, kind = 'approve') {
   return read('fixtures/mo1307/human', `${readinessName}-${kind}.json`);
 }
+// A ledger entry for a released readiness result, with the member descriptor of its real bytes (Amendment A4.1:
+// admission re-verifies the retained bytes), and the retained-members map a verified ledger hands to admission.
+function readinessMemberList(name) {
+  const bytes = readinessBytes(name);
+  return [{ name: 'memoryos-readiness-result.json', byteLength: bytes.length, sha256: sha(bytes) }];
+}
 function readinessEntryFor(name, index = 0) {
   const result = JSON.parse(dec.decode(readinessBytes(name)));
-  return recordEntry(index, 'READINESS_RESULT', d(5000 + index), [
+  const entry = recordEntry(index, 'READINESS_RESULT', D('MEMORYOS-HISTORY-RECORD-1.0', 'READINESS_RESULT', jcs(readinessMemberList(name))), [
     { type: 'PROOF_BINDING_DIGEST', value: result.proofBindingDigest }, { type: 'READINESS_CANDIDATE_DIGEST', value: result.assessment.candidateDigest },
     { type: 'READINESS_DIGEST', value: result.readinessDigest }]);
+  entry.record.members = readinessMemberList(name);
+  return entry;
 }
+const readinessRetained = (name, index = 0) => new Map([[readinessEntryFor(name, index).record.recordDigest, [{ name: 'memoryos-readiness-result.json', bytes: readinessBytes(name) }]]]);
+const claimLedger = (name, extraEntries = [], retained = readinessRetained(name)) => view([readinessEntryFor(name), ...extraEntries], WS, retained);
+// The consistency MO-1307 section 13 gives each (decision, readiness) pair.
+const expectedConsistency = (decision, readiness) => (decision === 'APPROVE' && !['READY', 'READY_WITH_QUALIFICATIONS'].includes(readiness) ? 'CONTRARY_TO_READINESS' : 'CONSISTENT');
 
 test('B15 HUMAN_DECISION_CLAIM: admitted only against a matching READINESS_RESULT entry (H16, R13)', () => {
   for (const name of ['ready', 'qualified', 'not-ready', 'could-not-evaluate']) {
@@ -557,32 +570,34 @@ test('B15 HUMAN_DECISION_CLAIM: admitted only against a matching READINESS_RESUL
     for (const kind of ['approve', 'defer', 'reject']) {
       const bytes = decisionFor(label, kind);
       const claim = JSON.parse(dec.decode(bytes));
-      const record = admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': bytes }, view([readinessEntryFor(name)]));
+      const record = admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': bytes }, claimLedger(name));
       assert.deepEqual([...record.subjects].map(s => ({ ...s })), subjectsOf(claim).sort((a, b) => (a.type < b.type ? -1 : 1)));
+      const readiness = JSON.parse(dec.decode(readinessBytes(name))).assessment.readiness;
+      assert.equal(record.decisionConsistency, expectedConsistency(claim.decision, readiness), `${name} ${kind}`);
       assert.equal(record.admission, 'MO1307_DECISION_CLAIM_BOUND');
       assert.equal(record.workspaceAssociation, 'DECLARED');
-      assert.equal(JSON.stringify(record).includes('CONSISTENT'), false, 'consistency is never stored');
     }
   }
   const bytes = decisionFor('ready');
   // No readiness entry, a different readiness entry, or a partially matching one.
   assert.throws(() => admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': bytes }), code('DECISION_UNBOUND', 'ADMISSION'));
-  assert.throws(() => admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': bytes }, view([readinessEntryFor('qualified')])), code('DECISION_UNBOUND'));
+  assert.throws(() => admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': bytes }, claimLedger('qualified')), code('DECISION_UNBOUND'));
   for (const field of ['PROOF_BINDING_DIGEST', 'READINESS_CANDIDATE_DIGEST', 'READINESS_DIGEST']) {
     const entry = readinessEntryFor('ready');
     entry.record.subjects = entry.record.subjects.map(s => (s.type === field ? { ...s, value: d(9) } : s)).sort((a, b) => (a.type < b.type ? -1 : 1));
-    assert.throws(() => admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': bytes }, view([entry])), code('DECISION_UNBOUND'), field);
+    assert.throws(() => admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': bytes }, view([entry], WS, readinessRetained('ready'))), code('DECISION_UNBOUND'), field);
   }
   // Another ledger entry kind carrying the same digests does not bind.
   const wrongKind = recordEntry(0, 'MIP_PACKAGE', d(777), [{ type: 'WORKSPACE', value: WS }]);
   assert.throws(() => admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': bytes }, view([wrongKind])), code('DECISION_UNBOUND'));
-  // A readiness entry that was later purged still binds: the entry remains in the ledger (Freeze section 7.4 wording).
-  admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': bytes }, view([readinessEntryFor('ready'), tombstoneEntry(1, 0)]));
+  // Amendment A4.1 (supersedes J2): a purged readiness result has no bytes to verify, so it no longer binds a new claim.
+  assert.throws(() => admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': bytes }, claimLedger('ready', [tombstoneEntry(1, 0)], new Map())), code('DECISION_UNBOUND'));
+  assert.throws(() => admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': bytes }, claimLedger('ready', [tombstoneEntry(1, 0)])), code('DECISION_UNBOUND'), 'purged even if bytes are supplied');
 });
 
 test('B16 HUMAN_DECISION_CLAIM shape rejections: exact MO-1307 section 13 shape and value rules', () => {
   const claim = JSON.parse(dec.decode(decisionFor('ready')));
-  const ledger = () => view([readinessEntryFor('ready')]);
+  const ledger = () => claimLedger('ready');
   const encode = value => new Uint8Array(j1307(value));
   const rejects = mutate => { const copy = structuredClone(claim); mutate(copy); assert.throws(() => admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': encode(copy) }, ledger()), code('RECORD_INVALID', 'ADMISSION')); };
   const accepts = mutate => { const copy = structuredClone(claim); mutate(copy); admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': encode(copy) }, ledger()); };
@@ -675,11 +690,11 @@ test('B20 every admitted record has the closed Freeze entry shape and no time, p
   const samples = [
     admit('MIP_PACKAGE', { 'package.mip': mipBytes }),
     admit('READINESS_RESULT', { 'memoryos-readiness-result.json': readinessBytes('ready') }),
-    admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': decisionFor('ready') }, view([readinessEntryFor('ready')])),
+    admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': decisionFor('ready') }, claimLedger('ready')),
     admit('CICD_RUN', bundleMembers(realBundles[0])),
   ];
   for (const record of samples) {
-    assert.deepEqual(Object.keys(record).sort(), ['admission', 'members', 'recordDigest', 'recordKind', 'subjects', 'workspaceAssociation']);
+    assert.deepEqual(Object.keys(record).sort(), ['admission', 'decisionConsistency', 'members', 'recordDigest', 'recordKind', 'subjects', 'workspaceAssociation']);
     const text = JSON.stringify(record);
     assert.doesNotMatch(text, /timestamp|actor|reason|observedAt|\d{4}-\d{2}-\d{2}T|https?:|[A-Za-z]:\\\\|\/home\//u);
   }
@@ -796,4 +811,221 @@ test('B25 the embedded MO-1306 semantic-code allowlist equals the owner list (dr
   for (const semanticCode of owner) assert.equal(ours(result(semanticCode)), true, semanticCode);
   for (const decoy of ['NOT_A_CODE', 'INVALID_INPUT_X', 'ZZZ', 'CORE_BUSY2']) assert.equal(ours(result(decoy)), false, decoy);
   assert.equal(ours(result(null)), true);
+});
+
+// ---- Amendment A4.1: decisionConsistency computed at admission from the verified claim and readiness bytes ----
+
+// A readiness result re-sealed (both digests recomputed with the independent MO-1307 J) over a chosen readiness state.
+function resealedReadiness(readiness, tag = '') {
+  const result = JSON.parse(dec.decode(readinessBytes('ready')));
+  result.assessment.readiness = readiness;
+  result.audit.manifestSha256 = D('audit', tag + readiness);
+  result.readinessDigest = sha(j1307({ kind: 'MemoryOSReadinessIdentity', version: '1.0.0', assessment: result.assessment }));
+  result.proofBindingDigest = sha(j1307({ kind: 'MemoryOSReadinessProofBinding', version: '1.0.0', readinessDigest: result.readinessDigest, audit: result.audit }));
+  return { result, bytes: new Uint8Array(j1307(result)) };
+}
+function ledgerWithResult({ result, bytes }, { sha256 = sha(bytes), recordDigest } = {}) {
+  const members = [{ name: 'memoryos-readiness-result.json', byteLength: bytes.length, sha256 }];
+  const digest = recordDigest ?? D('MEMORYOS-HISTORY-RECORD-1.0', 'READINESS_RESULT', jcs(members));
+  const entry = recordEntry(0, 'READINESS_RESULT', digest, [
+    { type: 'PROOF_BINDING_DIGEST', value: result.proofBindingDigest }, { type: 'READINESS_CANDIDATE_DIGEST', value: result.assessment.candidateDigest },
+    { type: 'READINESS_DIGEST', value: result.readinessDigest }]);
+  entry.record.members = members;
+  return { entry, retained: new Map([[digest, [{ name: 'memoryos-readiness-result.json', bytes }]]]) };
+}
+const claimBytesFor = (result, decision, reason = 'A4.1 test') => new Uint8Array(j1307({ actor: null, attestation: null, authenticity: 'NOT_VERIFIED_BY_MEMORYOS',
+  candidateDigest: result.assessment.candidateDigest, decision, kind: 'MemoryOSReadinessHumanDecision', proofBindingDigest: result.proofBindingDigest,
+  readinessDigest: result.readinessDigest, reason, timestamp: null, version: '1.0.0' }));
+
+test('B26 decisionConsistency is computed from the verified claim and result for every decision and readiness state (A4.1)', () => {
+  const table = { READY: ['CONSISTENT', 'CONSISTENT', 'CONSISTENT'], READY_WITH_QUALIFICATIONS: ['CONSISTENT', 'CONSISTENT', 'CONSISTENT'],
+    NOT_READY: ['CONTRARY_TO_READINESS', 'CONSISTENT', 'CONSISTENT'], COULD_NOT_EVALUATE: ['CONTRARY_TO_READINESS', 'CONSISTENT', 'CONSISTENT'] };
+  for (const [readiness, expected] of Object.entries(table)) {
+    const sealed = resealedReadiness(readiness);
+    const { entry, retained } = ledgerWithResult(sealed);
+    ['APPROVE', 'REJECT', 'DEFER'].forEach((decision, index) => {
+      const record = admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': claimBytesFor(sealed.result, decision) }, view([entry], WS, retained));
+      assert.equal(record.decisionConsistency, expected[index], `${decision} ${readiness}`);
+      assert.deepEqual(Object.keys(record).sort(), ['admission', 'decisionConsistency', 'members', 'recordDigest', 'recordKind', 'subjects', 'workspaceAssociation']);
+    });
+  }
+  // Every other kind stores null.
+  assert.equal(admit('READINESS_RESULT', { 'memoryos-readiness-result.json': readinessBytes('ready') }).decisionConsistency, null);
+  assert.equal(admit('MIP_PACKAGE', { 'package.mip': mipBytes }).decisionConsistency, null);
+  // The released decision fixtures agree with MO-1307's own derivation (foundation.mjs: APPROVE contrary unless READY or qualified).
+  for (const [name, label] of [['ready', 'ready'], ['qualified', 'qualified'], ['not-ready', 'not-ready'], ['could-not-evaluate', 'cne']]) {
+    const readiness = JSON.parse(dec.decode(readinessBytes(name))).assessment.readiness;
+    for (const kind of ['approve', 'defer', 'reject']) {
+      const claim = JSON.parse(dec.decode(decisionFor(label, kind)));
+      assert.equal(admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': decisionFor(label, kind) }, claimLedger(name)).decisionConsistency, expectedConsistency(claim.decision, readiness));
+    }
+  }
+});
+
+test('B27 a claim is rejected, never stored with a guessed value, for an absent, purged, unavailable, unverified or inconsistent result (A4.1)', () => {
+  const sealed = resealedReadiness('READY');
+  const claim = claimBytesFor(sealed.result, 'APPROVE');
+  const good = ledgerWithResult(sealed);
+  const run = (ledger) => admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': claim }, ledger);
+  run(view([good.entry], WS, good.retained)); // control
+  // Absent: no entry, or a result that exists only in another ledger (its bytes alone bind nothing).
+  assert.throws(() => run(view([], WS, good.retained)), code('DECISION_UNBOUND', 'ADMISSION'));
+  assert.throws(() => run(view([], WS)), code('DECISION_UNBOUND'));
+  // Purged or unavailable bytes.
+  assert.throws(() => run(view([good.entry, tombstoneEntry(1, 0)], WS, good.retained)), code('DECISION_UNBOUND'));
+  assert.throws(() => run(view([good.entry], WS, new Map())), code('DECISION_UNBOUND'));
+  // The retained bytes are not what the entry recorded.
+  const flipped = new Uint8Array(sealed.bytes); flipped[flipped.length >> 1] ^= 1;
+  assert.throws(() => run(view([good.entry], WS, new Map([[good.entry.record.recordDigest, [{ name: 'memoryos-readiness-result.json', bytes: flipped }]]]))), code('RECORD_BYTES_MISMATCH'));
+  assert.throws(() => run(view([good.entry], WS, new Map([[good.entry.record.recordDigest, [{ name: 'memoryos-readiness-result.json', bytes: sealed.bytes.slice(1) }]]]))), code('RECORD_BYTES_MISMATCH'));
+  assert.throws(() => run(view([good.entry], WS, new Map([[good.entry.record.recordDigest, []]]))), code('RECORD_BYTES_MISMATCH'));
+  // Present and recorded consistently, but not a verifiable readiness result.
+  const tampered = structuredClone(sealed.result); tampered.assessment.readiness = 'NOT_READY'; // digests left stale
+  const tamperedBytes = new Uint8Array(j1307(tampered));
+  const bad = ledgerWithResult({ result: sealed.result, bytes: tamperedBytes });
+  assert.throws(() => run(view([bad.entry], WS, bad.retained)), code('RECORD_INVALID', 'ADMISSION'));
+  // A result whose own digests differ from the entry's subjects (and the claim's).
+  const other = resealedReadiness('NOT_READY', 'other');
+  const swapped = ledgerWithResult({ result: sealed.result, bytes: other.bytes });
+  assert.throws(() => run(view([swapped.entry], WS, swapped.retained)), code('RECORD_INVALID'));
+  // A re-sealed result with a readiness outside the closed set is not a readiness result.
+  const unknown = resealedReadiness('MAYBE_READY');
+  const unknownLedger = ledgerWithResult(unknown);
+  assert.throws(() => admit('HUMAN_DECISION_CLAIM', { 'human-decision.json': claimBytesFor(unknown.result, 'APPROVE') }, view([unknownLedger.entry], WS, unknownLedger.retained)), code('RECORD_INVALID'));
+  // A malformed view is a usage error, not a verdict.
+  assert.throws(() => run({ workspaceIdentifier: WS, entries: [good.entry], members: {} }), code('USAGE'));
+});
+
+// ---- Amendment A4.5: linear checkpoint admission, byte-identical to the quadratic construction ----
+
+// The Standard's D with native incremental hashing, independent of the module under test.
+const nativeD = (domain, ...parts) => {
+  const hash = crypto.createHash('sha256').update('MIP-1').update(Buffer.from([0])).update(domain);
+  for (const part of parts) hash.update(Buffer.from([0])).update(part);
+  return 'sha256:' + hash.digest('hex');
+};
+// A linear re-sealer (native hash `copy()` per prefix), used to build very long, self-consistent checkpoints.
+function fastReseal(checkpoint) {
+  const value = structuredClone(checkpoint);
+  const id = value.investigationIdentifier;
+  let prior = nativeD('INVESTIGATION-CORE-LOG-1.0', id, '[]');
+  const running = crypto.createHash('sha256').update('MIP-1').update(Buffer.from([0])).update('INVESTIGATION-CORE-LOG-1.0').update(Buffer.from([0])).update(id).update(Buffer.from([0])).update('[');
+  value.transitionLog.transitions.forEach((transition, index) => {
+    transition.index = index;
+    transition.previousLogDigest = prior;
+    transition.identifier = nativeD('INVESTIGATION-CORE-TRANSITION-1.0', jcs({ investigationIdentifier: id, index, kind: transition.kind, payload: transition.payload, previousLogDigest: prior }));
+    running.update((index === 0 ? '' : ',') + jcs({ identifier: transition.identifier, index, investigationIdentifier: id, kind: transition.kind, payload: transition.payload, previousLogDigest: prior }));
+    prior = 'sha256:' + running.copy().update(']').digest('hex');
+  });
+  value.transitionLog.digest = prior;
+  value.transitionLogDigest = prior;
+  value.transitionCount = value.transitionLog.transitions.length;
+  value.identifier = nativeD('INVESTIGATION-CORE-CHECKPOINT-1.0', id, prior, value.stateDigest);
+  return value;
+}
+const KINDS_AFTER_IMPORT = ['TRACE_SELECTED', 'REPLAY_PREPARED', 'REPLAY_ACTION', 'EVOLUTION_ENTERED', 'EVOLUTION_MOVED', 'COMPARATIVE_ENTERED',
+  'COMPARATIVE_ACTION', 'COMPARATIVE_LEFT', 'EVOLUTION_LEFT', 'RETURNED_TO_WORLD', 'VERIFIED', 'ARCHIVED'];
+function longCheckpoint(count) {
+  const value = checkpointValue('mo1308-a45');
+  const id = value.investigationIdentifier;
+  for (let index = value.transitionLog.transitions.length; index < count; index += 1) {
+    value.transitionLog.transitions.push({ kind: KINDS_AFTER_IMPORT[index % KINDS_AFTER_IMPORT.length], version: '1.0.0', investigationIdentifier: id, index,
+      payload: index % 7 === 0 ? { step: index, note: `navigation ${index} é` } : {}, previousLogDigest: '', identifier: '' });
+  }
+  return fastReseal(value);
+}
+const outcomeOf = (action) => {
+  try { return { subjects: [...action().subjects].map(subject => `${subject.type}=${subject.value}`) }; } catch (error) {
+    return { code: error.code, stage: error.stage };
+  }
+};
+const newOutcome = bytes => outcomeOf(() => admit('INVESTIGATION_CHECKPOINT', { 'checkpoint.json': bytes }));
+const oldOutcome = (bytes, digest) => outcomeOf(() => ({ subjects: legacyAdmitCheckpoint(bytes, WS, digest) }));
+
+test('B28 the incremental SHA-256 equals the standard hash for every length, split and clone (A4.5)', async () => {
+  const { __sha256ForTests: stream } = await import('../../cca-studio/web/js/memoryos-history-admission.js');
+  assert.equal(typeof stream, 'function');
+  const hex = (...chunks) => { const s = stream(); for (const chunk of chunks) s.update(chunk); return s.hex(); };
+  assert.equal(hex(), 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');
+  assert.equal(hex(enc.encode('abc')), 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
+  assert.equal(hex(enc.encode('abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq')), '248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1');
+  assert.equal(hex(new Uint8Array(1_000_000).fill(0x61)), 'cdc76e5c9914fb9281a1c7e284d73e67f1809a48a497200e046d39ccc7112cd0');
+  let seed = 12345;
+  const next = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed; };
+  for (let length = 0; length <= 300; length += 1) {
+    const data = new Uint8Array(length).map(() => next() & 255);
+    const expected = crypto.createHash('sha256').update(data).digest('hex');
+    assert.equal(hex(data), expected, `length ${length}`);
+    const cut = length === 0 ? 0 : next() % (length + 1), cut2 = cut + (length === cut ? 0 : next() % (length - cut + 1));
+    assert.equal(hex(data.subarray(0, cut), data.subarray(cut, cut2), data.subarray(cut2)), expected, `split ${length}`);
+    // hex() leaves the stream usable, and a clone continues independently.
+    const s = stream().update(data.subarray(0, cut));
+    const midstate = s.hex();
+    assert.equal(midstate, crypto.createHash('sha256').update(data.subarray(0, cut)).digest('hex'));
+    const branch = s.clone().update(data.subarray(cut));
+    assert.equal(branch.hex(), expected);
+    assert.equal(s.update(data.subarray(cut)).hex(), expected);
+    assert.equal(branch.update(enc.encode('x')).hex(), crypto.createHash('sha256').update(data).update('x').digest('hex'));
+  }
+});
+
+test('B29 linear checkpoint admission gives byte-identical results to the quadratic construction on the corpus and tampered variants (A4.5)', () => {
+  const base = checkpointValue();
+  const core = new InvestigationCore();
+  core.import(mipBytes, { identifier: 'nav2' });
+  core.returnToWorld('nav2');
+  const navigated = JSON.parse(JSON.stringify(core.checkpoint('nav2')));
+  const native = (() => { const c = new InvestigationCore(); c.create({ identifier: 'native', snapshot: referenceSnapshot }); return JSON.parse(JSON.stringify(c.checkpoint('native'))); })();
+  const tweak = (mutate, source = base) => { const copy = structuredClone(source); mutate(copy); return copy; };
+  const variants = [base, navigated, native, longCheckpoint(2), longCheckpoint(3), longCheckpoint(40), reseal(base),
+    tweak(v => { v.identifier = D('x'); }), tweak(v => { v.stateDigest = D('y'); }), tweak(v => { v.transitionCount += 1; }),
+    tweak(v => { v.transitionLogDigest = D('z'); }), tweak(v => { v.transitionLog.digest = D('z'); }),
+    tweak(v => { v.transitionLog.transitions[0].identifier = D('i'); }), tweak(v => { v.transitionLog.transitions[1].previousLogDigest = D('p'); }),
+    tweak(v => { v.transitionLog.transitions[1].index = 2; }), tweak(v => { v.extra = 1; }), tweak(v => { v.transitionLog.transitions.pop(); v.transitionCount = 1; }),
+    reseal(tweak(v => { v.transitionLog.transitions[0].payload.sourceKind = 'native'; })),
+    reseal(tweak(v => { v.transitionLog.transitions[1].kind = 'OBSERVED'; })),
+    reseal(tweak(v => { v.transitionLog.transitions[1].payload.package.manifest.packageIdentifier += '-forged'; })),
+    reseal(tweak(v => { v.transitionLog.transitions[0].payload.workspaceIdentifier = 'other'; v.workspaceIdentifier = 'other'; })),
+    reseal(tweak(v => { v.transitionLog.transitions.splice(1, 1); })),
+    // A forged prefix digest inside a long, otherwise consistent log; a swapped pair; a transition from another log.
+    (() => { const v = longCheckpoint(30); v.transitionLog.transitions[17].previousLogDigest = D('forged'); return v; })(),
+    (() => { const v = longCheckpoint(30); const t = v.transitionLog.transitions; [t[10], t[11]] = [t[11], t[10]]; return v; })(),
+    (() => { const v = longCheckpoint(30); v.transitionLog.transitions[20].payload = { step: 'changed' }; return v; })(),
+    (() => { const v = longCheckpoint(30); v.transitionLog.digest = D('tail'); return v; })(),
+    (() => { const v = longCheckpoint(30); v.transitionCount = 29; return v; })(),
+    tweak(v => { v.transitionLog.transitions[0].kind = 'NOT_A_KIND'; })];
+  let accepted = 0;
+  for (const [index, value] of variants.entries()) {
+    const bytes = checkpointBytes(value);
+    const expected = oldOutcome(bytes);
+    const actual = newOutcome(bytes);
+    assert.deepEqual(actual, expected, `variant ${index}`);
+    if (expected.subjects) accepted += 1;
+  }
+  assert.ok(accepted >= 6 && accepted < variants.length - 8, `accepted ${accepted} of ${variants.length}`);
+  // Raw non-JSON and non-canonical inputs agree as well.
+  for (const bytes of [new Uint8Array(0), enc.encode('{}'), enc.encode('[]'), new Uint8Array([...checkpointBytes(base), 10]), enc.encode(JSON.stringify(base, null, 1))]) {
+    assert.deepEqual(newOutcome(bytes), oldOutcome(bytes));
+  }
+});
+
+test('B30 linear admission equals the quadratic construction on generated checkpoints up to 10,000 transitions (A4.5)', () => {
+  // The oracle is the verbatim quadratic algorithm (every prefix re-hashed) with native hashing, so 10,000 transitions finish.
+  for (const count of [2, 5, 64, 500, 2500, 10_000]) {
+    const value = longCheckpoint(count);
+    assert.equal(value.transitionCount, count);
+    const bytes = checkpointBytes(value);
+    const expected = oldOutcome(bytes, nativeD);
+    assert.ok(expected.subjects, `the quadratic oracle accepts ${count} transitions`);
+    assert.deepEqual(newOutcome(bytes), expected, `${count} transitions`);
+    assert.equal(expected.subjects.includes(`TRANSITION_LOG_DIGEST=${value.transitionLogDigest}`), true);
+    // One forged previousLogDigest at the deepest transition is rejected identically.
+    const forged = structuredClone(value);
+    forged.transitionLog.transitions[count - 1].previousLogDigest = D('forged-tail');
+    assert.deepEqual(newOutcome(checkpointBytes(forged)), oldOutcome(checkpointBytes(forged), nativeD), `${count} forged`);
+    assert.equal(newOutcome(checkpointBytes(forged)).code, 'MO1308_RECORD_INVALID');
+  }
+  // The Core's published ceiling: one transition more is not a checkpoint.
+  const over = longCheckpoint(10_001);
+  assert.deepEqual(newOutcome(checkpointBytes(over)), { code: 'MO1308_RECORD_INVALID', stage: 'ADMISSION' });
 });
