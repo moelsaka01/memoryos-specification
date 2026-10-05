@@ -1214,3 +1214,120 @@ directly as its exact command and counts toward `PASS`
 mandatory precondition before any MO-1308 Phase 3 certification run (section
 18.1, Phase 3). Phase 3 certification may not start until that run passes on the
 reference host.
+
+## 27. Amendment A4 — decision consistency, Phase 2 interpretations and checkpoint cost (2026-10-05, owner-authorized)
+
+This amendment is append-only. The frozen text above, and Amendments A1, A2 and A3,
+are unchanged. Where this amendment and an earlier section differ, this amendment
+governs, and the superseded text is named below. It records the owner's resolution of the
+Phase 2 report: [2A ledger core](mo1308-phase2a-ledger.md) (BLOCKER-1 and I1–I9),
+[2B admission](mo1308-phase2b-admission.md) (J1–J11 and the checkpoint cost finding) and
+[2C persistence](mo1308-phase2c-store.md) (K1–K11).
+
+### A4.1 BLOCKER-1: `decisionConsistency` is computed at admission and stored
+
+`decisionConsistency` is computed **once, at admission of a `HUMAN_DECISION_CLAIM`**, from
+the verified bytes of the claim and of the `READINESS_RESULT` it references, both available
+and verified at that moment, and is **stored in the claim's entry**. The entry identity
+(`entryDigest`, section 8.2) covers it because it is a member of the entry.
+
+**Field and placement.** The entry's `record` object gains one required member,
+`decisionConsistency`, so `record` has exactly seven members:
+`recordKind`, `recordDigest`, `admission`, `members`, `workspaceAssociation`, `subjects`,
+`decisionConsistency`. Its value is `null` or one member of the closed set
+`"CONSISTENT"` | `"CONTRARY_TO_READINESS"`, under this rule:
+
+| Entry | `record.decisionConsistency` |
+|---|---|
+| `entryType` `TOMBSTONE` (`record` is `null`) | not applicable (no `record`) |
+| `RECORD` entry of any kind other than `HUMAN_DECISION_CLAIM` | `null` |
+| `RECORD` entry of kind `HUMAN_DECISION_CLAIM` | exactly `"CONSISTENT"` or `"CONTRARY_TO_READINESS"`, never `null` |
+
+`recordDigest` (section 7.1) is unchanged: it still binds only the kind and the member
+list. The closed query result shape (section 11.2) is unchanged: each entry's
+`decisionConsistency` is the stored value for a `HUMAN_DECISION_CLAIM` record entry and
+`null` for every other entry, including every tombstone entry.
+
+**Computation (MO-1307 Freeze section 13, unchanged).** With `decision` from the claim
+and `readiness` from `assessment.readiness` of the referenced result:
+
+- `APPROVE` with `READY` or `READY_WITH_QUALIFICATIONS` is `CONSISTENT`;
+- `APPROVE` with `NOT_READY` or `COULD_NOT_EVALUATE` is `CONTRARY_TO_READINESS`;
+- `REJECT` and `DEFER` are `CONSISTENT` for every readiness.
+
+**Inputs and rejection, never a guess.** The referenced result is the `READINESS_RESULT`
+entry whose `READINESS_CANDIDATE_DIGEST`, `READINESS_DIGEST` and `PROOF_BINDING_DIGEST`
+subjects equal the claim's `candidateDigest`, `readinessDigest` and `proofBindingDigest`
+(H16, section 7.4). Admission reads that result's retained bytes and re-verifies them with
+the `READINESS_RESULT` admission method (`MO1307_SELF_DIGESTS_RECOMPUTED`). A claim is
+rejected, and nothing is stored, when the referenced result is
+absent from the ledger (including a result that exists only in another ledger or
+Workspace), purged so that its bytes are unavailable, or does not verify:
+
+| Condition | Error |
+|---|---|
+| No matching `READINESS_RESULT` entry, or its retained bytes are unavailable (purged) | `DECISION_UNBOUND` |
+| Retained bytes differ from the entry's recorded member length or digest | `RECORD_BYTES_MISMATCH` |
+| Retained bytes fail the `READINESS_RESULT` admission method or do not carry the claim's three digests | `RECORD_INVALID` |
+
+**Never recomputed.** The stored value is not recomputed by `query`, `verify`, `export` or
+any later operation. It survives a later purge of the claim or of the readiness result.
+`queryHistoryLedger` returns the stored value and needs no member bytes. Chain
+verification (section 11.1) checks only the shape rule in the table above, not the value.
+
+**Informational only (human authority separation).** `decisionConsistency` is a label
+about the relation between a claimed human decision and a readiness state. It never
+represents approval, risk acceptance or release authorization, grants none, and no
+MO-1307 gate consumes it (R14). The claim's own authenticity remains
+`NOT_VERIFIED_BY_MEMORYOS`.
+
+**Frozen text superseded by A4.1:** section 7.4 "Consistency ... is a derived query value,
+never stored" and R13 "consistency is derived only"; the closed `record` shape in section
+8.2 (one member added); the section 11.2 comment that the value is derived by the query;
+and the Phase 2B interpretation J2 (a purged readiness result no longer binds a new
+claim, because its bytes are unavailable). Section 7.4's binding rule, error
+`DECISION_UNBOUND`, R14 and R35 (no timestamp) are unchanged. This is the owner's option
+(b) of the Phase 2A record (store at admission), storing the derived value rather than its
+two inputs.
+
+### A4.2 K1: frozen CLI success results
+
+The minimal success-result projections recorded in the Phase 2C record (K1) are the
+frozen shapes. They add nothing beyond the SDK return values and stay within the data
+classes of section 15.3:
+
+| Command | `result` |
+|---|---|
+| `init` | `{ledgerIdentifier}` |
+| `append` | `{index, entryDigest}` |
+| `tombstone` | `{index, entryDigest}` (the existing tombstone entry when an interrupted purge is finished) |
+| `export` | `{ledgerIdentifier, entryCount, headDigest}` |
+| `verify`, `verify-export` | the `MemoryOSHistoryVerification` (`pendingArtifacts` is the store's count of staging files) |
+| `query` | the `MemoryOSHistoryQueryResult` |
+
+### A4.3 Interpretations accepted
+
+The interpretations I1–I9 (Phase 2A record), J1–J11 (Phase 2B record) and K1–K11 (Phase 2C
+record) are accepted as written, except J2, which A4.1 changes as stated above. K1 is
+adopted as A4.2.
+
+### A4.4 Known limits accepted (recorded as limits, not defects)
+
+1. `POLICY_EVALUATION` admission is inspection-only. It inherits the SDK detached
+   verifiers' `authority: "inspectionOnly"`: a digest-valued field inside the outcome can
+   be altered and the artifact still verifies.
+2. `READINESS_RESULT` admission is not a MO-1307 verification (section 7.3).
+3. Costs at the 100,000-entry ceiling are as characterized in the Phase 2A and 2C records
+   (a chain verify or an append reads and verifies every entry and retained member;
+   about 21 s to verify, about 16 s to append and about 7.7 minutes to write an export in
+   the cloud container). They are Freeze consequences, not defects.
+
+### A4.5 Checkpoint admission must be linear
+
+`INVESTIGATION_CHECKPOINT` admission (section 7.2, H13) must not be quadratic in the
+transition count. It must use an algorithm that is linear (or n log n) in the checkpoint
+size and gives **byte-identical admission results** to the published construction: the
+same accepted and rejected inputs, the same subjects and the same record. The Standard's
+construction, its digests and the 10,000-transition count policy are unchanged. If that
+proves impossible without changing semantics, the stream reports it, and any limit change
+returns to owner review.
