@@ -1,0 +1,38 @@
+{
+  "kind": "MO1308Phase1BindingCorrection",
+  "correctsCommit": "a8f367de1abcdfa479e9cc8014e88eb1ecd77e01",
+  "evidenceCommit": "442b783d1c93e99cb8b5cfdce03d1004b126db39",
+  "file": "repositories/cca-conformance/evidence/mo1308/phase1/verify.log",
+  "boundRaw": {
+    "sha256": "85396c74e8bb886ed8603fe847c53d8e365dec79a1ca9ff9051ba61aba8ce8c8",
+    "byteLength": 85
+  },
+  "committedNormalizedBlob": {
+    "path": "repositories/cca-conformance/evidence/mo1308/phase1/verify.log",
+    "sha256": "1bafbd9286cd3f3426fcdc5cb27320b58314f48e56e331932db23fff57878b20",
+    "byteLength": 84
+  },
+  "preservedRaw": {
+    "path": "repositories/cca-conformance/evidence/mo1308/phase1/verify.raw.log",
+    "sha256": "85396c74e8bb886ed8603fe847c53d8e365dec79a1ca9ff9051ba61aba8ce8c8",
+    "byteLength": 85
+  },
+  "cause": ".gitattributes \"* text=auto eol=lf\" converted the CRLF verify.log to LF when it was committed in E; the receipt and binding.json hash the raw CRLF bytes.",
+  "rule": "repositories/cca-conformance/evidence/mo1308/** -text",
+  "otherLogsMatch": {
+    "count": 8,
+    "files": [
+      "characterization.json",
+      "characterization.stderr.log",
+      "cli.log",
+      "entry.log",
+      "mo1307.log",
+      "mo1308.log",
+      "studio.log",
+      "wscheck.log"
+    ]
+  },
+  "runResultUnaffected": true,
+  "runResult": "PASS",
+  "note": "receipt.json, binding.json, E and B1 are unchanged. The run, its exit codes and counts are unaffected; only the committed bytes of one log differed from the bound hash."
+}
