@@ -115,8 +115,22 @@ comparison); that is not a committed test.
 
 `repositories/cca-conformance/tools/mo1308-phase2c/characterize.mjs` measures the store at
 the frozen 100,000-entry ceiling with the stand-in engine, so the values bound the
-store's I/O plus a native-crypto verifier, not the real engine. Cloud values are in the
-report; the reference-host values are recorded at binding.
+store's I/O plus a native-crypto verifier, not the real engine. Cloud values (Linux,
+Node v22.22.0, one run, 99,999 existing entries, one member each, then the 100,000th):
+
+| Operation | Time | Heap delta |
+|---|---:|---:|
+| Generate 99,999 entries and members on disk | 34.4 s | 7.3 MiB |
+| `query` page of 1,000 (reads every entry, no members) | 14.2 s | 175.9 MiB |
+| `verify` (reads every entry and member) | 16.4 s | 229.0 MiB |
+| `append` of the last allowed entry (verify, then publish) | 16.1 s | 223.6 MiB |
+| `export` (200,000 files written, each flushed and re-read) | 459.8 s | 381.0 MiB |
+| `verify-export` | 7.5 s | 332.3 MiB |
+
+Reads and appends are linear and dominated by reading the files. Export is the slow path
+because every file is written exclusively, flushed and re-read for the identity check
+(about 2.3 ms per file). Reference-host values (NTFS, where file creation is slower) are
+recorded at binding.
 
 ## 7. Local binding plan (one run, reference Windows host)
 
