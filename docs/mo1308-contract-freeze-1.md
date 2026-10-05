@@ -1198,3 +1198,19 @@ governs. It records the owner's decisions on the four open points of the
    the validators only; each later phase measures what it builds.
 
 No other rule, limit, error code or exit code changes.
+
+## 26. Amendment A3 — B1 CTest deferral and Phase 3 dependency (2026-10-05, owner-authorized)
+
+This amendment is append-only. The frozen text above, and Amendments A1 and A2,
+are unchanged.
+
+For the Phase 1 B1 binding, the CTest item is deferred as
+`DEFERRED_TOOLCHAIN_ABSENT` because the reference Windows host has no C++
+toolchain and Phase 1 changes no C++ code; `cca.workspace.verify` is run
+directly as its exact command and counts toward `PASS`
+([Phase 1 foundation record](mo1308-phase1-foundation.md) section 6.1).
+
+**Dependency.** A full CTest run, including `cca.workspace.verify`, is a
+mandatory precondition before any MO-1308 Phase 3 certification run (section
+18.1, Phase 3). Phase 3 certification may not start until that run passes on the
+reference host.

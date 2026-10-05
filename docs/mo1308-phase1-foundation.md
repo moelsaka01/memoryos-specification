@@ -165,3 +165,22 @@ Binding, following the MO-1307 V2 and Phase 3D precedent:
    E's commit and tree, the path, byte length and SHA-256 of the receipt, every
    log, this record and the correction record. B1 embeds no hash of itself.
 3. Push `mo1308/phase1`. No `main` update, no tag.
+
+### 6.1 Owner amendment to section 6: CTest deferred for B1 (2026-10-05, owner-authorized)
+
+This note is append-only; the plan above is unchanged except as stated here.
+
+1. **Item 9 (CTest) is DEFERRED for B1.** The reference Windows host has no C++
+   toolchain (no compiler, cmake, ninja or vcpkg checkout in a fresh worktree)
+   and Phase 1 changes no C++ code. The B1 receipt records item 9 as
+   `DEFERRED_TOOLCHAIN_ABSENT` with that reason. No toolchain is installed.
+2. **`cca.workspace.verify` is run directly as its exact command**,
+   `python tools\verify_workspace.py --root .` (item 8). It must exit 0 with no
+   MO-1302 and no MO-1304 error, and that result counts toward `PASS`. The
+   receipt's `PASS` therefore requires every other expected value, with item 9
+   recorded as deferred rather than passed.
+3. **A full CTest run, including `cca.workspace.verify`, is a mandatory
+   precondition of any MO-1308 Phase 3 certification run**
+   ([Freeze Amendment A3](mo1308-contract-freeze-1.md)).
+
+Everything else in section 6 is unchanged.
