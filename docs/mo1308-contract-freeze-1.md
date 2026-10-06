@@ -1398,3 +1398,51 @@ another handle is open). The recorded runs do not distinguish them.
 
 This limitation is re-reviewed together with H40 (the Node-only, helper-free file mechanism)
 before any multi-user, shared-storage or cloud use of the history store.
+
+## 30. Amendment A7 — Stream 2D integration decisions (2026-10-06, owner-authorized)
+
+This amendment is append-only. The frozen text above, and Amendments A1 to A6, are unchanged
+except where this amendment names the superseded text. It records the owner's acceptance of the
+Stream 2D decisions in the [Phase 2D record](mo1308-phase2d-integration.md) section 3.
+
+1. **CLI success envelope `command`.** The `command` field of the CLI success envelope for the
+   history commands is `"history <subcommand>"` (for example `"history query"`), matching the
+   error envelopes.
+2. **`history query` human output.** Each result entry is printed as its canonical JSON. The
+   previous output (`[object Object]`) was a defect of the human formatter, not a contract.
+3. **`verify-export` on a missing directory.** Reports `LEDGER_NOT_FOUND` (exit category 4), the
+   existing 2C behaviour, confirmed. The Freeze has no separate "export not found" code.
+4. **Live version pins.** The live SDK and CLI version pins are `1.2.0`. The historical MO-1301
+   inventory that records `1.1.0` is released evidence and is untouched.
+5. **Corrections to bound 2C tests T09 and T20.** Both are accepted as test defects that encoded
+   the 2C stand-in engine, not the product. Neither weakens what the test proves. The exact change
+   (`git diff 76095766 93dc69de -- repositories/memoryos-cli/tests/history-store.test.mjs`):
+
+   T09, "foreign member name in a record directory" (expected `RECORD_BYTES_MISMATCH`):
+
+   ```
+   before: writeFileSync(join(ledger, "records", hex, "checkpoint.json"), "x")   / rmSync(... "checkpoint.json")
+   after:  writeFileSync(join(ledger, "records", hex, "package.mip"), "x")        / rmSync(... "package.mip")
+   ```
+
+   The test proves that a file in a record directory whose name the record's kind does not own
+   fails closed with `RECORD_BYTES_MISMATCH`. The stand-in record's member was `package.mip`, so
+   `checkpoint.json` was foreign to it; the real record's member is `checkpoint.json`, so
+   `checkpoint.json` is now the record's own member and `package.mip` is the foreign name. The
+   property, the planted file, the expected code and the restore step are unchanged.
+
+   T20, operation `query` after a committed purge (the stable second pass answers):
+
+   ```
+   before: ...limit: 10 }).entries.length, 2, "the stable second pass answers (the purged record is listed once, its tombstone is not a result row)")
+   after:  ...limit: 10 }).entries.length, 3, "the stable second pass answers (the purged record is listed once, plus its tombstone entry, section 11.2)")
+   ```
+
+   The test proves that a purge committed between the entry listing and the member listing never
+   makes a read report an integrity failure, and that the stable second pass answers. The
+   stand-in filtered tombstone entries out of query results; the Freeze (section 11.2,
+   `entryType`) makes a tombstone entry a result row. The assertion remains an exact count on the
+   same stable pass (2 became 3: the purged record's entry, the second record and the tombstone
+   entry), so it is not weakened; the old value encoded the stand-in's filtering.
+
+No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
