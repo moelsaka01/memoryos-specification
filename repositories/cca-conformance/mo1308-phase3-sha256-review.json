@@ -1,0 +1,53 @@
+{
+  "kind": "MO1308Phase3Review",
+  "version": "1.0.0",
+  "subject": [
+    {
+      "path": "repositories/cca-studio/web/js/memoryos-history-admission.js",
+      "byteLength": 48026,
+      "sha256": "5c1882a2e3ac300e0f2ebd751114298058babb66a0b60a14a1b1f31fa8f164cc"
+    },
+    {
+      "path": "repositories/cca-studio/web/js/mip-canonical.js",
+      "byteLength": 25607,
+      "sha256": "0dd9dbaed8c3fdf92600dec4d998fe290dd9b2b83344198711ec88f0ec95fa68"
+    }
+  ],
+  "reviewer": {
+    "role": "INDEPENDENT_SUB_AGENT",
+    "identity": "general-purpose sub-agent, spawned for 3C-D9; read-only; instructed not to read repositories/cca-conformance"
+  },
+  "scope": "FIPS 180-4 correctness and robustness of Sha256Stream (memoryos-history-admission.js) and sha256Hex (mip-canonical.js): constants derived from prime roots, padding at 55/56/63/64 bytes and above 2^32 bits, schedule and functions, 32-bit arithmetic, chunking and views, invalid inputs, reuse, mutation, performance at 32 MiB; compared with node:crypto on lengths 0-300, random chunking, 1 MiB and 32 MiB.",
+  "findings": [
+    {
+      "id": "D9-F1",
+      "severity": "NON_BLOCKING",
+      "summary": "Sha256Stream.update does not validate its argument and changes length before it can throw: a string, Array or ArrayBuffer corrupts the stream, and a non-Uint8Array typed array is accepted with a wrong digest. The class is not exported and its only caller passes Uint8Array from utf8Encode, so the defect is latent.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "No production change in this task (candidate is frozen). Recorded as a latent hardening item for the next candidate; no reachable input triggers it."
+    },
+    {
+      "id": "D9-F2",
+      "severity": "NOTE",
+      "summary": "sha256Hex accepts strings (UTF-8, lone surrogates rejected with INVALID_UNICODE), ArrayBuffer, typed-array views and DataView, and rejects other types; the two implementations differ in input handling.",
+      "disposition": "REJECTED_WITH_REASON",
+      "note": "Reviewer states this is correct behaviour, not a defect."
+    },
+    {
+      "id": "D9-F3",
+      "severity": "NOTE",
+      "summary": "Both are linear; 32 MiB takes about 1.06 s (sha256Hex, 2x memory for a padded copy) and 2.06 s (stream).",
+      "disposition": "REJECTED_WITH_REASON",
+      "note": "Not a defect; consistent with the linear-admission requirement (A4.5)."
+    },
+    {
+      "id": "D9-F4",
+      "severity": "NOTE",
+      "summary": "Sha256Stream.hex() works on a clone; update after hex() and repeated hex() are correct.",
+      "disposition": "REJECTED_WITH_REASON",
+      "note": "Confirmation, not a defect."
+    }
+  ],
+  "conclusion": "NO_BLOCKING_FINDINGS",
+  "reviewedAt": "2026-10-06T00:00:00.000Z"
+}

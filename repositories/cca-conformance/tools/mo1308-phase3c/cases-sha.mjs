@@ -1,13 +1,14 @@
 // MO-1308 Phase 3C step D: the two hand-written SHA-256 implementations (the incremental `Sha256Stream` in the history admission
 // module and `sha256Hex` in mip-canonical.js). FIPS 180-4 example messages, the CAVP Monte Carlo procedure and a differential against
 // node:crypto, all computed here: official CAVP response files are NOT used (A8 decision 1). Checkpoint admission is compared with the
-// verbatim legacy (quadratic) algorithm at the frozen sizes. The independent sub-agent review (3C-D9) is a recorded input.
+// verbatim legacy (quadratic) algorithm at the frozen sizes. The independent sub-agent review (3C-D9) is a recorded, hash-bound input.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { sha256Hex as mipSha256Hex } from '../../../cca-studio/web/js/mip-canonical.js';
 import { legacyAdmitCheckpoint } from '../../tests/support/mo1308-legacy-checkpoint-oracle.mjs';
 import { drbgWord, SEEDS } from '../mo1308-phase3/corpus.mjs';
+import { validateReview } from '../mo1308-phase3/lib/receipts.mjs';
 import { conclude, recordById } from './env.mjs';
 import { CORPUS_WORKSPACE, MemoryLedger, attempt, dec, enc, jcs, longCheckpoint, resealCheckpoint, D, sdk } from './support.mjs';
 
@@ -76,7 +77,30 @@ function everyImplementation(env, check) {
   return { problems, names };
 }
 
+// The recorded independent review of the two hand-written SHA-256 implementations is a bound input (A8 decision, D8; owner
+// authorization of 2026-10-06). It names the reviewed sources by hash, so a change to either source invalidates it.
+export const SHA_REVIEW_FILE = 'repositories/cca-conformance/mo1308-phase3-sha256-review.json';
+export const SHA_REVIEW_SUBJECTS = Object.freeze(['repositories/cca-studio/web/js/memoryos-history-admission.js', 'repositories/cca-studio/web/js/mip-canonical.js']);
+
 export const sha = {
+  '3C-D9': (h, env) => {
+    const problems = [];
+    const file = path.join(env.repo, SHA_REVIEW_FILE);
+    if (!fs.existsSync(file)) { problems.push(`${SHA_REVIEW_FILE} is not recorded`); conclude(h, problems, {}); }
+    const review = JSON.parse(fs.readFileSync(file, 'utf8'));
+    problems.push(...validateReview(review));
+    if (review.reviewer?.role !== 'INDEPENDENT_SUB_AGENT') problems.push('the reviewer is not an independent sub-agent');
+    const subjects = new Map((review.subject ?? []).map((row) => [row.path, row]));
+    for (const relative of SHA_REVIEW_SUBJECTS) {
+      const bytes = fs.readFileSync(path.join(env.repo, relative));
+      const row = subjects.get(relative);
+      if (row === undefined) problems.push(`${relative} is not among the reviewed files`);
+      else if (row.sha256 !== nodeHex(bytes) || row.byteLength !== bytes.length) problems.push(`${relative} changed since it was reviewed`);
+    }
+    for (const finding of review.findings ?? []) if (finding.disposition === 'OPEN') problems.push(`finding ${finding.id} has no disposition`);
+    if (review.conclusion !== 'NO_BLOCKING_FINDINGS') problems.push(`the review concludes ${review.conclusion}`);
+    conclude(h, problems, { reviewer: review.reviewer?.identity ?? null, findings: (review.findings ?? []).map((finding) => `${finding.id}:${finding.severity}:${finding.disposition}`), conclusion: review.conclusion });
+  },
   '3C-D1': (h, env) => {
     const { problems, names } = everyImplementation(env, (implementation) => {
       const found = [];

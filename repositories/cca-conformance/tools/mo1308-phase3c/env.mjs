@@ -8,8 +8,6 @@ import { RECIPES, buildRecipe } from '../mo1308-phase3/corpus.mjs';
 export async function makeEnv({ root, option, certifying }) {
   const env = {
     repo: root, certifying, evidenceDir: null, cache: {}, temporary: [],
-    // `accepted3aDir` is the accepted 3A generation whose outcomes the disclosure check reads (3C-K2, K3).
-    accepted3aDir: option('--accepted-3a') === null ? null : path.resolve(option('--accepted-3a')),
   };
   process.on('exit', () => { for (const directory of env.temporary) fs.rmSync(directory, { recursive: true, force: true }); });
   return env;

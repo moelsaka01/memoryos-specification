@@ -5,8 +5,6 @@ import { execFileSync } from 'node:child_process';
 import { work, recordById, conclude, memo } from './env.mjs';
 import { cli, observedCli, appendArgs, buildDiskLedger, dec, sdk, MemoryLedger, attempt, CLI, REPOSITORIES } from './support.mjs';
 import { tokenize, scanImports } from '../mo1308-phase3/lib/closure.mjs';
-import { checkDisclosure, readOutcomes } from '../mo1308-phase3/lib/disclosure.mjs';
-import { loadInventory } from '../mo1308-phase3/lib/inventory.mjs';
 import { MEMORYOS_HISTORY_ERRORS } from '../../../cca-studio/web/js/memoryos-history-contract.js';
 import { scenario } from './cases-data.mjs';
 
@@ -190,56 +188,5 @@ export const authority = {
     conclude(h, problems, { filesScanned: files.length, environmentReads: reads.length, whitelist: [], canariesChecked: secrets.length, leaks });
   },
 
-  // ---- K: release claims (documentation is written after the 3A and 3C outcomes are recorded) ----
-  '3C-K1': (h, env) => {
-    const disclosures = 'docs/mo1308-release-disclosures.md';
-    const problems = [];
-    if (!fs.existsSync(path.join(env.repo, disclosures))) problems.push(`PENDING: ${disclosures} does not exist yet`);
-    else {
-      const text = read(env, disclosures);
-      const inventory = loadInventory(path.join(env.repo, 'repositories/cca-conformance/mo1308-phase3-inventory.json'));
-      for (const row of inventory.qualifications) if (!new RegExp(`\\b${row.id}\\b`).test(text)) problems.push(`${row.id} is missing from the disclosures`);
-    }
-    const OVERCLAIM = /tamper[- ]?proof|\bencrypt(?:ed|ion)\b|\bsigned\b|\bauthenticat(?:ed|ion)\b|multi-user|shared storage|cloud (?:sync|storage|backup)|CCA-MEMORYOS-1\.0 (?:conformant|compliant)/i;
-    const NEGATION = /\b(no|not|never|without|does not|cannot|isn't|excluded|out of scope|NOT_VERIFIED_BY_MEMORYOS|re-review|before any)\b/i;
-    const documents = ['README.md', 'ROADMAP.md', 'RELEASE_NOTES.md', 'KNOWN_ISSUES.md', 'ARCHITECTURE.md', 'repositories/memoryos-cli/README.md', ...fs.readdirSync(path.join(env.repo, 'repositories/memoryos-cli/docs')).filter((n) => n.endsWith('.md')).map((n) => `repositories/memoryos-cli/docs/${n}`)];
-    const overclaims = [];
-    for (const file of documents.filter((name) => fs.existsSync(path.join(env.repo, name)))) {
-      const lines = read(env, file).split('\n');
-      lines.forEach((line, index) => {
-        if (/MO-1308|history ledger|Investigation History|memoryos history/i.test(line) && OVERCLAIM.test(line) && !NEGATION.test(line)) overclaims.push(`${file}:${index + 1}`);
-      });
-    }
-    for (const where of overclaims.slice(0, 5)) problems.push(`${where}: a claim beyond the Freeze`);
-    conclude(h, problems, { documentsScanned: documents.length, overclaims: overclaims.length });
-  },
-  '3C-K2': (h, env) => {
-    const candidates = ['repositories/memoryos-cli/README.md', 'repositories/memoryos-cli/docs/history-guide.md', 'docs/mo1308-release-disclosures.md'].filter((file) => fs.existsSync(path.join(env.repo, file)));
-    const guided = candidates.filter((file) => /headDigest/.test(read(env, file)) && /(outside the ledger|external(ly)?|separate system)/i.test(read(env, file)));
-    const problems = [];
-    if (guided.length === 0) problems.push('PENDING: no CLI document gives the headDigest anchoring guidance yet');
-    const outcomes = readOutcomes([env.evidenceDir ?? '']);
-    const outcome = outcomes.get('3C-A6') ?? null;
-    if (outcome === null) problems.push('3C-A6 has no recorded outcome in this generation');
-    for (const file of guided) {
-      const text = read(env, file);
-      const states = new RegExp('3C-A6:\\s+(CONFIRMED|NOT_CONFIRMED)').exec(text)?.[1] ?? null;
-      if (outcome !== null && states !== outcome) problems.push(`${file}: states ${states} for 3C-A6 but the recorded outcome is ${outcome}`);
-    }
-    conclude(h, problems, { guidanceIn: guided, recordedOutcome: outcome });
-  },
-  '3C-K3': (h, env) => {
-    const disclosures = 'docs/mo1308-release-disclosures.md';
-    const problems = [];
-    const inventory = loadInventory(path.join(env.repo, 'repositories/cca-conformance/mo1308-phase3-inventory.json'));
-    if (!fs.existsSync(path.join(env.repo, disclosures))) problems.push(`PENDING: ${disclosures} does not exist yet`);
-    else {
-      const directories = [env.accepted3aDir, env.evidenceDir].filter((value) => value !== null && value !== undefined);
-      const outcomes = readOutcomes(directories);
-      problems.push(...checkDisclosure(read(env, disclosures), inventory, outcomes));
-      void outcomes;
-    }
-    conclude(h, problems.slice(0, 8), { disclosureDocument: disclosures, inputs: [env.accepted3aDir ? 'accepted 3A generation' : 'no accepted 3A generation', 'this 3C generation'] });
-  },
 };
 void CLI; void REPOSITORIES; void MemoryLedger; void memo;

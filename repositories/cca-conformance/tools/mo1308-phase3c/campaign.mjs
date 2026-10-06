@@ -8,7 +8,8 @@ import { fileURLToPath } from 'node:url';
 import { main } from '../mo1308-phase3/lib/campaign-driver.mjs';
 import { walkRecords } from '../mo1308-phase3/lib/hashing.mjs';
 import { hostOnly, impls, makeEnv } from './cases.mjs';
+import { SHA_REVIEW_FILE } from './cases-sha.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const streamToolPaths = (root) => walkRecords(here).map((row) => path.relative(root, path.join(here, row.path)).split(path.sep).join('/'));
-process.exitCode = await main({ argv: process.argv.slice(2), stream: '3C', impls, hostOnly, makeEnv, streamToolPaths, moduleUrl: import.meta.url });
+process.exitCode = await main({ argv: process.argv.slice(2), stream: '3C', impls, hostOnly, makeEnv, streamToolPaths, inputPaths: [SHA_REVIEW_FILE], moduleUrl: import.meta.url });
