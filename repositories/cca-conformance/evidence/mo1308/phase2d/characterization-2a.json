@@ -1,0 +1,37 @@
+{
+  "kind": "MO1308Phase2ACharacterization",
+  "entryCount": 100000,
+  "node": "v24.21.0",
+  "rows": [
+    {
+      "label": "generate 100000 entries",
+      "milliseconds": 15031,
+      "heapDeltaMiB": 100.2
+    },
+    {
+      "label": "query page of 1000 entries (chain verify + filter)",
+      "milliseconds": 19631,
+      "heapDeltaMiB": 215.2
+    },
+    {
+      "label": "query: subject filter over the full ledger",
+      "milliseconds": 21058,
+      "heapDeltaMiB": 228.7
+    },
+    {
+      "label": "verify (chain and members)",
+      "milliseconds": 20799,
+      "heapDeltaMiB": 110.6
+    },
+    {
+      "label": "build export (verify + manifest)",
+      "milliseconds": 29695,
+      "heapDeltaMiB": 278.8
+    },
+    {
+      "label": "verify export",
+      "milliseconds": 30369,
+      "heapDeltaMiB": 311.1
+    }
+  ]
+}
