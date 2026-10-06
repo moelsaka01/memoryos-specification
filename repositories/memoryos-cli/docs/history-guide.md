@@ -30,7 +30,7 @@ memoryos history verify-export --export DIR [--json]
 | `tombstone` | `--ledger`, `--target`, `--reason`, `--authority-reference` | Appends a tombstone entry for a retained record entry and purges that record's member bytes. The entry itself, and the chain, stay. |
 | `verify` | `--ledger` | Recomputes every identity and the chain, and reports counts, the head digest and any anomalies. |
 | `query` | `--ledger`, `--retention`, `--from`, `--limit` | Lists entries in index order. Optional `--kind` (repeatable, once per kind) and `--subject-type` with `--subject`. `--limit` is 1 to 1000. |
-| `export` | `--ledger`, `--output` | Writes a self-contained export to a **new** directory that is outside the ledger directory. |
+| `export` | `--ledger`, `--output` | Writes a self-contained export to a **new** directory that is not inside the ledger directory. |
 | `verify-export` | `--export` | Verifies an export directory without the ledger. |
 
 Record kinds and their input flags:
@@ -107,10 +107,10 @@ total, a readiness result 4,194,304 bytes, a decision claim 8,192 bytes).
   multi-user store, and it is not a cloud service.
 - Integrity only: entries are hash-chained, but they are not signed, not authenticated and not encrypted. Access control is the
   operator's filesystem responsibility. Verification detects a changed or reordered entry; the release disclosures state what it
-  cannot detect and how operators should record export digests outside the ledger.
+  cannot detect and how operators should keep a record of each export digest.
 - A checkpoint record kept in a ledger is not a restore source: `restore` and `session` never read the ledger.
 - A directory swap during an operation is detected after the fact and is never prevented (single local user only).
-- `export --output` must name a new location outside the ledger directory.
+- `export --output` must name a new location that is not inside the ledger directory.
 - Windows 11 x64 with the pinned Node is the only certified platform. UNC, network, synchronized and cloud-placeholder locations
   are observed, not claimed.
 - The history commands start no process, open no socket and read no environment variable.
