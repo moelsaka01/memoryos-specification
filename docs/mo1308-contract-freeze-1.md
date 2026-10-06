@@ -1514,3 +1514,66 @@ recorded in the evidence. Only a run where all of that holds is `PASS`; otherwis
 release. It is outside MO-1308.
 
 No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
+
+## 32. Amendment A3.2 — A3 differential no-regression gate (2026-10-06, owner-authorized)
+
+This amendment is append-only. The frozen text above and Amendments A1 to A7 and A3.1 are
+unchanged. It is a sub-amendment of Amendment A3 (section 26) and replaces A3's absolute gate
+("a full CTest run passes") with a differential no-regression gate. It does not use or pre-empt
+A8 or A9, which are reserved for the Phase 3 protocol.
+
+**The A3.1 run is preserved.** The A3.1 run is recorded as `FAILED_PRESERVED` (evidence commit
+`59dfee40320f953570aff7e833eac61c10df04e6`, binding commit
+`82bb165e7c1b2ee66179e940d62f26c635bb102d`, directory
+`repositories/cca-conformance/evidence/mo1308/phase3-precondition/`). It stays untouched and is
+not rerun or edited.
+
+**Rule.** CTest is run twice, with preset `default`, the A3.1 waiver (target `cca_core_tests` is
+not built; only its placeholder test `cca_core_tests_NOT_BUILT` is excluded, with
+`-E "^cca_core_tests_NOT_BUILT$"`), and an identical toolchain, environment and setup:
+
+- BASELINE = BF `1dd1e8c82fe0ed5a32a894744392f2c279f89d4c` (the MO-1307 release);
+- CANDIDATE = B2 `47595cc95204307dd43c4772c417b52f0ac8402b`.
+
+The verdict is `PASS` only if all of the following hold:
+
+1. `cca.workspace.verify` passes on CANDIDATE;
+2. no test that passes on BASELINE fails or is Not Run on CANDIDATE;
+3. every test present on CANDIDATE but not on BASELINE passes;
+4. every test that fails on both is listed as `PRE_EXISTING` with a classification.
+
+Any other outcome is `FAILED_PRESERVED`. The recorded runs are each made once. Setup may be
+repeated. Setup installs Node dependencies from the committed lockfiles as the repository's own
+tooling or CI does, completes test discovery before the recorded runs, and does not edit
+repository files, create the hard-coded workspace path, or remove tags. The evidence directory
+is `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g2/` and contains both raw
+logs, both `ctest -N` listings, the setup records, the toolchain and dependency versions, a
+computed comparison table and `receipt.json` with the A3.2 verdict.
+
+**Classifications of the 125 A3.1 failures (recorded).**
+
+| Class | Count | Tests |
+| --- | ---: | --- |
+| product or toolchain (undetermined) | 112 | `*AllocationFailureTest.*`: each aborts with exit code 3 about 0.03 s after `RUN` |
+| environment | 7 | `memoryos.vscode.runtime`, `memoryos.vscode.product`, `memoryos.vscode.package.validation`, `memoryos.mcp.foundation`, `memoryos.standard.mo1303-phase3`, `memoryos.standard.mo1304-phase1`, `memoryos.standard.mo1304-phase2`: Node dependencies not installed in the fresh worktree (`esbuild`, `zod`, `@modelcontextprotocol/server`, `yauzl`); `npm` not found in the pinned Node folder |
+| environment | 3 | `memoryos.standard.mo1305-phase3` (hard-coded workspace root `C:/Users/melsa/Documents/Codex/cca-workspace`), `memoryos.standard.mo1304-phase3-ubuntu` and `memoryos.standard.mo1304-phase3-windows` (assert that local tag `memoryos-1.3-mo1304` does not exist) |
+| test | 2 | `memoryos.standard.specification` (stale 1.2.1 pin of `repositories/cca-core/src`), `memoryos.standard.coverage-gap` (same specification conformance check) |
+| environment (consequence of the A3.1 waiver) | 1 | `memoryos.standard.runtime.reference`: Not Run, needs `cca_core_tests.exe` |
+
+The 112 allocation tests by suite: `EpisodicMemoryAllocationFailureTest` 11,
+`KnowledgeRetrievalAllocationFailureTest` 15, `LongTermMemoryAllocationFailureTest` 7,
+`MemoryAllocationFailureTest` 3, `MemoryConsolidationAllocationFailureTest` 6,
+`MemoryProviderAllocationFailureTest` 15, `MemoryReflectionAllocationFailureTest` 10,
+`MemoryStudioAllocationFailureTest` 9, `ProceduralMemoryAllocationFailureTest` 15,
+`ProcessAllocationFailureTest` 4, `SemanticMemoryAllocationFailureTest` 11,
+`WorkingMemoryAllocationFailureTest` 6. The full names are in `receipt.json` of the A3.1
+evidence.
+
+**Project follow-up (outside MO-1308; extends the A3.1 follow-up: Windows CI green before the
+MemoryOS 1.3 release).** In addition to the A3.1 items, the maintenance task covers: the
+`AllocationFailureTest` aborts; missing Node dependencies in fresh worktrees; the hard-coded
+workspace path in `memoryos.standard.mo1305-phase3`; the tag-absence assertions in
+`memoryos.standard.mo1304-phase3-ubuntu` and `-windows`; and the stale 1.2.1 `cca-core/src` pin
+behind `memoryos.standard.specification` and `memoryos.standard.coverage-gap`.
+
+No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
