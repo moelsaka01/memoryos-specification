@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { execFileSync, spawn } from "node:child_process";
+import crypto from "node:crypto";
 import * as nodeFs from "node:fs";
 import { lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, renameSync, rmSync, rmdirSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -426,31 +427,60 @@ test("W07 drive-letter, UNC and long-path forms work end to end; the \\\\?\\ and
   assert.deepEqual(contents(ledger), before);
 });
 
-test("W08 NTFS concurrency: ten real appender processes with concurrent readers produce one entry per index and a verifying chain; readers never see corruption (R15)", WIN, async (t) => {
+test("W08 NTFS concurrency: ten real appender processes with concurrent readers; every append that succeeded is in the ledger exactly once, every record that is not was reported as a typed failure, and no failed writer left a record (R15)", WIN, async (t) => {
   const { ledger, store } = newLedger(t);
   const appenders = 10;
   const perWorker = 3;
   const readers = [runWorker("verify", ledger, 12_000), runWorker("verify", ledger, 12_000)];
-  const writers = Array.from({ length: appenders }, (_, index) => runWorker("append", ledger, `w${index}`, perWorker));
-  const outcomes = (await Promise.all(writers)).map(parsed);
+  const writers = Array.from({ length: appenders }, (_, index) => runWorker("append-detailed", ledger, `w${index}`, perWorker));
+  const records = (await Promise.all(writers)).map(parsed).flat();
   const observed = (await Promise.all(readers)).map(parsed);
-  const attempts = outcomes.flat();
-  const wins = attempts.filter((attempt) => attempt.ok).map((attempt) => attempt.index).sort((a, b) => a - b);
-  assert.deepEqual(wins, wins.map((_, position) => position), "winning indices are exactly 0..n-1, each once");
-  assert.ok(attempts.every((attempt) => attempt.ok || ["MO1308_LEDGER_CONFLICT", "MO1308_IO"].includes(attempt.code)), JSON.stringify(attempts.filter((a) => !a.ok)));
-  assert.equal(wins.length, appenders * perWorker, "every record was committed");
+  assert.equal(records.length, appenders * perWorker, "every writer reported every record it tried");
+
+  // Per-attempt evidence, written to the test output so any recurrence is diagnosable from the log.
+  const attempts = records.flatMap((record) => record.attempts.map((attempt) => ({ label: record.label, ...attempt })));
+  const failed = attempts.filter((attempt) => !attempt.ok);
+  const byCode = {};
+  const byErrno = {};
+  for (const attempt of failed) {
+    byCode[attempt.code] = (byCode[attempt.code] ?? 0) + 1;
+    for (const error of attempt.fsErrors ?? []) { const key = `${error.code}/${error.errno}/${error.syscall}`; byErrno[key] = (byErrno[key] ?? 0) + 1; }
+  }
+  t.diagnostic(`W08 attempts=${attempts.length} succeeded=${attempts.length - failed.length} failedByCode=${JSON.stringify(byCode)} fsErrorsByCodeErrnoSyscall=${JSON.stringify(byErrno)}`);
+  for (const record of records.filter((entry) => entry.outcome !== "success")) t.diagnostic(`W08 record not committed by its writer: ${JSON.stringify(record)}`);
+  for (const attempt of failed.filter((entry) => entry.code !== "MO1308_LEDGER_CONFLICT")) t.diagnostic(`W08 non-conflict failure: ${JSON.stringify(attempt)}`);
+  assert.ok(failed.every((attempt) => ["MO1308_LEDGER_CONFLICT", "MO1308_IO"].includes(attempt.code)), JSON.stringify(failed.filter((a) => !["MO1308_LEDGER_CONFLICT", "MO1308_IO"].includes(a.code))));
+
+  // The exact contract. Present records are identified by the member bytes' digest, which is unique per record.
+  const entries = readdirSync(join(ledger, "entries")).map((name) => JSON.parse(readFileSync(join(ledger, "entries", name), "utf8")));
+  const digestOf = (text) => `sha256:${crypto.createHash("sha256").update(text).digest("hex")}`;
+  const presence = new Map();
+  for (const entry of entries) presence.set(entry.record.members[0].sha256, (presence.get(entry.record.members[0].sha256) ?? 0) + 1);
+  const succeeded = records.filter((record) => record.outcome === "success");
+  const notReported = records.filter((record) => record.outcome !== "success");
+  // (a) no lost writes and no duplicates: every success is present exactly once.
+  for (const record of succeeded) assert.equal(presence.get(digestOf(record.memberText)) ?? 0, 1, `${record.label} succeeded and must be present exactly once`);
+  // (b) no silent loss: every record that is absent had a typed failure reported to its writer.
+  const absent = records.filter((record) => (presence.get(digestOf(record.memberText)) ?? 0) === 0);
+  for (const record of absent) assert.ok(record.outcome === "failed" && ["MO1308_LEDGER_CONFLICT", "MO1308_IO"].includes(record.finalCode), `${record.label} is absent without a reported failure: ${JSON.stringify(record)}`);
+  // (c) no phantom commit: a record whose writer saw a failure is not in the ledger.
+  for (const record of notReported) assert.equal(presence.get(digestOf(record.memberText)) ?? 0, 0, `${record.label} failed for its writer yet is in the ledger: ${JSON.stringify(record)}`);
+  // (d) the ledger itself: contiguous indices, entry count equals the successes, the chain verifies, readers see no corruption.
+  const indices = succeeded.map((record) => record.attempts.at(-1).index).sort((a, b) => a - b);
+  assert.deepEqual(indices, indices.map((_, position) => position), "winning indices are exactly 0..n-1, each once");
+  assert.equal(entries.length, succeeded.length, "the entry count equals the number of successes");
+  assert.deepEqual([...presence.values()].filter((count) => count !== 1), [], "no record is present twice");
   const verification = store.verify(ledger);
-  assert.equal(verification.entryCount, wins.length);
-  assert.deepEqual(readdirSync(join(ledger, "entries")), wins.map((_, index) => entryName(index)));
+  assert.equal(verification.entryCount, succeeded.length);
+  assert.deepEqual(readdirSync(join(ledger, "entries")), succeeded.map((_, index) => entryName(index)));
   for (const name of readdirSync(join(ledger, ".pending"))) assert.match(name, /^(entry-[0-9]{20}|member-[0-9a-f]{64}-[a-z.-]+)\.[0-9]+$/u, "only staging names");
   for (const { counts, failures } of observed) {
     assert.ok(counts.length > 0, "the reader completed verifications");
     assert.deepEqual(counts, [...counts].sort((a, b) => a - b), "a reader never sees the ledger shrink");
     assert.deepEqual(Object.keys(failures).filter((key) => !["MO1308_IO", "MO1308_LEDGER_CONFLICT"].includes(key)), [], `readers see no integrity or boundary failure (only a typed IO error or the bounded-retry conflict): ${JSON.stringify(failures)}`);
-    assert.ok(counts.at(-1) <= wins.length);
+    assert.ok(counts.at(-1) <= succeeded.length);
   }
 });
-
 test("W08b concurrent tombstones and appends in separate processes leave one tombstone per target and a verifying chain (R15, section 10.2)", WIN, async (t) => {
   const { ledger, store } = newLedger(t);
   for (let index = 0; index < 4; index += 1) store.append(ledger, mip(`seed ${index}`));
