@@ -1,7 +1,7 @@
 # MO-1308 Phase 3A native campaign: platform-neutral part
 
 Status: **PARTIALLY AUTHORED AND REHEARSED IN THE CLOUD — NOT CERTIFIED**. Stream 3A of the [Phase 3 protocol](mo1308-phase3-protocol.md)
-(Freeze Amendment A8, section 33), on branch `mo1308/phase3a-native`. Nothing here is evidence; nothing was committed under
+(Freeze Amendment A8, section 34), on branch `mo1308/phase3a-native`. Nothing here is evidence; nothing was committed under
 `evidence/`. This branch holds the 33 cases that need no Windows API; the other 75 are declared host-only and are Step 3 scope.
 
 ## 1. Implemented (33 cases, `repositories/cca-conformance/tools/mo1308-phase3a/`)
