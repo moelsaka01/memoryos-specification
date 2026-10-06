@@ -1,7 +1,7 @@
 # MO-1308 Phase 3B closure and supply audit: campaign definition
 
 Status: **AUTHORED AND REHEARSED IN THE CLOUD — NOT CERTIFIED**. Stream 3B of the [Phase 3 protocol](mo1308-phase3-protocol.md)
-(Freeze Amendment A8, section 33), on branch `mo1308/phase3b-closure`. Nothing here is evidence; no certifying generation was
+(Freeze Amendment A8, section 34), on branch `mo1308/phase3b-closure`. Nothing here is evidence; no certifying generation was
 sealed and nothing was committed under `evidence/`.
 
 ## 1. What it audits
