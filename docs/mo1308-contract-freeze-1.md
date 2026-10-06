@@ -1446,3 +1446,71 @@ Stream 2D decisions in the [Phase 2D record](mo1308-phase2d-integration.md) sect
    entry), so it is not weakened; the old value encoded the stand-in's filtering.
 
 No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
+
+## 31. Amendment A3.1 — A3 full CTest run: cca_core_tests waiver (2026-10-06, owner-authorized)
+
+This amendment is append-only. The frozen text above and Amendments A1 to A7 are unchanged.
+It is a sub-amendment of Amendment A3 (section 26) and refines only how the A3 precondition
+run is executed on the reference host. It does not use or pre-empt A8 or A9, which are reserved
+for the Phase 3 protocol.
+
+**Run configuration.** The A3 run uses CMake preset `default`, with MSVC 19.44.35229 (Visual
+Studio Build Tools 17.14), CMake 3.31.6, Ninja 1.13.2, vcpkg commit
+`cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3` (tag 2026.06.24) and triplet `x64-windows`, from
+`origin/main` `47595cc95204307dd43c4772c417b52f0ac8402b` (B2).
+
+**Waived.** The `cca_core_tests` target only. It does not compile with MSVC 19.44.35229
+(error C2607, `static_assert(!CanMutateCoreMetric<Observability>)` at
+`repositories/cca-core/tests/observability_test.cpp:86`). MSVC 19.44 mis-evaluates access
+checking in a namespace-scope concept: a private member that a conforming compiler treats as
+inaccessible (so the concept is false and the assert holds) is evaluated as accessible. A
+standalone reproduction, compiled with `cl /std:c++latest /EHsc r.cpp` and failing with
+`r.cpp(17): error C2607: static assertion failed`:
+
+```cpp
+#include <concepts>
+#include <cstdint>
+enum class RuntimeMetric { cleanup_operations };
+class Runtime;
+class Observability final {
+  public:
+    int pub() const { return 0; }
+  private:
+    void increment_metric(RuntimeMetric metric, std::uint64_t amount = 1) {}
+    friend class Runtime;
+};
+class Runtime {};
+template <typename Type>
+concept CanMutateCoreMetric = requires(Type& observability) {
+    observability.increment_metric(RuntimeMetric::cleanup_operations);
+};
+static_assert(!CanMutateCoreMetric<Observability>);
+int main() {}
+```
+
+**Why the waiver hides nothing MO-1308 changed.** `git diff --stat 1dd1e8c8..47595cc9 --
+repositories/cca-core` is empty: cca-core is byte-identical between BF (`1dd1e8c8`) and B2
+(`47595cc9`). The failing assertion is unchanged since commit `3827a696` (2026-07-27, IM-003).
+
+**What is still required.** Every other build target must build. Every other registered CTest
+test must run and pass, including `cca.workspace.verify`. The tests that belong to
+`cca_core_tests` are excluded from the run by an explicit `-E` pattern, and their names are
+recorded in the evidence. Only a run where all of that holds is `PASS`; otherwise the result is
+`FAILED_PRESERVED` with each failure classified.
+
+**Pre-existing project issues, outside MO-1308 (recorded, not fixed here).**
+
+1. `.github/workflows/ci.yml` has no successful run in its public history; the latest completed
+   Windows job (run 62) failed at checkout.
+2. The MSVC concept-access defect above, which prevents `cca_core_tests` from compiling with
+   MSVC 19.44.35229.
+3. Under the `ci` preset (`CCA_WARNINGS_AS_ERRORS=ON`), warning C4100 is promoted to an error at
+   `repositories/cca-core/include/cca/runtime/service_registry.hpp:94` and in its dependents
+   (`cca_process`, `memoryos_sdk`, and the `cca_core_tests` sources).
+4. The `minimal` preset fails at `repositories/cca-compiler/CMakeLists.txt:15`
+   (`find_package(yaml-cpp)`) because that preset provides no vcpkg.
+
+**Follow-up.** A separate maintenance task makes Windows CI green before the MemoryOS 1.3
+release. It is outside MO-1308.
+
+No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
