@@ -10,7 +10,7 @@ import { exists, fileSha256, readJson, writeOnce } from './evidence.mjs';
 import { walkRecords, digestOfJson } from './hashing.mjs';
 import { stableValue, stableBytes, stableStringify } from './stable-json.mjs';
 import { check } from './shape.mjs';
-import { MAX_OBSERVED_BYTES, validate, STREAM_RECEIPT_SHAPE } from './receipts.mjs';
+import { MAX_OBSERVED_BYTES, QUALIFICATION_OUTCOMES, validate, STREAM_RECEIPT_SHAPE } from './receipts.mjs';
 import { CampaignError, fail, loadSeal, verifyBindings } from './seal.mjs';
 import { allCases, inventoryBytes } from './inventory.mjs';
 import { sha256Hex } from './hashing.mjs';
@@ -34,7 +34,7 @@ function stepSpec(seal, stepId) {
 }
 
 function notRunCase(spec) {
-  return { id: spec.id, result: 'NOT_RUN', mode: spec.mode, mandatory: spec.mandatory, elapsedMs: 0, escalation: null, observed: {}, failure: null };
+  return { id: spec.id, result: 'NOT_RUN', mode: spec.mode, mandatory: spec.mandatory, elapsedMs: 0, escalation: null, outcome: null, observed: {}, failure: null };
 }
 
 // ---- run ----
@@ -156,10 +156,15 @@ async function runStep({ evidenceDir, seal, spec, executor, effectiveGuardMs, no
       if (failure === null && escalation === null && item.mode === 'record' && Object.keys(observedValue).length === 0) {
         failure = { name: 'HarnessError', code: 'RECORD_WITHOUT_OBSERVATION', message: 'a record case must observe something' };
       }
+      let outcome = null;
+      if (item.mode === 'record' && item.qualifications.length > 0 && failure === null) {
+        if (QUALIFICATION_OUTCOMES.includes(observedValue.outcome)) outcome = observedValue.outcome;
+        else failure = { name: 'HarnessError', code: 'QUALIFICATION_OUTCOME_INVALID', message: 'a qualification case must observe outcome CONFIRMED or NOT_CONFIRMED' };
+      }
       const result = failure !== null ? 'FAIL' : escalation !== null ? 'ESCALATE' : 'PASS';
       const row = {
         id, result, mode: item.mode, mandatory: item.mandatory, elapsedMs: roundMs(monotonic() - caseClock),
-        escalation, observed: observedValue, failure,
+        escalation, outcome, observed: observedValue, failure,
       };
       results.set(id, row);
       if (result !== 'PASS' && item.mandatory) state.stopped = true;
@@ -235,10 +240,11 @@ export function deriveStreamReceipt({ seal, sealSha256, inventory, stepReceipts,
   if (seal.certifying) result = accepted ? 'ACCEPTED' : escalated ? 'ESCALATED_PRESERVED' : 'FAILED_PRESERVED';
   else result = accepted ? 'REHEARSAL_COMPLETED' : 'REHEARSAL_FAILED';
   const byId = new Map(rows.map((row) => [row.id, row.result]));
+  const outcomeById = new Map(rows.map((row) => [row.id, row.outcome]));
   const qualifications = inventory.qualifications.map(({ id }) => ({
     id,
     cases: allCases(inventory).filter((item) => item.stream === seal.stream && item.qualifications.includes(id))
-      .map((item) => ({ id: item.id, result: byId.get(item.id) })),
+      .map((item) => ({ id: item.id, result: byId.get(item.id), outcome: outcomeById.get(item.id) ?? null })),
   })).filter((item) => item.cases.length > 0);
   return {
     kind: 'MO1308Phase3StreamReceipt', version: '1.0.0', stream: seal.stream, generation: seal.generation.id,

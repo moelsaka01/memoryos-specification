@@ -10,6 +10,8 @@ export const CERTIFYING_RESULTS = Object.freeze(['ACCEPTED', 'FAILED_PRESERVED',
 export const REHEARSAL_RESULTS = Object.freeze(['REHEARSAL_COMPLETED', 'REHEARSAL_FAILED']);
 export const GENERATION_ID = /^phase3[abcd](-g[2-9][0-9]*|-rehearsal-r[1-9][0-9]*)?$/;
 export const MAX_OBSERVED_BYTES = 65536;
+// A qualification case (record mode with a Qnn tag) must observe exactly one of these (A8 decision 6); anything else fails.
+export const QUALIFICATION_OUTCOMES = Object.freeze(['CONFIRMED', 'NOT_CONFIRMED']);
 
 export const EXECUTION_RULES = Object.freeze({
   once: true, caseRetry: false, warmup: false, adaptiveExpansion: false, diagnosticPromotion: false,
@@ -37,7 +39,7 @@ export const SEAL_SHAPE = closedObject({
     id: str(1, 16), budgetMs: int(1), extended: nullable(closedObject({ rationale: str(1, 1000) })), steps: arrayOf(str(1, 16)),
   })),
   steps: arrayOf(closedObject({
-    id: str(1, 16), segment: str(1, 16), guardMs: int(1), cases: arrayOf(closedObject({ id: str(1, 32), mandatory: bool, mode: oneOf(['assert', 'record']) })),
+    id: str(1, 16), segment: str(1, 16), guardMs: int(1), cases: arrayOf(closedObject({ id: str(1, 32), mandatory: bool, mode: oneOf(['assert', 'record']), qualifications: arrayOf(str(3, 3)) })),
   })),
   execution: executionShape,
   sealedAt: isIsoTime,
@@ -59,7 +61,7 @@ export const STEP_START_SHAPE = closedObject({
 const failure = closedObject({ name: str(0, 200), code: nullable(str(0, 200)), message: str(0, 1000) });
 const caseResult = closedObject({
   id: str(1, 32), result: oneOf(CASE_RESULTS), mode: oneOf(['assert', 'record']), mandatory: bool, elapsedMs: int(),
-  escalation: nullable(str(1, 200)), observed: any, failure: nullable(failure),
+  escalation: nullable(str(1, 200)), outcome: nullable(oneOf(QUALIFICATION_OUTCOMES)), observed: any, failure: nullable(failure),
 });
 export const STEP_RECEIPT_SHAPE = closedObject({
   kind: lit('MO1308Phase3StepReceipt'), version: lit('1.0.0'), stream: oneOf(STREAM_IDS), generation: str(1, 64), step: str(1, 16),
@@ -81,7 +83,7 @@ export const STREAM_RECEIPT_SHAPE = closedObject({
   counts: closedObject({ total: int(), PASS: int(), FAIL: int(), ESCALATE: int(), NOT_RUN: int() }),
   mandatoryNotPassed: arrayOf(str(1, 32)),
   nonMandatoryNotPassed: arrayOf(str(1, 32)),
-  qualifications: arrayOf(closedObject({ id: str(3, 3), cases: arrayOf(closedObject({ id: str(1, 32), result: oneOf(CASE_RESULTS) })) })),
+  qualifications: arrayOf(closedObject({ id: str(3, 3), cases: arrayOf(closedObject({ id: str(1, 32), result: oneOf(CASE_RESULTS), outcome: nullable(oneOf(QUALIFICATION_OUTCOMES)) })) })),
   finishedAt: isIsoTime,
 });
 

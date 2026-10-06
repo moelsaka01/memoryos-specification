@@ -1,7 +1,7 @@
 // MO-1308 Phase 3 shared library: the case inventory (built from inventory-source.mjs), its validation, and the derived
 // requirement matrix. The committed mo1308-phase3-inventory.json must equal buildInventory() byte for byte.
 import fs from 'node:fs';
-import { QUALIFICATIONS, REQUIREMENT_IDS, STREAMS } from './inventory-source.mjs';
+import { QUALIFICATIONS, REQUIREMENT_IDS, RESERVE_MINUTES, STREAMS } from './inventory-source.mjs';
 import { stableBytes } from './stable-json.mjs';
 
 export const INVENTORY_KIND = 'MO1308Phase3Inventory';
@@ -22,6 +22,7 @@ export function buildInventory() {
     kind: INVENTORY_KIND,
     version: INVENTORY_VERSION,
     protocol: 'MO1308-PHASE3-PROTOCOL-1 (proposed Freeze Amendment A8)',
+    reserveMinutes: RESERVE_MINUTES,
     requirements: REQUIREMENT_IDS.map((id) => `MO1308-${id}`),
     qualifications: QUALIFICATIONS.map(([id, statement]) => ({ id, statement })),
     streams: STREAMS.map((stream) => ({
@@ -75,6 +76,13 @@ export function validateInventory(inventory) {
   for (const stream of inventory.streams) {
     const segmentIds = new Set(stream.segments.map((segment) => segment.id));
     const stepIds = new Set();
+    for (const segment of stream.segments) {
+      const guards = stream.steps.filter((step) => step.segment === segment.id).reduce((sum, step) => sum + step.guardMinutes, 0);
+      if (guards + inventory.reserveMinutes > segment.budgetMinutes) {
+        problems.push(`${stream.id}/${segment.id}: guards ${guards} + reserve ${inventory.reserveMinutes} exceed the ${segment.budgetMinutes} minute budget`);
+      }
+      if (segment.extendedMinutes < segment.budgetMinutes) problems.push(`${stream.id}/${segment.id}: extended budget below the normal budget`);
+    }
     for (const step of stream.steps) {
       if (stepIds.has(step.id)) problems.push(`${stream.id}: duplicate step ${step.id}`);
       stepIds.add(step.id);

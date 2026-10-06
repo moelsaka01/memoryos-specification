@@ -133,7 +133,9 @@ export function sealGeneration(options) {
     segments,
     steps: streamDef.steps.map((step) => ({
       id: step.id, segment: step.segment, guardMs: guardOverridesMs[step.id] ?? step.guardMinutes * 60000,
-      cases: step.cases.map((item) => ({ id: item.id, mandatory: cases.get(item.id).mandatory, mode: cases.get(item.id).mode })),
+      cases: step.cases.map((item) => ({
+        id: item.id, mandatory: cases.get(item.id).mandatory, mode: cases.get(item.id).mode, qualifications: [...cases.get(item.id).qualifications],
+      })),
     })),
     execution: { ...EXECUTION_RULES },
     sealedAt: now().toISOString(),
@@ -186,6 +188,11 @@ function verifySupersedes(root, previous, stream) {
     fail('DISPOSITION_MISMATCH', 'the disposition is about a different generation or seal');
   }
   if (disposition.nextAction !== 'NEW_GENERATION') fail('DISPOSITION_NO_RERUN', `the disposition's next action is ${disposition.nextAction}`);
+  // A8 decision 5: an escalation (for example more than 1 of 10 F7 runs with a staging EPERM) stops the generation, and a
+  // rerun needs the owner's approval reference whatever the failure class.
+  if (receipt.result === 'ESCALATED_PRESERVED' && disposition.ownerApprovalReference === null) {
+    fail('ESCALATION_NEEDS_OWNER', 'a rerun after an escalation needs an owner approval reference');
+  }
   if (disposition.rerunOrdinal !== priorSeal.generation.ordinal + 1) fail('DISPOSITION_ORDINAL', 'the rerun ordinal does not follow the failed generation');
   return {
     id: priorSeal.generation.id,

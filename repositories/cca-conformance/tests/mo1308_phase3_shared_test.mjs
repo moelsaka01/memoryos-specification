@@ -22,6 +22,7 @@ import { validateDisposition, requiresOwnerReview } from '../tools/mo1308-phase3
 import { CampaignError, isApprovedStatus, parseGeneration, protocolStatus, sealGeneration, sharedToolPaths, verifyBindings } from '../tools/mo1308-phase3/lib/seal.mjs';
 import { HarnessError, closeGeneration, runSegment, verifyEvidence } from '../tools/mo1308-phase3/lib/runner.mjs';
 import { writeOnce } from '../tools/mo1308-phase3/lib/evidence.mjs';
+import { checkDisclosure, qualificationCases, readOutcomes, structuralQualifications } from '../tools/mo1308-phase3/lib/disclosure.mjs';
 
 // MO-1308 Phase 3, shared step: the protocol document, the case inventory, the candidate identity, the corpus and the campaign
 // runner. Everything here is pure and runs in the cloud (Linux) as well as on the host; no Windows-only behavior is tested.
@@ -153,7 +154,8 @@ test('I02 stream, step and case counts are the protocol ones', () => {
   assert.equal(shape('3D'), 'D:7');
   assert.deepEqual(streamOf(inventory, '3A').steps.filter((step) => step.segment === 'ceiling').map((step) => step.id), ['JC']);
   assert.equal(allCases(inventory).length, 108 + 26 + 70 + 7);
-  assert.deepEqual(streamOf(inventory, '3A').segments.map((s) => [s.id, s.budgetMinutes, s.extendedMinutes]), [['main', 90, 180], ['ceiling', 180, 180]]);
+  assert.deepEqual(streamOf(inventory, '3A').segments.map((s) => [s.id, s.budgetMinutes, s.extendedMinutes]), [['main1', 90, 180], ['main2', 90, 180], ['ceiling', 180, 180]]);
+  assert.deepEqual(streamOf(inventory, '3A').steps.map((step) => `${step.id}:${step.segment}`).join(' '), 'A:main1 B:main1 C:main1 D:main1 E:main1 F:main2 G:main2 H:main2 I:main2 J:main2 K:main2 L:main2 M:main2 JC:ceiling');
 });
 
 test('I03 every Freeze requirement R01-R37 and every qualification Q01-Q15 is covered', () => {
@@ -183,9 +185,9 @@ test('I04 the owner decisions D6 and D7 are in the inventory', () => {
   assert.ok(cases.get('3A-JC6').title.includes('1000.9 s'));
 });
 
-test('P01 the protocol document is PROPOSED, current with the inventory, and names exactly the inventory cases', () => {
+test('P01 the protocol document is APPROVED as Amendment A8, current with the inventory, and names exactly the inventory cases', () => {
   const text = fs.readFileSync(inFile(PROTOCOL), 'utf8');
-  assert.match(text, /^Status: \*\*PROPOSED — PENDING OWNER APPROVAL \(A8\)\*\*\.$/m);
+  assert.match(text, /^Status: \*\*APPROVED — FREEZE AMENDMENT A8 \(owner approval 2026-10-06\)\*\*\.$/m);
   assert.equal(renderDocument(text), text, 'run: node tools/mo1308-phase3/render-protocol.mjs update');
   const ids = new Set(text.match(/\b3[ABCD]-[A-Z]+\d+\b/g));
   const expected = new Set(allCases(buildInventory()).map((item) => item.id));
@@ -409,7 +411,7 @@ function makeRoot(t, { approved = true, review: withReview = true } = {}) {
   const root = tmp(t);
   const put = (relative, bytes) => { const target = path.join(root, relative); fs.mkdirSync(path.dirname(target), { recursive: true }); fs.writeFileSync(target, bytes); };
   const protocol = fs.readFileSync(inFile(PROTOCOL), 'utf8');
-  put(PROTOCOL, approved ? protocol.replace(/^Status: \*\*.*\*\*\./m, 'Status: **APPROVED — FREEZE AMENDMENT A8 (test copy)**.') : protocol);
+  put(PROTOCOL, protocol.replace(/^Status: \*\*.*\*\*\./m, approved ? 'Status: **APPROVED — FREEZE AMENDMENT A8 (test copy)**.' : 'Status: **PROPOSED — PENDING OWNER APPROVAL (A8)**.'));
   put(INVENTORY, fs.readFileSync(inFile(INVENTORY)));
   put(IDENTITY, fs.readFileSync(inFile(IDENTITY)));
   put(MANIFEST, fs.readFileSync(inFile(MANIFEST)));
@@ -462,7 +464,7 @@ test('U01 a certifying generation: seal, run, close, verify; the receipt says AC
   assert.deepEqual(seal.execution, EXECUTION_RULES);
   assert.equal(seal.steps.reduce((sum, step) => sum + step.cases.length, 0), 26);
   assert.equal(seal.segments[0].budgetMs, 90 * 60000);
-  assert.equal(seal.steps.find((step) => step.id === 'A').guardMs, 10 * 60000);
+  assert.equal(seal.steps.find((step) => step.id === 'A').guardMs, 5 * 60000);
   assert.equal(seal.candidate.baseCommit, CANDIDATE_BASE);
   assert.match(seal.candidate.productionTreeDigest, /^sha256:[0-9a-f]{64}$/);
   assert.match(seal.corpus.corpusDigest, /^sha256:[0-9a-f]{64}$/);
@@ -486,7 +488,10 @@ test('U01 a certifying generation: seal, run, close, verify; the receipt says AC
 
 test('U02 a certifying seal is refused without approval, a review or a matching generation id', (t) => {
   const real = { ...baseOptions(repo, '3B', 'phase3b'), evidenceDir: path.join(tmp(t), 'phase3b'), harnessReviewPath: null, toolPaths: [`${TOOLS}/lib/runner.mjs`] };
-  assert.throws(() => sealGeneration(real), (e) => e.code === 'PROTOCOL_NOT_APPROVED');
+  fs.writeFileSync(path.join(tmp(t), 'unused'), '');
+  const proposedRoot = makeRoot(t, { approved: false });
+  assert.throws(() => sealGeneration(baseOptions(proposedRoot, '3B', 'phase3b')), (e) => e.code === 'PROTOCOL_NOT_APPROVED');
+  void real;
   const rootNoReview = makeRoot(t, { review: false });
   assert.throws(() => sealGeneration(baseOptions(rootNoReview, '3B', 'phase3b', { harnessReviewPath: null })), (e) => e.code === 'REVIEW_REQUIRED');
   const root = makeRoot(t);
@@ -504,13 +509,13 @@ test('U02 a certifying seal is refused without approval, a review or a matching 
   assert.throws(() => sealGeneration(options), (e) => e.code === 'EVIDENCE_NOT_EMPTY');
 });
 
-test('U03 a rehearsal runs against the real PROPOSED protocol, is non-promotable and cannot be mistaken for a certification', async (t) => {
+test('U03 a rehearsal is non-promotable and cannot be mistaken for a certification', async (t) => {
   const work = tmp(t);
   const options = { ...baseOptions(repo, '3B', 'phase3b-rehearsal-r1'), certifying: false, harnessReviewPath: null, evidenceDir: path.join(work, 'phase3b-rehearsal-r1'),
     toolPaths: [`${TOOLS}/lib/runner.mjs`, `${TOOLS}/lib/seal.mjs`] };
   const { seal } = sealGeneration({ ...options, now: clock() });
   assert.equal(seal.certifying, false);
-  assert.match(seal.protocol.status, /^PROPOSED/);
+  assert.match(seal.protocol.status, /^APPROVED/);
   assert.equal(seal.harnessReview, null);
   assert.equal(seal.generation.ordinal, 0);
   await runAll(repo, options.evidenceDir, '3B');
@@ -606,23 +611,24 @@ test('U08 a non-mandatory failure is recorded but does not stop the generation o
   const options = baseOptions(root, '3A', 'phase3a');
   sealGeneration({ ...options, now: clock() });
   const outcomes = await runAll(root, options.evidenceDir, '3A', { '3A-A7': async () => { throw new Error('sampler unavailable'); } });
-  assert.deepEqual(outcomes.map((item) => item.result), ['PASS', 'PASS']);
+  assert.deepEqual(outcomes.map((item) => item.result), ['PASS', 'PASS', 'PASS']);
   const receipt = closeGeneration({ root, evidenceDir: options.evidenceDir, inventory, now: clock() });
   assert.equal(receipt.result, 'ACCEPTED');
   assert.deepEqual(receipt.nonMandatoryNotPassed, ['3A-A7']);
   assert.deepEqual(receipt.mandatoryNotPassed, []);
   assert.equal(receipt.counts.total, 108);
-  assert.equal(receipt.segments.length, 2);
-  assert.deepEqual(receipt.qualifications.find((item) => item.id === 'Q11'), { id: 'Q11', cases: [{ id: '3A-JC6', result: 'PASS' }] });
+  assert.equal(receipt.segments.length, 3);
+  assert.deepEqual(receipt.qualifications.find((item) => item.id === 'Q11'), { id: 'Q11', cases: [{ id: '3A-JC6', result: 'PASS', outcome: 'CONFIRMED' }] });
   assert.ok(exists(options.evidenceDir, 'segments/ceiling-finish.json'));
+  assert.ok(exists(options.evidenceDir, 'segments/main1-finish.json') && exists(options.evidenceDir, 'segments/main2-finish.json'));
 });
 
 test('U09 an escalation stops the generation and ends ESCALATED_PRESERVED, not FAILED', async (t) => {
   const root = makeRoot(t);
   const options = baseOptions(root, '3A', 'phase3a');
   sealGeneration({ ...options, now: clock() });
-  const outcomes = await runAll(root, options.evidenceDir, '3A', { '3A-F7': async (c) => { c.observe({ runsWithStagingEperm: 2, ofRuns: 10 }); c.escalate('STAGING_EPERM_IN_MORE_THAN_1_OF_10_RUNS'); } });
-  assert.deepEqual(outcomes, [{ result: 'ESCALATE', reason: 'STEP_ESCALATE' }]);
+  const outcomes = await runAll(root, options.evidenceDir, '3A', { '3A-F7': async (c) => { c.observe({ runsWithStagingEperm: 2, ofRuns: 10, outcome: 'CONFIRMED' }); c.escalate('STAGING_EPERM_IN_MORE_THAN_1_OF_10_RUNS'); } });
+  assert.deepEqual(outcomes, [{ result: 'PASS', reason: null }, { result: 'ESCALATE', reason: 'STEP_ESCALATE' }]);
   const receipt = closeGeneration({ root, evidenceDir: options.evidenceDir, inventory, now: clock() });
   assert.equal(receipt.result, 'ESCALATED_PRESERVED');
   assert.equal(receipt.outcome, 'PHASE3A_ESCALATED_PRESERVED');
@@ -630,7 +636,7 @@ test('U09 an escalation stops the generation and ends ESCALATED_PRESERVED, not F
   assert.equal(receipt.counts.ESCALATE, 1);
   const f = JSON.parse(fs.readFileSync(path.join(options.evidenceDir, 'steps/F.json'), 'utf8'));
   assert.equal(f.cases.find((row) => row.id === '3A-F7').escalation, 'STAGING_EPERM_IN_MORE_THAN_1_OF_10_RUNS');
-  assert.deepEqual(receipt.segments, [{ id: 'main', result: 'ESCALATE' }, { id: 'ceiling', result: 'NOT_RUN' }]);
+  assert.deepEqual(receipt.segments, [{ id: 'main1', result: 'PASS' }, { id: 'main2', result: 'ESCALATE' }, { id: 'ceiling', result: 'NOT_RUN' }]);
   assert.deepEqual(verifyEvidence({ root, evidenceDir: options.evidenceDir, inventory }).problems, []);
 });
 
@@ -638,12 +644,14 @@ test('U10 one-shot: no second run of a segment, no ceiling before main, no run o
   const root = makeRoot(t);
   const options = baseOptions(root, '3A', 'phase3a');
   sealGeneration({ ...options, now: clock() });
-  await assert.rejects(runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'ceiling', executors: executors('3A') }), (e) => e.code === 'PREVIOUS_SEGMENT_NOT_PASSED');
+  await assert.rejects(runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'main2', executors: executors('3A') }), (e) => e.code === 'PREVIOUS_SEGMENT_NOT_PASSED');
   await assert.rejects(runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'nope', executors: executors('3A') }), (e) => e.code === 'UNKNOWN_SEGMENT');
-  await assert.rejects(runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'main', executors: {} }), (e) => e.code === 'EXECUTOR_MISSING');
-  assert.ok(!exists(options.evidenceDir, 'segments/main-start.json'), 'a refused run leaves no start record');
-  await runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'main', executors: executors('3A'), now: clock() });
-  await assert.rejects(runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'main', executors: executors('3A') }), (e) => e.code === 'SEGMENT_ALREADY_STARTED');
+  await assert.rejects(runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'main1', executors: {} }), (e) => e.code === 'EXECUTOR_MISSING');
+  assert.ok(!exists(options.evidenceDir, 'segments/main1-start.json'), 'a refused run leaves no start record');
+  await runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'main1', executors: executors('3A'), now: clock() });
+  await assert.rejects(runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'main1', executors: executors('3A') }), (e) => e.code === 'SEGMENT_ALREADY_STARTED');
+  await assert.rejects(runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'ceiling', executors: executors('3A') }), (e) => e.code === 'PREVIOUS_SEGMENT_NOT_PASSED');
+  await runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'main2', executors: executors('3A'), now: clock() });
   await runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'ceiling', executors: executors('3A'), now: clock() });
   closeGeneration({ root, evidenceDir: options.evidenceDir, inventory, now: clock() });
   await assert.rejects(runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'ceiling', executors: executors('3A') }), (e) => e.code === 'GENERATION_CLOSED');
@@ -850,6 +858,150 @@ test('U19 an accepted or open generation cannot be superseded; a rehearsal never
   fs.writeFileSync(dispositionFile, stableStringify(disposition({ evidenceSealSha256: sha256Hex(fs.readFileSync(path.join(first.evidenceDir, 'evidence-seal.json'))) })));
   assert.throws(() => sealGeneration(baseOptions(root, '3B', 'phase3b-g2', { previous: { evidenceDir: first.evidenceDir, dispositionPath: dispositionFile } })), (e) => e.code === 'SUPERSEDES_NOT_FAILED');
   assert.throws(() => sealGeneration(baseOptions(root, '3B', 'phase3b-rehearsal-r1', { certifying: false, previous: { evidenceDir: first.evidenceDir, dispositionPath: dispositionFile } })), (e) => e.code === 'SUPERSEDES_UNEXPECTED');
+});
+
+// ---------------------------------------------------------------- Amendment A8: approval record, budgets, qualification outcomes
+
+test('M01 Amendment A8 is appended to the Freeze and binds the protocol, inventory, candidate and corpus by hash', () => {
+  const freeze = fs.readFileSync(inFile('docs/mo1308-contract-freeze-1.md'), 'utf8');
+  const start = freeze.indexOf('## 33. Amendment A8');
+  assert.ok(start > 0, 'the A8 section is missing');
+  assert.ok(freeze.indexOf('## 30. Amendment A7') < start, 'A8 comes after A7');
+  const section = freeze.slice(start);
+  for (const [file, relative] of [['protocol', PROTOCOL], ['inventory', INVENTORY], ['identity', IDENTITY], ['corpus', MANIFEST]]) {
+    const row = new RegExp(`\\| \`${relative.replace(/[.]/g, '\\.')}\` \\| \`([0-9a-f]{64})\` \\|`).exec(section);
+    assert.ok(row, `${file}: no hash row`);
+    assert.equal(row[1], sha256Hex(fs.readFileSync(inFile(relative))), `${relative} changed after A8 approval: a new amendment is needed`);
+  }
+  const identity = JSON.parse(fs.readFileSync(inFile(IDENTITY), 'utf8'));
+  assert.ok(section.includes(identity.productionTreeDigest));
+  assert.ok(section.includes(JSON.parse(fs.readFileSync(inFile(MANIFEST), 'utf8')).corpusDigest));
+  assert.ok(section.includes('Official CAVP response files were not used'));
+  assert.match(section, /owner-authorized/);
+  // The frozen text before A8 is untouched: the A8 section is the only addition after A7's last line.
+  assert.ok(freeze.slice(0, start).trimEnd().endsWith('No shape, layout, limit, identity, error code or protocol step of the frozen text changes.'));
+});
+
+test('M02 guards fit the budgets by design in every segment of every stream (A8 decision 8)', () => {
+  const inv = buildInventory();
+  assert.equal(inv.reserveMinutes, 5);
+  const sums = [];
+  for (const stream of inv.streams) for (const segment of stream.segments) {
+    const guards = stream.steps.filter((step) => step.segment === segment.id).reduce((sum, step) => sum + step.guardMinutes, 0);
+    sums.push(`${stream.id}/${segment.id}:${guards}`);
+    assert.ok(guards + inv.reserveMinutes <= segment.budgetMinutes, `${stream.id}/${segment.id}`);
+  }
+  assert.deepEqual(sums, ['3A/main1:50', '3A/main2:82', '3A/ceiling:175', '3B/main:55', '3C/main:81', '3D/main:60']);
+  const broken = JSON.parse(JSON.stringify(inv));
+  broken.streams[0].steps.find((step) => step.id === 'F').guardMinutes = 40;
+  assert.ok(validateInventory(broken).some((problem) => problem.includes('3A/main2') && problem.includes('exceed')));
+  const shortExtended = JSON.parse(JSON.stringify(inv));
+  shortExtended.streams[1].segments[0].extendedMinutes = 60;
+  assert.ok(validateInventory(shortExtended).some((problem) => problem.includes('extended budget below')));
+  const text = fs.readFileSync(inFile(PROTOCOL), 'utf8');
+  for (const row of ['| 3A `main1` | A 5, B 15, C 8, D 15, E 7 | 50 | 5 | 55 | 90 |', '| 3A `main2` | F 25, G 10, H 12, I 5, J 15, K 5, L 5, M 5 | 82 | 5 | 87 | 90 |',
+    '| 3A `ceiling` | JC 175 | 175 | 5 | 180 | 180 |', '| 3C `main` | A 15, B 5, C 5, D 10, E 8, F 6, G 5, H 8, I 4, J 12, K 3 | 81 | 5 | 86 | 90 |']) assert.ok(text.includes(row), row);
+});
+
+test('M03 the ceiling segment is the only one of 3A with the 180-minute budget and runs after both main segments', () => {
+  const stream = streamOf(buildInventory(), '3A');
+  assert.deepEqual(stream.segments.map((segment) => segment.id), ['main1', 'main2', 'ceiling']);
+  assert.deepEqual(stream.steps.filter((step) => step.segment === 'ceiling').map((step) => step.id), ['JC']);
+  assert.equal(stream.steps.at(-1).cases.at(-1).id, '3A-JC10');
+});
+
+test('M04 a qualification case must observe CONFIRMED or NOT_CONFIRMED; anything else fails (A8 decision 6)', async (t) => {
+  const root = makeRoot(t);
+  const options = baseOptions(root, '3C', 'phase3c-rehearsal-r1', { certifying: false, harnessReviewPath: null });
+  const { seal } = sealGeneration({ ...options, now: clock() });
+  assert.deepEqual(seal.steps.find((step) => step.id === 'A').cases.find((row) => row.id === '3C-A6').qualifications, ['Q03']);
+  const outcomes = ['NOT_CONFIRMED', 'MAYBE', undefined];
+  const seen = [];
+  for (const outcome of outcomes) {
+    const dir = path.join(root, 'evidence', `phase3c-rehearsal-r${seen.length + 2}`);
+    sealGeneration({ ...options, generation: `phase3c-rehearsal-r${seen.length + 2}`, evidenceDir: dir, now: clock() });
+    await runSegment({ root, evidenceDir: dir, segmentId: 'main', now: clock(), executors: { ...executors('3C'), A: async (ctx) => {
+      for (const id of ['3C-A1', '3C-A2', '3C-A3', '3C-A4', '3C-A5']) await ctx.runCase(id, async () => undefined);
+      await ctx.runCase('3C-A6', async (c) => c.observe(outcome === undefined ? { other: 1 } : { outcome }));
+      await ctx.runCase('3C-A7', async () => undefined);
+    } } });
+    const step = JSON.parse(fs.readFileSync(path.join(dir, 'steps/A.json'), 'utf8'));
+    seen.push(step.cases.find((row) => row.id === '3C-A6'));
+  }
+  assert.deepEqual(seen.map((row) => [row.result, row.outcome, row.failure?.code ?? null]),
+    [['PASS', 'NOT_CONFIRMED', null], ['FAIL', null, 'QUALIFICATION_OUTCOME_INVALID'], ['FAIL', null, 'QUALIFICATION_OUTCOME_INVALID']]);
+});
+
+test('M05 the stream receipt carries each qualification case outcome', async (t) => {
+  const root = makeRoot(t);
+  const options = baseOptions(root, '3C', 'phase3c');
+  sealGeneration({ ...options, now: clock() });
+  await runAll(root, options.evidenceDir, '3C', { '3C-A6': async (c) => c.observe({ outcome: 'NOT_CONFIRMED' }), '3C-E6': async (c) => c.observe({ outcome: 'CONFIRMED' }) });
+  const receipt = closeGeneration({ root, evidenceDir: options.evidenceDir, inventory, now: clock() });
+  assert.deepEqual(receipt.qualifications.find((item) => item.id === 'Q03'), { id: 'Q03', cases: [{ id: '3C-A6', result: 'PASS', outcome: 'NOT_CONFIRMED' }, { id: '3C-K2', result: 'PASS', outcome: null }] });
+  assert.equal(receipt.qualifications.find((item) => item.id === 'Q04').cases[0].outcome, 'CONFIRMED');
+  assert.deepEqual(verifyEvidence({ root, evidenceDir: options.evidenceDir, inventory }).problems, []);
+});
+
+const disclosureOutcomes = (overrides = {}) => new Map(qualificationCases(inventory).map((item) => [item.id, overrides[item.id] ?? 'CONFIRMED']));
+const disclosureText = (outcomes) => [...outcomes].map(([id, outcome]) => `- ${id}: ${outcome} - sentence`).concat(structuralQualifications(inventory).map((id) => `${id}: DISCLOSED - sentence`)).join('\n');
+
+test('M06 the disclosure check states the recorded outcome of every qualification case and nothing else', () => {
+  assert.deepEqual(structuralQualifications(inventory), ['Q01', 'Q09', 'Q14', 'Q15']);
+  assert.equal(qualificationCases(inventory).length, 11);
+  const outcomes = disclosureOutcomes({ '3C-A6': 'NOT_CONFIRMED', '3A-E6': 'NOT_CONFIRMED' });
+  assert.deepEqual(checkDisclosure(disclosureText(outcomes), inventory, outcomes), []);
+  // a weakness that was NOT_CONFIRMED disclosed as confirmed
+  const wrong = disclosureText(disclosureOutcomes()).replace('- 3C-A6: CONFIRMED', '- 3C-A6: CONFIRMED');
+  assert.ok(checkDisclosure(wrong, inventory, outcomes).some((p) => p.includes('3C-A6: disclosed CONFIRMED but recorded NOT_CONFIRMED')));
+  // a confirmed weakness reported as not confirmed
+  const understated = disclosureText(outcomes).replace('3C-E6: CONFIRMED', '3C-E6: NOT_CONFIRMED');
+  assert.ok(checkDisclosure(understated, inventory, outcomes).some((p) => p.includes('3C-E6: disclosed NOT_CONFIRMED but recorded CONFIRMED')));
+  // omitted
+  const omitted = disclosureText(outcomes).split('\n').filter((line) => !line.includes('3C-E7:')).join('\n');
+  assert.ok(checkDisclosure(omitted, inventory, outcomes).some((p) => p.includes('3C-E7: recorded CONFIRMED but not disclosed')));
+  const noStructural = disclosureText(outcomes).split('\n').filter((line) => !line.startsWith('Q01:')).join('\n');
+  assert.ok(checkDisclosure(noStructural, inventory, outcomes).some((p) => p.includes('Q01: structural qualification is not disclosed')));
+  // duplicates, unknown ids, DISCLOSED for a characterized qualification, an outcome never recorded
+  assert.ok(checkDisclosure(`${disclosureText(outcomes)}\n3C-A6: CONFIRMED - again`, inventory, outcomes).some((p) => p.includes('stated more than once')));
+  assert.ok(checkDisclosure(`${disclosureText(outcomes)}\n3C-Z9: CONFIRMED - x`, inventory, outcomes).some((p) => p.includes('3C-Z9: not a qualification case')));
+  assert.ok(checkDisclosure(`${disclosureText(outcomes)}\nQ03: DISCLOSED - x`, inventory, outcomes).some((p) => p.includes('must be disclosed per case')));
+  const missing = new Map(outcomes);
+  missing.delete('3A-JC6');
+  assert.ok(checkDisclosure(disclosureText(outcomes), inventory, missing).some((p) => p.includes('3A-JC6: no recorded outcome')));
+});
+
+test('M07 recorded outcomes are read from step receipts of passed cases only', async (t) => {
+  const root = makeRoot(t);
+  const options = baseOptions(root, '3C', 'phase3c-rehearsal-r1', { certifying: false, harnessReviewPath: null });
+  sealGeneration({ ...options, now: clock() });
+  await runSegment({ root, evidenceDir: options.evidenceDir, segmentId: 'main', now: clock(), executors: { ...executors('3C'),
+    A: async (ctx) => {
+      for (const id of ['3C-A1', '3C-A2', '3C-A3', '3C-A4', '3C-A5']) await ctx.runCase(id, async () => undefined);
+      await ctx.runCase('3C-A6', async (c) => c.observe({ outcome: 'CONFIRMED' }));
+      await ctx.runCase('3C-A7', async () => { throw new Error('later failure'); });
+    } } });
+  const outcomes = readOutcomes([options.evidenceDir]);
+  assert.equal(outcomes.get('3C-A6'), 'CONFIRMED');
+  assert.equal(outcomes.has('3C-B3'), false);
+  assert.equal(readOutcomes([path.join(root, 'nothing')]).size, 0);
+});
+
+test('M08 a rerun after an escalation needs an owner approval reference (A8 decision 5)', async (t) => {
+  const root = makeRoot(t);
+  const first = baseOptions(root, '3A', 'phase3a');
+  sealGeneration({ ...first, now: clock() });
+  await runAll(root, first.evidenceDir, '3A', { '3A-F7': async (c) => { c.observe({ runsWithStagingEperm: 3, ofRuns: 10, outcome: 'CONFIRMED' }); c.escalate('STAGING_EPERM_IN_MORE_THAN_1_OF_10_RUNS'); } });
+  const receipt = closeGeneration({ root, evidenceDir: first.evidenceDir, inventory, now: clock() });
+  assert.equal(receipt.result, 'ESCALATED_PRESERVED');
+  const evidenceSealSha256 = sha256Hex(fs.readFileSync(path.join(first.evidenceDir, 'evidence-seal.json')));
+  const write = (name, value) => { const file = path.join(root, name); fs.writeFileSync(file, stableStringify(value)); return file; };
+  const base = { stream: '3A', generation: 'phase3a', evidenceSealSha256, subjects: [{ step: 'F', caseId: '3A-F7' }], class: 'ENVIRONMENT_BLOCKER', diagnosis: 'host antivirus' };
+  const noReference = write('e1.json', disposition({ ...base }));
+  assert.throws(() => sealGeneration(baseOptions(root, '3A', 'phase3a-g2', { previous: { evidenceDir: first.evidenceDir, dispositionPath: noReference } })), (e) => e.code === 'ESCALATION_NEEDS_OWNER');
+  const withReference = write('e2.json', disposition({ ...base, ownerApprovalReference: 'owner-approval-2026-10-07' }));
+  const { seal } = sealGeneration({ ...baseOptions(root, '3A', 'phase3a-g2', { previous: { evidenceDir: first.evidenceDir, dispositionPath: withReference } }), now: clock() });
+  assert.equal(seal.generation.ordinal, 2);
 });
 
 test('U20a the close and verify steps refuse an inventory other than the sealed one; the shared tools can all be bound', async (t) => {

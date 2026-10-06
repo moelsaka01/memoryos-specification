@@ -15,20 +15,21 @@ export const STREAMS = [
   {
     id: '3A', title: 'Native Windows CLI campaign', platform: 'win32-x64', oneShot: true,
     segments: [
-      { id: 'main', title: 'Main campaign', budgetMinutes: 90, extendedMinutes: 180 },
-      { id: 'ceiling', title: 'J-C ceiling run (its own step, own hard stop)', budgetMinutes: 180, extendedMinutes: 180 },
+      { id: 'main1', title: 'Main 1: gate, CLI contract, determinism, filesystem boundary, NTFS semantics', budgetMinutes: 90, extendedMinutes: 180 },
+      { id: 'main2', title: 'Main 2: concurrency, swaps, interruption, purge, limits, resources, transport, after-state', budgetMinutes: 90, extendedMinutes: 180 },
+      { id: 'ceiling', title: 'J-C ceiling run (its own segment, own clock and hard stop; runs only after main1 and main2 PASS)', budgetMinutes: 180, extendedMinutes: 180 },
     ],
     steps: [
-      { id: 'A', segment: 'main', title: 'Gate', guardMinutes: 5, cases: cases([
+      { id: 'A', segment: 'main1', title: 'Gate', guardMinutes: 5, cases: cases([
         ['A1', ...A('Host identity: Windows 11 x64 build, NTFS volume type and serial, free space recorded')],
         ['A2', ...A('Node.js v24.21.0 win-x64 executable SHA-256 equals ba4e6d11...6c32')],
         ['A3', ...A('Production path tree of the worktree equals the sealed candidate identity blob by blob; worktree clean', 'R32')],
-        ['A4', ...A('The A3 precondition receipt (full CTest including cca.workspace.verify) is bound and PASS for the same candidate', 'R31')],
+        ['A4', ...A('The A3.2 receipt (differential CTest gate, BF 1dd1e8c8 versus B2 47595cc9) is bound with verdict PASS for the same candidate', 'R31')],
         ['A5', ...A('Sealed tool inventory matches; harness review bound; no rehearsal evidence is referenced as an input')],
         ['A6', ...A('Environment capture: AV and Defender state, LongPathsEnabled, 8.3 name setting, unprivileged symlink creation, CPU and disk', '', 'record')],
         ['A7', ...A('Idle host-load sample before the run (recorded, never gated)', '', 'record nonmandatory')],
       ]) },
-      { id: 'B', segment: 'main', title: 'CLI contract through real processes', guardMinutes: 10, cases: cases([
+      { id: 'B', segment: 'main1', title: 'CLI contract through real processes', guardMinutes: 15, cases: cases([
         ['B1', ...A('Version 1.2.0 and help: history is listed and the baseline command set is unchanged', 'R34')],
         ['B2', ...A('init: success shape, LEDGER_EXISTS, missing parent, invalid name, invalid Workspace', 'R25')],
         ['B3', ...A('append succeeds for every record kind through its documented flags (7 kinds; CICD with 6 files and with 4 files)', 'R25,R36')],
@@ -40,7 +41,7 @@ export const STREAMS = [
         ['B9', ...A('session never serializes or restores a checkpoint; the other command namespaces are unchanged', 'R30')],
         ['B10', ...A('SDK and CLI produce byte-identical entries, query results and exports for the same operations', 'R27')],
       ]) },
-      { id: 'C', segment: 'main', title: 'Determinism and layout', guardMinutes: 5, cases: cases([
+      { id: 'C', segment: 'main1', title: 'Determinism and layout', guardMinutes: 8, cases: cases([
         ['C1', ...A('Twin ledgers built independently (other drive, directory, case, cwd, environment, time zone, code page) are byte-identical', 'R04')],
         ['C2', ...A('Equal ledgers export to byte-identical exports; verify and query outputs are identical', 'R04,R23')],
         ['C3', ...A('Exact on-disk layout (section 9.1): no head file, segment, seal or extra file', 'R06')],
@@ -48,7 +49,7 @@ export const STREAMS = [
         ['C5', ...A('Every ledger has exactly one Workspace; every entry is INTRINSIC or DECLARED', 'R11,R36')],
         ['C6', ...A('File-identity audit: no published file changes bytes or NTFS file index across later operations; only purge deletes members', 'R06')],
       ]) },
-      { id: 'D', segment: 'main', title: 'Filesystem boundary', guardMinutes: 10, cases: cases([
+      { id: 'D', segment: 'main1', title: 'Filesystem boundary', guardMinutes: 15, cases: cases([
         ['D1', ...A('Ledger root is a junction or directory symlink: every operation fails FILESYSTEM_BOUNDARY', 'R17')],
         ['D2', ...A('An ancestor of the ledger root is a junction or symlink', 'R17')],
         ['D3', ...A('entries, records, .pending or a record directory is a junction or symlink; a member is a symlink', 'R17')],
@@ -62,7 +63,7 @@ export const STREAMS = [
         ['D11', ...A('Read-only attribute and ACL-denied locations give a typed IO failure and change nothing', 'R17,R25')],
         ['D12', ...A('Reparse-point survey: every kind that can be planted unprivileged is refused; the others are recorded as not plantable (K11)', 'R17', 'record')],
       ]) },
-      { id: 'E', segment: 'main', title: 'NTFS semantics', guardMinutes: 5, cases: cases([
+      { id: 'E', segment: 'main1', title: 'NTFS semantics', guardMinutes: 7, cases: cases([
         ['E1', ...A('Exclusive creation: an existing name in any case is refused and never opened', 'R15,R17')],
         ['E2', ...A('A hard link never replaces an existing name, including a case variant', 'R06,R15')],
         ['E3', ...A('Published files are hard links with distinct file indexes and identical bytes', 'R17')],
@@ -71,7 +72,7 @@ export const STREAMS = [
         ['E6', ...A('Delete-pending staging name probe: EEXIST versus EPERM recorded for A6 hypothesis 2', '', 'record Q02')],
         ['E7', ...A('Read-only attribute on a ledger file: reads work, nothing is modified', 'R06')],
       ]) },
-      { id: 'F', segment: 'main', title: 'Concurrency', guardMinutes: 20, cases: cases([
+      { id: 'F', segment: 'main2', title: 'Concurrency', guardMinutes: 25, cases: cases([
         ['F1', ...A('10 appender processes and 2 readers: every success present exactly once, every absent record had a typed failure, chain valid', 'R05,R15')],
         ['F2', ...A('Appenders and tombstoners: one tombstone per target, every purge finished, chain verifies', 'R18')],
         ['F3', ...A('Exporters racing appenders: a consistent snapshot or LEDGER_CONFLICT; the export verifies', 'R23')],
@@ -80,7 +81,7 @@ export const STREAMS = [
         ['F6', ...A('Same-target tombstone race: one wins, the rest TOMBSTONE_INVALID', 'R18')],
         ['F7', ...A('F1 repeated 10 times: census of every filesystem error; staging EPERM in more than 1 of 10 runs escalates (owner decision D6)', 'R15', 'record Q02 Q10')],
       ]) },
-      { id: 'G', segment: 'main', title: 'Directory-swap races (H40)', guardMinutes: 10, cases: cases([
+      { id: 'G', segment: 'main2', title: 'Directory-swap races (H40)', guardMinutes: 10, cases: cases([
         ['G1', ...A('Record directory swapped for a junction during an append', 'R17', 'Q01')],
         ['G2', ...A('entries directory swapped at the commit point', 'R17', 'Q01')],
         ['G3', ...A('Swap during a tombstone purge', 'R17,R18', 'Q01')],
@@ -88,7 +89,7 @@ export const STREAMS = [
         ['G5', ...A('Ledger root swapped between two reads', 'R17', 'Q01')],
         ['G6', ...A('Junction swapper racing three appenders for a fixed number of swaps: sentinel intact; ledger verifies or fails closed typed', 'R17', 'Q01')],
       ]) },
-      { id: 'H', segment: 'main', title: 'Interruption', guardMinutes: 10, cases: cases([
+      { id: 'H', segment: 'main2', title: 'Interruption', guardMinutes: 12, cases: cases([
         ['H1', ...A('Kill after a member is staged', 'R16')],
         ['H2', ...A('Kill after a member is linked, before the entry is staged', 'R16')],
         ['H3', ...A('Kill after the entry is staged, before its link', 'R16')],
@@ -100,7 +101,7 @@ export const STREAMS = [
         ['H9', ...A('Ctrl-C and Ctrl-Break before the commit point publish nothing', 'R16')],
         ['H10', ...A('Closed stdout and stdin during a command', 'R25')],
       ]) },
-      { id: 'I', segment: 'main', title: 'Tombstone and purge on the host', guardMinutes: 5, cases: cases([
+      { id: 'I', segment: 'main2', title: 'Tombstone and purge on the host', guardMinutes: 5, cases: cases([
         ['I1', ...A('Tombstone lifecycle end to end: the chain verifies and purged content is reported PURGED, never verified', 'R18,R19')],
         ['I2', ...A('Purge while another process holds a member open: typed IO, purgePending, rerun after release finishes', 'R18')],
         ['I3', ...A('Re-supply of purged bytes is RECORD_PURGED', 'R20')],
@@ -108,7 +109,7 @@ export const STREAMS = [
         ['I5', ...A('Tombstone rules: the target is a retained RECORD entry; one tombstone per target; none on a tombstone', 'R18')],
         ['I6', ...A('Purge-pending state is reported consistently by verify, query and export', 'R18')],
       ]) },
-      { id: 'J', segment: 'main', title: 'Limits (section 14.2)', guardMinutes: 15, cases: cases([
+      { id: 'J', segment: 'main2', title: 'Limits (section 14.2)', guardMinutes: 15, cases: cases([
         ['J1', ...A('MIP_PACKAGE member: limit-1 and limit are not RESOURCE_LIMIT; limit+1 is (16,777,216)', 'R26')],
         ['J2', ...A('INVESTIGATION_CHECKPOINT member (33,554,432)', 'R26')],
         ['J3', ...A('POLICY_EVALUATION members (4,060 each)', 'R26')],
@@ -123,13 +124,13 @@ export const STREAMS = [
         ['J12', ...A('Checkpoint transitions: 10,000 accepted and 10,001 refused; admission is linear (A4.5)', 'R26')],
         ['J13', ...A('Staging and unreferenced artifact reports list the first 1,000 sorted with an exact count', 'R26')],
       ]) },
-      { id: 'K', segment: 'main', title: 'Resources and process', guardMinutes: 5, cases: cases([
+      { id: 'K', segment: 'main2', title: 'Resources and process', guardMinutes: 5, cases: cases([
         ['K1', ...A('No product operation creates a child process, PowerShell included', 'R37')],
         ['K2', ...A('No network socket and no name resolution')],
         ['K3', ...A('Memory and handle census per operation recorded; no handle remains open after exit', '', 'record')],
         ['K4', ...A('No staging, temporary or lock residue after successful operations; anomalies disclosed only after interruptions', 'R16')],
       ]) },
-      { id: 'L', segment: 'main', title: 'Output transport and host variance', guardMinutes: 5, cases: cases([
+      { id: 'L', segment: 'main2', title: 'Output transport and host variance', guardMinutes: 5, cases: cases([
         ['L1', ...A('Console code pages 437 and 65001 give identical bytes', 'R04,R25')],
         ['L2', ...A('stdout to console, pipe, file and a headless launch: identical bytes and exit codes', 'R25')],
         ['L3', ...A('Closed pipe (EPIPE) and slow reader on large output: no partial publication, typed outcome', 'R25')],
@@ -137,13 +138,13 @@ export const STREAMS = [
         ['L5', ...A('Working directory, drive and relative versus absolute path variance', 'R04,R17')],
         ['L6', ...A('Hostile NODE_OPTIONS and environment variables: behavior recorded', '', 'record')],
       ]) },
-      { id: 'M', segment: 'main', title: 'After-state', guardMinutes: 5, cases: cases([
+      { id: 'M', segment: 'main2', title: 'After-state', guardMinutes: 5, cases: cases([
         ['M1', ...A('Every ledger created by the campaign verifies, or is a recorded intentional corruption', 'R05')],
         ['M2', ...A('Production path blobs unchanged: the candidate identity is re-verified', 'R32')],
         ['M3', ...A('Evidence inventory sealed; every raw log hashed')],
         ['M4', ...A('Nothing was created outside the campaign work root; junction targets are intact', 'R06')],
       ]) },
-      { id: 'JC', segment: 'ceiling', title: 'J-C ceiling run (100,000 entries)', guardMinutes: 180, cases: cases([
+      { id: 'JC', segment: 'ceiling', title: 'J-C ceiling run (100,000 entries)', guardMinutes: 175, cases: cases([
         ['JC1', ...A('Generate 99,999 chain-valid entries with members (time recorded)', 'R26', 'record')],
         ['JC2', ...A('Query page of 1,000', 'R26', 'record')],
         ['JC3', ...A('Query with a subject filter across the whole ledger', 'R26', 'record')],
@@ -161,7 +162,7 @@ export const STREAMS = [
     id: '3B', title: 'Closure and supply audit', platform: 'win32-x64', oneShot: true,
     segments: [{ id: 'main', title: 'Main audit', budgetMinutes: 90, extendedMinutes: 180 }],
     steps: [
-      { id: 'A', segment: 'main', title: 'Lineage and path allowlist', guardMinutes: 10, cases: cases([
+      { id: 'A', segment: 'main', title: 'Lineage and path allowlist', guardMinutes: 5, cases: cases([
         ['A1', ...A('Candidate identity verified from git objects: commit, tree, production path set and blobs', 'R32')],
         ['A2', ...A('History from the Freeze approval to the candidate has normal parents only (no rewrite); Amendments A1-A7 intact and ordered')],
         ['A3', ...A('Every path changed since BF 1dd1e8c8 lies inside the allowed path set of the protocol; any other path is a finding', 'R32,R33')],
@@ -174,20 +175,20 @@ export const STREAMS = [
         ['B4', ...A('MO-1307 readiness package: 89 members and the archive identity of its release record', 'R32')],
         ['B5', ...A('Every memoryos-1.3-* tag object exists, peels to its recorded commit and is unmodified', 'R32')],
       ]) },
-      { id: 'C', segment: 'main', title: 'Dependency audit', guardMinutes: 10, cases: cases([
+      { id: 'C', segment: 'main', title: 'Dependency audit', guardMinutes: 5, cases: cases([
         ['C1', ...A('package.json files, lockfiles and vcpkg.json: no dependency added or changed; only the 1.2.0 version fields differ', 'R33,R34')],
         ['C2', ...A('Static import scan of the CLI and SDK closures: only node:fs, node:path and repository-relative imports', 'R33')],
         ['C3', ...A('The history modules import no node module, SDK, Core, filesystem or network module', 'R28')],
         ['C4', ...A('The history authority and SDK facade perform no I/O: forbidden-identifier scan and runtime proof', 'R29')],
         ['C5', ...A('No new third-party code: LICENSE and notices unchanged; hand-written cryptography listed as first-party', 'R33', 'Q09')],
       ]) },
-      { id: 'D', segment: 'main', title: 'Source closure', guardMinutes: 10, cases: cases([
+      { id: 'D', segment: 'main', title: 'Source closure', guardMinutes: 5, cases: cases([
         ['D1', ...A('Closure of memoryos-cli/bin/memoryos.js with blob ids; the static scan equals the set Node loads', 'R33')],
         ['D2', ...A('Closure of memoryos-sdk.js with blob ids; the static scan equals the set Node loads', 'R33')],
         ['D3', ...A('The production closure is exactly the candidate identity path set', 'R32')],
         ['D4', ...A('Closure manifest digest recorded')],
       ]) },
-      { id: 'E', segment: 'main', title: 'Reproducibility', guardMinutes: 10, cases: cases([
+      { id: 'E', segment: 'main', title: 'Reproducibility', guardMinutes: 15, cases: cases([
         ['E1', ...A('Two independently implemented assemblies produce identical closure manifests', 'R32')],
         ['E2', ...A('Assemblies in two clean worktrees (autocrlf true and false) agree', 'R32')],
         ['E3', ...A('Deterministic archive of the closure is byte-identical across both assemblies')],
@@ -196,7 +197,7 @@ export const STREAMS = [
         ['F1', ...A('Extract the closure to an empty directory with only the pinned Node and no network: init, append, verify, query, export, verify-export succeed', 'R33')],
         ['F2', ...A('Output bytes equal the in-tree run', 'R04')],
       ]) },
-      { id: 'G', segment: 'main', title: 'Provenance', guardMinutes: 10, cases: cases([
+      { id: 'G', segment: 'main', title: 'Provenance', guardMinutes: 5, cases: cases([
         ['G1', ...A('Toolchain provenance recorded: Node, git and Python versions and hashes')],
         ['G2', ...A('No network access and no package installation during the audit', 'R33')],
         ['G3', ...A('Closure manifest and license statement: all first-party; no SBOM (owner decision D9)', 'R33')],
@@ -207,7 +208,7 @@ export const STREAMS = [
     id: '3C', title: 'Security and integrity', platform: 'win32-x64', oneShot: true,
     segments: [{ id: 'main', title: 'Main audit', budgetMinutes: 90, extendedMinutes: 180 }],
     steps: [
-      { id: 'A', segment: 'main', title: 'Tamper', guardMinutes: 20, cases: cases([
+      { id: 'A', segment: 'main', title: 'Tamper', guardMinutes: 15, cases: cases([
         ['A1', ...A('Exhaustive single-byte flips of the descriptor: every flip fails closed, typed, exit category 3', 'R21')],
         ['A2', ...A('Exhaustive single-byte flips of every entry file', 'R21')],
         ['A3', ...A('Strided single-byte flips of every retained member', 'R21')],
@@ -216,7 +217,7 @@ export const STREAMS = [
         ['A6', ...A('Tail truncation and rollback to an older valid prefix: outcome recorded against the pre-registered set', 'R05', 'record Q03')],
         ['A7', ...A('query on a tampered chain fails closed before answering; results are sorted by index', 'R22')],
       ]) },
-      { id: 'B', segment: 'main', title: 'Shape and forgery', guardMinutes: 10, cases: cases([
+      { id: 'B', segment: 'main', title: 'Shape and forgery', guardMinutes: 5, cases: cases([
         ['B1', ...A('Closed-shape and version negatives on every stored structure: unknown member, kind and version', 'R01')],
         ['B2', ...A('Golden-vector reaffirmation: corpus ledgers recomputed by an independent implementation equal the corpus manifest heads', 'R02,R04')],
         ['B3', ...A('A fully self-consistent forged chain verifies (integrity only, H07): outcome recorded', '', 'record Q13')],
@@ -224,7 +225,7 @@ export const STREAMS = [
         ['B5', ...A('A forged admission field, or an entry whose bytes would fail admission, still verifies (no re-admission): recorded', '', 'record Q08')],
         ['B6', ...A('recordDigest and member-list mismatches; an entry from another ledger at the same index', 'R21')],
       ]) },
-      { id: 'C', segment: 'main', title: 'Admission matrix', guardMinutes: 10, cases: cases([
+      { id: 'C', segment: 'main', title: 'Admission matrix', guardMinutes: 5, cases: cases([
         ['C1', ...A('MIP_PACKAGE: valid, forged, stale, wrong Workspace, wrong members, oversized, duplicate, purged', 'R07')],
         ['C2', ...A('INVESTIGATION_CHECKPOINT including a native checkpoint and a forged log or prefix digest', 'R07,R12')],
         ['C3', ...A('POLICY_EVALUATION matrix', 'R07')],
@@ -236,18 +237,18 @@ export const STREAMS = [
         ['C9', ...A('Duplicate, Workspace-mismatch and purged re-supply rules; one Workspace per ledger', 'R10,R11,R20,R36')],
         ['C10', ...A('Known limits demonstrated: Policy admission is inspection-only; Readiness admission is self-digests only', '', 'record Q12')],
       ]) },
-      { id: 'D', segment: 'main', title: 'Incremental and hand-written SHA-256', guardMinutes: 20, cases: cases([
-        ['D1', ...A('FIPS 180-4 example vectors (empty, abc, 448-bit, 896-bit, one million a) on both hand-written implementations', 'R02', 'Q09')],
-        ['D2', ...A('Monte Carlo procedure (100 x 1000 iterations) on both implementations against node:crypto', 'R02', 'Q09')],
+      { id: 'D', segment: 'main', title: 'Incremental and hand-written SHA-256', guardMinutes: 10, cases: cases([
+        ['D1', ...A('FIPS 180-4 example vectors (empty, abc, 448-bit, 896-bit, one million a) on both hand-written implementations; official CAVP response files are not used', 'R02', 'Q09')],
+        ['D2', ...A('CAVP Monte Carlo procedure (100 x 1000 iterations) computed on both implementations and against node:crypto; official CAVP response files are not used', 'R02', 'Q09')],
         ['D3', ...A('Lengths 0-300, block-boundary lengths and 1,000 seeded random messages and splits: Sha256Stream equals node:crypto', 'R02', 'Q09')],
         ['D4', ...A('clone independence, repeatable hex(), update after hex()', 'R02', 'Q09')],
         ['D5', ...A('Differential against node:crypto up to 32 MiB with misaligned chunking', 'R02', 'Q09')],
         ['D6', ...A('Checkpoint admission equals the verbatim legacy algorithm at 2, 5, 64, 500, 2,500 and 10,000 transitions: accept or reject, code, stage, subjects', 'R02,R26', 'Q09')],
         ['D7', ...A('A forged deepest prefix digest is rejected identically; 10,001 transitions are refused', 'R26', 'Q09')],
         ['D8', ...A('The mip-canonical.js hand-written SHA-256 under D1-D5', 'R02', 'Q09')],
-        ['D9', ...A('A recorded independent sub-agent review of both implementations is bound; every finding has a disposition (owner decision D8)', '', 'record Q09')],
+        ['D9', ...A('A recorded independent sub-agent review of both implementations is bound; every finding has a disposition (owner decision D8)', '', 'Q09')],
       ]) },
-      { id: 'E', segment: 'main', title: 'Tombstone and purge', guardMinutes: 10, cases: cases([
+      { id: 'E', segment: 'main', title: 'Tombstone and purge', guardMinutes: 8, cases: cases([
         ['E1', ...A('Governance: closed reason list; authority reference 1-256 printable ASCII; anything else is rejected', 'R18')],
         ['E2', ...A('Tombstone authenticity is NOT_VERIFIED_BY_MEMORYOS and the authority reference is never validated or fetched', 'R18')],
         ['E3', ...A('Crash during purge: purgePending; a rerun finishes; the chain stays valid', 'R16,R18')],
@@ -258,14 +259,14 @@ export const STREAMS = [
         ['E8', ...A('An export taken before a tombstone retains the bytes', '', 'record Q07')],
         ['E9', ...A('Authority reference permanence and its free-text content', '', 'record Q06')],
       ]) },
-      { id: 'F', segment: 'main', title: 'Export integrity', guardMinutes: 10, cases: cases([
+      { id: 'F', segment: 'main', title: 'Export integrity', guardMinutes: 6, cases: cases([
         ['F1', ...A('Export tamper corpus: manifest, marker, content, missing, extra and reordered files', 'R23')],
         ['F2', ...A('Hostile paths in verifyHistoryExport files: traversal, absolute, backslash, alternate data stream, reserved name, case duplicate', 'R23')],
         ['F3', ...A('A link or junction inside an export directory', 'R17,R23')],
         ['F4', ...A('export --output inside or under the ledger directory', 'R06')],
         ['F5', ...A('Exports of equal ledgers are byte-identical; the marker is created last', 'R23')],
       ]) },
-      { id: 'G', segment: 'main', title: 'Human-authority separation', guardMinutes: 10, cases: cases([
+      { id: 'G', segment: 'main', title: 'Human-authority separation', guardMinutes: 5, cases: cases([
         ['G1', ...A('Static: no MO-1307 gate, readiness code or CI package imports the history authority', 'R14')],
         ['G2', ...A('Runtime: a ledger directory does not alter any MO-1307 result', 'R14')],
         ['G3', ...A('No approve, grant or accept semantics in any history surface, exit code or output', 'R14')],
@@ -273,19 +274,19 @@ export const STREAMS = [
         ['G5', ...A('verifyReadiness and windows-inspect.ps1 are never called by admission', 'R08')],
         ['G6', ...A('Audit of restore callers: no history operation restores an investigation', 'R12')],
       ]) },
-      { id: 'H', segment: 'main', title: 'Data-class audit', guardMinutes: 10, cases: cases([
+      { id: 'H', segment: 'main', title: 'Data-class audit', guardMinutes: 8, cases: cases([
         ['H1', ...A('Canary planting: user, host, environment value, path, cwd, file name, date string and URL in the environment and inputs', 'R24')],
         ['H2', ...A('Scan of every MO-1308-authored byte (descriptor, entries, verification, query, export, marker) for canaries and forbidden classes', 'R24')],
         ['H3', ...A('Scan of every failure output (stdout, stderr, JSON errors)', 'R24,R25')],
         ['H4', ...A('Authority reference and subject values: the only free-form content; recorded', 'R24', 'record')],
         ['H5', ...A('No timestamp-like value in MO-1308-authored bytes', 'R35')],
       ]) },
-      { id: 'I', segment: 'main', title: 'Process, network and environment boundaries', guardMinutes: 10, cases: cases([
+      { id: 'I', segment: 'main', title: 'Process, network and environment boundaries', guardMinutes: 4, cases: cases([
         ['I1', ...A('Static forbidden-API scan: child_process, net, http, https, dns, eval, Function, dynamic import, undeclared environment reads', 'R28,R37')],
         ['I2', ...A('Runtime sample: no process creation and no socket during a representative operation set', 'R37')],
         ['I3', ...A('Environment-variable read whitelist; a secret canary is never exposed', 'R24')],
       ]) },
-      { id: 'J', segment: 'main', title: 'Hostile inputs', guardMinutes: 15, cases: cases([
+      { id: 'J', segment: 'main', title: 'Hostile inputs', guardMinutes: 12, cases: cases([
         ['J1', ...A('Deeply nested and wide JSON members', 'R26')],
         ['J2', ...A('Large counts, huge numbers, duplicate keys and malformed UTF-8', 'R26')],
         ['J3', ...A('A 10,000-transition checkpoint (the maximum)', 'R26')],
@@ -294,10 +295,10 @@ export const STREAMS = [
         ['J6', ...A('A valid maximal 32 MiB checkpoint member', 'R26')],
         ['J7', ...A('Every hostile input ends within a fixed guard with a typed outcome; no crash and no INTERNAL', 'R25')],
       ]) },
-      { id: 'K', segment: 'main', title: 'Release-claim review', guardMinutes: 5, cases: cases([
+      { id: 'K', segment: 'main', title: 'Release-claim review', guardMinutes: 3, cases: cases([
         ['K1', ...A('README, ROADMAP, RELEASE_NOTES, KNOWN_ISSUES, ARCHITECTURE and the CLI docs claim nothing beyond the Freeze; the qualification register is present')],
-        ['K2', ...A('Operator guidance: record each export and verify headDigest externally as the rollback anchor (owner decision D7)', '', 'Q03')],
-        ['K3', ...A('Disclosures present: H40, A6, integrity-only, no encryption, ACL responsibility, Windows only, local single-user v1', '', 'Q01 Q02 Q13 Q14')],
+        ['K2', ...A('Operator guidance (record each export and verify headDigest externally as the rollback anchor, D7) is present and states the recorded outcome of 3C-A6', '', 'Q03')],
+        ['K3', ...A('Release disclosures state the actual recorded outcome of every qualification case (none NOT_CONFIRMED disclosed as confirmed, none CONFIRMED omitted) and DISCLOSED for the structural qualifications', '', 'Q01 Q02 Q13 Q14 Q15')],
       ]) },
     ],
   },
@@ -310,7 +311,7 @@ export const STREAMS = [
         ['D2', ...A('Accepted 3A, 3B and 3C receipts, every preserved failed generation, rehearsal and disposition are present and bound')],
         ['D3', ...A('Requirement matrix: every R01-R37 maps to at least one case with PASS in an accepted generation')],
         ['D4', ...A('Retained full regression: MO-1308 suites, CLI, studio, MO-1307 (639) and examples', 'R03,R31')],
-        ['D5', ...A('A3 precondition receipt: full CTest including cca.workspace.verify PASS on the candidate', 'R31')],
+        ['D5', ...A('The A3.2 receipt (differential CTest gate) is bound with verdict PASS, and cca.workspace.verify passes on the candidate', 'R31')],
         ['D6', ...A('Qualification register Q01-Q15 is complete with a disposition for each')],
         ['D7', ...A('I3 plus a binding-only BF with no self-reference; no tag, push or approval in this task')],
       ]) },
@@ -319,6 +320,10 @@ export const STREAMS = [
 ];
 
 // The Freeze section 17 requirement IDs, as written without the MO1308- prefix.
+// A correct run must not be able to exceed its budget by design: in every segment the step guards plus this reserve
+// (for the records written between steps) must fit in the normal budget. `validateInventory` enforces it.
+export const RESERVE_MINUTES = 5;
+
 export const REQUIREMENT_IDS = Array.from({ length: 37 }, (_, index) => `R${String(index + 1).padStart(2, '0')}`);
 
 // The v1 qualification register (owner decisions D7, D8, D10 and Freeze H40, A4.4, A6).
@@ -331,7 +336,7 @@ export const QUALIFICATIONS = [
   ['Q06', 'The tombstone authority reference is operator-chosen free text and is permanent.'],
   ['Q07', 'An export taken before a tombstone keeps the bytes; there is no import and no recall.'],
   ['Q08', 'verify does not re-run admission; an entry written by a party with filesystem access verifies if the chain and member digests are consistent.'],
-  ['Q09', 'The incremental SHA-256 (and the canonical module copy) is hand-written first-party code, verified by differential and example-vector tests and a recorded independent review.'],
+  ['Q09', 'The incremental SHA-256 (and the canonical module copy) is hand-written first-party code, verified by FIPS 180-4 example messages, the CAVP Monte Carlo procedure computed against node:crypto, differential tests and a recorded independent review. Official CAVP response files were not used.'],
   ['Q10', 'Host latency under antivirus and indexers is heavy-tailed; recorded as an environment qualification, not a bound.'],
   ['Q11', 'A 100,000-entry export takes about 16 minutes on the reference host; recorded as a MO-1309 performance follow-up, not a defect.'],
   ['Q12', 'A4.4: POLICY_EVALUATION admission is inspection-only; READINESS_RESULT admission is not a MO-1307 verification.'],

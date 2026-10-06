@@ -1446,3 +1446,63 @@ Stream 2D decisions in the [Phase 2D record](mo1308-phase2d-integration.md) sect
    entry), so it is not weakened; the old value encoded the stand-in's filtering.
 
 No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
+
+
+## 33. Amendment A8 — Phase 3 certification protocol (2026-10-06, owner-authorized)
+
+This amendment is append-only. The frozen text above and Amendments A1 to A7 are unchanged. It adopts the Phase 3
+certification protocol as the Freeze's Phase 3 campaign protocol and case inventory, as MO-1307 Freeze section 21 requires
+before any campaign runs. Amendments A3.1 and A3.2 (sections 31 and 32) are recorded on branch `mo1308/phase3-precondition`
+(commit `f3e500c5`) and are not yet merged into this branch; this amendment is numbered 33 so that the three merge in order, and
+A8 and A9 are the numbers those two amendments reserved for the Phase 3 protocol.
+
+### A8.1 Adoption
+
+[`docs/mo1308-phase3-protocol.md`](mo1308-phase3-protocol.md) is the Phase 3 protocol. Its status is **APPROVED — FREEZE
+AMENDMENT A8 (owner approval 2026-10-06)**. It refines the Phase 3 rows of section 18.1 and H47 (section 18.3) without changing
+them: it adds the per-stream case inventories, acceptance rules, the one-shot generation lifecycle (seal, run, close), failure
+classes and dispositions, budgets and guards, the receipt schemas, the requirement matrix R01 to R37, the qualification register
+Q01 to Q15 and the allowed path set.
+
+### A8.2 Bound inputs
+
+The protocol, the inventory, the candidate identity and the corpus manifest are bound by the hashes below (SHA-256 of the file
+bytes at the approval commit). A later change to any of them needs a new amendment; the shared tests fail if one changes.
+
+| File | SHA-256 |
+|---|---|
+| `docs/mo1308-phase3-protocol.md` | `5f5caf6d81524eabd1c88377b129fa329f0b5dd35c85234c22f1942ec6df052c` |
+| `repositories/cca-conformance/mo1308-phase3-inventory.json` | `c56642c4f46e4adb82744f4176cab8d35fdd19592376ed130e89af8726d9ed1c` |
+| `repositories/cca-conformance/mo1308-phase3-candidate-identity.json` | `92b33904a1ff5a868d5b13b6f1354efbf718778d0b80594ce38b7e67077a7244` |
+| `repositories/cca-conformance/mo1308-phase3-corpus-manifest.json` | `b055805d2db43f414261921ded61eb69d856ad5c821139254e9ba1b7ce386c9f` |
+
+The candidate is B2 `47595cc95204307dd43c4772c417b52f0ac8402b`: 45 production paths by git blob, `productionTreeDigest`
+`sha256:ccb1575f5d8e34743b38404898b2c720ee1a0046071fc5e57c824d4b4566562a`. The corpus digest is `sha256:cfca5edb267fad074863f3ddd1945a3f8fe500a8e07d602722140d745b54a730`.
+
+### A8.3 Owner decisions
+
+1. The NIST-style SHA-256 tests are accepted as proposed (FIPS 180-4 example messages and the CAVP Monte Carlo procedure computed
+   against `node:crypto`). **Official CAVP response files were not used**, and the disclosures state it.
+2. The 45 candidate paths are confirmed.
+3. The seven allowed-path classes are confirmed; ordinary documents are not candidate changes.
+4. The J-C ceiling run is a separate segment that runs only after the main segments PASS, ending with JC10.
+5. An F7 escalation stops the generation; a rerun requires an owner approval reference.
+6. A qualification case passes with `CONFIRMED` or `NOT_CONFIRMED` and fails otherwise. The release disclosures (3C-K3 and the
+   D7 operator guidance) must state the actual recorded outcome of each qualification case: a weakness that was `NOT_CONFIRMED`
+   is never disclosed as confirmed, and one that was `CONFIRMED` is never omitted.
+7. Rehearsal evidence lives under `evidence/mo1308/phaseNx-rehearsal-rN/`.
+8. A correct run must not be able to exceed its budget by design: in every segment the step guards plus a 5-minute reserve fit
+   the normal budget (3A `main` is split into `main1` and `main2`; 3C and 3B guards are rebalanced).
+9. The A3 precondition is the differential gate of Amendment A3.2; the gate input is its receipt with verdict PASS. A production
+   change arising from the precondition is a new candidate and returns to the owner.
+
+The earlier planning decisions D1 to D11 (candidate by blob, the protocol as an amendment, the 90-minute and 3-hour budgets,
+rehearsals, the MO-1307 failure classes, the staging `EPERM` threshold of more than 1 in 10 F7 runs, the D7 qualifications and
+operator guidance, the SHA-256 review, no SBOM, observed-not-claimed locations, the `mo1308/phase3b-closure` branch) stand and
+are recorded in section 2 of the protocol.
+
+### A8.4 Effect on the frozen text
+
+No shape, layout, limit, identity, error code or protocol step of the frozen text changes, and no production behavior changes.
+Certification claims remain qualified by the register of the protocol (Q01 to Q15), including the H40 and A6 qualifications of
+sections 9.4 and 29.

@@ -1,12 +1,14 @@
 # MO-1308 Phase 3 certification protocol
 
-Status: **PROPOSED — PENDING OWNER APPROVAL (A8)**.
+Status: **APPROVED — FREEZE AMENDMENT A8 (owner approval 2026-10-06)**.
 
-This document is the proposed text of Freeze Amendment A8 to
-[MO-1308 Contract Freeze 1](mo1308-contract-freeze-1.md). It is documentation only. It changes no frozen text, no production
-code and no evidence; it freezes, once approved, the finite Phase 3 campaign protocol and case inventory before any run, as
-MO-1307 Freeze section 21 requires ("Freeze the finite campaign protocol/inventory before execution"). Until the owner approves
-it, a certifying generation cannot be sealed (section 5.2); only non-certifying rehearsals can.
+This document is the text of Freeze Amendment A8 to [MO-1308 Contract Freeze 1](mo1308-contract-freeze-1.md), approved by the
+owner on 2026-10-06 after review of the proposal and the nine decisions of section 2a. It is documentation only. It changes no
+frozen text, no production code and no evidence; it freezes the finite Phase 3 campaign protocol and case inventory before any
+run, as MO-1307 Freeze section 21 requires ("Freeze the finite campaign protocol/inventory before execution"). The amendment
+record in the Freeze (section 33) binds the protocol, the inventory, the candidate identity and the corpus manifest by hash: a
+later change to any of them needs a new amendment. The approval status makes certifying seals possible (section 5.2); each still
+needs a recorded harness review.
 
 The case inventory below is rendered from
 [`mo1308-phase3-inventory.json`](../repositories/cca-conformance/mo1308-phase3-inventory.json), which is built from
@@ -44,6 +46,22 @@ exists.
 | D10 | UNC, network, OneDrive and cloud placeholders are observed, not claimed. | Q15; case 3A-D9 |
 | D11 | The 3B branch is `mo1308/phase3b-closure`. | Section 14 |
 
+## 2a. A8 approval decisions (owner, 2026-10-06)
+
+The owner decided the nine items of the Step 1 report as follows. Each is applied in the section named.
+
+| # | Decision | Applied in |
+|---|---|---|
+| 1 | The NIST-style SHA-256 tests are accepted as proposed: FIPS 180-4 example messages plus the CAVP Monte Carlo procedure computed against `node:crypto`. **Official CAVP response files were not used**, and every disclosure says so. | Q09; cases 3C-D1, D2; section 9.3 |
+| 2 | The 45 candidate paths are confirmed. | Section 3 |
+| 3 | The seven allowed-path classes are confirmed. Ordinary documents (README, RELEASE_NOTES and the like) are not candidate changes. | Section 15 |
+| 4 | The J-C ceiling run is a separate segment that runs only after the main segments PASS and ends with JC10. | Sections 7, 9.1 |
+| 5 | An F7 escalation stops the generation; a rerun needs an owner approval reference. | Sections 5.5, 8.3 |
+| 6 | A qualification case passes with CONFIRMED or NOT_CONFIRMED and fails with anything else. The release disclosures (3C-K3, and the D7 guidance 3C-K2) must state the actual recorded outcome of each qualification case: a weakness that was NOT_CONFIRMED is never disclosed as confirmed, and one that was CONFIRMED is never omitted. | Sections 8.4, 11; cases 3C-K2, K3 |
+| 7 | Rehearsal evidence lives under `evidence/mo1308/phaseNx-rehearsal-rN/`. | Section 5.3 |
+| 8 | A correct run must not be able to exceed its budget by design: guards are rebalanced and 3A main is split into two segments. | Section 7 |
+| 9 | The precondition is Amendment A3.2's differential gate; the gate input is its receipt with verdict PASS. A production change from the precondition is a new candidate and returns to the owner. | Section 3 |
+
 ## 3. Candidate, inputs and the precondition
 
 **Candidate (D1).** B2 is commit `47595cc95204307dd43c4772c417b52f0ac8402b`. The candidate is the production path set of that
@@ -67,9 +85,24 @@ review (section 6).
 **Inputs.** Each stream is sealed over: this protocol and its approval status, the inventory, the candidate identity, the
 shared corpus (3A and 3C), the stream tools, the recorded harness review, and for 3A and 3D the bound A3 precondition receipt.
 
-**The A3 precondition.** Its full CTest run is in progress on the reference host. This protocol makes no assumption about its
-result. It defines the precondition receipt as a gate input (cases 3A-A4 and 3D-D5). If the precondition requires a change to a
-production path, that is a new candidate and returns to owner review.
+**The A3 precondition (Amendments A3.1 and A3.2).** Amendment A3 of the Freeze (section 26) makes a full CTest run a
+precondition of Phase 3. Two sub-amendments, recorded on branch `mo1308/phase3-precondition` (commit `f3e500c5`) and not yet
+merged here, refine it; they are cited by their section numbers on that branch and the citation is to be updated when they are
+merged:
+
+- **A3.1 (section 31 there)** waives the `cca_core_tests` target only, because MSVC 19.44.35229 miscompiles its
+  `static_assert(!CanMutateCoreMetric<Observability>)` (error C2607; `cca-core` is byte-identical between BF and B2). The first
+  run under it is preserved as `FAILED_PRESERVED` (evidence commit `59dfee40`, binding `82bb165e`): 125 of 316 executed tests
+  failed, none of them MO-1308 code, and `cca.workspace.verify` passed.
+- **A3.2 (section 32 there)** replaces A3's absolute gate with a **differential no-regression gate**: CTest is run on BF
+  `1dd1e8c8` and on B2 `47595cc9` under an identical toolchain; the verdict is PASS only if `cca.workspace.verify` passes on B2,
+  nothing that passes on BF fails or is not run on B2, every B2-only test passes, and every shared failure is listed
+  `PRE_EXISTING` with a classification. Its evidence directory is
+  `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g2/`, and its `receipt.json` carries the verdict.
+
+**The gate input of this protocol is the A3.2 receipt with verdict PASS** (cases 3A-A4 and 3D-D5). Its result is pending on the
+reference host, and this protocol assumes none. The exact verdict member of that receipt is to be confirmed from the receipt when
+it exists. **If the precondition changes any production path, that is a new candidate and returns to the owner.**
 
 ## 4. Streams, order and shared inputs
 
@@ -141,7 +174,9 @@ The 3D validator rejects a rehearsal as an accepted receipt.
 
 A failed generation is never resumed or promoted. A rerun (`-g2`, `-g3`, …) needs a closed prior generation that ended
 `FAILED_PRESERVED` or `ESCALATED_PRESERVED`, and a disposition for it (section 6) whose next action is `NEW_GENERATION` and
-whose ordinal is the next one. The seal records the superseded generation, the prior evidence seal and the disposition by hash.
+whose ordinal is the next one. After an `ESCALATED_PRESERVED` generation (an F7 escalation, section 8.3) the disposition must
+also carry an **owner approval reference**, whatever the failure class (A8 decision 5); the sealing refuses otherwise. The seal
+records the superseded generation, the prior evidence seal and the disposition by hash.
 
 ## 6. Failure classification and dispositions (D5)
 
@@ -156,55 +191,71 @@ change (CCA-ENG-2.0, D5); a new generation after such a disposition needs the ow
 product fix that changes no public behaviour makes a new candidate and a new generation of every affected stream, with the
 reason recorded; it does not need an amendment but does need the owner's acceptance of the new candidate (D1).
 
-## 7. Budgets and guards (D3)
+## 7. Budgets and guards (D3, A8 decision 8)
 
-| Segment | Normal budget | Extended | Notes |
-|---|---:|---:|---|
-| every stream, `main` | 90 min | 180 min | extended only when necessary and making measurable progress, with a recorded rationale in the seal |
-| 3A `ceiling` | 180 min | 180 min | its own segment, its own clock and hard stop; runs only after `main` finished PASS |
+**Rule.** A correct run must not be able to exceed its budget by design. In every segment, the sum of the step guards plus a
+**5-minute reserve** (for the records written between steps) must fit in the segment's normal budget. The inventory validator
+enforces this, so an inventory that breaks it cannot be sealed. The extended budget (180 minutes) is for a run that is making
+measurable progress and needs a recorded rationale; it is never part of the design arithmetic.
 
-Each step also has a guard (below). The effective guard of a step is the smaller of its guard and the time left in its segment
-budget; expiry is a failure (`STEP_GUARD_EXPIRED`), a segment that runs out of budget stops the generation
-(`BUDGET_EXHAUSTED`). Guards are ceilings, not expectations: the 3A guards sum to more than 90 minutes, and the budget is the
-binding limit. Reference-host timings from the 2D generation 2 characterization at 100,000 entries: export 1000.9 s, verify
-92.9 s, append 88.1 s, verify-export 146.7 s, real-process verify 197.0 s, generation 199.9 s. The product itself has no timer or
-deadline (Freeze 9.5); these are campaign engineering limits.
+| Stream / segment | Steps (guard, minutes) | Sum | Reserve | Total | Budget |
+|---|---|---:|---:|---:|---:|
+| 3A `main1` | A 5, B 15, C 8, D 15, E 7 | 50 | 5 | 55 | 90 |
+| 3A `main2` | F 25, G 10, H 12, I 5, J 15, K 5, L 5, M 5 | 82 | 5 | 87 | 90 |
+| 3A `ceiling` | JC 175 | 175 | 5 | 180 | 180 |
+| 3B `main` | A 5, B 10, C 5, D 5, E 15, F 10, G 5 | 55 | 5 | 60 | 90 |
+| 3C `main` | A 15, B 5, C 5, D 10, E 8, F 6, G 5, H 8, I 4, J 12, K 3 | 81 | 5 | 86 | 90 |
+| 3D `main` | D 60 | 60 | 5 | 65 | 90 |
+
+**What changed.** The Step 1 draft had 3A `main` at 110 guard minutes against a 90-minute budget and 3C at 130. 3A `main` is now
+**split into two segments** (`main1`, `main2`) that each fit, rather than shrinking guards below realistic needs: `main1` ends
+before the concurrency, swap and interruption cases, `main2` runs only after `main1` finished PASS, and the ceiling segment runs
+only after both. 3C had no natural split, so its guards were reduced to 81 minutes (the in-process tamper flips, the Monte Carlo
+and the differential hashing are the heavy steps and are bounded in the corpus). The J-C ceiling guard is 175 minutes so that
+guard plus reserve equals the 180-minute budget.
+
+Each step has a guard; its effective guard is the smaller of the guard and the time left in its segment budget. Expiry is a
+failure (`STEP_GUARD_EXPIRED`); a segment that runs out of budget stops the generation (`BUDGET_EXHAUSTED`). Reference-host
+timings from the 2D generation 2 characterization at 100,000 entries: export 1000.9 s, verify 92.9 s, append 88.1 s,
+verify-export 146.7 s, real-process verify 197.0 s, generation 199.9 s; the ceiling run is the sum of these plus the rejected
+append, about 30 to 35 minutes, well inside its guard. The product itself has no timer or deadline (Freeze 9.5); these are campaign
+engineering limits.
 
 <!-- GENERATED:BEGIN steps -->
 | Stream | Step | Segment | Guard (min) | Cases |
 |---|---|---|---:|---|
-| 3A | A | main | 5 | A1, A2, A3, A4, A5, A6, A7 |
-| 3A | B | main | 10 | B1, B2, B3, B4, B5, B6, B7, B8, B9, B10 |
-| 3A | C | main | 5 | C1, C2, C3, C4, C5, C6 |
-| 3A | D | main | 10 | D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12 |
-| 3A | E | main | 5 | E1, E2, E3, E4, E5, E6, E7 |
-| 3A | F | main | 20 | F1, F2, F3, F4, F5, F6, F7 |
-| 3A | G | main | 10 | G1, G2, G3, G4, G5, G6 |
-| 3A | H | main | 10 | H1, H2, H3, H4, H5, H6, H7, H8, H9, H10 |
-| 3A | I | main | 5 | I1, I2, I3, I4, I5, I6 |
-| 3A | J | main | 15 | J1, J2, J3, J4, J5, J6, J7, J8, J9, J10, J11, J12, J13 |
-| 3A | K | main | 5 | K1, K2, K3, K4 |
-| 3A | L | main | 5 | L1, L2, L3, L4, L5, L6 |
-| 3A | M | main | 5 | M1, M2, M3, M4 |
-| 3A | JC | ceiling | 180 | JC1, JC2, JC3, JC4, JC5, JC6, JC7, JC8, JC9, JC10 |
-| 3B | A | main | 10 | A1, A2, A3, A4 |
+| 3A | A | main1 | 5 | A1, A2, A3, A4, A5, A6, A7 |
+| 3A | B | main1 | 15 | B1, B2, B3, B4, B5, B6, B7, B8, B9, B10 |
+| 3A | C | main1 | 8 | C1, C2, C3, C4, C5, C6 |
+| 3A | D | main1 | 15 | D1, D2, D3, D4, D5, D6, D7, D8, D9, D10, D11, D12 |
+| 3A | E | main1 | 7 | E1, E2, E3, E4, E5, E6, E7 |
+| 3A | F | main2 | 25 | F1, F2, F3, F4, F5, F6, F7 |
+| 3A | G | main2 | 10 | G1, G2, G3, G4, G5, G6 |
+| 3A | H | main2 | 12 | H1, H2, H3, H4, H5, H6, H7, H8, H9, H10 |
+| 3A | I | main2 | 5 | I1, I2, I3, I4, I5, I6 |
+| 3A | J | main2 | 15 | J1, J2, J3, J4, J5, J6, J7, J8, J9, J10, J11, J12, J13 |
+| 3A | K | main2 | 5 | K1, K2, K3, K4 |
+| 3A | L | main2 | 5 | L1, L2, L3, L4, L5, L6 |
+| 3A | M | main2 | 5 | M1, M2, M3, M4 |
+| 3A | JC | ceiling | 175 | JC1, JC2, JC3, JC4, JC5, JC6, JC7, JC8, JC9, JC10 |
+| 3B | A | main | 5 | A1, A2, A3, A4 |
 | 3B | B | main | 10 | B1, B2, B3, B4, B5 |
-| 3B | C | main | 10 | C1, C2, C3, C4, C5 |
-| 3B | D | main | 10 | D1, D2, D3, D4 |
-| 3B | E | main | 10 | E1, E2, E3 |
+| 3B | C | main | 5 | C1, C2, C3, C4, C5 |
+| 3B | D | main | 5 | D1, D2, D3, D4 |
+| 3B | E | main | 15 | E1, E2, E3 |
 | 3B | F | main | 10 | F1, F2 |
-| 3B | G | main | 10 | G1, G2, G3 |
-| 3C | A | main | 20 | A1, A2, A3, A4, A5, A6, A7 |
-| 3C | B | main | 10 | B1, B2, B3, B4, B5, B6 |
-| 3C | C | main | 10 | C1, C2, C3, C4, C5, C6, C7, C8, C9, C10 |
-| 3C | D | main | 20 | D1, D2, D3, D4, D5, D6, D7, D8, D9 |
-| 3C | E | main | 10 | E1, E2, E3, E4, E5, E6, E7, E8, E9 |
-| 3C | F | main | 10 | F1, F2, F3, F4, F5 |
-| 3C | G | main | 10 | G1, G2, G3, G4, G5, G6 |
-| 3C | H | main | 10 | H1, H2, H3, H4, H5 |
-| 3C | I | main | 10 | I1, I2, I3 |
-| 3C | J | main | 15 | J1, J2, J3, J4, J5, J6, J7 |
-| 3C | K | main | 5 | K1, K2, K3 |
+| 3B | G | main | 5 | G1, G2, G3 |
+| 3C | A | main | 15 | A1, A2, A3, A4, A5, A6, A7 |
+| 3C | B | main | 5 | B1, B2, B3, B4, B5, B6 |
+| 3C | C | main | 5 | C1, C2, C3, C4, C5, C6, C7, C8, C9, C10 |
+| 3C | D | main | 10 | D1, D2, D3, D4, D5, D6, D7, D8, D9 |
+| 3C | E | main | 8 | E1, E2, E3, E4, E5, E6, E7, E8, E9 |
+| 3C | F | main | 6 | F1, F2, F3, F4, F5 |
+| 3C | G | main | 5 | G1, G2, G3, G4, G5, G6 |
+| 3C | H | main | 8 | H1, H2, H3, H4, H5 |
+| 3C | I | main | 4 | I1, I2, I3 |
+| 3C | J | main | 12 | J1, J2, J3, J4, J5, J6, J7 |
+| 3C | K | main | 3 | K1, K2, K3 |
 | 3D | D | main | 60 | D1, D2, D3, D4, D5, D6, D7 |
 <!-- GENERATED:END steps -->
 
@@ -240,13 +291,22 @@ committing nothing. Case 3A-F7 repeats the F1 workload 10 times and counts the r
 (the underlying error of the typed `IO` failure) occurred. **At most 1 run: PASS, with the census recorded. Two or more runs:
 `ESCALATE`.** Any contract violation in any run (a success missing from the ledger, a phantom commit for a reported failure, an
 untyped failure, an integrity or boundary code reported to a reader, an invalid chain) is a `FAIL` regardless of the count.
-Q02 and Q10 stay disclosed.
+An escalation stops the generation and ends `ESCALATED_PRESERVED`; a rerun needs an owner approval reference (section 5.5).
+Q02 and Q10 stay disclosed, with their actual outcome (section 8.4).
 
-### 8.4 Qualification cases
+### 8.4 Qualification cases (A8 decision 6)
 
-Cases that characterize a v1 qualification (section 11) are record cases with the pre-registered outcomes `CONFIRMED` (the
-limitation behaves as the register says) or `NOT_CONFIRMED` (the product is better than the register). Both are PASS and are
-recorded in the stream receipt per qualification. Any other outcome is a FAIL.
+A **qualification case** is a record case that carries a Qnn tag. It must observe `outcome`: `CONFIRMED` (the limitation behaves as
+the register says) or `NOT_CONFIRMED` (the product is better than the register). Both are PASS; any other outcome, or none, is a
+FAIL (`QUALIFICATION_OUTCOME_INVALID`). The outcome is stored in the case record and in the stream receipt per qualification.
+
+The release disclosures (case 3C-K3), and the operator guidance (3C-K2), must state **the actual recorded outcome of each
+qualification case**: a weakness that was NOT_CONFIRMED is never disclosed as confirmed, and one that was CONFIRMED is never
+omitted. The disclosure document states one line per qualification case, `3C-A6: CONFIRMED - …` or `3C-A6: NOT_CONFIRMED - …`,
+and `Q01: DISCLOSED - …` for each structural qualification (one that no record case characterizes: Q01, Q09, Q14, Q15). The check
+(`lib/disclosure.mjs`) compares those lines with the recorded outcomes in the 3A and 3C step receipts and refuses a mismatch, an
+omission, a duplicate, an unknown line, or an outcome that was never recorded. The 3C generation reads the accepted 3A receipt
+as an input for this (3A runs first).
 
 ## 9. Stream protocols
 
@@ -263,26 +323,30 @@ pure parts. No PowerShell is used by the product (R37); harness observers may us
 production byte changes (M2, JC10).
 **Evidence.** Sealed inventory, per-step receipts with raw logs, the F7 filesystem-error census, the ceiling timing table, the
 environment capture, the stream receipt. The 200,000-file ceiling ledger and export are not retained: digests and logs only.
-**Limits.** `main` 90 min (180 extended); `ceiling` 180 min, own clock.
+**Limits.** Three segments, run in order, each only after the previous one finished PASS: `main1` (steps A–E), `main2` (steps F–M)
+and `ceiling` (step JC). Budgets 90, 90 and 180 minutes with the guard arithmetic of section 7; the ceiling has its own clock.
+An F7 escalation stops the generation (section 8.3).
 
 <!-- GENERATED:BEGIN inventory-3A -->
-Segment `main`: Main campaign. Budget 90 min, extended 180 min.
+Segment `main1`: Main 1: gate, CLI contract, determinism, filesystem boundary, NTFS semantics. Budget 90 min, extended 180 min.
 
-Segment `ceiling`: J-C ceiling run (its own step, own hard stop). Budget 180 min, extended 180 min.
+Segment `main2`: Main 2: concurrency, swaps, interruption, purge, limits, resources, transport, after-state. Budget 90 min, extended 180 min.
 
-#### 3A step A: Gate (segment `main`, guard 5 min, 7 cases)
+Segment `ceiling`: J-C ceiling run (its own segment, own clock and hard stop; runs only after main1 and main2 PASS). Budget 180 min, extended 180 min.
+
+#### 3A step A: Gate (segment `main1`, guard 5 min, 7 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
 | 3A-A1 | Host identity: Windows 11 x64 build, NTFS volume type and serial, free space recorded | - | assert | - |
 | 3A-A2 | Node.js v24.21.0 win-x64 executable SHA-256 equals ba4e6d11...6c32 | - | assert | - |
 | 3A-A3 | Production path tree of the worktree equals the sealed candidate identity blob by blob; worktree clean | R32 | assert | - |
-| 3A-A4 | The A3 precondition receipt (full CTest including cca.workspace.verify) is bound and PASS for the same candidate | R31 | assert | - |
+| 3A-A4 | The A3.2 receipt (differential CTest gate, BF 1dd1e8c8 versus B2 47595cc9) is bound with verdict PASS for the same candidate | R31 | assert | - |
 | 3A-A5 | Sealed tool inventory matches; harness review bound; no rehearsal evidence is referenced as an input | - | assert | - |
 | 3A-A6 | Environment capture: AV and Defender state, LongPathsEnabled, 8.3 name setting, unprivileged symlink creation, CPU and disk | - | record | - |
 | 3A-A7 | Idle host-load sample before the run (recorded, never gated) | - | record, not mandatory | - |
 
-#### 3A step B: CLI contract through real processes (segment `main`, guard 10 min, 10 cases)
+#### 3A step B: CLI contract through real processes (segment `main1`, guard 15 min, 10 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -297,7 +361,7 @@ Segment `ceiling`: J-C ceiling run (its own step, own hard stop). Budget 180 min
 | 3A-B9 | session never serializes or restores a checkpoint; the other command namespaces are unchanged | R30 | assert | - |
 | 3A-B10 | SDK and CLI produce byte-identical entries, query results and exports for the same operations | R27 | assert | - |
 
-#### 3A step C: Determinism and layout (segment `main`, guard 5 min, 6 cases)
+#### 3A step C: Determinism and layout (segment `main1`, guard 8 min, 6 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -308,7 +372,7 @@ Segment `ceiling`: J-C ceiling run (its own step, own hard stop). Budget 180 min
 | 3A-C5 | Every ledger has exactly one Workspace; every entry is INTRINSIC or DECLARED | R11, R36 | assert | - |
 | 3A-C6 | File-identity audit: no published file changes bytes or NTFS file index across later operations; only purge deletes members | R06 | assert | - |
 
-#### 3A step D: Filesystem boundary (segment `main`, guard 10 min, 12 cases)
+#### 3A step D: Filesystem boundary (segment `main1`, guard 15 min, 12 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -325,7 +389,7 @@ Segment `ceiling`: J-C ceiling run (its own step, own hard stop). Budget 180 min
 | 3A-D11 | Read-only attribute and ACL-denied locations give a typed IO failure and change nothing | R17, R25 | assert | - |
 | 3A-D12 | Reparse-point survey: every kind that can be planted unprivileged is refused; the others are recorded as not plantable (K11) | R17 | record | - |
 
-#### 3A step E: NTFS semantics (segment `main`, guard 5 min, 7 cases)
+#### 3A step E: NTFS semantics (segment `main1`, guard 7 min, 7 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -337,7 +401,7 @@ Segment `ceiling`: J-C ceiling run (its own step, own hard stop). Budget 180 min
 | 3A-E6 | Delete-pending staging name probe: EEXIST versus EPERM recorded for A6 hypothesis 2 | - | record | Q02 |
 | 3A-E7 | Read-only attribute on a ledger file: reads work, nothing is modified | R06 | assert | - |
 
-#### 3A step F: Concurrency (segment `main`, guard 20 min, 7 cases)
+#### 3A step F: Concurrency (segment `main2`, guard 25 min, 7 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -349,7 +413,7 @@ Segment `ceiling`: J-C ceiling run (its own step, own hard stop). Budget 180 min
 | 3A-F6 | Same-target tombstone race: one wins, the rest TOMBSTONE_INVALID | R18 | assert | - |
 | 3A-F7 | F1 repeated 10 times: census of every filesystem error; staging EPERM in more than 1 of 10 runs escalates (owner decision D6) | R15 | record | Q02, Q10 |
 
-#### 3A step G: Directory-swap races (H40) (segment `main`, guard 10 min, 6 cases)
+#### 3A step G: Directory-swap races (H40) (segment `main2`, guard 10 min, 6 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -360,7 +424,7 @@ Segment `ceiling`: J-C ceiling run (its own step, own hard stop). Budget 180 min
 | 3A-G5 | Ledger root swapped between two reads | R17 | assert | Q01 |
 | 3A-G6 | Junction swapper racing three appenders for a fixed number of swaps: sentinel intact; ledger verifies or fails closed typed | R17 | assert | Q01 |
 
-#### 3A step H: Interruption (segment `main`, guard 10 min, 10 cases)
+#### 3A step H: Interruption (segment `main2`, guard 12 min, 10 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -375,7 +439,7 @@ Segment `ceiling`: J-C ceiling run (its own step, own hard stop). Budget 180 min
 | 3A-H9 | Ctrl-C and Ctrl-Break before the commit point publish nothing | R16 | assert | - |
 | 3A-H10 | Closed stdout and stdin during a command | R25 | assert | - |
 
-#### 3A step I: Tombstone and purge on the host (segment `main`, guard 5 min, 6 cases)
+#### 3A step I: Tombstone and purge on the host (segment `main2`, guard 5 min, 6 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -386,7 +450,7 @@ Segment `ceiling`: J-C ceiling run (its own step, own hard stop). Budget 180 min
 | 3A-I5 | Tombstone rules: the target is a retained RECORD entry; one tombstone per target; none on a tombstone | R18 | assert | - |
 | 3A-I6 | Purge-pending state is reported consistently by verify, query and export | R18 | assert | - |
 
-#### 3A step J: Limits (section 14.2) (segment `main`, guard 15 min, 13 cases)
+#### 3A step J: Limits (section 14.2) (segment `main2`, guard 15 min, 13 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -404,7 +468,7 @@ Segment `ceiling`: J-C ceiling run (its own step, own hard stop). Budget 180 min
 | 3A-J12 | Checkpoint transitions: 10,000 accepted and 10,001 refused; admission is linear (A4.5) | R26 | assert | - |
 | 3A-J13 | Staging and unreferenced artifact reports list the first 1,000 sorted with an exact count | R26 | assert | - |
 
-#### 3A step K: Resources and process (segment `main`, guard 5 min, 4 cases)
+#### 3A step K: Resources and process (segment `main2`, guard 5 min, 4 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -413,7 +477,7 @@ Segment `ceiling`: J-C ceiling run (its own step, own hard stop). Budget 180 min
 | 3A-K3 | Memory and handle census per operation recorded; no handle remains open after exit | - | record | - |
 | 3A-K4 | No staging, temporary or lock residue after successful operations; anomalies disclosed only after interruptions | R16 | assert | - |
 
-#### 3A step L: Output transport and host variance (segment `main`, guard 5 min, 6 cases)
+#### 3A step L: Output transport and host variance (segment `main2`, guard 5 min, 6 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -424,7 +488,7 @@ Segment `ceiling`: J-C ceiling run (its own step, own hard stop). Budget 180 min
 | 3A-L5 | Working directory, drive and relative versus absolute path variance | R04, R17 | assert | - |
 | 3A-L6 | Hostile NODE_OPTIONS and environment variables: behavior recorded | - | record | - |
 
-#### 3A step M: After-state (segment `main`, guard 5 min, 4 cases)
+#### 3A step M: After-state (segment `main2`, guard 5 min, 4 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -433,7 +497,7 @@ Segment `ceiling`: J-C ceiling run (its own step, own hard stop). Budget 180 min
 | 3A-M3 | Evidence inventory sealed; every raw log hashed | - | assert | - |
 | 3A-M4 | Nothing was created outside the campaign work root; junction targets are intact | R06 | assert | - |
 
-#### 3A step JC: J-C ceiling run (100,000 entries) (segment `ceiling`, guard 180 min, 10 cases)
+#### 3A step JC: J-C ceiling run (100,000 entries) (segment `ceiling`, guard 175 min, 10 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -460,12 +524,12 @@ Windows, reading git objects, never the working tree. The tags are not in a fres
 **Acceptance.** All cases PASS with two byte-identical assemblies and no path or dependency deviation.
 **Evidence.** The closure manifest and digest, both assemblers' outputs, the tag-versus-HEAD blob table, the import-closure
 listing, the receipt.
-**Limits.** `main` 90 min; expected to take well under 15.
+**Limits.** `main` 90 min (guards total 55 plus the reserve); expected to take well under 15.
 
 <!-- GENERATED:BEGIN inventory-3B -->
 Segment `main`: Main audit. Budget 90 min, extended 180 min.
 
-#### 3B step A: Lineage and path allowlist (segment `main`, guard 10 min, 4 cases)
+#### 3B step A: Lineage and path allowlist (segment `main`, guard 5 min, 4 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -484,7 +548,7 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3B-B4 | MO-1307 readiness package: 89 members and the archive identity of its release record | R32 | assert | - |
 | 3B-B5 | Every memoryos-1.3-* tag object exists, peels to its recorded commit and is unmodified | R32 | assert | - |
 
-#### 3B step C: Dependency audit (segment `main`, guard 10 min, 5 cases)
+#### 3B step C: Dependency audit (segment `main`, guard 5 min, 5 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -494,7 +558,7 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3B-C4 | The history authority and SDK facade perform no I/O: forbidden-identifier scan and runtime proof | R29 | assert | - |
 | 3B-C5 | No new third-party code: LICENSE and notices unchanged; hand-written cryptography listed as first-party | R33 | assert | Q09 |
 
-#### 3B step D: Source closure (segment `main`, guard 10 min, 4 cases)
+#### 3B step D: Source closure (segment `main`, guard 5 min, 4 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -503,7 +567,7 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3B-D3 | The production closure is exactly the candidate identity path set | R32 | assert | - |
 | 3B-D4 | Closure manifest digest recorded | - | assert | - |
 
-#### 3B step E: Reproducibility (segment `main`, guard 10 min, 3 cases)
+#### 3B step E: Reproducibility (segment `main`, guard 15 min, 3 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -518,7 +582,7 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3B-F1 | Extract the closure to an empty directory with only the pinned Node and no network: init, append, verify, query, export, verify-export succeed | R33 | assert | - |
 | 3B-F2 | Output bytes equal the in-tree run | R04 | assert | - |
 
-#### 3B step G: Provenance (segment `main`, guard 10 min, 3 cases)
+#### 3B step G: Provenance (segment `main`, guard 5 min, 3 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -532,21 +596,22 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 **Objective.** Show that integrity failures fail closed, that forgery is limited to the claims actually made (integrity only,
 H07), that the authority, privacy and data-class rules hold, and that every v1 qualification of section 11 is confirmed or
 refuted by test.
-**Inputs.** Candidate; corpus; sealed tools; the recorded independent SHA-256 review (3C-D9).
+**Inputs.** Candidate; corpus; sealed tools; the recorded independent SHA-256 review (3C-D9); the accepted 3A stream receipt (for
+the disclosure check of 3C-K2 and K3).
 **Tooling to build (later steps).** Tamper and forgery corpus generator; oracle comparator; SHA-256 differential harness
-(FIPS 180-4 example vectors, the Monte Carlo procedure and a differential against `node:crypto`: official CAVP response files are
-not available offline in the cloud, which D8's "NIST" tests state honestly; see section 16); canary scanner; dependency-free
+(FIPS 180-4 example vectors, the CAVP Monte Carlo procedure and a differential against `node:crypto`; **official CAVP response
+files are not used** and every disclosure says so, per A8 decision 1); canary scanner; dependency-free
 static auditors. Mostly cloud-authorable and rehearsable; NTFS-dependent cases (hard links, staging remnants, links in exports)
 and the certifying run need Windows.
 **Acceptance.** No success on any tampered input; every failure typed; zero canary leaks outside retained producer member
 bytes; every forgery limit matches the disclosed limits; section 8.4 for the qualifications.
 **Evidence.** Per-step receipts; the corpus manifest digests; oracle logs; the canary map and scan result; the audit listings.
-**Limits.** `main` 90 min. Exhaustive flips are in-process.
+**Limits.** `main` 90 min (guards total 81 plus the reserve, section 7). Exhaustive flips are in-process.
 
 <!-- GENERATED:BEGIN inventory-3C -->
 Segment `main`: Main audit. Budget 90 min, extended 180 min.
 
-#### 3C step A: Tamper (segment `main`, guard 20 min, 7 cases)
+#### 3C step A: Tamper (segment `main`, guard 15 min, 7 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -558,7 +623,7 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3C-A6 | Tail truncation and rollback to an older valid prefix: outcome recorded against the pre-registered set | R05 | record | Q03 |
 | 3C-A7 | query on a tampered chain fails closed before answering; results are sorted by index | R22 | assert | - |
 
-#### 3C step B: Shape and forgery (segment `main`, guard 10 min, 6 cases)
+#### 3C step B: Shape and forgery (segment `main`, guard 5 min, 6 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -569,7 +634,7 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3C-B5 | A forged admission field, or an entry whose bytes would fail admission, still verifies (no re-admission): recorded | - | record | Q08 |
 | 3C-B6 | recordDigest and member-list mismatches; an entry from another ledger at the same index | R21 | assert | - |
 
-#### 3C step C: Admission matrix (segment `main`, guard 10 min, 10 cases)
+#### 3C step C: Admission matrix (segment `main`, guard 5 min, 10 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -584,21 +649,21 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3C-C9 | Duplicate, Workspace-mismatch and purged re-supply rules; one Workspace per ledger | R10, R11, R20, R36 | assert | - |
 | 3C-C10 | Known limits demonstrated: Policy admission is inspection-only; Readiness admission is self-digests only | - | record | Q12 |
 
-#### 3C step D: Incremental and hand-written SHA-256 (segment `main`, guard 20 min, 9 cases)
+#### 3C step D: Incremental and hand-written SHA-256 (segment `main`, guard 10 min, 9 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
-| 3C-D1 | FIPS 180-4 example vectors (empty, abc, 448-bit, 896-bit, one million a) on both hand-written implementations | R02 | assert | Q09 |
-| 3C-D2 | Monte Carlo procedure (100 x 1000 iterations) on both implementations against node:crypto | R02 | assert | Q09 |
+| 3C-D1 | FIPS 180-4 example vectors (empty, abc, 448-bit, 896-bit, one million a) on both hand-written implementations; official CAVP response files are not used | R02 | assert | Q09 |
+| 3C-D2 | CAVP Monte Carlo procedure (100 x 1000 iterations) computed on both implementations and against node:crypto; official CAVP response files are not used | R02 | assert | Q09 |
 | 3C-D3 | Lengths 0-300, block-boundary lengths and 1,000 seeded random messages and splits: Sha256Stream equals node:crypto | R02 | assert | Q09 |
 | 3C-D4 | clone independence, repeatable hex(), update after hex() | R02 | assert | Q09 |
 | 3C-D5 | Differential against node:crypto up to 32 MiB with misaligned chunking | R02 | assert | Q09 |
 | 3C-D6 | Checkpoint admission equals the verbatim legacy algorithm at 2, 5, 64, 500, 2,500 and 10,000 transitions: accept or reject, code, stage, subjects | R02, R26 | assert | Q09 |
 | 3C-D7 | A forged deepest prefix digest is rejected identically; 10,001 transitions are refused | R26 | assert | Q09 |
 | 3C-D8 | The mip-canonical.js hand-written SHA-256 under D1-D5 | R02 | assert | Q09 |
-| 3C-D9 | A recorded independent sub-agent review of both implementations is bound; every finding has a disposition (owner decision D8) | - | record | Q09 |
+| 3C-D9 | A recorded independent sub-agent review of both implementations is bound; every finding has a disposition (owner decision D8) | - | assert | Q09 |
 
-#### 3C step E: Tombstone and purge (segment `main`, guard 10 min, 9 cases)
+#### 3C step E: Tombstone and purge (segment `main`, guard 8 min, 9 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -612,7 +677,7 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3C-E8 | An export taken before a tombstone retains the bytes | - | record | Q07 |
 | 3C-E9 | Authority reference permanence and its free-text content | - | record | Q06 |
 
-#### 3C step F: Export integrity (segment `main`, guard 10 min, 5 cases)
+#### 3C step F: Export integrity (segment `main`, guard 6 min, 5 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -622,7 +687,7 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3C-F4 | export --output inside or under the ledger directory | R06 | assert | - |
 | 3C-F5 | Exports of equal ledgers are byte-identical; the marker is created last | R23 | assert | - |
 
-#### 3C step G: Human-authority separation (segment `main`, guard 10 min, 6 cases)
+#### 3C step G: Human-authority separation (segment `main`, guard 5 min, 6 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -633,7 +698,7 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3C-G5 | verifyReadiness and windows-inspect.ps1 are never called by admission | R08 | assert | - |
 | 3C-G6 | Audit of restore callers: no history operation restores an investigation | R12 | assert | - |
 
-#### 3C step H: Data-class audit (segment `main`, guard 10 min, 5 cases)
+#### 3C step H: Data-class audit (segment `main`, guard 8 min, 5 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -643,7 +708,7 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3C-H4 | Authority reference and subject values: the only free-form content; recorded | R24 | record | - |
 | 3C-H5 | No timestamp-like value in MO-1308-authored bytes | R35 | assert | - |
 
-#### 3C step I: Process, network and environment boundaries (segment `main`, guard 10 min, 3 cases)
+#### 3C step I: Process, network and environment boundaries (segment `main`, guard 4 min, 3 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -651,7 +716,7 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3C-I2 | Runtime sample: no process creation and no socket during a representative operation set | R37 | assert | - |
 | 3C-I3 | Environment-variable read whitelist; a secret canary is never exposed | R24 | assert | - |
 
-#### 3C step J: Hostile inputs (segment `main`, guard 15 min, 7 cases)
+#### 3C step J: Hostile inputs (segment `main`, guard 12 min, 7 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
@@ -663,13 +728,13 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3C-J6 | A valid maximal 32 MiB checkpoint member | R26 | assert | - |
 | 3C-J7 | Every hostile input ends within a fixed guard with a typed outcome; no crash and no INTERNAL | R25 | assert | - |
 
-#### 3C step K: Release-claim review (segment `main`, guard 5 min, 3 cases)
+#### 3C step K: Release-claim review (segment `main`, guard 3 min, 3 cases)
 
 | Case | What is established | Requirements | Mode | Qualifications |
 |---|---|---|---|---|
 | 3C-K1 | README, ROADMAP, RELEASE_NOTES, KNOWN_ISSUES, ARCHITECTURE and the CLI docs claim nothing beyond the Freeze; the qualification register is present | - | assert | - |
-| 3C-K2 | Operator guidance: record each export and verify headDigest externally as the rollback anchor (owner decision D7) | - | assert | Q03 |
-| 3C-K3 | Disclosures present: H40, A6, integrity-only, no encryption, ACL responsibility, Windows only, local single-user v1 | - | assert | Q01, Q02, Q13, Q14 |
+| 3C-K2 | Operator guidance (record each export and verify headDigest externally as the rollback anchor, D7) is present and states the recorded outcome of 3C-A6 | - | assert | Q03 |
+| 3C-K3 | Release disclosures state the actual recorded outcome of every qualification case (none NOT_CONFIRMED disclosed as confirmed, none CONFIRMED omitted) and DISCLOSED for the structural qualifications | - | assert | Q01, Q02, Q13, Q14, Q15 |
 <!-- GENERATED:END inventory-3C -->
 
 ### 9.4 3D: final integration (validator run)
@@ -692,7 +757,7 @@ Segment `main`: Validator run. Budget 90 min, extended 180 min.
 | 3D-D2 | Accepted 3A, 3B and 3C receipts, every preserved failed generation, rehearsal and disposition are present and bound | - | assert | - |
 | 3D-D3 | Requirement matrix: every R01-R37 maps to at least one case with PASS in an accepted generation | - | assert | - |
 | 3D-D4 | Retained full regression: MO-1308 suites, CLI, studio, MO-1307 (639) and examples | R03, R31 | assert | - |
-| 3D-D5 | A3 precondition receipt: full CTest including cca.workspace.verify PASS on the candidate | R31 | assert | - |
+| 3D-D5 | The A3.2 receipt (differential CTest gate) is bound with verdict PASS, and cca.workspace.verify passes on the candidate | R31 | assert | - |
 | 3D-D6 | Qualification register Q01-Q15 is complete with a disposition for each | - | assert | - |
 | 3D-D7 | I3 plus a binding-only BF with no self-reference; no tag, push or approval in this task | - | assert | - |
 <!-- GENERATED:END inventory-3D -->
@@ -760,20 +825,21 @@ shipped behavior, not an unresolved defect. Changing the product to remove one n
 | Q06 | The tombstone authority reference is operator-chosen free text and is permanent. | 3C-E9 |
 | Q07 | An export taken before a tombstone keeps the bytes; there is no import and no recall. | 3C-E8 |
 | Q08 | verify does not re-run admission; an entry written by a party with filesystem access verifies if the chain and member digests are consistent. | 3C-B5 |
-| Q09 | The incremental SHA-256 (and the canonical module copy) is hand-written first-party code, verified by differential and example-vector tests and a recorded independent review. | 3B-C5, 3C-D1, 3C-D2, 3C-D3, 3C-D4, 3C-D5, 3C-D6, 3C-D7, 3C-D8, 3C-D9 |
+| Q09 | The incremental SHA-256 (and the canonical module copy) is hand-written first-party code, verified by FIPS 180-4 example messages, the CAVP Monte Carlo procedure computed against node:crypto, differential tests and a recorded independent review. Official CAVP response files were not used. | 3B-C5, 3C-D1, 3C-D2, 3C-D3, 3C-D4, 3C-D5, 3C-D6, 3C-D7, 3C-D8, 3C-D9 |
 | Q10 | Host latency under antivirus and indexers is heavy-tailed; recorded as an environment qualification, not a bound. | 3A-F7 |
 | Q11 | A 100,000-entry export takes about 16 minutes on the reference host; recorded as a MO-1309 performance follow-up, not a defect. | 3A-JC6 |
 | Q12 | A4.4: POLICY_EVALUATION admission is inspection-only; READINESS_RESULT admission is not a MO-1307 verification. | 3C-C10 |
 | Q13 | Integrity only: no signatures, no authenticity, no encryption; access control is the operator filesystem responsibility (H07, H08). | 3C-B3, 3C-K3 |
 | Q14 | Certification claims native Windows 11 x64 only (H45). | 3C-K3 |
-| Q15 | UNC, network, OneDrive and cloud-placeholder locations are observed, not claimed. | 3A-D9 |
+| Q15 | UNC, network, OneDrive and cloud-placeholder locations are observed, not claimed. | 3A-D9, 3C-K3 |
 <!-- GENERATED:END qualifications -->
 
 **Operator guidance required by D7 (documentation, not a CLI behavior change).** The CLI README and the release notes must say,
 in substance: "Record the `headDigest` printed by every `memoryos history verify` and `memoryos history export` run, and the one
 in each export manifest, in a system outside the ledger directory. Comparing a later `headDigest` and `entryCount` with the
 recorded ones is the only way to detect that the newest entries were removed or that an older valid copy of the ledger was
-restored." Case 3C-K2 checks that this guidance is present. Because it lives in `repositories/memoryos-cli/README.md` and
+restored." Case 3C-K2 checks that this guidance is present and states the recorded outcome of 3C-A6 (section 8.4): if the rollback weakness
+was NOT_CONFIRMED the guidance must not describe it as present, and if CONFIRMED it must. Because it lives in `repositories/memoryos-cli/README.md` and
 `docs/`, it is outside the candidate production path set.
 
 ## 12. Receipt schemas
@@ -855,12 +921,13 @@ sections 5.1, 16 and 18.1 and Amendments A1 to A7.
 | WORKSPACE_CHECK_CORRECTION | `tools/verify_workspace.py` |
 <!-- GENERATED:END allowed -->
 
-## 16. Points for owner attention before A8 approval
+## 16. Disclosures and follow-ups carried by A8
 
-1. **NIST vectors.** The cloud has no official CAVP response files. Cases 3C-D1 and D2 use the FIPS 180-4 example messages and
-   the CAVP Monte Carlo procedure computed against `node:crypto`. If the owner wants the official response files, they must be
-   supplied as a bound input.
-2. **Tool dependencies.** Static auditors for 3C must add no dependency; the shared scanner is a small hand-written tokenizer.
-3. **The allowed path set** (section 15) and the candidate production set (section 3) are proposals for the owner to confirm.
-4. **Documentation edits** needed by the campaigns (the D7 operator guidance, and the qualification disclosures of case 3C-K3)
-   are documentation changes outside the candidate; they are not made by this step.
+1. **Official CAVP response files were not used.** Cases 3C-D1 and D2 use the FIPS 180-4 example messages and the CAVP Monte Carlo
+   procedure computed against `node:crypto` (A8 decision 1). Every release disclosure of Q09 states this.
+2. **Tool dependencies.** Static auditors for 3C add no dependency; the shared scanner is a small hand-written tokenizer.
+3. **Documentation edits** needed by the campaigns (the D7 operator guidance, and the disclosures of cases 3C-K2 and K3) are
+   documentation changes outside the candidate; they are made after the 3A and 3C outcomes are recorded, so that they state the
+   actual outcomes (section 8.4).
+4. **Citation to update.** Amendments A3.1 and A3.2 are cited from branch `mo1308/phase3-precondition` (section 3); update the
+   citation when they are merged, and the verdict member of the A3.2 receipt when the receipt exists.

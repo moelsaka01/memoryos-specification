@@ -36,7 +36,7 @@
     },
     {
       "id": "Q09",
-      "statement": "The incremental SHA-256 (and the canonical module copy) is hand-written first-party code, verified by differential and example-vector tests and a recorded independent review."
+      "statement": "The incremental SHA-256 (and the canonical module copy) is hand-written first-party code, verified by FIPS 180-4 example messages, the CAVP Monte Carlo procedure computed against node:crypto, differential tests and a recorded independent review. Official CAVP response files were not used."
     },
     {
       "id": "Q10",
@@ -102,6 +102,7 @@
     "MO1308-R36",
     "MO1308-R37"
   ],
+  "reserveMinutes": 5,
   "streams": [
     {
       "id": "3A",
@@ -111,14 +112,20 @@
         {
           "budgetMinutes": 90,
           "extendedMinutes": 180,
-          "id": "main",
-          "title": "Main campaign"
+          "id": "main1",
+          "title": "Main 1: gate, CLI contract, determinism, filesystem boundary, NTFS semantics"
+        },
+        {
+          "budgetMinutes": 90,
+          "extendedMinutes": 180,
+          "id": "main2",
+          "title": "Main 2: concurrency, swaps, interruption, purge, limits, resources, transport, after-state"
         },
         {
           "budgetMinutes": 180,
           "extendedMinutes": 180,
           "id": "ceiling",
-          "title": "J-C ceiling run (its own step, own hard stop)"
+          "title": "J-C ceiling run (its own segment, own clock and hard stop; runs only after main1 and main2 PASS)"
         }
       ],
       "steps": [
@@ -158,7 +165,7 @@
               "requirements": [
                 "MO1308-R31"
               ],
-              "title": "The A3 precondition receipt (full CTest including cca.workspace.verify) is bound and PASS for the same candidate"
+              "title": "The A3.2 receipt (differential CTest gate, BF 1dd1e8c8 versus B2 47595cc9) is bound with verdict PASS for the same candidate"
             },
             {
               "id": "3A-A5",
@@ -187,7 +194,7 @@
           ],
           "guardMinutes": 5,
           "id": "A",
-          "segment": "main",
+          "segment": "main1",
           "title": "Gate"
         },
         {
@@ -298,9 +305,9 @@
               "title": "SDK and CLI produce byte-identical entries, query results and exports for the same operations"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 15,
           "id": "B",
-          "segment": "main",
+          "segment": "main1",
           "title": "CLI contract through real processes"
         },
         {
@@ -368,9 +375,9 @@
               "title": "File-identity audit: no published file changes bytes or NTFS file index across later operations; only purge deletes members"
             }
           ],
-          "guardMinutes": 5,
+          "guardMinutes": 8,
           "id": "C",
-          "segment": "main",
+          "segment": "main1",
           "title": "Determinism and layout"
         },
         {
@@ -501,9 +508,9 @@
               "title": "Reparse-point survey: every kind that can be planted unprivileged is refused; the others are recorded as not plantable (K11)"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 15,
           "id": "D",
-          "segment": "main",
+          "segment": "main1",
           "title": "Filesystem boundary"
         },
         {
@@ -582,9 +589,9 @@
               "title": "Read-only attribute on a ledger file: reads work, nothing is modified"
             }
           ],
-          "guardMinutes": 5,
+          "guardMinutes": 7,
           "id": "E",
-          "segment": "main",
+          "segment": "main1",
           "title": "NTFS semantics"
         },
         {
@@ -664,9 +671,9 @@
               "title": "F1 repeated 10 times: census of every filesystem error; staging EPERM in more than 1 of 10 runs escalates (owner decision D6)"
             }
           ],
-          "guardMinutes": 20,
+          "guardMinutes": 25,
           "id": "F",
-          "segment": "main",
+          "segment": "main2",
           "title": "Concurrency"
         },
         {
@@ -748,7 +755,7 @@
           ],
           "guardMinutes": 10,
           "id": "G",
-          "segment": "main",
+          "segment": "main2",
           "title": "Directory-swap races (H40)"
         },
         {
@@ -855,9 +862,9 @@
               "title": "Closed stdout and stdin during a command"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 12,
           "id": "H",
-          "segment": "main",
+          "segment": "main2",
           "title": "Interruption"
         },
         {
@@ -927,7 +934,7 @@
           ],
           "guardMinutes": 5,
           "id": "I",
-          "segment": "main",
+          "segment": "main2",
           "title": "Tombstone and purge on the host"
         },
         {
@@ -1066,7 +1073,7 @@
           ],
           "guardMinutes": 15,
           "id": "J",
-          "segment": "main",
+          "segment": "main2",
           "title": "Limits (section 14.2)"
         },
         {
@@ -1110,7 +1117,7 @@
           ],
           "guardMinutes": 5,
           "id": "K",
-          "segment": "main",
+          "segment": "main2",
           "title": "Resources and process"
         },
         {
@@ -1179,7 +1186,7 @@
           ],
           "guardMinutes": 5,
           "id": "L",
-          "segment": "main",
+          "segment": "main2",
           "title": "Output transport and host variance"
         },
         {
@@ -1225,7 +1232,7 @@
           ],
           "guardMinutes": 5,
           "id": "M",
-          "segment": "main",
+          "segment": "main2",
           "title": "After-state"
         },
         {
@@ -1335,7 +1342,7 @@
               "title": "Post-ceiling after-state: production blobs unchanged; no residue outside the work root; ceiling data not retained (digests and logs only)"
             }
           ],
-          "guardMinutes": 180,
+          "guardMinutes": 175,
           "id": "JC",
           "segment": "ceiling",
           "title": "J-C ceiling run (100,000 entries)"
@@ -1398,7 +1405,7 @@
               "title": "No released document, package, evidence or tag byte changed except append-only records"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 5,
           "id": "A",
           "segment": "main",
           "title": "Lineage and path allowlist"
@@ -1517,7 +1524,7 @@
               "title": "No new third-party code: LICENSE and notices unchanged; hand-written cryptography listed as first-party"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 5,
           "id": "C",
           "segment": "main",
           "title": "Dependency audit"
@@ -1563,7 +1570,7 @@
               "title": "Closure manifest digest recorded"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 5,
           "id": "D",
           "segment": "main",
           "title": "Source closure"
@@ -1599,7 +1606,7 @@
               "title": "Deterministic archive of the closure is byte-identical across both assemblies"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 15,
           "id": "E",
           "segment": "main",
           "title": "Reproducibility"
@@ -1663,7 +1670,7 @@
               "title": "Closure manifest and license statement: all first-party; no SBOM (owner decision D9)"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 5,
           "id": "G",
           "segment": "main",
           "title": "Provenance"
@@ -1761,7 +1768,7 @@
               "title": "query on a tampered chain fails closed before answering; results are sorted by index"
             }
           ],
-          "guardMinutes": 20,
+          "guardMinutes": 15,
           "id": "A",
           "segment": "main",
           "title": "Tamper"
@@ -1830,7 +1837,7 @@
               "title": "recordDigest and member-list mismatches; an entry from another ledger at the same index"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 5,
           "id": "B",
           "segment": "main",
           "title": "Shape and forgery"
@@ -1943,7 +1950,7 @@
               "title": "Known limits demonstrated: Policy admission is inspection-only; Readiness admission is self-digests only"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 5,
           "id": "C",
           "segment": "main",
           "title": "Admission matrix"
@@ -1960,7 +1967,7 @@
               "requirements": [
                 "MO1308-R02"
               ],
-              "title": "FIPS 180-4 example vectors (empty, abc, 448-bit, 896-bit, one million a) on both hand-written implementations"
+              "title": "FIPS 180-4 example vectors (empty, abc, 448-bit, 896-bit, one million a) on both hand-written implementations; official CAVP response files are not used"
             },
             {
               "id": "3C-D2",
@@ -1972,7 +1979,7 @@
               "requirements": [
                 "MO1308-R02"
               ],
-              "title": "Monte Carlo procedure (100 x 1000 iterations) on both implementations against node:crypto"
+              "title": "CAVP Monte Carlo procedure (100 x 1000 iterations) computed on both implementations and against node:crypto; official CAVP response files are not used"
             },
             {
               "id": "3C-D3",
@@ -2050,7 +2057,7 @@
             {
               "id": "3C-D9",
               "mandatory": true,
-              "mode": "record",
+              "mode": "assert",
               "qualifications": [
                 "Q09"
               ],
@@ -2058,7 +2065,7 @@
               "title": "A recorded independent sub-agent review of both implementations is bound; every finding has a disposition (owner decision D8)"
             }
           ],
-          "guardMinutes": 20,
+          "guardMinutes": 10,
           "id": "D",
           "segment": "main",
           "title": "Incremental and hand-written SHA-256"
@@ -2158,7 +2165,7 @@
               "title": "Authority reference permanence and its free-text content"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 8,
           "id": "E",
           "segment": "main",
           "title": "Tombstone and purge"
@@ -2217,7 +2224,7 @@
               "title": "Exports of equal ledgers are byte-identical; the marker is created last"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 6,
           "id": "F",
           "segment": "main",
           "title": "Export integrity"
@@ -2286,7 +2293,7 @@
               "title": "Audit of restore callers: no history operation restores an investigation"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 5,
           "id": "G",
           "segment": "main",
           "title": "Human-authority separation"
@@ -2345,7 +2352,7 @@
               "title": "No timestamp-like value in MO-1308-authored bytes"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 8,
           "id": "H",
           "segment": "main",
           "title": "Data-class audit"
@@ -2384,7 +2391,7 @@
               "title": "Environment-variable read whitelist; a secret canary is never exposed"
             }
           ],
-          "guardMinutes": 10,
+          "guardMinutes": 4,
           "id": "I",
           "segment": "main",
           "title": "Process, network and environment boundaries"
@@ -2462,7 +2469,7 @@
               "title": "Every hostile input ends within a fixed guard with a typed outcome; no crash and no INTERNAL"
             }
           ],
-          "guardMinutes": 15,
+          "guardMinutes": 12,
           "id": "J",
           "segment": "main",
           "title": "Hostile inputs"
@@ -2485,7 +2492,7 @@
                 "Q03"
               ],
               "requirements": [],
-              "title": "Operator guidance: record each export and verify headDigest externally as the rollback anchor (owner decision D7)"
+              "title": "Operator guidance (record each export and verify headDigest externally as the rollback anchor, D7) is present and states the recorded outcome of 3C-A6"
             },
             {
               "id": "3C-K3",
@@ -2495,13 +2502,14 @@
                 "Q01",
                 "Q02",
                 "Q13",
-                "Q14"
+                "Q14",
+                "Q15"
               ],
               "requirements": [],
-              "title": "Disclosures present: H40, A6, integrity-only, no encryption, ACL responsibility, Windows only, local single-user v1"
+              "title": "Release disclosures state the actual recorded outcome of every qualification case (none NOT_CONFIRMED disclosed as confirmed, none CONFIRMED omitted) and DISCLOSED for the structural qualifications"
             }
           ],
-          "guardMinutes": 5,
+          "guardMinutes": 3,
           "id": "K",
           "segment": "main",
           "title": "Release-claim review"
@@ -2569,7 +2577,7 @@
               "requirements": [
                 "MO1308-R31"
               ],
-              "title": "A3 precondition receipt: full CTest including cca.workspace.verify PASS on the candidate"
+              "title": "The A3.2 receipt (differential CTest gate) is bound with verdict PASS, and cca.workspace.verify passes on the candidate"
             },
             {
               "id": "3D-D6",
