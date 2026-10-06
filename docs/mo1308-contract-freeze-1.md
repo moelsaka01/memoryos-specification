@@ -1577,3 +1577,68 @@ workspace path in `memoryos.standard.mo1305-phase3`; the tag-absence assertions 
 behind `memoryos.standard.specification` and `memoryos.standard.coverage-gap`.
 
 No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
+
+## 33. Amendment A3.3 — Smart App Control: blocked-executable exclusion for the A3.2 runs (2026-10-06, owner-authorized)
+
+This amendment is append-only. The frozen text above, Amendments A1 to A7 and A3.1, and
+Amendment A3.2, are unchanged. It is a sub-amendment of Amendment A3 (section 26) and supplements
+A3.2 (section 32). It does not use or pre-empt A8 or A9.
+
+**Finding.** Smart App Control is enforcing on the reference host
+(`VerifiedAndReputablePolicyState = 1`) and blocks a build-dependent set of freshly built unsigned
+executables ("An Application Control policy has blocked this file"). The owner does not change
+this security setting, and the A3.2 setup does not rebuild until the set is empty. Because a
+blocked gtest executable aborts `ctest` discovery, `ctest -N` cannot complete in a tree that
+contains one.
+
+**Precondition proof (C/C++ source diff).** `git diff --name-only 1dd1e8c8 47595cc9` lists 186
+files and none is a C or C++ source or header (`*.c`, `*.cc`, `*.cpp`, `*.cxx`, `*.h`, `*.hh`,
+`*.hpp`, `*.hxx`, `*.ipp`, `*.inl`, `*.tpp` and similar); `git diff --stat` over
+`repositories/cca-core`, `cca-sdk`, `cca-compiler`, `cca-cli`, the root `CMakeLists.txt`,
+`CMakePresets.json`, `vcpkg.json`, `cmake` and `tests` is empty. The non-source build-related
+files that did change are:
+
+- `repositories/memoryos-cli/CMakeLists.txt` (project is `LANGUAGES NONE`: version 1.1.0 to 1.2.0 and
+  three added `node --check` commands for the new history sources; no C++ target or test is
+  built or changed);
+- `repositories/memoryos-cli/package.json` (version 1.2.0) and
+  `repositories/cca-studio/package.json` (a `test` list extended with two history test files and a
+  new `test:history-phase1` script; Node tests only);
+- `repositories/cca-studio/tests/fixtures/memoryos-history/1.0.0/shape-cases.json` (a Node test
+  fixture);
+- `tools/verify_workspace.py` (the `cca.workspace.verify` script itself, changed by MO-1308);
+- `.gitattributes`.
+
+None of them alters how any C++ test is built or what it tests.
+
+**Exclusion rule.** After setup, every executable that the Application Control policy blocks in
+either tree is identified by launching each built executable and capturing the reason. Every
+CTest test whose executable is in the UNION of the two blocked sets is excluded in BOTH runs, as
+`ENVIRONMENT_BLOCKED_SAC`, with the executable and test names recorded. The A3.1 waiver
+(`cca_core_tests_NOT_BUILT`) applies as well. The exclusion is frozen in
+`repositories/cca-conformance/evidence/mo1308/phase3-precondition-g2/setup/exclusions.json`,
+committed before the recorded runs. To let `ctest` complete discovery, each blocked gtest
+executable is renamed to `<name>.exe.sac-blocked` in the build directory of both trees (build
+output only; no repository file changes), so that its generated include registers the existing
+`<target>_NOT_BUILT` placeholder, which is excluded by name like the `cca_core_tests` placeholder.
+The names of the tests such an executable would have registered are recorded from the same
+executable built unblocked in the A3.1 tree (C/C++ sources are identical between BF and B2).
+
+**Guard.** If a blocked executable is not a native C++ test or tool binary (for example `node.exe`
+or anything a Node-based test or `cca.workspace.verify` depends on), the run stops and is reported
+instead of excluding.
+
+**Setup deviation accepted.** `MEMORYOS_VSCODE_NPM_EXECUTABLE` is pinned to the pinned Node
+folder's `npm.cmd` at configure time (`-DMEMORYOS_VSCODE_NPM_EXECUTABLE=.../npm.cmd`), identically
+in both trees, because `find_program` otherwise selects the extensionless `npm` shell script. This
+deviates from "preset `default` exactly" and is recorded as such.
+
+**Possible earlier effect (unconfirmed).** Smart App Control may explain part of the A3.1
+failures: freshly built executables that were blocked appear as failed or not-run tests. This has
+not been confirmed and does not change the recorded A3.1 classifications.
+
+**Follow-up added (outside MO-1308).** Native C++ verification belongs on GitHub's Windows runners
+(no Smart App Control) once Windows CI is green. While Smart App Control enforces, this host is
+not a reliable native C++ execution host.
+
+No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
