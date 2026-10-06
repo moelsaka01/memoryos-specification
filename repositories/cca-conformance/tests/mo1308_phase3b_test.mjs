@@ -105,7 +105,7 @@ test('A01 lineage, changed paths and released bytes hold for HEAD', () => {
   assert.deepEqual(A.auditIdentity(ctx).problems, []);
   const lineage = A.auditLineage(ctx);
   assert.deepEqual(lineage.problems, []);
-  assert.ok(lineage.observed.amendments.includes('A8@33'));
+  assert.ok(lineage.observed.amendments.includes('A3.3@33') && lineage.observed.amendments.includes('A8@34'));
   const paths = A.auditChangedPaths(ctx);
   assert.deepEqual(paths.problems, []);
   assert.ok(paths.observed.changed >= 186);
