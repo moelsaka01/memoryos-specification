@@ -151,8 +151,8 @@ test('I02 stream, step and case counts are the protocol ones', () => {
   const shape = (id) => streamOf(inventory, id).steps.map((step) => `${step.id}:${step.cases.length}`).join(' ');
   assert.equal(shape('3A'), 'A:7 B:10 C:6 D:12 E:7 F:7 G:6 H:10 I:6 J:13 K:4 L:6 M:4 JC:10');
   assert.equal(shape('3B'), 'A:4 B:5 C:5 D:4 E:3 F:2 G:3');
-  assert.equal(shape('3C'), 'A:7 B:6 C:10 D:9 E:9 F:5 G:6 H:5 I:3 J:7 K:3');
-  assert.equal(shape('3D'), 'D:7');
+  assert.equal(shape('3C'), 'A:7 B:6 C:10 D:9 E:9 F:5 G:6 H:5 I:3 J:7');
+  assert.equal(shape('3D'), 'D:7 E:3');
   assert.deepEqual(streamOf(inventory, '3A').steps.filter((step) => step.segment === 'ceiling').map((step) => step.id), ['JC']);
   assert.equal(allCases(inventory).length, 108 + 26 + 70 + 7);
   assert.deepEqual(streamOf(inventory, '3A').segments.map((s) => [s.id, s.budgetMinutes, s.extendedMinutes]), [['main1', 90, 180], ['main2', 90, 180], ['ceiling', 180, 180]]);
@@ -179,7 +179,7 @@ test('I04 the owner decisions D6 and D7 are in the inventory', () => {
   assert.ok(cases.get('3A-F7').title.includes('more than 1 of 10'));
   assert.equal(cases.get('3A-F7').mode, 'record');
   assert.ok(cases.get('3C-A6').qualifications.includes('Q03'));
-  assert.ok(cases.get('3C-K2').title.includes('headDigest'));
+  assert.ok(cases.get('3D-E2').title.includes('headDigest'));
   assert.ok(cases.get('3C-E6').qualifications.includes('Q04'));
   assert.ok(cases.get('3C-D9').title.includes('sub-agent'));
   assert.equal(cases.get('3A-A7').mandatory, false);
@@ -894,7 +894,7 @@ test('M02 guards fit the budgets by design in every segment of every stream (A8 
     sums.push(`${stream.id}/${segment.id}:${guards}`);
     assert.ok(guards + inv.reserveMinutes <= segment.budgetMinutes, `${stream.id}/${segment.id}`);
   }
-  assert.deepEqual(sums, ['3A/main1:50', '3A/main2:82', '3A/ceiling:175', '3B/main:55', '3C/main:81', '3D/main:60']);
+  assert.deepEqual(sums, ['3A/main1:50', '3A/main2:82', '3A/ceiling:175', '3B/main:55', '3C/main:78', '3D/main:75']);
   const broken = JSON.parse(JSON.stringify(inv));
   broken.streams[0].steps.find((step) => step.id === 'F').guardMinutes = 40;
   assert.ok(validateInventory(broken).some((problem) => problem.includes('3A/main2') && problem.includes('exceed')));
@@ -903,7 +903,7 @@ test('M02 guards fit the budgets by design in every segment of every stream (A8 
   assert.ok(validateInventory(shortExtended).some((problem) => problem.includes('extended budget below')));
   const text = fs.readFileSync(inFile(PROTOCOL), 'utf8');
   for (const row of ['| 3A `main1` | A 5, B 15, C 8, D 15, E 7 | 50 | 5 | 55 | 90 |', '| 3A `main2` | F 25, G 10, H 12, I 5, J 15, K 5, L 5, M 5 | 82 | 5 | 87 | 90 |',
-    '| 3A `ceiling` | JC 175 | 175 | 5 | 180 | 180 |', '| 3C `main` | A 15, B 5, C 5, D 10, E 8, F 6, G 5, H 8, I 4, J 12, K 3 | 81 | 5 | 86 | 90 |']) assert.ok(text.includes(row), row);
+    '| 3A `ceiling` | JC 175 | 175 | 5 | 180 | 180 |', '| 3C `main` | A 15, B 5, C 5, D 10, E 8, F 6, G 5, H 8, I 4, J 12 | 78 | 5 | 83 | 90 |', '| 3D `main` | D 60, E 15 | 75 | 5 | 80 | 90 |']) assert.ok(text.includes(row), row);
 });
 
 test('M03 the ceiling segment is the only one of 3A with the 180-minute budget and runs after both main segments', () => {
@@ -941,7 +941,7 @@ test('M05 the stream receipt carries each qualification case outcome', async (t)
   sealGeneration({ ...options, now: clock() });
   await runAll(root, options.evidenceDir, '3C', { '3C-A6': async (c) => c.observe({ outcome: 'NOT_CONFIRMED' }), '3C-E6': async (c) => c.observe({ outcome: 'CONFIRMED' }) });
   const receipt = closeGeneration({ root, evidenceDir: options.evidenceDir, inventory, now: clock() });
-  assert.deepEqual(receipt.qualifications.find((item) => item.id === 'Q03'), { id: 'Q03', cases: [{ id: '3C-A6', result: 'PASS', outcome: 'NOT_CONFIRMED' }, { id: '3C-K2', result: 'PASS', outcome: null }] });
+  assert.deepEqual(receipt.qualifications.find((item) => item.id === 'Q03'), { id: 'Q03', cases: [{ id: '3C-A6', result: 'PASS', outcome: 'NOT_CONFIRMED' }] });
   assert.equal(receipt.qualifications.find((item) => item.id === 'Q04').cases[0].outcome, 'CONFIRMED');
   assert.deepEqual(verifyEvidence({ root, evidenceDir: options.evidenceDir, inventory }).problems, []);
 });

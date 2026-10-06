@@ -1721,3 +1721,15 @@ The protocol text now cites Amendments A3.1 to A3.3 by their Freeze sections 31 
 | `repositories/cca-conformance/mo1308-phase3-inventory.json` | `c56642c4f46e4adb82744f4176cab8d35fdd19592376ed130e89af8726d9ed1c` |
 | `repositories/cca-conformance/mo1308-phase3-candidate-identity.json` | `92b33904a1ff5a868d5b13b6f1354efbf718778d0b80594ce38b7e67077a7244` |
 | `repositories/cca-conformance/mo1308-phase3-corpus-manifest.json` | `b055805d2db43f414261921ded61eb69d856ad5c821139254e9ba1b7ce386c9f` |
+
+
+### A8.7 Phase 3 housekeeping: release-claim review moved to 3D (append-only note, 2026-10-06, owner decision)
+
+Cases 3C-K1 to K3 (step K of 3C) moved to 3D as step E, cases 3D-E1 to E3, because only after all stream outcomes are known can the release claims and disclosures be reviewed. 3C now has 67 cases and 3D has 10; the total stays 211. Guards: 3C main 78 + 5 = 83 of 90; 3D main D 60 + E 15 + 5 = 80 of 90. The requirement matrix is unchanged (the moved cases map to no requirement); the qualification register cites 3D-E2 and 3D-E3. The inventory, the generated protocol tables and the guard table were regenerated; these are the bound hashes from here.
+
+| File | SHA-256 |
+|---|---|
+| `docs/mo1308-phase3-protocol.md` | `f904b3a0e863d15a9a6aff58730652d21ebfc89cd601a35edcf25526c28f952b` |
+| `repositories/cca-conformance/mo1308-phase3-inventory.json` | `6c59151012db60fa5ecbfa68c99673a617be60450a8763c93f68c3621ec5bd98` |
+| `repositories/cca-conformance/mo1308-phase3-candidate-identity.json` | `92b33904a1ff5a868d5b13b6f1354efbf718778d0b80594ce38b7e67077a7244` |
+| `repositories/cca-conformance/mo1308-phase3-corpus-manifest.json` | `b055805d2db43f414261921ded61eb69d856ad5c821139254e9ba1b7ce386c9f` |
