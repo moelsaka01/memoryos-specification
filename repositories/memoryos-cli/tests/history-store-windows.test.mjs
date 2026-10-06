@@ -10,7 +10,7 @@ import test from "node:test";
 
 import * as contract from "../../cca-studio/web/js/memoryos-history-contract.js";
 import { createHistoryStore } from "../src/history-store.js";
-import { checkpointRecord, policyRecord } from "./support/history-corpus.mjs";
+import { CORPUS_WORKSPACE, checkpointRecord, policyRecord } from "./support/history-corpus.mjs";
 import { createHistoryEngine } from "./support/history-engine.mjs";
 
 // MO-1308 Contract Freeze 1, Stream 2C: the native-Windows (NTFS) tests of the file store. They exercise the
@@ -392,7 +392,12 @@ test("W07 drive-letter, UNC and long-path forms work end to end; the \\\\?\\ and
   assert.equal(store.verify(unc(ledger)).headDigest, head);
   assert.equal(store.append(unc(ledger), mip("two")).index, 1);
   assert.equal(store.query(unc(ledger), QUERY).entries.length, 2);
-  store.init(unc(join(root, "unc-ledger")), { ledgerName: "a", workspaceIdentifier: "w" });
+  // A record of another Workspace is refused by admission, over a UNC path too, and commits nothing.
+  store.init(unc(join(root, "unc-mismatch")), { ledgerName: "a", workspaceIdentifier: "w" });
+  assert.throws(() => store.append(unc(join(root, "unc-mismatch")), mip("m")), code("WORKSPACE_MISMATCH"));
+  assert.deepEqual(readdirSync(join(root, "unc-mismatch", "entries")), [], "a refused record commits nothing");
+  // The ledger Workspace of the path-form checks is the real checkpoint's Workspace.
+  store.init(unc(join(root, "unc-ledger")), { ledgerName: "a", workspaceIdentifier: CORPUS_WORKSPACE });
   assert.equal(store.append(join(root, "unc-ledger"), mip("u")).index, 0);
   assert.equal(store.exportLedger(unc(ledger), unc(join(root, "unc-export"))).entryCount, 2);
   assert.equal(store.verifyExport(unc(join(root, "unc-export"))).entryCount, 2);
@@ -405,7 +410,7 @@ test("W07 drive-letter, UNC and long-path forms work end to end; the \\\\?\\ and
   mkdirSync(deep, { recursive: true });
   const longLedger = join(deep, "ledger");
   assert.ok(longLedger.length > 300);
-  store.init(longLedger, { ledgerName: "a", workspaceIdentifier: "w" });
+  store.init(longLedger, { ledgerName: "a", workspaceIdentifier: CORPUS_WORKSPACE });
   store.append(longLedger, mip("long one"));
   store.append(longLedger, mip("long two"));
   assert.equal(store.tombstone(longLedger, { targetIndex: 0, reason: "PRIVACY_REQUEST", authorityReference: "L-1" }).index, 2);
@@ -455,7 +460,8 @@ test("W08 NTFS concurrency: ten real appender processes with concurrent readers;
 
   // The exact contract. Present records are identified by the member bytes' digest, which is unique per record.
   const entries = readdirSync(join(ledger, "entries")).map((name) => JSON.parse(readFileSync(join(ledger, "entries", name), "utf8")));
-  const digestOf = (text) => `sha256:${crypto.createHash("sha256").update(text).digest("hex")}`;
+  // The stored member is the real checkpoint record built from the label (checkpointRecord is deterministic), not the label text.
+  const digestOf = (text) => `sha256:${crypto.createHash("sha256").update(checkpointRecord(text).members[0].bytes).digest("hex")}`;
   const presence = new Map();
   for (const entry of entries) presence.set(entry.record.members[0].sha256, (presence.get(entry.record.members[0].sha256) ?? 0) + 1);
   const succeeded = records.filter((record) => record.outcome === "success");

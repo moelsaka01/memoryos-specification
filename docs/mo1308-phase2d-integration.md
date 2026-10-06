@@ -127,3 +127,31 @@ retry, logs kept and classified if any expected result is not met; raw logs unde
 Evidence commit (single-parent child of `$D`, adding only `repositories/cca-conformance/evidence/mo1308/phase2d/`) and a
 binding-only commit, as the earlier streams. The receipt must disclose A6 and the H40 qualification, the section 3
 decisions, and every Windows test run versus NOT_RUN. No `main` update, no tag.
+
+## 7. B2 generation history
+
+| Generation | Evidence | Head | Result |
+|---|---|---|---|
+| 1 | `evidence/mo1308/phase2d/`, commit `9909a4098cbb05ca9932cd76eb18c8526a01f513` | `7891244c2987d61d5b449662b95bdbd79b88c7e0` | FAILED_PRESERVED (unchanged, never edited) |
+| 2 | `evidence/mo1308/phase2d-g2/` | recorded in that receipt and binding | see the generation 2 receipt |
+
+**Generation 1 failure.** Everything passed except two native-Windows tests (10 of 12 ran green, 0 skipped; the CLI
+suite failed the same two). Both were test defects, never run on Windows before generation 1, because the 2D edit that
+moved the 2C tests onto the real engine could only be checked on Linux (section 4):
+
+- W07 initialised its ledgers with Workspace `"w"` and appended real checkpoint records whose Workspace is
+  `workspace-investigation`; admission correctly refused them with `MO1308_WORKSPACE_MISMATCH`.
+- W08 found each appended record by the SHA-256 of the label text, but the stored member is the real checkpoint JSON
+  built from that label, so no record was found although all 30 appends succeeded.
+
+**Generation 2 correction (test only; production and every other test unchanged).** W07 now uses the real checkpoint's
+Workspace for the ledgers that receive appends, and gains an explicit assertion that a record of another Workspace is
+refused with `MO1308_WORKSPACE_MISMATCH` over a UNC path and commits nothing. W08 looks records up by the digest of the
+actual stored member bytes (`checkpointRecord(label).members[0].bytes`); every W08 contract assertion is unchanged.
+
+## 8. Reference-host characterization of the 2D tools (performance follow-up)
+
+Generation 1 on the reference Windows host (Node v24.21.0), 100,000 entries, one run: `history export` 964 s,
+`history verify` 104 s, `history verify-export` 135 s (query page 50 s, append of the last entry 92 s, real-process
+`history verify` 197 s). These are recorded as a performance follow-up for MO-1309, not as a defect: the Freeze records
+no time bound at the ceiling (Amendment A4.4 item 3).
