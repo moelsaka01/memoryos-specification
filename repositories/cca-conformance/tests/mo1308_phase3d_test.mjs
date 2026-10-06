@@ -30,9 +30,9 @@ const EVIDENCE = 'repositories/cca-conformance/evidence/mo1308';
 const inventory = loadInventory(path.join(repo, INVENTORY_FILE));
 const tmp = (t) => { const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'mo1308-p3d-test-')); t.after(() => fs.rmSync(directory, { recursive: true, force: true })); return directory; };
 
-test('D01 the 3D cases are all implemented and none is host-only', () => {
+test('D01 the ten 3D cases (steps D and E) are all implemented and none is host-only', () => {
   assert.deepEqual(checkDefinition({ inventory, stream: '3D', impls, hostOnly }), []);
-  assert.equal(Object.keys(impls).length, 7);
+  assert.equal(Object.keys(impls).length, 10);
 });
 
 test('D02 against the real repository today: D1 is READY, everything else NOT_READY with reasons, and nothing is written', () => {
@@ -40,9 +40,9 @@ test('D02 against the real repository today: D1 is READY, everything else NOT_RE
   const report = validateFinal({ root: repo });
   assert.equal(report.result, 'NOT_READY');
   const status = Object.fromEntries(report.cases.map((row) => [row.id, row.status]));
-  assert.deepEqual(status, { '3D-D1': 'READY', '3D-D2': 'NOT_READY', '3D-D3': 'NOT_READY', '3D-D4': 'NOT_READY', '3D-D5': 'NOT_READY', '3D-D6': 'NOT_READY', '3D-D7': 'NOT_READY' });
+  assert.deepEqual(status, { '3D-D1': 'READY', '3D-D2': 'NOT_READY', '3D-D3': 'NOT_READY', '3D-D4': 'NOT_READY', '3D-D5': 'NOT_READY', '3D-D6': 'NOT_READY', '3D-D7': 'NOT_READY', '3D-E1': 'NOT_READY', '3D-E2': 'NOT_READY', '3D-E3': 'NOT_READY' });
   assert.match(report.cases.find((row) => row.id === '3D-D2').problems[0], /no accepted certifying generation/);
-  assert.match(report.cases.find((row) => row.id === '3D-D5').problems[0], /A3\.2 receipt is absent/);
+  assert.match(report.cases.find((row) => row.id === '3D-D5').problems[0], /A3\.2 verdict is "FAILED_PRESERVED", not PASS/, 'the real A3.2 receipt of the precondition branch is FAILED_PRESERVED');
   assert.equal(gitText(repo, ['status', '--porcelain']), before, 'a read-only validator changes nothing');
   assert.throws(() => buildI3Inventory({ root: repo }), (error) => error.code === 'NOT_READY');
 });
@@ -87,7 +87,7 @@ async function completeClone(t, options = {}) {
     assert.equal(result.result, 'ACCEPTED');
   }
   const lines = [...qualificationCases(inventory).map((item) => `${item.id}: ${options.disclosed ?? 'CONFIRMED'} - stated`), ...structuralQualifications(inventory).map((id) => `${id}: DISCLOSED - stated`)];
-  put(clone, DISCLOSURES_FILE, `# Disclosures\n\n${lines.join('\n')}\n`);
+  put(clone, DISCLOSURES_FILE, `# Disclosures\n\nOperators record the headDigest of every export outside the ledger.\n\nRegister: ${inventory.qualifications.map((item) => item.id).join(' ')}.\n\n${lines.join('\n')}\n`);
   const identity = JSON.parse(fs.readFileSync(path.join(clone.directory, IDENTITY), 'utf8'));
   const suite = (name, total) => ({ name, runner: 'node --test', passed: total, failed: 0, skipped: 0, total, exitCode: 0, logSha256: sha256Hex(Buffer.from(name)) });
   put(clone, REGRESSION_FILE, JSON.stringify({ kind: REGRESSION_KIND, version: '1.0.0', commit: clone.run('rev-parse', 'HEAD'), candidate: { productionTreeDigest: identity.productionTreeDigest }, suites: [suite('mo1308', 120), suite('cli', 40), suite('studio', 90), suite('mo1307', 639), suite('examples', 12)] }));

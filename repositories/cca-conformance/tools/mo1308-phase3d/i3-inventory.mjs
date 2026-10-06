@@ -15,7 +15,7 @@ import { readOutcomes, structuralQualifications } from '../mo1308-phase3/lib/dis
 import { acceptedPasses, evaluate, A32_RECEIPT_FILE, CANDIDATE_IDENTITY_FILE, DISCLOSURES_FILE, FINAL_INVENTORY_FILE, REGRESSION_FILE, RELEASE_TAG } from './validate.mjs';
 
 export const FINAL_INVENTORY_KIND = 'MO1308FinalReleaseInventory';
-const REFUSING = ['3D-D1', '3D-D2', '3D-D3', '3D-D4', '3D-D5', '3D-D6'];
+const REFUSING = ['3D-D1', '3D-D2', '3D-D3', '3D-D4', '3D-D5', '3D-D6', '3D-E1', '3D-E2', '3D-E3'];
 
 export function buildI3Inventory(options) {
   const { report, context } = evaluate(options);

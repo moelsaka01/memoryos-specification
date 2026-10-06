@@ -1,4 +1,4 @@
-// MO-1308 Phase 3D: the seven integration cases. Each runs the read-only validator once (memoized) and fails with the reasons
+// MO-1308 Phase 3D: the ten integration cases (step D: the validator; step E: release-claim and disclosure review). Each runs the read-only validator once (memoized) and fails with the reasons
 // when its case is NOT_READY. On the Windows host after BF this is the validator run; before that every case reports the
 // current state honestly, so a rehearsal of 3D is expected to end REHEARSAL_FAILED until the evidence exists.
 import path from 'node:path';
@@ -23,6 +23,6 @@ function verdictCase(id) {
   };
 }
 
-export const impls = Object.fromEntries(['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7'].map((id) => [`3D-${id}`, verdictCase(`3D-${id}`)]));
+export const impls = Object.fromEntries(['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'E1', 'E2', 'E3'].map((id) => [`3D-${id}`, verdictCase(`3D-${id}`)]));
 export const hostOnly = {};
 void path;

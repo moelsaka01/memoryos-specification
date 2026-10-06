@@ -242,6 +242,50 @@ export function checkD7({ root, repo = root, head }) {
   return { problems, observed, pendingBf, tagged };
 }
 
+// ---- step E: release-claim and disclosure review (formerly 3C-K1 to K3; all case outcomes are known here) ----
+
+const OVERCLAIM = /tamper[- ]?proof|\bencrypt(?:ed|ion)\b|\bsigned\b|\bauthenticat(?:ed|ion)\b|multi-user|shared storage|cloud (?:sync|storage|backup)|CCA-MEMORYOS-1\.0 (?:conformant|compliant)/i;
+const NEGATION = /\b(no|not|never|without|does not|cannot|isn't|excluded|out of scope|NOT_VERIFIED_BY_MEMORYOS|re-review|before any)\b/i;
+const CLAIM_DOCUMENTS = ['README.md', 'ROADMAP.md', 'RELEASE_NOTES.md', 'KNOWN_ISSUES.md', 'ARCHITECTURE.md', 'repositories/memoryos-cli/README.md'];
+const text = (root, relative) => fs.readFileSync(path.join(root, ...relative.split('/')), 'utf8');
+
+export function checkE1({ root, inventory }) {
+  const problems = [];
+  if (!fileExists(root, DISCLOSURES_FILE)) problems.push(`${DISCLOSURES_FILE} does not exist`);
+  else for (const row of inventory.qualifications) if (!new RegExp(`\\b${row.id}\\b`).test(text(root, DISCLOSURES_FILE))) problems.push(`${row.id} is missing from the disclosures`);
+  const docsDirectory = path.join(root, 'repositories/memoryos-cli/docs');
+  const documents = [...CLAIM_DOCUMENTS, ...(fs.existsSync(docsDirectory) ? fs.readdirSync(docsDirectory).filter((name) => name.endsWith('.md')).map((name) => `repositories/memoryos-cli/docs/${name}`) : [])];
+  const overclaims = [];
+  for (const file of documents.filter((name) => fileExists(root, name))) {
+    text(root, file).split('\n').forEach((line, index) => {
+      if (/MO-1308|history ledger|Investigation History|memoryos history/i.test(line) && OVERCLAIM.test(line) && !NEGATION.test(line)) overclaims.push(`${file}:${index + 1}`);
+    });
+  }
+  for (const where of overclaims.slice(0, 5)) problems.push(`${where}: a claim beyond the Freeze`);
+  return { problems, observed: { documentsScanned: documents.length, overclaims: overclaims.length } };
+}
+
+export function checkE2({ root, generations }) {
+  const problems = [];
+  const outcomes = readOutcomes(generations.filter((row) => row.accepted && row.parsed.stream === '3C').map((row) => row.directory));
+  const outcome = outcomes.get('3C-A6') ?? null;
+  if (outcome === null) problems.push('3C-A6 has no recorded outcome in an accepted 3C generation');
+  const candidates = ['repositories/memoryos-cli/README.md', 'repositories/memoryos-cli/docs/history-guide.md', DISCLOSURES_FILE].filter((file) => fileExists(root, file));
+  const guided = candidates.filter((file) => /headDigest/.test(text(root, file)) && /(outside the ledger|external(ly)?|separate system)/i.test(text(root, file)));
+  if (guided.length === 0) problems.push('no document gives the headDigest anchoring guidance');
+  for (const file of guided) {
+    const states = /3C-A6:\s+(CONFIRMED|NOT_CONFIRMED)/.exec(text(root, file))?.[1] ?? null;
+    if (outcome !== null && states !== outcome) problems.push(`${file}: states ${states} for 3C-A6 but the recorded outcome is ${outcome}`);
+  }
+  return { problems, observed: { guidanceIn: guided, recordedOutcome: outcome } };
+}
+
+export function checkE3({ root, inventory, generations }) {
+  const outcomes = readOutcomes(generations.filter((row) => row.accepted && row.parsed.stream !== '3B').map((row) => row.directory));
+  if (!fileExists(root, DISCLOSURES_FILE)) return { problems: [`${DISCLOSURES_FILE} does not exist`], observed: {} };
+  return { problems: checkDisclosure(text(root, DISCLOSURES_FILE), inventory, outcomes).slice(0, 8), observed: { recordedOutcomes: outcomes.size } };
+}
+
 // ---- the run ----
 
 export function evaluate({ root, repo = root, head = null, a32ReceiptPath = A32_RECEIPT_FILE, regressionPath = REGRESSION_FILE, evidenceRoot = EVIDENCE_ROOT } = {}) {
@@ -262,6 +306,9 @@ export function evaluate({ root, repo = root, head = null, a32ReceiptPath = A32_
   put('3D-D3', checkD3({ inventory, generations, d4: results.get('3D-D4').status === 'READY', d5: results.get('3D-D5').status === 'READY' }));
   put('3D-D6', checkD6({ root, inventory, generations }));
   put('3D-D7', checkD7({ root, repo, head: headCommit }));
+  put('3D-E1', checkE1({ root, inventory }));
+  put('3D-E2', checkE2({ root, generations }));
+  put('3D-E3', checkE3({ root, inventory, generations }));
   if (inventoryProblems.length > 0) results.get('3D-D3').problems.unshift(`the inventory is invalid: ${inventoryProblems[0]}`);
   const ordered = allCases(inventory).filter((item) => item.stream === '3D').map((item) => results.get(item.id));
   const d7 = results.get('3D-D7');
