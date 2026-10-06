@@ -1,0 +1,38 @@
+✔ B01 MIP_PACKAGE: MIP-001 verified; subjects copy the package values; recordDigest equals the oracle (R07) (45.4277ms)
+✔ B02 MIP_PACKAGE rejections: tampered, non-canonical, truncated, wrong Workspace (R11) (38.171ms)
+✔ B03 INVESTIGATION_CHECKPOINT: accepts a Core checkpoint of a MIP-backed investigation (H13 option A) (412.1ms)
+✔ B04 INVESTIGATION_CHECKPOINT rejections: every tampered field, native, wrong Workspace, forged package (R12) (442.3549ms)
+✔ B05 a native investigation checkpoint is rejected (R12) (40.1388ms)
+✔ B06 POLICY_EVALUATION: accepts every released Policy and Policy Set artifact pair (39.4122ms)
+✔ B07 POLICY_EVALUATION rejections: swapped, cross-bound to another identity, tampered, non-canonical; agrees with the SDK verifiers (627.3893ms)
+✔ B08 REGRESSION_REPORT: SDK inspection accepted; both Workspaces must equal the ledger Workspace (R11) (74.6292ms)
+✔ B09 CICD_RUN: every real MO-1306 bundle in the repository evidence is admitted (completed and operational-failure) (695.7431ms)
+✔ B10 CICD_RUN rejections: structure, integrity, cross-links, forged semantic block (self-consistent forgeries included) (736.9829ms)
+✔ B11 CICD_RUN J parsing agrees with the MO-1306 parser on structural limits (R03) (8.529ms)
+✔ B12 READINESS_RESULT: every released MO-1307 result is admitted with recomputed digests; forged variants are not (R08) (246.1607ms)
+✔ B13 READINESS_RESULT rejections: stale digests, re-sealed forgeries, shape, non-J (R03) (2722.9294ms)
+✔ B14 READINESS_RESULT J parsing agrees with the MO-1307 parser on structural limits (170.4505ms)
+✔ B15 HUMAN_DECISION_CLAIM: admitted only against a matching READINESS_RESULT entry (H16, R13) (206.9762ms)
+✔ B16 HUMAN_DECISION_CLAIM shape rejections: exact MO-1307 section 13 shape and value rules (94.5723ms)
+✔ B17 duplicates and purged records are refused before any verification (R10, R20) (31.3639ms)
+✔ B18 member rules: exact names, sets, duplicates, per-kind byte limits, argument shapes (644.6575ms)
+✔ B19 admission is deterministic: member order, view construction and repetition do not change the record (R04) (6.0499ms)
+✔ B20 every admitted record has the closed Freeze entry shape and no time, path or actor field (R24, R35) (47.6912ms)
+✔ B21 the admission module delegates to owners, imports no SDK, Core, fs or predecessor package, and never runs verifyReadiness (R08, R28, R29, R35, R37) (1.7225ms)
+✔ B22 no admission verdict leaks input content in its error (3.0091ms)
+✔ B23 self-consistent forgeries that only a single rule can catch (checkpoint chain, evidence cross-hashes) (94.6769ms)
+✔ B24 CICD result rules agree with the MO-1306 checkResult over the whole error-catalog space (R03, R07) (2096.8048ms)
+✔ B25 the embedded MO-1306 semantic-code allowlist equals the owner list (drift guard) (81.7316ms)
+✔ B26 decisionConsistency is computed from the verified claim and result for every decision and readiness state (A4.1) (463.7936ms)
+✔ B27 a claim is rejected, never stored with a guessed value, for an absent, purged, unavailable, unverified or inconsistent result (A4.1) (153.6222ms)
+✔ B28 the incremental SHA-256 equals the standard hash for every length, split and clone (A4.5) (108.6267ms)
+✔ B29 linear checkpoint admission gives byte-identical results to the quadratic construction on the corpus and tampered variants (A4.5) (1955.958ms)
+✔ B30 linear admission equals the quadratic construction on generated checkpoints up to 10,000 transitions (A4.5) (106450.2352ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 120882.7237
