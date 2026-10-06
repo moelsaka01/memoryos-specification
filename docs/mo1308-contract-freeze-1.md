@@ -1447,14 +1447,209 @@ Stream 2D decisions in the [Phase 2D record](mo1308-phase2d-integration.md) sect
 
 No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
 
+## 31. Amendment A3.1 — A3 full CTest run: cca_core_tests waiver (2026-10-06, owner-authorized)
 
-## 33. Amendment A8 — Phase 3 certification protocol (2026-10-06, owner-authorized)
+This amendment is append-only. The frozen text above and Amendments A1 to A7 are unchanged.
+It is a sub-amendment of Amendment A3 (section 26) and refines only how the A3 precondition
+run is executed on the reference host. It does not use or pre-empt A8 or A9, which are reserved
+for the Phase 3 protocol.
+
+**Run configuration.** The A3 run uses CMake preset `default`, with MSVC 19.44.35229 (Visual
+Studio Build Tools 17.14), CMake 3.31.6, Ninja 1.13.2, vcpkg commit
+`cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3` (tag 2026.06.24) and triplet `x64-windows`, from
+`origin/main` `47595cc95204307dd43c4772c417b52f0ac8402b` (B2).
+
+**Waived.** The `cca_core_tests` target only. It does not compile with MSVC 19.44.35229
+(error C2607, `static_assert(!CanMutateCoreMetric<Observability>)` at
+`repositories/cca-core/tests/observability_test.cpp:86`). MSVC 19.44 mis-evaluates access
+checking in a namespace-scope concept: a private member that a conforming compiler treats as
+inaccessible (so the concept is false and the assert holds) is evaluated as accessible. A
+standalone reproduction, compiled with `cl /std:c++latest /EHsc r.cpp` and failing with
+`r.cpp(17): error C2607: static assertion failed`:
+
+```cpp
+#include <concepts>
+#include <cstdint>
+enum class RuntimeMetric { cleanup_operations };
+class Runtime;
+class Observability final {
+  public:
+    int pub() const { return 0; }
+  private:
+    void increment_metric(RuntimeMetric metric, std::uint64_t amount = 1) {}
+    friend class Runtime;
+};
+class Runtime {};
+template <typename Type>
+concept CanMutateCoreMetric = requires(Type& observability) {
+    observability.increment_metric(RuntimeMetric::cleanup_operations);
+};
+static_assert(!CanMutateCoreMetric<Observability>);
+int main() {}
+```
+
+**Why the waiver hides nothing MO-1308 changed.** `git diff --stat 1dd1e8c8..47595cc9 --
+repositories/cca-core` is empty: cca-core is byte-identical between BF (`1dd1e8c8`) and B2
+(`47595cc9`). The failing assertion is unchanged since commit `3827a696` (2026-07-27, IM-003).
+
+**What is still required.** Every other build target must build. Every other registered CTest
+test must run and pass, including `cca.workspace.verify`. The tests that belong to
+`cca_core_tests` are excluded from the run by an explicit `-E` pattern, and their names are
+recorded in the evidence. Only a run where all of that holds is `PASS`; otherwise the result is
+`FAILED_PRESERVED` with each failure classified.
+
+**Pre-existing project issues, outside MO-1308 (recorded, not fixed here).**
+
+1. `.github/workflows/ci.yml` has no successful run in its public history; the latest completed
+   Windows job (run 62) failed at checkout.
+2. The MSVC concept-access defect above, which prevents `cca_core_tests` from compiling with
+   MSVC 19.44.35229.
+3. Under the `ci` preset (`CCA_WARNINGS_AS_ERRORS=ON`), warning C4100 is promoted to an error at
+   `repositories/cca-core/include/cca/runtime/service_registry.hpp:94` and in its dependents
+   (`cca_process`, `memoryos_sdk`, and the `cca_core_tests` sources).
+4. The `minimal` preset fails at `repositories/cca-compiler/CMakeLists.txt:15`
+   (`find_package(yaml-cpp)`) because that preset provides no vcpkg.
+
+**Follow-up.** A separate maintenance task makes Windows CI green before the MemoryOS 1.3
+release. It is outside MO-1308.
+
+No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
+
+## 32. Amendment A3.2 — A3 differential no-regression gate (2026-10-06, owner-authorized)
+
+This amendment is append-only. The frozen text above and Amendments A1 to A7 and A3.1 are
+unchanged. It is a sub-amendment of Amendment A3 (section 26) and replaces A3's absolute gate
+("a full CTest run passes") with a differential no-regression gate. It does not use or pre-empt
+A8 or A9, which are reserved for the Phase 3 protocol.
+
+**The A3.1 run is preserved.** The A3.1 run is recorded as `FAILED_PRESERVED` (evidence commit
+`59dfee40320f953570aff7e833eac61c10df04e6`, binding commit
+`82bb165e7c1b2ee66179e940d62f26c635bb102d`, directory
+`repositories/cca-conformance/evidence/mo1308/phase3-precondition/`). It stays untouched and is
+not rerun or edited.
+
+**Rule.** CTest is run twice, with preset `default`, the A3.1 waiver (target `cca_core_tests` is
+not built; only its placeholder test `cca_core_tests_NOT_BUILT` is excluded, with
+`-E "^cca_core_tests_NOT_BUILT$"`), and an identical toolchain, environment and setup:
+
+- BASELINE = BF `1dd1e8c82fe0ed5a32a894744392f2c279f89d4c` (the MO-1307 release);
+- CANDIDATE = B2 `47595cc95204307dd43c4772c417b52f0ac8402b`.
+
+The verdict is `PASS` only if all of the following hold:
+
+1. `cca.workspace.verify` passes on CANDIDATE;
+2. no test that passes on BASELINE fails or is Not Run on CANDIDATE;
+3. every test present on CANDIDATE but not on BASELINE passes;
+4. every test that fails on both is listed as `PRE_EXISTING` with a classification.
+
+Any other outcome is `FAILED_PRESERVED`. The recorded runs are each made once. Setup may be
+repeated. Setup installs Node dependencies from the committed lockfiles as the repository's own
+tooling or CI does, completes test discovery before the recorded runs, and does not edit
+repository files, create the hard-coded workspace path, or remove tags. The evidence directory
+is `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g2/` and contains both raw
+logs, both `ctest -N` listings, the setup records, the toolchain and dependency versions, a
+computed comparison table and `receipt.json` with the A3.2 verdict.
+
+**Classifications of the 125 A3.1 failures (recorded).**
+
+| Class | Count | Tests |
+| --- | ---: | --- |
+| product or toolchain (undetermined) | 112 | `*AllocationFailureTest.*`: each aborts with exit code 3 about 0.03 s after `RUN` |
+| environment | 7 | `memoryos.vscode.runtime`, `memoryos.vscode.product`, `memoryos.vscode.package.validation`, `memoryos.mcp.foundation`, `memoryos.standard.mo1303-phase3`, `memoryos.standard.mo1304-phase1`, `memoryos.standard.mo1304-phase2`: Node dependencies not installed in the fresh worktree (`esbuild`, `zod`, `@modelcontextprotocol/server`, `yauzl`); `npm` not found in the pinned Node folder |
+| environment | 3 | `memoryos.standard.mo1305-phase3` (hard-coded workspace root `C:/Users/melsa/Documents/Codex/cca-workspace`), `memoryos.standard.mo1304-phase3-ubuntu` and `memoryos.standard.mo1304-phase3-windows` (assert that local tag `memoryos-1.3-mo1304` does not exist) |
+| test | 2 | `memoryos.standard.specification` (stale 1.2.1 pin of `repositories/cca-core/src`), `memoryos.standard.coverage-gap` (same specification conformance check) |
+| environment (consequence of the A3.1 waiver) | 1 | `memoryos.standard.runtime.reference`: Not Run, needs `cca_core_tests.exe` |
+
+The 112 allocation tests by suite: `EpisodicMemoryAllocationFailureTest` 11,
+`KnowledgeRetrievalAllocationFailureTest` 15, `LongTermMemoryAllocationFailureTest` 7,
+`MemoryAllocationFailureTest` 3, `MemoryConsolidationAllocationFailureTest` 6,
+`MemoryProviderAllocationFailureTest` 15, `MemoryReflectionAllocationFailureTest` 10,
+`MemoryStudioAllocationFailureTest` 9, `ProceduralMemoryAllocationFailureTest` 15,
+`ProcessAllocationFailureTest` 4, `SemanticMemoryAllocationFailureTest` 11,
+`WorkingMemoryAllocationFailureTest` 6. The full names are in `receipt.json` of the A3.1
+evidence.
+
+**Project follow-up (outside MO-1308; extends the A3.1 follow-up: Windows CI green before the
+MemoryOS 1.3 release).** In addition to the A3.1 items, the maintenance task covers: the
+`AllocationFailureTest` aborts; missing Node dependencies in fresh worktrees; the hard-coded
+workspace path in `memoryos.standard.mo1305-phase3`; the tag-absence assertions in
+`memoryos.standard.mo1304-phase3-ubuntu` and `-windows`; and the stale 1.2.1 `cca-core/src` pin
+behind `memoryos.standard.specification` and `memoryos.standard.coverage-gap`.
+
+No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
+
+## 33. Amendment A3.3 — Smart App Control: blocked-executable exclusion for the A3.2 runs (2026-10-06, owner-authorized)
+
+This amendment is append-only. The frozen text above, Amendments A1 to A7 and A3.1, and
+Amendment A3.2, are unchanged. It is a sub-amendment of Amendment A3 (section 26) and supplements
+A3.2 (section 32). It does not use or pre-empt A8 or A9.
+
+**Finding.** Smart App Control is enforcing on the reference host
+(`VerifiedAndReputablePolicyState = 1`) and blocks a build-dependent set of freshly built unsigned
+executables ("An Application Control policy has blocked this file"). The owner does not change
+this security setting, and the A3.2 setup does not rebuild until the set is empty. Because a
+blocked gtest executable aborts `ctest` discovery, `ctest -N` cannot complete in a tree that
+contains one.
+
+**Precondition proof (C/C++ source diff).** `git diff --name-only 1dd1e8c8 47595cc9` lists 186
+files and none is a C or C++ source or header (`*.c`, `*.cc`, `*.cpp`, `*.cxx`, `*.h`, `*.hh`,
+`*.hpp`, `*.hxx`, `*.ipp`, `*.inl`, `*.tpp` and similar); `git diff --stat` over
+`repositories/cca-core`, `cca-sdk`, `cca-compiler`, `cca-cli`, the root `CMakeLists.txt`,
+`CMakePresets.json`, `vcpkg.json`, `cmake` and `tests` is empty. The non-source build-related
+files that did change are:
+
+- `repositories/memoryos-cli/CMakeLists.txt` (project is `LANGUAGES NONE`: version 1.1.0 to 1.2.0 and
+  three added `node --check` commands for the new history sources; no C++ target or test is
+  built or changed);
+- `repositories/memoryos-cli/package.json` (version 1.2.0) and
+  `repositories/cca-studio/package.json` (a `test` list extended with two history test files and a
+  new `test:history-phase1` script; Node tests only);
+- `repositories/cca-studio/tests/fixtures/memoryos-history/1.0.0/shape-cases.json` (a Node test
+  fixture);
+- `tools/verify_workspace.py` (the `cca.workspace.verify` script itself, changed by MO-1308);
+- `.gitattributes`.
+
+None of them alters how any C++ test is built or what it tests.
+
+**Exclusion rule.** After setup, every executable that the Application Control policy blocks in
+either tree is identified by launching each built executable and capturing the reason. Every
+CTest test whose executable is in the UNION of the two blocked sets is excluded in BOTH runs, as
+`ENVIRONMENT_BLOCKED_SAC`, with the executable and test names recorded. The A3.1 waiver
+(`cca_core_tests_NOT_BUILT`) applies as well. The exclusion is frozen in
+`repositories/cca-conformance/evidence/mo1308/phase3-precondition-g2/setup/exclusions.json`,
+committed before the recorded runs. To let `ctest` complete discovery, each blocked gtest
+executable is renamed to `<name>.exe.sac-blocked` in the build directory of both trees (build
+output only; no repository file changes), so that its generated include registers the existing
+`<target>_NOT_BUILT` placeholder, which is excluded by name like the `cca_core_tests` placeholder.
+The names of the tests such an executable would have registered are recorded from the same
+executable built unblocked in the A3.1 tree (C/C++ sources are identical between BF and B2).
+
+**Guard.** If a blocked executable is not a native C++ test or tool binary (for example `node.exe`
+or anything a Node-based test or `cca.workspace.verify` depends on), the run stops and is reported
+instead of excluding.
+
+**Setup deviation accepted.** `MEMORYOS_VSCODE_NPM_EXECUTABLE` is pinned to the pinned Node
+folder's `npm.cmd` at configure time (`-DMEMORYOS_VSCODE_NPM_EXECUTABLE=.../npm.cmd`), identically
+in both trees, because `find_program` otherwise selects the extensionless `npm` shell script. This
+deviates from "preset `default` exactly" and is recorded as such.
+
+**Possible earlier effect (unconfirmed).** Smart App Control may explain part of the A3.1
+failures: freshly built executables that were blocked appear as failed or not-run tests. This has
+not been confirmed and does not change the recorded A3.1 classifications.
+
+**Follow-up added (outside MO-1308).** Native C++ verification belongs on GitHub's Windows runners
+(no Smart App Control) once Windows CI is green. While Smart App Control enforces, this host is
+not a reliable native C++ execution host.
+
+No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
+
+## 34. Amendment A8 — Phase 3 certification protocol (2026-10-06, owner-authorized)
 
 This amendment is append-only. The frozen text above and Amendments A1 to A7 are unchanged. It adopts the Phase 3
 certification protocol as the Freeze's Phase 3 campaign protocol and case inventory, as MO-1307 Freeze section 21 requires
-before any campaign runs. Amendments A3.1 and A3.2 (sections 31 and 32) are recorded on branch `mo1308/phase3-precondition`
-(commit `f3e500c5`) and are not yet merged into this branch; this amendment is numbered 33 so that the three merge in order, and
-A8 and A9 are the numbers those two amendments reserved for the Phase 3 protocol.
+before any campaign runs. Amendments A3.1, A3.2 and A3.3 (sections 31, 32 and 33) are recorded on branch `mo1308/phase3-precondition` and are merged
+into this branch; this amendment is section 34 (see A8.5), and A8 and A9 are the numbers those amendments reserved for the Phase 3
+protocol.
 
 ### A8.1 Adoption
 
@@ -1506,3 +1701,23 @@ are recorded in section 2 of the protocol.
 No shape, layout, limit, identity, error code or protocol step of the frozen text changes, and no production behavior changes.
 Certification claims remain qualified by the register of the protocol (Q01 to Q15), including the H40 and A6 qualifications of
 sections 9.4 and 29.
+
+### A8.5 Renumbering (append-only note, 2026-10-06, owner decision)
+
+This amendment was first approved and committed as section 33 (approval commit `607777df`). Amendment A3.3 is recorded evidence on
+`mo1308/phase3-precondition` and keeps section 33; when the branches merged, A8 became section 34. The text of A8.1 to A8.4 is
+unchanged apart from this section number and the sentence about A3.1 to A3.3 above. Every citation of "section 33" for A8 in the
+Phase 3 protocol, the inventory and the stream documents now reads "section 34", and the protocol cites A3.1 to A3.3 by their
+sections 31 to 33. The hashes of A8.2 are those of the approval commit; the bound inputs changed afterwards only as recorded in A8.6.
+
+
+### A8.6 Bound inputs after the merge of A3.1 to A3.3 (append-only note, 2026-10-06, owner decision)
+
+The protocol text now cites Amendments A3.1 to A3.3 by their Freeze sections 31 to 33 and A8 as section 34. The inventory, the candidate identity and the corpus manifest are byte-identical to A8.2. These are the bound hashes from here; a later note records each further authorized change.
+
+| File | SHA-256 |
+|---|---|
+| `docs/mo1308-phase3-protocol.md` | `8c1f82d21241476fa52803d59d8c197cea590a62b50b1b8d73c96bd6d47f836f` |
+| `repositories/cca-conformance/mo1308-phase3-inventory.json` | `c56642c4f46e4adb82744f4176cab8d35fdd19592376ed130e89af8726d9ed1c` |
+| `repositories/cca-conformance/mo1308-phase3-candidate-identity.json` | `92b33904a1ff5a868d5b13b6f1354efbf718778d0b80594ce38b7e67077a7244` |
+| `repositories/cca-conformance/mo1308-phase3-corpus-manifest.json` | `b055805d2db43f414261921ded61eb69d856ad5c821139254e9ba1b7ce386c9f` |

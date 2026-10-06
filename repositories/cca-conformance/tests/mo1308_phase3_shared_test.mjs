@@ -209,11 +209,12 @@ test('A01 every path changed since BF up to B2 is in the allowed set; unrelated 
   assert.equal(ALLOWED_CHANGE_RULES.length, 7);
 });
 
-test('A02 this branch changes no production path and adds nothing under evidence/', { skip: !haveBase }, () => {
+test('A02 this branch changes no production path and adds no evidence of its own (only the merged A3.x precondition evidence)', { skip: !haveBase }, () => {
   const names = new Set(git(repo, ['diff', '--name-only', '-z', CANDIDATE_BASE]).stdout.toString('utf8').split('\0').filter(Boolean));
   for (const name of git(repo, ['ls-files', '--others', '--exclude-standard', '-z']).stdout.toString('utf8').split('\0').filter(Boolean)) names.add(name);
   for (const name of names) {
-    assert.ok(!name.includes('/evidence/'), `${name}: the shared step never touches evidence`);
+    // the evidence merged from mo1308/phase3-precondition (Amendments A3.1 to A3.3) is the owner's recorded evidence, not this step's
+    if (name.includes('/evidence/')) assert.match(name, /\/evidence\/mo1308\/phase3-precondition(-g\d+)?\//, `${name}: the shared step never touches evidence`);
     assert.notEqual(classifyChangedPath(name), null, `${name} is outside the allowed set`);
   }
   const identity = JSON.parse(fs.readFileSync(inFile(IDENTITY), 'utf8'));
@@ -865,13 +866,15 @@ test('U19 an accepted or open generation cannot be superseded; a rehearsal never
 
 test('M01 Amendment A8 is appended to the Freeze and binds the protocol, inventory, candidate and corpus by hash', () => {
   const freeze = fs.readFileSync(inFile('docs/mo1308-contract-freeze-1.md'), 'utf8');
-  const start = freeze.indexOf('## 33. Amendment A8');
+  const start = freeze.indexOf('## 34. Amendment A8');
   assert.ok(start > 0, 'the A8 section is missing');
-  assert.ok(freeze.indexOf('## 30. Amendment A7') < start, 'A8 comes after A7');
+  for (const heading of ['## 30. Amendment A7', '## 31. Amendment A3.1', '## 32. Amendment A3.2', '## 33. Amendment A3.3']) assert.ok(freeze.indexOf(heading) > 0 && freeze.indexOf(heading) < start, `${heading} comes before A8`);
   const section = freeze.slice(start);
   for (const [file, relative] of [['protocol', PROTOCOL], ['inventory', INVENTORY], ['identity', IDENTITY], ['corpus', MANIFEST]]) {
-    const row = new RegExp(`\\| \`${relative.replace(/[.]/g, '\\.')}\` \\| \`([0-9a-f]{64})\` \\|`).exec(section);
-    assert.ok(row, `${file}: no hash row`);
+    // the latest row wins: A8.2 holds the approval hashes, later append-only notes (A8.6 ...) record each authorized change
+    const rows = [...section.matchAll(new RegExp(`\\| \`${relative.replace(/[.]/g, '\\.')}\` \\| \`([0-9a-f]{64})\` \\|`, 'g'))];
+    assert.ok(rows.length > 0, `${file}: no hash row`);
+    const row = rows.at(-1);
     assert.equal(row[1], sha256Hex(fs.readFileSync(inFile(relative))), `${relative} changed after A8 approval: a new amendment is needed`);
   }
   const identity = JSON.parse(fs.readFileSync(inFile(IDENTITY), 'utf8'));
@@ -879,8 +882,7 @@ test('M01 Amendment A8 is appended to the Freeze and binds the protocol, invento
   assert.ok(section.includes(JSON.parse(fs.readFileSync(inFile(MANIFEST), 'utf8')).corpusDigest));
   assert.ok(section.includes('Official CAVP response files were not used'));
   assert.match(section, /owner-authorized/);
-  // The frozen text before A8 is untouched: the A8 section is the only addition after A7's last line.
-  assert.ok(freeze.slice(0, start).trimEnd().endsWith('No shape, layout, limit, identity, error code or protocol step of the frozen text changes.'));
+  assert.ok(section.includes('### A8.5 Renumbering'), 'the renumbering note is recorded');
 });
 
 test('M02 guards fit the budgets by design in every segment of every stream (A8 decision 8)', () => {

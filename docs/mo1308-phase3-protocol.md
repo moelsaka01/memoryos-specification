@@ -6,7 +6,7 @@ This document is the text of Freeze Amendment A8 to [MO-1308 Contract Freeze 1](
 owner on 2026-10-06 after review of the proposal and the nine decisions of section 2a. It is documentation only. It changes no
 frozen text, no production code and no evidence; it freezes the finite Phase 3 campaign protocol and case inventory before any
 run, as MO-1307 Freeze section 21 requires ("Freeze the finite campaign protocol/inventory before execution"). The amendment
-record in the Freeze (section 33) binds the protocol, the inventory, the candidate identity and the corpus manifest by hash: a
+record in the Freeze (section 34, renumbered from 33, see A8.5) binds the protocol, the inventory, the candidate identity and the corpus manifest by hash: a
 later change to any of them needs a new amendment. The approval status makes certifying seals possible (section 5.2); each still
 needs a recorded harness review.
 
@@ -85,20 +85,23 @@ review (section 6).
 **Inputs.** Each stream is sealed over: this protocol and its approval status, the inventory, the candidate identity, the
 shared corpus (3A and 3C), the stream tools, the recorded harness review, and for 3A and 3D the bound A3 precondition receipt.
 
-**The A3 precondition (Amendments A3.1 and A3.2).** Amendment A3 of the Freeze (section 26) makes a full CTest run a
-precondition of Phase 3. Two sub-amendments, recorded on branch `mo1308/phase3-precondition` (commit `f3e500c5`) and not yet
-merged here, refine it; they are cited by their section numbers on that branch and the citation is to be updated when they are
-merged:
+**The A3 precondition (Amendments A3.1, A3.2 and A3.3).** Amendment A3 of the Freeze (section 26) makes a full CTest run a
+precondition of Phase 3. Three sub-amendments, merged into this branch from `mo1308/phase3-precondition` and cited by their
+Freeze sections, refine it:
 
-- **A3.1 (section 31 there)** waives the `cca_core_tests` target only, because MSVC 19.44.35229 miscompiles its
+- **A3.1 (section 31)** waives the `cca_core_tests` target only, because MSVC 19.44.35229 miscompiles its
   `static_assert(!CanMutateCoreMetric<Observability>)` (error C2607; `cca-core` is byte-identical between BF and B2). The first
   run under it is preserved as `FAILED_PRESERVED` (evidence commit `59dfee40`, binding `82bb165e`): 125 of 316 executed tests
   failed, none of them MO-1308 code, and `cca.workspace.verify` passed.
-- **A3.2 (section 32 there)** replaces A3's absolute gate with a **differential no-regression gate**: CTest is run on BF
+- **A3.2 (section 32)** replaces A3's absolute gate with a **differential no-regression gate**: CTest is run on BF
   `1dd1e8c8` and on B2 `47595cc9` under an identical toolchain; the verdict is PASS only if `cca.workspace.verify` passes on B2,
   nothing that passes on BF fails or is not run on B2, every B2-only test passes, and every shared failure is listed
   `PRE_EXISTING` with a classification. Its evidence directory is
   `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g2/`, and its `receipt.json` carries the verdict.
+- **A3.3 (section 33)** records that Smart App Control blocks a build-dependent set of freshly built unsigned executables on the
+  reference host: every CTest test whose executable is blocked in either tree is excluded in BOTH runs as
+  `ENVIRONMENT_BLOCKED_SAC`, from a frozen list (`setup/exclusions.json`, committed before the recorded runs). A blocked executable
+  that is not a native C++ test or tool binary stops the run. It supplements A3.2 and changes no production path.
 
 **The gate input of this protocol is the A3.2 receipt with verdict PASS** (cases 3A-A4 and 3D-D5). Its result is pending on the
 reference host, and this protocol assumes none. The exact verdict member of that receipt is to be confirmed from the receipt when
@@ -929,5 +932,5 @@ sections 5.1, 16 and 18.1 and Amendments A1 to A7.
 3. **Documentation edits** needed by the campaigns (the D7 operator guidance, and the disclosures of cases 3C-K2 and K3) are
    documentation changes outside the candidate; they are made after the 3A and 3C outcomes are recorded, so that they state the
    actual outcomes (section 8.4).
-4. **Citation to update.** Amendments A3.1 and A3.2 are cited from branch `mo1308/phase3-precondition` (section 3); update the
-   citation when they are merged, and the verdict member of the A3.2 receipt when the receipt exists.
+4. **Citation.** Amendments A3.1 to A3.3 are merged and cited by sections 31 to 33 (section 3); A8 is section 34 (A8.5). The
+   verdict member of the A3.2 receipt is to be updated when the receipt exists (the 3D validator reads `verdict`).

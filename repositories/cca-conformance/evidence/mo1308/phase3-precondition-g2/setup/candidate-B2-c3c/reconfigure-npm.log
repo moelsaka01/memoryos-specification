@@ -1,0 +1,51 @@
+Preset CMake variables:
+
+  BUILD_TESTING="ON"
+  CCA_BUILD_TESTS="ON"
+  CCA_WARNINGS_AS_ERRORS="OFF"
+  CMAKE_BUILD_TYPE="Debug"
+  CMAKE_CXX_EXTENSIONS="OFF"
+  CMAKE_CXX_STANDARD="23"
+  CMAKE_CXX_STANDARD_REQUIRED="ON"
+  CMAKE_EXPORT_COMPILE_COMMANDS="ON"
+  CMAKE_INSTALL_PREFIX:PATH="C:/Users/melsa/Documents/Codex/c3c/out/install/default"
+  CMAKE_TOOLCHAIN_FILE:FILEPATH="C:/Users/melsa/Documents/Codex/c3c/.cache/vcpkg/scripts/buildsystems/vcpkg.cmake"
+  VCPKG_MANIFEST_DIR="C:/Users/melsa/Documents/Codex/c3c"
+  VCPKG_MANIFEST_MODE="ON"
+
+-- Running vcpkg install
+Detecting compiler hash for triplet x64-windows...
+Compiler found: C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe
+The following packages are already installed:
+    gtest:x64-windows@1.17.0#2
+  * vcpkg-cmake:x64-windows@2024-04-23
+  * vcpkg-cmake-config:x64-windows@2024-05-23
+    yaml-cpp:x64-windows@0.9.0#1
+The package gtest is compatible with built-in CMake targets:
+
+    enable_testing()
+    
+    find_package(GTest CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
+    
+    add_test(AllTestsInMain main)
+
+yaml-cpp provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(yaml-cpp CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE yaml-cpp::yaml-cpp)
+
+yaml-cpp provides pkg-config modules:
+
+  # A YAML parser and emitter for C++
+  yaml-cpp
+
+All requested installations completed successfully in: 288 us
+-- Running vcpkg install - done
+-- Configuring CCA 0.2.0-dev
+-- memoryos is reserved for a future milestone; no targets are defined
+-- cca-atlas is reserved for a future milestone; no targets are defined
+-- Configuring done (9.6s)
+-- Generating done (0.5s)
+-- Build files have been written to: C:/Users/melsa/Documents/Codex/c3c/out/build/default
