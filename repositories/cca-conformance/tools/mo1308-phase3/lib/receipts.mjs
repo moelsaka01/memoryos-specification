@@ -7,7 +7,8 @@ export const CASE_RESULTS = Object.freeze(['PASS', 'FAIL', 'ESCALATE', 'NOT_RUN'
 export const STEP_RESULTS = CASE_RESULTS;
 export const SEGMENT_RESULTS = Object.freeze(['PASS', 'FAIL', 'ESCALATE', 'NOT_RUN']);
 export const CERTIFYING_RESULTS = Object.freeze(['ACCEPTED', 'FAILED_PRESERVED', 'ESCALATED_PRESERVED']);
-export const REHEARSAL_RESULTS = Object.freeze(['REHEARSAL_COMPLETED', 'REHEARSAL_FAILED']);
+// A rehearsal whose only unfinished cases were declared host-only (skipped) ends REHEARSAL_PARTIAL. Only rehearsals may skip.
+export const REHEARSAL_RESULTS = Object.freeze(['REHEARSAL_COMPLETED', 'REHEARSAL_PARTIAL', 'REHEARSAL_FAILED']);
 export const GENERATION_ID = /^phase3[abcd](-g[2-9][0-9]*|-rehearsal-r[1-9][0-9]*)?$/;
 export const MAX_OBSERVED_BYTES = 65536;
 // A qualification case (record mode with a Qnn tag) must observe exactly one of these (A8 decision 6); anything else fails.

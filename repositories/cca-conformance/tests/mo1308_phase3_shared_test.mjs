@@ -22,6 +22,7 @@ import { validateDisposition, requiresOwnerReview } from '../tools/mo1308-phase3
 import { CampaignError, isApprovedStatus, parseGeneration, protocolStatus, sealGeneration, sharedToolPaths, verifyBindings } from '../tools/mo1308-phase3/lib/seal.mjs';
 import { HarnessError, closeGeneration, runSegment, verifyEvidence } from '../tools/mo1308-phase3/lib/runner.mjs';
 import { writeOnce } from '../tools/mo1308-phase3/lib/evidence.mjs';
+import { buildExecutors, checkDefinition, rehearse, summarize } from '../tools/mo1308-phase3/lib/campaign-driver.mjs';
 import { checkDisclosure, qualificationCases, readOutcomes, structuralQualifications } from '../tools/mo1308-phase3/lib/disclosure.mjs';
 
 // MO-1308 Phase 3, shared step: the protocol document, the case inventory, the candidate identity, the corpus and the campaign
@@ -1002,6 +1003,70 @@ test('M08 a rerun after an escalation needs an owner approval reference (A8 deci
   const withReference = write('e2.json', disposition({ ...base, ownerApprovalReference: 'owner-approval-2026-10-07' }));
   const { seal } = sealGeneration({ ...baseOptions(root, '3A', 'phase3a-g2', { previous: { evidenceDir: first.evidenceDir, dispositionPath: withReference } }), now: clock() });
   assert.equal(seal.generation.ordinal, 2);
+});
+
+// ---------------------------------------------------------------- rehearsal skips and the campaign driver
+
+test('D01 a rehearsal may declare a case host-only (NOT_RUN, reason kept, no stop); a certifying generation never may', async (t) => {
+  const root = makeRoot(t);
+  const options = baseOptions(root, '3B', 'phase3b-rehearsal-r1', { certifying: false, harnessReviewPath: null });
+  sealGeneration({ ...options, now: clock() });
+  await runAll(root, options.evidenceDir, '3B', { '3B-C2': async (c) => c.skip('needs the Windows host'), '3B-C3': async (c) => c.skip('needs the Windows host') });
+  const step = JSON.parse(fs.readFileSync(path.join(options.evidenceDir, 'steps/C.json'), 'utf8'));
+  assert.deepEqual(step.cases.map((row) => row.result), ['PASS', 'NOT_RUN', 'NOT_RUN', 'PASS', 'PASS']);
+  assert.deepEqual(step.cases[1].observed, { skipped: 'needs the Windows host' });
+  assert.equal(step.result, 'PASS');
+  const receipt = closeGeneration({ root, evidenceDir: options.evidenceDir, inventory, now: clock() });
+  assert.equal(receipt.result, 'REHEARSAL_PARTIAL');
+  assert.equal(receipt.promotable, false);
+  assert.deepEqual(receipt.mandatoryNotPassed, ['3B-C2', '3B-C3']);
+  assert.deepEqual(verifyEvidence({ root, evidenceDir: options.evidenceDir, inventory }).problems, []);
+  const certifying = makeRoot(t);
+  const real = baseOptions(certifying, '3B', 'phase3b');
+  sealGeneration({ ...real, now: clock() });
+  const [outcome] = await runAll(certifying, real.evidenceDir, '3B', { '3B-A1': async (c) => c.skip('no') });
+  assert.equal(outcome.result, 'FAIL');
+  assert.equal(JSON.parse(fs.readFileSync(path.join(real.evidenceDir, 'steps/A.json'), 'utf8')).cases[0].failure.code, 'SKIP_NOT_ALLOWED');
+  assert.equal(closeGeneration({ root: certifying, evidenceDir: real.evidenceDir, inventory, now: clock() }).result, 'FAILED_PRESERVED');
+});
+
+test('D02 a skip does not hide a failure: a rehearsal with a failing case is REHEARSAL_FAILED', async (t) => {
+  const root = makeRoot(t);
+  const options = baseOptions(root, '3B', 'phase3b-rehearsal-r1', { certifying: false, harnessReviewPath: null });
+  sealGeneration({ ...options, now: clock() });
+  await runAll(root, options.evidenceDir, '3B', { '3B-B1': async (c) => c.skip('host'), '3B-C1': async () => { throw new Error('real failure'); } });
+  assert.equal(closeGeneration({ root, evidenceDir: options.evidenceDir, inventory, now: clock() }).result, 'REHEARSAL_FAILED');
+});
+
+test('D03 the driver checks a definition against the inventory and never lets an unimplemented case pass', async (t) => {
+  const ids3B = allCases(inventory).filter((item) => item.stream === '3B').map((item) => item.id);
+  const impls = Object.fromEntries(ids3B.map((id) => [id, async (h) => { if (allCases(inventory).find((item) => item.id === id).mode === 'record') h.observe({ outcome: 'CONFIRMED' }); }]));
+  assert.deepEqual(checkDefinition({ inventory, stream: '3B', impls }), []);
+  const missing = { ...impls };
+  delete missing['3B-D1'];
+  assert.deepEqual(checkDefinition({ inventory, stream: '3B', impls: missing }), ['3B-D1: neither implemented nor declared host-only']);
+  assert.ok(checkDefinition({ inventory, stream: '3B', impls, hostOnly: { '3B-D1': 'x' } }).some((p) => p.includes('both')));
+  assert.ok(checkDefinition({ inventory, stream: '3B', impls: { ...impls, '3B-Z1': async () => undefined } }).some((p) => p.includes('not a case of 3B')));
+  const work = tmp(t);
+  await assert.rejects(rehearse({ root: repo, stream: '3B', evidenceDir: path.join(work, 'x'), impls: missing, env: {}, toolPaths: sharedToolPaths(repo) }), (e) => e.code === 'DEFINITION_INVALID');
+  // an executor built over a definition with a hole fails the case instead of passing it
+  const holes = buildExecutors({ inventory, stream: '3B', impls: missing, env: {} });
+  assert.equal(typeof holes.D, 'function');
+});
+
+test('D04 rehearse seals, runs and closes a non-certifying generation and summarizes executed, skipped and failed cases', async (t) => {
+  const ids3B = allCases(inventory).filter((item) => item.stream === '3B');
+  const impls = Object.fromEntries(ids3B.map((item) => [item.id, async (h) => { if (item.mode === 'record') h.observe({ outcome: 'CONFIRMED' }); }]));
+  const hostOnly = { '3B-E2': 'needs two worktrees on the host' };
+  delete impls['3B-E2'];
+  const result = await rehearse({ root: repo, stream: '3B', evidenceDir: path.join(tmp(t), 'r1'), impls, hostOnly, env: {}, toolPaths: sharedToolPaths(repo) });
+  assert.equal(result.receipt.result, 'REHEARSAL_PARTIAL');
+  assert.deepEqual(result.problems, []);
+  assert.equal(result.summary.executedPass, 25);
+  assert.deepEqual(result.summary.skippedHostOnly, ['3B-E2']);
+  assert.deepEqual(result.summary.failed, []);
+  assert.deepEqual(summarize(inventory, result.evidenceDir, result.receipt), result.summary);
+  assert.equal(result.receipt.certifying, false);
 });
 
 test('U20a the close and verify steps refuse an inventory other than the sealed one; the shared tools can all be bound', async (t) => {

@@ -136,15 +136,30 @@ async function runStep({ evidenceDir, seal, spec, executor, effectiveGuardMs, no
       const observed = {};
       let escalation = null;
       let failure = null;
+      let skipped = null;
       const caseClock = monotonic();
       const handle = Object.freeze({
         signal: controller.signal,
         observe(values) { Object.assign(observed, values); },
         escalate(reason) { escalation = clip(reason, 200); },
+        // A rehearsal may declare a case host-only: it is not run and is recorded NOT_RUN with the reason. A certifying
+        // generation can never skip a case.
+        skip(reason) { skipped = clip(reason, 200); },
       });
       try { await body(handle); } catch (error) { failure = describe(error); }
       if (state.closed) return null; // the step guard already expired; its record wins
       state.current = null;
+      if (skipped !== null) {
+        if (seal.certifying) failure ??= { name: 'HarnessError', code: 'SKIP_NOT_ALLOWED', message: 'a certifying generation cannot skip a case' };
+        else if (failure === null) {
+          const row = {
+            id, result: 'NOT_RUN', mode: item.mode, mandatory: item.mandatory, elapsedMs: roundMs(monotonic() - caseClock),
+            escalation: null, outcome: null, observed: { skipped }, failure: null,
+          };
+          results.set(id, row);
+          return row;
+        }
+      }
       let observedValue = {};
       try {
         observedValue = stableValue(observed);
@@ -237,8 +252,10 @@ export function deriveStreamReceipt({ seal, sealSha256, inventory, stepReceipts,
   const escalated = !accepted && mandatoryRows.some((row) => row.result === 'ESCALATE')
     && !mandatoryRows.some((row) => row.result === 'FAIL') && stepFailures.length === 0;
   let result;
+  const onlySkipped = mandatoryRows.filter((row) => row.result !== 'PASS').every((row) => row.result === 'NOT_RUN' && row.observed?.skipped !== undefined);
   if (seal.certifying) result = accepted ? 'ACCEPTED' : escalated ? 'ESCALATED_PRESERVED' : 'FAILED_PRESERVED';
-  else result = accepted ? 'REHEARSAL_COMPLETED' : 'REHEARSAL_FAILED';
+  else if (accepted) result = 'REHEARSAL_COMPLETED';
+  else result = stepFailures.length === 0 && onlySkipped && allSegmentsPass ? 'REHEARSAL_PARTIAL' : 'REHEARSAL_FAILED';
   const byId = new Map(rows.map((row) => [row.id, row.result]));
   const outcomeById = new Map(rows.map((row) => [row.id, row.outcome]));
   const qualifications = inventory.qualifications.map(({ id }) => ({
