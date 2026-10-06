@@ -1331,3 +1331,70 @@ same accepted and rejected inputs, the same subjects and the same record. The St
 construction, its digests and the 10,000-transition count policy are unchanged. If that
 proves impossible without changing semantics, the stream reports it, and any limit change
 returns to owner review.
+
+## 28. Amendment A5 — consistent read snapshot (2026-10-06, owner-authorized)
+
+This amendment is append-only. The frozen text above, and Amendments A1 to A4, are unchanged
+except where this amendment names the superseded text. It records the owner's approval of the
+contract-visible changes in section 5a of the [Phase 2C record](mo1308-phase2c-store.md), found
+by the native-Windows test W08b (a tombstone purge racing a read reported a valid ledger as
+`RECORD_BYTES_MISMATCH`) and fixed in the file store.
+
+### A5.1 `LEDGER_CONFLICT` also covers a read that cannot obtain a consistent snapshot
+
+Every store read that combines the entry listing with member listings (`verify`, `query`,
+`export`, `tombstone` and the read inside `append`) takes a consistent snapshot: it lists the
+entries, reads the descriptor, the entries and the members, then lists the entries again, and
+repeats the whole pass when the listing changed. The number of passes is
+`STORE_SNAPSHOT_ATTEMPTS = 8`. A quiescent ledger is always read in one pass. When every pass
+is overtaken by a writer's entry commit, the operation fails with `LEDGER_CONFLICT`, stage
+`ACQUISITION`, exit category 4, with the same fixed message as before, and publishes nothing.
+It is never reported as `RECORD_BYTES_MISMATCH` or any other integrity-class code. Anything
+observed while the entry listing is unchanged is reported exactly as before.
+
+**Superseded text.** The section 14.1 row "`LEDGER_CONFLICT` | 4 | Lost the entry commit race"
+and R15 ("losers get LEDGER_CONFLICT") are extended: `LEDGER_CONFLICT` is also the result of a
+read that could not obtain a consistent snapshot within eight passes.
+
+### A5.2 A member that vanishes between listing and read is absent
+
+A member file that is listed in a record directory and is gone when it is read (a purge is
+deleting it, section 10.2) is treated as absent, as if it had been listed a moment later. It is
+no longer reported as `IO`. The engine decides what an absent member means: on a stable
+snapshot a retained record's missing member is `RECORD_BYTES_MISMATCH`, and a purged or
+purge-pending record is valid.
+
+### A5.3 Unchanged
+
+No shape, layout, limit, identity, other error code or protocol step changes. The commit point
+(exclusive creation of `entries/<n>.json`), the purge order and the engine functions are as
+frozen.
+
+## 29. Amendment A6 — exclusive-create failure on a staging file is a typed, unretried IO failure (2026-10-06, owner-authorized)
+
+This amendment is append-only. The frozen text above, and Amendments A1 to A5, are unchanged.
+It records the owner's decision on an observation from the MO-1308 Stream 2C development runs
+(see section 5c of the [Phase 2C record](mo1308-phase2c-store.md)): in 1 of 16 executions of
+the concurrent-appender test W08 on the reference Windows host, two appends failed with
+`EPERM` (errno -4048, syscall `open`) while creating a staging name `.pending/entry-N.0`.
+
+### A6.1 Behaviour accepted for v1
+
+When the exclusive creation of a staging file fails with any error other than "the name already
+exists" (`EEXIST`, which selects the next free staging name, K3), the operation fails with a
+typed `IO` failure. The store does not retry it. The writer is informed of the failure, nothing
+is committed (the commit point, exclusive creation of `entries/<n>.json`, is never reached), and
+the ledger remains valid; any leftover staging name is a disclosed anomaly (section 11.1).
+
+### A6.2 Known limitation, recorded as such
+
+This is accepted for v1 as a known limitation, not a defect, with no product change. Two
+hypotheses for the observed `EPERM` are recorded, neither confirmed: (1) a transient lock by
+antivirus or an indexer on the staging name; (2) the Windows delete-pending state of a
+contended staging name (a file whose deletion is requested but which still holds its name while
+another handle is open). The recorded runs do not distinguish them.
+
+### A6.3 Re-review condition
+
+This limitation is re-reviewed together with H40 (the Node-only, helper-free file mechanism)
+before any multi-user, shared-storage or cloud use of the history store.

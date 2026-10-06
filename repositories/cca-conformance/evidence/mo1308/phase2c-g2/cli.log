@@ -1,0 +1,109 @@
+✔ package bin resolves to the production executable entry (9.2044ms)
+✔ production CLI depends on the SDK facade and no lower platform layer (6.9055ms)
+✔ CLI output preserves direct SDK transition truth (1948.4164ms)
+✔ Regression output is the exact public SDK report (1138.5994ms)
+✔ Investigation navigation output is the exact public SDK result (1003.732ms)
+✔ version and help expose the deterministic supported command surface (1760.1469ms)
+✔ argument failures are stable, non-interactive, and use exit code 1 (3629.9529ms)
+✔ observe requires explicit deterministic files and emits stable summaries (1828.8526ms)
+✔ input validation failures use exit code 2 and deterministic JSON (2059.8831ms)
+✔ all documented exit-code classes are observable (2075.0258ms)
+✔ history grammar enumerations equal the SDK contract and the fixed usage message (1.9807ms)
+✔ every valid history command fails closed and writes nothing (2421.93ms)
+✔ history grammar rejects malformed commands with MO1308_USAGE (6321.8071ms)
+✔ history human errors carry the history code and the fixed message (177.7461ms)
+✔ history help lists the exact frozen grammar (196.9744ms)
+✔ non-history error envelopes are unchanged (no historyCode) (171.4574ms)
+✔ history grammar performs no I/O, starts no process and reads no clock (R35, R37) (3.2599ms)
+✔ W01 junctions and directory symlinks anywhere on the path or inside the ledger fail closed on every operation (R17, H40) (166.3348ms)
+✔ W01b a reparse point that is neither a junction nor a symlink (an app-execution alias) is refused as an input file (H40) (17.2099ms)
+✔ W02 a junction swapped in for a record directory during an append is detected; decoy content survives; the entry is never committed; reads then fail closed (H40) (74.2771ms)
+✔ W03 the entries directory swapped for a junction at the commit point is detected after the fact: the real entries stay unchanged, reads fail closed (H40) (65.8402ms)
+✔ W04 NTFS hard links: publication leaves one link per file, never replaces a name, and an unremoved staging link is only an anomaly (R06, section 9.2) (143.1457ms)
+✔ W05 exclusive-create semantics: an existing name is never opened for writing, even one locked by another process or differing only in case (R06) (1947.5086ms)
+✔ W05b a sharing violation (another process holds a ledger file with no sharing) fails closed with a typed IO error and changes nothing; releasing restores service (R17) (2482.6719ms)
+✔ W06 the case-insensitive realpath comparison accepts any casing of the real path and refuses a short (8.3) alias; case-only renames inside a ledger are corruption (R17, H40) (214.3962ms)
+✔ W07 drive-letter, UNC and long-path forms work end to end; the \\?\ and \\.\ forms are refused fail-closed without creating anything (R17) (840.4679ms)
+✖ W08 NTFS concurrency: ten real appender processes with concurrent readers produce one entry per index and a verifying chain; readers never see corruption (R15) (12238.8661ms)
+✔ W08b concurrent tombstones and appends in separate processes leave one tombstone per target and a verifying chain (R15, section 10.2) (660.8138ms)
+✔ W08c a junction swapper racing real appender processes: the race is exercised, nothing outside is overwritten, and the ledger only ever verifies or fails closed with a typed error (H40) (6208.8077ms)
+✔ T01 store constants equal the Freeze contract module (layout, limits, member names) (2.338ms)
+✔ T02 init creates exactly the frozen layout once; an existing target or a missing parent is refused (section 9.1) (31.5611ms)
+✔ T03 append publishes members, then the entry; every earlier file is untouched (R06, R15) (71.157ms)
+✔ T04 rejected appends change nothing: duplicates, wrong members, purged re-supply (R09, R10, R20) (60.0612ms)
+✔ T05 the commit point is exclusive creation of entries/<n>.json: a lost race is LEDGER_CONFLICT and publishes nothing (R15, H41) (83.3656ms)
+✔ T06 interruption at every mutating step before the commit point publishes nothing; after it, a complete entry (R16) (1561.3474ms)
+✔ T07 tombstone commits first, then purges every member; the chain still verifies (R18, R19, section 10.2) (88.5683ms)
+✔ T08 a crash during purge leaves purgePending; re-running the same command finishes it without a new entry (section 10.2) (278.5796ms)
+✔ T09 verify fails closed on every layout defect (section 11.1) (167.7422ms)
+✔ T10 verify reports staging and unreferenced artifacts; tampered bytes fail closed (R21) (138.2981ms)
+✔ T11 filesystem boundary: a link anywhere on the path or inside the ledger fails closed on every operation (R17, H40) (96.2614ms)
+✔ T12 a handle/path identity mismatch fails closed (H40) (18.3496ms)
+✔ T12b a published name whose identity differs from the staged file is detected after the link (H40) (32.4693ms)
+✔ T13 a directory swapped for a link during an append is detected after the fact; no content is overwritten; reads then fail closed (H40 risk acceptance) (57.1299ms)
+✔ T13b the same swap with no decoy is detected after the link: a boundary failure, the entry is never committed (H40) (57.2362ms)
+✔ T14 export is written once, marker last, byte-identical for equal ledgers, and verify-export fails closed (R23, section 12) (569.0858ms)
+✔ T15 query and verify-export are read-only; query verifies the chain and never reads member bytes (R22) (90.6808ms)
+✔ T16 commands: arguments become store operations, inputs are read through the boundary, errors carry only fixed text (section 13.3, 14.1) (276.7963ms)
+✔ T17 concurrent appenders in separate processes: exactly one entry per index, losers get LEDGER_CONFLICT, the chain verifies (R15) (371.6811ms)
+✔ T18 the store is Node-only, helper-free, timeless and never overwrites (R06, R35, R37, H40) (2.4548ms)
+✔ T19 nothing outside the SDK facade and the contract is imported by the history sources; commands.js stays the only SDK importer (ARCHITECTURE section 5) (1.1481ms)
+✔ T20 a purge committed between the entry listing and the member listing never produces RECORD_BYTES_MISMATCH: the read is repeated on a consistent snapshot (section 10.2, found by W08b) (428.6203ms)
+✔ T21 when writers overtake every pass the read fails with LEDGER_CONFLICT after exactly the fixed number of passes, never with an integrity code, and publishes nothing (961.3251ms)
+✔ T22 on a stable snapshot every mismatch is reported exactly as before: corruption of a quiescent ledger is an integrity error found in a single pass (69.6793ms)
+✔ CCA-MOS-CLI-004: every command emits deterministic human output through the production CLI (59557.3376ms)
+✔ investigate delegates raw and enveloped Regression Reports with stable JSON (2121.6586ms)
+✔ investigate selects Evidence, Reflection, Retrieval, and Evolution through the SDK (2107.1456ms)
+✔ investigate selects Replay, Transition, and Verification facts exactly (1621.2536ms)
+✔ investigate rejects invalid grammar, reports, categories, and selector combinations (2894.9558ms)
+✔ investigate remains bounded for a complete deterministic Regression Report (1077.6972ms)
+✔ verify delegates valid and invalid package truth with exit code 3 on failure (1915.8397ms)
+✔ import and inspect expose the same deterministic SDK investigation metadata (1897.5169ms)
+✔ trace requires and preserves one exact package Trace selector (1972.0835ms)
+✔ replay applies repeated SDK actions in caller order and is deterministic (4654.8656ms)
+✔ compare uses one package, completes its Replay, and enters exact Evolution (5949.055ms)
+✔ regression delegates two packages to the SDK and preserves deterministic report truth (1850.0473ms)
+✔ regression reports identical packages and accepts at most one stdin operand (2634.9814ms)
+✔ export is a byte-for-byte SDK round trip for files and stdout (2493.4405ms)
+✔ package stdin supports non-interactive verification and import (1990.3475ms)
+✔ invalid package import is reported as a package error (1423.7636ms)
+✔ policy namespace exposes exactly the seven frozen commands (2012.3491ms)
+✔ unexpected Policy operational failure maps to exit 5 and the exact JSON semantic projection (2.8186ms)
+✔ validate, digest, identities, and presentation envelopes preserve frozen bytes (2666.5195ms)
+✔ evaluate preserves PASS, FAIL, CNE, exact artifacts, and outcome-last generation (4215.464ms)
+✔ all detached inspections and both verification modes remain SDK-owned (4727.1486ms)
+✔ policy transport rejects collisions, multiple stdin inputs, URLs, and output-only stdin (2178.1822ms)
+✔ session preserves opaque checkpoints and restores exact SDK state (6922.1833ms)
+✔ checkpoint names cannot restore across live CLI sessions (1722.5334ms)
+✔ session executes Trace, complete Replay, and Compare in one live SDK (7102.9108ms)
+✔ session can verify and byte-preserving export through the SDK (1591.3091ms)
+✔ native observations fail export safely without fabricating a MIP (1214.9851ms)
+✔ session accepts a workflow file and fails malformed JSON deterministically (2147.98ms)
+ℹ tests 81
+ℹ suites 0
+ℹ pass 80
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 189627.0547
+
+✖ failing tests:
+
+test at tests\history-store-windows.test.mjs:429:1
+✖ W08 NTFS concurrency: ten real appender processes with concurrent readers produce one entry per index and a verifying chain; readers never see corruption (R15) (12238.8661ms)
+  AssertionError [ERR_ASSERTION]: every record was committed
+  
+  29 !== 30
+  
+      at TestContext.<anonymous> (file:///C:/Users/melsa/Documents/Codex/g2-2c/repositories/memoryos-cli/tests/history-store-windows.test.mjs:441:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 29,
+    expected: 30,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

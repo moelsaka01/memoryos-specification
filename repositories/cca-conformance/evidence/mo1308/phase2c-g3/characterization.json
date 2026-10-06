@@ -1,0 +1,44 @@
+{
+  "kind": "MO1308Phase2CCharacterization",
+  "entryCount": 100000,
+  "node": "v24.21.0",
+  "platform": "win32",
+  "rows": [
+    {
+      "label": "generate 99999 entries and members on disk",
+      "outcome": "ok",
+      "milliseconds": 342077,
+      "heapDeltaMiB": 6
+    },
+    {
+      "label": "store.query page of 1000 (list and read every entry, no members)",
+      "outcome": "ok",
+      "milliseconds": 94839,
+      "heapDeltaMiB": 209.5
+    },
+    {
+      "label": "store.verify (list and read every entry and member)",
+      "outcome": "ok",
+      "milliseconds": 189578,
+      "heapDeltaMiB": 224.9
+    },
+    {
+      "label": "store.append of the last allowed entry (verify the whole ledger, then publish)",
+      "outcome": "ok",
+      "milliseconds": 207010,
+      "heapDeltaMiB": 255.2
+    },
+    {
+      "label": "store.exportLedger",
+      "outcome": "ok",
+      "milliseconds": 1014566,
+      "heapDeltaMiB": 402.3
+    },
+    {
+      "label": "store.verifyExport",
+      "outcome": "ok",
+      "milliseconds": 98730,
+      "heapDeltaMiB": 307.5
+    }
+  ]
+}
