@@ -88,7 +88,22 @@ v24.21.0, the 122 native MO-1307 tests, `verify_workspace.py` without the Linux 
 ## 5. Characterization (Freeze §14.2, Amendment A2 item 4)
 
 `repositories/cca-conformance/tools/mo1308-phase2d/characterize.mjs` runs the REAL SDK through the CLI command layer at the
-100,000-entry ceiling. Cloud values (one run) are in section 5a.
+100,000-entry ceiling (chain-valid synthetic entries; verification does not re-run admission, §11.1). Cloud values
+(Linux, Node v22.22.0, one run, exit 0):
+
+| Operation | Time | Heap delta |
+|---|---:|---:|
+| Generate 99,999 entries and members on disk | 22.7 s | 9.4 MiB |
+| `query` page of 1,000 | 17.8 s | 171 MiB |
+| `query` with a subject filter over the whole ledger | 15.6 s | 177 MiB |
+| `verify` | 21.3 s | 270 MiB |
+| `append` of the last allowed entry (real MIP admission) | 20.2 s | 294 MiB |
+| `export` | 169.2 s | 465 MiB |
+| `verify-export` | 29.7 s | 524 MiB |
+| Real process `memoryos history verify` | 24.1 s | n/a |
+| `createHistoryCheckpointRecord` (reference checkpoint) | 70 ms | 4.3 MiB |
+
+Consistent with the 2A and 2C records (Freeze consequences, A4.4 item 3). Reference-host values are recorded at binding.
 
 ## 6. Local binding plan B2 (one run, reference Windows host)
 
