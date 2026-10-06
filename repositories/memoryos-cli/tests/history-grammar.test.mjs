@@ -15,9 +15,9 @@ import {
 } from "../src/history-arguments.js";
 import { runCli } from "./test-helpers.mjs";
 
-// MO-1308 Contract Freeze 1 §13.3 Phase 1 grammar. Every valid command fails
-// closed (MO1308_INTERNAL, exit 5) and writes nothing; grammar errors are
-// MO1308_USAGE, exit 1, with the fixed message and no echoed input.
+// MO-1308 Contract Freeze 1 §13.3 grammar. Phase 1 pinned "every valid command fails closed"; since Stream 2D the
+// grammar is wired to the real SDK and file store, so a valid command is accepted by the grammar and answered by
+// the store with a typed, frozen code. Grammar errors are MO1308_USAGE, exit 1, with the fixed message and no echoed input.
 async function scratch(t) {
   const root = await mkdtemp(join(tmpdir(), "memoryos-history-cli-"));
   t.after(() => rm(root, { recursive: true, force: true }));
@@ -27,13 +27,14 @@ function jsonError(result) {
   assert.equal(result.stdout, "");
   return JSON.parse(result.stderr).error;
 }
-function assertGuard(args) {
+function assertAnswered(args, expectedCode, expectedExit) {
   const result = runCli([...args, "--json"]);
-  assert.equal(result.status, 5, args.join(" "));
-  assert.deepEqual(jsonError(result), {
-    code: "SDK_FAILURE", details: [], exitCode: 5, historyCode: "MO1308_INTERNAL",
-    message: new contract.MemoryOSHistoryError("INTERNAL", "INTERNAL").message,
-  });
+  assert.equal(result.status, expectedExit, args.join(" "));
+  const error = jsonError(result);
+  assert.equal(error.historyCode, expectedCode, args.join(" "));
+  assert.equal(error.exitCode, expectedExit);
+  assert.notEqual(error.historyCode, "MO1308_USAGE", "a valid command is never a grammar error");
+  assert.notEqual(error.historyCode, "MO1308_INTERNAL", "the wiring is real: no command fails closed any more");
 }
 function assertUsage(args, secret = null) {
   const result = runCli([...args, "--json"]);
@@ -54,29 +55,29 @@ test("history grammar enumerations equal the SDK contract and the fixed usage me
   assert.equal(HISTORY_USAGE_MESSAGE, new contract.MemoryOSHistoryError("USAGE", "USAGE").message);
 });
 
-test("every valid history command fails closed and writes nothing", async (t) => {
+test("every valid history command is accepted by the grammar and answered by the store with a frozen code", async (t) => {
   const root = await scratch(t);
   const ledger = join(root, "ledger"), output = join(root, "export"), file = join(root, "record.json");
+  const missingLedger = ["MO1308_LEDGER_NOT_FOUND", 4], missingFile = ["MO1308_IO", 4];
   const valid = [
-    ["history", "init", "--ledger", ledger, "--name", "workspace.history", "--workspace", "workspace-investigation"],
-    ["history", "append", "--ledger", ledger, "--kind", "MIP_PACKAGE", "--record", file],
-    ["history", "append", "--ledger", ledger, "--kind", "INVESTIGATION_CHECKPOINT", "--record", file],
-    ["history", "append", "--ledger", ledger, "--kind", "REGRESSION_REPORT", "--record", file],
-    ["history", "append", "--ledger", ledger, "--kind", "READINESS_RESULT", "--record", file],
-    ["history", "append", "--ledger", ledger, "--kind", "HUMAN_DECISION_CLAIM", "--record", file],
-    ["history", "append", "--ledger", ledger, "--kind", "POLICY_EVALUATION", "--identity", file, "--outcome", file],
-    ["history", "append", "--ledger", ledger, "--kind", "CICD_RUN", "--run", root],
-    ["history", "tombstone", "--ledger", ledger, "--target", "0", "--reason", "PRIVACY_REQUEST", "--authority-reference", "PRIV-2026-0042"],
-    ["history", "verify", "--ledger", ledger],
-    ["history", "query", "--ledger", ledger, "--retention", "ANY", "--from", "0", "--limit", "1"],
-    ["history", "query", "--ledger", ledger, "--kind", "MIP_PACKAGE", "--kind", "CICD_RUN", "--subject-type", "WORKSPACE",
-      "--subject", "workspace-investigation", "--retention", "PURGED", "--from", "99999", "--limit", "1000"],
-    ["history", "export", "--ledger", ledger, "--output", output],
-    ["history", "verify-export", "--export", output],
+    [["history", "init", "--ledger", join(root, "no-parent", "ledger"), "--name", "workspace.history", "--workspace", "workspace-investigation"],
+      "MO1308_FILESYSTEM_BOUNDARY", 4],
+    ...["MIP_PACKAGE", "INVESTIGATION_CHECKPOINT", "REGRESSION_REPORT", "READINESS_RESULT", "HUMAN_DECISION_CLAIM"].map((kind) => [
+      ["history", "append", "--ledger", ledger, "--kind", kind, "--record", file], ...missingFile]),
+    [["history", "append", "--ledger", ledger, "--kind", "POLICY_EVALUATION", "--identity", file, "--outcome", file], ...missingFile],
+    [["history", "append", "--ledger", ledger, "--kind", "CICD_RUN", "--run", root], "MO1308_RECORD_INVALID", 2],
+    [["history", "tombstone", "--ledger", ledger, "--target", "0", "--reason", "PRIVACY_REQUEST", "--authority-reference", "PRIV-2026-0042"], ...missingLedger],
+    [["history", "verify", "--ledger", ledger], ...missingLedger],
+    [["history", "query", "--ledger", ledger, "--retention", "ANY", "--from", "0", "--limit", "1"], ...missingLedger],
+    [["history", "query", "--ledger", ledger, "--kind", "MIP_PACKAGE", "--kind", "CICD_RUN", "--subject-type", "WORKSPACE",
+      "--subject", "workspace-investigation", "--retention", "PURGED", "--from", "99999", "--limit", "1000"], ...missingLedger],
+    [["history", "export", "--ledger", ledger, "--output", output], ...missingLedger],
+    [["history", "verify-export", "--export", output], ...missingLedger],
   ];
-  for (const args of valid) assertGuard(args);
+  for (const [args, historyCode, exitCode] of valid) assertAnswered(args, historyCode, exitCode);
   assert.equal(existsSync(ledger), false);
   assert.equal(existsSync(output), false);
+  assert.equal(existsSync(join(root, "no-parent")), false);
 });
 
 test("history grammar rejects malformed commands with MO1308_USAGE", async (t) => {
@@ -128,10 +129,11 @@ test("history grammar rejects malformed commands with MO1308_USAGE", async (t) =
 });
 
 test("history human errors carry the history code and the fixed message", () => {
-  const result = runCli(["history", "verify", "--ledger", "x"]);
-  assert.equal(result.status, 5);
-  assert.equal(result.stderr, ["MemoryOS history verify failed", "code: SDK_FAILURE", "exitCode: 5",
-    "historyCode: MO1308_INTERNAL", "message: An internal history failure occurred."].join("\n") + "\n");
+  const result = runCli(["history", "verify", "--ledger", "private-missing-ledger-name"]);
+  assert.equal(result.status, 4);
+  assert.equal(result.stderr, ["MemoryOS history verify failed", "code: PACKAGE_ERROR", "exitCode: 4",
+    "historyCode: MO1308_LEDGER_NOT_FOUND", "message: No ledger descriptor was found."].join("\n") + "\n");
+  assert.ok(!result.stderr.includes("private-missing-ledger-name"));
 });
 
 test("history help lists the exact frozen grammar", () => {

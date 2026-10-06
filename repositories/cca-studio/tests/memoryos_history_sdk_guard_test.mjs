@@ -24,20 +24,23 @@ test("MO-1308 SDK exposes exactly the frozen history surface", () => {
   }
   assert.equal(typeof MemoryOS.prototype.createHistoryCheckpointRecord, "function");
   assert.equal(typeof MemoryOSHistoryError, "function");
-  assert.equal(sdk.MEMORYOS_SDK_VERSION, "1.1.0", "the 1.2.0 version is Phase 2D");
+  assert.equal(sdk.MEMORYOS_SDK_VERSION, "1.2.0");
 });
 
-test("MO-1308 SDK well-formed calls fail closed with MO1308_INTERNAL (Phase 1 guard)", () => {
-  const guarded = [
-    () => sdk.createHistoryLedger({ ledgerName: "workspace.history", workspaceIdentifier: "workspace-investigation" }),
+test("MO-1308 SDK well-formed calls reach the history authorities and report their frozen codes", () => {
+  // Phase 2D replaced the Phase 1 fail-closed guard: a well-formed call now runs the real authority, so bad bytes are
+  // integrity failures (section 14.1), never MO1308_INTERNAL.
+  const created = sdk.createHistoryLedger({ ledgerName: "workspace.history", workspaceIdentifier: "workspace-investigation" });
+  assert.ok(created.descriptorBytes instanceof Uint8Array);
+  assert.match(created.ledgerIdentifier, /^sha256:[0-9a-f]{64}$/u);
+  const corrupt = [
     () => sdk.verifyHistoryLedger({ descriptorBytes: bytes(), entries: [bytes()], members: members() }),
     () => sdk.queryHistoryLedger({ descriptorBytes: bytes(), entries: [], query }),
     () => sdk.buildHistoryExport({ descriptorBytes: bytes(), entries: [], members: new Map() }),
-    () => sdk.verifyHistoryExport({ files: [{ path: "memoryos-history-ledger.json", bytes: bytes() }] }),
   ];
-  for (const call of guarded) {
-    assert.throws(call, (error) => code("INTERNAL", "INTERNAL")(error) && error.exitCode === 5);
-  }
+  for (const call of corrupt) assert.throws(call, (error) => code("LEDGER_CORRUPT", "VERIFICATION")(error) && error.exitCode === 3);
+  assert.throws(() => sdk.verifyHistoryExport({ files: [{ path: "memoryos-history-ledger.json", bytes: bytes() }] }),
+    (error) => code("EXPORT_CORRUPT", "VERIFICATION")(error) && error.exitCode === 3);
 });
 
 test("MO-1308 SDK rejects malformed arguments with the frozen codes", () => {
@@ -64,12 +67,22 @@ test("MO-1308 SDK rejects malformed arguments with the frozen codes", () => {
   assert.throws(() => sdk.queryHistoryLedger({ descriptorBytes: bytes(), entries: [], query: { ...query, limit: 1001 } }), code("QUERY_INVALID"));
 });
 
-test("MO-1308 createHistoryCheckpointRecord accepts only this instance's Checkpoint, then fails closed", async () => {
+test("MO-1308 createHistoryCheckpointRecord accepts only this instance's Checkpoint and returns the admitted bytes", async () => {
   const memory = new MemoryOS(), other = new MemoryOS();
   const checkpoint = await mipCheckpoint(memory);
   assert.throws(() => other.createHistoryCheckpointRecord(checkpoint), code("USAGE", "USAGE"));
   assert.throws(() => memory.createHistoryCheckpointRecord({ ...checkpoint }), code("USAGE", "USAGE"));
-  assert.throws(() => memory.createHistoryCheckpointRecord(checkpoint), code("INTERNAL", "INTERNAL"));
+  const record = memory.createHistoryCheckpointRecord(checkpoint);
+  assert.ok(record instanceof Uint8Array);
+  const projection = JSON.parse(new TextDecoder().decode(record));
+  assert.deepEqual(Object.keys(projection).sort(), ["identifier", "investigationIdentifier", "kind", "stateDigest",
+    "transitionCount", "transitionLog", "transitionLogDigest", "version", "workspaceIdentifier"]);
+  assert.equal(projection.identifier, checkpoint.identifier);
+  // The record is a history record, never a restore source (H14): it is a verifiable ledger member.
+  const { descriptorBytes } = sdk.createHistoryLedger({ ledgerName: "workspace.history", workspaceIdentifier: checkpoint.workspaceIdentifier });
+  const ledger = sdk.verifyHistoryLedger({ descriptorBytes, entries: [], members: new Map() });
+  const admission = sdk.admitHistoryRecord({ recordKind: "INVESTIGATION_CHECKPOINT", members: [{ name: "checkpoint.json", bytes: record }], ledger });
+  assert.equal(admission.admission, "CORE_LOG_VERIFIED_STATE_ISSUED");
 });
 
 test("MO-1308 SDK history surface performs no I/O and does not mutate inputs (R29)", async () => {
@@ -77,6 +90,6 @@ test("MO-1308 SDK history surface performs no I/O and does not mutate inputs (R2
   assert.doesNotMatch(source, /from\s+["']node:|require\(|child_process|powershell/iu);
   const input = { descriptorBytes: bytes('{"a":1}'), entries: [bytes()], members: members() };
   const before = JSON.stringify([...input.members.keys()]) + Buffer.from(input.descriptorBytes).toString("hex");
-  assert.throws(() => sdk.verifyHistoryLedger(input), code("INTERNAL"));
+  assert.throws(() => sdk.verifyHistoryLedger(input), code("LEDGER_CORRUPT"));
   assert.equal(JSON.stringify([...input.members.keys()]) + Buffer.from(input.descriptorBytes).toString("hex"), before);
 });

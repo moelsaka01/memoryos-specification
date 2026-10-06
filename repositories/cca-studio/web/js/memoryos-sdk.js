@@ -18,6 +18,18 @@ import {
   MemoryOSRegressionReportInspection,
   createMemoryOSPolicyIntegration,
 } from "./investigation-policy-integration.js";
+import { canonicalize as historyCanonicalize } from "./mip-canonical.js";
+import { admitHistoryRecord as admitHistoryRecordAuthority } from "./memoryos-history-admission.js";
+import {
+  appendHistoryEntry as appendHistoryEntryAuthority,
+  buildHistoryExport as buildHistoryExportAuthority,
+  createHistoryLedger as createHistoryLedgerAuthority,
+  historyLedgerView,
+  queryHistoryLedger as queryHistoryLedgerAuthority,
+  tombstoneHistoryEntry as tombstoneHistoryEntryAuthority,
+  verifyHistoryExport as verifyHistoryExportAuthority,
+  verifyHistoryLedger as verifyHistoryLedgerAuthority,
+} from "./memoryos-history-ledger.js";
 import {
   MEMORYOS_HISTORY_LIMITS as HISTORY_LIMITS,
   MemoryOSHistoryError,
@@ -30,7 +42,7 @@ import {
   validateQuery as validateHistoryQuery,
 } from "./memoryos-history-contract.js";
 
-export const MEMORYOS_SDK_VERSION = "1.1.0";
+export const MEMORYOS_SDK_VERSION = "1.2.0";
 
 export {
   MemoryOSAuthoritativePolicyFactContext,
@@ -793,23 +805,34 @@ export class MemoryOS {
     return this.#binding().restore(checkpoint);
   }
 
-  // MO-1308 Contract Freeze 1 §13.2. Phase 1 guard: the argument shape is checked,
-  // then the call fails closed until Phase 2 implements checkpoint records.
+  // MO-1308 Contract Freeze 1 §7.2, §13.2: the JCS bytes of the Standard's nine-member public Core checkpoint projection,
+  // for the CLI to append. A record only, never a restore source (H14). A native investigation is rejected by the same
+  // admission method the ledger applies (RECORD_INVALID), so the bytes returned are bytes that admission accepts.
   createHistoryCheckpointRecord(checkpoint) {
     const binding = this.#binding();
-    if (!weakMapGet(checkpointValues, checkpoint) || weakMapGet(checkpointBindings, checkpoint) !== binding) {
-      historyGuardFail("USAGE", "USAGE");
+    const value = weakMapGet(checkpointValues, checkpoint);
+    if (!value || weakMapGet(checkpointBindings, checkpoint) !== binding) historyGuardFail("USAGE", "USAGE");
+    let bytes;
+    try {
+      bytes = new TextEncoder().encode(historyCanonicalize(JSON.parse(JSON.stringify(value))));
+    } catch {
+      historyGuardFail("RECORD_INVALID", "ADMISSION");
     }
-    return historyGuardFail("INTERNAL", "INTERNAL");
+    admitHistoryRecordAuthority({
+      recordKind: "INVESTIGATION_CHECKPOINT",
+      members: [{ name: "checkpoint.json", bytes }],
+      ledger: { workspaceIdentifier: value.workspaceIdentifier, entries: [], members: new Map() },
+    });
+    return bytes;
   }
 }
 
-// MO-1308 Investigation History (Contract Freeze 1 §13.2), Phase 1 guarded surface.
-// Each function checks its frozen argument shape and then fails closed with
-// MO1308_INTERNAL: Phase 1 implements no identity, chain, admission, query or
-// export, and a complete-looking result would falsely claim that it did. The
-// SDK performs no file I/O (H06); `ledger` and `admission` are branded values
-// that only the Phase 2 history authority will issue.
+// MO-1308 Investigation History (Contract Freeze 1 §13.2): thin forwarding functions over the pure history authorities
+// (memoryos-history-ledger.js and memoryos-history-admission.js). The SDK performs no file I/O (H06). `ledger` is the
+// verified-ledger value returned by verifyHistoryLedger and `admission` the record returned by admitHistoryRecord;
+// each is branded here when it is issued, so only values this facade issued are accepted back. The SDK checks the
+// frozen argument shapes before it delegates, builds admission's ledger view from the verified ledger
+// (historyLedgerView, which includes the retained READINESS_RESULT bytes Amendment A4.1 needs) and adds nothing else.
 const historyLedgers = new WeakSet();
 const historyAdmissions = new WeakSet();
 
@@ -855,7 +878,7 @@ function historyLedger(value) {
 export function createHistoryLedger(input) {
   const { ledgerName, workspaceIdentifier } = historyArgument(input, ["ledgerName", "workspaceIdentifier"]);
   if (!isHistoryLedgerName(ledgerName) || !isHistoryWorkspaceIdentifier(workspaceIdentifier)) historyGuardFail("USAGE", "USAGE");
-  return historyGuardFail("INTERNAL", "INTERNAL");
+  return createHistoryLedgerAuthority({ ledgerName, workspaceIdentifier });
 }
 
 export function admitHistoryRecord(input) {
@@ -863,14 +886,16 @@ export function admitHistoryRecord(input) {
   if (!HISTORY_RECORD_KINDS.includes(recordKind)) historyGuardFail("RECORD_INVALID", "ADMISSION");
   historyMembers(members);
   historyLedger(ledger);
-  return historyGuardFail("INTERNAL", "INTERNAL");
+  const admission = admitHistoryRecordAuthority({ recordKind, members, ledger: historyLedgerView(ledger) });
+  historyAdmissions.add(admission);
+  return admission;
 }
 
 export function appendHistoryEntry(input) {
   const { ledger, admission } = historyArgument(input, ["ledger", "admission"]);
   historyLedger(ledger);
   if (!historyAdmissions.has(admission)) historyGuardFail("USAGE", "USAGE");
-  return historyGuardFail("INTERNAL", "INTERNAL");
+  return appendHistoryEntryAuthority({ ledger, admission });
 }
 
 export function tombstoneHistoryEntry(input) {
@@ -881,7 +906,7 @@ export function tombstoneHistoryEntry(input) {
     historyGuardFail("USAGE", "USAGE");
   }
   historyLedger(ledger);
-  return historyGuardFail("INTERNAL", "INTERNAL");
+  return tombstoneHistoryEntryAuthority({ ledger, targetIndex, reason, authorityReference });
 }
 
 export function verifyHistoryLedger(input) {
@@ -889,7 +914,9 @@ export function verifyHistoryLedger(input) {
   historyBytes(descriptorBytes);
   historyByteList(entries);
   historyMemberMap(members);
-  return historyGuardFail("INTERNAL", "INTERNAL");
+  const ledger = verifyHistoryLedgerAuthority({ descriptorBytes, entries, members });
+  historyLedgers.add(ledger);
+  return ledger;
 }
 
 export function queryHistoryLedger(input) {
@@ -897,7 +924,7 @@ export function queryHistoryLedger(input) {
   historyBytes(descriptorBytes);
   historyByteList(entries);
   validateHistoryQuery(query);
-  return historyGuardFail("INTERNAL", "INTERNAL");
+  return queryHistoryLedgerAuthority({ descriptorBytes, entries, query });
 }
 
 export function buildHistoryExport(input) {
@@ -905,7 +932,7 @@ export function buildHistoryExport(input) {
   historyBytes(descriptorBytes);
   historyByteList(entries);
   historyMemberMap(members);
-  return historyGuardFail("INTERNAL", "INTERNAL");
+  return buildHistoryExportAuthority({ descriptorBytes, entries, members });
 }
 
 export function verifyHistoryExport(input) {
@@ -916,5 +943,5 @@ export function verifyHistoryExport(input) {
     if (typeof file.path !== "string") historyGuardFail("USAGE", "USAGE");
     historyBytes(file.bytes);
   }
-  return historyGuardFail("INTERNAL", "INTERNAL");
+  return verifyHistoryExportAuthority({ files });
 }

@@ -15,7 +15,13 @@ export function deterministicJson(value) {
 }
 
 function humanValue(value) {
-  if (Array.isArray(value)) return value.length === 0 ? "none" : value.join(", ");
+  if (Array.isArray(value)) {
+    if (value.length === 0) return "none";
+    // Elements that are objects (a history query's entries) are shown as canonical JSON, never "[object Object]".
+    return value.some((child) => child !== null && typeof child === "object")
+      ? value.map((child) => (child !== null && typeof child === "object" ? JSON.stringify(canonicalValue(child)) : String(child))).join(", ")
+      : value.join(", ");
+  }
   if (value && typeof value === "object") return JSON.stringify(canonicalValue(value));
   if (value === null) return "none";
   return String(value);

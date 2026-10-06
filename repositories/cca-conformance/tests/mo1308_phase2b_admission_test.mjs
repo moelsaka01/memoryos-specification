@@ -943,7 +943,12 @@ const newOutcome = bytes => outcomeOf(() => admit('INVESTIGATION_CHECKPOINT', { 
 const oldOutcome = (bytes, digest) => outcomeOf(() => ({ subjects: legacyAdmitCheckpoint(bytes, WS, digest) }));
 
 test('B28 the incremental SHA-256 equals the standard hash for every length, split and clone (A4.5)', async () => {
-  const { __sha256ForTests: stream } = await import('../../cca-studio/web/js/memoryos-history-admission.js');
+  // Stream 2D removed the test-only export of the hash from production. The tests reach the very same code by evaluating the
+  // module's own self-contained hash section (constants, compression function and `Sha256Stream`), unchanged.
+  const source = fs.readFileSync(path.join(workspace, 'repositories/cca-studio/web/js/memoryos-history-admission.js'), 'utf8');
+  const start = source.indexOf('const SHA256_K = '), end = source.indexOf('// ---- INVESTIGATION_CHECKPOINT');
+  assert.ok(start > 0 && end > start, 'the incremental hash section is present in the production module');
+  const stream = new Function(`${source.slice(start, end)}\nreturn () => new Sha256Stream();`)();
   assert.equal(typeof stream, 'function');
   const hex = (...chunks) => { const s = stream(); for (const chunk of chunks) s.update(chunk); return s.hex(); };
   assert.equal(hex(), 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855');

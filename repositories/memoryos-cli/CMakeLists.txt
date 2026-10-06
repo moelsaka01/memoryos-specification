@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.28)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-  project(memoryos_cli VERSION 1.1.0 LANGUAGES NONE)
+  project(memoryos_cli VERSION 1.2.0 LANGUAGES NONE)
   include(CTest)
   option(CCA_BUILD_TESTS "Build MemoryOS CLI tests" "${BUILD_TESTING}")
 endif()
@@ -24,6 +24,12 @@ add_custom_target(
           "${CMAKE_CURRENT_SOURCE_DIR}/src/policy-commands.js"
   COMMAND "${MEMORYOS_CLI_NODE_EXECUTABLE}" --check
           "${CMAKE_CURRENT_SOURCE_DIR}/src/policy-publication.js"
+  COMMAND "${MEMORYOS_CLI_NODE_EXECUTABLE}" --check
+          "${CMAKE_CURRENT_SOURCE_DIR}/src/history-arguments.js"
+  COMMAND "${MEMORYOS_CLI_NODE_EXECUTABLE}" --check
+          "${CMAKE_CURRENT_SOURCE_DIR}/src/history-commands.js"
+  COMMAND "${MEMORYOS_CLI_NODE_EXECUTABLE}" --check
+          "${CMAKE_CURRENT_SOURCE_DIR}/src/history-store.js"
   COMMENT "Checking the MemoryOS CLI entry points"
   VERBATIM
 )

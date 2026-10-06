@@ -8,10 +8,11 @@
 import * as nodeFs from "node:fs";
 import { join } from "node:path";
 import { createHistoryStore } from "../../src/history-store.js";
-import { createHistoryEngineDouble } from "./history-engine-double.mjs";
+import { checkpointRecord } from "./history-corpus.mjs";
+import { createHistoryEngine } from "./history-engine.mjs";
 
 const [mode, ledger, ...rest] = process.argv.slice(2);
-const store = createHistoryStore({ engine: createHistoryEngineDouble() });
+const store = createHistoryStore({ engine: createHistoryEngine() });
 const codeOf = (error) => error?.code ?? "UNEXPECTED";
 // A wall-clock bound for the loop modes only; the store itself never reads a clock (R35).
 const until = (milliseconds) => { const end = Date.now() + Number(milliseconds); return () => Date.now() < end; };
@@ -21,10 +22,10 @@ if (mode === "append") {
   const [label, count] = rest;
   const attempts = [];
   for (let record = 0; record < Number(count); record += 1) {
-    const member = { name: "package.mip", bytes: new Uint8Array(new TextEncoder().encode(`windows concurrent record ${label}-${record}`)) };
+    const member = checkpointRecord(`windows concurrent record ${label}-${record}`);
     for (let attempt = 0; attempt < 200; attempt += 1) {
       try {
-        attempts.push({ ok: true, index: store.append(ledger, { recordKind: "MIP_PACKAGE", members: [member] }).index });
+        attempts.push({ ok: true, index: store.append(ledger, member).index });
         break;
       } catch (error) {
         attempts.push({ ok: false, code: codeOf(error) });
@@ -54,17 +55,17 @@ if (mode === "append") {
     // `realpathSync.native` is a property of the function; the store calls it.
     if (typeof value.native === "function") recording[name].native = wrap(`${name}.native`, value.native);
   }
-  const recordingStore = createHistoryStore({ engine: createHistoryEngineDouble(), fs: recording });
+  const recordingStore = createHistoryStore({ engine: createHistoryEngine(), fs: recording });
   const records = [];
   for (let record = 0; record < Number(count); record += 1) {
     const text = `windows concurrent record ${label}-${record}`;
-    const member = { name: "package.mip", bytes: new Uint8Array(new TextEncoder().encode(text)) };
+    const member = checkpointRecord(text);
     const attempts = [];
     let outcome = "failed";
     for (let attempt = 0; attempt < 200; attempt += 1) {
       thrown = [];
       try {
-        attempts.push({ ok: true, index: recordingStore.append(ledger, { recordKind: "MIP_PACKAGE", members: [member] }).index });
+        attempts.push({ ok: true, index: recordingStore.append(ledger, member).index });
         outcome = "success";
         break;
       } catch (error) {

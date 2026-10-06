@@ -457,7 +457,7 @@ test("presentation diagnostics are excluded from the exact normative JSON error 
 test("JavaScript, Python, CLI, and the private C++ bridge report one contract identity", () => {
   const javascript = new MemoryOS().policyContractIdentities();
   const normativeBytes = canonicalizeRestrictedJson(javascript);
-  assert.equal(MEMORYOS_SDK_VERSION, "1.1.0");
+  assert.equal(MEMORYOS_SDK_VERSION, "1.2.0");
 
   const cliResult = runCli(["policy", "identities", "--json"]);
   assert.equal(cliResult.status, 0, cliResult.stderr);
@@ -734,8 +734,8 @@ test("CLI 1.1 exposes exactly the seven frozen Policy commands", () => {
   const versionResult = runCli(["version", "--json"]);
   assert.equal(versionResult.status, 0, versionResult.stderr);
   const version = parseCliJson(versionResult);
-  assert.equal(version.result.cliVersion, "1.1.0");
-  assert.equal(version.result.sdkVersion, "1.1.0");
+  assert.equal(version.result.cliVersion, "1.2.0");
+  assert.equal(version.result.sdkVersion, "1.2.0");
 });
 
 test("the registered Phase 1-4, Python, and CLI Policy suites are green through conformance", () => {

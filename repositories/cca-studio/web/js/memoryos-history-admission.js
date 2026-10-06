@@ -755,7 +755,3 @@ export function admitHistoryRecord(input) {
   return Object.freeze({ ...record, members: Object.freeze(memberList.map(Object.freeze)),
     subjects: Object.freeze(subjects.map(Object.freeze)) });
 }
-
-
-// Exposed only so the tests can prove the incremental hash against the standard one (Amendment A4.5).
-export const __sha256ForTests = () => new Sha256Stream();

@@ -53,7 +53,7 @@ export async function main(argv, io = processIO) {
     } else if (parsed.options.json) {
       const envelope = parsed.command === "policy"
         ? policySuccessEnvelope(policyCommand(), execution.result)
-        : successEnvelope(parsed.command, execution.result);
+        : successEnvelope(parsed.command === "history" ? `history ${parsed.subcommand}` : parsed.command, execution.result);
       io.stdout(deterministicJson(envelope));
     } else if (parsed.command === "regression") {
       io.stdout(humanRegressionResult(execution.result));
@@ -61,7 +61,7 @@ export async function main(argv, io = processIO) {
       io.stdout(humanInvestigationResult(execution.result));
     } else {
       io.stdout(humanResult(
-        parsed.command === "policy" ? policyCommand() : parsed.command,
+        parsed.command === "policy" ? policyCommand() : parsed.command === "history" ? `history ${parsed.subcommand}` : parsed.command,
         execution.result,
       ));
     }

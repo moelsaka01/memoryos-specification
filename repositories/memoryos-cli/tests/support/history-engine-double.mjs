@@ -1,8 +1,8 @@
-// A conforming stand-in for the SDK history functions (Freeze section 13.2), used only by the Stream 2C
-// tests. Stream 2C is built against the frozen SDK signatures only; the real functions are Streams 2A and
-// 2B, integrated in Stream 2D, and until then the SDK functions fail closed. This double implements the
-// frozen byte formats and rules just far enough to drive the file store: identities, the chain, member
-// verification, tombstones, a filter-only query and the export model. Admission here trusts the member
+// A conforming stand-in for the SDK history functions (Freeze section 13.2). Stream 2C built the file store against the
+// frozen SDK signatures with it. Since Stream 2D every test runs against the real SDK functions
+// (history-engine.mjs); this stand-in remains only for the Stream 2C characterization tool
+// (cca-conformance/tools/mo1308-phase2c/characterize.mjs), which writes 100,000 synthetic entries straight to disk
+// to bound the store's own I/O, so its stored bytes are not real admitted records. Admission here trusts the member
 // names and sizes (it is NOT the 2B admission), and records carry only a WORKSPACE subject and a trusted decisionConsistency.
 import crypto from "node:crypto";
 

@@ -43,7 +43,7 @@ Usage: memoryos COMMAND [OPTIONS]
 
 Commands:
   policy   Validate, evaluate, inspect, and verify Investigation Policies
-  history  Investigation History ledger (MO-1308; guarded until Phase 2)
+  history  Investigation History ledger (MO-1308)
   version  Show CLI and SDK versions
   help     Show command help
   observe  Observe an explicit Workspace snapshot

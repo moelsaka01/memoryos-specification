@@ -14,14 +14,15 @@ import { parseHistoryArguments } from "../src/history-arguments.js";
 import {
   STORE_LAYOUT, STORE_LIMITS, STORE_MEMBER_NAMES, STORE_POLICY_MEMBERS, STORE_RECORD_FILE_MEMBER, STORE_RUN_MAX, STORE_SNAPSHOT_ATTEMPTS, createHistoryStore,
 } from "../src/history-store.js";
-import { createHistoryEngineDouble } from "./support/history-engine-double.mjs";
+import { createHistoryEngine } from "./support/history-engine.mjs";
+import { bundleDirectory, checkpointRecord, mipBytes, policyFiles, policyRecord } from "./support/history-corpus.mjs";
 
 // MO-1308 Contract Freeze 1, Stream 2C: the file store and command layer, against the frozen SDK
-// signatures only. The SDK functions are a conforming stand-in (tests/support/history-engine-double.mjs);
-// Streams 2A and 2B are integrated in 2D. Tests that need native Windows (junctions, reparse points,
+// signatures only; Stream 2D runs it against the real SDK functions (tests/support/history-engine.mjs) with real records
+// (tests/support/history-corpus.mjs). Tests that need native Windows (junctions, reparse points,
 // pinned Node v24.21.0) are Windows-host items in docs/mo1308-phase2c-store.md.
 const here = fileURLToPath(new URL("./", import.meta.url));
-const engine = createHistoryEngineDouble();
+const engine = createHistoryEngine();
 const enc = new TextEncoder();
 const sha = (bytes) => crypto.createHash("sha256").update(bytes).digest("hex");
 const code = (expected, stage) => (error) => error instanceof contract.MemoryOSHistoryError && error.code === `MO1308_${expected}`
@@ -32,10 +33,10 @@ function scratch(t) {
   t.after(() => rmSync(root, { recursive: true, force: true }));
   return root;
 }
-const mip = (label) => ({ recordKind: "MIP_PACKAGE", members: [{ name: "package.mip", bytes: new Uint8Array(enc.encode(`package ${label}`)) }] });
-const policy = (label) => ({ recordKind: "POLICY_EVALUATION", members: [
-  { name: "evaluation-identity.json", bytes: new Uint8Array(enc.encode(`identity ${label}`)) },
-  { name: "policy-outcome.json", bytes: new Uint8Array(enc.encode(`outcome ${label}`)) }] });
+// Real admissible records (Stream 2D): a distinct real checkpoint per label, and the released Policy pairs.
+const mip = (label) => checkpointRecord(label);
+const MEMBER = "checkpoint.json";
+const policy = (label) => policyRecord(label === "two" ? 0 : 1);
 function newLedger(t, store = createHistoryStore({ engine })) {
   const root = scratch(t);
   const ledger = join(root, "ledger");
@@ -315,8 +316,8 @@ test("T09 verify fails closed on every layout defect (section 11.1)", (t) => {
   attempt("descriptor substituted", "LEDGER_CORRUPT", () => writeFileSync(descriptor, savedDescriptor.toString().replace("workspace.history", "workspace.hist0ry")), () => writeFileSync(descriptor, savedDescriptor));
   attempt("record directory that is not a digest", "LEDGER_CORRUPT", () => mkdirSync(join(ledger, "records", "not-a-digest")), () => rmSync(join(ledger, "records", "not-a-digest"), { recursive: true }));
   attempt("unknown file in a record directory", "LEDGER_CORRUPT", () => writeFileSync(join(ledger, "records", hex, "notes.txt"), "x"), () => rmSync(join(ledger, "records", hex, "notes.txt")));
-  attempt("foreign member name in a record directory", "RECORD_BYTES_MISMATCH", () => writeFileSync(join(ledger, "records", hex, "checkpoint.json"), "x"), () => rmSync(join(ledger, "records", hex, "checkpoint.json")));
-  const member = join(ledger, "records", hex, "package.mip");
+  attempt("foreign member name in a record directory", "RECORD_BYTES_MISMATCH", () => writeFileSync(join(ledger, "records", hex, "package.mip"), "x"), () => rmSync(join(ledger, "records", hex, "package.mip")));
+  const member = join(ledger, "records", hex, MEMBER);
   const memberBytes = readFileSync(member);
   attempt("member missing", "RECORD_BYTES_MISMATCH", () => rmSync(member), () => writeFileSync(member, memberBytes));
   attempt("member replaced by a shorter file", "RECORD_BYTES_MISMATCH", () => writeFileSync(member, "short"), () => writeFileSync(member, memberBytes));
@@ -331,7 +332,7 @@ test("T10 verify reports staging and unreferenced artifacts; tampered bytes fail
   writeFileSync(join(ledger, ".pending", "leftover.1"), "y");
   const orphan = "ab".repeat(32);
   mkdirSync(join(ledger, "records", orphan));
-  writeFileSync(join(ledger, "records", orphan, "package.mip"), "orphan");
+  writeFileSync(join(ledger, "records", orphan, MEMBER), "orphan");
   const verification = store.verify(ledger);
   assert.equal(verification.pendingArtifacts, 2);
   assert.deepEqual(verification.unreferencedRecords, [`sha256:${orphan}`]);
@@ -347,7 +348,7 @@ test("T10 verify reports staging and unreferenced artifacts; tampered bytes fail
   // Tampering: single-byte flips of the descriptor, an entry and a member.
   const targets = [join(ledger, "memoryos-history-ledger.json"), join(ledger, "entries/00000000000000000001.json")];
   const hex = JSON.parse(readFileSync(targets[1], "utf8")).record.recordDigest.slice(7);
-  targets.push(join(ledger, "records", hex, "package.mip"));
+  targets.push(join(ledger, "records", hex, MEMBER));
   for (const target of targets) {
     const bytes = readFileSync(target);
     for (const position of [0, Math.floor(bytes.length / 2), bytes.length - 1]) {
@@ -424,7 +425,7 @@ test("T11 filesystem boundary: a link anywhere on the path or inside the ledger 
   rmSync(entryPath);
   writeFileSync(entryPath, entryBytes);
   const hex = readdirSync(join(ledger, "records"))[0];
-  const memberPath = join(ledger, "records", hex, "package.mip");
+  const memberPath = join(ledger, "records", hex, MEMBER);
   const memberBytes = readFileSync(memberPath);
   writeFileSync(join(outside, "member"), memberBytes);
   rmSync(memberPath);
@@ -466,7 +467,7 @@ test("T13 a directory swapped for a link during an append is detected after the 
   mkdirSync(outside);
   const recordHex = (() => { const probe = newLedger(t); probe.store.append(probe.ledger, mip("swap")); return readdirSync(join(probe.ledger, "records"))[0]; })();
   // Plant a different decoy under the name the member will be linked to: the link must never replace it.
-  writeFileSync(join(outside, "package.mip"), "decoy that must survive");
+  writeFileSync(join(outside, MEMBER), "decoy that must survive");
   let swapped = false;
   const swapping = instrumentedFs({ before: (name, args) => {
     if (!swapped && name === "linkSync" && String(args[1]).includes(recordHex)) {
@@ -481,7 +482,7 @@ test("T13 a directory swapped for a link during an append is detected after the 
   if (!swapped) return;
   assert.ok(error instanceof contract.MemoryOSHistoryError, "the swap is detected");
   assert.ok(["MO1308_FILESYSTEM_BOUNDARY", "MO1308_RECORD_BYTES_MISMATCH"].includes(error.code), error.code);
-  assert.equal(readFileSync(join(outside, "package.mip"), "utf8"), "decoy that must survive", "existing content is never overwritten or replaced");
+  assert.equal(readFileSync(join(outside, MEMBER), "utf8"), "decoy that must survive", "existing content is never overwritten or replaced");
   assert.equal(nodeFs.existsSync(join(ledger, "entries/00000000000000000000.json")), false, "the entry was never committed");
   assert.throws(() => store.verify(ledger), code("FILESYSTEM_BOUNDARY"), "every subsequent read fails closed");
   assert.throws(() => store.append(ledger, mip("again")), code("FILESYSTEM_BOUNDARY"));
@@ -587,14 +588,14 @@ test("T16 commands: arguments become store operations, inputs are read through t
   const run = (...argv) => executeHistoryCommand(parseHistoryArguments(argv), { engine });
   assert.deepEqual(Object.keys(run("init", "--ledger", ledger, "--name", "workspace.history", "--workspace", "workspace-investigation").result), ["ledgerIdentifier"]);
   const file = join(root, "package.mip");
-  writeFileSync(file, "package bytes");
+  writeFileSync(file, mipBytes());
   assert.deepEqual(Object.keys(run("append", "--ledger", ledger, "--kind", "MIP_PACKAGE", "--record", file).result).sort(), ["entryDigest", "index"], "Amendment A4.2: append result");
-  writeFileSync(join(root, "identity.json"), "identity");
-  writeFileSync(join(root, "outcome.json"), "outcome");
+  writeFileSync(join(root, "identity.json"), policyFiles(0).identity);
+  writeFileSync(join(root, "outcome.json"), policyFiles(0).outcome);
   assert.equal(run("append", "--ledger", ledger, "--kind", "POLICY_EVALUATION", "--identity", join(root, "identity.json"), "--outcome", join(root, "outcome.json")).result.index, 1);
   const bundle = join(root, "bundle");
   mkdirSync(bundle);
-  for (const name of ["memoryos-ci-artifacts.json", "memoryos-ci-complete.json", "memoryos-ci-evidence.json", "memoryos-ci-result.json"]) writeFileSync(join(bundle, name), name);
+  for (const name of readdirSync(bundleDirectory(4))) writeFileSync(join(bundle, name), readFileSync(join(bundleDirectory(4), name)));
   assert.equal(run("append", "--ledger", ledger, "--kind", "CICD_RUN", "--run", bundle).result.index, 2);
   assert.equal(run("verify", "--ledger", ledger).result.entryCount, 3);
   assert.equal(run("query", "--ledger", ledger, "--retention", "ANY", "--from", "0", "--limit", "10").result.entries.length, 3);
@@ -720,7 +721,7 @@ test("T20 a purge committed between the entry listing and the member listing nev
     append: (store, ledger) => assert.equal(store.append(ledger, mip("after")).index, 3),
     export: (store, ledger, root) => assert.equal(store.exportLedger(ledger, join(root, "export")).entryCount, 3),
     tombstone: (store, ledger) => assert.equal(purge(store, ledger, 1).index, 3),
-    query: (store, ledger) => assert.equal(store.query(ledger, { kind: "MemoryOSHistoryQuery", version: "1.0.0", recordKinds: [], subject: null, retention: "ANY", fromIndex: 0, limit: 10 }).entries.length, 2, "the stable second pass answers (the purged record is listed once, its tombstone is not a result row)"),
+    query: (store, ledger) => assert.equal(store.query(ledger, { kind: "MemoryOSHistoryQuery", version: "1.0.0", recordKinds: [], subject: null, retention: "ANY", fromIndex: 0, limit: 10 }).entries.length, 3, "the stable second pass answers (the purged record is listed once, plus its tombstone entry, section 11.2)"),
   };
   for (const [name, operation] of Object.entries(operations)) {
     const { root, ledger, store } = newLedger(t);
@@ -762,7 +763,7 @@ test("T22 on a stable snapshot every mismatch is reported exactly as before: cor
   store.append(ledger, mip("one"));
   store.append(ledger, mip("two"));
   const hex = readdirSync(join(ledger, "records"))[0];
-  const member = join(ledger, "records", hex, "package.mip");
+  const member = join(ledger, "records", hex, MEMBER);
   const bytes = readFileSync(member);
   const observed = listingFs(() => {});
   const probe = createHistoryStore({ engine, fs: observed });

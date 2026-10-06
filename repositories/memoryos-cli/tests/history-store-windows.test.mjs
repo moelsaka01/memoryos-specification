@@ -10,7 +10,8 @@ import test from "node:test";
 
 import * as contract from "../../cca-studio/web/js/memoryos-history-contract.js";
 import { createHistoryStore } from "../src/history-store.js";
-import { createHistoryEngineDouble } from "./support/history-engine-double.mjs";
+import { checkpointRecord, policyRecord } from "./support/history-corpus.mjs";
+import { createHistoryEngine } from "./support/history-engine.mjs";
 
 // MO-1308 Contract Freeze 1, Stream 2C: the native-Windows (NTFS) tests of the file store. They exercise the
 // items docs/mo1308-phase2c-store.md section 5 lists as host-only: junctions and other reparse points, NTFS hard
@@ -21,7 +22,7 @@ import { createHistoryEngineDouble } from "./support/history-engine-double.mjs";
 const WIN = { skip: process.platform === "win32" ? false : "native Windows (NTFS) host test" };
 const here = fileURLToPath(new URL("./", import.meta.url));
 const worker = join(here, "support", "history-windows-worker.mjs");
-const engine = createHistoryEngineDouble();
+const engine = createHistoryEngine();
 const enc = new TextEncoder();
 const code = (expected, stage) => (error) => error instanceof contract.MemoryOSHistoryError && error.code === `MO1308_${expected}`
   && (stage === undefined || error.stage === stage);
@@ -31,7 +32,9 @@ function scratch(t) {
   t.after(() => rmSync(root, { recursive: true, force: true }));
   return root;
 }
-const mip = (label) => ({ recordKind: "MIP_PACKAGE", members: [{ name: "package.mip", bytes: new Uint8Array(enc.encode(`package ${label}`)) }] });
+// Real admissible records (Stream 2D): a distinct real checkpoint per label.
+const mip = (label) => checkpointRecord(label);
+const MEMBER = "checkpoint.json";
 function newLedger(t, store = createHistoryStore({ engine })) {
   const root = scratch(t);
   const ledger = join(root, "ledger");
@@ -182,7 +185,7 @@ test("W02 a junction swapped in for a record directory during an append is detec
   const hex = recordHexOf(t, "swap");
   // The decoy sits where the member link would land if the swap were followed: it must never be replaced.
   mkdirSync(join(outside, "decoy-dir"));
-  writeFileSync(join(outside, "package.mip"), "decoy that must survive");
+  writeFileSync(join(outside, MEMBER), "decoy that must survive");
   let swapped = false;
   const attacked = createHistoryStore({ engine, fs: interceptingFs((name, args) => {
     if (!swapped && name === "linkSync" && String(args[1]).includes(hex)) {
@@ -196,7 +199,7 @@ test("W02 a junction swapped in for a record directory during an append is detec
   assert.ok(swapped, "the swap happened");
   assert.ok(error instanceof contract.MemoryOSHistoryError, "the swap is detected");
   assert.ok(["MO1308_FILESYSTEM_BOUNDARY", "MO1308_RECORD_BYTES_MISMATCH"].includes(error.code), error.code);
-  assert.equal(readFileSync(join(outside, "package.mip"), "utf8"), "decoy that must survive", "existing content is never overwritten or replaced");
+  assert.equal(readFileSync(join(outside, MEMBER), "utf8"), "decoy that must survive", "existing content is never overwritten or replaced");
   assert.equal(nodeFs.existsSync(join(ledger, "entries", entryName(0))), false, "the entry was never committed");
   assert.throws(() => store.verify(ledger), code("FILESYSTEM_BOUNDARY"), "every subsequent read fails closed");
   assert.equal(store.query(ledger, QUERY).entries.length, 0, "a query reads entries only, and no entry was committed");
@@ -233,8 +236,7 @@ test("W03 the entries directory swapped for a junction at the commit point is de
 test("W04 NTFS hard links: publication leaves one link per file, never replaces a name, and an unremoved staging link is only an anomaly (R06, section 9.2)", WIN, (t) => {
   const { root, ledger, store } = newLedger(t);
   store.append(ledger, mip("one"));
-  store.append(ledger, { recordKind: "POLICY_EVALUATION", members: [
-    { name: "evaluation-identity.json", bytes: new Uint8Array(enc.encode("identity")) }, { name: "policy-outcome.json", bytes: new Uint8Array(enc.encode("outcome")) }] });
+  store.append(ledger, policyRecord(0));
   store.tombstone(ledger, { targetIndex: 0, reason: "PRIVACY_REQUEST", authorityReference: "P-1" });
   // After every operation each published file has exactly one name and a distinct, non-zero NTFS file index.
   const seen = new Set();
@@ -298,7 +300,7 @@ test("W05 exclusive-create semantics: an existing name is never opened for writi
   // Leftover staging names that another process holds open exclusively are skipped, never opened or replaced.
   const hex = recordHexOf(t, "locked");
   const leftovers = [
-    ...[0, 1].map((n) => join(ledger, ".pending", `member-${hex}-package.mip.${n}`)),
+    ...[0, 1].map((n) => join(ledger, ".pending", `member-${hex}-${MEMBER}.${n}`)),
     ...[0, 1].map((n) => join(ledger, ".pending", `entry-${String(0).padStart(20, "0")}.${n}`)),
   ];
   leftovers.forEach((path, n) => writeFileSync(path, `leftover ${n}`));
@@ -316,7 +318,7 @@ test("W05b a sharing violation (another process holds a ledger file with no shar
   store.append(ledger, mip("two"));
   const before = contents(ledger);
   const targets = [join(ledger, "entries", entryName(0)), join(ledger, "entries", entryName(1)),
-    join(ledger, "records", readdirSync(join(ledger, "records"))[0], "package.mip"), join(ledger, "memoryos-history-ledger.json")];
+    join(ledger, "records", readdirSync(join(ledger, "records"))[0], MEMBER), join(ledger, "memoryos-history-ledger.json")];
   for (const target of targets) {
     const holder = await holdOpen(t, target, "None");
     try {

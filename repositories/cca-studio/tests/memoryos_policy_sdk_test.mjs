@@ -243,7 +243,7 @@ function assertSdkEvaluationMatchesVector(evaluation, vector) {
 test("SDK 1.1 exposes only the frozen normative contract identity projection", () => {
   const memory = new MemoryOS();
   const identities = memory.policyContractIdentities();
-  assert.equal(MEMORYOS_SDK_VERSION, "1.1.0");
+  assert.equal(MEMORYOS_SDK_VERSION, "1.2.0");
   assert.deepEqual(identities, {
     kind: "MemoryOSPolicyContractIdentities",
     version: "1.0.0",
