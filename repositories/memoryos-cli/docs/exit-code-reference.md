@@ -31,6 +31,10 @@ evaluation exit and cross-check it against the verified outcome decision.
 
 An Investigation result with status `empty` is also successful and returns `0`; it means the exact SDK query found no matching observed difference.
 
+Within the `history` namespace the codes are `1` usage, `2` a refused record, query or tombstone, `3` verification failure, `4`
+location or filesystem failure and `5` internal failure; JSON errors add `error.historyCode`. See the [Investigation History CLI
+Guide](history-guide.md) for the full table.
+
 ## Shell use
 
 POSIX:

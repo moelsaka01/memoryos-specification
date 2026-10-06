@@ -32,6 +32,11 @@ authoritative acquisition, with an optional MIP Regression baseline. Detached
 contexts and sources are inspection-only. See [Investigation Policy CLI
 Guide](policy-guide.md) for result shapes, byte transport, and verification.
 
+## `memoryos history`
+
+The namespace contains exactly seven subcommands (`init`, `append`, `tombstone`, `verify`, `query`, `export`, `verify-export`) and
+no aliases; see the [Investigation History CLI Guide](history-guide.md) for the grammar, results and limits.
+
 ## `memoryos version`
 
 ```text

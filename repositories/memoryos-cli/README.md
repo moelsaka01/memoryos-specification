@@ -82,6 +82,7 @@ Checkpoint and restore are session actions, not portable top-level commands. A c
 - [CLI Quick Start](docs/quick-start.md)
 - [Investigation Policy CLI Guide](docs/policy-guide.md)
 - [MO-1301 CLI 1.1 Conformance Report](docs/policy-conformance-report.md)
+- [Investigation History CLI Guide](docs/history-guide.md)
 - [Command Reference](docs/command-reference.md)
 - [Examples](docs/examples.md)
 - [Exit Code Reference](docs/exit-code-reference.md)
