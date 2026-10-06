@@ -2473,46 +2473,6 @@
           "id": "J",
           "segment": "main",
           "title": "Hostile inputs"
-        },
-        {
-          "cases": [
-            {
-              "id": "3C-K1",
-              "mandatory": true,
-              "mode": "assert",
-              "qualifications": [],
-              "requirements": [],
-              "title": "README, ROADMAP, RELEASE_NOTES, KNOWN_ISSUES, ARCHITECTURE and the CLI docs claim nothing beyond the Freeze; the qualification register is present"
-            },
-            {
-              "id": "3C-K2",
-              "mandatory": true,
-              "mode": "assert",
-              "qualifications": [
-                "Q03"
-              ],
-              "requirements": [],
-              "title": "Operator guidance (record each export and verify headDigest externally as the rollback anchor, D7) is present and states the recorded outcome of 3C-A6"
-            },
-            {
-              "id": "3C-K3",
-              "mandatory": true,
-              "mode": "assert",
-              "qualifications": [
-                "Q01",
-                "Q02",
-                "Q13",
-                "Q14",
-                "Q15"
-              ],
-              "requirements": [],
-              "title": "Release disclosures state the actual recorded outcome of every qualification case (none NOT_CONFIRMED disclosed as confirmed, none CONFIRMED omitted) and DISCLOSED for the structural qualifications"
-            }
-          ],
-          "guardMinutes": 3,
-          "id": "K",
-          "segment": "main",
-          "title": "Release-claim review"
         }
       ],
       "title": "Security and integrity"
@@ -2600,6 +2560,46 @@
           "id": "D",
           "segment": "main",
           "title": "Final integration validator"
+        },
+        {
+          "cases": [
+            {
+              "id": "3D-E1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "README, ROADMAP, RELEASE_NOTES, KNOWN_ISSUES, ARCHITECTURE and the CLI docs claim nothing beyond the Freeze; the qualification register is present"
+            },
+            {
+              "id": "3D-E2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q03"
+              ],
+              "requirements": [],
+              "title": "Operator guidance (record each export and verify headDigest externally as the rollback anchor, D7) is present and states the recorded outcome of 3C-A6"
+            },
+            {
+              "id": "3D-E3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q01",
+                "Q02",
+                "Q13",
+                "Q14",
+                "Q15"
+              ],
+              "requirements": [],
+              "title": "Release disclosures state the actual recorded outcome of every qualification case (none NOT_CONFIRMED disclosed as confirmed, none CONFIRMED omitted) and DISCLOSED for the structural qualifications"
+            }
+          ],
+          "guardMinutes": 15,
+          "id": "E",
+          "segment": "main",
+          "title": "Release-claim and disclosure review"
         }
       ],
       "title": "Final integration"
