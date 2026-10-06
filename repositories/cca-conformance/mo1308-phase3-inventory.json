@@ -1,0 +1,2601 @@
+{
+  "kind": "MO1308Phase3Inventory",
+  "protocol": "MO1308-PHASE3-PROTOCOL-1 (proposed Freeze Amendment A8)",
+  "qualifications": [
+    {
+      "id": "Q01",
+      "statement": "H40: Node-only store; a directory swap is detected after the fact, never prevented. Local single-user v1 only; re-review before any multi-user, shared-storage or cloud use, including MO-1309."
+    },
+    {
+      "id": "Q02",
+      "statement": "A6: a failed exclusive create of a staging file is a typed IO failure, never retried; two hypotheses (transient lock, delete-pending) remain unconfirmed. Re-reviewed with H40."
+    },
+    {
+      "id": "Q03",
+      "statement": "Tail truncation and rollback to an older valid prefix are not detectable without an external head anchor. Operators record each export and verify headDigest externally."
+    },
+    {
+      "id": "Q04",
+      "statement": "Purge removes record member names; a staging name left by an interrupted append may still hold the same bytes (to be characterized by 3C-E6)."
+    },
+    {
+      "id": "Q05",
+      "statement": "After a purge the entry keeps recordDigest, member names, lengths and digests, and subjects; a digest can confirm a guess for small low-entropy content."
+    },
+    {
+      "id": "Q06",
+      "statement": "The tombstone authority reference is operator-chosen free text and is permanent."
+    },
+    {
+      "id": "Q07",
+      "statement": "An export taken before a tombstone keeps the bytes; there is no import and no recall."
+    },
+    {
+      "id": "Q08",
+      "statement": "verify does not re-run admission; an entry written by a party with filesystem access verifies if the chain and member digests are consistent."
+    },
+    {
+      "id": "Q09",
+      "statement": "The incremental SHA-256 (and the canonical module copy) is hand-written first-party code, verified by differential and example-vector tests and a recorded independent review."
+    },
+    {
+      "id": "Q10",
+      "statement": "Host latency under antivirus and indexers is heavy-tailed; recorded as an environment qualification, not a bound."
+    },
+    {
+      "id": "Q11",
+      "statement": "A 100,000-entry export takes about 16 minutes on the reference host; recorded as a MO-1309 performance follow-up, not a defect."
+    },
+    {
+      "id": "Q12",
+      "statement": "A4.4: POLICY_EVALUATION admission is inspection-only; READINESS_RESULT admission is not a MO-1307 verification."
+    },
+    {
+      "id": "Q13",
+      "statement": "Integrity only: no signatures, no authenticity, no encryption; access control is the operator filesystem responsibility (H07, H08)."
+    },
+    {
+      "id": "Q14",
+      "statement": "Certification claims native Windows 11 x64 only (H45)."
+    },
+    {
+      "id": "Q15",
+      "statement": "UNC, network, OneDrive and cloud-placeholder locations are observed, not claimed."
+    }
+  ],
+  "requirements": [
+    "MO1308-R01",
+    "MO1308-R02",
+    "MO1308-R03",
+    "MO1308-R04",
+    "MO1308-R05",
+    "MO1308-R06",
+    "MO1308-R07",
+    "MO1308-R08",
+    "MO1308-R09",
+    "MO1308-R10",
+    "MO1308-R11",
+    "MO1308-R12",
+    "MO1308-R13",
+    "MO1308-R14",
+    "MO1308-R15",
+    "MO1308-R16",
+    "MO1308-R17",
+    "MO1308-R18",
+    "MO1308-R19",
+    "MO1308-R20",
+    "MO1308-R21",
+    "MO1308-R22",
+    "MO1308-R23",
+    "MO1308-R24",
+    "MO1308-R25",
+    "MO1308-R26",
+    "MO1308-R27",
+    "MO1308-R28",
+    "MO1308-R29",
+    "MO1308-R30",
+    "MO1308-R31",
+    "MO1308-R32",
+    "MO1308-R33",
+    "MO1308-R34",
+    "MO1308-R35",
+    "MO1308-R36",
+    "MO1308-R37"
+  ],
+  "streams": [
+    {
+      "id": "3A",
+      "oneShot": true,
+      "platform": "win32-x64",
+      "segments": [
+        {
+          "budgetMinutes": 90,
+          "extendedMinutes": 180,
+          "id": "main",
+          "title": "Main campaign"
+        },
+        {
+          "budgetMinutes": 180,
+          "extendedMinutes": 180,
+          "id": "ceiling",
+          "title": "J-C ceiling run (its own step, own hard stop)"
+        }
+      ],
+      "steps": [
+        {
+          "cases": [
+            {
+              "id": "3A-A1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Host identity: Windows 11 x64 build, NTFS volume type and serial, free space recorded"
+            },
+            {
+              "id": "3A-A2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Node.js v24.21.0 win-x64 executable SHA-256 equals ba4e6d11...6c32"
+            },
+            {
+              "id": "3A-A3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32"
+              ],
+              "title": "Production path tree of the worktree equals the sealed candidate identity blob by blob; worktree clean"
+            },
+            {
+              "id": "3A-A4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R31"
+              ],
+              "title": "The A3 precondition receipt (full CTest including cca.workspace.verify) is bound and PASS for the same candidate"
+            },
+            {
+              "id": "3A-A5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Sealed tool inventory matches; harness review bound; no rehearsal evidence is referenced as an input"
+            },
+            {
+              "id": "3A-A6",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Environment capture: AV and Defender state, LongPathsEnabled, 8.3 name setting, unprivileged symlink creation, CPU and disk"
+            },
+            {
+              "id": "3A-A7",
+              "mandatory": false,
+              "mode": "record",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Idle host-load sample before the run (recorded, never gated)"
+            }
+          ],
+          "guardMinutes": 5,
+          "id": "A",
+          "segment": "main",
+          "title": "Gate"
+        },
+        {
+          "cases": [
+            {
+              "id": "3A-B1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R34"
+              ],
+              "title": "Version 1.2.0 and help: history is listed and the baseline command set is unchanged"
+            },
+            {
+              "id": "3A-B2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R25"
+              ],
+              "title": "init: success shape, LEDGER_EXISTS, missing parent, invalid name, invalid Workspace"
+            },
+            {
+              "id": "3A-B3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R25",
+                "MO1308-R36"
+              ],
+              "title": "append succeeds for every record kind through its documented flags (7 kinds; CICD with 6 files and with 4 files)"
+            },
+            {
+              "id": "3A-B4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R13"
+              ],
+              "title": "Decision claims through the CLI: DECISION_UNBOUND, CONSISTENT and CONTRARY_TO_READINESS"
+            },
+            {
+              "id": "3A-B5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R22",
+                "MO1308-R25"
+              ],
+              "title": "verify and query: required flags (A2), kind and subject filters, paging, ordering"
+            },
+            {
+              "id": "3A-B6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R18",
+                "MO1308-R23",
+                "MO1308-R25"
+              ],
+              "title": "tombstone, export and verify-export: result shapes (A4.2, A7) and finishing a purgePending tombstone"
+            },
+            {
+              "id": "3A-B7",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R25"
+              ],
+              "title": "Every section 14.1 code reachable from the CLI: exact code, exit category 1-5, fixed message, human and JSON"
+            },
+            {
+              "id": "3A-B8",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R24",
+                "MO1308-R25"
+              ],
+              "title": "No path, record content, exception message or stack in any failure output on stdout or stderr"
+            },
+            {
+              "id": "3A-B9",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R30"
+              ],
+              "title": "session never serializes or restores a checkpoint; the other command namespaces are unchanged"
+            },
+            {
+              "id": "3A-B10",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R27"
+              ],
+              "title": "SDK and CLI produce byte-identical entries, query results and exports for the same operations"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "B",
+          "segment": "main",
+          "title": "CLI contract through real processes"
+        },
+        {
+          "cases": [
+            {
+              "id": "3A-C1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R04"
+              ],
+              "title": "Twin ledgers built independently (other drive, directory, case, cwd, environment, time zone, code page) are byte-identical"
+            },
+            {
+              "id": "3A-C2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R04",
+                "MO1308-R23"
+              ],
+              "title": "Equal ledgers export to byte-identical exports; verify and query outputs are identical"
+            },
+            {
+              "id": "3A-C3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R06"
+              ],
+              "title": "Exact on-disk layout (section 9.1): no head file, segment, seal or extra file"
+            },
+            {
+              "id": "3A-C4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R35"
+              ],
+              "title": "No timestamp in any MO-1308-authored file or output"
+            },
+            {
+              "id": "3A-C5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R11",
+                "MO1308-R36"
+              ],
+              "title": "Every ledger has exactly one Workspace; every entry is INTRINSIC or DECLARED"
+            },
+            {
+              "id": "3A-C6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R06"
+              ],
+              "title": "File-identity audit: no published file changes bytes or NTFS file index across later operations; only purge deletes members"
+            }
+          ],
+          "guardMinutes": 5,
+          "id": "C",
+          "segment": "main",
+          "title": "Determinism and layout"
+        },
+        {
+          "cases": [
+            {
+              "id": "3A-D1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "Ledger root is a junction or directory symlink: every operation fails FILESYSTEM_BOUNDARY"
+            },
+            {
+              "id": "3A-D2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "An ancestor of the ledger root is a junction or symlink"
+            },
+            {
+              "id": "3A-D3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "entries, records, .pending or a record directory is a junction or symlink; a member is a symlink"
+            },
+            {
+              "id": "3A-D4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "Dangling junction or symlink at any ledger path"
+            },
+            {
+              "id": "3A-D5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R06",
+                "MO1308-R17"
+              ],
+              "title": "init at or under a link; export --output at or under a link; export --output inside the ledger"
+            },
+            {
+              "id": "3A-D6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "Input file (--record, --identity, --outcome) is a symlink, app-execution alias, directory or reserved device name"
+            },
+            {
+              "id": "3A-D7",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "--run directory with extra, missing, foreign or linked members"
+            },
+            {
+              "id": "3A-D8",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "Name forms: case-only rename, 8.3 short alias, trailing dot or space, alternate data stream, reserved names"
+            },
+            {
+              "id": "3A-D9",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q15"
+              ],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "Path forms: drive letter, forward slash, dot-dot, UNC (observed, not claimed), over-long, and \\\\?\\ and \\\\.\\ refused"
+            },
+            {
+              "id": "3A-D10",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R09",
+                "MO1308-R17"
+              ],
+              "title": "Every refusal creates nothing and leaves every outside sentinel byte-identical"
+            },
+            {
+              "id": "3A-D11",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R17",
+                "MO1308-R25"
+              ],
+              "title": "Read-only attribute and ACL-denied locations give a typed IO failure and change nothing"
+            },
+            {
+              "id": "3A-D12",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "Reparse-point survey: every kind that can be planted unprivileged is refused; the others are recorded as not plantable (K11)"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "D",
+          "segment": "main",
+          "title": "Filesystem boundary"
+        },
+        {
+          "cases": [
+            {
+              "id": "3A-E1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R15",
+                "MO1308-R17"
+              ],
+              "title": "Exclusive creation: an existing name in any case is refused and never opened"
+            },
+            {
+              "id": "3A-E2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R06",
+                "MO1308-R15"
+              ],
+              "title": "A hard link never replaces an existing name, including a case variant"
+            },
+            {
+              "id": "3A-E3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "Published files are hard links with distinct file indexes and identical bytes"
+            },
+            {
+              "id": "3A-E4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R17",
+                "MO1308-R25"
+              ],
+              "title": "A sharing violation is a typed IO failure that changes nothing; releasing it restores service"
+            },
+            {
+              "id": "3A-E5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R15"
+              ],
+              "title": "A staging name held open by another process is skipped, never opened or replaced"
+            },
+            {
+              "id": "3A-E6",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [
+                "Q02"
+              ],
+              "requirements": [],
+              "title": "Delete-pending staging name probe: EEXIST versus EPERM recorded for A6 hypothesis 2"
+            },
+            {
+              "id": "3A-E7",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R06"
+              ],
+              "title": "Read-only attribute on a ledger file: reads work, nothing is modified"
+            }
+          ],
+          "guardMinutes": 5,
+          "id": "E",
+          "segment": "main",
+          "title": "NTFS semantics"
+        },
+        {
+          "cases": [
+            {
+              "id": "3A-F1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R05",
+                "MO1308-R15"
+              ],
+              "title": "10 appender processes and 2 readers: every success present exactly once, every absent record had a typed failure, chain valid"
+            },
+            {
+              "id": "3A-F2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R18"
+              ],
+              "title": "Appenders and tombstoners: one tombstone per target, every purge finished, chain verifies"
+            },
+            {
+              "id": "3A-F3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R23"
+              ],
+              "title": "Exporters racing appenders: a consistent snapshot or LEDGER_CONFLICT; the export verifies"
+            },
+            {
+              "id": "3A-F4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R22"
+              ],
+              "title": "verify and query during a purge never report an integrity or boundary code (A5)"
+            },
+            {
+              "id": "3A-F5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R10"
+              ],
+              "title": "Same-record race: exactly one entry, the rest RECORD_DUPLICATE"
+            },
+            {
+              "id": "3A-F6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R18"
+              ],
+              "title": "Same-target tombstone race: one wins, the rest TOMBSTONE_INVALID"
+            },
+            {
+              "id": "3A-F7",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [
+                "Q02",
+                "Q10"
+              ],
+              "requirements": [
+                "MO1308-R15"
+              ],
+              "title": "F1 repeated 10 times: census of every filesystem error; staging EPERM in more than 1 of 10 runs escalates (owner decision D6)"
+            }
+          ],
+          "guardMinutes": 20,
+          "id": "F",
+          "segment": "main",
+          "title": "Concurrency"
+        },
+        {
+          "cases": [
+            {
+              "id": "3A-G1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q01"
+              ],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "Record directory swapped for a junction during an append"
+            },
+            {
+              "id": "3A-G2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q01"
+              ],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "entries directory swapped at the commit point"
+            },
+            {
+              "id": "3A-G3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q01"
+              ],
+              "requirements": [
+                "MO1308-R17",
+                "MO1308-R18"
+              ],
+              "title": "Swap during a tombstone purge"
+            },
+            {
+              "id": "3A-G4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q01"
+              ],
+              "requirements": [
+                "MO1308-R17",
+                "MO1308-R23"
+              ],
+              "title": "Swap during export (output directory) and during init"
+            },
+            {
+              "id": "3A-G5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q01"
+              ],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "Ledger root swapped between two reads"
+            },
+            {
+              "id": "3A-G6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q01"
+              ],
+              "requirements": [
+                "MO1308-R17"
+              ],
+              "title": "Junction swapper racing three appenders for a fixed number of swaps: sentinel intact; ledger verifies or fails closed typed"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "G",
+          "segment": "main",
+          "title": "Directory-swap races (H40)"
+        },
+        {
+          "cases": [
+            {
+              "id": "3A-H1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R16"
+              ],
+              "title": "Kill after a member is staged"
+            },
+            {
+              "id": "3A-H2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R16"
+              ],
+              "title": "Kill after a member is linked, before the entry is staged"
+            },
+            {
+              "id": "3A-H3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R16"
+              ],
+              "title": "Kill after the entry is staged, before its link"
+            },
+            {
+              "id": "3A-H4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R16"
+              ],
+              "title": "Kill after the entry link, before the staging name is removed"
+            },
+            {
+              "id": "3A-H5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R16",
+                "MO1308-R18"
+              ],
+              "title": "Tombstone killed after the commit and before any deletion: purgePending; rerun finishes without a new entry"
+            },
+            {
+              "id": "3A-H6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R18"
+              ],
+              "title": "Tombstone killed in the middle of deletion"
+            },
+            {
+              "id": "3A-H7",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R23"
+              ],
+              "title": "Export killed before the completion marker: verify-export fails EXPORT_CORRUPT"
+            },
+            {
+              "id": "3A-H8",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R16"
+              ],
+              "title": "init killed midway"
+            },
+            {
+              "id": "3A-H9",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R16"
+              ],
+              "title": "Ctrl-C and Ctrl-Break before the commit point publish nothing"
+            },
+            {
+              "id": "3A-H10",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R25"
+              ],
+              "title": "Closed stdout and stdin during a command"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "H",
+          "segment": "main",
+          "title": "Interruption"
+        },
+        {
+          "cases": [
+            {
+              "id": "3A-I1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R18",
+                "MO1308-R19"
+              ],
+              "title": "Tombstone lifecycle end to end: the chain verifies and purged content is reported PURGED, never verified"
+            },
+            {
+              "id": "3A-I2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R18"
+              ],
+              "title": "Purge while another process holds a member open: typed IO, purgePending, rerun after release finishes"
+            },
+            {
+              "id": "3A-I3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R20"
+              ],
+              "title": "Re-supply of purged bytes is RECORD_PURGED"
+            },
+            {
+              "id": "3A-I4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R18",
+                "MO1308-R23"
+              ],
+              "title": "Export and query after a purge: no member bytes; the record entry and its tombstone are present"
+            },
+            {
+              "id": "3A-I5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R18"
+              ],
+              "title": "Tombstone rules: the target is a retained RECORD entry; one tombstone per target; none on a tombstone"
+            },
+            {
+              "id": "3A-I6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R18"
+              ],
+              "title": "Purge-pending state is reported consistently by verify, query and export"
+            }
+          ],
+          "guardMinutes": 5,
+          "id": "I",
+          "segment": "main",
+          "title": "Tombstone and purge on the host"
+        },
+        {
+          "cases": [
+            {
+              "id": "3A-J1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "MIP_PACKAGE member: limit-1 and limit are not RESOURCE_LIMIT; limit+1 is (16,777,216)"
+            },
+            {
+              "id": "3A-J2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "INVESTIGATION_CHECKPOINT member (33,554,432)"
+            },
+            {
+              "id": "3A-J3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "POLICY_EVALUATION members (4,060 each)"
+            },
+            {
+              "id": "3A-J4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "REGRESSION_REPORT member (16,777,216)"
+            },
+            {
+              "id": "3A-J5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "CICD_RUN total (49,152)"
+            },
+            {
+              "id": "3A-J6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "READINESS_RESULT member (4,194,304)"
+            },
+            {
+              "id": "3A-J7",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "HUMAN_DECISION_CLAIM member (8,192)"
+            },
+            {
+              "id": "3A-J8",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "Entry file 16,384 bytes and ledger descriptor 1,024 bytes"
+            },
+            {
+              "id": "3A-J9",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "Subjects per entry: 16 accepted, 17 rejected"
+            },
+            {
+              "id": "3A-J10",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R22",
+                "MO1308-R26"
+              ],
+              "title": "Query page: 1 and 1,000 accepted; 0 and 1,001 are QUERY_INVALID"
+            },
+            {
+              "id": "3A-J11",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "CLI JSON stdout cap of 4,194,304 bytes"
+            },
+            {
+              "id": "3A-J12",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "Checkpoint transitions: 10,000 accepted and 10,001 refused; admission is linear (A4.5)"
+            },
+            {
+              "id": "3A-J13",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "Staging and unreferenced artifact reports list the first 1,000 sorted with an exact count"
+            }
+          ],
+          "guardMinutes": 15,
+          "id": "J",
+          "segment": "main",
+          "title": "Limits (section 14.2)"
+        },
+        {
+          "cases": [
+            {
+              "id": "3A-K1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R37"
+              ],
+              "title": "No product operation creates a child process, PowerShell included"
+            },
+            {
+              "id": "3A-K2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "No network socket and no name resolution"
+            },
+            {
+              "id": "3A-K3",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Memory and handle census per operation recorded; no handle remains open after exit"
+            },
+            {
+              "id": "3A-K4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R16"
+              ],
+              "title": "No staging, temporary or lock residue after successful operations; anomalies disclosed only after interruptions"
+            }
+          ],
+          "guardMinutes": 5,
+          "id": "K",
+          "segment": "main",
+          "title": "Resources and process"
+        },
+        {
+          "cases": [
+            {
+              "id": "3A-L1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R04",
+                "MO1308-R25"
+              ],
+              "title": "Console code pages 437 and 65001 give identical bytes"
+            },
+            {
+              "id": "3A-L2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R25"
+              ],
+              "title": "stdout to console, pipe, file and a headless launch: identical bytes and exit codes"
+            },
+            {
+              "id": "3A-L3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R25"
+              ],
+              "title": "Closed pipe (EPIPE) and slow reader on large output: no partial publication, typed outcome"
+            },
+            {
+              "id": "3A-L4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R04",
+                "MO1308-R35"
+              ],
+              "title": "Time zone and system clock changes do not change any byte"
+            },
+            {
+              "id": "3A-L5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R04",
+                "MO1308-R17"
+              ],
+              "title": "Working directory, drive and relative versus absolute path variance"
+            },
+            {
+              "id": "3A-L6",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Hostile NODE_OPTIONS and environment variables: behavior recorded"
+            }
+          ],
+          "guardMinutes": 5,
+          "id": "L",
+          "segment": "main",
+          "title": "Output transport and host variance"
+        },
+        {
+          "cases": [
+            {
+              "id": "3A-M1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R05"
+              ],
+              "title": "Every ledger created by the campaign verifies, or is a recorded intentional corruption"
+            },
+            {
+              "id": "3A-M2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32"
+              ],
+              "title": "Production path blobs unchanged: the candidate identity is re-verified"
+            },
+            {
+              "id": "3A-M3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Evidence inventory sealed; every raw log hashed"
+            },
+            {
+              "id": "3A-M4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R06"
+              ],
+              "title": "Nothing was created outside the campaign work root; junction targets are intact"
+            }
+          ],
+          "guardMinutes": 5,
+          "id": "M",
+          "segment": "main",
+          "title": "After-state"
+        },
+        {
+          "cases": [
+            {
+              "id": "3A-JC1",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "Generate 99,999 chain-valid entries with members (time recorded)"
+            },
+            {
+              "id": "3A-JC2",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "Query page of 1,000"
+            },
+            {
+              "id": "3A-JC3",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "Query with a subject filter across the whole ledger"
+            },
+            {
+              "id": "3A-JC4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "verify of 99,999 entries (real SDK)"
+            },
+            {
+              "id": "3A-JC5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "Append of the 100,000th entry (real MIP admission) succeeds"
+            },
+            {
+              "id": "3A-JC6",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [
+                "Q11"
+              ],
+              "requirements": [
+                "MO1308-R23",
+                "MO1308-R26"
+              ],
+              "title": "Export of 100,000 entries completes, marker last; time recorded (reference host 1000.9 s)"
+            },
+            {
+              "id": "3A-JC7",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R23"
+              ],
+              "title": "verify-export of that export"
+            },
+            {
+              "id": "3A-JC8",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "Real-process memoryos history verify at the ceiling"
+            },
+            {
+              "id": "3A-JC9",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "The 100,001st append is refused with RESOURCE_LIMIT and changes nothing"
+            },
+            {
+              "id": "3A-JC10",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R06",
+                "MO1308-R32"
+              ],
+              "title": "Post-ceiling after-state: production blobs unchanged; no residue outside the work root; ceiling data not retained (digests and logs only)"
+            }
+          ],
+          "guardMinutes": 180,
+          "id": "JC",
+          "segment": "ceiling",
+          "title": "J-C ceiling run (100,000 entries)"
+        }
+      ],
+      "title": "Native Windows CLI campaign"
+    },
+    {
+      "id": "3B",
+      "oneShot": true,
+      "platform": "win32-x64",
+      "segments": [
+        {
+          "budgetMinutes": 90,
+          "extendedMinutes": 180,
+          "id": "main",
+          "title": "Main audit"
+        }
+      ],
+      "steps": [
+        {
+          "cases": [
+            {
+              "id": "3B-A1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32"
+              ],
+              "title": "Candidate identity verified from git objects: commit, tree, production path set and blobs"
+            },
+            {
+              "id": "3B-A2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "History from the Freeze approval to the candidate has normal parents only (no rewrite); Amendments A1-A7 intact and ordered"
+            },
+            {
+              "id": "3B-A3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32",
+                "MO1308-R33"
+              ],
+              "title": "Every path changed since BF 1dd1e8c8 lies inside the allowed path set of the protocol; any other path is a finding"
+            },
+            {
+              "id": "3B-A4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32"
+              ],
+              "title": "No released document, package, evidence or tag byte changed except append-only records"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "A",
+          "segment": "main",
+          "title": "Lineage and path allowlist"
+        },
+        {
+          "cases": [
+            {
+              "id": "3B-B1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32"
+              ],
+              "title": "The four vendored memoryos-sdk.js copies equal their release bytes (3d476156...)"
+            },
+            {
+              "id": "3B-B2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32"
+              ],
+              "title": "MO-1302 Action bundle: every file equals its tag blob and its released manifest"
+            },
+            {
+              "id": "3B-B3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32"
+              ],
+              "title": "MO-1303 VSIX, MO-1304 MCP, MO-1305 REST and MO-1306 CI vendored closures equal their tag blobs"
+            },
+            {
+              "id": "3B-B4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32"
+              ],
+              "title": "MO-1307 readiness package: 89 members and the archive identity of its release record"
+            },
+            {
+              "id": "3B-B5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32"
+              ],
+              "title": "Every memoryos-1.3-* tag object exists, peels to its recorded commit and is unmodified"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "B",
+          "segment": "main",
+          "title": "Released closure identity"
+        },
+        {
+          "cases": [
+            {
+              "id": "3B-C1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R33",
+                "MO1308-R34"
+              ],
+              "title": "package.json files, lockfiles and vcpkg.json: no dependency added or changed; only the 1.2.0 version fields differ"
+            },
+            {
+              "id": "3B-C2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R33"
+              ],
+              "title": "Static import scan of the CLI and SDK closures: only node:fs, node:path and repository-relative imports"
+            },
+            {
+              "id": "3B-C3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R28"
+              ],
+              "title": "The history modules import no node module, SDK, Core, filesystem or network module"
+            },
+            {
+              "id": "3B-C4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R29"
+              ],
+              "title": "The history authority and SDK facade perform no I/O: forbidden-identifier scan and runtime proof"
+            },
+            {
+              "id": "3B-C5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q09"
+              ],
+              "requirements": [
+                "MO1308-R33"
+              ],
+              "title": "No new third-party code: LICENSE and notices unchanged; hand-written cryptography listed as first-party"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "C",
+          "segment": "main",
+          "title": "Dependency audit"
+        },
+        {
+          "cases": [
+            {
+              "id": "3B-D1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R33"
+              ],
+              "title": "Closure of memoryos-cli/bin/memoryos.js with blob ids; the static scan equals the set Node loads"
+            },
+            {
+              "id": "3B-D2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R33"
+              ],
+              "title": "Closure of memoryos-sdk.js with blob ids; the static scan equals the set Node loads"
+            },
+            {
+              "id": "3B-D3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32"
+              ],
+              "title": "The production closure is exactly the candidate identity path set"
+            },
+            {
+              "id": "3B-D4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Closure manifest digest recorded"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "D",
+          "segment": "main",
+          "title": "Source closure"
+        },
+        {
+          "cases": [
+            {
+              "id": "3B-E1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32"
+              ],
+              "title": "Two independently implemented assemblies produce identical closure manifests"
+            },
+            {
+              "id": "3B-E2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32"
+              ],
+              "title": "Assemblies in two clean worktrees (autocrlf true and false) agree"
+            },
+            {
+              "id": "3B-E3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Deterministic archive of the closure is byte-identical across both assemblies"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "E",
+          "segment": "main",
+          "title": "Reproducibility"
+        },
+        {
+          "cases": [
+            {
+              "id": "3B-F1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R33"
+              ],
+              "title": "Extract the closure to an empty directory with only the pinned Node and no network: init, append, verify, query, export, verify-export succeed"
+            },
+            {
+              "id": "3B-F2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R04"
+              ],
+              "title": "Output bytes equal the in-tree run"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "F",
+          "segment": "main",
+          "title": "Offline smoke"
+        },
+        {
+          "cases": [
+            {
+              "id": "3B-G1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Toolchain provenance recorded: Node, git and Python versions and hashes"
+            },
+            {
+              "id": "3B-G2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R33"
+              ],
+              "title": "No network access and no package installation during the audit"
+            },
+            {
+              "id": "3B-G3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R33"
+              ],
+              "title": "Closure manifest and license statement: all first-party; no SBOM (owner decision D9)"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "G",
+          "segment": "main",
+          "title": "Provenance"
+        }
+      ],
+      "title": "Closure and supply audit"
+    },
+    {
+      "id": "3C",
+      "oneShot": true,
+      "platform": "win32-x64",
+      "segments": [
+        {
+          "budgetMinutes": 90,
+          "extendedMinutes": 180,
+          "id": "main",
+          "title": "Main audit"
+        }
+      ],
+      "steps": [
+        {
+          "cases": [
+            {
+              "id": "3C-A1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R21"
+              ],
+              "title": "Exhaustive single-byte flips of the descriptor: every flip fails closed, typed, exit category 3"
+            },
+            {
+              "id": "3C-A2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R21"
+              ],
+              "title": "Exhaustive single-byte flips of every entry file"
+            },
+            {
+              "id": "3C-A3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R21"
+              ],
+              "title": "Strided single-byte flips of every retained member"
+            },
+            {
+              "id": "3C-A4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R21",
+                "MO1308-R25"
+              ],
+              "title": "CLI-level sample of flips through real processes (fixed count and seed)"
+            },
+            {
+              "id": "3C-A5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R05",
+                "MO1308-R21"
+              ],
+              "title": "Structural tamper: deletion, reordering, gap, extra file, duplicate index, foreign-ledger splice, descriptor substitution"
+            },
+            {
+              "id": "3C-A6",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [
+                "Q03"
+              ],
+              "requirements": [
+                "MO1308-R05"
+              ],
+              "title": "Tail truncation and rollback to an older valid prefix: outcome recorded against the pre-registered set"
+            },
+            {
+              "id": "3C-A7",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R22"
+              ],
+              "title": "query on a tampered chain fails closed before answering; results are sorted by index"
+            }
+          ],
+          "guardMinutes": 20,
+          "id": "A",
+          "segment": "main",
+          "title": "Tamper"
+        },
+        {
+          "cases": [
+            {
+              "id": "3C-B1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R01"
+              ],
+              "title": "Closed-shape and version negatives on every stored structure: unknown member, kind and version"
+            },
+            {
+              "id": "3C-B2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R02",
+                "MO1308-R04"
+              ],
+              "title": "Golden-vector reaffirmation: corpus ledgers recomputed by an independent implementation equal the corpus manifest heads"
+            },
+            {
+              "id": "3C-B3",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [
+                "Q13"
+              ],
+              "requirements": [],
+              "title": "A fully self-consistent forged chain verifies (integrity only, H07): outcome recorded"
+            },
+            {
+              "id": "3C-B4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R21"
+              ],
+              "title": "A substituted retained member with a valid self-hash fails RECORD_BYTES_MISMATCH"
+            },
+            {
+              "id": "3C-B5",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [
+                "Q08"
+              ],
+              "requirements": [],
+              "title": "A forged admission field, or an entry whose bytes would fail admission, still verifies (no re-admission): recorded"
+            },
+            {
+              "id": "3C-B6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R21"
+              ],
+              "title": "recordDigest and member-list mismatches; an entry from another ledger at the same index"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "B",
+          "segment": "main",
+          "title": "Shape and forgery"
+        },
+        {
+          "cases": [
+            {
+              "id": "3C-C1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R07"
+              ],
+              "title": "MIP_PACKAGE: valid, forged, stale, wrong Workspace, wrong members, oversized, duplicate, purged"
+            },
+            {
+              "id": "3C-C2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R07",
+                "MO1308-R12"
+              ],
+              "title": "INVESTIGATION_CHECKPOINT including a native checkpoint and a forged log or prefix digest"
+            },
+            {
+              "id": "3C-C3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R07"
+              ],
+              "title": "POLICY_EVALUATION matrix"
+            },
+            {
+              "id": "3C-C4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R07"
+              ],
+              "title": "REGRESSION_REPORT matrix"
+            },
+            {
+              "id": "3C-C5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R07"
+              ],
+              "title": "CICD_RUN matrix: 6 files, 4 files, missing marker, wrong cardinality, bad manifest"
+            },
+            {
+              "id": "3C-C6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R07"
+              ],
+              "title": "READINESS_RESULT matrix"
+            },
+            {
+              "id": "3C-C7",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R07",
+                "MO1308-R13"
+              ],
+              "title": "HUMAN_DECISION_CLAIM matrix: unbound, wrong digests, purged result, consistency label"
+            },
+            {
+              "id": "3C-C8",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R09"
+              ],
+              "title": "Every rejection created no entry and changed no file"
+            },
+            {
+              "id": "3C-C9",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R10",
+                "MO1308-R11",
+                "MO1308-R20",
+                "MO1308-R36"
+              ],
+              "title": "Duplicate, Workspace-mismatch and purged re-supply rules; one Workspace per ledger"
+            },
+            {
+              "id": "3C-C10",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [
+                "Q12"
+              ],
+              "requirements": [],
+              "title": "Known limits demonstrated: Policy admission is inspection-only; Readiness admission is self-digests only"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "C",
+          "segment": "main",
+          "title": "Admission matrix"
+        },
+        {
+          "cases": [
+            {
+              "id": "3C-D1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q09"
+              ],
+              "requirements": [
+                "MO1308-R02"
+              ],
+              "title": "FIPS 180-4 example vectors (empty, abc, 448-bit, 896-bit, one million a) on both hand-written implementations"
+            },
+            {
+              "id": "3C-D2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q09"
+              ],
+              "requirements": [
+                "MO1308-R02"
+              ],
+              "title": "Monte Carlo procedure (100 x 1000 iterations) on both implementations against node:crypto"
+            },
+            {
+              "id": "3C-D3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q09"
+              ],
+              "requirements": [
+                "MO1308-R02"
+              ],
+              "title": "Lengths 0-300, block-boundary lengths and 1,000 seeded random messages and splits: Sha256Stream equals node:crypto"
+            },
+            {
+              "id": "3C-D4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q09"
+              ],
+              "requirements": [
+                "MO1308-R02"
+              ],
+              "title": "clone independence, repeatable hex(), update after hex()"
+            },
+            {
+              "id": "3C-D5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q09"
+              ],
+              "requirements": [
+                "MO1308-R02"
+              ],
+              "title": "Differential against node:crypto up to 32 MiB with misaligned chunking"
+            },
+            {
+              "id": "3C-D6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q09"
+              ],
+              "requirements": [
+                "MO1308-R02",
+                "MO1308-R26"
+              ],
+              "title": "Checkpoint admission equals the verbatim legacy algorithm at 2, 5, 64, 500, 2,500 and 10,000 transitions: accept or reject, code, stage, subjects"
+            },
+            {
+              "id": "3C-D7",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q09"
+              ],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "A forged deepest prefix digest is rejected identically; 10,001 transitions are refused"
+            },
+            {
+              "id": "3C-D8",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q09"
+              ],
+              "requirements": [
+                "MO1308-R02"
+              ],
+              "title": "The mip-canonical.js hand-written SHA-256 under D1-D5"
+            },
+            {
+              "id": "3C-D9",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [
+                "Q09"
+              ],
+              "requirements": [],
+              "title": "A recorded independent sub-agent review of both implementations is bound; every finding has a disposition (owner decision D8)"
+            }
+          ],
+          "guardMinutes": 20,
+          "id": "D",
+          "segment": "main",
+          "title": "Incremental and hand-written SHA-256"
+        },
+        {
+          "cases": [
+            {
+              "id": "3C-E1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R18"
+              ],
+              "title": "Governance: closed reason list; authority reference 1-256 printable ASCII; anything else is rejected"
+            },
+            {
+              "id": "3C-E2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R18"
+              ],
+              "title": "Tombstone authenticity is NOT_VERIFIED_BY_MEMORYOS and the authority reference is never validated or fetched"
+            },
+            {
+              "id": "3C-E3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R16",
+                "MO1308-R18"
+              ],
+              "title": "Crash during purge: purgePending; a rerun finishes; the chain stays valid"
+            },
+            {
+              "id": "3C-E4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R20"
+              ],
+              "title": "Re-supply of purged bytes is refused for every record kind"
+            },
+            {
+              "id": "3C-E5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R06",
+                "MO1308-R19"
+              ],
+              "title": "Purge removes exactly the target record members and nothing else"
+            },
+            {
+              "id": "3C-E6",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [
+                "Q04"
+              ],
+              "requirements": [],
+              "title": "Staging remnant probe: after a kill between member link and staging removal, are the purged bytes still reachable through the staging name"
+            },
+            {
+              "id": "3C-E7",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [
+                "Q05"
+              ],
+              "requirements": [],
+              "title": "Surviving digests, sizes and subjects after a purge: what remains in entries and exports"
+            },
+            {
+              "id": "3C-E8",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [
+                "Q07"
+              ],
+              "requirements": [],
+              "title": "An export taken before a tombstone retains the bytes"
+            },
+            {
+              "id": "3C-E9",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [
+                "Q06"
+              ],
+              "requirements": [],
+              "title": "Authority reference permanence and its free-text content"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "E",
+          "segment": "main",
+          "title": "Tombstone and purge"
+        },
+        {
+          "cases": [
+            {
+              "id": "3C-F1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R23"
+              ],
+              "title": "Export tamper corpus: manifest, marker, content, missing, extra and reordered files"
+            },
+            {
+              "id": "3C-F2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R23"
+              ],
+              "title": "Hostile paths in verifyHistoryExport files: traversal, absolute, backslash, alternate data stream, reserved name, case duplicate"
+            },
+            {
+              "id": "3C-F3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R17",
+                "MO1308-R23"
+              ],
+              "title": "A link or junction inside an export directory"
+            },
+            {
+              "id": "3C-F4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R06"
+              ],
+              "title": "export --output inside or under the ledger directory"
+            },
+            {
+              "id": "3C-F5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R23"
+              ],
+              "title": "Exports of equal ledgers are byte-identical; the marker is created last"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "F",
+          "segment": "main",
+          "title": "Export integrity"
+        },
+        {
+          "cases": [
+            {
+              "id": "3C-G1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R14"
+              ],
+              "title": "Static: no MO-1307 gate, readiness code or CI package imports the history authority"
+            },
+            {
+              "id": "3C-G2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R14"
+              ],
+              "title": "Runtime: a ledger directory does not alter any MO-1307 result"
+            },
+            {
+              "id": "3C-G3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R14"
+              ],
+              "title": "No approve, grant or accept semantics in any history surface, exit code or output"
+            },
+            {
+              "id": "3C-G4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R13",
+                "MO1308-R14"
+              ],
+              "title": "decisionConsistency is documented and rendered as informational only"
+            },
+            {
+              "id": "3C-G5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R08"
+              ],
+              "title": "verifyReadiness and windows-inspect.ps1 are never called by admission"
+            },
+            {
+              "id": "3C-G6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R12"
+              ],
+              "title": "Audit of restore callers: no history operation restores an investigation"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "G",
+          "segment": "main",
+          "title": "Human-authority separation"
+        },
+        {
+          "cases": [
+            {
+              "id": "3C-H1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R24"
+              ],
+              "title": "Canary planting: user, host, environment value, path, cwd, file name, date string and URL in the environment and inputs"
+            },
+            {
+              "id": "3C-H2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R24"
+              ],
+              "title": "Scan of every MO-1308-authored byte (descriptor, entries, verification, query, export, marker) for canaries and forbidden classes"
+            },
+            {
+              "id": "3C-H3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R24",
+                "MO1308-R25"
+              ],
+              "title": "Scan of every failure output (stdout, stderr, JSON errors)"
+            },
+            {
+              "id": "3C-H4",
+              "mandatory": true,
+              "mode": "record",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R24"
+              ],
+              "title": "Authority reference and subject values: the only free-form content; recorded"
+            },
+            {
+              "id": "3C-H5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R35"
+              ],
+              "title": "No timestamp-like value in MO-1308-authored bytes"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "H",
+          "segment": "main",
+          "title": "Data-class audit"
+        },
+        {
+          "cases": [
+            {
+              "id": "3C-I1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R28",
+                "MO1308-R37"
+              ],
+              "title": "Static forbidden-API scan: child_process, net, http, https, dns, eval, Function, dynamic import, undeclared environment reads"
+            },
+            {
+              "id": "3C-I2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R37"
+              ],
+              "title": "Runtime sample: no process creation and no socket during a representative operation set"
+            },
+            {
+              "id": "3C-I3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R24"
+              ],
+              "title": "Environment-variable read whitelist; a secret canary is never exposed"
+            }
+          ],
+          "guardMinutes": 10,
+          "id": "I",
+          "segment": "main",
+          "title": "Process, network and environment boundaries"
+        },
+        {
+          "cases": [
+            {
+              "id": "3C-J1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "Deeply nested and wide JSON members"
+            },
+            {
+              "id": "3C-J2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "Large counts, huge numbers, duplicate keys and malformed UTF-8"
+            },
+            {
+              "id": "3C-J3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "A 10,000-transition checkpoint (the maximum)"
+            },
+            {
+              "id": "3C-J4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "10,001 transitions are refused"
+            },
+            {
+              "id": "3C-J5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R07"
+              ],
+              "title": "Hostile MIP packages: corrupt, oversized sections, bad digests"
+            },
+            {
+              "id": "3C-J6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R26"
+              ],
+              "title": "A valid maximal 32 MiB checkpoint member"
+            },
+            {
+              "id": "3C-J7",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R25"
+              ],
+              "title": "Every hostile input ends within a fixed guard with a typed outcome; no crash and no INTERNAL"
+            }
+          ],
+          "guardMinutes": 15,
+          "id": "J",
+          "segment": "main",
+          "title": "Hostile inputs"
+        },
+        {
+          "cases": [
+            {
+              "id": "3C-K1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "README, ROADMAP, RELEASE_NOTES, KNOWN_ISSUES, ARCHITECTURE and the CLI docs claim nothing beyond the Freeze; the qualification register is present"
+            },
+            {
+              "id": "3C-K2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q03"
+              ],
+              "requirements": [],
+              "title": "Operator guidance: record each export and verify headDigest externally as the rollback anchor (owner decision D7)"
+            },
+            {
+              "id": "3C-K3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [
+                "Q01",
+                "Q02",
+                "Q13",
+                "Q14"
+              ],
+              "requirements": [],
+              "title": "Disclosures present: H40, A6, integrity-only, no encryption, ACL responsibility, Windows only, local single-user v1"
+            }
+          ],
+          "guardMinutes": 5,
+          "id": "K",
+          "segment": "main",
+          "title": "Release-claim review"
+        }
+      ],
+      "title": "Security and integrity"
+    },
+    {
+      "id": "3D",
+      "oneShot": false,
+      "platform": "any (validator is read-only); host for the post-BF run",
+      "segments": [
+        {
+          "budgetMinutes": 90,
+          "extendedMinutes": 180,
+          "id": "main",
+          "title": "Validator run"
+        }
+      ],
+      "steps": [
+        {
+          "cases": [
+            {
+              "id": "3D-D1",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R32"
+              ],
+              "title": "Lineage and production-tree identity: the candidate and every evidence commit leave the production path set byte-identical"
+            },
+            {
+              "id": "3D-D2",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Accepted 3A, 3B and 3C receipts, every preserved failed generation, rehearsal and disposition are present and bound"
+            },
+            {
+              "id": "3D-D3",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Requirement matrix: every R01-R37 maps to at least one case with PASS in an accepted generation"
+            },
+            {
+              "id": "3D-D4",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R03",
+                "MO1308-R31"
+              ],
+              "title": "Retained full regression: MO-1308 suites, CLI, studio, MO-1307 (639) and examples"
+            },
+            {
+              "id": "3D-D5",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [
+                "MO1308-R31"
+              ],
+              "title": "A3 precondition receipt: full CTest including cca.workspace.verify PASS on the candidate"
+            },
+            {
+              "id": "3D-D6",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "Qualification register Q01-Q15 is complete with a disposition for each"
+            },
+            {
+              "id": "3D-D7",
+              "mandatory": true,
+              "mode": "assert",
+              "qualifications": [],
+              "requirements": [],
+              "title": "I3 plus a binding-only BF with no self-reference; no tag, push or approval in this task"
+            }
+          ],
+          "guardMinutes": 60,
+          "id": "D",
+          "segment": "main",
+          "title": "Final integration validator"
+        }
+      ],
+      "title": "Final integration"
+    }
+  ],
+  "version": "1.0.0"
+}
