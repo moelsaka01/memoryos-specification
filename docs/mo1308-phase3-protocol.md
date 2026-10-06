@@ -6,7 +6,7 @@ This document is the text of Freeze Amendment A8 to [MO-1308 Contract Freeze 1](
 owner on 2026-10-06 after review of the proposal and the nine decisions of section 2a. It is documentation only. It changes no
 frozen text, no production code and no evidence; it freezes the finite Phase 3 campaign protocol and case inventory before any
 run, as MO-1307 Freeze section 21 requires ("Freeze the finite campaign protocol/inventory before execution"). The amendment
-record in the Freeze (section 33) binds the protocol, the inventory, the candidate identity and the corpus manifest by hash: a
+record in the Freeze (section 34, renumbered from 33, see A8.5) binds the protocol, the inventory, the candidate identity and the corpus manifest by hash: a
 later change to any of them needs a new amendment. The approval status makes certifying seals possible (section 5.2); each still
 needs a recorded harness review.
 
@@ -57,7 +57,7 @@ The owner decided the nine items of the Step 1 report as follows. Each is applie
 | 3 | The seven allowed-path classes are confirmed. Ordinary documents (README, RELEASE_NOTES and the like) are not candidate changes. | Section 15 |
 | 4 | The J-C ceiling run is a separate segment that runs only after the main segments PASS and ends with JC10. | Sections 7, 9.1 |
 | 5 | An F7 escalation stops the generation; a rerun needs an owner approval reference. | Sections 5.5, 8.3 |
-| 6 | A qualification case passes with CONFIRMED or NOT_CONFIRMED and fails with anything else. The release disclosures (3C-K3, and the D7 guidance 3C-K2) must state the actual recorded outcome of each qualification case: a weakness that was NOT_CONFIRMED is never disclosed as confirmed, and one that was CONFIRMED is never omitted. | Sections 8.4, 11; cases 3C-K2, K3 |
+| 6 | A qualification case passes with CONFIRMED or NOT_CONFIRMED and fails with anything else. The release disclosures (3D-E3, and the D7 guidance 3D-E2) must state the actual recorded outcome of each qualification case: a weakness that was NOT_CONFIRMED is never disclosed as confirmed, and one that was CONFIRMED is never omitted. | Sections 8.4, 11; cases 3D-E2, K3 |
 | 7 | Rehearsal evidence lives under `evidence/mo1308/phaseNx-rehearsal-rN/`. | Section 5.3 |
 | 8 | A correct run must not be able to exceed its budget by design: guards are rebalanced and 3A main is split into two segments. | Section 7 |
 | 9 | The precondition is Amendment A3.2's differential gate; the gate input is its receipt with verdict PASS. A production change from the precondition is a new candidate and returns to the owner. | Section 3 |
@@ -85,20 +85,23 @@ review (section 6).
 **Inputs.** Each stream is sealed over: this protocol and its approval status, the inventory, the candidate identity, the
 shared corpus (3A and 3C), the stream tools, the recorded harness review, and for 3A and 3D the bound A3 precondition receipt.
 
-**The A3 precondition (Amendments A3.1 and A3.2).** Amendment A3 of the Freeze (section 26) makes a full CTest run a
-precondition of Phase 3. Two sub-amendments, recorded on branch `mo1308/phase3-precondition` (commit `f3e500c5`) and not yet
-merged here, refine it; they are cited by their section numbers on that branch and the citation is to be updated when they are
-merged:
+**The A3 precondition (Amendments A3.1, A3.2 and A3.3).** Amendment A3 of the Freeze (section 26) makes a full CTest run a
+precondition of Phase 3. Three sub-amendments, merged into this branch from `mo1308/phase3-precondition` and cited by their
+Freeze sections, refine it:
 
-- **A3.1 (section 31 there)** waives the `cca_core_tests` target only, because MSVC 19.44.35229 miscompiles its
+- **A3.1 (section 31)** waives the `cca_core_tests` target only, because MSVC 19.44.35229 miscompiles its
   `static_assert(!CanMutateCoreMetric<Observability>)` (error C2607; `cca-core` is byte-identical between BF and B2). The first
   run under it is preserved as `FAILED_PRESERVED` (evidence commit `59dfee40`, binding `82bb165e`): 125 of 316 executed tests
   failed, none of them MO-1308 code, and `cca.workspace.verify` passed.
-- **A3.2 (section 32 there)** replaces A3's absolute gate with a **differential no-regression gate**: CTest is run on BF
+- **A3.2 (section 32)** replaces A3's absolute gate with a **differential no-regression gate**: CTest is run on BF
   `1dd1e8c8` and on B2 `47595cc9` under an identical toolchain; the verdict is PASS only if `cca.workspace.verify` passes on B2,
   nothing that passes on BF fails or is not run on B2, every B2-only test passes, and every shared failure is listed
   `PRE_EXISTING` with a classification. Its evidence directory is
   `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g2/`, and its `receipt.json` carries the verdict.
+- **A3.3 (section 33)** records that Smart App Control blocks a build-dependent set of freshly built unsigned executables on the
+  reference host: every CTest test whose executable is blocked in either tree is excluded in BOTH runs as
+  `ENVIRONMENT_BLOCKED_SAC`, from a frozen list (`setup/exclusions.json`, committed before the recorded runs). A blocked executable
+  that is not a native C++ test or tool binary stops the run. It supplements A3.2 and changes no production path.
 
 **The gate input of this protocol is the A3.2 receipt with verdict PASS** (cases 3A-A4 and 3D-D5). Its result is pending on the
 reference host, and this protocol assumes none. The exact verdict member of that receipt is to be confirmed from the receipt when
@@ -111,8 +114,8 @@ it exists. **If the precondition changes any production path, that is a new cand
 |---|---|---:|---:|---|
 | 3A | Native Windows CLI campaign | 14 | 108 | yes |
 | 3B | Closure and supply audit | 7 | 26 | yes |
-| 3C | Security and integrity | 11 | 70 | yes |
-| 3D | Final integration | 1 | 7 | validator run |
+| 3C | Security and integrity | 10 | 67 | yes |
+| 3D | Final integration | 2 | 10 | validator run |
 <!-- GENERATED:END counts -->
 
 The streams are independent in their inputs and may be authored in parallel in the cloud. **Execution on the reference host is
@@ -204,13 +207,13 @@ measurable progress and needs a recorded rationale; it is never part of the desi
 | 3A `main2` | F 25, G 10, H 12, I 5, J 15, K 5, L 5, M 5 | 82 | 5 | 87 | 90 |
 | 3A `ceiling` | JC 175 | 175 | 5 | 180 | 180 |
 | 3B `main` | A 5, B 10, C 5, D 5, E 15, F 10, G 5 | 55 | 5 | 60 | 90 |
-| 3C `main` | A 15, B 5, C 5, D 10, E 8, F 6, G 5, H 8, I 4, J 12, K 3 | 81 | 5 | 86 | 90 |
-| 3D `main` | D 60 | 60 | 5 | 65 | 90 |
+| 3C `main` | A 15, B 5, C 5, D 10, E 8, F 6, G 5, H 8, I 4, J 12 | 78 | 5 | 83 | 90 |
+| 3D `main` | D 60, E 15 | 75 | 5 | 80 | 90 |
 
 **What changed.** The Step 1 draft had 3A `main` at 110 guard minutes against a 90-minute budget and 3C at 130. 3A `main` is now
 **split into two segments** (`main1`, `main2`) that each fit, rather than shrinking guards below realistic needs: `main1` ends
 before the concurrency, swap and interruption cases, `main2` runs only after `main1` finished PASS, and the ceiling segment runs
-only after both. 3C had no natural split, so its guards were reduced to 81 minutes (the in-process tamper flips, the Monte Carlo
+only after both. 3C had no natural split, so its guards were reduced to 78 minutes (after step K moved to 3D) (the in-process tamper flips, the Monte Carlo
 and the differential hashing are the heavy steps and are bounded in the corpus). The J-C ceiling guard is 175 minutes so that
 guard plus reserve equals the 180-minute budget.
 
@@ -255,8 +258,8 @@ engineering limits.
 | 3C | H | main | 8 | H1, H2, H3, H4, H5 |
 | 3C | I | main | 4 | I1, I2, I3 |
 | 3C | J | main | 12 | J1, J2, J3, J4, J5, J6, J7 |
-| 3C | K | main | 3 | K1, K2, K3 |
 | 3D | D | main | 60 | D1, D2, D3, D4, D5, D6, D7 |
+| 3D | E | main | 15 | E1, E2, E3 |
 <!-- GENERATED:END steps -->
 
 ## 8. Acceptance rules
@@ -300,7 +303,7 @@ A **qualification case** is a record case that carries a Qnn tag. It must observ
 the register says) or `NOT_CONFIRMED` (the product is better than the register). Both are PASS; any other outcome, or none, is a
 FAIL (`QUALIFICATION_OUTCOME_INVALID`). The outcome is stored in the case record and in the stream receipt per qualification.
 
-The release disclosures (case 3C-K3), and the operator guidance (3C-K2), must state **the actual recorded outcome of each
+The release disclosures (case 3D-E3), and the operator guidance (3D-E2), must state **the actual recorded outcome of each
 qualification case**: a weakness that was NOT_CONFIRMED is never disclosed as confirmed, and one that was CONFIRMED is never
 omitted. The disclosure document states one line per qualification case, `3C-A6: CONFIRMED - …` or `3C-A6: NOT_CONFIRMED - …`,
 and `Q01: DISCLOSED - …` for each structural qualification (one that no record case characterizes: Q01, Q09, Q14, Q15). The check
@@ -597,7 +600,7 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 H07), that the authority, privacy and data-class rules hold, and that every v1 qualification of section 11 is confirmed or
 refuted by test.
 **Inputs.** Candidate; corpus; sealed tools; the recorded independent SHA-256 review (3C-D9); the accepted 3A stream receipt (for
-the disclosure check of 3C-K2 and K3).
+the disclosure check of 3D-E2 and K3).
 **Tooling to build (later steps).** Tamper and forgery corpus generator; oracle comparator; SHA-256 differential harness
 (FIPS 180-4 example vectors, the CAVP Monte Carlo procedure and a differential against `node:crypto`; **official CAVP response
 files are not used** and every disclosure says so, per A8 decision 1); canary scanner; dependency-free
@@ -727,20 +730,13 @@ Segment `main`: Main audit. Budget 90 min, extended 180 min.
 | 3C-J5 | Hostile MIP packages: corrupt, oversized sections, bad digests | R07 | assert | - |
 | 3C-J6 | A valid maximal 32 MiB checkpoint member | R26 | assert | - |
 | 3C-J7 | Every hostile input ends within a fixed guard with a typed outcome; no crash and no INTERNAL | R25 | assert | - |
-
-#### 3C step K: Release-claim review (segment `main`, guard 3 min, 3 cases)
-
-| Case | What is established | Requirements | Mode | Qualifications |
-|---|---|---|---|---|
-| 3C-K1 | README, ROADMAP, RELEASE_NOTES, KNOWN_ISSUES, ARCHITECTURE and the CLI docs claim nothing beyond the Freeze; the qualification register is present | - | assert | - |
-| 3C-K2 | Operator guidance (record each export and verify headDigest externally as the rollback anchor, D7) is present and states the recorded outcome of 3C-A6 | - | assert | Q03 |
-| 3C-K3 | Release disclosures state the actual recorded outcome of every qualification case (none NOT_CONFIRMED disclosed as confirmed, none CONFIRMED omitted) and DISCLOSED for the structural qualifications | - | assert | Q01, Q02, Q13, Q14, Q15 |
 <!-- GENERATED:END inventory-3C -->
 
 ### 9.4 3D: final integration (validator run)
 
 **Objective.** Integrate the accepted 3A, 3B and 3C evidence and every failed attempt and disposition; prove the requirement
 matrix is complete; bind I3 and a binding-only BF; prepare the human tag review for `memoryos-1.3-mo1308`.
+**Release-claim and disclosure review (step E, moved here from 3C by an owner decision of 2026-10-06).** Cases 3D-E1 to E3 (formerly step K of 3C) run after the validator step, because only here are all case outcomes known: the documents claim nothing beyond the Freeze, the D7 operator guidance states the recorded outcome of 3C-A6, and the disclosures state every recorded qualification outcome. Step guards: D 60 + E 15 + 5 reserve = 80 of 90 minutes.
 **Tooling to build (later step).** A read-only `validate-final.mjs` in the manner of MO-1307's: it recomputes every claim from
 immutable inputs, executes no product, writes nothing; cloud-authorable, run on the host after BF.
 **Acceptance.** Every case PASS; rehearsals are rejected as accepted inputs; no tag, push or approval is created.
@@ -760,6 +756,14 @@ Segment `main`: Validator run. Budget 90 min, extended 180 min.
 | 3D-D5 | The A3.2 receipt (differential CTest gate) is bound with verdict PASS, and cca.workspace.verify passes on the candidate | R31 | assert | - |
 | 3D-D6 | Qualification register Q01-Q15 is complete with a disposition for each | - | assert | - |
 | 3D-D7 | I3 plus a binding-only BF with no self-reference; no tag, push or approval in this task | - | assert | - |
+
+#### 3D step E: Release-claim and disclosure review (segment `main`, guard 15 min, 3 cases)
+
+| Case | What is established | Requirements | Mode | Qualifications |
+|---|---|---|---|---|
+| 3D-E1 | README, ROADMAP, RELEASE_NOTES, KNOWN_ISSUES, ARCHITECTURE and the CLI docs claim nothing beyond the Freeze; the qualification register is present | - | assert | - |
+| 3D-E2 | Operator guidance (record each export and verify headDigest externally as the rollback anchor, D7) is present and states the recorded outcome of 3C-A6 | - | assert | Q03 |
+| 3D-E3 | Release disclosures state the actual recorded outcome of every qualification case (none NOT_CONFIRMED disclosed as confirmed, none CONFIRMED omitted) and DISCLOSED for the structural qualifications | - | assert | Q01, Q02, Q13, Q14, Q15 |
 <!-- GENERATED:END inventory-3D -->
 
 ## 10. Requirement matrix
@@ -817,9 +821,9 @@ shipped behavior, not an unresolved defect. Changing the product to remove one n
 <!-- GENERATED:BEGIN qualifications -->
 | ID | Qualification | Characterized by |
 |---|---|---|
-| Q01 | H40: Node-only store; a directory swap is detected after the fact, never prevented. Local single-user v1 only; re-review before any multi-user, shared-storage or cloud use, including MO-1309. | 3A-G1, 3A-G2, 3A-G3, 3A-G4, 3A-G5, 3A-G6, 3C-K3 |
-| Q02 | A6: a failed exclusive create of a staging file is a typed IO failure, never retried; two hypotheses (transient lock, delete-pending) remain unconfirmed. Re-reviewed with H40. | 3A-E6, 3A-F7, 3C-K3 |
-| Q03 | Tail truncation and rollback to an older valid prefix are not detectable without an external head anchor. Operators record each export and verify headDigest externally. | 3C-A6, 3C-K2 |
+| Q01 | H40: Node-only store; a directory swap is detected after the fact, never prevented. Local single-user v1 only; re-review before any multi-user, shared-storage or cloud use, including MO-1309. | 3A-G1, 3A-G2, 3A-G3, 3A-G4, 3A-G5, 3A-G6, 3D-E3 |
+| Q02 | A6: a failed exclusive create of a staging file is a typed IO failure, never retried; two hypotheses (transient lock, delete-pending) remain unconfirmed. Re-reviewed with H40. | 3A-E6, 3A-F7, 3D-E3 |
+| Q03 | Tail truncation and rollback to an older valid prefix are not detectable without an external head anchor. Operators record each export and verify headDigest externally. | 3C-A6, 3D-E2 |
 | Q04 | Purge removes record member names; a staging name left by an interrupted append may still hold the same bytes (to be characterized by 3C-E6). | 3C-E6 |
 | Q05 | After a purge the entry keeps recordDigest, member names, lengths and digests, and subjects; a digest can confirm a guess for small low-entropy content. | 3C-E7 |
 | Q06 | The tombstone authority reference is operator-chosen free text and is permanent. | 3C-E9 |
@@ -829,16 +833,16 @@ shipped behavior, not an unresolved defect. Changing the product to remove one n
 | Q10 | Host latency under antivirus and indexers is heavy-tailed; recorded as an environment qualification, not a bound. | 3A-F7 |
 | Q11 | A 100,000-entry export takes about 16 minutes on the reference host; recorded as a MO-1309 performance follow-up, not a defect. | 3A-JC6 |
 | Q12 | A4.4: POLICY_EVALUATION admission is inspection-only; READINESS_RESULT admission is not a MO-1307 verification. | 3C-C10 |
-| Q13 | Integrity only: no signatures, no authenticity, no encryption; access control is the operator filesystem responsibility (H07, H08). | 3C-B3, 3C-K3 |
-| Q14 | Certification claims native Windows 11 x64 only (H45). | 3C-K3 |
-| Q15 | UNC, network, OneDrive and cloud-placeholder locations are observed, not claimed. | 3A-D9, 3C-K3 |
+| Q13 | Integrity only: no signatures, no authenticity, no encryption; access control is the operator filesystem responsibility (H07, H08). | 3C-B3, 3D-E3 |
+| Q14 | Certification claims native Windows 11 x64 only (H45). | 3D-E3 |
+| Q15 | UNC, network, OneDrive and cloud-placeholder locations are observed, not claimed. | 3A-D9, 3D-E3 |
 <!-- GENERATED:END qualifications -->
 
 **Operator guidance required by D7 (documentation, not a CLI behavior change).** The CLI README and the release notes must say,
 in substance: "Record the `headDigest` printed by every `memoryos history verify` and `memoryos history export` run, and the one
 in each export manifest, in a system outside the ledger directory. Comparing a later `headDigest` and `entryCount` with the
 recorded ones is the only way to detect that the newest entries were removed or that an older valid copy of the ledger was
-restored." Case 3C-K2 checks that this guidance is present and states the recorded outcome of 3C-A6 (section 8.4): if the rollback weakness
+restored." Case 3D-E2 checks that this guidance is present and states the recorded outcome of 3C-A6 (section 8.4): if the rollback weakness
 was NOT_CONFIRMED the guidance must not describe it as present, and if CONFIRMED it must. Because it lives in `repositories/memoryos-cli/README.md` and
 `docs/`, it is outside the candidate production path set.
 
@@ -926,8 +930,8 @@ sections 5.1, 16 and 18.1 and Amendments A1 to A7.
 1. **Official CAVP response files were not used.** Cases 3C-D1 and D2 use the FIPS 180-4 example messages and the CAVP Monte Carlo
    procedure computed against `node:crypto` (A8 decision 1). Every release disclosure of Q09 states this.
 2. **Tool dependencies.** Static auditors for 3C add no dependency; the shared scanner is a small hand-written tokenizer.
-3. **Documentation edits** needed by the campaigns (the D7 operator guidance, and the disclosures of cases 3C-K2 and K3) are
+3. **Documentation edits** needed by the campaigns (the D7 operator guidance, and the disclosures of cases 3D-E2 and E3) are
    documentation changes outside the candidate; they are made after the 3A and 3C outcomes are recorded, so that they state the
    actual outcomes (section 8.4).
-4. **Citation to update.** Amendments A3.1 and A3.2 are cited from branch `mo1308/phase3-precondition` (section 3); update the
-   citation when they are merged, and the verdict member of the A3.2 receipt when the receipt exists.
+4. **Citation.** Amendments A3.1 to A3.3 are merged and cited by sections 31 to 33 (section 3); A8 is section 34 (A8.5). The
+   verdict member of the A3.2 receipt is to be updated when the receipt exists (the 3D validator reads `verdict`).

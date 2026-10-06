@@ -295,11 +295,6 @@ export const STREAMS = [
         ['J6', ...A('A valid maximal 32 MiB checkpoint member', 'R26')],
         ['J7', ...A('Every hostile input ends within a fixed guard with a typed outcome; no crash and no INTERNAL', 'R25')],
       ]) },
-      { id: 'K', segment: 'main', title: 'Release-claim review', guardMinutes: 3, cases: cases([
-        ['K1', ...A('README, ROADMAP, RELEASE_NOTES, KNOWN_ISSUES, ARCHITECTURE and the CLI docs claim nothing beyond the Freeze; the qualification register is present')],
-        ['K2', ...A('Operator guidance (record each export and verify headDigest externally as the rollback anchor, D7) is present and states the recorded outcome of 3C-A6', '', 'Q03')],
-        ['K3', ...A('Release disclosures state the actual recorded outcome of every qualification case (none NOT_CONFIRMED disclosed as confirmed, none CONFIRMED omitted) and DISCLOSED for the structural qualifications', '', 'Q01 Q02 Q13 Q14 Q15')],
-      ]) },
     ],
   },
   {
@@ -314,6 +309,11 @@ export const STREAMS = [
         ['D5', ...A('The A3.2 receipt (differential CTest gate) is bound with verdict PASS, and cca.workspace.verify passes on the candidate', 'R31')],
         ['D6', ...A('Qualification register Q01-Q15 is complete with a disposition for each')],
         ['D7', ...A('I3 plus a binding-only BF with no self-reference; no tag, push or approval in this task')],
+      ]) },
+      { id: 'E', segment: 'main', title: 'Release-claim and disclosure review', guardMinutes: 15, cases: cases([
+        ['E1', ...A('README, ROADMAP, RELEASE_NOTES, KNOWN_ISSUES, ARCHITECTURE and the CLI docs claim nothing beyond the Freeze; the qualification register is present')],
+        ['E2', ...A('Operator guidance (record each export and verify headDigest externally as the rollback anchor, D7) is present and states the recorded outcome of 3C-A6', '', 'Q03')],
+        ['E3', ...A('Release disclosures state the actual recorded outcome of every qualification case (none NOT_CONFIRMED disclosed as confirmed, none CONFIRMED omitted) and DISCLOSED for the structural qualifications', '', 'Q01 Q02 Q13 Q14 Q15')],
       ]) },
     ],
   },
