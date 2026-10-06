@@ -197,6 +197,30 @@ unprivileged on a host; other reparse-point kinds (WIM, cloud-files placeholders
 remain covered only by the rule that Node's `lstat` is the sole detector (K11, H40). (3) `O_NOFOLLOW` does not exist on
 Windows; the component and identity checks are the only guard (H40), exactly as accepted.
 
+## 5c. Observed limitation: `EPERM` when creating a staging file (accepted for v1, Freeze Amendment A6)
+
+**Observation.** The development runs of W08 (12 isolated and 4 inside the plan, 16 executions on the reference Windows
+host with the pinned Node v24.21.0) recorded the underlying Node error of every failed attempt. In 15 of 16 executions
+all 30 appends succeeded and every failure was `LEDGER_CONFLICT`. In one execution two appends failed with a typed `IO`
+failure whose underlying error was `EPERM`, errno -4048, syscall `open`, on `.pending/entry-N.0`, a staging name. The
+generation 3 binding run (`bd5056a3`) had no IO failure and no fs error (94 and 88 attempts, 30 successes each).
+`EPERM` is a sharing-violation-class errno, which is why it was put to the owner.
+
+**Behaviour.** The exclusive create of a staging file failed with an error other than `EEXIST`; the store maps it to a
+typed `IO` failure and does not retry. The writer was informed, nothing was committed (the contract assertions of W08 held in
+that execution: reported failures are absent from the ledger, no phantom commit), and the ledger stayed valid.
+
+**Hypotheses (neither confirmed; the recorded runs cannot tell them apart).** (1) A transient lock on the new name by
+antivirus or an indexer. (2) The Windows delete-pending state of a contended staging name: a file whose deletion is
+requested but which still holds its name while another handle is open, so an exclusive create of that name is refused
+with `EPERM` rather than `EEXIST`.
+
+**Decision (owner, 2026-10-06): accepted for v1 as a known limitation, no product change.** An exclusive-create failure on a
+staging file maps to a typed `IO` failure and is not retried; the writer is informed and nothing is committed. Recorded as
+[Freeze Amendment A6](mo1308-contract-freeze-1.md). It is re-reviewed together with H40 before any multi-user,
+shared-storage or cloud use of the history store. The bound evidence (generation 3, evidence commit `bd5056a3`, binding
+commit `fb3bd12d`) is not affected and not changed by this record.
+
 ## 6. Characterization (Freeze §14.2, Amendment A2 item 4)
 
 `repositories/cca-conformance/tools/mo1308-phase2c/characterize.mjs` measures the store at
