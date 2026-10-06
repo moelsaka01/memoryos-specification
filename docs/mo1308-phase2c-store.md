@@ -2,7 +2,7 @@
 
 Status: **DEVELOPMENT COMPLETE (CLOUD, THEN THE WINDOWS HOST), ADOPTED BY AMENDMENT A4.2 — NOT BOUND**. Generation 1 of the local run
 (`2c5cf474`) is `FAILED_PRESERVED` (section 7). The Windows-host tests were written on the Windows host and found a product race,
-fixed in section 5a; a Freeze amendment for the new error mapping is proposed there.
+fixed in section 5a and adopted by Freeze Amendment A5 (2026-10-06). Generation 2 (`746a5f85`) is `FAILED_PRESERVED` (W08, section 5b); generation 3 follows.
 
 This record describes Stream 2C of [MO-1308 Contract Freeze 1](mo1308-contract-freeze-1.md)
 (section 18.1, with Amendments A1–A3) on branch `mo1308/phase2c-store`, created from
@@ -150,7 +150,7 @@ changing ledger is not trusted), is discarded and repeated from the start.
   retained record's missing member is still `RECORD_BYTES_MISMATCH`; a purged or purge-pending record is fine. Previously
   this window produced `IO`.
 
-**Contract-visible changes (propose as a Freeze amendment, A4.4 or later).** (1) `LEDGER_CONFLICT`, defined for an append
+**Contract-visible changes (adopted by Freeze Amendment A5, 2026-10-06).** (1) `LEDGER_CONFLICT`, defined for an append
 that lost the entry commit race (§9.3, §14.1), is now also the result of any store read (`verify`, `query`, `export`,
 `tombstone`, `append`) that could not obtain a consistent snapshot in eight passes, with stage `ACQUISITION`; the
 message text is unchanged and fixed. (2) The `IO` result for a member that vanished between listing and read no longer
@@ -182,7 +182,7 @@ closed.
 | W05b | A sharing violation (another process holds a ledger file with no sharing) is a typed `IO` failure that changes nothing; releasing restores service |
 | W06 | Any casing of the real path is accepted (the `win32` case-insensitive realpath branch); case-only renames inside a ledger are corruption; an 8.3 short alias is refused and creates nothing |
 | W07 | Drive-letter, `/`, `..`, UNC (`\\localhost\C$\…`) and long (over 300 characters, no prefix) forms work end to end; the `\\?\` and `\\.\` forms are refused with `FILESYSTEM_BOUNDARY` and create nothing |
-| W08 | Ten real appender processes and two readers: one entry per index, a verifying chain, readers never see an integrity or boundary failure |
+| W08 | Ten real appender processes and two readers, every attempt recorded (typed code, stage and every Node file-system error with code, errno and syscall, written to the test output). The exact contract: every append that returned success is in the ledger exactly once; every record that is absent had a typed failure (`LEDGER_CONFLICT` after the worker bound of 200, or `IO`) reported to its writer; no record whose writer saw a failure is in the ledger; indices are 0..n-1, the entry count equals the successes, the chain verifies and readers never see an integrity or boundary failure. Generation 2 asserted "every record committed", which is stricter than the frozen behaviour (a bounded writer may legally fail) and could not tell a legal failed write from a lost write |
 | W08b | Three tombstone processes and three appenders: one tombstone per target, every purge finished, a verifying chain; the only tolerated failure is the retried `LEDGER_CONFLICT` |
 | W08c | A junction swapper racing three appender processes: the race is exercised, the outside sentinel is untouched, the ledger only verifies or fails closed with a typed error (`LEDGER_CORRUPT` and `RECORD_BYTES_MISMATCH` are allowed here and only here, because the swap itself puts a foreign name in the ledger root and hides the members) |
 
@@ -241,11 +241,16 @@ kept and classified if any expected result is not met.
 characterization: `characterize.mjs` predated Amendment A4.1 (entries without `decisionConsistency`), so every measured
 operation returned an error while the tool exited 0 (a test-tooling fault). Generation 1 stays exactly as committed, with
 no binding commit. The tool now follows A4.1 and exits non-zero on any failed operation; the Windows tests of section 5b
-and the snapshot fix of section 5a are new. Generation 2 is a new run, one run, recorded under
-`repositories/cca-conformance/evidence/mo1308/phase2c-g2/`; generation 1's directory is never overwritten.
+and the snapshot fix of section 5a are new. Generation 2 (evidence commit `746a5f85`, `FAILED_PRESERVED`, no binding commit) passed every item except W08, in `history-store-windows`
+and again as part of `npm test` (80/81): the assertion "every record was committed" failed 29 of 30. Its preceding assertions
+passed; the log did not record the per-attempt outcome, so the cause was not determinable, and no product defect was evidenced.
+Generation 2 stays exactly as committed. Generation 3 corrects W08 to assert the exact contract (every success present exactly
+once; every absent record reported as a typed failure; no phantom commit) and records every attempt, with the underlying Node
+error code, errno and syscall for failures; the other tests and production are unchanged. Generation 3 is a new run, one run,
+recorded under `repositories/cca-conformance/evidence/mo1308/phase2c-g3/`; no earlier generation's directory is overwritten.
 
 Evidence commit (single-parent child of `$C`, adding only
-`repositories/cca-conformance/evidence/mo1308/phase2c-g2/`, raw logs under the
+`repositories/cca-conformance/evidence/mo1308/phase2c-g3/`, raw logs under the
 `evidence/mo1308/**` `-text` rule) and a binding-only commit, as Phase 1. The receipt must
 disclose the H40 qualification, the known limitations of section 5b, the snapshot fix of section 5a (contract-visible
 `LEDGER_CONFLICT` mapping) and every Windows test run versus NOT_RUN. No `main` update, no tag.
