@@ -56,6 +56,9 @@ export async function rehearse({ root, stream, number = 1, evidenceDir, impls, h
   if (problems.length > 0) throw new CampaignError('DEFINITION_INVALID', problems[0]);
   const generation = `phase3${streamLetter(stream)}-rehearsal-r${number}`;
   const directory = evidenceDir ?? fs.mkdtempSync(path.join(os.tmpdir(), `mo1308-${generation}-`));
+  // Cases write their artifacts under env.evidenceDir; a rehearsal is never certifying.
+  env.evidenceDir = directory;
+  env.certifying = false;
   sealGeneration({
     root, stream, generation, certifying: false, protocolPath: PROTOCOL_FILE, inventoryPath: INVENTORY_FILE,
     candidateIdentityPath: IDENTITY_FILE, corpusManifestPath: stream === '3A' || stream === '3C' ? CORPUS_FILE : null,
@@ -100,7 +103,9 @@ export async function main({ argv, stream, impls, hostOnly, makeEnv, streamToolP
   const option = (name) => { const index = rest.indexOf(name); return index === -1 ? null : rest[index + 1] ?? null; };
   const toolPaths = [...sharedToolPaths(root), ...streamToolPaths(root)].sort();
   const inventory = loadInventory(path.join(root, INVENTORY_FILE));
-  const env = await makeEnv({ root, option });
+  const certifying = command !== 'rehearse' && !(option('--generation') ?? '').includes('rehearsal');
+  const env = await makeEnv({ root, option, certifying });
+  env.certifying = certifying;
   if (command === 'rehearse') {
     const result = await rehearse({ root, stream, number: Number(option('--number') ?? 1), evidenceDir: option('--out') === null ? undefined : path.resolve(option('--out')), impls, hostOnly, env, toolPaths, inputPaths });
     console.log(JSON.stringify({ ...result.summary, evidenceDir: result.evidenceDir, outcomes: result.outcomes, verification: result.problems }, null, 2));
@@ -109,6 +114,7 @@ export async function main({ argv, stream, impls, hostOnly, makeEnv, streamToolP
   const generation = option('--generation');
   if (generation === null) throw new CampaignError('USAGE', '--generation is required');
   const evidenceDir = path.join(root, ...EVIDENCE_ROOT.split('/'), generation);
+  env.evidenceDir = evidenceDir;
   if (command === 'seal') {
     const review = option('--review');
     const previous = option('--previous-evidence') === null ? null : { evidenceDir: path.resolve(option('--previous-evidence')), dispositionPath: path.resolve(option('--disposition')) };
