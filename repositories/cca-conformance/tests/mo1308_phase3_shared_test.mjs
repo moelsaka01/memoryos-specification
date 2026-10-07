@@ -200,9 +200,9 @@ test('P01 the protocol document is APPROVED as Amendment A8, current with the in
 
 // ---------------------------------------------------------------- allowed paths, candidate identity, no production change
 
-test('A01 every path changed since BF up to B2 is in the allowed set; unrelated paths are not', { skip: !haveBase || !haveBf }, () => {
+test('A01 every path changed since BF up to the corrected candidate is in the allowed set; unrelated paths are not', { skip: !haveBase || !haveBf }, () => {
   const paths = changedPaths(repo, BF, CANDIDATE_BASE);
-  assert.equal(paths.length, 186);
+  assert.equal(paths.length, 262);
   assert.deepEqual(paths.filter((file) => classifyChangedPath(file) === null), []);
   for (const file of ['repositories/memoryos-mcp/package.json', 'repositories/memoryos-readiness/src/constants.mjs', 'repositories/memoryos-cli/bin/other.js',
     'repositories/cca-conformance/evidence/mo1307/final-headless/x.json', 'package.json']) assert.equal(classifyChangedPath(file), null, file);

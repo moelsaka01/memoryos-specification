@@ -1,0 +1,9 @@
+Generation 3 setup (A3.1, A3.2, A3.3, A3.4).
+BASELINE worktree g3b = BF 1dd1e8c8; CANDIDATE worktree g3c = b0bf2d56 (corrected head). Both fresh, detached, created for this run.
+npm ci --ignore-scripts from the committed lockfiles in cca-studio, memoryos-ci, memoryos-mcp, memoryos-rest, memoryos-vscode (npm 11.19.0 bundled with the pinned Node), run BEFORE configure.
+MEMORYOS_VSCODE_NPM_EXECUTABLE pinned to <pinned node>/npm.cmd at configure (A3.3 setup deviation), identical in both trees.
+Smart App Control (VerifiedAndReputablePolicyState=1) not changed. Blocked executables were identified by launching every built repositories/**/*.exe (probe rounds 1 to 4) and from ctest discovery errors (exit code 0xc0e90002); the set is not stable between rounds, so the union of all rounds is excluded in both runs.
+Blocked gtest executables are renamed to <name>.exe.sac-blocked in the build directory of BOTH trees (build output only), so that each registers its existing <target>_NOT_BUILT placeholder; the placeholders are excluded by name.
+Tests of blocked non-gtest executables (examples) are excluded by name; cca.exe and cca-runtime.exe are blocked but no CTest test runs them.
+Test discovery (ctest -N) completed in both trees before the exclusion list was frozen: 98 registered tests in each tree, identical names.
+The recorded runs may dirty the candidate or baseline worktree through the MCP foundation suite rewriting measurements/phase2-integration.json (A3.4); it is recorded, not a gate.

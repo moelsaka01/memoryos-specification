@@ -147,6 +147,33 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
     return { parent: canonicalRoot(parent, stage), name: nodePath.basename(absolute) };
   }
 
+  // A location equal to or below `root` by spelling. `nodePath.relative` is case-insensitive on Windows and returns
+  // an absolute path across drives, which is never inside.
+  function insideOrEqual(root, candidate) {
+    const rel = nodePath.relative(root, candidate);
+    if (rel === "") return true;
+    return rel !== ".." && !rel.startsWith(`..${nodePath.sep}`) && !nodePath.isAbsolute(rel);
+  }
+
+  // A location equal to or below the ledger by file identity: `candidate` or any ancestor of it (existing or not)
+  // is the ledger root. This catches a spelling the lexical test cannot (another drive-letter, UNC or case form of
+  // the same directory). A path that cannot be examined is not a match here; the boundary checks that follow
+  // refuse it exactly as before.
+  function withinLedger(rootIdentity, candidate) {
+    for (let current = candidate; ;) {
+      let st = null;
+      try {
+        st = fs.statSync(current, { bigint: true });
+      } catch {
+        st = null;
+      }
+      if (st !== null && sameIdentity(ownedBy(st), rootIdentity)) return true;
+      const parent = nodePath.dirname(current);
+      if (parent === current) return false;
+      current = parent;
+    }
+  }
+
   // ---- Reading: lstat, then handle fstat identity, then the bytes (sections 9.2, 11.1) ----
 
   const NO_FOLLOW = fs.constants?.O_NOFOLLOW ?? 0;
@@ -487,6 +514,13 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
 
   function exportLedger(ledgerPath, outputPath) {
     const root = openRoot(ledgerPath, "required");
+    // An export is never written into the ledger it is made from (root, entries/, records/, .pending/, or any
+    // spelling that resolves there, such as `..`): checked before anything is read or created, by spelling and by
+    // file identity. Links and junctions are refused separately by openParent.
+    if (typeof outputPath !== "string" || outputPath.length === 0 || outputPath.includes("\0")) fail("USAGE", "USAGE");
+    const absoluteOutput = nodePath.resolve(outputPath);
+    const rootIdentity = ownedBy(guarded("ACQUISITION", () => fs.statSync(root, { bigint: true })));
+    if (insideOrEqual(root, absoluteOutput) || withinLedger(rootIdentity, absoluteOutput)) boundary("PUBLICATION");
     const state = readLedger(root, { members: true });
     const ledger = verifyLedger(state);
     const built = engine.buildHistoryExport({ descriptorBytes: state.descriptorBytes, entries: state.entries, members: state.members });
