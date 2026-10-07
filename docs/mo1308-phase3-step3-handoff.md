@@ -33,3 +33,4 @@ Rehearse 3A G-M and ceiling on the new candidate; harness reviews; tighten harne
 
 ## Correction round progress
 (none yet)
+* Step 1 (3A-L3) DONE on `mo1308/phase3-corrections` (worktree `C:\w3k`): `bin/memoryos.js` swallows stream errors on stdout/stderr; exit code stays the command's own. Test: `memoryos-cli/tests/closed-output.test.mjs` (3 tests, fail on b0bf2d56). Rule to propose in A10: unwritable output never changes the exit of an operation already carried out and prints nothing.
