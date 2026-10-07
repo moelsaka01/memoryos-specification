@@ -62,6 +62,15 @@ export function auditChangedPaths({ repo, commit, bf }) {
   return result(outside.map((file) => `${file} is outside the allowed path set`), { changed: paths.length, classes });
 }
 
+// Amendment A9.1: three test files inside released closures were corrected (checks pinned to their release). Each is authorized by
+// path, status and blob; a further change to any of them, or any other change inside a released closure, is a finding.
+function authorizedCorrection(repo, commit, baseline, file, status) {
+  const entry = (baseline.authorizedCorrections ?? []).find((item) => item.path === file);
+  if (entry === undefined || entry.status !== status) return false;
+  const found = treeEntry(repo, commit, file);
+  return found !== null && found.blob === entry.blob;
+}
+
 const PROTECTED = [/^docs\/mo1301-/, /^docs\/mo1302-/, /^docs\/mo1303-/, /^docs\/mo1304-/, /^docs\/mo1305-/, /^docs\/mo1306-/, /^docs\/mo1307-/];
 const isEvidenceOutsideMo1308 = (file) => file.startsWith('repositories/cca-conformance/evidence/') && !file.startsWith('repositories/cca-conformance/evidence/mo1308/');
 export function auditReleasedBytes({ repo, commit, bf, baseline }) {
@@ -74,6 +83,7 @@ export function auditReleasedBytes({ repo, commit, bf, baseline }) {
     const inRoot = roots.some((root) => file === root || file.startsWith(`${root}/`));
     const released = inRoot || PROTECTED.some((pattern) => pattern.test(file)) || isEvidenceOutsideMo1308(file);
     if (!released) continue;
+    if (authorizedCorrection(repo, commit, baseline, file, status)) { observed.authorized = [...(observed.authorized ?? []), file]; continue; }
     if (status !== 'A') problems.push(`${file}: released content changed (${status})`);
     else if (inRoot) problems.push(`${file}: a file was added to a released closure`);
     else observed.additions.push(file);
@@ -117,13 +127,20 @@ export function auditClosures({ repo, commit, bf, baseline, only = null }) {
     const tagCommit = revParse(repo, closure.tag);
     const row = { id: closure.id, roots: closure.roots, equalToBf: true, postTagDifferences: [] };
     for (const root of closure.roots) {
-      if (treeId(repo, commit, root) !== treeId(repo, bf, root)) { row.equalToBf = false; problems.push(`${closure.id}: ${root} differs from BF`); }
+      if (treeId(repo, commit, root) !== treeId(repo, bf, root)) {
+        const rows = git(repo, ['diff', '--name-status', '-z', '--no-renames', bf, commit, '--', root]).stdout.toString('utf8').split('\0').filter(Boolean);
+        const unauthorized = [];
+        for (let index = 0; index + 1 < rows.length; index += 2) if (!authorizedCorrection(repo, commit, baseline, rows[index + 1], rows[index])) unauthorized.push(rows[index + 1]);
+        row.equalToBf = unauthorized.length === 0 && rows.length > 0 ? 'EXCEPT_AUTHORIZED_CORRECTIONS' : false;
+        if (unauthorized.length > 0) problems.push(`${closure.id}: ${root} differs from BF (${unauthorized.slice(0, 3).join(', ')})`);
+      }
       const changed = git(repo, ['diff', '--name-only', '-z', tagCommit, commit, '--', root]).stdout.toString('utf8').split('\0').filter(Boolean).sort();
       row.postTagDifferences.push(...changed);
     }
     row.postTagDifferences.sort();
-    if (JSON.stringify(row.postTagDifferences) !== JSON.stringify(closure.postTagDifferences)) {
-      problems.push(`${closure.id}: differences from the release tag are ${JSON.stringify(row.postTagDifferences)}, expected ${JSON.stringify(closure.postTagDifferences)}`);
+    const expected = [...closure.postTagDifferences, ...(baseline.authorizedCorrections ?? []).map((item) => item.path).filter((file) => closure.roots.some((root) => file.startsWith(`${root}/`)))].sort();
+    if (JSON.stringify(row.postTagDifferences) !== JSON.stringify(expected)) {
+      problems.push(`${closure.id}: differences from the release tag are ${JSON.stringify(row.postTagDifferences)}, expected ${JSON.stringify(expected)}`);
     }
     observed.push(row);
   }

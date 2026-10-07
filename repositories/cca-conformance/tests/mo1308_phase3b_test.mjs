@@ -122,7 +122,10 @@ test('B01 released closures, vendored SDK copies, Action manifest and the readin
   assert.equal(action.observed.manifestRows, 42);
   const closures = A.auditClosures({ ...ctx, only: ['MO-1303-vscode', 'MO-1304-mcp', 'MO-1305-rest', 'MO-1306-ci'] });
   assert.deepEqual(closures.problems, []);
-  assert.deepEqual(closures.observed.closures.find((row) => row.id === 'MO-1303-vscode').postTagDifferences, ['repositories/memoryos-vscode/CHANGELOG.md', 'repositories/memoryos-vscode/README.md']);
+  assert.deepEqual(closures.observed.closures.find((row) => row.id === 'MO-1303-vscode').postTagDifferences, ['repositories/memoryos-vscode/CHANGELOG.md', 'repositories/memoryos-vscode/README.md', 'repositories/memoryos-vscode/tests/runtime_foundation.test.mjs', 'repositories/memoryos-vscode/tests/support/released-runtime-pins.mjs']);
+  assert.deepEqual(closures.observed.closures.find((row) => row.id === 'MO-1304-mcp').postTagDifferences, ['repositories/memoryos-mcp/tests/integrity.test.mjs']);
+  assert.equal(baseline.authorizedCorrections.length, 3, 'only the three A9.1 corrections are authorized');
+  assert.ok(baseline.authorizedCorrections.every((item) => item.amendment === 'A9.1'));
   const readiness = A.auditReadiness(ctx);
   assert.deepEqual(readiness.problems, []);
   assert.equal(readiness.observed.packageIdentity, 'sha256:0890ca4893ef76118eefbb2b5676ad084c60c70408d9e489f92aa33b74ba45b7');

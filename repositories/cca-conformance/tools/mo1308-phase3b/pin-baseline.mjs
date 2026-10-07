@@ -42,6 +42,14 @@ const object = (ref) => gitText(repo, ['rev-parse', '--verify', `refs/tags/${ref
 const changed = (from, to, root) => git(repo, ['diff', '--name-only', '-z', from, to, '--', root]).stdout.toString('utf8').split('\0').filter(Boolean).sort();
 const blobAt = (commit, file) => gitText(repo, ['rev-parse', '--verify', `${commit}:${file}`]);
 
+// Amendment A9.1 (owner-authorized, 2026-10-06): test corrections inside released closures, pinned by blob at the corrected candidate.
+export const CORRECTED_CANDIDATE = 'b0bf2d5618e76512867bcdf49f805b22a7e12774';
+const AUTHORIZED = [
+  { amendment: 'A9.1', path: 'repositories/memoryos-mcp/tests/integrity.test.mjs', status: 'M' },
+  { amendment: 'A9.1', path: 'repositories/memoryos-vscode/tests/runtime_foundation.test.mjs', status: 'M' },
+  { amendment: 'A9.1', path: 'repositories/memoryos-vscode/tests/support/released-runtime-pins.mjs', status: 'A' },
+];
+
 export function pin() {
   const tags = TAGS.map((name) => ({ name, tagObject: object(name), commit: peel(name) }));
   for (const [name, truth] of Object.entries(GROUND_TRUTH)) {
@@ -61,6 +69,7 @@ export function pin() {
     kind: 'MO1308Phase3BReleasedBaseline', version: '1.0.0', bf: BF,
     pinnedFrom: 'tags fetched from origin at authoring; independent ground truth exists for memoryos-1.3-mo1302 and memoryos-1.3-mo1307 only',
     groundTruth: GROUND_TRUTH, tags, closures, sdkCopies, archive,
+    authorizedCorrections: AUTHORIZED.map((item) => ({ ...item, blob: blobAt(CORRECTED_CANDIDATE, item.path) })),
   };
 }
 

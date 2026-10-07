@@ -77,3 +77,12 @@ Findings of the authoring, none of them a product defect:
   section 1.2); the other five are pinned from the tags as fetched and are trust-on-first-use.
 - B3 accepts two documentation differences of MO-1303 recorded in `baseline.json` (`CHANGELOG.md`, `README.md`), unchanged since BF.
 - The certifying run needs the pinned Node and native Windows; the cloud rehearsal is on Linux and Node v22.
+
+## Corrected candidate (Amendments A8.8 and A9.1)
+
+The audited commit is now the corrected head `b0bf2d56` (candidate identity `sha256:aa9816c3…`; only `history-store.js` changed in the
+production set). Amendment A9.1 authorizes three test corrections inside released closures (`memoryos-mcp/tests/integrity.test.mjs`,
+`memoryos-vscode/tests/runtime_foundation.test.mjs`, and the new `memoryos-vscode/tests/support/released-runtime-pins.mjs`), pinned in
+`baseline.json` as `authorizedCorrections` by path, status and blob at the corrected candidate. The released-bytes and closure
+audits accept exactly those three and nothing else; a further change to any of them, or any other change inside a released
+closure, is still a finding. Rehearsal: `REHEARSAL_COMPLETED`, 26 of 26 PASS.
