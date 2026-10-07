@@ -303,6 +303,10 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
   // Returns the new file's identity, or null when `skipExisting` is set and the name already exists.
   function writeFileExclusive(path, bytes, stage = "PUBLICATION", skipExisting = false) {
     return guarded(stage, () => {
+      // A link already at the name (planted: an exclusive create follows a dangling link on Windows and would create its target) is refused
+      // before any create. A swap after this check remains the H40-accepted, detected-after-the-fact case.
+      const planted = lstat(path);
+      if (planted !== null && planted.isSymbolicLink()) return boundary(stage);
       let fd;
       try {
         fd = fs.openSync(path, fs.constants.O_WRONLY | fs.constants.O_CREAT | fs.constants.O_EXCL | NO_FOLLOW, 0o644);

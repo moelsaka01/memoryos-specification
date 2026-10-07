@@ -559,3 +559,19 @@ test("W08c a junction swapper racing real appender processes: the race is exerci
     assert.doesNotThrow(() => JSON.parse(readFileSync(join(ledger, "entries", name), "utf8")), name);
   }
 });
+
+test("W09 a link planted at a staging name is detected before anything is created: typed FILESYSTEM_BOUNDARY, nothing is created at its target (3A-D4, Amendment A10)", WIN, (t) => {
+  for (const [kind, plant] of [["dangling file symlink", (target, at) => symlinkSync(target, at, "file")], ["dangling junction", (target, at) => junction(target, at)],
+    ["dangling directory symlink", (target, at) => symlinkSync(target, at, "dir")]]) {
+    for (const role of ["member", "entry"]) {
+      const { root, ledger, store } = newLedger(t);
+      const hex = recordHexOf(t, "planted");
+      const name = role === "member" ? `member-${hex}-${MEMBER}.0` : `entry-${String(0).padStart(20, "0")}.0`;
+      const target = join(root, `nowhere-${role}`);
+      plant(target, join(ledger, ".pending", name));
+      assert.throws(() => store.append(ledger, mip("planted")), code("FILESYSTEM_BOUNDARY"), `${kind} at a ${role} staging name`);
+      assert.equal(nodeFs.existsSync(target), false, `${kind}: something was created at the link target`);
+      assert.deepEqual(readdirSync(join(ledger, "entries")), [], "no entry was committed");
+    }
+  }
+});
