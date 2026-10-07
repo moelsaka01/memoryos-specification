@@ -280,19 +280,36 @@ export const purge = {
     conclude(h, problems.slice(0, 6), { hostileNames: hostile.length, results });
   },
   '3C-F4': (h, env) => {
+    // Amendment A9.2: an --output equal to or inside the ledger is refused with MO1308_FILESYSTEM_BOUNDARY (exit 4), before anything
+    // is created; the ledger is unchanged and still verifies. The six forms of the original finding, plus spelling and identity aliases.
     const directory = work(env);
     const ledger = buildDiskLedger(directory, 'p3c-f4', ['policy-0', 'readiness-ready']);
     const before = treeDigest(ledger);
     const problems = [];
     const results = {};
-    for (const [name, output] of [['inside-ledger', path.join(ledger, 'export')], ['inside-entries', path.join(ledger, 'entries', 'export')], ['inside-records', path.join(ledger, 'records', 'export')],
-      ['inside-pending', path.join(ledger, '.pending', 'export')], ['the-ledger-itself', ledger], ['dot-dot-into-ledger', path.join(ledger, 'entries', '..', 'export2')]]) {
+    const forms = [['inside-ledger', path.join(ledger, 'export')], ['inside-entries', path.join(ledger, 'entries', 'export')], ['inside-records', path.join(ledger, 'records', 'export')],
+      ['inside-pending', path.join(ledger, '.pending', 'export')], ['the-ledger-itself', ledger], ['dot-dot-into-ledger', path.join(ledger, 'entries', '..', 'export2')],
+      ['trailing-separator', `${path.join(ledger, 'export3')}${path.sep}`], ['dot-segment', path.join(ledger, '.', 'export4')]];
+    const alias = path.join(directory, 'alias-of-ledger');
+    try { fs.symlinkSync(ledger, alias, 'dir'); forms.push(['symlink-alias', path.join(alias, 'export5')]); } catch { results['symlink-alias'] = 'not plantable here'; }
+    for (const [name, output] of forms) {
       const run = cli(['history', 'export', '--ledger', ledger, '--output', output, '--json']);
       results[name] = `${run.status}:${run.code}`;
-      if (run.status === 0) problems.push(`${name}: the export was written inside the ledger`);
+      if (run.status !== 4 || run.code !== 'MO1308_FILESYSTEM_BOUNDARY' || run.exit !== 4) problems.push(`${name}: ${run.status} ${run.code}`);
       if (treeDigest(ledger) !== before) { problems.push(`${name}: the ledger changed`); break; }
     }
+    // a relative spelling that resolves into the ledger
+    const relative = cli(['history', 'export', '--ledger', ledger, '--output', 'entries/export6', '--json'], { cwd: ledger });
+    results['relative-from-ledger-cwd'] = `${relative.status}:${relative.code}`;
+    if (relative.code !== 'MO1308_FILESYSTEM_BOUNDARY') problems.push(`relative: ${relative.status} ${relative.code}`);
+    if (treeDigest(ledger) !== before) problems.push('the ledger changed');
     if (verify(ledger).status !== 0) problems.push('the ledger no longer verifies');
+    // outside the ledger nothing changes: a sibling whose name starts with the ledger name and a name that starts with two dots
+    for (const name of ['p3c-f4-sibling', '..dotted']) {
+      const run = cli(['history', 'export', '--ledger', ledger, '--output', path.join(directory, name), '--json']);
+      results[name] = `${run.status}`;
+      if (run.status !== 0) problems.push(`${name}: a legitimate location was refused (${run.code})`);
+    }
     conclude(h, problems, { results });
   },
   '3C-F5': (h, env) => {

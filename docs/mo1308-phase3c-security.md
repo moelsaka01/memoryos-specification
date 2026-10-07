@@ -23,7 +23,7 @@ sealed and nothing was committed under `evidence/`.
 
 ## 2. Rehearsal (Linux, cloud, non-certifying)
 
-3C now has 67 cases (K moved to 3D). Rehearsal: `REHEARSAL_PARTIAL`, 67 cases, 64 executed and PASS, 0 failed, 3 skipped, about 3 minutes. Declared host-only:
+3C now has 67 cases (K moved to 3D). Rehearsal: `REHEARSAL_PARTIAL`, 67 cases, 65 executed and PASS, 0 failed, 2 skipped (F3, G2), about 4 minutes, on the corrected candidate. Declared host-only:
 3C-F3 (links and junctions in an export directory need NTFS reparse points) and 3C-G2 (needs the MO-1307 native evaluate). A
 certifying generation refuses every skip (`SKIP_NOT_ALLOWED`).
 
@@ -35,9 +35,9 @@ validate its argument (recorded `ACCEPTED_WITH_DISCLOSURE`; no production change
 3C-G4 passes now that the CLI documents describe the `history` namespace (`history-guide.md`; `decisionConsistency` is
 informational and not an approval).
 
-**Rehearsal-only tolerance:** 3C-F4 is a real finding (`history export --output` accepts a path inside the ledger directory and
-corrupts the ledger). The fix is being made on `mo1308/phase2-corrections`; until the new candidate is bound the case is skipped
-visibly in a rehearsal and fails for real in a certifying generation.
+**3C-F4 (fixed in the candidate).** The corrected candidate `b0bf2d56` refuses an export location inside the ledger (Amendment A9.2). The case now expects `MO1308_FILESYSTEM_BOUNDARY`, exit 4, for the six original forms plus a trailing separator, a dot segment, a symlink alias and a relative spelling, with the ledger unchanged and still verifying, and expects a sibling and a `..`-prefixed name outside the ledger to succeed. The rehearsal tolerance is removed.
+
+**3C-D9 on the corrected candidate.** `memoryos-history-admission.js` and `mip-canonical.js` are byte-identical to B2 (only `history-store.js` changed), so the recorded review of their hashes stays valid; the case verifies the hashes.
 
 ## 3. Recorded qualification outcomes (rehearsal observations, not evidence)
 
