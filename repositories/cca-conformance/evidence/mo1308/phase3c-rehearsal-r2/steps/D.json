@@ -1,0 +1,258 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 70,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-D1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "implementations": [
+          "memoryos-history-admission.Sha256Stream",
+          "mip-canonical.sha256Hex"
+        ],
+        "officialCavpResponseFilesUsed": false,
+        "vectors": [
+          [
+            "empty",
+            "e3b0c44298fc1c14"
+          ],
+          [
+            "abc",
+            "ba7816bf8f01cfea"
+          ],
+          [
+            "448-bit",
+            "248d6a61d20638b8"
+          ],
+          [
+            "896-bit",
+            "cf5b16a778af8380"
+          ],
+          [
+            "one-million-a",
+            "cdc76e5c9914fb92"
+          ]
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 2169,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-D2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "checkpoints": 100,
+        "first": "34bcd104dc3bde7e",
+        "implementations": [
+          "memoryos-history-admission.Sha256Stream",
+          "mip-canonical.sha256Hex"
+        ],
+        "iterationsPerCheckpoint": 1000,
+        "last": "a0634e9f6a7086f6",
+        "officialCavpResponseFilesUsed": false
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 535,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-D3",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "boundaryLengths": 307,
+        "implementations": [
+          "memoryos-history-admission.Sha256Stream",
+          "mip-canonical.sha256Hex"
+        ],
+        "randomMessages": 1000,
+        "seed": "MO1308-P3-D3-RANDOM-1"
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 1,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-D4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "cuts": 8
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 2138,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-D5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "sizes": [
+          1048589,
+          8388609,
+          33554432
+        ],
+        "timingsMs": {
+          "memoryos-history-admission.Sha256Stream@1048589": 46,
+          "memoryos-history-admission.Sha256Stream@33554432": 1326,
+          "memoryos-history-admission.Sha256Stream@8388609": 392,
+          "mip-canonical.sha256Hex@1048589": 33,
+          "mip-canonical.sha256Hex@8388609": 270
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 55287,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-D6",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "rows": [
+          {
+            "accepted": true,
+            "count": 2,
+            "equal": true
+          },
+          {
+            "accepted": true,
+            "count": 5,
+            "equal": true
+          },
+          {
+            "accepted": true,
+            "count": 64,
+            "equal": true
+          },
+          {
+            "accepted": true,
+            "count": 500,
+            "equal": true
+          },
+          {
+            "accepted": true,
+            "count": 2500,
+            "equal": true
+          },
+          {
+            "accepted": true,
+            "count": 10000,
+            "equal": true
+          }
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 4956,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-D7",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "rows": [
+          {
+            "code": "MO1308_RECORD_INVALID",
+            "count": 2,
+            "legacyCompared": true
+          },
+          {
+            "code": "MO1308_RECORD_INVALID",
+            "count": 5,
+            "legacyCompared": true
+          },
+          {
+            "code": "MO1308_RECORD_INVALID",
+            "count": 64,
+            "legacyCompared": true
+          },
+          {
+            "code": "MO1308_RECORD_INVALID",
+            "count": 500,
+            "legacyCompared": true
+          },
+          {
+            "code": "MO1308_RECORD_INVALID",
+            "count": 2500,
+            "legacyCompared": true
+          },
+          {
+            "code": "MO1308_RECORD_INVALID",
+            "count": 10000,
+            "legacyCompared": false
+          },
+          {
+            "code": "MO1308_RECORD_INVALID",
+            "count": 10001
+          }
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 1508,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-D8",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "implementation": "mip-canonical.sha256Hex",
+        "messages": 1000,
+        "officialCavpResponseFilesUsed": false
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 2,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-D9",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "conclusion": "NO_BLOCKING_FINDINGS",
+        "findings": [
+          "D9-F1:NON_BLOCKING:ACCEPTED_WITH_DISCLOSURE",
+          "D9-F2:NOTE:REJECTED_WITH_REASON",
+          "D9-F3:NOTE:REJECTED_WITH_REASON",
+          "D9-F4:NOTE:REJECTED_WITH_REASON"
+        ],
+        "reviewer": "general-purpose sub-agent, spawned for 3C-D9; read-only; instructed not to read repositories/cca-conformance"
+      },
+      "outcome": null,
+      "result": "PASS"
+    }
+  ],
+  "elapsedMs": 66668,
+  "failureCode": null,
+  "finishedAt": "2026-10-07T16:59:09.669Z",
+  "generation": "phase3c-rehearsal-r2",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "PASS",
+  "segment": "main",
+  "startedAt": "2026-10-07T16:58:03.002Z",
+  "step": "D",
+  "stream": "3C",
+  "version": "1.0.0"
+}

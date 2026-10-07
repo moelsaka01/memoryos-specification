@@ -1,0 +1,126 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 0,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-H1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "authoredFiles": 20,
+        "canaryClasses": [
+          "DATE_TIME",
+          "ENVIRONMENT",
+          "EPOCH_MILLISECONDS",
+          "FILE_NAME",
+          "HOME",
+          "HOST",
+          "PATH_SEGMENT",
+          "SECRET",
+          "TMPDIR",
+          "URL",
+          "USER",
+          "WORKTREE"
+        ],
+        "failureExits": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "failureScenarios": 10,
+        "operations": 15,
+        "runtimeCanaries": 5
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 5,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-H2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "filesScanned": 20,
+        "findings": 0
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 2,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-H3",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "findings": 0,
+        "outputsScanned": 25
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 1,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-H4",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "authorityReferences": 1,
+        "freeFormPlaces": 2,
+        "longestAuthorityReference": 14,
+        "note": "subject values copy owner values; the authority reference is operator text (3C-E9)",
+        "subjectTypes": {
+          "subject:CHECKPOINT": 1,
+          "subject:CICD_RUN_ID": 1,
+          "subject:EVALUATION_IDENTITY_DIGEST": 2,
+          "subject:INVESTIGATION": 1,
+          "subject:MIP_PACKAGE_DIGEST": 1,
+          "subject:MIP_PACKAGE_IDENTIFIER": 1,
+          "subject:OUTCOME_DIGEST": 2,
+          "subject:PROOF_BINDING_DIGEST": 2,
+          "subject:READINESS_CANDIDATE_DIGEST": 2,
+          "subject:READINESS_DIGEST": 2,
+          "subject:REGRESSION_REPORT": 1,
+          "subject:TRANSITION_LOG_DIGEST": 1,
+          "subject:WORKSPACE": 3
+        },
+        "subjectValues": 20
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 3,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-H5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "filesScanned": 20,
+        "outputsScanned": 25,
+        "timestampLikeFindings": 0
+      },
+      "outcome": null,
+      "result": "PASS"
+    }
+  ],
+  "elapsedMs": 13,
+  "failureCode": null,
+  "finishedAt": "2026-10-07T17:05:46.043Z",
+  "generation": "phase3c-rehearsal-r2",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "PASS",
+  "segment": "main",
+  "startedAt": "2026-10-07T17:05:46.030Z",
+  "step": "H",
+  "stream": "3C",
+  "version": "1.0.0"
+}
