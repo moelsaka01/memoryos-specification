@@ -1890,3 +1890,17 @@ release).**
    `npm ci`.
 
 No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
+
+
+### A8.8 Candidate moved from B2 to the corrected head (append-only note, 2026-10-07, owner-authorized)
+
+The Phase 3 candidate moves from B2 `47595cc95204307dd43c4772c417b52f0ac8402b` to the binding commit `b0bf2d5618e76512867bcdf49f805b22a7e12774` of `mo1308/phase2-corrections` (Amendment A9, section 35; generation 2 PASS, generation 1 preserved `FAILED_PRESERVED`; `main` is at the same commit). The only production path that changed is `repositories/memoryos-cli/src/history-store.js` (the export-inside-ledger refusal, A9.2); the other 44 production blobs are identical, including `memoryos-history-admission.js` and `mip-canonical.js` (so the SHA-256 review of 3C-D9 stays valid). The new `productionTreeDigest` is `sha256:aa9816c37289f356784d2d3655e578c03052502a5698e8669624e299796c97a8` (it was `sha256:ccb1575f5d8e34743b38404898b2c720ee1a0046071fc5e57c824d4b4566562a`). The corpus manifest is unchanged (corpus digest `sha256:cfca5edb267fad074863f3ddd1945a3f8fe500a8e07d602722140d745b54a730`).
+
+The A3 gate input of cases 3A-A4 and 3D-D5 is the A3.2 generation 3 receipt, `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g3/receipt.json` (branch head `8297ce31`, evidence `2edd9d5d`, Amendment A3.4, section 36), and the gate reads the receipt's top-level member `verdict`, which must be `PASS`; `binding.json` has no verdict member and only hashes the receipt. The allowed path set gains the three test corrections that A9.1 authorizes (`runtime_foundation.test.mjs`, `released-runtime-pins.mjs`, `memoryos-mcp/tests/integrity.test.mjs`); all 262 paths changed between BF and the candidate are classified. Cases 3C-F4 and 3A-D5 now expect `MO1308_FILESYSTEM_BOUNDARY` (exit 4) for every export-inside-ledger form. The protocol, inventory and candidate identity were regenerated; these are the bound hashes from here.
+
+| File | SHA-256 |
+|---|---|
+| `docs/mo1308-phase3-protocol.md` | `b31bd1e0dcb76bbf89ffc48eef0e8232b47494ae539a7b9fc8fcb0851d8f6041` |
+| `repositories/cca-conformance/mo1308-phase3-inventory.json` | `7c5fa7ed9389971ece72278d29bed65387650ff36c0992c59d5b631d61fea2d7` |
+| `repositories/cca-conformance/mo1308-phase3-candidate-identity.json` | `ec85daa9245f7d581ff912cb08ec6a4b3e558cf408c1ac8de81bfeac5969bebe` |
+| `repositories/cca-conformance/mo1308-phase3-corpus-manifest.json` | `b055805d2db43f414261921ded61eb69d856ad5c821139254e9ba1b7ce386c9f` |
