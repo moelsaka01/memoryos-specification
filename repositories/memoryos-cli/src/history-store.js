@@ -349,11 +349,13 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
     });
   }
 
-  // A staging name that cannot collide with a leftover: role plus the first free counter.
+  // A staging name that cannot collide with a leftover or with another writer: role, the writer's process id, and the first free counter.
+  // Two concurrent writers never contend for one staging name (a name still delete-pending after another writer removed it gave EPERM, A6
+  // hypothesis 2). The process id is neither a clock nor randomness (R35) and no byte of history depends on it.
   function stageFile(root, role, bytes) {
     ensureDirectory(join(root, STORE_LAYOUT.pending));
     for (let attempt = 0; attempt < 1000; attempt += 1) {
-      const path = join(root, STORE_LAYOUT.pending, `${role}.${attempt}`);
+      const path = join(root, STORE_LAYOUT.pending, `${role}.${process.pid}.${attempt}`);
       const identity = writeFileExclusive(path, bytes, "PUBLICATION", true);
       if (identity !== null) return { path, identity };
       // The name existed before this attempt: try the next free one.

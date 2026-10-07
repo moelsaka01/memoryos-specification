@@ -499,7 +499,7 @@ test("W08 NTFS concurrency: ten real appender processes with concurrent readers;
   const verification = store.verify(ledger);
   assert.equal(verification.entryCount, succeeded.length);
   assert.deepEqual(readdirSync(join(ledger, "entries")), succeeded.map((_, index) => entryName(index)));
-  for (const name of readdirSync(join(ledger, ".pending"))) assert.match(name, /^(entry-[0-9]{20}|member-[0-9a-f]{64}-[a-z.-]+)\.[0-9]+$/u, "only staging names");
+  for (const name of readdirSync(join(ledger, ".pending"))) assert.match(name, /^(entry-[0-9]{20}|member-[0-9a-f]{64}-[a-z.-]+)(\.[0-9]+){1,2}$/u, "only staging names");
   for (const { counts, failures } of observed) {
     assert.ok(counts.length > 0, "the reader completed verifications");
     assert.deepEqual(counts, [...counts].sort((a, b) => a - b), "a reader never sees the ledger shrink");
@@ -566,7 +566,7 @@ test("W09 a link planted at a staging name is detected before anything is create
     for (const role of ["member", "entry"]) {
       const { root, ledger, store } = newLedger(t);
       const hex = recordHexOf(t, "planted");
-      const name = role === "member" ? `member-${hex}-${MEMBER}.0` : `entry-${String(0).padStart(20, "0")}.0`;
+      const name = role === "member" ? `member-${hex}-${MEMBER}.${process.pid}.0` : `entry-${String(0).padStart(20, "0")}.${process.pid}.0`; // the names this process will use first
       const target = join(root, `nowhere-${role}`);
       plant(target, join(ledger, ".pending", name));
       assert.throws(() => store.append(ledger, mip("planted")), code("FILESYSTEM_BOUNDARY"), `${kind} at a ${role} staging name`);
@@ -603,4 +603,15 @@ test("W10 a record directory swapped for a junction after the tombstone commit: 
   assert.deepEqual(store.verify(ledger).purgePending, [0], "the committed tombstone's purge is pending and a rerun finishes it");
   store.tombstone(ledger, { targetIndex: 0, reason: "PRIVACY_REQUEST", authorityReference: "G3" });
   assert.deepEqual(store.verify(ledger).purgePending, []);
+});
+
+test("W11 staging names carry the writer's process id, so concurrent writers never contend for one name (3A-F7, Amendment A10)", WIN, (t) => {
+  const { ledger, store } = newLedger(t);
+  const created = [];
+  const spying = createHistoryStore({ engine, fs: interceptingFs((name, args) => { if (name === "openSync" && String(args[0]).includes(".pending")) created.push(String(args[0]).split(/[\\/]/u).at(-1)); }) });
+  spying.append(ledger, mip("named"));
+  assert.ok(created.length >= 2, "a member and an entry were staged");
+  for (const name of created) assert.ok(name.endsWith(`.${process.pid}.0`), name);
+  assert.equal(store.verify(ledger).entryCount, 1);
+  assert.deepEqual(readdirSync(join(ledger, ".pending")), []);
 });
