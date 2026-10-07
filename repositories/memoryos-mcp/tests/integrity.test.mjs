@@ -9,8 +9,11 @@ async function sandbox(t) {
   await cp(resolve(PACKAGE_ROOT,'contracts'),resolve(root,'contracts'),{recursive:true});return root;
 }
 test('runtime closure is byte-preserved and pinned to exactly the authoritative source files',async()=>{
+  // WORKSPACE_CHECK_CORRECTION (MO-1308 Amendment A9): the vendored closure inside the released package is pinned to its
+  // release (tag memoryos-1.3-mo1304), not to the moving current source it was copied from.
   const manifest=await verifyRuntime();assert.equal(manifest.files.length,25);
-  for(const entry of manifest.files){const source=await readFile(resolve(PACKAGE_ROOT,'../..',entry.source));const copy=await readFile(resolve(PACKAGE_ROOT,'runtime',entry.path));assert.deepEqual(copy,source);assert.equal(sha256(copy),entry.sha256);assert.equal(copy.length,entry.byteLength);assert.ok(!/test|\.git|memoryos-cli/u.test(entry.path));}
+  const releasedManifest=await readFile(resolve(PACKAGE_ROOT,'runtime/runtime-closure-manifest.json'));assert.equal(releasedManifest.length,5566);assert.equal(sha256(releasedManifest),'0b910e64f40b562d62c9a053c98833b439f78abd195d9604386e74e0d20d961d');
+  for(const entry of manifest.files){const copy=await readFile(resolve(PACKAGE_ROOT,'runtime',entry.path));assert.equal(sha256(copy),entry.sha256);assert.equal(copy.length,entry.byteLength);assert.ok(!/test|\.git|memoryos-cli/u.test(entry.path));}
   const identity=await readFile(resolve(PACKAGE_ROOT,'contracts/policy-contract-identities-1.0.0.json'));
   assert.deepEqual(identity,await readFile(resolve(PACKAGE_ROOT,'../memoryos-vscode/contracts/policy-contract-identities-1.0.0.json')));assert.equal(identity.at(-1),10);
 });

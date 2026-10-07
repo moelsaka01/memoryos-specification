@@ -1,4 +1,4 @@
-// MO-1308 Phase 3 shared library: the candidate identity. The candidate is the production path set of B2, by git blob (owner
+// MO-1308 Phase 3 shared library: the candidate identity. The candidate is the production path set of the corrected head b0bf2d56 (B2 before Amendment A8.8), by git blob (owner
 // decision D1): the static import closure of the CLI entry and of the SDK facade, plus the three non-import files that decide
 // how that code runs (the two package.json "type" declarations and the CLI CMake file). Evidence-only descendants are allowed;
 // any change to a blob of this set, or to the closure itself, makes a different candidate.
@@ -10,7 +10,8 @@ import { digestOfJson } from './hashing.mjs';
 import { stableStringify } from './stable-json.mjs';
 
 export const CANDIDATE_KIND = 'MO1308Phase3CandidateIdentity';
-export const CANDIDATE_BASE = '47595cc95204307dd43c4772c417b52f0ac8402b';
+export const PREVIOUS_CANDIDATE_B2 = '47595cc95204307dd43c4772c417b52f0ac8402b';
+export const CANDIDATE_BASE = 'b0bf2d5618e76512867bcdf49f805b22a7e12774';
 export const CANDIDATE_RULES = Object.freeze({
   roots: Object.freeze(['repositories/memoryos-cli/bin/memoryos.js', 'repositories/cca-studio/web/js/memoryos-sdk.js']),
   extras: Object.freeze([

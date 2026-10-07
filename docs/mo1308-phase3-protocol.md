@@ -34,7 +34,7 @@ exists.
 
 | ID | Decision (owner, Phase 3 planning) | Where it lands |
 |---|---|---|
-| D1 | The candidate is B2 `47595cc9`, its production path tree by git blob; evidence-only descendants are allowed. | Section 3 |
+| D1 | The candidate is the corrected head `b0bf2d56` (B2 `47595cc9` before A8.8), its production path tree by git blob; evidence-only descendants are allowed. | Section 3 |
 | D2 | This protocol becomes Freeze Amendment A8, approved by the owner after review. | Status line; section 5.2 |
 | D3 | At most 90 minutes per task, at most 3 hours extended; the J-C ceiling run is its own step, at most 3 hours, with a hard stop. | Section 7 |
 | D4 | Non-certifying host rehearsals are allowed, preserved, and never promotable. | Section 5.4 |
@@ -64,7 +64,7 @@ The owner decided the nine items of the Step 1 report as follows. Each is applie
 
 ## 3. Candidate, inputs and the precondition
 
-**Candidate (D1).** B2 is commit `47595cc95204307dd43c4772c417b52f0ac8402b`. The candidate is the production path set of that
+**Candidate (D1, moved by A8.8).** The candidate is commit `b0bf2d5618e76512867bcdf49f805b22a7e12774` (the binding B of `mo1308/phase2-corrections`, Amendment A9); it was B2 `47595cc95204307dd43c4772c417b52f0ac8402b` until A8.8. The only production path that changed is `repositories/memoryos-cli/src/history-store.js` (the export-inside-ledger refusal). The candidate is the production path set of that
 commit by blob: the static import closure of `repositories/memoryos-cli/bin/memoryos.js` and of
 `repositories/cca-studio/web/js/memoryos-sdk.js` (42 files), plus `repositories/cca-studio/package.json`,
 `repositories/memoryos-cli/package.json` and `repositories/memoryos-cli/CMakeLists.txt`, which decide how that code runs.
@@ -85,8 +85,8 @@ review (section 6).
 **Inputs.** Each stream is sealed over: this protocol and its approval status, the inventory, the candidate identity, the
 shared corpus (3A and 3C), the stream tools, the recorded harness review, and for 3A and 3D the bound A3 precondition receipt.
 
-**The A3 precondition (Amendments A3.1, A3.2 and A3.3).** Amendment A3 of the Freeze (section 26) makes a full CTest run a
-precondition of Phase 3. Three sub-amendments, merged into this branch from `mo1308/phase3-precondition` and cited by their
+**The A3 precondition (Amendments A3.1 to A3.4).** Amendment A3 of the Freeze (section 26) makes a full CTest run a
+precondition of Phase 3. Four sub-amendments, merged into this branch from `mo1308/phase3-precondition` and cited by their
 Freeze sections, refine it:
 
 - **A3.1 (section 31)** waives the `cca_core_tests` target only, because MSVC 19.44.35229 miscompiles its
@@ -94,10 +94,13 @@ Freeze sections, refine it:
   run under it is preserved as `FAILED_PRESERVED` (evidence commit `59dfee40`, binding `82bb165e`): 125 of 316 executed tests
   failed, none of them MO-1308 code, and `cca.workspace.verify` passed.
 - **A3.2 (section 32)** replaces A3's absolute gate with a **differential no-regression gate**: CTest is run on BF
-  `1dd1e8c8` and on B2 `47595cc9` under an identical toolchain; the verdict is PASS only if `cca.workspace.verify` passes on B2,
+  `1dd1e8c8` and on the candidate under an identical toolchain; the verdict is PASS only if `cca.workspace.verify` passes on B2,
   nothing that passes on BF fails or is not run on B2, every B2-only test passes, and every shared failure is listed
   `PRE_EXISTING` with a classification. Its evidence directory is
-  `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g2/`, and its `receipt.json` carries the verdict.
+  `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g3/` (generation 3, evidence `2edd9d5d`, branch head `8297ce31`),
+  and its `receipt.json` carries the verdict as its top-level member `verdict`. The gate reads `receipt.json`; `binding.json` has no
+  verdict member and hashes the receipt.
+- **A3.4 (section 36)** repeats the differential as generation 3 on the corrected candidate; generation 2 stays preserved `FAILED_PRESERVED`.
 - **A3.3 (section 33)** records that Smart App Control blocks a build-dependent set of freshly built unsigned executables on the
   reference host: every CTest test whose executable is blocked in either tree is excluded in BOTH runs as
   `ENVIRONMENT_BLOCKED_SAC`, from a frozen list (`setup/exclusions.json`, committed before the recorded runs). A blocked executable
@@ -344,7 +347,7 @@ Segment `ceiling`: J-C ceiling run (its own segment, own clock and hard stop; ru
 | 3A-A1 | Host identity: Windows 11 x64 build, NTFS volume type and serial, free space recorded | - | assert | - |
 | 3A-A2 | Node.js v24.21.0 win-x64 executable SHA-256 equals ba4e6d11...6c32 | - | assert | - |
 | 3A-A3 | Production path tree of the worktree equals the sealed candidate identity blob by blob; worktree clean | R32 | assert | - |
-| 3A-A4 | The A3.2 receipt (differential CTest gate, BF 1dd1e8c8 versus B2 47595cc9) is bound with verdict PASS for the same candidate | R31 | assert | - |
+| 3A-A4 | The A3.2 generation 3 receipt (differential CTest gate, BF 1dd1e8c8 versus the corrected candidate b0bf2d56) is bound; its receipt.json top-level verdict is PASS for the same candidate | R31 | assert | - |
 | 3A-A5 | Sealed tool inventory matches; harness review bound; no rehearsal evidence is referenced as an input | - | assert | - |
 | 3A-A6 | Environment capture: AV and Defender state, LongPathsEnabled, 8.3 name setting, unprivileged symlink creation, CPU and disk | - | record | - |
 | 3A-A7 | Idle host-load sample before the run (recorded, never gated) | - | record, not mandatory | - |
@@ -753,7 +756,7 @@ Segment `main`: Validator run. Budget 90 min, extended 180 min.
 | 3D-D2 | Accepted 3A, 3B and 3C receipts, every preserved failed generation, rehearsal and disposition are present and bound | - | assert | - |
 | 3D-D3 | Requirement matrix: every R01-R37 maps to at least one case with PASS in an accepted generation | - | assert | - |
 | 3D-D4 | Retained full regression: MO-1308 suites, CLI, studio, MO-1307 (639) and examples | R03, R31 | assert | - |
-| 3D-D5 | The A3.2 receipt (differential CTest gate) is bound with verdict PASS, and cca.workspace.verify passes on the candidate | R31 | assert | - |
+| 3D-D5 | The A3.2 generation 3 receipt (differential CTest gate) is bound: receipt.json top-level verdict is PASS, and cca.workspace.verify passes on the candidate | R31 | assert | - |
 | 3D-D6 | Qualification register Q01-Q15 is complete with a disposition for each | - | assert | - |
 | 3D-D7 | I3 plus a binding-only BF with no self-reference; no tag, push or approval in this task | - | assert | - |
 
@@ -876,7 +879,7 @@ Evidence layout of a generation: `seal.json`; `segments/<segment>-start.json`, `
 | Path (under `repositories/cca-conformance/`) | Purpose |
 |---|---|
 | `mo1308-phase3-inventory.json` | the case inventory (generated from `tools/mo1308-phase3/lib/inventory-source.mjs`) |
-| `mo1308-phase3-candidate-identity.json` | the candidate identity at B2 |
+| `mo1308-phase3-candidate-identity.json` | the candidate identity at the corrected head `b0bf2d56` |
 | `mo1308-phase3-corpus-manifest.json` | the sealed corpus manifest |
 | `tools/mo1308-phase3/candidate-identity.mjs`, `lib/candidate.mjs`, `lib/closure.mjs` | compute and verify the identity; static import closure |
 | `tools/mo1308-phase3/corpus.mjs` | generate and verify the corpus |
@@ -910,8 +913,8 @@ integration boundaries; tags follow human review only.
 ## 15. Allowed path set (3B case A3)
 
 Every path changed between the MO-1307 release BF `1dd1e8c82fe0ed5a32a894744392f2c279f89d4c` and the candidate must fall in
-one of these classes. For B2 itself all 186 changed paths are classified; a path in none is a finding. The set follows Freeze
-sections 5.1, 16 and 18.1 and Amendments A1 to A7.
+one of these classes. For the candidate itself all 262 changed paths are classified (186 for B2); a path in none is a finding. The set follows Freeze
+sections 5.1, 16 and 18.1 and Amendments A1 to A7 and A9.1.
 
 <!-- GENERATED:BEGIN allowed -->
 | Class | Allowed paths |
@@ -919,7 +922,7 @@ sections 5.1, 16 and 18.1 and Amendments A1 to A7.
 | DOCUMENTS | `ARCHITECTURE.md`, `ROADMAP.md`, `README.md`, `KNOWN_ISSUES.md`, `RELEASE_NOTES.md`, `CHANGELOG.md`, `.gitattributes`, `repositories/memoryos-cli/README.md`, `repositories/memoryos-cli/docs/**`, `docs/ambiguity-register.md`, `docs/mo1308-*.md`, `docs/mo1302-vendored-runtime-check-correction.md`, `docs/mo1307-v2-stale-test-correction.md` |
 | APPEND_ONLY_EVIDENCE | `repositories/cca-conformance/evidence/mo1308/**`, `repositories/cca-conformance/evidence/mo1307/v2-stale-test-correction/**` |
 | CONFORMANCE_TOOLS_AND_TESTS | `repositories/cca-conformance/tools/mo1308-*/**`, `repositories/cca-conformance/tests/mo1308_*`, `repositories/cca-conformance/tests/support/mo1308-*`, `repositories/cca-conformance/mo1308-phase3-*.json` |
-| AUTHORIZED_TEST_CORRECTIONS | `repositories/cca-conformance/tests/compatibility_conformance_test.mjs`, `repositories/cca-conformance/tests/mo1301_integration_conformance_test.mjs`, `repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs`, `repositories/cca-conformance/tests/mo1307_phase2c_native_runtime_test.mjs`, `repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs`, `repositories/cca-conformance/tests/normative_vectors_conformance_test.mjs` |
+| AUTHORIZED_TEST_CORRECTIONS | `repositories/cca-conformance/tests/compatibility_conformance_test.mjs`, `repositories/cca-conformance/tests/mo1301_integration_conformance_test.mjs`, `repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs`, `repositories/cca-conformance/tests/mo1307_phase2c_native_runtime_test.mjs`, `repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs`, `repositories/cca-conformance/tests/normative_vectors_conformance_test.mjs`, `repositories/memoryos-vscode/tests/runtime_foundation.test.mjs`, `repositories/memoryos-vscode/tests/support/released-runtime-pins.mjs`, `repositories/memoryos-mcp/tests/integrity.test.mjs` |
 | HISTORY_AUTHORITY_AND_SDK | `repositories/cca-studio/web/js/memoryos-history-*.js`, `repositories/cca-studio/web/js/memoryos-sdk.js`, `repositories/cca-studio/package.json`, `repositories/cca-studio/scripts/generate-memoryos-history-fixtures.mjs`, `repositories/cca-studio/tests/memoryos_*`, `repositories/cca-studio/tests/fixtures/memoryos-history/**` |
 | CLI_HISTORY_NAMESPACE | `repositories/memoryos-cli/CMakeLists.txt`, `repositories/memoryos-cli/package.json`, `repositories/memoryos-cli/src/*.js`, `repositories/memoryos-cli/tests/**` |
 | WORKSPACE_CHECK_CORRECTION | `tools/verify_workspace.py` |
