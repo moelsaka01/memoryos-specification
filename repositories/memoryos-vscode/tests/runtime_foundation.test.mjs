@@ -24,6 +24,7 @@ import {
   CLOSED_SOURCE_ENTRY,
   createClosedSourceResolver,
 } from "../scripts/esbuild-closed-source.mjs";
+import * as releasedPinTable from "./support/released-runtime-pins.mjs";
 
 const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const WORKSPACE_ROOT = resolve(PACKAGE_ROOT, "..", "..");
@@ -202,15 +203,21 @@ test("runtime closure manifest and identities reproduce the frozen independent d
   assert.equal(contractText, `${canonicalJson(JSON.parse(contractText))}\n`);
   assert.equal(contractText.includes("\r"), false);
   assert.notEqual(api.RUNTIME_CLOSURE_DIGEST, "sha256:2e116b6518934c797e9c562670f2292462be11ee982c778b43f1aaf45a8986f9");
+  // WORKSPACE_CHECK_CORRECTION (MO-1308 Amendment A9): a vendored file inside the released package is pinned to
+  // its bytes at the releasing tag (memoryos-1.3-mo1303) and to the released manifest, not to the moving current
+  // source. The same function rejects any changed, added or removed file or manifest byte.
+  const releasedPins = new Map(releasedPinTable.RELEASED_VENDOR_PINS.map(([path, byteLength, digest]) => [path, { byteLength, digest }]));
+  assert.deepEqual([...releasedPins.keys()].sort(), manifest.files.map(({ path }) => path));
+  assert.equal(manifestBytes.byteLength, releasedPinTable.RELEASED_MANIFEST.byteLength);
+  assert.equal(sha256(manifestBytes), releasedPinTable.RELEASED_MANIFEST.sha256);
   for (const member of manifest.files) {
     assert.ok(member.path.startsWith("vendor/"));
-    const sourcePath = member.path.slice("vendor/".length).split("/");
-    assert.deepEqual(
-      await readFile(join(RUNTIME_ROOT, ...member.path.split("/"))),
-      await readFile(join(WORKSPACE_ROOT, ...sourcePath)),
-      `${member.path} is not byte-preserved from its authoritative source`,
-    );
+    const bytes = await readFile(join(RUNTIME_ROOT, ...member.path.split("/")));
+    const pin = releasedPins.get(member.path);
+    assert.deepEqual({ byteLength: bytes.byteLength, digest: sha256(bytes) }, pin, `${member.path} differs from its bytes at the release tag`);
+    assert.deepEqual(pin, { byteLength: member.byteLength, digest: member.sha256 }, `${member.path} differs from the released manifest`);
   }
+  assert.deepEqual(releasedPinTable.verifyReleasedRuntime(RUNTIME_ROOT), []);
   for (const source of [
     'void import("./dynamic.js")',
     'import /* comment */ ("./dynamic.js")',

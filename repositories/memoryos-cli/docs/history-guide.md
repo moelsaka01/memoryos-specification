@@ -30,7 +30,7 @@ memoryos history verify-export --export DIR [--json]
 | `tombstone` | `--ledger`, `--target`, `--reason`, `--authority-reference` | Appends a tombstone entry for a retained record entry and purges that record's member bytes. The entry itself, and the chain, stay. |
 | `verify` | `--ledger` | Recomputes every identity and the chain, and reports counts, the head digest and any anomalies. |
 | `query` | `--ledger`, `--retention`, `--from`, `--limit` | Lists entries in index order. Optional `--kind` (repeatable, once per kind) and `--subject-type` with `--subject`. `--limit` is 1 to 1000. |
-| `export` | `--ledger`, `--output` | Writes a self-contained export to a **new** directory that is outside the ledger directory. |
+| `export` | `--ledger`, `--output` | Writes a self-contained export to a **new** directory that is not inside the ledger directory. An `--output` equal to or inside the ledger root (`entries/`, `records/`, `.pending/` included, by any relative, `..`, alias or differently spelled path that resolves there) is refused before anything is created, with `MO1308_FILESYSTEM_BOUNDARY` (exit 4); the ledger is unchanged. |
 | `verify-export` | `--export` | Verifies an export directory without the ledger. |
 
 Record kinds and their input flags:
@@ -61,7 +61,7 @@ Successful `--json` results (inside the usual `command`, `ok`, `result`, `schema
 | `query` | `kind`, `version`, `ledgerIdentifier`, `workspaceIdentifier`, `entryCount`, `headDigest`, `query`, `entries[]` and `nextIndex` |
 | `export` | `ledgerIdentifier`, `entryCount`, `headDigest` |
 
-`verify` lists at most the first 1,000 `purgePending` and `unreferencedRecords` items, sorted; `pendingArtifacts` is an exact count.
+`verify` lists at most the first 1,000 `purgePending` and `unreferencedRecords` items, sorted, and has no total for `unreferencedRecords`: a ledger with more than 1,000 of them (each is left by an interrupted append) reports the first 1,000 only (recorded limit, Amendment A9.4). `pendingArtifacts` is an exact count of staging artifacts, beyond 1,000 too.
 The CLI JSON output is bounded to 4,194,304 bytes; a query page that would exceed it fails with `MO1308_RESOURCE_LIMIT`, so request
 a smaller `--limit`.
 
@@ -88,8 +88,10 @@ never echoes input.
 | `1` | Invalid arguments | `MO1308_USAGE` |
 | `2` | A record, query or tombstone was refused | `MO1308_RECORD_INVALID`, `MO1308_RECORD_DUPLICATE`, `MO1308_RECORD_PURGED`, `MO1308_WORKSPACE_MISMATCH`, `MO1308_DECISION_UNBOUND`, `MO1308_TOMBSTONE_INVALID`, `MO1308_QUERY_INVALID`, `MO1308_RESOURCE_LIMIT` |
 | `3` | Verification failed | `MO1308_LEDGER_CORRUPT`, `MO1308_RECORD_BYTES_MISMATCH`, `MO1308_EXPORT_CORRUPT`, `MO1308_VERSION_UNSUPPORTED` |
-| `4` | Location or filesystem failure | `MO1308_LEDGER_EXISTS`, `MO1308_LEDGER_NOT_FOUND`, `MO1308_LEDGER_CONFLICT`, `MO1308_FILESYSTEM_BOUNDARY`, `MO1308_IO` |
+| `4` | Location or filesystem failure (including an export location inside the ledger) | `MO1308_LEDGER_EXISTS`, `MO1308_LEDGER_NOT_FOUND`, `MO1308_LEDGER_CONFLICT`, `MO1308_FILESYSTEM_BOUNDARY`, `MO1308_IO` |
 | `5` | Internal failure | `MO1308_INTERNAL` |
+
+Through the CLI a malformed query flag (`--limit` of 0 or above 1000, a non-decimal `--from`, an unknown `--retention` or `--kind`, a repeated `--kind`) is a grammar error: `MO1308_USAGE`, exit 1. `MO1308_QUERY_INVALID` (exit 2) is produced by the SDK query validator for a malformed query object, not by the CLI, because the grammar rejects first (Amendment A9.3).
 
 A refused command leaves the ledger and every other path unchanged. `MO1308_LEDGER_CONFLICT` means another writer committed the
 entry first; run the command again.
@@ -107,10 +109,10 @@ total, a readiness result 4,194,304 bytes, a decision claim 8,192 bytes).
   multi-user store, and it is not a cloud service.
 - Integrity only: entries are hash-chained, but they are not signed, not authenticated and not encrypted. Access control is the
   operator's filesystem responsibility. Verification detects a changed or reordered entry; the release disclosures state what it
-  cannot detect and how operators should record export digests outside the ledger.
+  cannot detect and how operators should keep a record of each export digest.
 - A checkpoint record kept in a ledger is not a restore source: `restore` and `session` never read the ledger.
 - A directory swap during an operation is detected after the fact and is never prevented (single local user only).
-- `export --output` must name a new location outside the ledger directory.
+- `export --output` must name a new location that is not inside the ledger directory; such a path is refused (`MO1308_FILESYSTEM_BOUNDARY`).
 - Windows 11 x64 with the pinned Node is the only certified platform. UNC, network, synchronized and cloud-placeholder locations
   are observed, not claimed.
 - The history commands start no process, open no socket and read no environment variable.

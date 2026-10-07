@@ -1733,3 +1733,174 @@ Cases 3C-K1 to K3 (step K of 3C) moved to 3D as step E, cases 3D-E1 to E3, becau
 | `repositories/cca-conformance/mo1308-phase3-inventory.json` | `6c59151012db60fa5ecbfa68c99673a617be60450a8763c93f68c3621ec5bd98` |
 | `repositories/cca-conformance/mo1308-phase3-candidate-identity.json` | `92b33904a1ff5a868d5b13b6f1354efbf718778d0b80594ce38b7e67077a7244` |
 | `repositories/cca-conformance/mo1308-phase3-corpus-manifest.json` | `b055805d2db43f414261921ded61eb69d856ad5c821139254e9ba1b7ce386c9f` |
+
+## 35. Amendment A9 — released-bundle checks, and export never writes into its ledger (2026-10-06, owner-authorized)
+
+This amendment is append-only. The frozen text above and Amendments A1 to A7 are unchanged. Numbering
+assumption: Amendments A3.1, A3.2 and A3.3 (sections 31 to 33 on `mo1308/phase3-precondition`) and A8 (section
+33 on `mo1308/phase3-shared`, which will be renumbered to 34 when both are merged) live on other branches and
+are merged later, so this amendment takes section 35 and refers to its parts as A9.1 to A9.5 so that no
+reference depends on a section number. Nothing here depends on the text of those amendments.
+
+It records the owner's decisions on the findings of the A3.2 differential run (evidence `4196acf5` on
+`mo1308/phase3-precondition`) and of the Phase 3C rehearsal (`mo1308/phase3c-security`, case 3C-F4), and the
+outcome of two observations from Phase 3A authoring.
+
+### A9.1 Correction principle: a vendored copy inside a released package is pinned to its release (A1 extended)
+
+**Finding.** The A3.2 differential found `memoryos.vscode.runtime` (`runtime_foundation.test.mjs`, the test
+`runtime closure manifest and identities reproduce the frozen independent digests`) failing on B2 only: the
+vendored `repositories/memoryos-vscode/runtime/vendor/repositories/cca-studio/package.json` no longer equalled the
+current `repositories/cca-studio/package.json` after Stream 2D. The test compared every vendored file with the
+current source it was copied from. This is a check defect of the same class as Amendment A1.
+
+**Decision.** A1 is extended to every released bundle. Vendored copies inside a released package stay
+byte-identical to their released bytes (R32); they are **not** refreshed. A check of such a copy is pinned to the
+bytes at the releasing tag and, where the release has a manifest, to that released manifest. It still fails on
+any changed byte and on any added or removed file. It never compares a released copy with moving current source.
+
+**Applied.**
+
+| Bundle | Releasing tag (object, peeled commit) | Check | Before | After |
+|---|---|---|---|---|
+| `memoryos-vscode` runtime (37 vendored files) | `memoryos-1.3-mo1303` (`f3891cba…`, peels to `49aa80fa76bffc03e36335be8ab805bb5dc38f9c`, the commit the MO-1304 and MO-1305 tag tables name) | `memoryos.vscode.runtime`, `runtime_foundation.test.mjs` | each vendored file `deepEqual` to the current source file | each file equals its pin (length, SHA-256) and its entry in the released manifest; the manifest equals the released bytes; `verifyReleasedRuntime` finds no changed, added or removed file |
+| `memoryos-mcp` runtime (25 files) | `memoryos-1.3-mo1304` (`ce7b001d…`) | `memoryos.mcp.foundation`, `integrity.test.mjs` | `assert.deepEqual(copy, source)` against the manifest's `source` path (current source) | the manifest equals the released bytes (5,566 bytes, `0b910e64…`); each copy equals its manifest entry; `verifyRuntime` (unchanged) still rejects any change |
+
+The vscode pins are constants in `repositories/memoryos-vscode/tests/support/released-runtime-pins.mjs` (no git
+access at verification time, as in A1). The new test
+`repositories/cca-conformance/tests/mo1308_phase2_corrections_test.mjs` proves that each tag exists, is annotated
+and peels to the recorded commit (PC01); that every pin and the manifest equal the exact blobs at the tag and
+cover exactly the released directory (PC02); that every released bundle directory, including the MCP, REST, CI
+and MO-1302 Action ones, is unchanged since its releasing tag (PC03); that the corrected checks pass while current
+source differs from the vendored copy (PC04); and that they still fail on a one-byte change, an appended byte, an
+emptied file, a manifest change, a consistently re-hashed manifest, an added file, a removed file and a link
+(PC05, PC06, on temporary copies only). No assertion is weakened: an equality with a moving file is replaced by an
+equality with fixed released bytes.
+
+**Inventory.** The whole repository was searched for every test or check that compares a released vendored or
+bundled copy with current source. Found and corrected: the two rows above. Found and already correct (pinned to
+the release, or to the bundle's own manifest, or not a comparison with current source):
+
+- MO-1302 Action, `tools/verify_workspace.py` `validate_mo1302_distribution` (A1);
+  `mo1308_phase1_entry_obligations_test.mjs` EO3 (compares the released SDK copies in the Action, `memoryos-ci`,
+  `memoryos-mcp`, `memoryos-rest` and `memoryos-vscode` with the blob at `memoryos-1.3-mo1302`);
+  `mo1308_phase1_workspace_check_correction_test.mjs` WC01 to WC11.
+- `memoryos-ci` and `memoryos-rest`: `src/integrity.mjs` verifies the runtime against the bundle's own closure
+  manifest; no test or script reads current source (REST `tests/*.test.mjs`, CI `scripts/verify-*.mjs`).
+- `memoryos-mcp` `src/integrity.mjs` `verifyRuntime`: against the manifest pinned by `contracts/runtime-pin.json`.
+- `mo1303_phase1_conformance_test.mjs`: the vscode runtime against its manifest and receipt.
+- `mo1308_phase2d_integration_test.mjs` D01: asserts that the released SDK copies are identical, carry version
+  1.1.0 and contain no MO-1308 code; the only comparison with current source is `notEqual`.
+- `mo1304_*`, `mo1305_*`, `mo1306_*`, `mo1307_*` conformance tests and tools: a pattern search found none that
+  compares a bundle with current `cca-studio` or `memoryos-cli` source. Those that fail in the cloud container fail
+  for environment reasons (commits and external specification checkouts absent, Node v24.21.0 pinned, Windows
+  paths), not for this one; they are listed in the Windows and pinned-host items of the correction report.
+- `tools/build-pinned-manifest.mjs` and the pinned requirements manifests: describe the v1.2.1 Reference
+  Implementation revision (Freeze section 5.1), not a bundled copy.
+
+Generators, not checks, and therefore not changed: `memoryos-vscode/scripts/build-runtime-distribution.mjs`
+(`npm run build:runtime`, also run by `npm run build` and the `memoryos_vscode_build` target),
+`memoryos-mcp/scripts/assemble.mjs` and `cca-conformance/tools/build-mo1302-action-distribution.mjs` copy the
+current source into the bundle. They are release-time tools wired into no test; running any of them after the
+release would rewrite released bytes (R32) and must not be done for a released bundle.
+
+### A9.2 Export refuses a location inside its own ledger (F4): public behaviour change, owner-approved
+
+**Finding (3C-F4).** `history export --output` accepted a path equal to or inside the ledger directory (the
+root, `entries/`, `records/`, `.pending/`, or a `..` spelling that resolves there). The export was written, the
+command exited 0, and the ledger then failed `verify` with `MO1308_LEDGER_CORRUPT` (inside `.pending/` it still
+verified, with an anomaly). Section 12 and section 13.3 required only that `--output` not exist.
+
+**Decision.** Fix it. `export` refuses, with the existing code `MO1308_FILESYSTEM_BOUNDARY` (section 14.1: "Path,
+link, reparse-point or identity check failed", exit 4, stage `PUBLICATION`), any `--output` that is equal to or
+inside the ledger root, `.pending/` included, before anything is read or created. The check is made on the
+resolved path (so `entries/../x` and relative spellings are covered) and on file identity: the output or any
+ancestor of it that is the ledger root by `(dev, ino)` is refused, which also covers another drive-letter, UNC or
+case spelling of the same directory on a Windows host. Links and junctions on the output path are refused by the
+existing component check, as before. Nothing is created and the ledger is unchanged. No new code, exit number,
+shape, limit or protocol step. Outside the ledger nothing changes, including a sibling directory whose name
+starts with the ledger name and a name that starts with two dots.
+
+Before: `history init` then `history export --ledger L --output L/entries/x` exits 0, and `history verify` then
+reports `MO1308_LEDGER_CORRUPT` (exit 3). After: exit 4, `MO1308_FILESYSTEM_BOUNDARY`, `verify` unchanged.
+
+This is the only production change of this correction (`repositories/memoryos-cli/src/history-store.js`).
+Tests: `history-store.test.mjs` T23 (every F4 form of the 3C case: inside the ledger, `entries/`, `records/`,
+`.pending/`, the ledger itself, `entries/../x`, plus a trailing separator, dot segments, a retained record
+directory, the three directories themselves, a missing directory below the ledger, a relative path, links, an
+identity alias, and the successful sibling and dot-prefixed names, through both the store and the command layer);
+`history-store-windows.test.mjs` W07b (drive-letter, UNC and differently cased spellings, Windows host only).
+
+### A9.3 Observation: the CLI grammar shadows `MO1308_QUERY_INVALID` with `MO1308_USAGE` (Phase 3A)
+
+Outcome: **the Freeze allows it; nothing changes.** Section 14.1 defines `USAGE` as an invalid command, flag or
+argument, and Amendment A2 item 1 makes a malformed query flag a grammar error (`MO1308_USAGE`, exit 1, the fixed
+message). A `--limit` of 0 or above 1,000, a non-decimal `--from`, an unknown `--retention` or `--kind`, or a
+repeated `--kind` is therefore a usage error at the CLI. `MO1308_QUERY_INVALID` (exit 2) is still produced by the
+SDK query validator for every malformed `MemoryOSHistoryQuery`, which is where section 11.2 places the rule
+(`limit: 1..1000`); the SDK is not changed. Recorded as a known property: through the CLI the malformed-query cases of Phase 3A end in
+`USAGE`, because the grammar rejects first.
+
+### A9.4 Observation: `verify` lists the first 1,000 `unreferencedRecords` with no total (Phase 3A)
+
+Outcome: **the Freeze allows it; nothing changes.** Section 14.2 fixes "Staging and unreferenced artifacts
+reported: first 1,000, sorted; count exact", and section 11.1 fixes the `MemoryOSHistoryVerification` shape.
+`pendingArtifacts` is an exact integer count of staging artifacts, beyond 1,000 too. The shape has no field that
+carries a total of unreferenced records, and adding one would change a frozen shape, which is not a correction.
+Recorded as a known limit: a ledger with more than 1,000 unreferenced records reports the first 1,000 digests,
+sorted, and the exact total is available only to a reader that lists the records directory. Reaching it needs more
+than 1,000 interrupted appends (each leaves one unreferenced record, section 9.2). Any change to the shape returns
+to owner review.
+
+### A9.5 Unchanged
+
+No shape, layout, limit, identity, error code, exit number or protocol step of the frozen text changes. No released
+byte, tag or released manifest changes. No evidence or binding commit is made by this correction.
+
+## 36. Amendment A3.4 — A3.2 generation 3 and project follow-ups (2026-10-07, owner-authorized)
+
+This amendment is append-only. The frozen text above and Amendments A1 to A7, A3.1, A3.2 and A3.3 are
+unchanged. It is a sub-amendment of Amendment A3 (section 26). The section number 36 is chosen so that it collides
+with neither section 34 (A8, once merged) nor section 35 (A9, on `mo1308/phase2-corrections`); references to it use
+"A3.4". It does not use or pre-empt A8 or A9.
+
+**Generation 3 of the A3.2 differential.** The generation 2 run (`phase3-precondition-g2`, `FAILED_PRESERVED`) stays
+untouched. Generation 3 repeats the A3.2 rule under A3.1 and A3.3 with the same toolchain and setup, with
+BASELINE = BF `1dd1e8c82fe0ed5a32a894744392f2c279f89d4c` and CANDIDATE = the binding commit of the corrected
+`mo1308/phase2-corrections` head (Amendment A9; see the generation 3 setup record). Smart App Control blocked
+executables are identified freshly in both new trees and the union is excluded in both runs; the exclusion list is
+committed before the runs. Evidence directory:
+`repositories/cca-conformance/evidence/mo1308/phase3-precondition-g3/`. Each recorded run is made once.
+
+**Expected clean-tree effect (recorded, not a gate).** The `memoryos.mcp.foundation` CTest test runs the whole
+`memoryos-mcp` test suite. When its official-client integration tests fail, that suite rewrites the tracked file
+`repositories/memoryos-mcp/measurements/phase2-integration.json` (status `FAIL`, empty results). The differential
+may therefore leave the worktrees dirty by that one file. It is recorded in the evidence; A3.2 has no clean-tree
+gate.
+
+**Project follow-ups (outside MO-1308; extend the A3.1 and A3.2 lists: Windows CI green before the MemoryOS 1.3
+release).**
+
+1. The `memoryos-mcp` foundation suite rewrites the tracked `measurements/phase2-integration.json` when it fails.
+2. Raw `npm ci --ignore-scripts` output does not match the pruned `memoryos-mcp` dependency-closure pin: it leaves 98
+   zod test files that `distribution/dependency-closure.json` excludes, so the integrity test "production dependency
+   closure rejects changed, missing and extra package members" fails, and every server start in that suite ends in
+   `MO1304_RUNTIME_INTEGRITY`. The failure is identical on BF (`1dd1e8c8`).
+3. The `out/phase2/memoryos-mcp-0.1.0.tgz` artifact that the MCP installed-archive tests require is not produced by
+   `npm ci`.
+
+No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
+
+
+### A8.8 Candidate moved from B2 to the corrected head (append-only note, 2026-10-07, owner-authorized)
+
+The Phase 3 candidate moves from B2 `47595cc95204307dd43c4772c417b52f0ac8402b` to the binding commit `b0bf2d5618e76512867bcdf49f805b22a7e12774` of `mo1308/phase2-corrections` (Amendment A9, section 35; generation 2 PASS, generation 1 preserved `FAILED_PRESERVED`; `main` is at the same commit). The only production path that changed is `repositories/memoryos-cli/src/history-store.js` (the export-inside-ledger refusal, A9.2); the other 44 production blobs are identical, including `memoryos-history-admission.js` and `mip-canonical.js` (so the SHA-256 review of 3C-D9 stays valid). The new `productionTreeDigest` is `sha256:aa9816c37289f356784d2d3655e578c03052502a5698e8669624e299796c97a8` (it was `sha256:ccb1575f5d8e34743b38404898b2c720ee1a0046071fc5e57c824d4b4566562a`). The corpus manifest is unchanged (corpus digest `sha256:cfca5edb267fad074863f3ddd1945a3f8fe500a8e07d602722140d745b54a730`).
+
+The A3 gate input of cases 3A-A4 and 3D-D5 is the A3.2 generation 3 receipt, `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g3/receipt.json` (branch head `8297ce31`, evidence `2edd9d5d`, Amendment A3.4, section 36), and the gate reads the receipt's top-level member `verdict`, which must be `PASS`; `binding.json` has no verdict member and only hashes the receipt. The allowed path set gains the three test corrections that A9.1 authorizes (`runtime_foundation.test.mjs`, `released-runtime-pins.mjs`, `memoryos-mcp/tests/integrity.test.mjs`); all 262 paths changed between BF and the candidate are classified. Cases 3C-F4 and 3A-D5 now expect `MO1308_FILESYSTEM_BOUNDARY` (exit 4) for every export-inside-ledger form. The protocol, inventory and candidate identity were regenerated; these are the bound hashes from here.
+
+| File | SHA-256 |
+|---|---|
+| `docs/mo1308-phase3-protocol.md` | `b31bd1e0dcb76bbf89ffc48eef0e8232b47494ae539a7b9fc8fcb0851d8f6041` |
+| `repositories/cca-conformance/mo1308-phase3-inventory.json` | `7c5fa7ed9389971ece72278d29bed65387650ff36c0992c59d5b631d61fea2d7` |
+| `repositories/cca-conformance/mo1308-phase3-candidate-identity.json` | `ec85daa9245f7d581ff912cb08ec6a4b3e558cf408c1ac8de81bfeac5969bebe` |
+| `repositories/cca-conformance/mo1308-phase3-corpus-manifest.json` | `b055805d2db43f414261921ded61eb69d856ad5c821139254e9ba1b7ce386c9f` |

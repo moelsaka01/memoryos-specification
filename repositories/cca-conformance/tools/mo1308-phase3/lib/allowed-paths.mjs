@@ -14,7 +14,10 @@ export const ALLOWED_CHANGE_RULES = Object.freeze([
   { class: 'AUTHORIZED_TEST_CORRECTIONS', patterns: [
     'repositories/cca-conformance/tests/compatibility_conformance_test.mjs', 'repositories/cca-conformance/tests/mo1301_integration_conformance_test.mjs',
     'repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs', 'repositories/cca-conformance/tests/mo1307_phase2c_native_runtime_test.mjs',
-    'repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs', 'repositories/cca-conformance/tests/normative_vectors_conformance_test.mjs'] },
+    'repositories/cca-conformance/tests/mo1307_phase2c_runtime_test.mjs', 'repositories/cca-conformance/tests/normative_vectors_conformance_test.mjs',
+    // Amendment A9.1: released-bundle checks pinned to their release
+    'repositories/memoryos-vscode/tests/runtime_foundation.test.mjs', 'repositories/memoryos-vscode/tests/support/released-runtime-pins.mjs',
+    'repositories/memoryos-mcp/tests/integrity.test.mjs'] },
   { class: 'HISTORY_AUTHORITY_AND_SDK', patterns: [
     'repositories/cca-studio/web/js/memoryos-history-*.js', 'repositories/cca-studio/web/js/memoryos-sdk.js', 'repositories/cca-studio/package.json',
     'repositories/cca-studio/scripts/generate-memoryos-history-fixtures.mjs', 'repositories/cca-studio/tests/memoryos_*',
