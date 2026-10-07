@@ -6,9 +6,13 @@ import { cliCases } from './cases-cli.mjs';
 import { boundaryCases } from './cases-boundary.mjs';
 import { detCases } from './cases-det.mjs';
 import { limitCases } from './cases-limits.mjs';
+import { hostCases } from './cases-host.mjs';
+import { ntfsCases } from './cases-ntfs.mjs';
+import { pathCases } from './cases-paths.mjs';
+import { pathCases2 } from './cases-paths2.mjs';
 
 export { makeEnv };
-export const impls = { ...cliCases, ...detCases, ...boundaryCases, ...limitCases };
+export const impls = { ...cliCases, ...detCases, ...boundaryCases, ...limitCases, ...hostCases, ...ntfsCases, ...pathCases, ...pathCases2 };
 
 // Step 3 harness items (the Windows-only code that does not exist yet).
 export const STEP3 = Object.freeze({
@@ -27,7 +31,8 @@ export const STEP3 = Object.freeze({
 });
 
 const declare = (reason, ids) => Object.fromEntries(ids.map((id) => [`3A-${id}`, `HOST_ONLY: ${STEP3[reason]}`]));
-export const hostOnly = {
+// A case implemented by the Windows harness leaves this table; what remains is still to be written.
+const declared = {
   ...declare('HOST_CAPTURE', ['A1', 'A2', 'A6', 'A7']),
   ...declare('GATE_INPUT', ['A4', 'A5']),
   ...declare('FILE_INDEX', ['C6', 'E3']),
@@ -41,3 +46,4 @@ export const hostOnly = {
   ...declare('TRANSPORT', ['L1', 'L2', 'L3', 'L4', 'L5', 'L6']),
   ...declare('CEILING', ['JC1', 'JC2', 'JC3', 'JC4', 'JC5', 'JC6', 'JC7', 'JC8', 'JC9', 'JC10']),
 };
+export const hostOnly = Object.fromEntries(Object.entries(declared).filter(([id]) => impls[id] === undefined));
