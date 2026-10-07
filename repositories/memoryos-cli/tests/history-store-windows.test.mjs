@@ -434,6 +434,24 @@ test("W07 drive-letter, UNC and long-path forms work end to end; the \\\\?\\ and
   assert.deepEqual(contents(ledger), before);
 });
 
+test("W07b an export into the ledger is refused under every Windows spelling of the ledger: drive-letter, UNC and differently cased forms (3C-F4, Amendment A9)", WIN, (t) => {
+  const { ledger, store } = newLedger(t);
+  store.append(ledger, mip("one"));
+  const unc = (path) => `\\\\localhost\\${path[0]}$${path.slice(2)}`;
+  assert.ok(nodeFs.existsSync(unc(ledger)), "the UNC form of the scratch directory is reachable from this process");
+  const before = contents(ledger);
+  const outputs = [
+    unc(join(ledger, "export")), unc(join(ledger, "entries", "export")), unc(join(ledger, ".pending", "export")), unc(ledger),
+    join(ledger.toUpperCase(), "ENTRIES", "export"), join(ledger.toLowerCase(), "export"), ledger.toUpperCase(),
+  ];
+  for (const output of outputs) {
+    assert.throws(() => store.exportLedger(ledger, output), code("FILESYSTEM_BOUNDARY"), output);
+    assert.throws(() => store.exportLedger(unc(ledger), output), code("FILESYSTEM_BOUNDARY"), `${output} from the UNC form`);
+  }
+  assert.deepEqual(contents(ledger), before, "the ledger is unchanged");
+  assert.equal(store.verify(ledger).entryCount, 1);
+});
+
 test("W08 NTFS concurrency: ten real appender processes with concurrent readers; every append that succeeded is in the ledger exactly once, every record that is not was reported as a typed failure, and no failed writer left a record (R15)", WIN, async (t) => {
   const { ledger, store } = newLedger(t);
   const appenders = 10;

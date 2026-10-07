@@ -1,0 +1,70 @@
+✔ runtime closure manifest and identities reproduce the frozen independent digests (94.764ms)
+✔ verifier copies exact bytes into a disposable private immutable snapshot (394.3955ms)
+▶ closed runtime verifier rejects missing, unexpected, traversal, and symbolic members
+  ✔ missing (100.7115ms)
+  ✔ unexpected (118.962ms)
+  ✔ traversal manifest mutation (1.3355ms)
+  ✔ duplicate normalized manifest path (1.3296ms)
+  ✔ non-normalized manifest path (1.7902ms)
+  ✔ symbolic leaf where supported (110.6679ms)
+✔ closed runtime verifier rejects missing, unexpected, traversal, and symbolic members (337.099ms)
+▶ secure input snapshots enforce below, exact, and first-byte-above measured limits
+  ✔ policy (23.3624ms)
+  ✔ policySet (20.7835ms)
+  ✔ candidateMip (33.2608ms)
+✔ secure input snapshots enforce below, exact, and first-byte-above measured limits (79.1036ms)
+ℹ policy exact snapshot RSS delta=0 bytes; fixed copy buffer=65536
+ℹ policySet exact snapshot RSS delta=45056 bytes; fixed copy buffer=65536
+ℹ candidateMip exact snapshot RSS delta=28672 bytes; fixed copy buffer=65536
+✔ verification inputs use the frozen normative outcome ceiling without creating a transport limit (31.5652ms)
+✔ input snapshots reject unsupported authorities and close acquire/dispose races (31.0874ms)
+✔ opaque operation capability confines every CLI path to fixed private roles (42.0137ms)
+✔ actual worker enforces exact stdout/stderr bounds and persists caught overflow (322.7559ms)
+✔ actual worker disables stdin and treats crashes as adapter failures (56.7446ms)
+▶ actual worker enforces the closed bounded worker request
+  ✔ extra request member (46.7645ms)
+  ✔ relative module path (44.3085ms)
+  ✔ oversized argument (48.8911ms)
+  ✔ too many arguments (45.4178ms)
+  ✔ oversized encoded request (47.2044ms)
+✔ actual worker enforces the closed bounded worker request (287.1885ms)
+▶ actual worker rejects caught direct process output as an output-contract violation
+  ✔ stdout (51.9575ms)
+  ✔ stderr (52.0212ms)
+  ✔ console (70.5036ms)
+✔ actual worker rejects caught direct process output as an output-contract violation (175.5182ms)
+✔ adapter preflight succeeds, rejects concurrency, and executes only through workers (427.1598ms)
+✔ adapter cancellation hard-terminates a worker and dispose waits for the operation (202.281ms)
+✔ adapter rejects out-of-band worker output immediately and terminates a non-reporting worker (210.9544ms)
+✔ adapter rejects out-of-band output even when a worker also posts a valid result (225.3153ms)
+✔ adapter terminates a worker after its single result message (216.2516ms)
+✔ MemoryOS stable CLI codes pass through without becoming adapter decisions (291.9042ms)
+▶ adapter rejects malformed envelopes and enforces command-aware exit binding
+  ✔ exact digest success shape (304.1168ms)
+  ✔ empty digest result (284.2343ms)
+  ✔ wrong digest artifact kind (273.6115ms)
+  ✔ malformed digest (252.535ms)
+  ✔ extra digest member (292.1267ms)
+  ✔ undefined worker message is a closed worker failure (337.2939ms)
+  ✔ worker failure with extra member (264.1152ms)
+  ✔ worker failure with non-string message (260.3975ms)
+  ✔ malformed JSON (296.6452ms)
+  ✔ non-evaluation success with nonzero exit (274.1538ms)
+  ✔ error envelope exit mismatch (278.0698ms)
+  ✔ FAIL decision uses frozen exit 6 (306.4648ms)
+  ✔ evaluation decision/exit mismatch (299.8022ms)
+  ✔ evaluation rejects an extra success member (270.9157ms)
+  ✔ exact identity-verification success shape (306.169ms)
+  ✔ identity verification rejects wrong scope and false success (293.8529ms)
+  ✔ exact outcome-verification success shape (335.8175ms)
+  ✔ outcome verification rejects missing and unexpected members (297.9546ms)
+✔ adapter rejects malformed envelopes and enforces command-aware exit binding (5265.0927ms)
+✔ postflight mismatch blocks completion and invalidates the cached snapshot (422.1976ms)
+ℹ tests 54
+ℹ suites 0
+ℹ pass 54
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11475.0315
