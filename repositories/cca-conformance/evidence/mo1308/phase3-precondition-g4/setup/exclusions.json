@@ -1,0 +1,96 @@
+{
+  "kind": "MO1308Phase3PreconditionG4Exclusions",
+  "amendments": "A3.1 (cca_core_tests), A3.2, A3.3, A3.4 (generation 4)",
+  "frozenBeforeRecordedRuns": true,
+  "baseline": "1dd1e8c82fe0ed5a32a894744392f2c279f89d4c",
+  "candidate": "f4211c8c502f771bc78c2d2ab509c20d2b715676",
+  "trees": {
+    "baseline": "g4b",
+    "candidate": "g4c"
+  },
+  "probeRounds": [
+    {
+      "round": 1,
+      "probed": 70,
+      "blocked": [
+        "g4b:repositories/cca-core/tests/cca_long_term_memory_allocation_tests.exe",
+        "g4b:repositories/cca-core/tests/cca_memory_allocation_tests.exe",
+        "g4c:repositories/cca-core/cca_procedural_memory_example.exe",
+        "g4c:repositories/cca-core/tests/cca_procedural_memory_allocation_tests.exe"
+      ]
+    },
+    {
+      "round": 2,
+      "probed": 70,
+      "blocked": [
+        "g4b:repositories/cca-core/tests/cca_long_term_memory_allocation_tests.exe",
+        "g4b:repositories/cca-core/tests/cca_memory_allocation_tests.exe",
+        "g4c:repositories/cca-core/tests/cca_procedural_memory_allocation_tests.exe"
+      ]
+    },
+    {
+      "round": 3,
+      "probed": 70,
+      "blocked": [
+        "g4b:repositories/cca-core/tests/cca_long_term_memory_allocation_tests.exe",
+        "g4b:repositories/cca-core/tests/cca_memory_allocation_tests.exe",
+        "g4c:repositories/cca-core/tests/cca_procedural_memory_allocation_tests.exe"
+      ]
+    },
+    {
+      "round": 4,
+      "probed": 70,
+      "blocked": [
+        "g4b:repositories/cca-core/tests/cca_long_term_memory_allocation_tests.exe",
+        "g4b:repositories/cca-core/tests/cca_memory_allocation_tests.exe",
+        "g4c:repositories/cca-core/tests/cca_procedural_memory_allocation_tests.exe"
+      ]
+    }
+  ],
+  "blockedPerTree": {
+    "g4b": [
+      "repositories/cca-core/tests/cca_long_term_memory_allocation_tests.exe",
+      "repositories/cca-core/tests/cca_memory_allocation_tests.exe"
+    ],
+    "g4c": [
+      "repositories/cca-core/cca_procedural_memory_example.exe",
+      "repositories/cca-core/tests/cca_procedural_memory_allocation_tests.exe"
+    ]
+  },
+  "blockedAtCtestDiscovery": [],
+  "unionOfBlockedExecutables": 4,
+  "unionList": [
+    "repositories/cca-core/cca_procedural_memory_example.exe",
+    "repositories/cca-core/tests/cca_long_term_memory_allocation_tests.exe",
+    "repositories/cca-core/tests/cca_memory_allocation_tests.exe",
+    "repositories/cca-core/tests/cca_procedural_memory_allocation_tests.exe"
+  ],
+  "gtestExecutablesRenamedInBothTrees": [
+    "repositories/cca-core/tests/cca_long_term_memory_allocation_tests.exe",
+    "repositories/cca-core/tests/cca_memory_allocation_tests.exe",
+    "repositories/cca-core/tests/cca_procedural_memory_allocation_tests.exe"
+  ],
+  "nonGtestBlockedExecutables": [
+    "repositories/cca-core/cca_procedural_memory_example.exe"
+  ],
+  "testsForNonGtestBlockedExecutables": {
+    "repositories/cca-core/cca_procedural_memory_example.exe": [
+      "cca.procedural_memory.example"
+    ]
+  },
+  "blockedExecutablesWithNoCtestTest": [],
+  "guard": "all blocked executables are native C++ test, example or tool binaries built under repositories/ (no node.exe, python.exe, cmake.exe, ctest.exe, npm.cmd); the pinned node.exe, python.exe, cmake.exe and ctest.exe launch normally",
+  "registeredTests": 295,
+  "ctestExcludedNames": [
+    "cca_core_tests_NOT_BUILT",
+    "cca_memory_allocation_tests_NOT_BUILT",
+    "cca_long_term_memory_allocation_tests_NOT_BUILT",
+    "cca_procedural_memory_allocation_tests_NOT_BUILT",
+    "cca.procedural_memory.example"
+  ],
+  "ctestExcludedCount": 5,
+  "ctestExcludeRegex": "^(cca_core_tests_NOT_BUILT|cca_memory_allocation_tests_NOT_BUILT|cca_long_term_memory_allocation_tests_NOT_BUILT|cca_procedural_memory_allocation_tests_NOT_BUILT|cca\\.procedural_memory\\.example)$",
+  "ctestCommand": "ctest --preset default -E \"^(cca_core_tests_NOT_BUILT|cca_memory_allocation_tests_NOT_BUILT|cca_long_term_memory_allocation_tests_NOT_BUILT|cca_procedural_memory_allocation_tests_NOT_BUILT|cca\\.procedural_memory\\.example)$\" --timeout 3600",
+  "excludedGtestTestNames": "excluded-gtest-test-names.json",
+  "classification": "ENVIRONMENT_BLOCKED_SAC for every excluded test except cca_core_tests_NOT_BUILT, which is the A3.1 waiver"
+}
