@@ -1,0 +1,9 @@
+generate 99999 entries and members on disk: ok, 196108 ms, heap +8.8 MiB
+history query page of 1000 (real SDK query): ok, 40723 ms, heap +197.3 MiB
+history query with a subject filter over the whole ledger: ok, 42695 ms, heap +196.3 MiB
+history verify (real SDK verification of every entry and member): ok, 97882 ms, heap +336.7 MiB
+history append of the last allowed entry (real MIP admission, then publish): ok, 83390 ms, heap +346 MiB
+history export: ok, 898348 ms, heap +490.8 MiB
+history verify-export: ok, 101305 ms, heap +478.2 MiB
+real process: memoryos history verify (includes process start and module load): ok, 151723 ms, heap +0.1 MiB
+MemoryOS#createHistoryCheckpointRecord (reference MIP checkpoint, 2 transitions): ok, 49 ms, heap +1.6 MiB
