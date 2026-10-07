@@ -788,3 +788,80 @@ test("T22 on a stable snapshot every mismatch is reported exactly as before: cor
   writeFileSync(entry, entryBytes);
   assert.equal(probe.verify(ledger).entryCount, 2, "restored: a quiescent ledger is read in one pass");
 });
+test("T23 export never writes into the ledger it is made from: every spelling that resolves to the ledger root, entries/, records/ or .pending/ is a FILESYSTEM_BOUNDARY failure that creates nothing and leaves the ledger unchanged (3C-F4, Amendment A9)", (t) => {
+  const { root, ledger, store } = newLedger(t);
+  store.append(ledger, mip("one"));
+  store.append(ledger, policy("two"));
+  const before = snapshot(ledger);
+  const layout = (directory) => readdirSync(directory).sort();
+  const directories = ["entries", "records", ".pending"];
+  const layouts = [ledger, ...directories.map((name) => join(ledger, name))].map((path) => [path, layout(path)]);
+  const forms = [
+    ["inside the ledger", join(ledger, "export")],
+    ["inside entries/", join(ledger, "entries", "export")],
+    ["inside records/", join(ledger, "records", "export")],
+    ["inside .pending/", join(ledger, ".pending", "export")],
+    ["the ledger itself", ledger],
+    ["the ledger itself with a trailing separator", `${ledger}/`],
+    ["dot-dot into the ledger", join(ledger, "entries", "..", "export2")],
+    ["dot-dot out of and back into the ledger", join(root, "elsewhere", "..", "ledger", "export3")],
+    ["a dot segment", join(ledger, ".", "export4")],
+    ["a retained record directory", join(ledger, "records", readdirSync(join(ledger, "records"))[0], "export")],
+    ["entries/ itself", join(ledger, "entries")],
+    ["records/ itself", join(ledger, "records")],
+    [".pending/ itself", join(ledger, ".pending")],
+    ["a path below a missing directory inside the ledger", join(ledger, "missing", "export")],
+  ];
+  const relativeToHere = relative(process.cwd(), join(ledger, "export5"));
+  forms.push(["a relative path into the ledger", relativeToHere]);
+  // Windows host only (case-insensitive paths): a differently cased spelling of the ledger directory.
+  if (process.platform === "win32") forms.push(["a differently cased spelling of the ledger", join(ledger.toUpperCase(), "ENTRIES", "export8")]);
+  for (const [label, output] of forms) {
+    assert.throws(() => store.exportLedger(ledger, output), code("FILESYSTEM_BOUNDARY"), label);
+    assert.deepEqual(snapshot(ledger), before, `${label}: the ledger is unchanged`);
+    for (const [path, names] of layouts) assert.deepEqual(layout(path), names, `${label}: no name was created in ${relative(root, path)}`);
+  }
+  assert.equal(store.verify(ledger).entryCount, 2, "the ledger still verifies");
+
+  // The same through the command layer (the CLI `history export --output`), with the typed code and exit category 4.
+  const run = (...argv) => executeHistoryCommand(parseHistoryArguments(argv), { engine });
+  for (const [label, output] of forms) {
+    let caught = null;
+    try { run("export", "--ledger", ledger, "--output", output); } catch (error) { caught = error; }
+    assert.ok(caught !== null, `${label}: refused by the command`);
+    assert.equal(caught.historyCode, "MO1308_FILESYSTEM_BOUNDARY", label);
+    assert.equal(caught.exitCode, 4, label);
+    assert.doesNotMatch(String(caught.message), /export|ledger|memoryos-history-store|\/tmp/u, `${label}: no path in the error`);
+  }
+  assert.deepEqual(snapshot(ledger), before);
+  for (const [path, names] of layouts) assert.deepEqual(layout(path), names);
+
+  // Links: a link to the ledger, a link below the ledger, and an ancestor link are refused by the existing boundary check.
+  const link = join(root, "link-to-ledger");
+  if (symlinkOrSkip(t, ledger, link)) {
+    assert.throws(() => store.exportLedger(ledger, join(link, "export6")), code("FILESYSTEM_BOUNDARY"), "output through a link to the ledger");
+    assert.throws(() => store.exportLedger(ledger, link), code("FILESYSTEM_BOUNDARY"), "output is a link to the ledger");
+    const inside = join(root, "link-to-entries");
+    symlinkSync(join(ledger, "entries"), inside);
+    assert.throws(() => store.exportLedger(ledger, join(inside, "export7")), code("FILESYSTEM_BOUNDARY"), "output through a link to entries/");
+    assert.deepEqual(snapshot(ledger), before, "links: the ledger is unchanged");
+  }
+
+  // The identity test catches a spelling the lexical test cannot: a directory that is the ledger by file identity
+  // (here a stand-in for another drive-letter, UNC or case form of the same directory on a Windows host).
+  const alias = join(root, "alias-of-ledger");
+  mkdirSync(alias);
+  const spoofed = createHistoryStore({ engine, fs: { ...nodeFs, statSync: (path, options) => nodeFs.statSync(path === alias ? ledger : path, options) } });
+  assert.throws(() => spoofed.exportLedger(ledger, join(alias, "export9")), code("FILESYSTEM_BOUNDARY"), "an alias of the ledger by file identity");
+  assert.throws(() => spoofed.exportLedger(ledger, alias), code("FILESYSTEM_BOUNDARY"), "an alias of the ledger root itself");
+  assert.deepEqual(readdirSync(alias), [], "nothing was created below the alias");
+  assert.deepEqual(snapshot(ledger), before);
+
+  // A location outside the ledger still works, including a sibling whose name begins with the ledger name.
+  const sibling = join(root, "ledger-export");
+  assert.equal(store.exportLedger(ledger, sibling).entryCount, 2, "a sibling with the ledger name as a prefix is outside the ledger");
+  assert.equal(store.verifyExport(sibling).entryCount, 2);
+  const dotted = join(root, "..export");
+  assert.equal(store.exportLedger(ledger, dotted).entryCount, 2, "a name that begins with two dots is not the parent");
+  assert.deepEqual(snapshot(ledger), before, "a refused or successful export never changes the ledger");
+});
