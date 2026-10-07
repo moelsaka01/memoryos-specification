@@ -1856,3 +1856,37 @@ to owner review.
 
 No shape, layout, limit, identity, error code, exit number or protocol step of the frozen text changes. No released
 byte, tag or released manifest changes. No evidence or binding commit is made by this correction.
+
+## 36. Amendment A3.4 — A3.2 generation 3 and project follow-ups (2026-10-07, owner-authorized)
+
+This amendment is append-only. The frozen text above and Amendments A1 to A7, A3.1, A3.2 and A3.3 are
+unchanged. It is a sub-amendment of Amendment A3 (section 26). The section number 36 is chosen so that it collides
+with neither section 34 (A8, once merged) nor section 35 (A9, on `mo1308/phase2-corrections`); references to it use
+"A3.4". It does not use or pre-empt A8 or A9.
+
+**Generation 3 of the A3.2 differential.** The generation 2 run (`phase3-precondition-g2`, `FAILED_PRESERVED`) stays
+untouched. Generation 3 repeats the A3.2 rule under A3.1 and A3.3 with the same toolchain and setup, with
+BASELINE = BF `1dd1e8c82fe0ed5a32a894744392f2c279f89d4c` and CANDIDATE = the binding commit of the corrected
+`mo1308/phase2-corrections` head (Amendment A9; see the generation 3 setup record). Smart App Control blocked
+executables are identified freshly in both new trees and the union is excluded in both runs; the exclusion list is
+committed before the runs. Evidence directory:
+`repositories/cca-conformance/evidence/mo1308/phase3-precondition-g3/`. Each recorded run is made once.
+
+**Expected clean-tree effect (recorded, not a gate).** The `memoryos.mcp.foundation` CTest test runs the whole
+`memoryos-mcp` test suite. When its official-client integration tests fail, that suite rewrites the tracked file
+`repositories/memoryos-mcp/measurements/phase2-integration.json` (status `FAIL`, empty results). The differential
+may therefore leave the worktrees dirty by that one file. It is recorded in the evidence; A3.2 has no clean-tree
+gate.
+
+**Project follow-ups (outside MO-1308; extend the A3.1 and A3.2 lists: Windows CI green before the MemoryOS 1.3
+release).**
+
+1. The `memoryos-mcp` foundation suite rewrites the tracked `measurements/phase2-integration.json` when it fails.
+2. Raw `npm ci --ignore-scripts` output does not match the pruned `memoryos-mcp` dependency-closure pin: it leaves 98
+   zod test files that `distribution/dependency-closure.json` excludes, so the integrity test "production dependency
+   closure rejects changed, missing and extra package members" fails, and every server start in that suite ends in
+   `MO1304_RUNTIME_INTEGRITY`. The failure is identical on BF (`1dd1e8c8`).
+3. The `out/phase2/memoryos-mcp-0.1.0.tgz` artifact that the MCP installed-archive tests require is not produced by
+   `npm ci`.
+
+No shape, layout, limit, identity, error code or protocol step of the frozen text changes.
