@@ -3,11 +3,12 @@
 // Step 3 harness that will implement it; a rehearsal skips them visibly and a certifying generation refuses every skip.
 import { makeEnv } from './env.mjs';
 import { cliCases } from './cases-cli.mjs';
+import { boundaryCases } from './cases-boundary.mjs';
 import { detCases } from './cases-det.mjs';
 import { limitCases } from './cases-limits.mjs';
 
 export { makeEnv };
-export const impls = { ...cliCases, ...detCases, ...limitCases };
+export const impls = { ...cliCases, ...detCases, ...boundaryCases, ...limitCases };
 
 // Step 3 harness items (the Windows-only code that does not exist yet).
 export const STEP3 = Object.freeze({
@@ -30,7 +31,7 @@ export const hostOnly = {
   ...declare('HOST_CAPTURE', ['A1', 'A2', 'A6', 'A7']),
   ...declare('GATE_INPUT', ['A4', 'A5']),
   ...declare('FILE_INDEX', ['C6', 'E3']),
-  ...declare('JUNCTIONS', ['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10', 'D11', 'D12', 'E1', 'E2', 'E7']),
+  ...declare('JUNCTIONS', ['D1', 'D2', 'D3', 'D4', 'D6', 'D7', 'D8', 'D9', 'D10', 'D11', 'D12', 'E1', 'E2', 'E7']),
   ...declare('SHARING', ['E4', 'E5', 'E6']),
   ...declare('FANOUT', ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7']),
   ...declare('SWAPPER', ['G1', 'G2', 'G3', 'G4', 'G5', 'G6']),

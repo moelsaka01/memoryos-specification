@@ -24,10 +24,10 @@ test('A01 every 3A case is implemented or declared host-only, none both', () => 
   assert.deepEqual(checkDefinition({ inventory, stream: '3A', impls, hostOnly }), []);
 });
 
-test('A02 the implemented set is exactly steps A3, B, C1-C5, J and M, and nothing implemented needs a Windows API', () => {
+test('A02 the implemented set is exactly steps A3, B, C1-C5, D5, J and M, and nothing implemented needs a Windows API', () => {
   const ids = Object.keys(impls).sort();
-  assert.equal(ids.length, 33);
-  const expected = allCases(inventory).filter((item) => item.stream === '3A' && /^3A-(A3|B\d+|C[1-5]|J\d+|M\d)$/.test(item.id)).map((item) => item.id).sort();
+  assert.equal(ids.length, 34);
+  const expected = allCases(inventory).filter((item) => item.stream === '3A' && /^3A-(A3|B\d+|C[1-5]|D5|J\d+|M\d)$/.test(item.id)).map((item) => item.id).sort();
   assert.deepEqual(ids, expected);
   for (const file of fs.readdirSync(path.join(repo, TOOLS)).filter((name) => name.endsWith('.mjs'))) {
     const text = fs.readFileSync(path.join(repo, TOOLS, file), 'utf8');
@@ -65,15 +65,15 @@ test('A05 a record one byte over a member limit is refused with the limit code a
   assert.equal(readTree(ledger).size > 0, true);
 });
 
-test('A06 a complete non-certifying rehearsal: 33 pass, 75 declared host-only, nothing fails, never promotable', async (t) => {
+test('A06 a complete non-certifying rehearsal: 34 pass, 74 declared host-only, nothing fails, never promotable', async (t) => {
   const directory = path.join(tmp(t), 'r1');
   const env = await makeEnv({ root: repo, option: () => null, certifying: false });
   t.after(() => { for (const dir of env.temporary) fs.rmSync(dir, { recursive: true, force: true }); });
   const toolPaths = [...sharedToolPaths(repo), ...walkRecords(path.join(repo, TOOLS)).map((row) => `${TOOLS}/${row.path}`)].sort();
   const result = await rehearse({ root: repo, stream: '3A', evidenceDir: directory, impls, hostOnly, env, toolPaths });
   assert.equal(result.receipt.result, 'REHEARSAL_PARTIAL', JSON.stringify(result.summary));
-  assert.equal(result.summary.executedPass, 33);
-  assert.equal(result.summary.skippedHostOnly.length, 75);
+  assert.equal(result.summary.executedPass, 34);
+  assert.equal(result.summary.skippedHostOnly.length, 74);
   assert.deepEqual(result.summary.failed, []);
   assert.deepEqual(result.problems, []);
   assert.equal(result.receipt.certifying, false);
