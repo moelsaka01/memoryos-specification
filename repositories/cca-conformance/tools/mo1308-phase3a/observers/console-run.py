@@ -41,6 +41,8 @@ class CSBI(ctypes.Structure):
 HANDLER = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.DWORD)
 # a handler routine (not the inheritable "ignore" flag): this process survives the event it sends, its children do not inherit the shield
 _handler = HANDLER(lambda event: True)
+# a launcher started from a shell job may have inherited "Ctrl-C is ignored"; clear that flag first so the children it starts get normal Ctrl-C processing
+k32.SetConsoleCtrlHandler(None, False)
 k32.SetConsoleCtrlHandler(_handler, True)
 
 env = dict(os.environ) if spec.get('inheritEnv') else {}

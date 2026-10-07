@@ -7,6 +7,7 @@ import { CORPUS_WORKSPACE, appendArgs, contract, initArgs, queryArgs, readTree, 
 import { conclude, recordById, register, run, work } from './env.mjs';
 import { ledgerWith } from './cases-cli.mjs';
 import { verifyCandidate } from '../mo1308-phase3/lib/candidate.mjs';
+import { bulkVerify } from './win.mjs';
 
 const IDS = ['mip-reference', 'checkpoint-c00', 'policy-0', 'regression-reference', 'cicd-6', 'cicd-4', 'readiness-ready', 'decision-ready-approve'];
 const LAYOUT = contract.MEMORYOS_HISTORY_LAYOUT;
@@ -109,13 +110,14 @@ export const detCases = {
   '3A-M1': (h, env) => {
     const problems = [];
     let verified = 0; let corrupt = 0;
-    for (const { path: ledger, intentionalCorruption } of env.ledgers) {
-      if (!fs.existsSync(ledger)) continue;
-      const result = run(env, ['history', 'verify', '--ledger', ledger, '--json']);
-      if (intentionalCorruption) { corrupt += 1; continue; }
-      verified += 1;
-      if (result.status !== 0) problems.push(`${path.basename(ledger)}: ${result.code}`);
-    }
+    // the latest registration of a path wins (a case registers a ledger when it makes it, and again when it interrupts or corrupts it)
+    const latest = new Map();
+    for (const row of env.ledgers) latest.set(row.path, row);
+    // hundreds of small ledgers: verified in one process by the real SDK and the production store (the CLI verify is the same composition)
+    const present = [...latest.values()].filter((row) => fs.existsSync(row.path));
+    corrupt = present.filter((row) => row.intentionalCorruption).length;
+    const checked = bulkVerify(present.filter((row) => !row.intentionalCorruption).map((row) => row.path), path.join(env.workRoot, 'm1'));
+    for (const row of checked) { verified += 1; if (!row.ok) problems.push(`${path.basename(row.path)}: ${row.code}`); }
     conclude(h, problems, { verified, recordedIntentionalCorruptions: corrupt });
   },
   '3A-M2': (h, env) => {
@@ -130,7 +132,17 @@ export const detCases = {
       const file = path.join(directory, 'raw-log-index.json');
       if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify(index), { flag: 'wx' });
     }
-    conclude(h, problems, { rawOutputs: index.length, indexDigest: sha(Buffer.from(JSON.stringify(index))) });
+    // every observer the harness launched (Python or PowerShell: never the product) is recorded with the hash of the script it ran
+    const observers = env.observers.all();
+    if (env.evidenceDir !== null) {
+      const directory = path.join(env.evidenceDir, 'artifacts'); fs.mkdirSync(directory, { recursive: true });
+      const file = path.join(directory, 'observer-launches.json');
+      if (!fs.existsSync(file)) fs.writeFileSync(file, `${JSON.stringify(observers.map((row, number) => ({ number, ...row })), null, 2)}
+`, { flag: 'wx' });
+    }
+    for (const row of observers) if (row.observer === 'python' && (typeof row.scriptSha256 !== 'string' || row.scriptSha256.length !== 64)) problems.push(`an observer launch has no script hash: ${row.script}`);
+    const byTool = {}; for (const row of observers) byTool[row.observer] = (byTool[row.observer] ?? 0) + 1;
+    conclude(h, problems, { rawOutputs: index.length, indexDigest: sha(Buffer.from(JSON.stringify(index))), harnessObserverLaunches: byTool });
   },
   '3A-M4': (h, env) => {
     const problems = [];

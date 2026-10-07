@@ -245,3 +245,14 @@ export function consoleRun(env, spec, { dir }) {
     resolve({ ...report, stdout: report.stdout === undefined ? null : Buffer.from(report.stdout, 'base64'), stderr: report.stderr === undefined ? null : Buffer.from(report.stderr, 'base64') });
   }));
 }
+
+// Verifies many ledgers in ONE process with the real SDK and the production store (ceiling-ops.mjs verify-many): [{path, ok, result | code}].
+export function bulkVerify(paths, directory) {
+  fs.mkdirSync(directory, { recursive: true });
+  const list = path.join(directory, `verify-many-${process.hrtime.bigint()}.json`);
+  fs.writeFileSync(list, JSON.stringify(paths));
+  const run = spawnSync(process.execPath, [path.join(HERE, 'ceiling-ops.mjs'), 'verify-many', list], { encoding: 'utf8', windowsHide: true, shell: false, maxBuffer: 1 << 28, env: { PATH: process.env.PATH ?? '', SystemRoot: process.env.SystemRoot ?? '' } });
+  const out = JSON.parse(run.stdout);
+  if (!out.ok) throw new Error(`bulk verify failed: ${out.code ?? out.message}`);
+  return out.result;
+}

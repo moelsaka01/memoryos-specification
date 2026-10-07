@@ -95,7 +95,7 @@ export const ntfsCases = {
     const record = recordById(env, 'checkpoint-c00');
     const hex = hexOf(record);
     // (a) staging names that exist in another case are skipped: never opened, never replaced
-    const a = ledgerWith(env, 'e1-staging', []);
+    const a = ledgerWith(env, 'e1-staging', []); register(env, a, false, { interrupted: true }); // planted staging leftovers are disclosed anomalies
     const stagingPlants = [`ENTRY-${entryName(0).replace('.json', '')}.0`, `MEMBER-${hex}-CHECKPOINT.JSON.0`, `member-${hex}-checkpoint.json.1`];
     const planted = new Map();
     for (const name of stagingPlants) { const file = p(a, '.pending', name); fs.writeFileSync(file, `planted ${name}`, { flag: 'wx' }); planted.set(file, { bytes: sha256(bytesOf(file)), mtime: mtimeOf(file), ino: String(fs.statSync(file, { bigint: true }).ino) }); }
@@ -240,7 +240,7 @@ export const ntfsCases = {
     const problems = [];
     const record = recordById(env, 'checkpoint-c04');
     const hex = hexOf(record);
-    const ledger = ledgerWith(env, 'e5', []);
+    const ledger = ledgerWith(env, 'e5', []); register(env, ledger, false, { interrupted: true }); // held leftovers stay as disclosed anomalies
     const leftovers = [`member-${hex}-checkpoint.json.0`, `member-${hex}-checkpoint.json.1`, `entry-${entryName(0).replace('.json', '')}.0`, `entry-${entryName(0).replace('.json', '')}.1`].map((name) => p(ledger, '.pending', name));
     const expected = new Map();
     leftovers.forEach((file, index) => { fs.writeFileSync(file, `leftover ${index}`, { flag: 'wx' }); expected.set(file, { bytes: sha256(bytesOf(file)), ino: String(fs.statSync(file, { bigint: true }).ino) }); });

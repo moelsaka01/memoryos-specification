@@ -5,6 +5,7 @@
 //   node ... append <ledger> <kind> <member-name> <file>
 //   node ... export <ledger> <output>
 //   node ... verify-export <export>
+//   node ... verify-many <file.json>     verifies every ledger path listed in the JSON array (3A-M1 and 3A-K4: hundreds of small ledgers in one process)
 // Prints one JSON object {ok, op, ms, result | code, stage}. Harness only.
 import fs from 'node:fs';
 import {
@@ -24,6 +25,11 @@ try {
   else if (op === 'append') result = store.append(rest[0], { recordKind: rest[1], members: [{ name: rest[2], bytes: new Uint8Array(fs.readFileSync(rest[3])) }] });
   else if (op === 'export') result = store.exportLedger(rest[0], rest[1]);
   else if (op === 'verify-export') result = store.verifyExport(rest[0]);
+  else if (op === 'verify-many') {
+    result = JSON.parse(fs.readFileSync(rest[0], 'utf8')).map((ledger) => {
+      try { return { path: ledger, ok: true, result: store.verify(ledger) }; } catch (error) { return { path: ledger, ok: false, code: error?.code ?? null }; }
+    });
+  }
   else throw new Error(`unknown operation ${op}`);
   process.stdout.write(JSON.stringify({ ok: true, op, ms: elapsed(), result: JSON.parse(JSON.stringify(result, (key, value) => (typeof value === 'bigint' ? String(value) : value))), heapMiB: Math.round(process.memoryUsage().rss / 1048576) }));
 } catch (error) {

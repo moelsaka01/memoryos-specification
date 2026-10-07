@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
-const env = await makeEnv({ root: repo, option: (name) => (name === '--generation' ? 'dev' : null), certifying: false });
+const env = await makeEnv({ root: repo, option: (name) => (name === '--generation' ? 'dev' : name === '--tolerate' ? process.env.P3A_TOLERATE ?? null : null), certifying: false });
 const patterns = process.argv.slice(2).map((p) => new RegExp(`^${p.replace(/\*/g, '.*')}$`));
 for (const id of Object.keys(impls).filter((id) => patterns.some((p) => p.test(id))).sort((a, b) => a.localeCompare(b, 'en', { numeric: true }))) {
   const started = Date.now();

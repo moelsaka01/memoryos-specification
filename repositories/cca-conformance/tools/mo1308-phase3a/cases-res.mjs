@@ -8,7 +8,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { CLI, appendArgs, initArgs, treeDigest } from './support.mjs';
 import { conclude, recordById, register, run, work } from './env.mjs';
-import { HERE, PRELOAD, pathToFileHrefOf, pausedCli, runPython, sha256, waitForFile, writePlan } from './win.mjs';
+import { HERE, PRELOAD, bulkVerify, pathToFileHrefOf, pausedCli, runPython, sha256, waitForFile, writePlan } from './win.mjs';
 
 const p = (...parts) => path.join(...parts);
 const MODE = { children: true, exitCensus: true, exitPause: true };
@@ -134,12 +134,14 @@ export const resourceCases = {
     const latest = new Map();
     for (const row of env.ledgers) latest.set(row.path, row);
     let clean = 0; let interruptedWithAnomalies = 0; let skipped = 0;
+    // one process verifies every ledger the campaign made (the real SDK and the production store, as the CLI composes them)
+    const checked = new Map(bulkVerify([...latest.values()].filter((row) => exists(row.path) && !row.intentionalCorruption).map((row) => row.path), p(env.workRoot, 'k4')).map((row) => [row.path, row]));
     for (const row of latest.values()) {
       if (!exists(row.path)) { skipped += 1; continue; }
       if (row.intentionalCorruption) { skipped += 1; continue; }
-      const verified = run(env, ['history', 'verify', '--ledger', row.path, '--json']);
-      if (verified.status !== 0) { problems.push(`${path.basename(row.path)}: does not verify (${verified.code})`); continue; }
-      const result = verified.json.result;
+      const verified = checked.get(row.path);
+      if (verified === undefined || !verified.ok) { problems.push(`${path.basename(row.path)}: does not verify (${verified?.code ?? 'not checked'})`); continue; }
+      const result = verified.result;
       const pendingOnDisk = fs.readdirSync(p(row.path, '.pending')).length;
       const recordDirs = fs.readdirSync(p(row.path, 'records')).filter((name) => fs.readdirSync(p(row.path, 'records', name)).length > 0);
       const entries = fs.readdirSync(p(row.path, 'entries')).map((name) => JSON.parse(fs.readFileSync(p(row.path, 'entries', name), 'utf8')));

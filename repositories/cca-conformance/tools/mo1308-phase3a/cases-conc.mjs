@@ -54,6 +54,8 @@ async function reader(env, ledger, stopped, { query = false, plan = null } = {})
   return { counts, failures, runs };
 }
 
+// A ledger that ends a race with staging leftovers (the leftovers of a typed failure are disclosed anomalies, not residue of successes).
+const markResidue = (env, ledger) => { if (fs.readdirSync(p(ledger, '.pending')).length > 0) register(env, ledger, false, { interrupted: true }); };
 const readEntries = (ledger) => fs.readdirSync(p(ledger, 'entries')).map((name) => JSON.parse(fs.readFileSync(p(ledger, 'entries', name), 'utf8')));
 const verifyLedger = (env, ledger) => { const out = cliSync(env, ledger); return out; };
 import { run as syncRun } from './env.mjs';
@@ -170,6 +172,7 @@ export const concCases = {
     if (verification.json?.result?.purgedRecords !== 3) problems.push(`purgedRecords ${verification.json?.result?.purgedRecords}`);
     const succeededAppends = appends.filter((record) => record.outcome === 'success').length;
     if (entries.length !== seedIds.length + 3 + succeededAppends) problems.push(`${entries.length} entries, ${seedIds.length + 3 + succeededAppends} expected`);
+    markResidue(env, ledger);
     conclude(h, problems, { tombstones: tombstones.map((item) => ({ target: item.target, attempts: item.attempts.length })), appendsSucceeded: succeededAppends, entries: entries.length });
   },
 
@@ -208,6 +211,7 @@ export const concCases = {
     if (verified === 0) problems.push('no export completed');
     const verification = cliSync(env, ledger);
     if (verification.status !== 0) problems.push(`the ledger does not verify: ${verification.code}`);
+    markResidue(env, ledger);
     conclude(h, problems, { exports: exports.length, verified, conflicts, finalEntries: final.length });
   },
 
@@ -235,6 +239,7 @@ export const concCases = {
     }
     const final = cliSync(env, ledger);
     if (final.status !== 0 || final.json?.result?.purgedRecords !== 12 || (final.json?.result?.purgePending ?? [0]).length !== 0) problems.push('the purge did not complete cleanly');
+    markResidue(env, ledger);
     conclude(h, problems, { purges: purges.length, readerRuns: observed.map((item) => item.runs), readerFailures: observed.map((item) => item.failures) });
   },
 
@@ -255,6 +260,7 @@ export const concCases = {
     if (entries.length !== 1) problems.push(`${entries.length} entries`);
     const verification = cliSync(env, ledger);
     if (verification.status !== 0 || verification.json?.result?.entryCount !== 1) problems.push('the ledger does not verify with exactly one entry');
+    markResidue(env, ledger);
     conclude(h, problems, { writers: 8, winners, loserOutcomes: finals });
   },
 
@@ -281,6 +287,7 @@ export const concCases = {
     if (entries.filter((entry) => entry.entryType === 'TOMBSTONE').length !== 1) problems.push('there is not exactly one tombstone entry');
     const verification = cliSync(env, ledger);
     if (verification.status !== 0 || (verification.json?.result?.purgePending ?? [0]).length !== 0) problems.push('the ledger does not verify with the purge finished');
+    markResidue(env, ledger);
     conclude(h, problems, { workers: 6, winners, loserCodes: finals.filter((item) => item.status !== 0).map((item) => item.code) });
   },
 
