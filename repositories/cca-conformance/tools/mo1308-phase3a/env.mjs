@@ -32,7 +32,7 @@ export async function makeEnv({ root, option, certifying }) {
   fs.mkdirSync(sentinelDir, { recursive: true });
   if (!fs.existsSync(path.join(sentinelDir, 'sentinel.txt'))) fs.writeFileSync(path.join(sentinelDir, 'sentinel.txt'), 'untouched');
   const ledgerJournal = journal(workRoot, 'ledgers');
-  return {
+  const env = {
     repo: root, certifying, tag, scratch, identity: JSON.parse(fs.readFileSync(path.join(root, 'repositories/cca-conformance/mo1308-phase3-candidate-identity.json'), 'utf8')),
     evidenceDir: null, cache: {}, temporary: [], workRoot, sentinelDir, isWin,
     log: journal(workRoot, 'raw-log'), observers: journal(workRoot, 'observers'),
@@ -40,6 +40,9 @@ export async function makeEnv({ root, option, certifying }) {
     ledgerJournal,
     get ledgers() { return ledgerJournal.all(); },
   };
+  // A rehearsal that ended well removes its work root (a failed one keeps it for the diagnosis); a certifying generation is cleaned by `cleanup`.
+  if (!certifying && tag.startsWith('rehearsal')) process.on('exit', (code) => { if (code === 0) cleanupEnv(env); });
+  return env;
 }
 
 // Removes the work root and the sentinel directory (links first, never through a link, never outside the scratch area).

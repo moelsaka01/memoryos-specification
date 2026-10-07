@@ -33,7 +33,7 @@ const POINT = {
 export { POINT, pausedAppend, entryName, hexOf };
 
 // Runs a paused append to its stop, lets `during` act on the stopped ledger, releases it, returns the CLI result.
-async function stoppedThenReleased(controller, during) {
+export async function stoppedThenReleased(controller, during) {
   const reached = await controller.reached('P');
   if (!reached) { controller.kill(); const closed = await controller.closed; throw new Error(`the pause point was not reached: ${closed.stderr.slice(0, 160)}`); }
   try { await during(); } finally { controller.release('P'); }

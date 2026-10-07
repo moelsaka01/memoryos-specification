@@ -17,7 +17,7 @@ export async function arm(planFile) {
   const mode = { errors: false, events: false, children: false, exitCensus: false, exitPause: false, ...(plan.mode ?? {}) };
   const points = (plan.points ?? []).map((point) => ({
     ...point, nth: point.nth ?? 1, when: point.when ?? 'before', seen: 0,
-    matchers: Object.entries(point.match ?? {}).map(([index, source]) => [Number(index), new RegExp(source)]),
+    matchers: Object.entries(point.match ?? {}).map(([index, source]) => [Number(index), new RegExp(source, point.ignoreCase === true ? 'i' : '')]),
   }));
   const state = { errors: [], counts: {}, openFds: new Map() };
   const identityOf = (file) => { try { const st = real.lstatSync(file, { bigint: true }); return { ino: String(st.ino), nlink: Number(st.nlink) }; } catch { return null; } };
@@ -26,8 +26,10 @@ export async function arm(planFile) {
 
   const matches = (point, name, args) => point.op === name && point.matchers.every(([index, regex]) => { const value = norm(args[index]); return value !== null && regex.test(value); });
   const reach = (point, name, args) => {
-    real.writeFileSync(path.join(dir, `${point.id}.reached`), JSON.stringify({ pid: process.pid, op: name, args: args.map((value) => (typeof value === 'string' ? value : typeof value)), nth: point.seen }));
-    const go = path.join(dir, `${point.id}.go`);
+    // `perProcess` points write <id>-<pid>.reached (a start barrier for many processes); `goFile` names a shared release file
+    const stem = point.perProcess ? `${point.id}-${process.pid}` : point.id;
+    real.writeFileSync(path.join(dir, `${stem}.reached`), JSON.stringify({ pid: process.pid, op: name, args: args.map((value) => (typeof value === 'string' ? value : typeof value)), nth: point.seen }));
+    const go = point.goFile ?? path.join(dir, `${stem}.go`);
     const end = Date.now() + (point.timeoutMs ?? 120000);
     while (!real.existsSync(go)) {
       if (Date.now() > end) process.exit(97);

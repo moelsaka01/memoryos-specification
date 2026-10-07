@@ -10,9 +10,16 @@ import { hostCases } from './cases-host.mjs';
 import { ntfsCases } from './cases-ntfs.mjs';
 import { pathCases } from './cases-paths.mjs';
 import { pathCases2 } from './cases-paths2.mjs';
+import { concCases } from './cases-conc.mjs';
+import { swapCases } from './cases-swap.mjs';
+import { killCases } from './cases-kill.mjs';
+import { purgeHostCases } from './cases-purgehost.mjs';
+import { resourceCases } from './cases-res.mjs';
+import { transportCases } from './cases-transport.mjs';
+import { ceilingCases } from './cases-ceiling.mjs';
 
 export { makeEnv };
-export const impls = { ...cliCases, ...detCases, ...boundaryCases, ...limitCases, ...hostCases, ...ntfsCases, ...pathCases, ...pathCases2 };
+export const impls = { ...cliCases, ...detCases, ...boundaryCases, ...limitCases, ...hostCases, ...ntfsCases, ...pathCases, ...pathCases2, ...concCases, ...swapCases, ...killCases, ...purgeHostCases, ...resourceCases, ...transportCases, ...ceilingCases };
 
 // Step 3 harness items (the Windows-only code that does not exist yet).
 export const STEP3 = Object.freeze({

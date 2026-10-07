@@ -207,3 +207,41 @@ export function parseClosed(closed) {
   try { json = JSON.parse(closed.stdout || closed.stderr); } catch { json = null; }
   return { status: closed.code, signal: closed.signal, stdout: closed.stdout, stderr: closed.stderr, json, code: json?.error?.historyCode ?? null, exit: json?.error?.exitCode ?? null };
 }
+
+// A CLI run as a promise (a real process, hidden window, piped stdio). `plan` is an optional preload plan file (observation or pauses).
+export function cliAsync(cliPath, args, { cwd, env, plan = null, log = null } = {}) {
+  const tracked = spawnTracked(process.execPath, [cliPath, ...args], { cwd, env, preloadPlan: plan });
+  return tracked.closed.then((closed) => {
+    const parsed = parseClosed(closed);
+    if (log !== null) log.push({ command: args.slice(0, 2).join(' '), status: closed.code, stdout: `sha256:${sha256(Buffer.from(closed.stdout))}`, stderr: `sha256:${sha256(Buffer.from(closed.stderr))}` });
+    return { ...parsed, pid: tracked.pid };
+  });
+}
+
+// Writes a plan file for the preload and returns its path (a census or events directory is created beside it).
+export function writePlan(dir, { mode = {}, points = [] } = {}) {
+  fs.mkdirSync(dir, { recursive: true });
+  const file = path.join(dir, 'plan.json');
+  fs.writeFileSync(file, JSON.stringify({ id: path.basename(dir), dir, mode, points }));
+  return file;
+}
+
+// The console launcher (observers/console-run.py): runs one command in a chosen console/stdio/signal setting. Resolves with its JSON
+// report; `stdout` and `stderr` come back decoded from base64 as Buffers. The launcher is started hidden, so it owns a console of its own.
+export function consoleRun(env, spec, { dir }) {
+  fs.mkdirSync(dir, { recursive: true });
+  const specFile = path.join(dir, `spec-${process.hrtime.bigint()}.json`);
+  fs.writeFileSync(specFile, JSON.stringify(spec));
+  const script = path.join(OBSERVERS_DIR, 'console-run.py');
+  const child = spawn(PYTHON, ['-I', script, specFile], { windowsHide: true, shell: false, stdio: ['ignore', 'pipe', 'pipe'] });
+  env.observers?.push({ observer: 'python', script: 'console-run.py', scriptSha256: toolHash(script), purpose: `console launcher, mode ${spec.mode}${spec.event ? ` ${spec.event}` : ''}`, status: null, signal: null });
+  let out = ''; let err = '';
+  child.stdout.on('data', (chunk) => { out += chunk; });
+  child.stderr.on('data', (chunk) => { err += chunk; });
+  return new Promise((resolve) => child.on('close', (code) => {
+    let report = null;
+    try { report = JSON.parse(out); } catch { report = null; }
+    if (report === null) { resolve({ launcherFailed: true, code, stderr: err.slice(0, 400), stdout: Buffer.alloc(0), stderrBytes: Buffer.alloc(0) }); return; }
+    resolve({ ...report, stdout: report.stdout === undefined ? null : Buffer.from(report.stdout, 'base64'), stderr: report.stderr === undefined ? null : Buffer.from(report.stderr, 'base64') });
+  }));
+}

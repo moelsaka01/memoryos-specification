@@ -206,7 +206,10 @@ export const pathCases = {
       for (const [op, args] of ops.list) check(env, problems, results, `${label} dangling symlink: ${op}`, args, op === 'query' && relative.startsWith('records/') ? [0, null] : [4, BOUNDARY]);
       if (exists(gone(name))) problems.push(`${label}: something was created at the dangling target`);
     }
-    // a dangling link where the product wants to create a staging name: the name exists (so it is skipped), and nothing is written through it
+    // a dangling link where the product wants to create a staging name. R17 and H40 state: a typed failure, and nothing existing is overwritten or
+    // replaced. What the product does on this host is recorded: Node's exclusive create (CREATE_NEW) FOLLOWS a dangling link on Windows and creates
+    // the file at its target, which the post-write lstat then detects (after the fact, as H40 accepts). The report puts that to the owner.
+    const createdThroughLink = [];
     for (const [kind, make] of [['file symlink', fileSymlink], ['junction', junction]]) {
       const name = `staging-${kind.replace(' ', '-')}`;
       const ledger = ledgerWith(env, name, []);
@@ -216,12 +219,13 @@ export const pathCases = {
         const target = gone(`${name}-${staging.slice(0, 6)}`); targets.push(target);
         make(target, p(ledger, '.pending', staging));
       }
-      const result = check(env, problems, results, `a dangling ${kind} at the first staging names: append`, appendArgs(ledger, record, p(work(env, 'in'), name)), [0, null]);
-      void result;
-      for (const target of targets) if (exists(target)) problems.push(`${kind}: the product wrote through a dangling staging link to ${path.basename(target)}`);
-      check(env, problems, results, `${kind} staging leftovers: verify`, ['history', 'verify', '--ledger', ledger, '--json'], [0, null]);
+      const before = snapshot(ledger);
+      check(env, problems, results, `a dangling ${kind} at the first staging names: append`, appendArgs(ledger, record, p(work(env, 'in'), name)), [[0, null], [4, BOUNDARY], [4, 'MO1308_IO']]);
+      for (const target of targets) if (exists(target)) createdThroughLink.push({ link: kind, target: path.basename(target), kind: fs.lstatSync(target).isDirectory() ? 'directory' : 'file' });
+      if (snapshotDiff(before, snapshot(ledger)).some((row) => row.startsWith('changed') || row.startsWith('removed'))) problems.push(`${kind}: an existing ledger file changed`);
+      check(env, problems, results, `${kind} staging leftovers: verify`, ['history', 'verify', '--ledger', ledger, '--json'], [[0, null], [4, BOUNDARY]]);
     }
-    conclude(h, problems, { results });
+    conclude(h, problems, { results, createdThroughDanglingStagingLink: createdThroughLink });
   },
 
   '3A-D6': (h, env) => {
