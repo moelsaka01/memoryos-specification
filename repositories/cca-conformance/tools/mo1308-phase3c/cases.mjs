@@ -7,15 +7,14 @@ import { purge } from './cases-purge.mjs';
 import { data } from './cases-data.mjs';
 import { authority } from './cases-authority.mjs';
 import { hostileCases } from './cases-hostile.mjs';
+import { linkCases } from './cases-links.mjs';
+import { nativeCases } from './cases-native.mjs';
 
 export { makeEnv };
-const implemented = { ...tamper, ...admission, ...sha, ...purge, ...data, ...authority, ...hostileCases };
+const implemented = { ...tamper, ...admission, ...sha, ...purge, ...data, ...authority, ...hostileCases, ...linkCases, ...nativeCases };
 
 export const knownFindings = {};
 export const impls = implemented;
 
-// Declared host-only: not runnable on this host class, or an input that is not a program.
-export const hostOnly = {
-  '3C-F3': 'HOST_ONLY: links and junctions inside an export directory need NTFS reparse points (Step 3 Windows harness)',
-  '3C-G2': 'HOST_ONLY: needs the MO-1307 native evaluate, which exists only on the Windows reference host',
-};
+// Nothing is declared host-only any more: F3 and G2 are implemented by the Windows harness (links.mjs, cases-links.mjs, cases-native.mjs).
+export const hostOnly = {};

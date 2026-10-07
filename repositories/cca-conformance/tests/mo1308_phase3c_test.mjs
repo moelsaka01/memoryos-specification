@@ -23,8 +23,10 @@ test('C01 every 3C case is implemented or declared host-only, none both', () => 
   assert.deepEqual(checkDefinition({ inventory, stream: '3C', impls, hostOnly }), []);
 });
 
-test('C02 host-only declarations are exactly the two that cannot run in the cloud', () => {
-  assert.deepEqual(Object.keys(hostOnly).sort(), ['3C-F3', '3C-G2']);
+test('C02 nothing is declared host-only: F3 and G2 are implemented by the Windows harness, and a certifying generation refuses every skip', () => {
+  assert.deepEqual(Object.keys(hostOnly), []);
+  assert.equal(typeof impls['3C-F3'], 'function');
+  assert.equal(typeof impls['3C-G2'], 'function');
 });
 
 test('C03 known findings are all implemented (so a certifying run executes them for real)', () => {
