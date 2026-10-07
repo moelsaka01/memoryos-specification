@@ -35,14 +35,14 @@ test('D01 the ten 3D cases (steps D and E) are all implemented and none is host-
   assert.equal(Object.keys(impls).length, 10);
 });
 
-test('D02 against the real repository today: D1 is READY, everything else NOT_READY with reasons, and nothing is written', () => {
+test('D02 against the real repository today: D1 and D5 are READY (corrected candidate, A3.2 g3 PASS), everything else NOT_READY with reasons, and nothing is written', () => {
   const before = gitText(repo, ['status', '--porcelain']);
   const report = validateFinal({ root: repo });
   assert.equal(report.result, 'NOT_READY');
   const status = Object.fromEntries(report.cases.map((row) => [row.id, row.status]));
-  assert.deepEqual(status, { '3D-D1': 'READY', '3D-D2': 'NOT_READY', '3D-D3': 'NOT_READY', '3D-D4': 'NOT_READY', '3D-D5': 'NOT_READY', '3D-D6': 'NOT_READY', '3D-D7': 'NOT_READY', '3D-E1': 'NOT_READY', '3D-E2': 'NOT_READY', '3D-E3': 'NOT_READY' });
+  assert.deepEqual(status, { '3D-D1': 'READY', '3D-D2': 'NOT_READY', '3D-D3': 'NOT_READY', '3D-D4': 'NOT_READY', '3D-D5': 'READY', '3D-D6': 'NOT_READY', '3D-D7': 'NOT_READY', '3D-E1': 'NOT_READY', '3D-E2': 'NOT_READY', '3D-E3': 'NOT_READY' });
   assert.match(report.cases.find((row) => row.id === '3D-D2').problems[0], /no accepted certifying generation/);
-  assert.match(report.cases.find((row) => row.id === '3D-D5').problems[0], /A3\.2 verdict is "FAILED_PRESERVED", not PASS/, 'the real A3.2 receipt of the precondition branch is FAILED_PRESERVED');
+  assert.equal(report.cases.find((row) => row.id === '3D-D5').observed.verdict, 'PASS', 'the real A3.2 generation 3 receipt is PASS');
   assert.equal(gitText(repo, ['status', '--porcelain']), before, 'a read-only validator changes nothing');
   assert.throws(() => buildI3Inventory({ root: repo }), (error) => error.code === 'NOT_READY');
 });

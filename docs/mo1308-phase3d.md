@@ -21,7 +21,7 @@ with reasons, and for D7 `PENDING_BF`.
 
 | Case | Recomputed from immutable inputs |
 |---|---|
-| D1 | HEAD descends from B2; the candidate identity re-verifies against HEAD; no commit after B2 touches a production path (each commit against each parent) |
+| D1 | HEAD descends from the candidate `b0bf2d56`; the candidate identity re-verifies against HEAD; no commit after it introduces new production bytes (each production blob equals one parent's) |
 | D2 | every generation directory under `evidence/mo1308/` verifies (`verifyEvidence`); per stream exactly one accepted certifying generation, the latest; every earlier one is `FAILED_PRESERVED` or `ESCALATED_PRESERVED`, superseded by the next with the prior evidence-seal hash and a valid disposition (shape, generation, seal, `NEW_GENERATION`, ordinal, owner approval reference); rehearsals are listed but never accepted and must be non-certifying and non-promotable; the accepted 3A generation binds the A3.2 receipt that D5 reads |
 | D3 | R01–R37 are exactly the inventory list and each has a PASS case in an accepted generation (a requirement whose cases are all 3D cases is proven by D4/D5 of the same run) |
 | D4 | a retained regression record (below) for this production tree, naming a commit that is HEAD or its ancestor, with suites `mo1308`, `cli`, `studio`, `mo1307` (639 tests) and `examples`, each a clean pass with a raw-log digest |
@@ -39,15 +39,14 @@ with reasons, and for D7 `PENDING_BF`.
 
 ## 3. Rehearsal against the current state
 
-`validate-final.mjs` on the real repository: `NOT_READY`; D1 READY (the candidate and every commit since leave the 45 production paths
-byte-identical); D2–D7 and E1–E3 NOT_READY (no certifying evidence, no regression record, no disclosures, no I3). D5 reads the real A3.2 receipt now merged from the precondition branch: its `verdict` is `FAILED_PRESERVED` (A3.2 rule 2: `memoryos.vscode.runtime` passes on BF and fails on B2), so D5 is NOT_READY for that reason. This confirms that the verdict member is `verdict`.
+`validate-final.mjs` on the real repository: `NOT_READY`; D1 READY (the head carries the corrected candidate's 45 production blobs and no commit after it introduces new production bytes) and D5 READY (the real A3.2 generation 3 receipt's top-level `verdict` is `PASS`); D2–D4, D6, D7 and E1–E3 are NOT_READY (no certifying evidence, no regression record, no disclosures, no I3).
 `campaign.mjs rehearse` ends `REHEARSAL_FAILED` at D2 (the first mandatory failure stops the generation, as designed). The test
 `mo1308_phase3d_test.mjs` also fabricates a complete local clone (three accepted generations, receipts, disclosures, regression
 record) and walks it through `NOT_READY` → I3 → `I3_VALID_PENDING_BF` → `CERTIFIED_READY_TO_TAG`, plus tamper and rehearsal negatives.
 
 ## 4. Inputs the protocol does not fix (assumptions to confirm)
 
-1. **A3.2 receipt member.** Confirmed from the real receipt: `receipt.json` → `verdict`; the validator requires `"PASS"`.
+1. **A3.2 receipt member.** Confirmed from the real receipt: `phase3-precondition-g3/receipt.json` → top-level `verdict`; the validator requires `"PASS"` (`binding.json` has no verdict member and only hashes the receipt).
 2. **Regression record.** D4 needs the retained full regression as a bound input; no format exists. The validator expects `evidence/mo1308/phase3d/regression.json` of kind `MO1308Phase3RegressionRecord` (`commit`, `candidate.productionTreeDigest`, `suites[] {name, passed, failed, skipped, total, exitCode, logSha256}`).
 3. **Dispositions.** The protocol defines the record but not its location. The validator finds `MO1308Phase3Disposition` files anywhere under `evidence/mo1308/` whose path contains "disposition", by hash, through the successor generation's `supersedes.dispositionSha256`.
 4. **File names.** `docs/mo1308-release-disclosures.md`, `mo1308-final-release-inventory.json` (I3) and `mo1308-final-binding.json` (BF) follow MO-1307's pattern and are not yet fixed by the protocol.

@@ -17,7 +17,7 @@ import { digestOfJson, sha256Hex, walkRecords } from '../mo1308-phase3/lib/hashi
 import { stableStringify } from '../mo1308-phase3/lib/stable-json.mjs';
 
 export const CANDIDATE_IDENTITY_FILE = 'repositories/cca-conformance/mo1308-phase3-candidate-identity.json';
-export const A32_RECEIPT_FILE = `${EVIDENCE_ROOT}/phase3-precondition-g2/receipt.json`;
+export const A32_RECEIPT_FILE = `${EVIDENCE_ROOT}/phase3-precondition-g3/receipt.json`;
 export const REGRESSION_FILE = `${EVIDENCE_ROOT}/phase3d/regression.json`;
 export const DISCLOSURES_FILE = 'docs/mo1308-release-disclosures.md';
 export const FINAL_INVENTORY_FILE = 'repositories/cca-conformance/mo1308-final-release-inventory.json';
@@ -77,12 +77,25 @@ export function checkD1({ root, repo = root, head, identity }) {
   const problems = [];
   if (!isAncestor(repo, identity.baseCommit, head)) return { problems: [`${head.slice(0, 8)} does not descend from the candidate ${identity.baseCommit.slice(0, 8)}`], observed: {} };
   problems.push(...verifyCandidate({ repo, identity, against: head, worktree: false }));
-  const production = new Set(identity.productionPaths.map((row) => row.path));
+  // No commit introduces production bytes: at every commit after the candidate the blob of each production path equals the blob in one
+  // of its parents (an ordinary commit changes none; a merge takes one side's). The head equals the candidate, checked above.
+  const paths = identity.productionPaths.map((row) => row.path);
+  const blobs = new Map();
+  const blobsAt = (commit) => {
+    if (!blobs.has(commit)) {
+      const rows = new Map();
+      for (const line of git(repo, ['ls-tree', '-r', commit, '--', ...paths]).stdout.toString('utf8').split('\n').filter(Boolean)) { const [meta, file] = line.split('\t'); rows.set(file, meta.split(' ')[2]); }
+      blobs.set(commit, rows);
+    }
+    return blobs.get(commit);
+  };
   const commits = commitsBetween(repo, identity.baseCommit, head);
   for (const { commit, parents } of commits) {
-    for (const parent of parents.length === 0 ? [identity.baseCommit] : parents) {
-      const touched = changedPaths(repo, parent, commit).filter((file) => production.has(file));
-      if (touched.length > 0) problems.push(`${commit.slice(0, 8)} changes production path ${touched[0]}`);
+    const here = blobsAt(commit);
+    for (const file of paths) {
+      if (parents.length > 0 && parents.some((parent) => blobsAt(parent).get(file) === here.get(file))) continue;
+      problems.push(`${commit.slice(0, 8)} introduces new bytes for production path ${file}`);
+      break;
     }
   }
   return { problems, observed: { candidate: identity.baseCommit, productionTreeDigest: identity.productionTreeDigest, commitsChecked: commits.length } };
@@ -128,7 +141,7 @@ export function checkD2({ root, inventory, generations, dispositions, a32Sha256 
     });
     // the accepted 3A generation binds the A3.2 receipt that this run is checking (D5)
     if (stream === '3A' && last.seal !== null) {
-      const bound = last.seal.inputs.find((item) => item.path.endsWith('phase3-precondition-g2/receipt.json'));
+      const bound = last.seal.inputs.find((item) => item.path.endsWith('phase3-precondition-g3/receipt.json'));
       if (bound === undefined) problems.push('3A: the accepted generation does not bind the A3.2 receipt');
       else if (a32Sha256 !== null && bound.sha256 !== a32Sha256) problems.push('3A: the A3.2 receipt changed since the accepted generation sealed it');
     }
