@@ -19,7 +19,12 @@ import { transportCases } from './cases-transport.mjs';
 import { ceilingCases } from './cases-ceiling.mjs';
 
 export { makeEnv };
-export const impls = { ...cliCases, ...detCases, ...boundaryCases, ...limitCases, ...hostCases, ...ntfsCases, ...pathCases, ...pathCases2, ...concCases, ...swapCases, ...killCases, ...purgeHostCases, ...resourceCases, ...transportCases, ...ceilingCases };
+const rawImpls = { ...cliCases, ...detCases, ...boundaryCases, ...limitCases, ...hostCases, ...ntfsCases, ...pathCases, ...pathCases2, ...concCases, ...swapCases, ...killCases, ...purgeHostCases, ...resourceCases, ...transportCases, ...ceilingCases };
+
+// Receipts hold safe integers only (protocol section 12): a non-integer number in an observation is kept as its decimal text.
+const sanitize = (value) => (typeof value === 'number' ? (Number.isSafeInteger(value) ? value : String(value)) : Array.isArray(value) ? value.map(sanitize)
+  : value !== null && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([key, item]) => [key, sanitize(item)])) : value);
+export const impls = Object.fromEntries(Object.entries(rawImpls).map(([id, implementation]) => [id, (handle, env) => implementation({ ...handle, observe: (value) => handle.observe(sanitize(value)) }, env)]));
 
 // Step 3 harness items (the Windows-only code that does not exist yet).
 export const STEP3 = Object.freeze({
