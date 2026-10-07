@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { work, recordById, memo, conclude } from './env.mjs';
+import { createHistoryStore } from '../../../memoryos-cli/src/history-store.js';
 import { cli, appendArgs, buildDiskLedger, dec, enc, filler, flipFirstHex, jcs, resealCheckpoint, sha, treeDigest, withMember, dropMember, MemoryLedger, attempt, CORPUS_WORKSPACE, sdk, D, tempDir } from './support.mjs';
 
 const OTHER_WORKSPACE = 'workspace-other';
@@ -119,16 +120,25 @@ function runCell(env, cell, index) {
   const directory = work(env);
   const workspace = cell.setup.workspace ?? CORPUS_WORKSPACE;
   const ledger = path.join(directory, `ledger-${index}`);
-  const init = cli(['history', 'init', '--ledger', ledger, '--name', `p3c-cell-${index}`, '--workspace', workspace, '--json']);
-  if (init.status !== 0) throw new Error(`init failed: ${init.stderr.slice(0, 200)}`);
-  for (const id of cell.setup.pre ?? []) {
-    const result = cli(appendArgs(ledger, recordById(env, id), path.join(directory, `pre-${id}`)));
-    if (result.status !== 0) throw new Error(`pre-append ${id} failed: ${result.code}`);
+  // Cells with the same setup start from the same ledger: it is built once through the CLI (init, pre-appends, purges) and copied byte for
+  // byte for each cell, so a cell costs one append process instead of a dozen (the step guard of 3C-C is 5 minutes).
+  const key = JSON.stringify({ workspace, pre: cell.setup.pre ?? [], purge: cell.setup.purge ?? [] });
+  const templates = memo(env, 'cell-templates', () => new Map());
+  if (!templates.has(key)) {
+    const template = path.join(work(env), 'template');
+    const init = cli(['history', 'init', '--ledger', template, '--name', 'p3c-cell', '--workspace', workspace, '--json']);
+    if (init.status !== 0) throw new Error(`init failed: ${init.stderr.slice(0, 200)}`);
+    for (const id of cell.setup.pre ?? []) {
+      const result = cli(appendArgs(template, recordById(env, id), path.join(directory, `pre-${id}`)));
+      if (result.status !== 0) throw new Error(`pre-append ${id} failed: ${result.code}`);
+    }
+    for (const target of cell.setup.purge ?? []) {
+      const result = cli(['history', 'tombstone', '--ledger', template, '--target', String(target), '--reason', 'OPERATOR_CORRECTION', '--authority-reference', 'P3C-CELL', '--json']);
+      if (result.status !== 0) throw new Error(`purge ${target} failed: ${result.code}`);
+    }
+    templates.set(key, template);
   }
-  for (const target of cell.setup.purge ?? []) {
-    const result = cli(['history', 'tombstone', '--ledger', ledger, '--target', String(target), '--reason', 'OPERATOR_CORRECTION', '--authority-reference', 'P3C-CELL', '--json']);
-    if (result.status !== 0) throw new Error(`purge ${target} failed: ${result.code}`);
-  }
+  fs.cpSync(templates.get(key), ledger, { recursive: true, errorOnExist: true, force: false });
   const before = treeDigest(ledger);
   const run = cli(appendArgs(ledger, cell.record, path.join(directory, 'record')));
   const after = treeDigest(ledger);
@@ -137,8 +147,10 @@ function runCell(env, cell, index) {
     const query = cli(['history', 'query', '--ledger', ledger, '--kind', 'HUMAN_DECISION_CLAIM', '--retention', 'RETAINED', '--from', '0', '--limit', '10', '--json']);
     label = query.json?.result?.entries?.[0]?.decisionConsistency ?? null;
   }
-  const verify = cli(['history', 'verify', '--ledger', ledger, '--json']);
-  return { status: run.status, code: run.code, exit: run.exit, changed: before !== after, label, ledgerVerifiesAfter: verify.status === 0 };
+  // the real SDK and the production store verify the ledger in this process (the CLI verify is the same composition)
+  let verifies = true;
+  try { createHistoryStore({ engine: sdk }).verify(ledger); } catch { verifies = false; }
+  return { status: run.status, code: run.code, exit: run.exit, changed: before !== after, label, ledgerVerifiesAfter: verifies };
 }
 
 const results = (env) => memo(env, 'cell-results', () => new Map());
