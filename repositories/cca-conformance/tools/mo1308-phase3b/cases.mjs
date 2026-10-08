@@ -7,7 +7,8 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as A from './audit.mjs';
-import { archiveA, archiveB, assembleFromArchive, assembleFromObjects, assembleFromWorktree, extractEntries, manifestOf } from './assemble.mjs';
+import { archiveA, archiveB, assembleFromArchive, assembleFromObjects, assembleFromWorktree, extractEntries, listWorktrees, manifestOf } from './assemble.mjs';
+import { makeTemp, tempRecord } from '../mo1308-phase3/short-temp.mjs';
 import { permissionFlag, runSequence } from './smoke.mjs';
 import { corpusRecords } from '../mo1308-phase3/corpus.mjs';
 import { git, gitText, revParse, treeEntry, blobBytes } from '../mo1308-phase3/lib/git.mjs';
@@ -32,7 +33,9 @@ export async function makeEnv({ root, option, certifying }) {
   return env;
 }
 
-const temporary = (env, prefix) => { const directory = fs.mkdtempSync(path.join(os.tmpdir(), prefix)); env.temporary.push(directory); return directory; };
+// A8.9: temporary directories are made under the short temporary root (C:\tt\3b-<n> on Windows), never under the system temp path.
+// `purpose` only documents what the directory is for.
+const temporary = (env, purpose) => { void purpose; const directory = makeTemp('3b'); env.temporary.push(directory); return directory; };
 const productionPaths = (env) => env.identity.productionPaths.map((row) => row.path);
 const memo = (env, key, make) => (env.cache[key] ??= make());
 const entriesA = (env) => memo(env, 'entriesA', () => assembleFromObjects({ repo: env.repo, commit: env.commit, paths: productionPaths(env) }));
@@ -205,9 +208,14 @@ export const impls = {
   },
   '3B-E2': (h, env) => {
     const reference = manifestOf(entriesA(env)).filesDigest;
+    // The repository may have any number of other worktrees; the case checks only the ones it makes itself (by path): they are gone afterwards.
+    const registeredBefore = listWorktrees(env.repo);
     const digests = Object.fromEntries(['true', 'false'].map((setting) => [setting, manifestOf(assembleFromWorktree({ repo: env.repo, commit: env.commit, paths: productionPaths(env), autocrlf: setting })).filesDigest]));
     const problems = Object.entries(digests).filter(([, digest]) => digest !== reference).map(([setting]) => `a clean worktree with core.autocrlf=${setting} differs from the object assembly`);
-    conclude(h, { problems, observed: { reference, worktrees: digests } });
+    const registeredAfter = listWorktrees(env.repo);
+    const left = registeredAfter.filter((worktree) => !registeredBefore.includes(worktree));
+    if (left.length > 0) problems.push(`the case left worktrees behind: ${left.join(', ')}`);
+    conclude(h, { problems, observed: { reference, worktrees: digests, ownWorktreesLeftBehind: left.length, temporaryRoot: { base: tempRecord().base, maxLength: tempRecord().maxLength } } });
   },
   '3B-E3': (h, env) => {
     const a = archiveA(entriesA(env));

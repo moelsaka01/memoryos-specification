@@ -4,11 +4,11 @@
 // bytes alone, including the git blob id (computed here, not asked of git), so agreement is a real cross-check.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { git, treeEntry, blobBytes } from '../mo1308-phase3/lib/git.mjs';
 import { digestOfJson, sha256Hex } from '../mo1308-phase3/lib/hashing.mjs';
 import { readTar, writeTarA, writeTarB } from './tar.mjs';
+import { makeTemp, removeTemp } from '../mo1308-phase3/short-temp.mjs';
 
 export const blobId = (bytes) => crypto.createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex');
 const compare = (a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
@@ -39,9 +39,15 @@ export function assembleFromArchive({ repo, commit, paths }) {
   return entries.filter((entry) => wanted.has(entry.path));
 }
 
-// C: a clean detached worktree with only the production paths checked out, under core.autocrlf = `autocrlf`.
+// The worktrees git lists for `repo` (normalized paths). The campaign never assumes how many exist: other worktrees of the repository are not its business.
+const normalize = (value) => path.resolve(value).split(path.sep).join('/').toLowerCase();
+export const listWorktrees = (repo) => git(repo, ['worktree', 'list', '--porcelain']).stdout.toString('utf8').split('\n').filter((line) => line.startsWith('worktree ')).map((line) => normalize(line.slice('worktree '.length)));
+
+// C: a clean detached worktree with only the production paths checked out, under core.autocrlf = `autocrlf`. The worktree is made under the short
+// temporary root (A8.9), is removed by its own path only (no `git worktree prune`: that would also drop the records of other, missing worktrees), and
+// the function fails if git still lists it afterwards.
 export function assembleFromWorktree({ repo, commit, paths, autocrlf }) {
-  const directory = fs.mkdtempSync(path.join(os.tmpdir(), `mo1308-p3b-wt-${autocrlf}-`));
+  const directory = makeTemp('3b');
   try {
     git(repo, ['worktree', 'add', '--detach', '--no-checkout', directory, commit]);
     // The repository's own attribute rules travel with a real clone, so they are checked out too: .gitattributes (eol=lf)
@@ -56,8 +62,8 @@ export function assembleFromWorktree({ repo, commit, paths, autocrlf }) {
     }));
   } finally {
     git(repo, ['worktree', 'remove', '--force', directory], { allowFailure: true });
-    fs.rmSync(directory, { recursive: true, force: true });
-    git(repo, ['worktree', 'prune'], { allowFailure: true });
+    removeTemp(directory);
+    if (listWorktrees(repo).includes(normalize(directory))) throw new Error(`the campaign's own worktree ${directory} is still registered after removal`);
   }
 }
 

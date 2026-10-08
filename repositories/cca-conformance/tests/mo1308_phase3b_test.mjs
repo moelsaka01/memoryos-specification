@@ -9,7 +9,8 @@ import { fileURLToPath } from 'node:url';
 import * as A from '../tools/mo1308-phase3b/audit.mjs';
 import { impls, auditToolSources, loadedSet } from '../tools/mo1308-phase3b/cases.mjs';
 import { pin } from '../tools/mo1308-phase3b/pin-baseline.mjs';
-import { archiveA, archiveB, assembleFromArchive, assembleFromObjects, assembleFromWorktree, blobId, manifestOf } from '../tools/mo1308-phase3b/assemble.mjs';
+import { archiveA, archiveB, assembleFromArchive, assembleFromObjects, assembleFromWorktree, blobId, listWorktrees, manifestOf } from '../tools/mo1308-phase3b/assemble.mjs';
+import { makeTemp, removeTemp } from '../tools/mo1308-phase3/short-temp.mjs';
 import { readTar, writeTarA, writeTarB } from '../tools/mo1308-phase3b/tar.mjs';
 import { rehearse, checkDefinition } from '../tools/mo1308-phase3/lib/campaign-driver.mjs';
 import { git, repositoryRoot } from '../tools/mo1308-phase3/lib/git.mjs';
@@ -29,11 +30,12 @@ const baseline = JSON.parse(fs.readFileSync(path.join(repo, TOOLS, 'baseline.jso
 const identity = JSON.parse(fs.readFileSync(path.join(repo, 'repositories/cca-conformance/mo1308-phase3-candidate-identity.json'), 'utf8'));
 const haveTags = baseline.tags.every((tag) => git(repo, ['rev-parse', '-q', '--verify', `refs/tags/${tag.name}`], { allowFailure: true }).status === 0);
 const ctx = { repo, commit: 'HEAD', bf: BF, baseline, identity };
-const tmp = (t) => { const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'mo1308-p3b-test-')); t.after(() => fs.rmSync(directory, { recursive: true, force: true })); return directory; };
+const tmp = (t) => { const directory = makeTemp('3b'); t.after(() => removeTemp(directory)); return directory; };
 
 // A commit (unreferenced) that descends from HEAD with the given file edits: a Buffer replaces or adds, null removes.
 function derive(edits) {
-  const index = path.join(os.tmpdir(), `mo1308-p3b-index-${process.pid}-${Math.random().toString(16).slice(2)}`);
+  const indexDirectory = makeTemp('3b');
+  const index = path.join(indexDirectory, 'index');
   const run = (args, input) => {
     const result = spawnSync('git', args, { cwd: repo, env: { ...process.env, GIT_INDEX_FILE: index }, input, encoding: 'buffer' });
     if (result.status !== 0) throw new Error(`git ${args[0]}: ${result.stderr.toString()}`);
@@ -47,7 +49,7 @@ function derive(edits) {
     }
     const tree = run(['write-tree']);
     return run(['-c', 'user.name=t', '-c', 'user.email=t@t', 'commit-tree', tree, '-p', 'HEAD', '-m', 'p3b-test'], Buffer.alloc(0));
-  } finally { fs.rmSync(index, { force: true }); }
+  } finally { removeTemp(indexDirectory); }
 }
 const read = (file, commit = 'HEAD') => git(repo, ['cat-file', 'blob', `${commit}:${file}`]).stdout;
 const append = (file, extra) => Buffer.concat([read(file), Buffer.from(extra)]);
@@ -89,6 +91,7 @@ test('T03 blob ids are computed without git and match it', () => {
 
 test('E01 the object-database, git-archive and clean-worktree assemblies agree, and so do the archives', () => {
   const paths = identity.productionPaths.map((row) => row.path);
+  const worktreesBefore = listWorktrees(repo);   // the repository may have any number of other worktrees: only the ones this test makes are checked
   const objects = assembleFromObjects({ repo, commit: 'HEAD', paths });
   const archive = assembleFromArchive({ repo, commit: 'HEAD', paths });
   assert.equal(objects.length, 45);
@@ -96,7 +99,7 @@ test('E01 the object-database, git-archive and clean-worktree assemblies agree, 
   for (const setting of ['true', 'false']) assert.equal(manifestOf(assembleFromWorktree({ repo, commit: 'HEAD', paths, autocrlf: setting })).filesDigest, manifestOf(objects).filesDigest, `autocrlf=${setting}`);
   assert.ok(archiveA(objects).equals(archiveB(archive)));
   assert.ok(manifestOf(objects).files.every((row, index) => row.blob === identity.productionPaths[index].blob), 'blob ids equal the candidate identity');
-  assert.deepEqual(git(repo, ['worktree', 'list']).stdout.toString().trim().split('\n').length, 1, 'no worktree is left behind');
+  assert.deepEqual(listWorktrees(repo), worktreesBefore, 'the worktrees this test made are removed again (and no other worktree was touched)');
 });
 
 // ---------------------------------------------------------------- audits on the real repository
