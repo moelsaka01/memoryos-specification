@@ -17,6 +17,7 @@ import { runSegment } from '../tools/mo1308-phase3/lib/runner.mjs';
 import { sealGeneration } from '../tools/mo1308-phase3/lib/seal.mjs';
 import { stableBytes } from '../tools/mo1308-phase3/lib/stable-json.mjs';
 import { sha256Hex } from '../tools/mo1308-phase3/lib/hashing.mjs';
+import { makeTemp, removeTemp, tempBase } from '../tools/mo1308-phase3/short-temp.mjs';
 
 // MO-1308 Phase 3D: the read-only validator and the I3 inventory builder, against the real repository (expected NOT_READY, because
 // no certifying evidence exists yet) and against a fabricated, complete, local clone (every state from I3 to the binding-only BF).
@@ -28,7 +29,8 @@ const MANIFEST = 'repositories/cca-conformance/mo1308-phase3-corpus-manifest.jso
 const TOOL = 'repositories/cca-conformance/tools/mo1308-phase3/lib/runner.mjs';
 const EVIDENCE = 'repositories/cca-conformance/evidence/mo1308';
 const inventory = loadInventory(path.join(repo, INVENTORY_FILE));
-const tmp = (t) => { const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'mo1308-p3d-test-')); t.after(() => fs.rmSync(directory, { recursive: true, force: true })); return directory; };
+// A8.9: temporary checkouts and clones live under the short temporary root (C:/tt/3d-N on Windows), never under the system temp path.
+const tmp = (t) => { const directory = makeTemp('3d'); t.after(() => removeTemp(directory)); return directory; };
 
 test('D01 the ten 3D cases (steps D and E) are all implemented and none is host-only', () => {
   assert.deepEqual(checkDefinition({ inventory, stream: '3D', impls, hostOnly }), []);
@@ -55,7 +57,7 @@ const review = () => ({ kind: 'MO1308Phase3Review', version: '1.0.0', subject: [
 function makeClone(t) {
   const directory = path.join(tmp(t), 'clone');
   const run = (cwd, args) => { const result = spawnSync('git', args, { cwd, encoding: 'utf8' }); if (result.status !== 0) throw new Error(`git ${args.join(' ')}: ${result.stderr}`); return result.stdout.trim(); };
-  run(os.tmpdir(), ['clone', '-q', '--shared', '--no-checkout', repo, directory]);
+  run(path.dirname(directory), ['clone', '-q', '--shared', '--no-checkout', repo, directory]);
   run(directory, ['checkout', '-q', '--detach', gitText(repo, ['rev-parse', 'HEAD'])]);
   run(directory, ['config', 'user.name', 'p3d-test']); run(directory, ['config', 'user.email', 'p3d@example.test']); run(directory, ['config', 'commit.gpgsign', 'false']);
   return { directory, run: (...args) => run(directory, args) };
@@ -165,7 +167,7 @@ test('D07 the validator CLI is read-only and its exit code follows the result', 
   const run = spawnSync(process.execPath, [path.join(here, '../tools/mo1308-phase3d/validate-final.mjs'), '--root', repo], { encoding: 'utf8' });
   assert.equal(run.status, 1);
   assert.equal(JSON.parse(run.stdout).result, 'NOT_READY');
-  const bad = spawnSync(process.execPath, [path.join(here, '../tools/mo1308-phase3d/validate-final.mjs'), '--root', path.join(os.tmpdir(), 'absent-root-p3d')], { encoding: 'utf8' });
+  const bad = spawnSync(process.execPath, [path.join(here, '../tools/mo1308-phase3d/validate-final.mjs'), '--root', path.join(tempBase(), 'absent-root-p3d')], { encoding: 'utf8' });
   assert.equal(bad.status, 2);
   void allCases;
 });
