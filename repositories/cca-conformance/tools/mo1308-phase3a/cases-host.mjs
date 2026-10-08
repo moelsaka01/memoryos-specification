@@ -11,8 +11,8 @@ import { validateReview } from '../mo1308-phase3/lib/receipts.mjs';
 
 export const PINNED_NODE = Object.freeze({ version: 'v24.21.0', sha256: 'ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32', byteLength: 93580104 });
 export const BASELINE_COMMIT = '1dd1e8c82fe0ed5a32a894744392f2c279f89d4c';
-const PRECONDITION_RECEIPT = 'repositories/cca-conformance/evidence/mo1308/phase3-precondition-g3/receipt.json';
-const PRECONDITION_BINDING = 'repositories/cca-conformance/evidence/mo1308/phase3-precondition-g3/binding.json';
+const PRECONDITION_RECEIPT = 'repositories/cca-conformance/evidence/mo1308/phase3-precondition-g4/receipt.json';
+const PRECONDITION_BINDING = 'repositories/cca-conformance/evidence/mo1308/phase3-precondition-g4/binding.json';
 export const GATE_INPUTS = Object.freeze([PRECONDITION_RECEIPT, PRECONDITION_BINDING]);
 export const HARNESS_REVIEW = 'repositories/cca-conformance/evidence/mo1308/phase3a-harness-review/review.json';
 
