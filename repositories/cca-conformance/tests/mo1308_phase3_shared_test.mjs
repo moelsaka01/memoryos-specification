@@ -21,6 +21,7 @@ import { validateDisposition, requiresOwnerReview } from '../tools/mo1308-phase3
 import { CampaignError, isApprovedStatus, parseGeneration, protocolStatus, sealGeneration, sharedToolPaths, verifyBindings } from '../tools/mo1308-phase3/lib/seal.mjs';
 import { HarnessError, closeGeneration, runSegment, verifyEvidence } from '../tools/mo1308-phase3/lib/runner.mjs';
 import { writeOnce } from '../tools/mo1308-phase3/lib/evidence.mjs';
+import { checkEvidenceAllowance, classifyEvidencePath } from '../tools/mo1308-phase3/lib/evidence-allowance.mjs';
 import { MAX_TEMP_ROOT_LENGTH, TEMP_ROOT_VARIABLE, makeTemp, removeTemp, tempBase, tempRecord } from '../tools/mo1308-phase3/short-temp.mjs';
 import { buildExecutors, checkDefinition, rehearse, summarize } from '../tools/mo1308-phase3/lib/campaign-driver.mjs';
 import { checkDisclosure, qualificationCases, readOutcomes, structuralQualifications } from '../tools/mo1308-phase3/lib/disclosure.mjs';
@@ -209,31 +210,57 @@ test('A01 every path changed since BF up to the corrected candidate is in the al
   assert.equal(ALLOWED_CHANGE_RULES.length, 7);
 });
 
-// The only evidence a stream branch may carry on top of the candidate (A8.9): the owner's recorded A3.x precondition evidence, and the rehearsal
-// evidence directories the protocol defines (section 5.3, owner decision 7: evidence/mo1308/phase3<a|b|c|d>-rehearsal-r<N>/). Certifying
-// generation directories (phase3a, phase3a-g2, ...) and anything else are never allowed here: they are committed only after a sealed run.
-const ALLOWED_EVIDENCE = /\/evidence\/mo1308\/(phase3-precondition(-g\d+)?|phase3[abcd]-rehearsal-r\d+)\//u;
+/// The only evidence a stream branch may carry on top of the candidate (A8.9, A8.10): the owner's recorded A3.x precondition evidence, the rehearsal
+// evidence directories the protocol defines (section 5.3, owner decision 7), and certifying generation directories (phase3<a|b|c|d>(-gN)) whose
+// evidence seal verifies under the protocol. Everything else, and a certifying directory that does not verify, is rejected (lib/evidence-allowance.mjs).
 
-test('A02 this branch changes no production path and adds no evidence of its own (only the A3.x precondition evidence and protocol-defined rehearsal evidence)', { skip: !haveBase }, () => {
+test('A02 this branch changes no production path and adds no evidence beyond the A3.x precondition evidence, protocol-defined rehearsal evidence and verifying certifying generations', { skip: !haveBase }, () => {
   const names = new Set(git(repo, ['diff', '--name-only', '-z', CANDIDATE_BASE]).stdout.toString('utf8').split('\0').filter(Boolean));
   for (const name of git(repo, ['ls-files', '--others', '--exclude-standard', '-z']).stdout.toString('utf8').split('\0').filter(Boolean)) names.add(name);
-  for (const name of names) {
-    // the evidence merged from mo1308/phase3-precondition (Amendments A3.1 to A3.3) is the owner's recorded evidence, not this step's
-    if (name.includes('/evidence/')) assert.match(name, ALLOWED_EVIDENCE, `${name}: only A3.x precondition evidence and protocol-defined rehearsal evidence may be carried`);
-    assert.notEqual(classifyChangedPath(name), null, `${name} is outside the allowed set`);
-  }
+  assert.deepEqual(checkEvidenceAllowance({ root: repo, names: [...names], inventory }), []);
+  for (const name of names) assert.notEqual(classifyChangedPath(name), null, `${name} is outside the allowed set`);
   const identity = JSON.parse(fs.readFileSync(inFile(IDENTITY), 'utf8'));
   const productionPaths = new Set(identity.productionPaths.map((row) => row.path));
   for (const name of names) assert.ok(!productionPaths.has(name), `${name} is a production path`);
 });
 
-test('A03 the evidence allowance is exactly the A3.x precondition evidence and the protocol-defined rehearsal directories', () => {
+test('A03 the evidence allowance classifies exactly the A3.x precondition evidence, the protocol-defined rehearsal directories and certifying generation directories', () => {
   const root = 'repositories/cca-conformance/evidence/mo1308';
-  for (const ok of ['phase3-precondition/x.json', 'phase3-precondition-g4/receipt.json', 'phase3a-rehearsal-r1/evidence-seal.json', 'phase3b-rehearsal-r12/a/b.json',
-    'phase3c-rehearsal-r2/x', 'phase3d-rehearsal-r3/x']) assert.match(`${root}/${ok}`, ALLOWED_EVIDENCE, ok);
-  for (const bad of ['phase3a/seal.json', 'phase3a-g2/seal.json', 'phase3d-g2/x', 'phase3a-rehearsal/x', 'phase3e-rehearsal-r1/x', 'phase3a-rehearsal-r1-extra/x', 'phase3-corrections/x',
-    'phase3-precondition-x/x', 'phase2d/x', 'phase3a-rehearsal-r1']) assert.doesNotMatch(`${root}/${bad}`, ALLOWED_EVIDENCE, bad);
-  assert.doesNotMatch('repositories/cca-conformance/evidence/mo1307/phase3a-rehearsal-r1/x', ALLOWED_EVIDENCE);
+  const kind = (name) => classifyEvidencePath(`${root}/${name}`).kind;
+  for (const ok of ['phase3-precondition/x.json', 'phase3-precondition-g4/receipt.json']) assert.equal(kind(ok), 'PRECONDITION', ok);
+  for (const ok of ['phase3a-rehearsal-r1/evidence-seal.json', 'phase3b-rehearsal-r12/a/b.json', 'phase3c-rehearsal-r2/x', 'phase3d-rehearsal-r3/x']) assert.equal(kind(ok), 'REHEARSAL', ok);
+  for (const ok of ['phase3a/seal.json', 'phase3a-g2/seal.json', 'phase3d-g12/x', 'phase3b/steps/A/step-receipt.json']) assert.equal(kind(ok), 'CERTIFYING', ok);
+  for (const bad of ['phase3a-rehearsal/x', 'phase3e-rehearsal-r1/x', 'phase3e/x', 'phase3a-rehearsal-r1-extra/x', 'phase3-corrections/x', 'phase3-precondition-x/x', 'phase3a-gx/x',
+    'phase3a-g2-extra/x', 'phase2d/x', 'phase3a-rehearsal-r1']) assert.equal(kind(bad), null, bad);
+  assert.equal(classifyEvidencePath('repositories/cca-conformance/evidence/mo1307/phase3a/x').kind, null);
+});
+
+test('A04 a certifying generation directory is allowed only when its evidence seal verifies; a tampered or unsealed one is rejected', async (t) => {
+  const root = makeRoot(t);
+  const options = baseOptions(root, '3B', 'phase3b');
+  sealGeneration({ ...options, now: clock() });
+  assert.deepEqual(await runAll(root, options.evidenceDir, '3B'), [{ result: 'PASS', reason: null }]);
+  closeGeneration({ root, evidenceDir: options.evidenceDir, inventory, now: clock() });
+  const relative = 'repositories/cca-conformance/evidence/mo1308/phase3b';
+  const target = path.join(root, ...relative.split('/'));
+  fs.cpSync(options.evidenceDir, target, { recursive: true });
+  const names = [`${relative}/seal.json`, `${relative}/stream-receipt.json`];
+  assert.deepEqual(checkEvidenceAllowance({ root, names, inventory }), [], 'a verifying certifying directory is allowed');
+  // tampered: one byte of the stream receipt changes
+  const receiptFile = path.join(target, 'stream-receipt.json');
+  const original = fs.readFileSync(receiptFile);
+  fs.writeFileSync(receiptFile, Buffer.concat([original, Buffer.from(' ')]));
+  assert.ok(checkEvidenceAllowance({ root, names, inventory }).length > 0, 'a tampered certifying directory is rejected');
+  fs.writeFileSync(receiptFile, original);
+  assert.deepEqual(checkEvidenceAllowance({ root, names, inventory }), []);
+  // unsealed: the evidence seal is missing
+  const sealFile = path.join(target, 'evidence-seal.json');
+  const sealBytes = fs.readFileSync(sealFile);
+  fs.rmSync(sealFile);
+  assert.ok(checkEvidenceAllowance({ root, names, inventory }).some((problem) => problem.includes('evidence-seal.json')), 'an unsealed certifying directory is rejected');
+  fs.writeFileSync(sealFile, sealBytes);
+  // any other evidence path is rejected even next to a verifying directory
+  assert.equal(checkEvidenceAllowance({ root, names: [...names, 'repositories/cca-conformance/evidence/mo1308/phase3-corrections/x'], inventory }).length, 1);
 });
 
 test('K01 the candidate identity is exactly reproducible from git objects at B2', { skip: !haveBase }, () => {
