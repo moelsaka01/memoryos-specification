@@ -499,7 +499,7 @@ test("W08 NTFS concurrency: ten real appender processes with concurrent readers;
   const verification = store.verify(ledger);
   assert.equal(verification.entryCount, succeeded.length);
   assert.deepEqual(readdirSync(join(ledger, "entries")), succeeded.map((_, index) => entryName(index)));
-  for (const name of readdirSync(join(ledger, ".pending"))) assert.match(name, /^(entry-[0-9]{20}|member-[0-9a-f]{64}-[a-z.-]+)\.[0-9]+$/u, "only staging names");
+  for (const name of readdirSync(join(ledger, ".pending"))) assert.match(name, /^(entry-[0-9]{20}|member-[0-9a-f]{64}-[a-z.-]+)(\.[0-9]+){1,2}$/u, "only staging names");
   for (const { counts, failures } of observed) {
     assert.ok(counts.length > 0, "the reader completed verifications");
     assert.deepEqual(counts, [...counts].sort((a, b) => a - b), "a reader never sees the ledger shrink");
@@ -558,4 +558,60 @@ test("W08c a junction swapper racing real appender processes: the race is exerci
   for (const name of readdirSync(join(ledger, "entries"))) {
     assert.doesNotThrow(() => JSON.parse(readFileSync(join(ledger, "entries", name), "utf8")), name);
   }
+});
+
+test("W09 a link planted at a staging name is detected before anything is created: typed FILESYSTEM_BOUNDARY, nothing is created at its target (3A-D4, Amendment A10)", WIN, (t) => {
+  for (const [kind, plant] of [["dangling file symlink", (target, at) => symlinkSync(target, at, "file")], ["dangling junction", (target, at) => junction(target, at)],
+    ["dangling directory symlink", (target, at) => symlinkSync(target, at, "dir")]]) {
+    for (const role of ["member", "entry"]) {
+      const { root, ledger, store } = newLedger(t);
+      const hex = recordHexOf(t, "planted");
+      const name = role === "member" ? `member-${hex}-${MEMBER}.${process.pid}.0` : `entry-${String(0).padStart(20, "0")}.${process.pid}.0`; // the names this process will use first
+      const target = join(root, `nowhere-${role}`);
+      plant(target, join(ledger, ".pending", name));
+      assert.throws(() => store.append(ledger, mip("planted")), code("FILESYSTEM_BOUNDARY"), `${kind} at a ${role} staging name`);
+      assert.equal(nodeFs.existsSync(target), false, `${kind}: something was created at the link target`);
+      assert.deepEqual(readdirSync(join(ledger, "entries")), [], "no entry was committed");
+    }
+  }
+});
+
+test("W10 a record directory swapped for a junction after the tombstone commit: the purge deletes nothing outside the ledger and fails closed (3A-G3, Amendment A10)", WIN, (t) => {
+  const { root, ledger, store } = newLedger(t);
+  store.append(ledger, mip("victim"));
+  const hex = readdirSync(join(ledger, "records"))[0];
+  const outside = join(root, "outside");
+  mkdirSync(outside);
+  writeFileSync(join(outside, MEMBER), "decoy that must survive");
+  const moved = join(root, "moved-record");
+  let swapped = false;
+  const attacked = createHistoryStore({ engine, fs: interceptingFs((name, args) => {
+    // the committed tombstone's staging name is removed just before the purge starts: swap the record directory then
+    if (!swapped && name === "unlinkSync" && String(args[0]).includes(".pending") && String(args[0]).includes("entry-")) {
+      swapped = true;
+      renameSync(join(ledger, "records", hex), moved);
+      junction(outside, join(ledger, "records", hex));
+    }
+  }) });
+  assert.throws(() => attacked.tombstone(ledger, { targetIndex: 0, reason: "PRIVACY_REQUEST", authorityReference: "G3" }), code("FILESYSTEM_BOUNDARY"));
+  assert.ok(swapped, "the swap happened");
+  assert.equal(readFileSync(join(outside, MEMBER), "utf8"), "decoy that must survive", "nothing outside the ledger was deleted");
+  assert.deepEqual(readdirSync(outside), [MEMBER]);
+  assert.ok(nodeFs.existsSync(join(moved, MEMBER)), "the real member was not touched either");
+  rmdirSync(join(ledger, "records", hex));
+  renameSync(moved, join(ledger, "records", hex));
+  assert.deepEqual(store.verify(ledger).purgePending, [0], "the committed tombstone's purge is pending and a rerun finishes it");
+  store.tombstone(ledger, { targetIndex: 0, reason: "PRIVACY_REQUEST", authorityReference: "G3" });
+  assert.deepEqual(store.verify(ledger).purgePending, []);
+});
+
+test("W11 staging names carry the writer's process id, so concurrent writers never contend for one name (3A-F7, Amendment A10)", WIN, (t) => {
+  const { ledger, store } = newLedger(t);
+  const created = [];
+  const spying = createHistoryStore({ engine, fs: interceptingFs((name, args) => { if (name === "openSync" && String(args[0]).includes(".pending")) created.push(String(args[0]).split(/[\\/]/u).at(-1)); }) });
+  spying.append(ledger, mip("named"));
+  assert.ok(created.length >= 2, "a member and an entry were staged");
+  for (const name of created) assert.ok(name.endsWith(`.${process.pid}.0`), name);
+  assert.equal(store.verify(ledger).entryCount, 1);
+  assert.deepEqual(readdirSync(join(ledger, ".pending")), []);
 });
