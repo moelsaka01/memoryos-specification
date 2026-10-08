@@ -1,0 +1,11 @@
+Generation 4 setup (A3.1, A3.2, A3.3, A3.4).
+BASELINE worktree g4b = BF 1dd1e8c8; CANDIDATE worktree g4c = f4211c8c (binding commit of mo1308/phase3-corrections, Part 1 PASS). Both fresh, detached, created for this run, short paths C:\g4b and C:\g4c.
+npm ci --ignore-scripts from the committed lockfiles in cca-studio, memoryos-ci, memoryos-mcp, memoryos-rest, memoryos-vscode (npm 11.19.0 bundled with the pinned Node), run BEFORE configure.
+MEMORYOS_VSCODE_NPM_EXECUTABLE pinned to <pinned node>/npm.cmd at configure (A3.3 setup deviation), identical in both trees.
+C++ source diff BF..candidate: empty (setup/cxx-source-diff.txt).
+Smart App Control (VerifiedAndReputablePolicyState=1) not changed. Blocked executables were identified freshly in both trees by launching every built repositories/**/*.exe (probe rounds 1 to 4) and from ctest discovery (no further blocked executable appeared); the union of all rounds is excluded in both runs.
+Round 1 blocked 4 executables, rounds 2 to 4 blocked 3 each (the set varied: cca_procedural_memory_example.exe was blocked only in round 1, in g4c). Union: 3 gtest executables (cca_long_term_memory_allocation_tests, cca_memory_allocation_tests, cca_procedural_memory_allocation_tests) and 1 example (cca_procedural_memory_example.exe). All are native C++ binaries under repositories/.
+Blocked gtest executables were renamed to <name>.exe.sac-blocked in the build directory of BOTH trees (build output only) so that each registers its existing <target>_NOT_BUILT placeholder; the placeholders and the example test are excluded by name.
+Test discovery (ctest -N) completed in both trees before the exclusion list was frozen: 295 registered tests in each tree, identical names.
+The recorded runs may dirty the worktrees through the MCP foundation suite rewriting measurements/phase2-integration.json (A3.4); it is recorded, not a gate.
+Names of the tests the excluded gtest executables would register come from gtest-list-raw.json (copied from the generation 3 setup: --gtest_list_tests of the same executables built unblocked in the A3.1 tree; C and C++ sources are identical) or the generation 2 record.
