@@ -24,6 +24,8 @@ export const ALLOWED_CHANGE_RULES = Object.freeze([
     'repositories/cca-studio/tests/fixtures/memoryos-history/**'] },
   { class: 'CLI_HISTORY_NAMESPACE', patterns: [
     'repositories/memoryos-cli/CMakeLists.txt', 'repositories/memoryos-cli/package.json', 'repositories/memoryos-cli/src/*.js',
+    // Amendment A10 (section 37) / A8.9: the stream-error handling correction of the CLI entry
+    'repositories/memoryos-cli/bin/memoryos.js',
     'repositories/memoryos-cli/tests/**'] },
   { class: 'WORKSPACE_CHECK_CORRECTION', patterns: ['tools/verify_workspace.py'] },
 ]);

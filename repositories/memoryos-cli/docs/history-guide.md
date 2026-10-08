@@ -113,6 +113,18 @@ total, a readiness result 4,194,304 bytes, a decision claim 8,192 bytes).
 - A checkpoint record kept in a ledger is not a restore source: `restore` and `session` never read the ledger.
 - A directory swap during an operation is detected after the fact and is never prevented (single local user only).
 - `export --output` must name a new location that is not inside the ledger directory; such a path is refused (`MO1308_FILESYSTEM_BOUNDARY`).
+- **Output writes (A10).** An operation that was carried out is never reported as failed because its output could not be written (for example a
+  closed stdout pipe after a committed `init` or `append`): the exit code stays the command's own and nothing is printed about the write failure.
+  A failure whose error output cannot be written keeps its exit category.
+- **Staging names (A10).** A writer stages files under `.pending/` as `<role>.<pid>.<n>` (its process id and the first free counter), so concurrent
+  writers do not contend for one name. The process id is not a clock and no history byte depends on it. A staging error such as `EPERM` is not retried.
+- **Planted links (A10).** A staging name that already holds a link (a symbolic link, a junction or a dangling one) is refused with
+  `MO1308_FILESYSTEM_BOUNDARY` before anything is created. A link planted between that check and the create is not prevented; the identity checks after the
+  write still detect it (see the directory-swap note above).
+- **Purge boundary (A10).** `tombstone` purges a record's members only after proving that the ledger root, `records/` and the record directory are not
+  links, are canonical and are the same directories (device and file identity) that the ledger read captured. Any mismatch is refused with
+  `MO1308_FILESYSTEM_BOUNDARY` and deletes nothing. A swap between that check and the removal of one member is not prevented; at most that one member name is
+  followed.
 - Windows 11 x64 with the pinned Node is the only certified platform. UNC, network, synchronized and cloud-placeholder locations
   are observed, not claimed.
 - The history commands start no process, open no socket and read no environment variable.
