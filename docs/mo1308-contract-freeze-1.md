@@ -1857,7 +1857,6 @@ to owner review.
 No shape, layout, limit, identity, error code, exit number or protocol step of the frozen text changes. No released
 byte, tag or released manifest changes. No evidence or binding commit is made by this correction.
 
-<<<<<<< HEAD
 ## 36. Amendment A3.4 — A3.2 generation 3 and project follow-ups (2026-10-07, owner-authorized)
 
 This amendment is append-only. The frozen text above and Amendments A1 to A7, A3.1, A3.2 and A3.3 are
@@ -1905,7 +1904,7 @@ The A3 gate input of cases 3A-A4 and 3D-D5 is the A3.2 generation 3 receipt, `re
 | `repositories/cca-conformance/mo1308-phase3-inventory.json` | `7c5fa7ed9389971ece72278d29bed65387650ff36c0992c59d5b631d61fea2d7` |
 | `repositories/cca-conformance/mo1308-phase3-candidate-identity.json` | `ec85daa9245f7d581ff912cb08ec6a4b3e558cf408c1ac8de81bfeac5969bebe` |
 | `repositories/cca-conformance/mo1308-phase3-corpus-manifest.json` | `b055805d2db43f414261921ded61eb69d856ad5c821139254e9ba1b7ce386c9f` |
-=======
+
 ## 37. Amendment A10 — Phase 3A findings, corrections and accepted items (2026-10-07, owner-authorized)
 
 Note: sections 31 to 36 (A3.1 to A3.4 and related text) live on other branches (`mo1308/phase3-precondition` and others) and are merged with this section at step 3D. The same text is kept as `docs/mo1308-amendment-a10.md`, its source.
@@ -1952,4 +1951,3 @@ history byte depends on it.
 The 3A-F7 workload (10 appender processes of 3 records each started together by a barrier, 2 readers, the observation preload in errors-only mode) was run 20 times on the corrected product (worktree with the corrected `history-store.js` and entry file): **staging EPERM in 0 of 20 runs** (two batches of 10: 0 and 0; owner decision D6 escalates at 2 of 10). On b0bf2d56 the same workload gave 2 of 10 (runs 7 and 10, one typed IO each). Every run kept the contract: every success present once, every absent record a typed failure, chain valid, readers never saw an integrity or boundary code.
 
 This amendment is append-only; the frozen text and Amendments A1 to A9 and A3.1 to A3.4 are unchanged.
->>>>>>> origin/mo1308/phase3-corrections
