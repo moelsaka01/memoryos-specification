@@ -68,7 +68,7 @@ export const hostCases = {
       verdict = receipt.verdict;
       candidateCommit = receipt.candidate?.commit ?? null;
       if (verdict !== 'PASS') problems.push(`the receipt verdict is ${verdict}`);
-      if (receipt.kind !== 'MO1308Phase3PreconditionG3Receipt') problems.push(`receipt kind ${receipt.kind}`);
+      if (receipt.kind !== 'MO1308Phase3PreconditionG4Receipt') problems.push(`receipt kind ${receipt.kind}`);
       if (receipt.baseline?.commit !== BASELINE_COMMIT) problems.push(`baseline ${receipt.baseline?.commit}`);
       if (candidateCommit !== env.identity.baseCommit) problems.push(`the receipt is about candidate ${candidateCommit}, not ${env.identity.baseCommit}`);
       if (Object.values(receipt.rules ?? {}).some((value) => value !== true) || Object.keys(receipt.rules ?? {}).length < 4) problems.push('a precondition rule is not true');
