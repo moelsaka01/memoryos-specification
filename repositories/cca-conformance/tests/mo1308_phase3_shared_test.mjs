@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -22,6 +21,7 @@ import { validateDisposition, requiresOwnerReview } from '../tools/mo1308-phase3
 import { CampaignError, isApprovedStatus, parseGeneration, protocolStatus, sealGeneration, sharedToolPaths, verifyBindings } from '../tools/mo1308-phase3/lib/seal.mjs';
 import { HarnessError, closeGeneration, runSegment, verifyEvidence } from '../tools/mo1308-phase3/lib/runner.mjs';
 import { writeOnce } from '../tools/mo1308-phase3/lib/evidence.mjs';
+import { MAX_TEMP_ROOT_LENGTH, TEMP_ROOT_VARIABLE, makeTemp, removeTemp, tempBase, tempRecord } from '../tools/mo1308-phase3/short-temp.mjs';
 import { buildExecutors, checkDefinition, rehearse, summarize } from '../tools/mo1308-phase3/lib/campaign-driver.mjs';
 import { checkDisclosure, qualificationCases, readOutcomes, structuralQualifications } from '../tools/mo1308-phase3/lib/disclosure.mjs';
 
@@ -39,8 +39,8 @@ const MANIFEST = 'repositories/cca-conformance/mo1308-phase3-corpus-manifest.jso
 const haveBase = git(repo, ['cat-file', '-e', `${CANDIDATE_BASE}^{commit}`], { allowFailure: true }).status === 0;
 const haveBf = git(repo, ['cat-file', '-e', `${BF}^{commit}`], { allowFailure: true }).status === 0;
 const tmp = (t) => {
-  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'mo1308-p3-'));
-  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  const directory = makeTemp('p3');
+  t.after(() => removeTemp(directory));
   return directory;
 };
 
@@ -209,17 +209,31 @@ test('A01 every path changed since BF up to the corrected candidate is in the al
   assert.equal(ALLOWED_CHANGE_RULES.length, 7);
 });
 
-test('A02 this branch changes no production path and adds no evidence of its own (only the merged A3.x precondition evidence)', { skip: !haveBase }, () => {
+// The only evidence a stream branch may carry on top of the candidate (A8.9): the owner's recorded A3.x precondition evidence, and the rehearsal
+// evidence directories the protocol defines (section 5.3, owner decision 7: evidence/mo1308/phase3<a|b|c|d>-rehearsal-r<N>/). Certifying
+// generation directories (phase3a, phase3a-g2, ...) and anything else are never allowed here: they are committed only after a sealed run.
+const ALLOWED_EVIDENCE = /\/evidence\/mo1308\/(phase3-precondition(-g\d+)?|phase3[abcd]-rehearsal-r\d+)\//u;
+
+test('A02 this branch changes no production path and adds no evidence of its own (only the A3.x precondition evidence and protocol-defined rehearsal evidence)', { skip: !haveBase }, () => {
   const names = new Set(git(repo, ['diff', '--name-only', '-z', CANDIDATE_BASE]).stdout.toString('utf8').split('\0').filter(Boolean));
   for (const name of git(repo, ['ls-files', '--others', '--exclude-standard', '-z']).stdout.toString('utf8').split('\0').filter(Boolean)) names.add(name);
   for (const name of names) {
     // the evidence merged from mo1308/phase3-precondition (Amendments A3.1 to A3.3) is the owner's recorded evidence, not this step's
-    if (name.includes('/evidence/')) assert.match(name, /\/evidence\/mo1308\/phase3-precondition(-g\d+)?\//, `${name}: the shared step never touches evidence`);
+    if (name.includes('/evidence/')) assert.match(name, ALLOWED_EVIDENCE, `${name}: only A3.x precondition evidence and protocol-defined rehearsal evidence may be carried`);
     assert.notEqual(classifyChangedPath(name), null, `${name} is outside the allowed set`);
   }
   const identity = JSON.parse(fs.readFileSync(inFile(IDENTITY), 'utf8'));
   const productionPaths = new Set(identity.productionPaths.map((row) => row.path));
   for (const name of names) assert.ok(!productionPaths.has(name), `${name} is a production path`);
+});
+
+test('A03 the evidence allowance is exactly the A3.x precondition evidence and the protocol-defined rehearsal directories', () => {
+  const root = 'repositories/cca-conformance/evidence/mo1308';
+  for (const ok of ['phase3-precondition/x.json', 'phase3-precondition-g4/receipt.json', 'phase3a-rehearsal-r1/evidence-seal.json', 'phase3b-rehearsal-r12/a/b.json',
+    'phase3c-rehearsal-r2/x', 'phase3d-rehearsal-r3/x']) assert.match(`${root}/${ok}`, ALLOWED_EVIDENCE, ok);
+  for (const bad of ['phase3a/seal.json', 'phase3a-g2/seal.json', 'phase3d-g2/x', 'phase3a-rehearsal/x', 'phase3e-rehearsal-r1/x', 'phase3a-rehearsal-r1-extra/x', 'phase3-corrections/x',
+    'phase3-precondition-x/x', 'phase2d/x', 'phase3a-rehearsal-r1']) assert.doesNotMatch(`${root}/${bad}`, ALLOWED_EVIDENCE, bad);
+  assert.doesNotMatch('repositories/cca-conformance/evidence/mo1307/phase3a-rehearsal-r1/x', ALLOWED_EVIDENCE);
 });
 
 test('K01 the candidate identity is exactly reproducible from git objects at B2', { skip: !haveBase }, () => {
@@ -1094,4 +1108,31 @@ test('U20 the runner has no platform-specific code and writes nothing outside it
     assert.ok(!/\bprocess\.platform\b/.test(source), name);
   }
   assert.ok(!fs.readFileSync(inFile(TOOLS, 'lib/runner.mjs'), 'utf8').includes('child_process'));
+});
+
+// ---------------------------------------------------------------- the short temporary root (A8.9)
+
+test('U21 the temporary root is short by design: C:/tt on Windows, configurable, never the system temp path, refused when long', () => {
+  assert.equal(tempBase({ env: {}, platform: 'win32' }), 'C:\\tt');
+  assert.equal(tempBase({ env: { [TEMP_ROOT_VARIABLE]: path.resolve('/tmp/abc') }, platform: 'win32' }), path.resolve('/tmp/abc'));
+  assert.ok(tempBase({ env: {}, platform: 'linux' }).endsWith('mo1308-p3'));
+  assert.throws(() => tempBase({ env: { [TEMP_ROOT_VARIABLE]: path.join(path.resolve('/'), 'x'.repeat(MAX_TEMP_ROOT_LENGTH)) }, platform: 'win32' }), /at most/u);
+  assert.ok(tempBase({ env: {}, platform: 'win32' }).length <= MAX_TEMP_ROOT_LENGTH);
+});
+
+test('U22 makeTemp makes <root>/<stream>-<n> with the first free counter, records it and removes only what it made', () => {
+  const first = makeTemp('u22');
+  const second = makeTemp('u22');
+  try {
+    assert.notEqual(first, second);
+    assert.match(path.basename(first), /^u22-[0-9]+$/u);
+    assert.equal(path.dirname(first), tempBase());
+    assert.ok(fs.statSync(first).isDirectory());
+    const record = tempRecord();
+    assert.ok(record.directories.includes(first) && record.directories.includes(second));
+    assert.ok(record.longestPathLength >= first.length);
+    assert.throws(() => makeTemp('Bad Id'), /invalid temporary stream id/u);
+    assert.throws(() => removeTemp(path.dirname(first)), /was not made by makeTemp/u);
+  } finally { removeTemp(first); removeTemp(second); }
+  assert.ok(!fs.existsSync(first) && !fs.existsSync(second));
 });
