@@ -142,7 +142,7 @@ export const resourceCases = {
       const verified = checked.get(row.path);
       if (verified === undefined || !verified.ok) { problems.push(`${path.basename(row.path)}: does not verify (${verified?.code ?? 'not checked'})`); continue; }
       const result = verified.result;
-      const pendingOnDisk = fs.readdirSync(p(row.path, '.pending')).length;
+      const pendingOnDisk = exists(p(row.path, '.pending')) ? fs.readdirSync(p(row.path, '.pending')).length : 0; // a ledger written from memory (J11) has no .pending directory
       const recordDirs = fs.readdirSync(p(row.path, 'records')).filter((name) => fs.readdirSync(p(row.path, 'records', name)).length > 0);
       const entries = fs.readdirSync(p(row.path, 'entries')).map((name) => JSON.parse(fs.readFileSync(p(row.path, 'entries', name), 'utf8')));
       const referenced = new Set(entries.filter((entry) => entry.entryType === 'RECORD').map((entry) => entry.record.recordDigest.slice('sha256:'.length)));
