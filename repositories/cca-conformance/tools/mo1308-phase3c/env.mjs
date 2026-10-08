@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { makeTemp } from '../mo1308-phase3/short-temp.mjs';
 import { corpusRecords, sampleIndices, SEEDS, CANARIES } from '../mo1308-phase3/corpus.mjs';
 import { RECIPES, buildRecipe } from '../mo1308-phase3/corpus.mjs';
 
@@ -13,7 +14,8 @@ export async function makeEnv({ root, option, certifying }) {
   return env;
 }
 
-export const work = (env, prefix = 'mo1308-p3c-') => { const directory = fs.mkdtempSync(path.join(os.tmpdir(), prefix)); env.temporary.push(directory); return directory; };
+// A8.9: work directories are made under the short temporary root (C:/tt/3c-N on Windows), never under the system temp path; prefix only documents the purpose.
+export const work = (env, prefix = 'work') => { void prefix; const directory = makeTemp('3c'); env.temporary.push(directory); return directory; };
 export const memo = (env, key, make) => (env.cache[key] ??= make());
 export const records = (env) => memo(env, 'records', () => corpusRecords());
 export const recordById = (env, id) => records(env).find((record) => record.id === id);

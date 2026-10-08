@@ -10,6 +10,8 @@ import { fileURLToPath } from 'node:url';
 import * as sdk from '../../../cca-studio/web/js/memoryos-sdk.js';
 import { MemoryOSHistoryError } from '../../../cca-studio/web/js/memoryos-history-contract.js';
 import { CORPUS_WORKSPACE, RECIPES, buildRecipe, corpusRecords } from '../mo1308-phase3/corpus.mjs';
+import { makeTemp, removeAllTemp } from '../mo1308-phase3/short-temp.mjs';
+process.on('exit', removeAllTemp);
 
 export { sdk, MemoryOSHistoryError, CORPUS_WORKSPACE, RECIPES, buildRecipe, corpusRecords };
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -133,7 +135,7 @@ export function readTree(root) {
 }
 export const treeDigest = (root) => sha(Buffer.from(JSON.stringify([...readTree(root)].map(([file, bytes]) => [file, sha(bytes)]))));
 export function copyTree(from, to) { fs.cpSync(from, to, { recursive: true }); }
-export const tempDir = (prefix = 'mo1308-p3c-') => fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+export const tempDir = (prefix = 'work') => { void prefix; return makeTemp('3c'); };
 
 export function ledgerFiles(ledger) {
   return {
