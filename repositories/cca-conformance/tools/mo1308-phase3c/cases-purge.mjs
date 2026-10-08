@@ -80,7 +80,7 @@ export const purge = {
     const rerun = cli(tombstoneArgs(ledger, 0));
     if (rerun.status !== 0) problems.push(`the rerun failed: ${rerun.code}`);
     if (ledgerFiles(ledger).entries.length !== entriesAfter) problems.push('the rerun appended a new entry');
-    if (rerun.json?.result?.index !== first.json?.result?.index) problems.push('the rerun returned a different tombstone index');
+    if (!Number.isInteger(rerun.json?.result?.index) || rerun.json.result.index !== first.json?.result?.index) problems.push('the rerun returned no tombstone index or a different one (review H-07)');
     if (fs.existsSync(recordDirectory) && fs.readdirSync(recordDirectory).length > 0) problems.push('the rerun did not delete the remaining members');
     const done = verify(ledger);
     if (done.status !== 0 || (done.json?.result?.purgePending ?? []).length !== 0) problems.push('the ledger still has a pending purge');

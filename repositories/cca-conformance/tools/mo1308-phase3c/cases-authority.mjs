@@ -25,6 +25,7 @@ export const authority = {
       scanned += 1;
       if (/memoryos-history|createHistoryLedger|admitHistoryRecord|appendHistoryEntry|verifyHistoryLedger|queryHistoryLedger|tombstoneHistoryEntry/.test(read(env, file))) problems.push(`${file} names the history authority`);
     }
+    if (scanned === 0) problems.push('no file was scanned in any package root (review H-08)');
     conclude(h, problems.slice(0, 6), { packageRoots: roots.length, filesScanned: scanned });
   },
   '3C-G3': (h, env) => {
@@ -100,6 +101,7 @@ export const authority = {
     });
     const method = /createHistoryCheckpointRecord\([^)]*\)\s*\{/.exec(sdkSource);
     if (method !== null) historyRegions.push({ name: 'createHistoryCheckpointRecord', text: sdkSource.slice(method.index, sdkSource.indexOf('\n  }\n', method.index)) });
+    if (historyRegions.length === 0) problems.push('no SDK history region was found to audit (review H-03; the runtime refusals below only corroborate this static audit)');
     for (const region of historyRegions) if (/\brestore\b/.test(region.text)) problems.push(`${region.name} refers to restore`);
     // a checkpoint record is not a restore source: the SDK refuses it
     const memory = new sdk.MemoryOS();
