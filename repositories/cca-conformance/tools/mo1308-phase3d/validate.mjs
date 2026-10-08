@@ -12,12 +12,13 @@ import { validateDisposition } from '../mo1308-phase3/lib/classification.mjs';
 import { allCases, loadInventory, requirementMatrix, validateInventory, INVENTORY_FILE } from '../mo1308-phase3/lib/inventory.mjs';
 import { verifyEvidence } from '../mo1308-phase3/lib/runner.mjs';
 import { EVIDENCE_ROOT, parseGeneration } from '../mo1308-phase3/lib/seal.mjs';
+import { QUIET_CPU_PERCENT } from './regression-preconditions.mjs';
 import { changedPaths, commitsBetween, git, gitText, isAncestor, revParse } from '../mo1308-phase3/lib/git.mjs';
 import { digestOfJson, sha256Hex, walkRecords } from '../mo1308-phase3/lib/hashing.mjs';
 import { stableStringify } from '../mo1308-phase3/lib/stable-json.mjs';
 
 export const CANDIDATE_IDENTITY_FILE = 'repositories/cca-conformance/mo1308-phase3-candidate-identity.json';
-export const A32_RECEIPT_FILE = `${EVIDENCE_ROOT}/phase3-precondition-g3/receipt.json`;
+export const A32_RECEIPT_FILE = `${EVIDENCE_ROOT}/phase3-precondition-g4/receipt.json`;
 export const REGRESSION_FILE = `${EVIDENCE_ROOT}/phase3d/regression.json`;
 export const DISCLOSURES_FILE = 'docs/mo1308-release-disclosures.md';
 export const FINAL_INVENTORY_FILE = 'repositories/cca-conformance/mo1308-final-release-inventory.json';
@@ -141,7 +142,7 @@ export function checkD2({ root, inventory, generations, dispositions, a32Sha256 
     });
     // the accepted 3A generation binds the A3.2 receipt that this run is checking (D5)
     if (stream === '3A' && last.seal !== null) {
-      const bound = last.seal.inputs.find((item) => item.path.endsWith('phase3-precondition-g3/receipt.json'));
+      const bound = last.seal.inputs.find((item) => item.path.endsWith('phase3-precondition-g4/receipt.json'));
       if (bound === undefined) problems.push('3A: the accepted generation does not bind the A3.2 receipt');
       else if (a32Sha256 !== null && bound.sha256 !== a32Sha256) problems.push('3A: the A3.2 receipt changed since the accepted generation sealed it');
     }
@@ -196,6 +197,18 @@ export function checkD4({ root, regression, identity, head, repo = root }) {
     if (!/^[0-9a-f]{64}$/.test(suite.logSha256 ?? '')) problems.push(`suite ${name}: no raw log digest`);
   }
   if (byName.get('mo1307') !== undefined && byName.get('mo1307').total !== MO1307_TESTS) problems.push(`suite mo1307: ${byName.get('mo1307').total} tests, expected ${MO1307_TESTS}`);
+  // A8.10: the strict run's preconditions (fresh worktree without .cache/mo1307 leftovers, a quiet-host load sample, F22's timing, no retries)
+  const pre = regression.preconditions;
+  if (pre === undefined || pre === null || typeof pre !== 'object') problems.push('the record carries no preconditions (A8.10)');
+  else {
+    if (pre.freshWorktree !== true) problems.push('preconditions: the run was not in a fresh worktree');
+    if (!['ABSENT', 'EMPTY'].includes(pre.mo1307CacheBeforeRun)) problems.push(`preconditions: .cache/mo1307 was ${JSON.stringify(pre.mo1307CacheBeforeRun ?? null)} before the run, not ABSENT or EMPTY`);
+    const sample = pre.loadSample;
+    if (sample === undefined || sample === null || !Number.isFinite(sample.cpuPercent) || !Number.isFinite(sample.sampledMs) || sample.sampledMs <= 0) problems.push('preconditions: no load sample');
+    else if (sample.cpuPercent > QUIET_CPU_PERCENT) problems.push(`preconditions: the host was not quiet (${sample.cpuPercent}% CPU, limit ${QUIET_CPU_PERCENT}%)`);
+    if (!Number.isFinite(pre.f22DurationMs) || !(pre.f22DurationMs > 0)) problems.push('preconditions: F22 timing is not recorded');
+    if (pre.retries !== 0) problems.push(`preconditions: ${JSON.stringify(pre.retries ?? null)} retries; no test may be re-run`);
+  }
   return { problems, observed: { suites: [...byName.keys()] } };
 }
 

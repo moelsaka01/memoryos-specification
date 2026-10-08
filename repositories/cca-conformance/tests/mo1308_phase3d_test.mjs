@@ -5,7 +5,8 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { evaluate, validateFinal, A32_RECEIPT_FILE, DISCLOSURES_FILE, FINAL_BINDING_FILE, FINAL_INVENTORY_FILE, REGRESSION_FILE, REGRESSION_KIND } from '../tools/mo1308-phase3d/validate.mjs';
+import { checkD4, evaluate, validateFinal, A32_RECEIPT_FILE, DISCLOSURES_FILE, FINAL_BINDING_FILE, FINAL_INVENTORY_FILE, REGRESSION_FILE, REGRESSION_KIND } from '../tools/mo1308-phase3d/validate.mjs';
+import { captureRegressionPreconditions, f22DurationMs, mo1307CacheState } from '../tools/mo1308-phase3d/regression-preconditions.mjs';
 import { buildI3Inventory } from '../tools/mo1308-phase3d/i3-inventory.mjs';
 import { impls, hostOnly } from '../tools/mo1308-phase3d/cases.mjs';
 import { checkDefinition } from '../tools/mo1308-phase3/lib/campaign-driver.mjs';
@@ -51,6 +52,7 @@ test('D02 against the real repository today: D1 and D5 are READY (corrected cand
 
 // ---- a complete fabricated clone ----
 
+const PRECONDITIONS = { freshWorktree: true, mo1307CacheBeforeRun: 'ABSENT', loadSample: { cpuPercent: 3.5, sampledMs: 2000, logicalCpus: 8 }, f22DurationMs: 2031.2, retries: 0 };
 const clock = () => { let tick = 0; return () => new Date(Date.UTC(2026, 9, 8, 0, 0, tick++)); };
 const review = () => ({ kind: 'MO1308Phase3Review', version: '1.0.0', subject: [{ path: TOOL, byteLength: 1, sha256: '1'.repeat(64) }], reviewer: { role: 'INDEPENDENT_SUB_AGENT', identity: 'review-agent-1' }, scope: 'the harness', findings: [], conclusion: 'NO_BLOCKING_FINDINGS', reviewedAt: '2026-10-08T00:00:00.000Z' });
 
@@ -92,7 +94,7 @@ async function completeClone(t, options = {}) {
   put(clone, DISCLOSURES_FILE, `# Disclosures\n\nOperators record the headDigest of every export outside the ledger.\n\nRegister: ${inventory.qualifications.map((item) => item.id).join(' ')}.\n\n${lines.join('\n')}\n`);
   const identity = JSON.parse(fs.readFileSync(path.join(clone.directory, IDENTITY), 'utf8'));
   const suite = (name, total) => ({ name, runner: 'node --test', passed: total, failed: 0, skipped: 0, total, exitCode: 0, logSha256: sha256Hex(Buffer.from(name)) });
-  put(clone, REGRESSION_FILE, JSON.stringify({ kind: REGRESSION_KIND, version: '1.0.0', commit: clone.run('rev-parse', 'HEAD'), candidate: { productionTreeDigest: identity.productionTreeDigest }, suites: [suite('mo1308', 120), suite('cli', 40), suite('studio', 90), suite('mo1307', 639), suite('examples', 12)] }));
+  put(clone, REGRESSION_FILE, JSON.stringify({ kind: REGRESSION_KIND, version: '1.0.0', commit: clone.run('rev-parse', 'HEAD'), candidate: { productionTreeDigest: identity.productionTreeDigest }, suites: [suite('mo1308', 120), suite('cli', 40), suite('studio', 90), suite('mo1307', 639), suite('examples', 12)], preconditions: PRECONDITIONS }));
   commit(clone, 'evidence, disclosures and regression record');
   return clone;
 }
@@ -170,4 +172,44 @@ test('D07 the validator CLI is read-only and its exit code follows the result', 
   const bad = spawnSync(process.execPath, [path.join(here, '../tools/mo1308-phase3d/validate-final.mjs'), '--root', path.join(tempBase(), 'absent-root-p3d')], { encoding: 'utf8' });
   assert.equal(bad.status, 2);
   void allCases;
+});
+
+test('D08 the retained regression needs its A8.10 preconditions: fresh worktree, no .cache/mo1307 leftovers, quiet host, F22 timing, no retries', async (t) => {
+  const edits = [
+    ['no preconditions member', (record) => { delete record.preconditions; }, /no preconditions/u],
+    ['not a fresh worktree', (record) => { record.preconditions.freshWorktree = false; }, /fresh worktree/u],
+    ['leftovers in .cache/mo1307', (record) => { record.preconditions.mo1307CacheBeforeRun = 'NOT_EMPTY'; }, /not ABSENT or EMPTY/u],
+    ['no load sample', (record) => { delete record.preconditions.loadSample; }, /no load sample/u],
+    ['a busy host', (record) => { record.preconditions.loadSample.cpuPercent = 75; }, /not quiet/u],
+    ['no F22 timing', (record) => { record.preconditions.f22DurationMs = null; }, /F22 timing/u],
+    ['a retry', (record) => { record.preconditions.retries = 1; }, /retries/u],
+  ];
+  const clone = await completeClone(t);
+  const file = path.join(clone.directory, ...REGRESSION_FILE.split('/'));
+  const original = fs.readFileSync(file, 'utf8');
+  const cloneIdentity = JSON.parse(fs.readFileSync(path.join(clone.directory, IDENTITY), 'utf8'));
+  const cloneHead = clone.run('rev-parse', 'HEAD');
+  assert.equal(validateFinal({ root: clone.directory }).cases.find((row) => row.id === '3D-D4').status, 'READY');
+  for (const [label, edit, expected] of edits) {
+    const record = JSON.parse(original);
+    edit(record);
+    assert.match(checkD4({ root: clone.directory, regression: record, identity: cloneIdentity, head: cloneHead }).problems.join(' '), expected, label);
+  }
+  assert.deepEqual(checkD4({ root: clone.directory, regression: JSON.parse(original), identity: cloneIdentity, head: cloneHead }).problems, []);
+});
+
+test('D09 the precondition capture: cache state, load sample, F22 duration from a node:test log, and refusal on leftovers or a busy host', async (t) => {
+  const worktree = tmp(t);
+  assert.equal(mo1307CacheState(worktree), 'ABSENT');
+  fs.mkdirSync(path.join(worktree, '.cache', 'mo1307'), { recursive: true });
+  assert.equal(mo1307CacheState(worktree), 'EMPTY');
+  const captured = await captureRegressionPreconditions({ worktree, requireQuiet: false });
+  assert.deepEqual([captured.freshWorktree, captured.mo1307CacheBeforeRun, captured.retries], [true, 'EMPTY', 0]);
+  assert.ok(captured.loadSample.cpuPercent >= 0 && captured.loadSample.sampledMs > 0);
+  fs.mkdirSync(path.join(worktree, '.cache', 'mo1307', 'phase2c', 'focused-1'), { recursive: true });
+  assert.equal(mo1307CacheState(worktree), 'NOT_EMPTY');
+  await assert.rejects(() => captureRegressionPreconditions({ worktree, requireQuiet: false }), /fresh worktree/u);
+  assert.equal(f22DurationMs('✔ F21 x (3.1ms)\n✔ F22 read-only verification timeout is bounded and late handle completion only closes (2031.2ms)\n'), 2031.2);
+  assert.equal(f22DurationMs('✖ F22 something (12.5ms)\n'), 12.5);
+  assert.equal(f22DurationMs('✔ F23 x (1ms)\n'), null);
 });
