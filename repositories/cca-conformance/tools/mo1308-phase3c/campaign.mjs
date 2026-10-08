@@ -12,4 +12,4 @@ import { SHA_REVIEW_FILE } from './cases-sha.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const streamToolPaths = (root) => walkRecords(here).map((row) => path.relative(root, path.join(here, row.path)).split(path.sep).join('/'));
-process.exitCode = await main({ argv: process.argv.slice(2), stream: '3C', impls, hostOnly, makeEnv, streamToolPaths, inputPaths: [SHA_REVIEW_FILE], moduleUrl: import.meta.url });
+process.exitCode = await main({ argv: process.argv.slice(2), stream: '3C', impls, hostOnly, makeEnv, streamToolPaths, inputPaths: [SHA_REVIEW_FILE, 'repositories/cca-conformance/tests/support/mo1308-legacy-checkpoint-oracle.mjs'], moduleUrl: import.meta.url });

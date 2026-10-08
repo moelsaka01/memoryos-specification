@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { work, recordById, conclude, memo } from './env.mjs';
 import { cli, observedCli, appendArgs, buildDiskLedger, copyTree, dec, enc, jcs, jcsBytes, ledgerFiles, readTree, sdk, sha, treeDigest, attempt, tempDir, CORPUS_WORKSPACE } from './support.mjs';
+import { validateExportManifest } from '../../../cca-studio/web/js/memoryos-history-contract.js';
 
 const tombstoneArgs = (ledger, target, reason = 'OPERATOR_CORRECTION', reference = 'P3C-TICKET') =>
   ['history', 'tombstone', '--ledger', ledger, '--target', String(target), '--reason', reason, '--authority-reference', reference, '--json'];
@@ -260,24 +261,55 @@ export const purge = {
     conclude(h, problems.slice(0, 6), { files: base.length, results });
   },
   '3C-F2': (h, env) => {
+    // Hostile export paths. The path is placed INSIDE a re-sealed manifest (sorted into place, with a matching file and the marker's manifest digest
+    // recomputed), so the extra-file count check cannot reject it first: the only violated rule is the path rule of the manifest (review H-01).
+    // A control row (a benign path of the allowed form, same construction) must pass the manifest validation, which shows the rejection is path-driven.
     const ledger = buildDiskLedger(work(env), 'p3c-f2', ['policy-0', 'readiness-ready']);
     const base = [...readTree(exportOf(env, ledger))].map(([file, bytes]) => ({ path: file, bytes: new Uint8Array(bytes) }));
+    const manifestIndex = base.findIndex((file) => file.path === 'memoryos-history-export.json');
+    const markerIndex = base.findIndex((file) => file.path === 'memoryos-history-export-complete.json');
+    const manifest0 = JSON.parse(dec.decode(base[manifestIndex].bytes));
+    const prefixed = manifest0.files[0].sha256.startsWith('sha256:');
+    const digestOf = (bytes) => { const hex = sha(bytes).replace(/^sha256:/u, ''); return prefixed ? `sha256:${hex}` : hex; };
+    const withPath = (name) => {
+      const content = enc.encode('x');
+      const manifest = JSON.parse(JSON.stringify(manifest0));
+      manifest.files.push({ path: name, byteLength: content.length, sha256: digestOf(content) });
+      manifest.files.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+      const manifestBytes = jcsBytes(manifest);
+      const marker = JSON.parse(dec.decode(base[markerIndex].bytes));
+      marker.manifestSha256 = sha(manifestBytes);
+      const files = base.slice();
+      files[manifestIndex] = { path: base[manifestIndex].path, bytes: manifestBytes };
+      files[markerIndex] = { path: base[markerIndex].path, bytes: jcsBytes(marker) };
+      files.push({ path: name, bytes: content });
+      return { manifest, files };
+    };
     const hostile = ['../escape.json', '/etc/passwd', 'entries\\00000000000000000000.json', 'entries/../memoryos-history-ledger.json', 'C:\\Windows\\x', 'C:/x',
       `records/${'a'.repeat(300)}`, 'CON', 'NUL.json', 'entries/00000000000000000000.json:stream', 'entries/./00000000000000000000.json', '', '.', '..', './memoryos-history-ledger.json',
-      'entries/00000000000000000000.json\u0000x', 'ENTRIES/00000000000000000000.json', 'records//x', '\\\\server\\share\\x', 'entries/00000000000000000000.json '];
+      'entries/00000000000000000000.json\u0000x', 'ENTRIES/00000000000000000000.json', 'records//x', '\\\\server\\share\\x', 'entries/00000000000000000000.json ',
+      `../${base.find((file) => file.path.startsWith('records/')).path}`, base.find((file) => file.path.startsWith('records/')).path.toUpperCase(),
+      base.find((file) => file.path.startsWith('entries/')).path.toUpperCase()];
     const problems = [];
     const results = {};
+    // the control: an allowed path that the real export does not hold; the manifest is valid and only the file set differs
+    const controlName = 'entries/99999999999999999999.json';
+    const control = withPath(controlName);
+    const controlManifest = attempt(() => validateExportManifest(control.manifest));
+    if (controlManifest.code !== undefined && controlManifest.accepted !== true) problems.push(`control: the manifest with an allowed extra path was refused (${controlManifest.code}), so the hostile rows prove nothing`);
     for (const name of hostile) {
-      const outcome = attempt(() => sdk.verifyHistoryExport({ files: [...base, { path: name, bytes: enc.encode('x') }] }));
-      results[JSON.stringify(name).slice(0, 40)] = outcome.accepted ? 'ACCEPTED' : outcome.code;
-      if (outcome.accepted || outcome.code === 'UNTYPED') problems.push(`${JSON.stringify(name).slice(0, 40)}: ${outcome.accepted ? 'accepted' : outcome.code}`);
+      const row = withPath(name);
+      const label = JSON.stringify(name).slice(0, 40);
+      const sorted = row.manifest.files.every((file, index) => index === 0 || row.manifest.files[index - 1].path < file.path);
+      if (!sorted) { problems.push(`${label}: the constructed manifest is not strictly ascending (the row would not isolate the path rule)`); continue; }
+      const manifestOutcome = attempt(() => validateExportManifest(row.manifest));
+      const exportOutcome = attempt(() => sdk.verifyHistoryExport({ files: row.files }));
+      results[label] = `manifest ${manifestOutcome.accepted ? 'ACCEPTED' : manifestOutcome.code}; export ${exportOutcome.accepted ? 'ACCEPTED' : exportOutcome.code}`;
+      if (manifestOutcome.accepted || manifestOutcome.code !== 'MO1308_EXPORT_CORRUPT') problems.push(`${label}: the manifest validation gave ${manifestOutcome.accepted ? 'accepted' : manifestOutcome.code}, wanted MO1308_EXPORT_CORRUPT`);
+      if (exportOutcome.accepted || exportOutcome.code !== 'MO1308_EXPORT_CORRUPT') problems.push(`${label}: the export verification gave ${exportOutcome.accepted ? 'accepted' : exportOutcome.code}, wanted MO1308_EXPORT_CORRUPT`);
     }
-    // a hostile name in place of a real file, and a case-only duplicate of a real file
-    const renamed = base.map((file, index) => (index === 3 ? { ...file, path: `../${file.path}` } : file));
-    if (attempt(() => sdk.verifyHistoryExport({ files: renamed })).accepted) problems.push('a real file under a traversal name was accepted');
-    const duplicate = [...base, { path: base[2].path.toUpperCase(), bytes: base[2].bytes }];
-    if (attempt(() => sdk.verifyHistoryExport({ files: duplicate })).accepted) problems.push('a case-only duplicate path was accepted');
-    conclude(h, problems.slice(0, 6), { hostileNames: hostile.length, results });
+    // a real file listed under a traversal name (the manifest names it, the file is present under that name)
+    conclude(h, problems.slice(0, 6), { hostileNames: hostile.length, control: controlManifest.accepted ? 'manifest accepted' : controlManifest.code, results });
   },
   '3C-F4': (h, env) => {
     // Amendment A9.2: an --output equal to or inside the ledger is refused with MO1308_FILESYSTEM_BOUNDARY (exit 4), before anything
