@@ -1,0 +1,490 @@
+{
+  "kind": "MO1308Phase3CorrectionsReceipt",
+  "generation": 1,
+  "streamHead": "97f81e8c237790a4d45a902cfb5923b623c4d581",
+  "result": "PASS",
+  "failedItems": [],
+  "runtime": {
+    "nodeVersion": "v24.21.0",
+    "platform": "win32",
+    "arch": "x64",
+    "nodeSha256": "ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32",
+    "python": "Python 3.14.4",
+    "unprivilegedSymlinks": "confirmed (fs.symlinkSync file and dir, pinned Node)"
+  },
+  "setup": {
+    "npmVersion": "11.19.0 (bundled with the pinned Node, npm.cmd)",
+    "command": "npm.cmd ci --ignore-scripts, run once per directory from the committed lockfiles",
+    "logs": "setup/"
+  },
+  "items": [
+    {
+      "id": 1,
+      "name": "MO1308_SUITES",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" --test --test-concurrency=1 tests/mo1308_*_test.mjs",
+      "cwd": "repositories/cca-conformance",
+      "exitCode": 0,
+      "seconds": 362.2,
+      "counts": {
+        "tests": 98,
+        "pass": 98,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "expected": "98/98",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/mo1308.log",
+        "byteLength": 11207,
+        "sha256": "efc93acbd2518d83a2658974babe85188ba290f9d721994db2b0bbde5f5e949c"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 2,
+      "name": "PHASE2_CORRECTIONS",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" --test --test-concurrency=1 tests/mo1308_phase2_corrections_test.mjs",
+      "cwd": "repositories/cca-conformance",
+      "exitCode": 0,
+      "seconds": 13.3,
+      "counts": {
+        "tests": 6,
+        "pass": 6,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "expected": "6/6",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/phase2-corrections.log",
+        "byteLength": 850,
+        "sha256": "56815332bbd7e7f42584ff4406049808dc2f65a4f2b8b95a793ed40f3022884d"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 3,
+      "name": "HISTORY_STORE",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" --test --test-concurrency=1 tests/history-store.test.mjs",
+      "cwd": "repositories/memoryos-cli",
+      "exitCode": 0,
+      "seconds": 22.4,
+      "counts": {
+        "tests": 25,
+        "pass": 25,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "expected": "25/25",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/history-store.log",
+        "byteLength": 3562,
+        "sha256": "4f0598d73f69c388fdf10cef5516e2bf5d8548117ab60cf6d9545bdd540a1a09"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 4,
+      "name": "HISTORY_STORE_WINDOWS",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" --test --test-concurrency=1 tests/history-store-windows.test.mjs",
+      "cwd": "repositories/memoryos-cli",
+      "exitCode": 0,
+      "seconds": 56.6,
+      "counts": {
+        "tests": 16,
+        "pass": 16,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "expected": "16/16",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/history-store-windows.log",
+        "byteLength": 2951,
+        "sha256": "cebfa91cf239478d0d083ef83078dce995f1dd61274eb15fb06c4043ba0a6c21"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 5,
+      "name": "MEMORYOS_CLI",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" --test --test-concurrency=1 tests/*.test.mjs",
+      "cwd": "repositories/memoryos-cli",
+      "exitCode": 0,
+      "seconds": 571.4,
+      "counts": {
+        "tests": 89,
+        "pass": 89,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "expected": "89/89",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/cli.log",
+        "byteLength": 10643,
+        "sha256": "350e0142f4e672bea32c41e6ebcfa60e9679a18c02f57c25ce827b716d995d38"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 6,
+      "name": "CCA_STUDIO",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" --test tests/memory_studio_web_test.mjs tests/memory_studio_integration_test.mjs tests/mip_canonical_test.mjs tests/memory_investigation_package_test.mjs tests/mip_schema_conformance_test.mjs tests/mip_adversarial_conformance_test.mjs tests/mip_ordering_conformance_test.mjs tests/mip_derived_edge_conformance_test.mjs tests/mip_pipeline_conformance_test.mjs tests/ai_runtime_adapter_test.mjs tests/investigation_core_test.mjs tests/memoryos_sdk_test.mjs tests/cognitive_regression_test.mjs tests/cognitive_investigation_explorer_test.mjs tests/policy_canonical_test.mjs tests/investigation_policy_contracts_test.mjs tests/investigation_policy_test.mjs tests/policy_fact_context_test.mjs tests/regression_policy_fact_source_test.mjs tests/investigation_policy_engine_test.mjs tests/memoryos_policy_sdk_test.mjs tests/memoryos_history_contract_test.mjs tests/memoryos_history_sdk_guard_test.mjs",
+      "cwd": "repositories/cca-studio",
+      "exitCode": 0,
+      "seconds": 42.7,
+      "counts": {
+        "tests": 358,
+        "pass": 358,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "expected": "358/358",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/studio.log",
+        "byteLength": 34217,
+        "sha256": "d9d1c10b5ac2529d09301fe7956d7ef7b8035c4dbd3523b50dacdbfb4cc21e43"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 7,
+      "name": "MO1307_REGRESSION",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" --test --test-concurrency=1 tests/mo1307_*_test.mjs",
+      "cwd": "repositories/cca-conformance",
+      "exitCode": 0,
+      "seconds": 129.2,
+      "counts": {
+        "tests": 639,
+        "pass": 639,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "expected": "639/639",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/mo1307.log",
+        "byteLength": 62422,
+        "sha256": "516324ebc904df0a2396c98b2fee852c12e57573d82301e90d8b40b30e64cd83"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 8,
+      "name": "MCP_INTEGRITY",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" --test --test-concurrency=1 tests/integrity.test.mjs",
+      "cwd": "repositories/memoryos-mcp",
+      "exitCode": 1,
+      "seconds": 8.6,
+      "counts": {
+        "tests": 6,
+        "pass": 5,
+        "fail": 1,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "expected": "corrected released-manifest test passes; the only permitted failure is the production dependency closure test (ENVIRONMENT_PRE_EXISTING)",
+      "failedTests": [
+        "production dependency closure rejects changed, missing and extra package members"
+      ],
+      "result": "ENVIRONMENT_PRE_EXISTING",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/mcp-integrity.log",
+        "byteLength": 1266,
+        "sha256": "f3c36cff971ea400fc0a9ab612b799852bb70e6d43d9630f49051749f5cbea77"
+      }
+    },
+    {
+      "id": 9,
+      "name": "VSCODE_RUNTIME",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" --test tests/runtime_foundation.test.mjs",
+      "cwd": "repositories/memoryos-vscode",
+      "exitCode": 0,
+      "seconds": 14.4,
+      "counts": {
+        "tests": 54,
+        "pass": 54,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "expected": "54/54",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/vscode-runtime.log",
+        "byteLength": 4116,
+        "sha256": "14b542c3a535abc3f7979172ab55e90d338c4b636166f9511b2d9118d21d56fc"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 10,
+      "name": "CLI_EXAMPLES",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" examples\\run-cli-examples.mjs",
+      "cwd": "repositories/memoryos-cli",
+      "exitCode": 0,
+      "seconds": 40.4,
+      "expected": "exit 0",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/cli-examples.log",
+        "byteLength": 430,
+        "sha256": "6584cbb3c84719f84863f23da09d367521a8f27d6f5c366847979a526dbf03ad"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 11,
+      "name": "STUDIO_EXAMPLE_ai_runtime_adapter_usage",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" examples\\ai_runtime_adapter_usage.mjs",
+      "cwd": "repositories/cca-studio",
+      "exitCode": 0,
+      "seconds": 1.6,
+      "expected": "exit 0",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/studio-example-ai_runtime_adapter_usage.log",
+        "byteLength": 91,
+        "sha256": "44edf298c60ce4a8285b7a3064c2f19940bc70e893b8b9dcbb8d053cf46e371e"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 12,
+      "name": "STUDIO_EXAMPLE_cognitive_investigation_explorer_usage",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" examples\\cognitive_investigation_explorer_usage.mjs",
+      "cwd": "repositories/cca-studio",
+      "exitCode": 0,
+      "seconds": 1.6,
+      "expected": "exit 0",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/studio-example-cognitive_investigation_explorer_usage.log",
+        "byteLength": 1030,
+        "sha256": "d64dd9342638b7d14d9aea1b1468bafa4455bd9880748a3302040fd0b4855759"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 13,
+      "name": "STUDIO_EXAMPLE_investigation_core_usage",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" examples\\investigation_core_usage.mjs",
+      "cwd": "repositories/cca-studio",
+      "exitCode": 0,
+      "seconds": 3.3,
+      "expected": "exit 0",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/studio-example-investigation_core_usage.log",
+        "byteLength": 523,
+        "sha256": "d41bd1b2f92c805d5e1157490ffc29f06f1a56ccf9839ebc842498af6bd8650a"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 14,
+      "name": "STUDIO_EXAMPLE_investigation_policy_usage",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" examples\\investigation_policy_usage.mjs",
+      "cwd": "repositories/cca-studio",
+      "exitCode": 0,
+      "seconds": 2,
+      "expected": "exit 0",
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/studio-example-investigation_policy_usage.log",
+        "byteLength": 2110,
+        "sha256": "5f7b37ce75fcd1397a212815a9745009be90b705b8e1fcce0cc63d19f26460a4"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 15,
+      "name": "WORKSPACE_VERIFIER",
+      "command": "python tools\\verify_workspace.py --root .",
+      "cwd": ".",
+      "exitCode": 0,
+      "seconds": 0.8,
+      "expected": "exit 0, pass line only",
+      "noMo1302Error": true,
+      "noMo1304Error": true,
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/verify.log",
+        "byteLength": 42,
+        "sha256": "684fc7d9d9f09833335ab76fac87482a362535d8d9f97559e4f62d581e471ed5"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 16,
+      "name": "CHARACTERIZATION_2a",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" --expose-gc repositories\\cca-conformance\\tools\\mo1308-phase2a\\characterize.mjs",
+      "cwd": ".",
+      "exitCode": 0,
+      "seconds": 127.1,
+      "expected": "exit 0, every operation recorded with finite values and no failed outcome",
+      "operations": 6,
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/characterization-2a.json",
+        "byteLength": 826,
+        "sha256": "89fd6ea76d8bec27e082ed71147000ac845f5f11f107ed2e3088725754fb4ae5"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/characterization-2a.stderr.log",
+        "byteLength": 354,
+        "sha256": "82e6075096f6d8a9b900266cb82cd2b79d5534eda49944898bec53c485377f7c"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 17,
+      "name": "CHARACTERIZATION_2b",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" --expose-gc repositories\\cca-conformance\\tools\\mo1308-phase2b\\characterize.mjs",
+      "cwd": ".",
+      "exitCode": 0,
+      "seconds": 4.6,
+      "expected": "exit 0, every operation recorded with finite values and no failed outcome",
+      "operations": 9,
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/characterization-2b.json",
+        "byteLength": 1496,
+        "sha256": "f7acdf7195800daa212ec52691bed43f771cb030875c4865ad2d9d66ffc118c4"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/characterization-2b.stderr.log",
+        "byteLength": 692,
+        "sha256": "20db2ac868fc935e543eaa5050c0269c8936477858ec34b79457a62f24848efa"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 18,
+      "name": "CHARACTERIZATION_2c",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" --expose-gc repositories\\cca-conformance\\tools\\mo1308-phase2c\\characterize.mjs",
+      "cwd": ".",
+      "exitCode": 0,
+      "seconds": 1547.9,
+      "expected": "exit 0, every operation recorded with finite values and no failed outcome",
+      "operations": 6,
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/characterization-2c.json",
+        "byteLength": 1074,
+        "sha256": "0aaafa58a04a5a608e2976914d6c1cb2fa30c16f7953ebf4ae96a59134171a61"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/characterization-2c.stderr.log",
+        "byteLength": 463,
+        "sha256": "02f333d44e94a9a4fcfb00c27b4047bea8826df741b8ce6984dcb9ec5089add0"
+      },
+      "result": "PASS"
+    },
+    {
+      "id": 19,
+      "name": "CHARACTERIZATION_2d",
+      "command": "\"C:\\Users\\melsa\\Documents\\Codex\\cca-workspace\\.cache\\mo1305-phase3br\\toolchain\\node-v24.21.0-win-x64\\node.exe\" --expose-gc repositories\\cca-conformance\\tools\\mo1308-phase2d\\characterize.mjs",
+      "cwd": ".",
+      "exitCode": 0,
+      "seconds": 1788,
+      "expected": "exit 0, every operation recorded with finite values and no failed outcome",
+      "operations": 9,
+      "log": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/characterization-2d.json",
+        "byteLength": 1606,
+        "sha256": "fb5da3d739d3f5fb36ec323bab1938f1fee4900ab16c6332fa18f7810f0c312f"
+      },
+      "stderr": {
+        "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/characterization-2d.stderr.log",
+        "byteLength": 755,
+        "sha256": "834122db5dd42e25c6c256815e49ac245669d96aba9d4ad00a123e4ad84db8f3"
+      },
+      "result": "PASS"
+    }
+  ],
+  "windowsTests": [
+    {
+      "test": "W01",
+      "result": "PASS"
+    },
+    {
+      "test": "W01b",
+      "result": "PASS"
+    },
+    {
+      "test": "W02",
+      "result": "PASS"
+    },
+    {
+      "test": "W03",
+      "result": "PASS"
+    },
+    {
+      "test": "W04",
+      "result": "PASS"
+    },
+    {
+      "test": "W05",
+      "result": "PASS"
+    },
+    {
+      "test": "W05b",
+      "result": "PASS"
+    },
+    {
+      "test": "W06",
+      "result": "PASS"
+    },
+    {
+      "test": "W07",
+      "result": "PASS"
+    },
+    {
+      "test": "W07b",
+      "result": "PASS"
+    },
+    {
+      "test": "W08",
+      "result": "PASS"
+    },
+    {
+      "test": "W08b",
+      "result": "PASS"
+    },
+    {
+      "test": "W08c",
+      "result": "PASS"
+    },
+    {
+      "test": "W09",
+      "result": "PASS"
+    },
+    {
+      "test": "W10",
+      "result": "PASS"
+    },
+    {
+      "test": "W11",
+      "result": "PASS"
+    }
+  ],
+  "windowsTestsRun": 16,
+  "windowsTestsNotRun": [],
+  "closedOutputTests": [
+    {
+      "test": "L3a",
+      "result": "PASS"
+    },
+    {
+      "test": "L3b",
+      "result": "PASS"
+    },
+    {
+      "test": "L3c",
+      "result": "PASS"
+    }
+  ],
+  "skipped": 0,
+  "porcelainAfterRun": "clean",
+  "rerun": "none: one run, no retry, no test or production edits",
+  "runner": {
+    "path": "repositories/cca-conformance/evidence/mo1308/phase3-corrections/run.ps1",
+    "byteLength": 3815,
+    "sha256": "6f4ad57681e5be28a6ce34adc85fabe826d42f658a55904e113d3ea6ca81fae9"
+  },
+  "notes": "Recorded run of the MO-1308 phase3-corrections head (production change vs b0bf2d56: repositories/memoryos-cli/bin/memoryos.js and repositories/memoryos-cli/src/history-store.js only). Plan = phase2-corrections generation 2 plan, plus the new tests closed-output.test.mjs (L3a-c) and W09, W10, W11 inside the CLI suites. The MCP integrity test may fail only in the production dependency closure test (ENVIRONMENT_PRE_EXISTING, identical on BF). CTest deferred per A3."
+}
