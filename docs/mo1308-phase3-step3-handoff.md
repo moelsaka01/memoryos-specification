@@ -1,5 +1,10 @@
 # MO-1308 Phase 3 step 3: handoff (updated at the end of every task)
 
+## STOPPED (2026-10-08): PRODUCT DEFECT at 3A-JC9, owner decision needed
+3A rehearsal r6 (full, incl. the 100,000-entry ceiling) passed 106/108 (main1 16 min, main2 26 min, ceiling 28 min before the stop; F7 not escalated). 3A-JC9 failed: the 100,001st append gives `MO1308_RECORD_INVALID` (ADMISSION) instead of `MO1308_RESOURCE_LIMIT`, because `validateEntry` (isIndex <= 99,999) runs before the entry-limit check. Details, cause and reproduction: `docs/mo1308-phase3a-jc9-finding.md`. Per the rules: no production change, no weakening; classified PRODUCT_DEFECT; evidence r6 preserved. Options for the owner: correct the product (new binding, A3.2 differential, candidate move) or amend the Freeze/protocol. 3A is NOT ready for its certifying run until decided.
+Not done because of the stop: 3C re-rehearsal r4 (3C-F2 and campaign.mjs changed after r3), the 3A and 3C independent reviews on final bytes (the 3C review of a1744da8 found 1 blocking issue, fixed; non-blocking findings H-02..H-13 still to be given dispositions), the A02 filter for `phase3x-harness-review/review.json`. 3B is ready (r1 26/26). 3D validator rehearsal done (NOT_READY as expected).
+
+
 ## Current state (2026-10-08, interim): TASKS 1-2 DONE; TASKS 3-4 IN PROGRESS
 Owner decisions recorded as note A8.10 (Freeze, end of file, on phase3-shared): (1) A02 also allows certifying generation directories only when their evidence seal verifies (`lib/evidence-allowance.mjs`, tests A02-A04); (2) F22 / 3D-D4: strict 639/639, test unchanged, NO reruns of any test (D5); preconditions in case 3D-D4 (`tools/mo1308-phase3d/regression-preconditions.mjs`, checkD4, tests D08-D09): fresh worktree, `.cache/mo1307` absent or empty before the run, load sample (quiet host, <= 20% CPU), F22 duration recorded, retries 0. The F22 rerun proposal of Task 2 was NOT approved. Apply the same fresh-worktree/no-leftover rule to every certifying run that executes the MO-1307 suite. Also fixed: 3A cases-host and 3D validate read the g4 receipt (kind `...G4Receipt`).
 
