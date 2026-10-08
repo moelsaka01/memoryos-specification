@@ -122,7 +122,7 @@ function checkF1(env, label, outcome) {
   if (fs.readdirSync(p(ledger, '.pending')).length > 0) register(env, ledger, false, { interrupted: true });
   const verification = cliSync(env, ledger);
   if (verification.status !== 0 || verification.json?.result?.entryCount !== succeeded.length) problems.push(`${label}: the chain does not verify (${verification.status} ${verification.code})`);
-  for (const name of fs.readdirSync(p(ledger, '.pending'))) if (!/^(entry-[0-9]{20}|member-[0-9a-f]{64}-[a-z.-]+)\.[0-9]+$/u.test(name)) problems.push(`${label}: ${name} is not a staging name`);
+  for (const name of fs.readdirSync(p(ledger, '.pending'))) if (!/^(entry-[0-9]{20}|member-[0-9a-f]{64}-[a-z.-]+)\.[0-9]+\.[0-9]+$/u.test(name)) problems.push(`${label}: ${name} is not a staging name (<role>.<pid>.<n>)`);
   for (const { counts, failures } of observed) {
     if (counts.length === 0) problems.push(`${label}: a reader completed no verification`);
     if (JSON.stringify(counts) !== JSON.stringify([...counts].sort((a, b) => a - b))) problems.push(`${label}: a reader saw the ledger shrink`);

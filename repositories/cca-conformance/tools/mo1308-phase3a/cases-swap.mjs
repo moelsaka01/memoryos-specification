@@ -99,39 +99,58 @@ export const swapCases = {
   },
 
   '3A-G3': async (h, env) => {
-    // a swap during a tombstone purge: the tombstone entry is committed, then the record directory becomes a junction to a directory that
-    // holds decoy files under the member names. R17/H40: a typed failure, nothing existing is overwritten or replaced, every later read fails
-    // closed, and the committed tombstone's purge is resumable. What the purge did to the decoys is recorded (a purge deletes by path, and
-    // a swap is not prevented: Q01) for the disclosure.
+    // A swap during a tombstone purge (A10, Freeze section 37.1 row 3): the tombstone entry is committed, then the record directory becomes a
+    // junction to a directory that holds decoy files under the member names. The product proves the ledger root, records/ and the record directory
+    // are not links and are the directories it read, before EVERY deletion. Two stops: (a) right after the tombstone entry was published, before the
+    // purge starts, and (b) right after the first member was removed, before the next check. In both the purge must be refused with
+    // MO1308_FILESYSTEM_BOUNDARY and NOTHING outside the ledger may be deleted or changed (every outside file byte-identical afterwards); every
+    // later read fails closed, nothing existing is replaced, and the committed tombstone's purge is resumable. (A swap in the single instant between
+    // the check and one unlink is the disclosed H40 residual and is not what this case tests.)
     const problems = []; const results = {};
     const record = recordById(env, 'cicd-4');
-    const ledger = ledgerWith(env, 'g3', ['checkpoint-c00', 'cicd-4']); register(env, ledger, true);
     const hex = hexOf(record);
-    const decoys = Object.fromEntries(record.members.map((member) => [member.name, `${decoyText} ${member.name}`]));
-    const outside = outsideDir(env, 'g3', decoys);
-    const before = snapshot(outside);
-    const moved = p(work(env, 'g3moved'), 'record');
-    const realBefore = snapshot(p(ledger, 'records', hex));
-    const { result } = await stoppedRun(env, ['history', 'tombstone', '--ledger', ledger, '--target', '1', '--reason', 'PRIVACY_REQUEST', '--authority-reference', 'P3A-G3', '--json'], POINTS.purgeUnlink, 'g3',
-      () => { fs.renameSync(p(ledger, 'records', hex), moved); junction(outside, p(ledger, 'records', hex)); });
-    results['the tombstone'] = `${result.status}:${result.code ?? 'ok'}`;
-    const removedOutside = snapshotDiff(before, snapshot(outside)).filter((row) => row.startsWith('removed'));
-    const changed = changedExisting(outside, before);
-    for (const row of changed.filter((entry) => !entry.startsWith('removed'))) problems.push(`outside content changed: ${row}`);
-    if (result.status === 0) problems.push('the purge reported success although its record directory was swapped for a junction');
-    for (const row of snapshotDiff(realBefore, snapshot(moved), { identities: true })) problems.push(`the real record directory changed: ${row}`);
-    const later = run(env, verifyArgs(ledger)); results['later verify'] = `${later.status}:${later.code}`;
-    if (later.code !== BOUNDARY) problems.push(`a read after the swap gave ${later.status} ${later.code}, wanted fail-closed ${BOUNDARY}`);
-    removeLink(p(ledger, 'records', hex)); fs.renameSync(moved, p(ledger, 'records', hex));
-    const restored = run(env, verifyArgs(ledger));
-    results['verify with the real directory back'] = `${restored.status}:${restored.code ?? 'ok'}`;
-    if (restored.status !== 0 || !(restored.json?.result?.purgePending ?? []).includes(1)) problems.push('with the real directory back the committed tombstone must show the purge as pending');
-    else {
-      const finish = run(env, ['history', 'tombstone', '--ledger', ledger, '--target', '1', '--reason', 'PRIVACY_REQUEST', '--authority-reference', 'P3A-G3', '--json']);
-      results['rerun finishes the purge'] = `${finish.status}:${finish.code ?? 'ok'}`;
-      if (finish.status !== 0) problems.push(`the purge rerun gave ${finish.status} ${finish.code}`); else register(env, ledger, false, { interrupted: true });
+    if (record.members.length < 2) problems.push(`the record has ${record.members.length} member(s): the between-members stop needs two`);
+    const tombstoneArgs = (ledger) => ['history', 'tombstone', '--ledger', ledger, '--target', '1', '--reason', 'PRIVACY_REQUEST', '--authority-reference', 'P3A-G3', '--json'];
+    const stops = [
+      ['before the purge starts', { id: 'P', op: 'linkSync', match: { 1: 'entries/[0-9]{20}[.]json$' }, nth: 1, when: 'after', action: 'pause' }, 0],
+      ['between two members', { id: 'P', op: 'unlinkSync', match: { 0: 'records/[0-9a-f]{64}/' }, nth: 1, when: 'after', action: 'pause' }, 1],
+    ];
+    const outsideSnapshots = {};
+    for (const [stop, point, removedFromReal] of stops) {
+      const tag = stop.replace(/\W+/g, '-');
+      const ledger = ledgerWith(env, `g3-${tag}`, ['checkpoint-c00', 'cicd-4']); register(env, ledger, true);
+      const decoys = Object.fromEntries(record.members.map((member) => [member.name, `${decoyText} ${member.name}`]));
+      const outside = outsideDir(env, `g3-${tag}`, decoys);
+      const before = snapshot(outside);
+      const moved = p(work(env, 'g3moved'), tag);
+      const realBefore = snapshot(p(ledger, 'records', hex));
+      const { result } = await stoppedRun(env, tombstoneArgs(ledger), point, `g3-${tag}`,
+        () => { fs.renameSync(p(ledger, 'records', hex), moved); junction(outside, p(ledger, 'records', hex)); });
+      results[`${stop}: the tombstone`] = `${result.status}:${result.code ?? 'ok'}`;
+      if (result.status !== 4 || result.code !== BOUNDARY) problems.push(`${stop}: the purge gave ${result.status} ${result.code ?? 'ok'}, wanted 4 ${BOUNDARY}`);
+      // nothing outside the ledger was deleted, changed or added
+      for (const row of snapshotDiff(before, snapshot(outside), { identities: true })) problems.push(`${stop}: outside content changed: ${row}`);
+      for (const [name, text] of Object.entries(decoys)) {
+        const file = p(outside, name);
+        if (!exists(file) || fs.readFileSync(file, 'utf8') !== text) problems.push(`${stop}: the outside sentinel ${name} is missing or differs`);
+      }
+      outsideSnapshots[stop] = { files: Object.keys(decoys).length, unchanged: true };
+      // the real record directory lost at most the members removed before the swap
+      const realRows = snapshotDiff(realBefore, snapshot(moved), { identities: true });
+      if (realRows.length !== removedFromReal || realRows.some((row) => !row.startsWith('removed'))) problems.push(`${stop}: the real record directory changed unexpectedly: ${realRows.join(', ')}`);
+      const later = run(env, verifyArgs(ledger)); results[`${stop}: later verify`] = `${later.status}:${later.code}`;
+      if (later.code !== BOUNDARY) problems.push(`${stop}: a read after the swap gave ${later.status} ${later.code}, wanted fail-closed ${BOUNDARY}`);
+      removeLink(p(ledger, 'records', hex)); fs.renameSync(moved, p(ledger, 'records', hex));
+      const restored = run(env, verifyArgs(ledger));
+      results[`${stop}: verify with the real directory back`] = `${restored.status}:${restored.code ?? 'ok'}`;
+      if (restored.status !== 0 || !(restored.json?.result?.purgePending ?? []).includes(1)) problems.push(`${stop}: with the real directory back the committed tombstone must show the purge as pending`);
+      else {
+        const finish = run(env, tombstoneArgs(ledger));
+        results[`${stop}: rerun finishes the purge`] = `${finish.status}:${finish.code ?? 'ok'}`;
+        if (finish.status !== 0) problems.push(`${stop}: the purge rerun gave ${finish.status} ${finish.code}`); else register(env, ledger, false, { interrupted: true });
+      }
     }
-    conclude(h, problems, { results, decoysOutside: Object.keys(decoys).length, decoysDeletedThroughTheSwappedJunction: removedOutside.map((row) => row.slice('removed: '.length)), h40: 'the purge followed the swapped link and deleted same-named files outside the ledger before the typed failure (not prevented, Q01)' });
+    conclude(h, problems, { results, outside: outsideSnapshots, decoysDeletedThroughTheSwappedJunction: [], h40: 'a swap between the check and one unlink is not prevented (Q01); a swap before a check is refused with nothing deleted' });
   },
 
   '3A-G4': async (h, env) => {

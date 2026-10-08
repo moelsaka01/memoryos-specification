@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { CLI, MemoryLedger, appendArgs, initArgs, jcs, parseLedger, rebuild, recordDigestOf, resealCheckpoint, sha, treeDigest, writeLedgerToDisk, dec, enc } from './support.mjs';
-import { conclude, concludeKnown, recordById, register, run, work } from './env.mjs';
+import { conclude, recordById, register, run, work } from './env.mjs';
 import { ledgerWith } from './cases-cli.mjs';
 import { HERE, consoleRun, pathToFileHrefOf, sha256, sleep } from './win.mjs';
 
@@ -129,7 +129,8 @@ export const transportCases = {
 
   '3A-L3': async (h, env) => {
     const problems = []; const results = {};
-    // the closed-pipe findings are kept apart: a classified product finding (an unhandled EPIPE), tolerated in a rehearsal only
+    // Strict (A10 output rule, Freeze section 37.1 row 1): an operation that was carried out is never reported as failed because its output could not
+    // be written, a failure whose error output cannot be written keeps its exit category, and nothing is printed about the write failure.
     const known = [];
     const ledger = bigLedger(env, 600);
     const args = queryJson(ledger, 600);
@@ -148,26 +149,34 @@ export const transportCases = {
     // a closed pipe: the reader goes away before the product writes. Read-only commands publish nothing; an append that was already
     // committed stays committed; every outcome is a defined exit and carries no stack trace
     const leaks = (text) => /\n\s+at\s|node:internal|\.mjs:\d+|C:\\|Error:/u.test(text);
-    const closedPipe = (args2) => new Promise((resolve) => {
+    const closedPipe = (args2, { both = false } = {}) => new Promise((resolve) => {
       const child = spawn(process.execPath, [CLI, ...args2], { windowsHide: true, shell: false, stdio: ['ignore', 'pipe', 'pipe'], env: NODE_ENV });
       const errors = [];
       child.stderr.on('data', (chunk) => errors.push(chunk));
       child.stdout.destroy();
+      if (both) child.stderr.destroy();
       child.on('close', (code, signal) => resolve({ code, signal, stderr: Buffer.concat(errors).toString('utf8') }));
     });
     const queryClosed = await closedPipe(args);
     results['closed pipe: query'] = `exit ${queryClosed.code}`;
-    if (queryClosed.code === null || queryClosed.code > 5 || queryClosed.code < 0) known.push(`closed pipe, query: exit ${queryClosed.code} ${queryClosed.signal ?? ''}`);
-    if (leaks(queryClosed.stderr)) known.push(`closed pipe, query: stderr carries a stack trace or a path: ${queryClosed.stderr.slice(0, 120)}`);
+    if (queryClosed.code !== 0) known.push(`closed pipe, query: exit ${queryClosed.code} ${queryClosed.signal ?? ''}, wanted the command's own exit 0`);
+    if (queryClosed.stderr.length !== 0) known.push(`closed pipe, query: something was printed on stderr: ${queryClosed.stderr.slice(0, 120)}`);
     const mutable = ledgerWith(env, 'l3-append', ['checkpoint-c00']);
     const appendClosed = await closedPipe(appendArgs(mutable, recordById(env, 'checkpoint-c01'), p(work(env, 'in'), 'l3')));
     const after = run(env, verifyJson(mutable));
     results['closed pipe: append'] = `exit ${appendClosed.code}; entries ${after.json?.result?.entryCount}`;
     if (after.status !== 0) problems.push(`closed pipe, append: the ledger does not verify afterwards: ${after.code}`);
-    else if ((appendClosed.code === 0) !== (after.json.result.entryCount === 2)) known.push(`closed pipe, append: exit ${appendClosed.code} but ${after.json.result.entryCount} entries (no partial publication, no lost success)`);
-    if (appendClosed.code === null || appendClosed.code > 5) known.push(`closed pipe, append: exit ${appendClosed.code}`);
-    if (leaks(appendClosed.stderr)) known.push(`closed pipe, append: stderr carries a stack trace or a path: ${appendClosed.stderr.slice(0, 120)}`);
-    concludeKnown(h, env, '3A-L3', problems, known, { results, bytes: reference.stdout.length });
+    else if (after.json.result.entryCount !== 2) known.push(`closed pipe, append: ${after.json.result.entryCount} entries, wanted the committed append (2)`);
+    if (appendClosed.code !== 0) known.push(`closed pipe, append: exit ${appendClosed.code}, wanted 0 (the append was carried out)`);
+    if (appendClosed.stderr.length !== 0 || leaks(appendClosed.stderr)) known.push(`closed pipe, append: something was printed on stderr: ${appendClosed.stderr.slice(0, 120)}`);
+    // a failure whose error output cannot be written (stdout and stderr both closed) keeps its exit category
+    const duplicate = appendArgs(mutable, recordById(env, 'checkpoint-c01'), p(work(env, 'in'), 'l3-dup'));
+    const openFailure = run(env, duplicate);
+    const closedFailure = await closedPipe(duplicate, { both: true });
+    results['closed pipe: failure'] = `open exit ${openFailure.status} ${openFailure.code}; both closed exit ${closedFailure.code}`;
+    if (openFailure.status === 0) problems.push('closed pipe, failure: the duplicate append unexpectedly succeeded on an open pipe');
+    else if (closedFailure.code !== openFailure.status) known.push(`closed pipe, failure: exit ${closedFailure.code} with both streams closed, wanted ${openFailure.status}`);
+    conclude(h, [...problems, ...known], { results, bytes: reference.stdout.length });
   },
 
   '3A-L4': async (h, env) => {

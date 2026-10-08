@@ -9,6 +9,7 @@ import path from 'node:path';
 import { CORPUS_WORKSPACE, appendArgs, initArgs, recordDigestOf } from './support.mjs';
 import { conclude, recordById, register, run, work } from './env.mjs';
 import { ledgerWith } from './cases-cli.mjs';
+import { appendWithStagingNames, entryStage, memberStage } from './cases-ntfs.mjs';
 import { aclDeny, aclRestore, copyTree, dirSymlink, fileSymlink, isLink, junction, removeLink, removeTree, setReadOnly, snapshot, snapshotDiff } from './win.mjs';
 
 const p = (...parts) => path.join(...parts);
@@ -166,7 +167,7 @@ export const pathCases = {
     conclude(h, problems, { variants, results });
   },
 
-  '3A-D4': (h, env) => {
+  '3A-D4': async (h, env) => {
     const problems = []; const results = {};
     const base = work(env, 'd4');
     const seed = ledgerWith(env, 'd4-seed', BASE_IDS);
@@ -206,24 +207,33 @@ export const pathCases = {
       for (const [op, args] of ops.list) check(env, problems, results, `${label} dangling symlink: ${op}`, args, op === 'query' && relative.startsWith('records/') ? [0, null] : [4, BOUNDARY]);
       if (exists(gone(name))) problems.push(`${label}: something was created at the dangling target`);
     }
-    // a dangling link where the product wants to create a staging name. R17 and H40 state: a typed failure, and nothing existing is overwritten or
-    // replaced. What the product does on this host is recorded: Node's exclusive create (CREATE_NEW) FOLLOWS a dangling link on Windows and creates
-    // the file at its target, which the post-write lstat then detects (after the fact, as H40 accepts). The report puts that to the owner.
+    // a dangling link where the product wants to create a staging name (A10, Freeze section 37.1 row 2). The stopped append's own first member and entry
+    // staging names (<role>.<pid>.<n>) are planted as dangling links, as a file symlink, a junction and a directory symlink. The product must refuse
+    // with MO1308_FILESYSTEM_BOUNDARY (exit 4) before any create: nothing exists at either link target and nothing in the ledger changed or was added.
+    // (A link planted after the product's own lstat is the disclosed H40 residual and is not what this case tests.)
     const createdThroughLink = [];
-    for (const [kind, make] of [['file symlink', fileSymlink], ['junction', junction]]) {
+    for (const [kind, make] of [['file symlink', fileSymlink], ['junction', junction], ['directory symlink', dirSymlink]]) {
       const name = `staging-${kind.replace(' ', '-')}`;
       const ledger = ledgerWith(env, name, []);
       const record = recordById(env, 'checkpoint-c07');
-      const targets = [];
-      for (const staging of [`member-${hexOf(record)}-checkpoint.json.0`, `entry-${entryName(0).replace('.json', '')}.0`]) {
-        const target = gone(`${name}-${staging.slice(0, 6)}`); targets.push(target);
-        make(target, p(ledger, '.pending', staging));
-      }
-      const before = snapshot(ledger);
-      check(env, problems, results, `a dangling ${kind} at the first staging names: append`, appendArgs(ledger, record, p(work(env, 'in'), name)), [[0, null], [4, BOUNDARY], [4, 'MO1308_IO']]);
-      for (const target of targets) if (exists(target)) createdThroughLink.push({ link: kind, target: path.basename(target), kind: fs.lstatSync(target).isDirectory() ? 'directory' : 'file' });
-      if (snapshotDiff(before, snapshot(ledger)).some((row) => row.startsWith('changed') || row.startsWith('removed'))) problems.push(`${kind}: an existing ledger file changed`);
-      check(env, problems, results, `${kind} staging leftovers: verify`, ['history', 'verify', '--ledger', ledger, '--json'], [[0, null], [4, BOUNDARY]]);
+      const links = []; const targets = []; let before = null;
+      const { result, pid } = await appendWithStagingNames(env, ledger, 'checkpoint-c07', name, (stoppedPid) => {
+        for (const staging of [memberStage(hexOf(record), stoppedPid, 0), entryStage(0, stoppedPid, 0)]) {
+          const target = gone(`${name}-${staging.slice(0, 6)}`); targets.push(target);
+          const link = p(ledger, '.pending', staging); links.push(link);
+          make(target, link);
+        }
+        before = snapshot(ledger);
+      });
+      results[`a dangling ${kind} at the first staging names: append`] = `${result.status}:${result.code ?? 'ok'}`;
+      if (result.status !== 4 || result.code !== BOUNDARY) problems.push(`a dangling ${kind} at a staging name: ${result.status} ${result.code ?? 'ok'}, wanted 4 ${BOUNDARY}`);
+      for (const target of targets) if (exists(target)) { createdThroughLink.push({ link: kind, target: path.basename(target), kind: fs.lstatSync(target).isDirectory() ? 'directory' : 'file' }); problems.push(`${kind}: something was created at the dangling target ${path.basename(target)}`); }
+      for (const row of snapshotDiff(before, snapshot(ledger))) problems.push(`${kind}: the refused append changed the ledger: ${row}`);
+      if (JSON.stringify(fs.readdirSync(p(ledger, '.pending')).sort()) !== JSON.stringify(links.map((link) => path.basename(link)).sort())) problems.push(`${kind}: .pending holds more than the planted links`);
+      for (const link of links) if (!isLink(link)) problems.push(`${kind}: the planted link ${path.basename(link)} was replaced`);
+      results[`${kind}: process id`] = pid;
+      for (const link of links) removeLink(link);
+      check(env, problems, results, `${kind}: the ledger verifies once the links are removed`, ['history', 'verify', '--ledger', ledger, '--json'], [0, null]);
     }
     conclude(h, problems, { results, createdThroughDanglingStagingLink: createdThroughLink });
   },

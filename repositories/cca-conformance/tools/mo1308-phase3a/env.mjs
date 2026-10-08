@@ -32,13 +32,9 @@ export async function makeEnv({ root, option, certifying }) {
   fs.mkdirSync(sentinelDir, { recursive: true });
   if (!fs.existsSync(path.join(sentinelDir, 'sentinel.txt'))) fs.writeFileSync(path.join(sentinelDir, 'sentinel.txt'), 'untouched');
   const ledgerJournal = journal(workRoot, 'ledgers');
-  // Rehearsal-only tolerance of a CLASSIFIED PRODUCT finding (`--tolerate 3A-L3`): the case still records the finding in its observation, and a
-  // certifying generation refuses the option, so the strict assertion is what the certifying run applies (precedent: the 3C-F4 rehearsal tolerance).
-  const tolerated = new Set((option('--tolerate') ?? '').split(',').filter(Boolean));
-  if (certifying && tolerated.size > 0) throw new Error('--tolerate exists for rehearsals only');
   const env = {
     repo: root, certifying, tag, scratch, identity: JSON.parse(fs.readFileSync(path.join(root, 'repositories/cca-conformance/mo1308-phase3-candidate-identity.json'), 'utf8')),
-    evidenceDir: null, cache: {}, temporary: [], workRoot, sentinelDir, isWin, tolerated,
+    evidenceDir: null, cache: {}, temporary: [], workRoot, sentinelDir, isWin,
     log: journal(workRoot, 'raw-log'), observers: journal(workRoot, 'observers'),
     // journal of {path, intentionalCorruption, interrupted} for ledgers created by the campaign (3A-M1, 3A-K4)
     ledgerJournal,
@@ -60,12 +56,6 @@ export const records = (env) => (env.cache.records ??= corpusRecords());
 export const recordById = (env, id) => records(env).find((record) => record.id === id);
 export const run = (env, args, options = {}) => rawCli(args, { ...options, log: env.log });
 export const register = (env, ledger, intentionalCorruption = false, { interrupted = false } = {}) => { env.ledgerJournal.push({ path: ledger, intentionalCorruption, interrupted }); return ledger; };
-
-// A case with a known product finding: in a rehearsal that tolerates it, the finding is recorded in the observation and does not fail the case.
-export function concludeKnown(handle, env, id, problems, known, observed = {}) {
-  if (known.length > 0 && env.tolerated.has(id)) return conclude(handle, problems, { ...observed, knownFinding: { id, toleratedInRehearsalOnly: true, findings: known } });
-  return conclude(handle, [...problems, ...known], observed);
-}
 
 export function conclude(handle, problems, observed = {}) {
   handle.observe(JSON.parse(JSON.stringify(observed)));

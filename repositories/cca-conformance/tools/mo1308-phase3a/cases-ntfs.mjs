@@ -24,13 +24,29 @@ function pausedAppend(env, ledger, id, name, point, extra = {}) {
   const controller = pausedCli(env, CLI, args, { dir: p(work(env, 'pause'), name), points: [point], ...extra });
   return { controller, record };
 }
+// A10: staging names are <role>.<pid>.<n>, so a case cannot know them before the process runs. The stop (firstStaging) is the first look the product
+// takes at a staging name (the lstat that refuses a planted link, before any create). The stopped process's id is read from the preload's reached
+// file; the case plants or holds the names of THAT process and releases it. The product still meets the planted names at exactly the places the old
+// fixed names were met (its first attempts, counters 0 and 1), so nothing a case proves is weakened.
 const POINT = {
+  firstStaging: { id: 'P', op: 'lstatSync', match: { 0: '[.]pending/(member|entry)-' }, nth: 1, when: 'before', action: 'pause' },
   memberLink: { id: 'P', op: 'linkSync', match: { 0: '[.]pending/member-' }, nth: 1, when: 'before', action: 'pause' },
   entryStage: { id: 'P', op: 'openSync', match: { 0: '[.]pending/entry-' }, nth: 1, when: 'before', action: 'pause' },
   entryLink: { id: 'P', op: 'linkSync', match: { 1: 'entries/[0-9]{20}[.]json$' }, nth: 1, when: 'before', action: 'pause' },
   entryUnlink: { id: 'P', op: 'unlinkSync', match: { 0: '[.]pending/entry-' }, nth: 1, when: 'before', action: 'pause' },
 };
 export { POINT, pausedAppend, entryName, hexOf };
+export const memberStage = (hex, pid, n, name = 'checkpoint.json') => `member-${hex}-${name}.${pid}.${n}`;
+export const entryStage = (index, pid, n) => `entry-${entryName(index).replace('.json', '')}.${pid}.${n}`;
+
+// An append of corpus record `id` that is stopped before its first staging name is looked at. `during(pid)` acts on the stopped ledger (pid is the
+// product process's own, read from the preload), then the append is released. Returns its CLI result and the pid.
+export async function appendWithStagingNames(env, ledger, id, name, during) {
+  const { controller } = pausedAppend(env, ledger, id, name, POINT.firstStaging);
+  let pid = null;
+  const result = await stoppedThenReleased(controller, async () => { pid = controller.reachedInfo('P').pid; await during(pid); });
+  return { result, pid };
+}
 
 // Runs a paused append to its stop, lets `during` act on the stopped ledger, releases it, returns the CLI result.
 export async function stoppedThenReleased(controller, during) {
@@ -96,12 +112,15 @@ export const ntfsCases = {
     const hex = hexOf(record);
     // (a) staging names that exist in another case are skipped: never opened, never replaced
     const a = ledgerWith(env, 'e1-staging', []); register(env, a, false, { interrupted: true }); // planted staging leftovers are disclosed anomalies
-    const stagingPlants = [`ENTRY-${entryName(0).replace('.json', '')}.0`, `MEMBER-${hex}-CHECKPOINT.JSON.0`, `member-${hex}-checkpoint.json.1`];
+    // the stopped process's own names (A10): its first entry and member names in another case, and its second member name
+    let stagingPlants = [];
     const planted = new Map();
-    for (const name of stagingPlants) { const file = p(a, '.pending', name); fs.writeFileSync(file, `planted ${name}`, { flag: 'wx' }); planted.set(file, { bytes: sha256(bytesOf(file)), mtime: mtimeOf(file), ino: String(fs.statSync(file, { bigint: true }).ino) }); }
-    const appended = run(env, appendArgs(a, record, p(work(env, 'in'), 'e1-a')));
-    results.staging = appended.status;
-    if (appended.status !== 0) problems.push(`the append beside differently cased staging names failed: ${appended.code}`);
+    const appended = await appendWithStagingNames(env, a, 'checkpoint-c00', 'e1-a', (pid) => {
+      stagingPlants = [`ENTRY-${entryName(0).replace('.json', '')}.${pid}.0`, `MEMBER-${hex}-CHECKPOINT.JSON.${pid}.0`, memberStage(hex, pid, 1)];
+      for (const name of stagingPlants) { const file = p(a, '.pending', name); fs.writeFileSync(file, `planted ${name}`, { flag: 'wx' }); planted.set(file, { bytes: sha256(bytesOf(file)), mtime: mtimeOf(file), ino: String(fs.statSync(file, { bigint: true }).ino) }); }
+    });
+    results.staging = appended.result.status; results.processId = appended.pid;
+    if (appended.result.status !== 0) problems.push(`the append beside differently cased staging names failed: ${appended.result.code}`);
     for (const [file, before] of planted) {
       if (!fs.existsSync(file)) problems.push(`${path.basename(file)}: a planted staging name was removed`);
       else if (sha256(bytesOf(file)) !== before.bytes || mtimeOf(file) !== before.mtime || String(fs.statSync(file, { bigint: true }).ino) !== before.ino) problems.push(`${path.basename(file)}: a planted staging name was opened or replaced`);
@@ -241,13 +260,18 @@ export const ntfsCases = {
     const record = recordById(env, 'checkpoint-c04');
     const hex = hexOf(record);
     const ledger = ledgerWith(env, 'e5', []); register(env, ledger, false, { interrupted: true }); // held leftovers stay as disclosed anomalies
-    const leftovers = [`member-${hex}-checkpoint.json.0`, `member-${hex}-checkpoint.json.1`, `entry-${entryName(0).replace('.json', '')}.0`, `entry-${entryName(0).replace('.json', '')}.1`].map((name) => p(ledger, '.pending', name));
+    // the first two member and entry names of the stopped process (A10 names), held open with sharing none while the product runs on
+    let leftovers = [];
     const expected = new Map();
-    leftovers.forEach((file, index) => { fs.writeFileSync(file, `leftover ${index}`, { flag: 'wx' }); expected.set(file, { bytes: sha256(bytesOf(file)), ino: String(fs.statSync(file, { bigint: true }).ino) }); });
     const holders = [];
-    for (const file of leftovers) holders.push(await holdOpen(env, file, 'none'));
     let result;
-    try { result = run(env, appendArgs(ledger, record, p(work(env, 'in'), 'e5'))); } finally { for (const holder of holders) await holder.release(); }
+    try {
+      ({ result } = await appendWithStagingNames(env, ledger, 'checkpoint-c04', 'e5', async (pid) => {
+        leftovers = [memberStage(hex, pid, 0), memberStage(hex, pid, 1), entryStage(0, pid, 0), entryStage(0, pid, 1)].map((name) => p(ledger, '.pending', name));
+        leftovers.forEach((file, index) => { fs.writeFileSync(file, `leftover ${index}`, { flag: 'wx' }); expected.set(file, { bytes: sha256(bytesOf(file)), ino: String(fs.statSync(file, { bigint: true }).ino) }); });
+        for (const file of leftovers) holders.push(await holdOpen(env, file, 'none'));
+      }));
+    } finally { for (const holder of holders) await holder.release(); }
     if (result.status !== 0 || result.json?.result?.index !== 0) problems.push(`the append used held names badly: ${result.status} ${result.code}`);
     for (const [file, before] of expected) {
       if (!fs.existsSync(file) || sha256(bytesOf(file)) !== before.bytes || String(fs.statSync(file, { bigint: true }).ino) !== before.ino) problems.push(`${path.basename(file)} was opened, replaced or removed`);
@@ -280,12 +304,17 @@ export const ntfsCases = {
     const record = recordById(env, 'checkpoint-c05');
     const hex = hexOf(record);
     const ledger = ledgerWith(env, 'e6', []);
-    const names = [`member-${hex}-checkpoint.json.0`, `entry-${entryName(0).replace('.json', '')}.0`].map((n) => p(ledger, '.pending', n));
+    // the first member and entry names of the stopped process (A10 names) are made delete-pending
     const holders = [];
-    for (const file of names) { fs.writeFileSync(file, 'pending'); holders.push(await holdOpen(env, file, 'pending')); }
-    const stateProduced = names.every((file) => fs.readdirSync(path.dirname(file)).includes(path.basename(file)));
+    let stateProduced = false;
     let product;
-    try { product = run(env, appendArgs(ledger, record, p(work(env, 'in'), 'e6'))); } finally { for (const held of holders) await held.release(); }
+    try {
+      ({ result: product } = await appendWithStagingNames(env, ledger, 'checkpoint-c05', 'e6', async (pid) => {
+        const names = [memberStage(hex, pid, 0), entryStage(0, pid, 0)].map((n) => p(ledger, '.pending', n));
+        for (const file of names) { fs.writeFileSync(file, 'pending'); holders.push(await holdOpen(env, file, 'pending')); }
+        stateProduced = names.every((file) => fs.readdirSync(path.dirname(file)).includes(path.basename(file)));
+      }));
+    } finally { for (const held of holders) await held.release(); }
     const afterwards = run(env, ['history', 'verify', '--ledger', ledger, '--json']);
     let outcome = 'UNEXPECTED';
     if (listed && stateProduced && primitive === 'EPERM' && product.code === 'MO1308_IO') outcome = 'CONFIRMED';

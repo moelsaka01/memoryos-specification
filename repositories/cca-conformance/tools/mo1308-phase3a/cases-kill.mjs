@@ -8,7 +8,7 @@ import path from 'node:path';
 import { CLI, appendArgs, initArgs } from './support.mjs';
 import { conclude, recordById, register, run, work } from './env.mjs';
 import { ledgerWith } from './cases-cli.mjs';
-import { POINT, entryName, hexOf, pausedAppend } from './cases-ntfs.mjs';
+import { POINT, entryName, entryStage, hexOf, memberStage, pausedAppend } from './cases-ntfs.mjs';
 import { POINTS } from './cases-swap.mjs';
 import { PRELOAD, consoleRun, pathToFileHrefOf, pausedCli, sha256, snapshot, snapshotDiff, writePlan } from './win.mjs';
 
@@ -35,14 +35,16 @@ export const killCases = {
     const ledger = ledgerWith(env, 'h1', ['checkpoint-c00']); register(env, ledger, false, { interrupted: true });
     const before = state(env, ledger); const snapBefore = snapshot(ledger);
     const record = recordById(env, 'checkpoint-c01'); const hex = hexOf(record);
-    const { closed } = await killedAt(env, appendArgs(ledger, record, p(work(env, 'in'), 'h1')), POINT.memberLink, 'h1');
+    const { closed, controller } = await killedAt(env, appendArgs(ledger, record, p(work(env, 'in'), 'h1')), POINT.memberLink, 'h1');
+    const killedPid = controller.reachedInfo('P').pid;
     const after = state(env, ledger);
     if (closed.code === 0) problems.push('the killed process exited 0');
     if (after.status !== 0 || after.result.entryCount !== 1 || after.result.headDigest !== before.result.headDigest) problems.push(`the ledger changed or no longer verifies: ${after.status} ${after.code}`);
     if (exists(p(ledger, 'records', hex, 'checkpoint.json'))) problems.push('the member was published although the process was killed before its link');
     if (fs.readdirSync(p(ledger, 'entries')).length !== 1) problems.push('an entry was published');
     const staged = fs.readdirSync(p(ledger, '.pending'));
-    if (staged.length !== 1 || !staged[0].startsWith('member-')) problems.push(`.pending holds ${JSON.stringify(staged)}`);
+    // A10: the leftover is the killed process's own first member staging name, <role>.<pid>.<n>
+    if (staged.length !== 1 || staged[0] !== memberStage(hex, killedPid, 0)) problems.push(`.pending holds ${JSON.stringify(staged)}, wanted ${memberStage(hex, killedPid, 0)}`);
     if (after.result?.pendingArtifacts !== 1) problems.push(`verify reports ${after.result?.pendingArtifacts} staging leftovers`);
     const leftover = p(ledger, '.pending', staged[0] ?? 'none'); const leftoverBytes = exists(leftover) ? sha256(bytes(leftover)) : null;
     const rerun = run(env, appendArgs(ledger, record, p(work(env, 'in'), 'h1')));
@@ -80,13 +82,15 @@ export const killCases = {
     const ledger = ledgerWith(env, 'h3', ['checkpoint-c00']); register(env, ledger, false, { interrupted: true });
     const before = state(env, ledger);
     const record = recordById(env, 'checkpoint-c01');
-    const { closed } = await killedAt(env, appendArgs(ledger, record, p(work(env, 'in'), 'h3')), POINT.entryLink, 'h3');
+    const { closed, controller } = await killedAt(env, appendArgs(ledger, record, p(work(env, 'in'), 'h3')), POINT.entryLink, 'h3');
+    const killedPid = controller.reachedInfo('P').pid;
     const after = state(env, ledger);
     if (closed.code === 0) problems.push('the killed process exited 0');
     if (after.status !== 0 || after.result.entryCount !== 1 || after.result.headDigest !== before.result.headDigest) problems.push(`the ledger changed or no longer verifies: ${after.status} ${after.code}`);
     if (exists(p(ledger, 'entries', entryName(1)))) problems.push('the entry was published although the process was killed before its link');
     const staged = fs.readdirSync(p(ledger, '.pending'));
-    if (!staged.some((name) => name.startsWith('entry-'))) problems.push('the staged entry is missing from .pending');
+    // A10: the staged entry is the killed process's own first entry staging name, <role>.<pid>.<n>
+    if (!staged.includes(entryStage(1, killedPid, 0))) problems.push(`the staged entry ${entryStage(1, killedPid, 0)} is missing from .pending (${JSON.stringify(staged)})`);
     if (after.result?.pendingArtifacts < 1) problems.push('verify does not report the staged entry');
     const rerun = run(env, appendArgs(ledger, record, p(work(env, 'in'), 'h3')));
     if (rerun.status !== 0 || rerun.json?.result?.index !== 1) problems.push(`the rerun gave ${rerun.status} ${rerun.code}`);
