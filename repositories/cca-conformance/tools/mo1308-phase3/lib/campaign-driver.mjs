@@ -2,13 +2,13 @@
 // cases that can only run on the Windows host (`hostOnly`), and gets the executors, the rehearsal, and the seal / run / close
 // commands. The driver never contains product or platform logic: it wires the inventory to the runner.
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { closeGeneration, runSegment, verifyEvidence } from './runner.mjs';
 import { CampaignError, EVIDENCE_ROOT, sealGeneration, sharedToolPaths } from './seal.mjs';
 import { allCases, loadInventory, streamOf, INVENTORY_FILE } from './inventory.mjs';
 import { repositoryRoot } from './git.mjs';
+import { makeTemp } from '../short-temp.mjs';
 
 export const PROTOCOL_FILE = 'docs/mo1308-phase3-protocol.md';
 export const IDENTITY_FILE = 'repositories/cca-conformance/mo1308-phase3-candidate-identity.json';
@@ -55,7 +55,7 @@ export async function rehearse({ root, stream, number = 1, evidenceDir, impls, h
   const problems = checkDefinition({ inventory, stream, impls, hostOnly });
   if (problems.length > 0) throw new CampaignError('DEFINITION_INVALID', problems[0]);
   const generation = `phase3${streamLetter(stream)}-rehearsal-r${number}`;
-  const directory = evidenceDir ?? fs.mkdtempSync(path.join(os.tmpdir(), `mo1308-${generation}-`));
+  const directory = evidenceDir ?? makeTemp('p3');
   // Cases write their artifacts under env.evidenceDir; a rehearsal is never certifying.
   env.evidenceDir = directory;
   env.certifying = false;
