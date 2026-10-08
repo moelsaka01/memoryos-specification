@@ -1,5 +1,22 @@
 # MO-1308 Phase 3 step 3: handoff (updated at the end of every task)
 
+## Current state (2026-10-08, interim): TASKS 1-2 DONE; TASKS 3-4 IN PROGRESS
+Owner decisions recorded as note A8.10 (Freeze, end of file, on phase3-shared): (1) A02 also allows certifying generation directories only when their evidence seal verifies (`lib/evidence-allowance.mjs`, tests A02-A04); (2) F22 / 3D-D4: strict 639/639, test unchanged, NO reruns of any test (D5); preconditions in case 3D-D4 (`tools/mo1308-phase3d/regression-preconditions.mjs`, checkD4, tests D08-D09): fresh worktree, `.cache/mo1307` absent or empty before the run, load sample (quiet host, <= 20% CPU), F22 duration recorded, retries 0. The F22 rerun proposal of Task 2 was NOT approved. Apply the same fresh-worktree/no-leftover rule to every certifying run that executes the MO-1307 suite. Also fixed: 3A cases-host and 3D validate read the g4 receipt (kind `...G4Receipt`).
+
+Heads (all pushed): shared 05da15d3; 3B 7111434e; 3C 9ec9e36d (rehearsal r3 + review fix); 3D 7c48ace3; 3A see git log.
+
+Rehearsals (non-certifying, preserved under `evidence/mo1308/phaseNx-rehearsal-rN`, each in a fresh worktree; run with `campaign.mjs rehearse --number N --out <worktree>/repositories/cca-conformance/evidence/mo1308/phase3x-rehearsal-rN`):
+* 3B r1: 26/26 PASS, 340 s of 5400 s.
+* 3C r3: 67/67 PASS, 1104 s of 5400 s. After the review (below) 3C-F2 and campaign.mjs changed: a 3C re-rehearsal (r4) is required.
+* 3D r1: REHEARSAL_FAILED at 3D-D2 as expected (no certifying evidence). Validator readiness: D1 READY, D5 READY (g4 receipt), D2/D3/D4/D6/D7/E1/E2/E3 NOT_READY. Dry run of the D4 preconditions on a fresh worktree: ABSENT cache, load 11.8%.
+* 3A r3 stopped at 3A-A4 (receipt kind G3 vs G4), r4 and r5 stopped at 3A-K4 (J11 ledger without .pending; J13 planted anomalies unregistered and verify's 1000-item list cap): all harness defects, fixed, evidence preserved. r6 (A1 failed once at 7.5 GB free: the ceiling needs 8 GiB; disk space freed) re-run in progress: in worktree C:\v6a. F7 in r4/r5: NOT_CONFIRMED (0 staging EPERM), no escalation.
+Disk: keep >= 12 GB free on C: (worktrees are 0.4 GB each; remove finished ones, use `campaign.mjs cleanup --generation ID` for .p3a-work).
+
+Reviews (Task 4): 3C review done on the bytes of 9ec9e36d's predecessor a1744da8: one BLOCKING finding H-01 (3C-F2 vacuous: hostile paths were extra files, rejected by the file-count check) FIXED (paths now inside a re-sealed manifest, control row, exact EXPORT_CORRUPT; verified to FAIL when the path regex is removed); non-blocking H-02..H-13 to be recorded with dispositions; the legacy oracle is now a bound input. The 3C review must be repeated on the final 3C bytes after r4. 3A review: not yet (wait for a clean full rehearsal). The review file location is `evidence/mo1308/phase3a-harness-review/review.json` (3A) and the equivalent for 3C; A02 needs a test-only filter for `phase3x-harness-review/review.json` (not yet written).
+
+Next: finish 3A r6 (incl. the 100,000-entry ceiling), re-rehearse 3C (r4), 3A and 3C reviews on final bytes, record reviews as sealed inputs, then STOP.
+
+
 ## Current state (2026-10-08): TASKS 1 AND 2 DONE; NEXT = TASKS 3-4
 Task 1 (move to candidate f4211c8c, A8.9) and Task 2 (harness updates for A10 and harness assumption fixes) are complete and pushed. Nothing certifying or rehearsal-grade has been produced: the changed cases were verified one by one in development worktrees (`dev-run.mjs`), and every branch's own test file and the shared tests pass on this host (about 40 existing worktrees).
 
