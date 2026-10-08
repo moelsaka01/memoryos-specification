@@ -11,6 +11,7 @@ campaign: the Windows-only harnesses of 3A, 3B and 3C come in later steps and pl
 | `node corpus.mjs write --out FILE` / `verify --file FILE` | generate or check the sealed shared corpus manifest |
 | `node inventory-file.mjs write` / `check` | write or check `mo1308-phase3-inventory.json` from `lib/inventory-source.mjs` |
 | `node render-protocol.mjs update` / `check` | rewrite or check the generated tables of the protocol document |
+| `short-temp.mjs` (`makeTemp`, `tempRecord`) | the short temporary root of A8.9: `C:\tt\<stream>-<n>` on Windows, override with `MO1308_P3_TEMP_ROOT` (at most 24 characters) |
 
 After editing `lib/inventory-source.mjs` run `inventory-file.mjs write`, then `render-protocol.mjs update`.
 
