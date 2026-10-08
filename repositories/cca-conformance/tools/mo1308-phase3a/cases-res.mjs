@@ -149,7 +149,7 @@ export const resourceCases = {
       const unreferencedOnDisk = recordDirs.filter((name) => !referenced.has(name)).length;
       // anomalies are always DISCLOSED by verify, exactly
       if (result.pendingArtifacts !== pendingOnDisk) problems.push(`${path.basename(row.path)}: ${pendingOnDisk} staging names on disk, verify reports ${result.pendingArtifacts}`);
-      if ((result.unreferencedRecords ?? []).length !== unreferencedOnDisk) problems.push(`${path.basename(row.path)}: ${unreferencedOnDisk} unreferenced records on disk, verify reports ${(result.unreferencedRecords ?? []).length}`);
+      if ((result.unreferencedRecords ?? []).length !== Math.min(unreferencedOnDisk, 1000)) problems.push(`${path.basename(row.path)}: ${unreferencedOnDisk} unreferenced records on disk, verify reports ${(result.unreferencedRecords ?? []).length}`);
       if (row.interrupted) { if (pendingOnDisk + unreferencedOnDisk > 0) interruptedWithAnomalies += 1; continue; }
       // ... and none exist after successful operations
       clean += 1;

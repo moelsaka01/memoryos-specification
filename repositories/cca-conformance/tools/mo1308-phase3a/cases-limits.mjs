@@ -207,6 +207,7 @@ export const limitCases = {
       fs.writeFileSync(path.join(directory, 'package.mip'), 'x');
       fs.writeFileSync(path.join(ledger, '.pending', `stage-${String(index).padStart(5, '0')}`), 'x');
     }
+    register(env, ledger, false, { interrupted: true }); // the planted anomalies are disclosed ones (3A-K4 counts them)
     const verify = run(env, ['history', 'verify', '--ledger', ledger, '--json']);
     const listed = verify.json?.result?.unreferencedRecords ?? [];
     if (verify.status !== 0) problems.push(`verify: ${verify.code}`);
