@@ -1,10 +1,19 @@
-# MO-1308 Phase 3 step 3: handoff (updated at the end of every correction step)
+# MO-1308 Phase 3 step 3: handoff (updated at the end of every task)
 
-## Branch heads (as of this file's first commit)
+## Current state (2026-10-08): TASK 1 DONE; NEXT = TASK 2 (harness expectation changes)
+Task 1 (move to candidate f4211c8c, bookkeeping only) is complete: phase3-corrections (A10, section 37) and phase3-precondition (A3.2 generation 4) are merged into `mo1308/phase3-shared`; A8.9 is appended to the Freeze; the candidate identity, inventory and protocol are regenerated; the shared merge is in all four stream branches.
+
+* **Candidate:** `f4211c8c502f771bc78c2d2ab509c20d2b715676` (binding B of `mo1308/phase3-corrections`, evidence `d1836294`, `main` at the same commit). `productionTreeDigest` = `sha256:144171044dad6b83050cf0933ce68f243416d66ca3f39f458b15a0b8216200d3` (candidate-identity.json SHA-256 `13565f19bd393c411e7bb133a889a34eb9429185b3b8eeb8686a1ed7713e042f`). Against b0bf2d56 only `memoryos-cli/bin/memoryos.js` and `memoryos-cli/src/history-store.js` changed; `memoryos-history-admission.js` and `mip-canonical.js` are byte-identical (D9 holds).
+* **A3 gate input** (3A-A4, 3D-D5): `evidence/mo1308/phase3-precondition-g4/receipt.json` (top-level `verdict` = PASS; branch head `ce0d15ce`, evidence `ce3876f4`).
+* **Bound hashes (A8.9):** protocol `1c3622ba...2a0`, inventory `884638ed...c66`, identity `13565f19...e31`, corpus unchanged `b055805d...c1e`.
+* **Heads after Task 1:** shared `8ac7930b`; 3A, 3B, 3C, 3D heads are the merge commits of `origin/mo1308/phase3-shared` (3A also carries this file's commit; see `git log`). Old heads: 3A `b3224446`, 3B `5ef538ba`, 3C `c1ef03eb`, 3D `c56a707f`.
+* **Open for Task 2:** fill the placeholder subsection "A8.9 harness expectation changes" at the end of `docs/mo1308-contract-freeze-1.md`; then the work listed under "Open issues" below. The shared test A02 fails on the 3A branch only because 3A carries its own rehearsal evidence (`evidence/mo1308/phase3a-rehearsal-r2`); it is not a regression.
+* Allowed path set: `memoryos-cli/bin/memoryos.js` joined CLI_HISTORY_NAMESPACE (299 changed paths since BF, all classified).
+
+## Branch heads (as of the first commit of this file, before Task 1)
 * `mo1308/phase3a-native` d58a1ba8 + this file; worktree `C:\w3a`.
 * `mo1308/phase3c-security` c1ef03eb; worktree `C:\w3c`.
-* Candidate under test: b0bf2d56, productionTreeDigest sha256:aa9816c3...a798. Correction branch (to create): `mo1308/phase3-corrections` from b0bf2d56.
-
+* Old candidate b0bf2d56, productionTreeDigest sha256:aa9816c3...a798. Correction branch `mo1308/phase3-corrections` from b0bf2d56 (now merged, head f4211c8c).
 ## Harness status
 | Stream / segment | State |
 |---|---|
@@ -19,7 +28,7 @@
 `C:\scratch3a` (probes, patch scripts, steps.py, run3a.sh, aborted-r1-observation-float), `C:\scratch3c`. Work roots: `C:\w3a\.p3a-work`, `C:\w3c\.p3c-work` (git-excluded).
 Run a 3A rehearsal: `bash /c/scratch3a/run3a.sh N` (uses `--tolerate 3A-L3`, rehearsal only). Pinned Node: `C:\Users\melsa\Documents\Codex\cca-workspace\.cache\mo1305-phase3br\toolchain\node-v24.21.0-win-x64\node.exe`.
 
-## Findings (candidate b0bf2d56)
+## Findings (old candidate b0bf2d56; corrected by A10 in f4211c8c)
 1. **3A-L3** closed stdout pipe: `memoryos-cli/src/main.js:21` `process.stdout.write` emits an unhandled EPIPE; Node prints a stack with source paths, exit 1, even after a committed init/append. Repro: spawn the CLI with stdout piped and destroy the read end at once (`C:\scratch3a\epipe.mjs`). Harness: cases-transport.mjs `3A-L3`.
 2. **3A-D4** planted dangling link at a staging name: `history-store.js` `writeFileExclusive` (`openSync` O_EXCL) follows a dangling symlink/junction on Windows and creates the target; after-the-fact lstat then fails typed. Harness: cases-paths.mjs `3A-D4` (staging sub-scenario, currently records `createdThroughDanglingStagingLink`).
 3. **3A-G3** purge through a swapped record directory: `purgeMembers` lstat/unlinks by path with no chain re-check, deleting same-named files outside the ledger. Harness: cases-swap.mjs `3A-G3` (records `decoysDeletedThroughTheSwappedJunction`).
