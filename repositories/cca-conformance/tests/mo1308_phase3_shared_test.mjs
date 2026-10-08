@@ -232,6 +232,8 @@ test('A03 the evidence allowance classifies exactly the A3.x precondition eviden
   for (const ok of ['phase3a/seal.json', 'phase3a-g2/seal.json', 'phase3d-g12/x', 'phase3b/steps/A/step-receipt.json']) assert.equal(kind(ok), 'CERTIFYING', ok);
   for (const bad of ['phase3a-rehearsal/x', 'phase3e-rehearsal-r1/x', 'phase3e/x', 'phase3a-rehearsal-r1-extra/x', 'phase3-corrections/x', 'phase3-precondition-x/x', 'phase3a-gx/x',
     'phase3a-g2-extra/x', 'phase2d/x', 'phase3a-rehearsal-r1']) assert.equal(kind(bad), null, bad);
+  for (const letter of ['a', 'b', 'c', 'd']) assert.equal(kind('phase3' + letter + '-harness-review/review.json'), 'REVIEW');
+  for (const bad of ['phase3a-harness-review/other.json', 'phase3a-harness-review/review.json.bak', 'phase3a-harness-review/sub/review.json', 'phase3e-harness-review/review.json', 'phase3-harness-review/review.json', 'phase3a-harness-review']) assert.equal(kind(bad), null, bad);
   assert.equal(classifyEvidencePath('repositories/cca-conformance/evidence/mo1307/phase3a/x').kind, null);
 });
 
