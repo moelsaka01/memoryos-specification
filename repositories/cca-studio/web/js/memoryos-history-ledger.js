@@ -255,6 +255,9 @@ function sealEntry(state, fields) {
 export function appendHistoryEntry(input) {
   const { ledger, admission } = requireObject(input, ["ledger", "admission"]);
   const state = stateOf(ledger);
+  // Amendment A11: the entry-count limit comes before any shape check. The would-be entry of a full ledger has index 100000, which the entry shape
+  // check below rejects, so the limit must be tested first for the refusal to be RESOURCE_LIMIT (Freeze section 14.2) and not RECORD_INVALID.
+  if (state.entries.length >= LIMITS.entriesPerLedger) historyFail("RESOURCE_LIMIT", "PUBLICATION");
   const invalid = () => historyFail("RECORD_INVALID", "ADMISSION");
   if (admission === null || typeof admission !== "object" || Array.isArray(admission)) invalid();
   let parsed;

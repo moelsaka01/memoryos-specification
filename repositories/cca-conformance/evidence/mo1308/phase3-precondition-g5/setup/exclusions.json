@@ -1,0 +1,91 @@
+{
+  "kind": "MO1308Phase3PreconditionG4Exclusions",
+  "amendments": "A3.1 (cca_core_tests), A3.2, A3.3, A3.4 (generation 4)",
+  "frozenBeforeRecordedRuns": true,
+  "baseline": "1dd1e8c82fe0ed5a32a894744392f2c279f89d4c",
+  "candidate": "f4211c8c502f771bc78c2d2ab509c20d2b715676",
+  "trees": {
+    "baseline": "g5b",
+    "candidate": "g5c"
+  },
+  "probeRounds": [
+    {
+      "round": 1,
+      "probed": 70,
+      "blocked": [
+        "g5b:repositories/cca-core/cca_memory_reflection_example.exe",
+        "g5c:repositories/cca-sdk/memoryos_sdk_cpp_tests.exe",
+        "g5c:repositories/cca-studio/cca_memory_studio_allocation_tests.exe"
+      ]
+    },
+    {
+      "round": 2,
+      "probed": 70,
+      "blocked": [
+        "g5b:repositories/cca-core/cca_memory_reflection_example.exe",
+        "g5c:repositories/cca-sdk/memoryos_sdk_cpp_tests.exe",
+        "g5c:repositories/cca-studio/cca_memory_studio_allocation_tests.exe"
+      ]
+    },
+    {
+      "round": 3,
+      "probed": 70,
+      "blocked": [
+        "g5b:repositories/cca-core/cca_memory_reflection_example.exe",
+        "g5c:repositories/cca-sdk/memoryos_sdk_cpp_tests.exe",
+        "g5c:repositories/cca-studio/cca_memory_studio_allocation_tests.exe"
+      ]
+    },
+    {
+      "round": 4,
+      "probed": 70,
+      "blocked": [
+        "g5b:repositories/cca-core/cca_memory_reflection_example.exe",
+        "g5c:repositories/cca-sdk/memoryos_sdk_cpp_tests.exe",
+        "g5c:repositories/cca-studio/cca_memory_studio_allocation_tests.exe"
+      ]
+    }
+  ],
+  "blockedPerTree": {
+    "g5b": [
+      "repositories/cca-core/cca_memory_reflection_example.exe"
+    ],
+    "g5c": [
+      "repositories/cca-sdk/memoryos_sdk_cpp_tests.exe",
+      "repositories/cca-studio/cca_memory_studio_allocation_tests.exe"
+    ]
+  },
+  "blockedAtCtestDiscovery": [],
+  "unionOfBlockedExecutables": 3,
+  "unionList": [
+    "repositories/cca-core/cca_memory_reflection_example.exe",
+    "repositories/cca-sdk/memoryos_sdk_cpp_tests.exe",
+    "repositories/cca-studio/cca_memory_studio_allocation_tests.exe"
+  ],
+  "gtestExecutablesRenamedInBothTrees": [
+    "repositories/cca-sdk/memoryos_sdk_cpp_tests.exe",
+    "repositories/cca-studio/cca_memory_studio_allocation_tests.exe"
+  ],
+  "nonGtestBlockedExecutables": [
+    "repositories/cca-core/cca_memory_reflection_example.exe"
+  ],
+  "testsForNonGtestBlockedExecutables": {
+    "repositories/cca-core/cca_memory_reflection_example.exe": [
+      "cca.memory_reflection.example"
+    ]
+  },
+  "blockedExecutablesWithNoCtestTest": [],
+  "guard": "all blocked executables are native C++ test, example or tool binaries built under repositories/ (no node.exe, python.exe, cmake.exe, ctest.exe, npm.cmd); the pinned node.exe, python.exe, cmake.exe and ctest.exe launch normally",
+  "registeredTests": 288,
+  "ctestExcludedNames": [
+    "cca_core_tests_NOT_BUILT",
+    "cca_memory_studio_allocation_tests_NOT_BUILT",
+    "memoryos_sdk_cpp_tests_NOT_BUILT",
+    "cca.memory_reflection.example"
+  ],
+  "ctestExcludedCount": 4,
+  "ctestExcludeRegex": "^(cca_core_tests_NOT_BUILT|cca_memory_studio_allocation_tests_NOT_BUILT|memoryos_sdk_cpp_tests_NOT_BUILT|cca\\.memory_reflection\\.example)$",
+  "ctestCommand": "ctest --preset default -E \"^(cca_core_tests_NOT_BUILT|cca_memory_studio_allocation_tests_NOT_BUILT|memoryos_sdk_cpp_tests_NOT_BUILT|cca\\.memory_reflection\\.example)$\" --timeout 3600",
+  "excludedGtestTestNames": "excluded-gtest-test-names.json",
+  "classification": "ENVIRONMENT_BLOCKED_SAC for every excluded test except cca_core_tests_NOT_BUILT, which is the A3.1 waiver"
+}
