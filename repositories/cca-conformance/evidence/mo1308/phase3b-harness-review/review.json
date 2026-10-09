@@ -1,0 +1,132 @@
+{
+  "conclusion": "NO_BLOCKING_FINDINGS",
+  "findings": [
+    {
+      "id": "H-01",
+      "severity": "NON_BLOCKING",
+      "summary": "3B-C3 records transitiveReachesCore/Sdk but asserts only the direct imports against the allowed list.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Not changed so the reviewed bytes stay stable; the property holds today (rehearsals r1, r2 26/26) and the gap is disclosed for 3D. The transitive Core reach of the history authority via investigation-policy-engine.js is carried into the release disclosure; owner modules are unchanged (A3)."
+    },
+    {
+      "id": "H-02",
+      "severity": "NON_BLOCKING",
+      "summary": "3B-C1 tolerates any change to the package.json scripts member (needed for the cca-studio test list), which would also admit a lifecycle script.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Not changed so the reviewed bytes stay stable; the property holds today (rehearsals r1, r2 26/26) and the gap is disclosed for 3D. The package.json files of the released closures are additionally bound by the A3 allowed-path audit."
+    },
+    {
+      "id": "H-03",
+      "severity": "NON_BLOCKING",
+      "summary": "3B-G2 no-network/no-install check strips string literals and exempts cases.mjs; holds by construction.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Not changed so the reviewed bytes stay stable; the property holds today (rehearsals r1, r2 26/26) and the gap is disclosed for 3D."
+    },
+    {
+      "id": "H-04",
+      "severity": "NON_BLOCKING",
+      "summary": "3B-C4 static scan skips globalThis.x and word-before-colon forms; runtime proof denies fs, write and child process but not network.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Not changed so the reviewed bytes stay stable; the property holds today (rehearsals r1, r2 26/26) and the gap is disclosed for 3D."
+    },
+    {
+      "id": "H-05",
+      "severity": "NON_BLOCKING",
+      "summary": "3B-G1 hashes the Node executable only; git and Python are recorded by version.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Not changed so the reviewed bytes stay stable; the property holds today (rehearsals r1, r2 26/26) and the gap is disclosed for 3D. Disclose that git and Python are recorded by version only."
+    },
+    {
+      "id": "H-06",
+      "severity": "NON_BLOCKING",
+      "summary": "Cleanup rmSync has no maxRetries; an antivirus handle could raise EBUSY in a finally block (flake risk).",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Not changed so the reviewed bytes stay stable; the property holds today (rehearsals r1, r2 26/26) and the gap is disclosed for 3D. If it occurs in the certifying run it is a HARNESS defect with a preserved generation."
+    },
+    {
+      "id": "H-07",
+      "severity": "NOTE",
+      "summary": "Some baseline values (vscode post-tag docs, readiness archive SHA, other tags) are pinned from the repository itself (trust on first use); bfTrees pinned but unused.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Not changed so the reviewed bytes stay stable; the property holds today (rehearsals r1, r2 26/26) and the gap is disclosed for 3D."
+    },
+    {
+      "id": "H-08",
+      "severity": "NOTE",
+      "summary": "Identity record and baseline.json read from the working tree (sealed as tool paths); identity.baseCommit is not asserted equal to the candidate base; one error message wording.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Not changed so the reviewed bytes stay stable; the property holds today (rehearsals r1, r2 26/26) and the gap is disclosed for 3D."
+    },
+    {
+      "id": "H-09",
+      "severity": "NOTE",
+      "summary": "3B-E2 compares worktree lists, so no other campaign may create a worktree concurrently; spawn calls have no timeout.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Run procedure: 3B runs alone on a quiet host, after 3A and 3C have finished."
+    },
+    {
+      "id": "H-10",
+      "severity": "NOTE",
+      "summary": "Housekeeping: 3B-B5 needs a clean local memoryos-1.3-* tag set; 3B-D4 can only pass; dead code; manifest and licence patterns could be wider.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Local tag set checked before the run (only the expected tags). Rest accepted."
+    },
+    {
+      "id": "H-11",
+      "severity": "NOTE",
+      "summary": "No finding: evidence integrity (no timestamps or user paths), safety (read-only git, confined temp worktrees), A3 rule set matches protocol section 15.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "None."
+    }
+  ],
+  "kind": "MO1308Phase3Review",
+  "reviewedAt": "2026-10-09T13:54:42.184Z",
+  "reviewer": {
+    "identity": "Claude Sonnet 5.5 read-only sub-agent (independent review of the final 3B bytes)",
+    "role": "INDEPENDENT_SUB_AGENT"
+  },
+  "scope": "All 8 files of repositories/cca-conformance/tools/mo1308-phase3b at commit 2ba87d52, against protocol section 9.2, the 3B inventory and section 15, and Freeze R28, R29, R32, R33, R34, A8 and A9.1.",
+  "subject": [
+    {
+      "byteLength": 4888,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3b/assemble.mjs",
+      "sha256": "9c2bfd41db7ad948125c544053de5e61109afd749ac94e9256c03b2c1fa0b1ea"
+    },
+    {
+      "byteLength": 23156,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3b/audit.mjs",
+      "sha256": "00bc5f3904235e9d6ec87eecb894d2cfc62b38942bc8c7ed6fe5fdcc7a4a22f4"
+    },
+    {
+      "byteLength": 6142,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3b/baseline.json",
+      "sha256": "5d2ad18392a7f7e66d7e30545a0561d645f95f4b84f69e56f0f2c144f30a014a"
+    },
+    {
+      "byteLength": 1047,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3b/campaign.mjs",
+      "sha256": "0bdb5923f8e0424efb03d678770283dcfd2dbad7d5281e82e75c809c65c1b818"
+    },
+    {
+      "byteLength": 20829,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3b/cases.mjs",
+      "sha256": "6a52f9d5d531bdc125d35ee2e7638aeca69030816ea726de2f047e505285261a"
+    },
+    {
+      "byteLength": 6017,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3b/pin-baseline.mjs",
+      "sha256": "f88fc29f4956aa100f3279f192f0582b0d90bb48cc1c869fc2f912b1a388e5d0"
+    },
+    {
+      "byteLength": 4148,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3b/smoke.mjs",
+      "sha256": "2152d6e98ae1e4d49885ebe05bfc9b09d728b6fee14feb7b19ba17d1122d2523"
+    },
+    {
+      "byteLength": 4847,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3b/tar.mjs",
+      "sha256": "29cc99aa0bb839b958db2cd561901737ce4f3c20bc3e57711ba80055d2bfe33d"
+    }
+  ],
+  "version": "1.0.0"
+}
