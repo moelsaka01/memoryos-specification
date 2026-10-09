@@ -1,0 +1,101 @@
+{
+  "conclusion": "NO_BLOCKING_FINDINGS",
+  "findings": [
+    {
+      "id": "R1-H-01",
+      "severity": "BLOCKING",
+      "summary": "First review: the sealed, open certifying phase3d generation was verified as an input of its own run and would turn D2 NOT_READY.",
+      "disposition": "FIXED",
+      "note": "validate.mjs loadGenerations marks a certifying 3D row self (not verified, never accepted, no problems); test D13; confirmed correct by the second review (R2-H-01-recheck)."
+    },
+    {
+      "id": "R1-H-02",
+      "severity": "NON_BLOCKING",
+      "summary": "D4 trusts the regression record: log digests are format-checked only, per-suite commit field unchecked, D5 reads only the verdict member.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Partly fixed (skipped 0 and mo1307 passed 639 are now required). The raw logs sit beside regression.json and match their digests (checked by hand). Not changed so the reviewed bytes stay stable; an honest tree cannot produce a false READY from it."
+    },
+    {
+      "id": "R1-H-03",
+      "severity": "NON_BLOCKING",
+      "summary": "D7 reads the binding from the worktree; the I3 inventory contents are not re-hashed.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Not changed so the reviewed bytes stay stable; an honest tree cannot produce a false READY from it."
+    },
+    {
+      "id": "R2-H-04",
+      "severity": "NON_BLOCKING",
+      "summary": "loadGenerations does not compare seal.stream with the stream parsed from the directory name.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Acceptance still needs a full verifyEvidence and a stream that does not appear fails D2. Not changed so the reviewed bytes stay stable; an honest tree cannot produce a false READY from it."
+    },
+    {
+      "id": "R2-H-05",
+      "severity": "NON_BLOCKING",
+      "summary": "row.accepted is not conditioned on !rehearsal; in the moved-inventory branch a hand-edited rehearsal receipt with a re-written evidence seal could set accepted.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "D2 then reports the rehearsal as certifying/promotable and the run is NOT_READY, so it cannot reach CERTIFIED_READY_TO_TAG; D11 covers receipt and step tampering. Not changed so the reviewed bytes stay stable; an honest tree cannot produce a false READY from it."
+    },
+    {
+      "id": "R2-H-06",
+      "severity": "NON_BLOCKING",
+      "summary": "i3-inventory would throw if a certifying 3D self row were present when I3 is built.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Run order is I3, then BF, then the 3D seal."
+    },
+    {
+      "id": "R2-H-07",
+      "severity": "NOTE",
+      "summary": "E1 is lenient by design (a line with any negation word passes).",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "Mentioned in the disclosure."
+    },
+    {
+      "id": "R2-H-08",
+      "severity": "NOTE",
+      "summary": "Read-only, harness-failure and tag checks are clean.",
+      "disposition": "ACCEPTED_WITH_DISCLOSURE",
+      "note": "None."
+    }
+  ],
+  "kind": "MO1308Phase3Review",
+  "reviewedAt": "2026-10-09T16:21:07.828Z",
+  "reviewer": {
+    "identity": "Claude Sonnet 5.5 read-only sub-agent (second review of the final 3D bytes; first review found R1-H-01)",
+    "role": "INDEPENDENT_SUB_AGENT"
+  },
+  "scope": "All 6 files of repositories/cca-conformance/tools/mo1308-phase3d at commit 4f9839d3, against protocol section 9.4, Freeze A8.10 and A8.12 and the committed 3A, 3B, 3C and regression evidence.",
+  "subject": [
+    {
+      "byteLength": 1020,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3d/campaign.mjs",
+      "sha256": "1483aa1512352c5726b4220a07b5e0b231752209a67e03bee34c2c000a6a02b0"
+    },
+    {
+      "byteLength": 1556,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3d/cases.mjs",
+      "sha256": "e34f6a2f659c0abdea5bb50c93f6efe3544c72fe83c30356f198b5316021dcfe"
+    },
+    {
+      "byteLength": 5075,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3d/i3-inventory.mjs",
+      "sha256": "c5d07b957ae1ec785a7ed163aaf94a5e75a9e66ca7011b9366ab74033e1fe162"
+    },
+    {
+      "byteLength": 2809,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3d/regression-preconditions.mjs",
+      "sha256": "2a8be22ef08d2c6e13cc2180b8a1bc1c144b120e6401b87e2fca0bc5a2af0c92"
+    },
+    {
+      "byteLength": 1390,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3d/validate-final.mjs",
+      "sha256": "376d0f8d6f69ccb784d8511ec9dd4702e502b644656de87332d2212bda1a6888"
+    },
+    {
+      "byteLength": 29382,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3d/validate.mjs",
+      "sha256": "f9782676f53b82684030998d35e4719c1131b1071e262488a32b4b390eba1286"
+    }
+  ],
+  "version": "1.0.0"
+}
