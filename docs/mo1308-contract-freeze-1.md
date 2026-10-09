@@ -2051,3 +2051,12 @@ The A3 gate input of cases 3A-A4 and 3D-D5 is the A3.2 generation 5 receipt, `re
 | `repositories/cca-conformance/mo1308-phase3-inventory.json` | `2f49ac38b5b2ad4dcea3933fb5505f35856043ea8c963c8e66e0f2812872a12c` |
 | `repositories/cca-conformance/mo1308-phase3-candidate-identity.json` | `528f36b8103abe1df3fbff08489350fd7a494f951ec73ac043bbf7209c5112c7` |
 | `repositories/cca-conformance/mo1308-phase3-corpus-manifest.json` | `b055805d2db43f414261921ded61eb69d856ad5c821139254e9ba1b7ce386c9f` |
+
+**A8.11 addendum (2026-10-09, owner-authorized): the gate input is generation 6.** The generation 5 receipt (`phase3-precondition-g5`, evidence `c0233109`, binding `1db9590d`) is preserved unchanged: both of its worktrees held `deff3c80` and its verdict is PASS, but its `exclusions.json` and `receipt.json` label the candidate `f4211c8c` (the setup script still held the generation 4 candidate), so case 3A-A4 correctly rejected it (non-certifying rehearsal r7, step A). Classification: HARNESS defect of the A3.2 setup script, not a product or environment finding. The differential was repeated as generation 6 in fresh worktrees with a script that asserts the labelled commits equal the trees' HEADs: `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g6/receipt.json` (SHA-256 `3d1674733e2ca25df673f28f1ee87a829d45cc23914a2fddcc54132d0e7f0841`, receipt kind `MO1308Phase3PreconditionG6Receipt`, evidence `26d8954a`, binding head `9fd44195`, BF `1dd1e8c8` versus `deff3c80`; 295 registered tests, 7 excluded, 190 PASS_BOTH, 98 PRE_EXISTING, no new failure, no candidate-only test). The A3 gate input of cases 3A-A4 and 3D-D5 is this generation 6 receipt; the section above that names generation 5 is superseded on this point. The protocol (section 3 and the two inventory titles) was updated; these are the bound hashes from here (the identity and corpus hashes are unchanged):
+
+| File | SHA-256 |
+|---|---|
+| `docs/mo1308-phase3-protocol.md` | `4066c8df246db08875969cb61a5088daab2ed52ef4ad22835db81eb93e4d284f` |
+| `repositories/cca-conformance/mo1308-phase3-inventory.json` | `934607c1acdeff88b934fa447ce714c3869bbb73a2a4d35b36603bc5c2d35b5d` |
+| `repositories/cca-conformance/mo1308-phase3-candidate-identity.json` | `528f36b8103abe1df3fbff08489350fd7a494f951ec73ac043bbf7209c5112c7` |
+| `repositories/cca-conformance/mo1308-phase3-corpus-manifest.json` | `b055805d2db43f414261921ded61eb69d856ad5c821139254e9ba1b7ce386c9f` |

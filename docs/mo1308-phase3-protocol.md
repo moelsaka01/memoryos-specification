@@ -97,10 +97,10 @@ Freeze sections, refine it:
   `1dd1e8c8` and on the candidate under an identical toolchain; the verdict is PASS only if `cca.workspace.verify` passes on B2,
   nothing that passes on BF fails or is not run on B2, every B2-only test passes, and every shared failure is listed
   `PRE_EXISTING` with a classification. Its evidence directory is
-  `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g5/` (generation 5, evidence `c0233109`, branch head `1db9590d`; A8.11),
+  `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g6/` (generation 6, evidence `26d8954a`, branch head `9fd44195`; A8.11),
   and its `receipt.json` carries the verdict as its top-level member `verdict`. The gate reads `receipt.json`; `binding.json` has no
   verdict member and hashes the receipt.
-- **A3.4 (section 36)** repeats the differential as generation 3 on the corrected candidate b0bf2d56; generation 4 (A8.9) repeats it on f4211c8c and generation 5 (A8.11) on deff3c80; generation 5 is the gate input; generations 2, 3 and 4 stay preserved.
+- **A3.4 (section 36)** repeats the differential as generation 3 on the corrected candidate b0bf2d56; generation 4 (A8.9) repeats it on f4211c8c and generation 5 (A8.11) on deff3c80 with a mislabelled candidate field in its receipt, and generation 6 (A8.11) repeats it correctly; generation 6 is the gate input; generations 2 to 5 stay preserved.
 - **A3.3 (section 33)** records that Smart App Control blocks a build-dependent set of freshly built unsigned executables on the
   reference host: every CTest test whose executable is blocked in either tree is excluded in BOTH runs as
   `ENVIRONMENT_BLOCKED_SAC`, from a frozen list (`setup/exclusions.json`, committed before the recorded runs). A blocked executable
@@ -347,7 +347,7 @@ Segment `ceiling`: J-C ceiling run (its own segment, own clock and hard stop; ru
 | 3A-A1 | Host identity: Windows 11 x64 build, NTFS volume type and serial, free space recorded | - | assert | - |
 | 3A-A2 | Node.js v24.21.0 win-x64 executable SHA-256 equals ba4e6d11...6c32 | - | assert | - |
 | 3A-A3 | Production path tree of the worktree equals the sealed candidate identity blob by blob; worktree clean | R32 | assert | - |
-| 3A-A4 | The A3.2 generation 5 receipt (differential CTest gate, BF 1dd1e8c8 versus the corrected candidate deff3c80) is bound; its receipt.json top-level verdict is PASS for the same candidate | R31 | assert | - |
+| 3A-A4 | The A3.2 generation 6 receipt (differential CTest gate, BF 1dd1e8c8 versus the corrected candidate deff3c80) is bound; its receipt.json top-level verdict is PASS for the same candidate | R31 | assert | - |
 | 3A-A5 | Sealed tool inventory matches; harness review bound; no rehearsal evidence is referenced as an input | - | assert | - |
 | 3A-A6 | Environment capture: AV and Defender state, LongPathsEnabled, 8.3 name setting, unprivileged symlink creation, CPU and disk | - | record | - |
 | 3A-A7 | Idle host-load sample before the run (recorded, never gated) | - | record, not mandatory | - |
@@ -756,7 +756,7 @@ Segment `main`: Validator run. Budget 90 min, extended 180 min.
 | 3D-D2 | Accepted 3A, 3B and 3C receipts, every preserved failed generation, rehearsal and disposition are present and bound | - | assert | - |
 | 3D-D3 | Requirement matrix: every R01-R37 maps to at least one case with PASS in an accepted generation | - | assert | - |
 | 3D-D4 | Retained full regression: MO-1308 suites, CLI, studio, MO-1307 (639) and examples | R03, R31 | assert | - |
-| 3D-D5 | The A3.2 generation 5 receipt (differential CTest gate) is bound: receipt.json top-level verdict is PASS, and cca.workspace.verify passes on the candidate | R31 | assert | - |
+| 3D-D5 | The A3.2 generation 6 receipt (differential CTest gate) is bound: receipt.json top-level verdict is PASS, and cca.workspace.verify passes on the candidate | R31 | assert | - |
 | 3D-D6 | Qualification register Q01-Q15 is complete with a disposition for each | - | assert | - |
 | 3D-D7 | I3 plus a binding-only BF with no self-reference; no tag, push or approval in this task | - | assert | - |
 
