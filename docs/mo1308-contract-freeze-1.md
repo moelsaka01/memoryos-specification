@@ -2003,3 +2003,51 @@ Two owner decisions after Task 2. They change harness and test rules only; no pr
 *Task 2 measurements (this host, Windows 11, Node v24.21.0).* Six full MO-1307 suite runs (`node --test --test-concurrency=1 tests/mo1307_*_test.mjs`): 639/639 each, F22 2024 to 2040 ms. Twenty solo runs: 2046 to 2083 ms. A probe on a copy of the test (the original untouched; the copy deleted) measured `performance.now() - dispositionDeadline` at the assertion of line 206: 125 quiet runs, minimum 1.10 ms, p5 2.71, median 8.72, p95 16.06, maximum 18.78, none negative; 55 runs with eight CPU-burn processes, minimum 8.01, median 22.47, maximum 75.37, none negative. The C3S failure (line 206, whole test 2029.5 ms) was not reproduced in about 180 probe runs. Separately, F22 failed in its setup (`staged()`, `MO1307_OUTPUT` after about 16 ms, before any timing code) in 13 of 80 and 5 of 30 solo runs on a worktree holding about 200 stale `.cache/mo1307/phase2c-finalization-correction/focused-<pid>` directories left by earlier runs, and in 0 of 30 after they were removed (0 of 6 in the full suite). *Root-cause hypothesis (not confirmed):* the test's cache directory is `focused-<process id>` and is never removed; a reused process id lands on a stale directory and the fixture's staging fails. Hence the fresh-worktree precondition above.
 
 **3. Harness defect found while preparing the rehearsals.** `3A` (`cases-host.mjs`) and `3D` (`validate.mjs`) still read the A3.2 generation 3 receipt; A8.9 made generation 4 the gate input. Both now read `phase3-precondition-g4`.
+
+**A8.10 addendum (2026-10-08, owner-authorized): the harness review record.** A02 also allows exactly the protocol-defined independent review record of a stream, `evidence/mo1308/phase3<a|b|c|d>-harness-review/review.json` (a sealed input), and nothing else in that directory or elsewhere (`lib/evidence-allowance.mjs`, test A03).
+
+## 38. Amendment A11 — the entry-count limit is tested first (2026-10-08, owner-authorized)
+
+Status: **owner-authorized 2026-10-08 (append-only, dated)**. It is also the file `docs/mo1308-amendment-a11.md` of branch `mo1308/phase3-corrections-2`, to be merged after section 37. It changes no frozen shape, layout, limit, identity or error code: it makes the product do what section 14.2 and the error table already say. The owner decided to correct the product, not to amend the Freeze or the Phase 3 protocol.
+
+### 38.1 The defect (found by the non-certifying Phase 3A rehearsal r6, case 3A-JC9, candidate `f4211c8c`)
+
+With a ledger holding exactly 100,000 entries, a further valid `append` was refused with exit 2 `MO1308_RECORD_INVALID` (stage `ADMISSION`) instead of `MO1308_RESOURCE_LIMIT`. Cause: `appendHistoryEntry` (`repositories/cca-studio/web/js/memoryos-history-ledger.js`) built the would-be entry with `index = 100000` and ran the entry shape check on it before the limit test in `sealEntry`; the shape check allows indexes up to 99,999 only (`maximumIndex`), so the shape check failed first and masked the limit. The refusal was clean (nothing written), only the code was wrong. The code was the same in `b0bf2d56` and the Phase 2 code; Amendment A10 did not touch it.
+
+### 38.2 The correction (one production path)
+
+`appendHistoryEntry` tests `state.entries.length >= entriesPerLedger` right after the ledger handle is resolved and before any shape check, and fails with `RESOURCE_LIMIT`, stage `PUBLICATION` (the code and stage the limit test in `sealEntry` already used), exit category 2, nothing written. Changed production path: `repositories/cca-studio/web/js/memoryos-history-ledger.js` (in the candidate's import closure through `memoryos-sdk.js`). `memoryos-history-admission.js` and `mip-canonical.js` are NOT changed, so the SHA-256 review of 3C-D9 stays valid.
+
+### 38.3 Other limits checked for the same ordering problem
+
+Every Freeze section 14.2 limit on the append, admission, tombstone and read paths was traced to the check that enforces it and to the checks before it:
+* **Entries per ledger, append:** the defect above (fixed). **Tombstone** on a full ledger: no shape check on the would-be entry, the limit test in `sealEntry` is reached after the target checks (`TOMBSTONE_INVALID` for an invalid target first, as for any invalid request), so a valid tombstone of a full ledger gives `RESOURCE_LIMIT`; unchanged.
+* **Entries per ledger, read:** `verifyChain` tests `entryBytesList.length` before any entry is decoded; the store tests the entry-file count before the name and size checks. Unchanged.
+* **Entry bytes (16,384):** tested on the encoded entry in `sealEntry` after construction, and by `decodeHistoryBytes` before parsing on read. Not masked.
+* **Descriptor bytes (1,024):** tested before parsing. **Member bytes and total member bytes** (admission): tested after the member-set name check and before the owner's verifiers; an oversized member under an invalid member set is `RECORD_INVALID` (the stronger fault), an oversized member of a valid set is `RESOURCE_LIMIT`. Unchanged.
+* **Subjects per entry (16):** a record whose admission would produce more than 16 subjects would fail the entry shape check (`RECORD_INVALID`) and not `RESOURCE_LIMIT`. No record kind produces more than four subjects (the subject sets are fixed by construction in the admission methods), so this is not reachable and nothing was changed.
+* **Query limit, authority reference and ledger name maxima, reported anomalies, CLI JSON stdout (4,194,304):** input-shape rules (`USAGE`) or truncation rules, not resource refusals that a shape check can mask. Unchanged.
+No other masked limit was found.
+
+### 38.4 Regression tests (fail on `f4211c8c`, pass after)
+
+`repositories/memoryos-cli/tests/history-limit-order.test.mjs` (L01, L02): the real SDK is loaded from a copy of `cca-studio/web` whose two ledger limits are made tiny (`entriesPerLedger` 3, `maximumIndex` 2; the replacement is asserted), so the unmodified ordering logic is exercised through the real file store without a 100,000-entry ledger: after three appends the fourth gives `MO1308_RESOURCE_LIMIT` at stage `PUBLICATION` and the ledger directory is byte-identical (nothing written, staged or removed); a ledger at a limit of four accepts four appends and refuses the fifth. On `f4211c8c` L01 and L02 fail with `RECORD_INVALID` / `ADMISSION`. The Phase 3A case 3A-JC9 (the real 100,001st append) is the end-to-end check at the next rehearsal.
+
+### 38.5 What follows
+
+Not part of this amendment, and not done: the binding of the correction branch, the A3.2 differential and the candidate move (new identity, protocol and inventory hashes, a note in the style of A8.8 and A8.9), then the rehearsals and the harness reviews on the new candidate. The candidate `f4211c8c` stays the candidate until that step.
+
+This amendment is append-only; the frozen text and Amendments A1 to A10 are unchanged.
+
+### A8.11 Candidate moved from f4211c8c to deff3c80 (append-only note, 2026-10-09, owner-authorized)
+
+The Phase 3 candidate moves from `f4211c8c502f771bc78c2d2ab509c20d2b715676` to the binding commit `deff3c8016ca685db18a3874b18ff956d289c0e0` of `mo1308/phase3-corrections-2` (Amendment A11, section 38; evidence `bef666a6`; `main` is at the same commit). Exactly one production path changed against f4211c8c: `repositories/cca-studio/web/js/memoryos-history-ledger.js` (blob `cdca6ed1303f0c07964695c732f4d0c4a841dd9e` to `79429d3be049ea691c12a615ba23cc50c66aa4ea`); the other 44 production blobs are identical. `memoryos-history-admission.js` (blob `09a52bd4db3122f6c4271af11190a7183b9bd84f`) and `mip-canonical.js` (blob `a86aff4b14f206b5521433130843604fc28366b9`) are unchanged, so the SHA-256 review of 3C-D9 stays valid. The new `productionTreeDigest` is `sha256:111bd7dd6860221bb2f00f344f38750450c9be3a509bbe888630443d47a83481` (it was `sha256:144171044dad6b83050cf0933ce68f243416d66ca3f39f458b15a0b8216200d3`). The corpus manifest is unchanged.
+
+The A3 gate input of cases 3A-A4 and 3D-D5 is the A3.2 generation 5 receipt, `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g5/receipt.json` (SHA-256 `f1c119b4aa9b8a3b7c759eb4330f93acd168214e13b2ac56cf9f0ef0c06aa9f3`, evidence `c0233109`, branch head `1db9590d`, BF `1dd1e8c8` versus `deff3c80`; 288 registered tests, 4 excluded, 168 PASS_BOTH, 116 PRE_EXISTING, no new failure), receipt kind `MO1308Phase3PreconditionG5Receipt`. The gate reads the receipt's top-level member `verdict`, which must be `PASS` (`binding.json` hashes the receipt and carries its own `verdict` of `PASS`). Generations 2, 3 and 4 stay preserved and are not gate inputs. All 335 paths changed between BF and the candidate are classified (no allowed-set change was needed: `memoryos-history-ledger.js` is in the class HISTORY_AUTHORITY_AND_SDK). The protocol sections 1, 3 and 15 and the A3.2 bullets of section 3, the inventory titles of 3A-A4 and 3D-D5, the shared test (335 paths), the candidate library constants and the CLI history guide (A11 entry-count rule) were updated. No other case or budget changed. The protocol, inventory and candidate identity were regenerated; these are the bound hashes from here.
+
+| File | SHA-256 |
+|---|---|
+| `docs/mo1308-phase3-protocol.md` | `923787b362c165fcb942a6348efdf6ba2216bd4d52d46a190bdbe55f0a4d6a07` |
+| `repositories/cca-conformance/mo1308-phase3-inventory.json` | `2f49ac38b5b2ad4dcea3933fb5505f35856043ea8c963c8e66e0f2812872a12c` |
+| `repositories/cca-conformance/mo1308-phase3-candidate-identity.json` | `528f36b8103abe1df3fbff08489350fd7a494f951ec73ac043bbf7209c5112c7` |
+| `repositories/cca-conformance/mo1308-phase3-corpus-manifest.json` | `b055805d2db43f414261921ded61eb69d856ad5c821139254e9ba1b7ce386c9f` |

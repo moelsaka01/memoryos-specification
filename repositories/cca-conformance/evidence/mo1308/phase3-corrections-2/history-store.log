@@ -1,0 +1,33 @@
+✔ T01 store constants equal the Freeze contract module (layout, limits, member names) (1.8146ms)
+✔ T02 init creates exactly the frozen layout once; an existing target or a missing parent is refused (section 9.1) (30.1737ms)
+✔ T03 append publishes members, then the entry; every earlier file is untouched (R06, R15) (202.0228ms)
+✔ T04 rejected appends change nothing: duplicates, wrong members, purged re-supply (R09, R10, R20) (142.7022ms)
+✔ T05 the commit point is exclusive creation of entries/<n>.json: a lost race is LEDGER_CONFLICT and publishes nothing (R15, H41) (394.1868ms)
+✔ T06 interruption at every mutating step before the commit point publishes nothing; after it, a complete entry (R16) (1618.92ms)
+✔ T07 tombstone commits first, then purges every member; the chain still verifies (R18, R19, section 10.2) (82.3715ms)
+✔ T08 a crash during purge leaves purgePending; re-running the same command finishes it without a new entry (section 10.2) (200.8348ms)
+✔ T09 verify fails closed on every layout defect (section 11.1) (258.856ms)
+✔ T10 verify reports staging and unreferenced artifacts; tampered bytes fail closed (R21) (127.0677ms)
+✔ T11 filesystem boundary: a link anywhere on the path or inside the ledger fails closed on every operation (R17, H40) (185.1943ms)
+✔ T12 a handle/path identity mismatch fails closed (H40) (13.8135ms)
+✔ T12b a published name whose identity differs from the staged file is detected after the link (H40) (130.0951ms)
+✔ T13 a directory swapped for a link during an append is detected after the fact; no content is overwritten; reads then fail closed (H40 risk acceptance) (250.9237ms)
+✔ T13b the same swap with no decoy is detected after the link: a boundary failure, the entry is never committed (H40) (179.9637ms)
+✔ T14 export is written once, marker last, byte-identical for equal ledgers, and verify-export fails closed (R23, section 12) (630.1019ms)
+✔ T15 query and verify-export are read-only; query verifies the chain and never reads member bytes (R22) (87.5617ms)
+✔ T16 commands: arguments become store operations, inputs are read through the boundary, errors carry only fixed text (section 13.3, 14.1) (629.3963ms)
+✔ T17 concurrent appenders in separate processes: exactly one entry per index, losers get LEDGER_CONFLICT, the chain verifies (R15) (7461.3734ms)
+✔ T18 the store is Node-only, helper-free, timeless and never overwrites (R06, R35, R37, H40) (1.3533ms)
+✔ T19 nothing outside the SDK facade and the contract is imported by the history sources; commands.js stays the only SDK importer (ARCHITECTURE section 5) (0.523ms)
+✔ T20 a purge committed between the entry listing and the member listing never produces RECORD_BYTES_MISMATCH: the read is repeated on a consistent snapshot (section 10.2, found by W08b) (566.8813ms)
+✔ T21 when writers overtake every pass the read fails with LEDGER_CONFLICT after exactly the fixed number of passes, never with an integrity code, and publishes nothing (2211.3357ms)
+✔ T22 on a stable snapshot every mismatch is reported exactly as before: corruption of a quiescent ledger is an integrity error found in a single pass (80.2981ms)
+✔ T23 export never writes into the ledger it is made from: every spelling that resolves to the ledger root, entries/, records/ or .pending/ is a FILESYSTEM_BOUNDARY failure that creates nothing and leaves the ledger unchanged (3C-F4, Amendment A9) (210.4575ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16984.5259
