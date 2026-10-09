@@ -1,0 +1,207 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 54646,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-E1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "reasons": {
+          "DATA_MINIMIZATION": 0,
+          "LEGAL_REQUIREMENT": 0,
+          "OPERATOR_CORRECTION": 0,
+          "PRIVACY_REQUEST": 0,
+          "SECURITY_INCIDENT": 0,
+          "reference-1-character": 0,
+          "reference-256-characters": 0,
+          "reference-printable-punctuation": 0
+        },
+        "rejected": {
+          "reason-lower-case": "1:MO1308_USAGE",
+          "reason-not-in-list": "1:MO1308_USAGE",
+          "reference-257-characters": "1:MO1308_USAGE",
+          "reference-control-character": "1:MO1308_USAGE",
+          "reference-empty": "1:MO1308_USAGE",
+          "reference-non-ascii": "1:MO1308_USAGE"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 5161,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-E2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "authenticity": "NOT_VERIFIED_BY_MEMORYOS",
+        "counts": {
+          "childProcess": 0,
+          "dnsLookups": 0,
+          "networkConnections": 0,
+          "workerThreads": 0
+        },
+        "referenceFetched": false,
+        "tombstoneMembers": [
+          "authenticity",
+          "authorityReference",
+          "reason",
+          "targetEntryDigest",
+          "targetIndex",
+          "targetRecordDigest"
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 10888,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-E3",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "entriesAfterFirstTombstone": 3,
+        "method": "CONSTRUCTED_CRASH_STATE",
+        "purgePendingBefore": [
+          0
+        ],
+        "rerunIndex": 2
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 48970,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-E4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "kinds": {
+          "CICD_RUN": "0/MO1308_RECORD_PURGED",
+          "HUMAN_DECISION_CLAIM": "0/MO1308_RECORD_PURGED",
+          "INVESTIGATION_CHECKPOINT": "0/MO1308_RECORD_PURGED",
+          "MIP_PACKAGE": "0/MO1308_RECORD_PURGED",
+          "POLICY_EVALUATION": "0/MO1308_RECORD_PURGED",
+          "READINESS_RESULT": "0/MO1308_RECORD_PURGED",
+          "REGRESSION_REPORT": "0/MO1308_RECORD_PURGED"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 8221,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-E5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "added": [
+          "entries/00000000000000000003.json"
+        ],
+        "changed": [],
+        "removed": [
+          "records/029318176746fc541e4d2e7ea5256db0d1db05539ac1bade8a92eb9bdbd53825/evaluation-identity.json",
+          "records/029318176746fc541e4d2e7ea5256db0d1db05539ac1bade8a92eb9bdbd53825/policy-outcome.json"
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 12069,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-E6",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "exportCopiesRemnant": false,
+        "memberRemoved": true,
+        "method": "CONSTRUCTED_CRASH_STATE",
+        "outcome": "CONFIRMED",
+        "pendingArtifactsAfter": 1,
+        "pendingArtifactsBefore": 1,
+        "remnantStillHoldsBytes": true,
+        "tombstoneExit": 0
+      },
+      "outcome": "CONFIRMED",
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 9237,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-E7",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "aGuessedContentIsConfirmedByTheDigest": true,
+        "claimBytes": 493,
+        "exportKeepsEntryButNoBytes": true,
+        "memberDigestSurvives": true,
+        "memberLengthSurvives": 493,
+        "memberNameSurvives": "human-decision.json",
+        "outcome": "CONFIRMED",
+        "recordDigestSurvives": true,
+        "subjectsSurvive": 3,
+        "tombstoneExit": 0
+      },
+      "outcome": "CONFIRMED",
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 9423,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-E8",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "exportBeforePurgeKeepsBytes": true,
+        "exportStillVerifies": true,
+        "noImportOrRecallCommand": true,
+        "outcome": "CONFIRMED"
+      },
+      "outcome": "CONFIRMED",
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 9452,
+      "escalation": null,
+      "failure": null,
+      "id": "3C-E9",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "exportCarriesReference": true,
+        "freeTextPrintableAscii": true,
+        "outcome": "CONFIRMED",
+        "storedVerbatim": true,
+        "tombstoneOfTombstoneRefused": "2:MO1308_TOMBSTONE_INVALID"
+      },
+      "outcome": "CONFIRMED",
+      "result": "PASS"
+    }
+  ],
+  "elapsedMs": 168068,
+  "failureCode": null,
+  "finishedAt": "2026-10-07T17:01:57.740Z",
+  "generation": "phase3c-rehearsal-r2",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "PASS",
+  "segment": "main",
+  "startedAt": "2026-10-07T16:59:09.670Z",
+  "step": "E",
+  "stream": "3C",
+  "version": "1.0.0"
+}
