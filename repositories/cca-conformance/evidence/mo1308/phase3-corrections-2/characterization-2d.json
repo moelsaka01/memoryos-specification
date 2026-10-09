@@ -1,0 +1,62 @@
+{
+  "kind": "MO1308Phase2DCharacterization",
+  "entryCount": 100000,
+  "node": "v24.21.0",
+  "platform": "win32",
+  "rows": [
+    {
+      "label": "generate 99999 entries and members on disk",
+      "outcome": "ok",
+      "milliseconds": 135932,
+      "heapDeltaMiB": 7.4
+    },
+    {
+      "label": "history query page of 1000 (real SDK query)",
+      "outcome": "ok",
+      "milliseconds": 32190,
+      "heapDeltaMiB": 206.4
+    },
+    {
+      "label": "history query with a subject filter over the whole ledger",
+      "outcome": "ok",
+      "milliseconds": 32352,
+      "heapDeltaMiB": 189.4
+    },
+    {
+      "label": "history verify (real SDK verification of every entry and member)",
+      "outcome": "ok",
+      "milliseconds": 76924,
+      "heapDeltaMiB": 307.7
+    },
+    {
+      "label": "history append of the last allowed entry (real MIP admission, then publish)",
+      "outcome": "ok",
+      "milliseconds": 66622,
+      "heapDeltaMiB": 341
+    },
+    {
+      "label": "history export",
+      "outcome": "ok",
+      "milliseconds": 780386,
+      "heapDeltaMiB": 490.8
+    },
+    {
+      "label": "history verify-export",
+      "outcome": "ok",
+      "milliseconds": 79646,
+      "heapDeltaMiB": 533
+    },
+    {
+      "label": "real process: memoryos history verify (includes process start and module load)",
+      "outcome": "ok",
+      "milliseconds": 118935,
+      "heapDeltaMiB": 0.1
+    },
+    {
+      "label": "MemoryOS#createHistoryCheckpointRecord (reference MIP checkpoint, 2 transitions)",
+      "outcome": "ok",
+      "milliseconds": 32,
+      "heapDeltaMiB": 1.7
+    }
+  ]
+}
