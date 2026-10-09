@@ -5,7 +5,7 @@
 //   node i3-inventory.mjs [--root DIR] [--head REV] [--write FILE]
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { repositoryRoot } from '../mo1308-phase3/lib/git.mjs';
 import { sha256Hex } from '../mo1308-phase3/lib/hashing.mjs';
 import { stableBytes } from '../mo1308-phase3/lib/stable-json.mjs';
@@ -50,7 +50,7 @@ export function buildI3Inventory(options) {
   };
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = process.argv.slice(2);
   const option = (name) => { const index = args.indexOf(name); return index === -1 ? null : args[index + 1] ?? null; };
   try {
