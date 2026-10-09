@@ -46,7 +46,7 @@ const receipt = {
   supersedes: ['generation 2 evidence 4196acf5 (FAILED_PRESERVED), generation 3 evidence 2edd9d5d (PASS, candidate b0bf2d56) generation 4 (PASS, candidate f4211c8c, receipt kind MO1308Phase3PreconditionG4Receipt) and generation 5 (PASS on deff3c80 but its receipt and exclusions.json label the candidate f4211c8c by a script error, so 3A-A4 rejects it; evidence c0233109, binding 1db9590d), all left untouched'],
   reason: verdict === 'PASS' ? 'Rules 1 to 4 hold: cca.workspace.verify passes on CANDIDATE; no test that passes on BASELINE fails or is Not Run on CANDIDATE; no candidate-only test exists; every test failing on both is PRE_EXISTING with a classification.' : 'See rules.',
   baseline: side('b'), candidate: side('c'),
-  command: ex.ctestCommand, exclusions: 'setup/exclusions.json (frozen and committed before the recorded runs, commit 4c95b34abed7029932b9d8e90de38e4c5e4d3e5f)',
+  command: ex.ctestCommand, exclusions: 'setup/exclusions.json (frozen and committed before the recorded runs, commit 0f0f4a4acc98da5d692bbc0d7b55b4529c8824f7)',
   rules: { rule1_workspaceVerifyPassesOnCandidate: r1, rule2_noBaselinePassingTestFailsOrNotRunOnCandidate: r2, rule3_everyCandidateOnlyTestPasses: r3, rule4_everyFailBothTestListedPreExistingWithClassification: r4 },
   comparison: { PASS_BOTH: cnt('PASS_BOTH'), PRE_EXISTING: cnt('PRE_EXISTING'), NEW_FAILURE: cnt('NEW_FAILURE'), NEWLY_PASSING: cnt('NEWLY_PASSING'), CANDIDATE_ONLY_PASS: cnt('CANDIDATE_ONLY_PASS'), CANDIDATE_ONLY_FAIL: cnt('CANDIDATE_ONLY_FAIL'), REMOVED_ON_CANDIDATE: cnt('REMOVED_ON_CANDIDATE') },
   newFailures: newFail, newlyPassing: rows.filter((r) => r.comparison === 'NEWLY_PASSING'), candidateOnlyTests: rows.filter((r) => r.comparison.startsWith('CANDIDATE_ONLY')),
