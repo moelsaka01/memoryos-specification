@@ -11,7 +11,7 @@ import { checkDisclosure, readOutcomes } from '../mo1308-phase3/lib/disclosure.m
 import { validateDisposition } from '../mo1308-phase3/lib/classification.mjs';
 import { allCases, loadInventory, requirementMatrix, validateInventory, INVENTORY_FILE } from '../mo1308-phase3/lib/inventory.mjs';
 import { verifyEvidence } from '../mo1308-phase3/lib/runner.mjs';
-import { EVIDENCE_ROOT, parseGeneration } from '../mo1308-phase3/lib/seal.mjs';
+import { EVIDENCE_ROOT, parseGeneration, verifyBindings } from '../mo1308-phase3/lib/seal.mjs';
 import { QUIET_CPU_PERCENT } from './regression-preconditions.mjs';
 import { changedPaths, commitsBetween, git, gitText, isAncestor, revParse } from '../mo1308-phase3/lib/git.mjs';
 import { digestOfJson, sha256Hex, walkRecords } from '../mo1308-phase3/lib/hashing.mjs';
@@ -35,6 +35,39 @@ const sha = (root, relative) => sha256Hex(fs.readFileSync(path.join(root, ...rel
 
 // ---- the evidence set ----
 
+// A rehearsal is non-certifying and never promotable (note A8.12). Its own evidence bytes must still match its own seal (any tampering
+// fails), but it may have been sealed against protocol, inventory, candidate-identity or tool bytes that have since moved: that is recorded
+// as STALE_REHEARSAL (informational, row.stale) and is not a problem. Certifying generations never come through here.
+function verifyRehearsal({ root, directory, inventory, row }) {
+  const full = verifyEvidence({ root, evidenceDir: directory, inventory, checkBindings: false });
+  const moved = full.seal === undefined ? [] : verifyBindings(root, full.seal).filter((problem) => problem.endsWith(': changed since the seal'));
+  const others = full.seal === undefined ? [] : verifyBindings(root, full.seal).filter((problem) => !problem.endsWith(': changed since the seal'));
+  const problems = [...others];
+  const inventoryMoved = full.problems.length > 0 && full.problems.at(-1) === 'the inventory is not the one the seal binds';
+  if (!inventoryMoved) problems.push(...full.problems);
+  else {
+    // The sealed inventory is gone, so the receipt cannot be re-derived: the evidence is checked against its own evidence seal.
+    problems.push(...full.problems.slice(0, -1));
+    const required = ['stream-receipt.json', 'evidence-seal.json'].filter((name) => !fileExists(directory, name));
+    if (required.length > 0) problems.push(...required.map((name) => `${name}: missing`));
+    else {
+      try {
+        const evidenceSeal = JSON.parse(fs.readFileSync(path.join(directory, 'evidence-seal.json'), 'utf8'));
+        const actual = walkRecords(directory).filter((item) => item.path !== 'evidence-seal.json');
+        if (stableStringify(actual) !== stableStringify(evidenceSeal.files)) problems.push('evidence-seal: the evidence files differ from the seal');
+        if (evidenceSeal.rootDigest !== digestOfJson(evidenceSeal.files)) problems.push('evidence-seal: rootDigest mismatch');
+      } catch (error) { problems.push(`evidence-seal: ${error.message}`); }
+    }
+  }
+  row.stale = moved.length > 0 || inventoryMoved;
+  row.staleDetails = inventoryMoved ? [...moved, 'the inventory is not the one the seal binds'] : moved;
+  let receipt = full.receipt;
+  if (receipt === undefined && fileExists(directory, 'stream-receipt.json')) {
+    try { receipt = JSON.parse(fs.readFileSync(path.join(directory, 'stream-receipt.json'), 'utf8')); } catch (error) { problems.push(`stream-receipt: ${error.message}`); }
+  }
+  return { problems, seal: full.seal, receipt };
+}
+
 // Every generation directory under the evidence root (those with a seal.json), verified against the inventory.
 export function loadGenerations({ root, evidenceRoot = EVIDENCE_ROOT, inventory }) {
   const base = path.join(root, ...evidenceRoot.split('/'));
@@ -45,7 +78,7 @@ export function loadGenerations({ root, evidenceRoot = EVIDENCE_ROOT, inventory 
     if (!fs.existsSync(path.join(directory, 'seal.json'))) continue;
     const row = { id: name, directory, relative: `${evidenceRoot}/${name}`, problems: [], seal: null, receipt: null, parsed: null };
     try { row.parsed = parseGeneration(name); } catch (error) { row.problems.push(error.message); generations.push(row); continue; }
-    const verified = verifyEvidence({ root, evidenceDir: directory, inventory });
+    const verified = row.parsed.rehearsal ? verifyRehearsal({ root, directory, inventory, row }) : verifyEvidence({ root, evidenceDir: directory, inventory });
     row.problems.push(...verified.problems);
     row.seal = verified.seal ?? null;
     row.receipt = verified.receipt ?? null;
@@ -107,11 +140,13 @@ export function checkD2({ root, inventory, generations, dispositions, a32Sha256 
   const accepted = {};
   const preserved = [];
   const rehearsals = [];
+  const stale = [];
   for (const row of generations) {
     if (row.problems.length > 0) problems.push(`${row.id}: ${row.problems[0]}`);
     if (row.parsed === null) continue;
     if (row.parsed.rehearsal) {
       rehearsals.push(row.id);
+      if (row.stale) stale.push({ id: row.id, status: 'STALE_REHEARSAL', details: row.staleDetails });
       if (row.receipt?.certifying !== false || row.receipt?.promotable !== false) problems.push(`${row.id}: a rehearsal must be non-certifying and not promotable`);
     }
   }
@@ -147,7 +182,7 @@ export function checkD2({ root, inventory, generations, dispositions, a32Sha256 
       else if (a32Sha256 !== null && bound.sha256 !== a32Sha256) problems.push('3A: the A3.2 receipt changed since the accepted generation sealed it');
     }
   }
-  return { problems, observed: { accepted, preserved, rehearsals, generations: generations.map((row) => ({ id: row.id, result: row.receipt?.result ?? null, evidenceSealSha256: row.evidenceSealSha256 })) } };
+  return { problems, observed: { accepted, preserved, rehearsals, staleRehearsals: stale, generations: generations.map((row) => ({ id: row.id, result: row.receipt?.result ?? null, evidenceSealSha256: row.evidenceSealSha256 })) } };
 }
 
 // Case results (PASS) of the accepted generations, by case id.

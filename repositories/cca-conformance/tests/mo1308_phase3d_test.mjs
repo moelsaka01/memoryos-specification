@@ -106,7 +106,7 @@ test('D03 a complete accepted state: I3 is built, then the binding-only BF is ce
   assert.equal(first.report.cases.find((row) => row.id === '3D-D7').status, 'NOT_READY', 'no I3 yet');
   assert.equal(first.report.result, 'NOT_READY');
   const inventoryDocument = buildI3Inventory({ root: clone.directory });
-  assert.equal(inventoryDocument.generations.length, 3);
+  assert.equal(inventoryDocument.generations.filter((row) => row.certifying).length, 3, 'the committed non-certifying rehearsals are listed too');
   assert.equal(inventoryDocument.requirements.length, 37);
   assert.equal(inventoryDocument.release.created, false);
   const bytes = stableBytes(inventoryDocument);
@@ -134,7 +134,7 @@ test('D04 a rehearsal is never an accepted input: a stream with only a rehearsal
   const report = validateFinal({ root: clone.directory });
   const d2 = report.cases.find((row) => row.id === '3D-D2');
   assert.ok(d2.problems.includes('3B: no accepted certifying generation'));
-  assert.deepEqual(d2.observed.rehearsals, ['phase3b-rehearsal-r1']);
+  assert.ok(d2.observed.rehearsals.includes('phase3b-rehearsal-r1'), 'the committed 3D rehearsals are in the tree too');
   assert.equal(d2.observed.accepted['3B'], undefined);
 });
 
@@ -212,4 +212,55 @@ test('D09 the precondition capture: cache state, load sample, F22 duration from 
   assert.equal(f22DurationMs('✔ F21 x (3.1ms)\n✔ F22 read-only verification timeout is bounded and late handle completion only closes (2031.2ms)\n'), 2031.2);
   assert.equal(f22DurationMs('✖ F22 something (12.5ms)\n'), 12.5);
   assert.equal(f22DurationMs('✔ F23 x (1ms)\n'), null);
+});
+
+// ---- note A8.12: stale rehearsals ----
+
+const staleOf = (report) => (report.cases.find((row) => row.id === '3D-D2').observed.staleRehearsals ?? []).filter((row) => row.id.startsWith('phase3b-'));
+const movedBindings = (clone) => { put(clone, PROTOCOL, `${fs.readFileSync(path.join(clone.directory, PROTOCOL), 'utf8')}\nA later amendment.\n`); put(clone, TOOL, `${fs.readFileSync(path.join(clone.directory, TOOL), 'utf8')}\n// moved\n`); commit(clone, 'bound bytes move'); };
+
+test('D10 an untampered rehearsal sealed against bytes that have since moved is accepted as STALE_REHEARSAL (informational)', async (t) => {
+  const clone = makeClone(t);
+  await certify(clone, '3B', 'phase3b-rehearsal-r1', { rehearsal: true });
+  commit(clone, 'rehearsal');
+  assert.deepEqual(staleOf(validateFinal({ root: clone.directory })), [], 'not stale while the bound bytes are unchanged');
+  movedBindings(clone);
+  const d2 = validateFinal({ root: clone.directory }).cases.find((row) => row.id === '3D-D2');
+  assert.deepEqual(d2.problems, ['3A: no accepted certifying generation', '3B: no accepted certifying generation', '3C: no accepted certifying generation'], 'the stale rehearsal itself adds no problem');
+  const mine = d2.observed.staleRehearsals.filter((row) => row.id === 'phase3b-rehearsal-r1');
+  assert.equal(mine.length, 1);
+  assert.equal(mine[0].status, 'STALE_REHEARSAL');
+  assert.ok(mine[0].details.some((detail) => /changed since the seal/.test(detail)));
+  assert.deepEqual(d2.observed.accepted, {}, 'a rehearsal is still never an accepted input');
+});
+
+test('D11 a tampered rehearsal fails, whether or not its bound bytes moved', async (t) => {
+  const clone = makeClone(t);
+  await certify(clone, '3B', 'phase3b-rehearsal-r1', { rehearsal: true });
+  commit(clone, 'rehearsal');
+  const file = path.join(clone.directory, ...EVIDENCE.split('/'), 'phase3b-rehearsal-r1', 'stream-receipt.json');
+  const original = fs.readFileSync(file, 'utf8');
+  for (const moved of [false, true]) {
+    if (moved) movedBindings(clone);
+    fs.writeFileSync(file, original.replace('"PASS"', '"FAIL"').replace(/"result":\s*"ACCEPTED"/, '"result": "FAILED_PRESERVED"'));
+    assert.notEqual(fs.readFileSync(file, 'utf8'), original);
+    const d2 = validateFinal({ root: clone.directory }).cases.find((row) => row.id === '3D-D2');
+    assert.ok(d2.problems.some((problem) => problem.startsWith('phase3b-rehearsal-r1:')), `moved=${moved}: ${JSON.stringify(d2.problems)}`);
+    fs.writeFileSync(file, original);
+  }
+  // a changed step receipt
+  const step = fs.readdirSync(path.join(path.dirname(file), 'steps'))[0];
+  const stepFile = path.join(path.dirname(file), 'steps', step);
+  fs.writeFileSync(stepFile, `${fs.readFileSync(stepFile, 'utf8')} `);
+  assert.ok(validateFinal({ root: clone.directory }).cases.find((row) => row.id === '3D-D2').problems.some((problem) => problem.startsWith('phase3b-rehearsal-r1:')));
+});
+
+test('D12 a certifying generation whose bound inputs changed still fails exactly as before', async (t) => {
+  const clone = await completeClone(t);
+  assert.deepEqual(validateFinal({ root: clone.directory }).cases.find((row) => row.id === '3D-D2').problems, []);
+  movedBindings(clone);
+  const d2 = validateFinal({ root: clone.directory }).cases.find((row) => row.id === '3D-D2');
+  assert.equal(d2.status, 'NOT_READY');
+  assert.ok(d2.problems.some((problem) => /^phase3[abc]: .*changed since the seal$/.test(problem)), JSON.stringify(d2.problems));
+  assert.deepEqual(d2.observed.staleRehearsals.filter((row) => /^phase3[abc]-[0-9]/.test(row.id) || !row.id.includes('rehearsal')), [], 'a certifying generation is never reported as a stale rehearsal');
 });
