@@ -38,16 +38,18 @@ test('D01 the ten 3D cases (steps D and E) are all implemented and none is host-
   assert.equal(Object.keys(impls).length, 10);
 });
 
-test('D02 against the real repository today: D1 and D5 are READY (corrected candidate, A3.2 g3 PASS), everything else NOT_READY with reasons, and nothing is written', () => {
+test('D02 against the real repository: well-formed read-only report, D1 and D5 READY, preserved rehearsals add no D2 problem, nothing is written', () => {
   const before = gitText(repo, ['status', '--porcelain']);
   const report = validateFinal({ root: repo });
-  assert.equal(report.result, 'NOT_READY');
+  assert.ok(['NOT_READY', 'I3_VALID_PENDING_BF', 'CERTIFIED_READY_TO_TAG'].includes(report.result));
+  assert.deepEqual(report.cases.map((row) => row.id), ['3D-D1', '3D-D2', '3D-D3', '3D-D4', '3D-D5', '3D-D6', '3D-D7', '3D-E1', '3D-E2', '3D-E3']);
   const status = Object.fromEntries(report.cases.map((row) => [row.id, row.status]));
-  assert.deepEqual(status, { '3D-D1': 'READY', '3D-D2': 'NOT_READY', '3D-D3': 'NOT_READY', '3D-D4': 'NOT_READY', '3D-D5': 'READY', '3D-D6': 'NOT_READY', '3D-D7': 'NOT_READY', '3D-E1': 'NOT_READY', '3D-E2': 'NOT_READY', '3D-E3': 'NOT_READY' });
-  assert.match(report.cases.find((row) => row.id === '3D-D2').problems[0], /no accepted certifying generation/);
-  assert.equal(report.cases.find((row) => row.id === '3D-D5').observed.verdict, 'PASS', 'the real A3.2 generation 3 receipt is PASS');
+  assert.equal(status['3D-D1'], 'READY');
+  assert.equal(status['3D-D5'], 'READY');
+  assert.equal(report.cases.find((row) => row.id === '3D-D5').observed.verdict, 'PASS', 'the real A3.2 generation 6 receipt is PASS');
+  const d2 = report.cases.find((row) => row.id === '3D-D2');
+  assert.deepEqual(d2.problems.filter((problem) => /rehearsal/.test(problem)), [], 'a preserved rehearsal (stale or not) is never a D2 problem');
   assert.equal(gitText(repo, ['status', '--porcelain']), before, 'a read-only validator changes nothing');
-  assert.throws(() => buildI3Inventory({ root: repo }), (error) => error.code === 'NOT_READY');
 });
 
 // ---- a complete fabricated clone ----
@@ -62,6 +64,11 @@ function makeClone(t) {
   run(path.dirname(directory), ['clone', '-q', '--shared', '--no-checkout', repo, directory]);
   run(directory, ['checkout', '-q', '--detach', gitText(repo, ['rev-parse', 'HEAD'])]);
   run(directory, ['config', 'user.name', 'p3d-test']); run(directory, ['config', 'user.email', 'p3d@example.test']); run(directory, ['config', 'commit.gpgsign', 'false']);
+  // The real certifying generations (phase3a, phase3b, phase3c) and the regression/disclosure files are in the repository's tree now; the fabricated states below start from a clone without them (A8.12 era: the tests must not depend on the real evidence state).
+  for (const name of ['phase3a', 'phase3b', 'phase3c']) fs.rmSync(path.join(directory, ...EVIDENCE.split('/'), name), { recursive: true, force: true });
+  fs.rmSync(path.join(directory, ...DISCLOSURES_FILE.split('/')), { force: true });
+  fs.rmSync(path.join(directory, ...REGRESSION_FILE.split('/')), { force: true });
+  run(directory, ['add', '-A']); run(directory, ['commit', '-q', '--allow-empty', '-m', 'test clone: clean evidence slate']);
   return { directory, run: (...args) => run(directory, args) };
 }
 const put = (clone, relative, bytes) => { const target = path.join(clone.directory, ...relative.split('/')); fs.mkdirSync(path.dirname(target), { recursive: true }); fs.writeFileSync(target, bytes); };
