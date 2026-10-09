@@ -1,5 +1,9 @@
 # MO-1308 Phase 3 step 3: handoff (updated at the end of every task)
 
+* Step 2 DONE: A3.2 generation 5 PASS (BF 1dd1e8c8 vs B deff3c80; 288 registered, 4 excluded, 168 PASS_BOTH, 116 PRE_EXISTING, 0 new failures). Frozen setup 4c95b34a, evidence c0233109, binding **1db9590d** on mo1308/phase3-precondition (pushed). Receipt kind is `MO1308Phase3PreconditionG5Receipt`, path `evidence/mo1308/phase3-precondition-g5/receipt.json` (3A-A4 and 3D-D5 consumers read kind ...G4Receipt/g4: update in step 3 together with A8.11). Worktrees C:\g5 (branch), C:\g5b, C:\g5c (removable), logs C:\g5-logs.
+* NEXT: step 3 candidate move onto phase3-shared (merge phase3-corrections-2 deff3c80 and phase3-precondition 1db9590d; A8.11; CLI history guide for A11; merge shared into 3A/3B/3C/3D).
+
+
 ## RUN-TO-COMPLETION LOG (autonomous run; resume with "Read the handoff and continue the run to completion")
 * Step 1 DONE: correction round 3 bound. Production diff vs f4211c8c = memoryos-history-ledger.js only. Dev run green; recorded run (fresh worktree C:\r3, generation 1) PASS, 19 items (CLI 91/91 incl. L01/L02; MCP integrity only the permitted dependency-closure failure). Evidence E bef666a6, binding B **deff3c80** on mo1308/phase3-corrections-2 (pushed). origin/main fast-forwarded f4211c8c -> deff3c80. (Local `main` in the primary workspace is unrelated MO-1307 work; untouched.)
 * NEXT: step 2, A3.2 generation 5 on mo1308/phase3-precondition (BF vs B), evidence .../phase3-precondition-g5/.
