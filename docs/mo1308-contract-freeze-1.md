@@ -2038,3 +2038,16 @@ No other masked limit was found.
 Not part of this amendment, and not done: the binding of the correction branch, the A3.2 differential and the candidate move (new identity, protocol and inventory hashes, a note in the style of A8.8 and A8.9), then the rehearsals and the harness reviews on the new candidate. The candidate `f4211c8c` stays the candidate until that step.
 
 This amendment is append-only; the frozen text and Amendments A1 to A10 are unchanged.
+
+### A8.11 Candidate moved from f4211c8c to deff3c80 (append-only note, 2026-10-09, owner-authorized)
+
+The Phase 3 candidate moves from `f4211c8c502f771bc78c2d2ab509c20d2b715676` to the binding commit `deff3c8016ca685db18a3874b18ff956d289c0e0` of `mo1308/phase3-corrections-2` (Amendment A11, section 38; evidence `bef666a6`; `main` is at the same commit). Exactly one production path changed against f4211c8c: `repositories/cca-studio/web/js/memoryos-history-ledger.js` (blob `cdca6ed1303f0c07964695c732f4d0c4a841dd9e` to `79429d3be049ea691c12a615ba23cc50c66aa4ea`); the other 44 production blobs are identical. `memoryos-history-admission.js` (blob `09a52bd4db3122f6c4271af11190a7183b9bd84f`) and `mip-canonical.js` (blob `a86aff4b14f206b5521433130843604fc28366b9`) are unchanged, so the SHA-256 review of 3C-D9 stays valid. The new `productionTreeDigest` is `sha256:111bd7dd6860221bb2f00f344f38750450c9be3a509bbe888630443d47a83481` (it was `sha256:144171044dad6b83050cf0933ce68f243416d66ca3f39f458b15a0b8216200d3`). The corpus manifest is unchanged.
+
+The A3 gate input of cases 3A-A4 and 3D-D5 is the A3.2 generation 5 receipt, `repositories/cca-conformance/evidence/mo1308/phase3-precondition-g5/receipt.json` (SHA-256 `f1c119b4aa9b8a3b7c759eb4330f93acd168214e13b2ac56cf9f0ef0c06aa9f3`, evidence `c0233109`, branch head `1db9590d`, BF `1dd1e8c8` versus `deff3c80`; 288 registered tests, 4 excluded, 168 PASS_BOTH, 116 PRE_EXISTING, no new failure), receipt kind `MO1308Phase3PreconditionG5Receipt`. The gate reads the receipt's top-level member `verdict`, which must be `PASS` (`binding.json` hashes the receipt and carries its own `verdict` of `PASS`). Generations 2, 3 and 4 stay preserved and are not gate inputs. All 335 paths changed between BF and the candidate are classified (no allowed-set change was needed: `memoryos-history-ledger.js` is in the class HISTORY_AUTHORITY_AND_SDK). The protocol sections 1, 3 and 15 and the A3.2 bullets of section 3, the inventory titles of 3A-A4 and 3D-D5, the shared test (335 paths), the candidate library constants and the CLI history guide (A11 entry-count rule) were updated. No other case or budget changed. The protocol, inventory and candidate identity were regenerated; these are the bound hashes from here.
+
+| File | SHA-256 |
+|---|---|
+| `docs/mo1308-phase3-protocol.md` | `923787b362c165fcb942a6348efdf6ba2216bd4d52d46a190bdbe55f0a4d6a07` |
+| `repositories/cca-conformance/mo1308-phase3-inventory.json` | `2f49ac38b5b2ad4dcea3933fb5505f35856043ea8c963c8e66e0f2812872a12c` |
+| `repositories/cca-conformance/mo1308-phase3-candidate-identity.json` | `528f36b8103abe1df3fbff08489350fd7a494f951ec73ac043bbf7209c5112c7` |
+| `repositories/cca-conformance/mo1308-phase3-corpus-manifest.json` | `b055805d2db43f414261921ded61eb69d856ad5c821139254e9ba1b7ce386c9f` |
