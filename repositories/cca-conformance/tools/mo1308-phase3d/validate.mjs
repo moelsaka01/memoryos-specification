@@ -18,7 +18,7 @@ import { digestOfJson, sha256Hex, walkRecords } from '../mo1308-phase3/lib/hashi
 import { stableStringify } from '../mo1308-phase3/lib/stable-json.mjs';
 
 export const CANDIDATE_IDENTITY_FILE = 'repositories/cca-conformance/mo1308-phase3-candidate-identity.json';
-export const A32_RECEIPT_FILE = `${EVIDENCE_ROOT}/phase3-precondition-g4/receipt.json`;
+export const A32_RECEIPT_FILE = `${EVIDENCE_ROOT}/phase3-precondition-g5/receipt.json`;
 export const REGRESSION_FILE = `${EVIDENCE_ROOT}/phase3d/regression.json`;
 export const DISCLOSURES_FILE = 'docs/mo1308-release-disclosures.md';
 export const FINAL_INVENTORY_FILE = 'repositories/cca-conformance/mo1308-final-release-inventory.json';
@@ -142,7 +142,7 @@ export function checkD2({ root, inventory, generations, dispositions, a32Sha256 
     });
     // the accepted 3A generation binds the A3.2 receipt that this run is checking (D5)
     if (stream === '3A' && last.seal !== null) {
-      const bound = last.seal.inputs.find((item) => item.path.endsWith('phase3-precondition-g4/receipt.json'));
+      const bound = last.seal.inputs.find((item) => item.path.endsWith('phase3-precondition-g5/receipt.json'));
       if (bound === undefined) problems.push('3A: the accepted generation does not bind the A3.2 receipt');
       else if (a32Sha256 !== null && bound.sha256 !== a32Sha256) problems.push('3A: the A3.2 receipt changed since the accepted generation sealed it');
     }
