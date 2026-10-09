@@ -1,0 +1,277 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 59451,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-F1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "appenders": 10,
+        "failedAttemptsByCode": {
+          "MO1308_LEDGER_CONFLICT": 9
+        },
+        "readerFailures": [
+          {},
+          {}
+        ],
+        "readerRuns": [
+          6,
+          3
+        ],
+        "readers": 2,
+        "recordsNotCommitted": 0,
+        "succeeded": 30
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 26999,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-F2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "appendsSucceeded": 6,
+        "entries": 15,
+        "tombstones": [
+          {
+            "attempts": 2,
+            "target": 0
+          },
+          {
+            "attempts": 1,
+            "target": 1
+          },
+          {
+            "attempts": 2,
+            "target": 2
+          }
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 26457,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-F3",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "conflicts": 0,
+        "exports": 5,
+        "finalEntries": 8,
+        "verified": 5
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 105844,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-F4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "purges": 12,
+        "readerFailures": [
+          {},
+          {},
+          {}
+        ],
+        "readerRuns": [
+          13,
+          25,
+          25
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 19634,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-F5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "loserOutcomes": {
+          "MO1308_RECORD_DUPLICATE": 7
+        },
+        "winners": 1,
+        "writers": 8
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 19112,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-F6",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "loserCodes": [
+          "MO1308_TOMBSTONE_INVALID",
+          "MO1308_TOMBSTONE_INVALID",
+          "MO1308_TOMBSTONE_INVALID",
+          "MO1308_TOMBSTONE_INVALID",
+          "MO1308_TOMBSTONE_INVALID"
+        ],
+        "winners": 1,
+        "workers": 6
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 595716,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-F7",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "escalationThreshold": 2,
+        "note": "Q02: CONFIRMED when a staging EPERM occurred (the typed IO failure of A6 was reproduced); NOT_CONFIRMED when none occurred in ten runs. Q10: host latency is recorded in the per-run timings of the step receipt.",
+        "outcome": "NOT_CONFIRMED",
+        "problems": [],
+        "repetitions": 10,
+        "runs": [
+          {
+            "failedAttemptsByCode": {
+              "MO1308_LEDGER_CONFLICT": 9
+            },
+            "failedRecords": 0,
+            "fileSystemErrors": {},
+            "processesObserved": 48,
+            "run": 1,
+            "stagingEperm": 0,
+            "succeeded": 30
+          },
+          {
+            "failedAttemptsByCode": {
+              "MO1308_LEDGER_CONFLICT": 9
+            },
+            "failedRecords": 0,
+            "fileSystemErrors": {},
+            "processesObserved": 48,
+            "run": 2,
+            "stagingEperm": 0,
+            "succeeded": 30
+          },
+          {
+            "failedAttemptsByCode": {
+              "MO1308_LEDGER_CONFLICT": 9
+            },
+            "failedRecords": 0,
+            "fileSystemErrors": {},
+            "processesObserved": 48,
+            "run": 3,
+            "stagingEperm": 0,
+            "succeeded": 30
+          },
+          {
+            "failedAttemptsByCode": {
+              "MO1308_LEDGER_CONFLICT": 9
+            },
+            "failedRecords": 0,
+            "fileSystemErrors": {},
+            "processesObserved": 51,
+            "run": 4,
+            "stagingEperm": 0,
+            "succeeded": 30
+          },
+          {
+            "failedAttemptsByCode": {
+              "MO1308_LEDGER_CONFLICT": 9
+            },
+            "failedRecords": 0,
+            "fileSystemErrors": {},
+            "processesObserved": 51,
+            "run": 5,
+            "stagingEperm": 0,
+            "succeeded": 30
+          },
+          {
+            "failedAttemptsByCode": {
+              "MO1308_LEDGER_CONFLICT": 9
+            },
+            "failedRecords": 0,
+            "fileSystemErrors": {},
+            "processesObserved": 48,
+            "run": 6,
+            "stagingEperm": 0,
+            "succeeded": 30
+          },
+          {
+            "failedAttemptsByCode": {
+              "MO1308_LEDGER_CONFLICT": 9
+            },
+            "failedRecords": 0,
+            "fileSystemErrors": {},
+            "processesObserved": 48,
+            "run": 7,
+            "stagingEperm": 0,
+            "succeeded": 30
+          },
+          {
+            "failedAttemptsByCode": {
+              "MO1308_LEDGER_CONFLICT": 9
+            },
+            "failedRecords": 0,
+            "fileSystemErrors": {},
+            "processesObserved": 48,
+            "run": 8,
+            "stagingEperm": 0,
+            "succeeded": 30
+          },
+          {
+            "failedAttemptsByCode": {
+              "MO1308_LEDGER_CONFLICT": 9
+            },
+            "failedRecords": 0,
+            "fileSystemErrors": {},
+            "processesObserved": 51,
+            "run": 9,
+            "stagingEperm": 0,
+            "succeeded": 30
+          },
+          {
+            "failedAttemptsByCode": {
+              "MO1308_LEDGER_CONFLICT": 9
+            },
+            "failedRecords": 0,
+            "fileSystemErrors": {},
+            "processesObserved": 48,
+            "run": 10,
+            "stagingEperm": 0,
+            "succeeded": 30
+          }
+        ],
+        "runsWithStagingEperm": 0
+      },
+      "outcome": "NOT_CONFIRMED",
+      "result": "PASS"
+    }
+  ],
+  "elapsedMs": 853214,
+  "failureCode": null,
+  "finishedAt": "2026-10-09T08:59:14.619Z",
+  "generation": "phase3a-rehearsal-r9",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "PASS",
+  "segment": "main2",
+  "startedAt": "2026-10-09T08:45:01.397Z",
+  "step": "F",
+  "stream": "3A",
+  "version": "1.0.0"
+}

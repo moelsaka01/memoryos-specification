@@ -1,0 +1,280 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 15739,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-L1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "results": {
+          "a refusal (JSON)": "exit 4, 205 bytes, identical at 437 and 65001",
+          "a refusal (human)": "exit 4, 141 bytes, identical at 437 and 65001",
+          "query (JSON)": "exit 0, 2645 bytes, identical at 437 and 65001",
+          "verify (human)": "exit 0, 421 bytes, identical at 437 and 65001"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 13663,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-L2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "results": {
+          "a refusal (JSON)": "exit 4; pipe, file and headless bytes identical (205); console text equal",
+          "verify (JSON)": "exit 0; pipe, file and headless bytes identical (487); console text equal",
+          "verify (human)": "exit 0; pipe, file and headless bytes identical (421); console text equal"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 16012,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-L3",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "bytes": 2894223,
+        "results": {
+          "closed pipe: append": "exit 0; entries 2",
+          "closed pipe: failure": "open exit 2 MO1308_RECORD_DUPLICATE; both closed exit 2",
+          "closed pipe: query": "exit 0",
+          "slow reader": "exit 0, 2894223 bytes"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 37977,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-L4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "bytesCompared": "ledger tree, export tree and every command output",
+        "systemClockAndZone": "not changed (system settings); simulated per process: TZ variants and a shifted Date",
+        "variants": [
+          "TZ=Pacific/Kiritimati (UTC+14)",
+          "TZ=America/St_Johns (UTC-3:30)",
+          "clock +400 days",
+          "clock -9 years",
+          "clock +30 years and TZ=Pacific/Kiritimati"
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 36873,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-L5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "note": "one volume (C:); the drive letter in both cases and the drive root as the working directory are the drive variance available without changing system drive mappings",
+        "variants": [
+          "another working directory",
+          "the drive root as the working directory",
+          "relative paths from a deep directory",
+          "drive letter in lower case",
+          "forward slashes"
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 46651,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-L6",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "hookLoaded": 3,
+        "problems": [],
+        "variants": [
+          {
+            "exits": [
+              0,
+              0,
+              0
+            ],
+            "outcome": "UNCHANGED",
+            "stderrBytes": [
+              0,
+              0,
+              0
+            ],
+            "variant": "NODE_OPTIONS=--require a harmless hook"
+          },
+          {
+            "exits": [
+              0,
+              134,
+              0
+            ],
+            "outcome": "RUNTIME_ABORTED_NOTHING_PARTIAL",
+            "stderrBytes": [
+              0,
+              1619,
+              0
+            ],
+            "variant": "NODE_OPTIONS=--max-old-space-size=8"
+          },
+          {
+            "exits": [
+              9,
+              9,
+              9
+            ],
+            "outcome": "RUNTIME_REFUSED",
+            "stderrBytes": [
+              169,
+              169,
+              169
+            ],
+            "variant": "NODE_OPTIONS=--unknown-flag"
+          },
+          {
+            "exits": [
+              0,
+              0,
+              0
+            ],
+            "outcome": "UNCHANGED",
+            "stderrBytes": [
+              0,
+              0,
+              0
+            ],
+            "variant": "NODE_OPTIONS=--stack-trace-limit=0"
+          },
+          {
+            "exits": [
+              0,
+              0,
+              0
+            ],
+            "outcome": "UNCHANGED",
+            "stderrBytes": [
+              0,
+              0,
+              0
+            ],
+            "variant": "NODE_DEBUG=fs"
+          },
+          {
+            "exits": [
+              0,
+              0,
+              0
+            ],
+            "outcome": "UNCHANGED",
+            "stderrBytes": [
+              0,
+              0,
+              0
+            ],
+            "variant": "NODE_EXTRA_CA_CERTS to a missing file"
+          },
+          {
+            "exits": [
+              0,
+              0,
+              0
+            ],
+            "outcome": "UNCHANGED",
+            "stderrBytes": [
+              0,
+              0,
+              0
+            ],
+            "variant": "NODE_PATH to a decoy directory"
+          },
+          {
+            "exits": [
+              0,
+              0,
+              0
+            ],
+            "outcome": "UNCHANGED",
+            "stderrBytes": [
+              0,
+              0,
+              0
+            ],
+            "variant": "FORCE_COLOR=3 and NO_COLOR=1"
+          },
+          {
+            "exits": [
+              0,
+              0,
+              0
+            ],
+            "outcome": "UNCHANGED",
+            "stderrBytes": [
+              0,
+              0,
+              0
+            ],
+            "variant": "TZ=not-a-zone and LANG=xx"
+          },
+          {
+            "exits": [
+              0,
+              0,
+              0
+            ],
+            "outcome": "UNCHANGED",
+            "stderrBytes": [
+              0,
+              0,
+              0
+            ],
+            "variant": "a 30,000-character variable"
+          },
+          {
+            "exits": [
+              0,
+              0,
+              0
+            ],
+            "outcome": "UNCHANGED",
+            "stderrBytes": [
+              0,
+              0,
+              0
+            ],
+            "variant": "MEMORYOS_* look-alike variables"
+          }
+        ]
+      },
+      "outcome": null,
+      "result": "PASS"
+    }
+  ],
+  "elapsedMs": 166918,
+  "failureCode": null,
+  "finishedAt": "2026-10-09T11:46:29.108Z",
+  "generation": "phase3a-rehearsal-r11",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "PASS",
+  "segment": "main2",
+  "startedAt": "2026-10-09T11:43:42.186Z",
+  "step": "L",
+  "stream": "3A",
+  "version": "1.0.0"
+}

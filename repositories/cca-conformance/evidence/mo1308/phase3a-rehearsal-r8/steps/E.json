@@ -1,0 +1,141 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 8762,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-E1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "results": {
+          "entry name in another case": "4:MO1308_LEDGER_CONFLICT",
+          "entry name in the same case": "4:MO1308_LEDGER_CONFLICT",
+          "processId": 4648,
+          "staging": 0
+        },
+        "stagingPlanted": 3
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 6172,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-E2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "results": {
+          "memberDifferent": "3:MO1308_RECORD_BYTES_MISMATCH",
+          "memberIdentical": "0:null",
+          "verifyAfterCasedMember": "3:MO1308_LEDGER_CORRUPT"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 5067,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-E3",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "allSameFileAtLink": true,
+        "distinctFileIndexes": true,
+        "linkOperations": 12,
+        "publishedFiles": 13
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 24475,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-E4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "lockedFiles": 4,
+        "results": {
+          "entries/00000000000000000000.json append": "4:MO1308_IO",
+          "entries/00000000000000000000.json export": "4:MO1308_IO",
+          "entries/00000000000000000000.json verify": "4:MO1308_IO",
+          "entries/00000000000000000001.json append": "4:MO1308_IO",
+          "entries/00000000000000000001.json export": "4:MO1308_IO",
+          "entries/00000000000000000001.json verify": "4:MO1308_IO",
+          "memoryos-history-ledger.json append": "4:MO1308_IO",
+          "memoryos-history-ledger.json export": "4:MO1308_IO",
+          "memoryos-history-ledger.json verify": "4:MO1308_IO",
+          "records/07f5b2c3c9a845d674055b8146cdb912a18d02f814d0687f4a081e9c9b3070bc/package.mip append": "4:MO1308_IO",
+          "records/07f5b2c3c9a845d674055b8146cdb912a18d02f814d0687f4a081e9c9b3070bc/package.mip export": "4:MO1308_IO",
+          "records/07f5b2c3c9a845d674055b8146cdb912a18d02f814d0687f4a081e9c9b3070bc/package.mip verify": "4:MO1308_IO"
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 4013,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-E5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "heldNames": 4,
+        "pendingArtifactsReported": 4
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 4023,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-E6",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "afterRelease": "name gone",
+        "deletePendingStateProduced": true,
+        "exclusiveCreateAfterNodeUnlink": "created",
+        "exclusiveCreateOfDeletePendingName": "EPERM",
+        "note": "EPERM from the exclusive create and IO from the product confirm hypothesis 2; EEXIST (or no delete-pending state) and a successful append refute it",
+        "outcome": "CONFIRMED",
+        "productAppend": "4:MO1308_IO",
+        "verifyAfter": "0:ok"
+      },
+      "outcome": "CONFIRMED",
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 9895,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-E7",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "readOnlyFiles": 11
+      },
+      "outcome": null,
+      "result": "PASS"
+    }
+  ],
+  "elapsedMs": 62407,
+  "failureCode": null,
+  "finishedAt": "2026-10-09T04:40:55.943Z",
+  "generation": "phase3a-rehearsal-r8",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "PASS",
+  "segment": "main1",
+  "startedAt": "2026-10-09T04:39:53.528Z",
+  "step": "E",
+  "stream": "3A",
+  "version": "1.0.0"
+}
