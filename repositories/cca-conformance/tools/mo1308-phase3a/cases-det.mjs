@@ -2,9 +2,8 @@
 // What needs NTFS (drive, case-insensitive names, file index, code pages) is declared host-only in cases.mjs.
 import fs from 'node:fs';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
 import { CORPUS_WORKSPACE, appendArgs, contract, initArgs, queryArgs, readTree, sha, treeDigest, treeList, tempDir } from './support.mjs';
-import { conclude, recordById, register, run, work } from './env.mjs';
+import { conclude, recordById, register, run, work, worktreePorcelain } from './env.mjs';
 import { ledgerWith } from './cases-cli.mjs';
 import { verifyCandidate } from '../mo1308-phase3/lib/candidate.mjs';
 import { bulkVerify } from './win.mjs';
@@ -37,9 +36,9 @@ export const detCases = {
   '3A-A3': (h, env) => {
     const problems = [];
     for (const problem of verifyCandidate({ repo: env.repo, identity: env.identity, against: 'HEAD', worktree: true })) problems.push(problem);
-    const status = spawnSync('git', ['status', '--porcelain'], { cwd: env.repo, encoding: 'utf8' }).stdout.trim();
-    if (env.certifying && status !== '') problems.push('the worktree is not clean');
-    conclude(h, problems, { productionTreeDigest: env.identity.productionTreeDigest, dirtyFiles: status === '' ? 0 : status.split('\n').length });
+    const dirty = worktreePorcelain(env);
+    if (env.certifying && dirty.length > 0) problems.push(`the worktree is not clean: ${dirty[0]}`);
+    conclude(h, problems, { productionTreeDigest: env.identity.productionTreeDigest, dirtyFiles: dirty.length });
   },
   '3A-C1': (h, env) => {
     const [one, two] = twins(env);

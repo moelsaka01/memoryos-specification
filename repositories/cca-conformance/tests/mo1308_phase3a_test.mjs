@@ -6,7 +6,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { impls, hostOnly, makeEnv, STEP3 } from '../tools/mo1308-phase3a/cases.mjs';
-import { cleanupEnv, SCRATCH } from '../tools/mo1308-phase3a/env.mjs';
+import { cleanupEnv, SCRATCH, porcelainOutside, worktreePorcelain } from '../tools/mo1308-phase3a/env.mjs';
 import { failureScenarios, UNREACHABLE, ledgerWith } from '../tools/mo1308-phase3a/cases-cli.mjs';
 import { GATE_INPUTS } from '../tools/mo1308-phase3a/cases-host.mjs';
 import { POINT, pausedAppend } from '../tools/mo1308-phase3a/cases-ntfs.mjs';
@@ -152,4 +152,72 @@ test('A13 the scratch area is outside git: the work root of a generation does no
   const status = spawnSync('git', ['status', '--porcelain', '--', SCRATCH], { cwd: repo, encoding: 'utf8' }).stdout.trim();
   assert.equal(status, '');
   void os;
+});
+
+// Note A8.12: the clean-tree check of 3A-A3 and 3A-JC10 ignores exactly the running generation's own evidence directory.
+const EVIDENCE = 'repositories/cca-conformance/evidence/mo1308/phase3a-rehearsal-r9';
+function cleanRepository(t) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'p3a-clean-'));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const git = (...args) => assert.equal(spawnSync('git', args, { cwd: root, encoding: 'utf8' }).status, 0, args.join(' '));
+  git('init', '-q'); git('config', 'user.email', 'a@b.c'); git('config', 'user.name', 'n');
+  fs.mkdirSync(path.join(root, 'evidence'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'tracked.txt'), 'one');
+  fs.writeFileSync(path.join(root, 'evidence', 'keep.txt'), 'k');
+  git('add', '-A'); git('commit', '-q', '-m', 'base');
+  const evidenceDir = path.join(root, EVIDENCE);
+  fs.mkdirSync(path.join(evidenceDir, 'artifacts'), { recursive: true });
+  fs.writeFileSync(path.join(evidenceDir, 'seal.json'), '{}');
+  fs.writeFileSync(path.join(evidenceDir, 'artifacts', 'a.json'), '{}');
+  return { root, evidenceDir };
+}
+const clean = (root, evidenceDir) => worktreePorcelain({ repo: root, evidenceDir });
+
+test('A14 the clean-tree check ignores the generation\'s own evidence directory, and only that', (t) => {
+  const { root, evidenceDir } = cleanRepository(t);
+  assert.deepEqual(clean(root, evidenceDir), []);
+  assert.notDeepEqual(clean(root, null), [], 'without an evidence directory the same files are reported');
+  assert.deepEqual(clean(root, path.join(root, EVIDENCE, 'artifacts')).length, 1, 'only a directory that is exactly the evidence directory is ignored (here: seal.json remains)');
+  void evidenceDir;
+});
+
+test('A15 a stray path anywhere outside the evidence directory still fails the clean-tree check', (t) => {
+  const { root, evidenceDir } = cleanRepository(t);
+  const parent = path.dirname(evidenceDir);
+  const strays = [
+    path.join(parent, 'phase3a-rehearsal-r8', 'seal.json'), // a sibling generation's evidence directory
+    path.join(parent, 'stray.txt'), // a file in the evidence directory's parent
+    path.join(parent, 'phase3a-rehearsal-r9-other', 'x.txt'), // a name that merely starts with the evidence directory's name
+    path.join(root, 'elsewhere.txt'),
+  ];
+  for (const stray of strays) {
+    fs.mkdirSync(path.dirname(stray), { recursive: true });
+    fs.writeFileSync(stray, 'x');
+    const found = clean(root, evidenceDir);
+    assert.equal(found.length, 1, `${stray}: ${found.join('|')}`);
+    assert.ok(found[0].split(path.sep).join('/').includes(path.relative(root, stray).split(path.sep).join('/')), found[0]);
+    fs.rmSync(stray, { force: true });
+    if (stray === strays[0] || stray === strays[2]) fs.rmSync(path.dirname(stray), { recursive: true, force: true });
+  }
+  // a stray file nested inside the evidence directory's own subtree is the generation's own and stays ignored
+  fs.writeFileSync(path.join(evidenceDir, 'artifacts', 'b.json'), '{}');
+  assert.deepEqual(clean(root, evidenceDir), []);
+});
+
+test('A16 a modified or deleted tracked file still fails the clean-tree check', (t) => {
+  const { root, evidenceDir } = cleanRepository(t);
+  fs.writeFileSync(path.join(root, 'tracked.txt'), 'two');
+  assert.match(clean(root, evidenceDir).join('|'), /tracked\.txt/);
+  fs.rmSync(path.join(root, 'tracked.txt'));
+  assert.match(clean(root, evidenceDir).join('|'), /tracked\.txt/);
+  fs.writeFileSync(path.join(root, 'tracked.txt'), 'one');
+  fs.rmSync(path.join(root, 'evidence', 'keep.txt'));
+  assert.match(clean(root, evidenceDir).join('|'), /keep\.txt/);
+});
+
+test('A17 the porcelain filter handles renames and exclusion of a path outside the repository', () => {
+  assert.equal(porcelainOutside(['R  b/new', 'a/old'], 'e/dir', false).length, 1);
+  assert.equal(porcelainOutside(['R  e/dir/new', 'a/old'], 'e/dir', false).length, 1, 'a rename out of tracked space into the evidence directory is not hidden');
+  assert.equal(porcelainOutside(['?? ../x'], '../x', false).length, 1, 'a path outside the repository is never excluded');
+  assert.equal(porcelainOutside(['?? e/dir/x'], 'e/dir', false).length, 0);
 });

@@ -4,6 +4,7 @@
 // harness-launched observer is recorded. A destructive harness never touches a path outside the work root.
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { corpusRecords } from '../mo1308-phase3/corpus.mjs';
 import { cli as rawCli } from './support.mjs';
 import { isWin, removeTree } from './win.mjs';
@@ -60,4 +61,36 @@ export const register = (env, ledger, intentionalCorruption = false, { interrupt
 export function conclude(handle, problems, observed = {}) {
   handle.observe(JSON.parse(JSON.stringify(observed)));
   if (problems.length > 0) throw new Error(`${problems.length} problem(s): ${problems.slice(0, 6).join('; ')}`);
+}
+
+// The clean-tree check (3A-A3, 3A-JC10): `git status --porcelain` over the worktree, ignoring EXACTLY the running generation's own evidence
+// directory (note A8.12; the directory is protected by its own seal) and nothing else. Every untracked, modified or deleted path anywhere else
+// is returned: a sibling generation's directory, a file next to the evidence directory, a modified tracked file. Untracked files are listed one
+// by one (-uall) so a collapsed directory entry can never hide a stray file, and -z keeps odd file names exact.
+export function porcelainOutside(entries, excludedRelative, caseInsensitive = isWin) {
+  const fold = (value) => (caseInsensitive ? value.toLowerCase() : value);
+  const excluded = excludedRelative === null ? null : fold(excludedRelative.split(path.sep).join('/').replace(/\/+$/, ''));
+  const inside = (file) => {
+    if (excluded === null || excluded === '' || excluded === '..' || excluded.startsWith('../')) return false;
+    const candidate = fold(file.replace(/\/+$/, ''));
+    return candidate === excluded || candidate.startsWith(`${excluded}/`);
+  };
+  const lines = [];
+  for (let index = 0; index < entries.length; index += 1) {
+    const entry = entries[index];
+    if (entry === '') continue;
+    const status = entry.slice(0, 2); const file = entry.slice(3);
+    const files = [file];
+    if (status[0] === 'R' || status[0] === 'C' || status[1] === 'R' || status[1] === 'C') { index += 1; files.push(entries[index] ?? ''); }
+    if (files.every(inside)) continue;
+    lines.push(`${status} ${files.join(' <- ')}`);
+  }
+  return lines;
+}
+
+export function worktreePorcelain(env) {
+  const result = spawnSync('git', ['status', '--porcelain', '-z', '--untracked-files=all'], { cwd: env.repo, encoding: 'utf8', maxBuffer: 1 << 28 });
+  if (result.status !== 0) return [`git status failed: ${String(result.stderr).trim()}`];
+  const relative = env.evidenceDir === null ? null : path.relative(env.repo, path.resolve(env.evidenceDir));
+  return porcelainOutside(result.stdout.split('\0'), relative);
 }

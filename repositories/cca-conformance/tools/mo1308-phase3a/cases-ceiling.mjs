@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { CLI, D, enc, initArgs, jcs, jcsBytes, sha } from './support.mjs';
-import { conclude, recordById, work } from './env.mjs';
+import { conclude, recordById, work, worktreePorcelain } from './env.mjs';
 import { HERE, removeTree, sha256 } from './win.mjs';
 import { verifyCandidate } from '../mo1308-phase3/lib/candidate.mjs';
 import { drbgWord } from '../mo1308-phase3/corpus.mjs';
@@ -180,8 +180,8 @@ export const ceilingCases = {
     const outside = fs.readdirSync(env.scratch).sort();
     if (JSON.stringify(outside) !== JSON.stringify(s.scratchBefore)) problems.push(`the scratch area changed: ${outside.join(',')}`);
     if (fs.existsSync(s.ledger) || (s.exportDir !== undefined && fs.existsSync(s.exportDir))) problems.push('the ceiling data was not removed');
-    const git = spawnSync('git', ['status', '--porcelain'], { cwd: env.repo, encoding: 'utf8' }).stdout.trim();
-    if (git !== '') problems.push(`the worktree is not clean: ${git.split('\n')[0]}`);
+    const dirty = worktreePorcelain(env);
+    if (dirty.length > 0) problems.push(`the worktree is not clean: ${dirty[0]}`);
     if (env.evidenceDir !== null) {
       const directory = p(env.evidenceDir, 'artifacts');
       fs.mkdirSync(directory, { recursive: true });
