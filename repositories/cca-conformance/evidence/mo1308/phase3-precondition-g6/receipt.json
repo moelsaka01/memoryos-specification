@@ -1,0 +1,880 @@
+{
+  "kind": "MO1308Phase3PreconditionG6Receipt",
+  "verdict": "PASS",
+  "amendments": "A3 as refined by A3.1 (waiver), A3.2 (differential gate), A3.3 (SAC exclusion) and A3.4 (generation 6); docs/mo1308-contract-freeze-1.md sections 26, 31, 32, 33, 36",
+  "supersedes": [
+    "generation 2 evidence 4196acf5 (FAILED_PRESERVED), generation 3 evidence 2edd9d5d (PASS, candidate b0bf2d56) generation 4 (PASS, candidate f4211c8c, receipt kind MO1308Phase3PreconditionG4Receipt) and generation 5 (PASS on deff3c80 but its receipt and exclusions.json label the candidate f4211c8c by a script error, so 3A-A4 rejects it; evidence c0233109, binding 1db9590d), all left untouched"
+  ],
+  "reason": "Rules 1 to 4 hold: cca.workspace.verify passes on CANDIDATE; no test that passes on BASELINE fails or is Not Run on CANDIDATE; no candidate-only test exists; every test failing on both is PRE_EXISTING with a classification.",
+  "baseline": {
+    "commit": "1dd1e8c82fe0ed5a32a894744392f2c279f89d4c",
+    "worktree": "g6b",
+    "registered": 295,
+    "excluded": 7,
+    "executed": 288,
+    "passed": 190,
+    "failed": 97,
+    "notRun": 1,
+    "other": 0,
+    "exitCode": 8,
+    "startedLocal": "09/10/2026  7:29:54.82",
+    "endedLocal": "09/10/2026  7:54:47.73",
+    "dirtyAfterRun": [
+      " M repositories/memoryos-mcp/measurements/phase2-integration.json"
+    ]
+  },
+  "candidate": {
+    "commit": "deff3c8016ca685db18a3874b18ff956d289c0e0",
+    "worktree": "g6c",
+    "registered": 295,
+    "excluded": 7,
+    "executed": 288,
+    "passed": 190,
+    "failed": 97,
+    "notRun": 1,
+    "other": 0,
+    "exitCode": 8,
+    "startedLocal": "09/10/2026  7:54:50.38",
+    "endedLocal": "09/10/2026  8:19:48.19",
+    "dirtyAfterRun": [
+      " M repositories/memoryos-mcp/measurements/phase2-integration.json"
+    ]
+  },
+  "command": "ctest --preset default -E \"^(cca_core_tests_NOT_BUILT|cca_episodic_memory_allocation_tests_NOT_BUILT|cca_memory_allocation_tests_NOT_BUILT|cca_semantic_memory_allocation_tests_NOT_BUILT|cca\\.process\\.example\\.runtime|cca\\.long_term_memory\\.example|memoryos\\.sdk\\.cpp\\.regression\\.example)$\" --timeout 3600",
+  "exclusions": "setup/exclusions.json (frozen and committed before the recorded runs, commit 0f0f4a4acc98da5d692bbc0d7b55b4529c8824f7)",
+  "rules": {
+    "rule1_workspaceVerifyPassesOnCandidate": true,
+    "rule2_noBaselinePassingTestFailsOrNotRunOnCandidate": true,
+    "rule3_everyCandidateOnlyTestPasses": true,
+    "rule4_everyFailBothTestListedPreExistingWithClassification": true
+  },
+  "comparison": {
+    "PASS_BOTH": 190,
+    "PRE_EXISTING": 98,
+    "NEW_FAILURE": 0,
+    "NEWLY_PASSING": 0,
+    "CANDIDATE_ONLY_PASS": 0,
+    "CANDIDATE_ONLY_FAIL": 0,
+    "REMOVED_ON_CANDIDATE": 0
+  },
+  "newFailures": [],
+  "newlyPassing": [],
+  "candidateOnlyTests": [],
+  "preExisting": {
+    "count": 98,
+    "tests": [
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.ExplainCopyPreservesSessionAndSourcesAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.ExplainNotStartedFailureConstructionPreservesEverything",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.FilterNotStartedFailureConstructionPreservesEverything",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.FilterPreservesCompleteSessionAndSourcesAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.ForgetReadySessionIsAtomicAndSourceIsolated",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.ForgetStartedSessionIsAtomicAndSourceIsolated",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.ForgottenSessionFailureConstructionPreservesEverything",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.RankNotStartedFailureConstructionPreservesEverything",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.RankPreservesCompleteSessionAndSourcesAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.RepeatedForgetRemainsTerminalAndSourceIsolated",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.RepeatedStartFailureConstructionPreservesEverything",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.RetrieveNotFoundFailureConstructionPreservesEverything",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.RetrieveStartPreservesSessionAndAllSourcesAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.SearchStartPreservesSessionAndAllSourcesAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "KnowledgeRetrievalAllocationFailureTest.ZeroMatchSearchStartIsAtomicAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "LongTermMemoryAllocationFailureTest.ArchivePreservesStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "LongTermMemoryAllocationFailureTest.ForgetPreservesEntriesAndHistoryAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "LongTermMemoryAllocationFailureTest.RestorePreservesSourceAndTargetAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "LongTermMemoryAllocationFailureTest.RetainAppendPreservesStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "LongTermMemoryAllocationFailureTest.RetainIdempotencePreservesStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "LongTermMemoryAllocationFailureTest.StoreAppendPreservesStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "LongTermMemoryAllocationFailureTest.StoreReplacementPreservesStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryConsolidationAllocationFailureTest.AnalyzePreservesCompleteStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryConsolidationAllocationFailureTest.ForgetSessionPreservesCompleteStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryConsolidationAllocationFailureTest.PromotePreservesCompleteStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryConsolidationAllocationFailureTest.RetainPreservesCompleteStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryConsolidationAllocationFailureTest.RetrieveSessionPreservesCompleteStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryConsolidationAllocationFailureTest.ValidatePreservesCompleteStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.CompletedLifecycleFailureConstructionPreservesCompleteState",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.DescriptorWorkspaceFailureConstructionPreservesCompleteState",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.EmptyEnumerationPreservesCompleteStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.ExportIsAtomicAndPreservesEverySourceAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.ForgetFromExportedIsAtomicAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.ForgetFromImportedIsAtomicAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.ForgetFromOpenIsAtomicAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.ForgottenLifecycleFailureConstructionPreservesCompleteState",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.ImportIsAtomicAndPreservesEverySourceAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.InvalidIdentityFailureConstructionPreservesCompleteState",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.NewRegistrationIsAtomicAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.PopulatedEnumerationPreservesCompleteStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.RegistrationFailureConstructionPreservesCompleteState",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.ValidateFailureConstructionPreservesCompleteState",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryProviderAllocationFailureTest.ValidateSuccessPreservesCompleteStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryReflectionAllocationFailureTest.DerivePreservesCompleteStateAndSourcesAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryReflectionAllocationFailureTest.ExplainPreservesCompleteStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryReflectionAllocationFailureTest.ForgetSessionIsAtomicAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryReflectionAllocationFailureTest.ReflectPreservesCompleteStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryReflectionAllocationFailureTest.RetrieveSessionPreservesCompleteStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryReflectionAllocationFailureTest.SourceChangedFailureConstructionPreservesEverything",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryReflectionAllocationFailureTest.SourceNotFoundFailureConstructionPreservesEverything",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryReflectionAllocationFailureTest.ValidateDerivedPreservesCompleteStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryReflectionAllocationFailureTest.ValidatePreparedPreservesCompleteStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryReflectionAllocationFailureTest.WrongStageFailureConstructionPreservesEverything",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryStudioAllocationFailureTest.CompleteViewConstructionSweepsEveryAllocation",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryStudioAllocationFailureTest.EverySemanticFailureFactoryPropagatesAllocationAndPreservesState",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryStudioAllocationFailureTest.ForgetStagesSuccessBeforeItsNonthrowingTerminalCommit",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryStudioAllocationFailureTest.InspectTraceSummarizeAndExportPreserveCompleteObservedState",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryStudioAllocationFailureTest.InvalidMovedViewFailureConstructionPreservesAllInputs",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryStudioAllocationFailureTest.ObserveAndReobserveCommitOnlyAfterCompleteStaging",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryStudioAllocationFailureTest.ObservedSessionCopyConstructionSweepsEveryAllocation",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryStudioAllocationFailureTest.QueryConstructionCopyAndAssignmentSweepEveryAllocation",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "MemoryStudioAllocationFailureTest.ReleasedExplainAndRetrievalTraceKeepTheStandardExceptionBoundary",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.ComposeAppendPreservesAllStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.ComposeIdempotencePreservesAllStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.ComposeMissingSourceFailureConstructionPreservesAllState",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.DeriveAppendPreservesAllStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.DeriveConflictFailureConstructionPreservesAllState",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.DeriveIdempotencePreservesAllStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.ForgetAbsentPreservesAllStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.ForgetPresentWithMultiSurvivorLinksPreservesAllStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.ForgetRepeatedPreservesAllStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.LinkAppendPreservesBothEndpointsAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.LinkIdempotencePreservesAllStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.LinkMissingEndpointFailureConstructionPreservesAllState",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.UpdateIdempotencePreservesAllStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.UpdateMissingTargetFailureConstructionPreservesAllState",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProceduralMemoryAllocationFailureTest.UpdateReplacementPreservesAllStateAtEveryFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProcessAllocationFailureTest.ContextExecutionPreservesReadyStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProcessAllocationFailureTest.DefinitionConstructionPreservesTheSourceAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProcessAllocationFailureTest.DefinitionExecutionPreservesTheDefinitionAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "ProcessAllocationFailureTest.DirectExecutionPreservesTheSourceAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "WorkingMemoryAllocationFailureTest.ExpirePreservesStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "WorkingMemoryAllocationFailureTest.ForgetPreservesStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "WorkingMemoryAllocationFailureTest.InitialActivationPreservesStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "WorkingMemoryAllocationFailureTest.NewStorePreservesStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "WorkingMemoryAllocationFailureTest.ReplacementPreservesStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "WorkingMemoryAllocationFailureTest.TaskSwitchPreservesStateAtEveryAllocationFailure",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "PRODUCT_OR_TOOLCHAIN_UNDETERMINED",
+        "detail": "AllocationFailureTest aborts with exit code 3 shortly after RUN, identical on BASELINE (A3.2 classification of the 112 A3.1 failures)"
+      },
+      {
+        "test": "memoryos.mcp.foundation",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "ENVIRONMENT",
+        "detail": "The MCP foundation suite fails on the missing out/phase2/memoryos-mcp-0.1.0.tgz artifact and on MO1304_RUNTIME_INTEGRITY at server start (raw npm ci output vs the pruned dependency-closure pin); it also rewrites the tracked measurements/phase2-integration.json (A3.4 follow-ups 1 to 3)."
+      },
+      {
+        "test": "memoryos.standard.coverage-gap",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "TEST",
+        "detail": "Same specification conformance check as memoryos.standard.specification (A3.2)."
+      },
+      {
+        "test": "memoryos.standard.independent",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "ENVIRONMENT",
+        "detail": "AssertionError: the authoritative Standard publication must be supplied or installed adjacent to the suite (portable-report.mjs); no publication is installed in the fresh worktree; identical on BASELINE."
+      },
+      {
+        "test": "memoryos.standard.mo1304-phase1",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "ENVIRONMENT",
+        "detail": "MO1304_RUNTIME_INTEGRITY: raw npm ci output does not match the pruned MCP dependency-closure pin (A3.4 follow-up 2)."
+      },
+      {
+        "test": "memoryos.standard.mo1304-phase2",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "ENVIRONMENT",
+        "detail": "ENOENT out/phase2/memoryos-mcp-0.1.0.tgz: the archive is required but not produced by npm ci (A3.4 follow-up 3)."
+      },
+      {
+        "test": "memoryos.standard.mo1304-phase3-ubuntu",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "ENVIRONMENT",
+        "detail": "The test compares the tracked measurements/phase2-integration.json with its pinned bytes; memoryos.mcp.foundation rewrote it earlier in the same run (A3.4 follow-up 1)."
+      },
+      {
+        "test": "memoryos.standard.mo1304-phase3-windows",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "ENVIRONMENT",
+        "detail": "Same as memoryos.standard.mo1304-phase3-ubuntu: the tracked measurements/phase2-integration.json was rewritten by memoryos.mcp.foundation earlier in the run."
+      },
+      {
+        "test": "memoryos.standard.mo1304-platform-support",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "ENVIRONMENT",
+        "detail": "Same as memoryos.standard.mo1304-phase3-ubuntu: the tracked measurements/phase2-integration.json was rewritten by memoryos.mcp.foundation earlier in the run."
+      },
+      {
+        "test": "memoryos.standard.mo1305-phase3",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "ENVIRONMENT",
+        "detail": "Hard-coded workspace root C:/Users/melsa/Documents/Codex/cca-workspace (ValueError WORKSPACE); A3.2 follow-up."
+      },
+      {
+        "test": "memoryos.standard.runtime.reference",
+        "baseline": "Not Run",
+        "candidate": "Not Run",
+        "comparison": "PRE_EXISTING",
+        "classification": "ENVIRONMENT",
+        "detail": "Not Run: needs cca_core_tests.exe, waived by A3.1."
+      },
+      {
+        "test": "memoryos.standard.specification",
+        "baseline": "Failed",
+        "candidate": "Failed",
+        "comparison": "PRE_EXISTING",
+        "classification": "TEST",
+        "detail": "Stale 1.2.1 pin of repositories/cca-core/src (A3.2)."
+      }
+    ]
+  },
+  "workspaceVerify": {
+    "baseline": "Passed",
+    "candidate": "Passed"
+  },
+  "expectedFromGeneration2": {
+    "memoryos.vscode.runtime": {
+      "baseline": "Passed",
+      "candidate": "Passed"
+    },
+    "memoryos.mcp.foundation": {
+      "baseline": "Failed",
+      "candidate": "Failed"
+    }
+  },
+  "setupDeviations": [
+    "MEMORYOS_VSCODE_NPM_EXECUTABLE pinned to npm.cmd at configure (A3.3, identical in both trees)",
+    "blocked gtest executables renamed to *.exe.sac-blocked in both build dirs (A3.3)",
+    "npm ci --ignore-scripts in the lockfile directories; built artifacts such as memoryos-mcp/out/phase2/*.tgz were not produced (environment-classified pre-existing failures)",
+    "npm ci ran before configure; vcpkg checkout copied from the A3.1 tree"
+  ],
+  "smartAppControl": {
+    "enforcing": true,
+    "unionOfBlockedExecutables": 6,
+    "gtestExecutablesRenamed": 3,
+    "excludedTests": 7,
+    "note": "the blocked set varies between probe rounds; the union of all rounds and of ctest discovery errors is excluded in both runs"
+  },
+  "note": "A3.4: the memoryos.mcp.foundation test rewrote the tracked measurements/phase2-integration.json in both worktrees; recorded in dirtyAfterRun, not a gate."
+}
