@@ -1,0 +1,82 @@
+Preset CMake variables:
+
+  BUILD_TESTING="ON"
+  CCA_BUILD_TESTS="ON"
+  CCA_WARNINGS_AS_ERRORS="OFF"
+  CMAKE_BUILD_TYPE="Debug"
+  CMAKE_CXX_EXTENSIONS="OFF"
+  CMAKE_CXX_STANDARD="23"
+  CMAKE_CXX_STANDARD_REQUIRED="ON"
+  CMAKE_EXPORT_COMPILE_COMMANDS="ON"
+  CMAKE_INSTALL_PREFIX:PATH="C:/g6c/out/install/default"
+  CMAKE_TOOLCHAIN_FILE:FILEPATH="C:/g6c/.cache/vcpkg/scripts/buildsystems/vcpkg.cmake"
+  VCPKG_MANIFEST_DIR="C:/g6c"
+  VCPKG_MANIFEST_MODE="ON"
+
+-- Running vcpkg install
+Detecting compiler hash for triplet x64-windows...
+Compiler found: C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe
+The following packages will be built and installed:
+    gtest:x64-windows@1.17.0#2
+  * vcpkg-cmake:x64-windows@2024-04-23
+  * vcpkg-cmake-config:x64-windows@2024-05-23
+    yaml-cpp:x64-windows@0.9.0#1
+Additional packages (*) will be modified to complete this operation.
+Restored 4 package(s) from C:\Users\melsa\AppData\Local\vcpkg\archives in 477 ms. Use --debug to see more details.
+Installing 1/4 vcpkg-cmake-config:x64-windows@2024-05-23...
+vcpkg-cmake-config:x64-windows@2024-05-23 package ABI: fbdbda4ba2e9a341b7cb99d2c75b0672b2bc7e099a5004bed208bc5ceaaeaa10
+Elapsed time to handle vcpkg-cmake-config:x64-windows: 21.7 ms
+Installing 2/4 vcpkg-cmake:x64-windows@2024-04-23...
+vcpkg-cmake:x64-windows@2024-04-23 package ABI: cee22d60350b57576c8a88584fb7ac7e80386a31dedca3d3700f449b7b4cda4c
+Elapsed time to handle vcpkg-cmake:x64-windows: 115 ms
+Installing 3/4 gtest:x64-windows@1.17.0#2...
+gtest:x64-windows@1.17.0#2 package ABI: fca655334b19a220c6675826a5b1b38413867e3f6080d0189b5350ff4511b469
+Elapsed time to handle gtest:x64-windows: 97.4 ms
+Installing 4/4 yaml-cpp:x64-windows@0.9.0#1...
+yaml-cpp:x64-windows@0.9.0#1 package ABI: 2fccedce488a83a8e4bb8b3ba62be750f0daeef9f068158620ef0f79dfa7ee08
+Elapsed time to handle yaml-cpp:x64-windows: 157 ms
+Installed contents are licensed to you by owners. Microsoft is not responsible for, nor does it grant any licenses to, third-party packages.
+Packages installed in this vcpkg installation declare the following licenses:
+BSD-3-Clause
+MIT
+The package gtest is compatible with built-in CMake targets:
+
+    enable_testing()
+    
+    find_package(GTest CONFIG REQUIRED)
+    target_link_libraries(main PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main)
+    
+    add_test(AllTestsInMain main)
+
+yaml-cpp provides CMake targets:
+
+  # this is heuristically generated, and may not be correct
+  find_package(yaml-cpp CONFIG REQUIRED)
+  target_link_libraries(main PRIVATE yaml-cpp::yaml-cpp)
+
+yaml-cpp provides pkg-config modules:
+
+  # A YAML parser and emitter for C++
+  yaml-cpp
+
+All requested installations completed successfully in: 395 ms
+-- Running vcpkg install - done
+-- The CXX compiler identification is MSVC 19.44.35229.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring CCA 0.2.0-dev
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
+-- Found Threads: TRUE
+-- memoryos is reserved for a future milestone; no targets are defined
+-- cca-atlas is reserved for a future milestone; no targets are defined
+-- Configuring done (21.3s)
+-- Generating done (0.5s)
+-- Build files have been written to: C:/g6c/out/build/default
