@@ -1,0 +1,25 @@
+✔ W01 junctions and directory symlinks anywhere on the path or inside the ledger fail closed on every operation (R17, H40) (437.3107ms)
+✔ W01b a reparse point that is neither a junction nor a symlink (an app-execution alias) is refused as an input file (H40) (18.1689ms)
+✔ W02 a junction swapped in for a record directory during an append is detected; decoy content survives; the entry is never committed; reads then fail closed (H40) (255.5492ms)
+✔ W03 the entries directory swapped for a junction at the commit point is detected after the fact: the real entries stay unchanged, reads fail closed (H40) (334.9392ms)
+✔ W04 NTFS hard links: publication leaves one link per file, never replaces a name, and an unremoved staging link is only an anomaly (R06, section 9.2) (444.6434ms)
+✔ W05 exclusive-create semantics: an existing name is never opened for writing, even one locked by another process or differing only in case (R06) (2200.4758ms)
+✔ W05b a sharing violation (another process holds a ledger file with no sharing) fails closed with a typed IO error and changes nothing; releasing restores service (R17) (2046.6107ms)
+✔ W06 the case-insensitive realpath comparison accepts any casing of the real path and refuses a short (8.3) alias; case-only renames inside a ledger are corruption (R17, H40) (257.8963ms)
+✔ W07 drive-letter, UNC and long-path forms work end to end; the \\?\ and \\.\ forms are refused fail-closed without creating anything (R17) (1329.7724ms)
+✔ W07b an export into the ledger is refused under every Windows spelling of the ledger: drive-letter, UNC and differently cased forms (3C-F4, Amendment A9) (115.6266ms)
+✔ W08 NTFS concurrency: ten real appender processes with concurrent readers; every append that succeeded is in the ledger exactly once, every record that is not was reported as a typed failure, and no failed writer left a record (R15) (22830.5522ms)
+ℹ W08 attempts=30 succeeded=30 failedByCode={} fsErrorsByCodeErrnoSyscall={}
+✔ W08b concurrent tombstones and appends in separate processes leave one tombstone per target and a verifying chain (R15, section 10.2) (12732.5079ms)
+✔ W08c a junction swapper racing real appender processes: the race is exercised, nothing outside is overwritten, and the ledger only ever verifies or fails closed with a typed error (H40) (7394.2704ms)
+✔ W09 a link planted at a staging name is detected before anything is created: typed FILESYSTEM_BOUNDARY, nothing is created at its target (3A-D4, Amendment A10) (500.3044ms)
+✔ W10 a record directory swapped for a junction after the tombstone commit: the purge deletes nothing outside the ledger and fails closed (3A-G3, Amendment A10) (144.6458ms)
+✔ W11 staging names carry the writer's process id, so concurrent writers never contend for one name (3A-F7, Amendment A10) (127.0944ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 52468.5006
