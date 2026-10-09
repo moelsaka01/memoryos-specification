@@ -17,21 +17,53 @@ const word = (counter) => crypto.createHash('sha256').update(`${seed}:${counter}
 const pause = (milliseconds) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds);
 const target = Number(swapsText);
 const end = Date.now() + Number(secondsText) * 1000;
+// Removing the junction and restoring the directory are retried while NTFS refuses them because a racing process still holds a handle on
+// the link or inside the directory (EPERM/EBUSY/EACCES): the directory must always come back, so this waits (bounded, 60 s) rather than
+// leaving records.aside behind or crashing with the junction still planted.
+const transient = (error) => ['EPERM', 'EBUSY', 'EACCES'].includes(error.code);
+function retrying(action) {
+  const limit = Date.now() + 60000;
+  for (;;) {
+    try { return action(); } catch (error) {
+      if (!transient(error) || Date.now() > limit) throw error;
+      refusedRestores += 1; pause(5);
+    }
+  }
+}
+const removeJunction = () => retrying(() => { if (fs.lstatSync(records, { throwIfNoEntry: false })?.isSymbolicLink()) fs.rmdirSync(records); });
+// While records is swapped out a racing append may re-create it as a real directory (the accepted H40 stray creation). The restore then moves
+// whatever the product put there into the saved directory (a name already there is kept, the stray copy dropped), removes the stray directory
+// and renames the saved directory back, so records is always the original directory again. Each occurrence is counted in the report.
+function absorbStray() {
+  const info = fs.lstatSync(records, { throwIfNoEntry: false });
+  if (info === undefined || info.isSymbolicLink() || !info.isDirectory()) return;
+  for (const name of fs.readdirSync(records)) {
+    const from = path.join(records, name); const to = path.join(aside, name);
+    if (fs.existsSync(to)) fs.rmSync(from, { recursive: true, force: true }); else fs.renameSync(from, to);
+  }
+  fs.rmdirSync(records);
+  strayRecords += 1;
+}
+const restore = () => retrying(() => { absorbStray(); fs.renameSync(aside, records); });
+let refusedRestores = 0; let strayRecords = 0;
 let swaps = 0; let refused = 0; let heldMs = 0;
 while (swaps < target && Date.now() < end) {
   try { fs.renameSync(records, aside); } catch { refused += 1; pause(2); continue; }
   try {
-    fs.symlinkSync(outside, records, 'junction');
-    const hold = 5 + (word(swaps) % 21);
-    pause(hold); heldMs += hold;
-    fs.rmdirSync(records);
-    swaps += 1;
+    let planted = false;
+    try { fs.symlinkSync(outside, records, 'junction'); planted = true; } catch (error) { if (error.code !== 'EEXIST') throw error; refused += 1; }
+    if (planted) {
+      const hold = 5 + (word(swaps) % 21);
+      pause(hold); heldMs += hold;
+      removeJunction();
+      swaps += 1;
+    }
   } finally {
     // restore: the directory must be back whatever happened
-    try { if (fs.lstatSync(records).isSymbolicLink()) fs.rmdirSync(records); } catch { /* absent */ }
-    fs.renameSync(aside, records);
+    removeJunction();
+    restore();
   }
   // a seeded gap between swaps (20-120 ms) lets the racing operations make progress between them
   pause(20 + (word(100000 + swaps) % 101));
 }
-process.stdout.write(JSON.stringify({ swaps, refused, heldMs, completed: swaps === target }));
+process.stdout.write(JSON.stringify({ swaps, refused, heldMs, refusedRestores, strayRecords, completed: swaps === target }));
