@@ -1,0 +1,109 @@
+{
+  "kind": "MO1308Phase3PreconditionG6Exclusions",
+  "amendments": "A3.1 (cca_core_tests), A3.2, A3.3, A3.4 (generation 6)",
+  "frozenBeforeRecordedRuns": true,
+  "baseline": "1dd1e8c82fe0ed5a32a894744392f2c279f89d4c",
+  "candidate": "deff3c8016ca685db18a3874b18ff956d289c0e0",
+  "trees": {
+    "baseline": "g6b",
+    "candidate": "g6c"
+  },
+  "probeRounds": [
+    {
+      "round": 1,
+      "probed": 70,
+      "blocked": [
+        "g6b:repositories/cca-core/cca_process_runtime_example.exe",
+        "g6b:repositories/cca-core/tests/cca_memory_allocation_tests.exe",
+        "g6b:repositories/cca-core/tests/cca_semantic_memory_allocation_tests.exe",
+        "g6c:repositories/cca-core/cca_long_term_memory_example.exe",
+        "g6c:repositories/cca-core/tests/cca_episodic_memory_allocation_tests.exe",
+        "g6c:repositories/cca-sdk/memoryos_sdk_cpp_regression.exe"
+      ]
+    },
+    {
+      "round": 2,
+      "probed": 70,
+      "blocked": [
+        "g6b:repositories/cca-core/tests/cca_memory_allocation_tests.exe",
+        "g6c:repositories/cca-core/cca_long_term_memory_example.exe"
+      ]
+    },
+    {
+      "round": 3,
+      "probed": 70,
+      "blocked": [
+        "g6b:repositories/cca-core/tests/cca_memory_allocation_tests.exe",
+        "g6c:repositories/cca-core/cca_long_term_memory_example.exe"
+      ]
+    },
+    {
+      "round": 4,
+      "probed": 70,
+      "blocked": [
+        "g6b:repositories/cca-core/tests/cca_memory_allocation_tests.exe",
+        "g6c:repositories/cca-core/cca_long_term_memory_example.exe"
+      ]
+    }
+  ],
+  "blockedPerTree": {
+    "g6b": [
+      "repositories/cca-core/cca_process_runtime_example.exe",
+      "repositories/cca-core/tests/cca_memory_allocation_tests.exe",
+      "repositories/cca-core/tests/cca_semantic_memory_allocation_tests.exe"
+    ],
+    "g6c": [
+      "repositories/cca-core/cca_long_term_memory_example.exe",
+      "repositories/cca-core/tests/cca_episodic_memory_allocation_tests.exe",
+      "repositories/cca-sdk/memoryos_sdk_cpp_regression.exe"
+    ]
+  },
+  "blockedAtCtestDiscovery": [],
+  "unionOfBlockedExecutables": 6,
+  "unionList": [
+    "repositories/cca-core/cca_long_term_memory_example.exe",
+    "repositories/cca-core/cca_process_runtime_example.exe",
+    "repositories/cca-core/tests/cca_episodic_memory_allocation_tests.exe",
+    "repositories/cca-core/tests/cca_memory_allocation_tests.exe",
+    "repositories/cca-core/tests/cca_semantic_memory_allocation_tests.exe",
+    "repositories/cca-sdk/memoryos_sdk_cpp_regression.exe"
+  ],
+  "gtestExecutablesRenamedInBothTrees": [
+    "repositories/cca-core/tests/cca_episodic_memory_allocation_tests.exe",
+    "repositories/cca-core/tests/cca_memory_allocation_tests.exe",
+    "repositories/cca-core/tests/cca_semantic_memory_allocation_tests.exe"
+  ],
+  "nonGtestBlockedExecutables": [
+    "repositories/cca-core/cca_long_term_memory_example.exe",
+    "repositories/cca-core/cca_process_runtime_example.exe",
+    "repositories/cca-sdk/memoryos_sdk_cpp_regression.exe"
+  ],
+  "testsForNonGtestBlockedExecutables": {
+    "repositories/cca-core/cca_process_runtime_example.exe": [
+      "cca.process.example.runtime"
+    ],
+    "repositories/cca-core/cca_long_term_memory_example.exe": [
+      "cca.long_term_memory.example"
+    ],
+    "repositories/cca-sdk/memoryos_sdk_cpp_regression.exe": [
+      "memoryos.sdk.cpp.regression.example"
+    ]
+  },
+  "blockedExecutablesWithNoCtestTest": [],
+  "guard": "all blocked executables are native C++ test, example or tool binaries built under repositories/ (no node.exe, python.exe, cmake.exe, ctest.exe, npm.cmd); the pinned node.exe, python.exe, cmake.exe and ctest.exe launch normally",
+  "registeredTests": 295,
+  "ctestExcludedNames": [
+    "cca_core_tests_NOT_BUILT",
+    "cca_episodic_memory_allocation_tests_NOT_BUILT",
+    "cca_memory_allocation_tests_NOT_BUILT",
+    "cca_semantic_memory_allocation_tests_NOT_BUILT",
+    "cca.process.example.runtime",
+    "cca.long_term_memory.example",
+    "memoryos.sdk.cpp.regression.example"
+  ],
+  "ctestExcludedCount": 7,
+  "ctestExcludeRegex": "^(cca_core_tests_NOT_BUILT|cca_episodic_memory_allocation_tests_NOT_BUILT|cca_memory_allocation_tests_NOT_BUILT|cca_semantic_memory_allocation_tests_NOT_BUILT|cca\\.process\\.example\\.runtime|cca\\.long_term_memory\\.example|memoryos\\.sdk\\.cpp\\.regression\\.example)$",
+  "ctestCommand": "ctest --preset default -E \"^(cca_core_tests_NOT_BUILT|cca_episodic_memory_allocation_tests_NOT_BUILT|cca_memory_allocation_tests_NOT_BUILT|cca_semantic_memory_allocation_tests_NOT_BUILT|cca\\.process\\.example\\.runtime|cca\\.long_term_memory\\.example|memoryos\\.sdk\\.cpp\\.regression\\.example)$\" --timeout 3600",
+  "excludedGtestTestNames": "excluded-gtest-test-names.json",
+  "classification": "ENVIRONMENT_BLOCKED_SAC for every excluded test except cca_core_tests_NOT_BUILT, which is the A3.1 waiver"
+}

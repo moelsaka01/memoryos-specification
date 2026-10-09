@@ -1,0 +1,14 @@
+generation: 6 (A3.1, A3.2, A3.3, A3.4)
+triplet: x64-windows
+source baseline: 1dd1e8c82fe0ed5a32a894744392f2c279f89d4c (worktree g6b = C:g6b)
+source candidate: deff3c8016ca685db18a3874b18ff956d289c0e0 (worktree g6c = C:g6c, binding commit of mo1308/phase3-corrections-2)
+preset: default (+ -DMEMORYOS_VSCODE_NPM_EXECUTABLE=<pinned node>/npm.cmd, A3.3)
+build: cmake --build --preset default -- -k 0 (cca_core_tests waived, A3.1)
+vcpkg: cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3 (copied from the generation 3 baseline tree, same checkout)
+node.exe sha256: ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32
+node: v24.21.0
+npm: 11.19.0
+python: Python 3.14.4
+cmake: cmake version 3.31.6
+ninja: 1.13.2
+SmartAppControl VerifiedAndReputablePolicyState: 0x1
