@@ -125,6 +125,8 @@ total, a readiness result 4,194,304 bytes, a decision claim 8,192 bytes).
   links, are canonical and are the same directories (device and file identity) that the ledger read captured. Any mismatch is refused with
   `MO1308_FILESYSTEM_BOUNDARY` and deletes nothing. A swap between that check and the removal of one member is not prevented; at most that one member name is
   followed.
+- **Entry-count limit (A11).** A valid `append` to a ledger that already holds 100,000 entries is refused with `MO1308_RESOURCE_LIMIT` (exit 2, nothing written);
+  the limit is tested before the shape check of the would-be entry, so it is never reported as `MO1308_RECORD_INVALID`.
 - Windows 11 x64 with the pinned Node is the only certified platform. UNC, network, synchronized and cloud-placeholder locations
   are observed, not claimed.
 - The history commands start no process, open no socket and read no environment variable.
