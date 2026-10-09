@@ -79,6 +79,9 @@ export function loadGenerations({ root, evidenceRoot = EVIDENCE_ROOT, inventory 
     if (!fs.existsSync(path.join(directory, 'seal.json'))) continue;
     const row = { id: name, directory, relative: `${evidenceRoot}/${name}`, problems: [], seal: null, receipt: null, parsed: null };
     try { row.parsed = parseGeneration(name); } catch (error) { row.problems.push(error.message); generations.push(row); continue; }
+    // The certifying 3D generation is this validator's own run: it is sealed (seal.json) before it runs and open while it runs, so it can never be one
+    // of the inputs it validates (3A, 3B and 3C). It is not verified here, never accepted, and adds no problem (second 3D review, H-01).
+    if (row.parsed.stream === '3D' && !row.parsed.rehearsal) { row.self = true; row.accepted = false; generations.push(row); continue; }
     const verified = row.parsed.rehearsal ? verifyRehearsal({ root, directory, inventory, row }) : verifyEvidence({ root, evidenceDir: directory, inventory });
     row.problems.push(...verified.problems);
     row.seal = verified.seal ?? null;
@@ -229,10 +232,11 @@ export function checkD4({ root, regression, identity, head, repo = root }) {
   for (const name of REQUIRED_SUITES) {
     const suite = byName.get(name);
     if (suite === undefined) { problems.push(`suite ${name} is absent`); continue; }
-    if (suite.exitCode !== 0 || suite.failed !== 0 || !(suite.passed > 0) || suite.total !== suite.passed + suite.failed + suite.skipped) problems.push(`suite ${name}: not a clean pass (${suite.passed}/${suite.total}, ${suite.failed} failed, exit ${suite.exitCode})`);
+    if (suite.exitCode !== 0 || suite.failed !== 0 || suite.skipped !== 0 || !(suite.passed > 0) || suite.total !== suite.passed + suite.failed + suite.skipped) problems.push(`suite ${name}: not a clean pass (${suite.passed}/${suite.total}, ${suite.failed} failed, exit ${suite.exitCode})`);
     if (!/^[0-9a-f]{64}$/.test(suite.logSha256 ?? '')) problems.push(`suite ${name}: no raw log digest`);
   }
   if (byName.get('mo1307') !== undefined && byName.get('mo1307').total !== MO1307_TESTS) problems.push(`suite mo1307: ${byName.get('mo1307').total} tests, expected ${MO1307_TESTS}`);
+  if (byName.get('mo1307') !== undefined && byName.get('mo1307').passed !== MO1307_TESTS) problems.push(`suite mo1307: ${byName.get('mo1307').passed} passed, expected ${MO1307_TESTS}`);
   // A8.10: the strict run's preconditions (fresh worktree without .cache/mo1307 leftovers, a quiet-host load sample, F22's timing, no retries)
   const pre = regression.preconditions;
   if (pre === undefined || pre === null || typeof pre !== 'object') problems.push('the record carries no preconditions (A8.10)');

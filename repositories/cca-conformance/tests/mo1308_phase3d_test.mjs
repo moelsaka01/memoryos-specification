@@ -272,3 +272,16 @@ test('D12 a certifying generation whose bound inputs changed still fails exactly
   assert.ok(d2.problems.some((problem) => /^phase3[abc]: .*changed since the seal$/.test(problem)), JSON.stringify(d2.problems));
   assert.deepEqual(d2.observed.staleRehearsals.filter((row) => /^phase3[abc]-[0-9]/.test(row.id) || !row.id.includes('rehearsal')), [], 'a certifying generation is never reported as a stale rehearsal');
 });
+
+test('D13 the open certifying 3D generation (sealed, not yet closed) is not an input of its own run: D2 stays READY', async (t) => {
+  const clone = await completeClone(t);
+  assert.equal(validateFinal({ root: clone.directory }).cases.find((row) => row.id === '3D-D2').status, 'READY');
+  sealGeneration({
+    root: clone.directory, stream: '3D', generation: 'phase3d', certifying: true, protocolPath: PROTOCOL, inventoryPath: INVENTORY_FILE, candidateIdentityPath: IDENTITY,
+    corpusManifestPath: null, toolPaths: [TOOL], inputPaths: [], harnessReviewPath: 'review.json', evidenceDir: path.join(clone.directory, ...EVIDENCE.split('/'), 'phase3d'), now: clock(),
+  });
+  const d2 = validateFinal({ root: clone.directory }).cases.find((row) => row.id === '3D-D2');
+  assert.deepEqual(d2.problems, []);
+  assert.equal(d2.status, 'READY');
+  assert.equal(d2.observed.accepted['3D'], undefined);
+});
