@@ -1,0 +1,188 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 138559,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-JC1",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "entriesPerSecond": 729,
+        "generated": 99999,
+        "headDigest": "sha256:9084f8b7a0b4747e01d3650ee721d570e1ec3ff37fbdfe5c765386447a76be50",
+        "seconds": "137.3"
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 31896,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-JC2",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "entriesReturned": 1000,
+        "seconds": "31.9",
+        "stdoutBytes": 445426
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 32345,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-JC3",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "entriesReturned": 1000,
+        "nextFrom": null,
+        "seconds": "32.3",
+        "stdoutBytes": 445476
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 73081,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-JC4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "entryCount": 99999,
+        "peakRssMiB": 588,
+        "seconds": "71.5"
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 66485,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-JC5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "index": 99999,
+        "seconds": 65
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 882664,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-JC6",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "entryCount": 100000,
+        "markerPresent": true,
+        "minutes": "14.7",
+        "outcome": "CONFIRMED",
+        "preRegistered": "CONFIRMED when the export takes at least 8 minutes (half of the register's 16)",
+        "referenceHostSeconds": "1000.9",
+        "seconds": "881.1"
+      },
+      "outcome": "CONFIRMED",
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 77718,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-JC7",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "entryCount": 100000,
+        "seconds": "76.5"
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 70432,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-JC8",
+      "mandatory": true,
+      "mode": "record",
+      "observed": {
+        "entryCount": 100000,
+        "exit": 0,
+        "headDigest": "sha256:42fa42360c941a590b5ae95b0d7a08d06a2c6638195907a6c3663e872948f2a3",
+        "seconds": "70.4"
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 71712,
+      "escalation": null,
+      "failure": null,
+      "id": "3A-JC9",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "entries": 100000,
+        "records": 100000,
+        "result": "2:MO1308_RESOURCE_LIMIT",
+        "seconds": "71.4"
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 308078,
+      "escalation": null,
+      "failure": {
+        "code": null,
+        "message": "1 problem(s): the worktree is not clean: ?? repositories/cca-conformance/evidence/mo1308/phase3a-rehearsal-r8/",
+        "name": "Error"
+      },
+      "id": "3A-JC10",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "finalEntryCount": 100000,
+        "finalHead": "sha256:42fa42360c941a590b5ae95b0d7a08d06a2c6638195907a6c3663e872948f2a3",
+        "productionBlobsUnchanged": false,
+        "retained": "digests and logs only",
+        "timingTable": [
+          "generate 99999 entries and members: 137.3s",
+          "query page of 1000 (real CLI): 31.9s",
+          "query with a subject filter over the whole ledger (real CLI): 32.3s",
+          "verify of 99999 entries (real SDK, production store): 71.5s",
+          "append of the last allowed entry (real MIP admission, then publish): 65s",
+          "export of 100000 entries: 881.1s",
+          "verify-export of 100000 entries: 76.5s",
+          "real process: memoryos history verify (process start, module load, verification): 70.4s",
+          "the 100,001st append, refused (real CLI): 71.4s",
+          "removal of the ceiling data (not retained): 202.4s"
+        ]
+      },
+      "outcome": null,
+      "result": "FAIL"
+    }
+  ],
+  "elapsedMs": 1752971,
+  "failureCode": null,
+  "finishedAt": "2026-10-09T05:34:16.850Z",
+  "generation": "phase3a-rehearsal-r8",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "FAIL",
+  "segment": "ceiling",
+  "startedAt": "2026-10-09T05:05:03.875Z",
+  "step": "JC",
+  "stream": "3A",
+  "version": "1.0.0"
+}
