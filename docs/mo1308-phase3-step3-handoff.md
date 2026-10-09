@@ -1,5 +1,14 @@
 # MO-1308 Phase 3 step 3: handoff (updated at the end of every task)
 
+## RUN LOG (2026-10-09, continuation after owner approvals A8.12)
+* Owner approvals applied (note A8.12 on phase3-shared 25480f8a, merged into 3A/3B/3C/3D): (1) 3A-JC10/3A-A3 clean-tree check excludes exactly the generation's own evidence directory (env.mjs worktreePorcelain; tests A14-A17); (2) 3D validator accepts untampered stale rehearsals as STALE_REHEARSAL, certifying generations unchanged (verifyRehearsal; tests D10-D12; 3D 12/12, head 6e6d91ae). The classifier did not block either edit.
+* 3A rehearsal r9 FAILED at 3A-G6 (HARNESS: swapper crashed when a racing append re-created records; docs/mo1308-phase3a-g6-swapper-finding.md). Fixed (swapper.mjs), r10 108/108, 3A independent review 1 found BLOCKING R1-H-01 (absorbStray race), fixed, review 2 NO_BLOCKING_FINDINGS on the final bytes (evidence/mo1308/phase3a-harness-review/review.json), r11 108/108 on the final bytes.
+* STEP 6, 3A: certifying generation **phase3a ACCEPTED 108/108** (commit 7f95d951 on mo1308/phase3a-native, worktree C:c3a, work root cleaned).
+* STEP 6, 3C: certifying generation **phase3c ACCEPTED** (commit e8101d92 on mo1308/phase3c-security, worktree C:c3c).
+* STEP 6, 3B: the certifying seal requires a recorded harness review (REVIEW_REQUIRED); none existed. Independent review of the 3B bytes run first; then seal/run/close in C:c3b.
+* Open non-blocking review items (disclosures for 3D): 3A R1-H-02, R1-H-03, R2-H-04 (reached-file read race), R2-H-05, R2-H-06, R2-H-07, R2-H-08.
+
+
 ## >>> RUN STOPPED (2026-10-09) AT STEP 4: TWO HARNESS FIXES NEED AN OWNER DECISION <<<
 Both fixes are inside the pre-authorized "HARNESS defect" class, but each loosens an integrity/cleanliness assertion and the auto-mode classifier refused them, so nothing was applied or worked around. Results so far (all on candidate deff3c80, gate input g6):
 * 3A rehearsal **r8** (preserved on 3A, commit 907c90b1): 107/108, main1 PASS, main2 PASS, ceiling reached JC9 PASS (100,001st append = MO1308_RESOURCE_LIMIT, so the A11 correction works at 100,000) and **3A-JC10 FAIL**: `cases-ceiling.mjs:183` requires `git status --porcelain` to be empty, but the generation's own evidence directory (`evidence/mo1308/phase3a-rehearsal-r8/`, untracked, inside the worktree) is listed. JC10 had never run before (r6 stopped at JC9). Same hazard in `cases-det.mjs:40` (3A-A3, certifying only). PROPOSED FIX (harness only): a helper `worktreePorcelain(env)` in env.mjs that drops only lines under `path.relative(env.repo, env.evidenceDir)`; used by JC10 and A3. Needs the 3A independent review afterwards (none done yet).
