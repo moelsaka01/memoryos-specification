@@ -20,7 +20,7 @@ const end = Date.now() + Number(secondsText) * 1000;
 // Removing the junction and restoring the directory are retried while NTFS refuses them because a racing process still holds a handle on
 // the link or inside the directory (EPERM/EBUSY/EACCES): the directory must always come back, so this waits (bounded, 60 s) rather than
 // leaving records.aside behind or crashing with the junction still planted.
-const transient = (error) => ['EPERM', 'EBUSY', 'EACCES'].includes(error.code);
+const transient = (error) => ['EPERM', 'EBUSY', 'EACCES', 'ENOTEMPTY', 'EEXIST'].includes(error.code);
 function retrying(action) {
   const limit = Date.now() + 60000;
   for (;;) {
@@ -37,15 +37,19 @@ const removeJunction = () => retrying(() => { if (fs.lstatSync(records, { throwI
 function absorbStray() {
   const info = fs.lstatSync(records, { throwIfNoEntry: false });
   if (info === undefined || info.isSymbolicLink() || !info.isDirectory()) return;
+  // The racing appenders may still create or remove entries here: a name that vanished between the listing and the move is already gone (ENOENT
+  // is skipped), and a directory that gained an entry before the final rmdir (ENOTEMPTY) makes the whole restore retry from the listing.
   for (const name of fs.readdirSync(records)) {
     const from = path.join(records, name); const to = path.join(aside, name);
-    if (fs.existsSync(to)) fs.rmSync(from, { recursive: true, force: true }); else fs.renameSync(from, to);
+    try {
+      if (fs.existsSync(to)) { fs.rmSync(from, { recursive: true, force: true }); droppedStrayNames.push(name); } else fs.renameSync(from, to);
+    } catch (error) { if (error.code !== 'ENOENT') throw error; }
   }
   fs.rmdirSync(records);
   strayRecords += 1;
 }
 const restore = () => retrying(() => { absorbStray(); fs.renameSync(aside, records); });
-let refusedRestores = 0; let strayRecords = 0;
+let refusedRestores = 0; let strayRecords = 0; const droppedStrayNames = [];
 let swaps = 0; let refused = 0; let heldMs = 0;
 while (swaps < target && Date.now() < end) {
   try { fs.renameSync(records, aside); } catch { refused += 1; pause(2); continue; }
@@ -66,4 +70,4 @@ while (swaps < target && Date.now() < end) {
   // a seeded gap between swaps (20-120 ms) lets the racing operations make progress between them
   pause(20 + (word(100000 + swaps) % 101));
 }
-process.stdout.write(JSON.stringify({ swaps, refused, heldMs, refusedRestores, strayRecords, completed: swaps === target }));
+process.stdout.write(JSON.stringify({ swaps, refused, heldMs, refusedRestores, strayRecords, droppedStrayNames, completed: swaps === target }));

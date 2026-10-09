@@ -197,7 +197,7 @@ export function aclDeny(env, target, rights) {
 export function aclRestore(env, target) {
   const run = spawnSync('icacls.exe', [target, '/remove:d', whoami()], { encoding: 'utf8', windowsHide: true, shell: false });
   env.observers?.push({ observer: 'icacls', purpose: `restore ${path.basename(target)}`, status: run.status, signal: null });
-  if (run.status !== 0) throw new Error(`icacls restore failed for ${target}: ${String(run.stdout).replace(/s+/g, " ").slice(0, 200)}${String(run.stderr).slice(0, 100)}`);
+  if (run.status !== 0) throw new Error(`icacls restore failed for ${target}: ${String(run.stdout).replace(/\s+/g, " ").slice(0, 200)}${String(run.stderr).slice(0, 100)}`);
 }
 export const setReadOnly = (target, on) => fs.chmodSync(target, on ? 0o444 : 0o666);
 
