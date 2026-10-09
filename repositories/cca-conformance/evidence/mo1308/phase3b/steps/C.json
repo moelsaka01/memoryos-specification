@@ -1,0 +1,153 @@
+{
+  "cases": [
+    {
+      "elapsedMs": 8241,
+      "escalation": null,
+      "failure": null,
+      "id": "3B-C1",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "changed": [
+          {
+            "differing": [
+              "scripts"
+            ],
+            "file": "repositories/cca-studio/package.json"
+          },
+          {
+            "differing": [
+              "version"
+            ],
+            "file": "repositories/memoryos-cli/package.json",
+            "version": "1.2.0"
+          }
+        ],
+        "manifests": 30
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 11235,
+      "escalation": null,
+      "failure": null,
+      "id": "3B-C2",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "builtins": [
+          "node:fs",
+          "node:path"
+        ],
+        "externals": [],
+        "files": 42
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 7708,
+      "escalation": null,
+      "failure": null,
+      "id": "3B-C3",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "direct": {
+          "repositories/cca-studio/web/js/memoryos-history-admission.js": [
+            "./mip-canonical.js",
+            "./memory-investigation-package.js",
+            "./investigation-policy-engine.js",
+            "./policy-canonical.js",
+            "./regression-policy-fact-source.js",
+            "./memoryos-history-contract.js"
+          ],
+          "repositories/cca-studio/web/js/memoryos-history-contract.js": [
+            "./mip-canonical.js"
+          ],
+          "repositories/cca-studio/web/js/memoryos-history-ledger.js": [
+            "./mip-canonical.js",
+            "./memoryos-history-contract.js"
+          ]
+        },
+        "transitiveFiles": 25,
+        "transitiveReachesCore": true,
+        "transitiveReachesSdk": false
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 18735,
+      "escalation": null,
+      "failure": null,
+      "id": "3B-C4",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "runtime": {
+          "permissionFlag": "--permission",
+          "proof": {
+            "childDenied": true,
+            "entries": 1,
+            "exportFiles": 6,
+            "head": "sha256:422d30febc2b9f85ccf3288dfa41c5fb99ce71a22a958eccaef5c14705611e06",
+            "readDenied": true,
+            "verifiedEntries": 1,
+            "writeDenied": true
+          }
+        },
+        "static": {
+          "memoryos-history-admission.js": {
+            "forbiddenIdentifiers": [],
+            "nodeImports": []
+          },
+          "memoryos-history-contract.js": {
+            "forbiddenIdentifiers": [],
+            "nodeImports": []
+          },
+          "memoryos-history-ledger.js": {
+            "forbiddenIdentifiers": [],
+            "nodeImports": []
+          },
+          "memoryos-sdk.js": {
+            "forbiddenIdentifiers": [],
+            "nodeImports": []
+          }
+        }
+      },
+      "outcome": null,
+      "result": "PASS"
+    },
+    {
+      "elapsedMs": 26416,
+      "escalation": null,
+      "failure": null,
+      "id": "3B-C5",
+      "mandatory": true,
+      "mode": "assert",
+      "observed": {
+        "handWrittenSha256": [
+          "repositories/cca-studio/web/js/memoryos-history-admission.js",
+          "repositories/cca-studio/web/js/mip-canonical.js"
+        ],
+        "licenseAndNoticeFiles": 12,
+        "thirdParty": []
+      },
+      "outcome": null,
+      "result": "PASS"
+    }
+  ],
+  "elapsedMs": 72335,
+  "failureCode": null,
+  "finishedAt": "2026-10-09T13:58:05.098Z",
+  "generation": "phase3b",
+  "kind": "MO1308Phase3StepReceipt",
+  "result": "PASS",
+  "segment": "main",
+  "startedAt": "2026-10-09T13:56:52.768Z",
+  "step": "C",
+  "stream": "3B",
+  "version": "1.0.0"
+}
