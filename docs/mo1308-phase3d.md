@@ -47,6 +47,6 @@ record) and walks it through `NOT_READY` → I3 → `I3_VALID_PENDING_BF` → `C
 ## 4. Inputs the protocol does not fix (assumptions to confirm)
 
 1. **A3.2 receipt member.** Confirmed from the real receipt: `phase3-precondition-g3/receipt.json` → top-level `verdict`; the validator requires `"PASS"` (`binding.json` has no verdict member and only hashes the receipt).
-2. **Regression record.** D4 needs the retained full regression as a bound input; no format exists. The validator expects `evidence/mo1308/phase3d/regression.json` of kind `MO1308Phase3RegressionRecord` (`commit`, `candidate.productionTreeDigest`, `suites[] {name, passed, failed, skipped, total, exitCode, logSha256}`).
+2. **Regression record.** D4 needs the retained full regression as a bound input; no format exists. The validator expects `evidence/mo1308/phase3d-regression/regression.json` (a sibling of the generation directory `phase3d`, which must be empty when sealed) of kind `MO1308Phase3RegressionRecord` (`commit`, `candidate.productionTreeDigest`, `suites[] {name, passed, failed, skipped, total, exitCode, logSha256}`).
 3. **Dispositions.** The protocol defines the record but not its location. The validator finds `MO1308Phase3Disposition` files anywhere under `evidence/mo1308/` whose path contains "disposition", by hash, through the successor generation's `supersedes.dispositionSha256`.
 4. **File names.** `docs/mo1308-release-disclosures.md`, `mo1308-final-release-inventory.json` (I3) and `mo1308-final-binding.json` (BF) follow MO-1307's pattern and are not yet fixed by the protocol.
