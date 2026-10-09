@@ -65,7 +65,8 @@ function makeClone(t) {
   run(directory, ['checkout', '-q', '--detach', gitText(repo, ['rev-parse', 'HEAD'])]);
   run(directory, ['config', 'user.name', 'p3d-test']); run(directory, ['config', 'user.email', 'p3d@example.test']); run(directory, ['config', 'commit.gpgsign', 'false']);
   // The real certifying generations (phase3a, phase3b, phase3c) and the regression/disclosure files are in the repository's tree now; the fabricated states below start from a clone without them (A8.12 era: the tests must not depend on the real evidence state).
-  for (const name of ['phase3a', 'phase3b', 'phase3c']) fs.rmSync(path.join(directory, ...EVIDENCE.split('/'), name), { recursive: true, force: true });
+  const evidenceBase = path.join(directory, ...EVIDENCE.split('/'));
+  for (const name of fs.readdirSync(evidenceBase)) if (/^phase3[abcd](-|$)/.test(name)) fs.rmSync(path.join(evidenceBase, name), { recursive: true, force: true });
   fs.rmSync(path.join(directory, ...DISCLOSURES_FILE.split('/')), { force: true });
   fs.rmSync(path.join(directory, ...REGRESSION_FILE.split('/')), { force: true });
   run(directory, ['add', '-A']); run(directory, ['commit', '-q', '--allow-empty', '-m', 'test clone: clean evidence slate']);
