@@ -11,8 +11,8 @@ import { validateReview } from '../mo1308-phase3/lib/receipts.mjs';
 
 export const PINNED_NODE = Object.freeze({ version: 'v24.21.0', sha256: 'ba4e6d110e8c1592a1ecd390f6b05f3da124b13871a5be62b341a07a853c6c32', byteLength: 93580104 });
 export const BASELINE_COMMIT = '1dd1e8c82fe0ed5a32a894744392f2c279f89d4c';
-const PRECONDITION_RECEIPT = 'repositories/cca-conformance/evidence/mo1308/phase3-precondition-g4/receipt.json';
-const PRECONDITION_BINDING = 'repositories/cca-conformance/evidence/mo1308/phase3-precondition-g4/binding.json';
+const PRECONDITION_RECEIPT = 'repositories/cca-conformance/evidence/mo1308/phase3-precondition-g5/receipt.json';
+const PRECONDITION_BINDING = 'repositories/cca-conformance/evidence/mo1308/phase3-precondition-g5/binding.json';
 export const GATE_INPUTS = Object.freeze([PRECONDITION_RECEIPT, PRECONDITION_BINDING]);
 export const HARNESS_REVIEW = 'repositories/cca-conformance/evidence/mo1308/phase3a-harness-review/review.json';
 
@@ -68,7 +68,7 @@ export const hostCases = {
       verdict = receipt.verdict;
       candidateCommit = receipt.candidate?.commit ?? null;
       if (verdict !== 'PASS') problems.push(`the receipt verdict is ${verdict}`);
-      if (receipt.kind !== 'MO1308Phase3PreconditionG4Receipt') problems.push(`receipt kind ${receipt.kind}`);
+      if (receipt.kind !== 'MO1308Phase3PreconditionG5Receipt') problems.push(`receipt kind ${receipt.kind}`);
       if (receipt.baseline?.commit !== BASELINE_COMMIT) problems.push(`baseline ${receipt.baseline?.commit}`);
       if (candidateCommit !== env.identity.baseCommit) problems.push(`the receipt is about candidate ${candidateCommit}, not ${env.identity.baseCommit}`);
       if (Object.values(receipt.rules ?? {}).some((value) => value !== true) || Object.keys(receipt.rules ?? {}).length < 4) problems.push('a precondition rule is not true');
