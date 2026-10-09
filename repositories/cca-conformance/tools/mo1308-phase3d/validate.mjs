@@ -19,7 +19,8 @@ import { stableStringify } from '../mo1308-phase3/lib/stable-json.mjs';
 
 export const CANDIDATE_IDENTITY_FILE = 'repositories/cca-conformance/mo1308-phase3-candidate-identity.json';
 export const A32_RECEIPT_FILE = `${EVIDENCE_ROOT}/phase3-precondition-g6/receipt.json`;
-export const REGRESSION_FILE = `${EVIDENCE_ROOT}/phase3d/regression.json`;
+// A sibling of the 3D generation directory (evidence/mo1308/phase3d): sealing a generation needs its own directory empty (EVIDENCE_NOT_EMPTY).
+export const REGRESSION_FILE = `${EVIDENCE_ROOT}/phase3d-regression/regression.json`;
 export const DISCLOSURES_FILE = 'docs/mo1308-release-disclosures.md';
 export const FINAL_INVENTORY_FILE = 'repositories/cca-conformance/mo1308-final-release-inventory.json';
 export const FINAL_BINDING_FILE = 'repositories/cca-conformance/mo1308-final-binding.json';
