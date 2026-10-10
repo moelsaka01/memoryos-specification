@@ -1,0 +1,25 @@
+{
+  "kind": "MemoryOSDashboardPerfBudgets",
+  "version": "1.0.0",
+  "scale": 10000,
+  "characterizedOnly": [100000],
+  "basis": "docs/mo1309-phase2d-cloud-report.json: worst of five runs at 10,000 entries on the cloud host, multiplied by the factor stated in docs/mo1309-phase2d-performance.md section 4 and rounded up",
+  "rule": "A budget bounds the worst run at the certified scale. Raising a budget or the certified scale after the Phase 2D binding returns to owner review (Freeze section 12).",
+  "maximum": {
+    "readMs": 30000,
+    "verifyOnlyMs": 30000,
+    "viewModelBuildMs": 150000,
+    "assembleMs": 5000,
+    "publishMs": 5000,
+    "generationWallMs": 200000,
+    "generationMaxRssMb": 1200,
+    "snapshotBytes": 11000000,
+    "loadEventMs": 1600,
+    "domContentLoadedMs": 1600,
+    "filterMs": 200,
+    "sortMs": 200,
+    "nextPageMs": 200,
+    "pageHeapMb": 100,
+    "domNodes": 3000
+  }
+}
