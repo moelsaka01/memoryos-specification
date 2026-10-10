@@ -44,6 +44,11 @@ the preset does not already enable failure output.
 All presets have corresponding configure and build presets. All except
 `minimal` have a test preset. `minimal` is deliberately not test evidence.
 
+`minimal` does not use vcpkg, but `cca-compiler` still requires the `yaml-cpp` CMake package
+(`yaml-cpp::yaml-cpp`). Provide it from the system (`apt install libyaml-cpp-dev`,
+`brew install yaml-cpp`, or `-DCMAKE_PREFIX_PATH=<prefix>`); otherwise configuration stops with an
+explicit message. Use a vcpkg-backed preset (`default`, `ci`, ...) when the package is not installed.
+
 The presets use the workspace-pinned vcpkg checkout prepared under
 `.cache/vcpkg` by the bootstrap script. See
 [developer-setup.md](developer-setup.md).
