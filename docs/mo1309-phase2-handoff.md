@@ -9,8 +9,10 @@ not on the four stream branches, so that the streams keep disjoint files.
 
 ## State
 
-2A UI, 2B generator/loader and 2C trust review COMPLETE and bound. 2D
-(performance) not started. No STOP condition has occurred.
+All four streams (2A UI, 2B generator/loader, 2C trust review, 2D performance)
+COMPLETE and bound. Certified scale fixed at 10,000 entries; 100,000 entries
+characterized only. The Windows characterization run is prepared and has not
+been run. No STOP condition occurred; no extra generation was needed.
 
 ## Last bound commit
 
@@ -20,10 +22,11 @@ not on the four stream branches, so that the streams keep disjoint files.
 | 2A UI | `mo1309/phase2a-ui` | `6956c650` |
 | 2B generator/loader | `mo1309/phase2b-build` | `2d0b66fe` |
 | 2C security/trust | `mo1309/phase2c-trust` | `f406b4eb` |
+| 2D performance | `mo1309/phase2d-perf` | `f53fda8e` |
 
 ## Next action
 
-2D performance.
+Phase 3 integration
 
 ## Decisions needed
 
@@ -75,3 +78,24 @@ None.
   (`support-dashboard-snapshot.mjs`, `support-dashboard-mini-snapshot.mjs`,
   stand-in page) with the real generator output; the `main` fast-forward;
   wire dashboard tests into a manifest (Phase 1 note).
+- 2026-10-10 — 2D. Corpus builder, runner and budget evaluator in
+  `scripts/memoryos-dashboard-perf*.mjs`; records
+  `docs/mo1309-phase2d-{performance.md,cloud-report.json,budgets.json,windows-run.md}`;
+  6 tests. Corpora are synthetic (MO-1308 identity primitives plus
+  `buildHistoryExport`, accepted by `verifyHistoryExport`; the released exporter
+  needs about 16 min for 100,000 entries), measured in a throwaway merge of the 2D
+  tip, 2A and 2B. Cloud medians: 1,000 entries generation 1.7 s, 0.92 MB, load
+  0.09 s; 10,000 entries generation 36.8 s, 8.9 MB, load 0.29 s; 100,000 entries
+  (one run, characterized only) generation 2,944 s, 2.6 GB, 88.8 MB, load 4.35 s.
+  Certified scale 10,000; budgets recorded from the worst of five runs
+  (factors in the performance record section 4). Finding for Phase 3 and the
+  owner, not a STOP: the view-model build is quadratic (about entries/1000 chain
+  verifications because every `queryHistoryLedger` page re-verifies the chain:
+  29.5 s at 10,000, 2,861 s at 100,000); a private fix with a differential test is
+  possible without any public-behaviour change. The Windows run is prepared in
+  `docs/mo1309-phase2d-windows-run.md`; no Windows result is claimed.
+- 2026-10-10 — Cross-stream check: an unpushed octopus merge of the four stream
+  tips merges without conflict; 77/77 dashboard tests pass (including the
+  browser tests), `npm test` in `cca-studio` 358/358, and no stream changes an
+  MO-1308 module, a package manifest, a lockfile or ARCHITECTURE.md relative to
+  `2da41aca`. `main` and tags untouched.
