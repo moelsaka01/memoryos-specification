@@ -1,6 +1,6 @@
 // MO-1309 Phase 2A test support: a minimal Chrome DevTools Protocol client built only on Node built-ins
 // (child_process, http, fs, os, path and the global WebSocket). No browser-automation package is used or added anywhere.
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import http from "node:http";
 import os from "node:os";
@@ -21,7 +21,7 @@ export async function launchBrowser() {
   if (executable === null) throw new Error("No Chromium-family browser found (set MO1309_BROWSER).");
   const profile = fs.mkdtempSync(path.join(os.tmpdir(), "mo1309-browser-"));
   const child = spawn(executable, ["--headless=new", "--no-sandbox", "--disable-gpu", "--disable-extensions", "--no-first-run",
-    "--no-default-browser-check", "--remote-debugging-port=0", `--user-data-dir=${profile}`, "about:blank"], { stdio: ["ignore", "ignore", "pipe"] });
+    "--no-default-browser-check", "--remote-debugging-port=0", `--user-data-dir=${profile}`, "about:blank"], { stdio: ["ignore", "ignore", "pipe"], detached: process.platform !== "win32" });
   const endpoint = await new Promise((resolve, reject) => {
     let text = "";
     const timer = global.setTimeout(() => reject(new Error("browser start timeout")), 30000);
@@ -100,7 +100,7 @@ export async function launchBrowser() {
 
   const close = async () => {
     try { socket.close(); } catch { /* already closed */ }
-    child.kill("SIGKILL");
+    killTree(child);
     await new Promise((resolve) => { if (child.exitCode !== null) resolve(); else child.on("exit", resolve); });
     removeProfile(profile);
   };
@@ -109,6 +109,15 @@ export async function launchBrowser() {
 
 // Phase 3 harness fix (HARNESS_DEFECT): SIGKILL stops only the main browser process, so helper processes may still be writing
 // the profile directory when it is removed (ENOTEMPTY). Removal is retried with a delay; a persistent failure still throws.
+// Phase 3 harness fix: the browser spawns helper processes that outlive a kill of the main process and keep writing the profile.
+// The whole tree is killed (process group on POSIX, taskkill /T on Windows).
+export function killTree(child) {
+  try {
+    if (process.platform === "win32") spawnSync("taskkill", ["/PID", String(child.pid), "/T", "/F"], { stdio: "ignore" });
+    else process.kill(-child.pid, "SIGKILL");
+  } catch { child.kill("SIGKILL"); }
+}
+
 export function removeProfile(directory, remove = fs.rmSync) {
   remove(directory, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
 }
