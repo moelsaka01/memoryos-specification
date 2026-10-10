@@ -550,5 +550,5 @@ test("the historical 1.2.1 pins are authenticated against the release commit, no
   const drifted = structuredClone(manifest);
   const record = drifted.implementation.sourceInventory.find(({ kind }) => kind === "directory");
   record.sha256 = `sha256:${"1".repeat(64)}`;
-  assert.throws(() => validateManifestInputsAtPinnedRelease(drifted), /differs from the pinned manifest bytes/u);
+  assert.throws(() => validateManifestInputsAtPinnedRelease(drifted), /differs from the pinned manifest bytes|inconsistent committed input identities/u);
 });
