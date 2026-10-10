@@ -8,18 +8,20 @@ update.
 
 ## State
 
-Phase 1 IN PROGRESS on `mo1309/phase1` (created from `main` at the Freeze commit
-`d7a4919ea6791e5169b364bad2dbb99fc74a6514`). Checkpoint 1 committed: the pure
-contract, view-model and wording modules, fixtures from real exports, and the
-tests.
+Phase 1 (contract and view model) COMPLETE and bound. Requirements covered:
+DB04, DB10, DB11, DB14, DB17, DB26 (Phase 1 part), DB31; DB15, DB16, DB18 and
+DB19 have their Phase 1 inputs (registry content, determinism of the view
+model) and are completed in 2A and 2B. No STOP condition occurred.
 
 ## Last bound commit
 
-None yet. Baseline: the Freeze commit above.
+`2da41aca` on `mo1309/phase1` (product commit; this handoff is a docs-only
+commit on top). Baseline: the Freeze commit
+`d7a4919ea6791e5169b364bad2dbb99fc74a6514`.
 
 ## Next action
 
-Run the affected released suites, bind Phase 1, fast-forward `main`.
+Phases 2A–2D
 
 ## Decisions needed
 
@@ -34,3 +36,20 @@ None.
   released `memoryos history` CLI (`scripts/generate-memoryos-dashboard-fixtures.mjs`);
   three test files; ARCHITECTURE section 5 and section 13 text from Freeze
   section 20.
+- 2026-10-10 — Checks: `node --test tests/memoryos_dashboard_*_test.mjs` 26/26
+  pass; `npm test` in `cca-studio` 384/384 pass; fixture regeneration is
+  byte-stable. Released suites (`specification_conformance_test`,
+  `mo1308_phase3_shared/3b/3d`): 8 of 109 fail identically on `origin/main`
+  (`d7a4919e`) and on this branch (A02, A01, B02, N07, S03, D03, manifest and
+  Standard-digest checks; lineage, tag and Standard-clone dependent). Not
+  caused by Phase 1; no change made.
+- 2026-10-10 — Private resolutions (no public change): summary arrays list every
+  imported enum value including zero counts; the view-model validator returns a
+  location-only result and adds no error code (Freeze section 13 catalog is
+  closed); the manifest digest is computed from the verified manifest bytes.
+  `cca-studio/package.json` is pinned in released closures, so it was left
+  unchanged and the dashboard tests are run by path
+  (`node --test tests/memoryos_dashboard_*_test.mjs`); wiring them into a
+  manifest is for Phase 3. 100,000-entry build cost (MO-1308 query is re-run per
+  1,000-row page) is a Phase 2D measurement item.
+- 2026-10-10 — Phase 1 bound; `main` fast-forwarded after an ancestry check.
