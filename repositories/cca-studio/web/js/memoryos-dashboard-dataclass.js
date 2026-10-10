@@ -58,6 +58,9 @@ function sha256Base64(text) {
   return out;
 }
 
+/* The only other meta elements a snapshot may carry: the character set and the viewport. */
+const otherMeta = (html) => (html.match(/<meta\b[^>]*>/gu) ?? []).some((tag) => !(tag.startsWith("<meta http-equiv=") || tag === '<meta charset="utf-8">'
+  || tag === '<meta name="viewport" content="width=device-width, initial-scale=1">'));
 const META = /<meta http-equiv="Content-Security-Policy" content="([^"]*)">/u;
 const DATA_BLOCK = /<script type="application\/json" id="memoryos-dashboard-data">([\s\S]*?)<\/script>/u;
 const STYLE = /<style>([\s\S]*?)<\/style>/u;
@@ -85,7 +88,7 @@ export function scanSnapshot(html, { paths = [], hostUserNames = [], environment
   const block = DATA_BLOCK.exec(html);
   const script = SCRIPT.exec(html.replace(DATA_BLOCK, ""));
   const count = (pattern) => (html.match(pattern) ?? []).length;
-  if (!meta || !style || !block || !script || count(/<meta\b/gu) !== 2 || count(/<style\b/gu) !== 1 || count(/<script\b/gu) !== 2 || count(/<\/script>/gu) !== 2
+  if (!meta || !style || !block || !script || count(/<meta http-equiv=/gu) !== 1 || otherMeta(html) || count(/<style\b/gu) !== 1 || count(/<script\b/gu) !== 2 || count(/<\/script>/gu) !== 2
     || !(meta.index < style.index && style.index < block.index && block.index < html.indexOf("<script>"))) {
     add("S1", "structure");
     return { violations };

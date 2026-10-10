@@ -43,6 +43,8 @@ const insertAfterApp = (html, text) => html.replace('<div id="app">', `<div id="
 // One negative control per rule: a real violation, resealed so that only the rule under test is the point of the case.
 const CONTROLS = {
   S1: { html: () => html0.replace("</body>", "<script>void 1</script></body>") },
+  S1b: { rule: "S1", html: () => html0.replace("<title>", '<meta http-equiv="refresh" content="0"><title>') },
+  S1c: { rule: "S1", html: () => html0.replace("<title>", '<meta name="referrer" content="always"><title>') },
   S2: { html: () => reseal(html0.replace("default-src &#39;none&#39;", "default-src &#39;none&#39;; img-src *")) },
   S3: { html: () => html0.replace(/id="snapshot-digest">sha256:[0-9a-f]{4}/u, 'id="snapshot-digest">sha256:0000') },
   D1: { html: () => reseal(html0.replace('"kind":"MemoryOSDashboardViewModel"', '"kind":"Other"')) },
@@ -58,9 +60,10 @@ const CONTROLS = {
 };
 
 test("every rule has a negative control that fires it (the scanner has teeth), and the clean case does not", () => {
-  assert.deepEqual(Object.keys(CONTROLS).sort(), DATA_CLASS_RULES.map((rule) => rule.id).sort());
+  assert.deepEqual([...new Set(Object.entries(CONTROLS).map(([id, c]) => c.rule ?? id))].sort(), DATA_CLASS_RULES.map((rule) => rule.id).sort());
   assert.deepEqual(scanSnapshot(html0, {}).violations, []);
-  for (const [rule, control] of Object.entries(CONTROLS)) {
+  for (const [id, control] of Object.entries(CONTROLS)) {
+    const rule = control.rule ?? id;
     const found = rulesOf(control.html(), control.context ?? {});
     assert.ok(found.includes(rule), `${rule} fires: ${found}`);
     for (const other of found) assert.ok(other === rule || (control.also ?? []).includes(other), `${rule} control also fired ${other}`);
