@@ -84,10 +84,16 @@ export function verdictOf({ base, candidate, workspace }) {
     const b = base.get(id);
     if (!b && c.exitCode !== 0) rules.r3.push({ unit: id, candidate: `exit ${c.exitCode}` });
     if (b) for (const [name, status] of c.tests) if (!b.tests.has(name) && status === "fail") rules.r3.push({ unit: id, test: name });
-    if (b && b.exitCode !== 0 && c.exitCode !== 0) rules.r4.push({ unit: id, classification: classify(fs.existsSync(c.__logPath ?? "") ? fs.readFileSync(c.__logPath, "utf8") : "") });
+    if (b && b.exitCode !== 0 && c.exitCode !== 0) {
+      const failing = (r) => [...r.tests].filter(([, status]) => status === "fail").map(([name]) => name).sort().join("\n");
+      rules.r4.push({ unit: id, classification: classify(fs.existsSync(c.__logPath ?? "") ? fs.readFileSync(c.__logPath, "utf8") : ""), identicalFailureSet: failing(b) === failing(c) });
+    }
   }
-  const ok = rules.r1 && rules.r2.length === 0 && rules.r3.length === 0;
-  return { verdict: ok ? "PASS" : "FAILED_PRESERVED", rules };
+  const ok = rules.r1 && rules.r2.length === 0 && rules.r3.length === 0 && rules.r4.every((entry) => entry.identicalFailureSet);
+  // A3.2 rule 1 needs the workspace verifier to PASS on CANDIDATE; where it cannot run (it needs the Windows workspace) and fails identically on both
+  // sides, the cloud verdict is qualified, never a plain PASS.
+  const qualified = workspace.candidateExit !== 0;
+  return { verdict: !ok ? "FAILED_PRESERVED" : qualified ? "PASS_QUALIFIED_CLOUD_SUBSET" : "PASS", rules };
 }
 
 export async function runGate({ out, base = BASELINE_BF, candidate = "HEAD", jobs = 2 }) {
@@ -113,6 +119,7 @@ export async function runGate({ out, base = BASELINE_BF, candidate = "HEAD", job
       baseline: baseCommit, candidate: candidateCommit, host: { platform: process.platform, arch: process.arch, node: process.version }, workspaceVerify: workspace,
       verdict, rules: { workspaceVerifyOk: rules.r1, regressions: rules.r2, newFailures: rules.r3 }, preExisting,
       counts: { baseUnits: base.size, candidateUnits: candidateResults.size, newUnits: [...candidateResults.keys()].filter((id) => !base.has(id)).length },
+      qualification: workspace.candidateExit === 0 ? null : "cca.workspace.verify (tools/verify_workspace.py) does not pass on CANDIDATE in the cloud and fails identically on BASELINE; A3.2 rule 1 is established only on the Windows host",
       notRunInCloud: ["CTest default preset (MSVC, vcpkg, GoogleTest)", "cca_core_tests and the 112 *AllocationFailureTest cases", "memoryos.sdk.cpp.*", "memoryos.standard.runtime.reference", "Windows-only CLI store tests"] };
     fs.writeFileSync(path.join(out, "comparison.json"), `${JSON.stringify(table, null, 2)}\n`);
     fs.writeFileSync(path.join(out, "receipt.json"), `${JSON.stringify(receipt, null, 2)}\n`);
@@ -129,5 +136,5 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   if (!option("out")) { process.stderr.write("usage: --out <dir> [--base <commit>] [--candidate <rev>] [--jobs <n>]\n"); process.exit(2); }
   const receipt = await runGate({ out: path.resolve(option("out")), base: option("base", BASELINE_BF), candidate: option("candidate", "HEAD"), jobs: Number(option("jobs", "2")) });
   process.stdout.write(`${JSON.stringify({ verdict: receipt.verdict, counts: receipt.counts, regressions: receipt.rules.regressions.length, newFailures: receipt.rules.newFailures.length, preExisting: receipt.preExisting.length })}\n`);
-  process.exitCode = receipt.verdict === "PASS" ? 0 : 1;
+  process.exitCode = receipt.verdict.startsWith("PASS") ? 0 : 1;
 }

@@ -69,3 +69,18 @@ test("DB32 no export-performance work: the MO-1308 exporter and every MO-1308 pr
     assert.equal(git("rev-parse", `HEAD:${file}`), git("rev-parse", `${BASELINE_BF}:${file}`), file);
   }
 });
+
+test("differential gate verdict rules (A3.2 style): a regression, a new failing unit, a changed failure set and an unverified workspace are each caught (negative controls)", async () => {
+  const { verdictOf, parseTap } = await import("../tools/mo1309/differential-gate.mjs");
+  const unit = (id, exitCode, tests = []) => [id, { id, exitCode, tests: new Map(tests) }];
+  const run = ({ base, candidate, workspace = { baseExit: 0, candidateExit: 0 } }) => verdictOf({ base: new Map(base), candidate: new Map(candidate), workspace });
+  assert.equal(run({ base: [unit("a", 0, [["t", "pass"]])], candidate: [unit("a", 0, [["t", "pass"]])] }).verdict, "PASS");
+  assert.equal(run({ base: [unit("a", 0, [["t", "pass"]])], candidate: [unit("a", 1, [["t", "fail"]])] }).verdict, "FAILED_PRESERVED", "a passing test now fails");
+  assert.equal(run({ base: [unit("a", 0)], candidate: [] }).verdict, "FAILED_PRESERVED", "a unit that passed is not run");
+  assert.equal(run({ base: [], candidate: [unit("n", 1)] }).verdict, "FAILED_PRESERVED", "a new unit fails");
+  assert.equal(run({ base: [unit("a", 1, [["x", "fail"]])], candidate: [unit("a", 1, [["x", "fail"], ["y", "fail"]])] }).verdict, "FAILED_PRESERVED", "a shared failing unit gains a failing test");
+  assert.equal(run({ base: [unit("a", 1, [["x", "fail"]])], candidate: [unit("a", 1, [["x", "fail"]])] }).verdict, "PASS", "a shared identical failure is PRE_EXISTING");
+  assert.equal(run({ base: [], candidate: [], workspace: { baseExit: 2, candidateExit: 2 } }).verdict, "PASS_QUALIFIED_CLOUD_SUBSET");
+  assert.equal(run({ base: [], candidate: [], workspace: { baseExit: 0, candidateExit: 2 } }).verdict, "FAILED_PRESERVED");
+  assert.deepEqual([...parseTap("ok 1 - a\n    not ok 1 - inner\nnot ok 2 - b # SKIP x")], [["a", "pass"], ["a > inner", "fail"], ["b", "skipped"]]);
+});

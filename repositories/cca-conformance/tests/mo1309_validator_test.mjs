@@ -122,3 +122,24 @@ test("a missing or foreign record is NOT_READY", () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mo1309-validator-empty-"));
   try { execFileSync("git", ["init", "-q"], { cwd: dir }); assert.equal(validate({ repo: dir }).state, "NOT_READY"); } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+test("4D rehearsal: the assembled record of non-certifying rehearsal receipts is NOT_READY (a rehearsal can never certify)", async () => {
+  const { assembleFinalRecord } = await import("../tools/mo1309/assemble-final.mjs");
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mo1309-assemble-"));
+  const git = (...args) => execFileSync("git", args, { cwd: dir, encoding: "utf8" }).trim();
+  const write = (relative, content) => { const full = path.join(dir, relative); fs.mkdirSync(path.dirname(full), { recursive: true }); fs.writeFileSync(full, content); };
+  try {
+    git("init", "-q", "-b", "main"); git("config", "user.email", "t@example.invalid"); git("config", "user.name", "t");
+    write("a.txt", "1"); git("add", "-A"); git("commit", "-q", "-m", "c");
+    const candidate = git("rev-parse", "HEAD");
+    for (const stream of ["4a", "4b", "4c"]) write(`${EV}/${stream}/gen-1/${stream}-receipt.json`, JSON.stringify({ stream: stream.toUpperCase(), certifying: false, accepted: false, result: "REHEARSAL_PASSED_NON_CERTIFYING", cases: [] }));
+    write(`${EV}/regression/rows.json`, "[]"); write("docs/mo1309-release-disclosures.md", "x");
+    const record = assembleFinalRecord({ repo: dir, candidate, evidence: EV, disclosures: "docs/mo1309-release-disclosures.md" });
+    assert.deepEqual(record.generations.map((g) => [g.stream, g.certifying, g.accepted]), [["4A", false, false], ["4B", false, false], ["4C", false, false]]);
+    write(RECORD, JSON.stringify(record)); write("repositories/cca-conformance/mo1309-conformance-inventory.json", JSON.stringify({ requirements: [] }));
+    git("add", "-A"); git("commit", "-q", "-m", "I3");
+    const result = validate({ repo: dir });
+    assert.equal(result.state, "NOT_READY");
+    assert.ok(failing(result).includes("4D-D2"));
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
