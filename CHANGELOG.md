@@ -20,6 +20,85 @@ CLI product surfaces advance to `1.1.0`. No v1.2.1 contract or historical
 attestation is rewritten. MO-1302 GitHub Actions integration,
 CCA-MEMORYOS-1.1 publication, tagging, and release publication remain deferred.
 
+### MO-1302 — GitHub Actions and Deterministic CI Policy Gates
+
+Released at annotated tag `memoryos-1.3-mo1302`, peeling to commit
+`7e07bd0db9ab10146f2e0e0bbd67a4c5850cf41d`. GitHub-specific CI integration over
+the MO-1301 Policy authority; its contract is the
+[GitHub Policy Gate contract](repositories/cca-conformance/docs/mo1302-github-policy-gate.md).
+Its GitHub-specific implementation and history are not reassigned to MO-1306.
+
+### MO-1303 — VS Code Extension
+
+Released at annotated tag `memoryos-1.3-mo1303`, with final conformance binding
+`49aa80fa76bffc03e36335be8ab805bb5dc38f9c`, under an explicit
+external-infrastructure exception: Ubuntu and Windows hosted certification
+PASS; macOS hosted certification NOT EXECUTED due to an external GitHub
+runner-allocation and billing restriction; three-platform parity NOT EXECUTED.
+
+### MO-1304 — MCP Server and Agent Integration
+
+Certified and released at annotated tag `memoryos-1.3-mo1304`, targeting final
+conformance binding `ce7b001d911239fa50d904f5f336bb1bd7858ba3`. Windows 11 x64
+support, execution on Windows 11 Home 25H2 build 26200.9457 x64, Ubuntu 24.04
+LTS x64 certification and two-platform parity PASS are recorded in the
+[Windows certification and parity record](repositories/cca-conformance/docs/mo1304-phase3-windows-certification.md).
+macOS remains unsupported for MO-1304.
+
+### MO-1305 — REST Gateway
+
+Certified and released at annotated tag `memoryos-1.3-mo1305` (tag object
+`741e596454cfbcc908b8bd576b4fa97311139083`), peeling to final binding
+`5955af062152a84c10de17860ba0bcabe8b3555f`. A bounded HTTP/API surface with six
+SDK-backed semantic operations and three operational endpoints under `/v1`,
+native TLS over HTTP/1.1, bearer authentication, explicit remote mode, bounded
+execution and a dependency-free Node adapter. Installed-package certification
+ran on the existing physical Windows 11 x64 host only. See the
+[Phase 3D release record](docs/mo1305-phase3d-release.md).
+
+### MO-1306 — Provider-Neutral CI/CD Integration
+
+Released with qualified certification at annotated tag `memoryos-1.3-mo1306`
+(tag object `9dd37b7757314b8cecbfc018ff7cdd8c2aa0cab8`), peeling to final
+binding `332ab0d2c35643ea8d155bcbea9c5019b304bbe3`. One SDK-backed
+provider-neutral core with a native Windows generic runner and deterministic
+GitLab, Jenkins, Azure and GitHub provider files. The generic runner is
+REAL_EXECUTION_CERTIFIED; the GitHub integration is IMPLEMENTED,
+OFFLINE_VALIDATED and NOT_CERTIFIED hosted, under the
+[hosted scope correction](docs/mo1306-hosted-certification-scope-correction.md).
+See the [qualified release record](docs/mo1306-phase3d-qualified-release.md).
+
+### MO-1307 — Release Governance and Readiness
+
+Released at annotated tag `memoryos-1.3-mo1307` (tag object
+`a3042f3bded41ec71deff8dac71691e9a595460b`), peeling to binding-only BF
+`1dd1e8c82fe0ed5a32a894744392f2c279f89d4c` (I3
+`ee18fc6114610569682cc04e5e8e025408a38594`). Deterministic, evidence-backed
+readiness assessment of an exact candidate; final release authorization remains
+human. The read-only validator reported `CERTIFIED_READY_TO_TAG`; 632 of 639
+conformance tests passed and 7 were disclosed stale-baseline tests. The
+test-only [V2 correction](docs/mo1307-v2-stale-test-correction.md) is bound
+afterwards (639/639 on the reference Windows host under Node v24.21.0, binding
+`1c3a4269fe9394de74e2a4a6ad76aed7d076fd19`); the tag still targets BF. See the
+[Phase 3D certification](docs/mo1307-phase3d-certification.md).
+
+### MO-1308 — Investigation History
+
+Released at annotated tag `memoryos-1.3-mo1308` (tag object
+`3ddb8243dcb9dcf023aa7df45552f71b86ccca20`), peeling to binding-only BF
+`bf2fdc87e9b2bfc25588ef61deacac6c04684376` (I3
+`08fc000db8cb32bae770e21bb1378895151461be`). A local, file-based, append-only,
+hash-chained ledger of records that existing authorities produce, with
+deterministic query and the `MemoryOSHistoryExport` bundle, through the
+JavaScript SDK and the `memoryos history` CLI namespace. Contract Freeze 1
+closed all 55 decisions. Certifying generations: `phase3a` 108/108, `phase3b`
+26/26, `phase3c` 67/67; `phase3d` accepted by the read-only validator at BF.
+The claim is local single-user v1 on native Windows 11 x64: the ledger is
+integrity-checked, not authenticated, encrypted or signed, and the Node-only
+store (H40) detects a concurrent directory swap after the fact rather than
+preventing it. See the [release disclosures](docs/mo1308-release-disclosures.md)
+and the [Contract Freeze](docs/mo1308-contract-freeze-1.md).
+
 ## MemoryOS 1.2 — v1.2.1
 
 Corrective restoration release. The v1.2.0 Git source archive omitted

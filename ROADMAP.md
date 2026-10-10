@@ -11,7 +11,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
 | MemoryOS 1.2 | Released — v1.2.0 | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, and its official Conformance Suite |
 | MemoryOS 1.2.1 | Corrective restoration | Restores omitted intended v1.2 source, registered tests, fixtures, examples, documentation, frozen Standard and MIP publication assets, and corrected conformance provenance while preserving all v1.2 semantics and CSP fixes |
-| MemoryOS 1.3 | In development; MO-1301 through MO-1307 RELEASED | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, certified REST Gateway, qualified Provider-Neutral CI/CD Integration, and certified Release Governance and Readiness (V2 stale-test correction bound, 639/639); MO-1308 CONTRACT FREEZE 1 FROZEN / PHASE 1 IN DEVELOPMENT |
+| MemoryOS 1.3 | In development; MO-1301 through MO-1308 RELEASED | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, certified REST Gateway, qualified Provider-Neutral CI/CD Integration, certified Release Governance and Readiness (V2 stale-test correction bound, 639/639), and certified Investigation History (BF `bf2fdc87`); MO-1309 AUTHORIZED (Contract Freeze 1 next) |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -112,8 +112,12 @@ Its Phase 1, 2 and 3 work is complete and bound by the
 MO-1307 is released at annotated tag `memoryos-1.3-mo1307`.
 MO-1308's [roadmap authority](docs/mo1308-investigation-history.md) establishes
 Investigation History scope and owner decisions; its
-[Contract Freeze 1](docs/mo1308-contract-freeze-1.md) is frozen, and Phase 1 is
-in development; the MO-1307 V2 stale-test correction it depended on is bound.
+[Contract Freeze 1](docs/mo1308-contract-freeze-1.md) is frozen. MO-1308 is
+released at annotated tag `memoryos-1.3-mo1308` (tag object
+`3ddb8243dcb9dcf023aa7df45552f71b86ccca20`), peeling exactly to binding-only BF
+`bf2fdc87e9b2bfc25588ef61deacac6c04684376`.
+MO-1309's [authority](docs/mo1309-cloud-dashboard.md) establishes the Cloud
+Dashboard scope and owner decisions.
 
 | Milestone | Title | Status | Architectural layer |
 |---|---|---|---|
@@ -124,14 +128,14 @@ in development; the MO-1307 V2 stale-test correction it depended on is bound.
 | MO-1305 | REST Gateway | CLOSED / CERTIFIED / RELEASED | Bounded REST/API integration |
 | MO-1306 | Provider-Neutral CI/CD Integration | CLOSED / QUALIFIED CERTIFICATION / RELEASED | Provider-neutral CI/CD integration with preserved provider limitations |
 | MO-1307 | Release Governance and Readiness | CLOSED / CERTIFIED / RELEASED (V2 STALE-TEST CORRECTION BOUND, 639/639) | Deterministic evidence-backed readiness; final release authorization remains human |
-| MO-1308 | Investigation History | CONTRACT FREEZE 1 FROZEN (AMENDMENT A1) / PHASE 1 IN DEVELOPMENT | Durable investigation/evaluation history and traceability |
-| MO-1309 | Cloud Dashboard | PLANNED / AUTHORITY PENDING | Cloud-facing dashboard experience |
+| MO-1308 | Investigation History | CLOSED / CERTIFIED / RELEASED (BF `bf2fdc87`) | Durable investigation/evaluation history and traceability |
+| MO-1309 | Cloud Dashboard | AUTHORIZED / CONTRACT FREEZE 1 NEXT | Static, offline, cloud-ready, read-only dashboard over MO-1308 exports |
 
 Later milestones must delegate to existing semantic authority rather than
 silently reimplementing MemoryOS semantics. The MO-1306 freeze and scope
 correction retain their released scope. MO-1307 is released after Phase 3D
-certification. MO-1308 has its authority and a frozen Contract Freeze 1;
-MO-1309 still requires its own authority and freeze. Unrelated proposals
+certification. MO-1308 is released after Phase 3D certification. MO-1309 has its
+authority; it still requires its own Contract Freeze. Unrelated proposals
 elsewhere in this document remain proposals.
 
 ### Released history and authority
@@ -353,7 +357,7 @@ platforms remain outside MO-1307.
 
 ### MO-1308: Investigation History
 
-Status: **CONTRACT FREEZE 1 FROZEN (AMENDMENT A1) / PHASE 1 IN DEVELOPMENT**.
+Status: **CLOSED / CERTIFIED / RELEASED** (binding-only BF `bf2fdc87e9b2bfc25588ef61deacac6c04684376`, tag `memoryos-1.3-mo1308`).
 
 The [Phase 1 entry obligations](docs/mo1308-phase1-entry-obligations.md)
 prove `J` equivalence and Regression report identity, and the MO-1307 V2
@@ -398,32 +402,40 @@ under an explicit owner risk acceptance limited to local single-user v1 (a
 concurrent directory swap is detected after the fact, not prevented; existing
 ledger content is never overwritten or replaced; every later read fails
 closed), which must be re-reviewed before any multi-user, shared-storage or
-cloud use, including MO-1309. No implementation, schema, package or evidence
-exists. Phase 1 must first prove that MO-1306/MO-1307 `J` equals canonical JSON
-plus one trailing newline on every existing fixture and that
-`inspectRegressionReport` verifies report identity. The MO-1307 V2 stale-test
-correction it depended on is bound (`1c3a4269fe9394de74e2a4a6ad76aed7d076fd19`).
+cloud use, including MO-1309. The MO-1307 V2 stale-test correction it depended on is bound
+(`1c3a4269fe9394de74e2a4a6ad76aed7d076fd19`).
+
+Phase 3 certified the accepted generations `phase3a` (108/108), `phase3b`
+(26/26) and `phase3c` (67/67), and `phase3d` was accepted by the read-only
+validator run at BF `bf2fdc87`; the I3 inventory is
+`08fc000db8cb32bae770e21bb1378895151461be`. The recorded outcomes and
+qualifications, including the H40 class and the 100,000-entry export duration,
+are in the [release disclosures](docs/mo1308-release-disclosures.md); the
+[Phase 3D record](docs/mo1308-phase3d.md) and the
+[3D-D4 deviation disposition](docs/mo1308-3d-d4-deviation-disposition.md)
+are retained history. The earlier Phase 1 stage text above and in the
+authority and Freeze describes the stage when it was written.
 
 ### MO-1309: Cloud Dashboard
 
-Status: **PLANNED / AUTHORITY PENDING**.
+Status: **AUTHORIZED / CONTRACT FREEZE 1 NEXT**.
 
-Provide a cloud-facing product/dashboard experience built on the authoritative
-MemoryOS capabilities established by earlier milestones. Cloud provider,
-frontend framework, database, multi-tenancy, billing, hosting, authentication,
-and deployment architecture remain decisions for future authority and Contract
-Freeze.
+The [MO-1309 authority](docs/mo1309-cloud-dashboard.md) resolves the scope with
+the owner decisions M1 through M12. "Cloud" means a static, offline,
+cloud-ready dashboard: an operator can host the generated static output
+anywhere, and MemoryOS ships no hosting, server, accounts, tenancy, billing or
+network access. The dashboard reads MO-1308 history exports and query results
+only, is strictly read-only, is dependency-free and CSP-safe with no build
+step, and is certified on Windows 11 x64 with Node 24.21.0 and a
+Chromium-family browser. A hosted service is deferred to a future milestone
+with its own authority. Release `v1.3.0` is a separate step after MO-1309 and a
+parallel test/CI maintenance item.
 
 The exact next task is:
 
-**MEMORYOS 1.3 MO-1308 PHASE 1 — FOUNDATION**
+**MEMORYOS 1.3 MO-1309 — CONTRACT FREEZE 1**
 
-Development continues on `mo1308/phase1` (from the bound V2 commit
-`1c3a4269fe9394de74e2a4a6ad76aed7d076fd19`) after the owner resolved the
-released-closure conflict with the
-[workspace check correction](docs/mo1302-vendored-runtime-check-correction.md).
-B1 is made later on the reference Windows host and binds both the correction
-and Phase 1.
+The [handoff](docs/mo1309-handoff.md) records the live state.
 
 ## IM-001: engineering foundation
 
