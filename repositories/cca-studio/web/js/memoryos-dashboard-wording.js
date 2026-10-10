@@ -158,6 +158,13 @@ const CHROME = {
   "a11y.membersTable": "Members of the selected entry",
 
   "error.dataUnreadable": "The embedded data could not be read, so nothing is shown.",
+
+  // Added in Phase 2A for the page: short neutral observation names (the long statement stays in decisionConsistency.*),
+  // the no-script text and the filter-update announcement.
+  "observation.CONSISTENT": "Recorded as matching its readiness result",
+  "observation.CONTRARY_TO_READINESS": "Recorded as differing from its readiness result",
+  "statement.scriptRequired": "This page needs scripts enabled to display its data.",
+  "page.updated": "The entries shown were updated.",
 };
 for (const [code, { message }] of Object.entries(DASHBOARD_ERRORS)) CHROME[`error.${code}`] = message;
 for (const [group, labels] of Object.entries(ENUM_LABELS)) {
