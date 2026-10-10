@@ -173,6 +173,13 @@ boundary. It admits records only through their owning authorities, binds them
 into an append-only, hash-chained ledger, and never re-derives their
 semantics. It performs no filesystem, network or Runtime access.
 
+MO-1309 adds a downstream presentation of MO-1308 history exports inside the
+same JavaScript boundary: a pure view model, a wording registry, a static
+dependency-free snapshot generator and a read-only page. It reads a verified
+export once, performs no network access, writes only an operator-named output
+file, owns no state, and never re-derives record semantics or appends,
+tombstones or approves anything.
+
 Studio no longer imports the Investigation Core directly. Its only public
 investigation dependency is the in-process JavaScript MemoryOS SDK facade,
 which forwards every state-changing operation, regression request, and
@@ -391,6 +398,12 @@ MO-1308 is the separately approved exception for a local, file-based,
 append-only Investigation History ledger. It does not authorize a database
 engine, embedded storage library, server process, network service, cloud store
 or general persistence for any other component.
+
+MO-1309 is a narrow downstream-presentation clause for a generated static page
+that presents a verified MO-1308 export. It is not an exception for hosting: it
+does not authorize a server, hosting, accounts, tenancy, billing, a network
+service, a database or any write path to a ledger. An operator who hosts the
+generated file does so outside MemoryOS.
 
 ## 14. Remaining decisions
 
