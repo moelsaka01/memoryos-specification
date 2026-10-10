@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: result boundary: exactly 4 MiB is retained and +1 is OUTPUT/EVALUATION
+ok 1 - result boundary: exactly 4 MiB is retained and +1 is OUTPUT/EVALUATION
+  ---
+  duration_ms: 1408.176598
+  type: 'test'
+  ...
+# Subtest: text boundary: exactly 128 KiB is complete and +1 is OUTPUT/EVALUATION
+ok 2 - text boundary: exactly 128 KiB is complete and +1 is OUTPUT/EVALUATION
+  ---
+  duration_ms: 661.740468
+  type: 'test'
+  ...
+# Subtest: result/proof/input snapshots do not share mutable output objects
+ok 3 - result/proof/input snapshots do not share mutable output objects
+  ---
+  duration_ms: 20.61331
+  type: 'test'
+  ...
+# Subtest: global derived counts reject 128+1 before malformed rows or byte sizing
+ok 4 - global derived counts reject 128+1 before malformed rows or byte sizing
+  ---
+  duration_ms: 5.400359
+  type: 'test'
+  ...
+# Subtest: result construction cannot promote a blocked aggregate to READY
+ok 5 - result construction cannot promote a blocked aggregate to READY
+  ---
+  duration_ms: 3.37693
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2223.829757

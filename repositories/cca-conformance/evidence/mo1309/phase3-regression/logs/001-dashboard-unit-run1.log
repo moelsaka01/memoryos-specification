@@ -1,0 +1,463 @@
+TAP version 13
+# Subtest: DB06 the policy meta pins script and style by SHA-256 and has no unsafe source; the hash equals node:crypto's
+ok 1 - DB06 the policy meta pins script and style by SHA-256 and has no unsafe source; the hash equals node:crypto's
+  ---
+  duration_ms: 56.571094
+  type: 'test'
+  ...
+# Subtest: DB05 DB09 one file, no external reference; data block is escaped, parses to the canonical view model and cannot close itself
+ok 2 - DB05 DB09 one file, no external reference; data block is escaped, parses to the canonical view model and cannot close itself
+  ---
+  duration_ms: 134.041375
+  type: 'test'
+  ...
+# Subtest: the assembler refuses a malformed argument or page source (no partial result); CRLF sources give identical bytes
+ok 3 - the assembler refuses a malformed argument or page source (no partial result); CRLF sources give identical bytes
+  ---
+  duration_ms: 13.267422
+  type: 'test'
+  ...
+# Subtest: DB02 each export file is read exactly once; the view model comes from those bytes even if the directory is swapped afterwards
+ok 4 - DB02 each export file is read exactly once; the view model comes from those bytes even if the directory is swapped afterwards
+  ---
+  duration_ms: 55.624186
+  type: 'test'
+  ...
+# Subtest: DB01 the only input is one export directory and one output name
+ok 5 - DB01 the only input is one export directory and one output name
+  ---
+  duration_ms: 0.547189
+  type: 'test'
+  ...
+# Subtest: DB03 a verification failure emits nothing and carries the MO-1308 code (tamper corpus)
+ok 6 - DB03 a verification failure emits nothing and carries the MO-1308 code (tamper corpus)
+  ---
+  duration_ms: 23.080242
+  type: 'test'
+  ...
+# Subtest: DASH_EXPORT_UNREADABLE: missing, symbolic-link, special, undefined-path and oversize inputs are refused without being followed
+ok 7 - DASH_EXPORT_UNREADABLE: missing, symbolic-link, special, undefined-path and oversize inputs are refused without being followed
+  ---
+  duration_ms: 20.381897
+  type: 'test'
+  ...
+# symbolic-link cases executed: true
+# Subtest: DB21 an over-limit entry count is DASH_LIMIT_EXCEEDED before any file is read; the limit itself is not
+ok 8 - DB21 an over-limit entry count is DASH_LIMIT_EXCEEDED before any file is read; the limit itself is not
+  ---
+  duration_ms: 610.516633
+  type: 'test'
+  ...
+# Subtest: DB18 same export and version give identical bytes across runs and directory enumeration orders
+ok 9 - DB18 same export and version give identical bytes across runs and directory enumeration orders
+  ---
+  duration_ms: 370.288533
+  type: 'test'
+  ...
+# Subtest: DB18 DB19 a fresh process under a different time zone, locale, working directory and clock gives the same bytes with no path, host, user or time
+ok 10 - DB18 DB19 a fresh process under a different time zone, locale, working directory and clock gives the same bytes with no path, host, user or time
+  ---
+  duration_ms: 1475.017246
+  type: 'test'
+  ...
+# Subtest: DB04 retained member contents are never embedded (every member's bytes are absent from the output)
+ok 11 - DB04 retained member contents are never embedded (every member's bytes are absent from the output)
+  ---
+  duration_ms: 66.555363
+  type: 'test'
+  ...
+# Subtest: DB20 output creation is exclusive: an existing name is never overwritten, staging failure is typed and not retried
+ok 12 - DB20 output creation is exclusive: an existing name is never overwritten, staging failure is typed and not retried
+  ---
+  duration_ms: 24.104612
+  type: 'test'
+  ...
+# Subtest: the command line: exit status and the single standard-error line (first token is the code)
+ok 13 - the command line: exit status and the single standard-error line (first token is the code)
+  ---
+  duration_ms: 438.999567
+  type: 'test'
+  ...
+# Subtest: the generator and assembler open no socket, read no clock, random source, locale or environment value; the assembler is pure
+ok 14 - the generator and assembler open no socket, read no clock, random source, locale or environment value; the assembler is pure
+  ---
+  duration_ms: 2.228144
+  type: 'test'
+  ...
+# Subtest: Phase 3: the end-to-end generator output equals the unit assembly the page tests use, for every fixture
+ok 15 - Phase 3: the end-to-end generator output equals the unit assembly the page tests use, for every fixture
+  ---
+  duration_ms: 87.0205
+  type: 'test'
+  ...
+# Subtest: removeProfile requests retries and removes a real directory tree
+ok 16 - removeProfile requests retries and removes a real directory tree
+  ---
+  duration_ms: 2.895796
+  type: 'test'
+  ...
+# Subtest: negative control: a removal that keeps failing still throws
+ok 17 - negative control: a removal that keeps failing still throws
+  ---
+  duration_ms: 0.630147
+  type: 'test'
+  ...
+# Subtest: closing the browser kills its whole process tree and removes the profile (the Phase 3 root cause: surviving helper processes)
+ok 18 - closing the browser kills its whole process tree and removes the profile (the Phase 3 root cause: surviving helper processes)
+  ---
+  duration_ms: 2463.091053
+  type: 'test'
+  ...
+# Subtest: every fixture: linear view model is byte-identical to the per-page reference
+ok 19 - every fixture: linear view model is byte-identical to the per-page reference
+  ---
+  duration_ms: 149.838037
+  type: 'test'
+  ...
+# Subtest: 1,000-entry synthetic corpus (with tombstones and purges): byte-identical
+ok 20 - 1,000-entry synthetic corpus (with tombstones and purges): byte-identical
+  ---
+  duration_ms: 3285.569948
+  type: 'test'
+  ...
+# Subtest: negative control: the byte comparison fails on a one-field divergence
+ok 21 - negative control: the byte comparison fails on a one-field divergence
+  ---
+  duration_ms: 27.735121
+  type: 'test'
+  ...
+# Subtest: tampered exports are still rejected with the carried MO-1308 code (entry, member, manifest, marker, truncation, extra file)
+ok 22 - tampered exports are still rejected with the carried MO-1308 code (entry, member, manifest, marker, truncation, extra file)
+  ---
+  duration_ms: 14.872687
+  type: 'test'
+  ...
+# Subtest: the linear builder consumes only MO-1308 public interfaces and no longer calls the per-page query
+ok 23 - the linear builder consumes only MO-1308 public interfaces and no longer calls the per-page query
+  ---
+  duration_ms: 4.854841
+  type: 'test'
+  ...
+# Subtest: linear build verifies the chain once (counting wrapper over the public verifier is not needed: time scales linearly)
+ok 24 - linear build verifies the chain once (counting wrapper over the public verifier is not needed: time scales linearly)
+  ---
+  duration_ms: 2030.491475
+  type: 'test'
+  ...
+# Subtest: DB07 DB08 the page script, style and template contain no forbidden API, sink, handler or external reference
+ok 25 - DB07 DB08 the page script, style and template contain no forbidden API, sink, handler or external reference
+  ---
+  duration_ms: 8.656224
+  type: 'test'
+  ...
+# Subtest: the source scan has teeth (negative controls): every forbidden construct is detected
+ok 26 - the source scan has teeth (negative controls): every forbidden construct is detected
+  ---
+  duration_ms: 1.481723
+  type: 'test'
+  ...
+# Subtest: DB05 DB06 the snapshot is one self-contained file: hash-pinned script and style, no external reference
+ok 27 - DB05 DB06 the snapshot is one self-contained file: hash-pinned script and style, no external reference
+  ---
+  duration_ms: 128.223042
+  type: 'test'
+  ...
+# Subtest: DB09 (page side) the embedded data is escaped, parses back to the canonical view model, and cannot close the block
+ok 28 - DB09 (page side) the embedded data is escaped, parses back to the canonical view model, and cannot close the block
+  ---
+  duration_ms: 6.014453
+  type: 'test'
+  ...
+# Subtest: the footer digest is SHA-256 of the file with that one field blanked (section 5)
+ok 29 - the footer digest is SHA-256 of the file with that one field blanked (section 5)
+  ---
+  duration_ms: 24.395966
+  type: 'test'
+  ...
+# Subtest: DB14 the template and script carry no display string of their own: the placeholder is the registry, and every static string is a registry value
+ok 30 - DB14 the template and script carry no display string of their own: the placeholder is the registry, and every static string is a registry value
+  ---
+  duration_ms: 29.064496
+  type: 'test'
+  ...
+# Subtest: DB13 the script's control actions are exactly members of the closed read-only action set and nothing else writes
+ok 31 - DB13 the script's control actions are exactly members of the closed read-only action set and nothing else writes
+  ---
+  duration_ms: 0.761057
+  type: 'test'
+  ...
+# Subtest: DB12 page filter results equal MO-1308 query for record kind, subject and retention, over every real fixture
+ok 32 - DB12 page filter results equal MO-1308 query for record kind, subject and retention, over every real fixture
+  ---
+  duration_ms: 2244.355035
+  type: 'test'
+  ...
+# Subtest: DB12 the decision-consistency filter, sort and paging behave as specified
+ok 33 - DB12 the decision-consistency filter, sort and paging behave as specified
+  ---
+  duration_ms: 69.262763
+  type: 'test'
+  ...
+# Subtest: the corpus is a valid MO-1308 export accepted by the product verifier, deterministic, with tombstones and purges
+ok 34 - the corpus is a valid MO-1308 export accepted by the product verifier, deterministic, with tombstones and purges
+  ---
+  duration_ms: 305.465713
+  type: 'test'
+  ...
+# Subtest: writeCorpus writes the same bytes to disk and refuses an existing directory
+ok 35 - writeCorpus writes the same bytes to disk and refuses an existing directory
+  ---
+  duration_ms: 65.584321
+  type: 'test'
+  ...
+# Subtest: summary statistics and report validation, with negative controls
+ok 36 - summary statistics and report validation, with negative controls
+  ---
+  duration_ms: 1.075169
+  type: 'test'
+  ...
+# Subtest: budgets are evaluated on the worst run at the certified scale; a violation, a missing metric and a missing scale are refused
+ok 37 - budgets are evaluated on the worst run at the certified scale; a violation, a missing metric and a missing scale are refused
+  ---
+  duration_ms: 0.525001
+  type: 'test'
+  ...
+# Subtest: DB22 the recorded cloud report is valid, its certified scale follows the Freeze rule, and 100,000 is characterized with no budget or claim
+ok 38 - DB22 the recorded cloud report is valid, its certified scale follows the Freeze rule, and 100,000 is characterized with no budget or claim
+  ---
+  duration_ms: 0.77209
+  type: 'test'
+  ...
+# Subtest: DB22 Phase 3 only tightens the Phase 2D budgets, never widens them; the pre-fix report shows why (negative control)
+ok 39 - DB22 Phase 3 only tightens the Phase 2D budgets, never widens them; the pre-fix report shows why (negative control)
+  ---
+  duration_ms: 0.676552
+  type: 'test'
+  ...
+# Subtest: the prepared Windows run names exactly the commands the runner supports and claims no Windows result
+ok 40 - the prepared Windows run names exactly the commands the runner supports and claims no Windows result
+  ---
+  duration_ms: 0.339538
+  type: 'test'
+  ...
+# Subtest: DB26 dashboard modules import only the MO-1308 history contract and ledger, the canonical module and each other
+ok 41 - DB26 dashboard modules import only the MO-1308 history contract and ledger, the canonical module and each other
+  ---
+  duration_ms: 5.767173
+  type: 'test'
+  ...
+# Subtest: DB26 pure and browser-safe: no filesystem, network, process, clock, random, locale or storage API
+ok 42 - DB26 pure and browser-safe: no filesystem, network, process, clock, random, locale or storage API
+  ---
+  duration_ms: 2.671273
+  type: 'test'
+  ...
+# Subtest: DB11 enums and limits are not redefined or copied: no enum list, no limit number, no re-declared export
+ok 43 - DB11 enums and limits are not redefined or copied: no enum list, no limit number, no re-declared export
+  ---
+  duration_ms: 1.934195
+  type: 'test'
+  ...
+# Subtest: DB26 MO-1308 production bytes are unchanged by MO-1309 (pinned digests of the released history modules)
+ok 44 - DB26 MO-1308 production bytes are unchanged by MO-1309 (pinned digests of the released history modules)
+  ---
+  duration_ms: 1.454512
+  type: 'test'
+  ...
+# Subtest: DB31 ARCHITECTURE section 5 and section 13 carry exactly the two clauses of Freeze section 20
+ok 45 - DB31 ARCHITECTURE section 5 and section 13 carry exactly the two clauses of Freeze section 20
+  ---
+  duration_ms: 1.76772
+  type: 'test'
+  ...
+# Subtest: human-authority separation: readiness results and decision claims are described, never presented as approval
+ok 46 - human-authority separation: readiness results and decision claims are described, never presented as approval
+  ---
+  duration_ms: 89.428908
+  type: 'test'
+  ...
+# Subtest: human-authority separation: the dashboard never decides; consistency has no effect on any count, order, state or label weight
+ok 47 - human-authority separation: the dashboard never decides; consistency has no effect on any count, order, state or label weight
+  ---
+  duration_ms: 15.702682
+  type: 'test'
+  ...
+# Subtest: the wording module exposes no function that maps a state to a verdict, colour, class or boolean
+ok 48 - the wording module exposes no function that maps a state to a verdict, colour, class or boolean
+  ---
+  duration_ms: 1.681956
+  type: 'test'
+  ...
+# Subtest: the data-class model is closed and every rule names a defined class and a requirement
+ok 49 - the data-class model is closed and every rule names a defined class and a requirement
+  ---
+  duration_ms: 2.313001
+  type: 'test'
+  ...
+# Subtest: a clean snapshot of every fixture, including the adversarial one, passes every rule
+ok 50 - a clean snapshot of every fixture, including the adversarial one, passes every rule
+  ---
+  duration_ms: 94.621101
+  type: 'test'
+  ...
+# Subtest: every rule has a negative control that fires it (the scanner has teeth), and the clean case does not
+ok 51 - every rule has a negative control that fires it (the scanner has teeth), and the clean case does not
+  ---
+  duration_ms: 68.497871
+  type: 'test'
+  ...
+# Subtest: violations name a rule and a location only, never the offending content
+ok 52 - violations name a rule and a location only, never the offending content
+  ---
+  duration_ms: 5.224799
+  type: 'test'
+  ...
+# Subtest: DB19 scan targets: paths, timestamps, hosts, users and members are caught in the data block position and in the frame
+ok 53 - DB19 scan targets: paths, timestamps, hosts, users and members are caught in the data block position and in the frame
+  ---
+  duration_ms: 67.453532
+  type: 'test'
+  ...
+# Subtest: DB28 H40: no dashboard file creates, opens or mutates a ledger store; the only MO-1308 ledger functions imported are verification and query
+ok 54 - DB28 H40: no dashboard file creates, opens or mutates a ledger store; the only MO-1308 ledger functions imported are verification and query
+  ---
+  duration_ms: 2.160757
+  type: 'test'
+  ...
+# Subtest: DB28 A6: where a dashboard file writes, it creates exclusively and never replaces; no write API that replaces, renames or truncates
+ok 55 - DB28 A6: where a dashboard file writes, it creates exclusively and never replaces; no write API that replaces, renames or truncates
+  ---
+  duration_ms: 1.338084
+  type: 'test'
+  ...
+# Subtest: DB28 the registry makes no multi-user, hosted-service, shared-storage, tenancy or store claim; the store claim stays local single-user v1
+ok 56 - DB28 the registry makes no multi-user, hosted-service, shared-storage, tenancy or store claim; the store claim stays local single-user v1
+  ---
+  duration_ms: 1.016536
+  type: 'test'
+  ...
+# Subtest: the trust review document exists, states the unchanged store claim and lists every threat with its requirement
+ok 57 - the trust review document exists, states the unchanged store claim and lists every threat with its requirement
+  ---
+  duration_ms: 0.802468
+  type: 'test'
+  ...
+# Subtest: DB11 enums and limits are the MO-1308 values, re-exported by identity, never copies
+ok 58 - DB11 enums and limits are the MO-1308 values, re-exported by identity, never copies
+  ---
+  duration_ms: 2.227673
+  type: 'test'
+  ...
+# Subtest: fixtures build to the pinned canonical bytes and validate
+ok 59 - fixtures build to the pinned canonical bytes and validate
+  ---
+  duration_ms: 82.298871
+  type: 'test'
+  ...
+# Subtest: DB17/DB18 the all-kinds fixture has the expected counts, both observations, one purge and a canonical newline
+ok 60 - DB17/DB18 the all-kinds fixture has the expected counts, both observations, one purge and a canonical newline
+  ---
+  duration_ms: 14.026683
+  type: 'test'
+  ...
+# Subtest: DB10 the shape is closed: unknown, missing, mistyped or out-of-enum members are rejected everywhere
+ok 61 - DB10 the shape is closed: unknown, missing, mistyped or out-of-enum members are rejected everywhere
+  ---
+  duration_ms: 31.155337
+  type: 'test'
+  ...
+# Subtest: DB04 the view model holds names, lengths and digests of members, never member contents
+ok 62 - DB04 the view model holds names, lengths and digests of members, never member contents
+  ---
+  duration_ms: 35.221383
+  type: 'test'
+  ...
+# Subtest: MO-1308 parity: every view-model row equals the MO-1308 query row for the same ledger
+ok 63 - MO-1308 parity: every view-model row equals the MO-1308 query row for the same ledger
+  ---
+  duration_ms: 33.869556
+  type: 'test'
+  ...
+# Subtest: DB03 a defective export builds nothing and carries the MO-1308 code; wrong arguments are DASH_USAGE
+ok 64 - DB03 a defective export builds nothing and carries the MO-1308 code; wrong arguments are DASH_USAGE
+  ---
+  duration_ms: 2.186679
+  type: 'test'
+  ...
+# Subtest: DB18/DB19 determinism: identical bytes give identical canonical bytes, whatever the file order, copy kind, locale or time zone
+ok 65 - DB18/DB19 determinism: identical bytes give identical canonical bytes, whatever the file order, copy kind, locale or time zone
+  ---
+  duration_ms: 151.095417
+  type: 'test'
+  ...
+# Subtest: DB19 no wall-clock or locale dependence: fresh processes under hostile time zones, locales and clocks give the pinned bytes
+ok 66 - DB19 no wall-clock or locale dependence: fresh processes under hostile time zones, locales and clocks give the pinned bytes
+  ---
+  duration_ms: 475.164895
+  type: 'test'
+  ...
+# Subtest: the view model carries no timestamp, path, host, user, clock or locale value
+ok 67 - the view model carries no timestamp, path, host, user, clock or locale value
+  ---
+  duration_ms: 30.367911
+  type: 'test'
+  ...
+# Subtest: DB14 the registry is closed, frozen and covers every imported enum value exactly
+ok 68 - DB14 the registry is closed, frozen and covers every imported enum value exactly
+  ---
+  duration_ms: 3.355186
+  type: 'test'
+  ...
+# Subtest: DB14 every registry string passes the forbidden-affordance scan, except closed negation entries limited to listed terms
+ok 69 - DB14 every registry string passes the forbidden-affordance scan, except closed negation entries limited to listed terms
+  ---
+  duration_ms: 2.671868
+  type: 'test'
+  ...
+# Subtest: the scanner has teeth: each forbidden class is detected (negative controls)
+ok 70 - the scanner has teeth: each forbidden class is detected (negative controls)
+  ---
+  duration_ms: 1.317959
+  type: 'test'
+  ...
+# Subtest: DB15/DB16 mandatory registry content (section 7.4) is present
+ok 71 - DB15/DB16 mandatory registry content (section 7.4) is present
+  ---
+  duration_ms: 0.31357
+  type: 'test'
+  ...
+# Subtest: DB14/DB17 the rendered-string scan is clean for every fixture, and every chrome string is a registry key
+ok 72 - DB14/DB17 the rendered-string scan is clean for every fixture, and every chrome string is a registry key
+  ---
+  duration_ms: 69.158217
+  type: 'test'
+  ...
+# Subtest: DB17 CONTRARY_TO_READINESS is a neutral observation: same structure and weight as CONSISTENT, no success or failure wording
+ok 73 - DB17 CONTRARY_TO_READINESS is a neutral observation: same structure and weight as CONSISTENT, no success or failure wording
+  ---
+  duration_ms: 8.287941
+  type: 'test'
+  ...
+# Subtest: adversarial words in untrusted data are inert text: they never change a key, a label or a control
+ok 74 - adversarial words in untrusted data are inert text: they never change a key, a label or a control
+  ---
+  duration_ms: 8.11221
+  type: 'test'
+  ...
+# Subtest: the rendered-string model is deterministic and ordered by index
+ok 75 - the rendered-string model is deterministic and ordered by index
+  ---
+  duration_ms: 28.105991
+  type: 'test'
+  ...
+1..75
+# tests 75
+# suites 0
+# pass 75
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5674.492071
+
+--- stderr ---

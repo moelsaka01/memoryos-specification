@@ -1,0 +1,106 @@
+TAP version 13
+# Subtest: W01 junctions and directory symlinks anywhere on the path or inside the ledger fail closed on every operation (R17, H40)
+ok 1 - W01 junctions and directory symlinks anywhere on the path or inside the ledger fail closed on every operation (R17, H40) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 1.151108
+  type: 'test'
+  ...
+# Subtest: W01b a reparse point that is neither a junction nor a symlink (an app-execution alias) is refused as an input file (H40)
+ok 2 - W01b a reparse point that is neither a junction nor a symlink (an app-execution alias) is refused as an input file (H40) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.139407
+  type: 'test'
+  ...
+# Subtest: W02 a junction swapped in for a record directory during an append is detected; decoy content survives; the entry is never committed; reads then fail closed (H40)
+ok 3 - W02 a junction swapped in for a record directory during an append is detected; decoy content survives; the entry is never committed; reads then fail closed (H40) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.084666
+  type: 'test'
+  ...
+# Subtest: W03 the entries directory swapped for a junction at the commit point is detected after the fact: the real entries stay unchanged, reads fail closed (H40)
+ok 4 - W03 the entries directory swapped for a junction at the commit point is detected after the fact: the real entries stay unchanged, reads fail closed (H40) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.077946
+  type: 'test'
+  ...
+# Subtest: W04 NTFS hard links: publication leaves one link per file, never replaces a name, and an unremoved staging link is only an anomaly (R06, section 9.2)
+ok 5 - W04 NTFS hard links: publication leaves one link per file, never replaces a name, and an unremoved staging link is only an anomaly (R06, section 9.2) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.084948
+  type: 'test'
+  ...
+# Subtest: W05 exclusive-create semantics: an existing name is never opened for writing, even one locked by another process or differing only in case (R06)
+ok 6 - W05 exclusive-create semantics: an existing name is never opened for writing, even one locked by another process or differing only in case (R06) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.096313
+  type: 'test'
+  ...
+# Subtest: W05b a sharing violation (another process holds a ledger file with no sharing) fails closed with a typed IO error and changes nothing; releasing restores service (R17)
+ok 7 - W05b a sharing violation (another process holds a ledger file with no sharing) fails closed with a typed IO error and changes nothing; releasing restores service (R17) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.069381
+  type: 'test'
+  ...
+# Subtest: W06 the case-insensitive realpath comparison accepts any casing of the real path and refuses a short (8.3) alias; case-only renames inside a ledger are corruption (R17, H40)
+ok 8 - W06 the case-insensitive realpath comparison accepts any casing of the real path and refuses a short (8.3) alias; case-only renames inside a ledger are corruption (R17, H40) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.068967
+  type: 'test'
+  ...
+# Subtest: W07 drive-letter, UNC and long-path forms work end to end; the \\\\?\\ and \\\\.\\ forms are refused fail-closed without creating anything (R17)
+ok 9 - W07 drive-letter, UNC and long-path forms work end to end; the \\\\?\\ and \\\\.\\ forms are refused fail-closed without creating anything (R17) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.229131
+  type: 'test'
+  ...
+# Subtest: W07b an export into the ledger is refused under every Windows spelling of the ledger: drive-letter, UNC and differently cased forms (3C-F4, Amendment A9)
+ok 10 - W07b an export into the ledger is refused under every Windows spelling of the ledger: drive-letter, UNC and differently cased forms (3C-F4, Amendment A9) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.420718
+  type: 'test'
+  ...
+# Subtest: W08 NTFS concurrency: ten real appender processes with concurrent readers; every append that succeeded is in the ledger exactly once, every record that is not was reported as a typed failure, and no failed writer left a record (R15)
+ok 11 - W08 NTFS concurrency: ten real appender processes with concurrent readers; every append that succeeded is in the ledger exactly once, every record that is not was reported as a typed failure, and no failed writer left a record (R15) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.130411
+  type: 'test'
+  ...
+# Subtest: W08b concurrent tombstones and appends in separate processes leave one tombstone per target and a verifying chain (R15, section 10.2)
+ok 12 - W08b concurrent tombstones and appends in separate processes leave one tombstone per target and a verifying chain (R15, section 10.2) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.057445
+  type: 'test'
+  ...
+# Subtest: W08c a junction swapper racing real appender processes: the race is exercised, nothing outside is overwritten, and the ledger only ever verifies or fails closed with a typed error (H40)
+ok 13 - W08c a junction swapper racing real appender processes: the race is exercised, nothing outside is overwritten, and the ledger only ever verifies or fails closed with a typed error (H40) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.037398
+  type: 'test'
+  ...
+# Subtest: W09 a link planted at a staging name is detected before anything is created: typed FILESYSTEM_BOUNDARY, nothing is created at its target (3A-D4, Amendment A10)
+ok 14 - W09 a link planted at a staging name is detected before anything is created: typed FILESYSTEM_BOUNDARY, nothing is created at its target (3A-D4, Amendment A10) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.836625
+  type: 'test'
+  ...
+# Subtest: W10 a record directory swapped for a junction after the tombstone commit: the purge deletes nothing outside the ledger and fails closed (3A-G3, Amendment A10)
+ok 15 - W10 a record directory swapped for a junction after the tombstone commit: the purge deletes nothing outside the ledger and fails closed (3A-G3, Amendment A10) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.053994
+  type: 'test'
+  ...
+# Subtest: W11 staging names carry the writer's process id, so concurrent writers never contend for one name (3A-F7, Amendment A10)
+ok 16 - W11 staging names carry the writer's process id, so concurrent writers never contend for one name (3A-F7, Amendment A10) # SKIP native Windows (NTFS) host test
+  ---
+  duration_ms: 0.033341
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 0
+# fail 0
+# cancelled 0
+# skipped 16
+# todo 0
+# duration_ms 149.875467

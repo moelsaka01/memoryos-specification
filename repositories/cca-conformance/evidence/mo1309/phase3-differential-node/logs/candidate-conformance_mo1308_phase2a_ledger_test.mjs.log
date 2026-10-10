@@ -1,0 +1,160 @@
+TAP version 13
+# Subtest: L01 identities equal the independent oracle (R02 golden construction)
+ok 1 - L01 identities equal the independent oracle (R02 golden construction)
+  ---
+  duration_ms: 15.462621
+  type: 'test'
+  ...
+# Subtest: L02 an empty ledger verifies with the genesis digest as head
+ok 2 - L02 an empty ledger verifies with the genesis digest as head
+  ---
+  duration_ms: 3.156062
+  type: 'test'
+  ...
+# Subtest: L03 entries are contiguous from 0 and chained by previousEntryDigest (R05)
+ok 3 - L03 entries are contiguous from 0 and chained by previousEntryDigest (R05)
+  ---
+  duration_ms: 22.046022
+  type: 'test'
+  ...
+# Subtest: L04 equivalent appends are byte-identical regardless of volatile inputs (R04)
+ok 4 - L04 equivalent appends are byte-identical regardless of volatile inputs (R04)
+  ---
+  duration_ms: 18.285804
+  type: 'test'
+  ...
+# Subtest: L05 append re-validates the admission record and enforces ledger rules
+ok 5 - L05 append re-validates the admission record and enforces ledger rules
+  ---
+  duration_ms: 7.962175
+  type: 'test'
+  ...
+# Subtest: L06 tombstone lifecycle: governed entry, chain verifies after purge, purged content is never verified (R18, R19, R20)
+ok 6 - L06 tombstone lifecycle: governed entry, chain verifies after purge, purged content is never verified (R18, R19, R20)
+  ---
+  duration_ms: 8.222344
+  type: 'test'
+  ...
+# Subtest: L07 a crash during purge is reported as purgePending, and a completed purge is not
+ok 7 - L07 a crash during purge is reported as purgePending, and a completed purge is not
+  ---
+  duration_ms: 10.076731
+  type: 'test'
+  ...
+# Subtest: L08 verify checks every retained member and recomputes record digests (R21)
+ok 8 - L08 verify checks every retained member and recomputes record digests (R21)
+  ---
+  duration_ms: 7.678242
+  type: 'test'
+  ...
+# Subtest: L09 tamper corpus: a single-byte flip anywhere in the descriptor or any entry fails closed (R21)
+ok 9 - L09 tamper corpus: a single-byte flip anywhere in the descriptor or any entry fails closed (R21)
+  ---
+  duration_ms: 952.095712
+  type: 'test'
+  ...
+# Subtest: L10 structural tamper: deletion, reorder, gap, foreign splice, descriptor substitution, trailing LF
+ok 10 - L10 structural tamper: deletion, reorder, gap, foreign splice, descriptor substitution, trailing LF
+  ---
+  duration_ms: 6.900511
+  type: 'test'
+  ...
+# Subtest: L11 tombstone targets are verified, not trusted
+ok 11 - L11 tombstone targets are verified, not trusted
+  ---
+  duration_ms: 8.153955
+  type: 'test'
+  ...
+# Subtest: L12 query: filters, order, retention, tombstone matching and pagination (R22)
+ok 12 - L12 query: filters, order, retention, tombstone matching and pagination (R22)
+  ---
+  duration_ms: 15.539565
+  type: 'test'
+  ...
+# Subtest: L13 query verifies the chain before answering and rejects malformed queries (R22)
+ok 13 - L13 query verifies the chain before answering and rejects malformed queries (R22)
+  ---
+  duration_ms: 4.269784
+  type: 'test'
+  ...
+# Subtest: L14 decisionConsistency is stored at admission, returned by query without member bytes, and covered by the entry identity (Amendment A4.1)
+ok 14 - L14 decisionConsistency is stored at admission, returned by query without member bytes, and covered by the entry identity (Amendment A4.1)
+  ---
+  duration_ms: 23.2041
+  type: 'test'
+  ...
+# Subtest: L14b a claim is rejected, never stored with a guessed value, when its readiness result is absent, purged or in another ledger (Amendment A4.1)
+ok 15 - L14b a claim is rejected, never stored with a guessed value, when its readiness result is absent, purged or in another ledger (Amendment A4.1)
+  ---
+  duration_ms: 21.358434
+  type: 'test'
+  ...
+# Subtest: L14c historyLedgerView gives admission the Workspace, the entries and only retained readiness bytes (Amendment A4.1)
+ok 16 - L14c historyLedgerView gives admission the Workspace, the entries and only retained readiness bytes (Amendment A4.1)
+  ---
+  duration_ms: 9.638088
+  type: 'test'
+  ...
+# Subtest: L15 export is complete, deterministic and verifiable (R23)
+ok 17 - L15 export is complete, deterministic and verifiable (R23)
+  ---
+  duration_ms: 15.831101
+  type: 'test'
+  ...
+# Subtest: L16 verify-export fails closed on every single-byte flip, missing, extra and reordered file (R23)
+ok 18 - L16 verify-export fails closed on every single-byte flip, missing, extra and reordered file (R23)
+  ---
+  duration_ms: 713.009011
+  type: 'test'
+  ...
+# Subtest: L17 verify-export keeps section 11.1 codes for a consistent manifest over corrupt content
+ok 19 - L17 verify-export keeps section 11.1 codes for a consistent manifest over corrupt content
+  ---
+  duration_ms: 9.158468
+  type: 'test'
+  ...
+# Subtest: L18 limits are enforced (R26): entry size, descriptor size, entries per ledger
+ok 20 - L18 limits are enforced (R26): entry size, descriptor size, entries per ledger
+  ---
+  duration_ms: 12.033899
+  type: 'test'
+  ...
+# Subtest: L19 argument shapes fail with USAGE
+ok 21 - L19 argument shapes fail with USAGE
+  ---
+  duration_ms: 2.830643
+  type: 'test'
+  ...
+# Subtest: L20 data classes: no time, path, URL or actor appears in any MO-1308-authored bytes (R24, R35)
+ok 22 - L20 data classes: no time, path, URL or actor appears in any MO-1308-authored bytes (R24, R35)
+  ---
+  duration_ms: 8.101293
+  type: 'test'
+  ...
+# Subtest: L21 the ledger module is pure and imports only the contract and canonical modules (R28, R29, R35, R37)
+ok 23 - L21 the ledger module is pure and imports only the contract and canonical modules (R28, R29, R35, R37)
+  ---
+  duration_ms: 1.37895
+  type: 'test'
+  ...
+# Subtest: L22 every Freeze error raised carries only a fixed message
+ok 24 - L22 every Freeze error raised carries only a fixed message
+  ---
+  duration_ms: 2.885477
+  type: 'test'
+  ...
+# Subtest: L23 re-sealed forgeries (valid entry digest) are caught by the chain rules themselves (R05, R10, R20)
+ok 25 - L23 re-sealed forgeries (valid entry digest) are caught by the chain rules themselves (R05, R10, R20)
+  ---
+  duration_ms: 16.7939
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2053.220094

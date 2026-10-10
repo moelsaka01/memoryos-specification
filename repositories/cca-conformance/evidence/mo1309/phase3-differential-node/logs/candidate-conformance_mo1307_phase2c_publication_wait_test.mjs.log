@@ -1,0 +1,145 @@
+TAP version 13
+# Subtest: FCLI actual queued rename awaits settlement after deadline
+not ok 1 - FCLI actual queued rename awaits settlement after deadline
+  ---
+  duration_ms: 6.992354
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:23:50'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'linux' !== 'win32'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'win32'
+  actual: 'linux'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:24:26)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: FCLI actual queued rename awaits settlement after cancellation
+not ok 2 - FCLI actual queued rename awaits settlement after cancellation
+  ---
+  duration_ms: 2.552778
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:23:50'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'linux' !== 'win32'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'win32'
+  actual: 'linux'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:24:26)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: PWAIT terminal cancellation prevents late advancement after mkdir
+not ok 3 - PWAIT terminal cancellation prevents late advancement after mkdir
+  ---
+  duration_ms: 3.699449
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:81:58'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\candidate\\.cache\\mo1307\\phase2c-final\\publication-waits-6353'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:84:33)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: PWAIT terminal cancellation prevents late advancement after sync
+not ok 4 - PWAIT terminal cancellation prevents late advancement after sync
+  ---
+  duration_ms: 2.711073
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:81:58'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\candidate\\.cache\\mo1307\\phase2c-final\\publication-waits-6353'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:84:33)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: PWAIT terminal cancellation prevents late advancement after final-open
+not ok 5 - PWAIT terminal cancellation prevents late advancement after final-open
+  ---
+  duration_ms: 2.679698
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:81:58'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-DZDIp7\\candidate\\.cache\\mo1307\\phase2c-final\\publication-waits-6353'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:84:33)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: FCLI post-commit stalled stdout timeout retains final and one transport allowance
+not ok 6 - FCLI post-commit stalled stdout timeout retains final and one transport allowance
+  ---
+  duration_ms: 13.166665
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:116:49'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    ReadinessError: MO1307_FILESYSTEM_BOUNDARY
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:131:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: FCLI post-commit stalled stdout cancellation retains final and one transport allowance
+not ok 7 - FCLI post-commit stalled stdout cancellation retains final and one transport allowance
+  ---
+  duration_ms: 12.710793
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:116:49'
+  failureType: 'testCodeFailure'
+  error: |-
+    The validation function is expected to return "true". Received false
+    
+    Caught error:
+    
+    ReadinessError: MO1307_FILESYSTEM_BOUNDARY
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  stack: |-
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/candidate/repositories/cca-conformance/tests/mo1307_phase2c_publication_wait_test.mjs:131:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 0
+# fail 7
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 185.037979

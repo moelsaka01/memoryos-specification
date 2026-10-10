@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: vendored MIP-001 schema is the exact frozen publication
+ok 1 - vendored MIP-001 schema is the exact frozen publication
+  ---
+  duration_ms: 14.533211
+  type: 'test'
+  ...
+# Subtest: independent JSON Schema validation accepts published vector minimal-observation.mip.b64
+ok 2 - independent JSON Schema validation accepts published vector minimal-observation.mip.b64
+  ---
+  duration_ms: 23.573726
+  type: 'test'
+  ...
+# Subtest: independent JSON Schema validation accepts published vector complete-investigation.mip.b64
+ok 3 - independent JSON Schema validation accepts published vector complete-investigation.mip.b64
+  ---
+  duration_ms: 58.721526
+  type: 'test'
+  ...
+# Subtest: independent JSON Schema validation accepts published vector noncritical-extension.mip.b64
+ok 4 - independent JSON Schema validation accepts published vector noncritical-extension.mip.b64
+  ---
+  duration_ms: 8.316812
+  type: 'test'
+  ...
+# Subtest: independent JSON Schema validation rejects closed-core and profile violations
+ok 5 - independent JSON Schema validation rejects closed-core and profile violations
+  ---
+  duration_ms: 5.612137
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 244.068426

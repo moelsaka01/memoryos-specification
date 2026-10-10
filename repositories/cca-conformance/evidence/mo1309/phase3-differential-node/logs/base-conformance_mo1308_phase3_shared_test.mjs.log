@@ -1,0 +1,431 @@
+TAP version 13
+# Subtest: S01 stable JSON sorts keys, ends with one LF and rejects what is not reproducible
+ok 1 - S01 stable JSON sorts keys, ends with one LF and rejects what is not reproducible
+  ---
+  duration_ms: 3.218597
+  type: 'test'
+  ...
+# Subtest: S02 hashing helpers agree with node:crypto and refuse links
+ok 2 - S02 hashing helpers agree with node:crypto and refuse links
+  ---
+  duration_ms: 7.124931
+  type: 'test'
+  ...
+# Subtest: S03 the closed-shape validator rejects extra and missing members
+ok 3 - S03 the closed-shape validator rejects extra and missing members
+  ---
+  duration_ms: 0.414909
+  type: 'test'
+  ...
+# Subtest: C01 the scanner reads statements and skips comments, strings, templates and regular expressions
+ok 4 - C01 the scanner reads statements and skips comments, strings, templates and regular expressions
+  ---
+  duration_ms: 1.265225
+  type: 'test'
+  ...
+# Subtest: C02 the closure follows relative imports, separates built-ins and externals, and reports missing files
+ok 5 - C02 the closure follows relative imports, separates built-ins and externals, and reports missing files
+  ---
+  duration_ms: 0.757402
+  type: 'test'
+  ...
+# Subtest: C03 the static closure of the CLI and SDK equals the set Node actually loads
+ok 6 - C03 the static closure of the CLI and SDK equals the set Node actually loads
+  ---
+  duration_ms: 398.54393
+  type: 'test'
+  ...
+# Subtest: I01 the committed inventory equals the source byte for byte and validates
+ok 7 - I01 the committed inventory equals the source byte for byte and validates
+  ---
+  duration_ms: 2.719877
+  type: 'test'
+  ...
+# Subtest: I02 stream, step and case counts are the protocol ones
+ok 8 - I02 stream, step and case counts are the protocol ones
+  ---
+  duration_ms: 0.957724
+  type: 'test'
+  ...
+# Subtest: I03 every Freeze requirement R01-R37 and every qualification Q01-Q15 is covered
+ok 9 - I03 every Freeze requirement R01-R37 and every qualification Q01-Q15 is covered
+  ---
+  duration_ms: 2.390473
+  type: 'test'
+  ...
+# Subtest: I04 the owner decisions D6 and D7 are in the inventory
+ok 10 - I04 the owner decisions D6 and D7 are in the inventory
+  ---
+  duration_ms: 0.637889
+  type: 'test'
+  ...
+# Subtest: P01 the protocol document is APPROVED as Amendment A8, current with the inventory, and names exactly the inventory cases
+ok 11 - P01 the protocol document is APPROVED as Amendment A8, current with the inventory, and names exactly the inventory cases
+  ---
+  duration_ms: 5.276588
+  type: 'test'
+  ...
+# Subtest: A01 every path changed since BF up to the corrected candidate is in the allowed set; unrelated paths are not
+ok 12 - A01 every path changed since BF up to the corrected candidate is in the allowed set; unrelated paths are not
+  ---
+  duration_ms: 15.254412
+  type: 'test'
+  ...
+# Subtest: A02 this branch changes no production path and adds no evidence beyond the A3.x precondition evidence, protocol-defined rehearsal evidence and verifying certifying generations
+not ok 13 - A02 this branch changes no production path and adds no evidence beyond the A3.x precondition evidence, protocol-defined rehearsal evidence and verifying certifying generations
+  ---
+  duration_ms: 642.012509
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1308_phase3_shared_test.mjs:217:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/cli.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/examples.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/mo1307.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/mo1308-first-run-9b79e120.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/mo1308.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/studio.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried',
+    +   'repositories/cca-conformance/evidence/mo1308/phase3d-regression/regression.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/cli.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    1: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/examples.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    2: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/mo1307.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    3: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/mo1308-first-run-9b79e120.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    4: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/mo1308.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    5: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/logs/studio.log: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+    6: 'repositories/cca-conformance/evidence/mo1308/phase3d-regression/regression.json: only A3.x precondition evidence, protocol-defined rehearsal evidence and sealed certifying generations may be carried'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1308_phase3_shared_test.mjs:220:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: A03 the evidence allowance classifies exactly the A3.x precondition evidence, the protocol-defined rehearsal directories and certifying generation directories
+ok 14 - A03 the evidence allowance classifies exactly the A3.x precondition evidence, the protocol-defined rehearsal directories and certifying generation directories
+  ---
+  duration_ms: 0.291146
+  type: 'test'
+  ...
+# Subtest: A04 a certifying generation directory is allowed only when its evidence seal verifies; a tampered or unsealed one is rejected
+ok 15 - A04 a certifying generation directory is allowed only when its evidence seal verifies; a tampered or unsealed one is rejected
+  ---
+  duration_ms: 46.145268
+  type: 'test'
+  ...
+# Subtest: K01 the candidate identity is exactly reproducible from git objects at B2
+ok 16 - K01 the candidate identity is exactly reproducible from git objects at B2
+  ---
+  duration_ms: 2317.072257
+  type: 'test'
+  ...
+# Subtest: K02 a tampered identity is detected
+ok 17 - K02 a tampered identity is detected
+  ---
+  duration_ms: 1753.656859
+  type: 'test'
+  ...
+# Subtest: K03 the identity command line verifies and fails closed
+ok 18 - K03 the identity command line verifies and fails closed
+  ---
+  duration_ms: 1405.360047
+  type: 'test'
+  ...
+# Subtest: R01 the corpus manifest regenerates byte for byte and its digest seals it
+ok 19 - R01 the corpus manifest regenerates byte for byte and its digest seals it
+  ---
+  duration_ms: 4966.342234
+  type: 'test'
+  ...
+# Subtest: R02 the corpus holds the records every campaign needs
+ok 20 - R02 the corpus holds the records every campaign needs
+  ---
+  duration_ms: 140.819755
+  type: 'test'
+  ...
+# Subtest: R03 every corpus record is admissible, and the recipes reach their recorded heads
+ok 21 - R03 every corpus record is admissible, and the recipes reach their recorded heads
+  ---
+  duration_ms: 1167.014589
+  type: 'test'
+  ...
+# Subtest: R04 the decision claims carry both consistency labels through the all recipe
+ok 22 - R04 the decision claims carry both consistency labels through the all recipe
+  ---
+  duration_ms: 285.527188
+  type: 'test'
+  ...
+# Subtest: R05 limit vectors are the Freeze limits, with deterministic filler
+ok 23 - R05 limit vectors are the Freeze limits, with deterministic filler
+  ---
+  duration_ms: 1.075881
+  type: 'test'
+  ...
+# Subtest: R06 the sampling generator is deterministic, sorted, distinct and pinned
+ok 24 - R06 the sampling generator is deterministic, sorted, distinct and pinned
+  ---
+  duration_ms: 1.174884
+  type: 'test'
+  ...
+# Subtest: R07 canaries are distinct and the F7 plan states the owner threshold
+ok 25 - R07 canaries are distinct and the F7 plan states the owner threshold
+  ---
+  duration_ms: 0.453909
+  type: 'test'
+  ...
+# Subtest: V01 generation ids, the approval status and the placement rule
+ok 26 - V01 generation ids, the approval status and the placement rule
+  ---
+  duration_ms: 0.685657
+  type: 'test'
+  ...
+# Subtest: V02 dispositions: the owner-review rule, the rerun ordinal and the historical class
+ok 27 - V02 dispositions: the owner-review rule, the rerun ordinal and the historical class
+  ---
+  duration_ms: 0.612146
+  type: 'test'
+  ...
+# Subtest: V03 reviews: an open blocking finding contradicts a clean conclusion
+ok 28 - V03 reviews: an open blocking finding contradicts a clean conclusion
+  ---
+  duration_ms: 0.428013
+  type: 'test'
+  ...
+# Subtest: U01 a certifying generation: seal, run, close, verify; the receipt says ACCEPTED
+ok 29 - U01 a certifying generation: seal, run, close, verify; the receipt says ACCEPTED
+  ---
+  duration_ms: 23.668002
+  type: 'test'
+  ...
+# Subtest: U02 a certifying seal is refused without approval, a review or a matching generation id
+ok 30 - U02 a certifying seal is refused without approval, a review or a matching generation id
+  ---
+  duration_ms: 23.572233
+  type: 'test'
+  ...
+# Subtest: U03 a rehearsal is non-promotable and cannot be mistaken for a certification
+ok 31 - U03 a rehearsal is non-promotable and cannot be mistaken for a certification
+  ---
+  duration_ms: 15.086604
+  type: 'test'
+  ...
+# Subtest: U04 the first mandatory failure stops the generation: the rest of the step and every later step is NOT_RUN
+ok 32 - U04 the first mandatory failure stops the generation: the rest of the step and every later step is NOT_RUN
+  ---
+  duration_ms: 19.578671
+  type: 'test'
+  ...
+# Subtest: U05 an observation that is not stable JSON (a fraction) fails the case instead of being recorded
+ok 33 - U05 an observation that is not stable JSON (a fraction) fails the case instead of being recorded
+  ---
+  duration_ms: 12.651374
+  type: 'test'
+  ...
+# Subtest: U06 a record case without an observation fails with RECORD_WITHOUT_OBSERVATION
+ok 34 - U06 a record case without an observation fails with RECORD_WITHOUT_OBSERVATION
+  ---
+  duration_ms: 14.061553
+  type: 'test'
+  ...
+# Subtest: U07 an observation larger than the bound is a harness failure, not silently truncated
+ok 35 - U07 an observation larger than the bound is a harness failure, not silently truncated
+  ---
+  duration_ms: 9.811417
+  type: 'test'
+  ...
+# Subtest: U08 a non-mandatory failure is recorded but does not stop the generation or the stream result
+ok 36 - U08 a non-mandatory failure is recorded but does not stop the generation or the stream result
+  ---
+  duration_ms: 31.729305
+  type: 'test'
+  ...
+# Subtest: U09 an escalation stops the generation and ends ESCALATED_PRESERVED, not FAILED
+ok 37 - U09 an escalation stops the generation and ends ESCALATED_PRESERVED, not FAILED
+  ---
+  duration_ms: 20.757179
+  type: 'test'
+  ...
+# Subtest: U10 one-shot: no second run of a segment, no ceiling before main, no run or close after closing
+ok 38 - U10 one-shot: no second run of a segment, no ceiling before main, no run or close after closing
+  ---
+  duration_ms: 32.742501
+  type: 'test'
+  ...
+# Subtest: U11 a case cannot be retried, an unknown case is refused, and executor misuse fails the step
+ok 39 - U11 a case cannot be retried, an unknown case is refused, and executor misuse fails the step
+  ---
+  duration_ms: 30.077595
+  type: 'test'
+  ...
+# Subtest: U11a cases run one at a time: an overlapping case is an executor defect
+ok 40 - U11a cases run one at a time: an overlapping case is an executor defect
+  ---
+  duration_ms: 8.303249
+  type: 'test'
+  ...
+# Subtest: U12 an executor that skips cases fails the step with CASES_NOT_REPORTED
+ok 41 - U12 an executor that skips cases fails the step with CASES_NOT_REPORTED
+  ---
+  duration_ms: 14.84501
+  type: 'test'
+  ...
+# Subtest: U13 a step guard that expires fails the step and aborts the signal; a late result is discarded
+ok 42 - U13 a step guard that expires fails the step and aborts the signal; a late result is discarded
+  ---
+  duration_ms: 105.87522
+  type: 'test'
+  ...
+# Subtest: U14 an exhausted segment budget stops the generation with BUDGET_EXHAUSTED
+ok 43 - U14 an exhausted segment budget stops the generation with BUDGET_EXHAUSTED
+  ---
+  duration_ms: 16.853455
+  type: 'test'
+  ...
+# Subtest: U15 an interrupted run (start records without receipts) closes as a failure, never as a pass
+ok 44 - U15 an interrupted run (start records without receipts) closes as a failure, never as a pass
+  ---
+  duration_ms: 15.899149
+  type: 'test'
+  ...
+# Subtest: U16 a bound file that changes after the seal refuses the run and the close
+ok 45 - U16 a bound file that changes after the seal refuses the run and the close
+  ---
+  duration_ms: 23.702886
+  type: 'test'
+  ...
+# Subtest: U17 verifyEvidence detects tampering with any closed generation file
+ok 46 - U17 verifyEvidence detects tampering with any closed generation file
+  ---
+  duration_ms: 31.559604
+  type: 'test'
+  ...
+# Subtest: U18 a rerun needs the failed generation, a valid disposition and the next ordinal
+ok 47 - U18 a rerun needs the failed generation, a valid disposition and the next ordinal
+  ---
+  duration_ms: 32.306288
+  type: 'test'
+  ...
+# Subtest: U19 an accepted or open generation cannot be superseded; a rehearsal never supersedes
+ok 48 - U19 an accepted or open generation cannot be superseded; a rehearsal never supersedes
+  ---
+  duration_ms: 19.63914
+  type: 'test'
+  ...
+# Subtest: M01 Amendment A8 is appended to the Freeze and binds the protocol, inventory, candidate and corpus by hash
+ok 49 - M01 Amendment A8 is appended to the Freeze and binds the protocol, inventory, candidate and corpus by hash
+  ---
+  duration_ms: 2.145755
+  type: 'test'
+  ...
+# Subtest: M02 guards fit the budgets by design in every segment of every stream (A8 decision 8)
+ok 50 - M02 guards fit the budgets by design in every segment of every stream (A8 decision 8)
+  ---
+  duration_ms: 2.53675
+  type: 'test'
+  ...
+# Subtest: M03 the ceiling segment is the only one of 3A with the 180-minute budget and runs after both main segments
+ok 51 - M03 the ceiling segment is the only one of 3A with the 180-minute budget and runs after both main segments
+  ---
+  duration_ms: 0.370736
+  type: 'test'
+  ...
+# Subtest: M04 a qualification case must observe CONFIRMED or NOT_CONFIRMED; anything else fails (A8 decision 6)
+ok 52 - M04 a qualification case must observe CONFIRMED or NOT_CONFIRMED; anything else fails (A8 decision 6)
+  ---
+  duration_ms: 25.247106
+  type: 'test'
+  ...
+# Subtest: M05 the stream receipt carries each qualification case outcome
+ok 53 - M05 the stream receipt carries each qualification case outcome
+  ---
+  duration_ms: 25.483459
+  type: 'test'
+  ...
+# Subtest: M06 the disclosure check states the recorded outcome of every qualification case and nothing else
+ok 54 - M06 the disclosure check states the recorded outcome of every qualification case and nothing else
+  ---
+  duration_ms: 2.483784
+  type: 'test'
+  ...
+# Subtest: M07 recorded outcomes are read from step receipts of passed cases only
+ok 55 - M07 recorded outcomes are read from step receipts of passed cases only
+  ---
+  duration_ms: 9.442668
+  type: 'test'
+  ...
+# Subtest: M08 a rerun after an escalation needs an owner approval reference (A8 decision 5)
+ok 56 - M08 a rerun after an escalation needs an owner approval reference (A8 decision 5)
+  ---
+  duration_ms: 24.028296
+  type: 'test'
+  ...
+# Subtest: D01 a rehearsal may declare a case host-only (NOT_RUN, reason kept, no stop); a certifying generation never may
+ok 57 - D01 a rehearsal may declare a case host-only (NOT_RUN, reason kept, no stop); a certifying generation never may
+  ---
+  duration_ms: 26.279451
+  type: 'test'
+  ...
+# Subtest: D02 a skip does not hide a failure: a rehearsal with a failing case is REHEARSAL_FAILED
+ok 58 - D02 a skip does not hide a failure: a rehearsal with a failing case is REHEARSAL_FAILED
+  ---
+  duration_ms: 10.875063
+  type: 'test'
+  ...
+# Subtest: D03 the driver checks a definition against the inventory and never lets an unimplemented case pass
+ok 59 - D03 the driver checks a definition against the inventory and never lets an unimplemented case pass
+  ---
+  duration_ms: 4.585149
+  type: 'test'
+  ...
+# Subtest: D04 rehearse seals, runs and closes a non-certifying generation and summarizes executed, skipped and failed cases
+ok 60 - D04 rehearse seals, runs and closes a non-certifying generation and summarizes executed, skipped and failed cases
+  ---
+  duration_ms: 14.743529
+  type: 'test'
+  ...
+# Subtest: U20a the close and verify steps refuse an inventory other than the sealed one; the shared tools can all be bound
+ok 61 - U20a the close and verify steps refuse an inventory other than the sealed one; the shared tools can all be bound
+  ---
+  duration_ms: 14.717937
+  type: 'test'
+  ...
+# Subtest: U20 the runner has no platform-specific code and writes nothing outside its evidence directory
+ok 62 - U20 the runner has no platform-specific code and writes nothing outside its evidence directory
+  ---
+  duration_ms: 1.332042
+  type: 'test'
+  ...
+# Subtest: U21 the temporary root is short by design: C:/tt on Windows, configurable, never the system temp path, refused when long
+ok 63 - U21 the temporary root is short by design: C:/tt on Windows, configurable, never the system temp path, refused when long
+  ---
+  duration_ms: 0.230242
+  type: 'test'
+  ...
+# Subtest: U22 makeTemp makes <root>/<stream>-<n> with the first free counter, records it and removes only what it made
+ok 64 - U22 makeTemp makes <root>/<stream>-<n> with the first free counter, records it and removes only what it made
+  ---
+  duration_ms: 0.902689
+  type: 'test'
+  ...
+1..64
+# tests 64
+# suites 0
+# pass 63
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14039.124608

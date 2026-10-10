@@ -86,10 +86,12 @@ export function verdictOf({ base, candidate, workspace }) {
     if (b) for (const [name, status] of c.tests) if (!b.tests.has(name) && status === "fail") rules.r3.push({ unit: id, test: name });
     if (b && b.exitCode !== 0 && c.exitCode !== 0) {
       const failing = (r) => [...r.tests].filter(([, status]) => status === "fail").map(([name]) => name).sort().join("\n");
-      rules.r4.push({ unit: id, classification: classify(fs.existsSync(c.__logPath ?? "") ? fs.readFileSync(c.__logPath, "utf8") : ""), identicalFailureSet: failing(b) === failing(c) });
+      const baseSet = new Set(failing(b).split("\n")); const added = failing(c).split("\n").filter((name) => !baseSet.has(name));
+      rules.r4.push({ unit: id, classification: classify(fs.existsSync(c.__logPath ?? "") ? fs.readFileSync(c.__logPath, "utf8") : ""), noNewFailures: added.length === 0,
+        failingOnlyOnBaseline: failing(b).split("\n").filter((name) => name !== "" && !failing(c).split("\n").includes(name)) });
     }
   }
-  const ok = rules.r1 && rules.r2.length === 0 && rules.r3.length === 0 && rules.r4.every((entry) => entry.identicalFailureSet);
+  const ok = rules.r1 && rules.r2.length === 0 && rules.r3.length === 0 && rules.r4.every((entry) => entry.noNewFailures);
   // A3.2 rule 1 needs the workspace verifier to PASS on CANDIDATE; where it cannot run (it needs the Windows workspace) and fails identically on both
   // sides, the cloud verdict is qualified, never a plain PASS.
   const qualified = workspace.candidateExit !== 0;

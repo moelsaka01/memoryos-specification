@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: history grammar enumerations equal the SDK contract and the fixed usage message
+ok 1 - history grammar enumerations equal the SDK contract and the fixed usage message
+  ---
+  duration_ms: 2.231895
+  type: 'test'
+  ...
+# Subtest: every valid history command is accepted by the grammar and answered by the store with a frozen code
+ok 2 - every valid history command is accepted by the grammar and answered by the store with a frozen code
+  ---
+  duration_ms: 1282.125236
+  type: 'test'
+  ...
+# Subtest: history grammar rejects malformed commands with MO1308_USAGE
+ok 3 - history grammar rejects malformed commands with MO1308_USAGE
+  ---
+  duration_ms: 3377.147078
+  type: 'test'
+  ...
+# Subtest: history human errors carry the history code and the fixed message
+ok 4 - history human errors carry the history code and the fixed message
+  ---
+  duration_ms: 73.93274
+  type: 'test'
+  ...
+# Subtest: history help lists the exact frozen grammar
+ok 5 - history help lists the exact frozen grammar
+  ---
+  duration_ms: 77.893702
+  type: 'test'
+  ...
+# Subtest: non-history error envelopes are unchanged (no historyCode)
+ok 6 - non-history error envelopes are unchanged (no historyCode)
+  ---
+  duration_ms: 75.180602
+  type: 'test'
+  ...
+# Subtest: history grammar performs no I/O, starts no process and reads no clock (R35, R37)
+ok 7 - history grammar performs no I/O, starts no process and reads no clock (R35, R37)
+  ---
+  duration_ms: 3.195794
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5042.40051

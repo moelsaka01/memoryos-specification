@@ -80,6 +80,9 @@ test("differential gate verdict rules (A3.2 style): a regression, a new failing 
   assert.equal(run({ base: [], candidate: [unit("n", 1)] }).verdict, "FAILED_PRESERVED", "a new unit fails");
   assert.equal(run({ base: [unit("a", 1, [["x", "fail"]])], candidate: [unit("a", 1, [["x", "fail"], ["y", "fail"]])] }).verdict, "FAILED_PRESERVED", "a shared failing unit gains a failing test");
   assert.equal(run({ base: [unit("a", 1, [["x", "fail"]])], candidate: [unit("a", 1, [["x", "fail"]])] }).verdict, "PASS", "a shared identical failure is PRE_EXISTING");
+  const fewer = run({ base: [unit("a", 1, [["x", "fail"], ["y", "fail"]])], candidate: [unit("a", 1, [["x", "fail"]])] });
+  assert.equal(fewer.verdict, "PASS", "a shared failing unit that fails FEWER tests on the candidate is not a regression (A3.2 rule 4 lists shared failures only)");
+  assert.deepEqual(fewer.rules.r4[0].failingOnlyOnBaseline, ["y"]);
   assert.equal(run({ base: [], candidate: [], workspace: { baseExit: 2, candidateExit: 2 } }).verdict, "PASS_QUALIFIED_CLOUD_SUBSET");
   assert.equal(run({ base: [], candidate: [], workspace: { baseExit: 0, candidateExit: 2 } }).verdict, "FAILED_PRESERVED");
   assert.deepEqual([...parseTap("ok 1 - a\n    not ok 1 - inner\nnot ok 2 - b # SKIP x")], [["a", "pass"], ["a > inner", "fail"], ["b", "skipped"]]);

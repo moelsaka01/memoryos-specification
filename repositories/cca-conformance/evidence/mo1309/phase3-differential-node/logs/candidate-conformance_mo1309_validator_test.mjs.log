@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: DB30 4D a consistent record reaches I3_VALID_PENDING_BF; a binding-only BF reaches CERTIFIED_READY_TO_TAG; no tag is created
+ok 1 - DB30 4D a consistent record reaches I3_VALID_PENDING_BF; a binding-only BF reaches CERTIFIED_READY_TO_TAG; no tag is created
+  ---
+  duration_ms: 374.509719
+  type: 'test'
+  ...
+# Subtest: 4D-D7 negative controls: a binding that names another commit, or a BF that changes more than the binding file, is not accepted
+ok 2 - 4D-D7 negative controls: a binding that names another commit, or a BF that changes more than the binding file, is not accepted
+  ---
+  duration_ms: 655.377392
+  type: 'test'
+  ...
+# Subtest: DB30 negative control: a tampered log is recomputed and rejected
+ok 3 - DB30 negative control: a tampered log is recomputed and rejected
+  ---
+  duration_ms: 254.341594
+  type: 'test'
+  ...
+# Subtest: DB30 negative control: a row whose commit is not HEAD or an ancestor is rejected (row commits are checked, not a record-level commit)
+ok 4 - DB30 negative control: a row whose commit is not HEAD or an ancestor is rejected (row commits are checked, not a record-level commit)
+  ---
+  duration_ms: 574.647469
+  type: 'test'
+  ...
+# Subtest: DB30 negative control: a rerun folded into the same run number, a gap in run numbers, and a missing row commit are rejected
+ok 5 - DB30 negative control: a rerun folded into the same run number, a gap in run numbers, and a missing row commit are rejected
+  ---
+  duration_ms: 770.41468
+  type: 'test'
+  ...
+# Subtest: 4D-D2 negative controls: two accepted generations, none accepted, and a preserved generation without a disposition are rejected
+ok 6 - 4D-D2 negative controls: two accepted generations, none accepted, and a preserved generation without a disposition are rejected
+  ---
+  duration_ms: 744.338962
+  type: 'test'
+  ...
+# Subtest: 4D-D1 negative control: a production byte changed after the candidate is rejected; evidence and documents are allowed
+ok 7 - 4D-D1 negative control: a production byte changed after the candidate is rejected; evidence and documents are allowed
+  ---
+  duration_ms: 236.817827
+  type: 'test'
+  ...
+# Subtest: 4D-D3 and 4D-D6 negative controls: a requirement with no passing suite and a disclosure that omits a qualification are rejected
+ok 8 - 4D-D3 and 4D-D6 negative controls: a requirement with no passing suite and a disclosure that omits a qualification are rejected
+  ---
+  duration_ms: 469.877355
+  type: 'test'
+  ...
+# Subtest: a missing or foreign record is NOT_READY
+ok 9 - a missing or foreign record is NOT_READY
+  ---
+  duration_ms: 10.327369
+  type: 'test'
+  ...
+# Subtest: 4D rehearsal: the assembled record of non-certifying rehearsal receipts is NOT_READY (a rehearsal can never certify)
+ok 10 - 4D rehearsal: the assembled record of non-certifying rehearsal receipts is NOT_READY (a rehearsal can never certify)
+  ---
+  duration_ms: 225.960605
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4438.52513

@@ -1,0 +1,118 @@
+TAP version 13
+# Subtest: restricted JSON accepts strict UTF-8 scalar strings and preserves them
+ok 1 - restricted JSON accepts strict UTF-8 scalar strings and preserves them
+  ---
+  duration_ms: 2.10797
+  type: 'test'
+  ...
+# Subtest: restricted JSON rejects malformed UTF-8 and a UTF-8 BOM
+ok 2 - restricted JSON rejects malformed UTF-8 and a UTF-8 BOM
+  ---
+  duration_ms: 0.526489
+  type: 'test'
+  ...
+# Subtest: restricted JSON rejects decoded duplicate names before construction
+ok 3 - restricted JSON rejects decoded duplicate names before construction
+  ---
+  duration_ms: 0.514729
+  type: 'test'
+  ...
+# Subtest: restricted JSON accepts only the four JSON whitespace bytes around one value
+ok 4 - restricted JSON accepts only the four JSON whitespace bytes around one value
+  ---
+  duration_ms: 0.375516
+  type: 'test'
+  ...
+# Subtest: restricted JSON rejects escaped lone surrogates
+ok 5 - restricted JSON rejects escaped lone surrogates
+  ---
+  duration_ms: 1.5108
+  type: 'test'
+  ...
+# Subtest: restricted JSON does not normalize Unicode
+ok 6 - restricted JSON does not normalize Unicode
+  ---
+  duration_ms: 1.231885
+  type: 'test'
+  ...
+# Subtest: restricted integer grammar accepts zero, negatives, and both safe endpoints
+ok 7 - restricted integer grammar accepts zero, negatives, and both safe endpoints
+  ---
+  duration_ms: 0.559053
+  type: 'test'
+  ...
+# Subtest: restricted integer grammar rejects unsafe, negative-zero, fractional, and exponent forms
+ok 8 - restricted integer grammar rejects unsafe, negative-zero, fractional, and exponent forms
+  ---
+  duration_ms: 0.467374
+  type: 'test'
+  ...
+# Subtest: canonical object ordering compares UTF-16 code units
+ok 9 - canonical object ordering compares UTF-16 code units
+  ---
+  duration_ms: 0.461462
+  type: 'test'
+  ...
+# Subtest: canonical arrays retain sequence order and registered sets require registry order
+ok 10 - canonical arrays retain sequence order and registered sets require registry order
+  ---
+  duration_ms: 0.538586
+  type: 'test'
+  ...
+# Subtest: canonicalization rejects sparse, accessor, symbol, non-data, subclassed, and cyclic values
+ok 11 - canonicalization rejects sparse, accessor, symbol, non-data, subclassed, and cyclic values
+  ---
+  duration_ms: 0.458544
+  type: 'test'
+  ...
+# Subtest: canonical output is exact UTF-8 without BOM or trailing LF
+ok 12 - canonical output is exact UTF-8 without BOM or trailing LF
+  ---
+  duration_ms: 0.340368
+  type: 'test'
+  ...
+# Subtest: JSON census uses value occurrences, open-container depth, and decoded string/name bytes
+ok 13 - JSON census uses value occurrences, open-container depth, and decoded string/name bytes
+  ---
+  duration_ms: 0.411284
+  type: 'test'
+  ...
+# Subtest: bounded parsing saturates counters, stops materializing, and still completes syntax
+ok 14 - bounded parsing saturates counters, stops materializing, and still completes syntax
+  ---
+  duration_ms: 0.562222
+  type: 'test'
+  ...
+# Subtest: domain-separated SHA-256 uses exactly domain, NUL, and canonical bytes
+ok 15 - domain-separated SHA-256 uses exactly domain, NUL, and canonical bytes
+  ---
+  duration_ms: 1.416549
+  type: 'test'
+  ...
+# Subtest: stable SemVer and dotted identifiers use their exact frozen grammars
+ok 16 - stable SemVer and dotted identifiers use their exact frozen grammars
+  ---
+  duration_ms: 0.347197
+  type: 'test'
+  ...
+# Subtest: stable machine errors preserve exact non-localized codes and immutable details
+ok 17 - stable machine errors preserve exact non-localized codes and immutable details
+  ---
+  duration_ms: 0.547793
+  type: 'test'
+  ...
+# Subtest: byte intake snapshots mutable buffers and rejects shared mutable storage
+ok 18 - byte intake snapshots mutable buffers and rejects shared mutable storage
+  ---
+  duration_ms: 1.902452
+  type: 'test'
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 140.083636

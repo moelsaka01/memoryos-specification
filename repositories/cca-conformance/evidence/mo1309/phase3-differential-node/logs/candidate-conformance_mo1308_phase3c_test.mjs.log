@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: C01 every 3C case is implemented or declared host-only, none both
+ok 1 - C01 every 3C case is implemented or declared host-only, none both
+  ---
+  duration_ms: 2.530729
+  type: 'test'
+  ...
+# Subtest: C02 nothing is declared host-only: F3 and G2 are implemented by the Windows harness, and a certifying generation refuses every skip
+ok 2 - C02 nothing is declared host-only: F3 and G2 are implemented by the Windows harness, and a certifying generation refuses every skip
+  ---
+  duration_ms: 0.195762
+  type: 'test'
+  ...
+# Subtest: C03 known findings are all implemented (so a certifying run executes them for real)
+ok 3 - C03 known findings are all implemented (so a certifying run executes them for real)
+  ---
+  duration_ms: 0.167318
+  type: 'test'
+  ...
+# Subtest: C04 independent JCS sorts keys, escapes and rejects nothing it should keep
+ok 4 - C04 independent JCS sorts keys, escapes and rejects nothing it should keep
+  ---
+  duration_ms: 0.776207
+  type: 'test'
+  ...
+# Subtest: C05 scanner detects planted canaries and every forbidden class
+ok 5 - C05 scanner detects planted canaries and every forbidden class
+  ---
+  duration_ms: 1.87924
+  type: 'test'
+  ...
+# Subtest: C06 scanner skips only the two free-form places
+ok 6 - C06 scanner skips only the two free-form places
+  ---
+  duration_ms: 0.89086
+  type: 'test'
+  ...
+# Subtest: C07 the incremental SHA-256 extracted from production matches node:crypto
+ok 7 - C07 the incremental SHA-256 extracted from production matches node:crypto
+  ---
+  duration_ms: 1.864863
+  type: 'test'
+  ...
+# Subtest: C08 a tampered in-memory ledger fails verification and a forged chain is accepted (the recorded A6/B3 weakness)
+ok 8 - C08 a tampered in-memory ledger fails verification and a forged chain is accepted (the recorded A6/B3 weakness)
+  ---
+  duration_ms: 0.282545
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 161.095942

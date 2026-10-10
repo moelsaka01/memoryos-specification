@@ -1,0 +1,239 @@
+TAP version 13
+# Subtest: T01 the two tar writers are byte-identical and a reader and system tar read the result
+ok 1 - T01 the two tar writers are byte-identical and a reader and system tar read the result
+  ---
+  duration_ms: 8.724261
+  type: 'test'
+  ...
+# Subtest: T02 tar bytes are canonical: mode, owner and time are fixed
+ok 2 - T02 tar bytes are canonical: mode, owner and time are fixed
+  ---
+  duration_ms: 1.88212
+  type: 'test'
+  ...
+# Subtest: T03 blob ids are computed without git and match it
+ok 3 - T03 blob ids are computed without git and match it
+  ---
+  duration_ms: 8.197526
+  type: 'test'
+  ...
+# Subtest: E01 the object-database, git-archive and clean-worktree assemblies agree, and so do the archives
+ok 4 - E01 the object-database, git-archive and clean-worktree assemblies agree, and so do the archives
+  ---
+  duration_ms: 518.920441
+  type: 'test'
+  ...
+# Subtest: A01 lineage, changed paths and released bytes hold for HEAD
+not ok 5 - A01 lineage, changed paths and released bytes hold for HEAD
+  ---
+  duration_ms: 1369.701055
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:107:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'repositories/cca-conformance/mo1308-final-binding.json is outside the allowed path set',
+    +   'repositories/cca-conformance/mo1308-final-release-inventory.json is outside the allowed path set'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'repositories/cca-conformance/mo1308-final-binding.json is outside the allowed path set'
+    1: 'repositories/cca-conformance/mo1308-final-release-inventory.json is outside the allowed path set'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:113:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: B01 released closures, vendored SDK copies, Action manifest and the readiness package hold
+ok 6 - B01 released closures, vendored SDK copies, Action manifest and the readiness package hold
+  ---
+  duration_ms: 2220.894319
+  type: 'test'
+  ...
+# Subtest: B02 the tags are the pinned ones; two are independently recorded in the Freeze
+not ok 7 - B02 the tags are the pinned ones; two are independently recorded in the Freeze
+  ---
+  duration_ms: 92.013654
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:139:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+    + [
+    +   'memoryos-1.3-* tags are ["memoryos-1.3-mo1301","memoryos-1.3-mo1302","memoryos-1.3-mo1303","memoryos-1.3-mo1304","memoryos-1.3-mo1305","memoryos-1.3-mo1306","memoryos-1.3-mo1307","memoryos-1.3-mo1308"], expected ["memoryos-1.3-mo1301","memoryos-1.3-mo1302","memoryos-1.3-mo1303","memoryos-1.3-mo1304","memoryos-1.3-mo1305","memoryos-1.3-mo1306","memoryos-1.3-mo1307"]'
+    + ]
+    - []
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual:
+    0: 'memoryos-1.3-* tags are ["memoryos-1.3-mo1301","memoryos-1.3-mo1302","memoryos-1.3-mo1303","memoryos-1.3-mo1304","memoryos-1.3-mo1305","memoryos-1.3-mo1306","memoryos-1.3-mo1307","memoryos-1.3-mo1308"], expected ["memoryos-1.3-mo1301","memoryos-1.3-mo1302","memoryos-1.3-mo1303","memoryos-1.3-mo1304","memoryos-1.3-mo1305","memoryos-1.3-mo1306","memoryos-1.3-mo1307"]'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:141:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: B03 the pinned baseline is reproducible from the repository tags
+ok 8 - B03 the pinned baseline is reproducible from the repository tags
+  ---
+  duration_ms: 185.492587
+  type: 'test'
+  ...
+# Subtest: C01 dependency, import, history-boundary, no-I/O and supply audits hold for HEAD
+ok 9 - C01 dependency, import, history-boundary, no-I/O and supply audits hold for HEAD
+  ---
+  duration_ms: 2808.070713
+  type: 'test'
+  ...
+# Subtest: C02 the forbidden-identifier scan ignores strings, comments, properties and object keys
+ok 10 - C02 the forbidden-identifier scan ignores strings, comments, properties and object keys
+  ---
+  duration_ms: 0.4885
+  type: 'test'
+  ...
+# Subtest: N01 a changed production blob breaks the identity and the closure-equals-identity audits
+ok 11 - N01 a changed production blob breaks the identity and the closure-equals-identity audits
+  ---
+  duration_ms: 1969.614522
+  type: 'test'
+  ...
+# Subtest: N02 released content is protected: a vendored SDK, a closure file, an addition to a closure, a released document
+ok 12 - N02 released content is protected: a vendored SDK, a closure file, an addition to a closure, a released document
+  ---
+  duration_ms: 715.84304
+  type: 'test'
+  ...
+# Subtest: N03 the readiness package and the Action bundle detect a changed member
+ok 13 - N03 the readiness package and the Action bundle detect a changed member
+  ---
+  duration_ms: 2109.511017
+  type: 'test'
+  ...
+# Subtest: N04 dependency manifests: a new dependency, a changed lockfile, an added manifest and a wrong version are all findings
+ok 14 - N04 dependency manifests: a new dependency, a changed lockfile, an added manifest and a wrong version are all findings
+  ---
+  duration_ms: 2111.58233
+  type: 'test'
+  ...
+# Subtest: N05 the history boundary: an SDK import, a node import and process use are findings
+ok 15 - N05 the history boundary: an SDK import, a node import and process use are findings
+  ---
+  duration_ms: 2224.290576
+  type: 'test'
+  ...
+# Subtest: N06 supply: a changed license, an added notice and a third copy of the hand-written hash are findings
+ok 16 - N06 supply: a changed license, an added notice and a third copy of the hand-written hash are findings
+  ---
+  duration_ms: 2894.654262
+  type: 'test'
+  ...
+# Subtest: N07 lineage: a rewritten Freeze, a missing amendment and a path outside the allowed set are findings
+not ok 17 - N07 lineage: a rewritten Freeze, a missing amendment and a path outside the allowed set are findings
+  ---
+  duration_ms: 415.589415
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:248:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly deep-equal:
+    + actual - expected
+    
+      [
+        'package.json',
+    +   'repositories/cca-conformance/mo1308-final-binding.json',
+    +   'repositories/cca-conformance/mo1308-final-release-inventory.json',
+        'repositories/memoryos-readiness/src/new.mjs'
+      ]
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+    0: 'package.json'
+    1: 'repositories/memoryos-readiness/src/new.mjs'
+  actual:
+    0: 'package.json'
+    1: 'repositories/cca-conformance/mo1308-final-binding.json'
+    2: 'repositories/cca-conformance/mo1308-final-release-inventory.json'
+    3: 'repositories/memoryos-readiness/src/new.mjs'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:255:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: S01 the 3B definition covers every case, with nothing host-only
+ok 18 - S01 the 3B definition covers every case, with nothing host-only
+  ---
+  duration_ms: 1.36726
+  type: 'test'
+  ...
+# Subtest: S02 the tool sources use no network module and no package manager
+ok 19 - S02 the tool sources use no network module and no package manager
+  ---
+  duration_ms: 11.759161
+  type: 'test'
+  ...
+# Subtest: S03 a complete non-certifying rehearsal passes every case, verifies its own evidence, and writes the closure artifacts
+not ok 20 - S03 a complete non-certifying rehearsal passes every case, verifies its own evidence, and writes the closure artifacts
+  ---
+  duration_ms: 1222.797476
+  type: 'test'
+  location: '/tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:273:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    {"stream":"3B","result":"REHEARSAL_FAILED","total":26,"executedPass":2,"failed":["3B-A3"],"escalated":[],"skippedHostOnly":[],"notRun":["3B-A4","3B-B1","3B-B2","3B-B3","3B-B4","3B-B5","3B-C1","3B-C2","3B-C3","3B-C4","3B-C5","3B-D1","3B-D2","3B-D3","3B-D4","3B-E1","3B-E2","3B-E3","3B-F1","3B-F2","3B-G1","3B-G2","3B-G3"],"outcomes":{}}
+    + actual - expected
+    
+    + 'REHEARSAL_FAILED'
+    - 'REHEARSAL_COMPLETED'
+                 ^
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'REHEARSAL_COMPLETED'
+  actual: 'REHEARSAL_FAILED'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-DZDIp7/base/repositories/cca-conformance/tests/mo1308_phase3b_test.mjs:278:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: S04 a certifying seal needs the pinned Node and native Windows (G1 refuses a rehearsal-grade host)
+ok 21 - S04 a certifying seal needs the pinned Node and native Windows (G1 refuses a rehearsal-grade host)
+  ---
+  duration_ms: 440.081793
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 17
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 21527.101197
