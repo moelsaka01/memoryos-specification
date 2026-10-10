@@ -1,0 +1,99 @@
+{
+  "kind": "MO1309CampaignReceipt",
+  "version": "1.0.0",
+  "stream": "4C",
+  "certifying": false,
+  "mode": "rehearsal",
+  "generation": 1,
+  "commit": "5c93c383a69c571493f5973fd52b47cfcb1b0932",
+  "requirements": [
+    "DB02",
+    "DB03",
+    "DB04",
+    "DB06",
+    "DB07",
+    "DB08",
+    "DB09",
+    "DB13",
+    "DB14",
+    "DB15",
+    "DB17",
+    "DB19",
+    "DB28"
+  ],
+  "host": {
+    "platform": "linux",
+    "arch": "x64",
+    "release": "6.18.44-fc-v114",
+    "node": "v22.22.0"
+  },
+  "result": "REHEARSAL_PASSED_NON_CERTIFYING",
+  "accepted": false,
+  "cases": [
+    {
+      "id": "4C-S1",
+      "windowsOnlyPart": "injection corpus rendered in the Windows browser",
+      "outcome": "PASS",
+      "detail": "hostile strings in subjects and identifiers render as inert text: nothing executes, no image, no request",
+      "state": {
+        "pwned": true,
+        "scripts": 2,
+        "imgs": 0
+      },
+      "fixtures": 5
+    },
+    {
+      "id": "4C-S2",
+      "windowsOnlyPart": "CSP enforced in the Windows browser, network blocked",
+      "outcome": "PASS",
+      "detail": "CSP enforced in the browser and zero requests",
+      "exitCode": 0,
+      "tests": 5,
+      "pass": 5,
+      "fail": 0,
+      "logSha256": "sha256:87aebe5c8c29d0701ce901465a6f78ec23a4956df8f575a315c8f82ca16f821a"
+    },
+    {
+      "id": "4C-S3",
+      "windowsOnlyPart": "tamper corpus on NTFS files",
+      "outcome": "PASS",
+      "detail": "every tamper variant is rejected with DASH_EXPORT_INVALID and nothing is emitted",
+      "result": {
+        "chain": "DASH_EXPORT_INVALID",
+        "member": "DASH_EXPORT_INVALID",
+        "manifest": "DASH_EXPORT_INVALID",
+        "marker": "DASH_EXPORT_INVALID",
+        "truncatedTail": "DASH_EXPORT_INVALID"
+      }
+    },
+    {
+      "id": "4C-S4",
+      "windowsOnlyPart": "forbidden-affordance scan of the Windows-rendered DOM",
+      "outcome": "PASS",
+      "detail": "forbidden-affordance scan of the rendered DOM and adversarial words in data",
+      "exitCode": 0,
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "logSha256": "sha256:f654e7f2164f6148059875a95cae0ad2fea5543dffd9c2978d893b5ec483eee1"
+    },
+    {
+      "id": "4C-S5",
+      "windowsOnlyPart": "swap-after-read probe on NTFS (real directory swap during the read)",
+      "outcome": "PASS",
+      "detail": "swap-after-read: the displayed data is the bytes read once",
+      "exitCode": 0,
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "logSha256": "sha256:492b59ba5e517db861fc59950d1bd9e41378f183c868cd99565b6313f4949e1e"
+    },
+    {
+      "id": "4C-S6",
+      "windowsOnlyPart": "data-class scan of Windows-generated output",
+      "outcome": "PASS",
+      "detail": "the data-class scan of every generated snapshot finds no violation",
+      "violations": {}
+    }
+  ]
+}

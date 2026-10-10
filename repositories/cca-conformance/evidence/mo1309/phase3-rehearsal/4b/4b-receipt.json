@@ -1,0 +1,62 @@
+{
+  "kind": "MO1309CampaignReceipt",
+  "version": "1.0.0",
+  "stream": "4B",
+  "certifying": false,
+  "mode": "rehearsal",
+  "generation": 1,
+  "commit": "5c93c383a69c571493f5973fd52b47cfcb1b0932",
+  "requirements": [
+    "DB05",
+    "DB26",
+    "DB27"
+  ],
+  "host": {
+    "platform": "linux",
+    "arch": "x64",
+    "release": "6.18.44-fc-v114",
+    "node": "v22.22.0"
+  },
+  "result": "REHEARSAL_PASSED_NON_CERTIFYING",
+  "accepted": false,
+  "cases": [
+    {
+      "id": "4B-C1",
+      "windowsOnlyPart": "released closures and tags on the Windows checkout",
+      "outcome": "PASS",
+      "detail": "MO-1308 production blobs, released manifests and inventories are unchanged against BF; only the three documents are modified",
+      "productionPaths": 45,
+      "modified": [
+        "M ARCHITECTURE.md",
+        "M CHANGELOG.md",
+        "M ROADMAP.md"
+      ]
+    },
+    {
+      "id": "4B-C2",
+      "windowsOnlyPart": "none beyond a clean Windows checkout",
+      "outcome": "PASS",
+      "detail": "no new dependency, no build step, no network module in MO-1309 source",
+      "importScan": {
+        "files": 16,
+        "offenders": []
+      },
+      "network": []
+    },
+    {
+      "id": "4B-C3",
+      "windowsOnlyPart": "none beyond Node 24.21.0",
+      "outcome": "PASS",
+      "detail": "no external reference in any fixture snapshot outside the data block and policy",
+      "offenders": []
+    },
+    {
+      "id": "4B-C4",
+      "windowsOnlyPart": "source-closure reproducibility from a fresh Windows checkout (line endings)",
+      "outcome": "PASS",
+      "detail": "the MO-1309 source closure extracted from HEAD equals the committed blobs",
+      "files": 28,
+      "closureDigest": "sha256:fc24074184e4988fb61fbd25c05964c17a5ecf51075fb86258dbb1c7c856cc8b"
+    }
+  ]
+}

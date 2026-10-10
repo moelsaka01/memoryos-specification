@@ -96,13 +96,13 @@ const viaTests = (files, pattern, detail) => () => { const r = nodeTest(files, p
 // ---- 4A ----
 const cases4A = ({ full, browser }) => ({
   "4A-E1": async () => { const root = scratch("e1"); try {
-    const exportDir = await cliExport(root, { workspace: "workspace-4a", records: allKinds, tombstones: [] }); const model = await modelOf(exportDir);
+    const exportDir = await cliExport(root, { workspace: "workspace-investigation", records: allKinds, tombstones: [] }); const model = await modelOf(exportDir);
     const kinds = model.summary.byRecordKind.filter((row) => row.count > 0).map((row) => row.recordKind);
     const out = path.join(root, "s.html"); const { digest } = await generate(exportDir, out);
     return ensure(kinds.length === 7 && fs.existsSync(out), "a real CLI export with every record kind verifies, builds and generates", { recordKinds: kinds, digest });
   } finally { fs.rmSync(root, { recursive: true, force: true }); } },
   "4A-E2": async () => { const root = scratch("e2"); try {
-    const exportDir = await cliExport(root, { workspace: "workspace-4a", records: allKinds, tombstones: [{ target: 0, reason: "PRIVACY_REQUEST", authority: "PRIV-4A-0001" }] }); const model = await modelOf(exportDir);
+    const exportDir = await cliExport(root, { workspace: "workspace-investigation", records: allKinds, tombstones: [{ target: 0, reason: "PRIVACY_REQUEST", authority: "PRIV-4A-0001" }] }); const model = await modelOf(exportDir);
     return ensure(model.verification.tombstones === 1 && model.verification.purgedRecords === 1 && model.entries[0].retention === "PURGED" && model.entries[0].members.length > 0, "tombstone and purge: retention PURGED, member list retained", { verification: model.verification });
   } finally { fs.rmSync(root, { recursive: true, force: true }); } },
   "4A-E3": async () => { const results = []; for (const [name, records] of [["empty", () => []], ["single", (c) => [c.policyRecord(1)]]]) { const root = scratch("e3"); try {
@@ -117,12 +117,12 @@ const cases4A = ({ full, browser }) => ({
     return ensure(check.status === 0, full ? "certified scale (10,000) generated, loaded and within the recorded budgets" : "rehearsal at 1,000 entries (budgets apply to 10,000 with --full)", { check: check.stdout.trim().slice(0, 300), scale: full ? 10000 : 1000 });
   } finally { fs.rmSync(root, { recursive: true, force: true }); } },
   "4A-E5": async () => { const root = scratch("e5"); try {
-    const exportDir = await cliExport(root, { workspace: "workspace-4a", records: allKinds }); const a = path.join(root, "a.html"); const b = path.join(root, "b.html");
+    const exportDir = await cliExport(root, { workspace: "workspace-investigation", records: allKinds }); const a = path.join(root, "a.html"); const b = path.join(root, "b.html");
     await generate(exportDir, a); await generate(exportDir, b);
     return ensure(Buffer.compare(fs.readFileSync(a), fs.readFileSync(b)) === 0, "two generations from the same export are byte-identical", { snapshotSha256: sha256(fs.readFileSync(a)) });
   } finally { fs.rmSync(root, { recursive: true, force: true }); } },
   "4A-E6": async () => withBrowser(browser, async (b) => { const root = scratch("e6"); try {
-    const exportDir = await cliExport(root, { workspace: "workspace-4a", records: allKinds }); const out = path.join(root, "s.html"); await generate(exportDir, out);
+    const exportDir = await cliExport(root, { workspace: "workspace-investigation", records: allKinds }); const out = path.join(root, "s.html"); await generate(exportDir, out);
     const { serveStatic } = await load("tests/support-devtools.mjs"); const html = fs.readFileSync(out);
     const host = await serveStatic(new Map([["/s.html", html]]));
     const text = async (url) => { const page = await b.openPage({ width: 1280, height: 900 }); await page.navigate(url); const value = await page.evaluate("document.body.innerText"); return { value, requests: page.requests.filter((u) => !u.startsWith(url)).length }; };
