@@ -87,3 +87,38 @@ evaluation, the recorded binding) are tested here by `tests/memoryos_dashboard_p
 DB22: the certified scale is measured and fixed (10,000), and 100,000 is characterized with no claim. DB32 is respected:
 no export-performance work was done and no MO-1308 byte changed. The Windows half of DB22 (case 4A-E4 and 4A-E8) is
 prepared, not run.
+
+## 7. Phase 3 update: the quadratic view-model build is fixed
+
+Finding 1 is resolved in Phase 3 by a private change to `memoryos-dashboard-viewmodel.js` with no public-behaviour change: the
+export is verified once by `verifyHistoryExport`, and each verified entry file is then parsed once with the public MO-1308
+contract validator, with the row fields (retention, tombstone link, stored decision consistency) taken exactly as
+`queryHistoryLedger` returns them. The builder consumes only MO-1308's public interfaces (`verifyHistoryExport`,
+`decodeHistoryBytes`, `validateEntry`) and no MO-1308 file changed (audit: `tools/mo1309/audit.mjs`).
+
+**Differential proof.** The Phase 1 per-page builder is kept verbatim as a test oracle
+(`tests/support-dashboard-reference-viewmodel.mjs`). `tests/memoryos_dashboard_linear_test.mjs` and
+`tests/memoryos_dashboard_linear_10k_test.mjs` require the canonical view-model bytes of the two builders to be identical on all five
+fixtures, on the synthetic 1,000-entry corpus and on the synthetic 10,000-entry corpus. Negative controls: the comparison fails on a
+one-field divergence, and tampered exports (entry byte, member byte, manifest, marker, truncated tail, extra file, removed member) are
+still rejected by both builders with the same carried MO-1308 code.
+
+**Re-measurement** (same host, runner and corpora as section 1, a quiet machine; five runs at 1,000 and 10,000, one at 100,000; every run is in
+[the Phase 3 report](mo1309-phase3-cloud-report.json); the Phase 2D report is not edited and stays as the pre-fix characterization):
+
+| Metric (median) | 1,000 | 10,000 | 100,000 (characterized, one run) |
+|---|---:|---:|---:|
+| View-model build, before to after | 0.84 s to 0.54 s | 29.5 s to 5.35 s | 2,861 s to 55.0 s |
+| **Generation, whole process**, before to after | 1.7 s to 1.26 s | 36.8 s to 11.4 s | 2,944 s (49.1 min) to 129.7 s |
+| Generator peak memory, before to after | 117 MB to 116 MB | 391 MB to 312 MB | 2,604 MB to 2,191 MB |
+| Snapshot size (unchanged, deterministic) | 0.92 MB | 8.90 MB | 88.8 MB |
+| Page load event | 0.07 s | 0.24 s | 3.58 s |
+
+The view-model build is now the verification plus one linear pass (5.35 s against 4.63 s for `verifyHistoryExport` alone at 10,000). 100,000
+entries remain **characterized only**, with no support claim (owner decision): the generation time is now about two minutes on this host, the
+claim does not change.
+
+**Budgets.** Only tightened, none widened ([budgets](mo1309-phase2d-budgets.json), field `supersedes` holds the bound Phase 2D values): view-model
+build 150 s to 30 s, generation wall 200 s to 60 s (5 times the worst post-fix 10,000-entry run, rounded up), generator peak memory
+1,200 MB to 1,100 MB (3 times, rounded up). Every other budget is unchanged. `check` of the Phase 3 report against the tightened budgets
+is within budget; the pre-fix report would exceed them (tested). A Windows exceedance is still a finding for campaign 4A, not a budget change.

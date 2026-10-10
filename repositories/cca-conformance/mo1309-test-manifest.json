@@ -1,0 +1,48 @@
+{
+  "kind": "MO1309TestManifest",
+  "version": "1.0.0",
+  "note": "The MO-1309 suites run by path. repositories/cca-studio/package.json is pinned in released closures and is not edited; its own `npm test` is the studio-existing suite. Each suite is its own process and its own log; a rerun is its own row in the retained regression record (Freeze DB30).",
+  "suites": [
+    {
+      "id": "dashboard-unit",
+      "cwd": "repositories/cca-studio",
+      "files": [
+        "tests/memoryos_dashboard_viewmodel_test.mjs",
+        "tests/memoryos_dashboard_wording_test.mjs",
+        "tests/memoryos_dashboard_separation_test.mjs",
+        "tests/memoryos_dashboard_page_test.mjs",
+        "tests/memoryos_dashboard_generator_test.mjs",
+        "tests/memoryos_dashboard_trust_test.mjs",
+        "tests/memoryos_dashboard_perf_test.mjs",
+        "tests/memoryos_dashboard_linear_test.mjs",
+        "tests/memoryos_dashboard_harness_test.mjs"
+      ]
+    },
+    {
+      "id": "dashboard-browser",
+      "cwd": "repositories/cca-studio",
+      "files": ["tests/memoryos_dashboard_browser_test.mjs"]
+    },
+    {
+      "id": "dashboard-differential-10k",
+      "cwd": "repositories/cca-studio",
+      "files": ["tests/memoryos_dashboard_linear_10k_test.mjs"]
+    },
+    {
+      "id": "mo1309-tools",
+      "cwd": "repositories/cca-conformance",
+      "files": [
+        "tests/mo1309_audit_test.mjs",
+        "tests/mo1309_inventory_test.mjs",
+        "tests/mo1309_manifest_test.mjs",
+        "tests/mo1309_validator_test.mjs",
+        "tests/mo1309_campaigns_test.mjs"
+      ]
+    },
+    {
+      "id": "studio-existing",
+      "cwd": "repositories/cca-studio",
+      "command": ["npm", "test", "--silent"]
+    }
+  ]
+}

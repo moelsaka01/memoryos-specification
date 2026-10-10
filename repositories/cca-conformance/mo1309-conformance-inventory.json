@@ -1,0 +1,1177 @@
+{
+  "kind": "MO1309ConformanceInventory",
+  "version": "1.0.0",
+  "requirementSource": {
+    "path": "docs/mo1309-contract-freeze-1.md",
+    "sha256": "sha256:7c192386eea8a8a4a4893be65939c13b327df6aa5b888601d7ecbf82e62b5349"
+  },
+  "manifest": {
+    "path": "repositories/cca-conformance/mo1309-test-manifest.json",
+    "sha256": "sha256:dabc641cd8502b7c4eb00779d54a56f798f22c8d6ec59db095f4103b0b59e743"
+  },
+  "status": "CLOUD_COVERAGE_ONLY_NOT_CERTIFIED",
+  "windowsCampaigns": {
+    "4A": {
+      "cases": [
+        "4A-E1",
+        "4A-E2",
+        "4A-E3",
+        "4A-E4",
+        "4A-E5",
+        "4A-E6",
+        "4A-E7",
+        "4A-E8",
+        "4A-E9"
+      ],
+      "requirements": [
+        "DB01",
+        "DB03",
+        "DB18",
+        "DB20",
+        "DB22",
+        "DB23",
+        "DB24",
+        "DB25",
+        "DB29"
+      ]
+    },
+    "4B": {
+      "cases": [
+        "4B-C1",
+        "4B-C2",
+        "4B-C3",
+        "4B-C4"
+      ],
+      "requirements": [
+        "DB05",
+        "DB26",
+        "DB27"
+      ]
+    },
+    "4C": {
+      "cases": [
+        "4C-S1",
+        "4C-S2",
+        "4C-S3",
+        "4C-S4",
+        "4C-S5",
+        "4C-S6"
+      ],
+      "requirements": [
+        "DB02",
+        "DB03",
+        "DB04",
+        "DB06",
+        "DB07",
+        "DB08",
+        "DB09",
+        "DB13",
+        "DB14",
+        "DB15",
+        "DB17",
+        "DB19",
+        "DB28"
+      ]
+    },
+    "4D": {
+      "cases": [
+        "4D-D1",
+        "4D-D2",
+        "4D-D3",
+        "4D-D4",
+        "4D-D5",
+        "4D-D6",
+        "4D-D7"
+      ],
+      "requirements": [
+        "DB01",
+        "DB02",
+        "DB03",
+        "DB04",
+        "DB05",
+        "DB06",
+        "DB07",
+        "DB08",
+        "DB09",
+        "DB10",
+        "DB11",
+        "DB12",
+        "DB13",
+        "DB14",
+        "DB15",
+        "DB16",
+        "DB17",
+        "DB18",
+        "DB19",
+        "DB20",
+        "DB21",
+        "DB22",
+        "DB23",
+        "DB24",
+        "DB25",
+        "DB26",
+        "DB27",
+        "DB28",
+        "DB29",
+        "DB30",
+        "DB31",
+        "DB32"
+      ]
+    }
+  },
+  "requirements": [
+    {
+      "id": "DB01",
+      "text": "The only input is a MO-1308 export directory; no other input source",
+      "freezePhases": "2B",
+      "freezeProvenBy": "2B unit, 4A",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_generator_test.mjs",
+            "title": "DB01 the only input is one export directory and one output name"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_inventory_test.mjs",
+            "title": "DB01..DB32 each appear exactly once, with the Freeze text, and each has cloud coverage or a recorded artefact"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4A",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB02",
+      "text": "Each export file is read once into memory; `verifyHistoryExport` runs over those bytes; the view model is built only from them",
+      "freezePhases": "2B",
+      "freezeProvenBy": "2B, 4C swap probe",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_generator_test.mjs",
+            "title": "DB02 each export file is read exactly once; the view model comes from those bytes even if the directory is swapped afterwards"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4C",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB03",
+      "text": "A verification failure emits nothing and returns `DASH_EXPORT_INVALID` carrying the MO-1308 code",
+      "freezePhases": "2B",
+      "freezeProvenBy": "2B, 4C tamper corpus",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_viewmodel_test.mjs",
+            "title": "DB03 a defective export builds nothing and carries the MO-1308 code; wrong arguments are DASH_USAGE"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_generator_test.mjs",
+            "title": "DB03 a verification failure emits nothing and carries the MO-1308 code (tamper corpus)"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4A",
+          "4C",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB04",
+      "text": "Retained member contents are never parsed, embedded or rendered",
+      "freezePhases": "1, 2B",
+      "freezeProvenBy": "1 shape, 4C scan",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_viewmodel_test.mjs",
+            "title": "DB04 the view model holds names, lengths and digests of members, never member contents"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_generator_test.mjs",
+            "title": "DB04 retained member contents are never embedded (every member's bytes are absent from the output)"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4C",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB05",
+      "text": "The snapshot is one self-contained HTML file with no external reference",
+      "freezePhases": "2A, 2B",
+      "freezeProvenBy": "2B, 4B scan",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_page_test.mjs",
+            "title": "DB05 DB06 the snapshot is one self-contained file: hash-pinned script and style, no external reference"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_generator_test.mjs",
+            "title": "DB05 DB09 one file, no external reference; data block is escaped, parses to the canonical view model and cannot close itself"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4B",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB06",
+      "text": "The CSP meta is `default-src 'none'` with hash-pinned script and style; no `unsafe-inline`/`unsafe-eval`",
+      "freezePhases": "2A, 2B",
+      "freezeProvenBy": "2A, 4C browser",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_page_test.mjs",
+            "title": "DB05 DB06 the snapshot is one self-contained file: hash-pinned script and style, no external reference"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_generator_test.mjs",
+            "title": "DB06 the policy meta pins script and style by SHA-256 and has no unsafe source; the hash equals node:crypto's"
+          },
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "every fixture renders, CSP-clean, request-free, with registry-only chrome and a closed read-only control set (DB06 DB07 DB08 DB13 DB14)"
+          },
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "DB07 DB06 CSP is enforced: inline injection, eval and network are refused; a one-byte script change prevents the page running"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4C",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB07",
+      "text": "The page issues zero requests and uses none of the forbidden network, storage and navigation APIs",
+      "freezePhases": "2A",
+      "freezeProvenBy": "2A, 4C browser with network blocked",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_page_test.mjs",
+            "title": "DB07 DB08 the page script, style and template contain no forbidden API, sink, handler or external reference"
+          },
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "every fixture renders, CSP-clean, request-free, with registry-only chrome and a closed read-only control set (DB06 DB07 DB08 DB13 DB14)"
+          },
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "DB07 DB06 CSP is enforced: inline injection, eval and network are refused; a one-byte script change prevents the page running"
+          },
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "DB07 DB25 zero requests after load with the network blocked; identical behaviour and DOM from file:// and a static HTTP host"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4C",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB08",
+      "text": "Untrusted strings are written only as text; forbidden DOM sinks are absent",
+      "freezePhases": "2A",
+      "freezeProvenBy": "2A source scan, 4C injection corpus",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_page_test.mjs",
+            "title": "DB07 DB08 the page script, style and template contain no forbidden API, sink, handler or external reference"
+          },
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "every fixture renders, CSP-clean, request-free, with registry-only chrome and a closed read-only control set (DB06 DB07 DB08 DB13 DB14)"
+          },
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "adversarial untrusted data stays inert text: no markup, no state, no control, no script (DB08 DB14 4C-S4 preview)"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4C",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB09",
+      "text": "Embedded data is escaped so no value can close the data block or the document",
+      "freezePhases": "2B",
+      "freezeProvenBy": "2B, 4C injection corpus",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_page_test.mjs",
+            "title": "DB09 (page side) the embedded data is escaped, parses back to the canonical view model, and cannot close the block"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_generator_test.mjs",
+            "title": "DB05 DB09 one file, no external reference; data block is escaped, parses to the canonical view model and cannot close itself"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4C",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB10",
+      "text": "The view model is closed and rejects unknown, missing or mistyped members",
+      "freezePhases": "1",
+      "freezeProvenBy": "1",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_viewmodel_test.mjs",
+            "title": "DB10 the shape is closed: unknown, missing, mistyped or out-of-enum members are rejected everywhere"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4D"
+        ],
+        "status": "VALIDATOR_ONLY",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB11",
+      "text": "Enums and limits are imported from the MO-1308 contract and never redefined",
+      "freezePhases": "1",
+      "freezeProvenBy": "1 source scan and equality test",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_viewmodel_test.mjs",
+            "title": "DB11 enums and limits are the MO-1308 values, re-exported by identity, never copies"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_separation_test.mjs",
+            "title": "DB11 enums and limits are not redefined or copied: no enum list, no limit number, no re-declared export"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4D"
+        ],
+        "status": "VALIDATOR_ONLY",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB12",
+      "text": "Page filtering equals MO-1308 `query` for record kind, subject and retention",
+      "freezePhases": "2A",
+      "freezeProvenBy": "2A differential test",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_page_test.mjs",
+            "title": "DB12 page filter results equal MO-1308 query for record kind, subject and retention, over every real fixture"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_page_test.mjs",
+            "title": "DB12 the decision-consistency filter, sort and paging behave as specified"
+          },
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "DB12 in the browser: filters give the MO-1308 query result for record kind, subject and retention; sort and clear work"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4D"
+        ],
+        "status": "VALIDATOR_ONLY",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB13",
+      "text": "The page is strictly read-only: closed action set, no write, approve, reject, append or tombstone control, no storage",
+      "freezePhases": "2A",
+      "freezeProvenBy": "2A, 4C",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_page_test.mjs",
+            "title": "DB13 the script's control actions are exactly members of the closed read-only action set and nothing else writes"
+          },
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "every fixture renders, CSP-clean, request-free, with registry-only chrome and a closed read-only control set (DB06 DB07 DB08 DB13 DB14)"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4C",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB14",
+      "text": "Every chrome string is a registry key; the forbidden-affordance scan passes on every fixture",
+      "freezePhases": "1, 2A",
+      "freezeProvenBy": "1, 2A, 4C",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_wording_test.mjs",
+            "title": "DB14 the registry is closed, frozen and covers every imported enum value exactly"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_wording_test.mjs",
+            "title": "DB14 every registry string passes the forbidden-affordance scan, except closed negation entries limited to listed terms"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_wording_test.mjs",
+            "title": "DB14/DB17 the rendered-string scan is clean for every fixture, and every chrome string is a registry key"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_page_test.mjs",
+            "title": "DB14 the template and script carry no display string of their own: the placeholder is the registry, and every static string is a registry value"
+          },
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "every fixture renders, CSP-clean, request-free, with registry-only chrome and a closed read-only control set (DB06 DB07 DB08 DB13 DB14)"
+          },
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "adversarial untrusted data stays inert text: no markup, no state, no control, no script (DB08 DB14 4C-S4 preview)"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4C",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB15",
+      "text": "The page states integrity-only verification, not authenticated/encrypted/signed, shows the full `headDigest` with anchoring guidance, and states the as-of-generation scope",
+      "freezePhases": "2A",
+      "freezeProvenBy": "2A, 4C",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_wording_test.mjs",
+            "title": "DB15/DB16 mandatory registry content (section 7.4) is present"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4C",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB16",
+      "text": "Anomaly counts (purge pending, unreferenced records, pending artifacts) are disclosed",
+      "freezePhases": "2A",
+      "freezeProvenBy": "2A",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_wording_test.mjs",
+            "title": "DB15/DB16 mandatory registry content (section 7.4) is present"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4D"
+        ],
+        "status": "VALIDATOR_ONLY",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB17",
+      "text": "`CONTRARY_TO_READINESS` is a neutral observation without success or failure styling",
+      "freezePhases": "1, 2A",
+      "freezeProvenBy": "1, 2A",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_viewmodel_test.mjs",
+            "title": "DB17/DB18 the all-kinds fixture has the expected counts, both observations, one purge and a canonical newline"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_wording_test.mjs",
+            "title": "DB14/DB17 the rendered-string scan is clean for every fixture, and every chrome string is a registry key"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_wording_test.mjs",
+            "title": "DB17 CONTRARY_TO_READINESS is a neutral observation: same structure and weight as CONSISTENT, no success or failure wording"
+          },
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "CONTRARY_TO_READINESS is a neutral, disclosed observation with the same presentation as CONSISTENT (DB17)"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4C",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB18",
+      "text": "Same export and version give a byte-identical snapshot, across runs and enumeration orders",
+      "freezePhases": "2B",
+      "freezeProvenBy": "2B, 4A",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_viewmodel_test.mjs",
+            "title": "DB17/DB18 the all-kinds fixture has the expected counts, both observations, one purge and a canonical newline"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_viewmodel_test.mjs",
+            "title": "DB18/DB19 determinism: identical bytes give identical canonical bytes, whatever the file order, copy kind, locale or time zone"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_generator_test.mjs",
+            "title": "DB18 same export and version give identical bytes across runs and directory enumeration orders"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_generator_test.mjs",
+            "title": "DB18 DB19 a fresh process under a different time zone, locale, working directory and clock gives the same bytes with no path, host, user or time"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4A",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB19",
+      "text": "The output contains no clock, locale, random value, path, host or user",
+      "freezePhases": "2B",
+      "freezeProvenBy": "2B, 2C scanner, 4C",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_viewmodel_test.mjs",
+            "title": "DB18/DB19 determinism: identical bytes give identical canonical bytes, whatever the file order, copy kind, locale or time zone"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_viewmodel_test.mjs",
+            "title": "DB19 no wall-clock or locale dependence: fresh processes under hostile time zones, locales and clocks give the pinned bytes"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_generator_test.mjs",
+            "title": "DB18 DB19 a fresh process under a different time zone, locale, working directory and clock gives the same bytes with no path, host, user or time"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_trust_test.mjs",
+            "title": "DB19 scan targets: paths, timestamps, hosts, users and members are caught in the data block position and in the frame"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4C",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB20",
+      "text": "Output creation is exclusive, never overwrites, and a failed exclusive create is a typed, unretried IO failure",
+      "freezePhases": "2B",
+      "freezeProvenBy": "2B, 4A",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_generator_test.mjs",
+            "title": "DB20 output creation is exclusive: an existing name is never overwritten, staging failure is typed and not retried"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4A",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB21",
+      "text": "Imported limits are enforced; over-limit input is `DASH_LIMIT_EXCEEDED`",
+      "freezePhases": "2B",
+      "freezeProvenBy": "2B",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_generator_test.mjs",
+            "title": "DB21 an over-limit entry count is DASH_LIMIT_EXCEEDED before any file is read; the limit itself is not"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4D"
+        ],
+        "status": "VALIDATOR_ONLY",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB22",
+      "text": "The certified scale (1,000 or 10,000) is measured; 100,000 is characterized with no claim",
+      "freezePhases": "2D",
+      "freezeProvenBy": "2D, 4A",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_perf_test.mjs",
+            "title": "DB22 the recorded cloud report is valid, its certified scale follows the Freeze rule, and 100,000 is characterized with no budget or claim"
+          }
+        ],
+        "records": [
+          "docs/mo1309-phase2d-performance.md",
+          "docs/mo1309-phase3-cloud-report.json",
+          "docs/mo1309-phase2d-budgets.json"
+        ]
+      },
+      "windows": {
+        "campaigns": [
+          "4A",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB23",
+      "text": "Accessibility: keyboard, names, contrast, no colour-only meaning, 200% zoom",
+      "freezePhases": "2A",
+      "freezeProvenBy": "2A, 4A",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "DB23 contrast at least 4.5:1 in light, dark and forced-colors; reduced motion has no animation; no colour-only meaning"
+          },
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "DB23 keyboard operation, visible focus, landmarks and accessible names"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4A",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB24",
+      "text": "No horizontal page scroll at 320 px; layouts at 320, 768, 1280",
+      "freezePhases": "2A",
+      "freezeProvenBy": "2A, 4A",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "DB24 no horizontal page scroll at 320, 768 and 1280 CSS px, and at 200% zoom (640 and 160 CSS px equivalents)"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4A",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB25",
+      "text": "Identical behaviour from `file://` and a static HTTP host",
+      "freezePhases": "2A",
+      "freezeProvenBy": "2A, 4A",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-browser",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_browser_test.mjs",
+            "title": "DB07 DB25 zero requests after load with the network blocked; identical behaviour and DOM from file:// and a static HTTP host"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4A",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB26",
+      "text": "Dashboard modules import no SDK, Core, readiness, CI, network or filesystem module; MO-1308 files unchanged",
+      "freezePhases": "1, 3",
+      "freezeProvenBy": "1, 3, 4B",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_separation_test.mjs",
+            "title": "DB26 dashboard modules import only the MO-1308 history contract and ledger, the canonical module and each other"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_separation_test.mjs",
+            "title": "DB26 pure and browser-safe: no filesystem, network, process, clock, random, locale or storage API"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_separation_test.mjs",
+            "title": "DB26 MO-1308 production bytes are unchanged by MO-1309 (pinned digests of the released history modules)"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_audit_test.mjs",
+            "title": "DB26 DB27 classifyDiff accepts MO-1309 additions and the three documents, and refuses everything else (negative controls)"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_audit_test.mjs",
+            "title": "DB26 DB27 the whole milestone against BF bf2fdc87: only MO-1309 additions and three documents; every MO-1308 production blob is unchanged; no new import"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4B",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB27",
+      "text": "Released packages, closures and inventories unchanged; no new dependency; no build step",
+      "freezePhases": "3",
+      "freezeProvenBy": "4B",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_audit_test.mjs",
+            "title": "DB26 DB27 classifyDiff accepts MO-1309 additions and the three documents, and refuses everything else (negative controls)"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_audit_test.mjs",
+            "title": "DB27 import scan: relative and node: specifiers pass, a package or URL specifier is an offender (negative control)"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_audit_test.mjs",
+            "title": "DB26 DB27 the whole milestone against BF bf2fdc87: only MO-1309 additions and three documents; every MO-1308 production blob is unchanged; no new import"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_audit_test.mjs",
+            "title": "DB27 the studio package manifest is byte-identical to BF and the MO-1309 tests are wired by a separate manifest (no build step, no script change)"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_manifest_test.mjs",
+            "title": "DB27 the manifest lists every MO-1309 test file, and each listed file exists"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_manifest_test.mjs",
+            "title": "DB27 negative control: a manifest missing a test file is detected, and a malformed manifest is refused"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4B",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB28",
+      "text": "The H40/A6 re-review is recorded and the store claim stays local single-user v1",
+      "freezePhases": "2C",
+      "freezeProvenBy": "2C, 4C wording",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_trust_test.mjs",
+            "title": "DB28 H40: no dashboard file creates, opens or mutates a ledger store; the only MO-1308 ledger functions imported are verification and query"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_trust_test.mjs",
+            "title": "DB28 A6: where a dashboard file writes, it creates exclusively and never replaces; no write API that replaces, renames or truncates"
+          },
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_trust_test.mjs",
+            "title": "DB28 the registry makes no multi-user, hosted-service, shared-storage, tenancy or store claim; the store claim stays local single-user v1"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4C",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB29",
+      "text": "Certification runs on Windows 11 x64, Node 24.21.0 and a Chromium-family browser",
+      "freezePhases": "4A",
+      "freezeProvenBy": "4A, 4D",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_campaigns_test.mjs",
+            "title": "DB29 a certifying run is refused unless it is Windows 11 x64, Node 24.21.0, a clean tree and a new evidence directory"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4A",
+          "4D"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB30",
+      "text": "Any rerun inside a retained regression is its own suite row with its own log binding; the validator recomputes log digests and checks each row's commit",
+      "freezePhases": "3, 4D",
+      "freezeProvenBy": "4D validator",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_manifest_test.mjs",
+            "title": "DB30 a rerun is its own row with its own numbered log, and the row digest binds the log bytes"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_manifest_test.mjs",
+            "title": "DB30 tapCounts reads the node --test summary and reports a missing summary as NaN (never as a pass)"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_validator_test.mjs",
+            "title": "DB30 4D a consistent record reaches I3_VALID_PENDING_BF; a binding-only BF reaches CERTIFIED_READY_TO_TAG; no tag is created"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_validator_test.mjs",
+            "title": "DB30 negative control: a tampered log is recomputed and rejected"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_validator_test.mjs",
+            "title": "DB30 negative control: a row whose commit is not HEAD or an ancestor is rejected (row commits are checked, not a record-level commit)"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_validator_test.mjs",
+            "title": "DB30 negative control: a rerun folded into the same run number, a gap in run numbers, and a missing row commit are rejected"
+          }
+        ],
+        "records": [
+          "repositories/cca-conformance/tools/mo1309/validate.mjs",
+          "retained regression record rows with one log each"
+        ]
+      },
+      "windows": {
+        "campaigns": [
+          "4D"
+        ],
+        "status": "VALIDATOR_ONLY",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB31",
+      "text": "ARCHITECTURE §5/§13 carry the narrow clause (section 20) and no other ARCHITECTURE change",
+      "freezePhases": "1",
+      "freezeProvenBy": "1",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "dashboard-unit",
+            "file": "repositories/cca-studio/tests/memoryos_dashboard_separation_test.mjs",
+            "title": "DB31 ARCHITECTURE section 5 and section 13 carry exactly the two clauses of Freeze section 20"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_audit_test.mjs",
+            "title": "DB31 ARCHITECTURE.md differs from BF by additions only, and they are the two Freeze section 20 clauses"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaigns": [
+          "4D"
+        ],
+        "status": "VALIDATOR_ONLY",
+        "certifying": false
+      }
+    },
+    {
+      "id": "DB32",
+      "text": "Export-performance work, if done, is separate maintenance with a byte-identical-output proof and is not part of MO-1309",
+      "freezePhases": "—",
+      "freezeProvenBy": "Section 18",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_audit_test.mjs",
+            "title": "DB32 no export-performance work: the MO-1308 exporter and every MO-1308 production path are byte-identical to the released candidate"
+          },
+          {
+            "suite": "mo1309-tools",
+            "file": "repositories/cca-conformance/tests/mo1309_inventory_test.mjs",
+            "title": "DB01..DB32 each appear exactly once, with the Freeze text, and each has cloud coverage or a recorded artefact"
+          }
+        ],
+        "records": [
+          "docs/mo1309-contract-freeze-1.md section 18",
+          "no export-performance work was done (audit: no MO-1308 byte changed)"
+        ]
+      },
+      "windows": {
+        "campaigns": [
+          "4D"
+        ],
+        "status": "VALIDATOR_ONLY",
+        "certifying": false
+      }
+    }
+  ]
+}

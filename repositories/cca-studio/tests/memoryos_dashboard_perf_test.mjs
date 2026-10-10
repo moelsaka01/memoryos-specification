@@ -87,7 +87,7 @@ test("budgets are evaluated on the worst run at the certified scale; a violation
 
 // ---- the recorded binding (Freeze section 12) ----
 test("DB22 the recorded cloud report is valid, its certified scale follows the Freeze rule, and 100,000 is characterized with no budget or claim", () => {
-  const measured = JSON.parse(fs.readFileSync(docs("mo1309-phase2d-cloud-report.json"), "utf8"));
+  const measured = JSON.parse(fs.readFileSync(docs("mo1309-phase3-cloud-report.json"), "utf8")); // post-fix (Phase 3 linear build)
   assert.ok(validateReport(measured).ok);
   const budgets = JSON.parse(fs.readFileSync(docs("mo1309-phase2d-budgets.json"), "utf8"));
   // The Freeze rule: the largest of 1,000 and 10,000 at which generation and load completed.
@@ -95,10 +95,25 @@ test("DB22 the recorded cloud report is valid, its certified scale follows the F
   assert.equal(budgets.scale, Math.max(...completed));
   assert.deepEqual(budgets.characterizedOnly, [100000]);
   assert.ok(!Object.hasOwn(budgets, "100000"));
-  assert.ok(evaluateBudgets(measured, budgets).ok, "the recorded cloud worst run is within the recorded budgets");
+  assert.ok(evaluateBudgets(measured, budgets).ok, "the post-fix cloud worst run is within the recorded budgets");
   assert.ok(measured.results.some((r) => r.entries === 100000), "the 100,000-entry characterization is recorded");
   for (const [name, bound] of Object.entries(budgets.maximum)) assert.ok(Object.hasOwn(METRICS, name) && bound > 0, name);
   assert.match(budgets.rule, /owner review/u);
+});
+
+test("DB22 Phase 3 only tightens the Phase 2D budgets, never widens them; the pre-fix report shows why (negative control)", () => {
+  const budgets = JSON.parse(fs.readFileSync(docs("mo1309-phase2d-budgets.json"), "utf8"));
+  const before = budgets.supersedes.maximum;
+  assert.deepEqual(Object.keys(before).sort(), Object.keys(budgets.maximum).sort());
+  for (const name of Object.keys(before)) assert.ok(budgets.maximum[name] <= before[name], `${name} is not widened`);
+  assert.deepEqual(Object.keys(before).filter((name) => budgets.maximum[name] < before[name]).sort(), [...budgets.tightenedInPhase3].sort());
+  // The pre-fix (quadratic) 2D report would now exceed the tightened view-model and generation budgets, so the tightening is real.
+  const pre = JSON.parse(fs.readFileSync(docs("mo1309-phase2d-cloud-report.json"), "utf8"));
+  const verdict = evaluateBudgets(pre, budgets);
+  assert.equal(verdict.ok, false);
+  assert.ok(budgets.tightenedInPhase3.some((name) => JSON.stringify(verdict.violations).includes(name)));
+  // And the 2D budgets as bound still hold for the pre-fix report (the rule is "tighten only", so the old bound is a superset).
+  assert.ok(evaluateBudgets(pre, { ...budgets, maximum: before }).ok);
 });
 
 test("the prepared Windows run names exactly the commands the runner supports and claims no Windows result", () => {

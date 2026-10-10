@@ -47,3 +47,9 @@ console output of the three commands. A Windows report is a new file. The cloud 
   Phase 2D binding returns to owner review.
 - The corpus is synthetic (see [the performance record](mo1309-phase2d-performance.md)); case 4A-E1 and 4A-E2 cover real
   CLI-produced exports.
+
+## Phase 3 note
+
+The linear view-model build (Phase 3) and the tightened budgets (view-model build 30 s, generation wall 60 s, generator memory 1,100 MB) apply to this run; the
+commands are unchanged. The cloud reference for the same commands is `docs/mo1309-phase3-cloud-report.json`. The run is still **prepared, not run**. It is executed
+inside campaign 4A (cases 4A-E4 and 4A-E8) by `tools/mo1309/campaigns.mjs 4a --certifying [--full]`, which wraps these commands.
