@@ -102,9 +102,15 @@ export async function launchBrowser() {
     try { socket.close(); } catch { /* already closed */ }
     child.kill("SIGKILL");
     await new Promise((resolve) => { if (child.exitCode !== null) resolve(); else child.on("exit", resolve); });
-    fs.rmSync(profile, { recursive: true, force: true });
+    removeProfile(profile);
   };
   return { openPage, close, executable };
+}
+
+// Phase 3 harness fix (HARNESS_DEFECT): SIGKILL stops only the main browser process, so helper processes may still be writing
+// the profile directory when it is removed (ENOTEMPTY). Removal is retried with a delay; a persistent failure still throws.
+export function removeProfile(directory, remove = fs.rmSync) {
+  remove(directory, { recursive: true, force: true, maxRetries: 20, retryDelay: 100 });
 }
 
 // A static HTTP host (no security headers) serving fixed files; the page must behave identically here and from file:// (DB25).
