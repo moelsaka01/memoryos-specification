@@ -1,0 +1,130 @@
+TAP version 13
+# Subtest: A01 every 3A case is implemented, none is declared host-only, none is both
+ok 1 - A01 every 3A case is implemented, none is declared host-only, none is both
+  ---
+  duration_ms: 3.631723
+  type: 'test'
+  ...
+# Subtest: A02 the implemented set is exactly the 108 inventory cases
+ok 2 - A02 the implemented set is exactly the 108 inventory cases
+  ---
+  duration_ms: 0.69484
+  type: 'test'
+  ...
+# Subtest: A03 the harness table of the former host-only declarations still names every Windows harness
+ok 3 - A03 the harness table of the former host-only declarations still names every Windows harness
+  ---
+  duration_ms: 0.215438
+  type: 'test'
+  ...
+# Subtest: A04 every Freeze section 14.1 code is either reached by a CLI scenario or declared unreachable with a reason
+ok 4 - A04 every Freeze section 14.1 code is either reached by a CLI scenario or declared unreachable with a reason
+  ---
+  duration_ms: 8469.96925
+  type: 'test'
+  ...
+# Subtest: A05 a record one byte over a member limit is refused with the limit code and leaves the ledger unchanged
+ok 5 - A05 a record one byte over a member limit is refused with the limit code and leaves the ledger unchanged
+  ---
+  duration_ms: 609.694932
+  type: 'test'
+  ...
+# Subtest: A06 removeTree removes a junction as a link, never touches its target, and refuses a path outside its root
+ok 6 - A06 removeTree removes a junction as a link, never touches its target, and refuses a path outside its root # SKIP the Windows host harness
+  ---
+  duration_ms: 0.172572
+  type: 'test'
+  ...
+# Subtest: A07 a snapshot records a junction as a link and never follows it
+ok 7 - A07 a snapshot records a junction as a link and never follows it # SKIP the Windows host harness
+  ---
+  duration_ms: 0.344218
+  type: 'test'
+  ...
+# Subtest: A08 the fault-injection preload is a no-op when disarmed and the probe can tell when it is armed
+ok 8 - A08 the fault-injection preload is a no-op when disarmed and the probe can tell when it is armed # SKIP the Windows host harness
+  ---
+  duration_ms: 0.414982
+  type: 'test'
+  ...
+# Subtest: A09 the junction swapper refuses a ledger or an outside directory beyond the work root
+ok 9 - A09 the junction swapper refuses a ledger or an outside directory beyond the work root # SKIP the Windows host harness
+  ---
+  duration_ms: 0.308014
+  type: 'test'
+  ...
+# Subtest: A10 a paused append stops at the commit-protocol step, is killed there, and leaves a ledger that verifies
+ok 10 - A10 a paused append stops at the commit-protocol step, is killed there, and leaves a ledger that verifies # SKIP the Windows host harness
+  ---
+  duration_ms: 0.268985
+  type: 'test'
+  ...
+# Subtest: A11 the product never names the harness: no production path mentions a harness file, an observer or the preload (R37)
+ok 11 - A11 the product never names the harness: no production path mentions a harness file, an observer or the preload (R37)
+  ---
+  duration_ms: 20.847621
+  type: 'test'
+  ...
+# Subtest: A12 the harness observers are exactly the reviewed set, and the gate inputs are real files
+ok 12 - A12 the harness observers are exactly the reviewed set, and the gate inputs are real files
+  ---
+  duration_ms: 0.698602
+  type: 'test'
+  ...
+# Subtest: A13 the scratch area is outside git: the work root of a generation does not make the worktree dirty
+not ok 13 - A13 the scratch area is outside git: the work root of a generation does not make the worktree dirty
+  ---
+  duration_ms: 926.43307
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1308_phase3a_test.mjs:149:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + '?? .p3a-work/'
+    - ''
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ''
+  actual: '?? .p3a-work/'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/base/repositories/cca-conformance/tests/mo1308_phase3a_test.mjs:153:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: A14 the clean-tree check ignores the generation's own evidence directory, and only that
+ok 14 - A14 the clean-tree check ignores the generation's own evidence directory, and only that
+  ---
+  duration_ms: 117.186868
+  type: 'test'
+  ...
+# Subtest: A15 a stray path anywhere outside the evidence directory still fails the clean-tree check
+ok 15 - A15 a stray path anywhere outside the evidence directory still fails the clean-tree check
+  ---
+  duration_ms: 145.91873
+  type: 'test'
+  ...
+# Subtest: A16 a modified or deleted tracked file still fails the clean-tree check
+ok 16 - A16 a modified or deleted tracked file still fails the clean-tree check
+  ---
+  duration_ms: 177.803059
+  type: 'test'
+  ...
+# Subtest: A17 the porcelain filter handles renames and exclusion of a path outside the repository
+ok 17 - A17 the porcelain filter handles renames and exclusion of a path outside the repository
+  ---
+  duration_ms: 0.328432
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 11
+# fail 1
+# cancelled 0
+# skipped 5
+# todo 0
+# duration_ms 10692.206701

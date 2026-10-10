@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: APIBOOT01 earlier malformed config dominates later oversized evidence
+ok 1 - APIBOOT01 earlier malformed config dominates later oversized evidence
+  ---
+  duration_ms: 32.626694
+  type: 'test'
+  ...
+# Subtest: APIBOOT02 config shape error dominates wrong authority pin in same phase
+ok 2 - APIBOOT02 config shape error dominates wrong authority pin in same phase
+  ---
+  duration_ms: 18.890731
+  type: 'test'
+  ...
+# Subtest: APIBOOT03 malformed config dominates oversized authority safely
+ok 3 - APIBOOT03 malformed config dominates oversized authority safely
+  ---
+  duration_ms: 10.712817
+  type: 'test'
+  ...
+# Subtest: APIBOOT04 exact manifest ENVELOPE cap applied before bytes copy
+ok 4 - APIBOOT04 exact manifest ENVELOPE cap applied before bytes copy
+  ---
+  duration_ms: 19.565486
+  type: 'test'
+  ...
+# Subtest: APIBOOT05 exact manifest file set checked before copying unknown file
+ok 5 - APIBOOT05 exact manifest file set checked before copying unknown file
+  ---
+  duration_ms: 16.489812
+  type: 'test'
+  ...
+# Subtest: APIBOOT06 snapshots remain detached and byte-identical
+ok 6 - APIBOOT06 snapshots remain detached and byte-identical
+  ---
+  duration_ms: 13.611896
+  type: 'test'
+  ...
+# Subtest: APIBOOT07 TIMEOUT interruption dominates collected parse errors
+ok 7 - APIBOOT07 TIMEOUT interruption dominates collected parse errors
+  ---
+  duration_ms: 0.432267
+  type: 'test'
+  ...
+# Subtest: APIBOOT07 CANCELLED interruption dominates collected parse errors
+ok 8 - APIBOOT07 CANCELLED interruption dominates collected parse errors
+  ---
+  duration_ms: 0.200074
+  type: 'test'
+  ...
+# Subtest: APIBOOT08 hostile typed-array byteLength override is never invoked
+ok 9 - APIBOOT08 hostile typed-array byteLength override is never invoked
+  ---
+  duration_ms: 11.007421
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 265.130064

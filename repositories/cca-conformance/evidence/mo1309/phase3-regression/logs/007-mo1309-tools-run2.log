@@ -1,0 +1,186 @@
+TAP version 13
+# Subtest: DB26 DB27 classifyDiff accepts MO-1309 additions and the three documents, and refuses everything else (negative controls)
+ok 1 - DB26 DB27 classifyDiff accepts MO-1309 additions and the three documents, and refuses everything else (negative controls)
+  ---
+  duration_ms: 3.873368
+  type: 'test'
+  ...
+# Subtest: DB27 import scan: relative and node: specifiers pass, a package or URL specifier is an offender (negative control)
+ok 2 - DB27 import scan: relative and node: specifiers pass, a package or URL specifier is an offender (negative control)
+  ---
+  duration_ms: 0.699234
+  type: 'test'
+  ...
+# Subtest: DB26 DB27 the whole milestone against BF bf2fdc87: only MO-1309 additions and three documents; every MO-1308 production blob is unchanged; no new import
+ok 3 - DB26 DB27 the whole milestone against BF bf2fdc87: only MO-1309 additions and three documents; every MO-1308 production blob is unchanged; no new import
+  ---
+  duration_ms: 391.929347
+  type: 'test'
+  ...
+# Subtest: DB27 the studio package manifest is byte-identical to BF and the MO-1309 tests are wired by a separate manifest (no build step, no script change)
+ok 4 - DB27 the studio package manifest is byte-identical to BF and the MO-1309 tests are wired by a separate manifest (no build step, no script change)
+  ---
+  duration_ms: 7.301829
+  type: 'test'
+  ...
+# Subtest: DB31 ARCHITECTURE.md differs from BF by additions only, and they are the two Freeze section 20 clauses
+ok 5 - DB31 ARCHITECTURE.md differs from BF by additions only, and they are the two Freeze section 20 clauses
+  ---
+  duration_ms: 4.423964
+  type: 'test'
+  ...
+# Subtest: DB32 no export-performance work: the MO-1308 exporter and every MO-1308 production path are byte-identical to the released candidate
+ok 6 - DB32 no export-performance work: the MO-1308 exporter and every MO-1308 production path are byte-identical to the released candidate
+  ---
+  duration_ms: 402.052068
+  type: 'test'
+  ...
+# Subtest: differential gate verdict rules (A3.2 style): a regression, a new failing unit, a changed failure set and an unverified workspace are each caught (negative controls)
+ok 7 - differential gate verdict rules (A3.2 style): a regression, a new failing unit, a changed failure set and an unverified workspace are each caught (negative controls)
+  ---
+  duration_ms: 10.756761
+  type: 'test'
+  ...
+# Subtest: the case ids equal the Freeze section 17 campaign table, and every case names its Windows-only part
+ok 8 - the case ids equal the Freeze section 17 campaign table, and every case names its Windows-only part
+  ---
+  duration_ms: 3.644734
+  type: 'test'
+  ...
+# Subtest: DB29 a certifying run is refused unless it is Windows 11 x64, Node 24.21.0, a clean tree and a new evidence directory
+ok 9 - DB29 a certifying run is refused unless it is Windows 11 x64, Node 24.21.0, a clean tree and a new evidence directory
+  ---
+  duration_ms: 110.726717
+  type: 'test'
+  ...
+# Subtest: 4B rehearsal passes in the cloud and writes a NON-certifying receipt that lists the Windows-only parts
+ok 10 - 4B rehearsal passes in the cloud and writes a NON-certifying receipt that lists the Windows-only parts
+  ---
+  duration_ms: 1150.224995
+  type: 'test'
+  ...
+# Subtest: the committed inventory equals the inventory rebuilt from the Freeze, the manifest and the test titles
+ok 11 - the committed inventory equals the inventory rebuilt from the Freeze, the manifest and the test titles
+  ---
+  duration_ms: 10.437394
+  type: 'test'
+  ...
+# Subtest: DB01..DB32 each appear exactly once, with the Freeze text, and each has cloud coverage or a recorded artefact
+ok 12 - DB01..DB32 each appear exactly once, with the Freeze text, and each has cloud coverage or a recorded artefact
+  ---
+  duration_ms: 2.14451
+  type: 'test'
+  ...
+# Subtest: every cited test exists in its file under its exact title, and its suite is in the manifest
+ok 13 - every cited test exists in its file under its exact title, and its suite is in the manifest
+  ---
+  duration_ms: 11.076052
+  type: 'test'
+  ...
+# Subtest: Windows campaigns come from the Freeze table, no inventory row claims certification, and the status is cloud-only
+ok 14 - Windows campaigns come from the Freeze table, no inventory row claims certification, and the status is cloud-only
+  ---
+  duration_ms: 0.495013
+  type: 'test'
+  ...
+# Subtest: negative controls: a Freeze table missing a row, or a removed test title, changes the rebuilt inventory
+ok 15 - negative controls: a Freeze table missing a row, or a removed test title, changes the rebuilt inventory
+  ---
+  duration_ms: 3.360718
+  type: 'test'
+  ...
+# Subtest: DB27 the manifest lists every MO-1309 test file, and each listed file exists
+ok 16 - DB27 the manifest lists every MO-1309 test file, and each listed file exists
+  ---
+  duration_ms: 3.41496
+  type: 'test'
+  ...
+# Subtest: DB27 negative control: a manifest missing a test file is detected, and a malformed manifest is refused
+ok 17 - DB27 negative control: a manifest missing a test file is detected, and a malformed manifest is refused
+  ---
+  duration_ms: 2.748645
+  type: 'test'
+  ...
+# Subtest: DB30 a rerun is its own row with its own numbered log, and the row digest binds the log bytes
+ok 18 - DB30 a rerun is its own row with its own numbered log, and the row digest binds the log bytes
+  ---
+  duration_ms: 75.807169
+  type: 'test'
+  ...
+# Subtest: DB30 tapCounts reads the node --test summary and reports a missing summary as NaN (never as a pass)
+ok 19 - DB30 tapCounts reads the node --test summary and reports a missing summary as NaN (never as a pass)
+  ---
+  duration_ms: 0.258466
+  type: 'test'
+  ...
+# Subtest: DB30 4D a consistent record reaches I3_VALID_PENDING_BF; a binding-only BF reaches CERTIFIED_READY_TO_TAG; no tag is created
+ok 20 - DB30 4D a consistent record reaches I3_VALID_PENDING_BF; a binding-only BF reaches CERTIFIED_READY_TO_TAG; no tag is created
+  ---
+  duration_ms: 389.165785
+  type: 'test'
+  ...
+# Subtest: 4D-D7 negative controls: a binding that names another commit, or a BF that changes more than the binding file, is not accepted
+ok 21 - 4D-D7 negative controls: a binding that names another commit, or a BF that changes more than the binding file, is not accepted
+  ---
+  duration_ms: 669.083455
+  type: 'test'
+  ...
+# Subtest: DB30 negative control: a tampered log is recomputed and rejected
+ok 22 - DB30 negative control: a tampered log is recomputed and rejected
+  ---
+  duration_ms: 362.116612
+  type: 'test'
+  ...
+# Subtest: DB30 negative control: a row whose commit is not HEAD or an ancestor is rejected (row commits are checked, not a record-level commit)
+ok 23 - DB30 negative control: a row whose commit is not HEAD or an ancestor is rejected (row commits are checked, not a record-level commit)
+  ---
+  duration_ms: 382.979897
+  type: 'test'
+  ...
+# Subtest: DB30 negative control: a rerun folded into the same run number, a gap in run numbers, and a missing row commit are rejected
+ok 24 - DB30 negative control: a rerun folded into the same run number, a gap in run numbers, and a missing row commit are rejected
+  ---
+  duration_ms: 758.553657
+  type: 'test'
+  ...
+# Subtest: 4D-D2 negative controls: two accepted generations, none accepted, and a preserved generation without a disposition are rejected
+ok 25 - 4D-D2 negative controls: two accepted generations, none accepted, and a preserved generation without a disposition are rejected
+  ---
+  duration_ms: 785.39087
+  type: 'test'
+  ...
+# Subtest: 4D-D1 negative control: a production byte changed after the candidate is rejected; evidence and documents are allowed
+ok 26 - 4D-D1 negative control: a production byte changed after the candidate is rejected; evidence and documents are allowed
+  ---
+  duration_ms: 234.095795
+  type: 'test'
+  ...
+# Subtest: 4D-D3 and 4D-D6 negative controls: a requirement with no passing suite and a disclosure that omits a qualification are rejected
+ok 27 - 4D-D3 and 4D-D6 negative controls: a requirement with no passing suite and a disclosure that omits a qualification are rejected
+  ---
+  duration_ms: 519.837119
+  type: 'test'
+  ...
+# Subtest: a missing or foreign record is NOT_READY
+ok 28 - a missing or foreign record is NOT_READY
+  ---
+  duration_ms: 8.437061
+  type: 'test'
+  ...
+# Subtest: 4D rehearsal: the assembled record of non-certifying rehearsal receipts is NOT_READY (a rehearsal can never certify)
+ok 29 - 4D rehearsal: the assembled record of non-certifying rehearsal receipts is NOT_READY (a rehearsal can never certify)
+  ---
+  duration_ms: 217.612425
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4720.113443
+
+--- stderr ---

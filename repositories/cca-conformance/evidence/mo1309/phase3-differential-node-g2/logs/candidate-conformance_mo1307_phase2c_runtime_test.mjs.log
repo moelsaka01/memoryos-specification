@@ -1,0 +1,226 @@
+TAP version 13
+# Subtest: R01 api exact absolute deadline and equality
+ok 1 - R01 api exact absolute deadline and equality
+  ---
+  duration_ms: 2.393734
+  type: 'test'
+  ...
+# Subtest: R01 cli exact absolute deadline and equality
+ok 2 - R01 cli exact absolute deadline and equality
+  ---
+  duration_ms: 0.24123
+  type: 'test'
+  ...
+# Subtest: R02 earlier cancellation stays terminal after deadline
+ok 3 - R02 earlier cancellation stays terminal after deadline
+  ---
+  duration_ms: 0.29924
+  type: 'test'
+  ...
+# Subtest: R03 timeout wins simultaneous first cancellation observation
+ok 4 - R03 timeout wins simultaneous first cancellation observation
+  ---
+  duration_ms: 0.251381
+  type: 'test'
+  ...
+# Subtest: R04 preaborted signal prevents any launch
+ok 5 - R04 preaborted signal prevents any launch
+  ---
+  duration_ms: 0.615397
+  type: 'test'
+  ...
+# Subtest: R05 monotonic decreasing clock rejects
+ok 6 - R05 monotonic decreasing clock rejects
+  ---
+  duration_ms: 0.498977
+  type: 'test'
+  ...
+# Subtest: R06 API cannot launch helper
+ok 7 - R06 API cannot launch helper
+  ---
+  duration_ms: 0.444475
+  type: 'test'
+  ...
+# Subtest: R07 helper deadline includes all active time; equality rejects
+ok 8 - R07 helper deadline includes all active time; equality rejects
+  ---
+  duration_ms: 0.924484
+  type: 'test'
+  ...
+# Subtest: R08 aggregate deadline does not reset across helpers
+ok 9 - R08 aggregate deadline does not reset across helpers
+  ---
+  duration_ms: 0.955167
+  type: 'test'
+  ...
+# Subtest: R09 worker time is excluded from helper aggregate but inside overall
+ok 10 - R09 worker time is excluded from helper aggregate but inside overall
+  ---
+  duration_ms: 0.745273
+  type: 'test'
+  ...
+# Subtest: R10 helper overlap is terminal and cleans prior owned role
+ok 11 - R10 helper overlap is terminal and cleans prior owned role
+  ---
+  duration_ms: 0.607275
+  type: 'test'
+  ...
+# Subtest: R11 helper and worker cannot overlap
+ok 12 - R11 helper and worker cannot overlap
+  ---
+  duration_ms: 0.444741
+  type: 'test'
+  ...
+# Subtest: R12 frame alone cannot advance before actual close
+ok 13 - R12 frame alone cannot advance before actual close
+  ---
+  duration_ms: 55.24888
+  type: 'test'
+  ...
+# Subtest: R13 launch uses only fixed executable/script/environment and no shell
+ok 14 - R13 launch uses only fixed executable/script/environment and no shell
+  ---
+  duration_ms: 1.620879
+  type: 'test'
+  ...
+# Subtest: R14 helper trailing byte fails closed
+ok 15 - R14 helper trailing byte fails closed
+  ---
+  duration_ms: 2.920995
+  type: 'test'
+  ...
+# Subtest: R14 helper extra frame fails closed
+ok 16 - R14 helper extra frame fails closed
+  ---
+  duration_ms: 4.452838
+  type: 'test'
+  ...
+# Subtest: R14 helper debug stdout fails closed
+ok 17 - R14 helper debug stdout fails closed
+  ---
+  duration_ms: 1.842974
+  type: 'test'
+  ...
+# Subtest: R14 helper truncated frame fails closed
+ok 18 - R14 helper truncated frame fails closed
+  ---
+  duration_ms: 1.287372
+  type: 'test'
+  ...
+# Subtest: R14 helper oversized prefix fails closed
+ok 19 - R14 helper oversized prefix fails closed
+  ---
+  duration_ms: 4.372478
+  type: 'test'
+  ...
+# Subtest: R14 helper stderr overflow fails closed
+ok 20 - R14 helper stderr overflow fails closed
+  ---
+  duration_ms: 2.497485
+  type: 'test'
+  ...
+# Subtest: R14 helper nonzero exit fails closed
+ok 21 - R14 helper nonzero exit fails closed
+  ---
+  duration_ms: 2.975355
+  type: 'test'
+  ...
+# Subtest: R15 cancellation in launch terminates and ignores later valid frame
+ok 22 - R15 cancellation in launch terminates and ignores later valid frame
+  ---
+  duration_ms: 2.412027
+  type: 'test'
+  ...
+# Subtest: R16 cancellation during transport cleans child
+ok 23 - R16 cancellation during transport cleans child
+  ---
+  duration_ms: 10.847122
+  type: 'test'
+  ...
+# Subtest: R17 fixed actual worker has empty environment and exact heap intent
+ok 24 - R17 fixed actual worker has empty environment and exact heap intent
+  ---
+  duration_ms: 66.698701
+  type: 'test'
+  ...
+# Subtest: R18 successful worker result waits for termination
+ok 25 - R18 successful worker result waits for termination
+  ---
+  duration_ms: 142.075922
+  type: 'test'
+  ...
+# Subtest: R19 actual worker crash fails closed
+ok 26 - R19 actual worker crash fails closed
+  ---
+  duration_ms: 44.10771
+  type: 'test'
+  ...
+# Subtest: R19 actual worker duplicate fails closed
+ok 27 - R19 actual worker duplicate fails closed
+  ---
+  duration_ms: 43.030468
+  type: 'test'
+  ...
+# Subtest: R19 actual worker stdout fails closed
+ok 28 - R19 actual worker stdout fails closed
+  ---
+  duration_ms: 64.904641
+  type: 'test'
+  ...
+# Subtest: R20 cancellation actually terminates CPU-bound worker thread
+ok 29 - R20 cancellation actually terminates CPU-bound worker thread
+  ---
+  duration_ms: 44.443714
+  type: 'test'
+  ...
+# Subtest: R21 production worker executes accepted 2A/2B and confirms quiescence
+ok 30 - R21 production worker executes accepted 2A/2B and confirms quiescence
+  ---
+  duration_ms: 330.806197
+  type: 'test'
+  ...
+# Subtest: R22 adapter matches closed 2A handoff; operational/session fields excluded
+ok 31 - R22 adapter matches closed 2A handoff; operational/session fields excluded
+  ---
+  duration_ms: 0.471276
+  type: 'test'
+  ...
+# Subtest: R23 verify evidence seam excludes result and decision bytes
+ok 32 - R23 verify evidence seam excludes result and decision bytes
+  ---
+  duration_ms: 0.302833
+  type: 'test'
+  ...
+# Subtest: R24 malformed decision uses dedicated mismatch, cap uses resource
+ok 33 - R24 malformed decision uses dedicated mismatch, cap uses resource
+  ---
+  duration_ms: 0.522423
+  type: 'test'
+  ...
+# Subtest: R25 actual worker policy denies filesystem/network/process/module escape imports
+ok 34 - R25 actual worker policy denies filesystem/network/process/module escape imports
+  ---
+  duration_ms: 87.470715
+  type: 'test'
+  ...
+# Subtest: R26 cancellation preempts pending publication promise without another role
+ok 35 - R26 cancellation preempts pending publication promise without another role
+  ---
+  duration_ms: 0.70368
+  type: 'test'
+  ...
+# Subtest: R27 late publication promise cannot restore terminal success
+ok 36 - R27 late publication promise cannot restore terminal success
+  ---
+  duration_ms: 0.380165
+  type: 'test'
+  ...
+1..36
+# tests 36
+# suites 0
+# pass 36
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1052.982417

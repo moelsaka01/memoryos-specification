@@ -1,0 +1,56 @@
+TAP version 13
+# Subtest: portable C3 assessments bind exact evidence, identities, scope, and all requirement results
+not ok 1 - portable C3 assessments bind exact evidence, identities, scope, and all requirement results
+  ---
+  duration_ms: 903.073792
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/independent_assessment_conformance_test.mjs:352:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    node:internal/modules/run_main:123
+        triggerUncaughtException(
+        ^
+    
+    AssertionError [ERR_ASSERTION]: the authoritative Standard publication must be supplied or installed adjacent to the suite
+        at loadInputs (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/portable-report.mjs:45:10)
+        at async file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/portable-report.mjs:64:76 {
+      generatedMessage: false,
+      code: 'ERR_ASSERTION',
+      actual: null,
+      expected: null,
+      operator: 'notStrictEqual',
+      diff: 'simple'
+    }
+    
+    Node.js v22.22.0
+    
+    
+    1 !== 0
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    loadInputs (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/portable-report.mjs:45:10)
+    async file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/portable-report.mjs:64:76 {
+    TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/independent_assessment_conformance_test.mjs:664:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: portable C1 retains no-parseable-test and dual native build failures
+ok 2 - portable C1 retains no-parseable-test and dual native build failures
+  ---
+  duration_ms: 213.998452
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1338.795075

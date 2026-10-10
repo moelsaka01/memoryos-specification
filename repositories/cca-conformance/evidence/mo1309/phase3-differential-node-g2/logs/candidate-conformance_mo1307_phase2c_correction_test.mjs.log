@@ -1,0 +1,199 @@
+TAP version 13
+# Subtest: C2C01 corrected limits leave all byte ceilings unchanged
+ok 1 - C2C01 corrected limits leave all byte ceilings unchanged
+  ---
+  duration_ms: 1.056379
+  type: 'test'
+  ...
+# Subtest: C2C02 every required observation has a canonical closed framed representation
+ok 2 - C2C02 every required observation has a canonical closed framed representation
+  ---
+  duration_ms: 9.837911
+  type: 'test'
+  ...
+# Subtest: C2C03 old wire version missing session unknown fields and arbitrary operations reject
+ok 3 - C2C03 old wire version missing session unknown fields and arbitrary operations reject
+  ---
+  duration_ms: 0.980157
+  type: 'test'
+  ...
+# Subtest: C2C04 operation sequence and fixed output leaf authority are closed
+ok 4 - C2C04 operation sequence and fixed output leaf authority are closed
+  ---
+  duration_ms: 0.973001
+  type: 'test'
+  ...
+# Subtest: C2C05 bounded frames reject trailing requests responses and alternate session
+ok 5 - C2C05 bounded frames reject trailing requests responses and alternate session
+  ---
+  duration_ms: 1.000304
+  type: 'test'
+  ...
+# Subtest: C2C06 complete acquisition then terminated worker then five publication requests
+ok 6 - C2C06 complete acquisition then terminated worker then five publication requests
+  ---
+  duration_ms: 6.27132
+  type: 'test'
+  ...
+# Subtest: C2C07 helper completion cannot substitute for fully quiescent exit
+ok 7 - C2C07 helper completion cannot substitute for fully quiescent exit
+  ---
+  duration_ms: 3.44647
+  type: 'test'
+  ...
+# Subtest: C2C08 helper and worker overlap and repeated worker transition are terminal
+ok 8 - C2C08 helper and worker overlap and repeated worker transition are terminal
+  ---
+  duration_ms: 3.182998
+  type: 'test'
+  ...
+# Subtest: C2C09 verify remains four reads followed by worker and cannot publish
+ok 9 - C2C09 verify remains four reads followed by worker and cannot publish
+  ---
+  duration_ms: 3.620931
+  type: 'test'
+  ...
+# Subtest: C2C10 request failure abort and transport failure permit no retry
+ok 10 - C2C10 request failure abort and transport failure permit no retry
+  ---
+  duration_ms: 2.851969
+  type: 'test'
+  ...
+# Subtest: C2C11 full component chains reject missing ancestors wrong paths reparse and hardlinks
+ok 11 - C2C11 full component chains reject missing ancestors wrong paths reparse and hardlinks
+  ---
+  duration_ms: 0.942203
+  type: 'test'
+  ...
+# Subtest: C2C12 acquisition parent cannot be reused after native identity change
+ok 12 - C2C12 acquisition parent cannot be reused after native identity change
+  ---
+  duration_ms: 2.233706
+  type: 'test'
+  ...
+# Subtest: C2C13 path and cross-invocation session substitutions terminate assessment
+ok 13 - C2C13 path and cross-invocation session substitutions terminate assessment
+  ---
+  duration_ms: 1.912784
+  type: 'test'
+  ...
+# Subtest: C2C14 capability branding root binding and single claim exclude substitution
+ok 14 - C2C14 capability branding root binding and single claim exclude substitution
+  ---
+  duration_ms: 10.832889
+  type: 'test'
+  ...
+# Subtest: C2C15 unclaimed out-of-order or concurrent inspection cannot be retried
+ok 15 - C2C15 unclaimed out-of-order or concurrent inspection cannot be retried
+  ---
+  duration_ms: 5.82688
+  type: 'test'
+  ...
+# Subtest: C2C16 bridge requires exact transport fields and confirmed process quiescence
+ok 16 - C2C16 bridge requires exact transport fields and confirmed process quiescence
+  ---
+  duration_ms: 10.289092
+  type: 'test'
+  ...
+# Subtest: C2C17 per-invocation deadline includes response parsing and process exit
+ok 17 - C2C17 per-invocation deadline includes response parsing and process exit
+  ---
+  duration_ms: 1.245793
+  type: 'test'
+  ...
+# Subtest: C2C18 aggregate helper budget cannot silently multiply with sequential invocations
+ok 18 - C2C18 aggregate helper budget cannot silently multiply with sequential invocations
+  ---
+  duration_ms: 2.63686
+  type: 'test'
+  ...
+# Subtest: C2C19 overall CLI deadline and nonmonotonic clock fail without grace
+ok 19 - C2C19 overall CLI deadline and nonmonotonic clock fail without grace
+  ---
+  duration_ms: 2.135592
+  type: 'test'
+  ...
+# Subtest: C2C20 framed publication performs exact five observations and one final rename
+not ok 20 - C2C20 framed publication performs exact five observations and one final rename
+  ---
+  duration_ms: 20.05352
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs:188:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-ybsq9L\\candidate\\.cache\\mo1307\\phase2c-correction\\native-30196'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs:190:22)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: C2C21 cancellation after each publication inspection is terminal and retains incomplete attempt
+not ok 21 - C2C21 cancellation after each publication inspection is terminal and retains incomplete attempt
+  ---
+  duration_ms: 2.056048
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs:197:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-ybsq9L\\candidate\\.cache\\mo1307\\phase2c-correction\\native-30196'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs:200:24)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: C2C22 immediate pre-rename checkpoint blocks timeout after final native observation
+not ok 22 - C2C22 immediate pre-rename checkpoint blocks timeout after final native observation
+  ---
+  duration_ms: 3.406697
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs:212:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-ybsq9L\\candidate\\.cache\\mo1307\\phase2c-correction\\native-30196'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async fixtureInspection (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs:214:22)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: C2C23 final native pending identity comparison rejects stale replacement and retains bytes
+not ok 23 - C2C23 final native pending identity comparison rejects stale replacement and retains bytes
+  ---
+  duration_ms: 1.548605
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs:219:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, lstat '\\tmp\\mo1309-gate-ybsq9L\\candidate\\.cache\\mo1307\\phase2c-correction\\native-30196'"
+  code: 'ENOENT'
+  stack: |-
+    async Object.lstat (node:internal/fs/promises:1020:18)
+    async fixtureInspect (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:30:18)
+    async inspect (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs:222:19)
+    async fixtureInspection (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/mo1307-phase2c-correction/publication-fixture.mjs:78:75)
+    async TestContext.<anonymous> (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1307_phase2c_correction_test.mjs:221:22)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: C2C24 mismatched branded capability and legacy callback cannot create an output root
+ok 24 - C2C24 mismatched branded capability and legacy callback cannot create an output root
+  ---
+  duration_ms: 4.645882
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 20
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 225.752146

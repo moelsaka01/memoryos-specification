@@ -1,0 +1,37 @@
+TAP version 13
+# node:fs:560
+#   return binding.open(
+#                  ^
+# Error: ENOENT: no such file or directory, open '/tmp/mo1309-gate-ybsq9L/candidate/.cache/mo1305-phase2d/build/memoryos-rest-0.1.0.tgz'
+#     at Object.openSync (node:fs:560:18)
+#     at readFileSync (node:fs:444:35)
+#     at reference (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/mo1305-phase2c/evidence.mjs:38:45)
+#     at executionBinding (file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tools/mo1305-phase2d/execution.mjs:26:70)
+#     at file:///tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1305_phase2_conformance_test.mjs:10:15 {
+#   errno: -2,
+#   code: 'ENOENT',
+#   syscall: 'open',
+#   path: '/tmp/mo1309-gate-ybsq9L/candidate/.cache/mo1305-phase2d/build/memoryos-rest-0.1.0.tgz'
+# }
+# Node.js v22.22.0
+# Subtest: tests/mo1305_phase2_conformance_test.mjs
+not ok 1 - tests/mo1305_phase2_conformance_test.mjs
+  ---
+  duration_ms: 125.225385
+  type: 'test'
+  location: '/tmp/mo1309-gate-ybsq9L/candidate/repositories/cca-conformance/tests/mo1305_phase2_conformance_test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 138.895396

@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: session preserves opaque checkpoints and restores exact SDK state
+ok 1 - session preserves opaque checkpoints and restores exact SDK state
+  ---
+  duration_ms: 5108.407646
+  type: 'test'
+  ...
+# Subtest: checkpoint names cannot restore across live CLI sessions
+ok 2 - checkpoint names cannot restore across live CLI sessions
+  ---
+  duration_ms: 1215.855748
+  type: 'test'
+  ...
+# Subtest: session executes Trace, complete Replay, and Compare in one live SDK
+ok 3 - session executes Trace, complete Replay, and Compare in one live SDK
+  ---
+  duration_ms: 5711.141494
+  type: 'test'
+  ...
+# Subtest: session can verify and byte-preserving export through the SDK
+ok 4 - session can verify and byte-preserving export through the SDK
+  ---
+  duration_ms: 1251.120613
+  type: 'test'
+  ...
+# Subtest: native observations fail export safely without fabricating a MIP
+ok 5 - native observations fail export safely without fabricating a MIP
+  ---
+  duration_ms: 896.621762
+  type: 'test'
+  ...
+# Subtest: session accepts a workflow file and fails malformed JSON deterministically
+ok 6 - session accepts a workflow file and fails malformed JSON deterministically
+  ---
+  duration_ms: 1436.172893
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15737.96269

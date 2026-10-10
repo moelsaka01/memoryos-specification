@@ -1,0 +1,94 @@
+TAP version 13
+# Subtest: the exact frozen Resource Profile bytes, digest, and 31-limit inventory verify
+ok 1 - the exact frozen Resource Profile bytes, digest, and 31-limit inventory verify
+  ---
+  duration_ms: 18.03556
+  type: 'test'
+  ...
+# Subtest: Resource Profile raw bootstrap accepts below/exact and rejects first above deterministically
+ok 2 - Resource Profile raw bootstrap accepts below/exact and rejects first above deterministically
+  ---
+  duration_ms: 7.809362
+  type: 'test'
+  ...
+# Subtest: Resource Profile depth bootstrap enforces exact and first-above before schema
+ok 3 - Resource Profile depth bootstrap enforces exact and first-above before schema
+  ---
+  duration_ms: 3.362294
+  type: 'test'
+  ...
+# Subtest: Resource Profile value-count bootstrap enforces exact and first-above before schema
+ok 4 - Resource Profile value-count bootstrap enforces exact and first-above before schema
+  ---
+  duration_ms: 0.724316
+  type: 'test'
+  ...
+# Subtest: Resource Profile decoded-string bootstrap enforces exact and first-above before schema
+ok 5 - Resource Profile decoded-string bootstrap enforces exact and first-above before schema
+  ---
+  duration_ms: 1.209941
+  type: 'test'
+  ...
+# Subtest: Resource Profile completes syntax validation before classifying bootstrap counters
+ok 6 - Resource Profile completes syntax validation before classifying bootstrap counters
+  ---
+  duration_ms: 1.065347
+  type: 'test'
+  ...
+# Subtest: Resource Profile bootstrap completes the deepest raw-bounded syntax envelopes
+ok 7 - Resource Profile bootstrap completes the deepest raw-bounded syntax envelopes
+  ---
+  duration_ms: 5.215637
+  type: 'test'
+  ...
+# Subtest: Resource Profile validation rejects syntax, unknown members, identity, and version precisely
+ok 8 - Resource Profile validation rejects syntax, unknown members, identity, and version precisely
+  ---
+  duration_ms: 4.98449
+  type: 'test'
+  ...
+# Subtest: all 16 immutable machine definitions reproduce exact bytes and normative identities
+ok 9 - all 16 immutable machine definitions reproduce exact bytes and normative identities
+  ---
+  duration_ms: 120.233979
+  type: 'test'
+  ...
+# Subtest: runtime rule preparation contracts exhaustively match the frozen registry and parameter schemas
+ok 10 - runtime rule preparation contracts exhaustively match the frozen registry and parameter schemas
+  ---
+  duration_ms: 16.270399
+  type: 'test'
+  ...
+# Subtest: the frozen definition manifest cross-binds the independent descriptor table
+ok 11 - the frozen definition manifest cross-binds the independent descriptor table
+  ---
+  duration_ms: 2.402236
+  type: 'test'
+  ...
+# Subtest: machine-definition verification fails closed for altered bytes and a wrong version
+ok 12 - machine-definition verification fails closed for altered bytes and a wrong version
+  ---
+  duration_ms: 2.081342
+  type: 'test'
+  ...
+# Subtest: verified Resource Profile data is deeply immutable
+ok 13 - verified Resource Profile data is deeply immutable
+  ---
+  duration_ms: 5.555138
+  type: 'test'
+  ...
+# Subtest: installed machine definitions contain no sizing placeholder identity
+ok 14 - installed machine definitions contain no sizing placeholder identity
+  ---
+  duration_ms: 8.488871
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 310.456363

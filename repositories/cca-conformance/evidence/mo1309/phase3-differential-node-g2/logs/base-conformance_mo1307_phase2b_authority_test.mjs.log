@@ -1,0 +1,226 @@
+TAP version 13
+# Subtest: A01 all sixteen frozen bundles produce only verified claims and exact independent graph/audit identities
+ok 1 - A01 all sixteen frozen bundles produce only verified claims and exact independent graph/audit identities
+  ---
+  duration_ms: 1644.374919
+  type: 'test'
+  ...
+# Subtest: A02 operator authority pin is separate and rejects an independently wrong trust root
+ok 2 - A02 operator authority pin is separate and rejects an independently wrong trust root
+  ---
+  duration_ms: 21.623868
+  type: 'test'
+  ...
+# Subtest: A03 an evidence-controlled authority mutation cannot select its own new pin
+ok 3 - A03 an evidence-controlled authority mutation cannot select its own new pin
+  ---
+  duration_ms: 3.592942
+  type: 'test'
+  ...
+# Subtest: A04 raw source bytes and raw length are verified independently of intact claim identity
+ok 4 - A04 raw source bytes and raw length are verified independently of intact claim identity
+  ---
+  duration_ms: 31.155382
+  type: 'test'
+  ...
+# Subtest: A05 raw manifest identity and envelope hash cannot be repaired by a self-consistent claim hash
+ok 5 - A05 raw manifest identity and envelope hash cannot be repaired by a self-consistent claim hash
+  ---
+  duration_ms: 30.124843
+  type: 'test'
+  ...
+# Subtest: A06 exact canonical claim digest is recomputed under an intact reviewed envelope grant
+ok 6 - A06 exact canonical claim digest is recomputed under an intact reviewed envelope grant
+  ---
+  duration_ms: 21.592251
+  type: 'test'
+  ...
+# Subtest: A07 ungranted external evidence cannot satisfy a gate
+ok 7 - A07 ungranted external evidence cannot satisfy a gate
+  ---
+  duration_ms: 22.279131
+  type: 'test'
+  ...
+# Subtest: A08 unknown evidence type and evidence version fail closed
+ok 8 - A08 unknown evidence type and evidence version fail closed
+  ---
+  duration_ms: 35.234725
+  type: 'test'
+  ...
+# Subtest: A09 granting the wrong existing claim for a compiled gate is rejected
+ok 9 - A09 granting the wrong existing claim for a compiled gate is rejected
+  ---
+  duration_ms: 23.203956
+  type: 'test'
+  ...
+# Subtest: A10 exact grant source IDs cannot substitute or omit the envelope lineage
+ok 10 - A10 exact grant source IDs cannot substitute or omit the envelope lineage
+  ---
+  duration_ms: 22.382701
+  type: 'test'
+  ...
+# Subtest: A11 source bytes cannot appoint themselves as authority provenance
+ok 11 - A11 source bytes cannot appoint themselves as authority provenance
+  ---
+  duration_ms: 22.501062
+  type: 'test'
+  ...
+# Subtest: A12 authority source Git fields, classification, length, hash and released target bind exactly
+ok 12 - A12 authority source Git fields, classification, length, hash and released target bind exactly
+  ---
+  duration_ms: 318.62364
+  type: 'test'
+  ...
+# Subtest: A13 candidate, manifest and independently reviewed component/contract closures cannot be substituted
+ok 13 - A13 candidate, manifest and independently reviewed component/contract closures cannot be substituted
+  ---
+  duration_ms: 80.414648
+  type: 'test'
+  ...
+# Subtest: A14 whole-candidate claims cannot use an earlier candidate root
+ok 14 - A14 whole-candidate claims cannot use an earlier candidate root
+  ---
+  duration_ms: 28.196402
+  type: 'test'
+  ...
+# Subtest: A15 a manifest cannot relabel a claim origin or dependency identity
+ok 15 - A15 a manifest cannot relabel a claim origin or dependency identity
+  ---
+  duration_ms: 52.234665
+  type: 'test'
+  ...
+# Subtest: A16 declared dependency role, length and content are checked against the current inventory
+ok 16 - A16 declared dependency role, length and content are checked against the current inventory
+  ---
+  duration_ms: 76.58449
+  type: 'test'
+  ...
+# Subtest: A17 minimum dependency closure cannot omit any relevant current component
+ok 17 - A17 minimum dependency closure cannot omit any relevant current component
+  ---
+  duration_ms: 32.556989
+  type: 'test'
+  ...
+# Subtest: A18 changed declared grant closure and dangling dependency IDs reject rather than first-win
+ok 18 - A18 changed declared grant closure and dangling dependency IDs reject rather than first-win
+  ---
+  duration_ms: 59.829339
+  type: 'test'
+  ...
+# Subtest: A19 scope escalation and unapproved/changed assumptions are stale
+ok 19 - A19 scope escalation and unapproved/changed assumptions are stale
+  ---
+  duration_ms: 95.936925
+  type: 'test'
+  ...
+# Subtest: A20 unrelated root assumptions do not stale an approved claim subset
+ok 20 - A20 unrelated root assumptions do not stale an approved claim subset
+  ---
+  duration_ms: 66.003712
+  type: 'test'
+  ...
+# Subtest: A21 selective reuse is explicit and unchanged dependencies retain their exact claims
+ok 21 - A21 selective reuse is explicit and unchanged dependencies retain their exact claims
+  ---
+  duration_ms: 96.018259
+  type: 'test'
+  ...
+# Subtest: A22 REUSED cannot conceal a whole-candidate claim
+ok 22 - A22 REUSED cannot conceal a whole-candidate claim
+  ---
+  duration_ms: 23.736083
+  type: 'test'
+  ...
+# Subtest: A23 old audit snapshots do not invent expiry and bounded disclosure remains mandatory
+ok 23 - A23 old audit snapshots do not invent expiry and bounded disclosure remains mandatory
+  ---
+  duration_ms: 61.390041
+  type: 'test'
+  ...
+# Subtest: A24 permitted fresh raw metadata pins change proof audit but preserve normative projection
+ok 24 - A24 permitted fresh raw metadata pins change proof audit but preserve normative projection
+  ---
+  duration_ms: 124.938653
+  type: 'test'
+  ...
+# Subtest: A25 duplicate IDs, copied normalized grants and unconsumed evidence fail closed
+ok 25 - A25 duplicate IDs, copied normalized grants and unconsumed evidence fail closed
+  ---
+  duration_ms: 80.099113
+  type: 'test'
+  ...
+# Subtest: A26 explicit unavailable slots omit evidence safely and optional provider slots mirror the parent
+ok 26 - A26 explicit unavailable slots omit evidence safely and optional provider slots mirror the parent
+  ---
+  duration_ms: 124.574408
+  type: 'test'
+  ...
+# Subtest: A27 all admitted bytes are snapshots independent of subsequent caller mutations
+ok 27 - A27 all admitted bytes are snapshots independent of subsequent caller mutations
+  ---
+  duration_ms: 104.334298
+  type: 'test'
+  ...
+# Subtest: A28 raw source byte ceiling admits exact boundary and rejects plus one
+ok 28 - A28 raw source byte ceiling admits exact boundary and rejects plus one
+  ---
+  duration_ms: 110.155036
+  type: 'test'
+  ...
+# Subtest: A29 explicit source and authority references cannot dangle
+ok 29 - A29 explicit source and authority references cannot dangle
+  ---
+  duration_ms: 100.722268
+  type: 'test'
+  ...
+# Subtest: A30 canonical set orders remain normative and are never silently sorted by the verifier
+ok 30 - A30 canonical set orders remain normative and are never silently sorted by the verifier
+  ---
+  duration_ms: 57.328354
+  type: 'test'
+  ...
+# Subtest: A31 input map insertion and object member order do not affect verified canonical projection
+ok 31 - A31 input map insertion and object member order do not affect verified canonical projection
+  ---
+  duration_ms: 188.18091
+  type: 'test'
+  ...
+# Subtest: A32 raw integrity failure wins over later root candidate mismatch
+ok 32 - A32 raw integrity failure wins over later root candidate mismatch
+  ---
+  duration_ms: 34.268525
+  type: 'test'
+  ...
+# Subtest: A33 an authority failure wins over a later structurally valid provider contradiction
+ok 33 - A33 an authority failure wins over a later structurally valid provider contradiction
+  ---
+  duration_ms: 61.831545
+  type: 'test'
+  ...
+# Subtest: A34 manifest file ceiling admits exactly 128 consumed files and rejects 129
+ok 34 - A34 manifest file ceiling admits exactly 128 consumed files and rejects 129
+  ---
+  duration_ms: 137.136419
+  type: 'test'
+  ...
+# Subtest: A35 aggregate raw source admission accepts 8 MiB exactly and rejects one additional byte
+ok 35 - A35 aggregate raw source admission accepts 8 MiB exactly and rejects one additional byte
+  ---
+  duration_ms: 172.891003
+  type: 'test'
+  ...
+# Subtest: A36 authority source ceiling admits 32 explicit provenance records and rejects 33
+ok 36 - A36 authority source ceiling admits 32 explicit provenance records and rejects 33
+  ---
+  duration_ms: 107.225448
+  type: 'test'
+  ...
+1..36
+# tests 36
+# suites 0
+# pass 36
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4463.017745

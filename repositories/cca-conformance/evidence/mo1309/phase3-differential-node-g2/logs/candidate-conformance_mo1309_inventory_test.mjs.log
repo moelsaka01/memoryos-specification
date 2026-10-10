@@ -1,0 +1,40 @@
+TAP version 13
+# Subtest: the committed inventory equals the inventory rebuilt from the Freeze, the manifest and the test titles
+ok 1 - the committed inventory equals the inventory rebuilt from the Freeze, the manifest and the test titles
+  ---
+  duration_ms: 8.517565
+  type: 'test'
+  ...
+# Subtest: DB01..DB32 each appear exactly once, with the Freeze text, and each has cloud coverage or a recorded artefact
+ok 2 - DB01..DB32 each appear exactly once, with the Freeze text, and each has cloud coverage or a recorded artefact
+  ---
+  duration_ms: 2.262868
+  type: 'test'
+  ...
+# Subtest: every cited test exists in its file under its exact title, and its suite is in the manifest
+ok 3 - every cited test exists in its file under its exact title, and its suite is in the manifest
+  ---
+  duration_ms: 4.645311
+  type: 'test'
+  ...
+# Subtest: Windows campaigns come from the Freeze table, no inventory row claims certification, and the status is cloud-only
+ok 4 - Windows campaigns come from the Freeze table, no inventory row claims certification, and the status is cloud-only
+  ---
+  duration_ms: 0.564706
+  type: 'test'
+  ...
+# Subtest: negative controls: a Freeze table missing a row, or a removed test title, changes the rebuilt inventory
+ok 5 - negative controls: a Freeze table missing a row, or a removed test title, changes the rebuilt inventory
+  ---
+  duration_ms: 3.494795
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 147.931001

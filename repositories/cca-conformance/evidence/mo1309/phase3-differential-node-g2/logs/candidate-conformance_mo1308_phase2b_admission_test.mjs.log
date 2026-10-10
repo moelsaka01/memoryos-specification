@@ -1,0 +1,190 @@
+TAP version 13
+# Subtest: B01 MIP_PACKAGE: MIP-001 verified; subjects copy the package values; recordDigest equals the oracle (R07)
+ok 1 - B01 MIP_PACKAGE: MIP-001 verified; subjects copy the package values; recordDigest equals the oracle (R07)
+  ---
+  duration_ms: 25.076495
+  type: 'test'
+  ...
+# Subtest: B02 MIP_PACKAGE rejections: tampered, non-canonical, truncated, wrong Workspace (R11)
+ok 2 - B02 MIP_PACKAGE rejections: tampered, non-canonical, truncated, wrong Workspace (R11)
+  ---
+  duration_ms: 29.583002
+  type: 'test'
+  ...
+# Subtest: B03 INVESTIGATION_CHECKPOINT: accepts a Core checkpoint of a MIP-backed investigation (H13 option A)
+ok 3 - B03 INVESTIGATION_CHECKPOINT: accepts a Core checkpoint of a MIP-backed investigation (H13 option A)
+  ---
+  duration_ms: 239.330792
+  type: 'test'
+  ...
+# Subtest: B04 INVESTIGATION_CHECKPOINT rejections: every tampered field, native, wrong Workspace, forged package (R12)
+ok 4 - B04 INVESTIGATION_CHECKPOINT rejections: every tampered field, native, wrong Workspace, forged package (R12)
+  ---
+  duration_ms: 278.738343
+  type: 'test'
+  ...
+# Subtest: B05 a native investigation checkpoint is rejected (R12)
+ok 5 - B05 a native investigation checkpoint is rejected (R12)
+  ---
+  duration_ms: 32.679142
+  type: 'test'
+  ...
+# Subtest: B06 POLICY_EVALUATION: accepts every released Policy and Policy Set artifact pair
+ok 6 - B06 POLICY_EVALUATION: accepts every released Policy and Policy Set artifact pair
+  ---
+  duration_ms: 20.826021
+  type: 'test'
+  ...
+# Subtest: B07 POLICY_EVALUATION rejections: swapped, cross-bound to another identity, tampered, non-canonical; agrees with the SDK verifiers
+ok 7 - B07 POLICY_EVALUATION rejections: swapped, cross-bound to another identity, tampered, non-canonical; agrees with the SDK verifiers
+  ---
+  duration_ms: 341.494501
+  type: 'test'
+  ...
+# Subtest: B08 REGRESSION_REPORT: SDK inspection accepted; both Workspaces must equal the ledger Workspace (R11)
+ok 8 - B08 REGRESSION_REPORT: SDK inspection accepted; both Workspaces must equal the ledger Workspace (R11)
+  ---
+  duration_ms: 68.63955
+  type: 'test'
+  ...
+# Subtest: B09 CICD_RUN: every real MO-1306 bundle in the repository evidence is admitted (completed and operational-failure)
+ok 9 - B09 CICD_RUN: every real MO-1306 bundle in the repository evidence is admitted (completed and operational-failure)
+  ---
+  duration_ms: 418.020641
+  type: 'test'
+  ...
+# Subtest: B10 CICD_RUN rejections: structure, integrity, cross-links, forged semantic block (self-consistent forgeries included)
+ok 10 - B10 CICD_RUN rejections: structure, integrity, cross-links, forged semantic block (self-consistent forgeries included)
+  ---
+  duration_ms: 336.291879
+  type: 'test'
+  ...
+# Subtest: B11 CICD_RUN J parsing agrees with the MO-1306 parser on structural limits (R03)
+ok 11 - B11 CICD_RUN J parsing agrees with the MO-1306 parser on structural limits (R03)
+  ---
+  duration_ms: 7.566085
+  type: 'test'
+  ...
+# Subtest: B12 READINESS_RESULT: every released MO-1307 result is admitted with recomputed digests; forged variants are not (R08)
+ok 12 - B12 READINESS_RESULT: every released MO-1307 result is admitted with recomputed digests; forged variants are not (R08)
+  ---
+  duration_ms: 215.606184
+  type: 'test'
+  ...
+# Subtest: B13 READINESS_RESULT rejections: stale digests, re-sealed forgeries, shape, non-J (R03)
+ok 13 - B13 READINESS_RESULT rejections: stale digests, re-sealed forgeries, shape, non-J (R03)
+  ---
+  duration_ms: 2021.603587
+  type: 'test'
+  ...
+# Subtest: B14 READINESS_RESULT J parsing agrees with the MO-1307 parser on structural limits
+ok 14 - B14 READINESS_RESULT J parsing agrees with the MO-1307 parser on structural limits
+  ---
+  duration_ms: 109.618252
+  type: 'test'
+  ...
+# Subtest: B15 HUMAN_DECISION_CLAIM: admitted only against a matching READINESS_RESULT entry (H16, R13)
+ok 15 - B15 HUMAN_DECISION_CLAIM: admitted only against a matching READINESS_RESULT entry (H16, R13)
+  ---
+  duration_ms: 119.116102
+  type: 'test'
+  ...
+# Subtest: B16 HUMAN_DECISION_CLAIM shape rejections: exact MO-1307 section 13 shape and value rules
+ok 16 - B16 HUMAN_DECISION_CLAIM shape rejections: exact MO-1307 section 13 shape and value rules
+  ---
+  duration_ms: 57.250508
+  type: 'test'
+  ...
+# Subtest: B17 duplicates and purged records are refused before any verification (R10, R20)
+ok 17 - B17 duplicates and purged records are refused before any verification (R10, R20)
+  ---
+  duration_ms: 29.81982
+  type: 'test'
+  ...
+# Subtest: B18 member rules: exact names, sets, duplicates, per-kind byte limits, argument shapes
+ok 18 - B18 member rules: exact names, sets, duplicates, per-kind byte limits, argument shapes
+  ---
+  duration_ms: 505.982576
+  type: 'test'
+  ...
+# Subtest: B19 admission is deterministic: member order, view construction and repetition do not change the record (R04)
+ok 19 - B19 admission is deterministic: member order, view construction and repetition do not change the record (R04)
+  ---
+  duration_ms: 4.016256
+  type: 'test'
+  ...
+# Subtest: B20 every admitted record has the closed Freeze entry shape and no time, path or actor field (R24, R35)
+ok 20 - B20 every admitted record has the closed Freeze entry shape and no time, path or actor field (R24, R35)
+  ---
+  duration_ms: 32.178363
+  type: 'test'
+  ...
+# Subtest: B21 the admission module delegates to owners, imports no SDK, Core, fs or predecessor package, and never runs verifyReadiness (R08, R28, R29, R35, R37)
+ok 21 - B21 the admission module delegates to owners, imports no SDK, Core, fs or predecessor package, and never runs verifyReadiness (R08, R28, R29, R35, R37)
+  ---
+  duration_ms: 1.127149
+  type: 'test'
+  ...
+# Subtest: B22 no admission verdict leaks input content in its error
+ok 22 - B22 no admission verdict leaks input content in its error
+  ---
+  duration_ms: 1.143576
+  type: 'test'
+  ...
+# Subtest: B23 self-consistent forgeries that only a single rule can catch (checkpoint chain, evidence cross-hashes)
+ok 23 - B23 self-consistent forgeries that only a single rule can catch (checkpoint chain, evidence cross-hashes)
+  ---
+  duration_ms: 75.997184
+  type: 'test'
+  ...
+# Subtest: B24 CICD result rules agree with the MO-1306 checkResult over the whole error-catalog space (R03, R07)
+ok 24 - B24 CICD result rules agree with the MO-1306 checkResult over the whole error-catalog space (R03, R07)
+  ---
+  duration_ms: 2065.896604
+  type: 'test'
+  ...
+# Subtest: B25 the embedded MO-1306 semantic-code allowlist equals the owner list (drift guard)
+ok 25 - B25 the embedded MO-1306 semantic-code allowlist equals the owner list (drift guard)
+  ---
+  duration_ms: 77.498862
+  type: 'test'
+  ...
+# Subtest: B26 decisionConsistency is computed from the verified claim and result for every decision and readiness state (A4.1)
+ok 26 - B26 decisionConsistency is computed from the verified claim and result for every decision and readiness state (A4.1)
+  ---
+  duration_ms: 259.687137
+  type: 'test'
+  ...
+# Subtest: B27 a claim is rejected, never stored with a guessed value, for an absent, purged, unavailable, unverified or inconsistent result (A4.1)
+ok 27 - B27 a claim is rejected, never stored with a guessed value, for an absent, purged, unavailable, unverified or inconsistent result (A4.1)
+  ---
+  duration_ms: 47.075195
+  type: 'test'
+  ...
+# Subtest: B28 the incremental SHA-256 equals the standard hash for every length, split and clone (A4.5)
+ok 28 - B28 the incremental SHA-256 equals the standard hash for every length, split and clone (A4.5)
+  ---
+  duration_ms: 78.845508
+  type: 'test'
+  ...
+# Subtest: B29 linear checkpoint admission gives byte-identical results to the quadratic construction on the corpus and tampered variants (A4.5)
+ok 29 - B29 linear checkpoint admission gives byte-identical results to the quadratic construction on the corpus and tampered variants (A4.5)
+  ---
+  duration_ms: 1250.696889
+  type: 'test'
+  ...
+# Subtest: B30 linear admission equals the quadratic construction on generated checkpoints up to 10,000 transitions (A4.5)
+ok 30 - B30 linear admission equals the quadratic construction on generated checkpoints up to 10,000 transitions (A4.5)
+  ---
+  duration_ms: 110526.186088
+  type: 'test'
+  ...
+1..30
+# tests 30
+# suites 0
+# pass 30
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 119545.971422

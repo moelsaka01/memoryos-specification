@@ -11,7 +11,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
 | MemoryOS 1.2 | Released — v1.2.0 | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, and its official Conformance Suite |
 | MemoryOS 1.2.1 | Corrective restoration | Restores omitted intended v1.2 source, registered tests, fixtures, examples, documentation, frozen Standard and MIP publication assets, and corrected conformance provenance while preserving all v1.2 semantics and CSP fixes |
-| MemoryOS 1.3 | In development; MO-1301 through MO-1308 RELEASED | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, certified REST Gateway, qualified Provider-Neutral CI/CD Integration, certified Release Governance and Readiness (V2 stale-test correction bound, 639/639), and certified Investigation History (BF `bf2fdc87`); MO-1309 CONTRACT FREEZE 1 FROZEN / PHASE 1 NEXT |
+| MemoryOS 1.3 | In development; MO-1301 through MO-1308 RELEASED | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, certified REST Gateway, qualified Provider-Neutral CI/CD Integration, certified Release Governance and Readiness (V2 stale-test correction bound, 639/639), and certified Investigation History (BF `bf2fdc87`); MO-1309 PHASES 1–3 BOUND (B2) / PHASE 4 ON THE WINDOWS HOST NEXT |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -130,7 +130,7 @@ Dashboard scope and owner decisions; its
 | MO-1306 | Provider-Neutral CI/CD Integration | CLOSED / QUALIFIED CERTIFICATION / RELEASED | Provider-neutral CI/CD integration with preserved provider limitations |
 | MO-1307 | Release Governance and Readiness | CLOSED / CERTIFIED / RELEASED (V2 STALE-TEST CORRECTION BOUND, 639/639) | Deterministic evidence-backed readiness; final release authorization remains human |
 | MO-1308 | Investigation History | CLOSED / CERTIFIED / RELEASED (BF `bf2fdc87`) | Durable investigation/evaluation history and traceability |
-| MO-1309 | Cloud Dashboard | CONTRACT FREEZE 1 FROZEN / PHASE 1 NEXT | Static, offline, cloud-ready, read-only dashboard over MO-1308 exports |
+| MO-1309 | Cloud Dashboard | PHASES 1–3 BOUND (B2) / PHASE 4 ON THE WINDOWS HOST NEXT | Static, offline, cloud-ready, read-only dashboard over MO-1308 exports |
 
 Later milestones must delegate to existing semantic authority rather than
 silently reimplementing MemoryOS semantics. The MO-1306 freeze and scope
@@ -419,7 +419,7 @@ authority and Freeze describes the stage when it was written.
 
 ### MO-1309: Cloud Dashboard
 
-Status: **CONTRACT FREEZE 1 FROZEN / PHASE 1 NEXT**.
+Status: **PHASES 1–3 BOUND (B2) / PHASE 4 ON THE WINDOWS HOST NEXT**.
 
 The [MO-1309 authority](docs/mo1309-cloud-dashboard.md) resolves the scope with
 the owner decisions M1 through M12. "Cloud" means a static, offline,
@@ -439,9 +439,9 @@ certification plan 4A–4D. The parallel test/CI maintenance item
 
 The exact next task is:
 
-**MEMORYOS 1.3 MO-1309 PHASE 1 — CONTRACT AND VIEW MODEL**
+**MEMORYOS 1.3 MO-1309 PHASE 4 — ON THE WINDOWS HOST** (see [the Windows plan](docs/mo1309-phase4-windows-plan.md))
 
-The [handoff](docs/mo1309-handoff.md) records the live state.
+The [Phase 3 handoff](docs/mo1309-phase3-handoff.md) records the live state.
 
 ## IM-001: engineering foundation
 
