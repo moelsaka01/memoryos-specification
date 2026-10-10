@@ -40,10 +40,10 @@ export const DATA_CLASS_RULES = freeze([
   { id: "F1", class: "FORBIDDEN_PATH", rule: "No path-shaped text (drive path, UNC path, rooted system directory, home shorthand, file address) outside the data block", requirement: "DB19" },
   { id: "F2", class: "FORBIDDEN_CLOCK", rule: "No date-time, time of day, time zone name or epoch-millisecond number outside the data block", requirement: "DB19" },
   { id: "F3", class: "FORBIDDEN_DIAGNOSTIC", rule: "No stack frame, exception name or error-code line outside the data block", requirement: "DB19" },
-  { id: "F4", class: "FORBIDDEN_HOST_USER", rule: "No supplied host or user name anywhere in the file", requirement: "DB19" },
-  { id: "F5", class: "FORBIDDEN_ENVIRONMENT", rule: "No supplied environment value anywhere in the file", requirement: "DB19" },
+  { id: "F4", class: "FORBIDDEN_HOST_USER", rule: "No supplied host or user name as a whole word anywhere in the file outside the fixed script and style", requirement: "DB19" },
+  { id: "F5", class: "FORBIDDEN_ENVIRONMENT", rule: "No supplied environment value as a whole word anywhere in the file outside the fixed script and style", requirement: "DB19" },
   { id: "F6", class: "FORBIDDEN_PATH", rule: "No supplied path anywhere in the file", requirement: "DB19" },
-  { id: "M1", class: "FORBIDDEN_MEMBER_CONTENT", rule: "No sample of any supplied member contents appears anywhere in the file", requirement: "DB04" },
+  { id: "M1", class: "FORBIDDEN_MEMBER_CONTENT", rule: "No sample of any supplied member contents appears outside the data block (D1 holds the data block to a shape with no member-content field; the view model legitimately repeats values such as the workspace identifier)", requirement: "DB04" },
 ]);
 
 const BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -129,12 +129,15 @@ export function scanSnapshot(html, { paths = [], hostUserNames = [], environment
 
   // F4 to F6 and M1: supplied literals anywhere in the file, member contents by sample.
   const supplied = (values) => values.filter((value) => typeof value === "string" && value.length >= 3);
-  if (supplied(hostUserNames).some((value) => html.includes(value))) add("F4", "supplied");
-  if (supplied(environmentValues).some((value) => html.includes(value))) add("F5", "supplied");
+  const movable = outside.replace(STYLE, "<style></style>").replace(SCRIPT, "<script></script>") + block[1]; /* markup and data; the fixed source is checked by F1 to F3 */
+  const word = (value) => new RegExp(`(?<![A-Za-z0-9_-])${value.replace(/[.*+?^${}()|[\]\\]/gu, "\\$&")}(?![A-Za-z0-9_-])`, "u");
+  if (supplied(hostUserNames).some((value) => word(value).test(movable))) add("F4", "supplied");
+  if (supplied(environmentValues).some((value) => word(value).test(movable))) add("F5", "supplied");
   if (supplied(paths).some((value) => html.includes(value) || html.includes(value.replaceAll("\\", "/")) || html.includes(JSON.stringify(value).slice(1, -1)))) add("F6", "supplied");
+  const withoutData = html.replace(DATA_BLOCK, "");
   for (const member of memberContents) {
     const body = typeof member === "string" ? member : Array.from(member, (byte) => String.fromCharCode(byte)).join("");
-    for (const sample of memberSamples(body)) if (html.includes(sample)) { add("M1", "sample"); break; }
+    for (const sample of memberSamples(body)) if (withoutData.includes(sample)) { add("M1", "sample"); break; }
   }
   return { violations };
 }

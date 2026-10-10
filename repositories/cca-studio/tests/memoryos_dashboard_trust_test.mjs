@@ -54,7 +54,7 @@ const CONTROLS = {
   F2: { html: () => reseal(insertAfterApp(html0, "<p>2026-10-10T10:22:31Z</p>")), also: ["D2"] },
   F3: { html: () => reseal(insertAfterApp(html0, "<p>TypeError: boom</p>")), also: ["D2"] },
   F4: { html: () => html0, context: { hostUserNames: ["MemoryOS"] } },
-  F5: { html: () => html0, context: { environmentValues: ["Content-Security-Policy"] } },
+  F5: { html: () => html0, context: { environmentValues: ["Generator"] } },
   F6: { html: () => html0, context: { paths: ["history export"] } },
   M1: { html: () => html0, context: { memberContents: [WORDING["statement.integrityOnly"]] } },
 };

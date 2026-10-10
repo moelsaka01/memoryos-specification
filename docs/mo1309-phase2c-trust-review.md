@@ -100,10 +100,14 @@ FORBIDDEN_ENVIRONMENT, FORBIDDEN_CLOCK, FORBIDDEN_MEMBER_CONTENT, FORBIDDEN_DIAG
 | F1 | FORBIDDEN_PATH | DB19 | No path-shaped text (drive, UNC, rooted system directory, home shorthand, file address) outside the data block |
 | F2 | FORBIDDEN_CLOCK | DB19 | No date-time, time of day, time zone name or epoch-millisecond number outside the data block |
 | F3 | FORBIDDEN_DIAGNOSTIC | DB19 | No stack frame, exception name or error-code line outside the data block and the fixed script |
-| F4 | FORBIDDEN_HOST_USER | DB19 | No supplied host or user name anywhere in the file |
-| F5 | FORBIDDEN_ENVIRONMENT | DB19 | No supplied environment value anywhere in the file |
+| F4 | FORBIDDEN_HOST_USER | DB19 | No supplied host or user name, as a whole word, anywhere in the file outside the fixed script and style |
+| F5 | FORBIDDEN_ENVIRONMENT | DB19 | No supplied environment value, as a whole word, anywhere in the file outside the fixed script and style |
 | F6 | FORBIDDEN_PATH | DB19 | No supplied path anywhere in the file |
-| M1 | FORBIDDEN_MEMBER_CONTENT | DB04 | No sample of any supplied member contents appears anywhere in the file |
+| M1 | FORBIDDEN_MEMBER_CONTENT | DB04 | No sample of any supplied member contents appears outside the data block (D1 holds the data block to a shape with no member-content field, and the view model legitimately repeats values such as the workspace identifier) |
+
+Two refinements came from running the scanner over real generator output in an unpushed merge of 2A, 2B and 2C: the
+page carries the viewport meta beside the policy meta (S1), and substring matching of short user names such as `root`
+or of member text that the view model legitimately repeats gives false positives (F4, F5, M1).
 
 Every rule has a negative control in `memoryos_dashboard_trust_test.mjs` that makes it fire, and a clean snapshot of every
 fixture, including the adversarial one, passes all of them. Untrusted data inside the data block may say anything (a path,
