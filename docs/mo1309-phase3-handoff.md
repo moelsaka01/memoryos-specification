@@ -14,7 +14,7 @@ Phase 3 (integration) COMPLETE and bound as B2. The four stream branches are mer
 differential-tested, budgets only tightened). The three duplicated test-support assemblers are gone; the page,
 scanner and generator tests run over the real generator output. The dashboard tests run from a separate
 manifest, `cca-studio/package.json` is byte-identical to BF. The conformance inventory covers DB01–DB32 (cloud
-coverage for all 32; 17 requirements also need Windows campaigns). Cloud rehearsals of 4A, 4B, 4C and the 4D
+coverage for all 32; 24 requirements also need Windows campaigns (4A, 4B or 4C)). Cloud rehearsals of 4A, 4B, 4C and the 4D
 validator pass or fail as they must and are **non-certifying**. No Windows result exists and none is claimed.
 No STOP condition occurred. DB26 holds: no MO-1308 production blob changed across the milestone.
 
