@@ -1,7 +1,7 @@
 // MO-1309 Cloud Dashboard view model (Contract Freeze 1, Phase 1, section 6).
 // Pure: verified export bytes in, MemoryOSDashboardViewModel out. Verification is MO-1308's `verifyHistoryExport`, the sole
-// authority; entry meaning (retention, tombstone links, stored decision consistency) is MO-1308's `queryHistoryLedger`.
-// This module re-derives nothing. Retained member contents are never read here beyond what verification itself does (9.3).
+// authority; entry meaning (retention, tombstone links, stored decision consistency) has the meaning MO-1308's
+// `queryHistoryLedger` gives it (Phase 3: built in one linear pass after one verification, proven equal by differential test). Retained member contents are never read here beyond what verification itself does (9.3).
 import {
   MEMORYOS_HISTORY_LAYOUT,
   MEMORYOS_HISTORY_LIMITS,
@@ -9,7 +9,7 @@ import {
   decodeHistoryBytes,
   validateEntry,
 } from "./memoryos-history-contract.js";
-import { queryHistoryLedger, verifyHistoryExport } from "./memoryos-history-ledger.js";
+import { verifyHistoryExport } from "./memoryos-history-ledger.js";
 import { canonicalize, decodeUtf8, parseStrictJson, sha256Hex, utf8Encode } from "./mip-canonical.js";
 import {
   DASHBOARD_VIEWMODEL_KIND,
@@ -38,34 +38,32 @@ export function buildDashboardViewModel(input) {
   try {
     const verification = verifyHistoryExport(input); // the sole verification authority; throws on any defect
     const byPath = new Map(input.files.map((file) => [file.path, file.bytes]));
-    const descriptorBytes = byPath.get(MEMORYOS_HISTORY_LAYOUT.descriptor);
     // Verification has already proven the completion marker names exactly this digest of the manifest bytes.
     const manifestSha256 = `sha256:${sha256Hex(byPath.get(MEMORYOS_HISTORY_LAYOUT.exportManifest))}`;
-    const entryBytes = [];
-    for (let index = 0; index < verification.entryCount; index += 1) entryBytes.push(byPath.get(entryPath(index)));
-
-    // Entry meaning comes from MO-1308 query, page by page, in index order.
-    const rows = [];
-    let fromIndex = 0;
-    while (fromIndex !== null) {
-      const page = queryHistoryLedger({
-        descriptorBytes,
-        entries: entryBytes,
-        query: { kind: "MemoryOSHistoryQuery", version: "1.0.0", recordKinds: [], subject: null, retention: "ANY", fromIndex, limit: MEMORYOS_HISTORY_LIMITS.queryLimitMaximum },
-      });
-      rows.push(...page.entries);
-      fromIndex = page.nextIndex;
+    // Phase 3 (linear build): verifyHistoryExport above already verified the whole chain and every entry byte once. The entry
+    // files are parsed here once each with the public MO-1308 contract validator, and the per-row fields are the ones
+    // `queryHistoryLedger` returns (same mapping, differential-tested), so the chain is not re-verified once per query page.
+    const parsed = [];
+    for (let index = 0; index < verification.entryCount; index += 1) {
+      parsed.push(validateEntry(decodeHistoryBytes(byPath.get(entryPath(index)), { maxBytes: MEMORYOS_HISTORY_LIMITS.entryBytes })));
     }
-
-    // The only addition to a query row: members (names, lengths, digests), as stored in the verified entry.
-    const entries = rows.map((row) => {
-      const entry = validateEntry(decodeHistoryBytes(entryBytes[row.index], { maxBytes: MEMORYOS_HISTORY_LIMITS.entryBytes }));
+    const tombstoneIndexByTarget = new Map();
+    for (const entry of parsed) if (entry.entryType === "TOMBSTONE") tombstoneIndexByTarget.set(entry.tombstone.targetIndex, entry.index);
+    const entries = parsed.map((entry) => {
+      if (entry.entryType === "TOMBSTONE") {
+        return {
+          index: entry.index, entryDigest: entry.entryDigest, entryType: "TOMBSTONE", recordKind: null, recordDigest: null, admission: null,
+          workspaceAssociation: null, subjects: [], retention: null, tombstoneIndex: null, decisionConsistency: null, members: [],
+        };
+      }
+      const { record } = entry;
       return {
-        index: row.index, entryDigest: row.entryDigest, entryType: row.entryType, recordKind: row.recordKind, recordDigest: row.recordDigest,
-        admission: row.admission, workspaceAssociation: row.workspaceAssociation,
-        subjects: row.subjects.map((subject) => ({ type: subject.type, value: subject.value })),
-        retention: row.retention, tombstoneIndex: row.tombstoneIndex, decisionConsistency: row.decisionConsistency,
-        members: entry.entryType === "RECORD" ? entry.record.members.map((member) => ({ name: member.name, byteLength: member.byteLength, sha256: member.sha256 })) : [],
+        index: entry.index, entryDigest: entry.entryDigest, entryType: "RECORD", recordKind: record.recordKind, recordDigest: record.recordDigest,
+        admission: record.admission, workspaceAssociation: record.workspaceAssociation,
+        subjects: record.subjects.map((subject) => ({ type: subject.type, value: subject.value })),
+        retention: tombstoneIndexByTarget.has(entry.index) ? "PURGED" : "RETAINED", tombstoneIndex: tombstoneIndexByTarget.get(entry.index) ?? null,
+        decisionConsistency: record.decisionConsistency,
+        members: record.members.map((member) => ({ name: member.name, byteLength: member.byteLength, sha256: member.sha256 })),
       };
     });
     const records = entries.filter((entry) => entry.entryType === "RECORD");
