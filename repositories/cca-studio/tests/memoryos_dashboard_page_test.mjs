@@ -10,6 +10,7 @@ import { queryHistoryLedger } from "../web/js/memoryos-history-ledger.js";
 import { DASHBOARD_ACTIONS } from "../web/js/memoryos-dashboard-contract.js";
 import { WORDING } from "../web/js/memoryos-dashboard-wording.js";
 import { FIXTURE_NAMES, readExportFiles } from "./support-dashboard-fixtures.mjs";
+import { DASHBOARD_GENERATOR_VERSION } from "../web/js/memoryos-dashboard-snapshot.js";
 import { assembleTestSnapshot, readDashboardSource } from "./support-dashboard-snapshot.mjs";
 import { syntheticViewModel } from "./support-dashboard-synthetic.mjs";
 
@@ -93,7 +94,7 @@ test("DB14 the template and script carry no display string of their own: the pla
   const text = stripped.replace(/<[^>]+>/gu, "\n").split("\n").map((line) => line.trim()).filter(Boolean);
   const decoded = (value) => value.replace(/&quot;/gu, '"').replace(/&#39;/gu, "'").replace(/&lt;/gu, "<").replace(/&gt;/gu, ">").replace(/&amp;/gu, "&");
   const registry = new Set(Object.values(WORDING));
-  for (const line of text) if (!/^(test-assembler|sha256:[0-9a-f]{64})$/u.test(line)) assert.ok(registry.has(decoded(line)), `static text is a registry value: ${line}`);
+  for (const line of text) if (!(line === DASHBOARD_GENERATOR_VERSION || /^sha256:[0-9a-f]{64}$/u.test(line))) assert.ok(registry.has(decoded(line)), `static text is a registry value: ${line}`);
   assert.ok(script.includes('"document.title"'));
   // Every wording key the script asks for exists in the registry (a static check of say("...") / w(tag, "...")).
   const source = readDashboardSource("page.js");

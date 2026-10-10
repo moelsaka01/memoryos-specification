@@ -13,11 +13,14 @@ import { buildDashboardViewModel, canonicalViewModelBytes } from "../web/js/memo
 import { DASHBOARD_GENERATOR_VERSION, WORDING_MARK, assembleSnapshot, cspSourceOf, escapeJsonForHtml } from "../web/js/memoryos-dashboard-snapshot.js";
 import { MEMORYOS_HISTORY_LIMITS } from "../web/js/memoryos-history-contract.js";
 import { WORDING } from "../web/js/memoryos-dashboard-wording.js";
-import { generateSnapshot, main, publishExclusively, readExportDirectory } from "../scripts/memoryos-dashboard-generator.mjs";
+import { generateSnapshot, loadPageSources, main, publishExclusively, readExportDirectory } from "../scripts/memoryos-dashboard-generator.mjs";
 import { FIXTURE_NAMES, FIXTURE_ROOT, readExportFiles } from "./support-dashboard-fixtures.mjs";
-import { STANDIN_SOURCES } from "./support-dashboard-standin-page.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
+// Phase 3: the generator tests run over the real Phase 2A page sources (the Phase 2B stand-in page is gone).
+const PAGE_SOURCES = Object.freeze(loadPageSources());
+const count = (text, needle) => text.split(needle).length - 1;
+const addedOccurrences = (text, allowed, needle) => count(text, needle) > count(allowed, needle);
 const studio = path.join(here, "..");
 const exportDirectoryOf = (name) => path.join(FIXTURE_ROOT, name, "export");
 const scratch = fs.mkdtempSync(path.join(os.tmpdir(), "mo1309-gen-"));
@@ -30,26 +33,26 @@ const codeOf = (fn) => { try { fn(); } catch (error) { return { code: error.code
 const listing = (dir) => fs.readdirSync(dir).sort();
 const generate = (name, extra = {}) => {
   const out = path.join(fresh("out"), "snapshot.html");
-  const result = generateSnapshot({ exportDirectory: exportDirectoryOf(name), outputFile: out, sources: STANDIN_SOURCES, ...extra });
+  const result = generateSnapshot({ exportDirectory: exportDirectoryOf(name), outputFile: out, sources: PAGE_SOURCES, ...extra });
   return { out, bytes: fs.readFileSync(out), ...result };
 };
 
 // ---- the assembler ----
 test("DB06 the policy meta pins script and style by SHA-256 and has no unsafe source; the hash equals node:crypto's", () => {
   const viewModel = buildDashboardViewModel({ files: readExportFiles("claims-only") });
-  const { html, csp } = assembleSnapshot({ viewModel, sources: STANDIN_SOURCES });
-  const script = STANDIN_SOURCES.script.replace(WORDING_MARK, () => `${escapeJsonForHtml(JSON.stringify(WORDING))};`);
+  const { html, csp } = assembleSnapshot({ viewModel, sources: PAGE_SOURCES });
+  const script = PAGE_SOURCES.script.replace(WORDING_MARK, () => `${escapeJsonForHtml(JSON.stringify(WORDING))};`);
   const sha = (text) => `'sha256-${crypto.createHash("sha256").update(text, "utf8").digest("base64")}'`;
-  assert.equal(csp, `default-src 'none'; script-src ${sha(script)}; style-src ${sha(STANDIN_SOURCES.style)}; base-uri 'none'; form-action 'none'`);
+  assert.equal(csp, `default-src 'none'; script-src ${sha(script)}; style-src ${sha(PAGE_SOURCES.style)}; base-uri 'none'; form-action 'none'`);
   assert.doesNotMatch(csp, /unsafe|data:|blob:|\*/u);
-  assert.ok(html.includes(`<script>${script}</script>`) && html.includes(`<style>${STANDIN_SOURCES.style}</style>`));
+  assert.ok(html.includes(`<script>${script}</script>`) && html.includes(`<style>${PAGE_SOURCES.style}</style>`));
   for (const text of ["", "a", "ab", "abc", "é€", "x".repeat(1000)]) assert.equal(cspSourceOf(text), sha(text));
 });
 
 test("DB05 DB09 one file, no external reference; data block is escaped, parses to the canonical view model and cannot close itself", () => {
   for (const name of FIXTURE_NAMES) {
     const viewModel = buildDashboardViewModel({ files: readExportFiles(name) });
-    const { html, digest } = assembleSnapshot({ viewModel, sources: STANDIN_SOURCES });
+    const { html, digest } = assembleSnapshot({ viewModel, sources: PAGE_SOURCES });
     const block = /<script type="application\/json" id="memoryos-dashboard-data">([\s\S]*?)<\/script>/u.exec(html)[1];
     assert.doesNotMatch(block, /[<>&\u2028\u2029]/u);
     assert.equal(`${JSON.stringify(JSON.parse(block))}`.length > 0, true);
@@ -64,25 +67,25 @@ test("DB05 DB09 one file, no external reference; data block is escaped, parses t
   // The adversarial export really carries markup in its untrusted data, and it stays inside the block.
   const adversarial = buildDashboardViewModel({ files: readExportFiles("adversarial-wording") });
   assert.match(adversarial.source.workspaceIdentifier, /<script>/u);
-  assert.doesNotMatch(assembleSnapshot({ viewModel: adversarial, sources: STANDIN_SOURCES }).html, /<script>alert/u);
+  assert.doesNotMatch(assembleSnapshot({ viewModel: adversarial, sources: PAGE_SOURCES }).html, /<script>alert/u);
 });
 
 test("the assembler refuses a malformed argument or page source (no partial result); CRLF sources give identical bytes", () => {
   const viewModel = buildDashboardViewModel({ files: readExportFiles("single-entry") });
-  const base = assembleSnapshot({ viewModel, sources: STANDIN_SOURCES });
+  const base = assembleSnapshot({ viewModel, sources: PAGE_SOURCES });
   const refuse = (arguments_) => assert.equal(codeOf(() => assembleSnapshot(arguments_)).code, "DASH_USAGE");
-  refuse({ viewModel: { ...viewModel, version: "9" }, sources: STANDIN_SOURCES });
+  refuse({ viewModel: { ...viewModel, version: "9" }, sources: PAGE_SOURCES });
   refuse({ viewModel, sources: null });
-  refuse({ viewModel, sources: { ...STANDIN_SOURCES, template: STANDIN_SOURCES.template.replace("@@DATA@@", "") } });
-  refuse({ viewModel, sources: { ...STANDIN_SOURCES, template: STANDIN_SOURCES.template.replace("@@TITLE@@", "@@TITLE@@@@TITLE@@") } });
-  refuse({ viewModel, sources: { ...STANDIN_SOURCES, template: `${STANDIN_SOURCES.template}@@UNKNOWN@@` } });
-  refuse({ viewModel, sources: { ...STANDIN_SOURCES, script: STANDIN_SOURCES.script.replace(WORDING_MARK, "null;") } });
-  refuse({ viewModel, sources: { ...STANDIN_SOURCES, script: `${STANDIN_SOURCES.script}${WORDING_MARK}` } });
-  refuse({ viewModel, sources: { ...STANDIN_SOURCES, script: `${STANDIN_SOURCES.script}"</script>"` } });
-  refuse({ viewModel, sources: { ...STANDIN_SOURCES, style: "</style>" } });
-  refuse({ viewModel, sources: STANDIN_SOURCES, generatorVersion: "<b>" });
-  refuse({ viewModel, sources: STANDIN_SOURCES, generatorVersion: "" });
-  const crlf = Object.fromEntries(Object.entries(STANDIN_SOURCES).map(([k, v]) => [k, v.replace(/\n/gu, "\r\n")]));
+  refuse({ viewModel, sources: { ...PAGE_SOURCES, template: PAGE_SOURCES.template.replace("@@DATA@@", "") } });
+  refuse({ viewModel, sources: { ...PAGE_SOURCES, template: PAGE_SOURCES.template.replace("@@TITLE@@", "@@TITLE@@@@TITLE@@") } });
+  refuse({ viewModel, sources: { ...PAGE_SOURCES, template: `${PAGE_SOURCES.template}@@UNKNOWN@@` } });
+  refuse({ viewModel, sources: { ...PAGE_SOURCES, script: PAGE_SOURCES.script.replace(WORDING_MARK, "null;") } });
+  refuse({ viewModel, sources: { ...PAGE_SOURCES, script: `${PAGE_SOURCES.script}${WORDING_MARK}` } });
+  refuse({ viewModel, sources: { ...PAGE_SOURCES, script: `${PAGE_SOURCES.script}"</script>"` } });
+  refuse({ viewModel, sources: { ...PAGE_SOURCES, style: "</style>" } });
+  refuse({ viewModel, sources: PAGE_SOURCES, generatorVersion: "<b>" });
+  refuse({ viewModel, sources: PAGE_SOURCES, generatorVersion: "" });
+  const crlf = Object.fromEntries(Object.entries(PAGE_SOURCES).map(([k, v]) => [k, v.replace(/\n/gu, "\r\n")]));
   assert.equal(assembleSnapshot({ viewModel, sources: crlf }).html, base.html);
   assert.ok(!base.html.includes("\r"));
   assert.ok(base.html.includes(DASHBOARD_GENERATOR_VERSION));
@@ -102,13 +105,13 @@ test("DB02 each export file is read exactly once; the view model comes from thos
       return fs.openSync(target, ...rest);
     } };
   const out = path.join(fresh("out"), "snapshot.html");
-  generateSnapshot({ exportDirectory: exportDir, outputFile: out, sources: STANDIN_SOURCES, fs: spy });
+  generateSnapshot({ exportDirectory: exportDir, outputFile: out, sources: PAGE_SOURCES, fs: spy });
   const expectedFiles = readExportFiles("all-kinds-tombstoned").length;
   assert.equal(opens.size, expectedFiles);
   assert.ok([...opens.values()].every((count) => count === 1), "one open per file");
   const baseline = generate("all-kinds-tombstoned");
   assert.deepEqual(fs.readFileSync(out), baseline.bytes, "a swap after the read changes nothing");
-  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: exportDir, outputFile: path.join(fresh("out"), "x.html"), sources: STANDIN_SOURCES })).code, "DASH_EXPORT_INVALID", "the swapped export is itself rejected");
+  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: exportDir, outputFile: path.join(fresh("out"), "x.html"), sources: PAGE_SOURCES })).code, "DASH_EXPORT_INVALID", "the swapped export is itself rejected");
 });
 
 test("DB01 the only input is one export directory and one output name", () => {
@@ -135,7 +138,7 @@ test("DB03 a verification failure emits nothing and carries the MO-1308 code (ta
     const exportDir = copyExport("all-kinds-tombstoned");
     tamper(exportDir);
     const outDir = fresh("out");
-    const failure = codeOf(() => generateSnapshot({ exportDirectory: exportDir, outputFile: path.join(outDir, "s.html"), sources: STANDIN_SOURCES }));
+    const failure = codeOf(() => generateSnapshot({ exportDirectory: exportDir, outputFile: path.join(outDir, "s.html"), sources: PAGE_SOURCES }));
     assert.ok(failure && ["DASH_EXPORT_INVALID", "DASH_EXPORT_UNREADABLE"].includes(failure.code), `${label}: ${JSON.stringify(failure)}`);
     if (failure.code === "DASH_EXPORT_INVALID") assert.match(failure.historyCode, /^MO1308_[A-Z_]+$/u, label);
     assert.deepEqual(listing(outDir), [], `${label}: nothing emitted, no staging file left`);
@@ -143,42 +146,42 @@ test("DB03 a verification failure emits nothing and carries the MO-1308 code (ta
   // A file the manifest does not list is a verification failure, not a silent extra.
   const extra = copyExport("single-entry");
   fs.writeFileSync(path.join(extra, "entries", "00000000000000000001.json"), "{}");
-  const failure = codeOf(() => generateSnapshot({ exportDirectory: extra, outputFile: path.join(fresh("out"), "s.html"), sources: STANDIN_SOURCES }));
+  const failure = codeOf(() => generateSnapshot({ exportDirectory: extra, outputFile: path.join(fresh("out"), "s.html"), sources: PAGE_SOURCES }));
   assert.equal(failure.code, "DASH_EXPORT_INVALID");
 });
 
 test("DASH_EXPORT_UNREADABLE: missing, symbolic-link, special, undefined-path and oversize inputs are refused without being followed", (t) => {
   const outOf = () => path.join(fresh("out"), "s.html");
-  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: path.join(scratch, "absent"), outputFile: outOf(), sources: STANDIN_SOURCES })).code, "DASH_EXPORT_UNREADABLE");
+  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: path.join(scratch, "absent"), outputFile: outOf(), sources: PAGE_SOURCES })).code, "DASH_EXPORT_UNREADABLE");
   const file = path.join(fresh("f"), "file");
   fs.writeFileSync(file, "x");
-  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: file, outputFile: outOf(), sources: STANDIN_SOURCES })).code, "DASH_EXPORT_UNREADABLE");
+  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: file, outputFile: outOf(), sources: PAGE_SOURCES })).code, "DASH_EXPORT_UNREADABLE");
   const stray = copyExport("single-entry");
   fs.writeFileSync(path.join(stray, "stray.txt"), "x");
-  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: stray, outputFile: outOf(), sources: STANDIN_SOURCES })).code, "DASH_EXPORT_UNREADABLE");
+  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: stray, outputFile: outOf(), sources: PAGE_SOURCES })).code, "DASH_EXPORT_UNREADABLE");
   const big = copyExport("single-entry");
   fs.writeFileSync(path.join(big, "entries", "00000000000000000000.json"), Buffer.alloc(MEMORYOS_HISTORY_LIMITS.entryBytes + 1, 65));
-  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: big, outputFile: outOf(), sources: STANDIN_SOURCES })).code, "DASH_EXPORT_UNREADABLE");
+  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: big, outputFile: outOf(), sources: PAGE_SOURCES })).code, "DASH_EXPORT_UNREADABLE");
   let linked = false;
   try {
     const realRoot = copyExport("single-entry");
     const linkRoot = path.join(fresh("l"), "link");
     fs.symlinkSync(realRoot, linkRoot, "junction");
-    assert.equal(codeOf(() => generateSnapshot({ exportDirectory: linkRoot, outputFile: outOf(), sources: STANDIN_SOURCES })).code, "DASH_EXPORT_UNREADABLE", "linked root");
+    assert.equal(codeOf(() => generateSnapshot({ exportDirectory: linkRoot, outputFile: outOf(), sources: PAGE_SOURCES })).code, "DASH_EXPORT_UNREADABLE", "linked root");
     const inner = copyExport("single-entry");
     const target = path.join(inner, "entries", "00000000000000000000.json");
     const hidden = path.join(fresh("h"), "real.json");
     fs.copyFileSync(target, hidden);
     fs.rmSync(target);
     fs.symlinkSync(hidden, target, "file");
-    assert.equal(codeOf(() => generateSnapshot({ exportDirectory: inner, outputFile: outOf(), sources: STANDIN_SOURCES })).code, "DASH_EXPORT_UNREADABLE", "linked file");
+    assert.equal(codeOf(() => generateSnapshot({ exportDirectory: inner, outputFile: outOf(), sources: PAGE_SOURCES })).code, "DASH_EXPORT_UNREADABLE", "linked file");
     linked = true;
   } catch (error) { if (!["EPERM", "EACCES", "ENOSYS"].includes(error.code)) throw error; }
   t.diagnostic(`symbolic-link cases executed: ${linked}`);
   if (process.platform !== "win32") {
     const special = copyExport("single-entry");
     assert.equal(spawnSync("mkfifo", [path.join(special, "pipe")]).status, 0);
-    assert.equal(codeOf(() => generateSnapshot({ exportDirectory: special, outputFile: outOf(), sources: STANDIN_SOURCES })).code, "DASH_EXPORT_UNREADABLE");
+    assert.equal(codeOf(() => generateSnapshot({ exportDirectory: special, outputFile: outOf(), sources: PAGE_SOURCES })).code, "DASH_EXPORT_UNREADABLE");
     assert.ok(linked, "the symbolic-link cases must run on this platform");
   }
 });
@@ -214,7 +217,7 @@ test("DB18 same export and version give identical bytes across runs and director
     const copy = path.join(fresh("export"), "elsewhere");
     copyTree(exportDirectoryOf(name), copy);
     const out = path.join(fresh("out"), "different-name.html");
-    generateSnapshot({ exportDirectory: copy, outputFile: out, sources: STANDIN_SOURCES });
+    generateSnapshot({ exportDirectory: copy, outputFile: out, sources: PAGE_SOURCES });
     assert.deepEqual(fs.readFileSync(out), first.bytes, `${name}: path and name do not matter`);
   }
 });
@@ -224,7 +227,7 @@ test("DB18 DB19 a fresh process under a different time zone, locale, working dir
   copyTree(path.join(studio, "scripts", "memoryos-dashboard-generator.mjs"), path.join(tree, "scripts", "memoryos-dashboard-generator.mjs"));
   copyTree(path.join(studio, "web", "js"), path.join(tree, "web", "js"));
   fs.mkdirSync(path.join(tree, "web", "dashboard"));
-  for (const [file, key] of [["page.html", "template"], ["page.css", "style"], ["page.js", "script"]]) fs.writeFileSync(path.join(tree, "web", "dashboard", file), STANDIN_SOURCES[key]);
+  for (const [file, key] of [["page.html", "template"], ["page.css", "style"], ["page.js", "script"]]) fs.writeFileSync(path.join(tree, "web", "dashboard", file), PAGE_SOURCES[key]);
   const run = (name, environment, cwd) => {
     const out = path.join(fresh("out"), "snapshot.html");
     const result = spawnSync(process.execPath, [...(environment.PRELOAD ? ["--import", environment.PRELOAD] : []), path.join(tree, "scripts", "memoryos-dashboard-generator.mjs"), exportDirectoryOf(name), out],
@@ -241,9 +244,13 @@ test("DB18 DB19 a fresh process under a different time zone, locale, working dir
     assert.match(a.stdout, /^snapshot sha256:[0-9a-f]{64}\n$/u);
     assert.deepEqual(fs.readFileSync(b.out), fs.readFileSync(a.out), name);
     const text = fs.readFileSync(a.out, "utf8");
-    for (const secret of [scratch, os.tmpdir(), os.homedir(), os.hostname(), os.userInfo().username, studio, process.cwd(), "Date", "tr_TR"]) {
-      if (secret.length > 3 && !["Date"].includes(secret)) assert.ok(!text.includes(secret), `${name} leaks ${secret}`);
+    // Phase 3: the real page legitimately contains short tokens (CSS `:root`), so a leak is an occurrence the generator ADDED beyond what
+    // the page sources, the registry and the view model already carry. The negative control below proves an added occurrence is caught.
+    const allowed = `${PAGE_SOURCES.template}${PAGE_SOURCES.style}${PAGE_SOURCES.script}${JSON.stringify(WORDING)}${new TextDecoder().decode(canonicalViewModelBytes(buildDashboardViewModel({ files: readExportFiles(name) })))}${DASHBOARD_GENERATOR_VERSION}`;
+    for (const secret of [scratch, os.tmpdir(), os.homedir(), os.hostname(), os.userInfo().username, studio, process.cwd(), "tr_TR"]) {
+      if (secret.length > 3) assert.ok(!addedOccurrences(text, allowed, secret), `${name} leaks ${secret}`);
     }
+    assert.ok(addedOccurrences(`${text}/home/${os.userInfo().username}/x`, allowed, os.userInfo().username), "negative control: an added occurrence is a leak");
     assert.doesNotMatch(text, /\b\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}/u, "no timestamp");
   }
 });
@@ -266,11 +273,11 @@ test("DB20 output creation is exclusive: an existing name is never overwritten, 
   const dir = fresh("out");
   const out = path.join(dir, "snapshot.html");
   fs.writeFileSync(out, "precious");
-  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: exportDirectoryOf("single-entry"), outputFile: out, sources: STANDIN_SOURCES })).code, "DASH_OUTPUT_EXISTS");
+  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: exportDirectoryOf("single-entry"), outputFile: out, sources: PAGE_SOURCES })).code, "DASH_OUTPUT_EXISTS");
   assert.equal(fs.readFileSync(out, "utf8"), "precious");
   fs.rmSync(out);
   fs.symlinkSync(path.join(dir, "nowhere"), out); // even a dangling link is an existing name
-  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: exportDirectoryOf("single-entry"), outputFile: out, sources: STANDIN_SOURCES })).code, "DASH_OUTPUT_EXISTS");
+  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: exportDirectoryOf("single-entry"), outputFile: out, sources: PAGE_SOURCES })).code, "DASH_OUTPUT_EXISTS");
   fs.rmSync(out);
 
   // The staging name already exists: one exclusive create, typed failure, the foreign file untouched, nothing published.
@@ -278,7 +285,7 @@ test("DB20 output creation is exclusive: an existing name is never overwritten, 
   fs.writeFileSync(staging, "foreign");
   let attempts = 0;
   const counting = { ...fs, openSync: (target, flags, ...rest) => { if (flags === "wx") attempts += 1; return fs.openSync(target, flags, ...rest); } };
-  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: exportDirectoryOf("single-entry"), outputFile: out, sources: STANDIN_SOURCES, fs: counting })).code, "DASH_IO_FAILURE");
+  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: exportDirectoryOf("single-entry"), outputFile: out, sources: PAGE_SOURCES, fs: counting })).code, "DASH_IO_FAILURE");
   assert.equal(attempts, 1, "not retried");
   assert.equal(fs.readFileSync(staging, "utf8"), "foreign");
   assert.ok(!fs.existsSync(out));
@@ -286,7 +293,7 @@ test("DB20 output creation is exclusive: an existing name is never overwritten, 
 
   // A name that appears between the early check and publication loses the race without being replaced.
   const racing = { ...fs, linkSync: (from, to) => { fs.writeFileSync(to, "winner"); return fs.linkSync(from, to); } };
-  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: exportDirectoryOf("single-entry"), outputFile: out, sources: STANDIN_SOURCES, fs: racing })).code, "DASH_OUTPUT_EXISTS");
+  assert.equal(codeOf(() => generateSnapshot({ exportDirectory: exportDirectoryOf("single-entry"), outputFile: out, sources: PAGE_SOURCES, fs: racing })).code, "DASH_OUTPUT_EXISTS");
   assert.equal(fs.readFileSync(out, "utf8"), "winner");
   assert.deepEqual(listing(dir), ["snapshot.html"], "staging removed");
   fs.rmSync(out);
@@ -312,7 +319,7 @@ test("the command line: exit status and the single standard-error line (first to
   copyTree(path.join(studio, "scripts", "memoryos-dashboard-generator.mjs"), path.join(tree, "scripts", "memoryos-dashboard-generator.mjs"));
   copyTree(path.join(studio, "web", "js"), path.join(tree, "web", "js"));
   fs.mkdirSync(path.join(tree, "web", "dashboard"));
-  for (const [file, key] of [["page.html", "template"], ["page.css", "style"], ["page.js", "script"]]) fs.writeFileSync(path.join(tree, "web", "dashboard", file), STANDIN_SOURCES[key]);
+  for (const [file, key] of [["page.html", "template"], ["page.css", "style"], ["page.js", "script"]]) fs.writeFileSync(path.join(tree, "web", "dashboard", file), PAGE_SOURCES[key]);
   const cli = (...args) => spawnSync(process.execPath, [path.join(tree, "scripts", "memoryos-dashboard-generator.mjs"), ...args], { encoding: "utf8" });
   const out = path.join(fresh("out"), "s.html");
   const ok = cli(exportDirectoryOf("all-kinds-tombstoned"), out);
@@ -352,4 +359,14 @@ test("the generator and assembler open no socket, read no clock, random source, 
   assert.ok(common.some((pattern) => pattern.test('import net from "node:net"; const t = Date.now();')));
   // The generator never calls the verifier's helpers itself: verification is the view-model unit's single call.
   assert.ok(!/verifyHistoryExport|decodeHistoryBytes|parseStrictJson/u.test(strip(generator)), "no verification or member parsing in the generator");
+});
+
+test("Phase 3: the end-to-end generator output equals the unit assembly the page tests use, for every fixture", async () => {
+  const { generateFixtureSnapshot, assembleTestSnapshot } = await import("./support-dashboard-snapshot.mjs");
+  for (const name of FIXTURE_NAMES) {
+    const generated = generateFixtureSnapshot(name);
+    const unit = assembleTestSnapshot({ viewModel: buildDashboardViewModel({ files: readExportFiles(name) }) });
+    assert.equal(generated.html, unit.html, name);
+    assert.equal(generated.digest, unit.digest, name);
+  }
 });
