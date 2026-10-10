@@ -15,6 +15,7 @@
 #include <stdexcept>
 #include <string>
 #include <thread>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -76,14 +77,32 @@ concept CanRecordCoreOutcome = requires(Type& observability) {
     observability.record_cleanup(RuntimeState::destroyed, RuntimeResult::success());
 };
 
+// MSVC 19.44 mis-evaluates access checking for a private member named inside a namespace-scope
+// requires-expression (it reports the member accessible, C2607). Detection through
+// expression SFINAE on a class template partial specialization is standards-equivalent
+// (an inaccessible member makes the substitution fail) and is evaluated correctly by MSVC.
+template <typename Type, typename = void> struct CoreMetricMutable : std::false_type {};
+
 template <typename Type>
-concept CanMutateCoreMetric = requires(Type& observability) {
-    observability.increment_metric(RuntimeMetric::cleanup_operations);
-};
+struct CoreMetricMutable<Type,
+                         std::void_t<decltype(std::declval<Type&>().increment_metric(
+                             RuntimeMetric::cleanup_operations))>> : std::true_type {};
+
+template <typename Type, typename = void> struct CoreMetricReadable : std::false_type {};
+
+template <typename Type>
+struct CoreMetricReadable<Type,
+                          std::void_t<decltype(std::declval<const Type&>().metric_value(
+                              RuntimeMetric::cleanup_operations))>> : std::true_type {};
+
+template <typename Type> inline constexpr bool CanMutateCoreMetric = CoreMetricMutable<Type>::value;
 
 static_assert(!CanRecordCoreDiagnostic<Observability>);
 static_assert(!CanRecordCoreOutcome<Observability>);
 static_assert(!CanMutateCoreMetric<Observability>);
+// Positive control: the same detection idiom finds the public read accessor, so the negative result
+// above cannot be vacuous, and the private mutator is found where it is genuinely accessible.
+static_assert(CoreMetricReadable<Observability>::value);
 static_assert(
     std::same_as<decltype(std::declval<Runtime&>().observability()), const Observability&>);
 static_assert(

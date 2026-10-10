@@ -2,12 +2,17 @@ import assert from 'node:assert/strict';
 import { Client } from '@modelcontextprotocol/client';
 import { StdioClientTransport } from '@modelcontextprotocol/client/stdio';
 import { resolve,dirname } from 'node:path';
-import { mkdtemp,readFile } from 'node:fs/promises';
+import { mkdtemp,readFile,mkdir,writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { execFileSync,spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
 import { PACKAGE_ROOT } from '../src/integrity.mjs';
-import { RECEIPT,ARCHIVE,verifyArchive,verifyInstalled } from '../scripts/distribution.mjs';
+import { npmCli } from '../scripts/npm-cli.mjs';
+import { LOCAL_RECEIPT } from '../scripts/prepare-tests.mjs';
+import { ARCHIVE,verifyArchive,verifyInstalled } from '../scripts/distribution.mjs';
+/** Test-run measurements go to an ignored directory; tracked measurements/*.json are pinned evidence and are never rewritten. */
+export const MEASUREMENT_DIR=resolve(process.env.MEMORYOS_MCP_MEASUREMENT_DIR??resolve(PACKAGE_ROOT,'out/test-measurements'));
+export async function writeMeasurement(name,text){await mkdir(MEASUREMENT_DIR,{recursive:true});const target=resolve(MEASUREMENT_DIR,name);await writeFile(target,text);return target;}
 export const workspace=resolve(PACKAGE_ROOT,'../..');
 export const env=()=>Object.fromEntries(['SystemRoot','TEMP','TMP'].filter(k=>process.env[k]).map(k=>[k,process.env[k]]));
 export async function official(root=PACKAGE_ROOT,launch) {
@@ -22,11 +27,11 @@ export async function official(root=PACKAGE_ROOT,launch) {
  return {client,transport,transcript,errors,pid,stderr:()=>stderr,async close(){await client.close();for(let i=0;i<100;i++){try{process.kill(pid,0);}catch(error){if(error.code==='ESRCH')return;throw error;}await delay(10);}throw Error('SERVER_PROCESS_NOT_REAPED');}};
 }
 export async function installArchive() {
- const receipt=JSON.parse(await readFile(RECEIPT)),archive=resolve(PACKAGE_ROOT,'out/phase2',ARCHIVE);
+ const receipt=JSON.parse(await readFile(LOCAL_RECEIPT)),archive=resolve(PACKAGE_ROOT,'out/phase2',ARCHIVE);
  verifyArchive(await readFile(archive),receipt);
  const destination=await mkdtemp(resolve(tmpdir(),'memoryos-mo1304-phase2-install-'));
  assert.ok(!destination.toLowerCase().startsWith(workspace.toLowerCase()));
- const npm=resolve(dirname(process.execPath),'node_modules/npm/bin/npm-cli.js');
+ const npm=npmCli();
  const output=execFileSync(process.execPath,[npm,'install','--offline','--ignore-scripts','--no-audit','--no-fund','--no-save','--omit=dev','--cache',resolve(destination,'empty-cache'),'--prefix',destination,archive],{env:{...env(),PATH:dirname(process.execPath)},windowsHide:true,encoding:'utf8',timeout:120000});
  const root=resolve(destination,'node_modules/memoryos-mcp');const verified=await verifyInstalled(root,receipt);
  return {root,destination,receipt,verified,installOutput:output};

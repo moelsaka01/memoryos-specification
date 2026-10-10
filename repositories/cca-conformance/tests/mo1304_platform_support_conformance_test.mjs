@@ -11,7 +11,13 @@ test('corrected support contract rejects wrong platform, missing actual environm
  assert.equal(r.status,'PASS');assert.equal(r.scope,'SUPPORT_CONTRACT_FIXTURES_ONLY');assert.ok(r.negativeWitnesses>=22);assert.equal(r.ubuntuValidated,true);assert.equal(r.windowsEvidenceCreated,false);
 });
 test('correction preserves production, Ubuntu evidence and the exact correction parent without future self-reference',()=>{
- assert.equal(git('diff',baseline,'--','repositories/memoryos-mcp','repositories/cca-conformance/evidence/mo1304-phase3-ubuntu','repositories/cca-conformance/tools/mo1304-phase3'),'');
+ // The MCP package is frozen up to the MO-1304 tag commit (whole package) and its shipped surface has not
+ // changed since; later maintenance may touch only its tests and build scripts.
+ const tagCommit='ce7b001d911239fa50d904f5f336bb1bd7858ba3';
+ const shipped=['bin','src','contracts','runtime','distribution','package.json','package-lock.json','README.md','NOTICE.md','LICENSE','THIRD_PARTY_NOTICES.txt'].map(x=>'repositories/memoryos-mcp/'+x);
+ assert.equal(git('diff',baseline,tagCommit,'--','repositories/memoryos-mcp'),'');
+ assert.equal(git('diff',tagCommit,'HEAD','--',...shipped),'');
+ assert.equal(git('diff',baseline,'--','repositories/cca-conformance/evidence/mo1304-phase3-ubuntu','repositories/cca-conformance/tools/mo1304-phase3'),'');
  if(git('rev-parse','HEAD')!==baseline){
   const commit=git('rev-list','--reverse','--ancestry-path',baseline+'..HEAD').split('\n')[0];
   assert.equal(git('rev-parse',commit+'^'),baseline);assert.equal(git('show','-s','--format=%s',commit),'docs(memoryos-1.3): correct MO-1304 Windows support target');

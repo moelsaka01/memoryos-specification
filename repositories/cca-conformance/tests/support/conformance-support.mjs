@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
-import { constants, readFileSync, readdirSync, statSync } from "node:fs";
+import { constants, mkdtempSync, readFileSync, readdirSync, rmSync, statSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, relative, resolve, sep } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -414,8 +415,8 @@ function filesBelowSync(root, directory = root) {
   return result.sort();
 }
 
-function currentInputRecord(record) {
-  const absolute = resolve(WORKSPACE_ROOT, record.path);
+function currentInputRecord(record, root = WORKSPACE_ROOT) {
+  const absolute = resolve(root, record.path);
   const metadata = statSync(absolute);
   if (record.kind === "file") {
     assert.equal(metadata.isFile(), true, `${record.path} is no longer a regular file`);
@@ -430,6 +431,56 @@ function currentInputRecord(record) {
     ...record,
     sha256: sha256(Buffer.from(canonicalJson(documents), "utf8")),
   };
+}
+
+/**
+ * The manifest, evidence and reports describe the immutable 1.2.1 release. Its pins are historical with
+ * respect to the 1.3 working tree and are authenticated against the content of this release commit, which
+ * the v1.2.1 tag peels to. Full history (git fetch --unshallow --tags) is required.
+ */
+export const PINNED_RELEASE = Object.freeze({
+  tag: "v1.2.1",
+  commit: "2c3a5491a9bdefd723fe47e79c9d9d59d08de4a5",
+});
+
+function releaseGit(args, input) {
+  const result = spawnSync("git", ["-C", WORKSPACE_ROOT, ...args], { encoding: "buffer", maxBuffer: 1 << 30, input });
+  return result;
+}
+
+export function validateManifestInputsAtPinnedRelease(manifest, release = PINNED_RELEASE) {
+  validateManifest(manifest);
+  assert.equal(
+    releaseGit(["cat-file", "-e", `${release.commit}^{commit}`]).status,
+    0,
+    `release commit ${release.commit} (${release.tag}) is not available; fetch full history with tags`,
+  );
+  const tagged = releaseGit(["rev-parse", "--verify", "--quiet", `refs/tags/${release.tag}^{commit}`]);
+  if (tagged.status === 0) {
+    assert.equal(tagged.stdout.toString("utf8").trim(), release.commit, `${release.tag} no longer peels to the pinned commit`);
+  }
+  const inputs = [
+    ...manifest.implementation.sourceInventory,
+    ...manifest.evidenceGroups.flatMap(({ inputInventory }) => inputInventory),
+  ];
+  const paths = [...new Set(inputs.map(({ path }) => path))];
+  const archive = releaseGit(["archive", "--format=tar", release.commit, "--", ...paths]);
+  assert.equal(archive.status, 0, `cannot read pinned inputs from ${release.commit}: ${archive.stderr}`);
+  const root = mkdtempSync(resolve(tmpdir(), "memoryos-pinned-release-"));
+  try {
+    const extracted = spawnSync("tar", ["-x", "-C", root], { input: archive.stdout });
+    assert.equal(extracted.status, 0, `cannot extract pinned inputs: ${extracted.stderr}`);
+    for (const record of inputs) {
+      assert.deepEqual(
+        currentInputRecord(record, root),
+        record,
+        `${record.path} differs from the pinned manifest bytes`,
+      );
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+  return manifest.implementation.sourceInventory;
 }
 
 export function validateManifestInputsCurrent(manifest) {

@@ -1,6 +1,7 @@
+import './prepare.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import { readFile,writeFile } from 'node:fs/promises';import { resolve } from 'node:path';
-import { official,installArchive } from './phase2-support.mjs';import { fixtures,b64 } from './corpus.mjs';
+import { official,installArchive,writeMeasurement } from './phase2-support.mjs';import { fixtures,b64 } from './corpus.mjs';
 import { setTimeout as delay } from 'node:timers/promises';
 import { PACKAGE_ROOT } from '../src/integrity.mjs';import { names } from '../src/contracts.mjs';import { J } from '../src/deterministic.mjs';
 test('installed archive denies network, client filesystem, persistence, shell, AJV paths and source fallback',async()=>{
@@ -21,5 +22,5 @@ test('installed archive denies network, client filesystem, persistence, shell, A
  const audit=JSON.parse(await readFile(auditPath));assert.equal(audit.code,0);assert.equal(audit.workers.length,7);
  for(const entry of [audit.parent,...audit.workers]){for(const key of ['network','filesystem','writes','shell','moduleFallback','validators'])assert.equal(entry[key],0,key);assert.ok(entry.reads>0);assert.ok(entry.modules.length>0);assert.ok(entry.modules.every(x=>!x.startsWith('..')));}
  const receipt={kind:'MemoryOSMCPPhase2OfflineBoundary',version:'1.0.0',status:'PASS',archiveSha256:installed.receipt.archive.sha256,installedOutsideCheckout:true,network:'INSTRUMENTED_REJECTION_PARENT_AND_ALL_SEVEN_WORKER_PATHS',filesystem:'CLOSED_PACKAGE_READS_AND_REQUIRED_ANCESTOR_METADATA_ONLY',sourceCheckoutFallback:false,persistence:false,processesReaped:true,officialClient:true,workerOperations:7,audit,osLevelNetworkDenial:'PENDING_PHASE3',platformCertification:'PENDING_PHASE3',instrumentation:'Explicit trusted test bootstrap imports the unchanged installed entry point; observer receipt writes are outside semantic runtime and use a saved test-owned writer.'};
- await writeFile(resolve(PACKAGE_ROOT,'measurements/phase2-offline.json'),J(receipt)+'\n');
+ await writeMeasurement('phase2-offline.json',J(receipt)+'\n');
 });

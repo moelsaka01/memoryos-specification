@@ -18,7 +18,8 @@ import {
   sha256,
   standardRoot,
   validateManifest,
-  validateManifestInputsCurrent,
+  validateManifestInputsAtPinnedRelease,
+  PINNED_RELEASE,
   validateReport,
   validateReviewArtifact,
   validatePublishedStandard,
@@ -188,7 +189,7 @@ test("the pinned manifest is complete, ordered, and self-authenticating", async 
   try {
     await mkdir(cacheDirectory, { recursive: true });
     await writeFile(cacheArtifact, "generated cache bytes must be irrelevant", "utf8");
-    validateManifestInputsCurrent(first);
+    validateManifestInputsAtPinnedRelease(first);
     assert.equal(
       first.implementation.revision,
       sha256(Buffer.from(canonicalJson(first.implementation.sourceInventory), "utf8")),
@@ -226,7 +227,7 @@ test("the pinned manifest is complete, ordered, and self-authenticating", async 
     if (record.path === stalePath) record.sha256 = `sha256:${"0".repeat(64)}`;
   }
   assert.throws(
-    () => validateManifestInputsCurrent(staleInputs),
+    () => validateManifestInputsAtPinnedRelease(staleInputs),
     /differs from the pinned manifest bytes/u,
   );
 
@@ -537,4 +538,17 @@ test("content-addressed assessment manifests retain earlier report bindings", as
   } finally {
     await rm(temporaryRoot, { recursive: true, force: true });
   }
+});
+
+test("the historical 1.2.1 pins are authenticated against the release commit, not the evolving working tree", async () => {
+  const manifest = await readManifest();
+  validateManifestInputsAtPinnedRelease(manifest);
+  assert.throws(
+    () => validateManifestInputsAtPinnedRelease(manifest, { tag: PINNED_RELEASE.tag, commit: "0".repeat(40) }),
+    /is not available/u,
+  );
+  const drifted = structuredClone(manifest);
+  const record = drifted.implementation.sourceInventory.find(({ kind }) => kind === "directory");
+  record.sha256 = `sha256:${"1".repeat(64)}`;
+  assert.throws(() => validateManifestInputsAtPinnedRelease(drifted), /differs from the pinned manifest bytes|inconsistent committed input identities/u);
 });
