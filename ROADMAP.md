@@ -11,7 +11,7 @@ authorize behavior beyond [the architecture](ARCHITECTURE.md).
 | MemoryOS 1.1 | Released — v1.1.0 | Stable Semantic World, Cognitive Trace, Living Connectome, Cognitive Replay, Cognitive Polish, Cognitive Evolution, Comparative Reconstruction, and integrated investigation workflow |
 | MemoryOS 1.2 | Released — v1.2.0 | Canonical Memory Investigation Packages, dependency-free AI runtime adapters, one renderer-independent Investigation Core, public SDK facades, the official SDK-backed CLI, deterministic Cognitive Regression Analysis, the Cognitive Investigation Explorer, CCA-MEMORYOS-1.0, and its official Conformance Suite |
 | MemoryOS 1.2.1 | Corrective restoration | Restores omitted intended v1.2 source, registered tests, fixtures, examples, documentation, frozen Standard and MIP publication assets, and corrected conformance provenance while preserving all v1.2 semantics and CSP fixes |
-| MemoryOS 1.3 | In development; MO-1301 through MO-1308 RELEASED | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, certified REST Gateway, qualified Provider-Neutral CI/CD Integration, certified Release Governance and Readiness (V2 stale-test correction bound, 639/639), and certified Investigation History (BF `bf2fdc87`); MO-1309 AUTHORIZED (Contract Freeze 1 next) |
+| MemoryOS 1.3 | In development; MO-1301 through MO-1308 RELEASED | Engineering Operations: Policy / Core Foundation, GitHub Policy Gate, VS Code integration (released with an external-infrastructure exception), certified MCP Server and Agent Integration, certified REST Gateway, qualified Provider-Neutral CI/CD Integration, certified Release Governance and Readiness (V2 stale-test correction bound, 639/639), and certified Investigation History (BF `bf2fdc87`); MO-1309 CONTRACT FREEZE 1 FROZEN / PHASE 1 NEXT |
 
 MemoryOS 1.1 is additive. It preserves the MemoryOS 1.0 runtime and public
 contracts while moving deterministic investigation into the downstream Studio
@@ -117,7 +117,8 @@ released at annotated tag `memoryos-1.3-mo1308` (tag object
 `3ddb8243dcb9dcf023aa7df45552f71b86ccca20`), peeling exactly to binding-only BF
 `bf2fdc87e9b2bfc25588ef61deacac6c04684376`.
 MO-1309's [authority](docs/mo1309-cloud-dashboard.md) establishes the Cloud
-Dashboard scope and owner decisions.
+Dashboard scope and owner decisions; its
+[Contract Freeze 1](docs/mo1309-contract-freeze-1.md) is frozen.
 
 | Milestone | Title | Status | Architectural layer |
 |---|---|---|---|
@@ -129,7 +130,7 @@ Dashboard scope and owner decisions.
 | MO-1306 | Provider-Neutral CI/CD Integration | CLOSED / QUALIFIED CERTIFICATION / RELEASED | Provider-neutral CI/CD integration with preserved provider limitations |
 | MO-1307 | Release Governance and Readiness | CLOSED / CERTIFIED / RELEASED (V2 STALE-TEST CORRECTION BOUND, 639/639) | Deterministic evidence-backed readiness; final release authorization remains human |
 | MO-1308 | Investigation History | CLOSED / CERTIFIED / RELEASED (BF `bf2fdc87`) | Durable investigation/evaluation history and traceability |
-| MO-1309 | Cloud Dashboard | AUTHORIZED / CONTRACT FREEZE 1 NEXT | Static, offline, cloud-ready, read-only dashboard over MO-1308 exports |
+| MO-1309 | Cloud Dashboard | CONTRACT FREEZE 1 FROZEN / PHASE 1 NEXT | Static, offline, cloud-ready, read-only dashboard over MO-1308 exports |
 
 Later milestones must delegate to existing semantic authority rather than
 silently reimplementing MemoryOS semantics. The MO-1306 freeze and scope
@@ -418,7 +419,7 @@ authority and Freeze describes the stage when it was written.
 
 ### MO-1309: Cloud Dashboard
 
-Status: **AUTHORIZED / CONTRACT FREEZE 1 NEXT**.
+Status: **CONTRACT FREEZE 1 FROZEN / PHASE 1 NEXT**.
 
 The [MO-1309 authority](docs/mo1309-cloud-dashboard.md) resolves the scope with
 the owner decisions M1 through M12. "Cloud" means a static, offline,
@@ -431,9 +432,14 @@ Chromium-family browser. A hosted service is deferred to a future milestone
 with its own authority. Release `v1.3.0` is a separate step after MO-1309 and a
 parallel test/CI maintenance item.
 
+The [Contract Freeze 1](docs/mo1309-contract-freeze-1.md) closes every decision
+and fixes the phase plan, the requirement inventory DB01–DB32 and the
+certification plan 4A–4D. The parallel test/CI maintenance item
+`maint/pre-1.3-release` is independent of every phase.
+
 The exact next task is:
 
-**MEMORYOS 1.3 MO-1309 — CONTRACT FREEZE 1**
+**MEMORYOS 1.3 MO-1309 PHASE 1 — CONTRACT AND VIEW MODEL**
 
 The [handoff](docs/mo1309-handoff.md) records the live state.
 

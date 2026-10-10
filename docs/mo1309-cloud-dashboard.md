@@ -1,7 +1,7 @@
 # MemoryOS 1.3 MO-1309 — Cloud Dashboard: Authority and Decision Register
 
-Status: **AUTHORIZED** (authority; Contract Freeze 1 is the next document,
-`docs/mo1309-contract-freeze-1.md`).
+Status: **AUTHORIZED** (authority; Contract Freeze 1 FROZEN). Contract Freeze 1 follows in
+[mo1309-contract-freeze-1.md](mo1309-contract-freeze-1.md).
 
 This document is documentation only. It adds no production code, schema,
 package, fixture, evidence or tag, in this repository or in
@@ -132,6 +132,7 @@ Zero OPEN. Zero entries await an owner decision.
 | M7 asks MO-1309 to characterize 100,000 but certify smaller; MO-1308 limit is 100,000 | CONSISTENT | Limit unchanged. The certified scale is a measurement result, never a changed limit (Freeze section 9) |
 | MO-1308 3D validator tolerated a regression row naming a rerun inside one suite entry | CONSISTENT WITH M13 | Resolved by the adopted 3D-D4 follow-up, carried into the Freeze certification plan. The MO-1308 validator and its accepted deviation are not edited |
 | MO-1308's certification shape (3A filesystem, concurrency, interruption) versus a read-only dashboard | CONSISTENT | C3: not carried over; 4A–4D replace it |
+| M7 names export performance as separate maintenance while M8 limits the one parallel item to test and CI | TENSION | Two different items: the parallel item is test and CI only; export performance is a separate, later, product-touching item with its own authority and a byte-identical-output proof, outside MO-1309 (Freeze section 18) |
 | Report §K carry-over table (maintenance items 1–5) was not supplied in full to this session | INFORMATIONAL | M8 binds the item class (test and CI only, no product semantics) and the three named first items. The five items are enumerated from the §K table in the first commit of `maint/pre-1.3-release`, under that class; the Freeze needs no further decision |
 | Standard-level observations from MO-1308 (registry text versus section prose) | INFORMATIONAL | Unchanged; belong to the Standard's own change process |
 
@@ -141,7 +142,7 @@ corrected in the same commit as this document.
 ## 6. Exact next tasks
 
 1. **Contract Freeze 1** on branch `mo1309/freeze`
-   (`docs/mo1309-contract-freeze-1.md`).
+   ([mo1309-contract-freeze-1.md](mo1309-contract-freeze-1.md)) — now FROZEN.
 2. After the Freeze is FROZEN: Phase 1 on `mo1309/phase1`, with the
    independent maintenance item on `maint/pre-1.3-release`.
 
