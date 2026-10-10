@@ -1,12 +1,14 @@
+import './prepare.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile,writeFile,mkdtemp,mkdir,link,unlink,symlink } from 'node:fs/promises';
 import { resolve,dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { gunzipSync,gzipSync } from 'node:zlib';
-import { ARCHIVE,RECEIPT,MANIFEST,archiveMembers,verifyArchive,verifyInstalled } from '../scripts/distribution.mjs';
+import { LOCAL_RECEIPT } from '../scripts/prepare-tests.mjs';
+import { ARCHIVE,MANIFEST,archiveMembers,verifyArchive,verifyInstalled } from '../scripts/distribution.mjs';
 import { PACKAGE_ROOT,sha256 } from '../src/integrity.mjs';
-const receipt=JSON.parse(await readFile(RECEIPT));
+const receipt=JSON.parse(await readFile(LOCAL_RECEIPT));
 const archive=await readFile(resolve(PACKAGE_ROOT,'out/phase2',ARCHIVE));
 const tar=gunzipSync(archive);
 function checksum(header){header.fill(32,148,156);let sum=0;for(const x of header)sum+=x;header.write(sum.toString(8).padStart(6,'0')+'\0 ',148,'ascii');}

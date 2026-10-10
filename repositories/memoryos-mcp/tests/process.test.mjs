@@ -1,3 +1,4 @@
+import './prepare.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import { spawn } from 'node:child_process';
 import { once } from 'node:events';import { mkdtemp,cp,unlink,rm } from 'node:fs/promises';import { tmpdir } from 'node:os';import { resolve,relative,sep } from 'node:path';
 import { PACKAGE_ROOT } from '../src/integrity.mjs';import { loadLimits } from '../src/limits.mjs';import { meta } from './support.mjs';

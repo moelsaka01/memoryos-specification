@@ -1,3 +1,4 @@
+import './prepare.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import { raw } from './phase2-support.mjs';import { meta } from './support.mjs';import { names,META } from '../src/contracts.mjs';import { loadLimits } from '../src/limits.mjs';
 const request=(id,method,params={})=>({jsonrpc:'2.0',id,method,params:{_meta:meta,...params}});

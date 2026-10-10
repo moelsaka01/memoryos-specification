@@ -7,6 +7,7 @@ import { crc32,inflateRawSync } from 'node:zlib';
 import { PACKAGE_ROOT,safeMember,regularBytes,exactFiles,sha256,verifyRuntime,verifyDependencies } from '../src/integrity.mjs';
 import { J } from '../src/deterministic.mjs';
 import { verifyFoundation } from './inventory.mjs';
+import { npmCli } from './npm-cli.mjs';
 export const MANIFEST='distribution/distribution-manifest.json';
 export const ARCHIVE='memoryos-mcp-0.1.0.tgz';
 export const RECEIPT=resolve(PACKAGE_ROOT,'measurements/phase2-package-receipt.json');
@@ -87,7 +88,7 @@ export async function verifyInstalled(root,receipt) {
  const files=new Map();for(const item of manifest.files){const bytes=await regularBytes(root,item.path);same(identity(bytes),{byteLength:item.byteLength,sha256:item.sha256});files.set(item.path,bytes);}
  const summary=productChecks(path=>{assert.ok(files.has(path),path);return files.get(path);});return {...summary,files:manifest.files.length+1};
 }
-export async function buildPackage() {
+export async function buildPackage({receiptPath=RECEIPT}={}) {
  assert.equal(process.versions.node,'24.21.0');await verifyRuntime();const deps=await verifyDependencies();
  // The reviewed source inventory is the allowlist; unexpected source files fail verification.
  const foundation=await verifyFoundation();
@@ -100,7 +101,7 @@ export async function buildPackage() {
  const assemble=async()=>{const destination=await mkdtemp(resolve(cache,'stage-'));for(const [path,bytes] of contents){const target=resolve(destination,path);await mkdir(dirname(target),{recursive:true});await writeFile(target,bytes);await chmod(target,path==='bin/memoryos-mcp.mjs'?0o755:0o644);}return destination;};
  const stage=await assemble();
  const out=resolve(PACKAGE_ROOT,'out/phase2');await mkdir(out,{recursive:true});
- const npm=resolve(dirname(process.execPath),'node_modules/npm/bin/npm-cli.js');
+ const npm=npmCli();
  const env={...process.env,NO_COLOR:'1',TZ:'UTC'};delete env.NODE_OPTIONS;delete env.NODE_PATH;
  assert.equal(execFileSync(process.execPath,[npm,'--version'],{env,windowsHide:true,encoding:'utf8'}).trim(),'11.19.0');
  const command=['pack','--ignore-scripts','--offline','--json','--loglevel=error','--cache',resolve(workspace,'.cache/mo1304-npm'),'--pack-destination',out];
@@ -111,7 +112,7 @@ export async function buildPackage() {
  const second=await readFile(resolve(out,ARCHIVE));assert.ok(first.equals(second),'non-deterministic npm archive');
  const record=path=>({path,...identity(contents.get(path))});
  const receipt={kind:'MemoryOSMCPPhase2PackageReceipt',version:'1.0.0',packageName:'memoryos-mcp',packageVersion:'0.1.0',archiveFilename:ARCHIVE,archive:identity(first),distributionManifest:identity(manifestBytes),runtimeManifest:record('runtime/runtime-closure-manifest.json'),dependencyLock:record('distribution/dependency-lock.json'),dependencyClosure:record('distribution/dependency-closure.json'),contractPin:record('contracts/policy-contract-identities-1.0.0.json'),limits:record('contracts/limits.json'),node:'24.21.0',npm:'11.19.0',protocol:'2026-07-28',identicalAssemblyRuns:2,archiveFileCount:files.length+1,platformCertification:'PENDING_PHASE3',license:'Private local artifact; root licensing decision notice preserved, no new grant'};
- const verified=verifyArchive(first,receipt);await writeFile(RECEIPT,J(receipt)+'\n');await writeFile(resolve(out,'distribution-manifest.json'),manifestBytes);
- return {...verified.summary,stage,archive:resolve(out,ARCHIVE),receipt:RECEIPT};
+ const verified=verifyArchive(first,receipt);await mkdir(dirname(receiptPath),{recursive:true});await writeFile(receiptPath,J(receipt)+'\n');await writeFile(resolve(out,'distribution-manifest.json'),manifestBytes);
+ return {...verified.summary,stage,archive:resolve(out,ARCHIVE),receipt:receiptPath};
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url))process.stdout.write(J(await buildPackage())+'\n');

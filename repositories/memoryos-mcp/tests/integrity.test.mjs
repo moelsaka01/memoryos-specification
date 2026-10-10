@@ -1,3 +1,4 @@
+import './prepare.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import { mkdtemp,mkdir,cp,readFile,writeFile,rm,rmdir,unlink,rename,symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';import { resolve,relative,sep } from 'node:path';

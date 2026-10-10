@@ -1,3 +1,5 @@
+import './prepare.mjs';
+import { LOCAL_RECEIPT } from '../scripts/prepare-tests.mjs';
 import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp,writeFile,readFile } from 'node:fs/promises';
@@ -6,7 +8,7 @@ import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
 import { MemoryOS } from '../../cca-studio/web/js/memoryos-sdk.js';
-import { official,installArchive,workspace,env } from './phase2-support.mjs';
+import { official,installArchive,workspace,env,writeMeasurement } from './phase2-support.mjs';
 import { fixtures,b64 } from './corpus.mjs';
 import { PACKAGE_ROOT,contractIdentityPin } from '../src/integrity.mjs';
 import { catalog,names,META } from '../src/contracts.mjs';
@@ -67,4 +69,4 @@ for(const mode of ['source','installed'])test(`official MCP OS-pipe integration,
  const restart=await official(root);try{assert.equal((await restart.client.callTool({name:names[0],arguments:{}})).structuredContent.status,'ok');assert.equal(restart.stderr(),'');assert.notEqual(restart.pid,h.pid);}finally{await restart.close();}
  results.push({mode,status:'PASS',transport:'official Client 2.0.0 and StdioClientTransport over actual OS pipes',tools:[...new Set(calls)].sort(),decisions,canonicalSDKAndCLIParity:true,stableMemoryOSErrorParity:true,busy:true,cancellation:true,restart:true,processesReaped:true,stderrBytes:0,installedOutsideCheckout:Boolean(installed),offlineInstall:installed?{ignoreScripts:true,offline:true,audit:false,fund:false,emptyExplicitCache:true,verifiedFiles:installed.verified.files}:null});
 });
-after(async()=>{const receipt={kind:'MemoryOSMCPPhase2ClientIntegration',version:'1.0.0',status:results.length===2?'PASS':'FAIL',node:process.versions.node,archiveSha256:JSON.parse(await readFile(resolve(PACKAGE_ROOT,'measurements/phase2-package-receipt.json'))).archive.sha256,results,platformCertification:'PENDING_PHASE3'};await writeFile(resolve(PACKAGE_ROOT,'measurements/phase2-integration.json'),J(receipt)+'\n');});
+after(async()=>{const receipt={kind:'MemoryOSMCPPhase2ClientIntegration',version:'1.0.0',status:results.length===2?'PASS':'FAIL',node:process.versions.node,archiveSha256:JSON.parse(await readFile(LOCAL_RECEIPT)).archive.sha256,results,platformCertification:'PENDING_PHASE3'};await writeMeasurement('phase2-integration.json',J(receipt)+'\n');});
