@@ -1,10 +1,9 @@
 #include <cca/memory/working_memory.hpp>
 
-#include <gtest/gtest.h>
-
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <gtest/gtest.h>
 #include <limits>
 #include <new>
 #include <optional>
@@ -25,7 +24,9 @@ void fail_after(const std::size_t successful_allocations) noexcept {
     allocations_before_failure = successful_allocations;
 }
 
-void disable() noexcept { allocations_before_failure = disabled; }
+void disable() noexcept {
+    allocations_before_failure = disabled;
+}
 
 [[nodiscard]] bool should_fail() noexcept {
     if (allocations_before_failure == disabled) {
@@ -60,8 +61,12 @@ void* operator new[](const std::size_t size) {
     return working_memory_allocation_failure_support::allocate(size);
 }
 
-void operator delete(void* allocation) noexcept { std::free(allocation); }
-void operator delete[](void* allocation) noexcept { std::free(allocation); }
+void operator delete(void* allocation) noexcept {
+    std::free(allocation);
+}
+void operator delete[](void* allocation) noexcept {
+    std::free(allocation);
+}
 
 void operator delete(void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
@@ -70,6 +75,25 @@ void operator delete(void* allocation, const std::size_t size) noexcept {
 
 void operator delete[](void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
+    std::free(allocation);
+}
+
+// The nothrow forms must pair with the same malloc/free family as the replaced throwing forms
+// (the standard library allocates temporary buffers with nothrow new); they are deliberately not
+// subject to failure injection, matching the library's default nothrow allocation behaviour.
+void* operator new(const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void* operator new[](const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void operator delete(void* allocation, const std::nothrow_t&) noexcept {
+    std::free(allocation);
+}
+
+void operator delete[](void* allocation, const std::nothrow_t&) noexcept {
     std::free(allocation);
 }
 
@@ -100,9 +124,8 @@ struct StateSnapshot final {
     std::vector<EntrySnapshot> entries;
     entries.reserve(memory.entries().size());
     for (const auto& entry : memory.entries()) {
-        entries.push_back(EntrySnapshot{entry.identifier(),
-                                        entry.value(),
-                                        entry.expirationPoint()});
+        entries.push_back(
+            EntrySnapshot{entry.identifier(), entry.value(), entry.expirationPoint()});
     }
     return StateSnapshot{memory.workspaceIdentifier(),
                          memory.active(),
@@ -111,42 +134,33 @@ struct StateSnapshot final {
 }
 
 void activate_and_seed(WorkingMemoryEngine& engine, WorkingMemory& memory) {
+    ASSERT_TRUE(engine.activate(memory, "allocation-test-task-with-a-long-identifier").succeeded());
     ASSERT_TRUE(engine
-                    .activate(memory,
-                              "allocation-test-task-with-a-long-identifier")
+                    .store(memory,
+                           WorkingMemoryEntry{"first-entry-with-a-long-identifier",
+                                              "first-value-with-enough-content-to-allocate",
+                                              std::uint64_t{5U}})
                     .succeeded());
     ASSERT_TRUE(engine
                     .store(memory,
-                           WorkingMemoryEntry{
-                               "first-entry-with-a-long-identifier",
-                               "first-value-with-enough-content-to-allocate",
-                               std::uint64_t{5U}})
+                           WorkingMemoryEntry{"second-entry-with-a-long-identifier",
+                                              "second-value-with-enough-content-to-allocate"})
                     .succeeded());
     ASSERT_TRUE(engine
                     .store(memory,
-                           WorkingMemoryEntry{
-                               "second-entry-with-a-long-identifier",
-                               "second-value-with-enough-content-to-allocate"})
-                    .succeeded());
-    ASSERT_TRUE(engine
-                    .store(memory,
-                           WorkingMemoryEntry{
-                               "third-entry-with-a-long-identifier",
-                               "third-value-with-enough-content-to-allocate",
-                               std::uint64_t{15U}})
+                           WorkingMemoryEntry{"third-entry-with-a-long-identifier",
+                                              "third-value-with-enough-content-to-allocate",
+                                              std::uint64_t{15U}})
                     .succeeded());
 }
 
 constexpr std::size_t allocation_campaign_limit = 128U;
 
-TEST(WorkingMemoryAllocationFailureTest,
-     InitialActivationPreservesStateAtEveryAllocationFailure) {
+TEST(WorkingMemoryAllocationFailureTest, InitialActivationPreservesStateAtEveryAllocationFailure) {
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         WorkingMemoryEngine engine;
         WorkingMemory memory{"allocation-test-workspace"};
         const auto before = snapshot_of(memory);
@@ -174,14 +188,11 @@ TEST(WorkingMemoryAllocationFailureTest,
     EXPECT_GT(observed_failures, 0U);
 }
 
-TEST(WorkingMemoryAllocationFailureTest,
-     TaskSwitchPreservesStateAtEveryAllocationFailure) {
+TEST(WorkingMemoryAllocationFailureTest, TaskSwitchPreservesStateAtEveryAllocationFailure) {
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         WorkingMemoryEngine engine;
         WorkingMemory memory{"allocation-test-workspace"};
         activate_and_seed(engine, memory);
@@ -210,22 +221,18 @@ TEST(WorkingMemoryAllocationFailureTest,
     EXPECT_GT(observed_failures, 0U);
 }
 
-TEST(WorkingMemoryAllocationFailureTest,
-     NewStorePreservesStateAtEveryAllocationFailure) {
+TEST(WorkingMemoryAllocationFailureTest, NewStorePreservesStateAtEveryAllocationFailure) {
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         WorkingMemoryEngine engine;
         WorkingMemory memory{"allocation-test-workspace"};
         activate_and_seed(engine, memory);
         const auto before = snapshot_of(memory);
-        const WorkingMemoryEntry candidate{
-            "fourth-entry-with-a-long-identifier",
-            "fourth-value-with-enough-content-to-allocate",
-            std::uint64_t{20U}};
+        const WorkingMemoryEntry candidate{"fourth-entry-with-a-long-identifier",
+                                           "fourth-value-with-enough-content-to-allocate",
+                                           std::uint64_t{20U}};
 
         working_memory_allocation_failure_support::fail_after(index);
         try {
@@ -248,22 +255,18 @@ TEST(WorkingMemoryAllocationFailureTest,
     EXPECT_GT(observed_failures, 0U);
 }
 
-TEST(WorkingMemoryAllocationFailureTest,
-     ReplacementPreservesStateAtEveryAllocationFailure) {
+TEST(WorkingMemoryAllocationFailureTest, ReplacementPreservesStateAtEveryAllocationFailure) {
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         WorkingMemoryEngine engine;
         WorkingMemory memory{"allocation-test-workspace"};
         activate_and_seed(engine, memory);
         const auto before = snapshot_of(memory);
-        const WorkingMemoryEntry replacement{
-            "first-entry-with-a-long-identifier",
-            "replacement-value-with-enough-content-to-allocate",
-            std::uint64_t{25U}};
+        const WorkingMemoryEntry replacement{"first-entry-with-a-long-identifier",
+                                             "replacement-value-with-enough-content-to-allocate",
+                                             std::uint64_t{25U}};
 
         working_memory_allocation_failure_support::fail_after(index);
         try {
@@ -286,14 +289,11 @@ TEST(WorkingMemoryAllocationFailureTest,
     EXPECT_GT(observed_failures, 0U);
 }
 
-TEST(WorkingMemoryAllocationFailureTest,
-     ExpirePreservesStateAtEveryAllocationFailure) {
+TEST(WorkingMemoryAllocationFailureTest, ExpirePreservesStateAtEveryAllocationFailure) {
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         WorkingMemoryEngine engine;
         WorkingMemory memory{"allocation-test-workspace"};
         activate_and_seed(engine, memory);
@@ -320,14 +320,11 @@ TEST(WorkingMemoryAllocationFailureTest,
     EXPECT_GT(observed_failures, 0U);
 }
 
-TEST(WorkingMemoryAllocationFailureTest,
-     ForgetPreservesStateAtEveryAllocationFailure) {
+TEST(WorkingMemoryAllocationFailureTest, ForgetPreservesStateAtEveryAllocationFailure) {
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         WorkingMemoryEngine engine;
         WorkingMemory memory{"allocation-test-workspace"};
         activate_and_seed(engine, memory);
@@ -335,8 +332,7 @@ TEST(WorkingMemoryAllocationFailureTest,
 
         working_memory_allocation_failure_support::fail_after(index);
         try {
-            const auto result = engine.forget(
-                memory, "second-entry-with-a-long-identifier");
+            const auto result = engine.forget(memory, "second-entry-with-a-long-identifier");
             working_memory_allocation_failure_support::disable();
             EXPECT_TRUE(result.succeeded());
             completed = true;

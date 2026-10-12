@@ -1,11 +1,10 @@
 #include <cca/memory/knowledge_retrieval.hpp>
 #include <cca/memory/long_term_memory.hpp>
 
-#include <gtest/gtest.h>
-
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <gtest/gtest.h>
 #include <limits>
 #include <new>
 #include <stdexcept>
@@ -31,7 +30,9 @@ void fail_after(const std::size_t successful_allocations) noexcept {
     allocations_before_failure = successful_allocations;
 }
 
-void disable() noexcept { allocations_before_failure = disabled; }
+void disable() noexcept {
+    allocations_before_failure = disabled;
+}
 
 [[nodiscard]] bool should_fail() noexcept {
     if (allocations_before_failure == disabled) {
@@ -66,8 +67,12 @@ void* operator new[](const std::size_t size) {
     return knowledge_retrieval_allocation_failure_support::allocate(size);
 }
 
-void operator delete(void* allocation) noexcept { std::free(allocation); }
-void operator delete[](void* allocation) noexcept { std::free(allocation); }
+void operator delete(void* allocation) noexcept {
+    std::free(allocation);
+}
+void operator delete[](void* allocation) noexcept {
+    std::free(allocation);
+}
 
 void operator delete(void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
@@ -76,6 +81,25 @@ void operator delete(void* allocation, const std::size_t size) noexcept {
 
 void operator delete[](void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
+    std::free(allocation);
+}
+
+// The nothrow forms must pair with the same malloc/free family as the replaced throwing forms
+// (the standard library allocates temporary buffers with nothrow new); they are deliberately not
+// subject to failure injection, matching the library's default nothrow allocation behaviour.
+void* operator new(const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void* operator new[](const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void operator delete(void* allocation, const std::nothrow_t&) noexcept {
+    std::free(allocation);
+}
+
+void operator delete[](void* allocation, const std::nothrow_t&) noexcept {
     std::free(allocation);
 }
 
@@ -90,9 +114,9 @@ using cca::memory::LongTermMemory;
 using cca::memory::LongTermMemoryEngine;
 using cca::memory::LongTermMemoryEntry;
 using cca::memory::MemoryRetrievalEngine;
-using cca::memory::Procedure;
 using cca::memory::ProceduralMemory;
 using cca::memory::ProceduralMemoryEngine;
+using cca::memory::Procedure;
 using cca::memory::RetrievalSession;
 using cca::memory::SemanticConcept;
 using cca::memory::SemanticMemory;
@@ -100,10 +124,8 @@ using cca::memory::SemanticMemoryEngine;
 
 constexpr std::string_view workspace_identifier{
     "knowledge-retrieval-allocation-workspace-with-long-identity"};
-constexpr std::string_view rank_token{
-    "allocation-ranking-token-with-enough-content-to-allocate"};
-constexpr std::string_view filter_token{
-    "allocation-filter-token-with-enough-content-to-allocate"};
+constexpr std::string_view rank_token{"allocation-ranking-token-with-enough-content-to-allocate"};
+constexpr std::string_view filter_token{"allocation-filter-token-with-enough-content-to-allocate"};
 constexpr std::string_view absent_identifier{
     "absent-knowledge-identifier-with-enough-content-to-allocate"};
 constexpr std::string_view source_a{
@@ -162,8 +184,7 @@ struct ProcedureSnapshot final {
     bool operator==(const ProcedureSnapshot&) const = default;
 };
 
-using TypedSourceSnapshot =
-    std::variant<SemanticSnapshot, EpisodeSnapshot, ProcedureSnapshot>;
+using TypedSourceSnapshot = std::variant<SemanticSnapshot, EpisodeSnapshot, ProcedureSnapshot>;
 
 struct CandidateSnapshot final {
     KnowledgeCandidate::Kind kind;
@@ -238,8 +259,8 @@ struct FixtureSnapshot final {
     return {entry.identifier(), entry.value(), entry.archived()};
 }
 
-[[nodiscard]] std::vector<EntrySnapshot> snapshot_entries(
-    const std::vector<LongTermMemoryEntry>& entries) {
+[[nodiscard]] std::vector<EntrySnapshot>
+snapshot_entries(const std::vector<LongTermMemoryEntry>& entries) {
     std::vector<EntrySnapshot> snapshots;
     snapshots.reserve(entries.size());
     for (const auto& entry : entries) {
@@ -248,8 +269,7 @@ struct FixtureSnapshot final {
     return snapshots;
 }
 
-[[nodiscard]] SemanticSnapshot snapshot_of(
-    const SemanticConcept& semantic_concept) {
+[[nodiscard]] SemanticSnapshot snapshot_of(const SemanticConcept& semantic_concept) {
     return {semantic_concept.identifier(),
             semantic_concept.meaning(),
             snapshot_entries(semantic_concept.sourceEntries()),
@@ -274,8 +294,7 @@ struct FixtureSnapshot final {
             procedure.linkedProcedureIdentifiers()};
 }
 
-[[nodiscard]] TypedSourceSnapshot typed_snapshot_of(
-    const KnowledgeCandidate& candidate) {
+[[nodiscard]] TypedSourceSnapshot typed_snapshot_of(const KnowledgeCandidate& candidate) {
     const auto* const semantic = candidate.semanticConcept();
     const auto* const episode = candidate.episode();
     const auto* const procedure = candidate.procedure();
@@ -299,9 +318,8 @@ struct FixtureSnapshot final {
     throw std::logic_error{"invalid KnowledgeCandidate Kind"};
 }
 
-[[nodiscard]] CandidateSnapshot snapshot_of(
-    const KnowledgeCandidate& candidate,
-    std::vector<std::string> explanation_chain) {
+[[nodiscard]] CandidateSnapshot snapshot_of(const KnowledgeCandidate& candidate,
+                                            std::vector<std::string> explanation_chain) {
     return {candidate.kind(),
             candidate.workspaceIdentifier(),
             candidate.sourceIdentifier(),
@@ -310,8 +328,7 @@ struct FixtureSnapshot final {
             std::move(explanation_chain)};
 }
 
-[[nodiscard]] SemanticMemorySnapshot snapshot_of(
-    const SemanticMemory& memory) {
+[[nodiscard]] SemanticMemorySnapshot snapshot_of(const SemanticMemory& memory) {
     std::vector<SemanticSnapshot> concepts;
     concepts.reserve(memory.concepts().size());
     for (const auto& semantic_concept : memory.concepts()) {
@@ -320,8 +337,7 @@ struct FixtureSnapshot final {
     return {memory.workspaceIdentifier(), std::move(concepts)};
 }
 
-[[nodiscard]] EpisodicMemorySnapshot snapshot_of(
-    const EpisodicMemory& memory) {
+[[nodiscard]] EpisodicMemorySnapshot snapshot_of(const EpisodicMemory& memory) {
     std::vector<EpisodeSnapshot> episodes;
     episodes.reserve(memory.episodes().size());
     for (const auto& episode : memory.episodes()) {
@@ -330,8 +346,7 @@ struct FixtureSnapshot final {
     return {memory.workspaceIdentifier(), std::move(episodes)};
 }
 
-[[nodiscard]] ProceduralMemorySnapshot snapshot_of(
-    const ProceduralMemory& memory) {
+[[nodiscard]] ProceduralMemorySnapshot snapshot_of(const ProceduralMemory& memory) {
     std::vector<ProcedureSnapshot> procedures;
     procedures.reserve(memory.procedures().size());
     for (const auto& procedure : memory.procedures()) {
@@ -355,9 +370,7 @@ struct FixtureSnapshot final {
         if (!explained.succeeded()) {
             throw std::logic_error{"unable to observe candidate explanation"};
         }
-        candidates.push_back(snapshot_of(
-            candidate,
-            explained.explanationChain()));
+        candidates.push_back(snapshot_of(candidate, explained.explanationChain()));
     }
     return {fixture.session.workspaceIdentifier(),
             fixture.session.started(),
@@ -369,24 +382,18 @@ struct FixtureSnapshot final {
     return {snapshot_session(fixture), snapshot_sources(fixture)};
 }
 
-void require_success(const bool succeeded,
-                     const std::string& code,
-                     const std::string& message) {
+void require_success(const bool succeeded, const std::string& code, const std::string& message) {
     ASSERT_TRUE(succeeded) << code << ": " << message;
 }
 
-void retain(Fixture& fixture,
-            std::string identifier,
-            std::string value) {
+void retain(Fixture& fixture, std::string identifier, std::string value) {
     auto result = fixture.long_term_engine.retain(
-        fixture.evidence,
-        LongTermMemoryEntry{std::move(identifier), std::move(value)});
+        fixture.evidence, LongTermMemoryEntry{std::move(identifier), std::move(value)});
     require_success(result.succeeded(), result.code(), result.message());
 }
 
-[[nodiscard]] const LongTermMemoryEntry& require_entry(
-    const Fixture& fixture,
-    const std::string_view identifier) {
+[[nodiscard]] const LongTermMemoryEntry& require_entry(const Fixture& fixture,
+                                                       const std::string_view identifier) {
     const auto* const entry = fixture.evidence.find(identifier);
     if (entry == nullptr) {
         throw std::logic_error{"allocation fixture evidence is absent"};
@@ -395,34 +402,29 @@ void retain(Fixture& fixture,
 }
 
 void seed(Fixture& fixture) {
-    retain(fixture,
-           std::string{source_a},
-           "source-a-value-with-enough-content-to-require-allocation");
-    retain(fixture,
-           std::string{source_b},
-           "source-b-value-with-enough-content-to-require-allocation");
-    retain(fixture,
-           std::string{source_c},
-           "source-c-value-with-enough-content-to-require-allocation");
+    retain(
+        fixture, std::string{source_a}, "source-a-value-with-enough-content-to-require-allocation");
+    retain(
+        fixture, std::string{source_b}, "source-b-value-with-enough-content-to-require-allocation");
+    retain(
+        fixture, std::string{source_c}, "source-c-value-with-enough-content-to-require-allocation");
 
     {
         auto result = fixture.semantic_engine.classify(
             fixture.semantic,
             fixture.evidence,
-            SemanticConcept{
-                std::string{rank_token},
-                "semantic-exact-identifier-meaning-with-long-content",
-                {require_entry(fixture, source_a)}});
+            SemanticConcept{std::string{rank_token},
+                            "semantic-exact-identifier-meaning-with-long-content",
+                            {require_entry(fixture, source_a)}});
         require_success(result.succeeded(), result.code(), result.message());
     }
     {
         auto result = fixture.semantic_engine.classify(
             fixture.semantic,
             fixture.evidence,
-            SemanticConcept{
-                std::string{semantic_substring_identifier},
-                "semantic-substring-identifier-meaning-with-long-content",
-                {require_entry(fixture, source_b)}});
+            SemanticConcept{std::string{semantic_substring_identifier},
+                            "semantic-substring-identifier-meaning-with-long-content",
+                            {require_entry(fixture, source_b)}});
         require_success(result.succeeded(), result.code(), result.message());
     }
     {
@@ -458,19 +460,17 @@ void seed(Fixture& fixture) {
         auto result = fixture.episodic_engine.derive(
             fixture.episodic,
             fixture.evidence,
-            Episode{
-                std::string{episode_substring_identifier},
-                "episode-substring-occurrence-with-enough-content-to-allocate",
-                "episode-context-prefix-allocation-ranking-token-with-enough-content-to-allocate-suffix",
-                10,
-                {require_entry(fixture, source_c)}});
+            Episode{std::string{episode_substring_identifier},
+                    "episode-substring-occurrence-with-enough-content-to-allocate",
+                    "episode-context-prefix-allocation-ranking-token-with-enough-content-to-"
+                    "allocate-suffix",
+                    10,
+                    {require_entry(fixture, source_c)}});
         require_success(result.succeeded(), result.code(), result.message());
     }
     {
         auto result = fixture.episodic_engine.link(
-            fixture.episodic,
-            episode_exact_content_identifier,
-            episode_substring_identifier);
+            fixture.episodic, episode_exact_content_identifier, episode_substring_identifier);
         require_success(result.succeeded(), result.code(), result.message());
     }
 
@@ -488,20 +488,17 @@ void seed(Fixture& fixture) {
         auto result = fixture.procedural_engine.compose(
             fixture.procedural,
             fixture.evidence,
-            Procedure{
-                std::string{procedure_substring_identifier},
-                "procedure-substring-activity-with-enough-content-to-allocate",
-                {"procedure-step-prefix-allocation-ranking-token-with-enough-content-to-allocate-suffix",
-                 "procedure-second-step-with-enough-content-to-allocate"},
-                {require_entry(fixture, source_a),
-                 require_entry(fixture, source_b)}});
+            Procedure{std::string{procedure_substring_identifier},
+                      "procedure-substring-activity-with-enough-content-to-allocate",
+                      {"procedure-step-prefix-allocation-ranking-token-with-enough-content-to-"
+                       "allocate-suffix",
+                       "procedure-second-step-with-enough-content-to-allocate"},
+                      {require_entry(fixture, source_a), require_entry(fixture, source_b)}});
         require_success(result.succeeded(), result.code(), result.message());
     }
     {
         auto result = fixture.procedural_engine.link(
-            fixture.procedural,
-            procedure_exact_content_identifier,
-            procedure_substring_identifier);
+            fixture.procedural, procedure_exact_content_identifier, procedure_substring_identifier);
         require_success(result.succeeded(), result.code(), result.message());
     }
 }
@@ -513,12 +510,11 @@ void seed(Fixture& fixture) {
 }
 
 void start_search(Fixture& fixture, const std::string_view query) {
-    auto result = fixture.retrieval_engine.search(
-        fixture.session,
-        fixture.semantic,
-        fixture.episodic,
-        fixture.procedural,
-        KnowledgeQuery{std::string{query}});
+    auto result = fixture.retrieval_engine.search(fixture.session,
+                                                  fixture.semantic,
+                                                  fixture.episodic,
+                                                  fixture.procedural,
+                                                  KnowledgeQuery{std::string{query}});
     require_success(result.succeeded(), result.code(), result.message());
 }
 
@@ -546,9 +542,7 @@ void verify_strong_guarantee(Arrange arrange,
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         auto fixture = arrange();
         const auto before = snapshot_of(fixture);
 
@@ -559,8 +553,7 @@ void verify_strong_guarantee(Arrange arrange,
 
             EXPECT_EQ(std::string_view{result.code()}, expected_code);
             if (expected_code == "OK") {
-                EXPECT_TRUE(result.succeeded())
-                    << result.code() << ": " << result.message();
+                EXPECT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
                 EXPECT_EQ(snapshot_sources(fixture), before.sources);
                 if (expect_session_change) {
                     EXPECT_NE(snapshot_session(fixture), before.session);
@@ -596,39 +589,36 @@ void verify_strong_guarantee(Arrange arrange,
 
 TEST(KnowledgeRetrievalAllocationFailureTest,
      RetrieveStartPreservesSessionAndAllSourcesAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.retrieval_engine.retrieve(
-                fixture.session,
-                fixture.semantic,
-                fixture.episodic,
-                fixture.procedural,
-                KnowledgeCandidate::Kind::Semantic,
-                rank_token);
-        },
-        "OK",
-        true);
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.retrieval_engine.retrieve(
+                                    fixture.session,
+                                    fixture.semantic,
+                                    fixture.episodic,
+                                    fixture.procedural,
+                                    KnowledgeCandidate::Kind::Semantic,
+                                    rank_token);
+                            },
+                            "OK",
+                            true);
 }
 
 TEST(KnowledgeRetrievalAllocationFailureTest,
      SearchStartPreservesSessionAndAllSourcesAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.retrieval_engine.search(
-                fixture.session,
-                fixture.semantic,
-                fixture.episodic,
-                fixture.procedural,
-                KnowledgeQuery{std::string{rank_token}});
-        },
-        "OK",
-        true);
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.retrieval_engine.search(
+                                    fixture.session,
+                                    fixture.semantic,
+                                    fixture.episodic,
+                                    fixture.procedural,
+                                    KnowledgeQuery{std::string{rank_token}});
+                            },
+                            "OK",
+                            true);
 }
 
-TEST(KnowledgeRetrievalAllocationFailureTest,
-     ZeroMatchSearchStartIsAtomicAtEveryFailure) {
+TEST(KnowledgeRetrievalAllocationFailureTest, ZeroMatchSearchStartIsAtomicAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
@@ -637,8 +627,7 @@ TEST(KnowledgeRetrievalAllocationFailureTest,
                 fixture.semantic,
                 fixture.episodic,
                 fixture.procedural,
-                KnowledgeQuery{
-                    "zero-match-query-with-enough-content-to-allocate"});
+                KnowledgeQuery{"zero-match-query-with-enough-content-to-allocate"});
         },
         "OK",
         true);
@@ -646,72 +635,57 @@ TEST(KnowledgeRetrievalAllocationFailureTest,
 
 TEST(KnowledgeRetrievalAllocationFailureTest,
      FilterPreservesCompleteSessionAndSourcesAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return started_fixture(""); },
-        [](Fixture& fixture) {
-            return fixture.retrieval_engine.filter(
-                fixture.session, KnowledgeQuery{std::string{filter_token}});
-        },
-        "OK",
-        true);
+    verify_strong_guarantee([] { return started_fixture(""); },
+                            [](Fixture& fixture) {
+                                return fixture.retrieval_engine.filter(
+                                    fixture.session, KnowledgeQuery{std::string{filter_token}});
+                            },
+                            "OK",
+                            true);
 }
 
 TEST(KnowledgeRetrievalAllocationFailureTest,
      RankPreservesCompleteSessionAndSourcesAtEveryFailure) {
     verify_strong_guarantee(
         [] { return started_fixture(rank_token); },
-        [](Fixture& fixture) {
-            return fixture.retrieval_engine.rank(fixture.session);
-        },
+        [](Fixture& fixture) { return fixture.retrieval_engine.rank(fixture.session); },
         "OK",
         true);
 }
 
-TEST(KnowledgeRetrievalAllocationFailureTest,
-     ForgetStartedSessionIsAtomicAndSourceIsolated) {
+TEST(KnowledgeRetrievalAllocationFailureTest, ForgetStartedSessionIsAtomicAndSourceIsolated) {
     verify_strong_guarantee(
         [] { return started_fixture(rank_token); },
-        [](Fixture& fixture) {
-            return fixture.retrieval_engine.forgetSession(fixture.session);
-        },
+        [](Fixture& fixture) { return fixture.retrieval_engine.forgetSession(fixture.session); },
         "OK",
         true,
         false);
 }
 
-TEST(KnowledgeRetrievalAllocationFailureTest,
-     ForgetReadySessionIsAtomicAndSourceIsolated) {
+TEST(KnowledgeRetrievalAllocationFailureTest, ForgetReadySessionIsAtomicAndSourceIsolated) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.retrieval_engine.forgetSession(fixture.session);
-        },
+        [](Fixture& fixture) { return fixture.retrieval_engine.forgetSession(fixture.session); },
         "OK",
         true,
         false);
 }
 
-TEST(KnowledgeRetrievalAllocationFailureTest,
-     RepeatedForgetRemainsTerminalAndSourceIsolated) {
+TEST(KnowledgeRetrievalAllocationFailureTest, RepeatedForgetRemainsTerminalAndSourceIsolated) {
     verify_strong_guarantee(
         [] { return forgotten_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.retrieval_engine.forgetSession(fixture.session);
-        },
+        [](Fixture& fixture) { return fixture.retrieval_engine.forgetSession(fixture.session); },
         "OK",
         false,
         false);
 }
 
-TEST(KnowledgeRetrievalAllocationFailureTest,
-     ExplainCopyPreservesSessionAndSourcesAtEveryFailure) {
+TEST(KnowledgeRetrievalAllocationFailureTest, ExplainCopyPreservesSessionAndSourcesAtEveryFailure) {
     verify_strong_guarantee(
         [] { return started_fixture(rank_token); },
         [](Fixture& fixture) {
             return fixture.retrieval_engine.explain(
-                fixture.session,
-                KnowledgeCandidate::Kind::Semantic,
-                rank_token);
+                fixture.session, KnowledgeCandidate::Kind::Semantic, rank_token);
         },
         "OK",
         false);
@@ -719,59 +693,53 @@ TEST(KnowledgeRetrievalAllocationFailureTest,
 
 TEST(KnowledgeRetrievalAllocationFailureTest,
      RetrieveNotFoundFailureConstructionPreservesEverything) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.retrieval_engine.retrieve(
-                fixture.session,
-                fixture.semantic,
-                fixture.episodic,
-                fixture.procedural,
-                KnowledgeCandidate::Kind::Semantic,
-                absent_identifier);
-        },
-        "NOT_FOUND",
-        false,
-        false);
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.retrieval_engine.retrieve(
+                                    fixture.session,
+                                    fixture.semantic,
+                                    fixture.episodic,
+                                    fixture.procedural,
+                                    KnowledgeCandidate::Kind::Semantic,
+                                    absent_identifier);
+                            },
+                            "NOT_FOUND",
+                            false,
+                            false);
 }
 
-TEST(KnowledgeRetrievalAllocationFailureTest,
-     RepeatedStartFailureConstructionPreservesEverything) {
-    verify_strong_guarantee(
-        [] { return started_fixture(rank_token); },
-        [](Fixture& fixture) {
-            return fixture.retrieval_engine.search(
-                fixture.session,
-                fixture.semantic,
-                fixture.episodic,
-                fixture.procedural,
-                KnowledgeQuery{std::string{rank_token}});
-        },
-        "SESSION_ALREADY_STARTED",
-        false,
-        false);
+TEST(KnowledgeRetrievalAllocationFailureTest, RepeatedStartFailureConstructionPreservesEverything) {
+    verify_strong_guarantee([] { return started_fixture(rank_token); },
+                            [](Fixture& fixture) {
+                                return fixture.retrieval_engine.search(
+                                    fixture.session,
+                                    fixture.semantic,
+                                    fixture.episodic,
+                                    fixture.procedural,
+                                    KnowledgeQuery{std::string{rank_token}});
+                            },
+                            "SESSION_ALREADY_STARTED",
+                            false,
+                            false);
 }
 
 TEST(KnowledgeRetrievalAllocationFailureTest,
      FilterNotStartedFailureConstructionPreservesEverything) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.retrieval_engine.filter(
-                fixture.session, KnowledgeQuery{std::string{rank_token}});
-        },
-        "SESSION_NOT_STARTED",
-        false,
-        false);
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.retrieval_engine.filter(
+                                    fixture.session, KnowledgeQuery{std::string{rank_token}});
+                            },
+                            "SESSION_NOT_STARTED",
+                            false,
+                            false);
 }
 
 TEST(KnowledgeRetrievalAllocationFailureTest,
      RankNotStartedFailureConstructionPreservesEverything) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.retrieval_engine.rank(fixture.session);
-        },
+        [](Fixture& fixture) { return fixture.retrieval_engine.rank(fixture.session); },
         "SESSION_NOT_STARTED",
         false,
         false);
@@ -783,9 +751,7 @@ TEST(KnowledgeRetrievalAllocationFailureTest,
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
             return fixture.retrieval_engine.explain(
-                fixture.session,
-                KnowledgeCandidate::Kind::Semantic,
-                rank_token);
+                fixture.session, KnowledgeCandidate::Kind::Semantic, rank_token);
         },
         "SESSION_NOT_STARTED",
         false,
@@ -794,20 +760,19 @@ TEST(KnowledgeRetrievalAllocationFailureTest,
 
 TEST(KnowledgeRetrievalAllocationFailureTest,
      ForgottenSessionFailureConstructionPreservesEverything) {
-    verify_strong_guarantee(
-        [] { return forgotten_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.retrieval_engine.retrieve(
-                fixture.session,
-                fixture.semantic,
-                fixture.episodic,
-                fixture.procedural,
-                KnowledgeCandidate::Kind::Semantic,
-                rank_token);
-        },
-        "SESSION_FORGOTTEN",
-        false,
-        false);
+    verify_strong_guarantee([] { return forgotten_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.retrieval_engine.retrieve(
+                                    fixture.session,
+                                    fixture.semantic,
+                                    fixture.episodic,
+                                    fixture.procedural,
+                                    KnowledgeCandidate::Kind::Semantic,
+                                    rank_token);
+                            },
+                            "SESSION_FORGOTTEN",
+                            false,
+                            false);
 }
 
 } // namespace

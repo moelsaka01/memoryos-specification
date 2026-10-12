@@ -1,10 +1,9 @@
 #include <cca/memory/memory_studio.hpp>
 
-#include <gtest/gtest.h>
-
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <gtest/gtest.h>
 #include <limits>
 #include <new>
 #include <optional>
@@ -28,7 +27,9 @@ void fail_after(const std::size_t successful_allocations) noexcept {
     allocations_before_failure = successful_allocations;
 }
 
-void disable() noexcept { allocations_before_failure = disabled; }
+void disable() noexcept {
+    allocations_before_failure = disabled;
+}
 
 [[nodiscard]] bool should_fail() noexcept {
     if (allocations_before_failure == disabled) {
@@ -63,8 +64,12 @@ void* operator new[](const std::size_t size) {
     return memory_studio_allocation_failure_support::allocate(size);
 }
 
-void operator delete(void* allocation) noexcept { std::free(allocation); }
-void operator delete[](void* allocation) noexcept { std::free(allocation); }
+void operator delete(void* allocation) noexcept {
+    std::free(allocation);
+}
+void operator delete[](void* allocation) noexcept {
+    std::free(allocation);
+}
 
 void operator delete(void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
@@ -76,24 +81,36 @@ void operator delete[](void* allocation, const std::size_t size) noexcept {
     std::free(allocation);
 }
 
+// The nothrow forms must pair with the same malloc/free family as the replaced throwing forms
+// (the standard library allocates temporary buffers with nothrow new); they are deliberately not
+// subject to failure injection, matching the library's default nothrow allocation behaviour.
+void* operator new(const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void* operator new[](const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void operator delete(void* allocation, const std::nothrow_t&) noexcept {
+    std::free(allocation);
+}
+
+void operator delete[](void* allocation, const std::nothrow_t&) noexcept {
+    std::free(allocation);
+}
+
 namespace {
 
 using namespace cca::memory;
 
-const std::string workspace =
-    "memory-studio-allocation-workspace-with-a-long-identifier";
-const std::string other_workspace =
-    "memory-studio-other-workspace-with-a-long-identifier";
-const std::string task_identifier =
-    "memory-studio-allocation-task-with-a-long-identifier";
-const std::string working_identifier =
-    "memory-studio-working-entry-with-a-long-identifier";
-const std::string semantic_identifier =
-    "memory-studio-semantic-concept-with-a-long-identifier";
-const std::string episodic_identifier =
-    "memory-studio-episodic-entry-with-a-long-identifier";
-const std::string procedural_identifier =
-    "memory-studio-procedural-entry-with-a-long-identifier";
+const std::string workspace = "memory-studio-allocation-workspace-with-a-long-identifier";
+const std::string other_workspace = "memory-studio-other-workspace-with-a-long-identifier";
+const std::string task_identifier = "memory-studio-allocation-task-with-a-long-identifier";
+const std::string working_identifier = "memory-studio-working-entry-with-a-long-identifier";
+const std::string semantic_identifier = "memory-studio-semantic-concept-with-a-long-identifier";
+const std::string episodic_identifier = "memory-studio-episodic-entry-with-a-long-identifier";
+const std::string procedural_identifier = "memory-studio-procedural-entry-with-a-long-identifier";
 const std::string forgotten_long_term_identifier =
     "memory-studio-forgotten-long-term-with-a-long-identifier";
 const std::string forgotten_semantic_identifier =
@@ -103,8 +120,7 @@ const std::string forgotten_episodic_identifier =
 const std::string forgotten_procedural_identifier =
     "memory-studio-forgotten-procedural-with-a-long-identifier";
 
-template <typename Result>
-void require_ok(const Result& result) {
+template <typename Result> void require_ok(const Result& result) {
     if (!result.succeeded()) {
         throw std::logic_error{result.code() + ": " + result.message()};
     }
@@ -126,19 +142,19 @@ class SnapshotBuilder final {
         text(name, value ? "true" : "false");
     }
 
-    template <typename Integer>
-    void number(const std::string& name, const Integer value) {
+    template <typename Integer> void number(const std::string& name, const Integer value) {
         text(name, std::to_string(value));
     }
 
-    [[nodiscard]] Snapshot finish() && { return std::move(value_); }
+    [[nodiscard]] Snapshot finish() && {
+        return std::move(value_);
+    }
 
   private:
     Snapshot value_;
 };
 
-[[nodiscard]] std::string indexed(const std::string& prefix,
-                                  const std::size_t index) {
+[[nodiscard]] std::string indexed(const std::string& prefix, const std::size_t index) {
     return prefix + "[" + std::to_string(index) + "]";
 }
 
@@ -162,11 +178,9 @@ void add_working_entry(SnapshotBuilder& builder,
                        const std::string& prefix) {
     builder.text(prefix + ".identifier", entry.identifier());
     builder.text(prefix + ".value", entry.value());
-    builder.boolean(prefix + ".expiration.present",
-                    entry.expirationPoint().has_value());
+    builder.boolean(prefix + ".expiration.present", entry.expirationPoint().has_value());
     if (entry.expirationPoint().has_value()) {
-        builder.number(prefix + ".expiration.value",
-                       *entry.expirationPoint());
+        builder.number(prefix + ".expiration.value", *entry.expirationPoint());
     }
 }
 
@@ -175,49 +189,36 @@ void add_semantic_concept(SnapshotBuilder& builder,
                           const std::string& prefix) {
     builder.text(prefix + ".identifier", semantic_concept.identifier());
     builder.text(prefix + ".meaning", semantic_concept.meaning());
-    builder.number(prefix + ".sources.size",
-                   semantic_concept.sourceEntries().size());
-    for (std::size_t index = 0U;
-         index < semantic_concept.sourceEntries().size();
+    builder.number(prefix + ".sources.size", semantic_concept.sourceEntries().size());
+    for (std::size_t index = 0U; index < semantic_concept.sourceEntries().size(); ++index) {
+        add_long_term_entry(
+            builder, semantic_concept.sourceEntries()[index], indexed(prefix + ".sources", index));
+    }
+    builder.number(prefix + ".categories.size", semantic_concept.categories().size());
+    for (std::size_t index = 0U; index < semantic_concept.categories().size(); ++index) {
+        builder.text(indexed(prefix + ".categories", index), semantic_concept.categories()[index]);
+    }
+    builder.number(prefix + ".links.size", semantic_concept.linkedConceptIdentifiers().size());
+    for (std::size_t index = 0U; index < semantic_concept.linkedConceptIdentifiers().size();
          ++index) {
-        add_long_term_entry(builder, semantic_concept.sourceEntries()[index],
-                            indexed(prefix + ".sources", index));
-    }
-    builder.number(prefix + ".categories.size",
-                   semantic_concept.categories().size());
-    for (std::size_t index = 0U;
-         index < semantic_concept.categories().size(); ++index) {
-        builder.text(indexed(prefix + ".categories", index),
-                     semantic_concept.categories()[index]);
-    }
-    builder.number(prefix + ".links.size",
-                   semantic_concept.linkedConceptIdentifiers().size());
-    for (std::size_t index = 0U;
-         index < semantic_concept.linkedConceptIdentifiers().size(); ++index) {
         builder.text(indexed(prefix + ".links", index),
                      semantic_concept.linkedConceptIdentifiers()[index]);
     }
 }
 
-void add_episode(SnapshotBuilder& builder,
-                 const Episode& episode,
-                 const std::string& prefix) {
+void add_episode(SnapshotBuilder& builder, const Episode& episode, const std::string& prefix) {
     builder.text(prefix + ".identifier", episode.identifier());
     builder.text(prefix + ".occurrence", episode.occurrence());
     builder.text(prefix + ".context", episode.context());
     builder.number(prefix + ".chronology", episode.chronology());
     builder.number(prefix + ".sources.size", episode.sourceEntries().size());
-    for (std::size_t index = 0U; index < episode.sourceEntries().size();
-         ++index) {
-        add_long_term_entry(builder, episode.sourceEntries()[index],
-                            indexed(prefix + ".sources", index));
+    for (std::size_t index = 0U; index < episode.sourceEntries().size(); ++index) {
+        add_long_term_entry(
+            builder, episode.sourceEntries()[index], indexed(prefix + ".sources", index));
     }
-    builder.number(prefix + ".links.size",
-                   episode.linkedEpisodeIdentifiers().size());
-    for (std::size_t index = 0U;
-         index < episode.linkedEpisodeIdentifiers().size(); ++index) {
-        builder.text(indexed(prefix + ".links", index),
-                     episode.linkedEpisodeIdentifiers()[index]);
+    builder.number(prefix + ".links.size", episode.linkedEpisodeIdentifiers().size());
+    for (std::size_t index = 0U; index < episode.linkedEpisodeIdentifiers().size(); ++index) {
+        builder.text(indexed(prefix + ".links", index), episode.linkedEpisodeIdentifiers()[index]);
     }
 }
 
@@ -228,34 +229,28 @@ void add_procedure(SnapshotBuilder& builder,
     builder.text(prefix + ".activity", procedure.activity());
     builder.number(prefix + ".steps.size", procedure.steps().size());
     for (std::size_t index = 0U; index < procedure.steps().size(); ++index) {
-        builder.text(indexed(prefix + ".steps", index),
-                     procedure.steps()[index]);
+        builder.text(indexed(prefix + ".steps", index), procedure.steps()[index]);
     }
     builder.number(prefix + ".sources.size", procedure.sourceEntries().size());
-    for (std::size_t index = 0U; index < procedure.sourceEntries().size();
-         ++index) {
-        add_long_term_entry(builder, procedure.sourceEntries()[index],
-                            indexed(prefix + ".sources", index));
+    for (std::size_t index = 0U; index < procedure.sourceEntries().size(); ++index) {
+        add_long_term_entry(
+            builder, procedure.sourceEntries()[index], indexed(prefix + ".sources", index));
     }
-    builder.number(prefix + ".links.size",
-                   procedure.linkedProcedureIdentifiers().size());
-    for (std::size_t index = 0U;
-         index < procedure.linkedProcedureIdentifiers().size(); ++index) {
+    builder.number(prefix + ".links.size", procedure.linkedProcedureIdentifiers().size());
+    for (std::size_t index = 0U; index < procedure.linkedProcedureIdentifiers().size(); ++index) {
         builder.text(indexed(prefix + ".links", index),
                      procedure.linkedProcedureIdentifiers()[index]);
     }
 }
 
-[[nodiscard]] std::string long_term_disposition(
-    const LongTermMemory& memory, const std::string& identifier) {
+[[nodiscard]] std::string long_term_disposition(const LongTermMemory& memory,
+                                                const std::string& identifier) {
     if (const auto* entry = memory.find(identifier); entry != nullptr) {
         return entry->archived() ? "ARCHIVED" : "LONG_TERM";
     }
     LongTermMemory probe{memory};
     const auto result = LongTermMemoryEngine{}.retain(
-        probe,
-        LongTermMemoryEntry{identifier,
-                            "private-history-probe-value-with-long-content"});
+        probe, LongTermMemoryEntry{identifier, "private-history-probe-value-with-long-content"});
     if (result.code() == "FORGOTTEN_IDENTIFIER") {
         return "FORGOTTEN";
     }
@@ -265,41 +260,36 @@ void add_procedure(SnapshotBuilder& builder,
 [[nodiscard]] LongTermMemory probe_evidence(const std::string& identifier) {
     LongTermMemory evidence{workspace};
     require_ok(LongTermMemoryEngine{}.retain(
-        evidence,
-        LongTermMemoryEntry{identifier,
-                            "private-history-probe-evidence-long-value"}));
+        evidence, LongTermMemoryEntry{identifier, "private-history-probe-evidence-long-value"}));
     return evidence;
 }
 
-[[nodiscard]] std::string semantic_disposition(
-    const SemanticMemory& memory, const std::string& identifier) {
+[[nodiscard]] std::string semantic_disposition(const SemanticMemory& memory,
+                                               const std::string& identifier) {
     if (memory.find(identifier) != nullptr) {
         return "ACCESSIBLE";
     }
-    const std::string source =
-        "private-semantic-history-probe-source-with-a-long-identifier";
+    const std::string source = "private-semantic-history-probe-source-with-a-long-identifier";
     auto evidence = probe_evidence(source);
     SemanticMemory probe{memory};
     const auto result = SemanticMemoryEngine{}.classify(
         probe,
         evidence,
-        SemanticConcept{
-            identifier,
-            "private-semantic-history-probe-meaning-with-long-content",
-            {*evidence.find(source)}});
+        SemanticConcept{identifier,
+                        "private-semantic-history-probe-meaning-with-long-content",
+                        {*evidence.find(source)}});
     if (result.code() == "FORGOTTEN_IDENTIFIER") {
         return "FORGOTTEN";
     }
     return result.succeeded() ? "ABSENT" : "UNEXPECTED:" + result.code();
 }
 
-[[nodiscard]] std::string episodic_disposition(
-    const EpisodicMemory& memory, const std::string& identifier) {
+[[nodiscard]] std::string episodic_disposition(const EpisodicMemory& memory,
+                                               const std::string& identifier) {
     if (memory.find(identifier) != nullptr) {
         return "ACCESSIBLE";
     }
-    const std::string source =
-        "private-episodic-history-probe-source-with-a-long-identifier";
+    const std::string source = "private-episodic-history-probe-source-with-a-long-identifier";
     auto evidence = probe_evidence(source);
     EpisodicMemory probe{memory};
     const auto result = EpisodicMemoryEngine{}.derive(
@@ -316,13 +306,12 @@ void add_procedure(SnapshotBuilder& builder,
     return result.succeeded() ? "ABSENT" : "UNEXPECTED:" + result.code();
 }
 
-[[nodiscard]] std::string procedural_disposition(
-    const ProceduralMemory& memory, const std::string& identifier) {
+[[nodiscard]] std::string procedural_disposition(const ProceduralMemory& memory,
+                                                 const std::string& identifier) {
     if (memory.find(identifier) != nullptr) {
         return "ACCESSIBLE";
     }
-    const std::string source =
-        "private-procedural-history-probe-source-with-a-long-identifier";
+    const std::string source = "private-procedural-history-probe-source-with-a-long-identifier";
     auto evidence = probe_evidence(source);
     ProceduralMemory probe{memory};
     const auto result = ProceduralMemoryEngine{}.derive(
@@ -338,14 +327,11 @@ void add_procedure(SnapshotBuilder& builder,
     return result.succeeded() ? "ABSENT" : "UNEXPECTED:" + result.code();
 }
 
-void add_memory(SnapshotBuilder& builder,
-                const Memory& memory,
-                const std::string& prefix) {
+void add_memory(SnapshotBuilder& builder, const Memory& memory, const std::string& prefix) {
     builder.text(prefix + ".workspace", memory.workspaceIdentifier());
     builder.number(prefix + ".entries.size", memory.entries().size());
     for (std::size_t index = 0U; index < memory.entries().size(); ++index) {
-        add_memory_entry(builder, memory.entries()[index],
-                         indexed(prefix + ".entries", index));
+        add_memory_entry(builder, memory.entries()[index], indexed(prefix + ".entries", index));
     }
 }
 
@@ -354,15 +340,13 @@ void add_working_memory(SnapshotBuilder& builder,
                         const std::string& prefix) {
     builder.text(prefix + ".workspace", memory.workspaceIdentifier());
     builder.boolean(prefix + ".active", memory.active());
-    builder.boolean(prefix + ".task.present",
-                    memory.activeTaskIdentifier().has_value());
+    builder.boolean(prefix + ".task.present", memory.activeTaskIdentifier().has_value());
     if (memory.activeTaskIdentifier().has_value()) {
         builder.text(prefix + ".task.value", *memory.activeTaskIdentifier());
     }
     builder.number(prefix + ".entries.size", memory.entries().size());
     for (std::size_t index = 0U; index < memory.entries().size(); ++index) {
-        add_working_entry(builder, memory.entries()[index],
-                          indexed(prefix + ".entries", index));
+        add_working_entry(builder, memory.entries()[index], indexed(prefix + ".entries", index));
     }
 }
 
@@ -372,8 +356,7 @@ void add_long_term_memory(SnapshotBuilder& builder,
     builder.text(prefix + ".workspace", memory.workspaceIdentifier());
     builder.number(prefix + ".entries.size", memory.entries().size());
     for (std::size_t index = 0U; index < memory.entries().size(); ++index) {
-        add_long_term_entry(builder, memory.entries()[index],
-                            indexed(prefix + ".entries", index));
+        add_long_term_entry(builder, memory.entries()[index], indexed(prefix + ".entries", index));
     }
     builder.text(prefix + ".forgotten-probe",
                  long_term_disposition(memory, forgotten_long_term_identifier));
@@ -385,8 +368,8 @@ void add_semantic_memory(SnapshotBuilder& builder,
     builder.text(prefix + ".workspace", memory.workspaceIdentifier());
     builder.number(prefix + ".concepts.size", memory.concepts().size());
     for (std::size_t index = 0U; index < memory.concepts().size(); ++index) {
-        add_semantic_concept(builder, memory.concepts()[index],
-                             indexed(prefix + ".concepts", index));
+        add_semantic_concept(
+            builder, memory.concepts()[index], indexed(prefix + ".concepts", index));
     }
     builder.text(prefix + ".forgotten-probe",
                  semantic_disposition(memory, forgotten_semantic_identifier));
@@ -398,8 +381,7 @@ void add_episodic_memory(SnapshotBuilder& builder,
     builder.text(prefix + ".workspace", memory.workspaceIdentifier());
     builder.number(prefix + ".episodes.size", memory.episodes().size());
     for (std::size_t index = 0U; index < memory.episodes().size(); ++index) {
-        add_episode(builder, memory.episodes()[index],
-                    indexed(prefix + ".episodes", index));
+        add_episode(builder, memory.episodes()[index], indexed(prefix + ".episodes", index));
     }
     builder.text(prefix + ".forgotten-probe",
                  episodic_disposition(memory, forgotten_episodic_identifier));
@@ -411,12 +393,10 @@ void add_procedural_memory(SnapshotBuilder& builder,
     builder.text(prefix + ".workspace", memory.workspaceIdentifier());
     builder.number(prefix + ".procedures.size", memory.procedures().size());
     for (std::size_t index = 0U; index < memory.procedures().size(); ++index) {
-        add_procedure(builder, memory.procedures()[index],
-                      indexed(prefix + ".procedures", index));
+        add_procedure(builder, memory.procedures()[index], indexed(prefix + ".procedures", index));
     }
     builder.text(prefix + ".forgotten-probe",
-                 procedural_disposition(memory,
-                                        forgotten_procedural_identifier));
+                 procedural_disposition(memory, forgotten_procedural_identifier));
 }
 
 void add_candidate(SnapshotBuilder& builder,
@@ -426,19 +406,15 @@ void add_candidate(SnapshotBuilder& builder,
     builder.text(prefix + ".workspace", candidate.workspaceIdentifier());
     builder.text(prefix + ".source", candidate.sourceIdentifier());
     builder.number(prefix + ".rank", candidate.rankScore());
-    builder.boolean(prefix + ".semantic.present",
-                    candidate.semanticConcept() != nullptr);
+    builder.boolean(prefix + ".semantic.present", candidate.semanticConcept() != nullptr);
     if (candidate.semanticConcept() != nullptr) {
-        add_semantic_concept(builder, *candidate.semanticConcept(),
-                             prefix + ".semantic");
+        add_semantic_concept(builder, *candidate.semanticConcept(), prefix + ".semantic");
     }
-    builder.boolean(prefix + ".episodic.present",
-                    candidate.episode() != nullptr);
+    builder.boolean(prefix + ".episodic.present", candidate.episode() != nullptr);
     if (candidate.episode() != nullptr) {
         add_episode(builder, *candidate.episode(), prefix + ".episodic");
     }
-    builder.boolean(prefix + ".procedural.present",
-                    candidate.procedure() != nullptr);
+    builder.boolean(prefix + ".procedural.present", candidate.procedure() != nullptr);
     if (candidate.procedure() != nullptr) {
         add_procedure(builder, *candidate.procedure(), prefix + ".procedural");
     }
@@ -468,8 +444,7 @@ void add_retrieval_session(SnapshotBuilder& builder,
             const auto explained = MemoryRetrievalEngine{}.explain(
                 session, candidate.kind(), candidate.sourceIdentifier());
             require_ok(explained);
-            add_chain(builder, explained.explanationChain(),
-                      candidate_prefix + ".chain");
+            add_chain(builder, explained.explanationChain(), candidate_prefix + ".chain");
         }
     }
 }
@@ -480,23 +455,18 @@ void add_consolidation_candidate(SnapshotBuilder& builder,
     builder.text(prefix + ".workspace", candidate.workspaceIdentifier());
     builder.text(prefix + ".task", candidate.taskIdentifier());
     builder.number(prefix + ".source-position", candidate.sourcePosition());
-    builder.boolean(prefix + ".working.present",
-                    candidate.workingMemoryEntry() != nullptr);
+    builder.boolean(prefix + ".working.present", candidate.workingMemoryEntry() != nullptr);
     if (candidate.workingMemoryEntry() != nullptr) {
-        add_working_entry(builder, *candidate.workingMemoryEntry(),
-                          prefix + ".working");
+        add_working_entry(builder, *candidate.workingMemoryEntry(), prefix + ".working");
     }
-    builder.boolean(prefix + ".long-term.present",
-                    candidate.longTermMemoryEntry() != nullptr);
+    builder.boolean(prefix + ".long-term.present", candidate.longTermMemoryEntry() != nullptr);
     if (candidate.longTermMemoryEntry() != nullptr) {
-        add_long_term_entry(builder, *candidate.longTermMemoryEntry(),
-                            prefix + ".long-term");
+        add_long_term_entry(builder, *candidate.longTermMemoryEntry(), prefix + ".long-term");
     }
     builder.boolean(prefix + ".retained-position.present",
                     candidate.retainedPosition().has_value());
     if (candidate.retainedPosition().has_value()) {
-        builder.number(prefix + ".retained-position.value",
-                       *candidate.retainedPosition());
+        builder.number(prefix + ".retained-position.value", *candidate.retainedPosition());
     }
 }
 
@@ -507,30 +477,21 @@ void add_consolidation_session(SnapshotBuilder& builder,
     builder.number(prefix + ".state", static_cast<int>(session.state()));
     builder.boolean(prefix + ".request.present", session.request() != nullptr);
     if (session.request() != nullptr) {
-        builder.text(prefix + ".request.workspace",
-                     session.request()->workspaceIdentifier());
-        builder.text(prefix + ".request.task",
-                     session.request()->taskIdentifier());
-        builder.text(prefix + ".request.entry",
-                     session.request()->entryIdentifier());
+        builder.text(prefix + ".request.workspace", session.request()->workspaceIdentifier());
+        builder.text(prefix + ".request.task", session.request()->taskIdentifier());
+        builder.text(prefix + ".request.entry", session.request()->entryIdentifier());
     }
-    builder.boolean(prefix + ".candidate.present",
-                    session.candidate() != nullptr);
+    builder.boolean(prefix + ".candidate.present", session.candidate() != nullptr);
     if (session.candidate() != nullptr) {
-        add_consolidation_candidate(builder, *session.candidate(),
-                                    prefix + ".candidate");
+        add_consolidation_candidate(builder, *session.candidate(), prefix + ".candidate");
     }
-    builder.boolean(prefix + ".working-memory.present",
-                    session.workingMemory() != nullptr);
+    builder.boolean(prefix + ".working-memory.present", session.workingMemory() != nullptr);
     if (session.workingMemory() != nullptr) {
-        add_working_memory(builder, *session.workingMemory(),
-                           prefix + ".working-memory");
+        add_working_memory(builder, *session.workingMemory(), prefix + ".working-memory");
     }
-    builder.boolean(prefix + ".long-term-memory.present",
-                    session.longTermMemory() != nullptr);
+    builder.boolean(prefix + ".long-term-memory.present", session.longTermMemory() != nullptr);
     if (session.longTermMemory() != nullptr) {
-        add_long_term_memory(builder, *session.longTermMemory(),
-                             prefix + ".long-term-memory");
+        add_long_term_memory(builder, *session.longTermMemory(), prefix + ".long-term-memory");
     }
 }
 
@@ -540,18 +501,15 @@ void add_reflection(SnapshotBuilder& builder,
     builder.text(prefix + ".workspace", reflection.workspaceIdentifier());
     builder.text(prefix + ".identifier", reflection.identifier());
     builder.text(prefix + ".knowledge", reflection.knowledge());
-    builder.number(prefix + ".sources.size",
-                   reflection.sourceCandidates().size());
-    for (std::size_t index = 0U;
-         index < reflection.sourceCandidates().size(); ++index) {
-        add_candidate(builder, reflection.sourceCandidates()[index],
-                      indexed(prefix + ".sources", index));
+    builder.number(prefix + ".sources.size", reflection.sourceCandidates().size());
+    for (std::size_t index = 0U; index < reflection.sourceCandidates().size(); ++index) {
+        add_candidate(
+            builder, reflection.sourceCandidates()[index], indexed(prefix + ".sources", index));
     }
-    builder.number(prefix + ".chains.size",
-                   reflection.sourceExplanationChains().size());
-    for (std::size_t index = 0U;
-         index < reflection.sourceExplanationChains().size(); ++index) {
-        add_chain(builder, reflection.sourceExplanationChains()[index],
+    builder.number(prefix + ".chains.size", reflection.sourceExplanationChains().size());
+    for (std::size_t index = 0U; index < reflection.sourceExplanationChains().size(); ++index) {
+        add_chain(builder,
+                  reflection.sourceExplanationChains()[index],
                   indexed(prefix + ".chains", index));
     }
 }
@@ -563,27 +521,21 @@ void add_reflection_session(SnapshotBuilder& builder,
     builder.number(prefix + ".state", static_cast<int>(session.state()));
     builder.boolean(prefix + ".query.present", session.query() != nullptr);
     if (session.query() != nullptr) {
-        builder.text(prefix + ".query.workspace",
-                     session.query()->workspaceIdentifier());
-        builder.text(prefix + ".query.identifier",
-                     session.query()->identifier());
+        builder.text(prefix + ".query.workspace", session.query()->workspaceIdentifier());
+        builder.text(prefix + ".query.identifier", session.query()->identifier());
         builder.text(prefix + ".query.knowledge", session.query()->knowledge());
     }
     builder.number(prefix + ".sources.size", session.sourceCandidates().size());
-    for (std::size_t index = 0U; index < session.sourceCandidates().size();
-         ++index) {
-        add_candidate(builder, session.sourceCandidates()[index],
-                      indexed(prefix + ".sources", index));
+    for (std::size_t index = 0U; index < session.sourceCandidates().size(); ++index) {
+        add_candidate(
+            builder, session.sourceCandidates()[index], indexed(prefix + ".sources", index));
     }
-    builder.number(prefix + ".chains.size",
-                   session.sourceExplanationChains().size());
-    for (std::size_t index = 0U;
-         index < session.sourceExplanationChains().size(); ++index) {
-        add_chain(builder, session.sourceExplanationChains()[index],
-                  indexed(prefix + ".chains", index));
+    builder.number(prefix + ".chains.size", session.sourceExplanationChains().size());
+    for (std::size_t index = 0U; index < session.sourceExplanationChains().size(); ++index) {
+        add_chain(
+            builder, session.sourceExplanationChains()[index], indexed(prefix + ".chains", index));
     }
-    builder.boolean(prefix + ".reflection.present",
-                    session.reflection() != nullptr);
+    builder.boolean(prefix + ".reflection.present", session.reflection() != nullptr);
     if (session.reflection() != nullptr) {
         add_reflection(builder, *session.reflection(), prefix + ".reflection");
     }
@@ -596,86 +548,65 @@ void add_provider_session(SnapshotBuilder& builder,
     builder.number(prefix + ".state", static_cast<int>(session.state()));
     builder.number(prefix + ".descriptors.size", session.descriptors().size());
     for (std::size_t index = 0U; index < session.descriptors().size(); ++index) {
-        const auto descriptor_prefix =
-            indexed(prefix + ".descriptors", index);
+        const auto descriptor_prefix = indexed(prefix + ".descriptors", index);
         builder.text(descriptor_prefix + ".workspace",
                      session.descriptors()[index].workspaceIdentifier());
-        builder.text(descriptor_prefix + ".identifier",
-                     session.descriptors()[index].identifier());
+        builder.text(descriptor_prefix + ".identifier", session.descriptors()[index].identifier());
     }
 }
 
-void add_view(SnapshotBuilder& builder,
-              const StudioView& view,
-              const std::string& prefix) {
+void add_view(SnapshotBuilder& builder, const StudioView& view, const std::string& prefix) {
     builder.text(prefix + ".workspace", view.workspaceIdentifier());
     builder.boolean(prefix + ".memory.present", view.memory() != nullptr);
     if (view.memory() != nullptr) {
         add_memory(builder, *view.memory(), prefix + ".memory");
     }
-    builder.boolean(prefix + ".working.present",
-                    view.workingMemory() != nullptr);
+    builder.boolean(prefix + ".working.present", view.workingMemory() != nullptr);
     if (view.workingMemory() != nullptr) {
         add_working_memory(builder, *view.workingMemory(), prefix + ".working");
     }
-    builder.boolean(prefix + ".long-term.present",
-                    view.longTermMemory() != nullptr);
+    builder.boolean(prefix + ".long-term.present", view.longTermMemory() != nullptr);
     if (view.longTermMemory() != nullptr) {
-        add_long_term_memory(builder, *view.longTermMemory(),
-                             prefix + ".long-term");
+        add_long_term_memory(builder, *view.longTermMemory(), prefix + ".long-term");
     }
-    builder.boolean(prefix + ".semantic.present",
-                    view.semanticMemory() != nullptr);
+    builder.boolean(prefix + ".semantic.present", view.semanticMemory() != nullptr);
     if (view.semanticMemory() != nullptr) {
-        add_semantic_memory(builder, *view.semanticMemory(),
-                            prefix + ".semantic");
+        add_semantic_memory(builder, *view.semanticMemory(), prefix + ".semantic");
     }
-    builder.boolean(prefix + ".episodic.present",
-                    view.episodicMemory() != nullptr);
+    builder.boolean(prefix + ".episodic.present", view.episodicMemory() != nullptr);
     if (view.episodicMemory() != nullptr) {
-        add_episodic_memory(builder, *view.episodicMemory(),
-                            prefix + ".episodic");
+        add_episodic_memory(builder, *view.episodicMemory(), prefix + ".episodic");
     }
-    builder.boolean(prefix + ".procedural.present",
-                    view.proceduralMemory() != nullptr);
+    builder.boolean(prefix + ".procedural.present", view.proceduralMemory() != nullptr);
     if (view.proceduralMemory() != nullptr) {
-        add_procedural_memory(builder, *view.proceduralMemory(),
-                              prefix + ".procedural");
+        add_procedural_memory(builder, *view.proceduralMemory(), prefix + ".procedural");
     }
 
-    builder.number(prefix + ".retrieval.size",
-                   view.retrievalSessions().size());
-    for (std::size_t index = 0U; index < view.retrievalSessions().size();
-         ++index) {
-        add_retrieval_session(builder, view.retrievalSessions()[index],
-                              indexed(prefix + ".retrieval", index));
+    builder.number(prefix + ".retrieval.size", view.retrievalSessions().size());
+    for (std::size_t index = 0U; index < view.retrievalSessions().size(); ++index) {
+        add_retrieval_session(
+            builder, view.retrievalSessions()[index], indexed(prefix + ".retrieval", index));
     }
-    builder.number(prefix + ".consolidation.size",
-                   view.consolidationSessions().size());
-    for (std::size_t index = 0U;
-         index < view.consolidationSessions().size(); ++index) {
-        add_consolidation_session(
-            builder, view.consolidationSessions()[index],
-            indexed(prefix + ".consolidation", index));
+    builder.number(prefix + ".consolidation.size", view.consolidationSessions().size());
+    for (std::size_t index = 0U; index < view.consolidationSessions().size(); ++index) {
+        add_consolidation_session(builder,
+                                  view.consolidationSessions()[index],
+                                  indexed(prefix + ".consolidation", index));
     }
     builder.number(prefix + ".reflections.size", view.reflections().size());
     for (std::size_t index = 0U; index < view.reflections().size(); ++index) {
-        add_reflection(builder, view.reflections()[index],
-                       indexed(prefix + ".reflections", index));
+        add_reflection(builder, view.reflections()[index], indexed(prefix + ".reflections", index));
     }
-    builder.number(prefix + ".reflection-sessions.size",
-                   view.reflectionSessions().size());
-    for (std::size_t index = 0U; index < view.reflectionSessions().size();
-         ++index) {
-        add_reflection_session(
-            builder, view.reflectionSessions()[index],
-            indexed(prefix + ".reflection-sessions", index));
+    builder.number(prefix + ".reflection-sessions.size", view.reflectionSessions().size());
+    for (std::size_t index = 0U; index < view.reflectionSessions().size(); ++index) {
+        add_reflection_session(builder,
+                               view.reflectionSessions()[index],
+                               indexed(prefix + ".reflection-sessions", index));
     }
     builder.number(prefix + ".providers.size", view.providerSessions().size());
-    for (std::size_t index = 0U; index < view.providerSessions().size();
-         ++index) {
-        add_provider_session(builder, view.providerSessions()[index],
-                             indexed(prefix + ".providers", index));
+    for (std::size_t index = 0U; index < view.providerSessions().size(); ++index) {
+        add_provider_session(
+            builder, view.providerSessions()[index], indexed(prefix + ".providers", index));
     }
 }
 
@@ -707,18 +638,13 @@ void add_studio_result(SnapshotBuilder& builder,
     if (result.view() != nullptr) {
         add_view(builder, *result.view(), prefix + ".view");
     }
-    builder.number(prefix + ".observations.size",
-                   result.observations().size());
+    builder.number(prefix + ".observations.size", result.observations().size());
     for (std::size_t index = 0U; index < result.observations().size(); ++index) {
-        builder.text(indexed(prefix + ".observations", index),
-                     result.observations()[index]);
+        builder.text(indexed(prefix + ".observations", index), result.observations()[index]);
     }
-    builder.number(prefix + ".chains.size",
-                   result.explanationChains().size());
-    for (std::size_t index = 0U;
-         index < result.explanationChains().size(); ++index) {
-        add_chain(builder, result.explanationChains()[index],
-                  indexed(prefix + ".chains", index));
+    builder.number(prefix + ".chains.size", result.explanationChains().size());
+    for (std::size_t index = 0U; index < result.explanationChains().size(); ++index) {
+        add_chain(builder, result.explanationChains()[index], indexed(prefix + ".chains", index));
     }
 }
 
@@ -744,22 +670,19 @@ struct Inputs final {
     Inputs() {
         require_ok(MemoryEngine{}.store(
             memory,
-            MemoryEntry{
-                "memory-studio-foundation-entry-with-a-long-identifier",
-                "memory-studio-foundation-value-with-enough-content-to-allocate"}));
+            MemoryEntry{"memory-studio-foundation-entry-with-a-long-identifier",
+                        "memory-studio-foundation-value-with-enough-content-to-allocate"}));
 
         require_ok(WorkingMemoryEngine{}.activate(working, task_identifier));
         require_ok(WorkingMemoryEngine{}.store(
             working,
-            WorkingMemoryEntry{
-                working_identifier,
-                "memory-studio-working-value-with-enough-content-to-allocate",
-                std::optional<std::uint64_t>{500U}}));
+            WorkingMemoryEntry{working_identifier,
+                               "memory-studio-working-value-with-enough-content-to-allocate",
+                               std::optional<std::uint64_t>{500U}}));
         require_ok(WorkingMemoryEngine{}.store(
             working,
-            WorkingMemoryEntry{
-                "memory-studio-working-survivor-with-a-long-identifier",
-                "memory-studio-working-survivor-value-with-long-content"}));
+            WorkingMemoryEntry{"memory-studio-working-survivor-with-a-long-identifier",
+                               "memory-studio-working-survivor-value-with-long-content"}));
 
         const std::string semantic_source =
             "memory-studio-semantic-evidence-with-a-long-identifier";
@@ -769,35 +692,30 @@ struct Inputs final {
             "memory-studio-procedural-evidence-with-a-long-identifier";
         require_ok(LongTermMemoryEngine{}.retain(
             long_term,
-            LongTermMemoryEntry{
-                semantic_source,
-                "memory-studio-semantic-evidence-value-with-long-content"}));
+            LongTermMemoryEntry{semantic_source,
+                                "memory-studio-semantic-evidence-value-with-long-content"}));
         require_ok(LongTermMemoryEngine{}.retain(
             long_term,
-            LongTermMemoryEntry{
-                episodic_source,
-                "memory-studio-episodic-evidence-value-with-long-content"}));
+            LongTermMemoryEntry{episodic_source,
+                                "memory-studio-episodic-evidence-value-with-long-content"}));
         require_ok(LongTermMemoryEngine{}.retain(
             long_term,
-            LongTermMemoryEntry{
-                procedural_source,
-                "memory-studio-procedural-evidence-value-with-long-content"}));
+            LongTermMemoryEntry{procedural_source,
+                                "memory-studio-procedural-evidence-value-with-long-content"}));
 
         const auto* const semantic_entry = long_term.find(semantic_source);
         const auto* const episodic_entry = long_term.find(episodic_source);
         const auto* const procedural_entry = long_term.find(procedural_source);
-        if (semantic_entry == nullptr || episodic_entry == nullptr ||
-            procedural_entry == nullptr) {
+        if (semantic_entry == nullptr || episodic_entry == nullptr || procedural_entry == nullptr) {
             throw std::logic_error{"allocation fixture evidence is absent"};
         }
 
         require_ok(SemanticMemoryEngine{}.classify(
             semantic,
             long_term,
-            SemanticConcept{
-                semantic_identifier,
-                "memory-studio-semantic-meaning-with-enough-content-to-allocate",
-                {*semantic_entry}}));
+            SemanticConcept{semantic_identifier,
+                            "memory-studio-semantic-meaning-with-enough-content-to-allocate",
+                            {*semantic_entry}}));
         require_ok(SemanticMemoryEngine{}.categorize(
             semantic,
             semantic_identifier,
@@ -806,99 +724,78 @@ struct Inputs final {
         require_ok(EpisodicMemoryEngine{}.derive(
             episodic,
             long_term,
-            Episode{
-                episodic_identifier,
-                "memory-studio-episodic-occurrence-with-long-content",
-                "memory-studio-episodic-context-with-long-content",
-                123456789,
-                {*episodic_entry}}));
+            Episode{episodic_identifier,
+                    "memory-studio-episodic-occurrence-with-long-content",
+                    "memory-studio-episodic-context-with-long-content",
+                    123456789,
+                    {*episodic_entry}}));
 
         require_ok(ProceduralMemoryEngine{}.derive(
             procedural,
             long_term,
-            Procedure{
-                procedural_identifier,
-                "memory-studio-procedural-activity-with-long-content",
-                {"memory-studio-procedure-step-one-with-long-content",
-                 "memory-studio-procedure-step-two-with-long-content",
-                 "memory-studio-procedure-step-two-with-long-content"},
-                {*procedural_entry}}));
+            Procedure{procedural_identifier,
+                      "memory-studio-procedural-activity-with-long-content",
+                      {"memory-studio-procedure-step-one-with-long-content",
+                       "memory-studio-procedure-step-two-with-long-content",
+                       "memory-studio-procedure-step-two-with-long-content"},
+                      {*procedural_entry}}));
 
         // Preserve released hidden forgotten-identifier history in every
         // aggregate that carries it. Snapshot probes verify the history also
         // survives every Studio copy and every injected exception.
         require_ok(LongTermMemoryEngine{}.retain(
             long_term,
-            LongTermMemoryEntry{
-                forgotten_long_term_identifier,
-                "memory-studio-forgotten-long-term-value-with-long-content"}));
-        require_ok(LongTermMemoryEngine{}.forget(
-            long_term, forgotten_long_term_identifier));
+            LongTermMemoryEntry{forgotten_long_term_identifier,
+                                "memory-studio-forgotten-long-term-value-with-long-content"}));
+        require_ok(LongTermMemoryEngine{}.forget(long_term, forgotten_long_term_identifier));
 
-        const auto* const retained_semantic_entry =
-            long_term.find(semantic_source);
-        const auto* const retained_episodic_entry =
-            long_term.find(episodic_source);
-        const auto* const retained_procedural_entry =
-            long_term.find(procedural_source);
-        if (retained_semantic_entry == nullptr ||
-            retained_episodic_entry == nullptr ||
+        const auto* const retained_semantic_entry = long_term.find(semantic_source);
+        const auto* const retained_episodic_entry = long_term.find(episodic_source);
+        const auto* const retained_procedural_entry = long_term.find(procedural_source);
+        if (retained_semantic_entry == nullptr || retained_episodic_entry == nullptr ||
             retained_procedural_entry == nullptr) {
-            throw std::logic_error{
-                "allocation fixture retained evidence is absent"};
+            throw std::logic_error{"allocation fixture retained evidence is absent"};
         }
 
         require_ok(SemanticMemoryEngine{}.classify(
             semantic,
             long_term,
-            SemanticConcept{
-                forgotten_semantic_identifier,
-                "memory-studio-forgotten-semantic-meaning-with-long-content",
-                {*retained_semantic_entry}}));
-        require_ok(SemanticMemoryEngine{}.forget(
-            semantic, forgotten_semantic_identifier));
+            SemanticConcept{forgotten_semantic_identifier,
+                            "memory-studio-forgotten-semantic-meaning-with-long-content",
+                            {*retained_semantic_entry}}));
+        require_ok(SemanticMemoryEngine{}.forget(semantic, forgotten_semantic_identifier));
 
         require_ok(EpisodicMemoryEngine{}.derive(
             episodic,
             long_term,
-            Episode{
-                forgotten_episodic_identifier,
-                "memory-studio-forgotten-episodic-occurrence-long-content",
-                "memory-studio-forgotten-episodic-context-long-content",
-                42,
-                {*retained_episodic_entry}}));
-        require_ok(EpisodicMemoryEngine{}.forget(
-            episodic, forgotten_episodic_identifier));
+            Episode{forgotten_episodic_identifier,
+                    "memory-studio-forgotten-episodic-occurrence-long-content",
+                    "memory-studio-forgotten-episodic-context-long-content",
+                    42,
+                    {*retained_episodic_entry}}));
+        require_ok(EpisodicMemoryEngine{}.forget(episodic, forgotten_episodic_identifier));
 
         require_ok(ProceduralMemoryEngine{}.derive(
             procedural,
             long_term,
-            Procedure{
-                forgotten_procedural_identifier,
-                "memory-studio-forgotten-procedural-activity-long-content",
-                {"memory-studio-forgotten-procedural-step-long-content"},
-                {*retained_procedural_entry}}));
-        require_ok(ProceduralMemoryEngine{}.forget(
-            procedural, forgotten_procedural_identifier));
+            Procedure{forgotten_procedural_identifier,
+                      "memory-studio-forgotten-procedural-activity-long-content",
+                      {"memory-studio-forgotten-procedural-step-long-content"},
+                      {*retained_procedural_entry}}));
+        require_ok(ProceduralMemoryEngine{}.forget(procedural, forgotten_procedural_identifier));
         require_ok(LongTermMemoryEngine{}.archive(long_term, semantic_source));
 
         RetrievalSession retrieval_session{workspace};
         require_ok(MemoryRetrievalEngine{}.search(
-            retrieval_session,
-            semantic,
-            episodic,
-            procedural,
-            KnowledgeQuery{""}));
+            retrieval_session, semantic, episodic, procedural, KnowledgeQuery{""}));
         require_ok(MemoryRetrievalEngine{}.rank(retrieval_session));
         retrieval.push_back(retrieval_session);
 
         ConsolidationSession consolidation_session{workspace};
-        const ConsolidationRequest request{
-            workspace, task_identifier, working_identifier};
+        const ConsolidationRequest request{workspace, task_identifier, working_identifier};
         require_ok(MemoryConsolidationEngine{}.analyze(
             consolidation_session, request, working, long_term));
-        require_ok(MemoryConsolidationEngine{}.promote(
-            consolidation_session));
+        require_ok(MemoryConsolidationEngine{}.promote(consolidation_session));
         consolidation.push_back(consolidation_session);
 
         ReflectionSession reflection_session{workspace};
@@ -908,8 +805,8 @@ struct Inputs final {
             "memory-studio-reflection-knowledge-with-enough-content-to-allocate"};
         require_ok(MemoryReflectionEngine{}.reflect(
             reflection_session, reflection_query, retrieval_session));
-        const auto reflected = MemoryReflectionEngine{}.derive(
-            reflection_session, semantic, episodic, procedural);
+        const auto reflected =
+            MemoryReflectionEngine{}.derive(reflection_session, semantic, episodic, procedural);
         require_ok(reflected);
         if (reflected.reflection() == nullptr) {
             throw std::logic_error{"allocation fixture Reflection is absent"};
@@ -920,9 +817,7 @@ struct Inputs final {
         ProviderSession provider_session{workspace};
         require_ok(MemoryProviderEngine{}.registerProvider(
             provider_session,
-            ProviderDescriptor{
-                workspace,
-                "memory-studio-provider-with-a-long-identifier"}));
+            ProviderDescriptor{workspace, "memory-studio-provider-with-a-long-identifier"}));
         providers.push_back(provider_session);
     }
 
@@ -942,9 +837,7 @@ struct Inputs final {
     }
 };
 
-void add_inputs(SnapshotBuilder& builder,
-                const Inputs& inputs,
-                const std::string& prefix) {
+void add_inputs(SnapshotBuilder& builder, const Inputs& inputs, const std::string& prefix) {
     add_memory(builder, inputs.memory, prefix + ".memory");
     add_working_memory(builder, inputs.working, prefix + ".working");
     add_long_term_memory(builder, inputs.long_term, prefix + ".long-term");
@@ -953,32 +846,28 @@ void add_inputs(SnapshotBuilder& builder,
     add_procedural_memory(builder, inputs.procedural, prefix + ".procedural");
     builder.number(prefix + ".retrieval.size", inputs.retrieval.size());
     for (std::size_t index = 0U; index < inputs.retrieval.size(); ++index) {
-        add_retrieval_session(builder, inputs.retrieval[index],
-                              indexed(prefix + ".retrieval", index));
+        add_retrieval_session(
+            builder, inputs.retrieval[index], indexed(prefix + ".retrieval", index));
     }
-    builder.number(prefix + ".consolidation.size",
-                   inputs.consolidation.size());
+    builder.number(prefix + ".consolidation.size", inputs.consolidation.size());
     for (std::size_t index = 0U; index < inputs.consolidation.size(); ++index) {
-        add_consolidation_session(builder, inputs.consolidation[index],
-                                  indexed(prefix + ".consolidation", index));
+        add_consolidation_session(
+            builder, inputs.consolidation[index], indexed(prefix + ".consolidation", index));
     }
     builder.number(prefix + ".reflections.size", inputs.reflections.size());
     for (std::size_t index = 0U; index < inputs.reflections.size(); ++index) {
-        add_reflection(builder, inputs.reflections[index],
-                       indexed(prefix + ".reflections", index));
+        add_reflection(builder, inputs.reflections[index], indexed(prefix + ".reflections", index));
     }
-    builder.number(prefix + ".reflection-sessions.size",
-                   inputs.reflection_sessions.size());
-    for (std::size_t index = 0U; index < inputs.reflection_sessions.size();
-         ++index) {
-        add_reflection_session(
-            builder, inputs.reflection_sessions[index],
-            indexed(prefix + ".reflection-sessions", index));
+    builder.number(prefix + ".reflection-sessions.size", inputs.reflection_sessions.size());
+    for (std::size_t index = 0U; index < inputs.reflection_sessions.size(); ++index) {
+        add_reflection_session(builder,
+                               inputs.reflection_sessions[index],
+                               indexed(prefix + ".reflection-sessions", index));
     }
     builder.number(prefix + ".providers.size", inputs.providers.size());
     for (std::size_t index = 0U; index < inputs.providers.size(); ++index) {
-        add_provider_session(builder, inputs.providers[index],
-                             indexed(prefix + ".providers", index));
+        add_provider_session(
+            builder, inputs.providers[index], indexed(prefix + ".providers", index));
     }
 }
 
@@ -1007,8 +896,11 @@ struct OpenFixture final {
 [[nodiscard]] FixtureSnapshot snapshot_of(const OpenFixture& fixture) {
     SnapshotBuilder session_builder;
     add_studio_session(session_builder, fixture.session, "session");
-    return {snapshot_of(fixture.inputs), snapshot_of(fixture.supplied_view),
-            std::move(session_builder).finish(), std::nullopt, std::nullopt};
+    return {snapshot_of(fixture.inputs),
+            snapshot_of(fixture.supplied_view),
+            std::move(session_builder).finish(),
+            std::nullopt,
+            std::nullopt};
 }
 
 struct ObservedFixture final {
@@ -1030,9 +922,11 @@ struct ObservedFixture final {
 [[nodiscard]] FixtureSnapshot snapshot_of(const ObservedFixture& fixture) {
     SnapshotBuilder session_builder;
     add_studio_session(session_builder, fixture.session, "session");
-    return {snapshot_of(fixture.inputs), snapshot_of(fixture.supplied_view),
+    return {snapshot_of(fixture.inputs),
+            snapshot_of(fixture.supplied_view),
             std::move(session_builder).finish(),
-            snapshot_of(*fixture.earlier_result), std::nullopt};
+            snapshot_of(*fixture.earlier_result),
+            std::nullopt};
 }
 
 struct ForgottenFixture final {
@@ -1054,7 +948,8 @@ struct ForgottenFixture final {
 [[nodiscard]] FixtureSnapshot snapshot_of(const ForgottenFixture& fixture) {
     SnapshotBuilder session_builder;
     add_studio_session(session_builder, fixture.session, "session");
-    return {snapshot_of(fixture.inputs), snapshot_of(fixture.supplied_view),
+    return {snapshot_of(fixture.inputs),
+            snapshot_of(fixture.supplied_view),
             std::move(session_builder).finish(),
             snapshot_of(*fixture.earlier_result),
             snapshot_of(*fixture.transition_result)};
@@ -1063,9 +958,7 @@ struct ForgottenFixture final {
 constexpr std::size_t allocation_campaign_limit = 16384U;
 
 template <typename Arrange, typename Operation, typename VerifySuccess>
-void sweep_studio_result(Arrange arrange,
-                         Operation operation,
-                         VerifySuccess verify_success) {
+void sweep_studio_result(Arrange arrange, Operation operation, VerifySuccess verify_success) {
     std::size_t observed_failures = 0U;
     bool completed = false;
     for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
@@ -1093,8 +986,7 @@ void sweep_studio_result(Arrange arrange,
 }
 
 void expect_success(const StudioResult& result) {
-    EXPECT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    EXPECT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
     EXPECT_EQ(result.code(), "OK");
     EXPECT_TRUE(result.message().empty());
 }
@@ -1110,8 +1002,7 @@ void expect_failure(const StudioResult& result,
     EXPECT_TRUE(result.explanationChains().empty());
 }
 
-TEST(MemoryStudioAllocationFailureTest,
-     CompleteViewConstructionSweepsEveryAllocation) {
+TEST(MemoryStudioAllocationFailureTest, CompleteViewConstructionSweepsEveryAllocation) {
     std::size_t observed_failures = 0U;
     bool completed = false;
     for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
@@ -1148,8 +1039,7 @@ TEST(MemoryStudioAllocationFailureTest,
     EXPECT_GT(observed_failures, 0U);
 }
 
-TEST(MemoryStudioAllocationFailureTest,
-     ViewCopyConstructionAndAssignmentAreTransactional) {
+TEST(MemoryStudioAllocationFailureTest, ViewCopyConstructionAndAssignmentAreTransactional) {
     std::size_t construction_failures = 0U;
     bool construction_completed = false;
     for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
@@ -1212,16 +1102,13 @@ TEST(MemoryStudioAllocationFailureTest,
     EXPECT_GT(assignment_failures, 0U);
 }
 
-TEST(MemoryStudioAllocationFailureTest,
-     QueryConstructionCopyAndAssignmentSweepEveryAllocation) {
+TEST(MemoryStudioAllocationFailureTest, QueryConstructionCopyAndAssignmentSweepEveryAllocation) {
     std::size_t construction_failures = 0U;
     bool construction_completed = false;
     for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         memory_studio_allocation_failure_support::fail_after(index);
         try {
-            const StudioQuery query{workspace,
-                                    StudioQuery::Scope::Retrieval,
-                                    semantic_identifier};
+            const StudioQuery query{workspace, StudioQuery::Scope::Retrieval, semantic_identifier};
             memory_studio_allocation_failure_support::disable();
             EXPECT_EQ(query.workspaceIdentifier(), workspace);
             EXPECT_EQ(query.scope(), StudioQuery::Scope::Retrieval);
@@ -1242,9 +1129,7 @@ TEST(MemoryStudioAllocationFailureTest,
     std::size_t copy_failures = 0U;
     bool copy_completed = false;
     for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
-        const StudioQuery source{workspace,
-                                 StudioQuery::Scope::Retrieval,
-                                 semantic_identifier};
+        const StudioQuery source{workspace, StudioQuery::Scope::Retrieval, semantic_identifier};
         StudioQuery target{workspace};
         memory_studio_allocation_failure_support::fail_after(index);
         try {
@@ -1277,8 +1162,7 @@ TEST(MemoryStudioAllocationFailureTest,
     EXPECT_GT(copy_failures, 0U);
 }
 
-TEST(MemoryStudioAllocationFailureTest,
-     ObservedSessionCopyConstructionSweepsEveryAllocation) {
+TEST(MemoryStudioAllocationFailureTest, ObservedSessionCopyConstructionSweepsEveryAllocation) {
     std::size_t session_construction_failures = 0U;
     bool session_construction_completed = false;
     for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
@@ -1330,17 +1214,13 @@ TEST(MemoryStudioAllocationFailureTest,
     EXPECT_GT(observed_failures, 0U);
 }
 
-TEST(MemoryStudioAllocationFailureTest,
-     ObserveAndReobserveCommitOnlyAfterCompleteStaging) {
+TEST(MemoryStudioAllocationFailureTest, ObserveAndReobserveCommitOnlyAfterCompleteStaging) {
     sweep_studio_result(
         [] { return OpenFixture{}; },
         [](OpenFixture& fixture) {
-            return fixture.engine.observe(fixture.session,
-                                          fixture.supplied_view);
+            return fixture.engine.observe(fixture.session, fixture.supplied_view);
         },
-        [](const OpenFixture& fixture,
-           const StudioResult& result,
-           const FixtureSnapshot& before) {
+        [](const OpenFixture& fixture, const StudioResult& result, const FixtureSnapshot& before) {
             expect_success(result);
             EXPECT_NE(result.view(), nullptr);
             EXPECT_TRUE(result.observations().empty());
@@ -1352,82 +1232,73 @@ TEST(MemoryStudioAllocationFailureTest,
             EXPECT_EQ(snapshot_of(fixture.supplied_view), before.supplied_view);
         });
 
-    sweep_studio_result(
-        [] { return ObservedFixture{}; },
-        [](ObservedFixture& fixture) {
-            return fixture.engine.observe(fixture.session,
-                                          fixture.supplied_view);
-        },
-        [](const ObservedFixture& fixture,
-           const StudioResult& result,
-           const FixtureSnapshot& before) {
-            expect_success(result);
-            EXPECT_NE(result.view(), nullptr);
-            EXPECT_NE(fixture.session.view(), nullptr);
-            EXPECT_NE(fixture.session.view(), result.view());
-            EXPECT_EQ(snapshot_of(fixture.inputs), before.inputs);
-            EXPECT_EQ(snapshot_of(fixture.supplied_view), before.supplied_view);
-            EXPECT_EQ(snapshot_of(*fixture.earlier_result),
-                      *before.earlier_result);
-        });
+    sweep_studio_result([] { return ObservedFixture{}; },
+                        [](ObservedFixture& fixture) {
+                            return fixture.engine.observe(fixture.session, fixture.supplied_view);
+                        },
+                        [](const ObservedFixture& fixture,
+                           const StudioResult& result,
+                           const FixtureSnapshot& before) {
+                            expect_success(result);
+                            EXPECT_NE(result.view(), nullptr);
+                            EXPECT_NE(fixture.session.view(), nullptr);
+                            EXPECT_NE(fixture.session.view(), result.view());
+                            EXPECT_EQ(snapshot_of(fixture.inputs), before.inputs);
+                            EXPECT_EQ(snapshot_of(fixture.supplied_view), before.supplied_view);
+                            EXPECT_EQ(snapshot_of(*fixture.earlier_result), *before.earlier_result);
+                        });
 }
 
 TEST(MemoryStudioAllocationFailureTest,
      InspectTraceSummarizeAndExportPreserveCompleteObservedState) {
-    sweep_studio_result(
-        [] { return ObservedFixture{}; },
-        [](ObservedFixture& fixture) {
-            return fixture.engine.inspect(
-                fixture.session, StudioQuery{workspace});
-        },
-        [](const ObservedFixture& fixture,
-           const StudioResult& result,
-           const FixtureSnapshot& before) {
-            expect_success(result);
-            EXPECT_NE(result.view(), nullptr);
-            EXPECT_FALSE(result.observations().empty());
-            EXPECT_TRUE(result.explanationChains().empty());
-            EXPECT_EQ(snapshot_of(fixture), before);
-        });
+    sweep_studio_result([] { return ObservedFixture{}; },
+                        [](ObservedFixture& fixture) {
+                            return fixture.engine.inspect(fixture.session, StudioQuery{workspace});
+                        },
+                        [](const ObservedFixture& fixture,
+                           const StudioResult& result,
+                           const FixtureSnapshot& before) {
+                            expect_success(result);
+                            EXPECT_NE(result.view(), nullptr);
+                            EXPECT_FALSE(result.observations().empty());
+                            EXPECT_TRUE(result.explanationChains().empty());
+                            EXPECT_EQ(snapshot_of(fixture), before);
+                        });
+
+    sweep_studio_result([] { return ObservedFixture{}; },
+                        [](ObservedFixture& fixture) {
+                            return fixture.engine.trace(
+                                fixture.session,
+                                StudioQuery{workspace, StudioQuery::Scope::Complete});
+                        },
+                        [](const ObservedFixture& fixture,
+                           const StudioResult& result,
+                           const FixtureSnapshot& before) {
+                            expect_success(result);
+                            EXPECT_EQ(result.view(), nullptr);
+                            EXPECT_TRUE(result.observations().empty());
+                            EXPECT_FALSE(result.explanationChains().empty());
+                            EXPECT_EQ(snapshot_of(fixture), before);
+                        });
+
+    sweep_studio_result([] { return ObservedFixture{}; },
+                        [](ObservedFixture& fixture) {
+                            return fixture.engine.summarize(fixture.session,
+                                                            StudioQuery{workspace});
+                        },
+                        [](const ObservedFixture& fixture,
+                           const StudioResult& result,
+                           const FixtureSnapshot& before) {
+                            expect_success(result);
+                            EXPECT_EQ(result.view(), nullptr);
+                            EXPECT_FALSE(result.observations().empty());
+                            EXPECT_TRUE(result.explanationChains().empty());
+                            EXPECT_EQ(snapshot_of(fixture), before);
+                        });
 
     sweep_studio_result(
         [] { return ObservedFixture{}; },
-        [](ObservedFixture& fixture) {
-            return fixture.engine.trace(
-                fixture.session,
-                StudioQuery{workspace, StudioQuery::Scope::Complete});
-        },
-        [](const ObservedFixture& fixture,
-           const StudioResult& result,
-           const FixtureSnapshot& before) {
-            expect_success(result);
-            EXPECT_EQ(result.view(), nullptr);
-            EXPECT_TRUE(result.observations().empty());
-            EXPECT_FALSE(result.explanationChains().empty());
-            EXPECT_EQ(snapshot_of(fixture), before);
-        });
-
-    sweep_studio_result(
-        [] { return ObservedFixture{}; },
-        [](ObservedFixture& fixture) {
-            return fixture.engine.summarize(
-                fixture.session, StudioQuery{workspace});
-        },
-        [](const ObservedFixture& fixture,
-           const StudioResult& result,
-           const FixtureSnapshot& before) {
-            expect_success(result);
-            EXPECT_EQ(result.view(), nullptr);
-            EXPECT_FALSE(result.observations().empty());
-            EXPECT_TRUE(result.explanationChains().empty());
-            EXPECT_EQ(snapshot_of(fixture), before);
-        });
-
-    sweep_studio_result(
-        [] { return ObservedFixture{}; },
-        [](ObservedFixture& fixture) {
-            return fixture.engine.exportView(fixture.session);
-        },
+        [](ObservedFixture& fixture) { return fixture.engine.exportView(fixture.session); },
         [](const ObservedFixture& fixture,
            const StudioResult& result,
            const FixtureSnapshot& before) {
@@ -1439,13 +1310,10 @@ TEST(MemoryStudioAllocationFailureTest,
         });
 }
 
-TEST(MemoryStudioAllocationFailureTest,
-     ForgetStagesSuccessBeforeItsNonthrowingTerminalCommit) {
+TEST(MemoryStudioAllocationFailureTest, ForgetStagesSuccessBeforeItsNonthrowingTerminalCommit) {
     sweep_studio_result(
         [] { return ObservedFixture{}; },
-        [](ObservedFixture& fixture) {
-            return fixture.engine.forgetSession(fixture.session);
-        },
+        [](ObservedFixture& fixture) { return fixture.engine.forgetSession(fixture.session); },
         [](const ObservedFixture& fixture,
            const StudioResult& result,
            const FixtureSnapshot& before) {
@@ -1457,8 +1325,7 @@ TEST(MemoryStudioAllocationFailureTest,
             EXPECT_EQ(fixture.session.view(), nullptr);
             EXPECT_EQ(snapshot_of(fixture.inputs), before.inputs);
             EXPECT_EQ(snapshot_of(fixture.supplied_view), before.supplied_view);
-            EXPECT_EQ(snapshot_of(*fixture.earlier_result),
-                      *before.earlier_result);
+            EXPECT_EQ(snapshot_of(*fixture.earlier_result), *before.earlier_result);
         });
 }
 
@@ -1467,62 +1334,32 @@ TEST(MemoryStudioAllocationFailureTest,
     sweep_studio_result(
         [] { return OpenFixture{}; },
         [](OpenFixture& fixture) {
-            return fixture.engine.inspect(
-                fixture.session, StudioQuery{workspace});
+            return fixture.engine.inspect(fixture.session, StudioQuery{workspace});
         },
-        [](const OpenFixture& fixture,
-           const StudioResult& result,
-           const FixtureSnapshot& before) {
-            expect_failure(result,
-                           "SESSION_NOT_OBSERVED",
-                           "studio session has no observed view");
+        [](const OpenFixture& fixture, const StudioResult& result, const FixtureSnapshot& before) {
+            expect_failure(result, "SESSION_NOT_OBSERVED", "studio session has no observed view");
             EXPECT_EQ(snapshot_of(fixture), before);
         });
 
     sweep_studio_result(
         [] { return ForgottenFixture{}; },
-        [](ForgottenFixture& fixture) {
-            return fixture.engine.exportView(fixture.session);
-        },
+        [](ForgottenFixture& fixture) { return fixture.engine.exportView(fixture.session); },
         [](const ForgottenFixture& fixture,
            const StudioResult& result,
            const FixtureSnapshot& before) {
-            expect_failure(result,
-                           "SESSION_FORGOTTEN",
-                           "studio session is forgotten");
+            expect_failure(result, "SESSION_FORGOTTEN", "studio session is forgotten");
             EXPECT_EQ(snapshot_of(fixture), before);
         });
 
     sweep_studio_result(
         [] { return ObservedFixture{}; },
         [](ObservedFixture& fixture) {
-            return fixture.engine.inspect(
-                fixture.session, StudioQuery{other_workspace});
+            return fixture.engine.inspect(fixture.session, StudioQuery{other_workspace});
         },
         [](const ObservedFixture& fixture,
            const StudioResult& result,
            const FixtureSnapshot& before) {
-            expect_failure(result,
-                           "WORKSPACE_MISMATCH",
-                           "workspace identifiers do not match");
-            EXPECT_EQ(snapshot_of(fixture), before);
-        });
-
-    sweep_studio_result(
-        [] { return ObservedFixture{}; },
-        [](ObservedFixture& fixture) {
-            return fixture.engine.inspect(
-                fixture.session,
-                StudioQuery{workspace,
-                            static_cast<StudioQuery::Scope>(999),
-                            semantic_identifier});
-        },
-        [](const ObservedFixture& fixture,
-           const StudioResult& result,
-           const FixtureSnapshot& before) {
-            expect_failure(result,
-                           "INVALID_QUERY",
-                           "studio query is invalid");
+            expect_failure(result, "WORKSPACE_MISMATCH", "workspace identifiers do not match");
             EXPECT_EQ(snapshot_of(fixture), before);
         });
 
@@ -1531,23 +1368,33 @@ TEST(MemoryStudioAllocationFailureTest,
         [](ObservedFixture& fixture) {
             return fixture.engine.inspect(
                 fixture.session,
-                StudioQuery{
-                    workspace,
-                    StudioQuery::Scope::Memory,
-                    "memory-studio-absent-identifier-with-long-content"});
+                StudioQuery{workspace, static_cast<StudioQuery::Scope>(999), semantic_identifier});
         },
         [](const ObservedFixture& fixture,
            const StudioResult& result,
            const FixtureSnapshot& before) {
-            expect_failure(result,
-                           "NOT_FOUND",
-                           "studio query matched no observation");
+            expect_failure(result, "INVALID_QUERY", "studio query is invalid");
             EXPECT_EQ(snapshot_of(fixture), before);
         });
+
+    sweep_studio_result([] { return ObservedFixture{}; },
+                        [](ObservedFixture& fixture) {
+                            return fixture.engine.inspect(
+                                fixture.session,
+                                StudioQuery{workspace,
+                                            StudioQuery::Scope::Memory,
+                                            "memory-studio-absent-identifier-with-long-content"});
+                        },
+                        [](const ObservedFixture& fixture,
+                           const StudioResult& result,
+                           const FixtureSnapshot& before) {
+                            expect_failure(
+                                result, "NOT_FOUND", "studio query matched no observation");
+                            EXPECT_EQ(snapshot_of(fixture), before);
+                        });
 }
 
-TEST(MemoryStudioAllocationFailureTest,
-     InvalidMovedViewFailureConstructionPreservesAllInputs) {
+TEST(MemoryStudioAllocationFailureTest, InvalidMovedViewFailureConstructionPreservesAllInputs) {
     struct InvalidViewFixture final {
         Inputs inputs;
         StudioView invalid_view{inputs.make_view()};
@@ -1572,12 +1419,9 @@ TEST(MemoryStudioAllocationFailureTest,
         const auto before = take_snapshot(fixture);
         memory_studio_allocation_failure_support::fail_after(index);
         try {
-            auto result =
-                fixture.engine.observe(fixture.session, fixture.invalid_view);
+            auto result = fixture.engine.observe(fixture.session, fixture.invalid_view);
             memory_studio_allocation_failure_support::disable();
-            expect_failure(result,
-                           "INVALID_VIEW",
-                           "studio view is invalid");
+            expect_failure(result, "INVALID_VIEW", "studio view is invalid");
             EXPECT_EQ(take_snapshot(fixture), before);
             completed = true;
             break;
@@ -1625,22 +1469,20 @@ TEST(MemoryStudioAllocationFailureTest,
     EXPECT_TRUE(explain_completed);
     EXPECT_GT(explain_failures, 0U);
 
-    sweep_studio_result(
-        [] { return ObservedFixture{}; },
-        [](ObservedFixture& fixture) {
-            return fixture.engine.trace(
-                fixture.session,
-                StudioQuery{workspace,
-                            StudioQuery::Scope::Retrieval,
-                            semantic_identifier});
-        },
-        [](const ObservedFixture& fixture,
-           const StudioResult& result,
-           const FixtureSnapshot& before) {
-            expect_success(result);
-            EXPECT_EQ(result.explanationChains().size(), 1U);
-            EXPECT_EQ(snapshot_of(fixture), before);
-        });
+    sweep_studio_result([] { return ObservedFixture{}; },
+                        [](ObservedFixture& fixture) {
+                            return fixture.engine.trace(fixture.session,
+                                                        StudioQuery{workspace,
+                                                                    StudioQuery::Scope::Retrieval,
+                                                                    semantic_identifier});
+                        },
+                        [](const ObservedFixture& fixture,
+                           const StudioResult& result,
+                           const FixtureSnapshot& before) {
+                            expect_success(result);
+                            EXPECT_EQ(result.explanationChains().size(), 1U);
+                            EXPECT_EQ(snapshot_of(fixture), before);
+                        });
 }
 
 } // namespace

@@ -1,10 +1,9 @@
 #include <cca/memory/long_term_memory.hpp>
 #include <cca/memory/semantic_memory.hpp>
 
-#include <gtest/gtest.h>
-
 #include <cstddef>
 #include <cstdlib>
+#include <gtest/gtest.h>
 #include <limits>
 #include <new>
 #include <string>
@@ -29,7 +28,9 @@ void fail_after(const std::size_t successful_allocations) noexcept {
     allocations_before_failure = successful_allocations;
 }
 
-void disable() noexcept { allocations_before_failure = disabled; }
+void disable() noexcept {
+    allocations_before_failure = disabled;
+}
 
 [[nodiscard]] bool should_fail() noexcept {
     if (allocations_before_failure == disabled) {
@@ -64,8 +65,12 @@ void* operator new[](const std::size_t size) {
     return semantic_memory_allocation_failure_support::allocate(size);
 }
 
-void operator delete(void* allocation) noexcept { std::free(allocation); }
-void operator delete[](void* allocation) noexcept { std::free(allocation); }
+void operator delete(void* allocation) noexcept {
+    std::free(allocation);
+}
+void operator delete[](void* allocation) noexcept {
+    std::free(allocation);
+}
 
 void operator delete(void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
@@ -74,6 +79,25 @@ void operator delete(void* allocation, const std::size_t size) noexcept {
 
 void operator delete[](void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
+    std::free(allocation);
+}
+
+// The nothrow forms must pair with the same malloc/free family as the replaced throwing forms
+// (the standard library allocates temporary buffers with nothrow new); they are deliberately not
+// subject to failure injection, matching the library's default nothrow allocation behaviour.
+void* operator new(const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void* operator new[](const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void operator delete(void* allocation, const std::nothrow_t&) noexcept {
+    std::free(allocation);
+}
+
+void operator delete[](void* allocation, const std::nothrow_t&) noexcept {
     std::free(allocation);
 }
 
@@ -86,16 +110,11 @@ using cca::memory::SemanticConcept;
 using cca::memory::SemanticMemory;
 using cca::memory::SemanticMemoryEngine;
 
-constexpr std::string_view source_a{
-    "source-a-with-a-long-identifier-for-allocation-testing"};
-constexpr std::string_view source_b{
-    "source-b-with-a-long-identifier-for-allocation-testing"};
-constexpr std::string_view concept_a{
-    "concept-a-with-a-long-identifier-for-allocation-testing"};
-constexpr std::string_view concept_b{
-    "concept-b-with-a-long-identifier-for-allocation-testing"};
-constexpr std::string_view concept_c{
-    "concept-c-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view source_a{"source-a-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view source_b{"source-b-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view concept_a{"concept-a-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view concept_b{"concept-b-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view concept_c{"concept-c-with-a-long-identifier-for-allocation-testing"};
 constexpr std::string_view forgotten_concept{
     "forgotten-concept-with-a-long-identifier-for-allocation-testing"};
 constexpr std::string_view candidate_concept{
@@ -150,8 +169,7 @@ struct Fixture final {
     SemanticMemory target{"semantic-allocation-test-workspace"};
     LongTermMemory evidence{"semantic-allocation-test-workspace"};
     std::vector<std::string_view> concept_probes{
-        concept_a, concept_b, concept_c, forgotten_concept,
-        candidate_concept, absent_concept};
+        concept_a, concept_b, concept_c, forgotten_concept, candidate_concept, absent_concept};
     std::vector<std::string_view> source_probes{source_a, source_b};
 };
 
@@ -183,16 +201,13 @@ void retain(LongTermMemoryEngine& engine,
             LongTermMemory& memory,
             std::string identifier,
             std::string value) {
-    const auto result = engine.retain(
-        memory,
-        LongTermMemoryEntry{std::move(identifier), std::move(value)});
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    const auto result =
+        engine.retain(memory, LongTermMemoryEntry{std::move(identifier), std::move(value)});
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
-[[nodiscard]] const LongTermMemoryEntry& require_entry(
-    const LongTermMemory& memory,
-    const std::string_view identifier) {
+[[nodiscard]] const LongTermMemoryEntry& require_entry(const LongTermMemory& memory,
+                                                       const std::string_view identifier) {
     const auto* const entry = memory.find(identifier);
     if (entry == nullptr) {
         throw std::logic_error{"allocation fixture source is absent"};
@@ -200,19 +215,16 @@ void retain(LongTermMemoryEngine& engine,
     return *entry;
 }
 
-[[nodiscard]] SemanticConcept proposal(
-    std::string identifier,
-    std::string meaning,
-    const LongTermMemory& evidence,
-    const std::vector<std::string_view>& source_identifiers) {
+[[nodiscard]] SemanticConcept proposal(std::string identifier,
+                                       std::string meaning,
+                                       const LongTermMemory& evidence,
+                                       const std::vector<std::string_view>& source_identifiers) {
     std::vector<LongTermMemoryEntry> sources;
     sources.reserve(source_identifiers.size());
     for (const auto source_identifier : source_identifiers) {
         sources.push_back(require_entry(evidence, source_identifier));
     }
-    return SemanticConcept{std::move(identifier),
-                           std::move(meaning),
-                           std::move(sources)};
+    return SemanticConcept{std::move(identifier), std::move(meaning), std::move(sources)};
 }
 
 void classify(SemanticMemoryEngine& engine,
@@ -222,28 +234,20 @@ void classify(SemanticMemoryEngine& engine,
               std::string meaning,
               const std::vector<std::string_view>& sources) {
     const auto result = engine.classify(
-        memory,
-        evidence,
-        proposal(std::move(identifier),
-                 std::move(meaning),
-                 evidence,
-                 sources));
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+        memory, evidence, proposal(std::move(identifier), std::move(meaning), evidence, sources));
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
-[[nodiscard]] std::string semantic_disposition(
-    const SemanticMemory& memory,
-    const std::string_view identifier) {
+[[nodiscard]] std::string semantic_disposition(const SemanticMemory& memory,
+                                               const std::string_view identifier) {
     if (memory.find(identifier) != nullptr) {
         return "ACCESSIBLE";
     }
     LongTermMemory probe_evidence{memory.workspaceIdentifier()};
     const auto retained = LongTermMemoryEngine{}.retain(
         probe_evidence,
-        LongTermMemoryEntry{
-            "private-semantic-allocation-history-probe-source",
-            "private-semantic-allocation-history-probe-value"});
+        LongTermMemoryEntry{"private-semantic-allocation-history-probe-source",
+                            "private-semantic-allocation-history-probe-value"});
     if (!retained.succeeded()) {
         return "PROBE-SOURCE-FAILURE:" + retained.code();
     }
@@ -264,17 +268,15 @@ void classify(SemanticMemoryEngine& engine,
     return "UNEXPECTED:" + classified.code();
 }
 
-[[nodiscard]] std::string long_term_disposition(
-    const LongTermMemory& memory,
-    const std::string_view identifier) {
+[[nodiscard]] std::string long_term_disposition(const LongTermMemory& memory,
+                                                const std::string_view identifier) {
     if (const auto* entry = memory.find(identifier); entry != nullptr) {
         return entry->archived() ? "ARCHIVED" : "LONG_TERM";
     }
     LongTermMemory probe{memory};
     const auto result = LongTermMemoryEngine{}.retain(
         probe,
-        LongTermMemoryEntry{std::string{identifier},
-                            "private-long-term-history-probe-value"});
+        LongTermMemoryEntry{std::string{identifier}, "private-long-term-history-probe-value"});
     if (result.code() == "FORGOTTEN_IDENTIFIER") {
         return "FORGOTTEN";
     }
@@ -284,9 +286,8 @@ void classify(SemanticMemoryEngine& engine,
     return "UNEXPECTED:" + result.code();
 }
 
-[[nodiscard]] SemanticStateSnapshot snapshot_of(
-    const SemanticMemory& memory,
-    const std::vector<std::string_view>& probes) {
+[[nodiscard]] SemanticStateSnapshot snapshot_of(const SemanticMemory& memory,
+                                                const std::vector<std::string_view>& probes) {
     std::vector<ConceptSnapshot> concepts;
     concepts.reserve(memory.concepts().size());
     for (const auto& semantic_concept : memory.concepts()) {
@@ -295,17 +296,13 @@ void classify(SemanticMemoryEngine& engine,
     std::vector<IdentifierSnapshot> identifiers;
     identifiers.reserve(probes.size());
     for (const auto probe : probes) {
-        identifiers.push_back(
-            {std::string{probe}, semantic_disposition(memory, probe)});
+        identifiers.push_back({std::string{probe}, semantic_disposition(memory, probe)});
     }
-    return {memory.workspaceIdentifier(),
-            std::move(concepts),
-            std::move(identifiers)};
+    return {memory.workspaceIdentifier(), std::move(concepts), std::move(identifiers)};
 }
 
-[[nodiscard]] LongTermStateSnapshot snapshot_of(
-    const LongTermMemory& memory,
-    const std::vector<std::string_view>& probes) {
+[[nodiscard]] LongTermStateSnapshot snapshot_of(const LongTermMemory& memory,
+                                                const std::vector<std::string_view>& probes) {
     std::vector<EntrySnapshot> entries;
     entries.reserve(memory.entries().size());
     for (const auto& entry : memory.entries()) {
@@ -314,12 +311,9 @@ void classify(SemanticMemoryEngine& engine,
     std::vector<IdentifierSnapshot> identifiers;
     identifiers.reserve(probes.size());
     for (const auto probe : probes) {
-        identifiers.push_back(
-            {std::string{probe}, long_term_disposition(memory, probe)});
+        identifiers.push_back({std::string{probe}, long_term_disposition(memory, probe)});
     }
-    return {memory.workspaceIdentifier(),
-            std::move(entries),
-            std::move(identifiers)};
+    return {memory.workspaceIdentifier(), std::move(entries), std::move(identifiers)};
 }
 
 [[nodiscard]] FixtureSnapshot snapshot_of(const Fixture& fixture) {
@@ -360,30 +354,19 @@ void seed(Fixture& fixture) {
              std::string{forgotten_concept},
              "forgotten-meaning-with-enough-content-to-require-allocation",
              {source_a});
-    ASSERT_TRUE(fixture.semantic_engine
-                    .categorize(
-                        fixture.target,
-                        concept_a,
-                        "first-category-with-enough-content-to-allocate")
-                    .succeeded());
-    ASSERT_TRUE(fixture.semantic_engine
-                    .categorize(
-                        fixture.target,
-                        concept_a,
-                        "second-category-with-enough-content-to-allocate")
-                    .succeeded());
     ASSERT_TRUE(
-        fixture.semantic_engine.link(fixture.target, concept_a, concept_b)
-            .succeeded());
-    ASSERT_TRUE(
-        fixture.semantic_engine.link(fixture.target, concept_a, concept_c)
-            .succeeded());
-    ASSERT_TRUE(
-        fixture.semantic_engine.link(fixture.target, concept_b, concept_c)
+        fixture.semantic_engine
+            .categorize(fixture.target, concept_a, "first-category-with-enough-content-to-allocate")
             .succeeded());
     ASSERT_TRUE(fixture.semantic_engine
-                    .forget(fixture.target, forgotten_concept)
+                    .categorize(fixture.target,
+                                concept_a,
+                                "second-category-with-enough-content-to-allocate")
                     .succeeded());
+    ASSERT_TRUE(fixture.semantic_engine.link(fixture.target, concept_a, concept_b).succeeded());
+    ASSERT_TRUE(fixture.semantic_engine.link(fixture.target, concept_a, concept_c).succeeded());
+    ASSERT_TRUE(fixture.semantic_engine.link(fixture.target, concept_b, concept_c).succeeded());
+    ASSERT_TRUE(fixture.semantic_engine.forget(fixture.target, forgotten_concept).succeeded());
 }
 
 constexpr std::size_t allocation_campaign_limit = 1024U;
@@ -393,9 +376,7 @@ void verify_strong_guarantee(Arrange arrange, Operation operation) {
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         auto fixture = arrange();
         const auto before = snapshot_of(fixture);
 
@@ -403,8 +384,7 @@ void verify_strong_guarantee(Arrange arrange, Operation operation) {
         try {
             const auto result = operation(fixture);
             semantic_memory_allocation_failure_support::disable();
-            EXPECT_TRUE(result.succeeded()) << result.code() << ": "
-                                            << result.message();
+            EXPECT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
             completed = true;
             break;
         } catch (const std::bad_alloc&) {
@@ -428,64 +408,54 @@ void verify_strong_guarantee(Arrange arrange, Operation operation) {
     return fixture;
 }
 
-TEST(SemanticMemoryAllocationFailureTest,
-     ClassifyAppendPreservesAllStateAtEveryFailure) {
+TEST(SemanticMemoryAllocationFailureTest, ClassifyAppendPreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
             return fixture.semantic_engine.classify(
                 fixture.target,
                 fixture.evidence,
-                proposal(
-                    std::string{candidate_concept},
-                    "candidate-meaning-with-enough-content-to-require-allocation",
-                    fixture.evidence,
-                    {source_b, source_a}));
+                proposal(std::string{candidate_concept},
+                         "candidate-meaning-with-enough-content-to-require-allocation",
+                         fixture.evidence,
+                         {source_b, source_a}));
         });
 }
 
-TEST(SemanticMemoryAllocationFailureTest,
-     ClassifyIdempotencePreservesAllStateAtEveryFailure) {
+TEST(SemanticMemoryAllocationFailureTest, ClassifyIdempotencePreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
             return fixture.semantic_engine.classify(
                 fixture.target,
                 fixture.evidence,
-                proposal(
-                    std::string{concept_a},
-                    "concept-a-meaning-with-enough-content-to-require-allocation",
-                    fixture.evidence,
-                    {source_a, source_b}));
+                proposal(std::string{concept_a},
+                         "concept-a-meaning-with-enough-content-to-require-allocation",
+                         fixture.evidence,
+                         {source_a, source_b}));
         });
 }
 
-TEST(SemanticMemoryAllocationFailureTest,
-     CategorizeAppendPreservesAllStateAtEveryFailure) {
+TEST(SemanticMemoryAllocationFailureTest, CategorizeAppendPreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.semantic_engine.categorize(
+                                    fixture.target,
+                                    concept_b,
+                                    "new-category-with-enough-content-to-require-allocation");
+                            });
+}
+
+TEST(SemanticMemoryAllocationFailureTest, CategorizeIdempotencePreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
             return fixture.semantic_engine.categorize(
-                fixture.target,
-                concept_b,
-                "new-category-with-enough-content-to-require-allocation");
+                fixture.target, concept_a, "first-category-with-enough-content-to-allocate");
         });
 }
 
-TEST(SemanticMemoryAllocationFailureTest,
-     CategorizeIdempotencePreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.semantic_engine.categorize(
-                fixture.target,
-                concept_a,
-                "first-category-with-enough-content-to-allocate");
-        });
-}
-
-TEST(SemanticMemoryAllocationFailureTest,
-     LinkAppendPreservesAllStateAtEveryFailure) {
+TEST(SemanticMemoryAllocationFailureTest, LinkAppendPreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] {
             Fixture fixture;
@@ -508,23 +478,19 @@ TEST(SemanticMemoryAllocationFailureTest,
             return fixture;
         },
         [](Fixture& fixture) {
-            return fixture.semantic_engine.link(
-                fixture.target, concept_a, concept_b);
+            return fixture.semantic_engine.link(fixture.target, concept_a, concept_b);
         });
 }
 
-TEST(SemanticMemoryAllocationFailureTest,
-     LinkIdempotencePreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.semantic_engine.link(
-                fixture.target, concept_a, concept_b);
-        });
+TEST(SemanticMemoryAllocationFailureTest, LinkIdempotencePreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.semantic_engine.link(
+                                    fixture.target, concept_a, concept_b);
+                            });
 }
 
-TEST(SemanticMemoryAllocationFailureTest,
-     UpdateReplacementPreservesAllStateAtEveryFailure) {
+TEST(SemanticMemoryAllocationFailureTest, UpdateReplacementPreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
@@ -535,46 +501,37 @@ TEST(SemanticMemoryAllocationFailureTest,
         });
 }
 
-TEST(SemanticMemoryAllocationFailureTest,
-     UpdateIdempotencePreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.semantic_engine.update(
-                fixture.target,
-                concept_a,
-                "concept-a-meaning-with-enough-content-to-require-allocation");
-        });
+TEST(SemanticMemoryAllocationFailureTest, UpdateIdempotencePreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.semantic_engine.update(
+                                    fixture.target,
+                                    concept_a,
+                                    "concept-a-meaning-with-enough-content-to-require-allocation");
+                            });
 }
 
 TEST(SemanticMemoryAllocationFailureTest,
      ForgetPresentWithMultiSurvivorLinksPreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.semantic_engine.forget(
-                fixture.target, concept_b);
-        });
+        [](Fixture& fixture) { return fixture.semantic_engine.forget(fixture.target, concept_b); });
 }
 
-TEST(SemanticMemoryAllocationFailureTest,
-     ForgetAbsentPreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.semantic_engine.forget(
-                fixture.target, absent_concept);
-        });
+TEST(SemanticMemoryAllocationFailureTest, ForgetAbsentPreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.semantic_engine.forget(fixture.target,
+                                                                      absent_concept);
+                            });
 }
 
-TEST(SemanticMemoryAllocationFailureTest,
-     ForgetRepeatedPreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.semantic_engine.forget(
-                fixture.target, forgotten_concept);
-        });
+TEST(SemanticMemoryAllocationFailureTest, ForgetRepeatedPreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.semantic_engine.forget(fixture.target,
+                                                                      forgotten_concept);
+                            });
 }
 
 } // namespace

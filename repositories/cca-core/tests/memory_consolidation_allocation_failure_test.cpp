@@ -1,10 +1,9 @@
 #include <cca/memory/memory_consolidation.hpp>
 
-#include <gtest/gtest.h>
-
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <gtest/gtest.h>
 #include <limits>
 #include <new>
 #include <optional>
@@ -30,7 +29,9 @@ void fail_after(const std::size_t successful_allocations) noexcept {
     allocations_before_failure = successful_allocations;
 }
 
-void disable() noexcept { allocations_before_failure = disabled; }
+void disable() noexcept {
+    allocations_before_failure = disabled;
+}
 
 [[nodiscard]] bool should_fail() noexcept {
     if (allocations_before_failure == disabled) {
@@ -65,8 +66,12 @@ void* operator new[](const std::size_t size) {
     return memory_consolidation_allocation_failure_support::allocate(size);
 }
 
-void operator delete(void* allocation) noexcept { std::free(allocation); }
-void operator delete[](void* allocation) noexcept { std::free(allocation); }
+void operator delete(void* allocation) noexcept {
+    std::free(allocation);
+}
+void operator delete[](void* allocation) noexcept {
+    std::free(allocation);
+}
 
 void operator delete(void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
@@ -75,6 +80,25 @@ void operator delete(void* allocation, const std::size_t size) noexcept {
 
 void operator delete[](void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
+    std::free(allocation);
+}
+
+// The nothrow forms must pair with the same malloc/free family as the replaced throwing forms
+// (the standard library allocates temporary buffers with nothrow new); they are deliberately not
+// subject to failure injection, matching the library's default nothrow allocation behaviour.
+void* operator new(const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void* operator new[](const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void operator delete(void* allocation, const std::nothrow_t&) noexcept {
+    std::free(allocation);
+}
+
+void operator delete[](void* allocation, const std::nothrow_t&) noexcept {
     std::free(allocation);
 }
 
@@ -94,10 +118,8 @@ using cca::memory::WorkingMemoryEntry;
 
 using State = ConsolidationSession::State;
 
-constexpr std::string_view workspace{
-    "consolidation-allocation-workspace-with-long-identifier"};
-constexpr std::string_view task{
-    "consolidation-allocation-active-task-with-long-identifier"};
+constexpr std::string_view workspace{"consolidation-allocation-workspace-with-long-identifier"};
+constexpr std::string_view task{"consolidation-allocation-active-task-with-long-identifier"};
 constexpr std::string_view source_identifier{
     "consolidation-allocation-working-source-with-long-identifier"};
 constexpr std::string_view forgotten_identifier{
@@ -197,13 +219,11 @@ struct FixtureSnapshot final {
     bool operator==(const FixtureSnapshot&) const = default;
 };
 
-[[nodiscard]] WorkingEntrySnapshot snapshot_of(
-    const WorkingMemoryEntry& entry) {
+[[nodiscard]] WorkingEntrySnapshot snapshot_of(const WorkingMemoryEntry& entry) {
     return {entry.identifier(), entry.value(), entry.expirationPoint()};
 }
 
-[[nodiscard]] LongTermEntrySnapshot snapshot_of(
-    const LongTermMemoryEntry& entry) {
+[[nodiscard]] LongTermEntrySnapshot snapshot_of(const LongTermMemoryEntry& entry) {
     return {entry.identifier(), entry.value(), entry.archived()};
 }
 
@@ -219,9 +239,8 @@ struct FixtureSnapshot final {
             std::move(entries)};
 }
 
-[[nodiscard]] std::string disposition_of(
-    const LongTermMemory& memory,
-    const std::string_view identifier) {
+[[nodiscard]] std::string disposition_of(const LongTermMemory& memory,
+                                         const std::string_view identifier) {
     if (const auto* const entry = memory.find(identifier); entry != nullptr) {
         return entry->archived() ? "ARCHIVED" : "LONG_TERM";
     }
@@ -229,9 +248,8 @@ struct FixtureSnapshot final {
     LongTermMemory probe{memory};
     const auto result = LongTermMemoryEngine{}.retain(
         probe,
-        LongTermMemoryEntry{
-            std::string{identifier},
-            "allocation-probe-value-with-enough-content-to-allocate"});
+        LongTermMemoryEntry{std::string{identifier},
+                            "allocation-probe-value-with-enough-content-to-allocate"});
     if (result.code() == "FORGOTTEN_IDENTIFIER") {
         return "FORGOTTEN";
     }
@@ -253,24 +271,18 @@ struct FixtureSnapshot final {
             disposition_of(memory, forgotten_identifier)};
 }
 
-[[nodiscard]] RequestSnapshot snapshot_of(
-    const ConsolidationRequest& request) {
-    return {request.workspaceIdentifier(),
-            request.taskIdentifier(),
-            request.entryIdentifier()};
+[[nodiscard]] RequestSnapshot snapshot_of(const ConsolidationRequest& request) {
+    return {request.workspaceIdentifier(), request.taskIdentifier(), request.entryIdentifier()};
 }
 
-[[nodiscard]] CandidateSnapshot snapshot_of(
-    const ConsolidationCandidate& candidate) {
+[[nodiscard]] CandidateSnapshot snapshot_of(const ConsolidationCandidate& candidate) {
     std::optional<WorkingEntrySnapshot> working_entry;
-    if (const auto* const entry = candidate.workingMemoryEntry();
-        entry != nullptr) {
+    if (const auto* const entry = candidate.workingMemoryEntry(); entry != nullptr) {
         working_entry = snapshot_of(*entry);
     }
 
     std::optional<LongTermEntrySnapshot> long_term_entry;
-    if (const auto* const entry = candidate.longTermMemoryEntry();
-        entry != nullptr) {
+    if (const auto* const entry = candidate.longTermMemoryEntry(); entry != nullptr) {
         long_term_entry = snapshot_of(*entry);
     }
 
@@ -282,8 +294,7 @@ struct FixtureSnapshot final {
             candidate.retainedPosition()};
 }
 
-[[nodiscard]] SessionSnapshot snapshot_of(
-    const ConsolidationSession& session) {
+[[nodiscard]] SessionSnapshot snapshot_of(const ConsolidationSession& session) {
     std::optional<RequestSnapshot> request;
     if (const auto* const value = session.request(); value != nullptr) {
         request = snapshot_of(*value);
@@ -312,8 +323,7 @@ struct FixtureSnapshot final {
             std::move(long_term)};
 }
 
-[[nodiscard]] ResultSnapshot snapshot_of(
-    const ConsolidationResult& result) {
+[[nodiscard]] ResultSnapshot snapshot_of(const ConsolidationResult& result) {
     std::optional<CandidateSnapshot> candidate;
     if (const auto* const value = result.candidate(); value != nullptr) {
         candidate = snapshot_of(*value);
@@ -343,17 +353,14 @@ struct FixtureSnapshot final {
             std::move(long_term)};
 }
 
-void require_success(const bool succeeded,
-                     const std::string& code,
-                     const std::string& message) {
+void require_success(const bool succeeded, const std::string& code, const std::string& message) {
     if (!succeeded) {
         throw std::runtime_error{code + ": " + message};
     }
 }
 
 void activate(WorkingMemory& memory) {
-    const auto result = WorkingMemoryEngine{}.activate(
-        memory, std::string{task});
+    const auto result = WorkingMemoryEngine{}.activate(memory, std::string{task});
     require_success(result.succeeded(), result.code(), result.message());
 }
 
@@ -362,18 +369,13 @@ void store(WorkingMemory& memory,
            std::string value,
            const std::optional<std::uint64_t> expiration) {
     const auto result = WorkingMemoryEngine{}.store(
-        memory,
-        WorkingMemoryEntry{
-            std::move(identifier), std::move(value), expiration});
+        memory, WorkingMemoryEntry{std::move(identifier), std::move(value), expiration});
     require_success(result.succeeded(), result.code(), result.message());
 }
 
-void retain(LongTermMemory& memory,
-            std::string identifier,
-            std::string value) {
+void retain(LongTermMemory& memory, std::string identifier, std::string value) {
     const auto result = LongTermMemoryEngine{}.retain(
-        memory,
-        LongTermMemoryEntry{std::move(identifier), std::move(value)});
+        memory, LongTermMemoryEntry{std::move(identifier), std::move(value)});
     require_success(result.succeeded(), result.code(), result.message());
 }
 
@@ -381,9 +383,8 @@ struct Fixture final {
     WorkingMemory working{std::string{workspace}};
     LongTermMemory long_term{std::string{workspace}};
     ConsolidationSession session{std::string{workspace}};
-    ConsolidationRequest request{std::string{workspace},
-                                 std::string{task},
-                                 std::string{source_identifier}};
+    ConsolidationRequest request{
+        std::string{workspace}, std::string{task}, std::string{source_identifier}};
     MemoryConsolidationEngine engine;
 
     Fixture() {
@@ -411,23 +412,16 @@ struct Fixture final {
                std::string{forgotten_identifier},
                "consolidation-allocation-forgotten-value-with-long-content");
         const auto archived = LongTermMemoryEngine{}.archive(
-            long_term,
-            "consolidation-allocation-long-a-with-long-identifier");
-        require_success(
-            archived.succeeded(), archived.code(), archived.message());
-        const auto forgotten = LongTermMemoryEngine{}.forget(
-            long_term, forgotten_identifier);
-        require_success(
-            forgotten.succeeded(), forgotten.code(), forgotten.message());
+            long_term, "consolidation-allocation-long-a-with-long-identifier");
+        require_success(archived.succeeded(), archived.code(), archived.message());
+        const auto forgotten = LongTermMemoryEngine{}.forget(long_term, forgotten_identifier);
+        require_success(forgotten.succeeded(), forgotten.code(), forgotten.message());
     }
 };
 
 void analyze(Fixture& fixture) {
     const auto result = fixture.engine.analyze(
-        fixture.session,
-        fixture.request,
-        fixture.working,
-        fixture.long_term);
+        fixture.session, fixture.request, fixture.working, fixture.long_term);
     require_success(result.succeeded(), result.code(), result.message());
 }
 
@@ -439,8 +433,7 @@ void promote(Fixture& fixture) {
 
 void retain_transition(Fixture& fixture) {
     promote(fixture);
-    const auto result = fixture.engine.retain(
-        fixture.session, fixture.working, fixture.long_term);
+    const auto result = fixture.engine.retain(fixture.session, fixture.working, fixture.long_term);
     require_success(result.succeeded(), result.code(), result.message());
 }
 
@@ -475,29 +468,22 @@ void retain_transition(Fixture& fixture) {
     };
 
     if (session.state() == State::Pristine) {
-        const auto result = engine.analyze(
-            session, fixture.request, fixture.working, fixture.long_term);
+        const auto result =
+            engine.analyze(session, fixture.request, fixture.working, fixture.long_term);
         if (!observe(result)) {
-            return {std::move(codes),
-                    snapshot_of(session),
-                    std::move(final_result)};
+            return {std::move(codes), snapshot_of(session), std::move(final_result)};
         }
     }
     if (session.state() == State::Analyzed) {
         const auto result = engine.promote(session);
         if (!observe(result)) {
-            return {std::move(codes),
-                    snapshot_of(session),
-                    std::move(final_result)};
+            return {std::move(codes), snapshot_of(session), std::move(final_result)};
         }
     }
     if (session.state() == State::Promoted) {
-        const auto result =
-            engine.retain(session, fixture.working, fixture.long_term);
+        const auto result = engine.retain(session, fixture.working, fixture.long_term);
         if (!observe(result)) {
-            return {std::move(codes),
-                    snapshot_of(session),
-                    std::move(final_result)};
+            return {std::move(codes), snapshot_of(session), std::move(final_result)};
         }
     }
     if (session.state() == State::Retained) {
@@ -513,9 +499,7 @@ void retain_transition(Fixture& fixture) {
         static_cast<void>(observe(result));
     }
 
-    return {std::move(codes),
-            snapshot_of(session),
-            std::move(final_result)};
+    return {std::move(codes), snapshot_of(session), std::move(final_result)};
 }
 
 [[nodiscard]] FixtureSnapshot snapshot_of(const Fixture& fixture) {
@@ -535,9 +519,7 @@ void verify_strong_guarantee(Arrange arrange,
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         auto fixture = arrange();
         const auto before = snapshot_of(fixture);
 
@@ -546,8 +528,7 @@ void verify_strong_guarantee(Arrange arrange,
             const auto result = operation(fixture);
             memory_consolidation_allocation_failure_support::disable();
 
-            EXPECT_TRUE(result.succeeded())
-                << result.code() << ": " << result.message();
+            EXPECT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
             EXPECT_EQ(result.code(), "OK");
             EXPECT_TRUE(result.message().empty());
             EXPECT_EQ(snapshot_of(fixture.working), before.working);
@@ -574,69 +555,54 @@ void verify_strong_guarantee(Arrange arrange,
     EXPECT_GT(observed_failures, 0U);
 }
 
-TEST(MemoryConsolidationAllocationFailureTest,
-     AnalyzePreservesCompleteStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return Fixture{}; },
-        [](Fixture& fixture) {
-            return fixture.engine.analyze(
-                fixture.session,
-                fixture.request,
-                fixture.working,
-                fixture.long_term);
-        },
-        true);
+TEST(MemoryConsolidationAllocationFailureTest, AnalyzePreservesCompleteStateAtEveryFailure) {
+    verify_strong_guarantee([] { return Fixture{}; },
+                            [](Fixture& fixture) {
+                                return fixture.engine.analyze(fixture.session,
+                                                              fixture.request,
+                                                              fixture.working,
+                                                              fixture.long_term);
+                            },
+                            true);
 }
 
-TEST(MemoryConsolidationAllocationFailureTest,
-     PromotePreservesCompleteStateAtEveryFailure) {
+TEST(MemoryConsolidationAllocationFailureTest, PromotePreservesCompleteStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return analyzed_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.engine.promote(fixture.session);
-        },
+        [](Fixture& fixture) { return fixture.engine.promote(fixture.session); },
         true);
 }
 
-TEST(MemoryConsolidationAllocationFailureTest,
-     RetainPreservesCompleteStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return promoted_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.engine.retain(
-                fixture.session, fixture.working, fixture.long_term);
-        },
-        true);
+TEST(MemoryConsolidationAllocationFailureTest, RetainPreservesCompleteStateAtEveryFailure) {
+    verify_strong_guarantee([] { return promoted_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.engine.retain(
+                                    fixture.session, fixture.working, fixture.long_term);
+                            },
+                            true);
 }
 
-TEST(MemoryConsolidationAllocationFailureTest,
-     ValidatePreservesCompleteStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return promoted_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.engine.validate(
-                fixture.session, fixture.working, fixture.long_term);
-        },
-        false);
+TEST(MemoryConsolidationAllocationFailureTest, ValidatePreservesCompleteStateAtEveryFailure) {
+    verify_strong_guarantee([] { return promoted_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.engine.validate(
+                                    fixture.session, fixture.working, fixture.long_term);
+                            },
+                            false);
 }
 
 TEST(MemoryConsolidationAllocationFailureTest,
      RetrieveSessionPreservesCompleteStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return retained_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.engine.retrieveSession(fixture.session);
-        },
+        [](Fixture& fixture) { return fixture.engine.retrieveSession(fixture.session); },
         false);
 }
 
-TEST(MemoryConsolidationAllocationFailureTest,
-     ForgetSessionPreservesCompleteStateAtEveryFailure) {
+TEST(MemoryConsolidationAllocationFailureTest, ForgetSessionPreservesCompleteStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return retained_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.engine.forgetSession(fixture.session);
-        },
+        [](Fixture& fixture) { return fixture.engine.forgetSession(fixture.session); },
         true);
 }
 
