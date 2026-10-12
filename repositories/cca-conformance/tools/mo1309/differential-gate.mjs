@@ -1,5 +1,5 @@
 // MO-1309 differential no-regression gate in the style of MO-1308 Amendment A3.2 (Freeze section 32 of the MO-1308 Freeze), as far as the cloud allows.
-//   node tools/mo1309/differential-gate.mjs --out <dir> [--base <commit>] [--candidate <rev>] [--jobs <n>]
+//   node tools/mo1309/differential-gate.mjs --out <dir> [--base <commit>] [--candidate <rev>] [--jobs <n>] [--base-tree <dir> --candidate-tree <dir>] [--scratch <dir>]
 // A3.2 runs CTest (default preset) at BASELINE and CANDIDATE. CTest needs the MSVC/vcpkg toolchain and `cca_core_tests` (Windows host; see the
 // Phase 3 handoff), so the cloud gate runs the Node-driven suites that CTest launches, at the same granularity (one unit per test file), in two
 // detached git worktrees with an identical toolchain and environment, and applies the A3.2 verdict rules:
@@ -8,7 +8,7 @@
 //   3. every unit or test present on CANDIDATE but not on BASELINE passes;
 //   4. every unit that fails on both is listed PRE_EXISTING with a classification.
 // Anything else is FAILED_PRESERVED. Each side's raw log is kept and digested. The gate writes only under --out.
-import { execFileSync, spawn } from "node:child_process";
+import { execFileSync, spawn, spawnSync } from "node:child_process";
 import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
@@ -20,14 +20,17 @@ const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", ".
 const sha = (bytes) => `sha256:${crypto.createHash("sha256").update(bytes).digest("hex")}`;
 const git = (args, cwd = REPO) => execFileSync("git", args, { cwd, encoding: "utf8", maxBuffer: 1 << 28 }).trim();
 
+// The reporter is explicit: Node 24 prints the spec reporter off a terminal, and the comparison below reads TAP.
+const TAP_ARGS = ["--test", "--test-reporter=tap"];
+
 // Units: every Node test file CTest launches (conformance, CLI) plus the studio suite as `npm test` runs it. Discovered per worktree.
 export function discoverUnits(root) {
   const units = [];
   const list = (relative, pattern) => { const dir = path.join(root, relative); return fs.existsSync(dir) ? fs.readdirSync(dir).filter((n) => pattern.test(n)).sort().map((n) => `${relative}/${n}`) : []; };
-  for (const file of list("repositories/cca-conformance/tests", /_test\.mjs$/u)) units.push({ id: `conformance:${path.basename(file)}`, cwd: "repositories/cca-conformance", args: ["--test", `tests/${path.basename(file)}`] });
-  for (const file of list("repositories/memoryos-cli/tests", /\.test\.mjs$/u)) units.push({ id: `cli:${path.basename(file)}`, cwd: "repositories/memoryos-cli", args: ["--test", `tests/${path.basename(file)}`] });
+  for (const file of list("repositories/cca-conformance/tests", /_test\.mjs$/u)) units.push({ id: `conformance:${path.basename(file)}`, cwd: "repositories/cca-conformance", args: [...TAP_ARGS, `tests/${path.basename(file)}`] });
+  for (const file of list("repositories/memoryos-cli/tests", /\.test\.mjs$/u)) units.push({ id: `cli:${path.basename(file)}`, cwd: "repositories/memoryos-cli", args: [...TAP_ARGS, `tests/${path.basename(file)}`] });
   const studio = JSON.parse(fs.readFileSync(path.join(root, "repositories/cca-studio/package.json"), "utf8")).scripts.test.replace(/^node --test /u, "").split(/\s+/u);
-  for (const file of studio) units.push({ id: `studio:${path.basename(file)}`, cwd: "repositories/cca-studio", args: ["--test", file] });
+  for (const file of studio) units.push({ id: `studio:${path.basename(file)}`, cwd: "repositories/cca-studio", args: [...TAP_ARGS, file] });
   return units;
 }
 
@@ -98,16 +101,26 @@ export function verdictOf({ base, candidate, workspace }) {
   return { verdict: !ok ? "FAILED_PRESERVED" : qualified ? "PASS_QUALIFIED_CLOUD_SUBSET" : "PASS", rules };
 }
 
-export async function runGate({ out, base = BASELINE_BF, candidate = "HEAD", jobs = 2 }) {
+// The workspace verifier (A3.2 rule 1): `python` on Windows, `python3` elsewhere; a missing interpreter is exit -1, never a pass.
+export function workspaceVerifyExit(root, platform = process.platform) {
+  const result = spawnSync(platform === "win32" ? "python" : "python3", ["tools/verify_workspace.py"], { cwd: root, stdio: "ignore" });
+  return result.status ?? -1;
+}
+
+// `baseTree` and `candidateTree` are optional prepared checkouts (dependencies installed from the lockfiles, as the A3.2 setup does). They must be at the
+// resolved commits and are never removed. Without them, detached worktrees under `scratchRoot` (default the temp directory) are created and removed.
+export async function runGate({ out, base = BASELINE_BF, candidate = "HEAD", jobs = 2, baseTree = null, candidateTree = null, scratchRoot = os.tmpdir() }) {
   const baseCommit = git(["rev-parse", "--verify", `${base}^{commit}`]); const candidateCommit = git(["rev-parse", "--verify", `${candidate}^{commit}`]);
   fs.mkdirSync(path.join(out, "logs"), { recursive: true });
-  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), "mo1309-gate-"));
-  const trees = { base: path.join(scratch, "base"), candidate: path.join(scratch, "candidate") };
+  const prepared = baseTree !== null || candidateTree !== null;
+  if (prepared && (baseTree === null || candidateTree === null)) throw new Error("baseTree and candidateTree are given together");
+  const scratch = prepared ? null : fs.mkdtempSync(path.join(scratchRoot, "mo1309-gate-"));
+  const trees = prepared ? { base: path.resolve(baseTree), candidate: path.resolve(candidateTree) } : { base: path.join(scratch, "base"), candidate: path.join(scratch, "candidate") };
   try {
-    git(["worktree", "add", "--detach", trees.base, baseCommit]); git(["worktree", "add", "--detach", trees.candidate, candidateCommit]);
+    if (prepared) { for (const [side, commit] of [["base", baseCommit], ["candidate", candidateCommit]]) if (git(["rev-parse", "HEAD"], trees[side]) !== commit) throw new Error(`the ${side} tree is not at ${commit}`); }
+    else { git(["worktree", "add", "--detach", trees.base, baseCommit]); git(["worktree", "add", "--detach", trees.candidate, candidateCommit]); }
     const unitsBase = discoverUnits(trees.base); const unitsCandidate = discoverUnits(trees.candidate);
-    const python = (root) => { const r = execFileSync("sh", ["-c", `cd ${JSON.stringify(root)} && (python3 tools/verify_workspace.py >/dev/null 2>&1; echo $?)`], { encoding: "utf8" }).trim(); return Number(r); };
-    const workspace = { baseExit: python(trees.base), candidateExit: python(trees.candidate) };
+    const workspace = { baseExit: workspaceVerifyExit(trees.base), candidateExit: workspaceVerifyExit(trees.candidate) };
     const base = await runSide(trees.base, unitsBase, path.join(out, "logs"), "base", jobs);
     const candidateResults = await runSide(trees.candidate, unitsCandidate, path.join(out, "logs"), "candidate", jobs);
     for (const [id, r] of candidateResults) r.__logPath = path.join(out, r.log);
@@ -117,26 +130,29 @@ export async function runGate({ out, base = BASELINE_BF, candidate = "HEAD", job
       baseTests: base.get(id) ? base.get(id).tests.size : 0, candidateTests: candidateResults.get(id) ? candidateResults.get(id).tests.size : 0,
       baseLog: base.get(id)?.logSha256 ?? null, candidateLog: candidateResults.get(id)?.logSha256 ?? null }));
     const preExisting = rules.r4.map((entry) => ({ ...entry, status: "PRE_EXISTING" }));
-    const receipt = { kind: "MO1309DifferentialGateReceipt", version: "1.0.0", style: "MO-1308 Amendment A3.2, Node-driven units only", certifying: false,
+    const receipt = { kind: "MO1309DifferentialGateReceipt", version: "1.0.0", style: "MO-1308 Amendment A3.2, Node-driven units only", certifying: false, preparedTrees: prepared,
       baseline: baseCommit, candidate: candidateCommit, host: { platform: process.platform, arch: process.arch, node: process.version }, workspaceVerify: workspace,
       verdict, rules: { workspaceVerifyOk: rules.r1, regressions: rules.r2, newFailures: rules.r3 }, preExisting,
       counts: { baseUnits: base.size, candidateUnits: candidateResults.size, newUnits: [...candidateResults.keys()].filter((id) => !base.has(id)).length },
-      qualification: workspace.candidateExit === 0 ? null : "cca.workspace.verify (tools/verify_workspace.py) does not pass on CANDIDATE in the cloud and fails identically on BASELINE; A3.2 rule 1 is established only on the Windows host",
+      qualification: workspace.candidateExit === 0 ? null : `cca.workspace.verify (tools/verify_workspace.py) does not pass on CANDIDATE on this host (${process.platform}) and ${workspace.baseExit === 0 ? "passes" : "fails identically"} on BASELINE; A3.2 rule 1 is established only where it passes`,
       notRunInCloud: ["CTest default preset (MSVC, vcpkg, GoogleTest)", "cca_core_tests and the 112 *AllocationFailureTest cases", "memoryos.sdk.cpp.*", "memoryos.standard.runtime.reference", "Windows-only CLI store tests"] };
     fs.writeFileSync(path.join(out, "comparison.json"), `${JSON.stringify(table, null, 2)}\n`);
     fs.writeFileSync(path.join(out, "receipt.json"), `${JSON.stringify(receipt, null, 2)}\n`);
     return receipt;
   } finally {
-    for (const tree of Object.values(trees)) { try { git(["worktree", "remove", "--force", tree]); } catch { /* already gone */ } }
-    fs.rmSync(scratch, { recursive: true, force: true });
+    if (!prepared) {
+      for (const tree of Object.values(trees)) { try { git(["worktree", "remove", "--force", tree]); } catch { /* already gone */ } }
+      fs.rmSync(scratch, { recursive: true, force: true });
+    }
   }
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = process.argv.slice(2);
   const option = (name, fallback) => { const i = args.indexOf(`--${name}`); return i >= 0 ? args[i + 1] : fallback; };
-  if (!option("out")) { process.stderr.write("usage: --out <dir> [--base <commit>] [--candidate <rev>] [--jobs <n>]\n"); process.exit(2); }
-  const receipt = await runGate({ out: path.resolve(option("out")), base: option("base", BASELINE_BF), candidate: option("candidate", "HEAD"), jobs: Number(option("jobs", "2")) });
+  if (!option("out")) { process.stderr.write("usage: --out <dir> [--base <commit>] [--candidate <rev>] [--jobs <n>] [--base-tree <dir> --candidate-tree <dir>] [--scratch <dir>]\n"); process.exit(2); }
+  const receipt = await runGate({ out: path.resolve(option("out")), base: option("base", BASELINE_BF), candidate: option("candidate", "HEAD"), jobs: Number(option("jobs", "2")),
+    baseTree: option("base-tree", null), candidateTree: option("candidate-tree", null), scratchRoot: option("scratch", os.tmpdir()) });
   process.stdout.write(`${JSON.stringify({ verdict: receipt.verdict, counts: receipt.counts, regressions: receipt.rules.regressions.length, newFailures: receipt.rules.newFailures.length, preExisting: receipt.preExisting.length })}\n`);
   process.exitCode = receipt.verdict.startsWith("PASS") ? 0 : 1;
 }

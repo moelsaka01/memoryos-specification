@@ -3,6 +3,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { BASELINE_BF, audit, classifyDiff, importSpecifiers, isAllowedSpecifier } from "../tools/mo1309/audit.mjs";
@@ -86,4 +87,16 @@ test("differential gate verdict rules (A3.2 style): a regression, a new failing 
   assert.equal(run({ base: [], candidate: [], workspace: { baseExit: 2, candidateExit: 2 } }).verdict, "PASS_QUALIFIED_CLOUD_SUBSET");
   assert.equal(run({ base: [], candidate: [], workspace: { baseExit: 0, candidateExit: 2 } }).verdict, "FAILED_PRESERVED");
   assert.deepEqual([...parseTap("ok 1 - a\n    not ok 1 - inner\nnot ok 2 - b # SKIP x")], [["a", "pass"], ["a > inner", "fail"], ["b", "skipped"]]);
+});
+
+test("differential gate on Windows and Node 24: units ask for the TAP reporter, an unrunnable workspace verifier is never a pass, and a prepared tree at the wrong commit is refused (negative controls)", async () => {
+  const { discoverUnits, workspaceVerifyExit, runGate } = await import("../tools/mo1309/differential-gate.mjs");
+  const units = discoverUnits(repo);
+  assert.ok(units.length > 0 && units.every((unit) => unit.args[0] === "--test" && unit.args[1] === "--test-reporter=tap"));
+  assert.equal(workspaceVerifyExit(path.join(repo, "no-such-directory")), -1);
+  const out = fs.mkdtempSync(path.join(os.tmpdir(), "mo1309-gate-test-"));
+  try {
+    await assert.rejects(runGate({ out, base: BASELINE_BF, candidate: "HEAD", baseTree: repo, candidateTree: repo }), /tree is not at/u);
+    await assert.rejects(runGate({ out, base: BASELINE_BF, candidate: "HEAD", baseTree: repo }), /given together/u);
+  } finally { fs.rmSync(out, { recursive: true, force: true }); }
 });
