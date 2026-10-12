@@ -8,7 +8,7 @@ Resume with: "Read docs/mo1309-phase4-handoff.md and continue the Phase 4 run to
 
 ## State
 
-Phase 4 on the Windows host from B2 `9991a105`. W1 COMPLETE (within budget). W2 (4A): generation 1 `FAILED_PRESERVED` (HARNESS_DEFECT, Node 24 test summary parsing); tooling fixed with negative control; generation 2 is next (extra generation 1 of 2 for stream 4A). No certifying result yet.
+Phase 4 on the Windows host from B2 `9991a105`. W1 COMPLETE (within budget). W2 4A: generation 1 `FAILED_PRESERVED` (HARNESS_DEFECT), generation 2 ACCEPTED (certifying, all cases PASS, E8 RECORDED). Next: W3 (4B). Extra generations used: 4A 1 of 2.
 
 ## Last bound commit
 
@@ -16,7 +16,7 @@ B2 `9991a105ab6670baac0bcfe489aca433157382be` (`main` on origin). Phase 4 work: 
 
 ## Next action
 
-4A generation 2 (`gen-2`) via PowerShell with Windows tar first on PATH, then W3 (4B), W4 (4C), W5, W6, W7.
+W3 4B certifying (`campaigns.mjs 4b --certifying`, PowerShell, branch `mo1309/phase4b-closure` from the 4A evidence commit), then W4 (4C), W5, W6, W7.
 
 ## Decisions needed
 
@@ -34,3 +34,5 @@ None.
 - 2026-10-12 — W2 4A generation 1 (`mo1309/phase4a-e2e` at `5730b659`, run from Git Bash, load samples 27–40 % CPU, disk 37 GB free): `FAILED_PRESERVED`. (A first launch stopped at once with ENOENT because the one-shot output's parent `evidence/mo1309/4a/` did not exist; no case ran, no output was created, so that is not a generation; the empty parent was created and the run repeated.)
   E1–E6 PASS, E8 RECORDED, E7 and E9 FAIL with exit code 0 and no counts. Classification HARNESS_DEFECT: Node 24's `node --test` prints `ℹ tests N` (spec) off a terminal and the campaign and regression runners parsed only TAP `# tests N`. Disposition in `evidence/mo1309/4a/gen-1/disposition.md`.
   Fix (tooling only, section 14.1; logged): `tapCounts` accepts both forms and `campaigns.mjs` uses it; negative-control test added; the DB29 unit test no longer assumes a Linux refusal text; the inventory was rebuilt for the new DB30-tagged test title (only that title was added). Also: Git Bash's GNU tar breaks 4B-C4, so all campaigns run from PowerShell (Windows tar first). Tool tests (manifest, campaigns, inventory) 13/13 on Windows.
+- 2026-10-12 — W2 4A generation 2 (`gen-2`, run from PowerShell at `68eed767`, clean tree, 35.9 GB free, load samples 21–31 % CPU): **ACCEPTED** certifying. E1–E7 and E9 PASS, E8 RECORDED (100,000 entries, no claim). Receipt `evidence/mo1309/4a/gen-2/4a-receipt.json`, console in `console.log`.
+  Streams 4B and 4C branch from the 4A evidence commit (not literally B2) because the generation 1 fix to the shared summary parser is needed there too; B2 plus tooling-only commits, no production byte differs.
