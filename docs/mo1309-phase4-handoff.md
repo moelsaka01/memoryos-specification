@@ -8,7 +8,7 @@ Resume with: "Read docs/mo1309-phase4-handoff.md and continue the Phase 4 run to
 
 ## State
 
-Phase 4 on the Windows host from B2 `9991a105`. W1 COMPLETE (within budget). W2 4A: generation 1 `FAILED_PRESERVED` (HARNESS_DEFECT), generation 2 ACCEPTED (certifying, all cases PASS, E8 RECORDED). Next: W3 (4B). Extra generations used: 4A 1 of 2.
+Phase 4 on the Windows host from B2 `9991a105`. W1 done (within budget). 4A gen-2 ACCEPTED (gen-1 preserved, HARNESS_DEFECT); 4B gen-1 ACCEPTED; 4C gen-1 ACCEPTED (all certifying, all cases PASS). Streams merged on `mo1309/phase4d`. Next: W5 retained regression. Extra generations used: 4A 1/2, 4B 0/2, 4C 0/2.
 
 ## Last bound commit
 
@@ -16,7 +16,7 @@ B2 `9991a105ab6670baac0bcfe489aca433157382be` (`main` on origin). Phase 4 work: 
 
 ## Next action
 
-W3 4B certifying (`campaigns.mjs 4b --certifying`, PowerShell, branch `mo1309/phase4b-closure` from the 4A evidence commit), then W4 (4C), W5, W6, W7.
+W5 retained regression (`run-tests.mjs`, every suite once, PowerShell, `mo1309/phase4d`), then W6 (differential gate), W7 (4D).
 
 ## Decisions needed
 
@@ -36,3 +36,7 @@ None.
   Fix (tooling only, section 14.1; logged): `tapCounts` accepts both forms and `campaigns.mjs` uses it; negative-control test added; the DB29 unit test no longer assumes a Linux refusal text; the inventory was rebuilt for the new DB30-tagged test title (only that title was added). Also: Git Bash's GNU tar breaks 4B-C4, so all campaigns run from PowerShell (Windows tar first). Tool tests (manifest, campaigns, inventory) 13/13 on Windows.
 - 2026-10-12 — W2 4A generation 2 (`gen-2`, run from PowerShell at `68eed767`, clean tree, 35.9 GB free, load samples 21–31 % CPU): **ACCEPTED** certifying. E1–E7 and E9 PASS, E8 RECORDED (100,000 entries, no claim). Receipt `evidence/mo1309/4a/gen-2/4a-receipt.json`, console in `console.log`.
   Streams 4B and 4C branch from the 4A evidence commit (not literally B2) because the generation 1 fix to the shared summary parser is needed there too; B2 plus tooling-only commits, no production byte differs.
+- 2026-10-12 — W3 4B generation 1 (`mo1309/phase4b-closure`, HEAD `f8bcf30f`, clean tree, 34.4 GB free, CPU samples 47–55 %): **ACCEPTED** (C1–C4 PASS). Receipt `evidence/mo1309/4b/gen-1/4b-receipt.json`, branch commit `4c8ca152`.
+- 2026-10-12 — W4 4C generation 1 (`mo1309/phase4c-trust`, HEAD `f8bcf30f`, clean tree, 34.8 GB free, CPU samples 20–30 %): **ACCEPTED** (S1–S6 PASS). Receipt `evidence/mo1309/4c/gen-1/4c-receipt.json`, branch commit `b8f618e4`.
+- 2026-10-12 — `mo1309/phase4d` created from the 4A head and the 4B and 4C branches merged (normal merges, no conflict, disjoint evidence paths).
+- 2026-10-12 — Harness fix before W5 (section 14.1; logged). `run-tests.mjs` could not run the `studio-existing` suite on Windows: Node cannot spawn `npm` (ENOENT) or `npm.cmd` (EINVAL). `executableOf` runs a declared `npm ...` command as `node <npm-cli.js beside node> ...` (no shell); the row still records the declared command. Test with negative controls (a missing npm-cli.js throws instead of falling back; other commands and platforms untouched). An unrecorded probe of the same command (`npm test --silent` in cca-studio) gave 358/358. Note: the MO-1309 manifest has no MO-1307 suite (the "MO-1307 strict" rule of the MO-1308 protocol has nothing to bind here; the MO-1307 tests are in the Node differential subset of W6).

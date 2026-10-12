@@ -33,10 +33,20 @@ export function tapCounts(text) {
   return { tests: read("tests"), pass: read("pass"), fail: read("fail"), skipped: read("skipped"), cancelled: read("cancelled") };
 }
 
+// On Windows, Node cannot spawn `npm` (no such executable) or `npm.cmd` (EINVAL without a shell). The declared command stays `npm ...` (it is what the row
+// records); it is executed as `<this node> <npm-cli.js beside it> ...`, which needs no shell and no PATH lookup. Any other command is run as declared.
+export function executableOf(command, nodeExecutable = process.execPath, platform = process.platform) {
+  if (command[0] !== "npm" || platform !== "win32") return command;
+  const cli = path.join(path.dirname(nodeExecutable), "node_modules", "npm", "bin", "npm-cli.js");
+  if (!fs.existsSync(cli)) throw new Error(`npm-cli.js not found beside ${nodeExecutable}`);
+  return [nodeExecutable, cli, ...command.slice(1)];
+}
+
 export function runSuite({ suite, outDir, commit, label = "" }) {
   const command = commandOf(suite);
+  const [program, ...programArgs] = executableOf(command);
   const started = new Date();
-  const result = spawnSync(command[0], command.slice(1), { cwd: path.join(REPO, suite.cwd), encoding: "buffer", maxBuffer: 512 * 1024 * 1024, env: process.env });
+  const result = spawnSync(program, programArgs, { cwd: path.join(REPO, suite.cwd), encoding: "buffer", maxBuffer: 512 * 1024 * 1024, env: process.env });
   const finished = new Date();
   const log = Buffer.concat([result.stdout ?? Buffer.alloc(0), Buffer.from("\n--- stderr ---\n"), result.stderr ?? Buffer.alloc(0)]);
   fs.mkdirSync(path.join(outDir, "logs"), { recursive: true });

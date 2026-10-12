@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { REPO, readManifest, runSuite, tapCounts } from "../tools/mo1309/run-tests.mjs";
+import { REPO, executableOf, readManifest, runSuite, tapCounts } from "../tools/mo1309/run-tests.mjs";
 
 const listed = (manifest) => new Set(manifest.suites.flatMap((suite) => (suite.files ?? []).map((file) => `${suite.cwd}/${file}`)));
 const onDisk = () => [
@@ -53,6 +53,18 @@ test("DB30 tapCounts reads the node --test summary and reports a missing summary
   assert.deepEqual(tapCounts("# tests 9\n# suites 0\n# pass 8\n# fail 1\n# cancelled 0\n# skipped 0\n"), { tests: 9, pass: 8, fail: 1, skipped: 0, cancelled: 0 });
   const empty = tapCounts("no summary here");
   assert.ok(Number.isNaN(empty.pass) && Number.isNaN(empty.fail));
+});
+
+test("runner: on Windows `npm` runs as node plus the npm-cli.js beside it; other commands and platforms are untouched; a missing npm-cli.js is an error, not a fallback", () => {
+  assert.deepEqual(executableOf(["npm", "test", "--silent"], "/x/node", "linux"), ["npm", "test", "--silent"]);
+  assert.deepEqual(executableOf(["node", "--test"], "C:\\n\\node.exe", "win32"), ["node", "--test"]);
+  assert.throws(() => executableOf(["npm", "test"], path.join(os.tmpdir(), "mo1309-no-such-node", "node.exe"), "win32"), /npm-cli\.js not found/u);
+  if (process.platform === "win32") {
+    const [program, cli, ...rest] = executableOf(["npm", "test", "--silent"]);
+    assert.equal(program, process.execPath);
+    assert.ok(fs.existsSync(cli) && cli.endsWith("npm-cli.js"));
+    assert.deepEqual(rest, ["test", "--silent"]);
+  }
 });
 
 test("DB30 tapCounts also reads the Node 24 spec-reporter summary, and a failure or garbled line is never read as a pass (negative control)", () => {
