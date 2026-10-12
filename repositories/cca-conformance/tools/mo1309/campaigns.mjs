@@ -9,7 +9,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { REPO, sha256 } from "./run-tests.mjs";
+import { REPO, sha256, tapCounts } from "./run-tests.mjs";
 import { audit } from "./audit.mjs";
 
 const studio = path.join(REPO, "repositories", "cca-studio");
@@ -88,8 +88,8 @@ async function withBrowser(browserPath, body) {
 function nodeTest(files, pattern) {
   const args = ["--test", ...(pattern ? [`--test-name-pattern=${pattern}`] : []), ...files];
   const result = spawnSync(process.execPath, args, { cwd: studio, encoding: "utf8", maxBuffer: 256 * 1024 * 1024 });
-  const read = (name) => Number(new RegExp(`^# ${name} (\\d+)$`, "mu").exec(result.stdout)?.[1] ?? Number.NaN);
-  return { exitCode: result.status, tests: read("tests"), pass: read("pass"), fail: read("fail"), logSha256: sha256(Buffer.from(result.stdout + result.stderr)) };
+  const { tests, pass: passed, fail: failed } = tapCounts(result.stdout);
+  return { exitCode: result.status, tests, pass: passed, fail: failed, logSha256: sha256(Buffer.from(result.stdout + result.stderr)) };
 }
 const viaTests = (files, pattern, detail) => () => { const r = nodeTest(files, pattern); return { ...(r.exitCode === 0 && r.fail === 0 && r.pass > 0 ? pass(detail, r) : fail(detail, r)) }; };
 

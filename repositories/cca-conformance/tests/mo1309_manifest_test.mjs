@@ -54,3 +54,12 @@ test("DB30 tapCounts reads the node --test summary and reports a missing summary
   const empty = tapCounts("no summary here");
   assert.ok(Number.isNaN(empty.pass) && Number.isNaN(empty.fail));
 });
+
+test("DB30 tapCounts also reads the Node 24 spec-reporter summary, and a failure or garbled line is never read as a pass (negative control)", () => {
+  const spec = (pass, fail) => `✔ a test (1ms)\nℹ tests ${pass + fail}\nℹ suites 0\nℹ pass ${pass}\nℹ fail ${fail}\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\n`;
+  assert.deepEqual(tapCounts(spec(6, 0)), { tests: 6, pass: 6, fail: 0, skipped: 0, cancelled: 0 });
+  assert.equal(tapCounts(spec(5, 1).replace(/\n/g, "\r\n")).fail, 1);
+  assert.equal(tapCounts(spec(5, 1)).fail, 1);
+  assert.ok(Number.isNaN(tapCounts("ℹ tests 6 of 7\nℹ pass x\n").pass));
+  assert.ok(Number.isNaN(tapCounts("tests 6\npass 6\nfail 0\n").pass));
+});

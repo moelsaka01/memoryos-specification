@@ -21,7 +21,7 @@ test("the case ids equal the Freeze section 17 campaign table, and every case na
 test("DB29 a certifying run is refused unless it is Windows 11 x64, Node 24.21.0, a clean tree and a new evidence directory", async () => {
   assert.equal(REQUIRED_NODE, "v24.21.0");
   const out = path.join(os.tmpdir(), "mo1309-should-not-exist");
-  await assert.rejects(runCampaign("4B", { mode: "certifying", out }), /certifying run refused: .*(platform is not win32|node is)/u);
+  await assert.rejects(runCampaign("4B", { mode: "certifying", out }), /certifying run refused: .*(platform is not win32|node is|output is not under evidence\/mo1309)/u);
   assert.equal(fs.existsSync(out), false, "a refused run writes nothing");
   await assert.rejects(runCampaign("4B", { mode: "certifying", out: path.join(REPO, "repositories/cca-conformance/evidence/mo1309/x") }), /refused/u);
 });

@@ -26,9 +26,10 @@ export function readManifest(file = MANIFEST) {
 
 export const commandOf = (suite) => (suite.command ? suite.command : [process.execPath, "--test", ...suite.files]);
 
-// TAP summary lines of node --test: "# tests N", "# pass N", "# fail N".
+// Summary lines of node --test: "# tests N", "# pass N", "# fail N" (TAP, the Node 22 default off a terminal) or "ℹ tests N" (the spec
+// reporter, the Node 24 default). A missing summary is NaN, never a pass.
 export function tapCounts(text) {
-  const read = (name) => Number(new RegExp(`^# ${name} (\\d+)$`, "mu").exec(text)?.[1] ?? Number.NaN);
+  const read = (name) => Number(new RegExp(`^(?:#|\\u2139) ${name} (\\d+)\\r?$`, "mu").exec(text)?.[1] ?? Number.NaN);
   return { tests: read("tests"), pass: read("pass"), fail: read("fail"), skipped: read("skipped"), cancelled: read("cancelled") };
 }
 

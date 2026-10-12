@@ -8,7 +8,7 @@ Resume with: "Read docs/mo1309-phase4-handoff.md and continue the Phase 4 run to
 
 ## State
 
-Phase 4 started on the Windows host from B2 `9991a105`. Step W1 (2D Windows performance run) COMPLETE and committed (budget check passed). Next: W2 (4A). No certifying campaign result yet.
+Phase 4 on the Windows host from B2 `9991a105`. W1 COMPLETE (within budget). W2 (4A): generation 1 `FAILED_PRESERVED` (HARNESS_DEFECT, Node 24 test summary parsing); tooling fixed with negative control; generation 2 is next (extra generation 1 of 2 for stream 4A). No certifying result yet.
 
 ## Last bound commit
 
@@ -16,7 +16,7 @@ B2 `9991a105ab6670baac0bcfe489aca433157382be` (`main` on origin). Phase 4 work: 
 
 ## Next action
 
-W2 (4A certifying, `campaigns.mjs 4a --certifying --full`), then W3 (4B), W4 (4C), W5 (regression), W6 (differential gate), W7 (4D).
+4A generation 2 (`gen-2`) via PowerShell with Windows tar first on PATH, then W3 (4B), W4 (4C), W5, W6, W7.
 
 ## Decisions needed
 
@@ -31,3 +31,6 @@ None.
   `check` against the budgets: `{"ok":true,"reason":"within budget"}`, exit 0. Worst of five runs at the certified scale 10,000 vs budget: read 7.3 s (30 s), verify-only 7.8 s (30 s), view-model build 8.5 s (30 s), assemble 1.2 s (5 s), publish 0.2 s (5 s), generation wall 25.9 s (60 s), generator RSS 467 MB (1,100 MB), snapshot 8.90 MB (11 MB), load event 440 ms (1,600 ms), filter/sort/next-page 17/10/29 ms (200 ms), page heap 14.3 MB (100 MB), DOM nodes 1,108 (3,000).
   100,000 entries (characterization only, no budget, no claim; one run): completed. read 227 s, verify-only 53 s, view-model build 67.5 s, assemble 11.2 s, publish 1.2 s, generation wall 363 s, generator RSS 2,127 MB, snapshot 88.8 MB, load event 2.34 s, filter/sort/next-page 52/69/69 ms, page heap 98.9 MB.
   Full SHA-256: report-1k-10k `e2b59aef4f010eca8b0c6d07354f13eaf5e62373553ed15d8d0a7214abfcf6b0`; report-100k `2e164c4a608b5c62b694ec196a097bc00db9922810d9e2762a77294cf3731f1e`.
+- 2026-10-12 — W2 4A generation 1 (`mo1309/phase4a-e2e` at `5730b659`, run from Git Bash, load samples 27–40 % CPU, disk 37 GB free): `FAILED_PRESERVED`. (A first launch stopped at once with ENOENT because the one-shot output's parent `evidence/mo1309/4a/` did not exist; no case ran, no output was created, so that is not a generation; the empty parent was created and the run repeated.)
+  E1–E6 PASS, E8 RECORDED, E7 and E9 FAIL with exit code 0 and no counts. Classification HARNESS_DEFECT: Node 24's `node --test` prints `ℹ tests N` (spec) off a terminal and the campaign and regression runners parsed only TAP `# tests N`. Disposition in `evidence/mo1309/4a/gen-1/disposition.md`.
+  Fix (tooling only, section 14.1; logged): `tapCounts` accepts both forms and `campaigns.mjs` uses it; negative-control test added; the DB29 unit test no longer assumes a Linux refusal text; the inventory was rebuilt for the new DB30-tagged test title (only that title was added). Also: Git Bash's GNU tar breaks 4B-C4, so all campaigns run from PowerShell (Windows tar first). Tool tests (manifest, campaigns, inventory) 13/13 on Windows.

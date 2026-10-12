@@ -1,0 +1,128 @@
+{
+  "kind": "MO1309CampaignReceipt",
+  "version": "1.0.0",
+  "stream": "4A",
+  "certifying": true,
+  "mode": "certifying",
+  "generation": 1,
+  "commit": "5730b659f9370f72bac3a099a0915a3ba202c716",
+  "requirements": [
+    "DB01",
+    "DB03",
+    "DB18",
+    "DB20",
+    "DB22",
+    "DB23",
+    "DB24",
+    "DB25",
+    "DB29"
+  ],
+  "host": {
+    "platform": "win32",
+    "arch": "x64",
+    "release": "10.0.26200",
+    "node": "v24.21.0"
+  },
+  "result": "FAILED_PRESERVED",
+  "accepted": false,
+  "cases": [
+    {
+      "id": "4A-E1",
+      "windowsOnlyPart": "export from the MO-1308 CLI on Windows 11 x64 (NTFS), Node 24.21.0",
+      "outcome": "PASS",
+      "detail": "a real CLI export with every record kind verifies, builds and generates",
+      "recordKinds": [
+        "MIP_PACKAGE",
+        "INVESTIGATION_CHECKPOINT",
+        "POLICY_EVALUATION",
+        "REGRESSION_REPORT",
+        "CICD_RUN",
+        "READINESS_RESULT",
+        "HUMAN_DECISION_CLAIM"
+      ],
+      "digest": "sha256:ef14f3f96b8238cd1f7d848d617ca179e6a778b8c32ea8e014214bf3d87e4c53"
+    },
+    {
+      "id": "4A-E2",
+      "windowsOnlyPart": "same, with tombstones and a purge on NTFS",
+      "outcome": "PASS",
+      "detail": "tombstone and purge: retention PURGED, member list retained",
+      "verification": {
+        "retainedRecords": 8,
+        "purgedRecords": 1,
+        "tombstones": 1,
+        "purgePending": [],
+        "unreferencedRecords": [],
+        "pendingArtifacts": 0
+      }
+    },
+    {
+      "id": "4A-E3",
+      "windowsOnlyPart": "same",
+      "outcome": "PASS",
+      "detail": "empty and single-entry exports verify and build",
+      "results": [
+        [
+          "empty",
+          0
+        ],
+        [
+          "single",
+          1
+        ]
+      ]
+    },
+    {
+      "id": "4A-E4",
+      "windowsOnlyPart": "certified-scale (10,000) generation, load and budget check on the reference host",
+      "outcome": "PASS",
+      "detail": "certified scale (10,000) generated, loaded and within the recorded budgets",
+      "check": "{\"ok\":true,\"reason\":\"within budget\",\"violations\":[]}",
+      "scale": 10000
+    },
+    {
+      "id": "4A-E5",
+      "windowsOnlyPart": "byte comparison on the reference host",
+      "outcome": "PASS",
+      "detail": "two generations from the same export are byte-identical",
+      "snapshotSha256": "sha256:c5f6e958cef4c4575fb05d2a205c3413c589f0601a2dd5f16faf64a947bd7758"
+    },
+    {
+      "id": "4A-E6",
+      "windowsOnlyPart": "file:// and static HTTP in the Windows Chromium-family browser",
+      "outcome": "PASS",
+      "detail": "identical rendered text from file:// and a static HTTP host, no further requests",
+      "characters": 3746
+    },
+    {
+      "id": "4A-E7",
+      "windowsOnlyPart": "keyboard, 200% zoom, 320/768/1280 layouts in the Windows browser",
+      "outcome": "FAIL",
+      "detail": "keyboard, zoom and 320/768/1280 layout tests of the page in the browser",
+      "exitCode": 0,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "logSha256": "sha256:f3f17fe223e5c01239fcc437b2b10c1b1049a2aa1c51511166205f087f21ce13"
+    },
+    {
+      "id": "4A-E8",
+      "windowsOnlyPart": "100,000-entry characterization (--full) on the reference host",
+      "outcome": "RECORDED",
+      "detail": "100,000-entry characterization: recorded, no pass/fail/support claim",
+      "exitCode": 0,
+      "reportSha256": "sha256:a5d85d0c6ff395ece80402c625ea195997fe37daddd4671bd7d20aba7a12ad4c"
+    },
+    {
+      "id": "4A-E9",
+      "windowsOnlyPart": "exclusive output and failure paths on NTFS (hard-link publication, sharing violations)",
+      "outcome": "FAIL",
+      "detail": "exclusive output, over-limit and failure-path tests of the generator",
+      "exitCode": 0,
+      "tests": null,
+      "pass": null,
+      "fail": null,
+      "logSha256": "sha256:939bb3721d3c198d0c707870474af8d47e7a0237154f9fc17b9c4512ee9a8abd"
+    }
+  ]
+}
