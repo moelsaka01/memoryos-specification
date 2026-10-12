@@ -165,3 +165,61 @@ uninitialized/dangling access, not of a switch-controlled optimizer defect. Both
 did not work) and the bisect diagnostic step was removed. Windows is therefore 690/692 + this test; it needs a debugger
 session on a Windows machine (RelWithDebInfo, `cca_memory_provider_allocation_tests.exe`, WinDbg/VS "break on access violation").
 The surrounding evidence does not point at product code, but it has not been ruled out either.
+
+
+## Round 10 - owner decisions applied (head after 552bf2e9)
+
+### 1. OWNER-APPROVED PRODUCT FIX (scope extension of this item) - for the v1.3.0 release notes
+`repositories/cca-sdk/src/core_process.cpp`, POSIX path only: the Core transport pipes are now created close-on-exec
+(`pipe2(..., O_CLOEXEC)` on Linux; `pipe` then `fcntl(F_SETFD, FD_CLOEXEC)` immediately after creation elsewhere). Nothing
+else changed; the Windows path is untouched and the host's stdio still arrives through `dup2`, which clears the flag on the
+duplicates.
+- **Symptom:** a process forked by another thread between pipe creation and the host's exec inherited the parent's pipe ends,
+  so the Core host never saw end-of-file on stdin and `~CoreProcess` blocked (`MemoryOsSdk.KeepsConcurrentInstancesDeterministicAndIsolated`,
+  `memoryos.standard.sdk.cpp.reference` timed out on Linux/macOS).
+- **Authority check (condition a):** `core_process.cpp` is in neither the MO-1308 candidate identity
+  (`mo1308-phase3-candidate-identity.json`: 45 JS production paths under `cca-studio` and `memoryos-cli`, none under `cca-sdk/src`),
+  nor the MO-1308 final/phase-3 inventories (no `cca-sdk` reference), nor any MO-1309 document. It is listed (by path, no hash)
+  in the older MO-1301/MO-1302 inventories and `verify_workspace.py` `REQUIRED_PATHS`; the one content check on it
+  (`mo1302_cross_platform_closure_conformance_test.mjs`, the `#include <Windows.h>` block) is unaffected.
+- **Regression test:** `MemoryOsSdkTransport.DoesNotLeakPipeEndsIntoLaterSpawnedProcesses` (POSIX). It starts a transport,
+  forks a bystander `sleep 20`, then destroys the transport. Before the fix: FAILED after 20.0 s (waited for the bystander).
+  After: PASSED in 6 ms. (Measured standalone against the original and the fixed `core_process.cpp`.)
+- **Known limit:** on non-Linux POSIX (macOS) there remains a microsecond window between `pipe()` and `fcntl()`; closing it
+  needs a process-wide spawn lock, which was not part of the approved change.
+
+### 2. Reference-host-only suites (hosted CI excludes them BY EXACT NAME)
+| Test | Why it cannot pass on a hosted runner | Hosted CI |
+|---|---|---|
+| `memoryos.standard.mo1304-phase2` | pins bytes/history of the reference host's frozen setup (`verify_workspace.py` and memoryos-mcp bytes at the binding revision, tooling) | excluded on Linux, macOS, Windows, ASan, Coverage |
+| `memoryos.standard.mo1304-phase3-windows` | Windows-toolchain parity evidence; fails off the reference host on POSIX | excluded on Linux, macOS, ASan, Coverage; **still runs (and passes) on the Windows runner** |
+
+Both carry the CTest label `reference-host-only` (added in `repositories/cca-conformance/CMakeLists.txt`; no test body, input
+or pin changed) and run unchanged on the reference host. The exclusion is the anchored regex in `CCA_CTEST_EXCLUDE`
+(`^memoryos\.standard\.mo1304-phase2$`, or the two-name alternation on POSIX), passed with `ctest -E` / `scripts/coverage.sh -E`.
+Not excluded and still red on Windows: `memoryos.standard.mo1305-phase3` (frozen evidence, Windows-only registration); it
+was not on the owner's list and is reported rather than excluded.
+
+### 3. `cca.workspace.verify` is NOT excluded - one sub-check is reported as not run on hosted POSIX runners
+Before (hosted POSIX / this sandbox), the only failure printed by `verify_workspace.py` was
+`error: MO-1304 independent platform/parity validation failed` (the verifier collects all errors; this was the sole one). Cause:
+`validate_parity.py validate` re-runs the independent validation of the Windows-11 receipt
+(`INDEPENDENT_VALIDATION_FAILED:windows-11`), which needs the reference host.
+After, with `CCA_VERIFY_WORKSPACE_NOT_RUN=MO1304_WINDOWS_TOOLCHAIN_PARITY` (set by the CTest property when
+`CCA_WORKSPACE_VERIFY_NOT_RUN_MO1304_PARITY` is ON / the env var is `1`, which CI sets on Linux, macOS, ASan and Coverage only):
+```
+NOT_RUN_ON_HOSTED_RUNNER: MO-1304 independent platform/parity validation (Windows-toolchain parity; enforced on the reference host)
+CCA workspace verification passed: <root>
+```
+Only that subprocess is skipped. The three receipt identity checks (path, byte length, sha256) in the same block, and every
+other check, still run: a one-byte change to `mo1304-phase3-parity.json` still fails with `MO-1304 evidence identity mismatch`
+with the flag set. Any other flag value, and the default, run the sub-check as before. The change is inside
+`validate_mo1304_registration` (no argparse/`main` change), so the byte-comparison in the phase-2 suite
+(everything outside that function and `validate_conformance_artifacts` unchanged) still holds. The windows runner does not set
+the flag and enforces the sub-check.
+
+### 4. Windows access violation: deferred (owner decision)
+Open. `MemoryProviderAllocationFailureTest.DescriptorWorkspaceFailureConstructionPreservesCompleteState`,
+`0xC0000005` in the `ci` RelWithDebInfo build on windows-2022; no crash location available from the hosted log (no
+debugger/dump). Passes under MSVC ASan and in a standalone `/Od` bisect build. To be debugged on the reference host after
+MO-1309 is tagged. Everything else on the Windows job passes except `mo1304-phase2` (now excluded) and `mo1305-phase3`.

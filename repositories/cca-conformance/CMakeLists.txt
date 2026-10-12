@@ -394,6 +394,19 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
     endif()
   endforeach()
 
+  # These suites verify evidence that is bound to the reference host's frozen
+  # setup (exact bytes of the author's tool installation and git history); a
+  # hosted runner cannot reproduce it. They run unchanged on the reference host;
+  # hosted CI excludes them by exact name (.github/workflows/ci.yml).
+  foreach(reference_host_test IN ITEMS
+    memoryos.standard.mo1304-phase2
+    memoryos.standard.mo1304-phase3-windows
+  )
+    if(TEST ${reference_host_test})
+      set_property(TEST ${reference_host_test} APPEND PROPERTY LABELS "reference-host-only")
+    endif()
+  endforeach()
+
   if(Python3_Interpreter_FOUND)
     set_tests_properties(
       memoryos.standard.boundary memoryos.standard.mo1301

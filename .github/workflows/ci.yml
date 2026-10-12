@@ -25,6 +25,13 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-24.04, macos-14, windows-2022]
+    env:
+      # Reference-host-only evidence (see docs/maint-pre-1.3-release.md): excluded BY EXACT NAME, never by pattern.
+      # mo1304-phase3-windows still runs, and passes, on the Windows runner.
+      CCA_CTEST_EXCLUDE: ${{ matrix.os == 'windows-2022' && '^memoryos\.standard\.mo1304-phase2$' || '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1304-phase3-windows)$' }}
+      # Only the MO-1304 Windows-toolchain parity sub-check of cca.workspace.verify is reported NOT_RUN_ON_HOSTED_RUNNER
+      # on POSIX runners; every other check stays enforced.
+      CCA_WORKSPACE_VERIFY_NOT_RUN_MO1304_PARITY: ${{ matrix.os == 'windows-2022' && '0' || '1' }}
     steps:
       - name: Enable long paths (Windows)
         if: runner.os == 'Windows'
@@ -109,7 +116,8 @@ jobs:
         run: cmake --build --preset ci -- -k 0
 
       - name: Test
-        run: ctest --preset ci --timeout 600
+        shell: bash
+        run: ctest --preset ci --timeout 600 -E "${CCA_CTEST_EXCLUDE}"
 
       - name: Diagnose Windows-only crashes (on failure)
         if: failure() && runner.os == 'Windows'
@@ -176,6 +184,9 @@ jobs:
     name: AddressSanitizer and UBSan
     runs-on: ubuntu-24.04
     timeout-minutes: 90
+    env:
+      CCA_CTEST_EXCLUDE: '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1304-phase3-windows)$'
+      CCA_WORKSPACE_VERIFY_NOT_RUN_MO1304_PARITY: '1'
     steps:
       - name: Check out source
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -218,12 +229,15 @@ jobs:
         run: cmake --build --preset sanitizer
 
       - name: Test
-        run: ctest --preset sanitizer --timeout 600
+        run: ctest --preset sanitizer --timeout 600 -E "${CCA_CTEST_EXCLUDE}"
 
   coverage:
     name: Coverage
     runs-on: ubuntu-24.04
     timeout-minutes: 90
+    env:
+      CCA_CTEST_EXCLUDE: '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1304-phase3-windows)$'
+      CCA_WORKSPACE_VERIFY_NOT_RUN_MO1304_PARITY: '1'
     steps:
       - name: Check out source
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -263,7 +277,7 @@ jobs:
         run: bash scripts/bootstrap.sh --skip-configure
 
       - name: Generate coverage report
-        run: bash scripts/coverage.sh
+        run: bash scripts/coverage.sh -E "${CCA_CTEST_EXCLUDE}"
 
       - name: Upload coverage report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
