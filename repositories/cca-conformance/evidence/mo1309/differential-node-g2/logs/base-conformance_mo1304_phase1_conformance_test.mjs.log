@@ -1,0 +1,61 @@
+TAP version 13
+# Subtest: MO-1304 correction is a documentation-only child of the original authority
+ok 1 - MO-1304 correction is a documentation-only child of the original authority
+  ---
+  duration_ms: 645.5632
+  type: 'test'
+  ...
+# Subtest: MO-1304 frozen catalog, mandatory cache fields and authority boundaries remain exact
+ok 2 - MO-1304 frozen catalog, mandatory cache fields and authority boundaries remain exact
+  ---
+  duration_ms: 12.8818
+  type: 'test'
+  ...
+# Subtest: MO-1304 runtime, contract and distribution foundations bind actual bytes
+not ok 3 - MO-1304 runtime, contract and distribution foundations bind actual bytes
+  ---
+  duration_ms: 365.1473
+  type: 'test'
+  location: 'C:\\n8b\\repositories\\cca-conformance\\tests\\mo1304_phase1_conformance_test.mjs:37:1'
+  failureType: 'testCodeFailure'
+  error: 'MO1304_RUNTIME_INTEGRITY'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    verifyDependencies (file:///C:/n8b/repositories/memoryos-mcp/src/integrity.mjs:122:79)
+    async TestContext.<anonymous> (file:///C:/n8b/repositories/cca-conformance/tests/mo1304_phase1_conformance_test.mjs:38:70)
+    async Test.run (node:internal/test_runner/test:1409:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:974:7)
+  ...
+# Subtest: MO-1304 resource constants are reviewed against all 420 operation and 60 transport samples
+ok 4 - MO-1304 resource constants are reviewed against all 420 operation and 60 transport samples
+  ---
+  duration_ms: 17.7368
+  type: 'test'
+  ...
+# Subtest: MO-1304 retains affected embedded fast-uri advisories and limited applicability evidence
+ok 5 - MO-1304 retains affected embedded fast-uri advisories and limited applicability evidence
+  ---
+  duration_ms: 3.8053
+  type: 'test'
+  ...
+# Subtest: MO-1304 binding is non-self-referential and Phase 2/3/release/tag values remain pending
+ok 6 - MO-1304 binding is non-self-referential and Phase 2/3/release/tag values remain pending
+  ---
+  duration_ms: 1047.1789
+  type: 'test'
+  ...
+# Subtest: MO-1304 registration adds one isolated harness entry without changing predecessor tag targets
+ok 7 - MO-1304 registration adds one isolated harness entry without changing predecessor tag targets
+  ---
+  duration_ms: 748.1652
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 6
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4947.4688
