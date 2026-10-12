@@ -1,0 +1,866 @@
+{
+  "candidate": {
+    "baseCommit": "deff3c8016ca685db18a3874b18ff956d289c0e0",
+    "identityPath": "repositories/cca-conformance/mo1308-phase3-candidate-identity.json",
+    "identitySha256": "528f36b8103abe1df3fbff08489350fd7a494f951ec73ac043bbf7209c5112c7",
+    "productionTreeDigest": "sha256:111bd7dd6860221bb2f00f344f38750450c9be3a509bbe888630443d47a83481"
+  },
+  "certifying": true,
+  "corpus": {
+    "corpusDigest": "sha256:cfca5edb267fad074863f3ddd1945a3f8fe500a8e07d602722140d745b54a730",
+    "manifestPath": "repositories/cca-conformance/mo1308-phase3-corpus-manifest.json",
+    "manifestSha256": "b055805d2db43f414261921ded61eb69d856ad5c821139254e9ba1b7ce386c9f"
+  },
+  "execution": {
+    "adaptiveExpansion": false,
+    "caseRetry": false,
+    "diagnosticPromotion": false,
+    "lateSuccessRecovery": false,
+    "once": true,
+    "stopAtFirstMandatoryFailure": true,
+    "warmup": false
+  },
+  "generation": {
+    "id": "phase3a",
+    "ordinal": 1,
+    "supersedes": null
+  },
+  "harnessReview": {
+    "byteLength": 495,
+    "path": "review.json",
+    "sha256": "ef59946cdc6db23acadf942f777860065007cb70ae15a904841ed010c063853f"
+  },
+  "inputs": [
+    {
+      "byteLength": 18,
+      "path": "repositories/cca-conformance/evidence/mo1308/phase3-precondition-g6/receipt.json",
+      "sha256": "32e3c0215358a1f45d846a4a2d924cf7901caa608db81c166e70fc4ac2fecd9a"
+    }
+  ],
+  "inventory": {
+    "path": "repositories/cca-conformance/mo1308-phase3-inventory.json",
+    "sha256": "934607c1acdeff88b934fa447ce714c3869bbb73a2a4d35b36603bc5c2d35b5d"
+  },
+  "kind": "MO1308Phase3Seal",
+  "protocol": {
+    "path": "docs/mo1308-phase3-protocol.md",
+    "sha256": "4066c8df246db08875969cb61a5088daab2ed52ef4ad22835db81eb93e4d284f",
+    "status": "APPROVED — FREEZE AMENDMENT A8 (owner approval 2026-10-06)"
+  },
+  "sealedAt": "2026-10-08T00:00:00.000Z",
+  "segments": [
+    {
+      "budgetMs": 5400000,
+      "extended": null,
+      "id": "main1",
+      "steps": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+      ]
+    },
+    {
+      "budgetMs": 5400000,
+      "extended": null,
+      "id": "main2",
+      "steps": [
+        "F",
+        "G",
+        "H",
+        "I",
+        "J",
+        "K",
+        "L",
+        "M"
+      ]
+    },
+    {
+      "budgetMs": 10800000,
+      "extended": null,
+      "id": "ceiling",
+      "steps": [
+        "JC"
+      ]
+    }
+  ],
+  "steps": [
+    {
+      "cases": [
+        {
+          "id": "3A-A1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-A2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-A3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-A4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-A5",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-A6",
+          "mandatory": true,
+          "mode": "record",
+          "qualifications": []
+        },
+        {
+          "id": "3A-A7",
+          "mandatory": false,
+          "mode": "record",
+          "qualifications": []
+        }
+      ],
+      "guardMs": 300000,
+      "id": "A",
+      "segment": "main1"
+    },
+    {
+      "cases": [
+        {
+          "id": "3A-B1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-B2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-B3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-B4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-B5",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-B6",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-B7",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-B8",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-B9",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-B10",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        }
+      ],
+      "guardMs": 900000,
+      "id": "B",
+      "segment": "main1"
+    },
+    {
+      "cases": [
+        {
+          "id": "3A-C1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-C2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-C3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-C4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-C5",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-C6",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        }
+      ],
+      "guardMs": 480000,
+      "id": "C",
+      "segment": "main1"
+    },
+    {
+      "cases": [
+        {
+          "id": "3A-D1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-D2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-D3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-D4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-D5",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-D6",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-D7",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-D8",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-D9",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": [
+            "Q15"
+          ]
+        },
+        {
+          "id": "3A-D10",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-D11",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-D12",
+          "mandatory": true,
+          "mode": "record",
+          "qualifications": []
+        }
+      ],
+      "guardMs": 900000,
+      "id": "D",
+      "segment": "main1"
+    },
+    {
+      "cases": [
+        {
+          "id": "3A-E1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-E2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-E3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-E4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-E5",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-E6",
+          "mandatory": true,
+          "mode": "record",
+          "qualifications": [
+            "Q02"
+          ]
+        },
+        {
+          "id": "3A-E7",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        }
+      ],
+      "guardMs": 420000,
+      "id": "E",
+      "segment": "main1"
+    },
+    {
+      "cases": [
+        {
+          "id": "3A-F1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-F2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-F3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-F4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-F5",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-F6",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-F7",
+          "mandatory": true,
+          "mode": "record",
+          "qualifications": [
+            "Q02",
+            "Q10"
+          ]
+        }
+      ],
+      "guardMs": 1500000,
+      "id": "F",
+      "segment": "main2"
+    },
+    {
+      "cases": [
+        {
+          "id": "3A-G1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": [
+            "Q01"
+          ]
+        },
+        {
+          "id": "3A-G2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": [
+            "Q01"
+          ]
+        },
+        {
+          "id": "3A-G3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": [
+            "Q01"
+          ]
+        },
+        {
+          "id": "3A-G4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": [
+            "Q01"
+          ]
+        },
+        {
+          "id": "3A-G5",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": [
+            "Q01"
+          ]
+        },
+        {
+          "id": "3A-G6",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": [
+            "Q01"
+          ]
+        }
+      ],
+      "guardMs": 600000,
+      "id": "G",
+      "segment": "main2"
+    },
+    {
+      "cases": [
+        {
+          "id": "3A-H1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-H2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-H3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-H4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-H5",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-H6",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-H7",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-H8",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-H9",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-H10",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        }
+      ],
+      "guardMs": 720000,
+      "id": "H",
+      "segment": "main2"
+    },
+    {
+      "cases": [
+        {
+          "id": "3A-I1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-I2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-I3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-I4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-I5",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-I6",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        }
+      ],
+      "guardMs": 300000,
+      "id": "I",
+      "segment": "main2"
+    },
+    {
+      "cases": [
+        {
+          "id": "3A-J1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-J2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-J3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-J4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-J5",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-J6",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-J7",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-J8",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-J9",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-J10",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-J11",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-J12",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-J13",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        }
+      ],
+      "guardMs": 900000,
+      "id": "J",
+      "segment": "main2"
+    },
+    {
+      "cases": [
+        {
+          "id": "3A-K1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-K2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-K3",
+          "mandatory": true,
+          "mode": "record",
+          "qualifications": []
+        },
+        {
+          "id": "3A-K4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        }
+      ],
+      "guardMs": 300000,
+      "id": "K",
+      "segment": "main2"
+    },
+    {
+      "cases": [
+        {
+          "id": "3A-L1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-L2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-L3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-L4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-L5",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-L6",
+          "mandatory": true,
+          "mode": "record",
+          "qualifications": []
+        }
+      ],
+      "guardMs": 300000,
+      "id": "L",
+      "segment": "main2"
+    },
+    {
+      "cases": [
+        {
+          "id": "3A-M1",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-M2",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-M3",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-M4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        }
+      ],
+      "guardMs": 300000,
+      "id": "M",
+      "segment": "main2"
+    },
+    {
+      "cases": [
+        {
+          "id": "3A-JC1",
+          "mandatory": true,
+          "mode": "record",
+          "qualifications": []
+        },
+        {
+          "id": "3A-JC2",
+          "mandatory": true,
+          "mode": "record",
+          "qualifications": []
+        },
+        {
+          "id": "3A-JC3",
+          "mandatory": true,
+          "mode": "record",
+          "qualifications": []
+        },
+        {
+          "id": "3A-JC4",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-JC5",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-JC6",
+          "mandatory": true,
+          "mode": "record",
+          "qualifications": [
+            "Q11"
+          ]
+        },
+        {
+          "id": "3A-JC7",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-JC8",
+          "mandatory": true,
+          "mode": "record",
+          "qualifications": []
+        },
+        {
+          "id": "3A-JC9",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        },
+        {
+          "id": "3A-JC10",
+          "mandatory": true,
+          "mode": "assert",
+          "qualifications": []
+        }
+      ],
+      "guardMs": 10500000,
+      "id": "JC",
+      "segment": "ceiling"
+    }
+  ],
+  "stream": "3A",
+  "tools": [
+    {
+      "byteLength": 21952,
+      "path": "repositories/cca-conformance/tools/mo1308-phase3/lib/runner.mjs",
+      "sha256": "eeb124af999fe59de392d318c9ffb49dc6303e334c44fd643c00fe2c99f62312"
+    }
+  ],
+  "version": "1.0.0"
+}
