@@ -372,3 +372,5 @@ export function verifyEvidence({ root, evidenceDir, inventory, checkBindings = t
 }
 
 export { CampaignError };
+
+// moved
