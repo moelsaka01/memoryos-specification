@@ -23,7 +23,11 @@ test("DB29 a certifying run is refused unless it is Windows 11 x64, Node 24.21.0
   const out = path.join(os.tmpdir(), "mo1309-should-not-exist");
   await assert.rejects(runCampaign("4B", { mode: "certifying", out }), /certifying run refused: .*(platform is not win32|node is|output is not under evidence\/mo1309)/u);
   assert.equal(fs.existsSync(out), false, "a refused run writes nothing");
-  await assert.rejects(runCampaign("4B", { mode: "certifying", out: path.join(REPO, "repositories/cca-conformance/evidence/mo1309/x") }), /refused/u);
+  // An EXISTING evidence directory is refused (one-shot). A not-yet-existing directory here would be accepted by a clean Windows 11 checkout and would run a
+  // real certifying campaign from inside a test, so the probe is a directory that is tracked in every checkout.
+  const existing = path.join(REPO, "repositories/cca-conformance/evidence/mo1309/phase3-rehearsal");
+  assert.equal(fs.existsSync(existing), true);
+  await assert.rejects(runCampaign("4B", { mode: "certifying", out: existing }), /certifying run refused: .*output directory exists \(one-shot\)/u);
 });
 
 test("4B rehearsal passes in the cloud and writes a NON-certifying receipt that lists the Windows-only parts", async () => {
