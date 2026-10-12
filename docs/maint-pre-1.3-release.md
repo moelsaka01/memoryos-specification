@@ -43,3 +43,47 @@ minutes), then read the Windows job log. If it still fails at checkout, fetch th
 "Updating files" to find the unwritable path. Environment needed to reproduce locally: Node 24.21.0, unset
 `NODE_OPTIONS`/`NODE_PATH`, full git history with tags, sibling `cca-specifications` checkout at
 `../cca-specifications`.
+
+
+## CI round 1 on PR #4 (run 73, head a4928a48) and the fixes pushed in response
+
+| Job | Result | Cause | Action |
+|-----|--------|-------|--------|
+| Windows (windows-2022) | Build failed at ~5 min | The runner PATH carries MinGW; Ninja picked GCC 14.2 and linked vcpkg's MSVC-ABI gtest (`undefined reference to testing::Test::~Test()`). The C4100/C2607 fixes were therefore not yet exercised. | `ci.yml` imports the VS developer environment and sets `CC=cl CXX=cl` (53e38461) |
+| clang-format | failed | 97 files had drifted from the repo style (not only `memory_studio_test.cpp`) | clang-format 18 applied (3ad441b0 + the harness commit); object code of all 59 standalone production TUs byte-identical; `client.cpp` differs only by include emission order (proved) |
+| ASan/UBSan | 17 allocation-failure tests: `alloc-dealloc-mismatch (operator new vs free)` | Test-harness defect: the 12 `*_allocation_failure_test.cpp` files replace `operator new/delete` with `malloc/free` but not the nothrow forms that `std::stable_sort` (inside GoogleTest) uses. Not a product bug. | Nothrow overloads added, no failure injection (ffd1eb8c); all 12 binaries clean under ASan+UBSan locally |
+| Ubuntu | 14 failing | `ERR_MODULE_NOT_FOUND` (no `npm ci` for memoryos-mcp / memoryos-vscode); missing sibling `cca-specifications`; runner Node is 22.23.3 while the suites pin 24.21.0 | Node 24.21.0 via the pinned setup-node, `npm ci --ignore-scripts`, sibling clone at bdf8fd46 (53e38461) |
+| macOS | Test step ran 6 h until cancelled | A hung test whose orphaned Node child keeps ctest's pipes open (see product bug below) | `timeout-minutes` on all long jobs, `ctest --timeout 600` (53e38461) |
+| Coverage | failed after 56 min | not yet read (same missing Node/deps/spec checkout and the same SDK hang are the expected causes) | covered by the same CI changes; re-check next round |
+
+### STOP: real product bug found (not changed, per the rules)
+
+`repositories/cca-sdk/src/core_process.cpp` (POSIX branch, ~lines 232-262) creates its stdin/stdout pipes with
+plain `pipe()` (no `O_CLOEXEC`) and then `fork()` + `execl()`. When two `MemoryOS` instances start their Core
+host on two threads (as `MemoryOsSdk.KeepsConcurrentInstancesDeterministicAndIsolated` does), each child
+inherits the other instance's pipe ends. The Node host never sees EOF on stdin, the destructor's `waitpid`
+blocks forever, and the test times out (1500 s on CI; ctest cannot reap it, which is what held macOS for 6 h).
+
+Evidence: it reproduces locally with the CI toolchain's gtest: that test alone hangs in **19 of 40** runs
+(20 s timeout), **12 of 40** when pinned to 2 CPUs; the other 20 SDK tests pass. It hangs in the Ubuntu job
+(shows as `memoryos.standard.sdk.cpp.reference` timing out), in the sanitizer job
+(`MemoryOsSdk.KeepsConcurrentInstances...` timeout) and on macOS.
+
+The minimal production fix (not applied): create the pipes with `pipe2(..., O_CLOEXEC)` (Linux) / set
+`FD_CLOEXEC` under a process-wide spawn mutex (macOS has no `pipe2`), keeping `dup2` for the child's
+stdin/stdout (dup2 clears CLOEXEC on the targets). This needs your decision because it changes product code.
+Until then Linux and macOS Build-and-test, the sanitizer job and Coverage cannot be green.
+
+### Known remaining after round 1 (outside test/CI scope or pinned by frozen evidence)
+
+- `memoryos.standard.mo1304-phase3-windows` and `cca.workspace.verify` ("MO-1304 independent platform/parity
+  validation failed"): `tools/mo1304-windows/validate_windows.py` compares Windows-recorded paths with
+  `pathlib.Path` (POSIX semantics on Linux/macOS). The file is hash-pinned by frozen evidence
+  (mo1305-phase2d, mo1307) and its own harness manifest, so it is not edited. It should pass on the Windows job.
+- `memoryos.standard.mo1305-phase3`: generation-time preconditions of the validator (HEAD is the BF commit,
+  branch main, tag absent, Codex-machine source commits) cannot hold in CI.
+
+### Next step
+
+Read the CI run for the head after 53e38461 (Windows build/test result first; then any further C4100 under
+`/WX`), fix what is test/CI-only, and wait for the owner's decision on the `core_process.cpp` fix.
