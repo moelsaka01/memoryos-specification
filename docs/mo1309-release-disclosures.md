@@ -35,3 +35,7 @@ These are recorded here because the maintenance branch is not edited from MO-130
 4. Windows CI green with native C++ tests on a host without Smart App Control (A3.1 to A3.4 follow-ups).
 
 No tag is created by anything in MO-1309; `memoryos-1.3-mo1309` awaits the human tag review.
+
+## Record note
+
+The first final record (I3 `26363d5f`) and a first binding commit `fb076079` were superseded before any acceptance: a handoff edit had been committed between I3 and the binding, so the validator (rule 4D-D7: only the binding file may change after I3) reported `NOT_READY`. The final record was reassembled after the handoff and these disclosures were final; the superseded commits stay in history and are not bound.
