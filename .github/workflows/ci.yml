@@ -98,7 +98,11 @@ jobs:
           Add-Content -Path $env:GITHUB_ENV -Value 'CXX=cl'
 
       - name: Configure
-        run: cmake --preset ci
+        # MSVC Debug enables checked iterators (_ITERATOR_DEBUG_LEVEL=2): STL containers then allocate a proxy
+        # inside noexcept constructors, so the allocation-failure sweeps (one injected bad_alloc per allocation)
+        # reach std::terminate (exit 3) instead of exercising the product's strong guarantee. RelWithDebInfo
+        # (/MD, level 0) removes that artifact; every other platform keeps the preset's Debug build.
+        run: cmake --preset ci ${{ runner.os == 'Windows' && '-DCMAKE_BUILD_TYPE=RelWithDebInfo' || '' }}
 
       - name: Build
         # -k 0 reports every compile error in one run instead of stopping at the first.
