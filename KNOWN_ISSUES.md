@@ -191,9 +191,6 @@ decision). Hosted Windows CI therefore shows this test failing.
 - **MO-1306:** the GitHub integration is IMPLEMENTED and OFFLINE_VALIDATED but
   NOT_CERTIFIED hosted. Source: [CHANGELOG](CHANGELOG.md),
   [hosted scope correction](docs/mo1306-hosted-certification-scope-correction.md).
-- **MO-1307:** 7 of 639 conformance tests were disclosed stale-baseline tests
-  before the bound V2 correction (639/639). Source: [CHANGELOG](CHANGELOG.md),
-  [V2 correction](docs/mo1307-v2-stale-test-correction.md).
 
 ## Carried forward from v1.2.1
 
@@ -209,3 +206,13 @@ release records no change to them.
   grants no software license; [LICENSE](LICENSE) is a notice, not a grant. The
   separately published MemoryOS Standard is an open technical standard and its
   publication does not license the Reference Implementation source.
+
+## Resolved since tag
+
+- **MO-1307 stale-baseline tests.** Seven of 639 conformance tests were
+  disclosed stale-baseline tests at the `memoryos-1.3-mo1307` tag. They were
+  fixed by the test-only MO-1307 V2 stale-test correction (evidence `32255d7a`,
+  binding `1c3a4269`, 639/639 on the reference host under Node v24.21.0). No
+  open item remains. Source:
+  [V2 correction](docs/mo1307-v2-stale-test-correction.md);
+  [CHANGELOG](CHANGELOG.md) MO-1307.
