@@ -242,3 +242,6 @@ MO-1309 is tagged. Everything else on the Windows job passes except `mo1304-phas
   `Unknown directory '.../coverage.xml'`: `--xml-pretty` is a flag and took the path as a search directory. The target now uses
   `--cobertura-pretty --cobertura <file>` (`cmake/CCACoverage.cmake`; tooling only, parsing checked with gcovr 8.3 locally).
   The `--fail-under-line 90` gate is unchanged.
+- **Coverage, gcov negative hits:** the next failure was gcovr aborting on `branch 2 taken -1` (GCC bug 68080, multithreaded
+  counters). `cmake/CCACoverage.cmake` now passes gcovr's documented `--gcov-ignore-parse-errors negative_hits.warn_once_per_file`
+  (warns once per file; affects branch counters only). The `--fail-under-line 90` line gate is unchanged.
