@@ -21,16 +21,13 @@ int main() {
 
     const auto stored_first = engine.store(
         memory,
-        WorkingMemoryEntry{"first", "temporary phase one",
-                           std::optional<std::uint64_t>{5U}});
+        WorkingMemoryEntry{"first", "temporary phase one", std::optional<std::uint64_t>{5U}});
     const auto stored_second = engine.store(
         memory,
-        WorkingMemoryEntry{"second", "temporary phase two",
-                           std::optional<std::uint64_t>{10U}});
-    const auto stored_kept = engine.store(
-        memory, WorkingMemoryEntry{"kept", "retained for the task"});
-    if (!stored_first.succeeded() || !stored_second.succeeded() ||
-        !stored_kept.succeeded()) {
+        WorkingMemoryEntry{"second", "temporary phase two", std::optional<std::uint64_t>{10U}});
+    const auto stored_kept =
+        engine.store(memory, WorkingMemoryEntry{"kept", "retained for the task"});
+    if (!stored_first.succeeded() || !stored_second.succeeded() || !stored_kept.succeeded()) {
         return 1;
     }
 
@@ -58,7 +55,5 @@ int main() {
         return 1;
     }
 
-    return memory.size() == 1U && memory.entries()[0].identifier() == "second"
-               ? 0
-               : 1;
+    return memory.size() == 1U && memory.entries()[0].identifier() == "second" ? 0 : 1;
 }

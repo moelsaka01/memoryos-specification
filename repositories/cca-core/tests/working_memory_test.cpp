@@ -1,10 +1,9 @@
 #include <cca/memory/memory.hpp>
 #include <cca/memory/working_memory.hpp>
 
-#include <gtest/gtest.h>
-
 #include <cstddef>
 #include <cstdint>
+#include <gtest/gtest.h>
 #include <limits>
 #include <optional>
 #include <stdexcept>
@@ -77,8 +76,7 @@ struct FoundationEntrySnapshot final {
 };
 
 [[nodiscard]] EntrySnapshot snapshot_of(const WorkingMemoryEntry& entry) {
-    return EntrySnapshot{
-        entry.identifier(), entry.value(), entry.expirationPoint()};
+    return EntrySnapshot{entry.identifier(), entry.value(), entry.expirationPoint()};
 }
 
 [[nodiscard]] std::vector<EntrySnapshot>
@@ -98,28 +96,24 @@ snapshot_of(const std::vector<WorkingMemoryEntry>& entries) {
                          snapshot_of(memory.entries())};
 }
 
-[[nodiscard]] std::vector<FoundationEntrySnapshot>
-snapshot_of(const Memory& memory) {
+[[nodiscard]] std::vector<FoundationEntrySnapshot> snapshot_of(const Memory& memory) {
     std::vector<FoundationEntrySnapshot> snapshot;
     snapshot.reserve(memory.entries().size());
     for (const auto& entry : memory.entries()) {
-        snapshot.push_back(
-            FoundationEntrySnapshot{entry.identifier(), entry.value()});
+        snapshot.push_back(FoundationEntrySnapshot{entry.identifier(), entry.value()});
     }
     return snapshot;
 }
 
 void expect_success_without_payload(const WorkingMemoryResult& result) {
-    EXPECT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    EXPECT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
     EXPECT_EQ(result.code(), "OK");
     EXPECT_TRUE(result.message().empty());
     EXPECT_EQ(result.entry(), nullptr);
     EXPECT_TRUE(result.matches().empty());
 }
 
-void expect_failure(const WorkingMemoryResult& result,
-                    const std::string_view expected_code) {
+void expect_failure(const WorkingMemoryResult& result, const std::string_view expected_code) {
     EXPECT_FALSE(result.succeeded());
     EXPECT_EQ(result.code(), expected_code);
     EXPECT_FALSE(result.message().empty());
@@ -140,12 +134,8 @@ void store(WorkingMemoryEngine& engine,
            std::string value,
            std::optional<std::uint64_t> expiration_point = std::nullopt) {
     const auto result = engine.store(
-        memory,
-        WorkingMemoryEntry{std::move(identifier),
-                           std::move(value),
-                           expiration_point});
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+        memory, WorkingMemoryEntry{std::move(identifier), std::move(value), expiration_point});
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
     EXPECT_EQ(result.code(), "OK");
     EXPECT_TRUE(result.message().empty());
     ASSERT_NE(result.entry(), nullptr);
@@ -157,9 +147,7 @@ TEST(WorkingMemoryApiTest, PublicDeclarationsMatchTheFrozenContract) {
                                           std::string,
                                           std::string,
                                           std::optional<std::uint64_t>>);
-    static_assert(std::is_constructible_v<WorkingMemoryEntry,
-                                          std::string,
-                                          std::string>);
+    static_assert(std::is_constructible_v<WorkingMemoryEntry, std::string, std::string>);
     static_assert(std::is_constructible_v<WorkingMemoryQuery, std::string>);
     static_assert(!std::is_convertible_v<std::string, WorkingMemoryQuery>);
 
@@ -176,76 +164,56 @@ TEST(WorkingMemoryApiTest, PublicDeclarationsMatchTheFrozenContract) {
     static_assert(!std::is_copy_assignable_v<WorkingMemoryResult>);
     static_assert(std::is_empty_v<WorkingMemoryEngine>);
 
-    using EntryIdentifier =
-        const std::string& (WorkingMemoryEntry::*)() const noexcept;
-    using EntryValue =
-        const std::string& (WorkingMemoryEntry::*)() const noexcept;
-    using EntryExpiration = const std::optional<std::uint64_t>& (
-        WorkingMemoryEntry::*)() const noexcept;
-    using QueryText =
-        const std::string& (WorkingMemoryQuery::*)() const noexcept;
-    using WorkspaceIdentifier =
-        const std::string& (WorkingMemory::*)() const noexcept;
+    using EntryIdentifier = const std::string& (WorkingMemoryEntry::*)() const noexcept;
+    using EntryValue = const std::string& (WorkingMemoryEntry::*)() const noexcept;
+    using EntryExpiration =
+        const std::optional<std::uint64_t>& (WorkingMemoryEntry::*)() const noexcept;
+    using QueryText = const std::string& (WorkingMemoryQuery::*)() const noexcept;
+    using WorkspaceIdentifier = const std::string& (WorkingMemory::*)() const noexcept;
     using Active = bool (WorkingMemory::*)() const noexcept;
-    using ActiveTask = const std::optional<std::string>& (
-        WorkingMemory::*)() const noexcept;
+    using ActiveTask = const std::optional<std::string>& (WorkingMemory::*)() const noexcept;
     using MemorySize = std::size_t (WorkingMemory::*)() const noexcept;
-    using MemoryFind = const WorkingMemoryEntry* (WorkingMemory::*)(
-        std::string_view) const noexcept;
-    using MemoryEntries = const std::vector<WorkingMemoryEntry>& (
-        WorkingMemory::*)() const noexcept;
+    using MemoryFind =
+        const WorkingMemoryEntry* (WorkingMemory::*)(std::string_view) const noexcept;
+    using MemoryEntries =
+        const std::vector<WorkingMemoryEntry>& (WorkingMemory::*)() const noexcept;
     using ResultSucceeded = bool (WorkingMemoryResult::*)() const noexcept;
-    using ResultText =
-        const std::string& (WorkingMemoryResult::*)() const noexcept;
-    using ResultEntry =
-        const WorkingMemoryEntry* (WorkingMemoryResult::*)() const noexcept;
-    using ResultMatches = const std::vector<WorkingMemoryEntry>& (
-        WorkingMemoryResult::*)() const noexcept;
-    using Activate = WorkingMemoryResult (WorkingMemoryEngine::*)(
-        WorkingMemory&, std::string) const;
-    using Store = WorkingMemoryResult (WorkingMemoryEngine::*)(
-        WorkingMemory&, WorkingMemoryEntry) const;
-    using Retrieve = WorkingMemoryResult (WorkingMemoryEngine::*)(
-        const WorkingMemory&, std::string_view) const;
-    using Search = WorkingMemoryResult (WorkingMemoryEngine::*)(
-        const WorkingMemory&, const WorkingMemoryQuery&) const;
-    using Expire = WorkingMemoryResult (WorkingMemoryEngine::*)(
-        WorkingMemory&, std::uint64_t) const;
-    using Forget = WorkingMemoryResult (WorkingMemoryEngine::*)(
-        WorkingMemory&, std::string_view) const;
+    using ResultText = const std::string& (WorkingMemoryResult::*)() const noexcept;
+    using ResultEntry = const WorkingMemoryEntry* (WorkingMemoryResult::*)() const noexcept;
+    using ResultMatches =
+        const std::vector<WorkingMemoryEntry>& (WorkingMemoryResult::*)() const noexcept;
+    using Activate =
+        WorkingMemoryResult (WorkingMemoryEngine::*)(WorkingMemory&, std::string) const;
+    using Store =
+        WorkingMemoryResult (WorkingMemoryEngine::*)(WorkingMemory&, WorkingMemoryEntry) const;
+    using Retrieve =
+        WorkingMemoryResult (WorkingMemoryEngine::*)(const WorkingMemory&, std::string_view) const;
+    using Search = WorkingMemoryResult (WorkingMemoryEngine::*)(const WorkingMemory&,
+                                                                const WorkingMemoryQuery&) const;
+    using Expire =
+        WorkingMemoryResult (WorkingMemoryEngine::*)(WorkingMemory&, std::uint64_t) const;
+    using Forget =
+        WorkingMemoryResult (WorkingMemoryEngine::*)(WorkingMemory&, std::string_view) const;
 
-    static_assert(std::is_same_v<decltype(&WorkingMemoryEntry::identifier),
-                                 EntryIdentifier>);
-    static_assert(std::is_same_v<decltype(&WorkingMemoryEntry::value),
-                                 EntryValue>);
-    static_assert(std::is_same_v<decltype(&WorkingMemoryEntry::expirationPoint),
-                                 EntryExpiration>);
-    static_assert(std::is_same_v<decltype(&WorkingMemoryQuery::text),
-                                 QueryText>);
-    static_assert(std::is_same_v<decltype(&WorkingMemory::workspaceIdentifier),
-                                 WorkspaceIdentifier>);
+    static_assert(std::is_same_v<decltype(&WorkingMemoryEntry::identifier), EntryIdentifier>);
+    static_assert(std::is_same_v<decltype(&WorkingMemoryEntry::value), EntryValue>);
+    static_assert(std::is_same_v<decltype(&WorkingMemoryEntry::expirationPoint), EntryExpiration>);
+    static_assert(std::is_same_v<decltype(&WorkingMemoryQuery::text), QueryText>);
+    static_assert(
+        std::is_same_v<decltype(&WorkingMemory::workspaceIdentifier), WorkspaceIdentifier>);
     static_assert(std::is_same_v<decltype(&WorkingMemory::active), Active>);
-    static_assert(std::is_same_v<decltype(&WorkingMemory::activeTaskIdentifier),
-                                 ActiveTask>);
+    static_assert(std::is_same_v<decltype(&WorkingMemory::activeTaskIdentifier), ActiveTask>);
     static_assert(std::is_same_v<decltype(&WorkingMemory::size), MemorySize>);
     static_assert(std::is_same_v<decltype(&WorkingMemory::find), MemoryFind>);
-    static_assert(std::is_same_v<decltype(&WorkingMemory::entries),
-                                 MemoryEntries>);
-    static_assert(std::is_same_v<decltype(&WorkingMemoryResult::succeeded),
-                                 ResultSucceeded>);
-    static_assert(std::is_same_v<decltype(&WorkingMemoryResult::code),
-                                 ResultText>);
-    static_assert(std::is_same_v<decltype(&WorkingMemoryResult::message),
-                                 ResultText>);
-    static_assert(std::is_same_v<decltype(&WorkingMemoryResult::entry),
-                                 ResultEntry>);
-    static_assert(std::is_same_v<decltype(&WorkingMemoryResult::matches),
-                                 ResultMatches>);
-    static_assert(std::is_same_v<decltype(&WorkingMemoryEngine::activate),
-                                 Activate>);
+    static_assert(std::is_same_v<decltype(&WorkingMemory::entries), MemoryEntries>);
+    static_assert(std::is_same_v<decltype(&WorkingMemoryResult::succeeded), ResultSucceeded>);
+    static_assert(std::is_same_v<decltype(&WorkingMemoryResult::code), ResultText>);
+    static_assert(std::is_same_v<decltype(&WorkingMemoryResult::message), ResultText>);
+    static_assert(std::is_same_v<decltype(&WorkingMemoryResult::entry), ResultEntry>);
+    static_assert(std::is_same_v<decltype(&WorkingMemoryResult::matches), ResultMatches>);
+    static_assert(std::is_same_v<decltype(&WorkingMemoryEngine::activate), Activate>);
     static_assert(std::is_same_v<decltype(&WorkingMemoryEngine::store), Store>);
-    static_assert(std::is_same_v<decltype(&WorkingMemoryEngine::retrieve),
-                                 Retrieve>);
+    static_assert(std::is_same_v<decltype(&WorkingMemoryEngine::retrieve), Retrieve>);
     static_assert(std::is_same_v<decltype(&WorkingMemoryEngine::search), Search>);
     static_assert(std::is_same_v<decltype(&WorkingMemoryEngine::expire), Expire>);
     static_assert(std::is_same_v<decltype(&WorkingMemoryEngine::forget), Forget>);
@@ -253,8 +221,7 @@ TEST(WorkingMemoryApiTest, PublicDeclarationsMatchTheFrozenContract) {
     std::string identifier = "entry";
     std::string value = "value";
     std::string query_text = "needle";
-    const WorkingMemoryEntry entry{
-        identifier, value, std::uint64_t{42U}};
+    const WorkingMemoryEntry entry{identifier, value, std::uint64_t{42U}};
     const WorkingMemoryQuery query{query_text};
     identifier.assign("changed");
     value.assign("changed");
@@ -262,8 +229,7 @@ TEST(WorkingMemoryApiTest, PublicDeclarationsMatchTheFrozenContract) {
 
     EXPECT_EQ(entry.identifier(), "entry");
     EXPECT_EQ(entry.value(), "value");
-    EXPECT_EQ(entry.expirationPoint(),
-              std::optional<std::uint64_t>{std::uint64_t{42U}});
+    EXPECT_EQ(entry.expirationPoint(), std::optional<std::uint64_t>{std::uint64_t{42U}});
     EXPECT_EQ(query.text(), "needle");
 }
 
@@ -311,8 +277,7 @@ TEST(WorkingMemoryActivationTest, InitialStateAndActivationAreExact) {
     EXPECT_TRUE(memory.entries().empty());
 }
 
-TEST(WorkingMemoryActivationTest,
-     ReactivationIsIdempotentAndTaskSwitchClears) {
+TEST(WorkingMemoryActivationTest, ReactivationIsIdempotentAndTaskSwitchClears) {
     WorkingMemory memory{"workspace"};
     WorkingMemoryEngine engine;
     activate(engine, memory, "Task-A");
@@ -334,14 +299,12 @@ TEST(WorkingMemoryActivationTest,
     EXPECT_EQ(memory.workspaceIdentifier(), "workspace");
 }
 
-TEST(WorkingMemoryPreconditionTest,
-     InactiveStateTakesPrecedenceWithoutMutation) {
+TEST(WorkingMemoryPreconditionTest, InactiveStateTakesPrecedenceWithoutMutation) {
     WorkingMemory memory{"workspace"};
     WorkingMemoryEngine engine;
     const auto initial = snapshot_of(memory);
 
-    const auto stored =
-        engine.store(memory, WorkingMemoryEntry{"", "rejected"});
+    const auto stored = engine.store(memory, WorkingMemoryEntry{"", "rejected"});
     expect_failure(stored, "NOT_ACTIVE");
     EXPECT_EQ(snapshot_of(memory), initial);
 
@@ -371,9 +334,8 @@ TEST(WorkingMemoryStoreTest, CreatesAndReplacesCompleteEntriesInPlace) {
     WorkingMemoryEngine engine;
     activate(engine, memory);
 
-    auto first_result = engine.store(
-        memory,
-        WorkingMemoryEntry{"alpha", "original", std::uint64_t{5U}});
+    auto first_result =
+        engine.store(memory, WorkingMemoryEntry{"alpha", "original", std::uint64_t{5U}});
     ASSERT_TRUE(first_result.succeeded()) << first_result.message();
     ASSERT_NE(first_result.entry(), nullptr);
     EXPECT_EQ(snapshot_of(*first_result.entry()),
@@ -383,9 +345,8 @@ TEST(WorkingMemoryStoreTest, CreatesAndReplacesCompleteEntriesInPlace) {
     store(engine, memory, "beta", "second");
     store(engine, memory, "gamma", "third", std::uint64_t{9U});
 
-    auto replacement = engine.store(
-        memory,
-        WorkingMemoryEntry{"beta", "replacement", std::uint64_t{7U}});
+    auto replacement =
+        engine.store(memory, WorkingMemoryEntry{"beta", "replacement", std::uint64_t{7U}});
     ASSERT_TRUE(replacement.succeeded()) << replacement.message();
     ASSERT_NE(replacement.entry(), nullptr);
     EXPECT_EQ(snapshot_of(*replacement.entry()),
@@ -414,11 +375,7 @@ TEST(WorkingMemoryRetrieveTest, UsesExactIdentifiersAndDoesNotMutate) {
     WorkingMemory memory{"workspace"};
     WorkingMemoryEngine engine;
     activate(engine, memory);
-    store(engine,
-          memory,
-          "CaseSensitive",
-          "payload",
-          std::numeric_limits<std::uint64_t>::max());
+    store(engine, memory, "CaseSensitive", "payload", std::numeric_limits<std::uint64_t>::max());
     const auto before = snapshot_of(memory);
 
     auto found = engine.retrieve(memory, "CaseSensitive");
@@ -427,10 +384,9 @@ TEST(WorkingMemoryRetrieveTest, UsesExactIdentifiersAndDoesNotMutate) {
     EXPECT_TRUE(found.message().empty());
     ASSERT_NE(found.entry(), nullptr);
     EXPECT_TRUE(found.matches().empty());
-    EXPECT_EQ(snapshot_of(*found.entry()),
-              (EntrySnapshot{"CaseSensitive",
-                             "payload",
-                             std::numeric_limits<std::uint64_t>::max()}));
+    EXPECT_EQ(
+        snapshot_of(*found.entry()),
+        (EntrySnapshot{"CaseSensitive", "payload", std::numeric_limits<std::uint64_t>::max()}));
 
     const auto absent = engine.retrieve(memory, "casesensitive");
     expect_failure(absent, "NOT_FOUND");
@@ -441,14 +397,12 @@ TEST(WorkingMemoryRetrieveTest, UsesExactIdentifiersAndDoesNotMutate) {
     EXPECT_EQ(repeated.message(), absent.message());
 
     store(engine, memory, "CaseSensitive", "changed");
-    EXPECT_EQ(snapshot_of(*found.entry()),
-              (EntrySnapshot{"CaseSensitive",
-                             "payload",
-                             std::numeric_limits<std::uint64_t>::max()}));
+    EXPECT_EQ(
+        snapshot_of(*found.entry()),
+        (EntrySnapshot{"CaseSensitive", "payload", std::numeric_limits<std::uint64_t>::max()}));
 }
 
-TEST(WorkingMemorySearchTest,
-     MatchesIdentifierAndValueInInsertionOrder) {
+TEST(WorkingMemorySearchTest, MatchesIdentifierAndValueInInsertionOrder) {
     WorkingMemory memory{"workspace"};
     WorkingMemoryEngine engine;
     activate(engine, memory);
@@ -470,8 +424,7 @@ TEST(WorkingMemorySearchTest,
                   {"fourth-needle", "needle twice", std::nullopt},
               }));
 
-    const auto no_match =
-        engine.search(memory, WorkingMemoryQuery{"not-present"});
+    const auto no_match = engine.search(memory, WorkingMemoryQuery{"not-present"});
     EXPECT_TRUE(no_match.succeeded());
     EXPECT_EQ(no_match.code(), "OK");
     EXPECT_TRUE(no_match.matches().empty());
@@ -491,8 +444,7 @@ TEST(WorkingMemorySearchTest,
               }));
 }
 
-TEST(WorkingMemoryForgetTest,
-     IsExactIdempotentAndPreservesSurvivorOrder) {
+TEST(WorkingMemoryForgetTest, IsExactIdempotentAndPreservesSurvivorOrder) {
     WorkingMemory memory{"workspace"};
     WorkingMemoryEngine engine;
     activate(engine, memory);
@@ -526,8 +478,7 @@ TEST(WorkingMemoryForgetTest,
               }));
 }
 
-TEST(WorkingMemoryExpirationTest,
-     IsInclusiveOptionalAndOrderPreserving) {
+TEST(WorkingMemoryExpirationTest, IsInclusiveOptionalAndOrderPreserving) {
     WorkingMemory memory{"workspace"};
     WorkingMemoryEngine engine;
     activate(engine, memory);
@@ -537,11 +488,7 @@ TEST(WorkingMemoryExpirationTest,
     store(engine, memory, "later", "d", std::uint64_t{11U});
     store(engine, memory, "persistent-second", "e");
     store(engine, memory, "ten-second", "f", std::uint64_t{10U});
-    store(engine,
-          memory,
-          "maximum",
-          "g",
-          std::numeric_limits<std::uint64_t>::max());
+    store(engine, memory, "maximum", "g", std::numeric_limits<std::uint64_t>::max());
 
     auto expired = engine.expire(memory, std::uint64_t{10U});
     ASSERT_TRUE(expired.succeeded()) << expired.message();
@@ -559,9 +506,7 @@ TEST(WorkingMemoryExpirationTest,
                   {"persistent-first", "a", std::nullopt},
                   {"later", "d", std::uint64_t{11U}},
                   {"persistent-second", "e", std::nullopt},
-                  {"maximum",
-                   "g",
-                   std::numeric_limits<std::uint64_t>::max()},
+                  {"maximum", "g", std::numeric_limits<std::uint64_t>::max()},
               }));
 
     store(engine, memory, "after-expiration", "new");
@@ -573,8 +518,7 @@ TEST(WorkingMemoryExpirationTest,
               }));
 }
 
-TEST(WorkingMemoryExpirationTest,
-     IsOnlyExplicitAndRetainsNoLogicalClock) {
+TEST(WorkingMemoryExpirationTest, IsOnlyExplicitAndRetainsNoLogicalClock) {
     WorkingMemory memory{"workspace"};
     WorkingMemoryEngine engine;
     activate(engine, memory);
@@ -611,12 +555,10 @@ TEST(WorkingMemoryExpirationTest,
     EXPECT_TRUE(memory.entries().empty());
 }
 
-TEST(WorkingMemoryOwnershipTest,
-     ValuesResultsCopiesAndMovesAreIndependent) {
+TEST(WorkingMemoryOwnershipTest, ValuesResultsCopiesAndMovesAreIndependent) {
     std::string identifier = "owned-id";
     std::string value = "owned-value";
-    WorkingMemoryEntry supplied{
-        identifier, value, std::uint64_t{15U}};
+    WorkingMemoryEntry supplied{identifier, value, std::uint64_t{15U}};
     identifier.assign("caller-mutated-id");
     value.assign("caller-mutated-value");
     EXPECT_EQ(supplied.identifier(), "owned-id");
@@ -674,15 +616,12 @@ TEST(WorkingMemoryIsolationTest, WorkspacesAndEnginesDoNotShareState) {
     const auto first_before = snapshot_of(first);
     const auto second_before = snapshot_of(second);
 
-    const auto first_via_second_engine =
-        second_engine.retrieve(first, "first-entry");
-    ASSERT_TRUE(first_via_second_engine.succeeded())
-        << first_via_second_engine.message();
+    const auto first_via_second_engine = second_engine.retrieve(first, "first-entry");
+    ASSERT_TRUE(first_via_second_engine.succeeded()) << first_via_second_engine.message();
     ASSERT_NE(first_via_second_engine.entry(), nullptr);
     EXPECT_EQ(first_via_second_engine.entry()->value(), "first-value");
 
-    const auto missing_cross_workspace =
-        first_engine.retrieve(second, "first-entry");
+    const auto missing_cross_workspace = first_engine.retrieve(second, "first-entry");
     expect_failure(missing_cross_workspace, "NOT_FOUND");
     EXPECT_EQ(snapshot_of(first), first_before);
     EXPECT_EQ(snapshot_of(second), second_before);
@@ -697,9 +636,7 @@ TEST(WorkingMemoryIsolationTest, MemoryFoundationStateIsUntouched) {
     Memory foundation_memory{"workspace"};
     MemoryEngine foundation_engine;
     ASSERT_TRUE(foundation_engine
-                    .store(foundation_memory,
-                           MemoryEntry{"foundation-entry",
-                                       "foundation-value"})
+                    .store(foundation_memory, MemoryEntry{"foundation-entry", "foundation-value"})
                     .succeeded());
     const auto foundation_before = snapshot_of(foundation_memory);
 
@@ -707,24 +644,18 @@ TEST(WorkingMemoryIsolationTest, MemoryFoundationStateIsUntouched) {
     WorkingMemoryEngine working_engine;
     activate(working_engine, working_memory, "task");
     store(working_engine, working_memory, "temporary", "working-value");
-    ASSERT_TRUE(working_engine
-                    .search(working_memory, WorkingMemoryQuery{"working"})
-                    .succeeded());
-    ASSERT_TRUE(working_engine
-                    .expire(working_memory,
-                            std::numeric_limits<std::uint64_t>::max())
+    ASSERT_TRUE(working_engine.search(working_memory, WorkingMemoryQuery{"working"}).succeeded());
+    ASSERT_TRUE(working_engine.expire(working_memory, std::numeric_limits<std::uint64_t>::max())
                     .succeeded());
     ASSERT_TRUE(working_engine.forget(working_memory, "temporary").succeeded());
     ASSERT_TRUE(working_engine.activate(working_memory, "other-task").succeeded());
 
     EXPECT_EQ(snapshot_of(foundation_memory), foundation_before);
     ASSERT_NE(foundation_memory.find("foundation-entry"), nullptr);
-    EXPECT_EQ(foundation_memory.find("foundation-entry")->value(),
-              "foundation-value");
+    EXPECT_EQ(foundation_memory.find("foundation-entry")->value(), "foundation-value");
 }
 
-TEST(WorkingMemoryFailureTest,
-     SemanticFailuresPreserveCompleteState) {
+TEST(WorkingMemoryFailureTest, SemanticFailuresPreserveCompleteState) {
     WorkingMemory memory{"workspace"};
     WorkingMemoryEngine engine;
     activate(engine, memory, "task");
@@ -732,8 +663,7 @@ TEST(WorkingMemoryFailureTest,
     store(engine, memory, "second", "two");
     const auto before = snapshot_of(memory);
 
-    const auto invalid_store =
-        engine.store(memory, WorkingMemoryEntry{"", "rejected", 2U});
+    const auto invalid_store = engine.store(memory, WorkingMemoryEntry{"", "rejected", 2U});
     expect_failure(invalid_store, "INVALID_IDENTIFIER");
     EXPECT_EQ(snapshot_of(memory), before);
 
@@ -749,8 +679,7 @@ TEST(WorkingMemoryFailureTest,
     expect_failure(absent, "NOT_FOUND");
     EXPECT_EQ(snapshot_of(memory), before);
 
-    const auto repeated_store =
-        engine.store(memory, WorkingMemoryEntry{"", "different", 99U});
+    const auto repeated_store = engine.store(memory, WorkingMemoryEntry{"", "different", 99U});
     EXPECT_EQ(repeated_store.code(), invalid_store.code());
     EXPECT_EQ(repeated_store.message(), invalid_store.message());
     EXPECT_EQ(snapshot_of(memory), before);
@@ -765,12 +694,10 @@ struct DeterministicObservation final {
     bool operator==(const DeterministicObservation&) const = default;
 };
 
-[[nodiscard]] DeterministicObservation
-run_deterministic_sequence(WorkingMemoryEngine& engine,
-                           WorkingMemory& memory) {
+[[nodiscard]] DeterministicObservation run_deterministic_sequence(WorkingMemoryEngine& engine,
+                                                                  WorkingMemory& memory) {
     DeterministicObservation observation;
-    const auto observe_result = [&observation](
-                                    const WorkingMemoryResult& result) {
+    const auto observe_result = [&observation](const WorkingMemoryResult& result) {
         observation.codes.push_back(result.code());
         observation.messages.push_back(result.message());
         if (result.entry() != nullptr) {
@@ -782,18 +709,16 @@ run_deterministic_sequence(WorkingMemoryEngine& engine,
 
     const auto activated = engine.activate(memory, "task");
     observe_result(activated);
-    const auto alpha = engine.store(
-        memory, WorkingMemoryEntry{"alpha", "match-a", std::uint64_t{5U}});
+    const auto alpha =
+        engine.store(memory, WorkingMemoryEntry{"alpha", "match-a", std::uint64_t{5U}});
     observe_result(alpha);
-    const auto beta = engine.store(
-        memory, WorkingMemoryEntry{"beta", "match-b", std::uint64_t{2U}});
+    const auto beta =
+        engine.store(memory, WorkingMemoryEntry{"beta", "match-b", std::uint64_t{2U}});
     observe_result(beta);
-    const auto gamma = engine.store(
-        memory, WorkingMemoryEntry{"gamma", "match-c"});
+    const auto gamma = engine.store(memory, WorkingMemoryEntry{"gamma", "match-c"});
     observe_result(gamma);
-    const auto replaced = engine.store(
-        memory,
-        WorkingMemoryEntry{"alpha", "match-replaced", std::uint64_t{7U}});
+    const auto replaced =
+        engine.store(memory, WorkingMemoryEntry{"alpha", "match-replaced", std::uint64_t{7U}});
     observe_result(replaced);
     const auto search = engine.search(memory, WorkingMemoryQuery{"match"});
     observe_result(search);
@@ -808,17 +733,14 @@ run_deterministic_sequence(WorkingMemoryEngine& engine,
     return observation;
 }
 
-TEST(WorkingMemoryOrderingTest,
-     EquivalentSequencesProduceEquivalentObservations) {
+TEST(WorkingMemoryOrderingTest, EquivalentSequencesProduceEquivalentObservations) {
     WorkingMemoryEngine first_engine;
     WorkingMemoryEngine second_engine;
     WorkingMemory first{"workspace"};
     WorkingMemory second{"workspace"};
 
-    const auto first_observation =
-        run_deterministic_sequence(first_engine, first);
-    const auto second_observation =
-        run_deterministic_sequence(second_engine, second);
+    const auto first_observation = run_deterministic_sequence(first_engine, first);
+    const auto second_observation = run_deterministic_sequence(second_engine, second);
 
     EXPECT_EQ(first_observation, second_observation);
     EXPECT_TRUE(first.active());

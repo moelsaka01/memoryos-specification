@@ -14,8 +14,8 @@ class ProceduralMemoryPersistence {
     static std::unique_ptr<cca::representation::RepresentationDocument>
     project(const ProceduralMemory& memory);
 
-    static ProceduralMemory reconstruct(
-        const cca::representation::RepresentationDocument& workspace);
+    static ProceduralMemory
+    reconstruct(const cca::representation::RepresentationDocument& workspace);
 
     static ProceduralMemory roundTrip(const ProceduralMemory& memory);
 };

@@ -26,14 +26,12 @@ class TransactionService;
 class FreezeService;
 class Transaction;
 
-using EntityCollection =
-    std::vector<std::reference_wrapper<const RepresentationEntity>>;
+using EntityCollection = std::vector<std::reference_wrapper<const RepresentationEntity>>;
 
 using RelationshipCollection =
     std::vector<std::reference_wrapper<const RepresentationRelationship>>;
 
-using PropertyCollection =
-    std::vector<std::reference_wrapper<const RepresentationProperty>>;
+using PropertyCollection = std::vector<std::reference_wrapper<const RepresentationProperty>>;
 
 class RepresentationId {
   public:
@@ -170,9 +168,8 @@ class RepresentationEntity {
 
     const PropertyCollection& properties() const noexcept;
 
-    RepresentationProperty& addProperty(std::string name,
-                                        RepresentationType type,
-                                        RepresentationValue value);
+    RepresentationProperty&
+    addProperty(std::string name, RepresentationType type, RepresentationValue value);
 
     const RepresentationProperty* property(std::string_view name) const noexcept;
 
@@ -195,8 +192,7 @@ class RepresentationRelationship {
   public:
     RepresentationRelationship(const RepresentationRelationship&) = delete;
 
-    RepresentationRelationship&
-    operator=(const RepresentationRelationship&) = delete;
+    RepresentationRelationship& operator=(const RepresentationRelationship&) = delete;
 
     const RepresentationId& id() const noexcept;
 
@@ -206,9 +202,8 @@ class RepresentationRelationship {
 
     const RepresentationEntity& target() const noexcept;
 
-    RepresentationProperty& addProperty(std::string name,
-                                        RepresentationType type,
-                                        RepresentationValue value);
+    RepresentationProperty&
+    addProperty(std::string name, RepresentationType type, RepresentationValue value);
 
     const PropertyCollection& properties() const noexcept;
 
@@ -251,8 +246,7 @@ class RepresentationMetadata {
 
 class RepresentationDocument {
   public:
-    explicit RepresentationDocument(
-        RepresentationMetadata metadata = RepresentationMetadata{});
+    explicit RepresentationDocument(RepresentationMetadata metadata = RepresentationMetadata{});
 
     ~RepresentationDocument();
 
@@ -266,10 +260,9 @@ class RepresentationDocument {
 
     RepresentationEntity& createEntity(const RepresentationType& type);
 
-    RepresentationRelationship&
-    createRelationship(RepresentationEntity& source,
-                       RepresentationEntity& target,
-                       const RepresentationType& type);
+    RepresentationRelationship& createRelationship(RepresentationEntity& source,
+                                                   RepresentationEntity& target,
+                                                   const RepresentationType& type);
 
     void removeEntity(const RepresentationId& id);
 
@@ -314,11 +307,7 @@ class RepresentationDocument {
     std::unique_ptr<Impl> impl_;
 };
 
-enum class DiagnosticSeverity {
-    Information = 0,
-    Warning = 1,
-    Error = 2
-};
+enum class DiagnosticSeverity { Information = 0, Warning = 1, Error = 2 };
 
 enum class DiagnosticCode {
     None = 0,
@@ -386,17 +375,14 @@ class FreezeService {
 
 class QueryService {
   public:
-    const RepresentationEntity*
-    findEntity(const RepresentationDocument& document,
-               const RepresentationId& id) const noexcept;
+    const RepresentationEntity* findEntity(const RepresentationDocument& document,
+                                           const RepresentationId& id) const noexcept;
 
-    const RepresentationRelationship*
-    findRelationship(const RepresentationDocument& document,
-                     const RepresentationId& id) const noexcept;
+    const RepresentationRelationship* findRelationship(const RepresentationDocument& document,
+                                                       const RepresentationId& id) const noexcept;
 
-    EntityCollection
-    entitiesByType(const RepresentationDocument& document,
-                   const RepresentationType& type) const;
+    EntityCollection entitiesByType(const RepresentationDocument& document,
+                                    const RepresentationType& type) const;
 };
 
 } // namespace cca::representation

@@ -1,7 +1,5 @@
 #include <cca/process/process.hpp>
 
-#include "process_test_access.hpp"
-
 #include <array>
 #include <cstddef>
 #include <memory>
@@ -9,6 +7,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+#include "process_test_access.hpp"
 
 namespace cca::process {
 namespace {
@@ -20,8 +20,7 @@ using cca::representation::ValidationService;
 
 constexpr auto invalid_definition_message =
     "Cannot construct a ProcessDefinition from an invalid RepresentationDocument";
-constexpr auto invalid_result_message =
-    "RepresentationDocument validation failed";
+constexpr auto invalid_result_message = "RepresentationDocument validation failed";
 
 const std::vector<RepresentationId>& empty_execution_order() noexcept {
     static const std::vector<RepresentationId> value;
@@ -48,8 +47,7 @@ class ProcessDefinition::Impl {
             property_count += relationship_reference.get().properties().size();
         }
 
-        execution_order.reserve(
-            entity_count + relationship_count + property_count);
+        execution_order.reserve(entity_count + relationship_count + property_count);
 
         for (const auto& entity_reference : entities) {
             const auto& entity = entity_reference.get();
@@ -86,10 +84,9 @@ ProcessDefinition::~ProcessDefinition() = default;
 
 ProcessDefinition::ProcessDefinition(const ProcessDefinition& other)
     : impl_(other.impl_ != nullptr ? std::make_unique<Impl>(*other.impl_)
-                                  : std::make_unique<Impl>()) {}
+                                   : std::make_unique<Impl>()) {}
 
-ProcessDefinition&
-ProcessDefinition::operator=(const ProcessDefinition& other) {
+ProcessDefinition& ProcessDefinition::operator=(const ProcessDefinition& other) {
     if (this == &other) {
         return *this;
     }
@@ -104,14 +101,11 @@ ProcessDefinition::operator=(const ProcessDefinition& other) {
     return *this;
 }
 
-ProcessDefinition::ProcessDefinition(ProcessDefinition&& other) noexcept =
-    default;
+ProcessDefinition::ProcessDefinition(ProcessDefinition&& other) noexcept = default;
 
-ProcessDefinition&
-ProcessDefinition::operator=(ProcessDefinition&& other) noexcept = default;
+ProcessDefinition& ProcessDefinition::operator=(ProcessDefinition&& other) noexcept = default;
 
-const std::vector<RepresentationId>&
-ProcessDefinition::executionOrder() const noexcept {
+const std::vector<RepresentationId>& ProcessDefinition::executionOrder() const noexcept {
     return impl_ != nullptr ? impl_->execution_order : empty_execution_order();
 }
 
@@ -182,21 +176,18 @@ void ProcessInternalAccess::setState(ExecutionContext& context,
     context.impl_->state = state;
 }
 
-ExecutionResult::ExecutionResult(
-    const ExecutionState state,
-    const Code code,
-    std::string message,
-    std::vector<RepresentationId> trace,
-    std::vector<Diagnostic> diagnostics)
-    : state_(state), code_(code), message_(std::move(message)),
-      trace_(std::move(trace)), diagnostics_(std::move(diagnostics)) {
-    const auto success_invariants =
-        state_ == ExecutionState::Completed && code_ == Code::Success &&
-        message_.empty() && diagnostics_.empty();
-    const auto invalid_invariants =
-        state_ == ExecutionState::Failed &&
-        code_ == Code::InvalidRepresentation && !message_.empty() &&
-        trace_.empty();
+ExecutionResult::ExecutionResult(const ExecutionState state,
+                                 const Code code,
+                                 std::string message,
+                                 std::vector<RepresentationId> trace,
+                                 std::vector<Diagnostic> diagnostics)
+    : state_(state), code_(code), message_(std::move(message)), trace_(std::move(trace)),
+      diagnostics_(std::move(diagnostics)) {
+    const auto success_invariants = state_ == ExecutionState::Completed && code_ == Code::Success &&
+                                    message_.empty() && diagnostics_.empty();
+    const auto invalid_invariants = state_ == ExecutionState::Failed &&
+                                    code_ == Code::InvalidRepresentation && !message_.empty() &&
+                                    trace_.empty();
 
     if (!success_invariants && !invalid_invariants) {
         throw std::logic_error{"Invalid ExecutionResult invariants"};
@@ -227,8 +218,7 @@ const std::vector<Diagnostic>& ExecutionResult::diagnostics() const noexcept {
     return diagnostics_;
 }
 
-ExecutionResult ProcessEngine::execute(
-    const RepresentationDocument& document) const {
+ExecutionResult ProcessEngine::execute(const RepresentationDocument& document) const {
     auto validation = ValidationService{}.validate(document);
     if (!validation.valid) {
         return ExecutionResult{
@@ -244,8 +234,7 @@ ExecutionResult ProcessEngine::execute(
     return execute(definition);
 }
 
-ExecutionResult
-ProcessEngine::execute(const ProcessDefinition& definition) const {
+ExecutionResult ProcessEngine::execute(const ProcessDefinition& definition) const {
     ExecutionContext context{definition};
     return execute(context);
 }

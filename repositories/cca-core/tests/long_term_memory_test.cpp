@@ -5,13 +5,10 @@
 #include <cca/runtime/runtime_builder.hpp>
 #include <cca/runtime/runtime_id.hpp>
 
-#include "long_term_memory_persistence.hpp"
-
-#include <gtest/gtest.h>
-
 #include <array>
 #include <cstddef>
 #include <cstdint>
+#include <gtest/gtest.h>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -20,6 +17,8 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
+
+#include "long_term_memory_persistence.hpp"
 
 /*
 CCA-LTMEM-1.0 requirement coverage
@@ -146,18 +145,15 @@ snapshot_of(const std::vector<LongTermMemoryEntry>& entries) {
     return result;
 }
 
-[[nodiscard]] std::string identifier_disposition(
-    const LongTermMemory& memory,
-    const std::string_view identifier) {
+[[nodiscard]] std::string identifier_disposition(const LongTermMemory& memory,
+                                                 const std::string_view identifier) {
     if (const auto* entry = memory.find(identifier); entry != nullptr) {
         return entry->archived() ? "ARCHIVED" : "LONG_TERM";
     }
 
     LongTermMemory probe{memory};
     const auto result = LongTermMemoryEngine{}.retain(
-        probe,
-        LongTermMemoryEntry{std::string{identifier},
-                            "private-forgotten-history-probe"});
+        probe, LongTermMemoryEntry{std::string{identifier}, "private-forgotten-history-probe"});
     if (result.code() == "FORGOTTEN_IDENTIFIER") {
         return "FORGOTTEN";
     }
@@ -167,20 +163,18 @@ snapshot_of(const std::vector<LongTermMemoryEntry>& entries) {
     return "UNEXPECTED:" + result.code();
 }
 
-[[nodiscard]] StateSnapshot snapshot_of(
-    const LongTermMemory& memory,
-    const std::vector<std::string_view>& identifier_probes = {}) {
+[[nodiscard]] StateSnapshot
+snapshot_of(const LongTermMemory& memory,
+            const std::vector<std::string_view>& identifier_probes = {}) {
     std::vector<IdentifierSnapshot> identifiers;
     identifiers.reserve(identifier_probes.size());
     for (const auto identifier : identifier_probes) {
-        identifiers.push_back(
-            IdentifierSnapshot{std::string{identifier},
-                               identifier_disposition(memory, identifier)});
+        identifiers.push_back(IdentifierSnapshot{std::string{identifier},
+                                                 identifier_disposition(memory, identifier)});
     }
 
-    return StateSnapshot{memory.workspaceIdentifier(),
-                         snapshot_of(memory.entries()),
-                         std::move(identifiers)};
+    return StateSnapshot{
+        memory.workspaceIdentifier(), snapshot_of(memory.entries()), std::move(identifiers)};
 }
 
 [[nodiscard]] ResultSnapshot snapshot_of(const LongTermMemoryResult& result) {
@@ -195,25 +189,21 @@ snapshot_of(const std::vector<LongTermMemoryEntry>& entries) {
                           snapshot_of(result.matches())};
 }
 
-[[nodiscard]] std::vector<MemoryEntrySnapshot> snapshot_of(
-    const Memory& memory) {
+[[nodiscard]] std::vector<MemoryEntrySnapshot> snapshot_of(const Memory& memory) {
     std::vector<MemoryEntrySnapshot> result;
     result.reserve(memory.entries().size());
     for (const auto& entry : memory.entries()) {
-        result.push_back(
-            MemoryEntrySnapshot{entry.identifier(), entry.value()});
+        result.push_back(MemoryEntrySnapshot{entry.identifier(), entry.value()});
     }
     return result;
 }
 
-[[nodiscard]] WorkingStateSnapshot snapshot_of(
-    const WorkingMemory& memory) {
+[[nodiscard]] WorkingStateSnapshot snapshot_of(const WorkingMemory& memory) {
     std::vector<WorkingEntrySnapshot> entries;
     entries.reserve(memory.entries().size());
     for (const auto& entry : memory.entries()) {
-        entries.push_back(WorkingEntrySnapshot{entry.identifier(),
-                                               entry.value(),
-                                               entry.expirationPoint()});
+        entries.push_back(
+            WorkingEntrySnapshot{entry.identifier(), entry.value(), entry.expirationPoint()});
     }
     return WorkingStateSnapshot{memory.workspaceIdentifier(),
                                 memory.active(),
@@ -225,8 +215,7 @@ void expect_entry_success(const LongTermMemoryResult& result,
                           const std::string_view identifier,
                           const std::string_view value,
                           const bool archived) {
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
     EXPECT_EQ(result.code(), "OK");
     EXPECT_TRUE(result.message().empty());
     ASSERT_NE(result.entry(), nullptr);
@@ -237,16 +226,14 @@ void expect_entry_success(const LongTermMemoryResult& result,
 }
 
 void expect_no_payload_success(const LongTermMemoryResult& result) {
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
     EXPECT_EQ(result.code(), "OK");
     EXPECT_TRUE(result.message().empty());
     EXPECT_EQ(result.entry(), nullptr);
     EXPECT_TRUE(result.matches().empty());
 }
 
-void expect_failure(const LongTermMemoryResult& result,
-                    const std::string_view expected_code) {
+void expect_failure(const LongTermMemoryResult& result, const std::string_view expected_code) {
     EXPECT_FALSE(result.succeeded());
     EXPECT_EQ(result.code(), expected_code);
     EXPECT_FALSE(result.message().empty());
@@ -258,27 +245,22 @@ void retain(LongTermMemoryEngine& engine,
             LongTermMemory& memory,
             std::string identifier,
             std::string value) {
-    const auto result = engine.retain(
-        memory,
-        LongTermMemoryEntry{std::move(identifier), std::move(value)});
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    const auto result =
+        engine.retain(memory, LongTermMemoryEntry{std::move(identifier), std::move(value)});
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
 void store(LongTermMemoryEngine& engine,
            LongTermMemory& memory,
            std::string identifier,
            std::string value) {
-    const auto result = engine.store(
-        memory,
-        LongTermMemoryEntry{std::move(identifier), std::move(value)});
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    const auto result =
+        engine.store(memory, LongTermMemoryEntry{std::move(identifier), std::move(value)});
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
 TEST(LongTermMemoryApiTest, PublicDeclarationsMatchTheFrozenContract) {
-    static_assert(
-        std::is_constructible_v<LongTermMemoryEntry, std::string, std::string>);
+    static_assert(std::is_constructible_v<LongTermMemoryEntry, std::string, std::string>);
     static_assert(std::is_constructible_v<LongTermMemoryQuery, std::string>);
     static_assert(!std::is_convertible_v<std::string, LongTermMemoryQuery>);
 
@@ -295,119 +277,90 @@ TEST(LongTermMemoryApiTest, PublicDeclarationsMatchTheFrozenContract) {
     static_assert(!std::is_copy_assignable_v<LongTermMemoryResult>);
     static_assert(std::is_empty_v<LongTermMemoryEngine>);
 
-    using EntryIdentifier =
-        const std::string& (LongTermMemoryEntry::*)() const noexcept;
-    using EntryValue =
-        const std::string& (LongTermMemoryEntry::*)() const noexcept;
+    using EntryIdentifier = const std::string& (LongTermMemoryEntry::*)() const noexcept;
+    using EntryValue = const std::string& (LongTermMemoryEntry::*)() const noexcept;
     using EntryArchived = bool (LongTermMemoryEntry::*)() const noexcept;
-    using QueryText =
-        const std::string& (LongTermMemoryQuery::*)() const noexcept;
-    using WorkspaceIdentifier =
-        const std::string& (LongTermMemory::*)() const noexcept;
+    using QueryText = const std::string& (LongTermMemoryQuery::*)() const noexcept;
+    using WorkspaceIdentifier = const std::string& (LongTermMemory::*)() const noexcept;
     using MemorySize = std::size_t (LongTermMemory::*)() const noexcept;
-    using Find = const LongTermMemoryEntry* (LongTermMemory::*)(
-        std::string_view) const noexcept;
-    using Entries = const std::vector<LongTermMemoryEntry>& (
-        LongTermMemory::*)() const noexcept;
+    using Find = const LongTermMemoryEntry* (LongTermMemory::*)(std::string_view) const noexcept;
+    using Entries = const std::vector<LongTermMemoryEntry>& (LongTermMemory::*)() const noexcept;
     using Succeeded = bool (LongTermMemoryResult::*)() const noexcept;
-    using ResultString =
-        const std::string& (LongTermMemoryResult::*)() const noexcept;
-    using ResultEntry =
-        const LongTermMemoryEntry* (LongTermMemoryResult::*)() const noexcept;
-    using Matches = const std::vector<LongTermMemoryEntry>& (
-        LongTermMemoryResult::*)() const noexcept;
+    using ResultString = const std::string& (LongTermMemoryResult::*)() const noexcept;
+    using ResultEntry = const LongTermMemoryEntry* (LongTermMemoryResult::*)() const noexcept;
+    using Matches =
+        const std::vector<LongTermMemoryEntry>& (LongTermMemoryResult::*)() const noexcept;
 
-    static_assert(std::is_same_v<decltype(static_cast<EntryIdentifier>(
-                                     &LongTermMemoryEntry::identifier)),
-                                 EntryIdentifier>);
-    static_assert(std::is_same_v<decltype(static_cast<EntryValue>(
-                                     &LongTermMemoryEntry::value)),
-                                 EntryValue>);
-    static_assert(std::is_same_v<decltype(static_cast<EntryArchived>(
-                                     &LongTermMemoryEntry::archived)),
-                                 EntryArchived>);
-    static_assert(std::is_same_v<decltype(static_cast<QueryText>(
-                                     &LongTermMemoryQuery::text)),
-                                 QueryText>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<EntryIdentifier>(&LongTermMemoryEntry::identifier)),
+                       EntryIdentifier>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<EntryValue>(&LongTermMemoryEntry::value)), EntryValue>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<EntryArchived>(&LongTermMemoryEntry::archived)),
+                       EntryArchived>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<QueryText>(&LongTermMemoryQuery::text)), QueryText>);
     static_assert(std::is_same_v<decltype(static_cast<WorkspaceIdentifier>(
                                      &LongTermMemory::workspaceIdentifier)),
                                  WorkspaceIdentifier>);
-    static_assert(std::is_same_v<decltype(static_cast<MemorySize>(
-                                     &LongTermMemory::size)),
-                                 MemorySize>);
-    static_assert(std::is_same_v<decltype(static_cast<Find>(
-                                     &LongTermMemory::find)),
-                                 Find>);
-    static_assert(std::is_same_v<decltype(static_cast<Entries>(
-                                     &LongTermMemory::entries)),
-                                 Entries>);
-    static_assert(std::is_same_v<decltype(static_cast<Succeeded>(
-                                     &LongTermMemoryResult::succeeded)),
+    static_assert(
+        std::is_same_v<decltype(static_cast<MemorySize>(&LongTermMemory::size)), MemorySize>);
+    static_assert(std::is_same_v<decltype(static_cast<Find>(&LongTermMemory::find)), Find>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Entries>(&LongTermMemory::entries)), Entries>);
+    static_assert(std::is_same_v<decltype(static_cast<Succeeded>(&LongTermMemoryResult::succeeded)),
                                  Succeeded>);
-    static_assert(std::is_same_v<decltype(static_cast<ResultString>(
-                                     &LongTermMemoryResult::code)),
+    static_assert(std::is_same_v<decltype(static_cast<ResultString>(&LongTermMemoryResult::code)),
                                  ResultString>);
-    static_assert(std::is_same_v<decltype(static_cast<ResultString>(
-                                     &LongTermMemoryResult::message)),
-                                 ResultString>);
-    static_assert(std::is_same_v<decltype(static_cast<ResultEntry>(
-                                     &LongTermMemoryResult::entry)),
+    static_assert(
+        std::is_same_v<decltype(static_cast<ResultString>(&LongTermMemoryResult::message)),
+                       ResultString>);
+    static_assert(std::is_same_v<decltype(static_cast<ResultEntry>(&LongTermMemoryResult::entry)),
                                  ResultEntry>);
-    static_assert(std::is_same_v<decltype(static_cast<Matches>(
-                                     &LongTermMemoryResult::matches)),
-                                 Matches>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Matches>(&LongTermMemoryResult::matches)), Matches>);
 
-    using Retain = LongTermMemoryResult (LongTermMemoryEngine::*)(
-        LongTermMemory&, LongTermMemoryEntry) const;
-    using Store = LongTermMemoryResult (LongTermMemoryEngine::*)(
-        LongTermMemory&, LongTermMemoryEntry) const;
-    using Retrieve = LongTermMemoryResult (LongTermMemoryEngine::*)(
-        const LongTermMemory&, std::string_view) const;
-    using Search = LongTermMemoryResult (LongTermMemoryEngine::*)(
-        const LongTermMemory&, const LongTermMemoryQuery&) const;
-    using Archive = LongTermMemoryResult (LongTermMemoryEngine::*)(
-        LongTermMemory&, std::string_view) const;
-    using Restore = LongTermMemoryResult (LongTermMemoryEngine::*)(
-        LongTermMemory&, const LongTermMemory&) const;
-    using Forget = LongTermMemoryResult (LongTermMemoryEngine::*)(
-        LongTermMemory&, std::string_view) const;
+    using Retain =
+        LongTermMemoryResult (LongTermMemoryEngine::*)(LongTermMemory&, LongTermMemoryEntry) const;
+    using Store =
+        LongTermMemoryResult (LongTermMemoryEngine::*)(LongTermMemory&, LongTermMemoryEntry) const;
+    using Retrieve = LongTermMemoryResult (LongTermMemoryEngine::*)(const LongTermMemory&,
+                                                                    std::string_view) const;
+    using Search = LongTermMemoryResult (LongTermMemoryEngine::*)(const LongTermMemory&,
+                                                                  const LongTermMemoryQuery&) const;
+    using Archive =
+        LongTermMemoryResult (LongTermMemoryEngine::*)(LongTermMemory&, std::string_view) const;
+    using Restore = LongTermMemoryResult (LongTermMemoryEngine::*)(LongTermMemory&,
+                                                                   const LongTermMemory&) const;
+    using Forget =
+        LongTermMemoryResult (LongTermMemoryEngine::*)(LongTermMemory&, std::string_view) const;
 
-    static_assert(std::is_same_v<decltype(static_cast<Retain>(
-                                     &LongTermMemoryEngine::retain)),
-                                 Retain>);
-    static_assert(std::is_same_v<decltype(static_cast<Store>(
-                                     &LongTermMemoryEngine::store)),
-                                 Store>);
-    static_assert(std::is_same_v<decltype(static_cast<Retrieve>(
-                                     &LongTermMemoryEngine::retrieve)),
-                                 Retrieve>);
-    static_assert(std::is_same_v<decltype(static_cast<Search>(
-                                     &LongTermMemoryEngine::search)),
-                                 Search>);
-    static_assert(std::is_same_v<decltype(static_cast<Archive>(
-                                     &LongTermMemoryEngine::archive)),
-                                 Archive>);
-    static_assert(std::is_same_v<decltype(static_cast<Restore>(
-                                     &LongTermMemoryEngine::restore)),
-                                 Restore>);
-    static_assert(std::is_same_v<decltype(static_cast<Forget>(
-                                     &LongTermMemoryEngine::forget)),
-                                 Forget>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Retain>(&LongTermMemoryEngine::retain)), Retain>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Store>(&LongTermMemoryEngine::store)), Store>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Retrieve>(&LongTermMemoryEngine::retrieve)), Retrieve>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Search>(&LongTermMemoryEngine::search)), Search>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Archive>(&LongTermMemoryEngine::archive)), Archive>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Restore>(&LongTermMemoryEngine::restore)), Restore>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Forget>(&LongTermMemoryEngine::forget)), Forget>);
 
-    static_assert(!std::is_invocable_v<Retain,
-                                       const LongTermMemoryEngine&,
-                                       LongTermMemory&,
-                                       MemoryEntry>);
+    static_assert(
+        !std::is_invocable_v<Retain, const LongTermMemoryEngine&, LongTermMemory&, MemoryEntry>);
     static_assert(!std::is_invocable_v<Retain,
                                        const LongTermMemoryEngine&,
                                        LongTermMemory&,
                                        WorkingMemoryEntry>);
 }
 
-TEST(LongTermMemoryOwnershipTest,
-     WorkspaceBoundaryIsRequiredAndImmutable) {
-    EXPECT_THROW(static_cast<void>(LongTermMemory{""}),
-                 std::invalid_argument);
+TEST(LongTermMemoryOwnershipTest, WorkspaceBoundaryIsRequiredAndImmutable) {
+    EXPECT_THROW(static_cast<void>(LongTermMemory{""}), std::invalid_argument);
 
     LongTermMemory memory{"Workspace-Case-Sensitive"};
     EXPECT_EQ(memory.workspaceIdentifier(), "Workspace-Case-Sensitive");
@@ -420,8 +373,7 @@ TEST(LongTermMemoryOwnershipTest,
     EXPECT_EQ(copied.workspaceIdentifier(), "Workspace-Case-Sensitive");
 }
 
-TEST(LongTermMemoryConstructionTest,
-     InitialStateAndClassificationBoundaryAreExact) {
+TEST(LongTermMemoryConstructionTest, InitialStateAndClassificationBoundaryAreExact) {
     std::string identifier = "durable-id";
     std::string value = "already-classified-long-term-value";
     LongTermMemoryEntry entry{identifier, value};
@@ -444,16 +396,12 @@ TEST(LongTermMemoryConstructionTest,
     EXPECT_EQ(query.text(), "classified");
 }
 
-TEST(LongTermMemoryObservationTest,
-     ExposesCompleteStateWithSpecifiedLifetimes) {
+TEST(LongTermMemoryObservationTest, ExposesCompleteStateWithSpecifiedLifetimes) {
     LongTermMemoryEngine engine;
     LongTermMemory memory{"workspace"};
     retain(engine, memory, "first", "alpha");
     retain(engine, memory, "second", "beta");
-    expect_entry_success(engine.archive(memory, "second"),
-                         "second",
-                         "beta",
-                         true);
+    expect_entry_success(engine.archive(memory, "second"), "second", "beta", true);
 
     const auto* first = memory.find("first");
     const auto* second = memory.find("second");
@@ -483,42 +431,30 @@ TEST(LongTermMemoryObservationTest,
     EXPECT_EQ(memory.entries().front().identifier(), "second");
 }
 
-TEST(LongTermMemoryRetainTest,
-     AppendIdempotenceConflictAndPrecedenceAreExact) {
+TEST(LongTermMemoryRetainTest, AppendIdempotenceConflictAndPrecedenceAreExact) {
     LongTermMemoryEngine engine;
     LongTermMemory memory{"workspace"};
 
-    const auto appended =
-        engine.retain(memory, LongTermMemoryEntry{"first", "one"});
+    const auto appended = engine.retain(memory, LongTermMemoryEntry{"first", "one"});
     expect_entry_success(appended, "first", "one", false);
     retain(engine, memory, "second", "two");
 
-    const auto before_idempotent =
-        snapshot_of(memory, {"first", "second"});
-    const auto idempotent =
-        engine.retain(memory, LongTermMemoryEntry{"first", "one"});
+    const auto before_idempotent = snapshot_of(memory, {"first", "second"});
+    const auto idempotent = engine.retain(memory, LongTermMemoryEntry{"first", "one"});
     expect_entry_success(idempotent, "first", "one", false);
     EXPECT_EQ(snapshot_of(memory, {"first", "second"}), before_idempotent);
 
-    const auto conflict =
-        engine.retain(memory, LongTermMemoryEntry{"first", "different"});
+    const auto conflict = engine.retain(memory, LongTermMemoryEntry{"first", "different"});
     expect_failure(conflict, "IDENTIFIER_CONFLICT");
     EXPECT_EQ(snapshot_of(memory, {"first", "second"}), before_idempotent);
 
-    expect_entry_success(engine.archive(memory, "second"),
-                         "second",
-                         "two",
-                         true);
-    const auto archived_idempotent =
-        engine.retain(memory, LongTermMemoryEntry{"second", "two"});
+    expect_entry_success(engine.archive(memory, "second"), "second", "two", true);
+    const auto archived_idempotent = engine.retain(memory, LongTermMemoryEntry{"second", "two"});
     expect_entry_success(archived_idempotent, "second", "two", true);
-    expect_failure(
-        engine.retain(memory,
-                      LongTermMemoryEntry{"second", "different"}),
-        "IDENTIFIER_CONFLICT");
+    expect_failure(engine.retain(memory, LongTermMemoryEntry{"second", "different"}),
+                   "IDENTIFIER_CONFLICT");
 
-    expect_failure(engine.retain(memory, LongTermMemoryEntry{"", "value"}),
-                   "INVALID_IDENTIFIER");
+    expect_failure(engine.retain(memory, LongTermMemoryEntry{"", "value"}), "INVALID_IDENTIFIER");
 
     LongTermMemory archived_source{"workspace"};
     retain(engine, archived_source, "forgotten", "archived-input");
@@ -532,39 +468,29 @@ TEST(LongTermMemoryRetainTest,
     const auto before_precedence = snapshot_of(target, {"forgotten"});
     expect_failure(engine.retain(target, *archived_copy.entry()), "ARCHIVED");
     EXPECT_EQ(snapshot_of(target, {"forgotten"}), before_precedence);
-    expect_failure(
-        engine.retain(target,
-                      LongTermMemoryEntry{"forgotten", "new-value"}),
-        "FORGOTTEN_IDENTIFIER");
+    expect_failure(engine.retain(target, LongTermMemoryEntry{"forgotten", "new-value"}),
+                   "FORGOTTEN_IDENTIFIER");
 }
 
-TEST(LongTermMemoryStoreTest,
-     AppendReplacementAndRejectionsAreExact) {
+TEST(LongTermMemoryStoreTest, AppendReplacementAndRejectionsAreExact) {
     LongTermMemoryEngine engine;
     LongTermMemory memory{"workspace"};
     store(engine, memory, "first", "one");
     store(engine, memory, "second", "two");
     store(engine, memory, "third", "three");
 
-    const auto replaced =
-        engine.store(memory, LongTermMemoryEntry{"second", "TWO"});
+    const auto replaced = engine.store(memory, LongTermMemoryEntry{"second", "TWO"});
     expect_entry_success(replaced, "second", "TWO", false);
     EXPECT_EQ(snapshot_of(memory.entries()),
-              (std::vector<EntrySnapshot>{{"first", "one", false},
-                                          {"second", "TWO", false},
-                                          {"third", "three", false}}));
+              (std::vector<EntrySnapshot>{
+                  {"first", "one", false}, {"second", "TWO", false}, {"third", "three", false}}));
 
     ASSERT_TRUE(engine.archive(memory, "second").succeeded());
-    const auto before_archived_destination =
-        snapshot_of(memory, {"first", "second", "third"});
-    expect_failure(
-        engine.store(memory, LongTermMemoryEntry{"second", "replacement"}),
-        "ARCHIVED");
-    EXPECT_EQ(snapshot_of(memory, {"first", "second", "third"}),
-              before_archived_destination);
+    const auto before_archived_destination = snapshot_of(memory, {"first", "second", "third"});
+    expect_failure(engine.store(memory, LongTermMemoryEntry{"second", "replacement"}), "ARCHIVED");
+    EXPECT_EQ(snapshot_of(memory, {"first", "second", "third"}), before_archived_destination);
 
-    expect_failure(engine.store(memory, LongTermMemoryEntry{"", "value"}),
-                   "INVALID_IDENTIFIER");
+    expect_failure(engine.store(memory, LongTermMemoryEntry{"", "value"}), "INVALID_IDENTIFIER");
 
     LongTermMemory archived_source{"workspace"};
     store(engine, archived_source, "forgotten", "input");
@@ -575,20 +501,14 @@ TEST(LongTermMemoryStoreTest,
     LongTermMemory forgotten_target{"workspace"};
     store(engine, forgotten_target, "forgotten", "old");
     ASSERT_TRUE(engine.forget(forgotten_target, "forgotten").succeeded());
-    const auto before_precedence =
-        snapshot_of(forgotten_target, {"forgotten"});
-    expect_failure(engine.store(forgotten_target, *archived_copy.entry()),
-                   "ARCHIVED");
-    EXPECT_EQ(snapshot_of(forgotten_target, {"forgotten"}),
-              before_precedence);
-    expect_failure(
-        engine.store(forgotten_target,
-                     LongTermMemoryEntry{"forgotten", "new"}),
-        "FORGOTTEN_IDENTIFIER");
+    const auto before_precedence = snapshot_of(forgotten_target, {"forgotten"});
+    expect_failure(engine.store(forgotten_target, *archived_copy.entry()), "ARCHIVED");
+    EXPECT_EQ(snapshot_of(forgotten_target, {"forgotten"}), before_precedence);
+    expect_failure(engine.store(forgotten_target, LongTermMemoryEntry{"forgotten", "new"}),
+                   "FORGOTTEN_IDENTIFIER");
 }
 
-TEST(LongTermMemoryRetrieveTest,
-     LongTermAndArchivedRetrievalAreExactAndIndependent) {
+TEST(LongTermMemoryRetrieveTest, LongTermAndArchivedRetrievalAreExactAndIndependent) {
     LongTermMemoryEngine engine;
     LongTermMemory memory{"workspace"};
     retain(engine, memory, "Case-ID", "value");
@@ -611,8 +531,7 @@ TEST(LongTermMemoryRetrieveTest,
     EXPECT_TRUE(archived.entry()->archived());
 }
 
-TEST(LongTermMemorySearchTest,
-     FiltersInCanonicalOrderWithoutMutation) {
+TEST(LongTermMemorySearchTest, FiltersInCanonicalOrderWithoutMutation) {
     LongTermMemoryEngine engine;
     LongTermMemory memory{"workspace"};
     retain(engine, memory, "alpha-id", "first value");
@@ -624,9 +543,7 @@ TEST(LongTermMemorySearchTest,
     ASSERT_TRUE(engine.forget(memory, "forgotten-alpha").succeeded());
 
     const auto before = snapshot_of(
-        memory,
-        {"alpha-id", "middle", "Alpha-id", "archived-alpha",
-         "forgotten-alpha"});
+        memory, {"alpha-id", "middle", "Alpha-id", "archived-alpha", "forgotten-alpha"});
     const auto matches = engine.search(memory, LongTermMemoryQuery{"alpha"});
     ASSERT_TRUE(matches.succeeded());
     EXPECT_EQ(matches.code(), "OK");
@@ -636,8 +553,7 @@ TEST(LongTermMemorySearchTest,
               (std::vector<EntrySnapshot>{{"alpha-id", "first value", false},
                                           {"middle", "contains alpha", false}}));
 
-    const auto case_matches =
-        engine.search(memory, LongTermMemoryQuery{"Alpha"});
+    const auto case_matches = engine.search(memory, LongTermMemoryQuery{"Alpha"});
     ASSERT_EQ(case_matches.matches().size(), 1U);
     EXPECT_EQ(case_matches.matches().front().identifier(), "Alpha-id");
 
@@ -651,8 +567,7 @@ TEST(LongTermMemorySearchTest,
     ASSERT_TRUE(none.succeeded());
     EXPECT_TRUE(none.matches().empty());
     EXPECT_EQ(snapshot_of(memory,
-                          {"alpha-id", "middle", "Alpha-id",
-                           "archived-alpha", "forgotten-alpha"}),
+                          {"alpha-id", "middle", "Alpha-id", "archived-alpha", "forgotten-alpha"}),
               before);
 
     ASSERT_TRUE(engine.forget(memory, "alpha-id").succeeded());
@@ -670,15 +585,11 @@ TEST(LongTermMemoryArchiveTest, TransitionAndIdempotenceAreExact) {
     const auto archived = engine.archive(memory, "second");
     expect_entry_success(archived, "second", "two", true);
     EXPECT_EQ(snapshot_of(memory.entries()),
-              (std::vector<EntrySnapshot>{{"first", "one", false},
-                                          {"second", "two", true},
-                                          {"third", "three", false}}));
+              (std::vector<EntrySnapshot>{
+                  {"first", "one", false}, {"second", "two", true}, {"third", "three", false}}));
 
     const auto before_idempotent = snapshot_of(memory, {"second"});
-    expect_entry_success(engine.archive(memory, "second"),
-                         "second",
-                         "two",
-                         true);
+    expect_entry_success(engine.archive(memory, "second"), "second", "two", true);
     EXPECT_EQ(snapshot_of(memory, {"second"}), before_idempotent);
 
     expect_failure(engine.archive(memory, "missing"), "NOT_FOUND");
@@ -687,8 +598,7 @@ TEST(LongTermMemoryArchiveTest, TransitionAndIdempotenceAreExact) {
     expect_failure(engine.archive(memory, "third"), "NOT_FOUND");
 }
 
-TEST(LongTermMemoryRestoreTest,
-     PreconditionsAndValidationPrecedenceAreExact) {
+TEST(LongTermMemoryRestoreTest, PreconditionsAndValidationPrecedenceAreExact) {
     LongTermMemoryEngine engine;
     LongTermMemory source{"source-workspace"};
     retain(engine, source, "source", "value");
@@ -697,42 +607,33 @@ TEST(LongTermMemoryRestoreTest,
     retain(engine, mismatch_target, "target", "value");
     const auto source_before = snapshot_of(source, {"source"});
     const auto mismatch_before = snapshot_of(mismatch_target, {"target"});
-    expect_failure(engine.restore(mismatch_target, source),
-                   "WORKSPACE_MISMATCH");
+    expect_failure(engine.restore(mismatch_target, source), "WORKSPACE_MISMATCH");
     EXPECT_EQ(snapshot_of(source, {"source"}), source_before);
     EXPECT_EQ(snapshot_of(mismatch_target, {"target"}), mismatch_before);
 
     LongTermMemory non_pristine{"source-workspace"};
     retain(engine, non_pristine, "target", "value");
-    const auto non_pristine_before =
-        snapshot_of(non_pristine, {"target", "source"});
-    expect_failure(engine.restore(non_pristine, source),
-                   "RESTORE_TARGET_NOT_PRISTINE");
-    EXPECT_EQ(snapshot_of(non_pristine, {"target", "source"}),
-              non_pristine_before);
+    const auto non_pristine_before = snapshot_of(non_pristine, {"target", "source"});
+    expect_failure(engine.restore(non_pristine, source), "RESTORE_TARGET_NOT_PRISTINE");
+    EXPECT_EQ(snapshot_of(non_pristine, {"target", "source"}), non_pristine_before);
 
     LongTermMemory forgotten_only{"source-workspace"};
     retain(engine, forgotten_only, "forgotten", "value");
     ASSERT_TRUE(engine.forget(forgotten_only, "forgotten").succeeded());
     ASSERT_EQ(forgotten_only.size(), 0U);
-    const auto forgotten_before =
-        snapshot_of(forgotten_only, {"forgotten", "source"});
-    expect_failure(engine.restore(forgotten_only, source),
-                   "RESTORE_TARGET_NOT_PRISTINE");
-    EXPECT_EQ(snapshot_of(forgotten_only, {"forgotten", "source"}),
-              forgotten_before);
+    const auto forgotten_before = snapshot_of(forgotten_only, {"forgotten", "source"});
+    expect_failure(engine.restore(forgotten_only, source), "RESTORE_TARGET_NOT_PRISTINE");
+    EXPECT_EQ(snapshot_of(forgotten_only, {"forgotten", "source"}), forgotten_before);
 
     LongTermMemory pristine_self{"self-workspace"};
     expect_no_payload_success(engine.restore(pristine_self, pristine_self));
     retain(engine, pristine_self, "entry", "value");
     const auto self_before = snapshot_of(pristine_self, {"entry"});
-    expect_failure(engine.restore(pristine_self, pristine_self),
-                   "RESTORE_TARGET_NOT_PRISTINE");
+    expect_failure(engine.restore(pristine_self, pristine_self), "RESTORE_TARGET_NOT_PRISTINE");
     EXPECT_EQ(snapshot_of(pristine_self, {"entry"}), self_before);
 }
 
-TEST(LongTermMemoryRestoreTest,
-     RestoresCompleteIndependentSemanticState) {
+TEST(LongTermMemoryRestoreTest, RestoresCompleteIndependentSemanticState) {
     LongTermMemoryEngine engine;
     LongTermMemory source{"workspace"};
     retain(engine, source, "forgotten", "removed");
@@ -741,16 +642,11 @@ TEST(LongTermMemoryRestoreTest,
     ASSERT_TRUE(engine.archive(source, "archived").succeeded());
     ASSERT_TRUE(engine.forget(source, "forgotten").succeeded());
 
-    const auto source_before =
-        snapshot_of(source, {"forgotten", "archived", "active", "absent"});
+    const auto source_before = snapshot_of(source, {"forgotten", "archived", "active", "absent"});
     LongTermMemory target{"workspace"};
     expect_no_payload_success(engine.restore(target, source));
-    EXPECT_EQ(snapshot_of(target,
-                          {"forgotten", "archived", "active", "absent"}),
-              source_before);
-    EXPECT_EQ(snapshot_of(source,
-                          {"forgotten", "archived", "active", "absent"}),
-              source_before);
+    EXPECT_EQ(snapshot_of(target, {"forgotten", "archived", "active", "absent"}), source_before);
+    EXPECT_EQ(snapshot_of(source, {"forgotten", "archived", "active", "absent"}), source_before);
 
     store(engine, target, "active", "target-only-change");
     EXPECT_EQ(source.find("active")->value(), "preserved active");
@@ -761,8 +657,7 @@ TEST(LongTermMemoryRestoreTest,
     EXPECT_EQ(identifier_disposition(source, "forgotten"), "FORGOTTEN");
 }
 
-TEST(LongTermMemoryForgetTest,
-     IsIrreversibleIdempotentAndOrderPreserving) {
+TEST(LongTermMemoryForgetTest, IsIrreversibleIdempotentAndOrderPreserving) {
     LongTermMemoryEngine engine;
     LongTermMemory memory{"workspace"};
     retain(engine, memory, "first", "one");
@@ -772,25 +667,22 @@ TEST(LongTermMemoryForgetTest,
 
     expect_no_payload_success(engine.forget(memory, "second"));
     EXPECT_EQ(snapshot_of(memory.entries()),
-              (std::vector<EntrySnapshot>{{"first", "one", false},
-                                          {"third", "three", false}}));
+              (std::vector<EntrySnapshot>{{"first", "one", false}, {"third", "three", false}}));
     EXPECT_EQ(memory.find("second"), nullptr);
     EXPECT_EQ(identifier_disposition(memory, "second"), "FORGOTTEN");
 
     const auto before_repeat = snapshot_of(memory, {"second", "absent"});
     expect_no_payload_success(engine.forget(memory, "second"));
     EXPECT_EQ(snapshot_of(memory, {"second", "absent"}), before_repeat);
-    expect_failure(
-        engine.retain(memory, LongTermMemoryEntry{"second", "new"}),
-        "FORGOTTEN_IDENTIFIER");
+    expect_failure(engine.retain(memory, LongTermMemoryEntry{"second", "new"}),
+                   "FORGOTTEN_IDENTIFIER");
     expect_failure(engine.store(memory, LongTermMemoryEntry{"second", "new"}),
                    "FORGOTTEN_IDENTIFIER");
 
     expect_no_payload_success(engine.forget(memory, "never-present"));
     EXPECT_EQ(identifier_disposition(memory, "never-present"), "ABSENT");
     expect_entry_success(
-        engine.retain(memory,
-                      LongTermMemoryEntry{"never-present", "now accepted"}),
+        engine.retain(memory, LongTermMemoryEntry{"never-present", "now accepted"}),
         "never-present",
         "now accepted",
         false);
@@ -808,10 +700,7 @@ TEST(LongTermMemoryIdentityTest, PreservesExactDurableIdentifiers) {
     EXPECT_EQ(memory.find("durable-id/case_01"), nullptr);
 
     LongTermMemory copy{memory};
-    expect_entry_success(engine.archive(copy, identifier),
-                         identifier,
-                         "replacement",
-                         true);
+    expect_entry_success(engine.archive(copy, identifier), identifier, "replacement", true);
     const auto retrieved = engine.retrieve(copy, identifier);
     expect_entry_success(retrieved, identifier, "replacement", true);
 
@@ -834,14 +723,11 @@ TEST(LongTermMemoryOrderingTest, AllTransitionsPreserveCanonicalOrder) {
     retain(engine, source, "d", "match d");
 
     EXPECT_EQ(snapshot_of(source.entries()),
-              (std::vector<EntrySnapshot>{{"a", "match a", true},
-                                          {"c", "match c", false},
-                                          {"d", "match d", false}}));
-    const auto matches =
-        engine.search(source, LongTermMemoryQuery{"match"});
+              (std::vector<EntrySnapshot>{
+                  {"a", "match a", true}, {"c", "match c", false}, {"d", "match d", false}}));
+    const auto matches = engine.search(source, LongTermMemoryQuery{"match"});
     EXPECT_EQ(snapshot_of(matches.matches()),
-              (std::vector<EntrySnapshot>{{"c", "match c", false},
-                                          {"d", "match d", false}}));
+              (std::vector<EntrySnapshot>{{"c", "match c", false}, {"d", "match d", false}}));
 
     LongTermMemory restored{"workspace"};
     ASSERT_TRUE(engine.restore(restored, source).succeeded());
@@ -849,8 +735,7 @@ TEST(LongTermMemoryOrderingTest, AllTransitionsPreserveCanonicalOrder) {
               snapshot_of(source, {"a", "b", "c", "d"}));
 }
 
-TEST(LongTermMemoryTransitionTest,
-     OnlyExplicitOperationsChangeBaseState) {
+TEST(LongTermMemoryTransitionTest, OnlyExplicitOperationsChangeBaseState) {
     LongTermMemoryEngine engine;
     LongTermMemory memory{"workspace"};
     retain(engine, memory, "active", "value");
@@ -865,8 +750,7 @@ TEST(LongTermMemoryTransitionTest,
         EXPECT_EQ(memory.entries().size(), 2U);
         EXPECT_TRUE(engine.retrieve(memory, "active").succeeded());
         EXPECT_TRUE(engine.retrieve(memory, "archived").succeeded());
-        EXPECT_TRUE(
-            engine.search(memory, LongTermMemoryQuery{"value"}).succeeded());
+        EXPECT_TRUE(engine.search(memory, LongTermMemoryQuery{"value"}).succeeded());
     }
 
     EXPECT_EQ(snapshot_of(memory, {"active", "archived"}), before);
@@ -874,8 +758,7 @@ TEST(LongTermMemoryTransitionTest,
     EXPECT_TRUE(memory.find("archived")->archived());
 }
 
-TEST(LongTermMemoryIntegrityTest,
-     RetainedKnowledgeChangesOnlyAsSpecified) {
+TEST(LongTermMemoryIntegrityTest, RetainedKnowledgeChangesOnlyAsSpecified) {
     LongTermMemoryEngine engine;
     LongTermMemory memory{"workspace"};
     retain(engine, memory, "first", "immutable until store");
@@ -883,8 +766,7 @@ TEST(LongTermMemoryIntegrityTest,
     const auto initial = snapshot_of(memory, {"first", "second"});
 
     ASSERT_TRUE(engine.retrieve(memory, "first").succeeded());
-    ASSERT_TRUE(engine.search(memory, LongTermMemoryQuery{"preserves"})
-                    .succeeded());
+    ASSERT_TRUE(engine.search(memory, LongTermMemoryQuery{"preserves"}).succeeded());
     EXPECT_EQ(snapshot_of(memory, {"first", "second"}), initial);
 
     ASSERT_TRUE(engine.archive(memory, "second").succeeded());
@@ -903,8 +785,7 @@ TEST(LongTermMemoryResultTest, CodesMessagesAndPayloadShapesAreExact) {
     LongTermMemoryEngine engine;
     LongTermMemory memory{"workspace"};
 
-    const auto retained =
-        engine.retain(memory, LongTermMemoryEntry{"entry", "value"});
+    const auto retained = engine.retain(memory, LongTermMemoryEntry{"entry", "value"});
     expect_entry_success(retained, "entry", "value", false);
 
     const auto searched = engine.search(memory, LongTermMemoryQuery{"entry"});
@@ -916,13 +797,11 @@ TEST(LongTermMemoryResultTest, CodesMessagesAndPayloadShapesAreExact) {
 
     expect_failure(engine.retrieve(memory, ""), "INVALID_IDENTIFIER");
     expect_failure(engine.retrieve(memory, "missing"), "NOT_FOUND");
-    expect_failure(
-        engine.retain(memory, LongTermMemoryEntry{"entry", "different"}),
-        "IDENTIFIER_CONFLICT");
+    expect_failure(engine.retain(memory, LongTermMemoryEntry{"entry", "different"}),
+                   "IDENTIFIER_CONFLICT");
 
     ASSERT_TRUE(engine.archive(memory, "entry").succeeded());
-    expect_failure(engine.store(memory, LongTermMemoryEntry{"entry", "new"}),
-                   "ARCHIVED");
+    expect_failure(engine.store(memory, LongTermMemoryEntry{"entry", "new"}), "ARCHIVED");
     ASSERT_TRUE(engine.forget(memory, "entry").succeeded());
     expect_failure(engine.retain(memory, LongTermMemoryEntry{"entry", "new"}),
                    "FORGOTTEN_IDENTIFIER");
@@ -931,8 +810,7 @@ TEST(LongTermMemoryResultTest, CodesMessagesAndPayloadShapesAreExact) {
     expect_failure(engine.restore(mismatch, memory), "WORKSPACE_MISMATCH");
     LongTermMemory non_pristine{"workspace"};
     retain(engine, non_pristine, "target", "value");
-    expect_failure(engine.restore(non_pristine, memory),
-                   "RESTORE_TARGET_NOT_PRISTINE");
+    expect_failure(engine.restore(non_pristine, memory), "RESTORE_TARGET_NOT_PRISTINE");
 
     const auto first_invalid = engine.retrieve(memory, "");
     const auto second_invalid = engine.retrieve(memory, "");
@@ -943,8 +821,7 @@ TEST(LongTermMemoryResultTest, CodesMessagesAndPayloadShapesAreExact) {
     expect_no_payload_success(forgotten);
 }
 
-TEST(LongTermMemoryOwnershipTest,
-     ValuesCopiesMovesAndResultsAreIndependent) {
+TEST(LongTermMemoryOwnershipTest, ValuesCopiesMovesAndResultsAreIndependent) {
     LongTermMemoryEngine engine;
     LongTermMemory original{"workspace"};
     retain(engine, original, "forgotten", "old");
@@ -955,9 +832,8 @@ TEST(LongTermMemoryOwnershipTest,
     store(engine, copy, "active", "copy-only");
     EXPECT_EQ(original.find("active")->value(), "value");
     EXPECT_EQ(copy.find("active")->value(), "copy-only");
-    expect_failure(
-        engine.retain(copy, LongTermMemoryEntry{"forgotten", "new"}),
-        "FORGOTTEN_IDENTIFIER");
+    expect_failure(engine.retain(copy, LongTermMemoryEntry{"forgotten", "new"}),
+                   "FORGOTTEN_IDENTIFIER");
 
     const auto result = engine.retrieve(original, "active");
     ASSERT_NE(result.entry(), nullptr);
@@ -965,19 +841,16 @@ TEST(LongTermMemoryOwnershipTest,
     EXPECT_EQ(result.entry()->identifier(), "active");
     EXPECT_EQ(result.entry()->value(), "value");
 
-    const auto before_move =
-        snapshot_of(copy, {"forgotten", "active", "absent"});
+    const auto before_move = snapshot_of(copy, {"forgotten", "active", "absent"});
     LongTermMemory moved{std::move(copy)};
-    EXPECT_EQ(snapshot_of(moved, {"forgotten", "active", "absent"}),
-              before_move);
+    EXPECT_EQ(snapshot_of(moved, {"forgotten", "active", "absent"}), before_move);
     EXPECT_EQ(copy.workspaceIdentifier(), "workspace");
     EXPECT_EQ(copy.size(), 0U);
     EXPECT_TRUE(copy.entries().empty());
-    expect_entry_success(
-        engine.retain(copy, LongTermMemoryEntry{"forgotten", "reusable"}),
-        "forgotten",
-        "reusable",
-        false);
+    expect_entry_success(engine.retain(copy, LongTermMemoryEntry{"forgotten", "reusable"}),
+                         "forgotten",
+                         "reusable",
+                         false);
 
     auto moved_result = engine.retrieve(moved, "active");
     LongTermMemoryResult destination{std::move(moved_result)};
@@ -985,8 +858,7 @@ TEST(LongTermMemoryOwnershipTest,
     EXPECT_EQ(destination.entry()->value(), "copy-only");
 }
 
-TEST(LongTermMemoryIsolationTest,
-     WorkspacesAndEnginesDoNotShareState) {
+TEST(LongTermMemoryIsolationTest, WorkspacesAndEnginesDoNotShareState) {
     LongTermMemoryEngine first_engine;
     LongTermMemoryEngine second_engine;
     LongTermMemory first{"workspace-a"};
@@ -1005,8 +877,7 @@ TEST(LongTermMemoryIsolationTest,
 
     LongTermMemory same_workspace_target{"workspace-a"};
     ASSERT_TRUE(second_engine.restore(same_workspace_target, first).succeeded());
-    ASSERT_TRUE(second_engine.forget(same_workspace_target, "same-id")
-                    .succeeded());
+    ASSERT_TRUE(second_engine.forget(same_workspace_target, "same-id").succeeded());
     EXPECT_NE(first.find("same-id"), nullptr);
 }
 
@@ -1021,16 +892,14 @@ TEST(LongTermMemoryIsolationTest, IndependentValuesSupportConcurrentUse) {
             LongTermMemory memory{"workspace-" + std::to_string(index)};
             const auto id = "entry-" + std::to_string(index);
             const auto value = "value-" + std::to_string(index);
-            const auto retained =
-                engine.retain(memory, LongTermMemoryEntry{id, value});
+            const auto retained = engine.retain(memory, LongTermMemoryEntry{id, value});
             const auto archived = engine.archive(memory, id);
             const auto retrieved = engine.retrieve(memory, id);
-            succeeded[index] =
-                retained.succeeded() && archived.succeeded() &&
-                retrieved.succeeded() && retrieved.entry() != nullptr &&
-                retrieved.entry()->identifier() == id &&
-                retrieved.entry()->value() == value &&
-                retrieved.entry()->archived() && memory.size() == 1U;
+            succeeded[index] = retained.succeeded() && archived.succeeded() &&
+                               retrieved.succeeded() && retrieved.entry() != nullptr &&
+                               retrieved.entry()->identifier() == id &&
+                               retrieved.entry()->value() == value &&
+                               retrieved.entry()->archived() && memory.size() == 1U;
         }};
     }
     for (auto& worker : workers) {
@@ -1041,8 +910,7 @@ TEST(LongTermMemoryIsolationTest, IndependentValuesSupportConcurrentUse) {
     }
 }
 
-TEST(LongTermMemoryFailureTest,
-     SemanticFailuresPreserveCompleteStateAndOtherCapabilities) {
+TEST(LongTermMemoryFailureTest, SemanticFailuresPreserveCompleteStateAndOtherCapabilities) {
     LongTermMemoryEngine engine;
     LongTermMemory memory{"workspace"};
     retain(engine, memory, "active", "value");
@@ -1053,26 +921,20 @@ TEST(LongTermMemoryFailureTest,
 
     Memory foundation{"workspace"};
     MemoryEngine foundation_engine;
-    ASSERT_TRUE(foundation_engine
-                    .store(foundation, MemoryEntry{"foundation", "value"})
-                    .succeeded());
+    ASSERT_TRUE(
+        foundation_engine.store(foundation, MemoryEntry{"foundation", "value"}).succeeded());
     WorkingMemory working{"workspace"};
     WorkingMemoryEngine working_engine;
     ASSERT_TRUE(working_engine.activate(working, "task").succeeded());
-    ASSERT_TRUE(working_engine
-                    .store(working,
-                           WorkingMemoryEntry{"working", "temporary", 7U})
-                    .succeeded());
+    ASSERT_TRUE(
+        working_engine.store(working, WorkingMemoryEntry{"working", "temporary", 7U}).succeeded());
 
     const auto foundation_before = snapshot_of(foundation);
     const auto working_before = snapshot_of(working);
-    const std::vector<std::string_view> probes{
-        "active", "archived", "forgotten", "absent"};
+    const std::vector<std::string_view> probes{"active", "archived", "forgotten", "absent"};
 
     const auto expect_unchanged_after_failure =
-        [&](LongTermMemoryResult result,
-            const std::string_view code,
-            const StateSnapshot& before) {
+        [&](LongTermMemoryResult result, const std::string_view code, const StateSnapshot& before) {
             expect_failure(result, code);
             EXPECT_EQ(snapshot_of(memory, probes), before);
             EXPECT_EQ(snapshot_of(foundation), foundation_before);
@@ -1081,38 +943,30 @@ TEST(LongTermMemoryFailureTest,
 
     auto before = snapshot_of(memory, probes);
     expect_unchanged_after_failure(
-        engine.retain(memory, LongTermMemoryEntry{"", "value"}),
-        "INVALID_IDENTIFIER",
-        before);
+        engine.retain(memory, LongTermMemoryEntry{"", "value"}), "INVALID_IDENTIFIER", before);
     expect_unchanged_after_failure(
         engine.retain(memory, LongTermMemoryEntry{"active", "different"}),
         "IDENTIFIER_CONFLICT",
         before);
     expect_unchanged_after_failure(
-        engine.store(memory,
-                     LongTermMemoryEntry{"archived", "replacement"}),
-        "ARCHIVED",
-        before);
+        engine.store(memory, LongTermMemoryEntry{"archived", "replacement"}), "ARCHIVED", before);
     expect_unchanged_after_failure(
-        engine.store(memory,
-                     LongTermMemoryEntry{"forgotten", "replacement"}),
+        engine.store(memory, LongTermMemoryEntry{"forgotten", "replacement"}),
         "FORGOTTEN_IDENTIFIER",
         before);
 
     LongTermMemory different_workspace{"other-workspace"};
     retain(engine, different_workspace, "source", "value");
     const auto different_before = snapshot_of(different_workspace, {"source"});
-    expect_unchanged_after_failure(engine.restore(memory, different_workspace),
-                                   "WORKSPACE_MISMATCH",
-                                   before);
+    expect_unchanged_after_failure(
+        engine.restore(memory, different_workspace), "WORKSPACE_MISMATCH", before);
     EXPECT_EQ(snapshot_of(different_workspace, {"source"}), different_before);
 
     EXPECT_EQ(snapshot_of(foundation), foundation_before);
     EXPECT_EQ(snapshot_of(working), working_before);
 }
 
-TEST(LongTermMemoryRuntimeTest,
-     RuntimeLifecycleDoesNotOwnOrMutateMemory) {
+TEST(LongTermMemoryRuntimeTest, RuntimeLifecycleDoesNotOwnOrMutateMemory) {
     LongTermMemoryEngine engine;
     LongTermMemory memory{"workspace"};
     retain(engine, memory, "active", "value");
@@ -1121,9 +975,8 @@ TEST(LongTermMemoryRuntimeTest,
     const auto before = snapshot_of(memory, {"active", "archived"});
 
     {
-        auto runtime = cca::runtime::RuntimeBuilder{
-                           cca::runtime::RuntimeId{"ltmem-runtime-one"}}
-                           .build();
+        auto runtime =
+            cca::runtime::RuntimeBuilder{cca::runtime::RuntimeId{"ltmem-runtime-one"}}.build();
         ASSERT_NE(runtime, nullptr);
         ASSERT_TRUE(runtime->start().ok());
         EXPECT_EQ(snapshot_of(memory, {"active", "archived"}), before);
@@ -1132,9 +985,8 @@ TEST(LongTermMemoryRuntimeTest,
     EXPECT_EQ(snapshot_of(memory, {"active", "archived"}), before);
 
     {
-        auto replacement = cca::runtime::RuntimeBuilder{
-                               cca::runtime::RuntimeId{"ltmem-runtime-two"}}
-                               .build();
+        auto replacement =
+            cca::runtime::RuntimeBuilder{cca::runtime::RuntimeId{"ltmem-runtime-two"}}.build();
         ASSERT_NE(replacement, nullptr);
         ASSERT_TRUE(replacement->start().ok());
         ASSERT_TRUE(replacement->stop().ok());
@@ -1142,8 +994,7 @@ TEST(LongTermMemoryRuntimeTest,
     EXPECT_EQ(snapshot_of(memory, {"active", "archived"}), before);
 }
 
-TEST(LongTermMemoryPersistenceTest,
-     RoundTripPreservesCompleteWorkspaceAssetState) {
+TEST(LongTermMemoryPersistenceTest, RoundTripPreservesCompleteWorkspaceAssetState) {
     LongTermMemoryEngine engine;
     LongTermMemory source{"persistence-workspace"};
     retain(engine, source, "Durable-A", "first value");
@@ -1156,16 +1007,13 @@ TEST(LongTermMemoryPersistenceTest,
         "Durable-A", "Durable-B", "Durable-C", "Durable-D", "Absent"};
     const auto source_before = snapshot_of(source, probes);
 
-    auto projection =
-        cca::memory::detail::LongTermMemoryPersistence::project(source);
+    auto projection = cca::memory::detail::LongTermMemoryPersistence::project(source);
     ASSERT_NE(projection, nullptr);
     auto directly_reconstructed =
-        cca::memory::detail::LongTermMemoryPersistence::reconstruct(
-            *projection);
+        cca::memory::detail::LongTermMemoryPersistence::reconstruct(*projection);
     EXPECT_EQ(snapshot_of(directly_reconstructed, probes), source_before);
 
-    auto reconstructed =
-        cca::memory::detail::LongTermMemoryPersistence::roundTrip(source);
+    auto reconstructed = cca::memory::detail::LongTermMemoryPersistence::roundTrip(source);
     EXPECT_EQ(snapshot_of(reconstructed, probes), source_before);
     EXPECT_EQ(snapshot_of(source, probes), source_before);
 
@@ -1180,24 +1028,19 @@ TEST(LongTermMemoryPersistenceTest,
     EXPECT_EQ(restored.find("Durable-A")->value(), "first value");
 }
 
-TEST(LongTermMemoryDeterminismTest,
-     EquivalentSequencesProduceEquivalentResultsAndState) {
+TEST(LongTermMemoryDeterminismTest, EquivalentSequencesProduceEquivalentResultsAndState) {
     const auto execute = [](LongTermMemory& memory) {
         LongTermMemoryEngine engine;
         std::vector<ResultSnapshot> results;
-        results.push_back(snapshot_of(engine.retain(
-            memory, LongTermMemoryEntry{"first", "one"})));
-        results.push_back(snapshot_of(engine.store(
-            memory, LongTermMemoryEntry{"second", "two"})));
-        results.push_back(snapshot_of(engine.store(
-            memory, LongTermMemoryEntry{"first", "ONE"})));
+        results.push_back(snapshot_of(engine.retain(memory, LongTermMemoryEntry{"first", "one"})));
+        results.push_back(snapshot_of(engine.store(memory, LongTermMemoryEntry{"second", "two"})));
+        results.push_back(snapshot_of(engine.store(memory, LongTermMemoryEntry{"first", "ONE"})));
         results.push_back(snapshot_of(engine.archive(memory, "second")));
-        results.push_back(snapshot_of(
-            engine.search(memory, LongTermMemoryQuery{"O"})));
+        results.push_back(snapshot_of(engine.search(memory, LongTermMemoryQuery{"O"})));
         results.push_back(snapshot_of(engine.retrieve(memory, "second")));
         results.push_back(snapshot_of(engine.forget(memory, "first")));
-        results.push_back(snapshot_of(engine.retain(
-            memory, LongTermMemoryEntry{"first", "again"})));
+        results.push_back(
+            snapshot_of(engine.retain(memory, LongTermMemoryEntry{"first", "again"})));
         results.push_back(snapshot_of(engine.forget(memory, "absent")));
         return results;
     };

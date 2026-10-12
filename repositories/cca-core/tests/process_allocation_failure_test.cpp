@@ -1,10 +1,9 @@
 #include <cca/process/process.hpp>
 #include <cca/representation/representation.hpp>
 
-#include <gtest/gtest.h>
-
 #include <cstddef>
 #include <cstdlib>
+#include <gtest/gtest.h>
 #include <limits>
 #include <new>
 #include <string>
@@ -79,6 +78,25 @@ void operator delete[](void* allocation, const std::size_t size) noexcept {
     std::free(allocation);
 }
 
+// The nothrow forms must pair with the same malloc/free family as the replaced throwing forms
+// (the standard library allocates temporary buffers with nothrow new); they are deliberately not
+// subject to failure injection, matching the library's default nothrow allocation behaviour.
+void* operator new(const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void* operator new[](const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void operator delete(void* allocation, const std::nothrow_t&) noexcept {
+    std::free(allocation);
+}
+
+void operator delete[](void* allocation, const std::nothrow_t&) noexcept {
+    std::free(allocation);
+}
+
 namespace {
 
 using cca::process::ExecutionContext;
@@ -94,24 +112,15 @@ using cca::representation::RepresentationValue;
 constexpr std::size_t allocation_campaign_limit = 128U;
 
 void populate_document(RepresentationDocument& document) {
-    auto& first =
-        document.createEntity(RepresentationType{"First"});
-    auto& second =
-        document.createEntity(RepresentationType{"Second"});
+    auto& first = document.createEntity(RepresentationType{"First"});
+    auto& second = document.createEntity(RepresentationType{"Second"});
     first.addProperty(
-        "name",
-        RepresentationType{"Text"},
-        RepresentationValue{std::string{"first"}});
+        "name", RepresentationType{"Text"}, RepresentationValue{std::string{"first"}});
     second.addProperty(
-        "name",
-        RepresentationType{"Text"},
-        RepresentationValue{std::string{"second"}});
-    auto& relationship = document.createRelationship(
-        first, second, RepresentationType{"Directed"});
+        "name", RepresentationType{"Text"}, RepresentationValue{std::string{"second"}});
+    auto& relationship = document.createRelationship(first, second, RepresentationType{"Directed"});
     relationship.addProperty(
-        "weight",
-        RepresentationType{"Integer"},
-        RepresentationValue{std::int64_t{7}});
+        "weight", RepresentationType{"Integer"}, RepresentationValue{std::int64_t{7}});
 }
 
 [[nodiscard]] std::vector<std::string>
@@ -147,8 +156,7 @@ document_fingerprint(const RepresentationDocument& document) {
             fingerprint.push_back(property.id().toString());
             fingerprint.emplace_back(property.name());
             fingerprint.emplace_back(property.type().name());
-            fingerprint.push_back(
-                std::to_string(property.value().asInteger()));
+            fingerprint.push_back(std::to_string(property.value().asInteger()));
         }
     }
 
@@ -164,8 +172,7 @@ struct DefinitionFingerprint final {
     bool operator==(const DefinitionFingerprint&) const = default;
 };
 
-[[nodiscard]] DefinitionFingerprint
-definition_fingerprint(const ProcessDefinition& definition) {
+[[nodiscard]] DefinitionFingerprint definition_fingerprint(const ProcessDefinition& definition) {
     std::vector<std::string> order;
     order.reserve(definition.executionOrder().size());
     for (const RepresentationId& id : definition.executionOrder()) {
@@ -181,16 +188,13 @@ definition_fingerprint(const ProcessDefinition& definition) {
 
 TEST(ProcessAllocationFailureTest,
      DefinitionConstructionPreservesTheSourceAtEveryAllocationFailure) {
-    RepresentationDocument document{
-        RepresentationMetadata{"allocation-test", "1", "constructor"}};
+    RepresentationDocument document{RepresentationMetadata{"allocation-test", "1", "constructor"}};
     populate_document(document);
     const auto before = document_fingerprint(document);
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         allocation_failure_support::fail_after(index);
         try {
             const ProcessDefinition definition{document};
@@ -213,19 +217,15 @@ TEST(ProcessAllocationFailureTest,
     EXPECT_EQ(document_fingerprint(document), before);
 }
 
-TEST(ProcessAllocationFailureTest,
-     DirectExecutionPreservesTheSourceAtEveryAllocationFailure) {
-    RepresentationDocument document{
-        RepresentationMetadata{"allocation-test", "1", "direct"}};
+TEST(ProcessAllocationFailureTest, DirectExecutionPreservesTheSourceAtEveryAllocationFailure) {
+    RepresentationDocument document{RepresentationMetadata{"allocation-test", "1", "direct"}};
     populate_document(document);
     const auto before = document_fingerprint(document);
     ProcessEngine engine;
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         allocation_failure_support::fail_after(index);
         try {
             const auto result = engine.execute(document);
@@ -258,9 +258,7 @@ TEST(ProcessAllocationFailureTest,
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         allocation_failure_support::fail_after(index);
         try {
             const auto result = engine.execute(definition);
@@ -283,8 +281,7 @@ TEST(ProcessAllocationFailureTest,
     EXPECT_EQ(definition_fingerprint(definition), before);
 }
 
-TEST(ProcessAllocationFailureTest,
-     ContextExecutionPreservesReadyStateAtEveryAllocationFailure) {
+TEST(ProcessAllocationFailureTest, ContextExecutionPreservesReadyStateAtEveryAllocationFailure) {
     RepresentationDocument document;
     populate_document(document);
     const ProcessDefinition definition{document};
@@ -293,9 +290,7 @@ TEST(ProcessAllocationFailureTest,
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         ExecutionContext context{definition};
         allocation_failure_support::fail_after(index);
         try {
@@ -309,9 +304,7 @@ TEST(ProcessAllocationFailureTest,
             ++observed_failures;
             EXPECT_EQ(context.state(), ExecutionState::Ready);
             EXPECT_TRUE(context.trace().empty());
-            EXPECT_EQ(
-                definition_fingerprint(context.definition()),
-                definition_before);
+            EXPECT_EQ(definition_fingerprint(context.definition()), definition_before);
         } catch (...) {
             allocation_failure_support::disable();
             throw;

@@ -1,10 +1,9 @@
 #include <cca/memory/long_term_memory.hpp>
 #include <cca/memory/procedural_memory.hpp>
 
-#include <gtest/gtest.h>
-
 #include <cstddef>
 #include <cstdlib>
+#include <gtest/gtest.h>
 #include <limits>
 #include <new>
 #include <stdexcept>
@@ -28,7 +27,9 @@ void fail_after(const std::size_t successful_allocations) noexcept {
     allocations_before_failure = successful_allocations;
 }
 
-void disable() noexcept { allocations_before_failure = disabled; }
+void disable() noexcept {
+    allocations_before_failure = disabled;
+}
 
 [[nodiscard]] bool should_fail() noexcept {
     if (allocations_before_failure == disabled) {
@@ -63,8 +64,12 @@ void* operator new[](const std::size_t size) {
     return procedural_memory_allocation_failure_support::allocate(size);
 }
 
-void operator delete(void* allocation) noexcept { std::free(allocation); }
-void operator delete[](void* allocation) noexcept { std::free(allocation); }
+void operator delete(void* allocation) noexcept {
+    std::free(allocation);
+}
+void operator delete[](void* allocation) noexcept {
+    std::free(allocation);
+}
 
 void operator delete(void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
@@ -73,6 +78,25 @@ void operator delete(void* allocation, const std::size_t size) noexcept {
 
 void operator delete[](void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
+    std::free(allocation);
+}
+
+// The nothrow forms must pair with the same malloc/free family as the replaced throwing forms
+// (the standard library allocates temporary buffers with nothrow new); they are deliberately not
+// subject to failure injection, matching the library's default nothrow allocation behaviour.
+void* operator new(const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void* operator new[](const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void operator delete(void* allocation, const std::nothrow_t&) noexcept {
+    std::free(allocation);
+}
+
+void operator delete[](void* allocation, const std::nothrow_t&) noexcept {
     std::free(allocation);
 }
 
@@ -85,18 +109,12 @@ using cca::memory::ProceduralMemory;
 using cca::memory::ProceduralMemoryEngine;
 using cca::memory::Procedure;
 
-constexpr std::string_view source_a{
-    "source-a-with-a-long-identifier-for-allocation-testing"};
-constexpr std::string_view source_b{
-    "source-b-with-a-long-identifier-for-allocation-testing"};
-constexpr std::string_view source_c{
-    "source-c-with-a-long-identifier-for-allocation-testing"};
-constexpr std::string_view procedure_a{
-    "procedure-a-with-a-long-identifier-for-allocation-testing"};
-constexpr std::string_view procedure_b{
-    "procedure-b-with-a-long-identifier-for-allocation-testing"};
-constexpr std::string_view procedure_c{
-    "procedure-c-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view source_a{"source-a-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view source_b{"source-b-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view source_c{"source-c-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view procedure_a{"procedure-a-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view procedure_b{"procedure-b-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view procedure_c{"procedure-c-with-a-long-identifier-for-allocation-testing"};
 constexpr std::string_view forgotten_procedure{
     "forgotten-procedure-with-a-long-identifier-for-allocation-testing"};
 constexpr std::string_view candidate_procedure{
@@ -150,13 +168,12 @@ struct Fixture final {
     LongTermMemoryEngine long_term_engine;
     ProceduralMemory target{"procedural-allocation-test-workspace"};
     LongTermMemory evidence{"procedural-allocation-test-workspace"};
-    std::vector<std::string_view> procedure_probes{
-        procedure_a,
-        procedure_b,
-        procedure_c,
-        forgotten_procedure,
-        candidate_procedure,
-        absent_procedure};
+    std::vector<std::string_view> procedure_probes{procedure_a,
+                                                   procedure_b,
+                                                   procedure_c,
+                                                   forgotten_procedure,
+                                                   candidate_procedure,
+                                                   absent_procedure};
     std::vector<std::string_view> source_probes{source_a, source_b, source_c};
 };
 
@@ -188,16 +205,13 @@ void retain(LongTermMemoryEngine& engine,
             LongTermMemory& memory,
             std::string identifier,
             std::string value) {
-    const auto result = engine.retain(
-        memory,
-        LongTermMemoryEntry{std::move(identifier), std::move(value)});
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    const auto result =
+        engine.retain(memory, LongTermMemoryEntry{std::move(identifier), std::move(value)});
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
-[[nodiscard]] const LongTermMemoryEntry& require_entry(
-    const LongTermMemory& memory,
-    const std::string_view identifier) {
+[[nodiscard]] const LongTermMemoryEntry& require_entry(const LongTermMemory& memory,
+                                                       const std::string_view identifier) {
     const auto* const entry = memory.find(identifier);
     if (entry == nullptr) {
         throw std::logic_error{"allocation fixture source is absent"};
@@ -205,21 +219,18 @@ void retain(LongTermMemoryEngine& engine,
     return *entry;
 }
 
-[[nodiscard]] Procedure proposal(
-    std::string identifier,
-    std::string activity,
-    std::vector<std::string> steps,
-    const LongTermMemory& evidence,
-    const std::vector<std::string_view>& source_identifiers) {
+[[nodiscard]] Procedure proposal(std::string identifier,
+                                 std::string activity,
+                                 std::vector<std::string> steps,
+                                 const LongTermMemory& evidence,
+                                 const std::vector<std::string_view>& source_identifiers) {
     std::vector<LongTermMemoryEntry> sources;
     sources.reserve(source_identifiers.size());
     for (const auto source_identifier : source_identifiers) {
         sources.push_back(require_entry(evidence, source_identifier));
     }
-    return Procedure{std::move(identifier),
-                     std::move(activity),
-                     std::move(steps),
-                     std::move(sources)};
+    return Procedure{
+        std::move(identifier), std::move(activity), std::move(steps), std::move(sources)};
 }
 
 void derive(ProceduralMemoryEngine& engine,
@@ -232,13 +243,8 @@ void derive(ProceduralMemoryEngine& engine,
     const auto result = engine.derive(
         memory,
         evidence,
-        proposal(std::move(identifier),
-                 std::move(activity),
-                 std::move(steps),
-                 evidence,
-                 {source}));
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+        proposal(std::move(identifier), std::move(activity), std::move(steps), evidence, {source}));
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
 void compose(ProceduralMemoryEngine& engine,
@@ -251,27 +257,20 @@ void compose(ProceduralMemoryEngine& engine,
     const auto result = engine.compose(
         memory,
         evidence,
-        proposal(std::move(identifier),
-                 std::move(activity),
-                 std::move(steps),
-                 evidence,
-                 sources));
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+        proposal(std::move(identifier), std::move(activity), std::move(steps), evidence, sources));
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
-[[nodiscard]] std::string procedural_disposition(
-    const ProceduralMemory& memory,
-    const std::string_view identifier) {
+[[nodiscard]] std::string procedural_disposition(const ProceduralMemory& memory,
+                                                 const std::string_view identifier) {
     if (memory.find(identifier) != nullptr) {
         return "ACCESSIBLE";
     }
     LongTermMemory evidence{memory.workspaceIdentifier()};
     const auto retained = LongTermMemoryEngine{}.retain(
         evidence,
-        LongTermMemoryEntry{
-            "private-procedural-allocation-history-probe-source",
-            "private-procedural-allocation-history-probe-value"});
+        LongTermMemoryEntry{"private-procedural-allocation-history-probe-source",
+                            "private-procedural-allocation-history-probe-value"});
     if (!retained.succeeded()) {
         return "PROBE-SOURCE-FAILURE:" + retained.code();
     }
@@ -293,16 +292,14 @@ void compose(ProceduralMemoryEngine& engine,
     return "UNEXPECTED:" + result.code();
 }
 
-[[nodiscard]] std::string long_term_disposition(
-    const LongTermMemory& memory,
-    const std::string_view identifier) {
+[[nodiscard]] std::string long_term_disposition(const LongTermMemory& memory,
+                                                const std::string_view identifier) {
     if (const auto* entry = memory.find(identifier); entry != nullptr) {
         return entry->archived() ? "ARCHIVED" : "LONG_TERM";
     }
     LongTermMemory probe{memory};
     const auto result = LongTermMemoryEngine{}.retain(
-        probe,
-        LongTermMemoryEntry{std::string{identifier}, "probe-value"});
+        probe, LongTermMemoryEntry{std::string{identifier}, "probe-value"});
     if (result.code() == "FORGOTTEN_IDENTIFIER") {
         return "FORGOTTEN";
     }
@@ -312,9 +309,8 @@ void compose(ProceduralMemoryEngine& engine,
     return "UNEXPECTED:" + result.code();
 }
 
-[[nodiscard]] ProceduralStateSnapshot snapshot_of(
-    const ProceduralMemory& memory,
-    const std::vector<std::string_view>& probes) {
+[[nodiscard]] ProceduralStateSnapshot snapshot_of(const ProceduralMemory& memory,
+                                                  const std::vector<std::string_view>& probes) {
     std::vector<ProcedureSnapshot> procedures;
     procedures.reserve(memory.procedures().size());
     for (const auto& procedure : memory.procedures()) {
@@ -323,17 +319,13 @@ void compose(ProceduralMemoryEngine& engine,
     std::vector<IdentifierSnapshot> identifiers;
     identifiers.reserve(probes.size());
     for (const auto probe : probes) {
-        identifiers.push_back(
-            {std::string{probe}, procedural_disposition(memory, probe)});
+        identifiers.push_back({std::string{probe}, procedural_disposition(memory, probe)});
     }
-    return {memory.workspaceIdentifier(),
-            std::move(procedures),
-            std::move(identifiers)};
+    return {memory.workspaceIdentifier(), std::move(procedures), std::move(identifiers)};
 }
 
-[[nodiscard]] LongTermStateSnapshot snapshot_of(
-    const LongTermMemory& memory,
-    const std::vector<std::string_view>& probes) {
+[[nodiscard]] LongTermStateSnapshot snapshot_of(const LongTermMemory& memory,
+                                                const std::vector<std::string_view>& probes) {
     std::vector<EntrySnapshot> entries;
     entries.reserve(memory.entries().size());
     for (const auto& entry : memory.entries()) {
@@ -342,12 +334,9 @@ void compose(ProceduralMemoryEngine& engine,
     std::vector<IdentifierSnapshot> identifiers;
     identifiers.reserve(probes.size());
     for (const auto probe : probes) {
-        identifiers.push_back(
-            {std::string{probe}, long_term_disposition(memory, probe)});
+        identifiers.push_back({std::string{probe}, long_term_disposition(memory, probe)});
     }
-    return {memory.workspaceIdentifier(),
-            std::move(entries),
-            std::move(identifiers)};
+    return {memory.workspaceIdentifier(), std::move(entries), std::move(identifiers)};
 }
 
 [[nodiscard]] FixtureSnapshot snapshot_of(const Fixture& fixture) {
@@ -398,18 +387,13 @@ void seed(Fixture& fixture) {
            "forgotten-activity-with-enough-content-to-require-allocation",
            {"forgotten-step-with-enough-content-to-require-allocation"},
            source_a);
-    ASSERT_TRUE(fixture.procedural_engine
-                    .link(fixture.target, procedure_a, procedure_b)
-                    .succeeded());
-    ASSERT_TRUE(fixture.procedural_engine
-                    .link(fixture.target, procedure_a, procedure_c)
-                    .succeeded());
-    ASSERT_TRUE(fixture.procedural_engine
-                    .link(fixture.target, procedure_b, procedure_c)
-                    .succeeded());
-    ASSERT_TRUE(fixture.procedural_engine
-                    .forget(fixture.target, forgotten_procedure)
-                    .succeeded());
+    ASSERT_TRUE(
+        fixture.procedural_engine.link(fixture.target, procedure_a, procedure_b).succeeded());
+    ASSERT_TRUE(
+        fixture.procedural_engine.link(fixture.target, procedure_a, procedure_c).succeeded());
+    ASSERT_TRUE(
+        fixture.procedural_engine.link(fixture.target, procedure_b, procedure_c).succeeded());
+    ASSERT_TRUE(fixture.procedural_engine.forget(fixture.target, forgotten_procedure).succeeded());
 }
 
 [[nodiscard]] Fixture seeded_fixture() {
@@ -427,9 +411,7 @@ void verify_strong_guarantee(Arrange arrange,
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         auto fixture = arrange();
         const auto before = snapshot_of(fixture);
 
@@ -439,8 +421,7 @@ void verify_strong_guarantee(Arrange arrange,
             procedural_memory_allocation_failure_support::disable();
             EXPECT_EQ(result.code(), expected_code);
             if (expected_code == "OK") {
-                EXPECT_TRUE(result.succeeded()) << result.code() << ": "
-                                                << result.message();
+                EXPECT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
             } else {
                 EXPECT_FALSE(result.succeeded());
                 EXPECT_FALSE(result.message().empty());
@@ -465,84 +446,74 @@ void verify_strong_guarantee(Arrange arrange,
     EXPECT_GT(observed_failures, 0U);
 }
 
-TEST(ProceduralMemoryAllocationFailureTest,
-     DeriveAppendPreservesAllStateAtEveryFailure) {
+TEST(ProceduralMemoryAllocationFailureTest, DeriveAppendPreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.procedural_engine.derive(
+                                    fixture.target,
+                                    fixture.evidence,
+                                    proposal(std::string{candidate_procedure},
+                                             "candidate-activity-with-enough-content-to-allocate",
+                                             {"candidate-step-one-with-enough-content-to-allocate",
+                                              "candidate-step-two-with-enough-content-to-allocate"},
+                                             fixture.evidence,
+                                             {source_b}));
+                            },
+                            "OK");
+}
+
+TEST(ProceduralMemoryAllocationFailureTest, DeriveIdempotencePreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
             return fixture.procedural_engine.derive(
                 fixture.target,
                 fixture.evidence,
-                proposal(
-                    std::string{candidate_procedure},
-                    "candidate-activity-with-enough-content-to-allocate",
-                    {"candidate-step-one-with-enough-content-to-allocate",
-                     "candidate-step-two-with-enough-content-to-allocate"},
-                    fixture.evidence,
-                    {source_b}));
+                proposal(std::string{procedure_a},
+                         "procedure-a-activity-with-enough-content-to-require-allocation",
+                         {"procedure-a-step-one-with-enough-content-to-allocate",
+                          "procedure-a-step-two-with-enough-content-to-allocate"},
+                         fixture.evidence,
+                         {source_a}));
         },
         "OK");
 }
 
-TEST(ProceduralMemoryAllocationFailureTest,
-     DeriveIdempotencePreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.procedural_engine.derive(
-                fixture.target,
-                fixture.evidence,
-                proposal(
-                    std::string{procedure_a},
-                    "procedure-a-activity-with-enough-content-to-require-allocation",
-                    {"procedure-a-step-one-with-enough-content-to-allocate",
-                     "procedure-a-step-two-with-enough-content-to-allocate"},
-                    fixture.evidence,
-                    {source_a}));
-        },
-        "OK");
-}
-
-TEST(ProceduralMemoryAllocationFailureTest,
-     ComposeAppendPreservesAllStateAtEveryFailure) {
+TEST(ProceduralMemoryAllocationFailureTest, ComposeAppendPreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
             return fixture.procedural_engine.compose(
                 fixture.target,
                 fixture.evidence,
-                proposal(
-                    std::string{candidate_procedure},
-                    "candidate-composed-activity-with-enough-content-to-allocate",
-                    {"candidate-composed-step-one-with-enough-content-to-allocate",
-                     "candidate-composed-step-two-with-enough-content-to-allocate"},
-                    fixture.evidence,
-                    {source_c, source_a, source_b}));
+                proposal(std::string{candidate_procedure},
+                         "candidate-composed-activity-with-enough-content-to-allocate",
+                         {"candidate-composed-step-one-with-enough-content-to-allocate",
+                          "candidate-composed-step-two-with-enough-content-to-allocate"},
+                         fixture.evidence,
+                         {source_c, source_a, source_b}));
         },
         "OK");
 }
 
-TEST(ProceduralMemoryAllocationFailureTest,
-     ComposeIdempotencePreservesAllStateAtEveryFailure) {
+TEST(ProceduralMemoryAllocationFailureTest, ComposeIdempotencePreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
             return fixture.procedural_engine.compose(
                 fixture.target,
                 fixture.evidence,
-                proposal(
-                    std::string{procedure_b},
-                    "procedure-b-activity-with-enough-content-to-require-allocation",
-                    {"procedure-b-step-one-with-enough-content-to-allocate",
-                     "procedure-b-step-one-with-enough-content-to-allocate"},
-                    fixture.evidence,
-                    {source_b, source_a}));
+                proposal(std::string{procedure_b},
+                         "procedure-b-activity-with-enough-content-to-require-allocation",
+                         {"procedure-b-step-one-with-enough-content-to-allocate",
+                          "procedure-b-step-one-with-enough-content-to-allocate"},
+                         fixture.evidence,
+                         {source_b, source_a}));
         },
         "OK");
 }
 
-TEST(ProceduralMemoryAllocationFailureTest,
-     LinkAppendPreservesBothEndpointsAtEveryFailure) {
+TEST(ProceduralMemoryAllocationFailureTest, LinkAppendPreservesBothEndpointsAtEveryFailure) {
     verify_strong_guarantee(
         [] {
             Fixture fixture;
@@ -567,41 +538,35 @@ TEST(ProceduralMemoryAllocationFailureTest,
             return fixture;
         },
         [](Fixture& fixture) {
-            return fixture.procedural_engine.link(
-                fixture.target, procedure_a, procedure_b);
+            return fixture.procedural_engine.link(fixture.target, procedure_a, procedure_b);
         },
         "OK");
 }
 
-TEST(ProceduralMemoryAllocationFailureTest,
-     LinkIdempotencePreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.procedural_engine.link(
-                fixture.target, procedure_b, procedure_a);
-        },
-        "OK");
+TEST(ProceduralMemoryAllocationFailureTest, LinkIdempotencePreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.procedural_engine.link(
+                                    fixture.target, procedure_b, procedure_a);
+                            },
+                            "OK");
 }
 
-TEST(ProceduralMemoryAllocationFailureTest,
-     UpdateReplacementPreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.procedural_engine.update(
-                fixture.target,
-                procedure_a,
-                "replacement-activity-with-enough-content-to-allocate",
-                {"replacement-step-one-with-enough-content-to-allocate",
-                 "replacement-step-one-with-enough-content-to-allocate",
-                 "replacement-step-three-with-enough-content-to-allocate"});
-        },
-        "OK");
+TEST(ProceduralMemoryAllocationFailureTest, UpdateReplacementPreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.procedural_engine.update(
+                                    fixture.target,
+                                    procedure_a,
+                                    "replacement-activity-with-enough-content-to-allocate",
+                                    {"replacement-step-one-with-enough-content-to-allocate",
+                                     "replacement-step-one-with-enough-content-to-allocate",
+                                     "replacement-step-three-with-enough-content-to-allocate"});
+                            },
+                            "OK");
 }
 
-TEST(ProceduralMemoryAllocationFailureTest,
-     UpdateIdempotencePreservesAllStateAtEveryFailure) {
+TEST(ProceduralMemoryAllocationFailureTest, UpdateIdempotencePreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
@@ -617,52 +582,45 @@ TEST(ProceduralMemoryAllocationFailureTest,
 
 TEST(ProceduralMemoryAllocationFailureTest,
      ForgetPresentWithMultiSurvivorLinksPreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.procedural_engine.forget(
-                fixture.target, procedure_b);
-        },
-        "OK");
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.procedural_engine.forget(fixture.target,
+                                                                        procedure_b);
+                            },
+                            "OK");
 }
 
-TEST(ProceduralMemoryAllocationFailureTest,
-     ForgetAbsentPreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.procedural_engine.forget(
-                fixture.target, absent_procedure);
-        },
-        "OK");
+TEST(ProceduralMemoryAllocationFailureTest, ForgetAbsentPreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.procedural_engine.forget(fixture.target,
+                                                                        absent_procedure);
+                            },
+                            "OK");
 }
 
-TEST(ProceduralMemoryAllocationFailureTest,
-     ForgetRepeatedPreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.procedural_engine.forget(
-                fixture.target, forgotten_procedure);
-        },
-        "OK");
+TEST(ProceduralMemoryAllocationFailureTest, ForgetRepeatedPreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.procedural_engine.forget(fixture.target,
+                                                                        forgotten_procedure);
+                            },
+                            "OK");
 }
 
-TEST(ProceduralMemoryAllocationFailureTest,
-     DeriveConflictFailureConstructionPreservesAllState) {
+TEST(ProceduralMemoryAllocationFailureTest, DeriveConflictFailureConstructionPreservesAllState) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
             return fixture.procedural_engine.derive(
                 fixture.target,
                 fixture.evidence,
-                proposal(
-                    std::string{procedure_a},
-                    "conflicting-activity-with-enough-content-to-allocate",
-                    {"procedure-a-step-one-with-enough-content-to-allocate",
-                     "procedure-a-step-two-with-enough-content-to-allocate"},
-                    fixture.evidence,
-                    {source_a}));
+                proposal(std::string{procedure_a},
+                         "conflicting-activity-with-enough-content-to-allocate",
+                         {"procedure-a-step-one-with-enough-content-to-allocate",
+                          "procedure-a-step-two-with-enough-content-to-allocate"},
+                         fixture.evidence,
+                         {source_a}));
         },
         "IDENTIFIER_CONFLICT");
 }
@@ -675,41 +633,38 @@ TEST(ProceduralMemoryAllocationFailureTest,
             return fixture.procedural_engine.compose(
                 fixture.target,
                 fixture.evidence,
-                Procedure{
-                    std::string{candidate_procedure},
-                    "candidate-activity-with-enough-content-to-allocate",
-                    {"candidate-step-with-enough-content-to-allocate"},
-                    {require_entry(fixture.evidence, source_a),
-                     LongTermMemoryEntry{
-                         "missing-source-with-a-long-identifier-for-allocation-testing",
-                         "missing-source-value-with-enough-content-to-allocate"}}});
+                Procedure{std::string{candidate_procedure},
+                          "candidate-activity-with-enough-content-to-allocate",
+                          {"candidate-step-with-enough-content-to-allocate"},
+                          {require_entry(fixture.evidence, source_a),
+                           LongTermMemoryEntry{
+                               "missing-source-with-a-long-identifier-for-allocation-testing",
+                               "missing-source-value-with-enough-content-to-allocate"}}});
         },
         "SOURCE_NOT_FOUND");
 }
 
 TEST(ProceduralMemoryAllocationFailureTest,
      LinkMissingEndpointFailureConstructionPreservesAllState) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.procedural_engine.link(
-                fixture.target, procedure_a, absent_procedure);
-        },
-        "NOT_FOUND");
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.procedural_engine.link(
+                                    fixture.target, procedure_a, absent_procedure);
+                            },
+                            "NOT_FOUND");
 }
 
 TEST(ProceduralMemoryAllocationFailureTest,
      UpdateMissingTargetFailureConstructionPreservesAllState) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.procedural_engine.update(
-                fixture.target,
-                absent_procedure,
-                "missing-target-activity-with-enough-content-to-allocate",
-                {"missing-target-step-with-enough-content-to-allocate"});
-        },
-        "NOT_FOUND");
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.procedural_engine.update(
+                                    fixture.target,
+                                    absent_procedure,
+                                    "missing-target-activity-with-enough-content-to-allocate",
+                                    {"missing-target-step-with-enough-content-to-allocate"});
+                            },
+                            "NOT_FOUND");
 }
 
 } // namespace

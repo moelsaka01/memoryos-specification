@@ -26,11 +26,7 @@ class KnowledgeQuery {
 
 class KnowledgeCandidate {
   public:
-    enum class Kind {
-        Semantic,
-        Episodic,
-        Procedural
-    };
+    enum class Kind { Semantic, Episodic, Procedural };
 
     ~KnowledgeCandidate();
     KnowledgeCandidate(const KnowledgeCandidate&);
@@ -47,24 +43,20 @@ class KnowledgeCandidate {
     const Procedure* procedure() const noexcept;
 
   private:
-    using SourceValue =
-        std::variant<std::monostate, SemanticConcept, Episode, Procedure>;
+    using SourceValue = std::variant<std::monostate, SemanticConcept, Episode, Procedure>;
 
-    KnowledgeCandidate(
-        std::string workspaceIdentifier,
-        SemanticConcept semanticConcept,
-        std::uint32_t rankScore,
-        std::vector<std::string> explanationChain);
-    KnowledgeCandidate(
-        std::string workspaceIdentifier,
-        Episode episode,
-        std::uint32_t rankScore,
-        std::vector<std::string> explanationChain);
-    KnowledgeCandidate(
-        std::string workspaceIdentifier,
-        Procedure procedure,
-        std::uint32_t rankScore,
-        std::vector<std::string> explanationChain);
+    KnowledgeCandidate(std::string workspaceIdentifier,
+                       SemanticConcept semanticConcept,
+                       std::uint32_t rankScore,
+                       std::vector<std::string> explanationChain);
+    KnowledgeCandidate(std::string workspaceIdentifier,
+                       Episode episode,
+                       std::uint32_t rankScore,
+                       std::vector<std::string> explanationChain);
+    KnowledgeCandidate(std::string workspaceIdentifier,
+                       Procedure procedure,
+                       std::uint32_t rankScore,
+                       std::vector<std::string> explanationChain);
 
     Kind kind_{Kind::Semantic};
     std::string workspace_identifier_;
@@ -126,11 +118,10 @@ class KnowledgeResult {
     static constexpr std::uint8_t invalid_identifier_status = 7U;
     static constexpr std::uint8_t not_found_status = 8U;
 
-    KnowledgeResult(
-        std::uint8_t status,
-        std::unique_ptr<KnowledgeCandidate> candidate,
-        std::vector<KnowledgeCandidate> candidates,
-        std::vector<std::string> explanationChain);
+    KnowledgeResult(std::uint8_t status,
+                    std::unique_ptr<KnowledgeCandidate> candidate,
+                    std::vector<KnowledgeCandidate> candidates,
+                    std::vector<std::string> explanationChain);
 
     std::uint8_t status_{moved_from_status};
     std::unique_ptr<KnowledgeCandidate> candidate_;
@@ -142,36 +133,29 @@ class KnowledgeResult {
 
 class MemoryRetrievalEngine {
   public:
-    KnowledgeResult retrieve(
-        RetrievalSession& session,
-        const SemanticMemory& semanticMemory,
-        const EpisodicMemory& episodicMemory,
-        const ProceduralMemory& proceduralMemory,
-        KnowledgeCandidate::Kind kind,
-        std::string_view identifier) const;
-    KnowledgeResult search(
-        RetrievalSession& session,
-        const SemanticMemory& semanticMemory,
-        const EpisodicMemory& episodicMemory,
-        const ProceduralMemory& proceduralMemory,
-        const KnowledgeQuery& query) const;
-    KnowledgeResult filter(
-        RetrievalSession& session,
-        const KnowledgeQuery& query) const;
+    KnowledgeResult retrieve(RetrievalSession& session,
+                             const SemanticMemory& semanticMemory,
+                             const EpisodicMemory& episodicMemory,
+                             const ProceduralMemory& proceduralMemory,
+                             KnowledgeCandidate::Kind kind,
+                             std::string_view identifier) const;
+    KnowledgeResult search(RetrievalSession& session,
+                           const SemanticMemory& semanticMemory,
+                           const EpisodicMemory& episodicMemory,
+                           const ProceduralMemory& proceduralMemory,
+                           const KnowledgeQuery& query) const;
+    KnowledgeResult filter(RetrievalSession& session, const KnowledgeQuery& query) const;
     KnowledgeResult rank(RetrievalSession& session) const;
-    KnowledgeResult explain(
-        const RetrievalSession& session,
-        KnowledgeCandidate::Kind kind,
-        std::string_view identifier) const;
+    KnowledgeResult explain(const RetrievalSession& session,
+                            KnowledgeCandidate::Kind kind,
+                            std::string_view identifier) const;
     KnowledgeResult forgetSession(RetrievalSession& session) const;
 
   private:
     static KnowledgeResult failure(std::uint8_t status);
-    static KnowledgeResult candidateSuccess(
-        const KnowledgeCandidate& candidate,
-        std::vector<std::string> explanationChain);
-    static KnowledgeResult candidatesSuccess(
-        const std::vector<KnowledgeCandidate>& candidates);
+    static KnowledgeResult candidateSuccess(const KnowledgeCandidate& candidate,
+                                            std::vector<std::string> explanationChain);
+    static KnowledgeResult candidatesSuccess(const std::vector<KnowledgeCandidate>& candidates);
     static KnowledgeResult emptySuccess();
 };
 

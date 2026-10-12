@@ -13,6 +13,25 @@ const raw=await readFile(receiptPath),receipt=JSON.parse(raw);
 const inventory=JSON.parse(await readFile(resolve(base,'mo1304-conformance-inventory.json')));
 const sha=b=>createHash('sha256').update(b).digest('hex');
 const git=(...args)=>execFileSync('git',args,{cwd:workspace,encoding:'utf8',windowsHide:true,env:{...process.env,GIT_OPTIONAL_LOCKS:'0'},maxBuffer:4*1024*1024}).trim();
+
+// The inventory is a frozen pre-tag snapshot (tagState PENDING). The tag now exists: it is an annotated tag
+// whose object and peeled commit are recorded in tools/mo1308-phase3b/baseline.json, descends from the
+// release binding, and leaves the shipped MCP surface identical to HEAD.
+const MO1304_TAG={name:'memoryos-1.3-mo1304',object:'6d877151f0857006fcf12958f8b4c5bc662f43d6',commit:'ce7b001d911239fa50d904f5f336bb1bd7858ba3'};
+const MCP_SHIPPED_SURFACE=['bin','src','contracts','runtime','distribution','package.json','package-lock.json','README.md','NOTICE.md','LICENSE','THIRD_PARTY_NOTICES.txt'].map(x=>'repositories/memoryos-mcp/'+x);
+function assertMo1304Tag(inventory){
+ assert.deepEqual(inventory.tagState,{status:'PENDING',name:MO1304_TAG.name,object:null});
+ assert.equal(git('tag','--list',MO1304_TAG.name),MO1304_TAG.name);
+ assert.equal(git('cat-file','-t','refs/tags/'+MO1304_TAG.name),'tag');
+ assert.equal(git('rev-parse','refs/tags/'+MO1304_TAG.name),MO1304_TAG.object);
+ assert.equal(git('rev-parse','refs/tags/'+MO1304_TAG.name+'^{commit}'),MO1304_TAG.commit);
+ if(inventory.releaseBinding.status==='BOUND')git('merge-base','--is-ancestor',inventory.releaseBinding.revision,MO1304_TAG.commit);
+}
+function assertMcpFrozenSince(base){
+ assert.equal(git('diff',base,MO1304_TAG.commit,'--','repositories/memoryos-mcp'),'');
+ assert.equal(git('diff',MO1304_TAG.commit,'HEAD','--',...MCP_SHIPPED_SURFACE),'','shipped MCP surface changed after the tag');
+}
+
 const python=process.env.MEMORYOS_CONFORMANCE_PYTHON??'python';
 const py=(name,args)=>JSON.parse(execFileSync(python,['-B',resolve(base,'tools/mo1304-phase3',name),...args],{cwd:workspace,encoding:'utf8',windowsHide:true,maxBuffer:4*1024*1024}));
 const B2='461a67f3dbb7a32132f9c76e0ea40358e6776583';
@@ -25,7 +44,7 @@ test('strict validator rejects fabricated PASS, missing/failed tests, changed by
 test('Ubuntu evidence binds B2 and the actual descendant harness commit without self-reference',async()=>{
  const graph=['ed4632fc81a6e90835233a848a9a3a118184c02e','9d12ea46c6971efd01619bcfdba804431b4149f3','6ab8ed0abb105f90cf44220b1798341133f2716d','0c8b8a35ff0f92a28fe4be85d60ee460208443de','18453aa6d0d347acece20598cf5b1bc3d174c5af',B2];
  for(let i=1;i<graph.length;i++)assert.equal(git('rev-parse',graph[i]+'^'),graph[i-1]);assert.equal(receipt.implementationRevision,graph[4]);assert.equal(receipt.phase2Binding,B2);assert.equal(git('show','-s','--format=%s',B2),'conformance(memoryos-1.3): bind MO-1304 phase 2 integration');
- assert.equal(git('diff',B2,'--','repositories/memoryos-mcp'),'');
+ assertMcpFrozenSince(B2);
  // B2 is allowed while preparing this surface. Once committed, inspect the
  // actual first descendant instead of placing a future commit hash in a receipt.
  const head=git('rev-parse','HEAD');
@@ -45,7 +64,7 @@ test('Ubuntu evidence binds B2 and the actual descendant harness commit without 
 test('inventory preserves exact Ubuntu evidence through later Windows/parity and release binding',()=>{
  const entry=inventory.phase3.ubuntu24_04_x64;assert.deepEqual(entry.harnessBinding,{status:'BOUND',strategy:'postCommitConformanceCommit',revision:'b95822625f8e7be2cd353b42a8fd185264e9a8bf',parent:B2,subject:'test(memoryos-1.3): add MO-1304 supported-platform certification harness'});assert.equal(entry.status,'PASS');assert.deepEqual(entry.receipt,{path:'repositories/cca-conformance/evidence/mo1304-phase3-ubuntu/ubuntu-receipt.json',byteLength:raw.length,sha256:sha(raw)});
  assert.deepEqual({...inventory.phase3,status:'PENDING',windows11_x64:null,ubuntu24_04_x64:null,platformParity:null},{status:'PENDING',windows11_x64:null,ubuntu24_04_x64:null,node:'24.21.0',macos:'UNSUPPORTED',platformParity:null});assert.equal(inventory.phase3.status,inventory.releaseBinding.status==='BOUND'?'PASS':'PENDING');
- if(inventory.releaseBinding.status==='PENDING')assert.deepEqual(inventory.releaseBinding,{status:'PENDING',revision:null});else{assert.equal(inventory.releaseBinding.status,'BOUND');assert.equal(inventory.releaseBinding.strategy,'postEvidenceConformanceCommit');assert.match(inventory.releaseBinding.revision,/^[0-9a-f]{40}$/);}assert.deepEqual(inventory.tagState,{status:'PENDING',name:'memoryos-1.3-mo1304',object:null});assert.equal(git('tag','--list','memoryos-1.3-mo1304'),'');
+ if(inventory.releaseBinding.status==='PENDING')assert.deepEqual(inventory.releaseBinding,{status:'PENDING',revision:null});else{assert.equal(inventory.releaseBinding.status,'BOUND');assert.equal(inventory.releaseBinding.strategy,'postEvidenceConformanceCommit');assert.match(inventory.releaseBinding.revision,/^[0-9a-f]{40}$/);}assertMo1304Tag(inventory);
 });
 test('Ubuntu actual environment and residual risk are preserved without Windows or zero-vulnerability claims',()=>{
  assert.equal(receipt.platform,'ubuntu-24.04');assert.equal(receipt.architecture,'x64');assert.equal(receipt.os.prettyName,'Ubuntu 24.04.5 LTS');assert.equal(receipt.node.version,'v24.21.0');assert.equal(receipt.npm,'11.19.0');assert.equal(receipt.nonNormative.virtualBoxProduct,'VirtualBox');

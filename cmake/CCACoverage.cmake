@@ -20,9 +20,13 @@ function(cca_add_coverage_report_target)
       --root "${CMAKE_SOURCE_DIR}"
       --filter "${CMAKE_SOURCE_DIR}/repositories"
       --exclude "${CMAKE_SOURCE_DIR}/out"
+      # GCC bug 68080: multithreaded tests can leave negative gcov branch counters.
+      # Warn once per file instead of aborting; the line-coverage gate below is unchanged.
+      --gcov-ignore-parse-errors negative_hits.warn_once_per_file
       --fail-under-line 90
       --html-details "${coverage_directory}/index.html"
-      --xml-pretty "${coverage_directory}/coverage.xml"
+      --cobertura-pretty
+      --cobertura "${coverage_directory}/coverage.xml"
       "${CMAKE_BINARY_DIR}"
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     COMMENT "Generating CCA HTML and Cobertura coverage reports"

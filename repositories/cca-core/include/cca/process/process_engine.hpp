@@ -11,8 +11,7 @@ class ProcessEngine {
   public:
     ProcessEngine() noexcept = default;
 
-    ExecutionResult execute(
-        const cca::representation::RepresentationDocument& document) const;
+    ExecutionResult execute(const cca::representation::RepresentationDocument& document) const;
 
     ExecutionResult execute(const ProcessDefinition& definition) const;
 

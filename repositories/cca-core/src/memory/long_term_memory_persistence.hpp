@@ -14,8 +14,7 @@ class LongTermMemoryPersistence {
     static std::unique_ptr<cca::representation::RepresentationDocument>
     project(const LongTermMemory& memory);
 
-    static LongTermMemory reconstruct(
-        const cca::representation::RepresentationDocument& workspace);
+    static LongTermMemory reconstruct(const cca::representation::RepresentationDocument& workspace);
 
     static LongTermMemory roundTrip(const LongTermMemory& memory);
 };

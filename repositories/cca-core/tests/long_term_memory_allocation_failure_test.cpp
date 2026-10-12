@@ -1,9 +1,8 @@
 #include <cca/memory/long_term_memory.hpp>
 
-#include <gtest/gtest.h>
-
 #include <cstddef>
 #include <cstdlib>
+#include <gtest/gtest.h>
 #include <limits>
 #include <new>
 #include <string>
@@ -25,7 +24,9 @@ void fail_after(const std::size_t successful_allocations) noexcept {
     allocations_before_failure = successful_allocations;
 }
 
-void disable() noexcept { allocations_before_failure = disabled; }
+void disable() noexcept {
+    allocations_before_failure = disabled;
+}
 
 [[nodiscard]] bool should_fail() noexcept {
     if (allocations_before_failure == disabled) {
@@ -60,8 +61,12 @@ void* operator new[](const std::size_t size) {
     return long_term_memory_allocation_failure_support::allocate(size);
 }
 
-void operator delete(void* allocation) noexcept { std::free(allocation); }
-void operator delete[](void* allocation) noexcept { std::free(allocation); }
+void operator delete(void* allocation) noexcept {
+    std::free(allocation);
+}
+void operator delete[](void* allocation) noexcept {
+    std::free(allocation);
+}
 
 void operator delete(void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
@@ -70,6 +75,25 @@ void operator delete(void* allocation, const std::size_t size) noexcept {
 
 void operator delete[](void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
+    std::free(allocation);
+}
+
+// The nothrow forms must pair with the same malloc/free family as the replaced throwing forms
+// (the standard library allocates temporary buffers with nothrow new); they are deliberately not
+// subject to failure injection, matching the library's default nothrow allocation behaviour.
+void* operator new(const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void* operator new[](const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void operator delete(void* allocation, const std::nothrow_t&) noexcept {
+    std::free(allocation);
+}
+
+void operator delete[](void* allocation, const std::nothrow_t&) noexcept {
     std::free(allocation);
 }
 
@@ -106,13 +130,12 @@ struct Fixture final {
     LongTermMemoryEngine engine;
     LongTermMemory target{"allocation-test-workspace"};
     LongTermMemory preserved{"allocation-test-workspace"};
-    std::vector<std::string_view> identifier_probes{
-        "first-entry-with-a-long-identifier",
-        "second-entry-with-a-long-identifier",
-        "third-entry-with-a-long-identifier",
-        "forgotten-entry-with-a-long-identifier",
-        "candidate-entry-with-a-long-identifier",
-        "absent-entry-with-a-long-identifier"};
+    std::vector<std::string_view> identifier_probes{"first-entry-with-a-long-identifier",
+                                                    "second-entry-with-a-long-identifier",
+                                                    "third-entry-with-a-long-identifier",
+                                                    "forgotten-entry-with-a-long-identifier",
+                                                    "candidate-entry-with-a-long-identifier",
+                                                    "absent-entry-with-a-long-identifier"};
 };
 
 struct FixtureSnapshot final {
@@ -122,18 +145,15 @@ struct FixtureSnapshot final {
     bool operator==(const FixtureSnapshot&) const = default;
 };
 
-[[nodiscard]] std::string identifier_disposition(
-    const LongTermMemory& memory,
-    const std::string_view identifier) {
+[[nodiscard]] std::string identifier_disposition(const LongTermMemory& memory,
+                                                 const std::string_view identifier) {
     if (const auto* entry = memory.find(identifier); entry != nullptr) {
         return entry->archived() ? "ARCHIVED" : "LONG_TERM";
     }
 
     LongTermMemory probe{memory};
     const auto result = LongTermMemoryEngine{}.retain(
-        probe,
-        LongTermMemoryEntry{std::string{identifier},
-                            "allocation-history-probe-value"});
+        probe, LongTermMemoryEntry{std::string{identifier}, "allocation-history-probe-value"});
     if (result.code() == "FORGOTTEN_IDENTIFIER") {
         return "FORGOTTEN";
     }
@@ -143,42 +163,33 @@ struct FixtureSnapshot final {
     return "UNEXPECTED:" + result.code();
 }
 
-[[nodiscard]] StateSnapshot snapshot_of(
-    const LongTermMemory& memory,
-    const std::vector<std::string_view>& identifier_probes) {
+[[nodiscard]] StateSnapshot snapshot_of(const LongTermMemory& memory,
+                                        const std::vector<std::string_view>& identifier_probes) {
     std::vector<EntrySnapshot> entries;
     entries.reserve(memory.entries().size());
     for (const auto& entry : memory.entries()) {
-        entries.push_back(
-            EntrySnapshot{entry.identifier(), entry.value(), entry.archived()});
+        entries.push_back(EntrySnapshot{entry.identifier(), entry.value(), entry.archived()});
     }
 
     std::vector<IdentifierSnapshot> identifiers;
     identifiers.reserve(identifier_probes.size());
     for (const auto identifier : identifier_probes) {
-        identifiers.push_back(
-            IdentifierSnapshot{std::string{identifier},
-                               identifier_disposition(memory, identifier)});
+        identifiers.push_back(IdentifierSnapshot{std::string{identifier},
+                                                 identifier_disposition(memory, identifier)});
     }
-    return StateSnapshot{memory.workspaceIdentifier(),
-                         std::move(entries),
-                         std::move(identifiers)};
+    return StateSnapshot{memory.workspaceIdentifier(), std::move(entries), std::move(identifiers)};
 }
 
 [[nodiscard]] FixtureSnapshot snapshot_of(const Fixture& fixture) {
-    return FixtureSnapshot{
-        snapshot_of(fixture.target, fixture.identifier_probes),
-        snapshot_of(fixture.preserved, fixture.identifier_probes)};
+    return FixtureSnapshot{snapshot_of(fixture.target, fixture.identifier_probes),
+                           snapshot_of(fixture.preserved, fixture.identifier_probes)};
 }
 
 void retain(LongTermMemoryEngine& engine,
             LongTermMemory& memory,
             std::string identifier,
             std::string value) {
-    ASSERT_TRUE(engine
-                    .retain(memory,
-                            LongTermMemoryEntry{std::move(identifier),
-                                                std::move(value)})
+    ASSERT_TRUE(engine.retain(memory, LongTermMemoryEntry{std::move(identifier), std::move(value)})
                     .succeeded());
 }
 
@@ -199,13 +210,9 @@ void seed_target(Fixture& fixture) {
            fixture.target,
            "forgotten-entry-with-a-long-identifier",
            "forgotten-value-with-enough-content-to-allocate");
-    ASSERT_TRUE(fixture.engine
-                    .archive(fixture.target,
-                             "second-entry-with-a-long-identifier")
-                    .succeeded());
-    ASSERT_TRUE(fixture.engine
-                    .forget(fixture.target,
-                            "forgotten-entry-with-a-long-identifier")
+    ASSERT_TRUE(
+        fixture.engine.archive(fixture.target, "second-entry-with-a-long-identifier").succeeded());
+    ASSERT_TRUE(fixture.engine.forget(fixture.target, "forgotten-entry-with-a-long-identifier")
                     .succeeded());
 }
 
@@ -226,13 +233,9 @@ void seed_preserved(Fixture& fixture) {
            fixture.preserved,
            "forgotten-entry-with-a-long-identifier",
            "preserved-forgotten-value-with-enough-content-to-allocate");
-    ASSERT_TRUE(fixture.engine
-                    .archive(fixture.preserved,
-                             "second-entry-with-a-long-identifier")
+    ASSERT_TRUE(fixture.engine.archive(fixture.preserved, "second-entry-with-a-long-identifier")
                     .succeeded());
-    ASSERT_TRUE(fixture.engine
-                    .forget(fixture.preserved,
-                            "forgotten-entry-with-a-long-identifier")
+    ASSERT_TRUE(fixture.engine.forget(fixture.preserved, "forgotten-entry-with-a-long-identifier")
                     .succeeded());
 }
 
@@ -243,9 +246,7 @@ void verify_strong_guarantee(Arrange arrange, Operation operation) {
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         auto fixture = arrange();
         const auto before = snapshot_of(fixture);
 
@@ -253,8 +254,7 @@ void verify_strong_guarantee(Arrange arrange, Operation operation) {
         try {
             const auto result = operation(fixture);
             long_term_memory_allocation_failure_support::disable();
-            EXPECT_TRUE(result.succeeded()) << result.code() << ": "
-                                            << result.message();
+            EXPECT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
             completed = true;
             break;
         } catch (const std::bad_alloc&) {
@@ -271,21 +271,18 @@ void verify_strong_guarantee(Arrange arrange, Operation operation) {
     EXPECT_GT(observed_failures, 0U);
 }
 
-TEST(LongTermMemoryAllocationFailureTest,
-     RetainAppendPreservesStateAtEveryAllocationFailure) {
+TEST(LongTermMemoryAllocationFailureTest, RetainAppendPreservesStateAtEveryAllocationFailure) {
     verify_strong_guarantee(
         [] { return Fixture{}; },
         [](Fixture& fixture) {
             return fixture.engine.retain(
                 fixture.target,
-                LongTermMemoryEntry{
-                    "candidate-entry-with-a-long-identifier",
-                    "candidate-value-with-enough-content-to-allocate"});
+                LongTermMemoryEntry{"candidate-entry-with-a-long-identifier",
+                                    "candidate-value-with-enough-content-to-allocate"});
         });
 }
 
-TEST(LongTermMemoryAllocationFailureTest,
-     RetainIdempotencePreservesStateAtEveryAllocationFailure) {
+TEST(LongTermMemoryAllocationFailureTest, RetainIdempotencePreservesStateAtEveryAllocationFailure) {
     verify_strong_guarantee(
         [] {
             Fixture fixture;
@@ -295,14 +292,12 @@ TEST(LongTermMemoryAllocationFailureTest,
         [](Fixture& fixture) {
             return fixture.engine.retain(
                 fixture.target,
-                LongTermMemoryEntry{
-                    "first-entry-with-a-long-identifier",
-                    "first-value-with-enough-content-to-allocate"});
+                LongTermMemoryEntry{"first-entry-with-a-long-identifier",
+                                    "first-value-with-enough-content-to-allocate"});
         });
 }
 
-TEST(LongTermMemoryAllocationFailureTest,
-     StoreAppendPreservesStateAtEveryAllocationFailure) {
+TEST(LongTermMemoryAllocationFailureTest, StoreAppendPreservesStateAtEveryAllocationFailure) {
     verify_strong_guarantee(
         [] {
             Fixture fixture;
@@ -312,14 +307,12 @@ TEST(LongTermMemoryAllocationFailureTest,
         [](Fixture& fixture) {
             return fixture.engine.store(
                 fixture.target,
-                LongTermMemoryEntry{
-                    "candidate-entry-with-a-long-identifier",
-                    "candidate-value-with-enough-content-to-allocate"});
+                LongTermMemoryEntry{"candidate-entry-with-a-long-identifier",
+                                    "candidate-value-with-enough-content-to-allocate"});
         });
 }
 
-TEST(LongTermMemoryAllocationFailureTest,
-     StoreReplacementPreservesStateAtEveryAllocationFailure) {
+TEST(LongTermMemoryAllocationFailureTest, StoreReplacementPreservesStateAtEveryAllocationFailure) {
     verify_strong_guarantee(
         [] {
             Fixture fixture;
@@ -329,14 +322,12 @@ TEST(LongTermMemoryAllocationFailureTest,
         [](Fixture& fixture) {
             return fixture.engine.store(
                 fixture.target,
-                LongTermMemoryEntry{
-                    "third-entry-with-a-long-identifier",
-                    "replacement-value-with-enough-content-to-allocate"});
+                LongTermMemoryEntry{"third-entry-with-a-long-identifier",
+                                    "replacement-value-with-enough-content-to-allocate"});
         });
 }
 
-TEST(LongTermMemoryAllocationFailureTest,
-     ArchivePreservesStateAtEveryAllocationFailure) {
+TEST(LongTermMemoryAllocationFailureTest, ArchivePreservesStateAtEveryAllocationFailure) {
     verify_strong_guarantee(
         [] {
             Fixture fixture;
@@ -344,9 +335,7 @@ TEST(LongTermMemoryAllocationFailureTest,
             return fixture;
         },
         [](Fixture& fixture) {
-            return fixture.engine.archive(
-                fixture.target,
-                "third-entry-with-a-long-identifier");
+            return fixture.engine.archive(fixture.target, "third-entry-with-a-long-identifier");
         });
 }
 
@@ -359,23 +348,18 @@ TEST(LongTermMemoryAllocationFailureTest,
             return fixture;
         },
         [](Fixture& fixture) {
-            return fixture.engine.forget(
-                fixture.target,
-                "third-entry-with-a-long-identifier");
+            return fixture.engine.forget(fixture.target, "third-entry-with-a-long-identifier");
         });
 }
 
-TEST(LongTermMemoryAllocationFailureTest,
-     RestorePreservesSourceAndTargetAtEveryAllocationFailure) {
+TEST(LongTermMemoryAllocationFailureTest, RestorePreservesSourceAndTargetAtEveryAllocationFailure) {
     verify_strong_guarantee(
         [] {
             Fixture fixture;
             seed_preserved(fixture);
             return fixture;
         },
-        [](Fixture& fixture) {
-            return fixture.engine.restore(fixture.target, fixture.preserved);
-        });
+        [](Fixture& fixture) { return fixture.engine.restore(fixture.target, fixture.preserved); });
 }
 
 } // namespace

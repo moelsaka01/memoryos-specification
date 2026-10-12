@@ -1,14 +1,13 @@
 #pragma once
 
-#include "json.hpp"
-
-#include <memoryos/memoryos.hpp>
-
 #include <cstdint>
 #include <memory>
+#include <memoryos/memoryos.hpp>
 #include <mutex>
 #include <string>
 #include <string_view>
+
+#include "json.hpp"
 
 namespace memoryos::detail {
 
@@ -23,14 +22,12 @@ class Client final {
     Client& operator=(const Client&) = delete;
 
     [[nodiscard]] Json invoke(std::string_view method, Json::Object params);
-    [[nodiscard]] Json invokeReplay(
-        std::string_view investigationIdentifier,
-        std::string_view replayIdentifier,
-        std::string_view action);
+    [[nodiscard]] Json invokeReplay(std::string_view investigationIdentifier,
+                                    std::string_view replayIdentifier,
+                                    std::string_view action);
 
   private:
-    [[nodiscard]] Json invokeUnlocked(std::string_view method,
-                                      Json::Object params);
+    [[nodiscard]] Json invokeUnlocked(std::string_view method, Json::Object params);
 
     std::mutex mutex_;
     std::unique_ptr<CoreProcess> process_;

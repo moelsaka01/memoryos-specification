@@ -14,8 +14,7 @@ class SemanticMemoryPersistence {
     static std::unique_ptr<cca::representation::RepresentationDocument>
     project(const SemanticMemory& memory);
 
-    static SemanticMemory reconstruct(
-        const cca::representation::RepresentationDocument& workspace);
+    static SemanticMemory reconstruct(const cca::representation::RepresentationDocument& workspace);
 
     static SemanticMemory roundTrip(const SemanticMemory& memory);
 };

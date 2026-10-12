@@ -21,19 +21,16 @@ void printDiagnostics(const rep::ValidationResult& result) {
 
 int main() {
     try {
-        rep::RepresentationDocument document{rep::RepresentationMetadata{
-            "CCA example",
-            "1.0",
-            "representation_usage.cpp"}};
+        rep::RepresentationDocument document{
+            rep::RepresentationMetadata{"CCA example", "1.0", "representation_usage.cpp"}};
 
         rep::TransactionService transactions;
         auto transaction = transactions.begin(document);
 
         const rep::RepresentationType service_type{"Service"};
         auto& gateway = document.createEntity(service_type);
-        gateway.addProperty("name",
-                            rep::RepresentationType{"Text"},
-                            rep::RepresentationValue{"gateway"});
+        gateway.addProperty(
+            "name", rep::RepresentationType{"Text"}, rep::RepresentationValue{"gateway"});
         gateway.addProperty("replicas",
                             rep::RepresentationType{"Count"},
                             rep::RepresentationValue{std::int64_t{3}});
@@ -43,17 +40,14 @@ int main() {
                             rep::RepresentationType{"Text"},
                             rep::RepresentationValue{std::string{"catalog"}});
 
-        auto& request_path = document.createRelationship(gateway,
-                                                         catalog,
-                                                         rep::RepresentationType{"Calls"});
+        auto& request_path =
+            document.createRelationship(gateway, catalog, rep::RepresentationType{"Calls"});
         request_path.addProperty("protocol",
                                  rep::RepresentationType{"Protocol"},
-                                 rep::RepresentationValue{
-                                     rep::EnumerationValue{"HTTPS"}});
+                                 rep::RepresentationValue{rep::EnumerationValue{"HTTPS"}});
 
         const rep::RepresentationId gateway_id{gateway.id().toString()};
-        const rep::RepresentationId relationship_id{
-            request_path.id().toString()};
+        const rep::RepresentationId relationship_id{request_path.id().toString()};
 
         const rep::ValidationResult commit_result = transaction.commit();
         if (!commit_result.valid) {
@@ -67,31 +61,27 @@ int main() {
             queries.findEntity(document, gateway_id);
         const rep::RepresentationRelationship* const found_relationship =
             queries.findRelationship(document, relationship_id);
-        const rep::EntityCollection services =
-            queries.entitiesByType(document, service_type);
+        const rep::EntityCollection services = queries.entitiesByType(document, service_type);
 
         if (found_gateway == nullptr || found_relationship == nullptr) {
             std::cerr << "committed objects were not found\n";
             return 2;
         }
 
-        const rep::RepresentationProperty* const name =
-            found_gateway->property("name");
+        const rep::RepresentationProperty* const name = found_gateway->property("name");
         if (name != nullptr) {
             std::cout << name->value().asString() << " is the source of "
                       << found_relationship->type().name() << '\n';
         }
         std::cout << "service count: " << services.size() << '\n';
 
-        const rep::ValidationResult validation =
-            rep::ValidationService{}.validate(document);
+        const rep::ValidationResult validation = rep::ValidationService{}.validate(document);
         if (!validation.valid) {
             printDiagnostics(validation);
             return 3;
         }
 
-        const rep::ValidationResult freeze_result =
-            rep::FreezeService{}.freeze(document);
+        const rep::ValidationResult freeze_result = rep::FreezeService{}.freeze(document);
         if (!freeze_result.valid || !document.isFrozen()) {
             printDiagnostics(freeze_result);
             return 4;

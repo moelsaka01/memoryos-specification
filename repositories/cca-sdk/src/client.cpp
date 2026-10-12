@@ -1,10 +1,10 @@
 #include "client.hpp"
 
-#include "core_process.hpp"
-
 #include <limits>
 #include <stdexcept>
 #include <utility>
+
+#include "core_process.hpp"
 
 namespace memoryos::detail {
 namespace {
@@ -12,11 +12,9 @@ namespace {
 constexpr std::string_view protocol_version{"1.0.0"};
 constexpr std::uint64_t maximum_safe_integer = 9'007'199'254'740'991ULL;
 
-[[nodiscard]] std::string optionalString(const Json& value,
-                                         std::string_view name) {
+[[nodiscard]] std::string optionalString(const Json& value, std::string_view name) {
     const Json* member = value.find(name);
-    return member != nullptr && member->isString() ? member->asString()
-                                                   : std::string{};
+    return member != nullptr && member->isString() ? member->asString() : std::string{};
 }
 
 [[nodiscard]] std::vector<Diagnostic> diagnosticsFrom(const Json& value) {
@@ -57,8 +55,7 @@ constexpr std::uint64_t maximum_safe_integer = 9'007'199'254'740'991ULL;
         protocolFailure("The Core host returned an invalid Replay projection.");
     }
     const Json* identifier = replay->find("identifier");
-    if (identifier == nullptr || !identifier->isString() ||
-        identifier->asString().empty()) {
+    if (identifier == nullptr || !identifier->isString() || identifier->asString().empty()) {
         protocolFailure("The Core host omitted the active Replay identifier.");
     }
     return &identifier->asString();
@@ -67,16 +64,13 @@ constexpr std::uint64_t maximum_safe_integer = 9'007'199'254'740'991ULL;
 } // namespace
 
 Client::Client(SdkOptions options)
-    : process_(std::make_unique<CoreProcess>(options.nodeExecutable,
-                                             options.coreHost)) {
+    : process_(std::make_unique<CoreProcess>(options.nodeExecutable, options.coreHost)) {
     const Json health = invoke("health", {});
     const Json* protocol = health.find("protocolVersion");
     const Json* core = health.find("investigationCoreVersion");
-    if (protocol == nullptr || !protocol->isString() ||
-        protocol->asString() != protocol_version || core == nullptr ||
-        !core->isString() || core->asString() != "1.0.0") {
-        protocolFailure(
-            "The private host does not expose the required Core protocol.");
+    if (protocol == nullptr || !protocol->isString() || protocol->asString() != protocol_version ||
+        core == nullptr || !core->isString() || core->asString() != "1.0.0") {
+        protocolFailure("The private host does not expose the required Core protocol.");
     }
 }
 
@@ -113,8 +107,10 @@ Json Client::invokeReplay(std::string_view investigationIdentifier,
 
 Json Client::invokeUnlocked(std::string_view method, Json::Object params) {
     if (next_request_id_ > maximum_safe_integer) {
-        throw SdkError{"SDK_RESOURCE_LIMIT", "transport",
-                       "The SDK request sequence exhausted its safe range.", {}};
+        throw SdkError{"SDK_RESOURCE_LIMIT",
+                       "transport",
+                       "The SDK request sequence exhausted its safe range.",
+                       {}};
     }
     const std::uint64_t requestId = next_request_id_++;
     Json::Object request{
@@ -143,12 +139,11 @@ Json Client::invokeUnlocked(std::string_view method, Json::Object params) {
     const Json* responseVersion = response.find("version");
     const Json* responseId = response.find("id");
     const Json* responseOk = response.find("ok");
-    if (!response.isObject() || responseVersion == nullptr ||
-        !responseVersion->isString() ||
-        responseVersion->asString() != protocol_version ||
-        responseId == nullptr || !responseId->isInteger() ||
-        responseId->asInteger() != static_cast<std::int64_t>(requestId) ||
-        responseOk == nullptr || !responseOk->isBool()) {
+    if (!response.isObject() || responseVersion == nullptr || !responseVersion->isString() ||
+        responseVersion->asString() != protocol_version || responseId == nullptr ||
+        !responseId->isInteger() ||
+        responseId->asInteger() != static_cast<std::int64_t>(requestId) || responseOk == nullptr ||
+        !responseOk->isBool()) {
         protocolFailure("The Core host returned an invalid response envelope.");
     }
     if (responseOk->asBool()) {
@@ -169,8 +164,7 @@ Json Client::invokeUnlocked(std::string_view method, Json::Object params) {
     throw SdkError{
         code.empty() ? "SDK_PROTOCOL_ERROR" : code,
         operation.empty() ? std::string{method} : operation,
-        message.empty() ? "The Investigation Core rejected the request."
-                        : message,
+        message.empty() ? "The Investigation Core rejected the request." : message,
         diagnosticsFrom(*error),
         optionalString(*error, "phase"),
         optionalString(*error, "artifactKind"),

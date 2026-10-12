@@ -1,9 +1,8 @@
-#include <memoryos/memoryos.hpp>
-
 #include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <memoryos/memoryos.hpp>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -16,8 +15,7 @@ std::string readText(const char* path) {
     if (!input) {
         throw std::runtime_error{"cannot open the deterministic observation"};
     }
-    return {std::istreambuf_iterator<char>{input},
-            std::istreambuf_iterator<char>{}};
+    return {std::istreambuf_iterator<char>{input}, std::istreambuf_iterator<char>{}};
 }
 
 memoryos::ObserveOptions observationOptions(std::string identifier) {
@@ -32,12 +30,12 @@ int main() {
     try {
         memoryos::MemoryOS memory;
         const auto workspace = memory.openWorkspace("workspace-memoryos-release");
-        const auto baseline = memory.observe(
-            workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-            observationOptions("cpp-policy-example-baseline"));
-        const auto candidate = memory.observe(
-            workspace, readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
-            observationOptions("cpp-policy-example-candidate"));
+        const auto baseline = memory.observe(workspace,
+                                             readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                             observationOptions("cpp-policy-example-baseline"));
+        const auto candidate = memory.observe(workspace,
+                                              readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
+                                              observationOptions("cpp-policy-example-candidate"));
         const std::string document =
             R"({"identifier":"p","kind":"MemoryOSInvestigationPolicy","policyVersion":"0.0.0","rules":[{"identifier":"r","parameters":{"allowedStates":["Observed"]},"type":"memoryos.require-lifecycle-state","version":"1.0.0"}],"version":"1.0.0"})";
         const std::vector<std::uint8_t> bytes(document.begin(), document.end());
@@ -48,35 +46,28 @@ int main() {
 
         memoryos::PolicyEvaluationOptions evaluationOptions;
         evaluationOptions.regressionSource = source;
-        const auto evaluation = memory.evaluatePolicy(
-            prepared, context, evaluationOptions);
-        const auto contextInspection = memory.inspectPolicyFactContext(
-            context.bytes(), {context.contextDigest()});
-        const auto sourceInspection = memory.inspectRegressionPolicyFactSource(
-            source.bytes(), {source.sourceDigest()});
+        const auto evaluation = memory.evaluatePolicy(prepared, context, evaluationOptions);
+        const auto contextInspection =
+            memory.inspectPolicyFactContext(context.bytes(), {context.contextDigest()});
+        const auto sourceInspection =
+            memory.inspectRegressionPolicyFactSource(source.bytes(), {source.sourceDigest()});
         const auto identityCheck = memory.verifyEvaluationIdentityForEvaluation(
-            evaluation.evaluationIdentityBytes(), prepared, context,
-            evaluationOptions);
+            evaluation.evaluationIdentityBytes(), prepared, context, evaluationOptions);
         memoryos::PolicyOutcomeEvaluationVerificationOptions outcomeOptions;
         outcomeOptions.regressionSource = source;
         outcomeOptions.expectedOutcomeDigest = evaluation.outcomeDigest();
-        const auto outcomeCheck =
-            memory.verifyPolicyEvaluationOutcomeForEvaluation(
-                evaluation.canonicalOutcomeBytes(), prepared, context,
-                outcomeOptions);
+        const auto outcomeCheck = memory.verifyPolicyEvaluationOutcomeForEvaluation(
+            evaluation.canonicalOutcomeBytes(), prepared, context, outcomeOptions);
 
         std::cout << "{\"contextDigest\":\"" << contextInspection.contextDigest()
-                  << "\",\"decision\":\"" << evaluation.decision()
-                  << "\",\"documentDigest\":\"" << prepared.documentDigest()
+                  << "\",\"decision\":\"" << evaluation.decision() << "\",\"documentDigest\":\""
+                  << prepared.documentDigest()
                   << "\",\"identities\":" << memory.policyContractIdentities()
-                  << ",\"identityVerified\":"
-                  << (identityCheck.verified() ? "true" : "false")
+                  << ",\"identityVerified\":" << (identityCheck.verified() ? "true" : "false")
                   << ",\"outcomeDigest\":\"" << evaluation.outcomeDigest()
-                  << "\",\"outcomeVerified\":"
-                  << (outcomeCheck.verified() ? "true" : "false")
+                  << "\",\"outcomeVerified\":" << (outcomeCheck.verified() ? "true" : "false")
                   << ",\"semanticDigest\":\"" << prepared.semanticDigest()
-                  << "\",\"sourceDigest\":\"" << sourceInspection.sourceDigest()
-                  << "\"}\n";
+                  << "\",\"sourceDigest\":\"" << sourceInspection.sourceDigest() << "\"}\n";
         return 0;
     } catch (const std::exception& error) {
         std::cerr << error.what() << '\n';

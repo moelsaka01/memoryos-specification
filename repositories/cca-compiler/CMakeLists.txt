@@ -12,7 +12,17 @@ endif()
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
-find_package(yaml-cpp CONFIG REQUIRED)
+find_package(yaml-cpp CONFIG QUIET)
+if(NOT yaml-cpp_FOUND)
+    message(
+        FATAL_ERROR
+        "cca-compiler requires the yaml-cpp CMake package (yaml-cpp::yaml-cpp). "
+        "The 'minimal' preset does not use vcpkg, so yaml-cpp must come from the system "
+        "(for example `apt install libyaml-cpp-dev` or `brew install yaml-cpp`, adding its "
+        "prefix to CMAKE_PREFIX_PATH when it is not a default location), or use a vcpkg-backed "
+        "preset such as 'default' or 'ci'. See docs/build-instructions.md."
+    )
+endif()
 
 set(CCA_COMPILER_OWNS_VERSION_TARGET OFF)
 if(NOT TARGET cca::version)

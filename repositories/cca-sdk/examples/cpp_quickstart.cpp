@@ -1,8 +1,7 @@
-#include <memoryos/memoryos.hpp>
-
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <memoryos/memoryos.hpp>
 #include <stdexcept>
 #include <string>
 
@@ -13,8 +12,7 @@ std::string readText(const char* path) {
     if (!input) {
         throw std::runtime_error{"cannot open the deterministic observation"};
     }
-    return {std::istreambuf_iterator<char>{input},
-            std::istreambuf_iterator<char>{}};
+    return {std::istreambuf_iterator<char>{input}, std::istreambuf_iterator<char>{}};
 }
 
 } // namespace
@@ -23,10 +21,8 @@ int main() {
     try {
         memoryos::MemoryOS memory;
         const auto workspace = memory.openWorkspace("workspace-memoryos-release");
-        auto investigation = memory.observe(
-            workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT));
-        investigation = investigation.trace(
-            "reflection:reflection-release-integrity:0");
+        auto investigation = memory.observe(workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT));
+        investigation = investigation.trace("reflection:reflection-release-integrity:0");
         auto replay = investigation.replay().next();
         const auto verification = replay.investigation().verify();
         if (!verification.valid()) {

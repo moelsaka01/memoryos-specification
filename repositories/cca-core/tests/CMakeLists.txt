@@ -248,6 +248,29 @@ if(COMMAND cca_add_google_test)
 else()
   find_package(GTest CONFIG REQUIRED)
 
+  # Access-control contract of Observability, checked by the compiler itself on every platform: the metric
+  # mutator must be inaccessible from outside (the read accessor, as a control, must compile).
+  # Compiled as a static library so nothing is linked.
+  set(_cca_saved_try_compile_target_type "${CMAKE_TRY_COMPILE_TARGET_TYPE}")
+  set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+  foreach(_probe IN ITEMS read mutation)
+    try_compile(
+      CCA_OBSERVABILITY_METRIC_${_probe}_COMPILES
+      SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/compile_fail/observability_metric_${_probe}.cpp"
+      CMAKE_FLAGS "-DINCLUDE_DIRECTORIES=${CMAKE_CURRENT_SOURCE_DIR}/../include"
+      CXX_STANDARD 23
+      CXX_STANDARD_REQUIRED ON
+      CXX_EXTENSIONS OFF
+      OUTPUT_VARIABLE _cca_probe_output
+    )
+    if(_probe STREQUAL "read" AND NOT CCA_OBSERVABILITY_METRIC_read_COMPILES)
+      message(FATAL_ERROR "Observability compile-fail control did not compile:\n${_cca_probe_output}")
+    elseif(_probe STREQUAL "mutation" AND CCA_OBSERVABILITY_METRIC_mutation_COMPILES)
+      message(FATAL_ERROR "Observability::increment_metric is callable from outside the class")
+    endif()
+  endforeach()
+  set(CMAKE_TRY_COMPILE_TARGET_TYPE "${_cca_saved_try_compile_target_type}")
+
   add_executable(cca_core_tests ${CCA_CORE_TEST_SOURCES})
   target_link_libraries(
     cca_core_tests

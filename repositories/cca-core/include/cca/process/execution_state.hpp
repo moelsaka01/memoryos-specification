@@ -2,11 +2,6 @@
 
 namespace cca::process {
 
-enum class ExecutionState {
-    Ready,
-    Running,
-    Completed,
-    Failed
-};
+enum class ExecutionState { Ready, Running, Completed, Failed };
 
 } // namespace cca::process

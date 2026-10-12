@@ -11,7 +11,7 @@ fi
 cd "${workspace_root}"
 cmake --preset coverage
 cmake --build --preset coverage
-ctest --preset coverage
+ctest --preset coverage "$@"
 cmake --build --preset coverage --target cca_coverage
 
 echo "Coverage report: ${workspace_root}/out/build/coverage/coverage/index.html"

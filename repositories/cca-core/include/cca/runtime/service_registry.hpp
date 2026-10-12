@@ -89,9 +89,9 @@ class ServiceRegistry final {
         using FactoryType = std::decay_t<Factory>;
 
         FactoryType typed_factory{std::forward<Factory>(factory)};
-        ErasedFactory erased_factory =
-            [typed_factory = std::move(typed_factory)](
-                ServiceRegistry& registry) mutable -> std::unique_ptr<ServiceProvider> {
+        ErasedFactory erased_factory = [typed_factory = std::move(typed_factory)](
+                                           [[maybe_unused]] ServiceRegistry& registry) mutable
+            -> std::unique_ptr<ServiceProvider> {
             auto concrete = std::invoke(typed_factory,
                                         registry.template resolve_for_injection<Dependencies>()...);
             std::unique_ptr<Provider> owned_provider{std::move(concrete)};

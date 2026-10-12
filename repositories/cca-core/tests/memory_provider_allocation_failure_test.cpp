@@ -1,10 +1,9 @@
 #include <cca/memory/memory_provider.hpp>
 
-#include <gtest/gtest.h>
-
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <gtest/gtest.h>
 #include <limits>
 #include <new>
 #include <optional>
@@ -30,7 +29,9 @@ void fail_after(const std::size_t successful_allocations) noexcept {
     allocations_before_failure = successful_allocations;
 }
 
-void disable() noexcept { allocations_before_failure = disabled; }
+void disable() noexcept {
+    allocations_before_failure = disabled;
+}
 
 [[nodiscard]] bool should_fail() noexcept {
     if (allocations_before_failure == disabled) {
@@ -65,8 +66,12 @@ void* operator new[](const std::size_t size) {
     return memory_provider_allocation_failure_support::allocate(size);
 }
 
-void operator delete(void* allocation) noexcept { std::free(allocation); }
-void operator delete[](void* allocation) noexcept { std::free(allocation); }
+void operator delete(void* allocation) noexcept {
+    std::free(allocation);
+}
+void operator delete[](void* allocation) noexcept {
+    std::free(allocation);
+}
 
 void operator delete(void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
@@ -75,6 +80,25 @@ void operator delete(void* allocation, const std::size_t size) noexcept {
 
 void operator delete[](void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
+    std::free(allocation);
+}
+
+// The nothrow forms must pair with the same malloc/free family as the replaced throwing forms
+// (the standard library allocates temporary buffers with nothrow new); they are deliberately not
+// subject to failure injection, matching the library's default nothrow allocation behaviour.
+void* operator new(const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void* operator new[](const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void operator delete(void* allocation, const std::nothrow_t&) noexcept {
+    std::free(allocation);
+}
+
+void operator delete[](void* allocation, const std::nothrow_t&) noexcept {
     std::free(allocation);
 }
 
@@ -94,9 +118,9 @@ using cca::memory::MemoryEntry;
 using cca::memory::MemoryProviderEngine;
 using cca::memory::MemoryReflectionEngine;
 using cca::memory::MemoryRetrievalEngine;
-using cca::memory::Procedure;
 using cca::memory::ProceduralMemory;
 using cca::memory::ProceduralMemoryEngine;
+using cca::memory::Procedure;
 using cca::memory::ProviderDescriptor;
 using cca::memory::ProviderRequest;
 using cca::memory::ProviderResult;
@@ -115,8 +139,7 @@ using cca::memory::WorkingMemoryEntry;
 using CandidateKind = KnowledgeCandidate::Kind;
 using SessionState = ProviderSession::State;
 
-constexpr std::string_view workspace{
-    "provider-allocation-workspace-with-a-long-identifier"};
+constexpr std::string_view workspace{"provider-allocation-workspace-with-a-long-identifier"};
 constexpr std::string_view other_workspace{
     "provider-allocation-other-workspace-with-a-long-identifier"};
 constexpr std::string_view provider_identifier{
@@ -135,8 +158,7 @@ constexpr std::string_view semantic_identifier{
     "provider-allocation-semantic-concept-with-a-long-identifier"};
 constexpr std::string_view semantic_forgotten_identifier{
     "provider-allocation-forgotten-semantic-with-a-long-identifier"};
-constexpr std::string_view episode_identifier{
-    "provider-allocation-episode-with-a-long-identifier"};
+constexpr std::string_view episode_identifier{"provider-allocation-episode-with-a-long-identifier"};
 constexpr std::string_view episode_forgotten_identifier{
     "provider-allocation-forgotten-episode-with-a-long-identifier"};
 constexpr std::string_view procedure_identifier{
@@ -299,8 +321,7 @@ struct FixtureSnapshot final {
     bool operator==(const FixtureSnapshot&) const = default;
 };
 
-template <typename Result>
-void require_ok(const Result& result) {
+template <typename Result> void require_ok(const Result& result) {
     if (!result.succeeded()) {
         throw std::logic_error{result.code() + ": " + result.message()};
     }
@@ -310,18 +331,16 @@ void require_ok(const Result& result) {
     return {value.identifier(), value.value()};
 }
 
-[[nodiscard]] WorkingEntrySnapshot snapshot_of(
-    const WorkingMemoryEntry& value) {
+[[nodiscard]] WorkingEntrySnapshot snapshot_of(const WorkingMemoryEntry& value) {
     return {value.identifier(), value.value(), value.expirationPoint()};
 }
 
-[[nodiscard]] LongTermEntrySnapshot snapshot_of(
-    const LongTermMemoryEntry& value) {
+[[nodiscard]] LongTermEntrySnapshot snapshot_of(const LongTermMemoryEntry& value) {
     return {value.identifier(), value.value(), value.archived()};
 }
 
-[[nodiscard]] std::vector<LongTermEntrySnapshot> snapshot_entries(
-    const std::vector<LongTermMemoryEntry>& values) {
+[[nodiscard]] std::vector<LongTermEntrySnapshot>
+snapshot_entries(const std::vector<LongTermMemoryEntry>& values) {
     std::vector<LongTermEntrySnapshot> result;
     result.reserve(values.size());
     for (const auto& value : values) {
@@ -330,8 +349,7 @@ void require_ok(const Result& result) {
     return result;
 }
 
-[[nodiscard]] SemanticConceptSnapshot snapshot_of(
-    const SemanticConcept& value) {
+[[nodiscard]] SemanticConceptSnapshot snapshot_of(const SemanticConcept& value) {
     return {value.identifier(),
             value.meaning(),
             snapshot_entries(value.sourceEntries()),
@@ -412,31 +430,25 @@ void require_ok(const Result& result) {
             std::move(entries)};
 }
 
-[[nodiscard]] std::string forgotten_disposition(
-    const LongTermMemory& value) {
+[[nodiscard]] std::string forgotten_disposition(const LongTermMemory& value) {
     LongTermMemory probe{value};
     const auto result = LongTermMemoryEngine{}.retain(
         probe,
-        LongTermMemoryEntry{
-            std::string{long_term_forgotten_identifier},
-            "provider-allocation-long-term-probe-value-with-long-content"});
+        LongTermMemoryEntry{std::string{long_term_forgotten_identifier},
+                            "provider-allocation-long-term-probe-value-with-long-content"});
     return result.code();
 }
 
-[[nodiscard]] LongTermMemorySnapshot snapshot_of(
-    const LongTermMemory& value) {
+[[nodiscard]] LongTermMemorySnapshot snapshot_of(const LongTermMemory& value) {
     std::vector<LongTermEntrySnapshot> entries;
     entries.reserve(value.entries().size());
     for (const auto& entry : value.entries()) {
         entries.push_back(snapshot_of(entry));
     }
-    return {value.workspaceIdentifier(),
-            std::move(entries),
-            forgotten_disposition(value)};
+    return {value.workspaceIdentifier(), std::move(entries), forgotten_disposition(value)};
 }
 
-[[nodiscard]] const LongTermMemoryEntry& semantic_source(
-    const LongTermMemory& evidence) {
+[[nodiscard]] const LongTermMemoryEntry& semantic_source(const LongTermMemory& evidence) {
     const auto* const source = evidence.find(long_term_semantic_source);
     if (source == nullptr) {
         throw std::logic_error{"semantic evidence is missing"};
@@ -444,8 +456,7 @@ void require_ok(const Result& result) {
     return *source;
 }
 
-[[nodiscard]] const LongTermMemoryEntry& episodic_source(
-    const LongTermMemory& evidence) {
+[[nodiscard]] const LongTermMemoryEntry& episodic_source(const LongTermMemory& evidence) {
     const auto* const source = evidence.find(long_term_episode_source);
     if (source == nullptr) {
         throw std::logic_error{"episodic evidence is missing"};
@@ -453,8 +464,7 @@ void require_ok(const Result& result) {
     return *source;
 }
 
-[[nodiscard]] const LongTermMemoryEntry& procedural_source(
-    const LongTermMemory& evidence) {
+[[nodiscard]] const LongTermMemoryEntry& procedural_source(const LongTermMemory& evidence) {
     const auto* const source = evidence.find(long_term_procedure_source);
     if (source == nullptr) {
         throw std::logic_error{"procedural evidence is missing"};
@@ -462,88 +472,76 @@ void require_ok(const Result& result) {
     return *source;
 }
 
-[[nodiscard]] std::string forgotten_disposition(
-    const SemanticMemory& value,
-    const LongTermMemory& evidence) {
+[[nodiscard]] std::string forgotten_disposition(const SemanticMemory& value,
+                                                const LongTermMemory& evidence) {
     SemanticMemory probe{value};
     const auto result = SemanticMemoryEngine{}.classify(
         probe,
         evidence,
-        SemanticConcept{
-            std::string{semantic_forgotten_identifier},
-            "provider-allocation-semantic-probe-meaning-with-long-content",
-            {semantic_source(evidence)}});
+        SemanticConcept{std::string{semantic_forgotten_identifier},
+                        "provider-allocation-semantic-probe-meaning-with-long-content",
+                        {semantic_source(evidence)}});
     return result.code();
 }
 
-[[nodiscard]] SemanticMemorySnapshot snapshot_of(
-    const SemanticMemory& value,
-    const LongTermMemory& evidence) {
+[[nodiscard]] SemanticMemorySnapshot snapshot_of(const SemanticMemory& value,
+                                                 const LongTermMemory& evidence) {
     std::vector<SemanticConceptSnapshot> concepts;
     concepts.reserve(value.concepts().size());
     for (const auto& semantic_concept : value.concepts()) {
         concepts.push_back(snapshot_of(semantic_concept));
     }
-    return {value.workspaceIdentifier(),
-            std::move(concepts),
-            forgotten_disposition(value, evidence)};
+    return {
+        value.workspaceIdentifier(), std::move(concepts), forgotten_disposition(value, evidence)};
 }
 
-[[nodiscard]] std::string forgotten_disposition(
-    const EpisodicMemory& value,
-    const LongTermMemory& evidence) {
+[[nodiscard]] std::string forgotten_disposition(const EpisodicMemory& value,
+                                                const LongTermMemory& evidence) {
     EpisodicMemory probe{value};
     const auto result = EpisodicMemoryEngine{}.derive(
         probe,
         evidence,
-        Episode{
-            std::string{episode_forgotten_identifier},
-            "provider-allocation-episodic-probe-occurrence-with-long-content",
-            "provider-allocation-episodic-probe-context-with-long-content",
-            99,
-            {episodic_source(evidence)}});
+        Episode{std::string{episode_forgotten_identifier},
+                "provider-allocation-episodic-probe-occurrence-with-long-content",
+                "provider-allocation-episodic-probe-context-with-long-content",
+                99,
+                {episodic_source(evidence)}});
     return result.code();
 }
 
-[[nodiscard]] EpisodicMemorySnapshot snapshot_of(
-    const EpisodicMemory& value,
-    const LongTermMemory& evidence) {
+[[nodiscard]] EpisodicMemorySnapshot snapshot_of(const EpisodicMemory& value,
+                                                 const LongTermMemory& evidence) {
     std::vector<EpisodeSnapshot> episodes;
     episodes.reserve(value.episodes().size());
     for (const auto& episode : value.episodes()) {
         episodes.push_back(snapshot_of(episode));
     }
-    return {value.workspaceIdentifier(),
-            std::move(episodes),
-            forgotten_disposition(value, evidence)};
+    return {
+        value.workspaceIdentifier(), std::move(episodes), forgotten_disposition(value, evidence)};
 }
 
-[[nodiscard]] std::string forgotten_disposition(
-    const ProceduralMemory& value,
-    const LongTermMemory& evidence) {
+[[nodiscard]] std::string forgotten_disposition(const ProceduralMemory& value,
+                                                const LongTermMemory& evidence) {
     ProceduralMemory probe{value};
     const auto result = ProceduralMemoryEngine{}.derive(
         probe,
         evidence,
-        Procedure{
-            std::string{procedure_forgotten_identifier},
-            "provider-allocation-procedural-probe-activity-with-long-content",
-            {"provider-allocation-procedural-probe-step-with-long-content"},
-            {procedural_source(evidence)}});
+        Procedure{std::string{procedure_forgotten_identifier},
+                  "provider-allocation-procedural-probe-activity-with-long-content",
+                  {"provider-allocation-procedural-probe-step-with-long-content"},
+                  {procedural_source(evidence)}});
     return result.code();
 }
 
-[[nodiscard]] ProceduralMemorySnapshot snapshot_of(
-    const ProceduralMemory& value,
-    const LongTermMemory& evidence) {
+[[nodiscard]] ProceduralMemorySnapshot snapshot_of(const ProceduralMemory& value,
+                                                   const LongTermMemory& evidence) {
     std::vector<ProcedureSnapshot> procedures;
     procedures.reserve(value.procedures().size());
     for (const auto& procedure : value.procedures()) {
         procedures.push_back(snapshot_of(procedure));
     }
-    return {value.workspaceIdentifier(),
-            std::move(procedures),
-            forgotten_disposition(value, evidence)};
+    return {
+        value.workspaceIdentifier(), std::move(procedures), forgotten_disposition(value, evidence)};
 }
 
 struct Sources final {
@@ -558,68 +556,55 @@ struct Sources final {
     Sources() {
         require_ok(MemoryEngine{}.store(
             memory,
-            MemoryEntry{
-                "provider-allocation-memory-a-with-a-long-identifier",
-                "provider-allocation-memory-a-value-with-long-content"}));
+            MemoryEntry{"provider-allocation-memory-a-with-a-long-identifier",
+                        "provider-allocation-memory-a-value-with-long-content"}));
         require_ok(MemoryEngine{}.store(
             memory,
-            MemoryEntry{
-                "provider-allocation-memory-b-with-a-long-identifier",
-                "provider-allocation-memory-b-value-with-long-content"}));
+            MemoryEntry{"provider-allocation-memory-b-with-a-long-identifier",
+                        "provider-allocation-memory-b-value-with-long-content"}));
 
         require_ok(WorkingMemoryEngine{}.activate(
-            working,
-            "provider-allocation-active-task-with-a-long-identifier"));
+            working, "provider-allocation-active-task-with-a-long-identifier"));
         require_ok(WorkingMemoryEngine{}.store(
             working,
-            WorkingMemoryEntry{
-                "provider-allocation-working-a-with-a-long-identifier",
-                "provider-allocation-working-a-value-with-long-content",
-                200U}));
+            WorkingMemoryEntry{"provider-allocation-working-a-with-a-long-identifier",
+                               "provider-allocation-working-a-value-with-long-content",
+                               200U}));
         require_ok(WorkingMemoryEngine{}.store(
             working,
-            WorkingMemoryEntry{
-                "provider-allocation-working-b-with-a-long-identifier",
-                "provider-allocation-working-b-value-with-long-content"}));
+            WorkingMemoryEntry{"provider-allocation-working-b-with-a-long-identifier",
+                               "provider-allocation-working-b-value-with-long-content"}));
 
         require_ok(LongTermMemoryEngine{}.retain(
             long_term,
-            LongTermMemoryEntry{
-                std::string{long_term_semantic_source},
-                "provider-allocation-semantic-evidence-value-long-content"}));
+            LongTermMemoryEntry{std::string{long_term_semantic_source},
+                                "provider-allocation-semantic-evidence-value-long-content"}));
         require_ok(LongTermMemoryEngine{}.retain(
             long_term,
-            LongTermMemoryEntry{
-                std::string{long_term_episode_source},
-                "provider-allocation-episodic-evidence-value-long-content"}));
+            LongTermMemoryEntry{std::string{long_term_episode_source},
+                                "provider-allocation-episodic-evidence-value-long-content"}));
         require_ok(LongTermMemoryEngine{}.retain(
             long_term,
-            LongTermMemoryEntry{
-                std::string{long_term_procedure_source},
-                "provider-allocation-procedural-evidence-value-long-content"}));
+            LongTermMemoryEntry{std::string{long_term_procedure_source},
+                                "provider-allocation-procedural-evidence-value-long-content"}));
         require_ok(LongTermMemoryEngine{}.retain(
             long_term,
-            LongTermMemoryEntry{
-                "provider-allocation-archived-evidence-with-long-identifier",
-                "provider-allocation-archived-evidence-value-long-content"}));
+            LongTermMemoryEntry{"provider-allocation-archived-evidence-with-long-identifier",
+                                "provider-allocation-archived-evidence-value-long-content"}));
         require_ok(LongTermMemoryEngine{}.archive(
-            long_term,
-            "provider-allocation-archived-evidence-with-long-identifier"));
+            long_term, "provider-allocation-archived-evidence-with-long-identifier"));
         require_ok(LongTermMemoryEngine{}.retain(
             long_term,
-            LongTermMemoryEntry{
-                std::string{long_term_forgotten_identifier},
-                "provider-allocation-forgotten-evidence-value-long-content"}));
-        require_ok(LongTermMemoryEngine{}.forget(
-            long_term, long_term_forgotten_identifier));
+            LongTermMemoryEntry{std::string{long_term_forgotten_identifier},
+                                "provider-allocation-forgotten-evidence-value-long-content"}));
+        require_ok(LongTermMemoryEngine{}.forget(long_term, long_term_forgotten_identifier));
 
         require_ok(SemanticMemoryEngine{}.classify(
             semantic,
             long_term,
-            SemanticConcept{
-                std::string{semantic_identifier},
-                "provider-allocation-semantic-meaning-with-long-content",
-                {semantic_source(long_term)}}));
+            SemanticConcept{std::string{semantic_identifier},
+                            "provider-allocation-semantic-meaning-with-long-content",
+                            {semantic_source(long_term)}}));
         require_ok(SemanticMemoryEngine{}.categorize(
             semantic,
             semantic_identifier,
@@ -627,73 +612,60 @@ struct Sources final {
         require_ok(SemanticMemoryEngine{}.classify(
             semantic,
             long_term,
-            SemanticConcept{
-                std::string{semantic_forgotten_identifier},
-                "provider-allocation-forgotten-semantic-meaning-long-content",
-                {semantic_source(long_term)}}));
-        require_ok(SemanticMemoryEngine{}.forget(
-            semantic, semantic_forgotten_identifier));
+            SemanticConcept{std::string{semantic_forgotten_identifier},
+                            "provider-allocation-forgotten-semantic-meaning-long-content",
+                            {semantic_source(long_term)}}));
+        require_ok(SemanticMemoryEngine{}.forget(semantic, semantic_forgotten_identifier));
 
         require_ok(EpisodicMemoryEngine{}.derive(
             episodic,
             long_term,
-            Episode{
-                std::string{episode_identifier},
-                "provider-allocation-episode-occurrence-with-long-content",
-                "provider-allocation-episode-context-with-long-content",
-                41,
-                {episodic_source(long_term)}}));
+            Episode{std::string{episode_identifier},
+                    "provider-allocation-episode-occurrence-with-long-content",
+                    "provider-allocation-episode-context-with-long-content",
+                    41,
+                    {episodic_source(long_term)}}));
         require_ok(EpisodicMemoryEngine{}.derive(
             episodic,
             long_term,
-            Episode{
-                std::string{episode_forgotten_identifier},
-                "provider-allocation-forgotten-episode-occurrence-long-content",
-                "provider-allocation-forgotten-episode-context-long-content",
-                42,
-                {episodic_source(long_term)}}));
-        require_ok(EpisodicMemoryEngine{}.forget(
-            episodic, episode_forgotten_identifier));
+            Episode{std::string{episode_forgotten_identifier},
+                    "provider-allocation-forgotten-episode-occurrence-long-content",
+                    "provider-allocation-forgotten-episode-context-long-content",
+                    42,
+                    {episodic_source(long_term)}}));
+        require_ok(EpisodicMemoryEngine{}.forget(episodic, episode_forgotten_identifier));
 
         require_ok(ProceduralMemoryEngine{}.derive(
             procedural,
             long_term,
-            Procedure{
-                std::string{procedure_identifier},
-                "provider-allocation-procedure-activity-with-long-content",
-                {"provider-allocation-step-a-with-long-content",
-                 "provider-allocation-step-a-with-long-content"},
-                {procedural_source(long_term)}}));
+            Procedure{std::string{procedure_identifier},
+                      "provider-allocation-procedure-activity-with-long-content",
+                      {"provider-allocation-step-a-with-long-content",
+                       "provider-allocation-step-a-with-long-content"},
+                      {procedural_source(long_term)}}));
         require_ok(ProceduralMemoryEngine{}.derive(
             procedural,
             long_term,
-            Procedure{
-                std::string{procedure_forgotten_identifier},
-                "provider-allocation-forgotten-procedure-activity-long-content",
-                {"provider-allocation-forgotten-step-with-long-content"},
-                {procedural_source(long_term)}}));
-        require_ok(ProceduralMemoryEngine{}.forget(
-            procedural, procedure_forgotten_identifier));
+            Procedure{std::string{procedure_forgotten_identifier},
+                      "provider-allocation-forgotten-procedure-activity-long-content",
+                      {"provider-allocation-forgotten-step-with-long-content"},
+                      {procedural_source(long_term)}}));
+        require_ok(ProceduralMemoryEngine{}.forget(procedural, procedure_forgotten_identifier));
 
         RetrievalSession retrieval{std::string{workspace}};
         require_ok(MemoryRetrievalEngine{}.search(
-            retrieval,
-            semantic,
-            episodic,
-            procedural,
-            KnowledgeQuery{""}));
+            retrieval, semantic, episodic, procedural, KnowledgeQuery{""}));
         require_ok(MemoryRetrievalEngine{}.rank(retrieval));
 
         ReflectionSession reflection_session{std::string{workspace}};
         require_ok(MemoryReflectionEngine{}.reflect(
             reflection_session,
-            ReflectionQuery{
-                std::string{workspace},
-                "provider-allocation-reflection-with-a-long-identifier",
-                "provider-allocation-reflected-knowledge-with-long-content"},
+            ReflectionQuery{std::string{workspace},
+                            "provider-allocation-reflection-with-a-long-identifier",
+                            "provider-allocation-reflected-knowledge-with-long-content"},
             retrieval));
-        const auto reflected = MemoryReflectionEngine{}.derive(
-            reflection_session, semantic, episodic, procedural);
+        const auto reflected =
+            MemoryReflectionEngine{}.derive(reflection_session, semantic, episodic, procedural);
         require_ok(reflected);
         if (reflected.reflection() == nullptr) {
             throw std::logic_error{"allocation fixture Reflection is missing"};
@@ -761,13 +733,12 @@ struct Sources final {
             std::move(reflections)};
 }
 
-[[nodiscard]] DescriptorSnapshot snapshot_of(
-    const ProviderDescriptor& value) {
+[[nodiscard]] DescriptorSnapshot snapshot_of(const ProviderDescriptor& value) {
     return {value.workspaceIdentifier(), value.identifier()};
 }
 
-[[nodiscard]] std::vector<DescriptorSnapshot> snapshot_descriptors(
-    const std::vector<ProviderDescriptor>& values) {
+[[nodiscard]] std::vector<DescriptorSnapshot>
+snapshot_descriptors(const std::vector<ProviderDescriptor>& values) {
     std::vector<DescriptorSnapshot> result;
     result.reserve(values.size());
     for (const auto& value : values) {
@@ -777,9 +748,7 @@ struct Sources final {
 }
 
 [[nodiscard]] SessionSnapshot snapshot_of(const ProviderSession& value) {
-    return {value.workspaceIdentifier(),
-            value.state(),
-            snapshot_descriptors(value.descriptors())};
+    return {value.workspaceIdentifier(), value.state(), snapshot_descriptors(value.descriptors())};
 }
 
 struct Fixture final {
@@ -789,11 +758,10 @@ struct Fixture final {
     ProviderSession session{std::string{workspace}};
     MemoryProviderEngine engine;
 
-    Fixture(
-        std::string request_workspace = std::string{workspace},
-        std::string request_provider = std::string{provider_identifier},
-        std::string descriptor_workspace = std::string{workspace},
-        std::string descriptor_provider = std::string{provider_identifier})
+    Fixture(std::string request_workspace = std::string{workspace},
+            std::string request_provider = std::string{provider_identifier},
+            std::string descriptor_workspace = std::string{workspace},
+            std::string descriptor_provider = std::string{provider_identifier})
         : request{std::move(request_workspace),
                   std::move(request_provider),
                   sources.memory,
@@ -803,8 +771,7 @@ struct Fixture final {
                   sources.episodic,
                   sources.procedural,
                   sources.reflections},
-          descriptor{std::move(descriptor_workspace),
-                     std::move(descriptor_provider)} {}
+          descriptor{std::move(descriptor_workspace), std::move(descriptor_provider)} {}
 };
 
 [[nodiscard]] FixtureSnapshot snapshot_of(const Fixture& value) {
@@ -815,13 +782,12 @@ struct Fixture final {
 }
 
 void register_provider(Fixture& fixture) {
-    require_ok(fixture.engine.registerProvider(fixture.session,
-                                               fixture.descriptor));
+    require_ok(fixture.engine.registerProvider(fixture.session, fixture.descriptor));
 }
 
-[[nodiscard]] Fixture registered_fixture(
-    std::string request_workspace = std::string{workspace},
-    std::string request_provider = std::string{provider_identifier}) {
+[[nodiscard]] Fixture registered_fixture(std::string request_workspace = std::string{workspace},
+                                         std::string request_provider = std::string{
+                                             provider_identifier}) {
     Fixture fixture{std::move(request_workspace), std::move(request_provider)};
     register_provider(fixture);
     return fixture;
@@ -857,9 +823,7 @@ struct ExpectedOutcome final {
 constexpr std::size_t allocation_campaign_limit = 16384U;
 
 template <typename Arrange, typename Operation>
-void verify_strong_guarantee(Arrange arrange,
-                             Operation operation,
-                             const ExpectedOutcome expected) {
+void verify_strong_guarantee(Arrange arrange, Operation operation, const ExpectedOutcome expected) {
     std::size_t observed_failures = 0U;
     bool completed = false;
 
@@ -880,8 +844,7 @@ void verify_strong_guarantee(Arrange arrange,
                 EXPECT_FALSE(result.message().empty());
             }
             EXPECT_EQ(result.request() != nullptr, expected.request_payload);
-            EXPECT_EQ(result.descriptors().size(),
-                      expected.descriptor_payload_size);
+            EXPECT_EQ(result.descriptors().size(), expected.descriptor_payload_size);
             EXPECT_EQ(fixture.session.state(), expected.state);
             EXPECT_EQ(fixture.session.size(), expected.session_size);
 
@@ -889,8 +852,7 @@ void verify_strong_guarantee(Arrange arrange,
                 EXPECT_EQ(snapshot_of(*result.request()), before.request);
             }
             if (!result.descriptors().empty()) {
-                EXPECT_EQ(snapshot_descriptors(result.descriptors()),
-                          before.session.descriptors);
+                EXPECT_EQ(snapshot_descriptors(result.descriptors()), before.session.descriptors);
             }
 
             if (expected.session_changes) {
@@ -919,73 +881,53 @@ void verify_strong_guarantee(Arrange arrange,
     EXPECT_GT(observed_failures, 0U);
 }
 
-TEST(MemoryProviderAllocationFailureTest,
-     NewRegistrationIsAtomicAtEveryAllocationFailure) {
-    verify_strong_guarantee(
-        [] { return Fixture{}; },
-        [](Fixture& fixture) {
-            return fixture.engine.registerProvider(fixture.session,
-                                                   fixture.descriptor);
-        },
-        {"OK", SessionState::Open, 1U, true, false, 0U});
+TEST(MemoryProviderAllocationFailureTest, NewRegistrationIsAtomicAtEveryAllocationFailure) {
+    verify_strong_guarantee([] { return Fixture{}; },
+                            [](Fixture& fixture) {
+                                return fixture.engine.registerProvider(fixture.session,
+                                                                       fixture.descriptor);
+                            },
+                            {"OK", SessionState::Open, 1U, true, false, 0U});
 }
 
 TEST(MemoryProviderAllocationFailureTest,
      ExportIsAtomicAndPreservesEverySourceAtEveryAllocationFailure) {
-    verify_strong_guarantee(
-        [] { return registered_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.engine.exportState(fixture.session,
-                                              fixture.request);
-        },
-        {"OK", SessionState::Exported, 1U, true, true, 0U});
+    verify_strong_guarantee([] { return registered_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.engine.exportState(fixture.session, fixture.request);
+                            },
+                            {"OK", SessionState::Exported, 1U, true, true, 0U});
 }
 
 TEST(MemoryProviderAllocationFailureTest,
      ImportIsAtomicAndPreservesEverySourceAtEveryAllocationFailure) {
-    verify_strong_guarantee(
-        [] { return registered_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.engine.importState(fixture.session,
-                                              fixture.request);
-        },
-        {"OK", SessionState::Imported, 1U, true, true, 0U});
+    verify_strong_guarantee([] { return registered_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.engine.importState(fixture.session, fixture.request);
+                            },
+                            {"OK", SessionState::Imported, 1U, true, true, 0U});
 }
 
 TEST(MemoryProviderAllocationFailureTest,
      ValidateSuccessPreservesCompleteStateAtEveryAllocationFailure) {
     verify_strong_guarantee(
         [] { return registered_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.engine.validate(fixture.session, fixture.request);
-        },
+        [](Fixture& fixture) { return fixture.engine.validate(fixture.session, fixture.request); },
         {"OK", SessionState::Open, 1U, false, false, 0U});
 }
 
-TEST(MemoryProviderAllocationFailureTest,
-     ValidateFailureConstructionPreservesCompleteState) {
+TEST(MemoryProviderAllocationFailureTest, ValidateFailureConstructionPreservesCompleteState) {
     verify_strong_guarantee(
-        [] {
-            return registered_fixture(std::string{other_workspace});
-        },
-        [](Fixture& fixture) {
-            return fixture.engine.validate(fixture.session, fixture.request);
-        },
-        {"WORKSPACE_MISMATCH",
-         SessionState::Open,
-         1U,
-         false,
-         false,
-         0U});
+        [] { return registered_fixture(std::string{other_workspace}); },
+        [](Fixture& fixture) { return fixture.engine.validate(fixture.session, fixture.request); },
+        {"WORKSPACE_MISMATCH", SessionState::Open, 1U, false, false, 0U});
 }
 
 TEST(MemoryProviderAllocationFailureTest,
      EmptyEnumerationPreservesCompleteStateAtEveryAllocationFailure) {
     verify_strong_guarantee(
         [] { return Fixture{}; },
-        [](Fixture& fixture) {
-            return fixture.engine.enumerate(fixture.session);
-        },
+        [](Fixture& fixture) { return fixture.engine.enumerate(fixture.session); },
         {"OK", SessionState::Open, 0U, false, false, 0U});
 }
 
@@ -993,39 +935,28 @@ TEST(MemoryProviderAllocationFailureTest,
      PopulatedEnumerationPreservesCompleteStateAtEveryAllocationFailure) {
     verify_strong_guarantee(
         [] { return registered_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.engine.enumerate(fixture.session);
-        },
+        [](Fixture& fixture) { return fixture.engine.enumerate(fixture.session); },
         {"OK", SessionState::Open, 1U, false, false, 1U});
 }
 
-TEST(MemoryProviderAllocationFailureTest,
-     ForgetFromOpenIsAtomicAtEveryAllocationFailure) {
+TEST(MemoryProviderAllocationFailureTest, ForgetFromOpenIsAtomicAtEveryAllocationFailure) {
     verify_strong_guarantee(
         [] { return registered_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.engine.forgetSession(fixture.session);
-        },
+        [](Fixture& fixture) { return fixture.engine.forgetSession(fixture.session); },
         {"OK", SessionState::Forgotten, 0U, true, false, 0U});
 }
 
-TEST(MemoryProviderAllocationFailureTest,
-     ForgetFromExportedIsAtomicAtEveryAllocationFailure) {
+TEST(MemoryProviderAllocationFailureTest, ForgetFromExportedIsAtomicAtEveryAllocationFailure) {
     verify_strong_guarantee(
         [] { return exported_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.engine.forgetSession(fixture.session);
-        },
+        [](Fixture& fixture) { return fixture.engine.forgetSession(fixture.session); },
         {"OK", SessionState::Forgotten, 0U, true, false, 0U});
 }
 
-TEST(MemoryProviderAllocationFailureTest,
-     ForgetFromImportedIsAtomicAtEveryAllocationFailure) {
+TEST(MemoryProviderAllocationFailureTest, ForgetFromImportedIsAtomicAtEveryAllocationFailure) {
     verify_strong_guarantee(
         [] { return imported_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.engine.forgetSession(fixture.session);
-        },
+        [](Fixture& fixture) { return fixture.engine.forgetSession(fixture.session); },
         {"OK", SessionState::Forgotten, 0U, true, false, 0U});
 }
 
@@ -1034,30 +965,17 @@ TEST(MemoryProviderAllocationFailureTest,
     verify_strong_guarantee(
         [] { return exported_fixture(); },
         [](Fixture& fixture) {
-            return fixture.engine.registerProvider(fixture.session,
-                                                   fixture.descriptor);
+            return fixture.engine.registerProvider(fixture.session, fixture.descriptor);
         },
-        {"SESSION_ALREADY_COMPLETED",
-         SessionState::Exported,
-         1U,
-         false,
-         false,
-         0U});
+        {"SESSION_ALREADY_COMPLETED", SessionState::Exported, 1U, false, false, 0U});
 }
 
 TEST(MemoryProviderAllocationFailureTest,
      ForgottenLifecycleFailureConstructionPreservesCompleteState) {
     verify_strong_guarantee(
         [] { return forgotten_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.engine.enumerate(fixture.session);
-        },
-        {"SESSION_FORGOTTEN",
-         SessionState::Forgotten,
-         0U,
-         false,
-         false,
-         0U});
+        [](Fixture& fixture) { return fixture.engine.enumerate(fixture.session); },
+        {"SESSION_FORGOTTEN", SessionState::Forgotten, 0U, false, false, 0U});
 }
 
 TEST(MemoryProviderAllocationFailureTest,
@@ -1070,15 +988,9 @@ TEST(MemoryProviderAllocationFailureTest,
                            std::string{provider_identifier}};
         },
         [](Fixture& fixture) {
-            return fixture.engine.registerProvider(fixture.session,
-                                                   fixture.descriptor);
+            return fixture.engine.registerProvider(fixture.session, fixture.descriptor);
         },
-        {"WORKSPACE_MISMATCH",
-         SessionState::Open,
-         0U,
-         false,
-         false,
-         0U});
+        {"WORKSPACE_MISMATCH", SessionState::Open, 0U, false, false, 0U});
 }
 
 TEST(MemoryProviderAllocationFailureTest,
@@ -1091,34 +1003,19 @@ TEST(MemoryProviderAllocationFailureTest,
                            std::string{}};
         },
         [](Fixture& fixture) {
-            return fixture.engine.registerProvider(fixture.session,
-                                                   fixture.descriptor);
+            return fixture.engine.registerProvider(fixture.session, fixture.descriptor);
         },
-        {"INVALID_PROVIDER_IDENTIFIER",
-         SessionState::Open,
-         0U,
-         false,
-         false,
-         0U});
+        {"INVALID_PROVIDER_IDENTIFIER", SessionState::Open, 0U, false, false, 0U});
 }
 
-TEST(MemoryProviderAllocationFailureTest,
-     RegistrationFailureConstructionPreservesCompleteState) {
+TEST(MemoryProviderAllocationFailureTest, RegistrationFailureConstructionPreservesCompleteState) {
     verify_strong_guarantee(
         [] {
-            return registered_fixture(
-                std::string{workspace},
-                std::string{unregistered_provider_identifier});
+            return registered_fixture(std::string{workspace},
+                                      std::string{unregistered_provider_identifier});
         },
-        [](Fixture& fixture) {
-            return fixture.engine.validate(fixture.session, fixture.request);
-        },
-        {"PROVIDER_NOT_REGISTERED",
-         SessionState::Open,
-         1U,
-         false,
-         false,
-         0U});
+        [](Fixture& fixture) { return fixture.engine.validate(fixture.session, fixture.request); },
+        {"PROVIDER_NOT_REGISTERED", SessionState::Open, 1U, false, false, 0U});
 }
 
 } // namespace

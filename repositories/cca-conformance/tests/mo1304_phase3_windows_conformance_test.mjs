@@ -11,6 +11,25 @@ const raw=await readFile(receiptPath),receipt=JSON.parse(raw),inventory=JSON.par
 const sha=b=>createHash('sha256').update(b).digest('hex'),python=process.env.MEMORYOS_CONFORMANCE_PYTHON??'python';
 const py=(path,args=[])=>JSON.parse(execFileSync(python,['-B',resolve(base,path),...args],{cwd:root,encoding:'utf8',windowsHide:true,maxBuffer:4*1024*1024}));
 const git=(...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8',windowsHide:true,env:{...process.env,GIT_OPTIONAL_LOCKS:'0'},maxBuffer:4*1024*1024}).trim();
+
+// The inventory is a frozen pre-tag snapshot (tagState PENDING). The tag now exists: it is an annotated tag
+// whose object and peeled commit are recorded in tools/mo1308-phase3b/baseline.json, descends from the
+// release binding, and leaves the shipped MCP surface identical to HEAD.
+const MO1304_TAG={name:'memoryos-1.3-mo1304',object:'6d877151f0857006fcf12958f8b4c5bc662f43d6',commit:'ce7b001d911239fa50d904f5f336bb1bd7858ba3'};
+const MCP_SHIPPED_SURFACE=['bin','src','contracts','runtime','distribution','package.json','package-lock.json','README.md','NOTICE.md','LICENSE','THIRD_PARTY_NOTICES.txt'].map(x=>'repositories/memoryos-mcp/'+x);
+function assertMo1304Tag(inventory){
+ assert.deepEqual(inventory.tagState,{status:'PENDING',name:MO1304_TAG.name,object:null});
+ assert.equal(git('tag','--list',MO1304_TAG.name),MO1304_TAG.name);
+ assert.equal(git('cat-file','-t','refs/tags/'+MO1304_TAG.name),'tag');
+ assert.equal(git('rev-parse','refs/tags/'+MO1304_TAG.name),MO1304_TAG.object);
+ assert.equal(git('rev-parse','refs/tags/'+MO1304_TAG.name+'^{commit}'),MO1304_TAG.commit);
+ if(inventory.releaseBinding.status==='BOUND')git('merge-base','--is-ancestor',inventory.releaseBinding.revision,MO1304_TAG.commit);
+}
+function assertMcpFrozenSince(base){
+ assert.equal(git('diff',base,MO1304_TAG.commit,'--','repositories/memoryos-mcp'),'');
+ assert.equal(git('diff',MO1304_TAG.commit,'HEAD','--',...MCP_SHIPPED_SURFACE),'','shipped MCP surface changed after the tag');
+}
+
 const correction='c29f527f29ec8e267367b3894099bb351c7873f4';
 const evidenceSubject='test(memoryos-1.3): certify MO-1304 Windows and platform parity';
 const finalSubject='conformance(memoryos-1.3): close MO-1304 MCP server certification';
@@ -37,11 +56,11 @@ test('parity rejects missing platforms, forged PASS and changed normative digest
 });
 test('Windows/parity evidence and final binding follow exact existing graph edges without self-reference',async()=>{
  assert.equal(git('rev-parse',correction+'^'),'43f07a48774e3ea0ef8509bd5f9ff5071a839b27');
- assert.equal(git('diff','18453aa6d0d347acece20598cf5b1bc3d174c5af','--','repositories/memoryos-mcp'),'');
+ assertMcpFrozenSince('18453aa6d0d347acece20598cf5b1bc3d174c5af');
  assert.deepEqual(await identity(inventory.phase3.windows11_x64.receipt),raw);assert.equal(inventory.phase3.windows11_x64.status,'PASS');await identity(inventory.phase3.platformParity.receipt);assert.equal(inventory.phase3.platformParity.status,'PASS');
  const head=git('rev-parse','HEAD');
  if(head!==correction){
-  const commits=git('rev-list','--reverse','--ancestry-path',correction+'..HEAD').split('\n'),evidenceCommit=commits[0];
+  const commits=git('rev-list','--reverse','--ancestry-path',correction+'..'+MO1304_TAG.commit).split('\n'),evidenceCommit=commits[0];
   assert.equal(git('rev-parse',evidenceCommit+'^'),correction);assert.equal(git('show','-s','--format=%s',evidenceCommit),evidenceSubject);
   const blob=path=>execFileSync('git',['show',evidenceCommit+':repositories/cca-conformance/'+path],{cwd:root,windowsHide:true,maxBuffer:4*1024*1024});
   assert.deepEqual(blob('evidence/mo1304-phase3-windows/windows-receipt.json'),raw);
@@ -58,7 +77,7 @@ test('Windows/parity evidence and final binding follow exact existing graph edge
    assert.equal(inventory.phase3.status,'PASS');
   }else assert.deepEqual(inventory.releaseBinding,{status:'PENDING',revision:null});
  }
- assert.deepEqual(inventory.tagState,{status:'PENDING',name:'memoryos-1.3-mo1304',object:null});assert.equal(git('tag','--list','memoryos-1.3-mo1304'),'');
+ assertMo1304Tag(inventory);
 });
 test('Windows receipt schema and all conformance registrations are valid',async()=>{
  const {AjvJsonSchemaValidator}=await import('../../memoryos-mcp/node_modules/@modelcontextprotocol/server/dist/validators/ajv.mjs');

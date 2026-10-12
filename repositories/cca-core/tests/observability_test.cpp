@@ -15,6 +15,7 @@
 #include <stdexcept>
 #include <string>
 #include <thread>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -76,14 +77,36 @@ concept CanRecordCoreOutcome = requires(Type& observability) {
     observability.record_cleanup(RuntimeState::destroyed, RuntimeResult::success());
 };
 
+// MSVC 19.44 mis-evaluates access checking for a *default-argument* call of a private member named
+// in a dependent expression (a requires-expression or expression SFINAE): it reports
+// increment_metric(metric) accessible (C2607), while the same probes of the argument-less private
+// members above are evaluated correctly. The detector therefore passes every argument explicitly,
+// so no default argument is involved. The one-argument (default-argument) form is proven
+// non-callable on every compiler, MSVC included, by the configure-time compile-fail check in
+// tests/CMakeLists.txt (tests/compile_fail/).
+template <typename Type, typename = void> struct CoreMetricMutable : std::false_type {};
+
 template <typename Type>
-concept CanMutateCoreMetric = requires(Type& observability) {
-    observability.increment_metric(RuntimeMetric::cleanup_operations);
-};
+struct CoreMetricMutable<Type,
+                         std::void_t<decltype(std::declval<Type&>().increment_metric(
+                             RuntimeMetric::cleanup_operations, std::uint64_t{1}))>>
+    : std::true_type {};
+
+template <typename Type, typename = void> struct CoreMetricReadable : std::false_type {};
+
+template <typename Type>
+struct CoreMetricReadable<Type,
+                          std::void_t<decltype(std::declval<const Type&>().metric_value(
+                              RuntimeMetric::cleanup_operations))>> : std::true_type {};
+
+template <typename Type> inline constexpr bool CanMutateCoreMetric = CoreMetricMutable<Type>::value;
 
 static_assert(!CanRecordCoreDiagnostic<Observability>);
 static_assert(!CanRecordCoreOutcome<Observability>);
 static_assert(!CanMutateCoreMetric<Observability>);
+// Positive control: the same detection idiom finds the public read accessor, so the negative result
+// above cannot be vacuous, and the private mutator is found where it is genuinely accessible.
+static_assert(CoreMetricReadable<Observability>::value);
 static_assert(
     std::same_as<decltype(std::declval<Runtime&>().observability()), const Observability&>);
 static_assert(

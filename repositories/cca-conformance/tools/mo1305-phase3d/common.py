@@ -85,7 +85,7 @@ def source_integrity():
         rows.append({'role':role,**s,'files':[ref(n) for n in names]})
     return rows
 def context():
-    need(ROOT==Path('C:/Users/melsa/Documents/Codex/cca-workspace'),'WORKSPACE')
+    need(ROOT==Path(textgit('rev-parse','--show-toplevel')).resolve(),'WORKSPACE')
     need(textgit('branch','--show-current')=='main','BRANCH')
     need(not git('tag','--list','memoryos-1.3-mo1305').strip(),'TAG_PRESENT')
     need(not git('diff','--name-only',C3B,'--',P).strip(),'PRODUCT_CHANGED')

@@ -19,19 +19,18 @@ namespace cca::memory {
 
 class StudioView {
   public:
-    StudioView(
-        std::string workspaceIdentifier,
-        const Memory& memory,
-        const WorkingMemory& workingMemory,
-        const LongTermMemory& longTermMemory,
-        const SemanticMemory& semanticMemory,
-        const EpisodicMemory& episodicMemory,
-        const ProceduralMemory& proceduralMemory,
-        std::vector<RetrievalSession> retrievalSessions = {},
-        std::vector<ConsolidationSession> consolidationSessions = {},
-        std::vector<Reflection> reflections = {},
-        std::vector<ReflectionSession> reflectionSessions = {},
-        std::vector<ProviderSession> providerSessions = {});
+    StudioView(std::string workspaceIdentifier,
+               const Memory& memory,
+               const WorkingMemory& workingMemory,
+               const LongTermMemory& longTermMemory,
+               const SemanticMemory& semanticMemory,
+               const EpisodicMemory& episodicMemory,
+               const ProceduralMemory& proceduralMemory,
+               std::vector<RetrievalSession> retrievalSessions = {},
+               std::vector<ConsolidationSession> consolidationSessions = {},
+               std::vector<Reflection> reflections = {},
+               std::vector<ReflectionSession> reflectionSessions = {},
+               std::vector<ProviderSession> providerSessions = {});
     ~StudioView();
     StudioView(const StudioView&);
     StudioView& operator=(const StudioView&);
@@ -46,8 +45,7 @@ class StudioView {
     const EpisodicMemory* episodicMemory() const noexcept;
     const ProceduralMemory* proceduralMemory() const noexcept;
     const std::vector<RetrievalSession>& retrievalSessions() const noexcept;
-    const std::vector<ConsolidationSession>&
-    consolidationSessions() const noexcept;
+    const std::vector<ConsolidationSession>& consolidationSessions() const noexcept;
     const std::vector<Reflection>& reflections() const noexcept;
     const std::vector<ReflectionSession>& reflectionSessions() const noexcept;
     const std::vector<ProviderSession>& providerSessions() const noexcept;
@@ -131,8 +129,7 @@ class StudioResult {
     const std::string& message() const noexcept;
     const StudioView* view() const noexcept;
     const std::vector<std::string>& observations() const noexcept;
-    const std::vector<std::vector<std::string>>&
-    explanationChains() const noexcept;
+    const std::vector<std::vector<std::string>>& explanationChains() const noexcept;
 
   private:
     class Impl;
@@ -151,14 +148,10 @@ class StudioResult {
 
 class MemoryStudioEngine {
   public:
-    StudioResult observe(StudioSession& session,
-                         const StudioView& view) const;
-    StudioResult inspect(const StudioSession& session,
-                         const StudioQuery& query) const;
-    StudioResult trace(const StudioSession& session,
-                       const StudioQuery& query) const;
-    StudioResult summarize(const StudioSession& session,
-                           const StudioQuery& query) const;
+    StudioResult observe(StudioSession& session, const StudioView& view) const;
+    StudioResult inspect(const StudioSession& session, const StudioQuery& query) const;
+    StudioResult trace(const StudioSession& session, const StudioQuery& query) const;
+    StudioResult summarize(const StudioSession& session, const StudioQuery& query) const;
     StudioResult exportView(const StudioSession& session) const;
     StudioResult forgetSession(StudioSession& session) const;
 };

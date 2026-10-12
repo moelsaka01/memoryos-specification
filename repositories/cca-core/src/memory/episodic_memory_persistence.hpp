@@ -14,8 +14,7 @@ class EpisodicMemoryPersistence {
     static std::unique_ptr<cca::representation::RepresentationDocument>
     project(const EpisodicMemory& memory);
 
-    static EpisodicMemory reconstruct(
-        const cca::representation::RepresentationDocument& workspace);
+    static EpisodicMemory reconstruct(const cca::representation::RepresentationDocument& workspace);
 
     static EpisodicMemory roundTrip(const EpisodicMemory& memory);
 };

@@ -1,11 +1,10 @@
 #include <cca/memory/episodic_memory.hpp>
 #include <cca/memory/long_term_memory.hpp>
 
-#include <gtest/gtest.h>
-
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
+#include <gtest/gtest.h>
 #include <limits>
 #include <new>
 #include <string>
@@ -28,7 +27,9 @@ void fail_after(const std::size_t successful_allocations) noexcept {
     allocations_before_failure = successful_allocations;
 }
 
-void disable() noexcept { allocations_before_failure = disabled; }
+void disable() noexcept {
+    allocations_before_failure = disabled;
+}
 
 [[nodiscard]] bool should_fail() noexcept {
     if (allocations_before_failure == disabled) {
@@ -63,8 +64,12 @@ void* operator new[](const std::size_t size) {
     return episodic_memory_allocation_failure_support::allocate(size);
 }
 
-void operator delete(void* allocation) noexcept { std::free(allocation); }
-void operator delete[](void* allocation) noexcept { std::free(allocation); }
+void operator delete(void* allocation) noexcept {
+    std::free(allocation);
+}
+void operator delete[](void* allocation) noexcept {
+    std::free(allocation);
+}
 
 void operator delete(void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
@@ -73,6 +78,25 @@ void operator delete(void* allocation, const std::size_t size) noexcept {
 
 void operator delete[](void* allocation, const std::size_t size) noexcept {
     static_cast<void>(size);
+    std::free(allocation);
+}
+
+// The nothrow forms must pair with the same malloc/free family as the replaced throwing forms
+// (the standard library allocates temporary buffers with nothrow new); they are deliberately not
+// subject to failure injection, matching the library's default nothrow allocation behaviour.
+void* operator new(const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void* operator new[](const std::size_t size, const std::nothrow_t&) noexcept {
+    return std::malloc(size == 0U ? 1U : size);
+}
+
+void operator delete(void* allocation, const std::nothrow_t&) noexcept {
+    std::free(allocation);
+}
+
+void operator delete[](void* allocation, const std::nothrow_t&) noexcept {
     std::free(allocation);
 }
 
@@ -85,16 +109,11 @@ using cca::memory::LongTermMemory;
 using cca::memory::LongTermMemoryEngine;
 using cca::memory::LongTermMemoryEntry;
 
-constexpr std::string_view source_a{
-    "source-a-with-a-long-identifier-for-allocation-testing"};
-constexpr std::string_view source_b{
-    "source-b-with-a-long-identifier-for-allocation-testing"};
-constexpr std::string_view episode_a{
-    "episode-a-with-a-long-identifier-for-allocation-testing"};
-constexpr std::string_view episode_b{
-    "episode-b-with-a-long-identifier-for-allocation-testing"};
-constexpr std::string_view episode_c{
-    "episode-c-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view source_a{"source-a-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view source_b{"source-b-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view episode_a{"episode-a-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view episode_b{"episode-b-with-a-long-identifier-for-allocation-testing"};
+constexpr std::string_view episode_c{"episode-c-with-a-long-identifier-for-allocation-testing"};
 constexpr std::string_view forgotten_episode{
     "forgotten-episode-with-a-long-identifier-for-allocation-testing"};
 constexpr std::string_view candidate_episode{
@@ -150,12 +169,7 @@ struct Fixture final {
     EpisodicMemory target{"episodic-allocation-test-workspace"};
     LongTermMemory evidence{"episodic-allocation-test-workspace"};
     std::vector<std::string_view> episode_probes{
-        episode_a,
-        episode_b,
-        episode_c,
-        forgotten_episode,
-        candidate_episode,
-        absent_episode};
+        episode_a, episode_b, episode_c, forgotten_episode, candidate_episode, absent_episode};
     std::vector<std::string_view> source_probes{source_a, source_b};
 };
 
@@ -188,16 +202,13 @@ void retain(LongTermMemoryEngine& engine,
             LongTermMemory& memory,
             std::string identifier,
             std::string value) {
-    const auto result = engine.retain(
-        memory,
-        LongTermMemoryEntry{std::move(identifier), std::move(value)});
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    const auto result =
+        engine.retain(memory, LongTermMemoryEntry{std::move(identifier), std::move(value)});
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
-[[nodiscard]] const LongTermMemoryEntry& require_entry(
-    const LongTermMemory& memory,
-    const std::string_view identifier) {
+[[nodiscard]] const LongTermMemoryEntry& require_entry(const LongTermMemory& memory,
+                                                       const std::string_view identifier) {
     const auto* const entry = memory.find(identifier);
     if (entry == nullptr) {
         throw std::logic_error{"allocation fixture source is absent"};
@@ -205,13 +216,12 @@ void retain(LongTermMemoryEngine& engine,
     return *entry;
 }
 
-[[nodiscard]] Episode proposal(
-    std::string identifier,
-    std::string occurrence,
-    std::string context,
-    const std::int64_t chronology,
-    const LongTermMemory& evidence,
-    const std::vector<std::string_view>& source_identifiers) {
+[[nodiscard]] Episode proposal(std::string identifier,
+                               std::string occurrence,
+                               std::string context,
+                               const std::int64_t chronology,
+                               const LongTermMemory& evidence,
+                               const std::vector<std::string_view>& source_identifiers) {
     std::vector<LongTermMemoryEntry> sources;
     sources.reserve(source_identifiers.size());
     for (const auto source_identifier : source_identifiers) {
@@ -232,31 +242,27 @@ void derive(EpisodicMemoryEngine& engine,
             std::string context,
             const std::int64_t chronology,
             const std::vector<std::string_view>& sources) {
-    const auto result = engine.derive(
-        memory,
-        evidence,
-        proposal(std::move(identifier),
-                 std::move(occurrence),
-                 std::move(context),
-                 chronology,
-                 evidence,
-                 sources));
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    const auto result = engine.derive(memory,
+                                      evidence,
+                                      proposal(std::move(identifier),
+                                               std::move(occurrence),
+                                               std::move(context),
+                                               chronology,
+                                               evidence,
+                                               sources));
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
-[[nodiscard]] std::string episodic_disposition(
-    const EpisodicMemory& memory,
-    const std::string_view identifier) {
+[[nodiscard]] std::string episodic_disposition(const EpisodicMemory& memory,
+                                               const std::string_view identifier) {
     if (memory.find(identifier) != nullptr) {
         return "ACCESSIBLE";
     }
     LongTermMemory probe_evidence{memory.workspaceIdentifier()};
     const auto retained = LongTermMemoryEngine{}.retain(
         probe_evidence,
-        LongTermMemoryEntry{
-            "private-episodic-allocation-history-probe-source",
-            "private-episodic-allocation-history-probe-value"});
+        LongTermMemoryEntry{"private-episodic-allocation-history-probe-source",
+                            "private-episodic-allocation-history-probe-value"});
     if (!retained.succeeded()) {
         return "PROBE-SOURCE-FAILURE:" + retained.code();
     }
@@ -279,17 +285,15 @@ void derive(EpisodicMemoryEngine& engine,
     return "UNEXPECTED:" + derived.code();
 }
 
-[[nodiscard]] std::string long_term_disposition(
-    const LongTermMemory& memory,
-    const std::string_view identifier) {
+[[nodiscard]] std::string long_term_disposition(const LongTermMemory& memory,
+                                                const std::string_view identifier) {
     if (const auto* entry = memory.find(identifier); entry != nullptr) {
         return entry->archived() ? "ARCHIVED" : "LONG_TERM";
     }
     LongTermMemory probe{memory};
     const auto result = LongTermMemoryEngine{}.retain(
         probe,
-        LongTermMemoryEntry{std::string{identifier},
-                            "private-long-term-history-probe-value"});
+        LongTermMemoryEntry{std::string{identifier}, "private-long-term-history-probe-value"});
     if (result.code() == "FORGOTTEN_IDENTIFIER") {
         return "FORGOTTEN";
     }
@@ -299,9 +303,8 @@ void derive(EpisodicMemoryEngine& engine,
     return "UNEXPECTED:" + result.code();
 }
 
-[[nodiscard]] EpisodicStateSnapshot snapshot_of(
-    const EpisodicMemory& memory,
-    const std::vector<std::string_view>& probes) {
+[[nodiscard]] EpisodicStateSnapshot snapshot_of(const EpisodicMemory& memory,
+                                                const std::vector<std::string_view>& probes) {
     std::vector<EpisodeSnapshot> episodes;
     episodes.reserve(memory.episodes().size());
     for (const auto& episode : memory.episodes()) {
@@ -310,17 +313,13 @@ void derive(EpisodicMemoryEngine& engine,
     std::vector<IdentifierSnapshot> identifiers;
     identifiers.reserve(probes.size());
     for (const auto probe : probes) {
-        identifiers.push_back(
-            {std::string{probe}, episodic_disposition(memory, probe)});
+        identifiers.push_back({std::string{probe}, episodic_disposition(memory, probe)});
     }
-    return {memory.workspaceIdentifier(),
-            std::move(episodes),
-            std::move(identifiers)};
+    return {memory.workspaceIdentifier(), std::move(episodes), std::move(identifiers)};
 }
 
-[[nodiscard]] LongTermStateSnapshot snapshot_of(
-    const LongTermMemory& memory,
-    const std::vector<std::string_view>& probes) {
+[[nodiscard]] LongTermStateSnapshot snapshot_of(const LongTermMemory& memory,
+                                                const std::vector<std::string_view>& probes) {
     std::vector<EntrySnapshot> entries;
     entries.reserve(memory.entries().size());
     for (const auto& entry : memory.entries()) {
@@ -329,12 +328,9 @@ void derive(EpisodicMemoryEngine& engine,
     std::vector<IdentifierSnapshot> identifiers;
     identifiers.reserve(probes.size());
     for (const auto probe : probes) {
-        identifiers.push_back(
-            {std::string{probe}, long_term_disposition(memory, probe)});
+        identifiers.push_back({std::string{probe}, long_term_disposition(memory, probe)});
     }
-    return {memory.workspaceIdentifier(),
-            std::move(entries),
-            std::move(identifiers)};
+    return {memory.workspaceIdentifier(), std::move(entries), std::move(identifiers)};
 }
 
 [[nodiscard]] FixtureSnapshot snapshot_of(const Fixture& fixture) {
@@ -383,18 +379,10 @@ void seed(Fixture& fixture) {
            "forgotten-context-with-enough-content-to-require-allocation",
            15,
            {source_a});
-    ASSERT_TRUE(fixture.episodic_engine
-                    .link(fixture.target, episode_a, episode_b)
-                    .succeeded());
-    ASSERT_TRUE(fixture.episodic_engine
-                    .link(fixture.target, episode_a, episode_c)
-                    .succeeded());
-    ASSERT_TRUE(fixture.episodic_engine
-                    .link(fixture.target, episode_b, episode_c)
-                    .succeeded());
-    ASSERT_TRUE(fixture.episodic_engine
-                    .forget(fixture.target, forgotten_episode)
-                    .succeeded());
+    ASSERT_TRUE(fixture.episodic_engine.link(fixture.target, episode_a, episode_b).succeeded());
+    ASSERT_TRUE(fixture.episodic_engine.link(fixture.target, episode_a, episode_c).succeeded());
+    ASSERT_TRUE(fixture.episodic_engine.link(fixture.target, episode_b, episode_c).succeeded());
+    ASSERT_TRUE(fixture.episodic_engine.forget(fixture.target, forgotten_episode).succeeded());
 }
 
 constexpr std::size_t allocation_campaign_limit = 1024U;
@@ -404,9 +392,7 @@ void verify_strong_guarantee(Arrange arrange, Operation operation) {
     std::size_t observed_failures = 0U;
     bool completed = false;
 
-    for (std::size_t index = 0U;
-         index < allocation_campaign_limit;
-         ++index) {
+    for (std::size_t index = 0U; index < allocation_campaign_limit; ++index) {
         auto fixture = arrange();
         const auto before = snapshot_of(fixture);
 
@@ -414,8 +400,7 @@ void verify_strong_guarantee(Arrange arrange, Operation operation) {
         try {
             const auto result = operation(fixture);
             episodic_memory_allocation_failure_support::disable();
-            EXPECT_TRUE(result.succeeded()) << result.code() << ": "
-                                            << result.message();
+            EXPECT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
             completed = true;
             break;
         } catch (const std::bad_alloc&) {
@@ -439,80 +424,69 @@ void verify_strong_guarantee(Arrange arrange, Operation operation) {
     return fixture;
 }
 
-TEST(EpisodicMemoryAllocationFailureTest,
-     RecordAppendPreservesAllStateAtEveryFailure) {
+TEST(EpisodicMemoryAllocationFailureTest, RecordAppendPreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.episodic_engine.record(
+                                    fixture.target,
+                                    fixture.evidence,
+                                    proposal(std::string{candidate_episode},
+                                             "candidate-occurrence-with-enough-content-to-allocate",
+                                             "candidate-context-with-enough-content-to-allocate",
+                                             40,
+                                             fixture.evidence,
+                                             {source_b, source_a}));
+                            });
+}
+
+TEST(EpisodicMemoryAllocationFailureTest, RecordIdempotencePreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
             return fixture.episodic_engine.record(
                 fixture.target,
                 fixture.evidence,
-                proposal(
-                    std::string{candidate_episode},
-                    "candidate-occurrence-with-enough-content-to-allocate",
-                    "candidate-context-with-enough-content-to-allocate",
-                    40,
-                    fixture.evidence,
-                    {source_b, source_a}));
+                proposal(std::string{episode_c},
+                         "episode-c-occurrence-with-enough-content-to-require-allocation",
+                         "episode-c-context-with-enough-content-to-require-allocation",
+                         30,
+                         fixture.evidence,
+                         {source_a}));
         });
 }
 
-TEST(EpisodicMemoryAllocationFailureTest,
-     RecordIdempotencePreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.episodic_engine.record(
-                fixture.target,
-                fixture.evidence,
-                proposal(
-                    std::string{episode_c},
-                    "episode-c-occurrence-with-enough-content-to-require-allocation",
-                    "episode-c-context-with-enough-content-to-require-allocation",
-                    30,
-                    fixture.evidence,
-                    {source_a}));
-        });
+TEST(EpisodicMemoryAllocationFailureTest, DeriveInsertionPreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.episodic_engine.derive(
+                                    fixture.target,
+                                    fixture.evidence,
+                                    proposal(std::string{candidate_episode},
+                                             "candidate-occurrence-with-enough-content-to-allocate",
+                                             "candidate-context-with-enough-content-to-allocate",
+                                             15,
+                                             fixture.evidence,
+                                             {source_b, source_a}));
+                            });
 }
 
-TEST(EpisodicMemoryAllocationFailureTest,
-     DeriveInsertionPreservesAllStateAtEveryFailure) {
+TEST(EpisodicMemoryAllocationFailureTest, DeriveIdempotencePreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
             return fixture.episodic_engine.derive(
                 fixture.target,
                 fixture.evidence,
-                proposal(
-                    std::string{candidate_episode},
-                    "candidate-occurrence-with-enough-content-to-allocate",
-                    "candidate-context-with-enough-content-to-allocate",
-                    15,
-                    fixture.evidence,
-                    {source_b, source_a}));
+                proposal(std::string{episode_b},
+                         "episode-b-occurrence-with-enough-content-to-require-allocation",
+                         "episode-b-context-with-enough-content-to-require-allocation",
+                         20,
+                         fixture.evidence,
+                         {source_b}));
         });
 }
 
-TEST(EpisodicMemoryAllocationFailureTest,
-     DeriveIdempotencePreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.episodic_engine.derive(
-                fixture.target,
-                fixture.evidence,
-                proposal(
-                    std::string{episode_b},
-                    "episode-b-occurrence-with-enough-content-to-require-allocation",
-                    "episode-b-context-with-enough-content-to-require-allocation",
-                    20,
-                    fixture.evidence,
-                    {source_b}));
-        });
-}
-
-TEST(EpisodicMemoryAllocationFailureTest,
-     LinkAppendPreservesAllStateAtEveryFailure) {
+TEST(EpisodicMemoryAllocationFailureTest, LinkAppendPreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] {
             Fixture fixture;
@@ -539,36 +513,30 @@ TEST(EpisodicMemoryAllocationFailureTest,
             return fixture;
         },
         [](Fixture& fixture) {
-            return fixture.episodic_engine.link(
-                fixture.target, episode_a, episode_b);
+            return fixture.episodic_engine.link(fixture.target, episode_a, episode_b);
         });
 }
 
-TEST(EpisodicMemoryAllocationFailureTest,
-     LinkIdempotencePreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.episodic_engine.link(
-                fixture.target, episode_a, episode_b);
-        });
+TEST(EpisodicMemoryAllocationFailureTest, LinkIdempotencePreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.episodic_engine.link(
+                                    fixture.target, episode_a, episode_b);
+                            });
 }
 
-TEST(EpisodicMemoryAllocationFailureTest,
-     UpdateReplacementPreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.episodic_engine.update(
-                fixture.target,
-                episode_a,
-                "replacement-occurrence-with-enough-content-to-allocate",
-                "replacement-context-with-enough-content-to-allocate");
-        });
+TEST(EpisodicMemoryAllocationFailureTest, UpdateReplacementPreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.episodic_engine.update(
+                                    fixture.target,
+                                    episode_a,
+                                    "replacement-occurrence-with-enough-content-to-allocate",
+                                    "replacement-context-with-enough-content-to-allocate");
+                            });
 }
 
-TEST(EpisodicMemoryAllocationFailureTest,
-     UpdateIdempotencePreservesAllStateAtEveryFailure) {
+TEST(EpisodicMemoryAllocationFailureTest, UpdateIdempotencePreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
         [](Fixture& fixture) {
@@ -584,30 +552,23 @@ TEST(EpisodicMemoryAllocationFailureTest,
      ForgetPresentWithMultiSurvivorLinksPreservesAllStateAtEveryFailure) {
     verify_strong_guarantee(
         [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.episodic_engine.forget(
-                fixture.target, episode_b);
-        });
+        [](Fixture& fixture) { return fixture.episodic_engine.forget(fixture.target, episode_b); });
 }
 
-TEST(EpisodicMemoryAllocationFailureTest,
-     ForgetAbsentPreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.episodic_engine.forget(
-                fixture.target, absent_episode);
-        });
+TEST(EpisodicMemoryAllocationFailureTest, ForgetAbsentPreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.episodic_engine.forget(fixture.target,
+                                                                      absent_episode);
+                            });
 }
 
-TEST(EpisodicMemoryAllocationFailureTest,
-     ForgetRepeatedPreservesAllStateAtEveryFailure) {
-    verify_strong_guarantee(
-        [] { return seeded_fixture(); },
-        [](Fixture& fixture) {
-            return fixture.episodic_engine.forget(
-                fixture.target, forgotten_episode);
-        });
+TEST(EpisodicMemoryAllocationFailureTest, ForgetRepeatedPreservesAllStateAtEveryFailure) {
+    verify_strong_guarantee([] { return seeded_fixture(); },
+                            [](Fixture& fixture) {
+                                return fixture.episodic_engine.forget(fixture.target,
+                                                                      forgotten_episode);
+                            });
 }
 
 } // namespace

@@ -11,9 +11,9 @@ TEST(PersistenceFoundation, MetadataAndSnapshotPreserveValues) {
     EXPECT_EQ(metadata.description(), "description");
 
     ExecutionContextSnapshot snapshot{
-        3, cca::process::ExecutionState::Running,
-        {cca::representation::RepresentationId{"a"},
-         cca::representation::RepresentationId{"b"}}};
+        3,
+        cca::process::ExecutionState::Running,
+        {cca::representation::RepresentationId{"a"}, cca::representation::RepresentationId{"b"}}};
     EXPECT_EQ(snapshot.processDefinitionIndex(), 3U);
     EXPECT_EQ(snapshot.state(), cca::process::ExecutionState::Running);
     ASSERT_EQ(snapshot.trace().size(), 2U);
@@ -26,8 +26,8 @@ TEST(PersistenceFoundation, SaveValidateAndLoadAreDeterministic) {
         cca::representation::RepresentationMetadata{"author", "1", "test"}};
     workspace.createEntity(cca::representation::RepresentationType{"Entity"});
     PersistenceEngine engine;
-    const auto saved = engine.save(
-        workspace, PersistenceMetadata{"w", "d"}, {"policy-a", "policy-b"});
+    const auto saved =
+        engine.save(workspace, PersistenceMetadata{"w", "d"}, {"policy-a", "policy-b"});
     ASSERT_TRUE(saved.succeeded()) << saved.message();
     ASSERT_NE(saved.package(), nullptr);
     EXPECT_EQ(saved.package()->policies().size(), 2U);
@@ -52,9 +52,12 @@ TEST(PersistenceFoundation, PackageOwnsWorkspaceAndRejectsInvalidContextReferenc
     workspace.createEntity(cca::representation::RepresentationType{"Later"});
     EXPECT_EQ(saved.package()->workspace().entities().size(), 1U);
 
-    const auto invalid = engine.save(
-        workspace, PersistenceMetadata{"w", "d"}, {}, {},
-        {ExecutionContextSnapshot{1, cca::process::ExecutionState::Ready, {}}});
+    const auto invalid =
+        engine.save(workspace,
+                    PersistenceMetadata{"w", "d"},
+                    {},
+                    {},
+                    {ExecutionContextSnapshot{1, cca::process::ExecutionState::Ready, {}}});
     EXPECT_FALSE(invalid.succeeded());
     EXPECT_EQ(invalid.code(), "INVALID_CONTEXT");
     EXPECT_EQ(invalid.package(), nullptr);
@@ -65,8 +68,13 @@ TEST(PersistenceFoundation, PreservesFrozenLifecycleIdentifiersAndValues) {
     using namespace cca::representation;
     RepresentationDocument workspace{RepresentationMetadata{"a", "v", "p"}};
     auto& entity = workspace.createEntity(RepresentationType{"Entity"});
-    const auto& property = entity.addProperty("enum", RepresentationType{"E"}, RepresentationValue{EnumerationValue{"Ready"}});
-    const auto& collection = entity.addProperty("items", RepresentationType{"List"}, RepresentationValue{std::vector<RepresentationValue>{RepresentationValue{std::int64_t{1}}, RepresentationValue{"two"}}});
+    const auto& property = entity.addProperty(
+        "enum", RepresentationType{"E"}, RepresentationValue{EnumerationValue{"Ready"}});
+    const auto& collection =
+        entity.addProperty("items",
+                           RepresentationType{"List"},
+                           RepresentationValue{std::vector<RepresentationValue>{
+                               RepresentationValue{std::int64_t{1}}, RepresentationValue{"two"}}});
     ASSERT_TRUE(FreezeService{}.freeze(workspace).valid);
     PersistenceEngine engine;
     const auto result = engine.save(workspace, PersistenceMetadata{"w", "d"});

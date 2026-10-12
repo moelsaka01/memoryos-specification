@@ -42,13 +42,12 @@ class ConsolidationCandidate {
     const std::optional<std::size_t>& retainedPosition() const noexcept;
 
   private:
-    ConsolidationCandidate(
-        std::string workspaceIdentifier,
-        std::string taskIdentifier,
-        std::size_t sourcePosition,
-        WorkingMemoryEntry workingMemoryEntry,
-        std::unique_ptr<LongTermMemoryEntry> longTermMemoryEntry,
-        std::optional<std::size_t> retainedPosition);
+    ConsolidationCandidate(std::string workspaceIdentifier,
+                           std::string taskIdentifier,
+                           std::size_t sourcePosition,
+                           WorkingMemoryEntry workingMemoryEntry,
+                           std::unique_ptr<LongTermMemoryEntry> longTermMemoryEntry,
+                           std::optional<std::size_t> retainedPosition);
 
     class Impl;
     std::unique_ptr<Impl> impl_;
@@ -100,22 +99,19 @@ class ConsolidationResult {
     const LongTermMemory* longTermMemory() const noexcept;
 
   private:
-    ConsolidationResult(
-        bool succeeded,
-        std::string code,
-        std::string message,
-        std::unique_ptr<ConsolidationCandidate> candidate,
-        std::unique_ptr<ConsolidationSession> session,
-        std::unique_ptr<WorkingMemory> workingMemory,
-        std::unique_ptr<LongTermMemory> longTermMemory);
+    ConsolidationResult(bool succeeded,
+                        std::string code,
+                        std::string message,
+                        std::unique_ptr<ConsolidationCandidate> candidate,
+                        std::unique_ptr<ConsolidationSession> session,
+                        std::unique_ptr<WorkingMemory> workingMemory,
+                        std::unique_ptr<LongTermMemory> longTermMemory);
 
-    static ConsolidationResult success(
-        std::unique_ptr<ConsolidationCandidate> candidate = nullptr,
-        std::unique_ptr<ConsolidationSession> session = nullptr,
-        std::unique_ptr<WorkingMemory> workingMemory = nullptr,
-        std::unique_ptr<LongTermMemory> longTermMemory = nullptr);
-    static ConsolidationResult failure(std::string code,
-                                       std::string message);
+    static ConsolidationResult success(std::unique_ptr<ConsolidationCandidate> candidate = nullptr,
+                                       std::unique_ptr<ConsolidationSession> session = nullptr,
+                                       std::unique_ptr<WorkingMemory> workingMemory = nullptr,
+                                       std::unique_ptr<LongTermMemory> longTermMemory = nullptr);
+    static ConsolidationResult failure(std::string code, std::string message);
 
     class Impl;
     std::unique_ptr<Impl> impl_;
@@ -136,8 +132,7 @@ class MemoryConsolidationEngine {
     ConsolidationResult validate(const ConsolidationSession& session,
                                  const WorkingMemory& workingMemory,
                                  const LongTermMemory& longTermMemory) const;
-    ConsolidationResult
-    retrieveSession(const ConsolidationSession& session) const;
+    ConsolidationResult retrieveSession(const ConsolidationSession& session) const;
     ConsolidationResult forgetSession(ConsolidationSession& session) const;
 };
 

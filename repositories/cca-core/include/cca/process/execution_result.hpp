@@ -13,10 +13,7 @@ class ProcessEngine;
 
 class ExecutionResult {
   public:
-    enum class Code {
-        Success,
-        InvalidRepresentation
-    };
+    enum class Code { Success, InvalidRepresentation };
 
     ExecutionResult(const ExecutionResult&) = default;
 
@@ -36,19 +33,16 @@ class ExecutionResult {
 
     std::string_view message() const noexcept;
 
-    const std::vector<cca::representation::RepresentationId>&
-    trace() const noexcept;
+    const std::vector<cca::representation::RepresentationId>& trace() const noexcept;
 
-    const std::vector<cca::representation::Diagnostic>&
-    diagnostics() const noexcept;
+    const std::vector<cca::representation::Diagnostic>& diagnostics() const noexcept;
 
   private:
-    ExecutionResult(
-        ExecutionState state,
-        Code code,
-        std::string message,
-        std::vector<cca::representation::RepresentationId> trace,
-        std::vector<cca::representation::Diagnostic> diagnostics);
+    ExecutionResult(ExecutionState state,
+                    Code code,
+                    std::string message,
+                    std::vector<cca::representation::RepresentationId> trace,
+                    std::vector<cca::representation::Diagnostic> diagnostics);
 
     ExecutionState state_;
     Code code_;

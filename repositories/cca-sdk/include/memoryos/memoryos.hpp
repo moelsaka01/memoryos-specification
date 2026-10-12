@@ -114,15 +114,13 @@ struct InvestigationQuery final {
 namespace detail {
 class Client;
 class Json;
-[[nodiscard]] Investigation investigationFrom(
-    const std::shared_ptr<Client>& client,
-    const Json& result);
-[[nodiscard]] VerificationResult verificationFrom(
-    const Json& value,
-    bool valid,
-    std::string_view operation,
-    const Json* diagnostics);
-}
+[[nodiscard]] Investigation investigationFrom(const std::shared_ptr<Client>& client,
+                                              const Json& result);
+[[nodiscard]] VerificationResult verificationFrom(const Json& value,
+                                                  bool valid,
+                                                  std::string_view operation,
+                                                  const Json* diagnostics);
+} // namespace detail
 
 class Workspace final {
   public:
@@ -172,8 +170,8 @@ class VerificationResult final {
     std::shared_ptr<const Impl> impl_;
     friend class MemoryOS;
     friend class Investigation;
-    friend VerificationResult detail::verificationFrom(
-        const detail::Json&, bool, std::string_view, const detail::Json*);
+    friend VerificationResult
+    detail::verificationFrom(const detail::Json&, bool, std::string_view, const detail::Json*);
 };
 
 class RegressionReport final {
@@ -260,15 +258,13 @@ class Investigation final {
     [[nodiscard]] std::size_t transitionCount() const noexcept;
     [[nodiscard]] const std::string& canonicalJson() const noexcept;
 
-    [[nodiscard]] Investigation observe(
-        std::string snapshotJson,
-        ObserveOptions options = {}) const;
+    [[nodiscard]] Investigation observe(std::string snapshotJson,
+                                        ObserveOptions options = {}) const;
     [[nodiscard]] Investigation trace(std::string selection) const;
     [[nodiscard]] ReplaySession replay() const;
-    [[nodiscard]] ComparisonSession comparisonSession(
-        std::optional<std::string> evolutionIdentifier) const;
-    [[nodiscard]] ComparisonSession compare(
-        const ComparisonSession& session) const;
+    [[nodiscard]] ComparisonSession
+    comparisonSession(std::optional<std::string> evolutionIdentifier) const;
+    [[nodiscard]] ComparisonSession compare(const ComparisonSession& session) const;
     [[nodiscard]] VerificationResult verify() const;
     [[nodiscard]] Checkpoint checkpoint() const;
     [[nodiscard]] Investigation restore(const Checkpoint& checkpoint) const;
@@ -283,8 +279,8 @@ class Investigation final {
     friend class MemoryOS;
     friend class ReplaySession;
     friend class ComparisonSession;
-    friend Investigation detail::investigationFrom(
-        const std::shared_ptr<detail::Client>&, const detail::Json&);
+    friend Investigation detail::investigationFrom(const std::shared_ptr<detail::Client>&,
+                                                   const detail::Json&);
 };
 
 class ReplaySession final {
@@ -321,14 +317,11 @@ class ComparisonSession final {
     ~ComparisonSession() = default;
 
     [[nodiscard]] const Investigation& investigation() const noexcept;
-    [[nodiscard]] const std::optional<std::string>&
-    evolutionIdentifier() const noexcept;
+    [[nodiscard]] const std::optional<std::string>& evolutionIdentifier() const noexcept;
     [[nodiscard]] ComparisonSession previousObservation() const;
     [[nodiscard]] ComparisonSession nextObservation() const;
-    [[nodiscard]] ComparisonSession start(
-        std::string reflectionSelection) const;
-    [[nodiscard]] ComparisonSession startPackage(
-        std::string comparativeIdentifier) const;
+    [[nodiscard]] ComparisonSession start(std::string reflectionSelection) const;
+    [[nodiscard]] ComparisonSession startPackage(std::string comparativeIdentifier) const;
     [[nodiscard]] ComparisonSession play() const;
     [[nodiscard]] ComparisonSession pause() const;
     [[nodiscard]] ComparisonSession next() const;
@@ -400,7 +393,8 @@ class PolicyFactContextInspection final {
 class AuthoritativePolicyFactContext final {
   public:
     AuthoritativePolicyFactContext(const AuthoritativePolicyFactContext&) noexcept = default;
-    AuthoritativePolicyFactContext& operator=(const AuthoritativePolicyFactContext&) noexcept = default;
+    AuthoritativePolicyFactContext&
+    operator=(const AuthoritativePolicyFactContext&) noexcept = default;
     AuthoritativePolicyFactContext(AuthoritativePolicyFactContext&&) noexcept = default;
     AuthoritativePolicyFactContext& operator=(AuthoritativePolicyFactContext&&) noexcept = default;
     ~AuthoritativePolicyFactContext() = default;
@@ -423,10 +417,13 @@ class AuthoritativePolicyFactContext final {
 
 class RegressionPolicyFactSourceInspection final {
   public:
-    RegressionPolicyFactSourceInspection(const RegressionPolicyFactSourceInspection&) noexcept = default;
-    RegressionPolicyFactSourceInspection& operator=(const RegressionPolicyFactSourceInspection&) noexcept = default;
+    RegressionPolicyFactSourceInspection(const RegressionPolicyFactSourceInspection&) noexcept =
+        default;
+    RegressionPolicyFactSourceInspection&
+    operator=(const RegressionPolicyFactSourceInspection&) noexcept = default;
     RegressionPolicyFactSourceInspection(RegressionPolicyFactSourceInspection&&) noexcept = default;
-    RegressionPolicyFactSourceInspection& operator=(RegressionPolicyFactSourceInspection&&) noexcept = default;
+    RegressionPolicyFactSourceInspection&
+    operator=(RegressionPolicyFactSourceInspection&&) noexcept = default;
     ~RegressionPolicyFactSourceInspection() = default;
 
     [[nodiscard]] const std::string& kind() const noexcept;
@@ -447,10 +444,14 @@ class RegressionPolicyFactSourceInspection final {
 
 class AuthoritativeRegressionPolicyFactSource final {
   public:
-    AuthoritativeRegressionPolicyFactSource(const AuthoritativeRegressionPolicyFactSource&) noexcept = default;
-    AuthoritativeRegressionPolicyFactSource& operator=(const AuthoritativeRegressionPolicyFactSource&) noexcept = default;
-    AuthoritativeRegressionPolicyFactSource(AuthoritativeRegressionPolicyFactSource&&) noexcept = default;
-    AuthoritativeRegressionPolicyFactSource& operator=(AuthoritativeRegressionPolicyFactSource&&) noexcept = default;
+    AuthoritativeRegressionPolicyFactSource(
+        const AuthoritativeRegressionPolicyFactSource&) noexcept = default;
+    AuthoritativeRegressionPolicyFactSource&
+    operator=(const AuthoritativeRegressionPolicyFactSource&) noexcept = default;
+    AuthoritativeRegressionPolicyFactSource(AuthoritativeRegressionPolicyFactSource&&) noexcept =
+        default;
+    AuthoritativeRegressionPolicyFactSource&
+    operator=(AuthoritativeRegressionPolicyFactSource&&) noexcept = default;
     ~AuthoritativeRegressionPolicyFactSource() = default;
 
     [[nodiscard]] const std::string& kind() const noexcept;
@@ -494,14 +495,18 @@ class RegressionReportInspection final {
 
 class AuthoritativeRegressionPolicyFacts final {
   public:
-    AuthoritativeRegressionPolicyFacts(const AuthoritativeRegressionPolicyFacts&) noexcept = default;
-    AuthoritativeRegressionPolicyFacts& operator=(const AuthoritativeRegressionPolicyFacts&) noexcept = default;
+    AuthoritativeRegressionPolicyFacts(const AuthoritativeRegressionPolicyFacts&) noexcept =
+        default;
+    AuthoritativeRegressionPolicyFacts&
+    operator=(const AuthoritativeRegressionPolicyFacts&) noexcept = default;
     AuthoritativeRegressionPolicyFacts(AuthoritativeRegressionPolicyFacts&&) noexcept = default;
-    AuthoritativeRegressionPolicyFacts& operator=(AuthoritativeRegressionPolicyFacts&&) noexcept = default;
+    AuthoritativeRegressionPolicyFacts&
+    operator=(AuthoritativeRegressionPolicyFacts&&) noexcept = default;
     ~AuthoritativeRegressionPolicyFacts() = default;
 
     [[nodiscard]] const AuthoritativePolicyFactContext& policyFactContext() const noexcept;
-    [[nodiscard]] const AuthoritativeRegressionPolicyFactSource& regressionPolicyFactSource() const noexcept;
+    [[nodiscard]] const AuthoritativeRegressionPolicyFactSource&
+    regressionPolicyFactSource() const noexcept;
 
   private:
     AuthoritativeRegressionPolicyFacts(AuthoritativePolicyFactContext context,
@@ -601,56 +606,48 @@ class MemoryOS final {
     [[nodiscard]] Investigation observe(const Workspace& workspace,
                                         std::string snapshotJson,
                                         ObserveOptions options = {}) const;
-    [[nodiscard]] Investigation importPackage(
-        const MemoryInvestigationPackage& package,
-        ImportOptions options = {}) const;
-    [[nodiscard]] MemoryInvestigationPackage exportPackage(
-        const Investigation& investigation,
-        std::optional<std::vector<std::string>> supportedExtensions =
-            std::nullopt) const;
-    [[nodiscard]] VerificationResult verifyPackage(
-        const MemoryInvestigationPackage& package,
-        std::vector<std::string> supportedExtensions = {}) const;
-    [[nodiscard]] RegressionReport regression(
-        const Investigation& baseline,
-        const Investigation& candidate) const;
-    [[nodiscard]] InvestigationResult investigate(
-        const RegressionReport& report,
-        InvestigationQuery query = {}) const;
+    [[nodiscard]] Investigation importPackage(const MemoryInvestigationPackage& package,
+                                              ImportOptions options = {}) const;
+    [[nodiscard]] MemoryInvestigationPackage
+    exportPackage(const Investigation& investigation,
+                  std::optional<std::vector<std::string>> supportedExtensions = std::nullopt) const;
+    [[nodiscard]] VerificationResult
+    verifyPackage(const MemoryInvestigationPackage& package,
+                  std::vector<std::string> supportedExtensions = {}) const;
+    [[nodiscard]] RegressionReport regression(const Investigation& baseline,
+                                              const Investigation& candidate) const;
+    [[nodiscard]] InvestigationResult investigate(const RegressionReport& report,
+                                                  InvestigationQuery query = {}) const;
     [[nodiscard]] Investigation restore(const Checkpoint& checkpoint) const;
-    [[nodiscard]] PreparedPolicy preparePolicy(
-        std::span<const std::uint8_t> bytes) const;
-    [[nodiscard]] PreparedPolicy preparePolicySet(
-        std::span<const std::uint8_t> bytes) const;
-    [[nodiscard]] PolicyFactContextInspection inspectPolicyFactContext(
-        std::span<const std::uint8_t> bytes,
-        PolicyFactContextInspectionOptions options = {}) const;
+    [[nodiscard]] PreparedPolicy preparePolicy(std::span<const std::uint8_t> bytes) const;
+    [[nodiscard]] PreparedPolicy preparePolicySet(std::span<const std::uint8_t> bytes) const;
+    [[nodiscard]] PolicyFactContextInspection
+    inspectPolicyFactContext(std::span<const std::uint8_t> bytes,
+                             PolicyFactContextInspectionOptions options = {}) const;
     [[nodiscard]] RegressionPolicyFactSourceInspection inspectRegressionPolicyFactSource(
         std::span<const std::uint8_t> bytes,
         RegressionPolicyFactSourceInspectionOptions options = {}) const;
-    [[nodiscard]] RegressionReportInspection inspectRegressionReport(
-        std::span<const std::uint8_t> bytes) const;
-    [[nodiscard]] AuthoritativePolicyFactContext capturePolicyFactContext(
-        const Investigation& investigation) const;
-    [[nodiscard]] AuthoritativeRegressionPolicyFacts captureRegressionPolicyFacts(
-        const Investigation& baseline,
-        const Investigation& candidate) const;
-    [[nodiscard]] PolicyEvaluation evaluatePolicy(
-        const PreparedPolicy& policy,
-        const AuthoritativePolicyFactContext& context,
-        PolicyEvaluationOptions options = {}) const;
-    [[nodiscard]] PolicyEvaluation evaluatePolicySet(
-        const PreparedPolicy& policySet,
-        const AuthoritativePolicyFactContext& context,
-        PolicyEvaluationOptions options = {}) const;
+    [[nodiscard]] RegressionReportInspection
+    inspectRegressionReport(std::span<const std::uint8_t> bytes) const;
+    [[nodiscard]] AuthoritativePolicyFactContext
+    capturePolicyFactContext(const Investigation& investigation) const;
+    [[nodiscard]] AuthoritativeRegressionPolicyFacts
+    captureRegressionPolicyFacts(const Investigation& baseline,
+                                 const Investigation& candidate) const;
+    [[nodiscard]] PolicyEvaluation evaluatePolicy(const PreparedPolicy& policy,
+                                                  const AuthoritativePolicyFactContext& context,
+                                                  PolicyEvaluationOptions options = {}) const;
+    [[nodiscard]] PolicyEvaluation evaluatePolicySet(const PreparedPolicy& policySet,
+                                                     const AuthoritativePolicyFactContext& context,
+                                                     PolicyEvaluationOptions options = {}) const;
     [[nodiscard]] PolicyArtifactVerification verifyEvaluationIdentityArtifact(
         std::span<const std::uint8_t> bytes,
         std::optional<std::string> expectedEvaluationIdentityDigest = std::nullopt) const;
-    [[nodiscard]] PolicyArtifactVerification verifyEvaluationIdentityForEvaluation(
-        std::span<const std::uint8_t> bytes,
-        const PreparedPolicy& artifact,
-        const AuthoritativePolicyFactContext& context,
-        PolicyEvaluationOptions options = {}) const;
+    [[nodiscard]] PolicyArtifactVerification
+    verifyEvaluationIdentityForEvaluation(std::span<const std::uint8_t> bytes,
+                                          const PreparedPolicy& artifact,
+                                          const AuthoritativePolicyFactContext& context,
+                                          PolicyEvaluationOptions options = {}) const;
     [[nodiscard]] PolicyArtifactVerification verifyPolicyEvaluationOutcomeArtifact(
         std::span<const std::uint8_t> bytes,
         PolicyOutcomeArtifactVerificationOptions options = {}) const;
@@ -662,8 +659,7 @@ class MemoryOS final {
     [[nodiscard]] std::string policyContractIdentities() const;
 
   private:
-    [[nodiscard]] bool ownsInvestigation(
-        const Investigation& investigation) const noexcept;
+    [[nodiscard]] bool ownsInvestigation(const Investigation& investigation) const noexcept;
     std::shared_ptr<detail::Client> client_;
 };
 

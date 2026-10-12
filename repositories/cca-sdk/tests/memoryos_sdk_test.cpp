@@ -1,15 +1,14 @@
-#include <memoryos/memoryos.hpp>
-
-#include "../src/json.hpp"
-
-#include <gtest/gtest.h>
-
 #include <algorithm>
 #include <cctype>
+#include <chrono>
 #include <cstdint>
+#include <filesystem>
 #include <fstream>
 #include <future>
+#include <gtest/gtest.h>
 #include <iterator>
+#include <memory>
+#include <memoryos/memoryos.hpp>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -18,41 +17,51 @@
 #include <utility>
 #include <vector>
 
+#if !defined(_WIN32)
+#include <csignal>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#endif
+
+#include "../src/core_process.hpp"
+#include "../src/json.hpp"
+
 namespace {
 
-constexpr std::string_view reflection_key{
-    "reflection:reflection-release-integrity:0"};
+constexpr std::string_view reflection_key{"reflection:reflection-release-integrity:0"};
 constexpr std::string_view package_trace{"trace-observation-b"};
-constexpr std::string_view package_evolution{
-    "evolution-observation-a-observation-b"};
-constexpr std::string_view package_comparative{
-    "comparative-observation-a-observation-b"};
+constexpr std::string_view package_evolution{"evolution-observation-a-observation-b"};
+constexpr std::string_view package_comparative{"comparative-observation-a-observation-b"};
 
 [[nodiscard]] std::string readText(const char* path) {
     std::ifstream input{path, std::ios::binary};
     if (!input) {
         throw std::runtime_error{"cannot open test fixture"};
     }
-    return {std::istreambuf_iterator<char>{input},
-            std::istreambuf_iterator<char>{}};
+    return {std::istreambuf_iterator<char>{input}, std::istreambuf_iterator<char>{}};
 }
 
 [[nodiscard]] int base64Value(char value) noexcept {
-    if (value >= 'A' && value <= 'Z') return value - 'A';
-    if (value >= 'a' && value <= 'z') return value - 'a' + 26;
-    if (value >= '0' && value <= '9') return value - '0' + 52;
-    if (value == '+') return 62;
-    if (value == '/') return 63;
+    if (value >= 'A' && value <= 'Z')
+        return value - 'A';
+    if (value >= 'a' && value <= 'z')
+        return value - 'a' + 26;
+    if (value >= '0' && value <= '9')
+        return value - '0' + 52;
+    if (value == '+')
+        return 62;
+    if (value == '/')
+        return 63;
     return -1;
 }
 
-[[nodiscard]] std::vector<std::uint8_t> readPackage(
-    const char* path = MEMORYOS_SDK_COMPLETE_MIP_B64) {
+[[nodiscard]] std::vector<std::uint8_t>
+readPackage(const char* path = MEMORYOS_SDK_COMPLETE_MIP_B64) {
     std::string encoded = readText(path);
-    encoded.erase(std::remove_if(encoded.begin(), encoded.end(),
-                                 [](unsigned char value) {
-                                     return std::isspace(value) != 0;
-                                 }),
+    encoded.erase(std::remove_if(encoded.begin(),
+                                 encoded.end(),
+                                 [](unsigned char value) { return std::isspace(value) != 0; }),
                   encoded.end());
     if (encoded.empty() || encoded.size() % 4U != 0U) {
         throw std::runtime_error{"invalid Base64 test fixture"};
@@ -67,19 +76,16 @@ constexpr std::string_view package_comparative{
         const int second = base64Value(encoded[index + 1U]);
         const int third = pad2 ? 0 : base64Value(encoded[index + 2U]);
         const int fourth = pad3 ? 0 : base64Value(encoded[index + 3U]);
-        if (first < 0 || second < 0 || third < 0 || fourth < 0 ||
-            (pad2 && !pad3)) {
+        if (first < 0 || second < 0 || third < 0 || fourth < 0 || (pad2 && !pad3)) {
             throw std::runtime_error{"invalid Base64 test fixture"};
         }
-        const auto value =
-            (static_cast<std::uint32_t>(first) << 18U) |
-            (static_cast<std::uint32_t>(second) << 12U) |
-            (static_cast<std::uint32_t>(third) << 6U) |
-            static_cast<std::uint32_t>(fourth);
+        const auto value = (static_cast<std::uint32_t>(first) << 18U) |
+                           (static_cast<std::uint32_t>(second) << 12U) |
+                           (static_cast<std::uint32_t>(third) << 6U) |
+                           static_cast<std::uint32_t>(fourth);
         output.push_back(static_cast<std::uint8_t>((value >> 16U) & 0xFFU));
         if (!pad2) {
-            output.push_back(
-                static_cast<std::uint8_t>((value >> 8U) & 0xFFU));
+            output.push_back(static_cast<std::uint8_t>((value >> 8U) & 0xFFU));
         }
         if (!pad3) {
             output.push_back(static_cast<std::uint8_t>(value & 0xFFU));
@@ -88,56 +94,47 @@ constexpr std::string_view package_comparative{
     return output;
 }
 
-[[nodiscard]] memoryos::ObserveOptions observationOptions(
-    std::string identifier) {
+[[nodiscard]] memoryos::ObserveOptions observationOptions(std::string identifier) {
     memoryos::ObserveOptions options;
     options.identifier = std::move(identifier);
     return options;
 }
 
-[[nodiscard]] std::vector<std::uint8_t> bytesFrom(
-    std::string_view value) {
+[[nodiscard]] std::vector<std::uint8_t> bytesFrom(std::string_view value) {
     return {value.begin(), value.end()};
 }
 
-[[nodiscard]] std::vector<std::uint8_t> bytesFrom(
-    std::span<const std::uint8_t> value) {
+[[nodiscard]] std::vector<std::uint8_t> bytesFrom(std::span<const std::uint8_t> value) {
     return {value.begin(), value.end()};
 }
 
-[[nodiscard]] std::string policyDocument(
-    std::string_view identifier,
-    std::string_view ruleType,
-    std::string_view parametersJson,
-    std::string_view description = {}) {
+[[nodiscard]] std::string policyDocument(std::string_view identifier,
+                                         std::string_view ruleType,
+                                         std::string_view parametersJson,
+                                         std::string_view description = {}) {
     std::string metadata;
     if (!description.empty()) {
-        metadata = "\"metadata\":{\"description\":\"" +
-                   std::string{description} + "\"},";
+        metadata = "\"metadata\":{\"description\":\"" + std::string{description} + "\"},";
     }
     return "{\"identifier\":\"" + std::string{identifier} +
            "\",\"kind\":\"MemoryOSInvestigationPolicy\"," + metadata +
            "\"policyVersion\":\"0.0.0\",\"rules\":[{\"identifier\":\"r\"," +
-           "\"parameters\":" + std::string{parametersJson} +
-           ",\"type\":\"" + std::string{ruleType} +
-           "\",\"version\":\"1.0.0\"}],\"version\":\"1.0.0\"}";
+           "\"parameters\":" + std::string{parametersJson} + ",\"type\":\"" +
+           std::string{ruleType} + "\",\"version\":\"1.0.0\"}],\"version\":\"1.0.0\"}";
 }
 
-[[nodiscard]] std::string policySetDocument(
-    std::string_view identifier,
-    std::string_view childPolicy,
-    std::string_view childSemanticDigest) {
+[[nodiscard]] std::string policySetDocument(std::string_view identifier,
+                                            std::string_view childPolicy,
+                                            std::string_view childSemanticDigest) {
     return "{\"identifier\":\"" + std::string{identifier} +
            "\",\"kind\":\"MemoryOSInvestigationPolicySet\",\"policies\":[{" +
-           "\"expectedSemanticDigest\":\"" +
-           std::string{childSemanticDigest} + "\",\"policy\":" +
-           std::string{childPolicy} +
+           "\"expectedSemanticDigest\":\"" + std::string{childSemanticDigest} +
+           "\",\"policy\":" + std::string{childPolicy} +
            "}],\"policySetVersion\":\"0.0.0\",\"version\":\"1.0.0\"}";
 }
 
-[[nodiscard]] const std::string& fixtureText(
-    const memoryos::detail::Json& value,
-    std::string_view name) {
+[[nodiscard]] const std::string& fixtureText(const memoryos::detail::Json& value,
+                                             std::string_view name) {
     const auto* member = value.find(name);
     if (member == nullptr || !member->isString()) {
         throw std::runtime_error{"invalid Policy golden-vector fixture member"};
@@ -145,8 +142,7 @@ constexpr std::string_view package_comparative{
     return member->asString();
 }
 
-[[nodiscard]] memoryos::ReplaySession completeReplay(
-    memoryos::ReplaySession replay) {
+[[nodiscard]] memoryos::ReplaySession completeReplay(memoryos::ReplaySession replay) {
     for (std::size_t index = 0U; index < 10'000U; ++index) {
         if (replay.investigation().lifecycle() == "ReplayComplete") {
             return replay;
@@ -157,9 +153,7 @@ constexpr std::string_view package_comparative{
 }
 
 template <typename Callable>
-void expectSdkError(std::string_view code,
-                    std::string_view operation,
-                    Callable&& callable) {
+void expectSdkError(std::string_view code, std::string_view operation, Callable&& callable) {
     try {
         std::forward<Callable>(callable)();
         FAIL() << "operation unexpectedly succeeded";
@@ -169,19 +163,16 @@ void expectSdkError(std::string_view code,
     }
 }
 
-template <typename Callable>
-void expectInvalidInput(Callable&& callable) {
-    expectSdkError("INVALID_INPUT", "sdk",
-                   std::forward<Callable>(callable));
+template <typename Callable> void expectInvalidInput(Callable&& callable) {
+    expectSdkError("INVALID_INPUT", "sdk", std::forward<Callable>(callable));
 }
 
 template <typename Callable>
-void expectPolicyPreparationFailure(
-    std::string_view code,
-    std::string_view operation,
-    std::string_view phase,
-    std::string_view artifactKind,
-    Callable&& callable) {
+void expectPolicyPreparationFailure(std::string_view code,
+                                    std::string_view operation,
+                                    std::string_view phase,
+                                    std::string_view artifactKind,
+                                    Callable&& callable) {
     try {
         std::forward<Callable>(callable)();
         FAIL() << "untrusted Policy capability unexpectedly accepted";
@@ -207,8 +198,7 @@ TEST(MemoryOsSdk, ExposesVersionedImmutableValueHandles) {
     EXPECT_EQ(portableNumber.serialize(), "0.125");
     const auto portableExponent = memoryos::detail::Json::parse("-1.25e2");
     EXPECT_EQ(portableExponent.serialize(), "-125");
-    EXPECT_THROW(static_cast<void>(memoryos::detail::Json::parse("1e9999")),
-                 std::invalid_argument);
+    EXPECT_THROW(static_cast<void>(memoryos::detail::Json::parse("1e9999")), std::invalid_argument);
     static_assert(std::is_copy_constructible_v<memoryos::Workspace>);
     static_assert(std::is_copy_constructible_v<memoryos::Investigation>);
     static_assert(std::is_copy_constructible_v<memoryos::ReplaySession>);
@@ -219,23 +209,15 @@ TEST(MemoryOsSdk, ExposesVersionedImmutableValueHandles) {
     static_assert(std::is_copy_constructible_v<memoryos::InvestigationQuery>);
     static_assert(std::is_copy_constructible_v<memoryos::Checkpoint>);
     static_assert(std::is_copy_constructible_v<memoryos::PreparedPolicy>);
-    static_assert(std::is_copy_constructible_v<
-                  memoryos::PolicyFactContextInspection>);
-    static_assert(std::is_copy_constructible_v<
-                  memoryos::AuthoritativePolicyFactContext>);
-    static_assert(std::is_copy_constructible_v<
-                  memoryos::RegressionPolicyFactSourceInspection>);
-    static_assert(std::is_copy_constructible_v<
-                  memoryos::AuthoritativeRegressionPolicyFactSource>);
-    static_assert(std::is_copy_constructible_v<
-                  memoryos::RegressionReportInspection>);
-    static_assert(std::is_copy_constructible_v<
-                  memoryos::AuthoritativeRegressionPolicyFacts>);
+    static_assert(std::is_copy_constructible_v<memoryos::PolicyFactContextInspection>);
+    static_assert(std::is_copy_constructible_v<memoryos::AuthoritativePolicyFactContext>);
+    static_assert(std::is_copy_constructible_v<memoryos::RegressionPolicyFactSourceInspection>);
+    static_assert(std::is_copy_constructible_v<memoryos::AuthoritativeRegressionPolicyFactSource>);
+    static_assert(std::is_copy_constructible_v<memoryos::RegressionReportInspection>);
+    static_assert(std::is_copy_constructible_v<memoryos::AuthoritativeRegressionPolicyFacts>);
     static_assert(std::is_copy_constructible_v<memoryos::PolicyEvaluation>);
-    static_assert(std::is_copy_constructible_v<
-                  memoryos::PolicyArtifactVerification>);
-    static_assert(std::is_copy_constructible_v<
-                  memoryos::PolicyPreparationFailure>);
+    static_assert(std::is_copy_constructible_v<memoryos::PolicyArtifactVerification>);
+    static_assert(std::is_copy_constructible_v<memoryos::PolicyPreparationFailure>);
 
     memoryos::MemoryOS memory;
     const auto workspace = memory.openWorkspace("workspace-memoryos-release");
@@ -246,12 +228,11 @@ TEST(MemoryOsSdk, DelegatesPolicySemanticsAndRetainsExactBytes) {
     memoryos::MemoryOS preparationMemory;
     memoryos::MemoryOS memory;
     const auto workspace = memory.openWorkspace("workspace-memoryos-release");
-    const auto investigation = memory.observe(
-        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-        observationOptions("cpp-policy-candidate"));
+    const auto investigation = memory.observe(workspace,
+                                              readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                              observationOptions("cpp-policy-candidate"));
     const std::string document = policyDocument(
-        "p", "memoryos.require-lifecycle-state",
-        R"({"allowedStates":["Observed"]})");
+        "p", "memoryos.require-lifecycle-state", R"({"allowedStates":["Observed"]})");
     const auto bytes = bytesFrom(document);
 
     const auto prepared = preparationMemory.preparePolicy(bytes);
@@ -263,9 +244,7 @@ TEST(MemoryOsSdk, DelegatesPolicySemanticsAndRetainsExactBytes) {
         "evaluatePolicy",
         "policyFactContext",
         "MemoryOSPolicyFactContext",
-        [&] {
-            static_cast<void>(preparationMemory.evaluatePolicy(prepared, context));
-        });
+        [&] { static_cast<void>(preparationMemory.evaluatePolicy(prepared, context)); });
 
     EXPECT_EQ(prepared.kind(), "MemoryOSInvestigationPolicy");
     EXPECT_EQ(bytesFrom(prepared.bytes()), bytes);
@@ -276,8 +255,7 @@ TEST(MemoryOsSdk, DelegatesPolicySemanticsAndRetainsExactBytes) {
     EXPECT_EQ(evaluation.outcomeDigest().substr(0U, 7U), "sha256:");
     EXPECT_EQ(bytesFrom(evaluation.evaluationIdentityBytes()),
               bytesFrom(evaluation.evaluationIdentityJson()));
-    EXPECT_EQ(bytesFrom(evaluation.canonicalOutcomeBytes()),
-              bytesFrom(evaluation.outcomeJson()));
+    EXPECT_EQ(bytesFrom(evaluation.canonicalOutcomeBytes()), bytesFrom(evaluation.outcomeJson()));
 
     std::optional<memoryos::PolicyEvaluation> retainedEvaluation;
     std::span<const std::uint8_t> retainedOutcomeBytes;
@@ -289,23 +267,20 @@ TEST(MemoryOsSdk, DelegatesPolicySemanticsAndRetainsExactBytes) {
     ASSERT_TRUE(retainedEvaluation.has_value());
     EXPECT_EQ(bytesFrom(retainedOutcomeBytes),
               bytesFrom(retainedEvaluation->canonicalOutcomeBytes()));
-    EXPECT_EQ(bytesFrom(retainedOutcomeBytes),
-              bytesFrom(evaluation.canonicalOutcomeBytes()));
+    EXPECT_EQ(bytesFrom(retainedOutcomeBytes), bytesFrom(evaluation.canonicalOutcomeBytes()));
 
-    const auto detached = memory.inspectPolicyFactContext(
-        context.bytes(), {context.contextDigest()});
+    const auto detached =
+        memory.inspectPolicyFactContext(context.bytes(), {context.contextDigest()});
     EXPECT_EQ(detached.contextDigest(), context.contextDigest());
     EXPECT_EQ(detached.bytes().size(), context.bytes().size());
 
     const auto identity = memory.verifyEvaluationIdentityArtifact(
-        evaluation.evaluationIdentityBytes(),
-        evaluation.evaluationIdentityDigest());
+        evaluation.evaluationIdentityBytes(), evaluation.evaluationIdentityDigest());
     EXPECT_TRUE(identity.verified());
     EXPECT_EQ(identity.authority(), "inspectionOnly");
 
     memoryos::PolicyOutcomeArtifactVerificationOptions options;
-    options.expectedEvaluationIdentityDigest =
-        evaluation.evaluationIdentityDigest();
+    options.expectedEvaluationIdentityDigest = evaluation.evaluationIdentityDigest();
     options.expectedOutcomeDigest = evaluation.outcomeDigest();
     const auto outcome = memory.verifyPolicyEvaluationOutcomeArtifact(
         evaluation.canonicalOutcomeBytes(), std::move(options));
@@ -325,54 +300,49 @@ TEST(MemoryOsSdk, DelegatesPolicySemanticsAndRetainsExactBytes) {
         EXPECT_TRUE(error.verificationFailure());
     }
 
-    EXPECT_EQ(memory.policyContractIdentities(),
+    EXPECT_EQ(
+        memory.policyContractIdentities(),
         R"({"deterministicFactSourceRegistry":{"registryDigest":"sha256:392d688acb866753c6ff85b7030131b38990b27d8a2a0ef6e8e052c8c4e048de","registryVersion":"1.0.0","sources":[{"domain":"cognitiveRegression","sourceModelDigest":"sha256:e7d1fdf24758f2a0ac9ad609df578f95c058bf3cbab9f02a650f9cc12dab1c0d","sourceModelVersion":"1.0.0","wireVersion":"1.0.0"}]},"evaluatorVersion":"1.0.0","factModel":{"factModelDigest":"sha256:b36b9488161cb67d8e971e802d15ad76d662d46f96e1304182de343ba69ef7a8","factModelVersion":"1.0.0"},"kind":"MemoryOSPolicyContractIdentities","outcomeContractVersion":"1.0.0","resourceProfile":{"identifier":"memoryos.policy.resource-profile.standard","resourceProfileDigest":"sha256:c091573dfd05481f5759ef077e15af16689382a7432fa546c6630c4caeaa5239","version":"1.0.0"},"ruleRegistry":{"ruleRegistryDigest":"sha256:aaa19116563d209f680b063cdccf49d899069683f9778271c4ca2c4559b94fd7","ruleRegistryVersion":"1.0.0"},"version":"1.0.0"})");
 }
 
 TEST(MemoryOsSdk, EnforcesObservationWorkspaceAuthorityAcrossTheBridge) {
     memoryos::MemoryOS memory;
     const auto workspace = memory.openWorkspace("workspace-memoryos-release");
-    const auto investigation = memory.observe(
-        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-        observationOptions("cpp-policy-workspace-authority"));
+    const auto investigation = memory.observe(workspace,
+                                              readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                              observationOptions("cpp-policy-workspace-authority"));
     const auto context = memory.capturePolicyFactContext(investigation);
 
     EXPECT_EQ(investigation.workspaceIdentifier(), workspace.identifier());
     EXPECT_EQ(context.authority(), "authoritative");
 
-    const auto foreignWorkspace = memory.openWorkspace(
-        "workspace-memoryos-policy-foreign");
+    const auto foreignWorkspace = memory.openWorkspace("workspace-memoryos-policy-foreign");
     expectSdkError("WORKSPACE_MISMATCH", "observe", [&] {
-        static_cast<void>(memory.observe(
-            foreignWorkspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-            observationOptions("cpp-policy-workspace-boundary")));
+        static_cast<void>(memory.observe(foreignWorkspace,
+                                         readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                         observationOptions("cpp-policy-workspace-boundary")));
     });
 }
 
 TEST(MemoryOsSdk, EvaluatesPolicySetAndCneAsNormalOutcomes) {
     memoryos::MemoryOS memory;
     const auto workspace = memory.openWorkspace("workspace-memoryos-release");
-    const auto investigation = memory.observe(
-        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-        observationOptions("cpp-policy-set-candidate"));
+    const auto investigation = memory.observe(workspace,
+                                              readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                              observationOptions("cpp-policy-set-candidate"));
     const auto context = memory.capturePolicyFactContext(investigation);
 
     const auto cneDocument = policyDocument(
-        "c", "memoryos.prohibit-regression-findings",
-        R"({"categories":["reflection"]})");
-    const auto cne = memory.evaluatePolicy(
-        memory.preparePolicy(bytesFrom(cneDocument)), context);
+        "c", "memoryos.prohibit-regression-findings", R"({"categories":["reflection"]})");
+    const auto cne = memory.evaluatePolicy(memory.preparePolicy(bytesFrom(cneDocument)), context);
     EXPECT_EQ(cne.outcomeKind(), "MemoryOSPolicyEvaluationOutcome");
     EXPECT_EQ(cne.decision(), "COULD_NOT_EVALUATE");
-    EXPECT_NE(cne.outcomeJson().find(
-                  "PROHIBIT_REGRESSION_FINDINGS_SOURCE_NOT_SUPPLIED"),
+    EXPECT_NE(cne.outcomeJson().find("PROHIBIT_REGRESSION_FINDINGS_SOURCE_NOT_SUPPLIED"),
               std::string::npos);
 
-    const auto childDocument = policyDocument(
-        "m", "memoryos.require-mip-integrity", "{}");
+    const auto childDocument = policyDocument("m", "memoryos.require-mip-integrity", "{}");
     const auto child = memory.preparePolicy(bytesFrom(childDocument));
-    const auto setDocument = policySetDocument(
-        "s", childDocument, child.semanticDigest());
+    const auto setDocument = policySetDocument("s", childDocument, child.semanticDigest());
     const auto preparedSet = memory.preparePolicySet(bytesFrom(setDocument));
     const auto evaluation = memory.evaluatePolicySet(preparedSet, context);
 
@@ -380,8 +350,7 @@ TEST(MemoryOsSdk, EvaluatesPolicySetAndCneAsNormalOutcomes) {
     EXPECT_EQ(bytesFrom(preparedSet.bytes()), bytesFrom(setDocument));
     EXPECT_EQ(evaluation.outcomeKind(), "MemoryOSPolicyEvaluationOutcome");
     EXPECT_EQ(evaluation.decision(), "FAIL");
-    EXPECT_NE(evaluation.outcomeJson().find("MemoryOSPolicySetResult"),
-              std::string::npos);
+    EXPECT_NE(evaluation.outcomeJson().find("MemoryOSPolicySetResult"), std::string::npos);
 
     const auto identity = memory.verifyEvaluationIdentityForEvaluation(
         evaluation.evaluationIdentityBytes(), preparedSet, context);
@@ -391,27 +360,23 @@ TEST(MemoryOsSdk, EvaluatesPolicySetAndCneAsNormalOutcomes) {
     memoryos::PolicyOutcomeEvaluationVerificationOptions options;
     options.expectedOutcomeDigest = evaluation.outcomeDigest();
     const auto outcome = memory.verifyPolicyEvaluationOutcomeForEvaluation(
-        evaluation.canonicalOutcomeBytes(), preparedSet, context,
-        std::move(options));
+        evaluation.canonicalOutcomeBytes(), preparedSet, context, std::move(options));
     EXPECT_TRUE(outcome.verified());
     EXPECT_EQ(outcome.authority(), "authoritativeReconstruction");
-    EXPECT_EQ(bytesFrom(outcome.bytes()),
-              bytesFrom(evaluation.canonicalOutcomeBytes()));
+    EXPECT_EQ(bytesFrom(outcome.bytes()), bytesFrom(evaluation.canonicalOutcomeBytes()));
 }
 
 TEST(MemoryOsSdk, PreservesMetadataIsolationAndExactCachedBytes) {
     memoryos::MemoryOS memory;
     const auto workspace = memory.openWorkspace("workspace-memoryos-release");
-    const auto investigation = memory.observe(
-        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-        observationOptions("cpp-policy-cache-candidate"));
+    const auto investigation = memory.observe(workspace,
+                                              readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                              observationOptions("cpp-policy-cache-candidate"));
     const auto context = memory.capturePolicyFactContext(investigation);
     const auto firstDocument = policyDocument(
-        "c", "memoryos.require-lifecycle-state",
-        R"({"allowedStates":["Observed"]})", "a");
+        "c", "memoryos.require-lifecycle-state", R"({"allowedStates":["Observed"]})", "a");
     const auto secondDocument = policyDocument(
-        "c", "memoryos.require-lifecycle-state",
-        R"({"allowedStates":["Observed"]})", "b");
+        "c", "memoryos.require-lifecycle-state", R"({"allowedStates":["Observed"]})", "b");
     const auto firstPolicy = memory.preparePolicy(bytesFrom(firstDocument));
     const auto secondPolicy = memory.preparePolicy(bytesFrom(secondDocument));
 
@@ -419,46 +384,41 @@ TEST(MemoryOsSdk, PreservesMetadataIsolationAndExactCachedBytes) {
     EXPECT_EQ(firstPolicy.semanticDigest(), secondPolicy.semanticDigest());
     const auto first = memory.evaluatePolicy(firstPolicy, context);
     const auto second = memory.evaluatePolicy(secondPolicy, context);
-    EXPECT_EQ(second.cacheDisposition(),
-              "HIT_RETURN_EXACT_RETAINED_BYTES");
-    EXPECT_EQ(first.evaluationIdentityDigest(),
-              second.evaluationIdentityDigest());
+    EXPECT_EQ(second.cacheDisposition(), "HIT_RETURN_EXACT_RETAINED_BYTES");
+    EXPECT_EQ(first.evaluationIdentityDigest(), second.evaluationIdentityDigest());
     EXPECT_EQ(first.outcomeDigest(), second.outcomeDigest());
     EXPECT_EQ(bytesFrom(first.evaluationIdentityBytes()),
               bytesFrom(second.evaluationIdentityBytes()));
-    EXPECT_EQ(bytesFrom(first.canonicalOutcomeBytes()),
-              bytesFrom(second.canonicalOutcomeBytes()));
+    EXPECT_EQ(bytesFrom(first.canonicalOutcomeBytes()), bytesFrom(second.canonicalOutcomeBytes()));
 }
 
 TEST(MemoryOsSdk, EvaluatesAnAuthoritativeMipBackedContext) {
     memoryos::MemoryOS memory;
-    const auto investigation = memory.importPackage(
-        memoryos::MemoryInvestigationPackage{readPackage()},
-        memoryos::ImportOptions{
-            .identifier = "cpp-policy-mip-candidate",
-            .supportedExtensions = {},
-        });
+    const auto investigation =
+        memory.importPackage(memoryos::MemoryInvestigationPackage{readPackage()},
+                             memoryos::ImportOptions{
+                                 .identifier = "cpp-policy-mip-candidate",
+                                 .supportedExtensions = {},
+                             });
     const auto context = memory.capturePolicyFactContext(investigation);
-    const auto document = policyDocument(
-        "m", "memoryos.require-mip-integrity", "{}");
-    const auto evaluation = memory.evaluatePolicy(
-        memory.preparePolicy(bytesFrom(document)), context);
+    const auto document = policyDocument("m", "memoryos.require-mip-integrity", "{}");
+    const auto evaluation =
+        memory.evaluatePolicy(memory.preparePolicy(bytesFrom(document)), context);
 
     EXPECT_EQ(context.authority(), "authoritative");
-    EXPECT_NE(context.artifactJson().find("\"sourceKind\":\"mip\""),
-              std::string::npos);
+    EXPECT_NE(context.artifactJson().find("\"sourceKind\":\"mip\""), std::string::npos);
     EXPECT_EQ(evaluation.decision(), "PASS");
 }
 
 TEST(MemoryOsSdk, CapturesAndVerifiesTrustedRegressionPolicyFacts) {
     memoryos::MemoryOS memory;
     const auto workspace = memory.openWorkspace("workspace-memoryos-release");
-    const auto baseline = memory.observe(
-        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-        observationOptions("cpp-policy-regression-baseline"));
-    const auto candidate = memory.observe(
-        workspace, readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
-        observationOptions("cpp-policy-regression-candidate"));
+    const auto baseline = memory.observe(workspace,
+                                         readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                         observationOptions("cpp-policy-regression-baseline"));
+    const auto candidate = memory.observe(workspace,
+                                          readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
+                                          observationOptions("cpp-policy-regression-candidate"));
 
     const auto detachedReport = memory.regression(baseline, candidate);
     const auto reportBytes = bytesFrom(detachedReport.canonicalJson());
@@ -474,38 +434,32 @@ TEST(MemoryOsSdk, CapturesAndVerifiesTrustedRegressionPolicyFacts) {
     EXPECT_EQ(source.authority(), "authoritative");
     EXPECT_EQ(source.domain(), "cognitiveRegression");
     EXPECT_EQ(source.sourceModelVersion(), "1.0.0");
-    const auto sourceInspection = memory.inspectRegressionPolicyFactSource(
-        source.bytes(), {source.sourceDigest()});
+    const auto sourceInspection =
+        memory.inspectRegressionPolicyFactSource(source.bytes(), {source.sourceDigest()});
     EXPECT_EQ(sourceInspection.authority(), "inspectionOnly");
     EXPECT_EQ(sourceInspection.sourceDigest(), source.sourceDigest());
     EXPECT_EQ(bytesFrom(sourceInspection.bytes()), bytesFrom(source.bytes()));
 
     const auto document = policyDocument(
-        "r", "memoryos.prohibit-regression-findings",
-        R"({"categories":["reflection"]})");
+        "r", "memoryos.prohibit-regression-findings", R"({"categories":["reflection"]})");
     const auto prepared = memory.preparePolicy(bytesFrom(document));
     memoryos::PolicyEvaluationOptions evaluationOptions;
     evaluationOptions.regressionSource = source;
-    const auto evaluation = memory.evaluatePolicy(
-        prepared, context, evaluationOptions);
+    const auto evaluation = memory.evaluatePolicy(prepared, context, evaluationOptions);
     EXPECT_EQ(evaluation.decision(), "FAIL");
-    EXPECT_NE(evaluation.evaluationIdentityJson().find(source.sourceDigest()),
-              std::string::npos);
+    EXPECT_NE(evaluation.evaluationIdentityJson().find(source.sourceDigest()), std::string::npos);
 
     const auto identity = memory.verifyEvaluationIdentityForEvaluation(
-        evaluation.evaluationIdentityBytes(), prepared, context,
-        evaluationOptions);
+        evaluation.evaluationIdentityBytes(), prepared, context, evaluationOptions);
     EXPECT_TRUE(identity.verified());
     EXPECT_EQ(identity.authority(), "authoritativeReconstruction");
-    EXPECT_EQ(bytesFrom(identity.bytes()),
-              bytesFrom(evaluation.evaluationIdentityBytes()));
+    EXPECT_EQ(bytesFrom(identity.bytes()), bytesFrom(evaluation.evaluationIdentityBytes()));
 
     memoryos::PolicyOutcomeEvaluationVerificationOptions outcomeOptions;
     outcomeOptions.regressionSource = source;
     outcomeOptions.expectedOutcomeDigest = evaluation.outcomeDigest();
     const auto outcome = memory.verifyPolicyEvaluationOutcomeForEvaluation(
-        evaluation.canonicalOutcomeBytes(), prepared, context,
-        outcomeOptions);
+        evaluation.canonicalOutcomeBytes(), prepared, context, outcomeOptions);
     EXPECT_TRUE(outcome.verified());
     ASSERT_TRUE(outcome.outcomeDigest().has_value());
     EXPECT_EQ(*outcome.outcomeDigest(), evaluation.outcomeDigest());
@@ -517,107 +471,90 @@ TEST(MemoryOsSdk, CapturesAndVerifiesTrustedRegressionPolicyFacts) {
             std::forward<decltype(operation)>(operation)();
             FAIL() << "candidate-mismatched Regression source unexpectedly accepted";
         } catch (const memoryos::SdkError& error) {
-            EXPECT_EQ(error.code(),
-                      "REGRESSION_POLICY_FACT_SOURCE_CANDIDATE_BINDING_MISMATCH");
+            EXPECT_EQ(error.code(), "REGRESSION_POLICY_FACT_SOURCE_CANDIDATE_BINDING_MISMATCH");
             EXPECT_EQ(error.phase(), "regressionPolicyFactSource");
             EXPECT_EQ(error.failureClass(), "preparation");
-            EXPECT_EQ(error.artifactKind(),
-                      "MemoryOSRegressionPolicyFactSource");
+            EXPECT_EQ(error.artifactKind(), "MemoryOSRegressionPolicyFactSource");
         }
     };
     expectCandidateBindingMismatch([&] {
-        static_cast<void>(memory.evaluatePolicy(
-            prepared, otherContext, evaluationOptions));
+        static_cast<void>(memory.evaluatePolicy(prepared, otherContext, evaluationOptions));
     });
-    const auto preparedSet = memory.preparePolicySet(bytesFrom(
-        policySetDocument("rs", document, prepared.semanticDigest())));
+    const auto preparedSet = memory.preparePolicySet(
+        bytesFrom(policySetDocument("rs", document, prepared.semanticDigest())));
     expectCandidateBindingMismatch([&] {
-        static_cast<void>(memory.evaluatePolicySet(
-            preparedSet, otherContext, evaluationOptions));
+        static_cast<void>(memory.evaluatePolicySet(preparedSet, otherContext, evaluationOptions));
     });
     expectCandidateBindingMismatch([&] {
         static_cast<void>(memory.verifyEvaluationIdentityForEvaluation(
-            evaluation.evaluationIdentityBytes(), prepared, otherContext,
-            evaluationOptions));
+            evaluation.evaluationIdentityBytes(), prepared, otherContext, evaluationOptions));
     });
     memoryos::PolicyOutcomeEvaluationVerificationOptions mismatchOptions;
     mismatchOptions.regressionSource = source;
     mismatchOptions.expectedOutcomeDigest = evaluation.outcomeDigest();
     expectCandidateBindingMismatch([&] {
         static_cast<void>(memory.verifyPolicyEvaluationOutcomeForEvaluation(
-            evaluation.canonicalOutcomeBytes(), prepared, otherContext,
-            mismatchOptions));
+            evaluation.canonicalOutcomeBytes(), prepared, otherContext, mismatchOptions));
     });
 
     memoryos::MemoryOS foreignMemory;
-    const auto foreignWorkspace = foreignMemory.openWorkspace(
-        "workspace-memoryos-release");
-    const auto foreignInvestigation = foreignMemory.observe(
-        foreignWorkspace, readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
-        observationOptions("cpp-policy-regression-foreign"));
-    const auto foreignContext = foreignMemory.capturePolicyFactContext(
-        foreignInvestigation);
+    const auto foreignWorkspace = foreignMemory.openWorkspace("workspace-memoryos-release");
+    const auto foreignInvestigation =
+        foreignMemory.observe(foreignWorkspace,
+                              readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
+                              observationOptions("cpp-policy-regression-foreign"));
+    const auto foreignContext = foreignMemory.capturePolicyFactContext(foreignInvestigation);
 
-    const auto expectForeignContext = [&](std::string_view operation,
-                                          auto&& action) {
-        expectPolicyPreparationFailure(
-            "POLICY_FACT_CONTEXT_PROVENANCE_UNTRUSTED",
-            operation,
-            "policyFactContext",
-            "MemoryOSPolicyFactContext",
-            std::forward<decltype(action)>(action));
+    const auto expectForeignContext = [&](std::string_view operation, auto&& action) {
+        expectPolicyPreparationFailure("POLICY_FACT_CONTEXT_PROVENANCE_UNTRUSTED",
+                                       operation,
+                                       "policyFactContext",
+                                       "MemoryOSPolicyFactContext",
+                                       std::forward<decltype(action)>(action));
     };
     expectForeignContext("evaluatePolicy", [&] {
-        static_cast<void>(memory.evaluatePolicy(
-            prepared, foreignContext, evaluationOptions));
+        static_cast<void>(memory.evaluatePolicy(prepared, foreignContext, evaluationOptions));
     });
     expectForeignContext("evaluatePolicySet", [&] {
-        static_cast<void>(memory.evaluatePolicySet(
-            preparedSet, foreignContext, evaluationOptions));
+        static_cast<void>(memory.evaluatePolicySet(preparedSet, foreignContext, evaluationOptions));
     });
     expectForeignContext("verifyEvaluationIdentityForEvaluation", [&] {
         static_cast<void>(memory.verifyEvaluationIdentityForEvaluation(
-            evaluation.evaluationIdentityBytes(), prepared, foreignContext,
-            evaluationOptions));
+            evaluation.evaluationIdentityBytes(), prepared, foreignContext, evaluationOptions));
     });
     memoryos::PolicyOutcomeEvaluationVerificationOptions foreignContextOptions;
     foreignContextOptions.regressionSource = source;
     foreignContextOptions.expectedOutcomeDigest = evaluation.outcomeDigest();
     expectForeignContext("verifyPolicyEvaluationOutcomeForEvaluation", [&] {
         static_cast<void>(memory.verifyPolicyEvaluationOutcomeForEvaluation(
-            evaluation.canonicalOutcomeBytes(), prepared, foreignContext,
-            foreignContextOptions));
+            evaluation.canonicalOutcomeBytes(), prepared, foreignContext, foreignContextOptions));
     });
 
-    const auto expectForeignSource = [&](std::string_view operation,
-                                         auto&& action) {
-        expectPolicyPreparationFailure(
-            "DETERMINISTIC_FACT_SOURCE_PROVENANCE_UNTRUSTED",
-            operation,
-            "regressionPolicyFactSource",
-            "MemoryOSRegressionPolicyFactSource",
-            std::forward<decltype(action)>(action));
+    const auto expectForeignSource = [&](std::string_view operation, auto&& action) {
+        expectPolicyPreparationFailure("DETERMINISTIC_FACT_SOURCE_PROVENANCE_UNTRUSTED",
+                                       operation,
+                                       "regressionPolicyFactSource",
+                                       "MemoryOSRegressionPolicyFactSource",
+                                       std::forward<decltype(action)>(action));
     };
     expectForeignSource("evaluatePolicy", [&] {
-        static_cast<void>(foreignMemory.evaluatePolicy(
-            prepared, foreignContext, evaluationOptions));
+        static_cast<void>(
+            foreignMemory.evaluatePolicy(prepared, foreignContext, evaluationOptions));
     });
     expectForeignSource("evaluatePolicySet", [&] {
-        static_cast<void>(foreignMemory.evaluatePolicySet(
-            preparedSet, foreignContext, evaluationOptions));
+        static_cast<void>(
+            foreignMemory.evaluatePolicySet(preparedSet, foreignContext, evaluationOptions));
     });
     expectForeignSource("verifyEvaluationIdentityForEvaluation", [&] {
         static_cast<void>(foreignMemory.verifyEvaluationIdentityForEvaluation(
-            evaluation.evaluationIdentityBytes(), prepared, foreignContext,
-            evaluationOptions));
+            evaluation.evaluationIdentityBytes(), prepared, foreignContext, evaluationOptions));
     });
     memoryos::PolicyOutcomeEvaluationVerificationOptions foreignSourceOptions;
     foreignSourceOptions.regressionSource = source;
     foreignSourceOptions.expectedOutcomeDigest = evaluation.outcomeDigest();
     expectForeignSource("verifyPolicyEvaluationOutcomeForEvaluation", [&] {
         static_cast<void>(foreignMemory.verifyPolicyEvaluationOutcomeForEvaluation(
-            evaluation.canonicalOutcomeBytes(), prepared, foreignContext,
-            foreignSourceOptions));
+            evaluation.canonicalOutcomeBytes(), prepared, foreignContext, foreignSourceOptions));
     });
 
     try {
@@ -625,15 +562,14 @@ TEST(MemoryOsSdk, CapturesAndVerifiesTrustedRegressionPolicyFacts) {
             source.bytes(), {"sha256:" + std::string(64U, '0')}));
         FAIL() << "source digest mismatch unexpectedly inspected";
     } catch (const memoryos::SdkError& error) {
-        EXPECT_EQ(error.code(),
-                  "REGRESSION_POLICY_FACT_SOURCE_DIGEST_MISMATCH");
+        EXPECT_EQ(error.code(), "REGRESSION_POLICY_FACT_SOURCE_DIGEST_MISMATCH");
         EXPECT_EQ(error.failureClass(), "preparation");
     }
 }
 
 TEST(MemoryOsSdk, VerifiesAllFrozenPolicyEvaluationArtifactsExactly) {
-    const auto fixture = memoryos::detail::Json::parse(
-        readText(MEMORYOS_SDK_POLICY_GOLDEN_VECTORS));
+    const auto fixture =
+        memoryos::detail::Json::parse(readText(MEMORYOS_SDK_POLICY_GOLDEN_VECTORS));
     const auto* records = fixture.find("records");
     if (records == nullptr || !records->isArray()) {
         throw std::runtime_error{"invalid Policy golden-vector fixture"};
@@ -645,14 +581,12 @@ TEST(MemoryOsSdk, VerifiesAllFrozenPolicyEvaluationArtifactsExactly) {
         const auto& recordIdentifier = fixtureText(record, "recordId");
         SCOPED_TRACE(recordIdentifier);
         const auto& identityText = fixtureText(record, "canonicalIdentityBytes");
-        const auto& identityDigest = fixtureText(
-            record, "evaluationIdentityDigest");
+        const auto& identityDigest = fixtureText(record, "evaluationIdentityDigest");
         const auto identityBytes = bytesFrom(identityText);
-        const auto identity = memory.verifyEvaluationIdentityArtifact(
-            identityBytes, identityDigest);
+        const auto identity =
+            memory.verifyEvaluationIdentityArtifact(identityBytes, identityDigest);
         EXPECT_TRUE(identity.verified());
-        EXPECT_EQ(identity.artifactKind(),
-                  "MemoryOSPolicyEvaluationIdentity");
+        EXPECT_EQ(identity.artifactKind(), "MemoryOSPolicyEvaluationIdentity");
         ASSERT_TRUE(identity.evaluationIdentityDigest().has_value());
         EXPECT_EQ(*identity.evaluationIdentityDigest(), identityDigest);
         EXPECT_EQ(bytesFrom(identity.bytes()), identityBytes);
@@ -665,11 +599,10 @@ TEST(MemoryOsSdk, VerifiesAllFrozenPolicyEvaluationArtifactsExactly) {
         memoryos::PolicyOutcomeArtifactVerificationOptions options;
         options.expectedIdentity = identityBytes;
         options.expectedOutcomeDigest = outcomeDigest;
-        const auto outcome = memory.verifyPolicyEvaluationOutcomeArtifact(
-            outcomeBytes, std::move(options));
+        const auto outcome =
+            memory.verifyPolicyEvaluationOutcomeArtifact(outcomeBytes, std::move(options));
         EXPECT_TRUE(outcome.verified());
-        EXPECT_EQ(outcome.artifactKind(),
-                  "MemoryOSPolicyEvaluationOutcome");
+        EXPECT_EQ(outcome.artifactKind(), "MemoryOSPolicyEvaluationOutcome");
         ASSERT_TRUE(outcome.evaluationIdentityDigest().has_value());
         EXPECT_EQ(*outcome.evaluationIdentityDigest(), identityDigest);
         ASSERT_TRUE(outcome.outcomeDigest().has_value());
@@ -678,12 +611,9 @@ TEST(MemoryOsSdk, VerifiesAllFrozenPolicyEvaluationArtifactsExactly) {
         ASSERT_TRUE(outcome.outcomeJson().has_value());
         EXPECT_EQ(*outcome.outcomeJson(), outcomeText);
         ASSERT_TRUE(outcome.decision().has_value());
-        const auto& logicalResult = record.require("logicalOutcome")
-                                        .require("result");
-        EXPECT_EQ(*outcome.decision(),
-                  fixtureText(logicalResult, "decision"));
-        EXPECT_NE(outcomeText.find(fixtureText(logicalResult, "kind")),
-                  std::string::npos);
+        const auto& logicalResult = record.require("logicalOutcome").require("result");
+        EXPECT_EQ(*outcome.decision(), fixtureText(logicalResult, "decision"));
+        EXPECT_NE(outcomeText.find(fixtureText(logicalResult, "kind")), std::string::npos);
     }
 }
 
@@ -701,14 +631,12 @@ TEST(MemoryOsSdk, PreservesStablePolicyErrorsAcrossTheBridge) {
         EXPECT_EQ(error.preparationFailure()->code(), error.code());
         EXPECT_EQ(error.preparationFailure()->phase(), error.phase());
         ASSERT_TRUE(error.preparationFailure()->artifactKind().has_value());
-        EXPECT_EQ(*error.preparationFailure()->artifactKind(),
-                  "MemoryOSInvestigationPolicy");
+        EXPECT_EQ(*error.preparationFailure()->artifactKind(), "MemoryOSInvestigationPolicy");
         EXPECT_EQ(error.preparationFailure()->failureClass(), "preparation");
     }
 
     auto oversized = bytesFrom(policyDocument(
-        "p", "memoryos.require-lifecycle-state",
-        R"({"allowedStates":["Observed"]})"));
+        "p", "memoryos.require-lifecycle-state", R"({"allowedStates":["Observed"]})"));
     oversized.resize(1025U, static_cast<std::uint8_t>(' '));
     try {
         static_cast<void>(memory.preparePolicy(oversized));
@@ -721,20 +649,19 @@ TEST(MemoryOsSdk, PreservesStablePolicyErrorsAcrossTheBridge) {
         EXPECT_EQ(error.limitIdentifier(), "policy.raw-document-bytes");
         ASSERT_TRUE(error.preparationFailure().has_value());
         ASSERT_TRUE(error.preparationFailure()->limitIdentifier().has_value());
-        EXPECT_EQ(*error.preparationFailure()->limitIdentifier(),
-                  "policy.raw-document-bytes");
+        EXPECT_EQ(*error.preparationFailure()->limitIdentifier(), "policy.raw-document-bytes");
     }
 }
 
 TEST(MemoryOsSdk, DelegatesImmutableDeterministicRegressionToCore) {
     memoryos::MemoryOS memory;
     const auto workspace = memory.openWorkspace("workspace-memoryos-release");
-    const auto baseline = memory.observe(
-        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-        observationOptions("cpp-regression-baseline"));
-    const auto candidate = memory.observe(
-        workspace, readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
-        observationOptions("cpp-regression-candidate"));
+    const auto baseline = memory.observe(workspace,
+                                         readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                         observationOptions("cpp-regression-baseline"));
+    const auto candidate = memory.observe(workspace,
+                                          readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
+                                          observationOptions("cpp-regression-candidate"));
 
     const auto first = memory.regression(baseline, candidate);
     const auto second = memory.regression(baseline, candidate);
@@ -742,8 +669,7 @@ TEST(MemoryOsSdk, DelegatesImmutableDeterministicRegressionToCore) {
     EXPECT_EQ(first.overall(), "regressionDetected");
     EXPECT_EQ(first.identifier(), second.identifier());
     EXPECT_EQ(first.canonicalJson(), second.canonicalJson());
-    EXPECT_NE(first.canonicalJson().find("\"category\":\"evidence\""),
-              std::string::npos);
+    EXPECT_NE(first.canonicalJson().find("\"category\":\"evidence\""), std::string::npos);
 
     const auto identical = memory.regression(baseline, baseline);
     EXPECT_FALSE(identical.regressionDetected());
@@ -753,12 +679,12 @@ TEST(MemoryOsSdk, DelegatesImmutableDeterministicRegressionToCore) {
 TEST(MemoryOsSdk, NavigatesRegressionEvidenceExclusivelyThroughCore) {
     memoryos::MemoryOS memory;
     const auto workspace = memory.openWorkspace("workspace-memoryos-release");
-    const auto baseline = memory.observe(
-        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-        observationOptions("cpp-explorer-baseline"));
-    const auto candidate = memory.observe(
-        workspace, readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
-        observationOptions("cpp-explorer-candidate"));
+    const auto baseline = memory.observe(workspace,
+                                         readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                         observationOptions("cpp-explorer-baseline"));
+    const auto candidate = memory.observe(workspace,
+                                          readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
+                                          observationOptions("cpp-explorer-candidate"));
     const auto report = memory.regression(baseline, candidate);
 
     memoryos::InvestigationQuery reflectionQuery;
@@ -771,8 +697,7 @@ TEST(MemoryOsSdk, NavigatesRegressionEvidenceExclusivelyThroughCore) {
     EXPECT_GT(first.matchCount(), 0U);
     EXPECT_EQ(first.identifier(), second.identifier());
     EXPECT_EQ(first.canonicalJson(), second.canonicalJson());
-    EXPECT_NE(first.canonicalJson().find("\"category\":\"reflection\""),
-              std::string::npos);
+    EXPECT_NE(first.canonicalJson().find("\"category\":\"reflection\""), std::string::npos);
 
     memoryos::InvestigationQuery replayQuery;
     replayQuery.category = "replay";
@@ -795,35 +720,31 @@ TEST(MemoryOsSdk, NavigatesRegressionEvidenceExclusivelyThroughCore) {
 TEST(MemoryOsSdk, DefaultObservationOperationsMatchCrossLanguageDigests) {
     memoryos::MemoryOS memory;
     const auto workspace = memory.openWorkspace("workspace-memoryos-release");
-    const auto initial = memory.observe(
-        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-        observationOptions("sdk-default-parity"));
+    const auto initial = memory.observe(workspace,
+                                        readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                        observationOptions("sdk-default-parity"));
     const auto initial_digest = initial.transitionLogDigest();
-    const auto appended =
-        initial.observe(readText(MEMORYOS_SDK_CHANGED_SNAPSHOT));
+    const auto appended = initial.observe(readText(MEMORYOS_SDK_CHANGED_SNAPSHOT));
 
-    EXPECT_EQ(
-        initial_digest,
-        "sha256:73d96188aee03223d8cab1693ea89a5f856a52aca3412250ff0693ad81e1a35e");
-    EXPECT_EQ(
-        appended.transitionLogDigest(),
-        "sha256:d71ea86ef5987acf507f57dfb61ca538e2ced64bad381cc799828a46060e142b");
+    EXPECT_EQ(initial_digest,
+              "sha256:73d96188aee03223d8cab1693ea89a5f856a52aca3412250ff0693ad81e1a35e");
+    EXPECT_EQ(appended.transitionLogDigest(),
+              "sha256:d71ea86ef5987acf507f57dfb61ca538e2ced64bad381cc799828a46060e142b");
 }
 
 TEST(MemoryOsSdk, DelegatesObservationTraceReplayVerifyAndRestore) {
     memoryos::MemoryOS memory;
     const auto workspace = memory.openWorkspace("workspace-memoryos-release");
-    auto investigation = memory.observe(
-        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-        observationOptions("cpp-native-investigation"));
+    auto investigation = memory.observe(workspace,
+                                        readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                        observationOptions("cpp-native-investigation"));
 
     EXPECT_EQ(investigation.lifecycle(), "Observed");
     EXPECT_EQ(investigation.phase(), "observe");
     expectSdkError("INVALID_TRANSITION", "replay", [&investigation] {
         static_cast<void>(investigation.replay());
     });
-    expectInvalidInput(
-        [&investigation] { static_cast<void>(investigation.trace("")); });
+    expectInvalidInput([&investigation] { static_cast<void>(investigation.trace("")); });
 
     const auto checkpoint = investigation.checkpoint();
     EXPECT_EQ(checkpoint.investigationIdentifier(), investigation.identifier());
@@ -849,22 +770,19 @@ TEST(MemoryOsSdk, DelegatesObservationTraceReplayVerifyAndRestore) {
 TEST(MemoryOsSdk, RejectsReplayHandleAfterActiveReplayIsReplaced) {
     memoryos::MemoryOS memory;
     const auto workspace = memory.openWorkspace("workspace-memoryos-release");
-    auto investigation = memory.observe(
-        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-        observationOptions("cpp-stale-replay"));
+    auto investigation = memory.observe(workspace,
+                                        readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                        observationOptions("cpp-stale-replay"));
     investigation = investigation.trace(std::string{reflection_key});
     const auto stale = investigation.replay();
 
     investigation = investigation.returnToWorld();
-    investigation =
-        investigation.observe(readText(MEMORYOS_SDK_CHANGED_SNAPSHOT));
+    investigation = investigation.observe(readText(MEMORYOS_SDK_CHANGED_SNAPSHOT));
     investigation = investigation.trace(std::string{reflection_key});
     const auto current = investigation.replay().next();
     const auto digest = current.investigation().transitionLogDigest();
 
-    expectSdkError("SESSION_MISMATCH", "replay", [&stale] {
-        static_cast<void>(stale.next());
-    });
+    expectSdkError("SESSION_MISMATCH", "replay", [&stale] { static_cast<void>(stale.next()); });
     const auto refreshed = current.investigation().replay();
     EXPECT_EQ(refreshed.investigation().transitionLogDigest(), digest);
 }
@@ -872,11 +790,10 @@ TEST(MemoryOsSdk, RejectsReplayHandleAfterActiveReplayIsReplaced) {
 TEST(MemoryOsSdk, ReachesNativeComparisonThroughTwoExplicitObservations) {
     memoryos::MemoryOS memory;
     const auto workspace = memory.openWorkspace("workspace-memoryos-release");
-    auto investigation = memory.observe(
-        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-        observationOptions("cpp-native-comparison"));
-    investigation =
-        investigation.observe(readText(MEMORYOS_SDK_CHANGED_SNAPSHOT));
+    auto investigation = memory.observe(workspace,
+                                        readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                        observationOptions("cpp-native-comparison"));
+    investigation = investigation.observe(readText(MEMORYOS_SDK_CHANGED_SNAPSHOT));
     investigation = investigation.trace(std::string{reflection_key});
     auto replay = completeReplay(investigation.replay());
 
@@ -884,20 +801,16 @@ TEST(MemoryOsSdk, ReachesNativeComparisonThroughTwoExplicitObservations) {
         static_cast<void>(replay.investigation().comparisonSession(
             std::optional<std::string>{"not-a-native-evolution"}));
     });
-    auto configured =
-        replay.investigation().comparisonSession(std::nullopt);
-    expectInvalidInput(
-        [&configured] { static_cast<void>(configured.nextObservation()); });
+    auto configured = replay.investigation().comparisonSession(std::nullopt);
+    expectInvalidInput([&configured] { static_cast<void>(configured.nextObservation()); });
 
     auto comparison = replay.investigation().compare(configured);
     EXPECT_EQ(comparison.investigation().lifecycle(), "ComparisonReady");
-    expectInvalidInput([&replay, &comparison] {
-        static_cast<void>(replay.investigation().compare(comparison));
-    });
+    expectInvalidInput(
+        [&replay, &comparison] { static_cast<void>(replay.investigation().compare(comparison)); });
     comparison = comparison.previousObservation().nextObservation();
     expectInvalidInput([&comparison] {
-        static_cast<void>(comparison.startPackage(
-            std::string{package_comparative}));
+        static_cast<void>(comparison.startPackage(std::string{package_comparative}));
     });
     comparison = comparison.start(std::string{reflection_key});
     EXPECT_EQ(comparison.investigation().lifecycle(), "Comparing");
@@ -911,33 +824,27 @@ TEST(MemoryOsSdk, ReachesNativeComparisonThroughTwoExplicitObservations) {
 TEST(MemoryOsSdk, PreservesExactMipAndEveryComparisonStage) {
     const auto source = readPackage();
     memoryos::MemoryOS memory;
-    auto investigation = memory.importPackage(
-        memoryos::MemoryInvestigationPackage{source},
-        memoryos::ImportOptions{
-            .identifier = "cpp-complete-mip",
-            .supportedExtensions = {},
-        });
+    auto investigation = memory.importPackage(memoryos::MemoryInvestigationPackage{source},
+                                              memoryos::ImportOptions{
+                                                  .identifier = "cpp-complete-mip",
+                                                  .supportedExtensions = {},
+                                              });
 
     const auto exported = memory.exportPackage(investigation);
-    EXPECT_EQ(std::vector<std::uint8_t>(exported.bytes().begin(),
-                                       exported.bytes().end()),
-              source);
+    EXPECT_EQ(std::vector<std::uint8_t>(exported.bytes().begin(), exported.bytes().end()), source);
     EXPECT_TRUE(memory.verifyPackage(exported).valid());
 
     investigation = investigation.trace(std::string{package_trace});
     auto replay = completeReplay(investigation.replay());
-    expectInvalidInput([&replay] {
-        static_cast<void>(
-            replay.investigation().comparisonSession(std::nullopt));
-    });
-    auto configured = replay.investigation().comparisonSession(
-        std::optional<std::string>{package_evolution});
+    expectInvalidInput(
+        [&replay] { static_cast<void>(replay.investigation().comparisonSession(std::nullopt)); });
+    auto configured =
+        replay.investigation().comparisonSession(std::optional<std::string>{package_evolution});
     EXPECT_EQ(configured.investigation().lifecycle(), "ReplayComplete");
     auto comparison = replay.investigation().compare(configured);
     EXPECT_EQ(comparison.investigation().lifecycle(), "ComparisonReady");
-    expectInvalidInput([&comparison] {
-        static_cast<void>(comparison.start(std::string{reflection_key}));
-    });
+    expectInvalidInput(
+        [&comparison] { static_cast<void>(comparison.start(std::string{reflection_key})); });
 
     comparison = comparison.previousObservation().nextObservation();
     comparison = comparison.startPackage(std::string{package_comparative});
@@ -951,16 +858,14 @@ TEST(MemoryOsSdk, PreservesExactMipAndEveryComparisonStage) {
 TEST(MemoryOsSdk, PreservesStoredExtensionPolicyWhenExportOverrideIsOmitted) {
     const auto source = readPackage(MEMORYOS_SDK_EXTENSION_MIP_B64);
     memoryos::MemoryOS memory;
-    const auto investigation = memory.importPackage(
-        memoryos::MemoryInvestigationPackage{source},
-        memoryos::ImportOptions{
-            .identifier = "cpp-extension-roundtrip",
-            .supportedExtensions = {"org.example.audit"},
-        });
+    const auto investigation =
+        memory.importPackage(memoryos::MemoryInvestigationPackage{source},
+                             memoryos::ImportOptions{
+                                 .identifier = "cpp-extension-roundtrip",
+                                 .supportedExtensions = {"org.example.audit"},
+                             });
     const auto exported = memory.exportPackage(investigation);
-    EXPECT_EQ(std::vector<std::uint8_t>(exported.bytes().begin(),
-                                       exported.bytes().end()),
-              source);
+    EXPECT_EQ(std::vector<std::uint8_t>(exported.bytes().begin(), exported.bytes().end()), source);
 }
 
 TEST(MemoryOsSdk, ReportsPackageFailuresWithoutPublishingAValue) {
@@ -979,8 +884,7 @@ TEST(MemoryOsSdk, ReportsPackageFailuresWithoutPublishingAValue) {
 
 TEST(MemoryOsSdk, EmptyPackageFailsAsMipValidationNotTransportInput) {
     memoryos::MemoryOS memory;
-    const memoryos::MemoryInvestigationPackage empty{
-        std::vector<std::uint8_t>{}};
+    const memoryos::MemoryInvestigationPackage empty{std::vector<std::uint8_t>{}};
     const auto result = memory.verifyPackage(empty);
     EXPECT_FALSE(result.valid());
     EXPECT_FALSE(result.diagnostics().empty());
@@ -991,13 +895,12 @@ TEST(MemoryOsSdk, RejectsCrossInstanceAndNativeExport) {
     memoryos::MemoryOS second;
     const auto workspace = first.openWorkspace("workspace-memoryos-release");
     expectInvalidInput([&second, &workspace] {
-        static_cast<void>(second.observe(
-            workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT)));
+        static_cast<void>(second.observe(workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT)));
     });
 
-    const auto native = first.observe(
-        workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-        observationOptions("cpp-native-no-export"));
+    const auto native = first.observe(workspace,
+                                      readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
+                                      observationOptions("cpp-native-no-export"));
     try {
         static_cast<void>(first.exportPackage(native));
         FAIL() << "native observation unexpectedly exported a MIP";
@@ -1006,49 +909,38 @@ TEST(MemoryOsSdk, RejectsCrossInstanceAndNativeExport) {
     }
 
     const auto package = memoryos::MemoryInvestigationPackage{readPackage()};
-    const auto foreign = second.importPackage(
-        package,
-        memoryos::ImportOptions{
-            .identifier = "cpp-foreign",
-            .supportedExtensions = {},
-        });
-    expectInvalidInput([&first, &native, &foreign] {
-        static_cast<void>(first.regression(native, foreign));
-    });
-    expectInvalidInput([&second, &native, &foreign] {
-        static_cast<void>(second.regression(native, foreign));
-    });
-    const auto configured = foreign.comparisonSession(
-        std::optional<std::string>{package_evolution});
+    const auto foreign = second.importPackage(package,
+                                              memoryos::ImportOptions{
+                                                  .identifier = "cpp-foreign",
+                                                  .supportedExtensions = {},
+                                              });
     expectInvalidInput(
-        [&native, &configured] { static_cast<void>(native.compare(configured)); });
+        [&first, &native, &foreign] { static_cast<void>(first.regression(native, foreign)); });
+    expectInvalidInput(
+        [&second, &native, &foreign] { static_cast<void>(second.regression(native, foreign)); });
+    const auto configured =
+        foreign.comparisonSession(std::optional<std::string>{package_evolution});
+    expectInvalidInput([&native, &configured] { static_cast<void>(native.compare(configured)); });
 
     const auto checkpoint = native.checkpoint();
-    expectInvalidInput([&foreign, &checkpoint] {
-        static_cast<void>(foreign.restore(checkpoint));
-    });
-    expectInvalidInput([&second, &checkpoint] {
-        static_cast<void>(second.restore(checkpoint));
-    });
+    expectInvalidInput([&foreign, &checkpoint] { static_cast<void>(foreign.restore(checkpoint)); });
+    expectInvalidInput([&second, &checkpoint] { static_cast<void>(second.restore(checkpoint)); });
 }
 
 TEST(MemoryOsSdk, KeepsConcurrentInstancesDeterministicAndIsolated) {
     const auto source = readPackage();
     auto execute = [&source] {
         memoryos::MemoryOS memory;
-        auto investigation = memory.importPackage(
-            memoryos::MemoryInvestigationPackage{source},
-            memoryos::ImportOptions{
-                .identifier = "cpp-concurrent-isolation",
-                .supportedExtensions = {},
-            });
+        auto investigation = memory.importPackage(memoryos::MemoryInvestigationPackage{source},
+                                                  memoryos::ImportOptions{
+                                                      .identifier = "cpp-concurrent-isolation",
+                                                      .supportedExtensions = {},
+                                                  });
         investigation = investigation.trace(std::string{package_trace});
         const auto replay = completeReplay(investigation.replay());
         const auto package = memory.exportPackage(replay.investigation());
-        return std::pair{
-            replay.investigation().transitionLogDigest(),
-            std::vector<std::uint8_t>{package.bytes().begin(),
-                                      package.bytes().end()}};
+        return std::pair{replay.investigation().transitionLogDigest(),
+                         std::vector<std::uint8_t>{package.bytes().begin(), package.bytes().end()}};
     };
 
     auto first = std::async(std::launch::async, execute);
@@ -1059,5 +951,46 @@ TEST(MemoryOsSdk, KeepsConcurrentInstancesDeterministicAndIsolated) {
     EXPECT_EQ(firstResult.second, source);
     EXPECT_EQ(secondResult.second, source);
 }
+
+#if !defined(_WIN32)
+// A process spawned after a Core transport exists must not inherit the
+// transport's pipe ends. Before the pipes were close-on-exec, the bystander
+// below kept a copy of the host's standard-input write end, so destroying the
+// CoreProcess waited for the bystander to exit instead of seeing end-of-file.
+TEST(MemoryOsSdkTransport, DoesNotLeakPipeEndsIntoLaterSpawnedProcesses) {
+    namespace fs = std::filesystem;
+    constexpr const char* bystander_seconds = "20";
+    const auto directory =
+        fs::temp_directory_path() / ("memoryos-cloexec-" + std::to_string(getpid()));
+    fs::create_directories(directory);
+    const auto host = directory / "host.sh";
+    {
+        std::ofstream script{host};
+        script << "cat > /dev/null\n";
+    }
+
+    pid_t bystander = -1;
+    std::chrono::steady_clock::duration elapsed{};
+    {
+        auto transport = std::make_unique<memoryos::detail::CoreProcess>("/bin/sh", host);
+        bystander = fork();
+        ASSERT_GE(bystander, 0);
+        if (bystander == 0) {
+            execl("/bin/sleep", "sleep", bystander_seconds, static_cast<char*>(nullptr));
+            _exit(127);
+        }
+        const auto start = std::chrono::steady_clock::now();
+        transport.reset();
+        elapsed = std::chrono::steady_clock::now() - start;
+    }
+    static_cast<void>(kill(bystander, SIGKILL));
+    static_cast<void>(waitpid(bystander, nullptr, 0));
+    std::error_code ignored;
+    fs::remove_all(directory, ignored);
+
+    EXPECT_LT(elapsed, std::chrono::seconds{10})
+        << "the Core host kept running because a later-spawned process inherited its stdin pipe";
+}
+#endif
 
 } // namespace

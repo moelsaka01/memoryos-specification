@@ -29,8 +29,7 @@ class ExecutionContext {
 
     ExecutionState state() const noexcept;
 
-    const std::vector<cca::representation::RepresentationId>&
-    trace() const noexcept;
+    const std::vector<cca::representation::RepresentationId>& trace() const noexcept;
 
   private:
     class Impl;
