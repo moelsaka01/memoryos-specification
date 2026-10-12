@@ -238,3 +238,7 @@ MO-1309 is tagged. Everything else on the Windows job passes except `mo1304-phas
   "evidence-bound failures" statement above this line (rounds 1-9) is superseded by round 10: the fd-inheritance bug is fixed
   (owner-approved), the frozen-evidence suites are reference-host-only/not-run as listed, and the only open item is the deferred
   Windows access violation. Those sections are kept unedited as history.
+- **Coverage report step (round 10):** with the tests now passing, `cca_coverage` failed in gcovr 8.3 with
+  `Unknown directory '.../coverage.xml'`: `--xml-pretty` is a flag and took the path as a search directory. The target now uses
+  `--cobertura-pretty --cobertura <file>` (`cmake/CCACoverage.cmake`; tooling only, parsing checked with gcovr 8.3 locally).
+  The `--fail-under-line 90` gate is unchanged.

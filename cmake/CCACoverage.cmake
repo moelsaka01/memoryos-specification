@@ -22,7 +22,8 @@ function(cca_add_coverage_report_target)
       --exclude "${CMAKE_SOURCE_DIR}/out"
       --fail-under-line 90
       --html-details "${coverage_directory}/index.html"
-      --xml-pretty "${coverage_directory}/coverage.xml"
+      --cobertura-pretty
+      --cobertura "${coverage_directory}/coverage.xml"
       "${CMAKE_BINARY_DIR}"
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     COMMENT "Generating CCA HTML and Cobertura coverage reports"
