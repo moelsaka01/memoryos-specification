@@ -245,3 +245,8 @@ MO-1309 is tagged. Everything else on the Windows job passes except `mo1304-phas
 - **Coverage, gcov negative hits:** the next failure was gcovr aborting on `branch 2 taken -1` (GCC bug 68080, multithreaded
   counters). `cmake/CCACoverage.cmake` now passes gcovr's documented `--gcov-ignore-parse-errors negative_hits.warn_once_per_file`
   (warns once per file; affects branch counters only). The `--fail-under-line 90` line gate is unchanged.
+- **Windows regression introduced and reverted in round 10 (head 7a9f70f2):** running `ctest` under `shell: bash` on Windows
+  (added for the `-E` exclusion) made `memoryos.cli.unit`, `memoryos.standard.coverage-gap` and `memoryos.standard.specification`
+  fail there (they pass on Linux locally and passed on Windows before). Working theory: Git Bash puts MSYS tools ahead of the
+  native `git`/`tar` on `PATH` and these tests shell out to git. Windows now uses pwsh (`-E $env:CCA_CTEST_EXCLUDE`) as before;
+  the theory is confirmed only if those three pass in the next Windows run.

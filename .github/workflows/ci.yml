@@ -116,8 +116,14 @@ jobs:
         run: cmake --build --preset ci -- -k 0
 
       - name: Test
-        shell: bash
+        # Windows keeps its default shell (pwsh): running ctest under Git Bash puts MSYS tools ahead of the
+        # native git/tar on PATH, which the git-reading conformance tests are sensitive to.
+        if: runner.os != 'Windows'
         run: ctest --preset ci --timeout 600 -E "${CCA_CTEST_EXCLUDE}"
+
+      - name: Test (Windows)
+        if: runner.os == 'Windows'
+        run: ctest --preset ci --timeout 600 -E $env:CCA_CTEST_EXCLUDE
 
       - name: Diagnose Windows-only crashes (on failure)
         if: failure() && runner.os == 'Windows'
