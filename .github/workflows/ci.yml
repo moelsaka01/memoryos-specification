@@ -111,14 +111,14 @@ jobs:
       - name: Test
         run: ctest --preset ci --timeout 600
 
-      - name: Diagnose the allocation-failure tests (Windows, on failure)
+      - name: Diagnose Windows-only crashes (on failure)
         if: failure() && runner.os == 'Windows'
         shell: pwsh
         run: |
-          $exe = Get-ChildItem out/build/ci -Recurse -Filter cca_process_allocation_tests.exe | Select-Object -First 1
-          & $exe.FullName --gtest_filter='*DefinitionConstruction*' 2>&1 | Select-Object -First 40
-          "exit code: $LASTEXITCODE (3 = abort/terminate, 0xC0000374 = heap corruption, 0xC00000FD = stack overflow)"
-          Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Windows Error Reporting','Application Error'} -MaxEvents 3 -ErrorAction SilentlyContinue | Format-List TimeCreated, Message
+          $exe = Get-ChildItem out/build/ci -Recurse -Filter cca_memory_provider_allocation_tests.exe | Select-Object -First 1
+          & $exe.FullName --gtest_filter='*DescriptorWorkspaceFailureConstruction*' --gtest_catch_exceptions=0 2>&1 | Select-Object -First 30
+          "exit code: $LASTEXITCODE (0xC0000005 = access violation)"
+          Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Application Error'} -MaxEvents 2 -ErrorAction SilentlyContinue | Format-List TimeCreated, Message
 
       - name: Install smoke test
         run: cmake --install out/build/ci --prefix out/stage
