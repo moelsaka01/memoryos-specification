@@ -86,7 +86,8 @@ jobs:
         run: cmake --preset ci
 
       - name: Build
-        run: cmake --build --preset ci
+        # -k 0 reports every compile error in one run instead of stopping at the first.
+        run: cmake --build --preset ci -- -k 0
 
       - name: Test
         run: ctest --preset ci --timeout 600

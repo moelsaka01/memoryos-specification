@@ -58,6 +58,11 @@ target_compile_definitions(
     "MEMORYOS_SDK_DEFAULT_CORE_HOST=\"${MEMORYOS_CORE_HOST_DEFINE}\""
     "MEMORYOS_SDK_INSTALL_CORE_HOST=\"${MEMORYOS_INSTALL_CORE_HOST_DEFINE}\""
 )
+if(MSVC)
+  # environmentPath() performs a read-only std::getenv lookup of documented MEMORYOS_* variables; MSVC
+  # deprecates getenv (C4996), which -WX turns into an error. Scoped to this target only.
+  target_compile_definitions(memoryos_sdk PRIVATE _CRT_SECURE_NO_WARNINGS)
+endif()
 
 if(COMMAND cca_configure_target)
   cca_configure_target(memoryos_sdk)
