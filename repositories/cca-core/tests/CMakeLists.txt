@@ -248,6 +248,19 @@ if(COMMAND cca_add_google_test)
 else()
   find_package(GTest CONFIG REQUIRED)
 
+  if(MSVC)
+    # MemoryProviderAllocationFailureTest.DescriptorWorkspaceFailureConstructionPreservesCompleteState dies with an
+    # access violation (0xC0000005) on windows-2022 when this translation unit AND memory_provider.cpp are both
+    # optimized (/O2). With /Od on either one alone, with /Od everywhere, and under MSVC AddressSanitizer it passes
+    # (CI bisect, docs/maint-pre-1.3-release.md): a cross-translation-unit inlining interaction that has not been
+    # attributed. This file alone is built /Od; the sweep still injects a failure at every allocation.
+    # /wd9025 silences the driver's "overriding /O2 with /Od" notice so /WX is unaffected.
+    set_source_files_properties(
+      memory_provider_allocation_failure_test.cpp
+      PROPERTIES COMPILE_OPTIONS "/Od;/wd9025"
+    )
+  endif()
+
   # Access-control contract of Observability, checked by the compiler itself on every platform: the metric
   # mutator must be inaccessible from outside (the read accessor, as a control, must compile).
   # Compiled as a static library so nothing is linked.
