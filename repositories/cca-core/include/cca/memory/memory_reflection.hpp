@@ -118,16 +118,23 @@ class ReflectionResult {
 
 class MemoryReflectionEngine {
   public:
-    ReflectionResult reflect(ReflectionSession& session,
-                             const ReflectionQuery& query,
-                             const RetrievalSession& retrievalSession) const;
-    ReflectionResult derive(ReflectionSession& session,
-                            const SemanticMemory& semanticMemory,
-                            const EpisodicMemory& episodicMemory,
-                            const ProceduralMemory& proceduralMemory) const;
-    ReflectionResult explain(const ReflectionSession& session,
-                             KnowledgeCandidate::Kind kind,
-                             std::string_view identifier) const;
+    // clang-format off
+    // These three declarations keep the line break after '(' that the whitespace-normalized
+    // API-012-HPP signature check (tests/memory_reflection_architecture_test.cmake) matches verbatim.
+    ReflectionResult reflect(
+        ReflectionSession& session,
+        const ReflectionQuery& query,
+        const RetrievalSession& retrievalSession) const;
+    ReflectionResult derive(
+        ReflectionSession& session,
+        const SemanticMemory& semanticMemory,
+        const EpisodicMemory& episodicMemory,
+        const ProceduralMemory& proceduralMemory) const;
+    ReflectionResult explain(
+        const ReflectionSession& session,
+        KnowledgeCandidate::Kind kind,
+        std::string_view identifier) const;
+    // clang-format on
     ReflectionResult validate(const ReflectionSession& session) const;
     ReflectionResult retrieveSession(const ReflectionSession& session) const;
     ReflectionResult forgetSession(ReflectionSession& session) const;
