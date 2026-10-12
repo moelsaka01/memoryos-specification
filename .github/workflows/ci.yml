@@ -120,6 +120,19 @@ jobs:
           "exit code: $LASTEXITCODE (0xC0000005 = access violation)"
           Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Application Error'} -MaxEvents 2 -ErrorAction SilentlyContinue | Format-List TimeCreated, Message
 
+      - name: Locate the Windows crash with MSVC AddressSanitizer (on failure)
+        if: failure() && runner.os == 'Windows'
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          cmake -S . -B out/build/ci-asan -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_STANDARD=23 `
+            -DCMAKE_TOOLCHAIN_FILE="$env:GITHUB_WORKSPACE/.cache/vcpkg/scripts/buildsystems/vcpkg.cmake" `
+            -DVCPKG_MANIFEST_MODE=ON "-DVCPKG_MANIFEST_DIR=$env:GITHUB_WORKSPACE" `
+            -DCCA_BUILD_TESTS=ON -DBUILD_TESTING=ON -DCCA_ENABLE_ADDRESS_SANITIZER=ON -DCCA_WARNINGS_AS_ERRORS=OFF
+          cmake --build out/build/ci-asan --target cca_memory_provider_allocation_tests
+          $exe = Get-ChildItem out/build/ci-asan -Recurse -Filter cca_memory_provider_allocation_tests.exe | Select-Object -First 1
+          & $exe.FullName --gtest_filter='*DescriptorWorkspaceFailureConstruction*' --gtest_catch_exceptions=0 2>&1 | Select-Object -First 60
+
       - name: Install smoke test
         run: cmake --install out/build/ci --prefix out/stage
 
