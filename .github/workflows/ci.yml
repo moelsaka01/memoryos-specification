@@ -120,21 +120,29 @@ jobs:
           "exit code: $LASTEXITCODE (0xC0000005 = access violation)"
           Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Application Error'} -MaxEvents 2 -ErrorAction SilentlyContinue | Format-List TimeCreated, Message
 
-      - name: Is the Windows crash optimizer-dependent? (on failure)
+      - name: Which side of the Windows crash is optimizer-dependent? (on failure)
         if: failure() && runner.os == 'Windows'
         shell: pwsh
         continue-on-error: true
         run: |
-          # MSVC AddressSanitizer runs this test cleanly (no report), so test the optimizer: same build, /Od.
-          cmake -S . -B out/build/ci-od -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_STANDARD=23 `
-            "-DCMAKE_CXX_FLAGS_RELWITHDEBINFO=/MD /Zi /Od /Ob0 /DNDEBUG" `
-            -DCMAKE_TOOLCHAIN_FILE="$env:GITHUB_WORKSPACE/.cache/vcpkg/scripts/buildsystems/vcpkg.cmake" `
-            -DVCPKG_MANIFEST_MODE=ON "-DVCPKG_MANIFEST_DIR=$env:GITHUB_WORKSPACE" `
-            -DCCA_BUILD_TESTS=ON -DBUILD_TESTING=ON -DCCA_WARNINGS_AS_ERRORS=OFF
-          cmake --build out/build/ci-od --target cca_memory_provider_allocation_tests
-          $exe = Get-ChildItem out/build/ci-od -Recurse -Filter cca_memory_provider_allocation_tests.exe | Select-Object -First 1
-          & $exe.FullName --gtest_filter='*DescriptorWorkspaceFailureConstruction*' 2>&1 | Select-Object -First 20
-          "exit code with /Od: $LASTEXITCODE"
+          # Everything /Od passes (earlier run) and MSVC AddressSanitizer is clean. Keep the default /O2 and force
+          # /Od on exactly one translation unit: the product file under test, then the test file.
+          foreach ($variant in @(
+              @{ name = 'product'; cmake = 'repositories/cca-core/CMakeLists.txt'; file = '${CMAKE_CURRENT_SOURCE_DIR}/src/memory/memory_provider.cpp' },
+              @{ name = 'test';    cmake = 'repositories/cca-core/tests/CMakeLists.txt'; file = '${CMAKE_CURRENT_SOURCE_DIR}/memory_provider_allocation_failure_test.cpp' })) {
+            git checkout -- repositories/cca-core
+            Add-Content -Path $variant.cmake -Value ('set_source_files_properties("' + $variant.file + '" PROPERTIES COMPILE_OPTIONS "/Od")')
+            $dir = "out/build/ci-$($variant.name)-od"
+            cmake -S . -B $dir -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_CXX_STANDARD=23 `
+              -DCMAKE_TOOLCHAIN_FILE="$env:GITHUB_WORKSPACE/.cache/vcpkg/scripts/buildsystems/vcpkg.cmake" `
+              -DVCPKG_MANIFEST_MODE=ON "-DVCPKG_MANIFEST_DIR=$env:GITHUB_WORKSPACE" `
+              -DCCA_BUILD_TESTS=ON -DBUILD_TESTING=ON -DCCA_WARNINGS_AS_ERRORS=OFF
+            cmake --build $dir --target cca_memory_provider_allocation_tests
+            $exe = Get-ChildItem $dir -Recurse -Filter cca_memory_provider_allocation_tests.exe | Select-Object -First 1
+            & $exe.FullName --gtest_filter='*DescriptorWorkspaceFailureConstruction*' 2>&1 | Select-Object -First 8
+            "RESULT $($variant.name) file /Od, rest /O2: exit code $LASTEXITCODE (0 = passes, -1073741819 = access violation)"
+          }
+          git checkout -- repositories/cca-core
 
       - name: Install smoke test
         run: cmake --install out/build/ci --prefix out/stage

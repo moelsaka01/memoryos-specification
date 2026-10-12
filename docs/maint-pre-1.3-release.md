@@ -144,3 +144,12 @@ It has not been attributed to product code or to the harness; it needs a debugge
 ### CI infrastructure blips (not caused by this PR)
 - clang-tidy, run 38246010004: `curl: (22) ... 504` downloading `vcpkg-glibc` in `Bootstrap dependencies` (comment posted on PR #4).
 - Windows, run 38250034240: `Downloading vcpkg.exe ... Download failed, server returned an error` from GitHub releases in `Bootstrap dependencies (Windows)`, before any build, so the `/Od` optimizer experiment did not run. The run was superseded by the next push (a re-run is refused while any job of the run is still in progress).
+
+
+### Windows access violation: not fixed by a test-side pragma (round 7)
+Head 1a359541: with everything `/Od` the test passes (exit 0); under MSVC AddressSanitizer it passes with no report; at
+default `/O2` it dies with `0xC0000005`. A `#pragma optimize("", off)` in the *test* translation unit (7d69f37e) did **not**
+change the result, so it was reverted: the product library `cca_memory.lib` stays `/O2` in that experiment, which means the
+optimizer-sensitive code may be **product code** (latent UB or an MSVC defect in `memory_provider.cpp` or what it inlines).
+This is a possible product finding and is not being papered over. The CI diagnostic now keeps `/O2` and forces `/Od` on one
+translation unit at a time (product file, then test file) to say which side owns it.
