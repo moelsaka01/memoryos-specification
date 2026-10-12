@@ -1,4 +1,3 @@
-import './prepare.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import { Worker } from 'node:worker_threads';import { once } from 'node:events';
 import { AjvJsonSchemaValidator } from '@modelcontextprotocol/server/validators/ajv';

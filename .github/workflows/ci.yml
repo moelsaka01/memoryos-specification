@@ -52,6 +52,9 @@ jobs:
         run: |
           npm ci --ignore-scripts --prefix repositories/memoryos-mcp
           npm ci --ignore-scripts --prefix repositories/memoryos-vscode
+          # Removes exactly the 198 hash-verified Zod dev-test files that npm ci installs but the pinned production
+          # closure excludes (tracked bytes are unchanged); the evidence-bound conformance suites inspect this tree in place.
+          node repositories/memoryos-mcp/scripts/assemble-dependencies.mjs
 
       - name: Check out the sibling Standard publication
         shell: bash
@@ -170,6 +173,9 @@ jobs:
         run: |
           npm ci --ignore-scripts --prefix repositories/memoryos-mcp
           npm ci --ignore-scripts --prefix repositories/memoryos-vscode
+          # Removes exactly the 198 hash-verified Zod dev-test files that npm ci installs but the pinned production
+          # closure excludes (tracked bytes are unchanged); the evidence-bound conformance suites inspect this tree in place.
+          node repositories/memoryos-mcp/scripts/assemble-dependencies.mjs
 
       - name: Check out the sibling Standard publication
         shell: bash
@@ -215,6 +221,9 @@ jobs:
         run: |
           npm ci --ignore-scripts --prefix repositories/memoryos-mcp
           npm ci --ignore-scripts --prefix repositories/memoryos-vscode
+          # Removes exactly the 198 hash-verified Zod dev-test files that npm ci installs but the pinned production
+          # closure excludes (tracked bytes are unchanged); the evidence-bound conformance suites inspect this tree in place.
+          node repositories/memoryos-mcp/scripts/assemble-dependencies.mjs
 
       - name: Check out the sibling Standard publication
         shell: bash
