@@ -110,3 +110,32 @@ macOS completes without a hang now (no SDK failure there); its failures were the
 1. `core_process.cpp` pipe inheritance bug (Linux SDK hang) - needs the owner's decision; no production file has been changed.
 2. Windows allocation-failure tests - waiting for the diagnostic.
 3. Evidence-bound suites that cannot pass off the author's machine: `mo1304-phase2` (archive gzip bytes), `mo1304-phase3-windows` and `cca.workspace.verify` (validator uses POSIX path semantics; hash-pinned), `mo1305-phase3` (generation-time preconditions).
+
+
+## CI rounds 4-5 on PR #4 (heads 795db6f0 .. ded237b8)
+
+| Job | State | Notes |
+|-----|-------|-------|
+| clang-format | green | |
+| AddressSanitizer + UBSan | 688/691, **0 sanitizer reports** | only the 3 evidence-bound suites fail; the SDK hang did not recur in this job |
+| Ubuntu, macOS | 688/691 | evidence-bound suites + the SDK concurrent-instance hang (`MemoryOsSdk.KeepsConcurrentInstancesDeterministicAndIsolated` and `memoryos.standard.sdk.cpp.reference` time out): same POSIX `core_process.cpp` bug, **needs the owner's decision** |
+| Windows | 689/692, deterministic | Debug -> RelWithDebInfo (MSVC checked iterators made every allocation-failure sweep `std::terminate`) fixed 111 of 112; `cli.unit`, MCP installed-tree, vscode package validation, `mo1304-phase3-windows` and `workspace.verify` pass after the canonical-temp and `npm.cmd` fixes |
+| clang-tidy | transient | one run died on `curl 504` downloading vcpkg-glibc during bootstrap (comment posted on PR #4); passed on earlier heads |
+
+### The one remaining Windows C++ failure
+`MemoryProviderAllocationFailureTest.DescriptorWorkspaceFailureConstructionPreservesCompleteState`: SEH `0xC0000005`
+in the test body on windows-2022 RelWithDebInfo (deterministic). Findings: it **passes under MSVC AddressSanitizer** with
+no report (so no heap overflow/UAF), the product path (`registerProvider`, workspace-mismatch branch) is plain, the
+sibling failure-construction tests pass. That is consistent with undefined behaviour that instrumentation masks or an
+optimizer-dependent miscompile; the CI step on failure now builds the target with `/Od` to check optimizer dependence.
+It has not been attributed to product code or to the harness; it needs a debugger session on Windows.
+
+### Evidence-bound failures (cannot be fixed without editing frozen evidence or hash-pinned harness files)
+- `mo1304-phase2`: compares the built `.tgz` identity with the recorded one (gzip bytes are not reproducible across zlib builds).
+- `mo1305-phase3`: generation-time preconditions (HEAD is the BF commit, branch main, tag absent, Codex-machine source commits).
+- `mo1304-phase3-windows`, `cca.workspace.verify`: POSIX-only failures; the validator uses POSIX `pathlib` semantics on Windows-recorded paths and verifies its own hash against the frozen harness manifest, so it cannot be patched. They pass on Windows.
+
+### Exact next steps
+1. Owner decision on `repositories/cca-sdk/src/core_process.cpp` (pipes created without `O_CLOEXEC`; fix: `pipe2(..., O_CLOEXEC)` on Linux, `FD_CLOEXEC` under a spawn mutex elsewhere). Until then Linux/macOS Build-and-test, Coverage cannot be green.
+2. Read the `/Od` experiment on the next Windows run; if the crash disappears, it is optimizer-dependent: investigate that test body (and the harness) with a Windows debugger.
+3. Re-run clang-tidy once if it fails on the vcpkg download again.
