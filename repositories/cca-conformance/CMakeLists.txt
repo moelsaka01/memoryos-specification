@@ -401,6 +401,7 @@ if(BUILD_TESTING AND CCA_BUILD_TESTS AND MEMORYOS_ENABLE_CONFORMANCE_SUITE)
   foreach(reference_host_test IN ITEMS
     memoryos.standard.mo1304-phase2
     memoryos.standard.mo1304-phase3-windows
+    memoryos.standard.mo1305-phase3
   )
     if(TEST ${reference_host_test})
       set_property(TEST ${reference_host_test} APPEND PROPERTY LABELS "reference-host-only")

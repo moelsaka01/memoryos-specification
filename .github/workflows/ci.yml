@@ -27,8 +27,8 @@ jobs:
         os: [ubuntu-24.04, macos-14, windows-2022]
     env:
       # Reference-host-only evidence (see docs/maint-pre-1.3-release.md): excluded BY EXACT NAME, never by pattern.
-      # mo1304-phase3-windows still runs, and passes, on the Windows runner.
-      CCA_CTEST_EXCLUDE: ${{ matrix.os == 'windows-2022' && '^memoryos\.standard\.mo1304-phase2$' || '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1304-phase3-windows)$' }}
+      # mo1304-phase3-windows still runs, and passes, on the Windows runner; mo1305-phase3 is registered on Windows only.
+      CCA_CTEST_EXCLUDE: ${{ matrix.os == 'windows-2022' && '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1305-phase3)$' || '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1304-phase3-windows|memoryos\.standard\.mo1305-phase3)$' }}
       # Only the MO-1304 Windows-toolchain parity sub-check of cca.workspace.verify is reported NOT_RUN_ON_HOSTED_RUNNER
       # on POSIX runners; every other check stays enforced.
       CCA_WORKSPACE_VERIFY_NOT_RUN_MO1304_PARITY: ${{ matrix.os == 'windows-2022' && '0' || '1' }}
@@ -185,7 +185,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     env:
-      CCA_CTEST_EXCLUDE: '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1304-phase3-windows)$'
+      CCA_CTEST_EXCLUDE: '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1304-phase3-windows|memoryos\.standard\.mo1305-phase3)$'
       CCA_WORKSPACE_VERIFY_NOT_RUN_MO1304_PARITY: '1'
     steps:
       - name: Check out source
@@ -236,7 +236,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     env:
-      CCA_CTEST_EXCLUDE: '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1304-phase3-windows)$'
+      CCA_CTEST_EXCLUDE: '^(memoryos\.standard\.mo1304-phase2|memoryos\.standard\.mo1304-phase3-windows|memoryos\.standard\.mo1305-phase3)$'
       CCA_WORKSPACE_VERIFY_NOT_RUN_MO1304_PARITY: '1'
     steps:
       - name: Check out source

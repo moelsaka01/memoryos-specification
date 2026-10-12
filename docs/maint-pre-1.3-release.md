@@ -223,3 +223,18 @@ Open. `MemoryProviderAllocationFailureTest.DescriptorWorkspaceFailureConstructio
 `0xC0000005` in the `ci` RelWithDebInfo build on windows-2022; no crash location available from the hosted log (no
 debugger/dump). Passes under MSVC ASan and in a standalone `/Od` bisect build. To be debugged on the reference host after
 MO-1309 is tagged. Everything else on the Windows job passes except `mo1304-phase2` (now excluded) and `mo1305-phase3`.
+
+### Round 10 addenda (owner decisions, second message)
+- **`memoryos.standard.mo1305-phase3` is now also reference-host-only** (label `reference-host-only`; excluded by anchored exact name
+  on every hosted runner where it is registered, which is Windows only: CMake skips it on POSIX). It fails on hosted Windows
+  because it pins the reference host's frozen evidence/setup. Test body, inputs and pins are unchanged and it runs unchanged on
+  the reference host. Hosted exclusions are now: Linux/macOS/ASan/Coverage = `mo1304-phase2`, `mo1304-phase3-windows`;
+  Windows = `mo1304-phase2`, `mo1305-phase3` (`mo1304-phase3-windows` still runs and passes there).
+- **FOR THE v1.3.0 RELEASE NOTES - accepted disclosure:** on non-Linux POSIX (macOS) the Core transport pipes are made
+  close-on-exec with `pipe()` followed immediately by `fcntl(FD_CLOEXEC)`. A microsecond window between the two calls remains
+  in which a process forked by another thread could still inherit a pipe end. Owner decision: accepted, no process-wide spawn
+  lock. Linux uses `pipe2(O_CLOEXEC)` and has no window.
+- **Superseded notes:** every earlier "unresolved", "STOP: real product bug", "Known remaining", "Still failing" and
+  "evidence-bound failures" statement above this line (rounds 1-9) is superseded by round 10: the fd-inheritance bug is fixed
+  (owner-approved), the frozen-evidence suites are reference-host-only/not-run as listed, and the only open item is the deferred
+  Windows access violation. Those sections are kept unedited as history.
