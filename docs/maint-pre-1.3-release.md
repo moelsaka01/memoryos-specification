@@ -153,11 +153,3 @@ change the result, so it was reverted: the product library `cca_memory.lib` stay
 optimizer-sensitive code may be **product code** (latent UB or an MSVC defect in `memory_provider.cpp` or what it inlines).
 This is a possible product finding and is not being papered over. The CI diagnostic now keeps `/O2` and forces `/Od` on one
 translation unit at a time (product file, then test file) to say which side owns it.
-
-
-### Windows access violation: bisect result (round 8, head 1e5b47b5)
-Forcing `/Od` on **only** `memory_provider.cpp` passes; forcing `/Od` on **only** the test file passes; all-`/Od` and MSVC
-AddressSanitizer pass; all-`/O2` crashes. The failure therefore needs both translation units optimized: a cross-TU inlining
-interaction (ODR-type mismatch or an MSVC inlining defect), not a fault in either file alone. Mitigation (test build config
-only): that test file is compiled `/Od` on MSVC (`tests/CMakeLists.txt`), i.e. exactly the configuration verified to pass.
-The root cause remains unattributed and should be examined with a Windows debugger (RelWithDebInfo, test and library both /O2).
