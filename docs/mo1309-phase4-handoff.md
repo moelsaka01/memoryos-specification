@@ -8,7 +8,7 @@ Resume with: "Read docs/mo1309-phase4-handoff.md and continue the Phase 4 run to
 
 ## State
 
-Phase 4 on the Windows host from B2 `9991a105`. W1 done (within budget). 4A gen-2 ACCEPTED (gen-1 preserved, HARNESS_DEFECT); 4B gen-1 ACCEPTED; 4C gen-1 ACCEPTED (all certifying, all cases PASS). Streams merged on `mo1309/phase4d`. Next: W5 retained regression. Extra generations used: 4A 1/2, 4B 0/2, 4C 0/2.
+Phase 4 on the Windows host from B2 `9991a105`. W1, W2 (4A gen-2), W3 (4B), W4 (4C) done and ACCEPTED; W5 retained regression run 1 of every suite PASSED (5 rows). Next: Windows-fit the differential gate tooling (tooling is frozen once the candidate is fixed: validator D1 allows only evidence and docs after it), rehearse assemble/validate on Windows, then W6 and W7.
 
 ## Last bound commit
 
@@ -16,7 +16,7 @@ B2 `9991a105ab6670baac0bcfe489aca433157382be` (`main` on origin). Phase 4 work: 
 
 ## Next action
 
-W5 retained regression (`run-tests.mjs`, every suite once, PowerShell, `mo1309/phase4d`), then W6 (differential gate), W7 (4D).
+Finish tooling: gate for Node 24/Windows, rehearse assemble+validate; then W6 (Node differential + CTest differential), W7 (4D).
 
 ## Decisions needed
 
@@ -40,3 +40,4 @@ None.
 - 2026-10-12 — W4 4C generation 1 (`mo1309/phase4c-trust`, HEAD `f8bcf30f`, clean tree, 34.8 GB free, CPU samples 20–30 %): **ACCEPTED** (S1–S6 PASS). Receipt `evidence/mo1309/4c/gen-1/4c-receipt.json`, branch commit `b8f618e4`.
 - 2026-10-12 — `mo1309/phase4d` created from the 4A head and the 4B and 4C branches merged (normal merges, no conflict, disjoint evidence paths).
 - 2026-10-12 — Harness fix before W5 (section 14.1; logged). `run-tests.mjs` could not run the `studio-existing` suite on Windows: Node cannot spawn `npm` (ENOENT) or `npm.cmd` (EINVAL). `executableOf` runs a declared `npm ...` command as `node <npm-cli.js beside node> ...` (no shell); the row still records the declared command. Test with negative controls (a missing npm-cli.js throws instead of falling back; other commands and platforms untouched). An unrecorded probe of the same command (`npm test --silent` in cca-studio) gave 358/358. Note: the MO-1309 manifest has no MO-1307 suite (the "MO-1307 strict" rule of the MO-1308 protocol has nothing to bind here; the MO-1307 tests are in the Node differential subset of W6).
+- 2026-10-12 — W5 retained regression (`mo1309/phase4d` at `4a25a9db`, PowerShell, clean tree, 35.1 GB free, CPU samples 30–44 %): each suite once, all exit 0: dashboard-unit 75/75, dashboard-browser 13/13, dashboard-differential-10k 1/1, mo1309-tools 31/31, studio-existing 358/358. Rows and logs in `evidence/mo1309/regression/` (logs are LF-only, so `eol=lf` checkout preserves their digests). No rerun yet; a rerun of `mo1309-tools` (run 2, own row) will follow if tools or their tests change before the candidate is fixed.
