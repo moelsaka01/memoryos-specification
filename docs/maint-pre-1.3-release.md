@@ -250,3 +250,19 @@ MO-1309 is tagged. Everything else on the Windows job passes except `mo1304-phas
   fail there (they pass on Linux locally and passed on Windows before). Working theory: Git Bash puts MSYS tools ahead of the
   native `git`/`tar` on `PATH` and these tests shell out to git. Windows now uses pwsh (`-E $env:CCA_CTEST_EXCLUDE`) as before;
   the theory is confirmed only if those three pass in the next Windows run.
+
+## KNOWN ISSUE for v1.3.0 - deferred to post-1.3.0 (owner decision)
+**Windows: `MemoryProviderAllocationFailureTest.DescriptorWorkspaceFailureConstructionPreservesCompleteState` dies with
+`0xC0000005` (exit code -1073741819, access violation).**
+- Observed at head `58a7a807` (and earlier heads) on windows-2022, `ci` preset, RelWithDebInfo, MSVC 14.44: 689/690 tests pass;
+  this is the only failing test. Deterministic. Run with `--gtest_catch_exceptions=0` it still dies at the start of the test body,
+  with no crash location in the hosted log (no debugger or dump available).
+- Passes under MSVC AddressSanitizer and in a standalone `/Od` bisect build; `/Od` mitigations did not carry over to the real
+  `ci` build, so it is not controlled by a single optimizer switch. Likely latent undefined behaviour that depends on build layout,
+  in either the test or the code it exercises (`memory_provider`); not ruled out as a product defect.
+- Status: **not fixed, not excluded**. No production change, and the test still runs and fails in hosted Windows CI by design.
+  To be debugged on a Windows machine with a debugger (WinDbg / Visual Studio "break on access violation") after the 1.3.0 release.
+
+## Coverage gate
+Recorded here if the `--fail-under-line 90` gate is not met: measured line coverage and the lowest-covered files (see the final
+report). The threshold is not lowered and no file is excluded. Status: pending the Coverage run on the latest head.
