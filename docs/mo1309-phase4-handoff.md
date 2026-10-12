@@ -8,7 +8,7 @@ Resume with: "Read docs/mo1309-phase4-handoff.md and continue the Phase 4 run to
 
 ## State
 
-Phase 4 on the Windows host from B2 `9991a105`. W1, W2 (4A gen-2), W3 (4B), W4 (4C) done and ACCEPTED; W5 retained regression run 1 of every suite PASSED (5 rows). Next: Windows-fit the differential gate tooling (tooling is frozen once the candidate is fixed: validator D1 allows only evidence and docs after it), rehearse assemble/validate on Windows, then W6 and W7.
+Phase 4 on the Windows host from B2 `9991a105`. W1–W5 done (4A gen-2, 4B, 4C accepted; regression run 1 of every suite passed). W6 in progress: Node differential gate generation 1 FAILED_PRESERVED (HARNESS_DEFECT, test), generation 2 running on candidate `74be815b`; CTest differential not started. Candidate (tooling-frozen) is `74be815b` unless a further tooling defect forces a move.
 
 ## Last bound commit
 
@@ -16,7 +16,7 @@ B2 `9991a105ab6670baac0bcfe489aca433157382be` (`main` on origin). Phase 4 work: 
 
 ## Next action
 
-Finish tooling: gate for Node 24/Windows, rehearse assemble+validate; then W6 (Node differential + CTest differential), W7 (4D).
+Node gate gen-2 result; then CTest differential (trees C:g7b BF, C:g7c candidate, SAC union, frozen exclusions, baseline once, candidate once); classify the shared failures; rerun `mo1309-tools` as regression run 2 at the candidate; then W7.
 
 ## Decisions needed
 
@@ -41,3 +41,5 @@ None.
 - 2026-10-12 — `mo1309/phase4d` created from the 4A head and the 4B and 4C branches merged (normal merges, no conflict, disjoint evidence paths).
 - 2026-10-12 — Harness fix before W5 (section 14.1; logged). `run-tests.mjs` could not run the `studio-existing` suite on Windows: Node cannot spawn `npm` (ENOENT) or `npm.cmd` (EINVAL). `executableOf` runs a declared `npm ...` command as `node <npm-cli.js beside node> ...` (no shell); the row still records the declared command. Test with negative controls (a missing npm-cli.js throws instead of falling back; other commands and platforms untouched). An unrecorded probe of the same command (`npm test --silent` in cca-studio) gave 358/358. Note: the MO-1309 manifest has no MO-1307 suite (the "MO-1307 strict" rule of the MO-1308 protocol has nothing to bind here; the MO-1307 tests are in the Node differential subset of W6).
 - 2026-10-12 — W5 retained regression (`mo1309/phase4d` at `4a25a9db`, PowerShell, clean tree, 35.1 GB free, CPU samples 30–44 %): each suite once, all exit 0: dashboard-unit 75/75, dashboard-browser 13/13, dashboard-differential-10k 1/1, mo1309-tools 31/31, studio-existing 358/358. Rows and logs in `evidence/mo1309/regression/` (logs are LF-only, so `eol=lf` checkout preserves their digests). No rerun yet; a rerun of `mo1309-tools` (run 2, own row) will follow if tools or their tests change before the candidate is fixed.
+- 2026-10-12 — Gate tooling made fit for Windows and Node 24 (HARNESS fixes, section 14.1, with controls; commit `1026dce7`): `differential-gate.mjs` asks for `--test-reporter=tap` (it parses TAP), runs the workspace verifier with `python` on Windows (an unrunnable interpreter is exit -1, never a pass), accepts prepared trees (`--base-tree/--candidate-tree`, never removed, refused if not at the resolved commits) and `--scratch`. Rehearsal of `assemble-final` + `validate` on Windows over the real evidence with a placeholder disclosure in a throwaway detached worktree (`C:\p4r`, local commit never pushed): `I3_VALID_PENDING_BF`, D1–D7 ok.
+- 2026-10-12 — W6a Node differential gate generation 1 (`mo1309/phase4d`; BF vs `1026dce7`; trees `C:\n7b`/`C:\n7c`; PowerShell; 32 GB free): `FAILED_PRESERVED`, HARNESS_DEFECT: `mo1309_campaigns_test.mjs` (a new MO-1309 unit) ran a real certifying 4B campaign on a clean Windows checkout. Fixed in `74be815b` (see `evidence/mo1309/differential-node-g1/disposition.md`). Gate extra generations used: 1 of 2. Gen 1 took about 85 minutes (99 + 104 units); no regression, no new failure among shared failures.
