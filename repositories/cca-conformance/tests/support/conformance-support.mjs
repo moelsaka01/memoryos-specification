@@ -1720,7 +1720,14 @@ function canonicalArtifactBytes(value, bytes, label) {
   const sourceBytes = Buffer.isBuffer(bytes) ? bytes : Buffer.from(bytes, "utf8");
   new TextDecoder("utf-8", { fatal: true }).decode(sourceBytes);
   const canonicalBytes = Buffer.from(`${canonicalJson(value)}\n`, "utf8");
-  assert.deepEqual(sourceBytes, canonicalBytes, `${label} must use exact canonical UTF-8 JSON bytes`);
+  // Byte-for-byte equality. assert.deepEqual on two large Buffers computes a quadratic diff to build its
+  // failure message (gigabytes of memory for a few MB of evidence), so a mismatch fails with a bounded message.
+  if (!sourceBytes.equals(canonicalBytes)) {
+    assert.fail(
+      `${label} must use exact canonical UTF-8 JSON bytes `
+      + `(stored ${sourceBytes.length} bytes ${sha256(sourceBytes)}; canonical ${canonicalBytes.length} bytes ${sha256(canonicalBytes)})`,
+    );
+  }
   return sourceBytes;
 }
 
