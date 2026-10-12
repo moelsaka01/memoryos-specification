@@ -39,8 +39,7 @@ RepresentationId make_identifier(const std::uint64_t ordinal) {
         throw std::overflow_error{"Unable to format representation identifier"};
     }
 
-    const auto digit_count =
-        static_cast<std::size_t>(conversion.ptr - digits.data());
+    const auto digit_count = static_cast<std::size_t>(conversion.ptr - digits.data());
     std::string value{identifier_prefix};
     value.append(identifier_digits - digit_count, '0');
     value.append(digits.data(), digit_count);
@@ -49,8 +48,7 @@ RepresentationId make_identifier(const std::uint64_t ordinal) {
 
 std::string checked_string(const char* const value) {
     if (value == nullptr) {
-        throw std::invalid_argument{
-            "Representation string value cannot be constructed from null"};
+        throw std::invalid_argument{"Representation string value cannot be constructed from null"};
     }
     return std::string{value};
 }
@@ -66,15 +64,11 @@ void add_diagnostic(std::vector<Diagnostic>& diagnostics,
 }
 
 template <typename Object>
-std::unique_ptr<Object>
-take_owned_object(std::vector<std::unique_ptr<Object>>& objects,
-                  const Object* const expected) noexcept {
-    const auto found =
-        std::find_if(objects.begin(),
-                     objects.end(),
-                     [expected](const auto& object) {
-                         return object.get() == expected;
-                     });
+std::unique_ptr<Object> take_owned_object(std::vector<std::unique_ptr<Object>>& objects,
+                                          const Object* const expected) noexcept {
+    const auto found = std::find_if(objects.begin(), objects.end(), [expected](const auto& object) {
+        return object.get() == expected;
+    });
     if (found == objects.end()) {
         return {};
     }
@@ -83,8 +77,7 @@ take_owned_object(std::vector<std::unique_ptr<Object>>& objects,
 
 } // namespace
 
-RepresentationId::RepresentationId(std::string value)
-    : value_(std::move(value)) {}
+RepresentationId::RepresentationId(std::string value) : value_(std::move(value)) {}
 
 std::string_view RepresentationId::value() const noexcept {
     return value_;
@@ -103,15 +96,17 @@ bool RepresentationId::operator!=(const RepresentationId& other) const noexcept 
 }
 
 bool RepresentationId::operator<(const RepresentationId& other) const noexcept {
-    return std::lexicographical_compare(
-        value_.begin(), value_.end(), other.value_.begin(), other.value_.end(),
-        [](const char lhs, const char rhs) noexcept {
-            return static_cast<unsigned char>(lhs) < static_cast<unsigned char>(rhs);
-        });
+    return std::lexicographical_compare(value_.begin(),
+                                        value_.end(),
+                                        other.value_.begin(),
+                                        other.value_.end(),
+                                        [](const char lhs, const char rhs) noexcept {
+                                            return static_cast<unsigned char>(lhs) <
+                                                   static_cast<unsigned char>(rhs);
+                                        });
 }
 
-RepresentationType::RepresentationType(std::string name)
-    : name_(std::move(name)) {}
+RepresentationType::RepresentationType(std::string name) : name_(std::move(name)) {}
 
 std::string_view RepresentationType::name() const noexcept {
     return name_;
@@ -121,36 +116,27 @@ bool RepresentationType::operator==(const RepresentationType& other) const noexc
     return name_ == other.name_;
 }
 
-EnumerationValue::EnumerationValue(std::string value)
-    : value_(std::move(value)) {}
+EnumerationValue::EnumerationValue(std::string value) : value_(std::move(value)) {}
 
 std::string_view EnumerationValue::value() const noexcept {
     return value_;
 }
 
-RepresentationValue::RepresentationValue(const bool value)
-    : value_(value) {}
+RepresentationValue::RepresentationValue(const bool value) : value_(value) {}
 
-RepresentationValue::RepresentationValue(const std::int64_t value)
-    : value_(value) {}
+RepresentationValue::RepresentationValue(const std::int64_t value) : value_(value) {}
 
-RepresentationValue::RepresentationValue(const double value)
-    : value_(value) {}
+RepresentationValue::RepresentationValue(const double value) : value_(value) {}
 
-RepresentationValue::RepresentationValue(std::string value)
-    : value_(std::move(value)) {}
+RepresentationValue::RepresentationValue(std::string value) : value_(std::move(value)) {}
 
-RepresentationValue::RepresentationValue(const char* const value)
-    : value_(checked_string(value)) {}
+RepresentationValue::RepresentationValue(const char* const value) : value_(checked_string(value)) {}
 
-RepresentationValue::RepresentationValue(EnumerationValue value)
-    : value_(std::move(value)) {}
+RepresentationValue::RepresentationValue(EnumerationValue value) : value_(std::move(value)) {}
 
-RepresentationValue::RepresentationValue(RepresentationId value)
-    : value_(std::move(value)) {}
+RepresentationValue::RepresentationValue(RepresentationId value) : value_(std::move(value)) {}
 
-RepresentationValue::RepresentationValue(
-    std::vector<RepresentationValue> value)
+RepresentationValue::RepresentationValue(std::vector<RepresentationValue> value)
     : value_(std::move(value)) {}
 
 ValueKind RepresentationValue::kind() const noexcept {
@@ -170,8 +156,7 @@ double RepresentationValue::asFloatingPoint() const {
 }
 
 std::string_view RepresentationValue::asString() const {
-    if (const auto* const text = std::get_if<std::string>(&value_);
-        text != nullptr) {
+    if (const auto* const text = std::get_if<std::string>(&value_); text != nullptr) {
         return *text;
     }
     return std::get<EnumerationValue>(value_).value();
@@ -181,8 +166,7 @@ const RepresentationId& RepresentationValue::asIdentifier() const {
     return std::get<RepresentationId>(value_);
 }
 
-const std::vector<RepresentationValue>&
-RepresentationValue::asCollection() const {
+const std::vector<RepresentationValue>& RepresentationValue::asCollection() const {
     return std::get<std::vector<RepresentationValue>>(value_);
 }
 
@@ -190,8 +174,8 @@ RepresentationProperty::RepresentationProperty(RepresentationId id,
                                                std::string name,
                                                RepresentationType type,
                                                RepresentationValue value)
-    : id_(std::move(id)), name_(std::move(name)), type_(std::move(type)),
-      value_(std::move(value)) {}
+    : id_(std::move(id)), name_(std::move(name)), type_(std::move(type)), value_(std::move(value)) {
+}
 
 const RepresentationId& RepresentationProperty::id() const noexcept {
     return id_;
@@ -226,33 +210,28 @@ const PropertyCollection& RepresentationEntity::properties() const noexcept {
     return property_view_;
 }
 
-RepresentationProperty&
-RepresentationEntity::addProperty(std::string name,
-                                  RepresentationType type,
-                                  RepresentationValue value) {
-    return owner_->addPropertyTo(
-        *this, std::move(name), std::move(type), std::move(value));
+RepresentationProperty& RepresentationEntity::addProperty(std::string name,
+                                                          RepresentationType type,
+                                                          RepresentationValue value) {
+    return owner_->addPropertyTo(*this, std::move(name), std::move(type), std::move(value));
 }
 
 const RepresentationProperty*
 RepresentationEntity::property(const std::string_view name) const noexcept {
     const auto found =
-        std::find_if(properties_.begin(),
-                     properties_.end(),
-                     [name](const auto& property) {
-                         return property->name() == name;
-                     });
+        std::find_if(properties_.begin(), properties_.end(), [name](const auto& property) {
+            return property->name() == name;
+        });
     return found == properties_.end() ? nullptr : found->get();
 }
 
-RepresentationRelationship::RepresentationRelationship(
-    RepresentationDocument& owner,
-    RepresentationId id,
-    RepresentationEntity& source,
-    RepresentationEntity& target,
-    RepresentationType type)
-    : owner_(&owner), id_(std::move(id)), type_(std::move(type)),
-      source_(&source), target_(&target) {}
+RepresentationRelationship::RepresentationRelationship(RepresentationDocument& owner,
+                                                       RepresentationId id,
+                                                       RepresentationEntity& source,
+                                                       RepresentationEntity& target,
+                                                       RepresentationType type)
+    : owner_(&owner), id_(std::move(id)), type_(std::move(type)), source_(&source),
+      target_(&target) {}
 
 const RepresentationId& RepresentationRelationship::id() const noexcept {
     return id_;
@@ -270,24 +249,21 @@ const RepresentationEntity& RepresentationRelationship::target() const noexcept 
     return *target_;
 }
 
-RepresentationProperty&
-RepresentationRelationship::addProperty(std::string name,
-                                        RepresentationType type,
-                                        RepresentationValue value) {
-    return owner_->addPropertyTo(
-        *this, std::move(name), std::move(type), std::move(value));
+RepresentationProperty& RepresentationRelationship::addProperty(std::string name,
+                                                                RepresentationType type,
+                                                                RepresentationValue value) {
+    return owner_->addPropertyTo(*this, std::move(name), std::move(type), std::move(value));
 }
 
-const PropertyCollection&
-RepresentationRelationship::properties() const noexcept {
+const PropertyCollection& RepresentationRelationship::properties() const noexcept {
     return property_view_;
 }
 
 RepresentationMetadata::RepresentationMetadata(std::string author,
                                                std::string version,
                                                std::string provenance)
-    : author_(std::move(author)), version_(std::move(version)),
-      provenance_(std::move(provenance)) {}
+    : author_(std::move(author)), version_(std::move(version)), provenance_(std::move(provenance)) {
+}
 
 std::string_view RepresentationMetadata::author() const noexcept {
     return author_;
@@ -323,16 +299,13 @@ struct RepresentationDocument::Impl {
         std::vector<EntityBaseline> entities;
         std::vector<RelationshipBaseline> relationships;
         std::vector<std::unique_ptr<RepresentationEntity>> removed_entities;
-        std::vector<std::unique_ptr<RepresentationRelationship>>
-            removed_relationships;
+        std::vector<std::unique_ptr<RepresentationRelationship>> removed_relationships;
         std::vector<std::unique_ptr<RepresentationEntity>> restored_entities;
-        std::vector<std::unique_ptr<RepresentationRelationship>>
-            restored_relationships;
+        std::vector<std::unique_ptr<RepresentationRelationship>> restored_relationships;
     };
 
     explicit Impl(RepresentationMetadata document_metadata)
-        : metadata(std::move(document_metadata)),
-          state(std::make_unique<ModelState>()) {}
+        : metadata(std::move(document_metadata)), state(std::make_unique<ModelState>()) {}
 
     RepresentationMetadata metadata;
     std::unique_ptr<ModelState> state;
@@ -349,8 +322,8 @@ RepresentationDocument::RepresentationDocument(RepresentationMetadata metadata)
 
 RepresentationDocument::~RepresentationDocument() = default;
 
-RepresentationLifecycleState RepresentationInternalAccess::lifecycleState(
-    const RepresentationDocument& document) noexcept {
+RepresentationLifecycleState
+RepresentationInternalAccess::lifecycleState(const RepresentationDocument& document) noexcept {
     switch (document.impl_->state->lifecycle) {
     case Lifecycle::Mutable:
         return RepresentationLifecycleState::Mutable;
@@ -363,16 +336,14 @@ RepresentationLifecycleState RepresentationInternalAccess::lifecycleState(
     return RepresentationLifecycleState::Mutable;
 }
 
-void RepresentationInternalAccess::setIdentifierState(
-    RepresentationDocument& document,
-    const std::uint64_t next_ordinal,
-    const bool exhausted) noexcept {
+void RepresentationInternalAccess::setIdentifierState(RepresentationDocument& document,
+                                                      const std::uint64_t next_ordinal,
+                                                      const bool exhausted) noexcept {
     document.impl_->next_ordinal = next_ordinal;
     document.impl_->identifiers_exhausted = exhausted;
 }
 
-void RepresentationInternalAccess::replaceId(RepresentationEntity& entity,
-                                             RepresentationId id) {
+void RepresentationInternalAccess::replaceId(RepresentationEntity& entity, RepresentationId id) {
     entity.id_ = std::move(id);
 }
 
@@ -381,15 +352,13 @@ void RepresentationInternalAccess::replaceId(RepresentationProperty& property,
     property.id_ = std::move(id);
 }
 
-void RepresentationInternalAccess::replaceId(
-    RepresentationRelationship& relationship,
-    RepresentationId id) {
+void RepresentationInternalAccess::replaceId(RepresentationRelationship& relationship,
+                                             RepresentationId id) {
     relationship.id_ = std::move(id);
 }
 
 void RepresentationInternalAccess::setLifecycleState(
-    RepresentationDocument& document,
-    const RepresentationLifecycleState state) noexcept {
+    RepresentationDocument& document, const RepresentationLifecycleState state) noexcept {
     switch (state) {
     case RepresentationLifecycleState::Mutable:
         document.impl_->state->lifecycle = Lifecycle::Mutable;
@@ -413,16 +382,14 @@ bool RepresentationInternalAccess::identifiersExhausted(
     return document.impl_->identifiers_exhausted;
 }
 
-void RepresentationInternalAccess::renameProperty(
-    RepresentationProperty& property,
-    std::string name) {
+void RepresentationInternalAccess::renameProperty(RepresentationProperty& property,
+                                                  std::string name) {
     property.name_ = std::move(name);
 }
 
-void RepresentationInternalAccess::setEndpoints(
-    RepresentationRelationship& relationship,
-    RepresentationEntity& source,
-    RepresentationEntity& target) noexcept {
+void RepresentationInternalAccess::setEndpoints(RepresentationRelationship& relationship,
+                                                RepresentationEntity& source,
+                                                RepresentationEntity& target) noexcept {
     relationship.source_ = &source;
     relationship.target_ = &target;
 }
@@ -456,8 +423,7 @@ void RepresentationDocument::markMutated() noexcept {
 
 void RepresentationDocument::rebuildViews() noexcept {
     assert(impl_->entity_view.capacity() >= impl_->state->entities.size());
-    assert(impl_->relationship_view.capacity() >=
-           impl_->state->relationships.size());
+    assert(impl_->relationship_view.capacity() >= impl_->state->relationships.size());
 
     impl_->entity_view.clear();
     for (const auto& entity : impl_->state->entities) {
@@ -470,16 +436,13 @@ void RepresentationDocument::rebuildViews() noexcept {
     }
 }
 
-bool RepresentationDocument::owns(
-    const RepresentationEntity& entity) const noexcept {
-    return std::any_of(
-        impl_->state->entities.begin(),
-        impl_->state->entities.end(),
-        [&entity](const auto& candidate) { return candidate.get() == &entity; });
+bool RepresentationDocument::owns(const RepresentationEntity& entity) const noexcept {
+    return std::any_of(impl_->state->entities.begin(),
+                       impl_->state->entities.end(),
+                       [&entity](const auto& candidate) { return candidate.get() == &entity; });
 }
 
-RepresentationEntity&
-RepresentationDocument::createEntity(const RepresentationType& type) {
+RepresentationEntity& RepresentationDocument::createEntity(const RepresentationType& type) {
     ensureMutable();
 
     auto entity = std::unique_ptr<RepresentationEntity>{
@@ -498,18 +461,14 @@ RepresentationDocument::createEntity(const RepresentationType& type) {
 }
 
 RepresentationRelationship& RepresentationDocument::createRelationship(
-    RepresentationEntity& source,
-    RepresentationEntity& target,
-    const RepresentationType& type) {
+    RepresentationEntity& source, RepresentationEntity& target, const RepresentationType& type) {
     ensureMutable();
     if (!owns(source) || !owns(target)) {
-        throw std::invalid_argument{
-            "Relationship endpoints must belong to the receiving document"};
+        throw std::invalid_argument{"Relationship endpoints must belong to the receiving document"};
     }
 
     auto relationship = std::unique_ptr<RepresentationRelationship>{
-        new RepresentationRelationship{
-            *this, identifierCandidate(), source, target, type}};
+        new RepresentationRelationship{*this, identifierCandidate(), source, target, type}};
 
     const auto next_size = impl_->state->relationships.size() + 1U;
     impl_->state->relationships.reserve(next_size);
@@ -523,25 +482,20 @@ RepresentationRelationship& RepresentationDocument::createRelationship(
     return *result;
 }
 
-RepresentationProperty& RepresentationDocument::addPropertyTo(
-    RepresentationEntity& owner,
-    std::string name,
-    RepresentationType type,
-    RepresentationValue value) {
+RepresentationProperty& RepresentationDocument::addPropertyTo(RepresentationEntity& owner,
+                                                              std::string name,
+                                                              RepresentationType type,
+                                                              RepresentationValue value) {
     ensureMutable();
     if (name.empty()) {
         throw std::invalid_argument{"Property name cannot be empty"};
     }
     if (owner.property(name) != nullptr) {
-        throw std::invalid_argument{
-            "Property name must be unique within its owner"};
+        throw std::invalid_argument{"Property name must be unique within its owner"};
     }
 
-    auto property = std::unique_ptr<RepresentationProperty>{
-        new RepresentationProperty{identifierCandidate(),
-                                   std::move(name),
-                                   std::move(type),
-                                   std::move(value)}};
+    auto property = std::unique_ptr<RepresentationProperty>{new RepresentationProperty{
+        identifierCandidate(), std::move(name), std::move(type), std::move(value)}};
 
     const auto next_size = owner.properties_.size() + 1U;
     owner.properties_.reserve(next_size);
@@ -555,11 +509,10 @@ RepresentationProperty& RepresentationDocument::addPropertyTo(
     return *result;
 }
 
-RepresentationProperty& RepresentationDocument::addPropertyTo(
-    RepresentationRelationship& owner,
-    std::string name,
-    RepresentationType type,
-    RepresentationValue value) {
+RepresentationProperty& RepresentationDocument::addPropertyTo(RepresentationRelationship& owner,
+                                                              std::string name,
+                                                              RepresentationType type,
+                                                              RepresentationValue value) {
     ensureMutable();
     if (name.empty()) {
         throw std::invalid_argument{"Property name cannot be empty"};
@@ -568,19 +521,13 @@ RepresentationProperty& RepresentationDocument::addPropertyTo(
     const auto duplicate =
         std::find_if(owner.properties_.begin(),
                      owner.properties_.end(),
-                     [&name](const auto& property) {
-                         return property->name() == name;
-                     });
+                     [&name](const auto& property) { return property->name() == name; });
     if (duplicate != owner.properties_.end()) {
-        throw std::invalid_argument{
-            "Property name must be unique within its owner"};
+        throw std::invalid_argument{"Property name must be unique within its owner"};
     }
 
-    auto property = std::unique_ptr<RepresentationProperty>{
-        new RepresentationProperty{identifierCandidate(),
-                                   std::move(name),
-                                   std::move(type),
-                                   std::move(value)}};
+    auto property = std::unique_ptr<RepresentationProperty>{new RepresentationProperty{
+        identifierCandidate(), std::move(name), std::move(type), std::move(value)}};
 
     const auto next_size = owner.properties_.size() + 1U;
     owner.properties_.reserve(next_size);
@@ -597,35 +544,30 @@ RepresentationProperty& RepresentationDocument::addPropertyTo(
 void RepresentationDocument::removeEntity(const RepresentationId& id) {
     ensureMutable();
 
-    const auto found =
-        std::find_if(impl_->state->entities.begin(),
-                     impl_->state->entities.end(),
-                     [&id](const auto& entity) { return entity->id() == id; });
+    const auto found = std::find_if(impl_->state->entities.begin(),
+                                    impl_->state->entities.end(),
+                                    [&id](const auto& entity) { return entity->id() == id; });
     if (found == impl_->state->entities.end()) {
         return;
     }
 
     const auto* const entity = found->get();
-    const auto incident =
-        std::any_of(impl_->state->relationships.begin(),
-                    impl_->state->relationships.end(),
-                    [entity](const auto& relationship) {
-                        return &relationship->source() == entity ||
-                               &relationship->target() == entity;
-                    });
+    const auto incident = std::any_of(impl_->state->relationships.begin(),
+                                      impl_->state->relationships.end(),
+                                      [entity](const auto& relationship) {
+                                          return &relationship->source() == entity ||
+                                                 &relationship->target() == entity;
+                                      });
     if (incident) {
-        throw std::logic_error{
-            "Entity with an incident relationship cannot be removed"};
+        throw std::logic_error{"Entity with an incident relationship cannot be removed"};
     }
 
     if (impl_->transaction_active) {
         assert(impl_->snapshot != nullptr);
-        const auto baseline =
-            std::any_of(impl_->snapshot->entities.begin(),
-                        impl_->snapshot->entities.end(),
-                        [entity](const Impl::EntityBaseline& entry) {
-                            return entry.object == entity;
-                        });
+        const auto baseline = std::any_of(
+            impl_->snapshot->entities.begin(),
+            impl_->snapshot->entities.end(),
+            [entity](const Impl::EntityBaseline& entry) { return entry.object == entity; });
         if (baseline) {
             assert(impl_->snapshot->removed_entities.size() <
                    impl_->snapshot->removed_entities.capacity());
@@ -641,10 +583,10 @@ void RepresentationDocument::removeEntity(const RepresentationId& id) {
 void RepresentationDocument::removeRelationship(const RepresentationId& id) {
     ensureMutable();
 
-    const auto found = std::find_if(
-        impl_->state->relationships.begin(),
-        impl_->state->relationships.end(),
-        [&id](const auto& relationship) { return relationship->id() == id; });
+    const auto found =
+        std::find_if(impl_->state->relationships.begin(),
+                     impl_->state->relationships.end(),
+                     [&id](const auto& relationship) { return relationship->id() == id; });
     if (found == impl_->state->relationships.end()) {
         return;
     }
@@ -652,18 +594,15 @@ void RepresentationDocument::removeRelationship(const RepresentationId& id) {
     if (impl_->transaction_active) {
         assert(impl_->snapshot != nullptr);
         const auto* const relationship = found->get();
-        const auto baseline =
-            std::any_of(impl_->snapshot->relationships.begin(),
-                        impl_->snapshot->relationships.end(),
-                        [relationship](
-                            const Impl::RelationshipBaseline& entry) {
-                            return entry.object == relationship;
-                        });
+        const auto baseline = std::any_of(impl_->snapshot->relationships.begin(),
+                                          impl_->snapshot->relationships.end(),
+                                          [relationship](const Impl::RelationshipBaseline& entry) {
+                                              return entry.object == relationship;
+                                          });
         if (baseline) {
             assert(impl_->snapshot->removed_relationships.size() <
                    impl_->snapshot->removed_relationships.capacity());
-            impl_->snapshot->removed_relationships.push_back(
-                std::move(*found));
+            impl_->snapshot->removed_relationships.push_back(std::move(*found));
         }
     }
 
@@ -676,13 +615,11 @@ const EntityCollection& RepresentationDocument::entities() const noexcept {
     return impl_->entity_view;
 }
 
-const RelationshipCollection&
-RepresentationDocument::relationships() const noexcept {
+const RelationshipCollection& RepresentationDocument::relationships() const noexcept {
     return impl_->relationship_view;
 }
 
-const RepresentationMetadata&
-RepresentationDocument::metadata() const noexcept {
+const RepresentationMetadata& RepresentationDocument::metadata() const noexcept {
     return impl_->metadata;
 }
 
@@ -735,11 +672,9 @@ void RepresentationDocument::rollbackTransaction() noexcept {
     assert(snapshot.restored_relationships.empty());
 
     for (const auto& baseline : snapshot.entities) {
-        auto restored =
-            take_owned_object(impl_->state->entities, baseline.object);
+        auto restored = take_owned_object(impl_->state->entities, baseline.object);
         if (restored == nullptr) {
-            restored =
-                take_owned_object(snapshot.removed_entities, baseline.object);
+            restored = take_owned_object(snapshot.removed_entities, baseline.object);
         }
         assert(restored != nullptr);
         assert(restored->properties_.size() >= baseline.property_count);
@@ -748,19 +683,15 @@ void RepresentationDocument::rollbackTransaction() noexcept {
             restored->property_view_.pop_back();
             restored->properties_.pop_back();
         }
-        assert(restored->property_view_.size() ==
-               restored->properties_.size());
-        assert(snapshot.restored_entities.size() <
-               snapshot.restored_entities.capacity());
+        assert(restored->property_view_.size() == restored->properties_.size());
+        assert(snapshot.restored_entities.size() < snapshot.restored_entities.capacity());
         snapshot.restored_entities.push_back(std::move(restored));
     }
 
     for (const auto& baseline : snapshot.relationships) {
-        auto restored =
-            take_owned_object(impl_->state->relationships, baseline.object);
+        auto restored = take_owned_object(impl_->state->relationships, baseline.object);
         if (restored == nullptr) {
-            restored = take_owned_object(snapshot.removed_relationships,
-                                         baseline.object);
+            restored = take_owned_object(snapshot.removed_relationships, baseline.object);
         }
         assert(restored != nullptr);
         assert(restored->properties_.size() >= baseline.property_count);
@@ -769,10 +700,8 @@ void RepresentationDocument::rollbackTransaction() noexcept {
             restored->property_view_.pop_back();
             restored->properties_.pop_back();
         }
-        assert(restored->property_view_.size() ==
-               restored->properties_.size());
-        assert(snapshot.restored_relationships.size() <
-               snapshot.restored_relationships.capacity());
+        assert(restored->property_view_.size() == restored->properties_.size());
+        assert(snapshot.restored_relationships.size() < snapshot.restored_relationships.capacity());
         snapshot.restored_relationships.push_back(std::move(restored));
     }
 
@@ -784,20 +713,17 @@ void RepresentationDocument::rollbackTransaction() noexcept {
     impl_->transaction_active = false;
 }
 
-ValidationResult
-ValidationService::validate(const RepresentationDocument& document) const {
+ValidationResult ValidationService::validate(const RepresentationDocument& document) const {
     std::vector<Diagnostic> diagnostics;
 
     std::set<std::string_view, std::less<>> identifiers;
-    const auto inspect_identifier =
-        [&diagnostics, &identifiers](const auto& object) {
-            if (!identifiers.insert(object.id().value()).second) {
-                add_diagnostic(
-                    diagnostics,
-                    DiagnosticCode::DuplicateIdentifier,
-                    "Duplicate identifier: " + object.id().toString());
-            }
-        };
+    const auto inspect_identifier = [&diagnostics, &identifiers](const auto& object) {
+        if (!identifiers.insert(object.id().value()).second) {
+            add_diagnostic(diagnostics,
+                           DiagnosticCode::DuplicateIdentifier,
+                           "Duplicate identifier: " + object.id().toString());
+        }
+    };
 
     for (const auto& entity_reference : document.entities()) {
         const auto& entity = entity_reference.get();
@@ -819,17 +745,14 @@ ValidationService::validate(const RepresentationDocument& document) const {
         if (entity.type().name().empty()) {
             add_diagnostic(diagnostics,
                            DiagnosticCode::MissingType,
-                           "Entity has an empty type: " +
-                               entity.id().toString());
+                           "Entity has an empty type: " + entity.id().toString());
         }
         for (const auto& property_reference : entity.properties()) {
             const auto& property = property_reference.get();
             if (property.type().name().empty()) {
-                add_diagnostic(
-                    diagnostics,
-                    DiagnosticCode::MissingType,
-                    "Property has an empty type: " +
-                        property.id().toString());
+                add_diagnostic(diagnostics,
+                               DiagnosticCode::MissingType,
+                               "Property has an empty type: " + property.id().toString());
             }
         }
     }
@@ -838,17 +761,14 @@ ValidationService::validate(const RepresentationDocument& document) const {
         if (relationship.type().name().empty()) {
             add_diagnostic(diagnostics,
                            DiagnosticCode::MissingType,
-                           "Relationship has an empty type: " +
-                               relationship.id().toString());
+                           "Relationship has an empty type: " + relationship.id().toString());
         }
         for (const auto& property_reference : relationship.properties()) {
             const auto& property = property_reference.get();
             if (property.type().name().empty()) {
-                add_diagnostic(
-                    diagnostics,
-                    DiagnosticCode::MissingType,
-                    "Property has an empty type: " +
-                        property.id().toString());
+                add_diagnostic(diagnostics,
+                               DiagnosticCode::MissingType,
+                               "Property has an empty type: " + property.id().toString());
             }
         }
     }
@@ -859,11 +779,9 @@ ValidationService::validate(const RepresentationDocument& document) const {
         for (const auto& property_reference : entity.properties()) {
             const auto& property = property_reference.get();
             if (!names.insert(property.name()).second) {
-                add_diagnostic(
-                    diagnostics,
-                    DiagnosticCode::DuplicateProperty,
-                    "Duplicate entity property: " +
-                        std::string{property.name()});
+                add_diagnostic(diagnostics,
+                               DiagnosticCode::DuplicateProperty,
+                               "Duplicate entity property: " + std::string{property.name()});
             }
         }
     }
@@ -873,71 +791,59 @@ ValidationService::validate(const RepresentationDocument& document) const {
         for (const auto& property_reference : relationship.properties()) {
             const auto& property = property_reference.get();
             if (!names.insert(property.name()).second) {
-                add_diagnostic(
-                    diagnostics,
-                    DiagnosticCode::DuplicateProperty,
-                    "Duplicate relationship property: " +
-                        std::string{property.name()});
+                add_diagnostic(diagnostics,
+                               DiagnosticCode::DuplicateProperty,
+                               "Duplicate relationship property: " + std::string{property.name()});
             }
         }
     }
 
     for (const auto& relationship_reference : document.relationships()) {
         const auto& relationship = relationship_reference.get();
-        const auto source_present = std::any_of(
-            document.entities().begin(),
-            document.entities().end(),
-            [&relationship](const auto& entity_reference) {
-                return &entity_reference.get() == &relationship.source();
-            });
-        const auto target_present = std::any_of(
-            document.entities().begin(),
-            document.entities().end(),
-            [&relationship](const auto& entity_reference) {
-                return &entity_reference.get() == &relationship.target();
-            });
+        const auto source_present =
+            std::any_of(document.entities().begin(),
+                        document.entities().end(),
+                        [&relationship](const auto& entity_reference) {
+                            return &entity_reference.get() == &relationship.source();
+                        });
+        const auto target_present =
+            std::any_of(document.entities().begin(),
+                        document.entities().end(),
+                        [&relationship](const auto& entity_reference) {
+                            return &entity_reference.get() == &relationship.target();
+                        });
         if (!source_present || !target_present) {
             add_diagnostic(diagnostics,
                            DiagnosticCode::InvalidRelationship,
-                           "Relationship endpoint is absent: " +
-                               relationship.id().toString());
+                           "Relationship endpoint is absent: " + relationship.id().toString());
         }
     }
 
     for (const auto& entity_reference : document.entities()) {
-        for (const auto& property_reference :
-             entity_reference.get().properties()) {
+        for (const auto& property_reference : entity_reference.get().properties()) {
             const auto& property = property_reference.get();
             if (property.name().empty()) {
-                add_diagnostic(
-                    diagnostics,
-                    DiagnosticCode::ValidationError,
-                    "Property has an empty name: " +
-                        property.id().toString());
+                add_diagnostic(diagnostics,
+                               DiagnosticCode::ValidationError,
+                               "Property has an empty name: " + property.id().toString());
             }
         }
     }
     for (const auto& relationship_reference : document.relationships()) {
-        for (const auto& property_reference :
-             relationship_reference.get().properties()) {
+        for (const auto& property_reference : relationship_reference.get().properties()) {
             const auto& property = property_reference.get();
             if (property.name().empty()) {
-                add_diagnostic(
-                    diagnostics,
-                    DiagnosticCode::ValidationError,
-                    "Property has an empty name: " +
-                        property.id().toString());
+                add_diagnostic(diagnostics,
+                               DiagnosticCode::ValidationError,
+                               "Property has an empty name: " + property.id().toString());
             }
         }
     }
 
     const auto has_error =
-        std::any_of(diagnostics.begin(),
-                    diagnostics.end(),
-                    [](const Diagnostic& diagnostic) {
-                        return diagnostic.severity ==
-                               DiagnosticSeverity::Error;
-                    });
+        std::any_of(diagnostics.begin(), diagnostics.end(), [](const Diagnostic& diagnostic) {
+            return diagnostic.severity == DiagnosticSeverity::Error;
+        });
     return ValidationResult{
         .valid = !has_error,
         .diagnostics = std::move(diagnostics),
@@ -998,8 +904,7 @@ void Transaction::rollback() {
 
 Transaction TransactionService::begin(RepresentationDocument& document) {
     if (document.isFrozen()) {
-        throw std::logic_error{
-            "Cannot begin a transaction on a frozen document"};
+        throw std::logic_error{"Cannot begin a transaction on a frozen document"};
     }
     if (document.impl_->transaction_active) {
         throw std::logic_error{"Nested representation transactions are not supported"};
@@ -1007,8 +912,7 @@ Transaction TransactionService::begin(RepresentationDocument& document) {
 
     const auto baseline = ValidationService{}.validate(document);
     if (!baseline.valid) {
-        throw std::logic_error{
-            "Cannot begin a transaction from an invalid document"};
+        throw std::logic_error{"Cannot begin a transaction from an invalid document"};
     }
 
     document.beginTransaction();
@@ -1034,33 +938,28 @@ ValidationResult FreezeService::freeze(RepresentationDocument& document) {
     return result;
 }
 
-const RepresentationEntity* QueryService::findEntity(
-    const RepresentationDocument& document,
-    const RepresentationId& id) const noexcept {
-    const auto found =
-        std::find_if(document.entities().begin(),
-                     document.entities().end(),
-                     [&id](const auto& entity_reference) {
-                         return entity_reference.get().id() == id;
-                     });
+const RepresentationEntity* QueryService::findEntity(const RepresentationDocument& document,
+                                                     const RepresentationId& id) const noexcept {
+    const auto found = std::find_if(
+        document.entities().begin(),
+        document.entities().end(),
+        [&id](const auto& entity_reference) { return entity_reference.get().id() == id; });
     return found == document.entities().end() ? nullptr : &found->get();
 }
 
-const RepresentationRelationship* QueryService::findRelationship(
-    const RepresentationDocument& document,
-    const RepresentationId& id) const noexcept {
-    const auto found =
-        std::find_if(document.relationships().begin(),
-                     document.relationships().end(),
-                     [&id](const auto& relationship_reference) {
-                         return relationship_reference.get().id() == id;
-                     });
+const RepresentationRelationship*
+QueryService::findRelationship(const RepresentationDocument& document,
+                               const RepresentationId& id) const noexcept {
+    const auto found = std::find_if(document.relationships().begin(),
+                                    document.relationships().end(),
+                                    [&id](const auto& relationship_reference) {
+                                        return relationship_reference.get().id() == id;
+                                    });
     return found == document.relationships().end() ? nullptr : &found->get();
 }
 
-EntityCollection QueryService::entitiesByType(
-    const RepresentationDocument& document,
-    const RepresentationType& type) const {
+EntityCollection QueryService::entitiesByType(const RepresentationDocument& document,
+                                              const RepresentationType& type) const {
     EntityCollection result;
     result.reserve(document.entities().size());
     for (const auto& entity_reference : document.entities()) {

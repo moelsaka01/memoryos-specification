@@ -81,10 +81,8 @@ class MemoryResult {
 class MemoryEngine {
   public:
     MemoryResult store(Memory& memory, MemoryEntry entry) const;
-    MemoryResult retrieve(const Memory& memory,
-                          std::string_view identifier) const;
-    MemoryResult search(const Memory& memory,
-                        const MemoryQuery& query) const;
+    MemoryResult retrieve(const Memory& memory, std::string_view identifier) const;
+    MemoryResult search(const Memory& memory, const MemoryQuery& query) const;
     MemoryResult forget(Memory& memory, std::string_view identifier) const;
 };
 

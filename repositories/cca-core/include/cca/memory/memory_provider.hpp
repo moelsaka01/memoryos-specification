@@ -18,8 +18,7 @@ namespace cca::memory {
 /// Provider-neutral identity metadata scoped to one Workspace.
 class ProviderDescriptor {
   public:
-    ProviderDescriptor(std::string workspaceIdentifier,
-                       std::string identifier);
+    ProviderDescriptor(std::string workspaceIdentifier, std::string identifier);
     ~ProviderDescriptor();
     ProviderDescriptor(const ProviderDescriptor&);
     ProviderDescriptor& operator=(const ProviderDescriptor&);
@@ -115,13 +114,11 @@ class ProviderResult {
                    std::unique_ptr<ProviderRequest> request,
                    std::vector<ProviderDescriptor> descriptors);
 
+    static ProviderResult success(std::string workspaceIdentifier,
+                                  std::unique_ptr<ProviderRequest> request = nullptr,
+                                  std::vector<ProviderDescriptor> descriptors = {});
     static ProviderResult
-    success(std::string workspaceIdentifier,
-            std::unique_ptr<ProviderRequest> request = nullptr,
-            std::vector<ProviderDescriptor> descriptors = {});
-    static ProviderResult failure(std::string workspaceIdentifier,
-                                  std::string code,
-                                  std::string message);
+    failure(std::string workspaceIdentifier, std::string code, std::string message);
 
     std::string workspace_identifier_;
     std::string code_;
@@ -135,15 +132,11 @@ class ProviderResult {
 /// Stateless Service for deterministic provider-neutral MemoryOS handoff.
 class MemoryProviderEngine {
   public:
-    ProviderResult
-    registerProvider(ProviderSession& session,
-                     const ProviderDescriptor& descriptor) const;
-    ProviderResult exportState(ProviderSession& session,
-                               const ProviderRequest& request) const;
-    ProviderResult importState(ProviderSession& session,
-                               const ProviderRequest& request) const;
-    ProviderResult validate(const ProviderSession& session,
-                            const ProviderRequest& request) const;
+    ProviderResult registerProvider(ProviderSession& session,
+                                    const ProviderDescriptor& descriptor) const;
+    ProviderResult exportState(ProviderSession& session, const ProviderRequest& request) const;
+    ProviderResult importState(ProviderSession& session, const ProviderRequest& request) const;
+    ProviderResult validate(const ProviderSession& session, const ProviderRequest& request) const;
     ProviderResult enumerate(const ProviderSession& session) const;
     ProviderResult forgetSession(ProviderSession& session) const;
 };

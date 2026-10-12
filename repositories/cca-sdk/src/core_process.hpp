@@ -8,8 +8,7 @@ namespace memoryos::detail {
 
 class CoreProcess final {
   public:
-    CoreProcess(const std::filesystem::path& nodeExecutable,
-                const std::filesystem::path& coreHost);
+    CoreProcess(const std::filesystem::path& nodeExecutable, const std::filesystem::path& coreHost);
     ~CoreProcess();
 
     CoreProcess(const CoreProcess&) = delete;

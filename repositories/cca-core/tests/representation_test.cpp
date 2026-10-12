@@ -1,12 +1,11 @@
 #include <cca/representation/representation.hpp>
 
-#include <gtest/gtest.h>
-
 #include <array>
 #include <bit>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <gtest/gtest.h>
 #include <iomanip>
 #include <optional>
 #include <sstream>
@@ -109,8 +108,7 @@ struct ValueSnapshot final {
         break;
     case ValueKind::FloatingPoint:
         snapshot.floating_point =
-            std::bit_cast<decltype(snapshot.floating_point)>(
-                value.asFloatingPoint());
+            std::bit_cast<decltype(snapshot.floating_point)>(value.asFloatingPoint());
         break;
     case ValueKind::String:
     case ValueKind::Enumeration:
@@ -138,8 +136,7 @@ struct PropertySnapshot final {
     bool operator==(const PropertySnapshot&) const = default;
 };
 
-[[nodiscard]] PropertySnapshot
-snapshot_of(const RepresentationProperty& property) {
+[[nodiscard]] PropertySnapshot snapshot_of(const RepresentationProperty& property) {
     return PropertySnapshot{
         .id = property.id().toString(),
         .name = std::string{property.name()},
@@ -148,8 +145,7 @@ snapshot_of(const RepresentationProperty& property) {
     };
 }
 
-[[nodiscard]] std::vector<PropertySnapshot>
-snapshot_of(const PropertyCollection& properties) {
+[[nodiscard]] std::vector<PropertySnapshot> snapshot_of(const PropertyCollection& properties) {
     std::vector<PropertySnapshot> snapshots;
     snapshots.reserve(properties.size());
     for (const auto& property : properties) {
@@ -274,22 +270,18 @@ TEST(RepresentationArchitectureTest, PublicTypesEnforceTheFrozenOwnershipModel) 
                                  const RepresentationMetadata&>);
     static_assert(std::is_same_v<decltype(std::declval<RepresentationDocument&>().entities()),
                                  const EntityCollection&>);
-    static_assert(
-        std::is_same_v<decltype(std::declval<RepresentationDocument&>().relationships()),
-                       const RelationshipCollection&>);
-    static_assert(
-        std::is_same_v<decltype(std::declval<RepresentationEntity&>().properties()),
-                       const PropertyCollection&>);
-    static_assert(std::is_same_v<
-                  decltype(std::declval<QueryService&>().findEntity(
-                      std::declval<const RepresentationDocument&>(),
-                      std::declval<const RepresentationId&>())),
-                  const RepresentationEntity*>);
-    static_assert(std::is_same_v<
-                  decltype(std::declval<QueryService&>().findRelationship(
-                      std::declval<const RepresentationDocument&>(),
-                      std::declval<const RepresentationId&>())),
-                  const RepresentationRelationship*>);
+    static_assert(std::is_same_v<decltype(std::declval<RepresentationDocument&>().relationships()),
+                                 const RelationshipCollection&>);
+    static_assert(std::is_same_v<decltype(std::declval<RepresentationEntity&>().properties()),
+                                 const PropertyCollection&>);
+    static_assert(std::is_same_v<decltype(std::declval<QueryService&>().findEntity(
+                                     std::declval<const RepresentationDocument&>(),
+                                     std::declval<const RepresentationId&>())),
+                                 const RepresentationEntity*>);
+    static_assert(std::is_same_v<decltype(std::declval<QueryService&>().findRelationship(
+                                     std::declval<const RepresentationDocument&>(),
+                                     std::declval<const RepresentationId&>())),
+                                 const RepresentationRelationship*>);
 
     ValidationService validation;
     QueryService query;
@@ -328,8 +320,8 @@ TEST(IdentityTest, IdentifierValuePreservesExactTextAndLexicographicOrdering) {
 TEST(IdentityTest, AllSemanticObjectsShareOneDeterministicDocumentLocalSequence) {
     RepresentationDocument document;
     auto& source = document.createEntity(RepresentationType{"Source"});
-    auto& source_property = source.addProperty(
-        "enabled", RepresentationType{"Boolean"}, RepresentationValue{true});
+    auto& source_property =
+        source.addProperty("enabled", RepresentationType{"Boolean"}, RepresentationValue{true});
     auto& target = document.createEntity(RepresentationType{"Target"});
     auto& relationship =
         document.createRelationship(source, target, RepresentationType{"Connects"});
@@ -403,8 +395,8 @@ TEST(DocumentTest, CollectionsAreStableLiveViewsInSuccessfulCreationOrder) {
               (std::vector<std::string>{
                   first.id().toString(), second.id().toString(), third.id().toString()}));
     EXPECT_EQ(ids_of(document.relationships()),
-              (std::vector<std::string>{
-                  first_relationship.id().toString(), second_relationship.id().toString()}));
+              (std::vector<std::string>{first_relationship.id().toString(),
+                                        second_relationship.id().toString()}));
 
     document.removeRelationship(first_relationship.id());
     document.removeEntity(first.id());
@@ -447,10 +439,10 @@ TEST(EntityTest, EntityCopiesItsTypeAndFindsPropertiesByExactCaseSensitiveName) 
     auto& entity = document.createEntity(supplied_type);
     supplied_type = RepresentationType{"Changed"};
 
-    auto& upper = entity.addProperty(
-        "Name", RepresentationType{"String"}, RepresentationValue{"upper"});
-    auto& lower = entity.addProperty(
-        "name", RepresentationType{"String"}, RepresentationValue{"lower"});
+    auto& upper =
+        entity.addProperty("Name", RepresentationType{"String"}, RepresentationValue{"upper"});
+    auto& lower =
+        entity.addProperty("name", RepresentationType{"String"}, RepresentationValue{"lower"});
 
     EXPECT_EQ(entity.type().name(), "Original");
     EXPECT_EQ(entity.property("Name"), &upper);
@@ -494,8 +486,7 @@ TEST(RelationshipTest, RelationshipHasExactlyTwoOwnedEndpointsAndItsOwnTypeAndId
 TEST(RelationshipTest, SelfRelationshipsArePermitted) {
     RepresentationDocument document;
     auto& entity = document.createEntity(RepresentationType{"Node"});
-    auto& relationship =
-        document.createRelationship(entity, entity, RepresentationType{"Self"});
+    auto& relationship = document.createRelationship(entity, entity, RepresentationType{"Self"});
 
     EXPECT_EQ(&relationship.source(), &entity);
     EXPECT_EQ(&relationship.target(), &entity);
@@ -508,12 +499,10 @@ TEST(RelationshipTest, ForeignEndpointsAreRejectedBeforeIdentifierAllocation) {
     auto& local = document.createEntity(RepresentationType{"Local"});
     auto& foreign = foreign_document.createEntity(RepresentationType{"Foreign"});
 
-    EXPECT_THROW(
-        document.createRelationship(local, foreign, RepresentationType{"Invalid"}),
-        std::invalid_argument);
-    EXPECT_THROW(
-        document.createRelationship(foreign, local, RepresentationType{"Invalid"}),
-        std::invalid_argument);
+    EXPECT_THROW(document.createRelationship(local, foreign, RepresentationType{"Invalid"}),
+                 std::invalid_argument);
+    EXPECT_THROW(document.createRelationship(foreign, local, RepresentationType{"Invalid"}),
+                 std::invalid_argument);
     EXPECT_TRUE(document.relationships().empty());
 
     const auto& next = document.createEntity(RepresentationType{"Next"});
@@ -524,8 +513,7 @@ TEST(RelationshipTest, RelationshipReferencesSurviveUnrelatedCreation) {
     RepresentationDocument document;
     auto& source = document.createEntity(RepresentationType{"Node"});
     auto& target = document.createEntity(RepresentationType{"Node"});
-    auto& stable =
-        document.createRelationship(source, target, RepresentationType{"Stable"});
+    auto& stable = document.createRelationship(source, target, RepresentationType{"Stable"});
     const RepresentationRelationship* const stable_address = &stable;
     const RepresentationEntity* const source_address = &stable.source();
     const RelationshipCollection* const collection_address = &document.relationships();
@@ -547,8 +535,8 @@ TEST(PropertyTest, EntityPropertiesOwnCopiedNameTypeAndValueInCreationOrder) {
     RepresentationValue supplied_value{std::int64_t{42}};
 
     auto& first = entity.addProperty("answer", supplied_type, supplied_value);
-    auto& second = entity.addProperty(
-        "enabled", RepresentationType{"Boolean"}, RepresentationValue{true});
+    auto& second =
+        entity.addProperty("enabled", RepresentationType{"Boolean"}, RepresentationValue{true});
     supplied_type = RepresentationType{"Changed"};
     supplied_value = RepresentationValue{std::int64_t{99}};
 
@@ -566,18 +554,16 @@ TEST(PropertyTest, RelationshipsOwnIndependentStablePropertyCollections) {
     RepresentationDocument document;
     auto& source = document.createEntity(RepresentationType{"Node"});
     auto& target = document.createEntity(RepresentationType{"Node"});
-    auto& relationship =
-        document.createRelationship(source, target, RepresentationType{"Edge"});
+    auto& relationship = document.createRelationship(source, target, RepresentationType{"Edge"});
     const PropertyCollection* const collection_address = &relationship.properties();
 
     auto& stable = relationship.addProperty(
         "first", RepresentationType{"String"}, RepresentationValue{"stable"});
     const RepresentationProperty* const stable_address = &stable;
     for (std::uint64_t ordinal = 0U; ordinal < 32U; ++ordinal) {
-        relationship.addProperty(
-            "property-" + std::to_string(ordinal),
-            RepresentationType{"Integer"},
-            RepresentationValue{static_cast<std::int64_t>(ordinal)});
+        relationship.addProperty("property-" + std::to_string(ordinal),
+                                 RepresentationType{"Integer"},
+                                 RepresentationValue{static_cast<std::int64_t>(ordinal)});
     }
 
     EXPECT_EQ(&relationship.properties(), collection_address);
@@ -593,8 +579,7 @@ TEST(PropertyTest, EmptyAndDuplicateNamesFailStronglyWithoutConsumingIdentifiers
 
     const auto original_properties = ids_of(entity.properties());
     EXPECT_THROW(
-        entity.addProperty(
-            "", RepresentationType{"String"}, RepresentationValue{"invalid"}),
+        entity.addProperty("", RepresentationType{"String"}, RepresentationValue{"invalid"}),
         std::invalid_argument);
     EXPECT_EQ(ids_of(entity.properties()), original_properties);
 
@@ -602,8 +587,7 @@ TEST(PropertyTest, EmptyAndDuplicateNamesFailStronglyWithoutConsumingIdentifiers
         entity.addProperty("name", RepresentationType{"String"}, RepresentationValue{"first"});
     const auto after_first = ids_of(entity.properties());
     EXPECT_THROW(
-        entity.addProperty(
-            "name", RepresentationType{"Other"}, RepresentationValue{"duplicate"}),
+        entity.addProperty("name", RepresentationType{"Other"}, RepresentationValue{"duplicate"}),
         std::invalid_argument);
     EXPECT_EQ(ids_of(entity.properties()), after_first);
 
@@ -616,27 +600,22 @@ TEST(PropertyTest, RelationshipPropertyPreconditionsAreStrongAndOwnerLocal) {
     RepresentationDocument document;
     auto& source = document.createEntity(RepresentationType{"Source"});
     auto& target = document.createEntity(RepresentationType{"Target"});
-    source.addProperty(
-        "shared-name", RepresentationType{"String"}, RepresentationValue{"entity"});
+    source.addProperty("shared-name", RepresentationType{"String"}, RepresentationValue{"entity"});
     auto& relationship =
         document.createRelationship(source, target, RepresentationType{"Connects"});
 
     const auto original_properties = ids_of(relationship.properties());
     EXPECT_THROW(
-        relationship.addProperty(
-            "", RepresentationType{"String"}, RepresentationValue{"invalid"}),
+        relationship.addProperty("", RepresentationType{"String"}, RepresentationValue{"invalid"}),
         std::invalid_argument);
     EXPECT_EQ(ids_of(relationship.properties()), original_properties);
 
     auto& first = relationship.addProperty(
         "shared-name", RepresentationType{"String"}, RepresentationValue{"relationship"});
     const auto after_first = ids_of(relationship.properties());
-    EXPECT_THROW(
-        relationship.addProperty(
-            "shared-name",
-            RepresentationType{"Other"},
-            RepresentationValue{"duplicate"}),
-        std::invalid_argument);
+    EXPECT_THROW(relationship.addProperty(
+                     "shared-name", RepresentationType{"Other"}, RepresentationValue{"duplicate"}),
+                 std::invalid_argument);
     EXPECT_EQ(ids_of(relationship.properties()), after_first);
 
     const auto& next = document.createEntity(RepresentationType{"Next"});
@@ -704,8 +683,7 @@ TEST(ValueTest, IncompatibleAccessAndNullCharacterPointerUseStandardExceptions) 
     EXPECT_THROW(string.asBoolean(), std::bad_variant_access);
     EXPECT_THROW(identifier.asCollection(), std::bad_variant_access);
     EXPECT_THROW(collection.asIdentifier(), std::bad_variant_access);
-    EXPECT_THROW(
-        RepresentationValue{static_cast<const char*>(nullptr)}, std::invalid_argument);
+    EXPECT_THROW(RepresentationValue{static_cast<const char*>(nullptr)}, std::invalid_argument);
 }
 
 TEST(ValueTest, ReturnedViewsAndReferencesRemainValidAcrossCopiesAndSourceAssignment) {
@@ -756,8 +734,7 @@ TEST(ValidationTest, ValidDocumentsProduceAStableReadOnlySuccessfulResult) {
               RepresentationLifecycleState::Mutable);
     auto& source = document.createEntity(RepresentationType{"Source"});
     auto& target = document.createEntity(RepresentationType{"Target"});
-    source.addProperty(
-        "enabled", RepresentationType{"Boolean"}, RepresentationValue{true});
+    source.addProperty("enabled", RepresentationType{"Boolean"}, RepresentationValue{true});
     auto& relationship =
         document.createRelationship(source, target, RepresentationType{"Connects"});
     relationship.addProperty(
@@ -785,12 +762,11 @@ TEST(ValidationTest, ValidationRecursesAndReportsEveryMissingTypeDeterministical
     RepresentationDocument document;
     auto& first = document.createEntity(RepresentationType{""});
     auto& second = document.createEntity(RepresentationType{"Valid"});
-    auto& first_property = first.addProperty(
-        "first-empty", RepresentationType{""}, RepresentationValue{"value"});
-    auto& second_property = second.addProperty(
-        "second-empty", RepresentationType{""}, RepresentationValue{"value"});
-    auto& relationship =
-        document.createRelationship(first, second, RepresentationType{""});
+    auto& first_property =
+        first.addProperty("first-empty", RepresentationType{""}, RepresentationValue{"value"});
+    auto& second_property =
+        second.addProperty("second-empty", RepresentationType{""}, RepresentationValue{"value"});
+    auto& relationship = document.createRelationship(first, second, RepresentationType{""});
     auto& relationship_property = relationship.addProperty(
         "relationship-empty", RepresentationType{""}, RepresentationValue{"value"});
     const DocumentSnapshot before = snapshot_of(document);
@@ -808,19 +784,14 @@ TEST(ValidationTest, ValidationRecursesAndReportsEveryMissingTypeDeterministical
 
     EXPECT_FALSE(first_result.valid);
     ASSERT_EQ(first_result.diagnostics.size(), 5U);
-    for (std::size_t index = 0U;
-         index < first_result.diagnostics.size();
-         ++index) {
+    for (std::size_t index = 0U; index < first_result.diagnostics.size(); ++index) {
         const auto& diagnostic = first_result.diagnostics[index];
         EXPECT_EQ(diagnostic.code, DiagnosticCode::MissingType);
         EXPECT_EQ(diagnostic.severity, DiagnosticSeverity::Error);
         EXPECT_FALSE(diagnostic.message.empty());
-        EXPECT_NE(
-            diagnostic.message.find(expected_diagnostic_subjects[index]),
-            std::string::npos);
+        EXPECT_NE(diagnostic.message.find(expected_diagnostic_subjects[index]), std::string::npos);
     }
-    EXPECT_EQ(fingerprint_of(first_result.diagnostics),
-              fingerprint_of(second_result.diagnostics));
+    EXPECT_EQ(fingerprint_of(first_result.diagnostics), fingerprint_of(second_result.diagnostics));
     EXPECT_EQ(snapshot_of(document), before);
 }
 
@@ -950,27 +921,21 @@ TEST(TransactionTest, RollbackRestoresSemanticStateOrderAndRetiresAllTentativeId
     RepresentationDocument document;
     auto& source = document.createEntity(RepresentationType{"Source"});
     auto& target = document.createEntity(RepresentationType{"Target"});
-    auto& source_property = source.addProperty(
-        "baseline", RepresentationType{"String"}, RepresentationValue{"kept"});
+    auto& source_property =
+        source.addProperty("baseline", RepresentationType{"String"}, RepresentationValue{"kept"});
     auto& target_rank = target.addProperty(
-        "rank",
-        RepresentationType{"Integer"},
-        RepresentationValue{std::int64_t{17}});
+        "rank", RepresentationType{"Integer"}, RepresentationValue{std::int64_t{17}});
     auto& target_label = target.addProperty(
-        "label",
-        RepresentationType{"String"},
-        RepresentationValue{"target-kept"});
+        "label", RepresentationType{"String"}, RepresentationValue{"target-kept"});
     auto& relationship =
         document.createRelationship(source, target, RepresentationType{"Connects"});
     auto& relationship_property = relationship.addProperty(
         "baseline-edge", RepresentationType{"Boolean"}, RepresentationValue{true});
     auto& relationship_label = relationship.addProperty(
-        "edge-label",
-        RepresentationType{"String"},
-        RepresentationValue{"relationship-kept"});
+        "edge-label", RepresentationType{"String"}, RepresentationValue{"relationship-kept"});
     auto& observer = document.createEntity(RepresentationType{"Observer"});
-    auto& retained_relationship = document.createRelationship(
-        source, observer, RepresentationType{"Observes"});
+    auto& retained_relationship =
+        document.createRelationship(source, observer, RepresentationType{"Observes"});
 
     const RepresentationId source_id = source.id();
     const RepresentationId target_id = target.id();
@@ -994,26 +959,15 @@ TEST(TransactionTest, RollbackRestoresSemanticStateOrderAndRetiresAllTentativeId
     QueryService query;
     auto transaction = service.begin(document);
     auto& discarded_source_property = source.addProperty(
-        "discarded",
-        RepresentationType{"String"},
-        RepresentationValue{"discarded"});
+        "discarded", RepresentationType{"String"}, RepresentationValue{"discarded"});
     auto& discarded_target_property = target.addProperty(
-        "discarded",
-        RepresentationType{"String"},
-        RepresentationValue{"discarded"});
+        "discarded", RepresentationType{"String"}, RepresentationValue{"discarded"});
     auto& discarded_relationship_property = relationship.addProperty(
-        "discarded",
-        RepresentationType{"String"},
-        RepresentationValue{"discarded"});
-    auto& discarded_retained_relationship_property =
-        retained_relationship.addProperty(
-            "discarded",
-            RepresentationType{"String"},
-            RepresentationValue{"discarded"});
-    const RepresentationId discarded_source_property_id =
-        discarded_source_property.id();
-    const RepresentationId discarded_target_property_id =
-        discarded_target_property.id();
+        "discarded", RepresentationType{"String"}, RepresentationValue{"discarded"});
+    auto& discarded_retained_relationship_property = retained_relationship.addProperty(
+        "discarded", RepresentationType{"String"}, RepresentationValue{"discarded"});
+    const RepresentationId discarded_source_property_id = discarded_source_property.id();
+    const RepresentationId discarded_target_property_id = discarded_target_property.id();
     const RepresentationId discarded_relationship_property_id =
         discarded_relationship_property.id();
     const RepresentationId discarded_retained_relationship_property_id =
@@ -1039,11 +993,9 @@ TEST(TransactionTest, RollbackRestoresSemanticStateOrderAndRetiresAllTentativeId
     EXPECT_EQ(query.findEntity(document, observer_id), &observer);
     const auto* restored_target = query.findEntity(document, target_id);
     ASSERT_EQ(restored_target, &target);
-    const auto* restored_relationship =
-        query.findRelationship(document, relationship_id);
+    const auto* restored_relationship = query.findRelationship(document, relationship_id);
     ASSERT_EQ(restored_relationship, &relationship);
-    EXPECT_EQ(query.findRelationship(document, retained_relationship_id),
-              &retained_relationship);
+    EXPECT_EQ(query.findRelationship(document, retained_relationship_id), &retained_relationship);
     EXPECT_EQ(restored_relationship->source().id(), source_id);
     EXPECT_EQ(restored_relationship->target().id(), target_id);
     EXPECT_EQ(source.type().name(), "Source");
@@ -1054,8 +1006,7 @@ TEST(TransactionTest, RollbackRestoresSemanticStateOrderAndRetiresAllTentativeId
               source_property_id);
     EXPECT_EQ(source.property("discarded"), nullptr);
     EXPECT_EQ(target.property("discarded"), nullptr);
-    EXPECT_EQ(&query.findEntity(document, source_id)->properties().front().get(),
-              &source_property);
+    EXPECT_EQ(&query.findEntity(document, source_id)->properties().front().get(), &source_property);
     EXPECT_EQ(source_property.name(), "baseline");
     EXPECT_EQ(source_property.type().name(), "String");
     EXPECT_EQ(source_property.value().asString(), "kept");
@@ -1073,14 +1024,11 @@ TEST(TransactionTest, RollbackRestoresSemanticStateOrderAndRetiresAllTentativeId
     ASSERT_EQ(restored_relationship->properties().size(), 2U);
     EXPECT_EQ(property_names_of(restored_relationship->properties()),
               (std::vector<std::string>{"baseline-edge", "edge-label"}));
-    EXPECT_EQ(restored_relationship->properties().front().get().id(),
-              relationship_property_id);
-    EXPECT_EQ(&restored_relationship->properties().front().get(),
-              &relationship_property);
+    EXPECT_EQ(restored_relationship->properties().front().get().id(), relationship_property_id);
+    EXPECT_EQ(&restored_relationship->properties().front().get(), &relationship_property);
     EXPECT_EQ(relationship_property.type().name(), "Boolean");
     EXPECT_TRUE(relationship_property.value().asBoolean());
-    EXPECT_EQ(&restored_relationship->properties()[1].get(),
-              &relationship_label);
+    EXPECT_EQ(&restored_relationship->properties()[1].get(), &relationship_label);
     EXPECT_EQ(relationship_label.id(), relationship_label_id);
     EXPECT_EQ(relationship_label.type().name(), "String");
     EXPECT_EQ(relationship_label.value().asString(), "relationship-kept");
@@ -1090,48 +1038,37 @@ TEST(TransactionTest, RollbackRestoresSemanticStateOrderAndRetiresAllTentativeId
     EXPECT_EQ(discarded_source_property_id.toString(), expected_id(11U));
     EXPECT_EQ(discarded_target_property_id.toString(), expected_id(12U));
     EXPECT_EQ(discarded_relationship_property_id.toString(), expected_id(13U));
-    EXPECT_EQ(discarded_retained_relationship_property_id.toString(),
-              expected_id(14U));
+    EXPECT_EQ(discarded_retained_relationship_property_id.toString(), expected_id(14U));
     EXPECT_EQ(tentative_id.toString(), expected_id(15U));
     EXPECT_EQ(tentative_property_id.toString(), expected_id(16U));
     EXPECT_EQ(after_rollback.id().toString(), expected_id(17U));
 
     const auto& source_after_rollback = source.addProperty(
-        "after-rollback",
-        RepresentationType{"String"},
-        RepresentationValue{"source"});
+        "after-rollback", RepresentationType{"String"}, RepresentationValue{"source"});
     const auto& target_after_rollback = target.addProperty(
-        "after-rollback",
-        RepresentationType{"String"},
-        RepresentationValue{"target"});
+        "after-rollback", RepresentationType{"String"}, RepresentationValue{"target"});
     const auto& relationship_after_rollback = relationship.addProperty(
-        "after-rollback",
-        RepresentationType{"String"},
-        RepresentationValue{"relationship"});
+        "after-rollback", RepresentationType{"String"}, RepresentationValue{"relationship"});
     const auto& retained_relationship_after_rollback =
-        retained_relationship.addProperty(
-            "after-rollback",
-            RepresentationType{"String"},
-            RepresentationValue{"retained-relationship"});
-    const auto& new_relationship = document.createRelationship(
-        source, target, RepresentationType{"AfterRollback"});
+        retained_relationship.addProperty("after-rollback",
+                                          RepresentationType{"String"},
+                                          RepresentationValue{"retained-relationship"});
+    const auto& new_relationship =
+        document.createRelationship(source, target, RepresentationType{"AfterRollback"});
 
     EXPECT_EQ(source_after_rollback.id().toString(), expected_id(18U));
     EXPECT_EQ(target_after_rollback.id().toString(), expected_id(19U));
     EXPECT_EQ(relationship_after_rollback.id().toString(), expected_id(20U));
-    EXPECT_EQ(retained_relationship_after_rollback.id().toString(),
-              expected_id(21U));
+    EXPECT_EQ(retained_relationship_after_rollback.id().toString(), expected_id(21U));
     EXPECT_EQ(new_relationship.id().toString(), expected_id(22U));
     EXPECT_EQ(source.property("after-rollback"), &source_after_rollback);
     EXPECT_EQ(target.property("after-rollback"), &target_after_rollback);
-    EXPECT_EQ(relationship.properties().back().get().id(),
-              relationship_after_rollback.id());
+    EXPECT_EQ(relationship.properties().back().get().id(), relationship_after_rollback.id());
     EXPECT_EQ(retained_relationship.properties().back().get().id(),
               retained_relationship_after_rollback.id());
     EXPECT_EQ(&new_relationship.source(), &source);
     EXPECT_EQ(&new_relationship.target(), &target);
-    EXPECT_EQ(document.relationships().back().get().id(),
-              new_relationship.id());
+    EXPECT_EQ(document.relationships().back().get().id(), new_relationship.id());
 }
 
 TEST(TransactionTest, DestroyingAnActiveHandleRollsBackWithoutThrowing) {
@@ -1175,20 +1112,17 @@ TEST(TransactionTest, MoveAssignmentRollsBackItsActiveHandleBeforeTransfer) {
     RepresentationDocument first_document;
     RepresentationDocument second_document;
     auto& first_baseline = first_document.createEntity(RepresentationType{"FirstBaseline"});
-    auto& second_baseline =
-        second_document.createEntity(RepresentationType{"SecondBaseline"});
+    auto& second_baseline = second_document.createEntity(RepresentationType{"SecondBaseline"});
     const RepresentationId first_baseline_id = first_baseline.id();
     const RepresentationId second_baseline_id = second_baseline.id();
 
     TransactionService service;
     auto destination = service.begin(first_document);
-    auto& first_tentative =
-        first_document.createEntity(RepresentationType{"FirstTentative"});
+    auto& first_tentative = first_document.createEntity(RepresentationType{"FirstTentative"});
     const RepresentationId first_tentative_id = first_tentative.id();
 
     auto source = service.begin(second_document);
-    auto& second_tentative =
-        second_document.createEntity(RepresentationType{"SecondTentative"});
+    auto& second_tentative = second_document.createEntity(RepresentationType{"SecondTentative"});
     const RepresentationId second_tentative_id = second_tentative.id();
 
     destination = std::move(source);
@@ -1206,8 +1140,7 @@ TEST(TransactionTest, MoveAssignmentRollsBackItsActiveHandleBeforeTransfer) {
     EXPECT_EQ(query.findEntity(second_document, second_tentative_id), nullptr);
 
     const auto& first_next = first_document.createEntity(RepresentationType{"FirstNext"});
-    const auto& second_next =
-        second_document.createEntity(RepresentationType{"SecondNext"});
+    const auto& second_next = second_document.createEntity(RepresentationType{"SecondNext"});
     EXPECT_EQ(first_next.id().toString(), expected_id(3U));
     EXPECT_EQ(second_next.id().toString(), expected_id(3U));
 }
@@ -1293,8 +1226,8 @@ TEST(FreezeTest, AllSemanticMutatorsRejectAndFrozenPrecedenceIsUniform) {
     auto& source = document.createEntity(RepresentationType{"Source"});
     auto& target = document.createEntity(RepresentationType{"Target"});
     auto& foreign = foreign_document.createEntity(RepresentationType{"Foreign"});
-    auto& source_property = source.addProperty(
-        "existing", RepresentationType{"String"}, RepresentationValue{"value"});
+    auto& source_property =
+        source.addProperty("existing", RepresentationType{"String"}, RepresentationValue{"value"});
     auto& relationship =
         document.createRelationship(source, target, RepresentationType{"Connects"});
     auto& relationship_property = relationship.addProperty(
@@ -1307,27 +1240,20 @@ TEST(FreezeTest, AllSemanticMutatorsRejectAndFrozenPrecedenceIsUniform) {
 
     EXPECT_THROW(document.createEntity(RepresentationType{""}), std::logic_error);
     EXPECT_THROW(
-        document.createRelationship(
-            foreign, foreign, RepresentationType{"ForeignEndpoints"}),
+        document.createRelationship(foreign, foreign, RepresentationType{"ForeignEndpoints"}),
         std::logic_error);
-    EXPECT_THROW(
-        source.addProperty("", RepresentationType{""}, RepresentationValue{"invalid"}),
-        std::logic_error);
-    EXPECT_THROW(
-        source.addProperty(
-            std::string{source_property.name()},
-            RepresentationType{"Duplicate"},
-            RepresentationValue{"invalid"}),
-        std::logic_error);
-    EXPECT_THROW(
-        relationship.addProperty(
-            std::string{relationship_property.name()},
-            RepresentationType{"Duplicate"},
-            RepresentationValue{"invalid"}),
-        std::logic_error);
+    EXPECT_THROW(source.addProperty("", RepresentationType{""}, RepresentationValue{"invalid"}),
+                 std::logic_error);
+    EXPECT_THROW(source.addProperty(std::string{source_property.name()},
+                                    RepresentationType{"Duplicate"},
+                                    RepresentationValue{"invalid"}),
+                 std::logic_error);
+    EXPECT_THROW(relationship.addProperty(std::string{relationship_property.name()},
+                                          RepresentationType{"Duplicate"},
+                                          RepresentationValue{"invalid"}),
+                 std::logic_error);
     EXPECT_THROW(document.removeEntity(RepresentationId{"unknown"}), std::logic_error);
-    EXPECT_THROW(
-        document.removeRelationship(RepresentationId{"unknown"}), std::logic_error);
+    EXPECT_THROW(document.removeRelationship(RepresentationId{"unknown"}), std::logic_error);
     EXPECT_THROW(document.removeEntity(source.id()), std::logic_error);
     EXPECT_THROW(document.removeRelationship(relationship.id()), std::logic_error);
 
@@ -1345,8 +1271,7 @@ TEST(FreezeTest, QueriesAndValidationRemainAvailableAfterFreeze) {
 
     const ValidationResult validation = ValidationService{}.validate(document);
     const auto* queried = QueryService{}.findEntity(document, entity_id);
-    const auto by_type =
-        QueryService{}.entitiesByType(document, RepresentationType{"Node"});
+    const auto by_type = QueryService{}.entitiesByType(document, RepresentationType{"Node"});
 
     EXPECT_TRUE(validation.valid);
     ASSERT_NE(queried, nullptr);
@@ -1360,8 +1285,7 @@ TEST(QueryTest, LookupsAreCategorySpecificAndUnknownIdsReturnNull) {
     RepresentationDocument document;
     auto& source = document.createEntity(RepresentationType{"Node"});
     auto& target = document.createEntity(RepresentationType{"Node"});
-    auto& relationship =
-        document.createRelationship(source, target, RepresentationType{"Edge"});
+    auto& relationship = document.createRelationship(source, target, RepresentationType{"Edge"});
     QueryService query;
 
     EXPECT_EQ(query.findEntity(document, source.id()), &source);
@@ -1369,8 +1293,7 @@ TEST(QueryTest, LookupsAreCategorySpecificAndUnknownIdsReturnNull) {
     EXPECT_EQ(query.findEntity(document, relationship.id()), nullptr);
     EXPECT_EQ(query.findRelationship(document, source.id()), nullptr);
     EXPECT_EQ(query.findEntity(document, RepresentationId{"unknown"}), nullptr);
-    EXPECT_EQ(
-        query.findRelationship(document, RepresentationId{"unknown"}), nullptr);
+    EXPECT_EQ(query.findRelationship(document, RepresentationId{"unknown"}), nullptr);
 }
 
 TEST(QueryTest, TypeQueriesAreExactCaseSensitiveAndPreserveInsertionOrder) {
@@ -1383,12 +1306,9 @@ TEST(QueryTest, TypeQueriesAreExactCaseSensitiveAndPreserveInsertionOrder) {
     const DocumentSnapshot before = snapshot_of(document);
 
     QueryService query;
-    const EntityCollection nodes =
-        query.entitiesByType(document, RepresentationType{"Node"});
-    const EntityCollection lower_nodes =
-        query.entitiesByType(document, RepresentationType{"node"});
-    const EntityCollection absent =
-        query.entitiesByType(document, RepresentationType{"Missing"});
+    const EntityCollection nodes = query.entitiesByType(document, RepresentationType{"Node"});
+    const EntityCollection lower_nodes = query.entitiesByType(document, RepresentationType{"node"});
+    const EntityCollection absent = query.entitiesByType(document, RepresentationType{"Missing"});
 
     EXPECT_EQ(ids_of(nodes),
               (std::vector<std::string>{
@@ -1408,8 +1328,7 @@ TEST(QueryTest, QueriesAreSideEffectFreeAndAvailableDuringTransactions) {
     auto& tentative = document.createEntity(RepresentationType{"Node"});
     const RepresentationId tentative_id = tentative.id();
     const DocumentSnapshot before_queries = snapshot_of(document);
-    const RepresentationEntity* const baseline_address =
-        query.findEntity(document, baseline_id);
+    const RepresentationEntity* const baseline_address = query.findEntity(document, baseline_id);
 
     EXPECT_NE(query.findEntity(document, tentative_id), nullptr);
     EXPECT_EQ(query.entitiesByType(document, RepresentationType{"Node"}).size(), 2U);

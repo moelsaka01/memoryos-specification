@@ -17,35 +17,30 @@ int main() {
 
     WorkingMemory working_memory{"example-workspace"};
     WorkingMemoryEngine working_engine;
-    const auto activated =
-        working_engine.activate(working_memory, "example-task");
-    const auto source_stored = working_engine.store(
-        working_memory,
-        WorkingMemoryEntry{"observation",
-                           "the release candidate passed verification",
-                           std::optional<std::uint64_t>{100U}});
+    const auto activated = working_engine.activate(working_memory, "example-task");
+    const auto source_stored =
+        working_engine.store(working_memory,
+                             WorkingMemoryEntry{"observation",
+                                                "the release candidate passed verification",
+                                                std::optional<std::uint64_t>{100U}});
     const auto survivor_stored = working_engine.store(
-        working_memory,
-        WorkingMemoryEntry{"next-action", "publish after approval"});
+        working_memory, WorkingMemoryEntry{"next-action", "publish after approval"});
 
     LongTermMemory long_term_memory{"example-workspace"};
     LongTermMemoryEngine long_term_engine;
     const auto existing_retained = long_term_engine.retain(
-        long_term_memory,
-        LongTermMemoryEntry{"release-policy", "approval is required"});
+        long_term_memory, LongTermMemoryEntry{"release-policy", "approval is required"});
 
-    if (!activated.succeeded() || !source_stored.succeeded() ||
-        !survivor_stored.succeeded() || !existing_retained.succeeded()) {
+    if (!activated.succeeded() || !source_stored.succeeded() || !survivor_stored.succeeded() ||
+        !existing_retained.succeeded()) {
         return 1;
     }
 
     MemoryConsolidationEngine engine;
     ConsolidationSession session{"example-workspace"};
-    ConsolidationRequest request{
-        "example-workspace", "example-task", "observation"};
+    ConsolidationRequest request{"example-workspace", "example-task", "observation"};
 
-    const auto analyzed = engine.analyze(
-        session, request, working_memory, long_term_memory);
+    const auto analyzed = engine.analyze(session, request, working_memory, long_term_memory);
     if (!analyzed.succeeded() || analyzed.candidate() == nullptr ||
         session.state() != ConsolidationSession::State::Analyzed ||
         analyzed.candidate()->sourcePosition() != 0U ||
@@ -60,11 +55,9 @@ int main() {
         return 1;
     }
 
-    const auto retained =
-        engine.retain(session, working_memory, long_term_memory);
+    const auto retained = engine.retain(session, working_memory, long_term_memory);
     if (!retained.succeeded() || retained.candidate() == nullptr ||
-        retained.workingMemory() == nullptr ||
-        retained.longTermMemory() == nullptr ||
+        retained.workingMemory() == nullptr || retained.longTermMemory() == nullptr ||
         session.state() != ConsolidationSession::State::Retained ||
         !retained.candidate()->retainedPosition().has_value() ||
         *retained.candidate()->retainedPosition() != 1U) {
@@ -81,13 +74,11 @@ int main() {
         return 1;
     }
 
-    const auto validated = engine.validate(
-        session, *retained.workingMemory(), *retained.longTermMemory());
+    const auto validated =
+        engine.validate(session, *retained.workingMemory(), *retained.longTermMemory());
     const auto retrieved = engine.retrieveSession(session);
-    if (!validated.succeeded() || !retrieved.succeeded() ||
-        retrieved.session() == nullptr ||
-        retrieved.session()->state() !=
-            ConsolidationSession::State::Retained ||
+    if (!validated.succeeded() || !retrieved.succeeded() || retrieved.session() == nullptr ||
+        retrieved.session()->state() != ConsolidationSession::State::Retained ||
         retrieved.session()->workingMemory() == nullptr ||
         retrieved.session()->longTermMemory() == nullptr) {
         return 1;
@@ -102,13 +93,10 @@ int main() {
     LongTermMemory successor_long_term{*retained.longTermMemory()};
 
     const auto forgotten = engine.forgetSession(session);
-    if (!forgotten.succeeded() ||
-        session.state() != ConsolidationSession::State::Forgotten ||
+    if (!forgotten.succeeded() || session.state() != ConsolidationSession::State::Forgotten ||
         session.request() != nullptr || session.candidate() != nullptr ||
-        session.workingMemory() != nullptr ||
-        session.longTermMemory() != nullptr ||
-        retrieved.session()->state() !=
-            ConsolidationSession::State::Retained ||
+        session.workingMemory() != nullptr || session.longTermMemory() != nullptr ||
+        retrieved.session()->state() != ConsolidationSession::State::Retained ||
         successor_working.size() != 1U || successor_long_term.size() != 2U) {
         return 1;
     }

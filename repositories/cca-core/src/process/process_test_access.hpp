@@ -11,8 +11,7 @@ class ProcessInternalAccess {
     [[nodiscard]] static std::vector<ExecutionState>
     stateTransitions(const ExecutionContext& context);
 
-    static void setState(ExecutionContext& context,
-                         ExecutionState state) noexcept;
+    static void setState(ExecutionContext& context, ExecutionState state) noexcept;
 };
 
 } // namespace cca::process

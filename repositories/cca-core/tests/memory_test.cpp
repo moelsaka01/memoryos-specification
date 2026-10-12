@@ -1,8 +1,7 @@
 #include <cca/memory/memory.hpp>
 
-#include <gtest/gtest.h>
-
 #include <cstddef>
+#include <gtest/gtest.h>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -45,8 +44,7 @@ struct EntrySnapshot final {
     return EntrySnapshot{entry.identifier(), entry.value()};
 }
 
-[[nodiscard]] std::vector<EntrySnapshot>
-snapshot_of(const std::vector<MemoryEntry>& entries) {
+[[nodiscard]] std::vector<EntrySnapshot> snapshot_of(const std::vector<MemoryEntry>& entries) {
     std::vector<EntrySnapshot> snapshot;
     snapshot.reserve(entries.size());
     for (const auto& entry : entries) {
@@ -59,21 +57,14 @@ snapshot_of(const std::vector<MemoryEntry>& entries) {
     return snapshot_of(memory.entries());
 }
 
-void store(MemoryEngine& engine,
-           Memory& memory,
-           std::string identifier,
-           std::string value) {
-    const auto result = engine.store(
-        memory, MemoryEntry{std::move(identifier), std::move(value)});
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+void store(MemoryEngine& engine, Memory& memory, std::string identifier, std::string value) {
+    const auto result = engine.store(memory, MemoryEntry{std::move(identifier), std::move(value)});
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
     EXPECT_EQ(result.code(), "OK");
 }
 
 TEST(MemoryApiTest, PublicDeclarationsMatchTheFrozenContract) {
-    static_assert(std::is_constructible_v<MemoryEntry,
-                                          std::string,
-                                          std::string>);
+    static_assert(std::is_constructible_v<MemoryEntry, std::string, std::string>);
     static_assert(std::is_constructible_v<MemoryQuery, std::string>);
     static_assert(!std::is_convertible_v<std::string, MemoryQuery>);
 
@@ -88,47 +79,34 @@ TEST(MemoryApiTest, PublicDeclarationsMatchTheFrozenContract) {
     static_assert(!std::is_copy_constructible_v<MemoryResult>);
     static_assert(!std::is_copy_assignable_v<MemoryResult>);
 
-    using EntryIdentifier =
-        const std::string& (MemoryEntry::*)() const noexcept;
+    using EntryIdentifier = const std::string& (MemoryEntry::*)() const noexcept;
     using EntryValue = const std::string& (MemoryEntry::*)() const noexcept;
     using QueryText = const std::string& (MemoryQuery::*)() const noexcept;
-    using WorkspaceIdentifier =
-        const std::string& (Memory::*)() const noexcept;
+    using WorkspaceIdentifier = const std::string& (Memory::*)() const noexcept;
     using MemorySize = std::size_t (Memory::*)() const noexcept;
-    using MemoryFind =
-        const MemoryEntry* (Memory::*)(std::string_view) const noexcept;
-    using MemoryEntries =
-        const std::vector<MemoryEntry>& (Memory::*)() const noexcept;
+    using MemoryFind = const MemoryEntry* (Memory::*)(std::string_view) const noexcept;
+    using MemoryEntries = const std::vector<MemoryEntry>& (Memory::*)() const noexcept;
     using ResultSucceeded = bool (MemoryResult::*)() const noexcept;
     using ResultText = const std::string& (MemoryResult::*)() const noexcept;
-    using ResultEntry =
-        const MemoryEntry* (MemoryResult::*)() const noexcept;
-    using ResultMatches =
-        const std::vector<MemoryEntry>& (MemoryResult::*)() const noexcept;
+    using ResultEntry = const MemoryEntry* (MemoryResult::*)() const noexcept;
+    using ResultMatches = const std::vector<MemoryEntry>& (MemoryResult::*)() const noexcept;
     using Store = MemoryResult (MemoryEngine::*)(Memory&, MemoryEntry) const;
-    using Retrieve = MemoryResult (MemoryEngine::*)(
-        const Memory&, std::string_view) const;
-    using Search = MemoryResult (MemoryEngine::*)(
-        const Memory&, const MemoryQuery&) const;
-    using Forget = MemoryResult (MemoryEngine::*)(
-        Memory&, std::string_view) const;
+    using Retrieve = MemoryResult (MemoryEngine::*)(const Memory&, std::string_view) const;
+    using Search = MemoryResult (MemoryEngine::*)(const Memory&, const MemoryQuery&) const;
+    using Forget = MemoryResult (MemoryEngine::*)(Memory&, std::string_view) const;
 
-    static_assert(std::is_same_v<decltype(&MemoryEntry::identifier),
-                                 EntryIdentifier>);
+    static_assert(std::is_same_v<decltype(&MemoryEntry::identifier), EntryIdentifier>);
     static_assert(std::is_same_v<decltype(&MemoryEntry::value), EntryValue>);
     static_assert(std::is_same_v<decltype(&MemoryQuery::text), QueryText>);
-    static_assert(std::is_same_v<decltype(&Memory::workspaceIdentifier),
-                                 WorkspaceIdentifier>);
+    static_assert(std::is_same_v<decltype(&Memory::workspaceIdentifier), WorkspaceIdentifier>);
     static_assert(std::is_same_v<decltype(&Memory::size), MemorySize>);
     static_assert(std::is_same_v<decltype(&Memory::find), MemoryFind>);
     static_assert(std::is_same_v<decltype(&Memory::entries), MemoryEntries>);
-    static_assert(std::is_same_v<decltype(&MemoryResult::succeeded),
-                                 ResultSucceeded>);
+    static_assert(std::is_same_v<decltype(&MemoryResult::succeeded), ResultSucceeded>);
     static_assert(std::is_same_v<decltype(&MemoryResult::code), ResultText>);
     static_assert(std::is_same_v<decltype(&MemoryResult::message), ResultText>);
     static_assert(std::is_same_v<decltype(&MemoryResult::entry), ResultEntry>);
-    static_assert(std::is_same_v<decltype(&MemoryResult::matches),
-                                 ResultMatches>);
+    static_assert(std::is_same_v<decltype(&MemoryResult::matches), ResultMatches>);
     static_assert(std::is_same_v<decltype(&MemoryEngine::store), Store>);
     static_assert(std::is_same_v<decltype(&MemoryEngine::retrieve), Retrieve>);
     static_assert(std::is_same_v<decltype(&MemoryEngine::search), Search>);
@@ -172,8 +150,7 @@ TEST(MemoryStoreTest, CreatesAndAtomicallyReplacesEntries) {
     ASSERT_NE(memory.find("alpha"), nullptr);
     EXPECT_EQ(memory.find("alpha")->value(), "replacement");
     EXPECT_EQ(snapshot_of(memory),
-              (std::vector<EntrySnapshot>{{"alpha", "replacement"},
-                                          {"beta", "two"}}));
+              (std::vector<EntrySnapshot>{{"alpha", "replacement"}, {"beta", "two"}}));
 }
 
 TEST(MemoryStoreTest, InvalidIdentifierLeavesMemoryUnchanged) {
@@ -204,8 +181,7 @@ TEST(MemoryRetrieveTest, UsesExactCaseSensitiveIdentifiers) {
     ASSERT_TRUE(found.succeeded()) << found.message();
     EXPECT_EQ(found.code(), "OK");
     ASSERT_NE(found.entry(), nullptr);
-    EXPECT_EQ(snapshot_of(*found.entry()),
-              (EntrySnapshot{"CaseSensitive", "payload"}));
+    EXPECT_EQ(snapshot_of(*found.entry()), (EntrySnapshot{"CaseSensitive", "payload"}));
 
     const auto absent = engine.retrieve(memory, "casesensitive");
     EXPECT_FALSE(absent.succeeded());
@@ -219,8 +195,7 @@ TEST(MemoryRetrieveTest, UsesExactCaseSensitiveIdentifiers) {
     EXPECT_EQ(repeated.message(), absent.message());
 }
 
-TEST(MemoryIdentifierValidationTest,
-     EmptyIdentifiersAreRejectedDeterministicallyWithoutMutation) {
+TEST(MemoryIdentifierValidationTest, EmptyIdentifiersAreRejectedDeterministicallyWithoutMutation) {
     Memory memory{"workspace"};
     MemoryEngine engine;
     store(engine, memory, "stable", "value");
@@ -282,8 +257,7 @@ TEST(MemoryForgetTest, IsIdempotentAndRestorageAppends) {
     EXPECT_TRUE(removed.succeeded()) << removed.message();
     EXPECT_EQ(removed.code(), "OK");
     EXPECT_EQ(snapshot_of(memory),
-              (std::vector<EntrySnapshot>{{"first", "one"},
-                                          {"third", "three"}}));
+              (std::vector<EntrySnapshot>{{"first", "one"}, {"third", "three"}}));
 
     const auto before_absent = snapshot_of(memory);
     const auto absent = engine.forget(memory, "second");
@@ -292,10 +266,9 @@ TEST(MemoryForgetTest, IsIdempotentAndRestorageAppends) {
     EXPECT_EQ(snapshot_of(memory), before_absent);
 
     store(engine, memory, "second", "restored");
-    EXPECT_EQ(snapshot_of(memory),
-              (std::vector<EntrySnapshot>{{"first", "one"},
-                                          {"third", "three"},
-                                          {"second", "restored"}}));
+    EXPECT_EQ(
+        snapshot_of(memory),
+        (std::vector<EntrySnapshot>{{"first", "one"}, {"third", "three"}, {"second", "restored"}}));
 }
 
 TEST(MemoryOwnershipTest, ValuesResultsAndInstancesAreIndependent) {
@@ -322,23 +295,19 @@ TEST(MemoryOwnershipTest, ValuesResultsAndInstancesAreIndependent) {
     ASSERT_TRUE(first_engine.forget(first, "owned-id").succeeded());
     store(first_engine, first, "replacement", "new-state");
 
-    EXPECT_EQ(snapshot_of(*retrieved.entry()),
-              (EntrySnapshot{"owned-id", "owned-value"}));
+    EXPECT_EQ(snapshot_of(*retrieved.entry()), (EntrySnapshot{"owned-id", "owned-value"}));
     EXPECT_EQ(snapshot_of(searched.matches()),
               (std::vector<EntrySnapshot>{{"owned-id", "owned-value"}}));
-    EXPECT_EQ(snapshot_of(second),
-              (std::vector<EntrySnapshot>{{"other", "isolated"}}));
+    EXPECT_EQ(snapshot_of(second), (std::vector<EntrySnapshot>{{"other", "isolated"}}));
 
     auto moved = std::move(retrieved);
     ASSERT_NE(moved.entry(), nullptr);
-    EXPECT_EQ(snapshot_of(*moved.entry()),
-              (EntrySnapshot{"owned-id", "owned-value"}));
+    EXPECT_EQ(snapshot_of(*moved.entry()), (EntrySnapshot{"owned-id", "owned-value"}));
 
     auto assigned = first_engine.retrieve(first, "replacement");
     assigned = std::move(moved);
     ASSERT_NE(assigned.entry(), nullptr);
-    EXPECT_EQ(snapshot_of(*assigned.entry()),
-              (EntrySnapshot{"owned-id", "owned-value"}));
+    EXPECT_EQ(snapshot_of(*assigned.entry()), (EntrySnapshot{"owned-id", "owned-value"}));
 }
 
 TEST(MemoryOrderingTest, ReplacementPreservesDeterministicOrdering) {
@@ -347,8 +316,7 @@ TEST(MemoryOrderingTest, ReplacementPreservesDeterministicOrdering) {
     MemoryEngine first_engine;
     MemoryEngine second_engine;
 
-    const auto apply_equivalent_sequence = [](MemoryEngine& engine,
-                                              Memory& memory) {
+    const auto apply_equivalent_sequence = [](MemoryEngine& engine, Memory& memory) {
         store(engine, memory, "alpha", "match-original");
         store(engine, memory, "beta", "match-beta");
         store(engine, memory, "gamma", "match-gamma");
@@ -367,10 +335,8 @@ TEST(MemoryOrderingTest, ReplacementPreservesDeterministicOrdering) {
     EXPECT_EQ(snapshot_of(first), expected);
     EXPECT_EQ(snapshot_of(second), expected);
 
-    const auto first_search =
-        first_engine.search(first, MemoryQuery{"match"});
-    const auto second_search =
-        second_engine.search(second, MemoryQuery{"match"});
+    const auto first_search = first_engine.search(first, MemoryQuery{"match"});
+    const auto second_search = second_engine.search(second, MemoryQuery{"match"});
     EXPECT_EQ(snapshot_of(first_search.matches()), expected);
     EXPECT_EQ(snapshot_of(second_search.matches()), expected);
     EXPECT_EQ(first_search.code(), second_search.code());

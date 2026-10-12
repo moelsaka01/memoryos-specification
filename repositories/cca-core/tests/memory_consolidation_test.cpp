@@ -1,11 +1,10 @@
 #include <cca/memory/memory_consolidation.hpp>
 
-#include <gtest/gtest.h>
-
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <future>
+#include <gtest/gtest.h>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -165,13 +164,11 @@ struct ResultSnapshot final {
     bool operator==(const ResultSnapshot&) const = default;
 };
 
-[[nodiscard]] WorkingEntrySnapshot snapshot_of(
-    const WorkingMemoryEntry& entry) {
+[[nodiscard]] WorkingEntrySnapshot snapshot_of(const WorkingMemoryEntry& entry) {
     return {entry.identifier(), entry.value(), entry.expirationPoint()};
 }
 
-[[nodiscard]] LongTermEntrySnapshot snapshot_of(
-    const LongTermMemoryEntry& entry) {
+[[nodiscard]] LongTermEntrySnapshot snapshot_of(const LongTermMemoryEntry& entry) {
     return {entry.identifier(), entry.value(), entry.archived()};
 }
 
@@ -196,17 +193,14 @@ struct ResultSnapshot final {
     return {memory.workspaceIdentifier(), std::move(entries)};
 }
 
-[[nodiscard]] CandidateSnapshot snapshot_of(
-    const ConsolidationCandidate& candidate) {
+[[nodiscard]] CandidateSnapshot snapshot_of(const ConsolidationCandidate& candidate) {
     std::optional<WorkingEntrySnapshot> working_entry;
-    if (const auto* const entry = candidate.workingMemoryEntry();
-        entry != nullptr) {
+    if (const auto* const entry = candidate.workingMemoryEntry(); entry != nullptr) {
         working_entry = snapshot_of(*entry);
     }
 
     std::optional<LongTermEntrySnapshot> long_term_entry;
-    if (const auto* const entry = candidate.longTermMemoryEntry();
-        entry != nullptr) {
+    if (const auto* const entry = candidate.longTermMemoryEntry(); entry != nullptr) {
         long_term_entry = snapshot_of(*entry);
     }
 
@@ -218,15 +212,11 @@ struct ResultSnapshot final {
             candidate.retainedPosition()};
 }
 
-[[nodiscard]] RequestSnapshot snapshot_of(
-    const ConsolidationRequest& request) {
-    return {request.workspaceIdentifier(),
-            request.taskIdentifier(),
-            request.entryIdentifier()};
+[[nodiscard]] RequestSnapshot snapshot_of(const ConsolidationRequest& request) {
+    return {request.workspaceIdentifier(), request.taskIdentifier(), request.entryIdentifier()};
 }
 
-[[nodiscard]] SessionSnapshot snapshot_of(
-    const ConsolidationSession& session) {
+[[nodiscard]] SessionSnapshot snapshot_of(const ConsolidationSession& session) {
     std::optional<RequestSnapshot> request;
     if (const auto* const value = session.request(); value != nullptr) {
         request = snapshot_of(*value);
@@ -286,14 +276,12 @@ struct ResultSnapshot final {
 }
 
 void require_success(const ConsolidationResult& result) {
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
     EXPECT_EQ(result.code(), "OK");
     EXPECT_TRUE(result.message().empty());
 }
 
-void expect_failure(const ConsolidationResult& result,
-                    const std::string_view code) {
+void expect_failure(const ConsolidationResult& result, const std::string_view code) {
     EXPECT_FALSE(result.succeeded());
     EXPECT_EQ(result.code(), code);
     EXPECT_FALSE(result.message().empty());
@@ -303,12 +291,10 @@ void expect_failure(const ConsolidationResult& result,
     EXPECT_EQ(result.longTermMemory(), nullptr);
 }
 
-void activate(WorkingMemory& memory,
-              const std::string_view task_identifier = task) {
+void activate(WorkingMemory& memory, const std::string_view task_identifier = task) {
     WorkingMemoryEngine engine;
     const auto result = engine.activate(memory, std::string{task_identifier});
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
 void store(WorkingMemory& memory,
@@ -317,44 +303,34 @@ void store(WorkingMemory& memory,
            const std::optional<std::uint64_t> expiration = std::nullopt) {
     WorkingMemoryEngine engine;
     const auto result = engine.store(
-        memory,
-        WorkingMemoryEntry{
-            std::move(identifier), std::move(value), expiration});
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+        memory, WorkingMemoryEntry{std::move(identifier), std::move(value), expiration});
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
-void retain(LongTermMemory& memory,
-            std::string identifier,
-            std::string value) {
+void retain(LongTermMemory& memory, std::string identifier, std::string value) {
     LongTermMemoryEngine engine;
-    const auto result = engine.retain(
-        memory,
-        LongTermMemoryEntry{std::move(identifier), std::move(value)});
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    const auto result =
+        engine.retain(memory, LongTermMemoryEntry{std::move(identifier), std::move(value)});
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
 void archive(LongTermMemory& memory, const std::string_view identifier) {
     LongTermMemoryEngine engine;
     const auto result = engine.archive(memory, identifier);
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
 void forget(LongTermMemory& memory, const std::string_view identifier) {
     LongTermMemoryEngine engine;
     const auto result = engine.forget(memory, identifier);
-    ASSERT_TRUE(result.succeeded()) << result.code() << ": "
-                                    << result.message();
+    ASSERT_TRUE(result.succeeded()) << result.code() << ": " << result.message();
 }
 
-[[nodiscard]] bool is_forgotten(const LongTermMemory& memory,
-                                const std::string_view identifier) {
+[[nodiscard]] bool is_forgotten(const LongTermMemory& memory, const std::string_view identifier) {
     LongTermMemory copy{memory};
     LongTermMemoryEngine engine;
-    const auto result = engine.retain(
-        copy, LongTermMemoryEntry{std::string{identifier}, "probe-value"});
+    const auto result =
+        engine.retain(copy, LongTermMemoryEntry{std::string{identifier}, "probe-value"});
     return result.code() == "FORGOTTEN_IDENTIFIER";
 }
 
@@ -362,18 +338,14 @@ struct Fixture final {
     WorkingMemory working{std::string{workspace}};
     LongTermMemory long_term{std::string{workspace}};
     ConsolidationSession session{std::string{workspace}};
-    ConsolidationRequest request{std::string{workspace},
-                                 std::string{task},
-                                 std::string{source_identifier}};
+    ConsolidationRequest request{
+        std::string{workspace}, std::string{task}, std::string{source_identifier}};
     MemoryConsolidationEngine engine;
 
     Fixture() {
         activate(working);
         store(working, "working-a", "working-value-a", 100U);
-        store(working,
-              std::string{source_identifier},
-              std::string{source_value},
-              200U);
+        store(working, std::string{source_identifier}, std::string{source_value}, 200U);
         store(working, "working-c", "working-value-c", 300U);
 
         retain(long_term, "long-a", "long-value-a");
@@ -386,10 +358,7 @@ struct Fixture final {
 
 void analyze(Fixture& fixture) {
     const auto result = fixture.engine.analyze(
-        fixture.session,
-        fixture.request,
-        fixture.working,
-        fixture.long_term);
+        fixture.session, fixture.request, fixture.working, fixture.long_term);
     require_success(result);
 }
 
@@ -401,23 +370,19 @@ void promote(Fixture& fixture) {
 
 [[nodiscard]] ConsolidationResult retain_transition(Fixture& fixture) {
     promote(fixture);
-    return fixture.engine.retain(
-        fixture.session, fixture.working, fixture.long_term);
+    return fixture.engine.retain(fixture.session, fixture.working, fixture.long_term);
 }
 
 TEST(MemoryConsolidationApiTest, PublicDeclarationsMatchFrozenContract) {
-    static_assert(std::is_constructible_v<ConsolidationRequest,
-                                          std::string,
-                                          std::string,
-                                          std::string>);
+    static_assert(
+        std::is_constructible_v<ConsolidationRequest, std::string, std::string, std::string>);
     static_assert(std::is_copy_constructible_v<ConsolidationRequest>);
     static_assert(std::is_move_constructible_v<ConsolidationRequest>);
 
     static_assert(!std::is_default_constructible_v<ConsolidationCandidate>);
     static_assert(std::is_copy_constructible_v<ConsolidationCandidate>);
     static_assert(std::is_copy_assignable_v<ConsolidationCandidate>);
-    static_assert(
-        std::is_nothrow_move_constructible_v<ConsolidationCandidate>);
+    static_assert(std::is_nothrow_move_constructible_v<ConsolidationCandidate>);
     static_assert(std::is_nothrow_move_assignable_v<ConsolidationCandidate>);
 
     static_assert(std::is_constructible_v<ConsolidationSession, std::string>);
@@ -434,62 +399,45 @@ TEST(MemoryConsolidationApiTest, PublicDeclarationsMatchFrozenContract) {
     static_assert(std::is_nothrow_move_assignable_v<ConsolidationResult>);
     static_assert(std::is_empty_v<MemoryConsolidationEngine>);
 
-    using Analyze = ConsolidationResult (MemoryConsolidationEngine::*)(
-        ConsolidationSession&,
-        const ConsolidationRequest&,
-        const WorkingMemory&,
-        const LongTermMemory&) const;
-    using Promote = ConsolidationResult (MemoryConsolidationEngine::*)(
-        ConsolidationSession&) const;
+    using Analyze = ConsolidationResult (MemoryConsolidationEngine::*)(ConsolidationSession&,
+                                                                       const ConsolidationRequest&,
+                                                                       const WorkingMemory&,
+                                                                       const LongTermMemory&) const;
+    using Promote = ConsolidationResult (MemoryConsolidationEngine::*)(ConsolidationSession&) const;
     using Retain = ConsolidationResult (MemoryConsolidationEngine::*)(
-        ConsolidationSession&,
-        const WorkingMemory&,
-        const LongTermMemory&) const;
+        ConsolidationSession&, const WorkingMemory&, const LongTermMemory&) const;
     using Validate = ConsolidationResult (MemoryConsolidationEngine::*)(
-        const ConsolidationSession&,
-        const WorkingMemory&,
-        const LongTermMemory&) const;
-    using Retrieve = ConsolidationResult (MemoryConsolidationEngine::*)(
-        const ConsolidationSession&) const;
-    using Forget = ConsolidationResult (MemoryConsolidationEngine::*)(
-        ConsolidationSession&) const;
+        const ConsolidationSession&, const WorkingMemory&, const LongTermMemory&) const;
+    using Retrieve =
+        ConsolidationResult (MemoryConsolidationEngine::*)(const ConsolidationSession&) const;
+    using Forget = ConsolidationResult (MemoryConsolidationEngine::*)(ConsolidationSession&) const;
 
-    static_assert(std::is_same_v<
-                  decltype(static_cast<Analyze>(
-                      &MemoryConsolidationEngine::analyze)),
-                  Analyze>);
-    static_assert(std::is_same_v<
-                  decltype(static_cast<Promote>(
-                      &MemoryConsolidationEngine::promote)),
-                  Promote>);
-    static_assert(std::is_same_v<
-                  decltype(static_cast<Retain>(
-                      &MemoryConsolidationEngine::retain)),
-                  Retain>);
-    static_assert(std::is_same_v<
-                  decltype(static_cast<Validate>(
-                      &MemoryConsolidationEngine::validate)),
-                  Validate>);
-    static_assert(std::is_same_v<
-                  decltype(static_cast<Retrieve>(
-                      &MemoryConsolidationEngine::retrieveSession)),
-                  Retrieve>);
-    static_assert(std::is_same_v<
-                  decltype(static_cast<Forget>(
-                      &MemoryConsolidationEngine::forgetSession)),
-                  Forget>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Analyze>(&MemoryConsolidationEngine::analyze)),
+                       Analyze>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Promote>(&MemoryConsolidationEngine::promote)),
+                       Promote>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Retain>(&MemoryConsolidationEngine::retain)), Retain>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Validate>(&MemoryConsolidationEngine::validate)),
+                       Validate>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Retrieve>(&MemoryConsolidationEngine::retrieveSession)),
+                       Retrieve>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Forget>(&MemoryConsolidationEngine::forgetSession)),
+                       Forget>);
 
     SUCCEED();
 }
 
-TEST(MemoryConsolidationOwnershipTest,
-     ConstructionAndWorkspaceOwnershipAreExact) {
-    EXPECT_THROW(ConsolidationRequest("", "task", "entry"),
-                 std::invalid_argument);
+TEST(MemoryConsolidationOwnershipTest, ConstructionAndWorkspaceOwnershipAreExact) {
+    EXPECT_THROW(ConsolidationRequest("", "task", "entry"), std::invalid_argument);
     EXPECT_THROW(ConsolidationSession(""), std::invalid_argument);
 
-    const ConsolidationRequest empty_semantic_fields{
-        std::string{workspace}, "", ""};
+    const ConsolidationRequest empty_semantic_fields{std::string{workspace}, "", ""};
     EXPECT_EQ(empty_semantic_fields.workspaceIdentifier(), workspace);
     EXPECT_TRUE(empty_semantic_fields.taskIdentifier().empty());
     EXPECT_TRUE(empty_semantic_fields.entryIdentifier().empty());
@@ -526,8 +474,8 @@ TEST(MemoryConsolidationLifecycleTest, PristineAndSuccessfulStagesAreExact) {
     ASSERT_NE(fixture.session.candidate()->longTermMemoryEntry(), nullptr);
     EXPECT_FALSE(fixture.session.candidate()->retainedPosition().has_value());
 
-    const auto retained = fixture.engine.retain(
-        fixture.session, fixture.working, fixture.long_term);
+    const auto retained =
+        fixture.engine.retain(fixture.session, fixture.working, fixture.long_term);
     require_success(retained);
     EXPECT_EQ(fixture.session.state(), State::Retained);
     EXPECT_NE(fixture.session.request(), nullptr);
@@ -545,21 +493,18 @@ TEST(MemoryConsolidationLifecycleTest, PromotionIsTypedAndIdempotent) {
     const auto first_session = snapshot_of(fixture.session);
     ASSERT_NE(first.candidate(), nullptr);
     ASSERT_NE(first.candidate()->longTermMemoryEntry(), nullptr);
-    EXPECT_EQ(first.candidate()->longTermMemoryEntry()->identifier(),
-              source_identifier);
+    EXPECT_EQ(first.candidate()->longTermMemoryEntry()->identifier(), source_identifier);
     EXPECT_EQ(first.candidate()->longTermMemoryEntry()->value(), source_value);
     EXPECT_FALSE(first.candidate()->longTermMemoryEntry()->archived());
 
     const auto second = fixture.engine.promote(fixture.session);
     require_success(second);
     ASSERT_NE(second.candidate(), nullptr);
-    EXPECT_EQ(snapshot_of(*second.candidate()),
-              snapshot_of(*first.candidate()));
+    EXPECT_EQ(snapshot_of(*second.candidate()), snapshot_of(*first.candidate()));
     EXPECT_EQ(snapshot_of(fixture.session), first_session);
 }
 
-TEST(MemoryConsolidationProvenanceTest,
-     CandidatePreservesCompleteWorkingEvidence) {
+TEST(MemoryConsolidationProvenanceTest, CandidatePreservesCompleteWorkingEvidence) {
     Fixture fixture;
     const auto result = fixture.engine.analyze(
         fixture.session, fixture.request, fixture.working, fixture.long_term);
@@ -578,8 +523,7 @@ TEST(MemoryConsolidationProvenanceTest,
     EXPECT_FALSE(candidate.retainedPosition().has_value());
 }
 
-TEST(MemoryConsolidationTransitionTest,
-     IdentityContentAndBaseStateArePreserved) {
+TEST(MemoryConsolidationTransitionTest, IdentityContentAndBaseStateArePreserved) {
     Fixture fixture;
     const auto result = retain_transition(fixture);
     require_success(result);
@@ -594,8 +538,7 @@ TEST(MemoryConsolidationTransitionTest,
     EXPECT_FALSE(retained->archived());
 }
 
-TEST(MemoryConsolidationTransitionTest,
-     WorkingSuccessorPreservesSurvivorsAndOrder) {
+TEST(MemoryConsolidationTransitionTest, WorkingSuccessorPreservesSurvivorsAndOrder) {
     Fixture fixture;
     const auto before = snapshot_of(fixture.working);
     const auto result = retain_transition(fixture);
@@ -612,8 +555,7 @@ TEST(MemoryConsolidationTransitionTest,
     EXPECT_EQ(successor.entries[1], before.entries[2]);
 }
 
-TEST(MemoryConsolidationTransitionTest,
-     LongTermSuccessorAppendsAndPreservesAllState) {
+TEST(MemoryConsolidationTransitionTest, LongTermSuccessorAppendsAndPreservesAllState) {
     Fixture fixture;
     const auto before = snapshot_of(fixture.long_term);
     ASSERT_TRUE(is_forgotten(fixture.long_term, "forgotten-unrelated"));
@@ -633,8 +575,7 @@ TEST(MemoryConsolidationTransitionTest,
     EXPECT_FALSE(successor.entries.back().archived);
     ASSERT_TRUE(result.candidate()->retainedPosition().has_value());
     EXPECT_EQ(*result.candidate()->retainedPosition(), before.entries.size());
-    EXPECT_TRUE(
-        is_forgotten(*result.longTermMemory(), "forgotten-unrelated"));
+    EXPECT_TRUE(is_forgotten(*result.longTermMemory(), "forgotten-unrelated"));
 }
 
 TEST(MemoryConsolidationTransitionTest, AtomicSuccessorPairIsComplete) {
@@ -648,8 +589,7 @@ TEST(MemoryConsolidationTransitionTest, AtomicSuccessorPairIsComplete) {
     ASSERT_NE(result.longTermMemory(), nullptr);
     ASSERT_NE(fixture.session.workingMemory(), nullptr);
     ASSERT_NE(fixture.session.longTermMemory(), nullptr);
-    EXPECT_EQ(snapshot_of(*result.workingMemory()),
-              snapshot_of(*fixture.session.workingMemory()));
+    EXPECT_EQ(snapshot_of(*result.workingMemory()), snapshot_of(*fixture.session.workingMemory()));
     EXPECT_EQ(snapshot_of(*result.longTermMemory()),
               snapshot_of(*fixture.session.longTermMemory()));
     EXPECT_NE(result.workingMemory(), fixture.session.workingMemory());
@@ -666,8 +606,8 @@ TEST(MemoryConsolidationValidationTest, IsStateDependentAndObservational) {
 
     {
         const auto before = snapshot_of(fixture.session);
-        const auto result = fixture.engine.validate(
-            fixture.session, fixture.working, fixture.long_term);
+        const auto result =
+            fixture.engine.validate(fixture.session, fixture.working, fixture.long_term);
         expect_failure(result, "SESSION_NOT_ANALYZED");
         EXPECT_EQ(snapshot_of(fixture.session), before);
     }
@@ -675,8 +615,8 @@ TEST(MemoryConsolidationValidationTest, IsStateDependentAndObservational) {
     analyze(fixture);
     {
         const auto before = snapshot_of(fixture.session);
-        const auto result = fixture.engine.validate(
-            fixture.session, fixture.working, fixture.long_term);
+        const auto result =
+            fixture.engine.validate(fixture.session, fixture.working, fixture.long_term);
         require_success(result);
         EXPECT_EQ(snapshot_of(fixture.session), before);
     }
@@ -685,28 +625,25 @@ TEST(MemoryConsolidationValidationTest, IsStateDependentAndObservational) {
         const auto result = fixture.engine.promote(fixture.session);
         require_success(result);
         const auto before = snapshot_of(fixture.session);
-        const auto validation = fixture.engine.validate(
-            fixture.session, fixture.working, fixture.long_term);
+        const auto validation =
+            fixture.engine.validate(fixture.session, fixture.working, fixture.long_term);
         require_success(validation);
         EXPECT_EQ(snapshot_of(fixture.session), before);
     }
 
-    const auto retained = fixture.engine.retain(
-        fixture.session, fixture.working, fixture.long_term);
+    const auto retained =
+        fixture.engine.retain(fixture.session, fixture.working, fixture.long_term);
     require_success(retained);
     ASSERT_NE(retained.workingMemory(), nullptr);
     ASSERT_NE(retained.longTermMemory(), nullptr);
     const auto before = snapshot_of(fixture.session);
     const auto validation = fixture.engine.validate(
-        fixture.session,
-        *retained.workingMemory(),
-        *retained.longTermMemory());
+        fixture.session, *retained.workingMemory(), *retained.longTermMemory());
     require_success(validation);
     EXPECT_EQ(snapshot_of(fixture.session), before);
 }
 
-TEST(MemoryConsolidationSessionTest,
-     RetrieveDeepCopiesEveryLifecycleStage) {
+TEST(MemoryConsolidationSessionTest, RetrieveDeepCopiesEveryLifecycleStage) {
     Fixture fixture;
     const auto check = [&fixture] {
         const auto before = snapshot_of(fixture.session);
@@ -727,8 +664,8 @@ TEST(MemoryConsolidationSessionTest,
     }
     check();
     {
-        const auto result = fixture.engine.retain(
-            fixture.session, fixture.working, fixture.long_term);
+        const auto result =
+            fixture.engine.retain(fixture.session, fixture.working, fixture.long_term);
         require_success(result);
     }
     check();
@@ -739,13 +676,9 @@ TEST(MemoryConsolidationSessionTest,
     check();
 }
 
-TEST(MemoryConsolidationSessionTest,
-     ForgettingEveryStageIsTerminalAndIsolated) {
-    for (const State stage : {State::Pristine,
-                              State::Analyzed,
-                              State::Promoted,
-                              State::Retained,
-                              State::Forgotten}) {
+TEST(MemoryConsolidationSessionTest, ForgettingEveryStageIsTerminalAndIsolated) {
+    for (const State stage :
+         {State::Pristine, State::Analyzed, State::Promoted, State::Retained, State::Forgotten}) {
         Fixture fixture;
         std::optional<WorkingSnapshot> detached_working;
         std::optional<LongTermSnapshot> detached_long_term;
@@ -758,8 +691,8 @@ TEST(MemoryConsolidationSessionTest,
             require_success(result);
         }
         if (stage == State::Retained) {
-            const auto result = fixture.engine.retain(
-                fixture.session, fixture.working, fixture.long_term);
+            const auto result =
+                fixture.engine.retain(fixture.session, fixture.working, fixture.long_term);
             require_success(result);
             ASSERT_NE(result.workingMemory(), nullptr);
             ASSERT_NE(result.longTermMemory(), nullptr);
@@ -793,67 +726,45 @@ TEST(MemoryConsolidationSessionTest,
     }
 }
 
-TEST(MemoryConsolidationLifecycleTest,
-     RepeatedAndWrongStageOperationsAreExact) {
+TEST(MemoryConsolidationLifecycleTest, RepeatedAndWrongStageOperationsAreExact) {
     Fixture fixture;
 
-    expect_failure(fixture.engine.promote(fixture.session),
+    expect_failure(fixture.engine.promote(fixture.session), "SESSION_NOT_ANALYZED");
+    expect_failure(fixture.engine.retain(fixture.session, fixture.working, fixture.long_term),
                    "SESSION_NOT_ANALYZED");
-    expect_failure(
-        fixture.engine.retain(
-            fixture.session, fixture.working, fixture.long_term),
-        "SESSION_NOT_ANALYZED");
 
     analyze(fixture);
-    expect_failure(
-        fixture.engine.analyze(
-            fixture.session,
-            fixture.request,
-            fixture.working,
-            fixture.long_term),
-        "SESSION_ALREADY_STARTED");
-    expect_failure(
-        fixture.engine.retain(
-            fixture.session, fixture.working, fixture.long_term),
-        "SESSION_NOT_PROMOTED");
+    expect_failure(fixture.engine.analyze(
+                       fixture.session, fixture.request, fixture.working, fixture.long_term),
+                   "SESSION_ALREADY_STARTED");
+    expect_failure(fixture.engine.retain(fixture.session, fixture.working, fixture.long_term),
+                   "SESSION_NOT_PROMOTED");
 
     {
         const auto result = fixture.engine.promote(fixture.session);
         require_success(result);
     }
     {
-        const auto result = fixture.engine.retain(
-            fixture.session, fixture.working, fixture.long_term);
+        const auto result =
+            fixture.engine.retain(fixture.session, fixture.working, fixture.long_term);
         require_success(result);
     }
-    expect_failure(fixture.engine.promote(fixture.session),
+    expect_failure(fixture.engine.promote(fixture.session), "SESSION_ALREADY_RETAINED");
+    expect_failure(fixture.engine.retain(fixture.session, fixture.working, fixture.long_term),
                    "SESSION_ALREADY_RETAINED");
-    expect_failure(
-        fixture.engine.retain(
-            fixture.session, fixture.working, fixture.long_term),
-        "SESSION_ALREADY_RETAINED");
 
     {
         const auto result = fixture.engine.forgetSession(fixture.session);
         require_success(result);
     }
-    expect_failure(
-        fixture.engine.analyze(
-            fixture.session,
-            fixture.request,
-            fixture.working,
-            fixture.long_term),
-        "SESSION_FORGOTTEN");
-    expect_failure(fixture.engine.promote(fixture.session),
+    expect_failure(fixture.engine.analyze(
+                       fixture.session, fixture.request, fixture.working, fixture.long_term),
                    "SESSION_FORGOTTEN");
-    expect_failure(
-        fixture.engine.retain(
-            fixture.session, fixture.working, fixture.long_term),
-        "SESSION_FORGOTTEN");
-    expect_failure(
-        fixture.engine.validate(
-            fixture.session, fixture.working, fixture.long_term),
-        "SESSION_FORGOTTEN");
+    expect_failure(fixture.engine.promote(fixture.session), "SESSION_FORGOTTEN");
+    expect_failure(fixture.engine.retain(fixture.session, fixture.working, fixture.long_term),
+                   "SESSION_FORGOTTEN");
+    expect_failure(fixture.engine.validate(fixture.session, fixture.working, fixture.long_term),
+                   "SESSION_FORGOTTEN");
 }
 
 TEST(MemoryConsolidationPrecedenceTest, AnalyzePrecedenceIsExact) {
@@ -865,8 +776,7 @@ TEST(MemoryConsolidationPrecedenceTest, AnalyzePrecedenceIsExact) {
         WorkingMemory wrong_working{"other"};
         LongTermMemory wrong_long_term{"other"};
         expect_failure(
-            fixture.engine.analyze(
-                fixture.session, wrong, wrong_working, wrong_long_term),
+            fixture.engine.analyze(fixture.session, wrong, wrong_working, wrong_long_term),
             "SESSION_FORGOTTEN");
     }
     {
@@ -876,8 +786,7 @@ TEST(MemoryConsolidationPrecedenceTest, AnalyzePrecedenceIsExact) {
         WorkingMemory wrong_working{"other"};
         LongTermMemory wrong_long_term{"other"};
         expect_failure(
-            fixture.engine.analyze(
-                fixture.session, wrong, wrong_working, wrong_long_term),
+            fixture.engine.analyze(fixture.session, wrong, wrong_working, wrong_long_term),
             "SESSION_ALREADY_STARTED");
     }
     {
@@ -886,8 +795,7 @@ TEST(MemoryConsolidationPrecedenceTest, AnalyzePrecedenceIsExact) {
         WorkingMemory wrong_working{"other"};
         LongTermMemory wrong_long_term{"other"};
         expect_failure(
-            fixture.engine.analyze(
-                fixture.session, wrong, wrong_working, wrong_long_term),
+            fixture.engine.analyze(fixture.session, wrong, wrong_working, wrong_long_term),
             "WORKSPACE_MISMATCH");
     }
     {
@@ -896,11 +804,7 @@ TEST(MemoryConsolidationPrecedenceTest, AnalyzePrecedenceIsExact) {
         WorkingMemory wrong_working{"other"};
         LongTermMemory wrong_long_term{"other"};
         expect_failure(
-            fixture.engine.analyze(
-                fixture.session,
-                request,
-                wrong_working,
-                wrong_long_term),
+            fixture.engine.analyze(fixture.session, request, wrong_working, wrong_long_term),
             "WORKSPACE_MISMATCH");
     }
     {
@@ -908,107 +812,70 @@ TEST(MemoryConsolidationPrecedenceTest, AnalyzePrecedenceIsExact) {
         ConsolidationRequest request{std::string{workspace}, "", ""};
         LongTermMemory wrong_long_term{"other"};
         expect_failure(
-            fixture.engine.analyze(
-                fixture.session,
-                request,
-                fixture.working,
-                wrong_long_term),
+            fixture.engine.analyze(fixture.session, request, fixture.working, wrong_long_term),
             "WORKSPACE_MISMATCH");
     }
     {
         Fixture fixture;
         ConsolidationRequest request{std::string{workspace}, "", ""};
         expect_failure(
-            fixture.engine.analyze(
-                fixture.session,
-                request,
-                fixture.working,
-                fixture.long_term),
+            fixture.engine.analyze(fixture.session, request, fixture.working, fixture.long_term),
             "INVALID_TASK_IDENTIFIER");
     }
     {
         Fixture fixture;
-        ConsolidationRequest request{std::string{workspace},
-                                     std::string{task},
-                                     ""};
+        ConsolidationRequest request{std::string{workspace}, std::string{task}, ""};
         expect_failure(
-            fixture.engine.analyze(
-                fixture.session,
-                request,
-                fixture.working,
-                fixture.long_term),
+            fixture.engine.analyze(fixture.session, request, fixture.working, fixture.long_term),
             "INVALID_IDENTIFIER");
     }
 }
 
-TEST(MemoryConsolidationPrecedenceTest,
-     SourcePreconditionsAndDriftAreExact) {
+TEST(MemoryConsolidationPrecedenceTest, SourcePreconditionsAndDriftAreExact) {
     {
         Fixture fixture;
         WorkingMemory inactive{std::string{workspace}};
-        ConsolidationRequest absent{std::string{workspace},
-                                    "wrong-task",
-                                    "absent"};
-        expect_failure(
-            fixture.engine.analyze(
-                fixture.session, absent, inactive, fixture.long_term),
-            "WORKING_MEMORY_NOT_ACTIVE");
+        ConsolidationRequest absent{std::string{workspace}, "wrong-task", "absent"};
+        expect_failure(fixture.engine.analyze(fixture.session, absent, inactive, fixture.long_term),
+                       "WORKING_MEMORY_NOT_ACTIVE");
     }
     {
         Fixture fixture;
-        ConsolidationRequest absent{std::string{workspace},
-                                    "wrong-task",
-                                    "absent"};
+        ConsolidationRequest absent{std::string{workspace}, "wrong-task", "absent"};
         expect_failure(
-            fixture.engine.analyze(
-                fixture.session, absent, fixture.working, fixture.long_term),
+            fixture.engine.analyze(fixture.session, absent, fixture.working, fixture.long_term),
             "TASK_MISMATCH");
     }
     {
         Fixture fixture;
-        ConsolidationRequest absent{std::string{workspace},
-                                    std::string{task},
-                                    "absent"};
+        ConsolidationRequest absent{std::string{workspace}, std::string{task}, "absent"};
         expect_failure(
-            fixture.engine.analyze(
-                fixture.session, absent, fixture.working, fixture.long_term),
+            fixture.engine.analyze(fixture.session, absent, fixture.working, fixture.long_term),
             "SOURCE_NOT_FOUND");
     }
     {
         Fixture fixture;
         promote(fixture);
         WorkingMemory changed{fixture.working};
-        store(changed,
-              std::string{source_identifier},
-              "changed-value",
-              200U);
-        expect_failure(
-            fixture.engine.retain(
-                fixture.session, changed, fixture.long_term),
-            "SOURCE_CHANGED");
+        store(changed, std::string{source_identifier}, "changed-value", 200U);
+        expect_failure(fixture.engine.retain(fixture.session, changed, fixture.long_term),
+                       "SOURCE_CHANGED");
     }
     {
         Fixture fixture;
         promote(fixture);
         WorkingMemory changed{fixture.working};
         store(changed, "unrelated", "unrelated-value");
-        expect_failure(
-            fixture.engine.retain(
-                fixture.session, changed, fixture.long_term),
-            "TRANSITION_STATE_MISMATCH");
+        expect_failure(fixture.engine.retain(fixture.session, changed, fixture.long_term),
+                       "TRANSITION_STATE_MISMATCH");
     }
     {
         Fixture fixture;
         promote(fixture);
         WorkingMemory changed{fixture.working};
-        store(changed,
-              std::string{source_identifier},
-              std::string{source_value},
-              201U);
-        expect_failure(
-            fixture.engine.retain(
-                fixture.session, changed, fixture.long_term),
-            "SOURCE_CHANGED");
+        store(changed, std::string{source_identifier}, std::string{source_value}, 201U);
+        expect_failure(fixture.engine.retain(fixture.session, changed, fixture.long_term),
+                       "SOURCE_CHANGED");
     }
     {
         Fixture fixture;
@@ -1016,12 +883,9 @@ TEST(MemoryConsolidationPrecedenceTest,
         WorkingMemory changed{fixture.working};
         WorkingMemoryEngine engine;
         const auto forgotten = engine.forget(changed, source_identifier);
-        ASSERT_TRUE(forgotten.succeeded()) << forgotten.code() << ": "
-                                           << forgotten.message();
-        expect_failure(
-            fixture.engine.retain(
-                fixture.session, changed, fixture.long_term),
-            "SOURCE_CHANGED");
+        ASSERT_TRUE(forgotten.succeeded()) << forgotten.code() << ": " << forgotten.message();
+        expect_failure(fixture.engine.retain(fixture.session, changed, fixture.long_term),
+                       "SOURCE_CHANGED");
     }
     {
         Fixture fixture;
@@ -1029,81 +893,53 @@ TEST(MemoryConsolidationPrecedenceTest,
         WorkingMemory changed{fixture.working};
         WorkingMemoryEngine engine;
         const auto forgotten = engine.forget(changed, source_identifier);
-        ASSERT_TRUE(forgotten.succeeded()) << forgotten.code() << ": "
-                                           << forgotten.message();
-        store(changed,
-              std::string{source_identifier},
-              std::string{source_value},
-              200U);
-        expect_failure(
-            fixture.engine.retain(
-                fixture.session, changed, fixture.long_term),
-            "SOURCE_CHANGED");
+        ASSERT_TRUE(forgotten.succeeded()) << forgotten.code() << ": " << forgotten.message();
+        store(changed, std::string{source_identifier}, std::string{source_value}, 200U);
+        expect_failure(fixture.engine.retain(fixture.session, changed, fixture.long_term),
+                       "SOURCE_CHANGED");
     }
 }
 
 TEST(MemoryConsolidationPrecedenceTest, DestinationStatesAreExact) {
     {
         Fixture fixture;
-        retain(fixture.long_term,
-               std::string{source_identifier},
-               std::string{source_value});
-        expect_failure(
-            fixture.engine.analyze(
-                fixture.session,
-                fixture.request,
-                fixture.working,
-                fixture.long_term),
-            "DESTINATION_CONFLICT");
+        retain(fixture.long_term, std::string{source_identifier}, std::string{source_value});
+        expect_failure(fixture.engine.analyze(
+                           fixture.session, fixture.request, fixture.working, fixture.long_term),
+                       "DESTINATION_CONFLICT");
     }
     {
         Fixture fixture;
-        retain(fixture.long_term,
-               std::string{source_identifier},
-               std::string{source_value});
+        retain(fixture.long_term, std::string{source_identifier}, std::string{source_value});
         archive(fixture.long_term, source_identifier);
-        expect_failure(
-            fixture.engine.analyze(
-                fixture.session,
-                fixture.request,
-                fixture.working,
-                fixture.long_term),
-            "DESTINATION_CONFLICT");
+        expect_failure(fixture.engine.analyze(
+                           fixture.session, fixture.request, fixture.working, fixture.long_term),
+                       "DESTINATION_CONFLICT");
     }
     {
         Fixture fixture;
-        retain(fixture.long_term,
-               std::string{source_identifier},
-               std::string{source_value});
+        retain(fixture.long_term, std::string{source_identifier}, std::string{source_value});
         forget(fixture.long_term, source_identifier);
-        expect_failure(
-            fixture.engine.analyze(
-                fixture.session,
-                fixture.request,
-                fixture.working,
-                fixture.long_term),
-            "DESTINATION_FORGOTTEN");
+        expect_failure(fixture.engine.analyze(
+                           fixture.session, fixture.request, fixture.working, fixture.long_term),
+                       "DESTINATION_FORGOTTEN");
     }
     {
         Fixture fixture;
         promote(fixture);
         LongTermMemory changed{fixture.long_term};
         retain(changed, "unrelated-new", "unrelated-new-value");
-        expect_failure(
-            fixture.engine.retain(fixture.session, fixture.working, changed),
-            "TRANSITION_STATE_MISMATCH");
+        expect_failure(fixture.engine.retain(fixture.session, fixture.working, changed),
+                       "TRANSITION_STATE_MISMATCH");
     }
     {
         Fixture fixture;
         promote(fixture);
         LongTermMemory changed{fixture.long_term};
-        retain(changed,
-               std::string{source_identifier},
-               std::string{source_value});
+        retain(changed, std::string{source_identifier}, std::string{source_value});
         forget(changed, source_identifier);
-        expect_failure(
-            fixture.engine.retain(fixture.session, fixture.working, changed),
-            "DESTINATION_FORGOTTEN");
+        expect_failure(fixture.engine.retain(fixture.session, fixture.working, changed),
+                       "DESTINATION_FORGOTTEN");
     }
 }
 
@@ -1113,66 +949,50 @@ TEST(MemoryConsolidationPrecedenceTest, RetainAndValidatePrecedenceIsExact) {
         promote(fixture);
         WorkingMemory wrong_working{"wrong"};
         LongTermMemory wrong_long_term{"wrong"};
-        expect_failure(
-            fixture.engine.retain(
-                fixture.session, wrong_working, wrong_long_term),
-            "WORKSPACE_MISMATCH");
+        expect_failure(fixture.engine.retain(fixture.session, wrong_working, wrong_long_term),
+                       "WORKSPACE_MISMATCH");
     }
     {
         Fixture fixture;
         promote(fixture);
         LongTermMemory wrong_long_term{"wrong"};
-        expect_failure(
-            fixture.engine.retain(
-                fixture.session, fixture.working, wrong_long_term),
-            "WORKSPACE_MISMATCH");
+        expect_failure(fixture.engine.retain(fixture.session, fixture.working, wrong_long_term),
+                       "WORKSPACE_MISMATCH");
     }
     {
         Fixture fixture;
         promote(fixture);
         WorkingMemory inactive{std::string{workspace}};
-        expect_failure(
-            fixture.engine.retain(
-                fixture.session, inactive, fixture.long_term),
-            "WORKING_MEMORY_NOT_ACTIVE");
+        expect_failure(fixture.engine.retain(fixture.session, inactive, fixture.long_term),
+                       "WORKING_MEMORY_NOT_ACTIVE");
     }
     {
         Fixture fixture;
         promote(fixture);
         WorkingMemory changed{fixture.working};
         activate(changed, "other-task");
-        expect_failure(
-            fixture.engine.retain(
-                fixture.session, changed, fixture.long_term),
-            "TASK_MISMATCH");
+        expect_failure(fixture.engine.retain(fixture.session, changed, fixture.long_term),
+                       "TASK_MISMATCH");
     }
     {
         Fixture fixture;
         promote(fixture);
         WorkingMemory wrong_working{"wrong"};
         LongTermMemory wrong_long_term{"wrong"};
-        expect_failure(
-            fixture.engine.validate(
-                fixture.session, wrong_working, wrong_long_term),
-            "WORKSPACE_MISMATCH");
+        expect_failure(fixture.engine.validate(fixture.session, wrong_working, wrong_long_term),
+                       "WORKSPACE_MISMATCH");
     }
 }
 
-TEST(MemoryConsolidationValidationTest,
-     RejectsCompletePrestateAndSuccessorDriftWithoutMutation) {
+TEST(MemoryConsolidationValidationTest, RejectsCompletePrestateAndSuccessorDriftWithoutMutation) {
     {
         Fixture fixture;
         analyze(fixture);
         WorkingMemory changed{fixture.working};
-        store(changed,
-              std::string{source_identifier},
-              std::string{source_value},
-              201U);
+        store(changed, std::string{source_identifier}, std::string{source_value}, 201U);
         const auto before = snapshot_of(fixture.session);
-        expect_failure(
-            fixture.engine.validate(
-                fixture.session, changed, fixture.long_term),
-            "SOURCE_CHANGED");
+        expect_failure(fixture.engine.validate(fixture.session, changed, fixture.long_term),
+                       "SOURCE_CHANGED");
         EXPECT_EQ(snapshot_of(fixture.session), before);
     }
     {
@@ -1181,10 +1001,8 @@ TEST(MemoryConsolidationValidationTest,
         LongTermMemory changed{fixture.long_term};
         retain(changed, "unrelated-drift", "unrelated-drift-value");
         const auto before = snapshot_of(fixture.session);
-        expect_failure(
-            fixture.engine.validate(
-                fixture.session, fixture.working, changed),
-            "TRANSITION_STATE_MISMATCH");
+        expect_failure(fixture.engine.validate(fixture.session, fixture.working, changed),
+                       "TRANSITION_STATE_MISMATCH");
         EXPECT_EQ(snapshot_of(fixture.session), before);
     }
     {
@@ -1197,8 +1015,7 @@ TEST(MemoryConsolidationValidationTest,
         store(changed, "successor-drift", "successor-drift-value");
         const auto before = snapshot_of(fixture.session);
         expect_failure(
-            fixture.engine.validate(
-                fixture.session, changed, *retained.longTermMemory()),
+            fixture.engine.validate(fixture.session, changed, *retained.longTermMemory()),
             "TRANSITION_STATE_MISMATCH");
         EXPECT_EQ(snapshot_of(fixture.session), before);
     }
@@ -1221,8 +1038,8 @@ TEST(MemoryConsolidationResultTest, SuccessPayloadShapesAreExact) {
     EXPECT_EQ(promoted.workingMemory(), nullptr);
     EXPECT_EQ(promoted.longTermMemory(), nullptr);
 
-    const auto retained = fixture.engine.retain(
-        fixture.session, fixture.working, fixture.long_term);
+    const auto retained =
+        fixture.engine.retain(fixture.session, fixture.working, fixture.long_term);
     require_success(retained);
     EXPECT_NE(retained.candidate(), nullptr);
     EXPECT_EQ(retained.session(), nullptr);
@@ -1230,9 +1047,7 @@ TEST(MemoryConsolidationResultTest, SuccessPayloadShapesAreExact) {
     EXPECT_NE(retained.longTermMemory(), nullptr);
 
     const auto validated = fixture.engine.validate(
-        fixture.session,
-        *retained.workingMemory(),
-        *retained.longTermMemory());
+        fixture.session, *retained.workingMemory(), *retained.longTermMemory());
     require_success(validated);
     EXPECT_EQ(validated.candidate(), nullptr);
     EXPECT_EQ(validated.session(), nullptr);
@@ -1263,25 +1078,23 @@ TEST(MemoryConsolidationResultTest, CodesMessagesAndPayloadShapesAreClosed) {
     require_success(success);
     EXPECT_TRUE(success.message().empty());
 
-    const std::vector<std::string_view> closed_codes{
-        "OK",
-        "SESSION_FORGOTTEN",
-        "SESSION_ALREADY_STARTED",
-        "SESSION_NOT_ANALYZED",
-        "SESSION_NOT_PROMOTED",
-        "SESSION_ALREADY_RETAINED",
-        "WORKSPACE_MISMATCH",
-        "INVALID_TASK_IDENTIFIER",
-        "INVALID_IDENTIFIER",
-        "WORKING_MEMORY_NOT_ACTIVE",
-        "TASK_MISMATCH",
-        "SOURCE_NOT_FOUND",
-        "SOURCE_CHANGED",
-        "DESTINATION_CONFLICT",
-        "DESTINATION_FORGOTTEN",
-        "TRANSITION_STATE_MISMATCH"};
-    EXPECT_NE(std::find(closed_codes.begin(), closed_codes.end(),
-                        std::string_view{invalid.code()}),
+    const std::vector<std::string_view> closed_codes{"OK",
+                                                     "SESSION_FORGOTTEN",
+                                                     "SESSION_ALREADY_STARTED",
+                                                     "SESSION_NOT_ANALYZED",
+                                                     "SESSION_NOT_PROMOTED",
+                                                     "SESSION_ALREADY_RETAINED",
+                                                     "WORKSPACE_MISMATCH",
+                                                     "INVALID_TASK_IDENTIFIER",
+                                                     "INVALID_IDENTIFIER",
+                                                     "WORKING_MEMORY_NOT_ACTIVE",
+                                                     "TASK_MISMATCH",
+                                                     "SOURCE_NOT_FOUND",
+                                                     "SOURCE_CHANGED",
+                                                     "DESTINATION_CONFLICT",
+                                                     "DESTINATION_FORGOTTEN",
+                                                     "TRANSITION_STATE_MISMATCH"};
+    EXPECT_NE(std::find(closed_codes.begin(), closed_codes.end(), std::string_view{invalid.code()}),
               closed_codes.end());
 }
 
@@ -1301,8 +1114,7 @@ TEST(MemoryConsolidationValueTest, CopyMoveAndLifetimeContractsAreExact) {
     EXPECT_EQ(candidate_copy.longTermMemoryEntry(), nullptr);
     EXPECT_FALSE(candidate_copy.retainedPosition().has_value());
 
-    ConsolidationCandidate assigned_candidate{
-        *fixture.session.candidate()};
+    ConsolidationCandidate assigned_candidate{*fixture.session.candidate()};
     ConsolidationCandidate copied_candidate{candidate_moved};
     assigned_candidate = copied_candidate;
     EXPECT_EQ(snapshot_of(assigned_candidate), snapshot_of(copied_candidate));
@@ -1353,8 +1165,7 @@ TEST(MemoryConsolidationValueTest, CopyMoveAndLifetimeContractsAreExact) {
     EXPECT_EQ(assignment_source.longTermMemory(), nullptr);
 }
 
-TEST(MemoryConsolidationValueTest,
-     ResultAndRetrievedSessionOutliveAllSourceValues) {
+TEST(MemoryConsolidationValueTest, ResultAndRetrievedSessionOutliveAllSourceValues) {
     const auto make_retained_result = [] {
         Fixture fixture;
         return retain_transition(fixture);
@@ -1377,8 +1188,7 @@ TEST(MemoryConsolidationValueTest,
     EXPECT_EQ(detached_session.state(), State::Pristine);
 }
 
-TEST(MemoryConsolidationFailureTest,
-     AllOutcomesLeaveInputPrestatesUnchanged) {
+TEST(MemoryConsolidationFailureTest, AllOutcomesLeaveInputPrestatesUnchanged) {
     Fixture fixture;
     const auto working_before = snapshot_of(fixture.working);
     const auto long_term_before = snapshot_of(fixture.long_term);
@@ -1397,29 +1207,27 @@ TEST(MemoryConsolidationFailureTest,
     WorkingMemory changed{fixture.working};
     store(changed, std::string{source_identifier}, "changed-value", 200U);
     const auto session_before_failure = snapshot_of(fixture.session);
-    const auto failure = fixture.engine.retain(
-        fixture.session, changed, fixture.long_term);
+    const auto failure = fixture.engine.retain(fixture.session, changed, fixture.long_term);
     expect_failure(failure, "SOURCE_CHANGED");
     EXPECT_EQ(snapshot_of(fixture.session), session_before_failure);
     EXPECT_EQ(snapshot_of(fixture.working), working_before);
     EXPECT_EQ(snapshot_of(fixture.long_term), long_term_before);
 
-    const auto retained = fixture.engine.retain(
-        fixture.session, fixture.working, fixture.long_term);
+    const auto retained =
+        fixture.engine.retain(fixture.session, fixture.working, fixture.long_term);
     require_success(retained);
     EXPECT_EQ(snapshot_of(fixture.working), working_before);
     EXPECT_EQ(snapshot_of(fixture.long_term), long_term_before);
 }
 
-TEST(MemoryConsolidationDeterminismTest,
-     EquivalentHistoriesAreCompletelyEqual) {
+TEST(MemoryConsolidationDeterminismTest, EquivalentHistoriesAreCompletelyEqual) {
     Fixture left;
     Fixture right;
 
-    const auto left_analyzed = left.engine.analyze(
-        left.session, left.request, left.working, left.long_term);
-    const auto right_analyzed = right.engine.analyze(
-        right.session, right.request, right.working, right.long_term);
+    const auto left_analyzed =
+        left.engine.analyze(left.session, left.request, left.working, left.long_term);
+    const auto right_analyzed =
+        right.engine.analyze(right.session, right.request, right.working, right.long_term);
     EXPECT_EQ(snapshot_of(left_analyzed), snapshot_of(right_analyzed));
     EXPECT_EQ(snapshot_of(left.session), snapshot_of(right.session));
 
@@ -1428,16 +1236,13 @@ TEST(MemoryConsolidationDeterminismTest,
     EXPECT_EQ(snapshot_of(left_promoted), snapshot_of(right_promoted));
     EXPECT_EQ(snapshot_of(left.session), snapshot_of(right.session));
 
-    const auto left_retained = left.engine.retain(
-        left.session, left.working, left.long_term);
-    const auto right_retained = right.engine.retain(
-        right.session, right.working, right.long_term);
+    const auto left_retained = left.engine.retain(left.session, left.working, left.long_term);
+    const auto right_retained = right.engine.retain(right.session, right.working, right.long_term);
     EXPECT_EQ(snapshot_of(left_retained), snapshot_of(right_retained));
     EXPECT_EQ(snapshot_of(left.session), snapshot_of(right.session));
 }
 
-TEST(MemoryConsolidationBoundaryTest,
-     IndependentEnginesAndValuesRemainIsolated) {
+TEST(MemoryConsolidationBoundaryTest, IndependentEnginesAndValuesRemainIsolated) {
     const auto run = [] {
         Fixture fixture;
         const auto result = retain_transition(fixture);
@@ -1452,30 +1257,24 @@ TEST(MemoryConsolidationBoundaryTest,
     EXPECT_EQ(first.get(), second.get());
 }
 
-TEST(MemoryConsolidationBoundaryTest,
-     PublicSurfaceUsesOnlyReleasedMemoryTypes) {
+TEST(MemoryConsolidationBoundaryTest, PublicSurfaceUsesOnlyReleasedMemoryTypes) {
     static_assert(std::is_empty_v<MemoryConsolidationEngine>);
+    static_assert(
+        std::is_same_v<decltype(std::declval<const ConsolidationSession&>().workingMemory()),
+                       const WorkingMemory*>);
+    static_assert(
+        std::is_same_v<decltype(std::declval<const ConsolidationSession&>().longTermMemory()),
+                       const LongTermMemory*>);
+    static_assert(
+        std::is_same_v<decltype(std::declval<const ConsolidationCandidate&>().workingMemoryEntry()),
+                       const WorkingMemoryEntry*>);
     static_assert(std::is_same_v<
-                  decltype(std::declval<const ConsolidationSession&>()
-                               .workingMemory()),
-                  const WorkingMemory*>);
-    static_assert(std::is_same_v<
-                  decltype(std::declval<const ConsolidationSession&>()
-                               .longTermMemory()),
-                  const LongTermMemory*>);
-    static_assert(std::is_same_v<
-                  decltype(std::declval<const ConsolidationCandidate&>()
-                               .workingMemoryEntry()),
-                  const WorkingMemoryEntry*>);
-    static_assert(std::is_same_v<
-                  decltype(std::declval<const ConsolidationCandidate&>()
-                               .longTermMemoryEntry()),
+                  decltype(std::declval<const ConsolidationCandidate&>().longTermMemoryEntry()),
                   const LongTermMemoryEntry*>);
     SUCCEED();
 }
 
-TEST(MemoryConsolidationBoundaryTest,
-     PersistenceDoesNotOwnSessionLifecycle) {
+TEST(MemoryConsolidationBoundaryTest, PersistenceDoesNotOwnSessionLifecycle) {
     Fixture fixture;
     const auto retained = retain_transition(fixture);
     require_success(retained);

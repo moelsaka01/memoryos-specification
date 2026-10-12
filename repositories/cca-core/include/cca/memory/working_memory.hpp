@@ -12,10 +12,9 @@ namespace cca::memory {
 
 class WorkingMemoryEntry {
   public:
-    WorkingMemoryEntry(
-        std::string identifier,
-        std::string value,
-        std::optional<std::uint64_t> expirationPoint = std::nullopt);
+    WorkingMemoryEntry(std::string identifier,
+                       std::string value,
+                       std::optional<std::uint64_t> expirationPoint = std::nullopt);
 
     const std::string& identifier() const noexcept;
     const std::string& value() const noexcept;
@@ -89,18 +88,12 @@ class WorkingMemoryResult {
 
 class WorkingMemoryEngine {
   public:
-    WorkingMemoryResult activate(WorkingMemory& memory,
-                                 std::string taskIdentifier) const;
-    WorkingMemoryResult store(WorkingMemory& memory,
-                              WorkingMemoryEntry entry) const;
-    WorkingMemoryResult retrieve(const WorkingMemory& memory,
-                                 std::string_view identifier) const;
-    WorkingMemoryResult search(const WorkingMemory& memory,
-                               const WorkingMemoryQuery& query) const;
-    WorkingMemoryResult expire(WorkingMemory& memory,
-                               std::uint64_t logicalPoint) const;
-    WorkingMemoryResult forget(WorkingMemory& memory,
-                               std::string_view identifier) const;
+    WorkingMemoryResult activate(WorkingMemory& memory, std::string taskIdentifier) const;
+    WorkingMemoryResult store(WorkingMemory& memory, WorkingMemoryEntry entry) const;
+    WorkingMemoryResult retrieve(const WorkingMemory& memory, std::string_view identifier) const;
+    WorkingMemoryResult search(const WorkingMemory& memory, const WorkingMemoryQuery& query) const;
+    WorkingMemoryResult expire(WorkingMemory& memory, std::uint64_t logicalPoint) const;
+    WorkingMemoryResult forget(WorkingMemory& memory, std::string_view identifier) const;
 };
 
 } // namespace cca::memory

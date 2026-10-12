@@ -22,26 +22,20 @@ class RepresentationInternalAccess {
                                    std::uint64_t next_ordinal,
                                    bool exhausted) noexcept;
 
-    static void replaceId(RepresentationEntity& entity,
-                          RepresentationId id);
+    static void replaceId(RepresentationEntity& entity, RepresentationId id);
 
-    static void replaceId(RepresentationProperty& property,
-                          RepresentationId id);
+    static void replaceId(RepresentationProperty& property, RepresentationId id);
 
-    static void replaceId(RepresentationRelationship& relationship,
-                          RepresentationId id);
+    static void replaceId(RepresentationRelationship& relationship, RepresentationId id);
 
     static void setLifecycleState(RepresentationDocument& document,
                                   RepresentationLifecycleState state) noexcept;
 
-    static std::uint64_t nextIdentifierOrdinal(
-        const RepresentationDocument& document) noexcept;
+    static std::uint64_t nextIdentifierOrdinal(const RepresentationDocument& document) noexcept;
 
-    static bool identifiersExhausted(
-        const RepresentationDocument& document) noexcept;
+    static bool identifiersExhausted(const RepresentationDocument& document) noexcept;
 
-    static void renameProperty(RepresentationProperty& property,
-                               std::string name);
+    static void renameProperty(RepresentationProperty& property, std::string name);
 
     static void setEndpoints(RepresentationRelationship& relationship,
                              RepresentationEntity& source,

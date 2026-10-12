@@ -4,14 +4,13 @@
 #include <cca/runtime/runtime.hpp>
 #include <cca/runtime/runtime_builder.hpp>
 
-#include <gtest/gtest.h>
-
 #include <algorithm>
 #include <array>
 #include <bit>
 #include <cstddef>
 #include <cstdint>
 #include <future>
+#include <gtest/gtest.h>
 #include <iomanip>
 #include <memory>
 #include <optional>
@@ -109,8 +108,8 @@ using cca::runtime::ServiceProvider;
 
 [[nodiscard]] std::string expected_id(const std::uint64_t ordinal) {
     std::ostringstream stream;
-    stream << "cca-rep-" << std::hex << std::nouppercase << std::setfill('0')
-           << std::setw(16) << ordinal;
+    stream << "cca-rep-" << std::hex << std::nouppercase << std::setfill('0') << std::setw(16)
+           << ordinal;
     return stream.str();
 }
 
@@ -124,8 +123,7 @@ template <typename Collection>
     return ids;
 }
 
-[[nodiscard]] std::vector<std::string>
-ids_of(const std::vector<RepresentationId>& ids) {
+[[nodiscard]] std::vector<std::string> ids_of(const std::vector<RepresentationId>& ids) {
     std::vector<std::string> values;
     values.reserve(ids.size());
     for (const auto& id : ids) {
@@ -134,8 +132,7 @@ ids_of(const std::vector<RepresentationId>& ids) {
     return values;
 }
 
-[[nodiscard]] std::vector<std::string>
-ids_of(const ProcessDefinition& definition) {
+[[nodiscard]] std::vector<std::string> ids_of(const ProcessDefinition& definition) {
     std::vector<std::string> ids;
     ids.reserve(definition.executionOrder().size());
     for (const auto& id : definition.executionOrder()) {
@@ -144,16 +141,14 @@ ids_of(const ProcessDefinition& definition) {
     return ids;
 }
 
-using DiagnosticFingerprint =
-    std::tuple<DiagnosticCode, DiagnosticSeverity, std::string>;
+using DiagnosticFingerprint = std::tuple<DiagnosticCode, DiagnosticSeverity, std::string>;
 
 [[nodiscard]] std::vector<DiagnosticFingerprint>
 fingerprint_of(const std::vector<Diagnostic>& diagnostics) {
     std::vector<DiagnosticFingerprint> fingerprint;
     fingerprint.reserve(diagnostics.size());
     for (const auto& diagnostic : diagnostics) {
-        fingerprint.emplace_back(
-            diagnostic.code, diagnostic.severity, diagnostic.message);
+        fingerprint.emplace_back(diagnostic.code, diagnostic.severity, diagnostic.message);
     }
     return fingerprint;
 }
@@ -181,8 +176,7 @@ struct ValueSnapshot final {
         break;
     case ValueKind::FloatingPoint:
         snapshot.floating_point =
-            std::bit_cast<decltype(snapshot.floating_point)>(
-                value.asFloatingPoint());
+            std::bit_cast<decltype(snapshot.floating_point)>(value.asFloatingPoint());
         break;
     case ValueKind::String:
     case ValueKind::Enumeration:
@@ -210,8 +204,7 @@ struct PropertySnapshot final {
     bool operator==(const PropertySnapshot&) const = default;
 };
 
-[[nodiscard]] PropertySnapshot
-snapshot_of(const RepresentationProperty& property) {
+[[nodiscard]] PropertySnapshot snapshot_of(const RepresentationProperty& property) {
     return PropertySnapshot{
         .id = property.id().toString(),
         .name = std::string{property.name()},
@@ -220,8 +213,7 @@ snapshot_of(const RepresentationProperty& property) {
     };
 }
 
-[[nodiscard]] std::vector<PropertySnapshot>
-snapshot_of(const PropertyCollection& properties) {
+[[nodiscard]] std::vector<PropertySnapshot> snapshot_of(const PropertyCollection& properties) {
     std::vector<PropertySnapshot> snapshots;
     snapshots.reserve(properties.size());
     for (const auto& property : properties) {
@@ -267,15 +259,13 @@ struct DocumentSnapshot final {
     std::string provenance;
     std::vector<EntitySnapshot> entities;
     std::vector<RelationshipSnapshot> relationships;
-    RepresentationLifecycleState lifecycle{
-        RepresentationLifecycleState::Mutable};
+    RepresentationLifecycleState lifecycle{RepresentationLifecycleState::Mutable};
     bool frozen{};
 
     bool operator==(const DocumentSnapshot&) const = default;
 };
 
-[[nodiscard]] DocumentSnapshot
-snapshot_of(const RepresentationDocument& document) {
+[[nodiscard]] DocumentSnapshot snapshot_of(const RepresentationDocument& document) {
     std::vector<EntitySnapshot> entities;
     entities.reserve(document.entities().size());
     for (const auto& entity_reference : document.entities()) {
@@ -308,8 +298,7 @@ snapshot_of(const RepresentationDocument& document) {
         .provenance = std::string{document.metadata().provenance()},
         .entities = std::move(entities),
         .relationships = std::move(relationships),
-        .lifecycle =
-            RepresentationInternalAccess::lifecycleState(document),
+        .lifecycle = RepresentationInternalAccess::lifecycleState(document),
         .frozen = document.isFrozen(),
     };
 }
@@ -323,8 +312,7 @@ struct DefinitionSnapshot final {
     bool operator==(const DefinitionSnapshot&) const = default;
 };
 
-[[nodiscard]] DefinitionSnapshot
-snapshot_of(const ProcessDefinition& definition) {
+[[nodiscard]] DefinitionSnapshot snapshot_of(const ProcessDefinition& definition) {
     return DefinitionSnapshot{
         .order = ids_of(definition),
         .entity_count = definition.entityCount(),
@@ -365,58 +353,43 @@ void populate_canonical_document(RepresentationDocument& document,
                                  const bool semantic_variant = false) {
     const std::string prefix = semantic_variant ? "Variant-" : "Canonical-";
 
-    auto& first =
-        document.createEntity(RepresentationType{prefix + "First"});
-    auto& second =
-        document.createEntity(RepresentationType{prefix + "Second"});
-    auto& early = document.createRelationship(
-        semantic_variant ? second : first,
-        semantic_variant ? first : second,
-        RepresentationType{prefix + "Early"});
+    auto& first = document.createEntity(RepresentationType{prefix + "First"});
+    auto& second = document.createEntity(RepresentationType{prefix + "Second"});
+    auto& early = document.createRelationship(semantic_variant ? second : first,
+                                              semantic_variant ? first : second,
+                                              RepresentationType{prefix + "Early"});
 
-    first.addProperty(
-        semantic_variant ? "changed-name" : "first-value",
-        RepresentationType{prefix + "Value"},
-        semantic_variant
-            ? RepresentationValue{std::string{"semantic-variant"}}
-            : RepresentationValue{std::int64_t{41}});
-    early.addProperty(
-        semantic_variant ? "changed-edge-name" : "early-weight",
-        RepresentationType{prefix + "Weight"},
-        semantic_variant ? RepresentationValue{false}
-                         : RepresentationValue{3.5});
+    first.addProperty(semantic_variant ? "changed-name" : "first-value",
+                      RepresentationType{prefix + "Value"},
+                      semantic_variant ? RepresentationValue{std::string{"semantic-variant"}}
+                                       : RepresentationValue{std::int64_t{41}});
+    early.addProperty(semantic_variant ? "changed-edge-name" : "early-weight",
+                      RepresentationType{prefix + "Weight"},
+                      semantic_variant ? RepresentationValue{false} : RepresentationValue{3.5});
 
-    auto& third =
-        document.createEntity(RepresentationType{prefix + "Third"});
-    second.addProperty(
-        semantic_variant ? "changed-second-name" : "second-value",
-        RepresentationType{prefix + "Value"},
-        semantic_variant ? RepresentationValue{std::int64_t{-8}}
-                         : RepresentationValue{true});
+    auto& third = document.createEntity(RepresentationType{prefix + "Third"});
+    second.addProperty(semantic_variant ? "changed-second-name" : "second-value",
+                       RepresentationType{prefix + "Value"},
+                       semantic_variant ? RepresentationValue{std::int64_t{-8}}
+                                        : RepresentationValue{true});
 
     auto& late = document.createRelationship(
-        semantic_variant ? third : second,
-        third,
-        RepresentationType{prefix + "Late"});
-    third.addProperty(
-        semantic_variant ? "changed-third-a" : "third-a",
-        RepresentationType{prefix + "Value"},
-        semantic_variant ? RepresentationValue{7.25}
-                         : RepresentationValue{std::string{"a"}});
-    third.addProperty(
-        semantic_variant ? "changed-third-b" : "third-b",
-        RepresentationType{prefix + "Value"},
-        semantic_variant
-            ? RepresentationValue{std::vector<RepresentationValue>{
-                  RepresentationValue{std::int64_t{1}},
-                  RepresentationValue{std::string{"two"}},
-              }}
-            : RepresentationValue{std::string{"b"}});
-    late.addProperty(
-        semantic_variant ? "changed-late-name" : "late-label",
-        RepresentationType{prefix + "Label"},
-        semantic_variant ? RepresentationValue{std::string{"different"}}
-                         : RepresentationValue{std::string{"late"}});
+        semantic_variant ? third : second, third, RepresentationType{prefix + "Late"});
+    third.addProperty(semantic_variant ? "changed-third-a" : "third-a",
+                      RepresentationType{prefix + "Value"},
+                      semantic_variant ? RepresentationValue{7.25}
+                                       : RepresentationValue{std::string{"a"}});
+    third.addProperty(semantic_variant ? "changed-third-b" : "third-b",
+                      RepresentationType{prefix + "Value"},
+                      semantic_variant ? RepresentationValue{std::vector<RepresentationValue>{
+                                             RepresentationValue{std::int64_t{1}},
+                                             RepresentationValue{std::string{"two"}},
+                                         }}
+                                       : RepresentationValue{std::string{"b"}});
+    late.addProperty(semantic_variant ? "changed-late-name" : "late-label",
+                     RepresentationType{prefix + "Label"},
+                     semantic_variant ? RepresentationValue{std::string{"different"}}
+                                      : RepresentationValue{std::string{"late"}});
 }
 
 [[nodiscard]] std::vector<std::string> canonical_order() {
@@ -435,57 +408,39 @@ void populate_canonical_document(RepresentationDocument& document,
     };
 }
 
-void populate_graph_document(RepresentationDocument& document,
-                             const bool alternate_shape) {
-    auto& first =
-        document.createEntity(RepresentationType{"GraphEntity"});
-    auto& second =
-        document.createEntity(RepresentationType{"GraphEntity"});
-    auto& third =
-        document.createEntity(RepresentationType{"GraphEntity"});
-    auto& disconnected =
-        document.createEntity(RepresentationType{"GraphEntity"});
+void populate_graph_document(RepresentationDocument& document, const bool alternate_shape) {
+    auto& first = document.createEntity(RepresentationType{"GraphEntity"});
+    auto& second = document.createEntity(RepresentationType{"GraphEntity"});
+    auto& third = document.createEntity(RepresentationType{"GraphEntity"});
+    auto& disconnected = document.createEntity(RepresentationType{"GraphEntity"});
 
     if (!alternate_shape) {
-        document.createRelationship(
-            first, second, RepresentationType{"Edge"});
-        document.createRelationship(
-            second, first, RepresentationType{"Edge"});
-        document.createRelationship(
-            third, third, RepresentationType{"Self"});
+        document.createRelationship(first, second, RepresentationType{"Edge"});
+        document.createRelationship(second, first, RepresentationType{"Edge"});
+        document.createRelationship(third, third, RepresentationType{"Self"});
     } else {
-        document.createRelationship(
-            disconnected, disconnected, RepresentationType{"Self"});
-        document.createRelationship(
-            first, third, RepresentationType{"Edge"});
-        document.createRelationship(
-            third, second, RepresentationType{"Edge"});
+        document.createRelationship(disconnected, disconnected, RepresentationType{"Self"});
+        document.createRelationship(first, third, RepresentationType{"Edge"});
+        document.createRelationship(third, second, RepresentationType{"Edge"});
     }
 }
 
 void populate_invalid_document(RepresentationDocument& document,
                                RepresentationDocument& foreign_document) {
-    auto& missing_entity =
-        document.createEntity(RepresentationType{""});
+    auto& missing_entity = document.createEntity(RepresentationType{""});
     missing_entity.addProperty(
-        "missing-property-type",
-        RepresentationType{""},
-        RepresentationValue{std::string{"value"}});
-    auto& duplicate =
-        document.createEntity(RepresentationType{"Duplicate"});
-    auto& relationship = document.createRelationship(
-        missing_entity, duplicate, RepresentationType{""});
-    relationship.addProperty(
-        "missing-relationship-property-type",
-        RepresentationType{""},
-        RepresentationValue{std::int64_t{7}});
+        "missing-property-type", RepresentationType{""}, RepresentationValue{std::string{"value"}});
+    auto& duplicate = document.createEntity(RepresentationType{"Duplicate"});
+    auto& relationship =
+        document.createRelationship(missing_entity, duplicate, RepresentationType{""});
+    relationship.addProperty("missing-relationship-property-type",
+                             RepresentationType{""},
+                             RepresentationValue{std::int64_t{7}});
 
-    auto& foreign =
-        foreign_document.createEntity(RepresentationType{"Foreign"});
-    RepresentationInternalAccess::replaceId(
-        duplicate, RepresentationId{missing_entity.id().toString()});
-    RepresentationInternalAccess::setEndpoints(
-        relationship, foreign, duplicate);
+    auto& foreign = foreign_document.createEntity(RepresentationType{"Foreign"});
+    RepresentationInternalAccess::replaceId(duplicate,
+                                            RepresentationId{missing_entity.id().toString()});
+    RepresentationInternalAccess::setEndpoints(relationship, foreign, duplicate);
 }
 
 [[nodiscard]] ProcessDefinition definition_from_destroyed_source() {
@@ -495,8 +450,7 @@ void populate_invalid_document(RepresentationDocument& document,
     return ProcessDefinition{*document};
 }
 
-[[nodiscard]] std::unique_ptr<Runtime>
-make_process_runtime(std::string runtime_id) {
+[[nodiscard]] std::unique_ptr<Runtime> make_process_runtime(std::string runtime_id) {
     RuntimeBuilder builder{RuntimeId{std::move(runtime_id)}};
     cca::process::detail::add_process_runtime_integration(builder);
     return std::move(builder).build();
@@ -507,31 +461,24 @@ enum class ProviderFailure {
     Stop,
 };
 
-class FailingProcessProvider final
-    : public ProcessEngine,
-      public ServiceProvider {
+class FailingProcessProvider final : public ProcessEngine, public ServiceProvider {
   public:
-    explicit FailingProcessProvider(const ProviderFailure failure) noexcept
-        : failure_(failure) {}
+    explicit FailingProcessProvider(const ProviderFailure failure) noexcept : failure_(failure) {}
 
-    [[nodiscard]] RuntimeResult
-    start(RuntimeContext& context) override {
+    [[nodiscard]] RuntimeResult start(RuntimeContext& context) override {
         static_cast<void>(context);
         if (failure_ == ProviderFailure::Start) {
-            return RuntimeResult::failure(
-                "process.test.start-failure",
-                "injected Process Provider start failure");
+            return RuntimeResult::failure("process.test.start-failure",
+                                          "injected Process Provider start failure");
         }
         return RuntimeResult::success();
     }
 
-    [[nodiscard]] RuntimeResult
-    stop(RuntimeContext& context) override {
+    [[nodiscard]] RuntimeResult stop(RuntimeContext& context) override {
         static_cast<void>(context);
         if (failure_ == ProviderFailure::Stop) {
-            return RuntimeResult::failure(
-                "process.test.stop-failure",
-                "injected Process Provider stop failure");
+            return RuntimeResult::failure("process.test.stop-failure",
+                                          "injected Process Provider stop failure");
         }
         return RuntimeResult::success();
     }
@@ -540,25 +487,20 @@ class FailingProcessProvider final
     ProviderFailure failure_;
 };
 
-[[nodiscard]] bool
-contains_state(const std::vector<RuntimeState>& history,
-               const RuntimeState expected) {
-    return std::find(history.begin(), history.end(), expected) !=
-           history.end();
+[[nodiscard]] bool contains_state(const std::vector<RuntimeState>& history,
+                                  const RuntimeState expected) {
+    return std::find(history.begin(), history.end(), expected) != history.end();
 }
 
 TEST(ProcessApiTest, PublicDeclarationsMatchTheFrozenContract) {
-    static_assert(
-        std::is_constructible_v<ProcessDefinition,
-                                const RepresentationDocument&>);
+    static_assert(std::is_constructible_v<ProcessDefinition, const RepresentationDocument&>);
     static_assert(!std::is_default_constructible_v<ProcessDefinition>);
     static_assert(std::is_copy_constructible_v<ProcessDefinition>);
     static_assert(std::is_copy_assignable_v<ProcessDefinition>);
     static_assert(std::is_nothrow_move_constructible_v<ProcessDefinition>);
     static_assert(std::is_nothrow_move_assignable_v<ProcessDefinition>);
 
-    static_assert(
-        std::is_constructible_v<ExecutionContext, ProcessDefinition>);
+    static_assert(std::is_constructible_v<ExecutionContext, ProcessDefinition>);
     static_assert(!std::is_default_constructible_v<ExecutionContext>);
     static_assert(!std::is_copy_constructible_v<ExecutionContext>);
     static_assert(!std::is_copy_assignable_v<ExecutionContext>);
@@ -577,44 +519,32 @@ TEST(ProcessApiTest, PublicDeclarationsMatchTheFrozenContract) {
     static_assert(std::is_move_constructible_v<ProcessEngine>);
     static_assert(std::is_move_assignable_v<ProcessEngine>);
 
-    using DocumentExecute = ExecutionResult (ProcessEngine::*)(
-        const RepresentationDocument&) const;
-    using DefinitionExecute = ExecutionResult (ProcessEngine::*)(
-        const ProcessDefinition&) const;
-    using ContextExecute = ExecutionResult (ProcessEngine::*)(
-        ExecutionContext&) const;
+    using DocumentExecute = ExecutionResult (ProcessEngine::*)(const RepresentationDocument&) const;
+    using DefinitionExecute = ExecutionResult (ProcessEngine::*)(const ProcessDefinition&) const;
+    using ContextExecute = ExecutionResult (ProcessEngine::*)(ExecutionContext&) const;
 
-    static_assert(std::is_same_v<
-                  decltype(static_cast<DocumentExecute>(
-                      &ProcessEngine::execute)),
-                  DocumentExecute>);
-    static_assert(std::is_same_v<
-                  decltype(static_cast<DefinitionExecute>(
-                      &ProcessEngine::execute)),
-                  DefinitionExecute>);
-    static_assert(std::is_same_v<
-                  decltype(static_cast<ContextExecute>(
-                      &ProcessEngine::execute)),
-                  ContextExecute>);
+    static_assert(std::is_same_v<decltype(static_cast<DocumentExecute>(&ProcessEngine::execute)),
+                                 DocumentExecute>);
+    static_assert(std::is_same_v<decltype(static_cast<DefinitionExecute>(&ProcessEngine::execute)),
+                                 DefinitionExecute>);
+    static_assert(std::is_same_v<decltype(static_cast<ContextExecute>(&ProcessEngine::execute)),
+                                 ContextExecute>);
 
-    EXPECT_EQ(
-        (std::array{
-            ExecutionState::Ready,
-            ExecutionState::Running,
-            ExecutionState::Completed,
-            ExecutionState::Failed,
-        }).size(),
-        4U);
+    EXPECT_EQ((std::array{
+                   ExecutionState::Ready,
+                   ExecutionState::Running,
+                   ExecutionState::Completed,
+                   ExecutionState::Failed,
+               })
+                  .size(),
+              4U);
 }
 
 TEST(ProcessApiTest, PublicSurfacePreservesLayerBoundaries) {
-    static_assert(
-        !std::is_base_of_v<ServiceProvider, ProcessEngine>);
-    static_assert(
-        std::is_same_v<
-            decltype(std::declval<const ProcessEngine&>().execute(
-                std::declval<const RepresentationDocument&>())),
-            ExecutionResult>);
+    static_assert(!std::is_base_of_v<ServiceProvider, ProcessEngine>);
+    static_assert(std::is_same_v<decltype(std::declval<const ProcessEngine&>().execute(
+                                     std::declval<const RepresentationDocument&>())),
+                                 ExecutionResult>);
 
     ProcessEngine engine;
     RepresentationDocument document;
@@ -637,8 +567,7 @@ TEST(ProcessApiTest, RequiredEmptyDocumentExampleSucceeds) {
 }
 
 TEST(ProcessDefinitionTest, MaterializesCanonicalOwnedOrderAndCounts) {
-    RepresentationDocument document{
-        RepresentationMetadata{"author", "1.0", "unit-test"}};
+    RepresentationDocument document{RepresentationMetadata{"author", "1.0", "unit-test"}};
     populate_canonical_document(document);
     const auto before = snapshot_of(document);
 
@@ -649,10 +578,9 @@ TEST(ProcessDefinitionTest, MaterializesCanonicalOwnedOrderAndCounts) {
     EXPECT_EQ(definition.entityCount(), 3U);
     EXPECT_EQ(definition.relationshipCount(), 2U);
     EXPECT_EQ(definition.propertyCount(), 6U);
-    EXPECT_EQ(
-        definition.executionOrder().size(),
-        definition.entityCount() + definition.relationshipCount() +
-            definition.propertyCount());
+    EXPECT_EQ(definition.executionOrder().size(),
+              definition.entityCount() + definition.relationshipCount() +
+                  definition.propertyCount());
 
     const ProcessDefinition copy{definition};
     EXPECT_EQ(snapshot_of(copy), snapshot_of(definition));
@@ -670,8 +598,7 @@ TEST(ProcessDefinitionTest, MaterializesCanonicalOwnedOrderAndCounts) {
     EXPECT_EQ(snapshot_of(move_assigned), snapshot_of(definition));
 }
 
-TEST(ProcessDefinitionTest,
-     InvalidConstructionIsDeterministicAndStrong) {
+TEST(ProcessDefinitionTest, InvalidConstructionIsDeterministicAndStrong) {
     RepresentationDocument document;
     RepresentationDocument foreign;
     populate_invalid_document(document, foreign);
@@ -702,8 +629,7 @@ TEST(ProcessDefinitionTest,
     EXPECT_EQ(snapshot_of(document), before);
 }
 
-TEST(ProcessDefinitionTest,
-     PlanSurvivesMutationRemovalRollbackAndDestruction) {
+TEST(ProcessDefinitionTest, PlanSurvivesMutationRemovalRollbackAndDestruction) {
     ProcessEngine engine;
     RepresentationDocument document;
     populate_canonical_document(document);
@@ -711,91 +637,57 @@ TEST(ProcessDefinitionTest,
     const ProcessDefinition original{document};
     const auto original_snapshot = snapshot_of(original);
 
-    auto& added =
-        document.createEntity(RepresentationType{"AddedAfterMaterialization"});
-    added.addProperty(
-        "new",
-        RepresentationType{"Value"},
-        RepresentationValue{std::int64_t{99}});
+    auto& added = document.createEntity(RepresentationType{"AddedAfterMaterialization"});
+    added.addProperty("new", RepresentationType{"Value"}, RepresentationValue{std::int64_t{99}});
 
-    const auto first_relationship_id =
-        document.relationships().front().get().id().toString();
-    const auto second_relationship_id =
-        document.relationships().back().get().id().toString();
-    document.removeRelationship(
-        RepresentationId{first_relationship_id});
-    document.removeRelationship(
-        RepresentationId{second_relationship_id});
+    const auto first_relationship_id = document.relationships().front().get().id().toString();
+    const auto second_relationship_id = document.relationships().back().get().id().toString();
+    document.removeRelationship(RepresentationId{first_relationship_id});
+    document.removeRelationship(RepresentationId{second_relationship_id});
     document.removeEntity(RepresentationId{expected_id(6U)});
 
     EXPECT_EQ(snapshot_of(original), original_snapshot);
-    EXPECT_EQ(
-        snapshot_of(engine.execute(original)).trace,
-        original_snapshot.order);
+    EXPECT_EQ(snapshot_of(engine.execute(original)).trace, original_snapshot.order);
 
     RepresentationDocument transactional_document;
-    transactional_document.createEntity(
-        RepresentationType{"Baseline"});
-    auto transaction =
-        TransactionService{}.begin(transactional_document);
-    auto& tentative = transactional_document.createEntity(
-        RepresentationType{"Tentative"});
-    tentative.addProperty(
-        "tentative",
-        RepresentationType{"Value"},
-        RepresentationValue{std::string{"retained by definition"}});
+    transactional_document.createEntity(RepresentationType{"Baseline"});
+    auto transaction = TransactionService{}.begin(transactional_document);
+    auto& tentative = transactional_document.createEntity(RepresentationType{"Tentative"});
+    tentative.addProperty("tentative",
+                          RepresentationType{"Value"},
+                          RepresentationValue{std::string{"retained by definition"}});
 
-    const ProcessDefinition tentative_definition{
-        transactional_document};
-    const auto tentative_snapshot =
-        snapshot_of(tentative_definition);
+    const ProcessDefinition tentative_definition{transactional_document};
+    const auto tentative_snapshot = snapshot_of(tentative_definition);
     transaction.rollback();
 
     ASSERT_EQ(transactional_document.entities().size(), 1U);
-    EXPECT_EQ(
-        snapshot_of(engine.execute(tentative_definition)).trace,
-        tentative_snapshot.order);
-    EXPECT_EQ(
-        tentative_snapshot.order,
-        (std::vector<std::string>{
-            expected_id(1U), expected_id(2U), expected_id(3U)}));
+    EXPECT_EQ(snapshot_of(engine.execute(tentative_definition)).trace, tentative_snapshot.order);
+    EXPECT_EQ(tentative_snapshot.order,
+              (std::vector<std::string>{expected_id(1U), expected_id(2U), expected_id(3U)}));
 
-    const ProcessDefinition destroyed_source_definition =
-        definition_from_destroyed_source();
-    EXPECT_EQ(
-        snapshot_of(destroyed_source_definition).order,
-        canonical_order());
-    EXPECT_EQ(
-        snapshot_of(engine.execute(destroyed_source_definition)).trace,
-        canonical_order());
+    const ProcessDefinition destroyed_source_definition = definition_from_destroyed_source();
+    EXPECT_EQ(snapshot_of(destroyed_source_definition).order, canonical_order());
+    EXPECT_EQ(snapshot_of(engine.execute(destroyed_source_definition)).trace, canonical_order());
 }
 
-TEST(ProcessInputTest,
-     PreservesCompleteMutableValidatedAndFrozenState) {
-    RepresentationDocument mutable_document{
-        RepresentationMetadata{"same", "1", "lifecycle"}};
-    RepresentationDocument validated_document{
-        RepresentationMetadata{"same", "1", "lifecycle"}};
-    RepresentationDocument frozen_document{
-        RepresentationMetadata{"same", "1", "lifecycle"}};
+TEST(ProcessInputTest, PreservesCompleteMutableValidatedAndFrozenState) {
+    RepresentationDocument mutable_document{RepresentationMetadata{"same", "1", "lifecycle"}};
+    RepresentationDocument validated_document{RepresentationMetadata{"same", "1", "lifecycle"}};
+    RepresentationDocument frozen_document{RepresentationMetadata{"same", "1", "lifecycle"}};
     populate_canonical_document(mutable_document);
     populate_canonical_document(validated_document);
     populate_canonical_document(frozen_document);
 
-    auto validation_transaction =
-        TransactionService{}.begin(validated_document);
+    auto validation_transaction = TransactionService{}.begin(validated_document);
     ASSERT_TRUE(validation_transaction.commit().valid);
-    ASSERT_EQ(
-        RepresentationInternalAccess::lifecycleState(
-            validated_document),
-        RepresentationLifecycleState::Validated);
+    ASSERT_EQ(RepresentationInternalAccess::lifecycleState(validated_document),
+              RepresentationLifecycleState::Validated);
 
-    const auto freeze_result =
-        FreezeService{}.freeze(frozen_document);
+    const auto freeze_result = FreezeService{}.freeze(frozen_document);
     ASSERT_TRUE(freeze_result.valid);
-    ASSERT_EQ(
-        RepresentationInternalAccess::lifecycleState(frozen_document),
-        RepresentationLifecycleState::Frozen);
+    ASSERT_EQ(RepresentationInternalAccess::lifecycleState(frozen_document),
+              RepresentationLifecycleState::Frozen);
 
     const auto mutable_before = snapshot_of(mutable_document);
     const auto validated_before = snapshot_of(validated_document);
@@ -812,12 +704,8 @@ TEST(ProcessInputTest,
     EXPECT_EQ(snapshot_of(mutable_document), mutable_before);
     EXPECT_EQ(snapshot_of(validated_document), validated_before);
     EXPECT_EQ(snapshot_of(frozen_document), frozen_before);
-    EXPECT_EQ(
-        snapshot_of(mutable_definition),
-        snapshot_of(validated_definition));
-    EXPECT_EQ(
-        snapshot_of(validated_definition),
-        snapshot_of(frozen_definition));
+    EXPECT_EQ(snapshot_of(mutable_definition), snapshot_of(validated_definition));
+    EXPECT_EQ(snapshot_of(validated_definition), snapshot_of(frozen_definition));
     EXPECT_EQ(snapshot_of(mutable_result), snapshot_of(validated_result));
     EXPECT_EQ(snapshot_of(validated_result), snapshot_of(frozen_result));
 }
@@ -827,8 +715,7 @@ TEST(ProcessInputTest, InvalidDirectInputIsValidatedBeforeExecution) {
     RepresentationDocument foreign;
     populate_invalid_document(document, foreign);
     const auto before = snapshot_of(document);
-    const auto direct_validation =
-        ValidationService{}.validate(document);
+    const auto direct_validation = ValidationService{}.validate(document);
     ASSERT_FALSE(direct_validation.valid);
     ASSERT_GE(direct_validation.diagnostics.size(), 6U);
 
@@ -838,13 +725,10 @@ TEST(ProcessInputTest, InvalidDirectInputIsValidatedBeforeExecution) {
 
     EXPECT_FALSE(first.succeeded());
     EXPECT_EQ(first.state(), ExecutionState::Failed);
-    EXPECT_EQ(
-        first.code(), ExecutionResult::Code::InvalidRepresentation);
+    EXPECT_EQ(first.code(), ExecutionResult::Code::InvalidRepresentation);
     EXPECT_FALSE(first.message().empty());
     EXPECT_TRUE(first.trace().empty());
-    EXPECT_EQ(
-        fingerprint_of(first.diagnostics()),
-        fingerprint_of(direct_validation.diagnostics));
+    EXPECT_EQ(fingerprint_of(first.diagnostics()), fingerprint_of(direct_validation.diagnostics));
     EXPECT_EQ(snapshot_of(second), snapshot_of(first));
     EXPECT_EQ(snapshot_of(document), before);
 
@@ -855,12 +739,8 @@ TEST(ProcessInputTest, InvalidDirectInputIsValidatedBeforeExecution) {
 
     const auto fingerprint = fingerprint_of(first.diagnostics());
     ASSERT_FALSE(fingerprint.empty());
-    EXPECT_EQ(
-        std::get<0>(fingerprint.front()),
-        DiagnosticCode::DuplicateIdentifier);
-    EXPECT_EQ(
-        std::get<0>(fingerprint.back()),
-        DiagnosticCode::InvalidRelationship);
+    EXPECT_EQ(std::get<0>(fingerprint.front()), DiagnosticCode::DuplicateIdentifier);
+    EXPECT_EQ(std::get<0>(fingerprint.back()), DiagnosticCode::InvalidRelationship);
 
     std::vector<std::string> missing_type_messages;
     for (const auto& diagnostic : first.diagnostics()) {
@@ -869,29 +749,19 @@ TEST(ProcessInputTest, InvalidDirectInputIsValidatedBeforeExecution) {
         }
     }
     ASSERT_EQ(missing_type_messages.size(), 4U);
-    EXPECT_NE(
-        missing_type_messages[0].find(expected_id(1U)),
-        std::string::npos);
-    EXPECT_NE(
-        missing_type_messages[1].find(expected_id(2U)),
-        std::string::npos);
-    EXPECT_NE(
-        missing_type_messages[2].find(expected_id(4U)),
-        std::string::npos);
-    EXPECT_NE(
-        missing_type_messages[3].find(expected_id(5U)),
-        std::string::npos);
+    EXPECT_NE(missing_type_messages[0].find(expected_id(1U)), std::string::npos);
+    EXPECT_NE(missing_type_messages[1].find(expected_id(2U)), std::string::npos);
+    EXPECT_NE(missing_type_messages[2].find(expected_id(4U)), std::string::npos);
+    EXPECT_NE(missing_type_messages[3].find(expected_id(5U)), std::string::npos);
 }
 
-TEST(ExecutionContextTest,
-     ReadyExecutionCompletesWithTheCanonicalTrace) {
+TEST(ExecutionContextTest, ReadyExecutionCompletesWithTheCanonicalTrace) {
     RepresentationDocument document;
     populate_canonical_document(document);
     const ProcessDefinition definition{document};
     ExecutionContext context{definition};
 
-    EXPECT_EQ(context.definition().executionOrder(),
-              definition.executionOrder());
+    EXPECT_EQ(context.definition().executionOrder(), definition.executionOrder());
     EXPECT_EQ(context.state(), ExecutionState::Ready);
     EXPECT_TRUE(context.trace().empty());
 
@@ -900,20 +770,18 @@ TEST(ExecutionContextTest,
 
     EXPECT_EQ(context.state(), ExecutionState::Completed);
     EXPECT_EQ(context.trace(), definition.executionOrder());
-    EXPECT_EQ(
-        ProcessInternalAccess::stateTransitions(context),
-        (std::vector<ExecutionState>{
-            ExecutionState::Ready,
-            ExecutionState::Running,
-            ExecutionState::Completed,
-        }));
+    EXPECT_EQ(ProcessInternalAccess::stateTransitions(context),
+              (std::vector<ExecutionState>{
+                  ExecutionState::Ready,
+                  ExecutionState::Running,
+                  ExecutionState::Completed,
+              }));
     EXPECT_EQ(result.state(), ExecutionState::Completed);
     EXPECT_EQ(result.trace(), context.trace());
     EXPECT_EQ(ids_of(context.definition()), canonical_order());
 }
 
-TEST(ExecutionContextTest,
-     CompletedContextIsOneShotAndRejectedStrongly) {
+TEST(ExecutionContextTest, CompletedContextIsOneShotAndRejectedStrongly) {
     RepresentationDocument document;
     populate_canonical_document(document);
     ExecutionContext context{ProcessDefinition{document}};
@@ -925,17 +793,14 @@ TEST(ExecutionContextTest,
     const auto state_before = context.state();
     const auto trace_before = ids_of(context.trace());
 
-    EXPECT_THROW(
-        static_cast<void>(engine.execute(context)),
-        std::logic_error);
+    EXPECT_THROW(static_cast<void>(engine.execute(context)), std::logic_error);
 
     EXPECT_EQ(snapshot_of(context.definition()), definition_before);
     EXPECT_EQ(context.state(), state_before);
     EXPECT_EQ(ids_of(context.trace()), trace_before);
 }
 
-TEST(ExecutionContextTest,
-     EveryNonReadyStateIsRejectedWithoutMutation) {
+TEST(ExecutionContextTest, EveryNonReadyStateIsRejectedWithoutMutation) {
     RepresentationDocument document;
     populate_canonical_document(document);
     const ProcessDefinition definition{document};
@@ -950,9 +815,7 @@ TEST(ExecutionContextTest,
         const auto definition_before = snapshot_of(context.definition());
         const auto trace_before = ids_of(context.trace());
 
-        EXPECT_THROW(
-            static_cast<void>(engine.execute(context)),
-            std::logic_error);
+        EXPECT_THROW(static_cast<void>(engine.execute(context)), std::logic_error);
 
         EXPECT_EQ(context.state(), state);
         EXPECT_EQ(snapshot_of(context.definition()), definition_before);
@@ -960,8 +823,7 @@ TEST(ExecutionContextTest,
     }
 }
 
-TEST(ExecutionContextTest,
-     ContextsOwnIsolatedDefinitionStateAndTraces) {
+TEST(ExecutionContextTest, ContextsOwnIsolatedDefinitionStateAndTraces) {
     RepresentationDocument document;
     populate_canonical_document(document);
     const ProcessDefinition definition{document};
@@ -977,9 +839,7 @@ TEST(ExecutionContextTest,
     EXPECT_EQ(second.state(), ExecutionState::Ready);
     EXPECT_TRUE(second.trace().empty());
     EXPECT_NE(&first.definition(), &second.definition());
-    EXPECT_NE(
-        &first.definition().executionOrder(),
-        &second.definition().executionOrder());
+    EXPECT_NE(&first.definition().executionOrder(), &second.definition().executionOrder());
 
     const auto second_result = engine.execute(second);
     EXPECT_EQ(snapshot_of(first_result), snapshot_of(second_result));
@@ -1033,20 +893,15 @@ TEST(ProcessEngineTest, AllValidEntrySurfacesAreEquivalent) {
     EXPECT_EQ(ids_of(context.trace()), canonical_order());
 }
 
-TEST(ProcessDeterminismTest,
-     EquivalentSemanticVariantsProduceEqualOutcomes) {
-    RepresentationDocument canonical{
-        RepresentationMetadata{"first-author", "1", "first-origin"}};
-    RepresentationDocument variant{
-        RepresentationMetadata{"other-author", "99", "other-origin"}};
+TEST(ProcessDeterminismTest, EquivalentSemanticVariantsProduceEqualOutcomes) {
+    RepresentationDocument canonical{RepresentationMetadata{"first-author", "1", "first-origin"}};
+    RepresentationDocument variant{RepresentationMetadata{"other-author", "99", "other-origin"}};
     populate_canonical_document(canonical, false);
     populate_canonical_document(variant, true);
 
     const ProcessDefinition canonical_definition{canonical};
     const ProcessDefinition variant_definition{variant};
-    EXPECT_EQ(
-        snapshot_of(canonical_definition),
-        snapshot_of(variant_definition));
+    EXPECT_EQ(snapshot_of(canonical_definition), snapshot_of(variant_definition));
 
     ProcessEngine engine;
     const auto canonical_result = engine.execute(canonical);
@@ -1057,8 +912,7 @@ TEST(ProcessDeterminismTest,
     EXPECT_EQ(snapshot_of(repeated_result), snapshot_of(canonical_result));
 }
 
-TEST(ProcessDeterminismTest,
-     GraphShapesRemainStructuralAndSideEffectFree) {
+TEST(ProcessDeterminismTest, GraphShapesRemainStructuralAndSideEffectFree) {
     RepresentationDocument cyclic_and_disconnected;
     RepresentationDocument alternate;
     populate_graph_document(cyclic_and_disconnected, false);
@@ -1071,24 +925,21 @@ TEST(ProcessDeterminismTest,
     const auto second = engine.execute(alternate);
 
     EXPECT_EQ(snapshot_of(first), snapshot_of(second));
-    EXPECT_EQ(
-        snapshot_of(cyclic_and_disconnected), first_before);
+    EXPECT_EQ(snapshot_of(cyclic_and_disconnected), first_before);
     EXPECT_EQ(snapshot_of(alternate), second_before);
-    EXPECT_EQ(
-        snapshot_of(first).trace,
-        (std::vector<std::string>{
-            expected_id(1U),
-            expected_id(2U),
-            expected_id(3U),
-            expected_id(4U),
-            expected_id(5U),
-            expected_id(6U),
-            expected_id(7U),
-        }));
+    EXPECT_EQ(snapshot_of(first).trace,
+              (std::vector<std::string>{
+                  expected_id(1U),
+                  expected_id(2U),
+                  expected_id(3U),
+                  expected_id(4U),
+                  expected_id(5U),
+                  expected_id(6U),
+                  expected_id(7U),
+              }));
 }
 
-TEST(ProcessThreadSafetyTest,
-     SupportsTheDocumentedConcurrentOperations) {
+TEST(ProcessThreadSafetyTest, SupportsTheDocumentedConcurrentOperations) {
     RepresentationDocument document;
     populate_canonical_document(document);
     const ProcessDefinition definition{document};
@@ -1099,18 +950,15 @@ TEST(ProcessThreadSafetyTest,
     contexts.reserve(worker_count);
     for (std::size_t index = 0U; index < worker_count; ++index) {
         static_cast<void>(index);
-        contexts.push_back(
-            std::make_unique<ExecutionContext>(definition));
+        contexts.push_back(std::make_unique<ExecutionContext>(definition));
     }
 
     std::vector<std::future<ResultSnapshot>> executions;
     executions.reserve(worker_count);
     for (const auto& context : contexts) {
-        executions.push_back(std::async(
-            std::launch::async,
-            [&engine, execution_context = context.get()] {
-                return snapshot_of(
-                    engine.execute(*execution_context));
+        executions.push_back(
+            std::async(std::launch::async, [&engine, execution_context = context.get()] {
+                return snapshot_of(engine.execute(*execution_context));
             }));
     }
 
@@ -1136,16 +984,12 @@ TEST(ProcessThreadSafetyTest,
     readers.reserve(worker_count);
     for (std::size_t index = 0U; index < worker_count; ++index) {
         static_cast<void>(index);
-        readers.push_back(std::async(
-            std::launch::async,
-            [&definition, &immutable_result, &immutable_snapshot] {
-                for (std::size_t iteration = 0U;
-                     iteration < 100U;
-                     ++iteration) {
+        readers.push_back(
+            std::async(std::launch::async, [&definition, &immutable_result, &immutable_snapshot] {
+                for (std::size_t iteration = 0U; iteration < 100U; ++iteration) {
                     if (definition.executionOrder().size() != 11U ||
                         definition.entityCount() != 3U ||
-                        snapshot_of(immutable_result) !=
-                            immutable_snapshot) {
+                        snapshot_of(immutable_result) != immutable_snapshot) {
                         return false;
                     }
                 }
@@ -1158,14 +1002,10 @@ TEST(ProcessThreadSafetyTest,
     }
 }
 
-TEST(RuntimeIntegrationTest,
-     ExposesTheProcessDomainServiceThroughRuntime) {
+TEST(RuntimeIntegrationTest, ExposesTheProcessDomainServiceThroughRuntime) {
     using Contract = cca::process::detail::ProcessEngineContract;
-    static_assert(
-        Contract::cardinality ==
-        cca::runtime::ServiceCardinality::exactly_one);
-    static_assert(
-        std::is_same_v<typename Contract::interface_type, ProcessEngine>);
+    static_assert(Contract::cardinality == cca::runtime::ServiceCardinality::exactly_one);
+    static_assert(std::is_same_v<typename Contract::interface_type, ProcessEngine>);
 
     auto runtime = make_process_runtime("process-runtime");
     ASSERT_EQ(runtime->state(), RuntimeState::constructed);
@@ -1173,8 +1013,7 @@ TEST(RuntimeIntegrationTest,
     ASSERT_EQ(runtime->state(), RuntimeState::running);
     ASSERT_TRUE(runtime->frozen());
 
-    auto& engine =
-        runtime->service_registry().resolve<Contract>();
+    auto& engine = runtime->service_registry().resolve<Contract>();
     RepresentationDocument document;
     populate_canonical_document(document);
     const auto result = engine.execute(document);
@@ -1186,68 +1025,47 @@ TEST(RuntimeIntegrationTest,
     EXPECT_EQ(runtime->state(), RuntimeState::destroyed);
 }
 
-TEST(RuntimeIntegrationTest,
-     ProviderLifecycleSurroundsHostedExecution) {
+TEST(RuntimeIntegrationTest, ProviderLifecycleSurroundsHostedExecution) {
     using Contract = cca::process::detail::ProcessEngineContract;
     auto runtime = make_process_runtime("process-lifecycle-runtime");
 
     ASSERT_TRUE(runtime->start().ok());
     ASSERT_EQ(runtime->state(), RuntimeState::running);
     const auto before_execution = runtime->lifecycle_history();
-    EXPECT_EQ(
-        runtime->observability().metric_value(
-            RuntimeMetric::providers_started),
-        1U);
-    EXPECT_EQ(
-        runtime->observability().metric_value(
-            RuntimeMetric::providers_stopped),
-        0U);
+    EXPECT_EQ(runtime->observability().metric_value(RuntimeMetric::providers_started), 1U);
+    EXPECT_EQ(runtime->observability().metric_value(RuntimeMetric::providers_stopped), 0U);
 
-    auto& engine =
-        runtime->service_registry().resolve<Contract>();
+    auto& engine = runtime->service_registry().resolve<Contract>();
     RepresentationDocument document;
     const auto result = engine.execute(document);
 
     EXPECT_TRUE(result.succeeded());
     EXPECT_EQ(runtime->state(), RuntimeState::running);
     EXPECT_EQ(runtime->lifecycle_history(), before_execution);
-    EXPECT_TRUE(
-        contains_state(before_execution, RuntimeState::starting));
+    EXPECT_TRUE(contains_state(before_execution, RuntimeState::starting));
     EXPECT_EQ(before_execution.back(), RuntimeState::running);
 
     ASSERT_TRUE(runtime->stop().ok());
     const auto complete_history = runtime->lifecycle_history();
-    EXPECT_TRUE(
-        contains_state(complete_history, RuntimeState::stopping));
-    EXPECT_TRUE(
-        contains_state(complete_history, RuntimeState::stopped));
+    EXPECT_TRUE(contains_state(complete_history, RuntimeState::stopping));
+    EXPECT_TRUE(contains_state(complete_history, RuntimeState::stopped));
     EXPECT_EQ(complete_history.back(), RuntimeState::destroyed);
-    EXPECT_EQ(
-        runtime->observability().metric_value(
-            RuntimeMetric::providers_started),
-        1U);
-    EXPECT_EQ(
-        runtime->observability().metric_value(
-            RuntimeMetric::providers_stopped),
-        1U);
+    EXPECT_EQ(runtime->observability().metric_value(RuntimeMetric::providers_started), 1U);
+    EXPECT_EQ(runtime->observability().metric_value(RuntimeMetric::providers_stopped), 1U);
 }
 
-TEST(RuntimeIntegrationTest,
-     KeepsRuntimeInstancesAndEnginesIsolated) {
+TEST(RuntimeIntegrationTest, KeepsRuntimeInstancesAndEnginesIsolated) {
     using Contract = cca::process::detail::ProcessEngineContract;
     auto first_runtime = make_process_runtime("process-instance-one");
     auto second_runtime = make_process_runtime("process-instance-two");
 
     ASSERT_TRUE(first_runtime->start().ok());
     ASSERT_TRUE(second_runtime->start().ok());
-    auto& first_engine =
-        first_runtime->service_registry().resolve<Contract>();
-    auto& second_engine =
-        second_runtime->service_registry().resolve<Contract>();
+    auto& first_engine = first_runtime->service_registry().resolve<Contract>();
+    auto& second_engine = second_runtime->service_registry().resolve<Contract>();
 
     EXPECT_NE(&first_engine, &second_engine);
-    EXPECT_NE(
-        first_runtime->runtime_id(), second_runtime->runtime_id());
+    EXPECT_NE(first_runtime->runtime_id(), second_runtime->runtime_id());
 
     RepresentationDocument first_document;
     populate_canonical_document(first_document);
@@ -1266,13 +1084,11 @@ TEST(RuntimeIntegrationTest,
     EXPECT_EQ(second_runtime->state(), RuntimeState::destroyed);
 }
 
-TEST(RuntimeIntegrationTest,
-     InvalidInputDoesNotFailTheRunningRuntime) {
+TEST(RuntimeIntegrationTest, InvalidInputDoesNotFailTheRunningRuntime) {
     using Contract = cca::process::detail::ProcessEngineContract;
     auto runtime = make_process_runtime("process-invalid-input-runtime");
     ASSERT_TRUE(runtime->start().ok());
-    auto& engine =
-        runtime->service_registry().resolve<Contract>();
+    auto& engine = runtime->service_registry().resolve<Contract>();
 
     RepresentationDocument invalid;
     RepresentationDocument foreign;
@@ -1281,66 +1097,44 @@ TEST(RuntimeIntegrationTest,
     const auto result = engine.execute(invalid);
 
     EXPECT_FALSE(result.succeeded());
-    EXPECT_EQ(
-        result.code(), ExecutionResult::Code::InvalidRepresentation);
+    EXPECT_EQ(result.code(), ExecutionResult::Code::InvalidRepresentation);
     EXPECT_EQ(runtime->state(), RuntimeState::running);
     EXPECT_EQ(runtime->lifecycle_history(), history_before);
 
     ASSERT_TRUE(runtime->stop().ok());
 }
 
-TEST(RuntimeIntegrationTest,
-     ProcessProviderLifecycleFailuresRemainRuntimeFailures) {
+TEST(RuntimeIntegrationTest, ProcessProviderLifecycleFailuresRemainRuntimeFailures) {
     using Contract = cca::process::detail::ProcessEngineContract;
 
-    RuntimeBuilder start_failure_builder{
-        RuntimeId{"process-start-failure"}};
+    RuntimeBuilder start_failure_builder{RuntimeId{"process-start-failure"}};
     start_failure_builder.declare_contract<Contract>();
-    start_failure_builder
-        .add_provider<Contract, FailingProcessProvider>([] {
-            return std::make_unique<FailingProcessProvider>(
-                ProviderFailure::Start);
-        });
-    auto start_failure_runtime =
-        std::move(start_failure_builder).build();
+    start_failure_builder.add_provider<Contract, FailingProcessProvider>(
+        [] { return std::make_unique<FailingProcessProvider>(ProviderFailure::Start); });
+    auto start_failure_runtime = std::move(start_failure_builder).build();
 
     const auto start_result = start_failure_runtime->start();
     EXPECT_FALSE(start_result.ok());
-    EXPECT_EQ(
-        start_result.code(), "process.test.start-failure");
-    EXPECT_EQ(
-        start_failure_runtime->state(), RuntimeState::destroyed);
-    const auto start_history =
-        start_failure_runtime->lifecycle_history();
-    EXPECT_TRUE(
-        contains_state(start_history, RuntimeState::failed));
-    EXPECT_TRUE(
-        contains_state(start_history, RuntimeState::rollback));
+    EXPECT_EQ(start_result.code(), "process.test.start-failure");
+    EXPECT_EQ(start_failure_runtime->state(), RuntimeState::destroyed);
+    const auto start_history = start_failure_runtime->lifecycle_history();
+    EXPECT_TRUE(contains_state(start_history, RuntimeState::failed));
+    EXPECT_TRUE(contains_state(start_history, RuntimeState::rollback));
 
-    RuntimeBuilder stop_failure_builder{
-        RuntimeId{"process-stop-failure"}};
+    RuntimeBuilder stop_failure_builder{RuntimeId{"process-stop-failure"}};
     stop_failure_builder.declare_contract<Contract>();
-    stop_failure_builder
-        .add_provider<Contract, FailingProcessProvider>([] {
-            return std::make_unique<FailingProcessProvider>(
-                ProviderFailure::Stop);
-        });
-    auto stop_failure_runtime =
-        std::move(stop_failure_builder).build();
+    stop_failure_builder.add_provider<Contract, FailingProcessProvider>(
+        [] { return std::make_unique<FailingProcessProvider>(ProviderFailure::Stop); });
+    auto stop_failure_runtime = std::move(stop_failure_builder).build();
 
     ASSERT_TRUE(stop_failure_runtime->start().ok());
     const auto stop_result = stop_failure_runtime->stop();
     EXPECT_FALSE(stop_result.ok());
-    EXPECT_EQ(
-        stop_result.code(), "process.test.stop-failure");
-    EXPECT_EQ(
-        stop_failure_runtime->state(), RuntimeState::destroyed);
-    const auto stop_history =
-        stop_failure_runtime->lifecycle_history();
-    EXPECT_TRUE(
-        contains_state(stop_history, RuntimeState::failed));
-    EXPECT_TRUE(
-        contains_state(stop_history, RuntimeState::rollback));
+    EXPECT_EQ(stop_result.code(), "process.test.stop-failure");
+    EXPECT_EQ(stop_failure_runtime->state(), RuntimeState::destroyed);
+    const auto stop_history = stop_failure_runtime->lifecycle_history();
+    EXPECT_TRUE(contains_state(stop_history, RuntimeState::failed));
+    EXPECT_TRUE(contains_state(stop_history, RuntimeState::rollback));
 }
 
 } // namespace

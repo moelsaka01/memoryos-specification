@@ -82,10 +82,7 @@ template <typename Floating>
     Floating value{};
     // Xcode 15.4's libc++ exposes integer but not floating-point from_chars.
     if constexpr (requires(const char* first, const char* last, Floating& candidate) {
-                      std::from_chars(first,
-                                      last,
-                                      candidate,
-                                      std::chars_format::general);
+                      std::from_chars(first, last, candidate, std::chars_format::general);
                   }) {
         const auto [end, error] = std::from_chars(
             text.data(), text.data() + text.size(), value, std::chars_format::general);
@@ -97,8 +94,7 @@ template <typename Floating>
         std::istringstream input{std::string{text}};
         input.imbue(std::locale::classic());
         input >> std::noskipws >> value;
-        if (input.fail() ||
-            input.rdbuf()->sgetc() != std::char_traits<char>::eof()) {
+        if (input.fail() || input.rdbuf()->sgetc() != std::char_traits<char>::eof()) {
             return std::nullopt;
         }
     }

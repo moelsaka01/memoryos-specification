@@ -1,10 +1,9 @@
+#include <cstdint>
 #include <memoryos/memoryos.hpp>
+#include <utility>
 
 #include "client.hpp"
 #include "json.hpp"
-
-#include <cstdint>
-#include <utility>
 
 namespace memoryos {
 namespace {
@@ -28,8 +27,7 @@ using detail::Json;
     };
 }
 
-[[noreturn]] void untrustedRegressionPolicyFactSource(
-    std::string_view operation) {
+[[noreturn]] void untrustedRegressionPolicyFactSource(std::string_view operation) {
     throw SdkError{
         "DETERMINISTIC_FACT_SOURCE_PROVENANCE_UNTRUSTED",
         std::string{operation},
@@ -46,28 +44,25 @@ using detail::Json;
     throw SdkError{"SDK_PROTOCOL_ERROR", "transport", std::move(message), {}};
 }
 
-[[nodiscard]] const std::string& requiredText(const Json& value,
-                                              std::string_view name) {
+[[nodiscard]] const std::string& requiredText(const Json& value, std::string_view name) {
     const Json* member = value.find(name);
     if (member == nullptr || !member->isString()) {
-        invalidPolicyProtocol("The policy host result omitted string member '" +
-                              std::string{name} + "'.");
+        invalidPolicyProtocol("The policy host result omitted string member '" + std::string{name} +
+                              "'.");
     }
     return member->asString();
 }
 
-[[nodiscard]] const Json& requiredObject(const Json& value,
-                                         std::string_view name) {
+[[nodiscard]] const Json& requiredObject(const Json& value, std::string_view name) {
     const Json* member = value.find(name);
     if (member == nullptr || !member->isObject()) {
-        invalidPolicyProtocol("The policy host result omitted object member '" +
-                              std::string{name} + "'.");
+        invalidPolicyProtocol("The policy host result omitted object member '" + std::string{name} +
+                              "'.");
     }
     return *member;
 }
 
-[[nodiscard]] std::optional<std::string> optionalText(const Json& value,
-                                                       std::string_view name) {
+[[nodiscard]] std::optional<std::string> optionalText(const Json& value, std::string_view name) {
     const Json* member = value.find(name);
     if (member == nullptr || member->isNull()) {
         return std::nullopt;
@@ -79,9 +74,8 @@ using detail::Json;
     return member->asString();
 }
 
-[[nodiscard]] std::optional<std::string> optionalObjectJson(
-    const Json& value,
-    std::string_view name) {
+[[nodiscard]] std::optional<std::string> optionalObjectJson(const Json& value,
+                                                            std::string_view name) {
     const Json* member = value.find(name);
     if (member == nullptr || member->isNull()) {
         return std::nullopt;
@@ -93,8 +87,7 @@ using detail::Json;
     return member->serialize();
 }
 
-[[nodiscard]] bool requiredBoolean(const Json& value,
-                                   std::string_view name) {
+[[nodiscard]] bool requiredBoolean(const Json& value, std::string_view name) {
     const Json* member = value.find(name);
     if (member == nullptr || !member->isBool()) {
         invalidPolicyProtocol("The policy host result omitted Boolean member '" +
@@ -103,8 +96,7 @@ using detail::Json;
     return member->asBool();
 }
 
-[[nodiscard]] std::string encodeBase64(
-    std::span<const std::uint8_t> bytes) {
+[[nodiscard]] std::string encodeBase64(std::span<const std::uint8_t> bytes) {
     constexpr std::string_view alphabet{
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"};
     std::string output;
@@ -125,16 +117,20 @@ using detail::Json;
 }
 
 [[nodiscard]] int base64Digit(char value) noexcept {
-    if (value >= 'A' && value <= 'Z') return value - 'A';
-    if (value >= 'a' && value <= 'z') return value - 'a' + 26;
-    if (value >= '0' && value <= '9') return value - '0' + 52;
-    if (value == '+') return 62;
-    if (value == '/') return 63;
+    if (value >= 'A' && value <= 'Z')
+        return value - 'A';
+    if (value >= 'a' && value <= 'z')
+        return value - 'a' + 26;
+    if (value >= '0' && value <= '9')
+        return value - '0' + 52;
+    if (value == '+')
+        return 62;
+    if (value == '/')
+        return 63;
     return -1;
 }
 
-[[nodiscard]] std::vector<std::uint8_t> decodeBase64(
-    std::string_view text) {
+[[nodiscard]] std::vector<std::uint8_t> decodeBase64(std::string_view text) {
     if (text.size() % 4U != 0U) {
         invalidPolicyProtocol("The policy host returned malformed Base64.");
     }
@@ -148,16 +144,14 @@ using detail::Json;
         const int second = base64Digit(text[index + 1U]);
         const int third = padSecond ? 0 : base64Digit(text[index + 2U]);
         const int fourth = padThird ? 0 : base64Digit(text[index + 3U]);
-        if (first < 0 || second < 0 || third < 0 || fourth < 0 ||
-            (padSecond && !padThird) ||
+        if (first < 0 || second < 0 || third < 0 || fourth < 0 || (padSecond && !padThird) ||
             ((padSecond || padThird) && !finalGroup)) {
             invalidPolicyProtocol("The policy host returned malformed Base64.");
         }
-        const auto value =
-            (static_cast<std::uint32_t>(first) << 18U) |
-            (static_cast<std::uint32_t>(second) << 12U) |
-            (static_cast<std::uint32_t>(third) << 6U) |
-            static_cast<std::uint32_t>(fourth);
+        const auto value = (static_cast<std::uint32_t>(first) << 18U) |
+                           (static_cast<std::uint32_t>(second) << 12U) |
+                           (static_cast<std::uint32_t>(third) << 6U) |
+                           static_cast<std::uint32_t>(fourth);
         output.push_back(static_cast<std::uint8_t>((value >> 16U) & 0xFFU));
         if (!padSecond) {
             output.push_back(static_cast<std::uint8_t>((value >> 8U) & 0xFFU));
@@ -169,8 +163,7 @@ using detail::Json;
     return output;
 }
 
-[[nodiscard]] std::vector<std::uint8_t> requiredBytes(const Json& result,
-                                                       std::string_view name) {
+[[nodiscard]] std::vector<std::uint8_t> requiredBytes(const Json& result, std::string_view name) {
     return decodeBase64(requiredText(result, name));
 }
 
@@ -272,113 +265,247 @@ struct PolicyArtifactVerification::Impl final {
     std::optional<std::string> decision;
 };
 
-PreparedPolicy::PreparedPolicy(std::shared_ptr<const Impl> impl)
-    : impl_(std::move(impl)) {}
-const std::string& PreparedPolicy::kind() const noexcept { return impl_->kind; }
-const std::string& PreparedPolicy::version() const noexcept { return impl_->version; }
-const std::string& PreparedPolicy::identifier() const noexcept { return impl_->identifier; }
-const std::string& PreparedPolicy::artifactJson() const noexcept { return impl_->artifact_json; }
-const std::string& PreparedPolicy::semanticProjectionJson() const noexcept { return impl_->semantic_projection_json; }
-const std::string& PreparedPolicy::documentDigest() const noexcept { return impl_->document_digest; }
-const std::string& PreparedPolicy::semanticDigest() const noexcept { return impl_->semantic_digest; }
-std::span<const std::uint8_t> PreparedPolicy::bytes() const noexcept { return impl_->bytes; }
+PreparedPolicy::PreparedPolicy(std::shared_ptr<const Impl> impl) : impl_(std::move(impl)) {}
+const std::string& PreparedPolicy::kind() const noexcept {
+    return impl_->kind;
+}
+const std::string& PreparedPolicy::version() const noexcept {
+    return impl_->version;
+}
+const std::string& PreparedPolicy::identifier() const noexcept {
+    return impl_->identifier;
+}
+const std::string& PreparedPolicy::artifactJson() const noexcept {
+    return impl_->artifact_json;
+}
+const std::string& PreparedPolicy::semanticProjectionJson() const noexcept {
+    return impl_->semantic_projection_json;
+}
+const std::string& PreparedPolicy::documentDigest() const noexcept {
+    return impl_->document_digest;
+}
+const std::string& PreparedPolicy::semanticDigest() const noexcept {
+    return impl_->semantic_digest;
+}
+std::span<const std::uint8_t> PreparedPolicy::bytes() const noexcept {
+    return impl_->bytes;
+}
 
 PolicyFactContextInspection::PolicyFactContextInspection(std::shared_ptr<const Impl> impl)
     : impl_(std::move(impl)) {}
-const std::string& PolicyFactContextInspection::kind() const noexcept { return impl_->kind; }
-const std::string& PolicyFactContextInspection::version() const noexcept { return impl_->version; }
-const std::string& PolicyFactContextInspection::factModelVersion() const noexcept { return impl_->fact_model_version; }
-const std::string& PolicyFactContextInspection::contextDigest() const noexcept { return impl_->context_digest; }
-const std::string& PolicyFactContextInspection::artifactJson() const noexcept { return impl_->artifact_json; }
-std::span<const std::uint8_t> PolicyFactContextInspection::bytes() const noexcept { return impl_->bytes; }
-std::string_view PolicyFactContextInspection::authority() const noexcept { return "inspectionOnly"; }
+const std::string& PolicyFactContextInspection::kind() const noexcept {
+    return impl_->kind;
+}
+const std::string& PolicyFactContextInspection::version() const noexcept {
+    return impl_->version;
+}
+const std::string& PolicyFactContextInspection::factModelVersion() const noexcept {
+    return impl_->fact_model_version;
+}
+const std::string& PolicyFactContextInspection::contextDigest() const noexcept {
+    return impl_->context_digest;
+}
+const std::string& PolicyFactContextInspection::artifactJson() const noexcept {
+    return impl_->artifact_json;
+}
+std::span<const std::uint8_t> PolicyFactContextInspection::bytes() const noexcept {
+    return impl_->bytes;
+}
+std::string_view PolicyFactContextInspection::authority() const noexcept {
+    return "inspectionOnly";
+}
 
 AuthoritativePolicyFactContext::AuthoritativePolicyFactContext(std::shared_ptr<const Impl> impl)
     : impl_(std::move(impl)) {}
-const std::string& AuthoritativePolicyFactContext::kind() const noexcept { return impl_->kind; }
-const std::string& AuthoritativePolicyFactContext::version() const noexcept { return impl_->version; }
-const std::string& AuthoritativePolicyFactContext::factModelVersion() const noexcept { return impl_->fact_model_version; }
-const std::string& AuthoritativePolicyFactContext::contextDigest() const noexcept { return impl_->context_digest; }
-const std::string& AuthoritativePolicyFactContext::artifactJson() const noexcept { return impl_->artifact_json; }
-std::span<const std::uint8_t> AuthoritativePolicyFactContext::bytes() const noexcept { return impl_->bytes; }
-std::string_view AuthoritativePolicyFactContext::authority() const noexcept { return "authoritative"; }
+const std::string& AuthoritativePolicyFactContext::kind() const noexcept {
+    return impl_->kind;
+}
+const std::string& AuthoritativePolicyFactContext::version() const noexcept {
+    return impl_->version;
+}
+const std::string& AuthoritativePolicyFactContext::factModelVersion() const noexcept {
+    return impl_->fact_model_version;
+}
+const std::string& AuthoritativePolicyFactContext::contextDigest() const noexcept {
+    return impl_->context_digest;
+}
+const std::string& AuthoritativePolicyFactContext::artifactJson() const noexcept {
+    return impl_->artifact_json;
+}
+std::span<const std::uint8_t> AuthoritativePolicyFactContext::bytes() const noexcept {
+    return impl_->bytes;
+}
+std::string_view AuthoritativePolicyFactContext::authority() const noexcept {
+    return "authoritative";
+}
 
-RegressionPolicyFactSourceInspection::RegressionPolicyFactSourceInspection(std::shared_ptr<const Impl> impl)
+RegressionPolicyFactSourceInspection::RegressionPolicyFactSourceInspection(
+    std::shared_ptr<const Impl> impl)
     : impl_(std::move(impl)) {}
-const std::string& RegressionPolicyFactSourceInspection::kind() const noexcept { return impl_->kind; }
-const std::string& RegressionPolicyFactSourceInspection::version() const noexcept { return impl_->version; }
-const std::string& RegressionPolicyFactSourceInspection::domain() const noexcept { return impl_->domain; }
-const std::string& RegressionPolicyFactSourceInspection::sourceModelVersion() const noexcept { return impl_->source_model_version; }
-const std::string& RegressionPolicyFactSourceInspection::sourceDigest() const noexcept { return impl_->source_digest; }
-const std::string& RegressionPolicyFactSourceInspection::artifactJson() const noexcept { return impl_->artifact_json; }
-std::span<const std::uint8_t> RegressionPolicyFactSourceInspection::bytes() const noexcept { return impl_->bytes; }
-std::string_view RegressionPolicyFactSourceInspection::authority() const noexcept { return "inspectionOnly"; }
+const std::string& RegressionPolicyFactSourceInspection::kind() const noexcept {
+    return impl_->kind;
+}
+const std::string& RegressionPolicyFactSourceInspection::version() const noexcept {
+    return impl_->version;
+}
+const std::string& RegressionPolicyFactSourceInspection::domain() const noexcept {
+    return impl_->domain;
+}
+const std::string& RegressionPolicyFactSourceInspection::sourceModelVersion() const noexcept {
+    return impl_->source_model_version;
+}
+const std::string& RegressionPolicyFactSourceInspection::sourceDigest() const noexcept {
+    return impl_->source_digest;
+}
+const std::string& RegressionPolicyFactSourceInspection::artifactJson() const noexcept {
+    return impl_->artifact_json;
+}
+std::span<const std::uint8_t> RegressionPolicyFactSourceInspection::bytes() const noexcept {
+    return impl_->bytes;
+}
+std::string_view RegressionPolicyFactSourceInspection::authority() const noexcept {
+    return "inspectionOnly";
+}
 
-AuthoritativeRegressionPolicyFactSource::AuthoritativeRegressionPolicyFactSource(std::shared_ptr<const Impl> impl)
+AuthoritativeRegressionPolicyFactSource::AuthoritativeRegressionPolicyFactSource(
+    std::shared_ptr<const Impl> impl)
     : impl_(std::move(impl)) {}
-const std::string& AuthoritativeRegressionPolicyFactSource::kind() const noexcept { return impl_->kind; }
-const std::string& AuthoritativeRegressionPolicyFactSource::version() const noexcept { return impl_->version; }
-const std::string& AuthoritativeRegressionPolicyFactSource::domain() const noexcept { return impl_->domain; }
-const std::string& AuthoritativeRegressionPolicyFactSource::sourceModelVersion() const noexcept { return impl_->source_model_version; }
-const std::string& AuthoritativeRegressionPolicyFactSource::sourceDigest() const noexcept { return impl_->source_digest; }
-const std::string& AuthoritativeRegressionPolicyFactSource::artifactJson() const noexcept { return impl_->artifact_json; }
-std::span<const std::uint8_t> AuthoritativeRegressionPolicyFactSource::bytes() const noexcept { return impl_->bytes; }
-std::string_view AuthoritativeRegressionPolicyFactSource::authority() const noexcept { return "authoritative"; }
+const std::string& AuthoritativeRegressionPolicyFactSource::kind() const noexcept {
+    return impl_->kind;
+}
+const std::string& AuthoritativeRegressionPolicyFactSource::version() const noexcept {
+    return impl_->version;
+}
+const std::string& AuthoritativeRegressionPolicyFactSource::domain() const noexcept {
+    return impl_->domain;
+}
+const std::string& AuthoritativeRegressionPolicyFactSource::sourceModelVersion() const noexcept {
+    return impl_->source_model_version;
+}
+const std::string& AuthoritativeRegressionPolicyFactSource::sourceDigest() const noexcept {
+    return impl_->source_digest;
+}
+const std::string& AuthoritativeRegressionPolicyFactSource::artifactJson() const noexcept {
+    return impl_->artifact_json;
+}
+std::span<const std::uint8_t> AuthoritativeRegressionPolicyFactSource::bytes() const noexcept {
+    return impl_->bytes;
+}
+std::string_view AuthoritativeRegressionPolicyFactSource::authority() const noexcept {
+    return "authoritative";
+}
 
 RegressionReportInspection::RegressionReportInspection(std::shared_ptr<const Impl> impl)
     : impl_(std::move(impl)) {}
-const std::string& RegressionReportInspection::kind() const noexcept { return impl_->kind; }
-const std::string& RegressionReportInspection::version() const noexcept { return impl_->version; }
-const std::string& RegressionReportInspection::reportIdentifier() const noexcept { return impl_->report_identifier; }
-const std::string& RegressionReportInspection::artifactJson() const noexcept { return impl_->artifact_json; }
-std::span<const std::uint8_t> RegressionReportInspection::bytes() const noexcept { return impl_->bytes; }
-std::string_view RegressionReportInspection::authority() const noexcept { return "inspectionOnly"; }
+const std::string& RegressionReportInspection::kind() const noexcept {
+    return impl_->kind;
+}
+const std::string& RegressionReportInspection::version() const noexcept {
+    return impl_->version;
+}
+const std::string& RegressionReportInspection::reportIdentifier() const noexcept {
+    return impl_->report_identifier;
+}
+const std::string& RegressionReportInspection::artifactJson() const noexcept {
+    return impl_->artifact_json;
+}
+std::span<const std::uint8_t> RegressionReportInspection::bytes() const noexcept {
+    return impl_->bytes;
+}
+std::string_view RegressionReportInspection::authority() const noexcept {
+    return "inspectionOnly";
+}
 
 AuthoritativeRegressionPolicyFacts::AuthoritativeRegressionPolicyFacts(
-    AuthoritativePolicyFactContext context,
-    AuthoritativeRegressionPolicyFactSource source)
+    AuthoritativePolicyFactContext context, AuthoritativeRegressionPolicyFactSource source)
     : context_(std::move(context)), source_(std::move(source)) {}
-const AuthoritativePolicyFactContext& AuthoritativeRegressionPolicyFacts::policyFactContext() const noexcept { return context_; }
-const AuthoritativeRegressionPolicyFactSource& AuthoritativeRegressionPolicyFacts::regressionPolicyFactSource() const noexcept { return source_; }
+const AuthoritativePolicyFactContext&
+AuthoritativeRegressionPolicyFacts::policyFactContext() const noexcept {
+    return context_;
+}
+const AuthoritativeRegressionPolicyFactSource&
+AuthoritativeRegressionPolicyFacts::regressionPolicyFactSource() const noexcept {
+    return source_;
+}
 
-PolicyEvaluation::PolicyEvaluation(std::shared_ptr<const Impl> impl)
-    : impl_(std::move(impl)) {}
-const std::string& PolicyEvaluation::outcomeKind() const noexcept { return impl_->outcome_kind; }
-const std::string& PolicyEvaluation::decision() const noexcept { return impl_->decision; }
-const std::string& PolicyEvaluation::evaluationIdentityJson() const noexcept { return impl_->evaluation_identity_json; }
-const std::string& PolicyEvaluation::evaluationIdentityDigest() const noexcept { return impl_->evaluation_identity_digest; }
-std::span<const std::uint8_t> PolicyEvaluation::evaluationIdentityBytes() const noexcept { return impl_->evaluation_identity_bytes; }
-const std::string& PolicyEvaluation::outcomeJson() const noexcept { return impl_->outcome_json; }
-const std::string& PolicyEvaluation::outcomeDigest() const noexcept { return impl_->outcome_digest; }
-std::span<const std::uint8_t> PolicyEvaluation::canonicalOutcomeBytes() const noexcept { return impl_->canonical_outcome_bytes; }
-const std::string& PolicyEvaluation::cacheDisposition() const noexcept { return impl_->cache_disposition; }
+PolicyEvaluation::PolicyEvaluation(std::shared_ptr<const Impl> impl) : impl_(std::move(impl)) {}
+const std::string& PolicyEvaluation::outcomeKind() const noexcept {
+    return impl_->outcome_kind;
+}
+const std::string& PolicyEvaluation::decision() const noexcept {
+    return impl_->decision;
+}
+const std::string& PolicyEvaluation::evaluationIdentityJson() const noexcept {
+    return impl_->evaluation_identity_json;
+}
+const std::string& PolicyEvaluation::evaluationIdentityDigest() const noexcept {
+    return impl_->evaluation_identity_digest;
+}
+std::span<const std::uint8_t> PolicyEvaluation::evaluationIdentityBytes() const noexcept {
+    return impl_->evaluation_identity_bytes;
+}
+const std::string& PolicyEvaluation::outcomeJson() const noexcept {
+    return impl_->outcome_json;
+}
+const std::string& PolicyEvaluation::outcomeDigest() const noexcept {
+    return impl_->outcome_digest;
+}
+std::span<const std::uint8_t> PolicyEvaluation::canonicalOutcomeBytes() const noexcept {
+    return impl_->canonical_outcome_bytes;
+}
+const std::string& PolicyEvaluation::cacheDisposition() const noexcept {
+    return impl_->cache_disposition;
+}
 
 PolicyArtifactVerification::PolicyArtifactVerification(std::shared_ptr<const Impl> impl)
     : impl_(std::move(impl)) {}
-const std::string& PolicyArtifactVerification::artifactKind() const noexcept { return impl_->artifact_kind; }
-const std::string& PolicyArtifactVerification::artifactVersion() const noexcept { return impl_->artifact_version; }
-const std::string& PolicyArtifactVerification::authority() const noexcept { return impl_->authority; }
-const std::string& PolicyArtifactVerification::verificationScope() const noexcept { return impl_->verification_scope; }
-bool PolicyArtifactVerification::verified() const noexcept { return impl_->verified; }
-std::span<const std::uint8_t> PolicyArtifactVerification::bytes() const noexcept { return impl_->bytes; }
-const std::optional<std::string>& PolicyArtifactVerification::evaluationIdentityJson() const noexcept { return impl_->evaluation_identity_json; }
-const std::optional<std::string>& PolicyArtifactVerification::evaluationIdentityDigest() const noexcept { return impl_->evaluation_identity_digest; }
-const std::optional<std::string>& PolicyArtifactVerification::outcomeJson() const noexcept { return impl_->outcome_json; }
-const std::optional<std::string>& PolicyArtifactVerification::outcomeDigest() const noexcept { return impl_->outcome_digest; }
-const std::optional<std::string>& PolicyArtifactVerification::decision() const noexcept { return impl_->decision; }
+const std::string& PolicyArtifactVerification::artifactKind() const noexcept {
+    return impl_->artifact_kind;
+}
+const std::string& PolicyArtifactVerification::artifactVersion() const noexcept {
+    return impl_->artifact_version;
+}
+const std::string& PolicyArtifactVerification::authority() const noexcept {
+    return impl_->authority;
+}
+const std::string& PolicyArtifactVerification::verificationScope() const noexcept {
+    return impl_->verification_scope;
+}
+bool PolicyArtifactVerification::verified() const noexcept {
+    return impl_->verified;
+}
+std::span<const std::uint8_t> PolicyArtifactVerification::bytes() const noexcept {
+    return impl_->bytes;
+}
+const std::optional<std::string>&
+PolicyArtifactVerification::evaluationIdentityJson() const noexcept {
+    return impl_->evaluation_identity_json;
+}
+const std::optional<std::string>&
+PolicyArtifactVerification::evaluationIdentityDigest() const noexcept {
+    return impl_->evaluation_identity_digest;
+}
+const std::optional<std::string>& PolicyArtifactVerification::outcomeJson() const noexcept {
+    return impl_->outcome_json;
+}
+const std::optional<std::string>& PolicyArtifactVerification::outcomeDigest() const noexcept {
+    return impl_->outcome_digest;
+}
+const std::optional<std::string>& PolicyArtifactVerification::decision() const noexcept {
+    return impl_->decision;
+}
 
-PreparedPolicy MemoryOS::preparePolicy(
-    std::span<const std::uint8_t> bytes) const {
-    const Json result = client_->invoke("preparePolicy", {
-        {"bytesBase64", Json{encodeBase64(bytes)}},
-    });
+PreparedPolicy MemoryOS::preparePolicy(std::span<const std::uint8_t> bytes) const {
+    const Json result = client_->invoke("preparePolicy",
+                                        {
+                                            {"bytesBase64", Json{encodeBase64(bytes)}},
+                                        });
     auto impl = std::make_shared<PreparedPolicy::Impl>();
     impl->kind = requiredText(result, "kind");
     impl->version = requiredText(result, "version");
     impl->identifier = requiredText(result, "identifier");
     impl->artifact_json = requiredObject(result, "artifact").serialize();
-    impl->semantic_projection_json =
-        requiredObject(result, "semanticProjection").serialize();
+    impl->semantic_projection_json = requiredObject(result, "semanticProjection").serialize();
     impl->document_digest = requiredText(result, "documentDigest");
     impl->semantic_digest = requiredText(result, "semanticDigest");
     impl->bytes = requiredBytes(result, "bytesBase64");
@@ -388,18 +515,17 @@ PreparedPolicy MemoryOS::preparePolicy(
     return PreparedPolicy{std::move(impl)};
 }
 
-PreparedPolicy MemoryOS::preparePolicySet(
-    std::span<const std::uint8_t> bytes) const {
-    const Json result = client_->invoke("preparePolicySet", {
-        {"bytesBase64", Json{encodeBase64(bytes)}},
-    });
+PreparedPolicy MemoryOS::preparePolicySet(std::span<const std::uint8_t> bytes) const {
+    const Json result = client_->invoke("preparePolicySet",
+                                        {
+                                            {"bytesBase64", Json{encodeBase64(bytes)}},
+                                        });
     auto impl = std::make_shared<PreparedPolicy::Impl>();
     impl->kind = requiredText(result, "kind");
     impl->version = requiredText(result, "version");
     impl->identifier = requiredText(result, "identifier");
     impl->artifact_json = requiredObject(result, "artifact").serialize();
-    impl->semantic_projection_json =
-        requiredObject(result, "semanticProjection").serialize();
+    impl->semantic_projection_json = requiredObject(result, "semanticProjection").serialize();
     impl->document_digest = requiredText(result, "documentDigest");
     impl->semantic_digest = requiredText(result, "semanticDigest");
     impl->bytes = requiredBytes(result, "bytesBase64");
@@ -409,9 +535,9 @@ PreparedPolicy MemoryOS::preparePolicySet(
     return PreparedPolicy{std::move(impl)};
 }
 
-PolicyFactContextInspection MemoryOS::inspectPolicyFactContext(
-    std::span<const std::uint8_t> bytes,
-    PolicyFactContextInspectionOptions options) const {
+PolicyFactContextInspection
+MemoryOS::inspectPolicyFactContext(std::span<const std::uint8_t> bytes,
+                                   PolicyFactContextInspectionOptions options) const {
     Json::Object params{{"bytesBase64", Json{encodeBase64(bytes)}}};
     addOptional(params, "expectedContextDigest", options.expectedContextDigest);
     const Json result = client_->invoke("inspectPolicyFactContext", std::move(params));
@@ -430,8 +556,7 @@ RegressionPolicyFactSourceInspection MemoryOS::inspectRegressionPolicyFactSource
     RegressionPolicyFactSourceInspectionOptions options) const {
     Json::Object params{{"bytesBase64", Json{encodeBase64(bytes)}}};
     addOptional(params, "expectedSourceDigest", options.expectedSourceDigest);
-    const Json result = client_->invoke(
-        "inspectRegressionPolicyFactSource", std::move(params));
+    const Json result = client_->invoke("inspectRegressionPolicyFactSource", std::move(params));
     auto impl = std::make_shared<RegressionPolicyFactSourceInspection::Impl>();
     impl->kind = requiredText(result, "kind");
     impl->version = requiredText(result, "version");
@@ -443,11 +568,12 @@ RegressionPolicyFactSourceInspection MemoryOS::inspectRegressionPolicyFactSource
     return RegressionPolicyFactSourceInspection{std::move(impl)};
 }
 
-RegressionReportInspection MemoryOS::inspectRegressionReport(
-    std::span<const std::uint8_t> bytes) const {
-    const Json result = client_->invoke("inspectRegressionReport", {
-        {"bytesBase64", Json{encodeBase64(bytes)}},
-    });
+RegressionReportInspection
+MemoryOS::inspectRegressionReport(std::span<const std::uint8_t> bytes) const {
+    const Json result = client_->invoke("inspectRegressionReport",
+                                        {
+                                            {"bytesBase64", Json{encodeBase64(bytes)}},
+                                        });
     auto impl = std::make_shared<RegressionReportInspection::Impl>();
     impl->kind = requiredText(result, "kind");
     impl->version = requiredText(result, "version");
@@ -457,15 +583,16 @@ RegressionReportInspection MemoryOS::inspectRegressionReport(
     return RegressionReportInspection{std::move(impl)};
 }
 
-AuthoritativePolicyFactContext MemoryOS::capturePolicyFactContext(
-    const Investigation& investigation) const {
+AuthoritativePolicyFactContext
+MemoryOS::capturePolicyFactContext(const Investigation& investigation) const {
     if (!ownsInvestigation(investigation)) {
-        invalidPolicyArgument(
-            "An Investigation belongs to a different MemoryOS instance.");
+        invalidPolicyArgument("An Investigation belongs to a different MemoryOS instance.");
     }
-    const Json result = client_->invoke("capturePolicyFactContext", {
-        {"investigationIdentifier", Json{investigation.identifier()}},
-    });
+    const Json result =
+        client_->invoke("capturePolicyFactContext",
+                        {
+                            {"investigationIdentifier", Json{investigation.identifier()}},
+                        });
     auto impl = std::make_shared<AuthoritativePolicyFactContext::Impl>();
     impl->client = client_;
     impl->token = requiredText(result, "capabilityToken");
@@ -478,17 +605,18 @@ AuthoritativePolicyFactContext MemoryOS::capturePolicyFactContext(
     return AuthoritativePolicyFactContext{std::move(impl)};
 }
 
-AuthoritativeRegressionPolicyFacts MemoryOS::captureRegressionPolicyFacts(
-    const Investigation& baseline,
-    const Investigation& candidate) const {
+AuthoritativeRegressionPolicyFacts
+MemoryOS::captureRegressionPolicyFacts(const Investigation& baseline,
+                                       const Investigation& candidate) const {
     if (!ownsInvestigation(baseline) || !ownsInvestigation(candidate)) {
-        invalidPolicyArgument(
-            "Regression investigations belong to a different MemoryOS instance.");
+        invalidPolicyArgument("Regression investigations belong to a different MemoryOS instance.");
     }
-    const Json result = client_->invoke("captureRegressionPolicyFacts", {
-        {"baselineInvestigationIdentifier", Json{baseline.identifier()}},
-        {"candidateInvestigationIdentifier", Json{candidate.identifier()}},
-    });
+    const Json result =
+        client_->invoke("captureRegressionPolicyFacts",
+                        {
+                            {"baselineInvestigationIdentifier", Json{baseline.identifier()}},
+                            {"candidateInvestigationIdentifier", Json{candidate.identifier()}},
+                        });
     const Json& contextValue = requiredObject(result, "policyFactContext");
     auto contextImpl = std::make_shared<AuthoritativePolicyFactContext::Impl>();
     contextImpl->client = client_;
@@ -517,10 +645,9 @@ AuthoritativeRegressionPolicyFacts MemoryOS::captureRegressionPolicyFacts(
     return AuthoritativeRegressionPolicyFacts{std::move(context), std::move(source)};
 }
 
-PolicyEvaluation MemoryOS::evaluatePolicy(
-    const PreparedPolicy& policy,
-    const AuthoritativePolicyFactContext& context,
-    PolicyEvaluationOptions options) const {
+PolicyEvaluation MemoryOS::evaluatePolicy(const PreparedPolicy& policy,
+                                          const AuthoritativePolicyFactContext& context,
+                                          PolicyEvaluationOptions options) const {
     if (context.impl_->client != client_) {
         untrustedPolicyFactContext("evaluatePolicy");
     }
@@ -543,8 +670,7 @@ PolicyEvaluation MemoryOS::evaluatePolicy(
     const Json& outcome = requiredObject(result, "outcome");
     impl->outcome_kind = requiredText(outcome, "kind");
     impl->decision = requiredText(result, "decision");
-    impl->evaluation_identity_json =
-        requiredObject(result, "evaluationIdentity").serialize();
+    impl->evaluation_identity_json = requiredObject(result, "evaluationIdentity").serialize();
     impl->evaluation_identity_digest = requiredText(result, "evaluationIdentityDigest");
     impl->evaluation_identity_bytes = requiredBytes(result, "evaluationIdentityBytesBase64");
     impl->outcome_json = outcome.serialize();
@@ -554,10 +680,9 @@ PolicyEvaluation MemoryOS::evaluatePolicy(
     return PolicyEvaluation{std::move(impl)};
 }
 
-PolicyEvaluation MemoryOS::evaluatePolicySet(
-    const PreparedPolicy& policySet,
-    const AuthoritativePolicyFactContext& context,
-    PolicyEvaluationOptions options) const {
+PolicyEvaluation MemoryOS::evaluatePolicySet(const PreparedPolicy& policySet,
+                                             const AuthoritativePolicyFactContext& context,
+                                             PolicyEvaluationOptions options) const {
     if (context.impl_->client != client_) {
         untrustedPolicyFactContext("evaluatePolicySet");
     }
@@ -580,8 +705,7 @@ PolicyEvaluation MemoryOS::evaluatePolicySet(
     const Json& outcome = requiredObject(result, "outcome");
     impl->outcome_kind = requiredText(outcome, "kind");
     impl->decision = requiredText(result, "decision");
-    impl->evaluation_identity_json =
-        requiredObject(result, "evaluationIdentity").serialize();
+    impl->evaluation_identity_json = requiredObject(result, "evaluationIdentity").serialize();
     impl->evaluation_identity_digest = requiredText(result, "evaluationIdentityDigest");
     impl->evaluation_identity_bytes = requiredBytes(result, "evaluationIdentityBytesBase64");
     impl->outcome_json = outcome.serialize();
@@ -595,10 +719,8 @@ PolicyArtifactVerification MemoryOS::verifyEvaluationIdentityArtifact(
     std::span<const std::uint8_t> bytes,
     std::optional<std::string> expectedEvaluationIdentityDigest) const {
     Json::Object params{{"bytesBase64", Json{encodeBase64(bytes)}}};
-    addOptional(params, "expectedEvaluationIdentityDigest",
-                expectedEvaluationIdentityDigest);
-    const Json result = client_->invoke(
-        "verifyEvaluationIdentityArtifact", std::move(params));
+    addOptional(params, "expectedEvaluationIdentityDigest", expectedEvaluationIdentityDigest);
+    const Json result = client_->invoke("verifyEvaluationIdentityArtifact", std::move(params));
     auto impl = std::make_shared<PolicyArtifactVerification::Impl>();
     impl->artifact_kind = requiredText(result, "artifactKind");
     impl->artifact_version = requiredText(result, "artifactVersion");
@@ -614,11 +736,11 @@ PolicyArtifactVerification MemoryOS::verifyEvaluationIdentityArtifact(
     return PolicyArtifactVerification{std::move(impl)};
 }
 
-PolicyArtifactVerification MemoryOS::verifyEvaluationIdentityForEvaluation(
-    std::span<const std::uint8_t> bytes,
-    const PreparedPolicy& artifact,
-    const AuthoritativePolicyFactContext& context,
-    PolicyEvaluationOptions options) const {
+PolicyArtifactVerification
+MemoryOS::verifyEvaluationIdentityForEvaluation(std::span<const std::uint8_t> bytes,
+                                                const PreparedPolicy& artifact,
+                                                const AuthoritativePolicyFactContext& context,
+                                                PolicyEvaluationOptions options) const {
     if (context.impl_->client != client_) {
         untrustedPolicyFactContext("verifyEvaluationIdentityForEvaluation");
     }
@@ -630,14 +752,12 @@ PolicyArtifactVerification MemoryOS::verifyEvaluationIdentityForEvaluation(
     };
     if (options.regressionSource.has_value()) {
         if (options.regressionSource->impl_->client != client_) {
-            untrustedRegressionPolicyFactSource(
-                "verifyEvaluationIdentityForEvaluation");
+            untrustedRegressionPolicyFactSource("verifyEvaluationIdentityForEvaluation");
         }
         params.emplace("regressionPolicyFactSourceToken",
                        Json{options.regressionSource->impl_->token});
     }
-    const Json result = client_->invoke(
-        "verifyEvaluationIdentityForEvaluation", std::move(params));
+    const Json result = client_->invoke("verifyEvaluationIdentityForEvaluation", std::move(params));
     auto impl = std::make_shared<PolicyArtifactVerification::Impl>();
     impl->artifact_kind = requiredText(result, "artifactKind");
     impl->artifact_version = requiredText(result, "artifactVersion");
@@ -654,23 +774,20 @@ PolicyArtifactVerification MemoryOS::verifyEvaluationIdentityForEvaluation(
 }
 
 PolicyArtifactVerification MemoryOS::verifyPolicyEvaluationOutcomeArtifact(
-    std::span<const std::uint8_t> bytes,
-    PolicyOutcomeArtifactVerificationOptions options) const {
+    std::span<const std::uint8_t> bytes, PolicyOutcomeArtifactVerificationOptions options) const {
     if (options.expectedIdentity.has_value() &&
         options.expectedEvaluationIdentityDigest.has_value()) {
-        invalidPolicyArgument(
-            "Expected identity bytes and digest are mutually exclusive.");
+        invalidPolicyArgument("Expected identity bytes and digest are mutually exclusive.");
     }
     Json::Object params{{"bytesBase64", Json{encodeBase64(bytes)}}};
     if (options.expectedIdentity.has_value()) {
         params.emplace("expectedEvaluationIdentityBytesBase64",
                        Json{encodeBase64(*options.expectedIdentity)});
     }
-    addOptional(params, "expectedEvaluationIdentityDigest",
-                options.expectedEvaluationIdentityDigest);
+    addOptional(
+        params, "expectedEvaluationIdentityDigest", options.expectedEvaluationIdentityDigest);
     addOptional(params, "expectedOutcomeDigest", options.expectedOutcomeDigest);
-    const Json result = client_->invoke(
-        "verifyPolicyEvaluationOutcomeArtifact", std::move(params));
+    const Json result = client_->invoke("verifyPolicyEvaluationOutcomeArtifact", std::move(params));
     auto impl = std::make_shared<PolicyArtifactVerification::Impl>();
     impl->artifact_kind = requiredText(result, "artifactKind");
     impl->artifact_version = requiredText(result, "artifactVersion");
@@ -692,8 +809,7 @@ PolicyArtifactVerification MemoryOS::verifyPolicyEvaluationOutcomeForEvaluation(
     const AuthoritativePolicyFactContext& context,
     PolicyOutcomeEvaluationVerificationOptions options) const {
     if (context.impl_->client != client_) {
-        untrustedPolicyFactContext(
-            "verifyPolicyEvaluationOutcomeForEvaluation");
+        untrustedPolicyFactContext("verifyPolicyEvaluationOutcomeForEvaluation");
     }
     Json::Object params{
         {"artifactBytesBase64", Json{encodeBase64(artifact.bytes())}},
@@ -703,15 +819,14 @@ PolicyArtifactVerification MemoryOS::verifyPolicyEvaluationOutcomeForEvaluation(
     };
     if (options.regressionSource.has_value()) {
         if (options.regressionSource->impl_->client != client_) {
-            untrustedRegressionPolicyFactSource(
-                "verifyPolicyEvaluationOutcomeForEvaluation");
+            untrustedRegressionPolicyFactSource("verifyPolicyEvaluationOutcomeForEvaluation");
         }
         params.emplace("regressionPolicyFactSourceToken",
                        Json{options.regressionSource->impl_->token});
     }
     addOptional(params, "expectedOutcomeDigest", options.expectedOutcomeDigest);
-    const Json result = client_->invoke(
-        "verifyPolicyEvaluationOutcomeForEvaluation", std::move(params));
+    const Json result =
+        client_->invoke("verifyPolicyEvaluationOutcomeForEvaluation", std::move(params));
     auto impl = std::make_shared<PolicyArtifactVerification::Impl>();
     impl->artifact_kind = requiredText(result, "artifactKind");
     impl->artifact_version = requiredText(result, "artifactVersion");

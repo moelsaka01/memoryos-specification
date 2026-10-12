@@ -12,8 +12,7 @@ class ProcessEngine;
 
 class ProcessDefinition {
   public:
-    explicit ProcessDefinition(
-        const cca::representation::RepresentationDocument& document);
+    explicit ProcessDefinition(const cca::representation::RepresentationDocument& document);
 
     ~ProcessDefinition();
 
@@ -25,8 +24,7 @@ class ProcessDefinition {
 
     ProcessDefinition& operator=(ProcessDefinition&& other) noexcept;
 
-    const std::vector<cca::representation::RepresentationId>&
-    executionOrder() const noexcept;
+    const std::vector<cca::representation::RepresentationId>& executionOrder() const noexcept;
 
     std::size_t entityCount() const noexcept;
 

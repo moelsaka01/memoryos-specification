@@ -17,12 +17,11 @@ class EpisodicMemoryPersistence;
 
 class Episode {
   public:
-    Episode(
-        std::string identifier,
-        std::string occurrence,
-        std::string context,
-        std::int64_t chronology,
-        std::vector<LongTermMemoryEntry> sourceEntries);
+    Episode(std::string identifier,
+            std::string occurrence,
+            std::string context,
+            std::int64_t chronology,
+            std::vector<LongTermMemoryEntry> sourceEntries);
     ~Episode();
     Episode(const Episode&);
     Episode& operator=(const Episode&);
@@ -34,8 +33,7 @@ class Episode {
     const std::string& context() const noexcept;
     std::int64_t chronology() const noexcept;
     const std::vector<LongTermMemoryEntry>& sourceEntries() const noexcept;
-    const std::vector<std::string>&
-    linkedEpisodeIdentifiers() const noexcept;
+    const std::vector<std::string>& linkedEpisodeIdentifiers() const noexcept;
 
   private:
     std::string identifier_;
@@ -111,32 +109,20 @@ class EpisodeResult {
 
 class EpisodicMemoryEngine {
   public:
-    EpisodeResult record(
-        EpisodicMemory& memory,
-        const LongTermMemory& evidence,
-        Episode episode) const;
-    EpisodeResult derive(
-        EpisodicMemory& memory,
-        const LongTermMemory& evidence,
-        Episode episode) const;
-    EpisodeResult retrieve(
-        const EpisodicMemory& memory,
-        std::string_view identifier) const;
-    EpisodeResult search(
-        const EpisodicMemory& memory,
-        const EpisodeQuery& query) const;
-    EpisodeResult link(
-        EpisodicMemory& memory,
-        std::string_view firstEpisodeIdentifier,
-        std::string_view secondEpisodeIdentifier) const;
-    EpisodeResult update(
-        EpisodicMemory& memory,
-        std::string_view identifier,
-        std::string occurrence,
-        std::string context) const;
-    EpisodeResult forget(
-        EpisodicMemory& memory,
-        std::string_view identifier) const;
+    EpisodeResult
+    record(EpisodicMemory& memory, const LongTermMemory& evidence, Episode episode) const;
+    EpisodeResult
+    derive(EpisodicMemory& memory, const LongTermMemory& evidence, Episode episode) const;
+    EpisodeResult retrieve(const EpisodicMemory& memory, std::string_view identifier) const;
+    EpisodeResult search(const EpisodicMemory& memory, const EpisodeQuery& query) const;
+    EpisodeResult link(EpisodicMemory& memory,
+                       std::string_view firstEpisodeIdentifier,
+                       std::string_view secondEpisodeIdentifier) const;
+    EpisodeResult update(EpisodicMemory& memory,
+                         std::string_view identifier,
+                         std::string occurrence,
+                         std::string context) const;
+    EpisodeResult forget(EpisodicMemory& memory, std::string_view identifier) const;
 };
 
 } // namespace cca::memory

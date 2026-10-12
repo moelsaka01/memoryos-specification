@@ -1,11 +1,10 @@
 #include <cca/memory/memory_provider.hpp>
 
-#include <gtest/gtest.h>
-
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <future>
+#include <gtest/gtest.h>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -71,9 +70,9 @@ using cca::memory::MemoryEntry;
 using cca::memory::MemoryProviderEngine;
 using cca::memory::MemoryReflectionEngine;
 using cca::memory::MemoryRetrievalEngine;
-using cca::memory::Procedure;
 using cca::memory::ProceduralMemory;
 using cca::memory::ProceduralMemoryEngine;
+using cca::memory::Procedure;
 using cca::memory::ProviderDescriptor;
 using cca::memory::ProviderRequest;
 using cca::memory::ProviderResult;
@@ -96,8 +95,7 @@ constexpr std::string_view workspace{"provider-workspace"};
 constexpr std::string_view provider_a{"provider-a"};
 constexpr std::string_view provider_b{"Provider-B"};
 
-template <typename Result>
-void require_ok(const Result& result) {
+template <typename Result> void require_ok(const Result& result) {
     if (!result.succeeded()) {
         throw std::logic_error{result.code() + ": " + result.message()};
     }
@@ -238,9 +236,8 @@ struct ResultSnapshot final {
 }
 
 template <typename Value, typename Snapshot>
-[[nodiscard]] std::vector<Snapshot> snapshot_vector(
-    const std::vector<Value>& values,
-    Snapshot (*snapshot)(const Value&)) {
+[[nodiscard]] std::vector<Snapshot> snapshot_vector(const std::vector<Value>& values,
+                                                    Snapshot (*snapshot)(const Value&)) {
     std::vector<Snapshot> result;
     result.reserve(values.size());
     for (const auto& value : values) {
@@ -249,10 +246,9 @@ template <typename Value, typename Snapshot>
     return result;
 }
 
-[[nodiscard]] std::vector<EntrySnapshot> snapshot_entries(
-    const std::vector<LongTermMemoryEntry>& values) {
-    return snapshot_vector<LongTermMemoryEntry, EntrySnapshot>(values,
-                                                               snapshot_of);
+[[nodiscard]] std::vector<EntrySnapshot>
+snapshot_entries(const std::vector<LongTermMemoryEntry>& values) {
+    return snapshot_vector<LongTermMemoryEntry, EntrySnapshot>(values, snapshot_of);
 }
 
 [[nodiscard]] MemorySnapshot snapshot_of(const Memory& value) {
@@ -265,12 +261,11 @@ template <typename Value, typename Snapshot>
 }
 
 [[nodiscard]] WorkingSnapshot snapshot_of(const WorkingMemory& value) {
-    WorkingSnapshot result{value.workspaceIdentifier(), value.active(),
-                           value.activeTaskIdentifier(), {}};
+    WorkingSnapshot result{
+        value.workspaceIdentifier(), value.active(), value.activeTaskIdentifier(), {}};
     result.entries.reserve(value.entries().size());
     for (const auto& entry : value.entries()) {
-        result.entries.push_back(
-            {entry.identifier(), entry.value(), entry.expirationPoint()});
+        result.entries.push_back({entry.identifier(), entry.value(), entry.expirationPoint()});
     }
     return result;
 }
@@ -280,40 +275,43 @@ template <typename Value, typename Snapshot>
 }
 
 [[nodiscard]] SemanticSnapshot snapshot_of(const SemanticConcept& value) {
-    return {value.identifier(), value.meaning(),
-            snapshot_entries(value.sourceEntries()), value.categories(),
+    return {value.identifier(),
+            value.meaning(),
+            snapshot_entries(value.sourceEntries()),
+            value.categories(),
             value.linkedConceptIdentifiers()};
 }
 
 [[nodiscard]] SemanticMemorySnapshot snapshot_of(const SemanticMemory& value) {
     return {value.workspaceIdentifier(),
-            snapshot_vector<SemanticConcept, SemanticSnapshot>(
-                value.concepts(), snapshot_of)};
+            snapshot_vector<SemanticConcept, SemanticSnapshot>(value.concepts(), snapshot_of)};
 }
 
 [[nodiscard]] EpisodeSnapshot snapshot_of(const Episode& value) {
-    return {value.identifier(), value.occurrence(), value.context(),
-            value.chronology(), snapshot_entries(value.sourceEntries()),
+    return {value.identifier(),
+            value.occurrence(),
+            value.context(),
+            value.chronology(),
+            snapshot_entries(value.sourceEntries()),
             value.linkedEpisodeIdentifiers()};
 }
 
 [[nodiscard]] EpisodicMemorySnapshot snapshot_of(const EpisodicMemory& value) {
     return {value.workspaceIdentifier(),
-            snapshot_vector<Episode, EpisodeSnapshot>(value.episodes(),
-                                                       snapshot_of)};
+            snapshot_vector<Episode, EpisodeSnapshot>(value.episodes(), snapshot_of)};
 }
 
 [[nodiscard]] ProcedureSnapshot snapshot_of(const Procedure& value) {
-    return {value.identifier(), value.activity(), value.steps(),
+    return {value.identifier(),
+            value.activity(),
+            value.steps(),
             snapshot_entries(value.sourceEntries()),
             value.linkedProcedureIdentifiers()};
 }
 
-[[nodiscard]] ProceduralMemorySnapshot snapshot_of(
-    const ProceduralMemory& value) {
+[[nodiscard]] ProceduralMemorySnapshot snapshot_of(const ProceduralMemory& value) {
     return {value.workspaceIdentifier(),
-            snapshot_vector<Procedure, ProcedureSnapshot>(
-                value.procedures(), snapshot_of)};
+            snapshot_vector<Procedure, ProcedureSnapshot>(value.procedures(), snapshot_of)};
 }
 
 [[nodiscard]] CandidateSnapshot snapshot_of(const KnowledgeCandidate& value) {
@@ -335,9 +333,11 @@ template <typename Value, typename Snapshot>
 }
 
 [[nodiscard]] ReflectionSnapshot snapshot_of(const Reflection& value) {
-    return {value.workspaceIdentifier(), value.identifier(), value.knowledge(),
-            snapshot_vector<KnowledgeCandidate, CandidateSnapshot>(
-                value.sourceCandidates(), snapshot_of),
+    return {value.workspaceIdentifier(),
+            value.identifier(),
+            value.knowledge(),
+            snapshot_vector<KnowledgeCandidate, CandidateSnapshot>(value.sourceCandidates(),
+                                                                   snapshot_of),
             value.sourceExplanationChains()};
 }
 
@@ -363,8 +363,8 @@ template <typename Value, typename Snapshot>
     if (value.proceduralMemory() != nullptr) {
         result.procedural = snapshot_of(*value.proceduralMemory());
     }
-    result.reflections = snapshot_vector<Reflection, ReflectionSnapshot>(
-        value.reflections(), snapshot_of);
+    result.reflections =
+        snapshot_vector<Reflection, ReflectionSnapshot>(value.reflections(), snapshot_of);
     return result;
 }
 
@@ -372,8 +372,7 @@ template <typename Value, typename Snapshot>
     SessionSnapshot result{value.workspaceIdentifier(), value.state(), {}};
     result.descriptors.reserve(value.descriptors().size());
     for (const auto& descriptor : value.descriptors()) {
-        result.descriptors.emplace_back(descriptor.workspaceIdentifier(),
-                                        descriptor.identifier());
+        result.descriptors.emplace_back(descriptor.workspaceIdentifier(), descriptor.identifier());
     }
     return result;
 }
@@ -388,8 +387,7 @@ template <typename Value, typename Snapshot>
         result.request = snapshot_of(*value.request());
     }
     for (const auto& descriptor : value.descriptors()) {
-        result.descriptors.emplace_back(descriptor.workspaceIdentifier(),
-                                        descriptor.identifier());
+        result.descriptors.emplace_back(descriptor.workspaceIdentifier(), descriptor.identifier());
     }
     return result;
 }
@@ -430,17 +428,17 @@ class AuthenticState final {
 
   public:
     explicit AuthenticState(std::string workspace_identifier)
-        : workspace_identifier_{std::move(workspace_identifier)},
-          memory{workspace_identifier_}, working{workspace_identifier_},
-          long_term{workspace_identifier_}, semantic{workspace_identifier_},
-          episodic{workspace_identifier_}, procedural{workspace_identifier_} {
+        : workspace_identifier_{std::move(workspace_identifier)}, memory{workspace_identifier_},
+          working{workspace_identifier_}, long_term{workspace_identifier_},
+          semantic{workspace_identifier_}, episodic{workspace_identifier_},
+          procedural{workspace_identifier_} {
         populate_base_state();
         build_reflection("reflection-a", "Explicit reflected knowledge A");
         build_reflection("reflection-b", "Explicit reflected knowledge B");
     }
 
-    [[nodiscard]] ProviderRequest request(
-        std::string provider_identifier = std::string{provider_a}) const {
+    [[nodiscard]] ProviderRequest request(std::string provider_identifier = std::string{
+                                              provider_a}) const {
         return ProviderRequest{workspace_identifier_,
                                std::move(provider_identifier),
                                memory,
@@ -465,8 +463,7 @@ class AuthenticState final {
     std::vector<Reflection> reflections;
 
   private:
-    [[nodiscard]] const LongTermMemoryEntry& evidence(
-        const std::string_view identifier) const {
+    [[nodiscard]] const LongTermMemoryEntry& evidence(const std::string_view identifier) const {
         const auto* const entry = long_term.find(identifier);
         if (entry == nullptr) {
             throw std::logic_error{"fixture evidence is absent"};
@@ -476,92 +473,90 @@ class AuthenticState final {
 
     void retain(std::string identifier, std::string value) {
         require_ok(LongTermMemoryEngine{}.retain(
-            long_term,
-            LongTermMemoryEntry{std::move(identifier), std::move(value)}));
+            long_term, LongTermMemoryEntry{std::move(identifier), std::move(value)}));
     }
 
     void populate_base_state() {
-        require_ok(MemoryEngine{}.store(
-            memory, MemoryEntry{"memory-b", "memory value b"}));
-        require_ok(MemoryEngine{}.store(
-            memory, MemoryEntry{"memory-a", "memory value a"}));
-        require_ok(MemoryEngine{}.store(
-            memory, MemoryEntry{"memory-b", "memory replacement b"}));
+        require_ok(MemoryEngine{}.store(memory, MemoryEntry{"memory-b", "memory value b"}));
+        require_ok(MemoryEngine{}.store(memory, MemoryEntry{"memory-a", "memory value a"}));
+        require_ok(MemoryEngine{}.store(memory, MemoryEntry{"memory-b", "memory replacement b"}));
 
         require_ok(WorkingMemoryEngine{}.activate(working, "task-main"));
         require_ok(WorkingMemoryEngine{}.store(
             working, WorkingMemoryEntry{"working-b", "working value b", 70U}));
+        require_ok(WorkingMemoryEngine{}.store(working,
+                                               WorkingMemoryEntry{"working-a", "working value a"}));
         require_ok(WorkingMemoryEngine{}.store(
-            working, WorkingMemoryEntry{"working-a", "working value a"}));
-        require_ok(WorkingMemoryEngine{}.store(
-            working,
-            WorkingMemoryEntry{"working-b", "working replacement b", 90U}));
+            working, WorkingMemoryEntry{"working-b", "working replacement b", 90U}));
 
         retain("evidence-a", "Evidence A");
         retain("evidence-b", "Evidence B");
         retain("evidence-c", "Evidence C");
         retain("archived-evidence", "Archived evidence");
-        require_ok(LongTermMemoryEngine{}.archive(long_term,
-                                                   "archived-evidence"));
+        require_ok(LongTermMemoryEngine{}.archive(long_term, "archived-evidence"));
         retain("forgotten-evidence", "Forgotten evidence");
-        require_ok(LongTermMemoryEngine{}.forget(long_term,
-                                                  "forgotten-evidence"));
+        require_ok(LongTermMemoryEngine{}.forget(long_term, "forgotten-evidence"));
 
         require_ok(SemanticMemoryEngine{}.classify(
-            semantic, long_term,
-            SemanticConcept{"semantic-a", "Meaning A",
-                            {evidence("evidence-a"), evidence("evidence-b")}}));
+            semantic,
+            long_term,
+            SemanticConcept{
+                "semantic-a", "Meaning A", {evidence("evidence-a"), evidence("evidence-b")}}));
         require_ok(SemanticMemoryEngine{}.classify(
-            semantic, long_term,
-            SemanticConcept{"semantic-b", "Meaning B",
-                            {evidence("evidence-c")}}));
-        require_ok(SemanticMemoryEngine{}.categorize(semantic, "semantic-a",
-                                                      "category-a"));
-        require_ok(SemanticMemoryEngine{}.categorize(semantic, "semantic-a",
-                                                      "category-b"));
-        require_ok(SemanticMemoryEngine{}.link(semantic, "semantic-a",
-                                                "semantic-b"));
+            semantic,
+            long_term,
+            SemanticConcept{"semantic-b", "Meaning B", {evidence("evidence-c")}}));
+        require_ok(SemanticMemoryEngine{}.categorize(semantic, "semantic-a", "category-a"));
+        require_ok(SemanticMemoryEngine{}.categorize(semantic, "semantic-a", "category-b"));
+        require_ok(SemanticMemoryEngine{}.link(semantic, "semantic-a", "semantic-b"));
         require_ok(SemanticMemoryEngine{}.classify(
-            semantic, long_term,
-            SemanticConcept{"forgotten-semantic", "Forgotten meaning",
-                            {evidence("evidence-a")}}));
-        require_ok(SemanticMemoryEngine{}.forget(semantic,
-                                                  "forgotten-semantic"));
+            semantic,
+            long_term,
+            SemanticConcept{"forgotten-semantic", "Forgotten meaning", {evidence("evidence-a")}}));
+        require_ok(SemanticMemoryEngine{}.forget(semantic, "forgotten-semantic"));
 
         require_ok(EpisodicMemoryEngine{}.derive(
-            episodic, long_term,
-            Episode{"episode-a", "Occurrence A", "Context A", 10,
-                    {evidence("evidence-a")}}));
+            episodic,
+            long_term,
+            Episode{"episode-a", "Occurrence A", "Context A", 10, {evidence("evidence-a")}}));
         require_ok(EpisodicMemoryEngine{}.derive(
-            episodic, long_term,
-            Episode{"episode-b", "Occurrence B", "Context B", 10,
+            episodic,
+            long_term,
+            Episode{"episode-b",
+                    "Occurrence B",
+                    "Context B",
+                    10,
                     {evidence("evidence-b"), evidence("evidence-c")}}));
-        require_ok(EpisodicMemoryEngine{}.link(episodic, "episode-a",
-                                                "episode-b"));
-        require_ok(EpisodicMemoryEngine{}.derive(
-            episodic, long_term,
-            Episode{"forgotten-episode", "Forgotten occurrence",
-                    "Forgotten context", 20, {evidence("evidence-a")}}));
-        require_ok(EpisodicMemoryEngine{}.forget(episodic,
-                                                  "forgotten-episode"));
+        require_ok(EpisodicMemoryEngine{}.link(episodic, "episode-a", "episode-b"));
+        require_ok(EpisodicMemoryEngine{}.derive(episodic,
+                                                 long_term,
+                                                 Episode{"forgotten-episode",
+                                                         "Forgotten occurrence",
+                                                         "Forgotten context",
+                                                         20,
+                                                         {evidence("evidence-a")}}));
+        require_ok(EpisodicMemoryEngine{}.forget(episodic, "forgotten-episode"));
 
-        require_ok(ProceduralMemoryEngine{}.derive(
-            procedural, long_term,
-            Procedure{"procedure-a", "Activity A",
-                      {"step-a", "step-a", "step-b"},
-                      {evidence("evidence-c")}}));
+        require_ok(ProceduralMemoryEngine{}.derive(procedural,
+                                                   long_term,
+                                                   Procedure{"procedure-a",
+                                                             "Activity A",
+                                                             {"step-a", "step-a", "step-b"},
+                                                             {evidence("evidence-c")}}));
         require_ok(ProceduralMemoryEngine{}.compose(
-            procedural, long_term,
-            Procedure{"procedure-b", "Activity B", {"step-c"},
+            procedural,
+            long_term,
+            Procedure{"procedure-b",
+                      "Activity B",
+                      {"step-c"},
                       {evidence("evidence-a"), evidence("evidence-b")}}));
-        require_ok(ProceduralMemoryEngine{}.link(procedural, "procedure-a",
-                                                  "procedure-b"));
+        require_ok(ProceduralMemoryEngine{}.link(procedural, "procedure-a", "procedure-b"));
         require_ok(ProceduralMemoryEngine{}.derive(
-            procedural, long_term,
-            Procedure{"forgotten-procedure", "Forgotten activity", {"step"},
-                      {evidence("evidence-a")}}));
-        require_ok(ProceduralMemoryEngine{}.forget(procedural,
-                                                    "forgotten-procedure"));
+            procedural,
+            long_term,
+            Procedure{
+                "forgotten-procedure", "Forgotten activity", {"step"}, {evidence("evidence-a")}}));
+        require_ok(ProceduralMemoryEngine{}.forget(procedural, "forgotten-procedure"));
     }
 
     void build_reflection(std::string identifier, std::string knowledge) {
@@ -571,32 +566,28 @@ class AuthenticState final {
         require_ok(MemoryRetrievalEngine{}.rank(retrieval));
 
         ReflectionSession reflection_session{workspace_identifier_};
-        ReflectionQuery query{workspace_identifier_, std::move(identifier),
-                              std::move(knowledge)};
-        require_ok(MemoryReflectionEngine{}.reflect(reflection_session, query,
-                                                     retrieval));
-        auto derived = MemoryReflectionEngine{}.derive(
-            reflection_session, semantic, episodic, procedural);
+        ReflectionQuery query{workspace_identifier_, std::move(identifier), std::move(knowledge)};
+        require_ok(MemoryReflectionEngine{}.reflect(reflection_session, query, retrieval));
+        auto derived =
+            MemoryReflectionEngine{}.derive(reflection_session, semantic, episodic, procedural);
         require_ok(derived);
         if (derived.reflection() == nullptr) {
             throw std::logic_error{"fixture reflection payload is absent"};
         }
         reflections.push_back(*derived.reflection());
     }
-
 };
 
-[[nodiscard]] ProviderRequest request_with(
-    const AuthenticState& source,
-    const std::string& request_workspace,
-    std::string provider_identifier,
-    const Memory& memory,
-    const WorkingMemory& working,
-    const LongTermMemory& long_term,
-    const SemanticMemory& semantic,
-    const EpisodicMemory& episodic,
-    const ProceduralMemory& procedural,
-    std::vector<Reflection> reflections) {
+[[nodiscard]] ProviderRequest request_with(const AuthenticState& source,
+                                           const std::string& request_workspace,
+                                           std::string provider_identifier,
+                                           const Memory& memory,
+                                           const WorkingMemory& working,
+                                           const LongTermMemory& long_term,
+                                           const SemanticMemory& semantic,
+                                           const EpisodicMemory& episodic,
+                                           const ProceduralMemory& procedural,
+                                           std::vector<Reflection> reflections) {
     static_cast<void>(source);
     return ProviderRequest{request_workspace,
                            std::move(provider_identifier),
@@ -609,39 +600,52 @@ class AuthenticState final {
                            std::move(reflections)};
 }
 
-[[nodiscard]] ProviderRequest request_with(
-    const AuthenticState& source,
-    const Memory& memory,
-    const WorkingMemory& working,
-    const LongTermMemory& long_term,
-    const SemanticMemory& semantic,
-    const EpisodicMemory& episodic,
-    const ProceduralMemory& procedural,
-    std::vector<Reflection> reflections) {
-    return request_with(source, source.workspaceIdentifier(),
-                        std::string{provider_a}, memory, working, long_term,
-                        semantic, episodic, procedural,
+[[nodiscard]] ProviderRequest request_with(const AuthenticState& source,
+                                           const Memory& memory,
+                                           const WorkingMemory& working,
+                                           const LongTermMemory& long_term,
+                                           const SemanticMemory& semantic,
+                                           const EpisodicMemory& episodic,
+                                           const ProceduralMemory& procedural,
+                                           std::vector<Reflection> reflections) {
+    return request_with(source,
+                        source.workspaceIdentifier(),
+                        std::string{provider_a},
+                        memory,
+                        working,
+                        long_term,
+                        semantic,
+                        episodic,
+                        procedural,
                         std::move(reflections));
 }
 
 TEST(MemoryProviderApiTest, PublicDeclarationsMatchContract) {
-    static_assert(std::is_constructible_v<ProviderDescriptor, std::string,
-                                          std::string>);
+    static_assert(std::is_constructible_v<ProviderDescriptor, std::string, std::string>);
     static_assert(std::is_copy_constructible_v<ProviderDescriptor>);
     static_assert(std::is_copy_assignable_v<ProviderDescriptor>);
     static_assert(std::is_nothrow_move_constructible_v<ProviderDescriptor>);
     static_assert(std::is_nothrow_move_assignable_v<ProviderDescriptor>);
 
-    static_assert(std::is_constructible_v<
-                  ProviderRequest, std::string, std::string, const Memory&,
-                  const WorkingMemory&, const LongTermMemory&,
-                  const SemanticMemory&, const EpisodicMemory&,
-                  const ProceduralMemory&, std::vector<Reflection>>);
-    static_assert(std::is_constructible_v<
-                  ProviderRequest, std::string, std::string, const Memory&,
-                  const WorkingMemory&, const LongTermMemory&,
-                  const SemanticMemory&, const EpisodicMemory&,
-                  const ProceduralMemory&>);
+    static_assert(std::is_constructible_v<ProviderRequest,
+                                          std::string,
+                                          std::string,
+                                          const Memory&,
+                                          const WorkingMemory&,
+                                          const LongTermMemory&,
+                                          const SemanticMemory&,
+                                          const EpisodicMemory&,
+                                          const ProceduralMemory&,
+                                          std::vector<Reflection>>);
+    static_assert(std::is_constructible_v<ProviderRequest,
+                                          std::string,
+                                          std::string,
+                                          const Memory&,
+                                          const WorkingMemory&,
+                                          const LongTermMemory&,
+                                          const SemanticMemory&,
+                                          const EpisodicMemory&,
+                                          const ProceduralMemory&>);
     static_assert(std::is_copy_constructible_v<ProviderRequest>);
     static_assert(std::is_copy_assignable_v<ProviderRequest>);
     static_assert(std::is_nothrow_move_constructible_v<ProviderRequest>);
@@ -660,78 +664,57 @@ TEST(MemoryProviderApiTest, PublicDeclarationsMatchContract) {
     static_assert(std::is_nothrow_move_assignable_v<ProviderResult>);
     static_assert(std::is_empty_v<MemoryProviderEngine>);
 
-    using DescriptorWorkspace = const std::string& (
-        ProviderDescriptor::*)() const noexcept;
-    using DescriptorIdentifier = const std::string& (
-        ProviderDescriptor::*)() const noexcept;
+    using DescriptorWorkspace = const std::string& (ProviderDescriptor::*)() const noexcept;
+    using DescriptorIdentifier = const std::string& (ProviderDescriptor::*)() const noexcept;
     using RequestMemory = const Memory* (ProviderRequest::*)() const noexcept;
-    using RequestReflections = const std::vector<Reflection>& (
-        ProviderRequest::*)() const noexcept;
+    using RequestReflections = const std::vector<Reflection>& (ProviderRequest::*)() const noexcept;
     using SessionStateAccessor = State (ProviderSession::*)() const noexcept;
     using SessionSize = std::size_t (ProviderSession::*)() const noexcept;
-    using SessionDescriptors = const std::vector<ProviderDescriptor>& (
-        ProviderSession::*)() const noexcept;
+    using SessionDescriptors =
+        const std::vector<ProviderDescriptor>& (ProviderSession::*)() const noexcept;
     using ResultSucceeded = bool (ProviderResult::*)() const noexcept;
-    using ResultRequest = const ProviderRequest* (
-        ProviderResult::*)() const noexcept;
+    using ResultRequest = const ProviderRequest* (ProviderResult::*)() const noexcept;
 
-    static_assert(std::is_same_v<
-                  decltype(&ProviderDescriptor::workspaceIdentifier),
-                  DescriptorWorkspace>);
-    static_assert(std::is_same_v<decltype(&ProviderDescriptor::identifier),
-                                 DescriptorIdentifier>);
-    static_assert(std::is_same_v<decltype(&ProviderRequest::memory),
-                                 RequestMemory>);
-    static_assert(std::is_same_v<decltype(&ProviderRequest::reflections),
-                                 RequestReflections>);
-    static_assert(std::is_same_v<decltype(&ProviderSession::state),
-                                 SessionStateAccessor>);
+    static_assert(
+        std::is_same_v<decltype(&ProviderDescriptor::workspaceIdentifier), DescriptorWorkspace>);
+    static_assert(std::is_same_v<decltype(&ProviderDescriptor::identifier), DescriptorIdentifier>);
+    static_assert(std::is_same_v<decltype(&ProviderRequest::memory), RequestMemory>);
+    static_assert(std::is_same_v<decltype(&ProviderRequest::reflections), RequestReflections>);
+    static_assert(std::is_same_v<decltype(&ProviderSession::state), SessionStateAccessor>);
     static_assert(std::is_same_v<decltype(&ProviderSession::size), SessionSize>);
-    static_assert(std::is_same_v<decltype(&ProviderSession::descriptors),
-                                 SessionDescriptors>);
-    static_assert(std::is_same_v<decltype(&ProviderResult::succeeded),
-                                 ResultSucceeded>);
-    static_assert(std::is_same_v<decltype(&ProviderResult::request),
-                                 ResultRequest>);
+    static_assert(std::is_same_v<decltype(&ProviderSession::descriptors), SessionDescriptors>);
+    static_assert(std::is_same_v<decltype(&ProviderResult::succeeded), ResultSucceeded>);
+    static_assert(std::is_same_v<decltype(&ProviderResult::request), ResultRequest>);
 
     static_assert(State::Open != State::Exported);
     static_assert(State::Exported != State::Imported);
     static_assert(State::Imported != State::Forgotten);
 
-    using Register = ProviderResult (MemoryProviderEngine::*)(
-        ProviderSession&, const ProviderDescriptor&) const;
-    using Transfer = ProviderResult (MemoryProviderEngine::*)(
-        ProviderSession&, const ProviderRequest&) const;
-    using Validate = ProviderResult (MemoryProviderEngine::*)(
-        const ProviderSession&, const ProviderRequest&) const;
-    using Enumerate = ProviderResult (MemoryProviderEngine::*)(
-        const ProviderSession&) const;
-    using Forget = ProviderResult (MemoryProviderEngine::*)(
-        ProviderSession&) const;
+    using Register =
+        ProviderResult (MemoryProviderEngine::*)(ProviderSession&, const ProviderDescriptor&) const;
+    using Transfer =
+        ProviderResult (MemoryProviderEngine::*)(ProviderSession&, const ProviderRequest&) const;
+    using Validate = ProviderResult (MemoryProviderEngine::*)(const ProviderSession&,
+                                                              const ProviderRequest&) const;
+    using Enumerate = ProviderResult (MemoryProviderEngine::*)(const ProviderSession&) const;
+    using Forget = ProviderResult (MemoryProviderEngine::*)(ProviderSession&) const;
 
-    static_assert(std::is_same_v<
-                  decltype(static_cast<Register>(
-                      &MemoryProviderEngine::registerProvider)),
-                  Register>);
-    static_assert(std::is_same_v<
-                  decltype(static_cast<Transfer>(
-                      &MemoryProviderEngine::exportState)),
-                  Transfer>);
-    static_assert(std::is_same_v<
-                  decltype(static_cast<Transfer>(
-                      &MemoryProviderEngine::importState)),
-                  Transfer>);
-    static_assert(std::is_same_v<
-                  decltype(static_cast<Validate>(&MemoryProviderEngine::validate)),
-                  Validate>);
-    static_assert(std::is_same_v<
-                  decltype(static_cast<Enumerate>(
-                      &MemoryProviderEngine::enumerate)),
-                  Enumerate>);
-    static_assert(std::is_same_v<
-                  decltype(static_cast<Forget>(
-                      &MemoryProviderEngine::forgetSession)),
-                  Forget>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Register>(&MemoryProviderEngine::registerProvider)),
+                       Register>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Transfer>(&MemoryProviderEngine::exportState)),
+                       Transfer>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Transfer>(&MemoryProviderEngine::importState)),
+                       Transfer>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Validate>(&MemoryProviderEngine::validate)), Validate>);
+    static_assert(std::is_same_v<decltype(static_cast<Enumerate>(&MemoryProviderEngine::enumerate)),
+                                 Enumerate>);
+    static_assert(
+        std::is_same_v<decltype(static_cast<Forget>(&MemoryProviderEngine::forgetSession)),
+                       Forget>);
 }
 
 TEST(MemoryProviderValueTest, ConstructionCopyMoveAndObservationAreExact) {
@@ -752,9 +735,14 @@ TEST(MemoryProviderValueTest, ConstructionCopyMoveAndObservationAreExact) {
     EXPECT_TRUE(descriptor_copy.identifier().empty());
 
     AuthenticState state{std::string{workspace}};
-    EXPECT_THROW((ProviderRequest{"", std::string{provider_a}, state.memory,
-                                  state.working, state.long_term, state.semantic,
-                                  state.episodic, state.procedural,
+    EXPECT_THROW((ProviderRequest{"",
+                                  std::string{provider_a},
+                                  state.memory,
+                                  state.working,
+                                  state.long_term,
+                                  state.semantic,
+                                  state.episodic,
+                                  state.procedural,
                                   state.reflections}),
                  std::invalid_argument);
 
@@ -781,8 +769,7 @@ TEST(MemoryProviderValueTest, ConstructionCopyMoveAndObservationAreExact) {
 
     ProviderSession open{"workspace"};
     MemoryProviderEngine engine;
-    expect_ok(engine.registerProvider(
-        open, ProviderDescriptor{"workspace", "provider"}));
+    expect_ok(engine.registerProvider(open, ProviderDescriptor{"workspace", "provider"}));
     ProviderSession open_copy = open;
     EXPECT_EQ(snapshot_of(open_copy), snapshot_of(open));
     ProviderSession moved_open = std::move(open_copy);
@@ -814,8 +801,7 @@ TEST(MemoryProviderValueTest, ConstructionCopyMoveAndObservationAreExact) {
 TEST(MemoryProviderValueTest, AssignmentsAndAccessorLifetimesAreExact) {
     AuthenticState values{std::string{workspace}};
 
-    const ProviderDescriptor descriptor{std::string{workspace},
-                                        std::string{provider_a}};
+    const ProviderDescriptor descriptor{std::string{workspace}, std::string{provider_a}};
     ProviderDescriptor descriptor_copy{"temporary-workspace", "temporary"};
     descriptor_copy = descriptor;
     EXPECT_EQ(descriptor_copy.workspaceIdentifier(), workspace);
@@ -887,8 +873,7 @@ TEST(MemoryProviderValueTest, AssignmentsAndAccessorLifetimesAreExact) {
 TEST(MemoryProviderValueTest, CompletedSessionMovesResetSourcesToOpen) {
     AuthenticState values{std::string{workspace}};
     const auto request = values.request();
-    const ProviderDescriptor descriptor{std::string{workspace},
-                                        std::string{provider_a}};
+    const ProviderDescriptor descriptor{std::string{workspace}, std::string{provider_a}};
     MemoryProviderEngine engine;
 
     ProviderSession exported_source{std::string{workspace}};
@@ -916,15 +901,12 @@ TEST(MemoryProviderValueTest, CompletedSessionMovesResetSourcesToOpen) {
     EXPECT_EQ(imported_source.size(), 1U);
 }
 
-TEST(MemoryProviderRegistrationTest,
-     RegistryIsCallerOwnedOrderedAndIdempotent) {
+TEST(MemoryProviderRegistrationTest, RegistryIsCallerOwnedOrderedAndIdempotent) {
     MemoryProviderEngine engine;
     ProviderSession first{std::string{workspace}};
     ProviderSession second{std::string{workspace}};
-    const ProviderDescriptor descriptor_b{std::string{workspace},
-                                          std::string{provider_b}};
-    const ProviderDescriptor descriptor_a{std::string{workspace},
-                                          std::string{provider_a}};
+    const ProviderDescriptor descriptor_b{std::string{workspace}, std::string{provider_b}};
+    const ProviderDescriptor descriptor_a{std::string{workspace}, std::string{provider_a}};
 
     expect_ok(engine.registerProvider(first, descriptor_b));
     expect_ok(engine.registerProvider(first, descriptor_a));
@@ -945,16 +927,15 @@ TEST(MemoryProviderRegistrationTest,
     EXPECT_EQ(listed.descriptors()[0].identifier(), provider_b);
     EXPECT_EQ(listed.descriptors()[1].identifier(), provider_a);
 
-    expect_ok(engine.registerProvider(
-        first, ProviderDescriptor{std::string{workspace}, "provider-A"}));
+    expect_ok(
+        engine.registerProvider(first, ProviderDescriptor{std::string{workspace}, "provider-A"}));
     EXPECT_EQ(first.size(), 3U);
 }
 
 TEST(MemoryProviderLifecycleTest, AllStatesOperationsAndPayloadsAreExact) {
     AuthenticState values{std::string{workspace}};
     auto request = values.request();
-    const ProviderDescriptor descriptor{std::string{workspace},
-                                        std::string{provider_a}};
+    const ProviderDescriptor descriptor{std::string{workspace}, std::string{provider_a}};
     MemoryProviderEngine engine;
 
     ProviderSession exported{std::string{workspace}};
@@ -973,12 +954,10 @@ TEST(MemoryProviderLifecycleTest, AllStatesOperationsAndPayloadsAreExact) {
     auto export_enumeration = engine.enumerate(exported);
     expect_ok(export_enumeration);
     EXPECT_EQ(export_enumeration.descriptors().size(), 1U);
-    expect_failure(engine.registerProvider(exported, descriptor), workspace,
-                   "SESSION_ALREADY_COMPLETED");
-    expect_failure(engine.exportState(exported, request), workspace,
-                   "SESSION_ALREADY_COMPLETED");
-    expect_failure(engine.importState(exported, request), workspace,
-                   "SESSION_ALREADY_COMPLETED");
+    expect_failure(
+        engine.registerProvider(exported, descriptor), workspace, "SESSION_ALREADY_COMPLETED");
+    expect_failure(engine.exportState(exported, request), workspace, "SESSION_ALREADY_COMPLETED");
+    expect_failure(engine.importState(exported, request), workspace, "SESSION_ALREADY_COMPLETED");
 
     ProviderSession imported{std::string{workspace}};
     expect_ok(engine.registerProvider(imported, descriptor));
@@ -990,12 +969,10 @@ TEST(MemoryProviderLifecycleTest, AllStatesOperationsAndPayloadsAreExact) {
     EXPECT_EQ(snapshot_of(*import_result.request()), snapshot_of(request));
     expect_ok(engine.validate(imported, request));
     expect_ok(engine.enumerate(imported));
-    expect_failure(engine.registerProvider(imported, descriptor), workspace,
-                   "SESSION_ALREADY_COMPLETED");
-    expect_failure(engine.exportState(imported, request), workspace,
-                   "SESSION_ALREADY_COMPLETED");
-    expect_failure(engine.importState(imported, request), workspace,
-                   "SESSION_ALREADY_COMPLETED");
+    expect_failure(
+        engine.registerProvider(imported, descriptor), workspace, "SESSION_ALREADY_COMPLETED");
+    expect_failure(engine.exportState(imported, request), workspace, "SESSION_ALREADY_COMPLETED");
+    expect_failure(engine.importState(imported, request), workspace, "SESSION_ALREADY_COMPLETED");
 
     auto forgotten_result = engine.forgetSession(imported);
     expect_ok(forgotten_result);
@@ -1005,10 +982,8 @@ TEST(MemoryProviderLifecycleTest, AllStatesOperationsAndPayloadsAreExact) {
     const auto forgotten_snapshot = snapshot_of(imported);
     expect_ok(engine.forgetSession(imported));
     EXPECT_EQ(snapshot_of(imported), forgotten_snapshot);
-    expect_failure(engine.exportState(imported, request), workspace,
-                   "SESSION_FORGOTTEN");
-    expect_failure(engine.validate(imported, request), workspace,
-                   "SESSION_FORGOTTEN");
+    expect_failure(engine.exportState(imported, request), workspace, "SESSION_FORGOTTEN");
+    expect_failure(engine.validate(imported, request), workspace, "SESSION_FORGOTTEN");
     expect_failure(engine.enumerate(imported), workspace, "SESSION_FORGOTTEN");
 
     ProviderSession direct_forget{std::string{workspace}};
@@ -1016,8 +991,7 @@ TEST(MemoryProviderLifecycleTest, AllStatesOperationsAndPayloadsAreExact) {
     EXPECT_EQ(direct_forget.state(), State::Forgotten);
 }
 
-TEST(MemoryProviderFidelityTest,
-     AuthenticStateProvenanceIdentityAndOrderAreExact) {
+TEST(MemoryProviderFidelityTest, AuthenticStateProvenanceIdentityAndOrderAreExact) {
     AuthenticState values{std::string{workspace}};
     const auto source_request = values.request();
     const auto expected = snapshot_of(source_request);
@@ -1045,8 +1019,7 @@ TEST(MemoryProviderFidelityTest,
     MemoryProviderEngine engine;
     ProviderSession export_session{std::string{workspace}};
     expect_ok(engine.registerProvider(
-        export_session,
-        ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
+        export_session, ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
     auto exported = engine.exportState(export_session, source_request);
     expect_ok(exported);
     ASSERT_NE(exported.request(), nullptr);
@@ -1054,16 +1027,14 @@ TEST(MemoryProviderFidelityTest,
 
     ProviderSession import_session{std::string{workspace}};
     expect_ok(engine.registerProvider(
-        import_session,
-        ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
+        import_session, ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
     auto imported = engine.importState(import_session, *exported.request());
     expect_ok(imported);
     ASSERT_NE(imported.request(), nullptr);
     EXPECT_EQ(snapshot_of(*imported.request()), expected);
     EXPECT_NE(imported.request(), exported.request());
     EXPECT_NE(imported.request()->memory(), exported.request()->memory());
-    EXPECT_NE(&imported.request()->reflections(),
-              &exported.request()->reflections());
+    EXPECT_NE(&imported.request()->reflections(), &exported.request()->reflections());
 }
 
 TEST(MemoryProviderFidelityTest, ValidEmptyValuesSurviveDetachedTransport) {
@@ -1075,23 +1046,25 @@ TEST(MemoryProviderFidelityTest, ValidEmptyValuesSurviveDetachedTransport) {
     EpisodicMemory episodic{workspace_identifier};
     ProceduralMemory procedural{workspace_identifier};
 
-    require_ok(MemoryEngine{}.store(
-        memory, MemoryEntry{"memory-empty-value", ""}));
+    require_ok(MemoryEngine{}.store(memory, MemoryEntry{"memory-empty-value", ""}));
     require_ok(WorkingMemoryEngine{}.activate(working, "empty-value-task"));
-    require_ok(WorkingMemoryEngine{}.store(
-        working, WorkingMemoryEntry{"working-empty-value", ""}));
-    require_ok(LongTermMemoryEngine{}.retain(
-        long_term, LongTermMemoryEntry{"long-term-empty-value", ""}));
+    require_ok(WorkingMemoryEngine{}.store(working, WorkingMemoryEntry{"working-empty-value", ""}));
+    require_ok(
+        LongTermMemoryEngine{}.retain(long_term, LongTermMemoryEntry{"long-term-empty-value", ""}));
 
-    const ProviderRequest request{
-        workspace_identifier, std::string{provider_a}, memory, working,
-        long_term, semantic, episodic, procedural};
+    const ProviderRequest request{workspace_identifier,
+                                  std::string{provider_a},
+                                  memory,
+                                  working,
+                                  long_term,
+                                  semantic,
+                                  episodic,
+                                  procedural};
     const auto expected = snapshot_of(request);
 
     ProviderSession export_session{workspace_identifier};
     MemoryProviderEngine engine;
-    const ProviderDescriptor descriptor{workspace_identifier,
-                                        std::string{provider_a}};
+    const ProviderDescriptor descriptor{workspace_identifier, std::string{provider_a}};
     expect_ok(engine.registerProvider(export_session, descriptor));
     auto exported = engine.exportState(export_session, request);
     expect_ok(exported);
@@ -1100,11 +1073,9 @@ TEST(MemoryProviderFidelityTest, ValidEmptyValuesSurviveDetachedTransport) {
     ASSERT_EQ(exported.request()->memory()->entries().size(), 1U);
     EXPECT_TRUE(exported.request()->memory()->entries().front().value().empty());
     ASSERT_EQ(exported.request()->workingMemory()->entries().size(), 1U);
-    EXPECT_TRUE(
-        exported.request()->workingMemory()->entries().front().value().empty());
+    EXPECT_TRUE(exported.request()->workingMemory()->entries().front().value().empty());
     ASSERT_EQ(exported.request()->longTermMemory()->entries().size(), 1U);
-    EXPECT_TRUE(
-        exported.request()->longTermMemory()->entries().front().value().empty());
+    EXPECT_TRUE(exported.request()->longTermMemory()->entries().front().value().empty());
 
     ProviderSession import_session{workspace_identifier};
     expect_ok(engine.registerProvider(import_session, descriptor));
@@ -1114,15 +1085,13 @@ TEST(MemoryProviderFidelityTest, ValidEmptyValuesSurviveDetachedTransport) {
     EXPECT_EQ(snapshot_of(*imported.request()), expected);
 }
 
-TEST(MemoryProviderFidelityTest,
-     HiddenForgottenIdentityHistorySurvivesTransport) {
+TEST(MemoryProviderFidelityTest, HiddenForgottenIdentityHistorySurvivesTransport) {
     AuthenticState values{std::string{workspace}};
     auto request = values.request();
     ProviderSession session{std::string{workspace}};
     MemoryProviderEngine engine;
     expect_ok(engine.registerProvider(
-        session,
-        ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
+        session, ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
     auto exported = engine.exportState(session, request);
     require_ok(exported);
     ASSERT_NE(exported.request(), nullptr);
@@ -1135,43 +1104,49 @@ TEST(MemoryProviderFidelityTest,
 
     SemanticMemory semantic = *exported.request()->semanticMemory();
     auto classified = SemanticMemoryEngine{}.classify(
-        semantic, *exported.request()->longTermMemory(),
-        SemanticConcept{"forgotten-semantic", "new meaning",
-                        {*exported.request()->longTermMemory()->find(
-                            "evidence-a")}});
+        semantic,
+        *exported.request()->longTermMemory(),
+        SemanticConcept{"forgotten-semantic",
+                        "new meaning",
+                        {*exported.request()->longTermMemory()->find("evidence-a")}});
     EXPECT_FALSE(classified.succeeded());
     EXPECT_EQ(classified.code(), "FORGOTTEN_IDENTIFIER");
 
     EpisodicMemory episodic = *exported.request()->episodicMemory();
     auto episode = EpisodicMemoryEngine{}.derive(
-        episodic, *exported.request()->longTermMemory(),
-        Episode{"forgotten-episode", "new occurrence", "new context", 30,
+        episodic,
+        *exported.request()->longTermMemory(),
+        Episode{"forgotten-episode",
+                "new occurrence",
+                "new context",
+                30,
                 {*exported.request()->longTermMemory()->find("evidence-a")}});
     EXPECT_FALSE(episode.succeeded());
     EXPECT_EQ(episode.code(), "FORGOTTEN_IDENTIFIER");
 
     ProceduralMemory procedural = *exported.request()->proceduralMemory();
     auto procedure = ProceduralMemoryEngine{}.derive(
-        procedural, *exported.request()->longTermMemory(),
-        Procedure{"forgotten-procedure", "new activity", {"new step"},
+        procedural,
+        *exported.request()->longTermMemory(),
+        Procedure{"forgotten-procedure",
+                  "new activity",
+                  {"new step"},
                   {*exported.request()->longTermMemory()->find("evidence-a")}});
     EXPECT_FALSE(procedure.succeeded());
     EXPECT_EQ(procedure.code(), "FORGOTTEN_IDENTIFIER");
 }
 
-TEST(MemoryProviderWorkspaceTest,
-     EveryTransportedWorkspaceBoundaryIsEnforced) {
+TEST(MemoryProviderWorkspaceTest, EveryTransportedWorkspaceBoundaryIsEnforced) {
     AuthenticState values{std::string{workspace}};
     AuthenticState other{"other-workspace"};
     MemoryProviderEngine engine;
     ProviderSession session{std::string{workspace}};
     expect_ok(engine.registerProvider(
-        session,
-        ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
+        session, ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
 
-    expect_failure(engine.registerProvider(
-                       session, ProviderDescriptor{"other-workspace", "other"}),
-                   workspace, "WORKSPACE_MISMATCH");
+    expect_failure(engine.registerProvider(session, ProviderDescriptor{"other-workspace", "other"}),
+                   workspace,
+                   "WORKSPACE_MISMATCH");
 
     const auto verify_mismatch = [&](ProviderRequest request) {
         const auto before = snapshot_of(session);
@@ -1180,47 +1155,85 @@ TEST(MemoryProviderWorkspaceTest,
         EXPECT_EQ(snapshot_of(session), before);
     };
 
-    verify_mismatch(request_with(
-        values, "other-workspace", std::string{provider_a}, values.memory,
-        values.working, values.long_term, values.semantic, values.episodic,
-        values.procedural, values.reflections));
-    verify_mismatch(request_with(
-        values, other.memory, values.working, values.long_term, values.semantic,
-        values.episodic, values.procedural, values.reflections));
-    verify_mismatch(request_with(
-        values, values.memory, other.working, values.long_term, values.semantic,
-        values.episodic, values.procedural, values.reflections));
-    verify_mismatch(request_with(
-        values, values.memory, values.working, other.long_term, values.semantic,
-        values.episodic, values.procedural, values.reflections));
-    verify_mismatch(request_with(
-        values, values.memory, values.working, values.long_term, other.semantic,
-        values.episodic, values.procedural, values.reflections));
-    verify_mismatch(request_with(
-        values, values.memory, values.working, values.long_term, values.semantic,
-        other.episodic, values.procedural, values.reflections));
-    verify_mismatch(request_with(
-        values, values.memory, values.working, values.long_term, values.semantic,
-        values.episodic, other.procedural, values.reflections));
-    verify_mismatch(request_with(
-        values, values.memory, values.working, values.long_term, values.semantic,
-        values.episodic, values.procedural, other.reflections));
+    verify_mismatch(request_with(values,
+                                 "other-workspace",
+                                 std::string{provider_a},
+                                 values.memory,
+                                 values.working,
+                                 values.long_term,
+                                 values.semantic,
+                                 values.episodic,
+                                 values.procedural,
+                                 values.reflections));
+    verify_mismatch(request_with(values,
+                                 other.memory,
+                                 values.working,
+                                 values.long_term,
+                                 values.semantic,
+                                 values.episodic,
+                                 values.procedural,
+                                 values.reflections));
+    verify_mismatch(request_with(values,
+                                 values.memory,
+                                 other.working,
+                                 values.long_term,
+                                 values.semantic,
+                                 values.episodic,
+                                 values.procedural,
+                                 values.reflections));
+    verify_mismatch(request_with(values,
+                                 values.memory,
+                                 values.working,
+                                 other.long_term,
+                                 values.semantic,
+                                 values.episodic,
+                                 values.procedural,
+                                 values.reflections));
+    verify_mismatch(request_with(values,
+                                 values.memory,
+                                 values.working,
+                                 values.long_term,
+                                 other.semantic,
+                                 values.episodic,
+                                 values.procedural,
+                                 values.reflections));
+    verify_mismatch(request_with(values,
+                                 values.memory,
+                                 values.working,
+                                 values.long_term,
+                                 values.semantic,
+                                 other.episodic,
+                                 values.procedural,
+                                 values.reflections));
+    verify_mismatch(request_with(values,
+                                 values.memory,
+                                 values.working,
+                                 values.long_term,
+                                 values.semantic,
+                                 values.episodic,
+                                 other.procedural,
+                                 values.reflections));
+    verify_mismatch(request_with(values,
+                                 values.memory,
+                                 values.working,
+                                 values.long_term,
+                                 values.semantic,
+                                 values.episodic,
+                                 values.procedural,
+                                 other.reflections));
 }
 
-TEST(MemoryProviderWorkspaceTest,
-     MovedFromValuesAreRejectedAtWorkspaceBoundary) {
+TEST(MemoryProviderWorkspaceTest, MovedFromValuesAreRejectedAtWorkspaceBoundary) {
     AuthenticState values{std::string{workspace}};
     MemoryProviderEngine engine;
     ProviderSession session{std::string{workspace}};
     expect_ok(engine.registerProvider(
-        session,
-        ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
+        session, ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
 
     auto request_source = values.request();
     const auto retained_request = std::move(request_source);
     EXPECT_EQ(retained_request.workspaceIdentifier(), workspace);
-    expect_failure(engine.validate(session, request_source), workspace,
-                   "WORKSPACE_MISMATCH");
+    expect_failure(engine.validate(session, request_source), workspace, "WORKSPACE_MISMATCH");
 
     Reflection reflection_source = values.reflections.front();
     const Reflection retained_reflection = std::move(reflection_source);
@@ -1229,26 +1242,26 @@ TEST(MemoryProviderWorkspaceTest,
 
     std::vector<Reflection> moved_from_reflections;
     moved_from_reflections.push_back(std::move(reflection_source));
-    ProviderRequest moved_reflection_request{
-        std::string{workspace}, std::string{provider_a}, values.memory,
-        values.working, values.long_term, values.semantic, values.episodic,
-        values.procedural, std::move(moved_from_reflections)};
+    ProviderRequest moved_reflection_request{std::string{workspace},
+                                             std::string{provider_a},
+                                             values.memory,
+                                             values.working,
+                                             values.long_term,
+                                             values.semantic,
+                                             values.episodic,
+                                             values.procedural,
+                                             std::move(moved_from_reflections)};
     ASSERT_EQ(moved_reflection_request.reflections().size(), 1U);
-    EXPECT_TRUE(moved_reflection_request.reflections()
-                    .front()
-                    .workspaceIdentifier()
-                    .empty());
-    expect_failure(engine.validate(session, moved_reflection_request), workspace,
-                   "WORKSPACE_MISMATCH");
+    EXPECT_TRUE(moved_reflection_request.reflections().front().workspaceIdentifier().empty());
+    expect_failure(
+        engine.validate(session, moved_reflection_request), workspace, "WORKSPACE_MISMATCH");
 }
 
-TEST(MemoryProviderResultTest,
-     ClosedCodesMessagesWorkspacesAndPayloadsAreExact) {
+TEST(MemoryProviderResultTest, ClosedCodesMessagesWorkspacesAndPayloadsAreExact) {
     AuthenticState values{std::string{workspace}};
     const auto request = values.request();
     MemoryProviderEngine engine;
-    const ProviderDescriptor descriptor{std::string{workspace},
-                                        std::string{provider_a}};
+    const ProviderDescriptor descriptor{std::string{workspace}, std::string{provider_a}};
 
     ProviderSession open{std::string{workspace}};
     auto ok = engine.registerProvider(open, descriptor);
@@ -1260,53 +1273,41 @@ TEST(MemoryProviderResultTest,
     expect_ok(engine.forgetSession(forgotten));
     auto first_forgotten = engine.enumerate(forgotten);
     auto second_forgotten = engine.enumerate(forgotten);
-    expect_equivalent_failures(first_forgotten, second_forgotten,
-                               "SESSION_FORGOTTEN");
+    expect_equivalent_failures(first_forgotten, second_forgotten, "SESSION_FORGOTTEN");
 
     ProviderSession completed{std::string{workspace}};
     expect_ok(engine.registerProvider(completed, descriptor));
     expect_ok(engine.exportState(completed, request));
     auto first_completed = engine.registerProvider(completed, descriptor);
     auto second_completed = engine.registerProvider(completed, descriptor);
-    expect_equivalent_failures(first_completed, second_completed,
-                               "SESSION_ALREADY_COMPLETED");
+    expect_equivalent_failures(first_completed, second_completed, "SESSION_ALREADY_COMPLETED");
 
     ProviderSession workspace_session{std::string{workspace}};
     const ProviderDescriptor wrong_workspace{"other-workspace", "provider"};
-    auto first_workspace =
-        engine.registerProvider(workspace_session, wrong_workspace);
-    auto second_workspace =
-        engine.registerProvider(workspace_session, wrong_workspace);
-    expect_equivalent_failures(first_workspace, second_workspace,
-                               "WORKSPACE_MISMATCH");
+    auto first_workspace = engine.registerProvider(workspace_session, wrong_workspace);
+    auto second_workspace = engine.registerProvider(workspace_session, wrong_workspace);
+    expect_equivalent_failures(first_workspace, second_workspace, "WORKSPACE_MISMATCH");
     const ProviderDescriptor empty_identifier{std::string{workspace}, ""};
-    auto first_identifier =
-        engine.registerProvider(workspace_session, empty_identifier);
-    auto second_identifier =
-        engine.registerProvider(workspace_session, empty_identifier);
-    expect_equivalent_failures(first_identifier, second_identifier,
-                               "INVALID_PROVIDER_IDENTIFIER");
+    auto first_identifier = engine.registerProvider(workspace_session, empty_identifier);
+    auto second_identifier = engine.registerProvider(workspace_session, empty_identifier);
+    expect_equivalent_failures(first_identifier, second_identifier, "INVALID_PROVIDER_IDENTIFIER");
 
     ProviderSession absent{std::string{workspace}};
     auto first_absent = engine.exportState(absent, request);
     auto second_absent = engine.exportState(absent, request);
-    expect_equivalent_failures(first_absent, second_absent,
-                               "PROVIDER_NOT_REGISTERED");
+    expect_equivalent_failures(first_absent, second_absent, "PROVIDER_NOT_REGISTERED");
 
     ProviderSession empty{std::string{workspace}};
     auto empty_enumeration = engine.enumerate(empty);
     expect_ok(empty_enumeration);
     EXPECT_EQ(empty_enumeration.request(), nullptr);
     EXPECT_TRUE(empty_enumeration.descriptors().empty());
-
 }
 
-TEST(MemoryProviderResultTest,
-     EverySuccessfulOperationReportsTheSessionWorkspace) {
+TEST(MemoryProviderResultTest, EverySuccessfulOperationReportsTheSessionWorkspace) {
     AuthenticState values{std::string{workspace}};
     const auto request = values.request();
-    const ProviderDescriptor descriptor{std::string{workspace},
-                                        std::string{provider_a}};
+    const ProviderDescriptor descriptor{std::string{workspace}, std::string{provider_a}};
     MemoryProviderEngine engine;
     const auto expect_workspace = [](const ProviderResult& result) {
         expect_ok(result);
@@ -1338,108 +1339,143 @@ TEST(MemoryProviderResultTest,
     EXPECT_TRUE(import_session.descriptors().empty());
 }
 
-TEST(MemoryProviderPrecedenceTest,
-     LifecycleIdentityAndRegistrationOrderIsExact) {
+TEST(MemoryProviderPrecedenceTest, LifecycleIdentityAndRegistrationOrderIsExact) {
     AuthenticState values{std::string{workspace}};
     AuthenticState other{"other-workspace"};
     MemoryProviderEngine engine;
-    const ProviderDescriptor valid{std::string{workspace},
-                                   std::string{provider_a}};
+    const ProviderDescriptor valid{std::string{workspace}, std::string{provider_a}};
     const ProviderDescriptor wrong_and_empty{"other-workspace", ""};
 
     ProviderSession completed{std::string{workspace}};
     expect_ok(engine.registerProvider(completed, valid));
     auto valid_request = values.request();
     expect_ok(engine.exportState(completed, valid_request));
-    expect_failure(engine.registerProvider(completed, wrong_and_empty), workspace,
+    expect_failure(engine.registerProvider(completed, wrong_and_empty),
+                   workspace,
                    "SESSION_ALREADY_COMPLETED");
 
     ProviderSession forgotten{std::string{workspace}};
     expect_ok(engine.forgetSession(forgotten));
-    expect_failure(engine.registerProvider(forgotten, wrong_and_empty), workspace,
-                   "SESSION_FORGOTTEN");
+    expect_failure(
+        engine.registerProvider(forgotten, wrong_and_empty), workspace, "SESSION_FORGOTTEN");
 
     ProviderSession open{std::string{workspace}};
-    expect_failure(engine.registerProvider(open, wrong_and_empty), workspace,
-                   "WORKSPACE_MISMATCH");
-    expect_failure(engine.registerProvider(
-                       open, ProviderDescriptor{std::string{workspace}, ""}),
-                   workspace, "INVALID_PROVIDER_IDENTIFIER");
-
-    auto wrong_request_workspace = request_with(
-        values, "other-workspace", "", values.memory, values.working,
-        values.long_term, values.semantic, values.episodic, values.procedural,
-        values.reflections);
-    expect_failure(engine.exportState(open, wrong_request_workspace), workspace,
-                   "WORKSPACE_MISMATCH");
-
-    auto empty_identifier = values.request("");
-    expect_failure(engine.exportState(open, empty_identifier), workspace,
+    expect_failure(engine.registerProvider(open, wrong_and_empty), workspace, "WORKSPACE_MISMATCH");
+    expect_failure(engine.registerProvider(open, ProviderDescriptor{std::string{workspace}, ""}),
+                   workspace,
                    "INVALID_PROVIDER_IDENTIFIER");
 
-    auto unregistered_with_bad_memory = request_with(
-        values, values.workspaceIdentifier(), "unregistered", other.memory,
-        values.working, values.long_term, values.semantic, values.episodic,
-        values.procedural, values.reflections);
+    auto wrong_request_workspace = request_with(values,
+                                                "other-workspace",
+                                                "",
+                                                values.memory,
+                                                values.working,
+                                                values.long_term,
+                                                values.semantic,
+                                                values.episodic,
+                                                values.procedural,
+                                                values.reflections);
+    expect_failure(
+        engine.exportState(open, wrong_request_workspace), workspace, "WORKSPACE_MISMATCH");
+
+    auto empty_identifier = values.request("");
+    expect_failure(
+        engine.exportState(open, empty_identifier), workspace, "INVALID_PROVIDER_IDENTIFIER");
+
+    auto unregistered_with_bad_memory = request_with(values,
+                                                     values.workspaceIdentifier(),
+                                                     "unregistered",
+                                                     other.memory,
+                                                     values.working,
+                                                     values.long_term,
+                                                     values.semantic,
+                                                     values.episodic,
+                                                     values.procedural,
+                                                     values.reflections);
     expect_failure(engine.exportState(open, unregistered_with_bad_memory),
-                   workspace, "PROVIDER_NOT_REGISTERED");
+                   workspace,
+                   "PROVIDER_NOT_REGISTERED");
 
     ProviderSession registered{std::string{workspace}};
     expect_ok(engine.registerProvider(registered, valid));
-    auto bad_memory = request_with(
-        values, other.memory, other.working, values.long_term, values.semantic,
-        values.episodic, values.procedural, values.reflections);
-    expect_failure(engine.exportState(registered, bad_memory), workspace,
-                   "WORKSPACE_MISMATCH");
+    auto bad_memory = request_with(values,
+                                   other.memory,
+                                   other.working,
+                                   values.long_term,
+                                   values.semantic,
+                                   values.episodic,
+                                   values.procedural,
+                                   values.reflections);
+    expect_failure(engine.exportState(registered, bad_memory), workspace, "WORKSPACE_MISMATCH");
 
     ProviderSession completed_validation{std::string{workspace}};
     expect_ok(engine.registerProvider(completed_validation, valid));
     expect_ok(engine.importState(completed_validation, valid_request));
     expect_failure(engine.validate(completed_validation, empty_identifier),
-                   workspace, "INVALID_PROVIDER_IDENTIFIER");
+                   workspace,
+                   "INVALID_PROVIDER_IDENTIFIER");
 }
 
-TEST(MemoryProviderPrecedenceTest,
-     ImportAggregateAndReflectionEdgesAreExact) {
+TEST(MemoryProviderPrecedenceTest, ImportAggregateAndReflectionEdgesAreExact) {
     AuthenticState values{std::string{workspace}};
     AuthenticState other{"other-workspace"};
     MemoryProviderEngine engine;
-    const ProviderDescriptor descriptor{std::string{workspace},
-                                        std::string{provider_a}};
+    const ProviderDescriptor descriptor{std::string{workspace}, std::string{provider_a}};
 
-    auto wrong_request_workspace = request_with(
-        values, "other-workspace", "", values.memory, values.working,
-        values.long_term, values.semantic, values.episodic, values.procedural,
-        other.reflections);
+    auto wrong_request_workspace = request_with(values,
+                                                "other-workspace",
+                                                "",
+                                                values.memory,
+                                                values.working,
+                                                values.long_term,
+                                                values.semantic,
+                                                values.episodic,
+                                                values.procedural,
+                                                other.reflections);
 
     ProviderSession completed{std::string{workspace}};
     expect_ok(engine.registerProvider(completed, descriptor));
     expect_ok(engine.exportState(completed, values.request()));
     expect_failure(engine.importState(completed, wrong_request_workspace),
-                   workspace, "SESSION_ALREADY_COMPLETED");
+                   workspace,
+                   "SESSION_ALREADY_COMPLETED");
 
     ProviderSession forgotten{std::string{workspace}};
     expect_ok(engine.forgetSession(forgotten));
-    expect_failure(engine.importState(forgotten, wrong_request_workspace),
-                   workspace, "SESSION_FORGOTTEN");
+    expect_failure(
+        engine.importState(forgotten, wrong_request_workspace), workspace, "SESSION_FORGOTTEN");
 
     ProviderSession open{std::string{workspace}};
-    expect_failure(engine.importState(open, wrong_request_workspace), workspace,
-                   "WORKSPACE_MISMATCH");
+    expect_failure(
+        engine.importState(open, wrong_request_workspace), workspace, "WORKSPACE_MISMATCH");
 
-    auto empty_provider_with_bad_memory = request_with(
-        values, values.workspaceIdentifier(), "", other.memory, values.working,
-        values.long_term, values.semantic, values.episodic, values.procedural,
-        values.reflections);
+    auto empty_provider_with_bad_memory = request_with(values,
+                                                       values.workspaceIdentifier(),
+                                                       "",
+                                                       other.memory,
+                                                       values.working,
+                                                       values.long_term,
+                                                       values.semantic,
+                                                       values.episodic,
+                                                       values.procedural,
+                                                       values.reflections);
     expect_failure(engine.importState(open, empty_provider_with_bad_memory),
-                   workspace, "INVALID_PROVIDER_IDENTIFIER");
+                   workspace,
+                   "INVALID_PROVIDER_IDENTIFIER");
 
-    auto unregistered_with_bad_memory = request_with(
-        values, values.workspaceIdentifier(), "unregistered", other.memory,
-        values.working, values.long_term, values.semantic, values.episodic,
-        values.procedural, values.reflections);
+    auto unregistered_with_bad_memory = request_with(values,
+                                                     values.workspaceIdentifier(),
+                                                     "unregistered",
+                                                     other.memory,
+                                                     values.working,
+                                                     values.long_term,
+                                                     values.semantic,
+                                                     values.episodic,
+                                                     values.procedural,
+                                                     values.reflections);
     expect_failure(engine.importState(open, unregistered_with_bad_memory),
-                   workspace, "PROVIDER_NOT_REGISTERED");
+                   workspace,
+                   "PROVIDER_NOT_REGISTERED");
 
     expect_ok(engine.registerProvider(open, descriptor));
     const auto verify_workspace_failure = [&](ProviderRequest request) {
@@ -1449,47 +1485,90 @@ TEST(MemoryProviderPrecedenceTest,
         EXPECT_EQ(snapshot_of(open), before);
     };
 
-    verify_workspace_failure(request_with(
-        values, other.memory, values.working, values.long_term, values.semantic,
-        values.episodic, values.procedural, values.reflections));
-    verify_workspace_failure(request_with(
-        values, values.memory, other.working, values.long_term, values.semantic,
-        values.episodic, values.procedural, values.reflections));
-    verify_workspace_failure(request_with(
-        values, values.memory, values.working, other.long_term, values.semantic,
-        values.episodic, values.procedural, values.reflections));
-    verify_workspace_failure(request_with(
-        values, values.memory, values.working, values.long_term, other.semantic,
-        values.episodic, values.procedural, values.reflections));
-    verify_workspace_failure(request_with(
-        values, values.memory, values.working, values.long_term, values.semantic,
-        other.episodic, values.procedural, values.reflections));
-    verify_workspace_failure(request_with(
-        values, values.memory, values.working, values.long_term, values.semantic,
-        values.episodic, other.procedural, values.reflections));
+    verify_workspace_failure(request_with(values,
+                                          other.memory,
+                                          values.working,
+                                          values.long_term,
+                                          values.semantic,
+                                          values.episodic,
+                                          values.procedural,
+                                          values.reflections));
+    verify_workspace_failure(request_with(values,
+                                          values.memory,
+                                          other.working,
+                                          values.long_term,
+                                          values.semantic,
+                                          values.episodic,
+                                          values.procedural,
+                                          values.reflections));
+    verify_workspace_failure(request_with(values,
+                                          values.memory,
+                                          values.working,
+                                          other.long_term,
+                                          values.semantic,
+                                          values.episodic,
+                                          values.procedural,
+                                          values.reflections));
+    verify_workspace_failure(request_with(values,
+                                          values.memory,
+                                          values.working,
+                                          values.long_term,
+                                          other.semantic,
+                                          values.episodic,
+                                          values.procedural,
+                                          values.reflections));
+    verify_workspace_failure(request_with(values,
+                                          values.memory,
+                                          values.working,
+                                          values.long_term,
+                                          values.semantic,
+                                          other.episodic,
+                                          values.procedural,
+                                          values.reflections));
+    verify_workspace_failure(request_with(values,
+                                          values.memory,
+                                          values.working,
+                                          values.long_term,
+                                          values.semantic,
+                                          values.episodic,
+                                          other.procedural,
+                                          values.reflections));
 
     auto first_reflection_bad = values.reflections;
     first_reflection_bad.front() = other.reflections.front();
-    verify_workspace_failure(request_with(
-        values, values.memory, values.working, values.long_term, values.semantic,
-        values.episodic, values.procedural, std::move(first_reflection_bad)));
+    verify_workspace_failure(request_with(values,
+                                          values.memory,
+                                          values.working,
+                                          values.long_term,
+                                          values.semantic,
+                                          values.episodic,
+                                          values.procedural,
+                                          std::move(first_reflection_bad)));
 
     auto second_reflection_bad = values.reflections;
     ASSERT_GE(second_reflection_bad.size(), 2U);
     second_reflection_bad[1] = other.reflections.front();
-    verify_workspace_failure(request_with(
-        values, values.memory, values.working, values.long_term, values.semantic,
-        values.episodic, values.procedural, std::move(second_reflection_bad)));
+    verify_workspace_failure(request_with(values,
+                                          values.memory,
+                                          values.working,
+                                          values.long_term,
+                                          values.semantic,
+                                          values.episodic,
+                                          values.procedural,
+                                          std::move(second_reflection_bad)));
 
     auto bad_aggregate_and_reflection = other.reflections;
-    verify_workspace_failure(request_with(
-        values, other.memory, other.working, other.long_term, other.semantic,
-        other.episodic, other.procedural,
-        std::move(bad_aggregate_and_reflection)));
+    verify_workspace_failure(request_with(values,
+                                          other.memory,
+                                          other.working,
+                                          other.long_term,
+                                          other.semantic,
+                                          other.episodic,
+                                          other.procedural,
+                                          std::move(bad_aggregate_and_reflection)));
 }
 
-TEST(MemoryProviderIsolationTest,
-     SuccessAndSemanticFailureDoNotModifySources) {
+TEST(MemoryProviderIsolationTest, SuccessAndSemanticFailureDoNotModifySources) {
     AuthenticState values{std::string{workspace}};
     auto request = values.request();
     const auto memory_before = snapshot_of(values.memory);
@@ -1498,14 +1577,13 @@ TEST(MemoryProviderIsolationTest,
     const auto semantic_before = snapshot_of(values.semantic);
     const auto episodic_before = snapshot_of(values.episodic);
     const auto procedural_before = snapshot_of(values.procedural);
-    const auto reflections_before = snapshot_vector<Reflection, ReflectionSnapshot>(
-        values.reflections, snapshot_of);
+    const auto reflections_before =
+        snapshot_vector<Reflection, ReflectionSnapshot>(values.reflections, snapshot_of);
     const auto request_before = snapshot_of(request);
 
     MemoryProviderEngine engine;
     ProviderSession session{std::string{workspace}};
-    const ProviderDescriptor descriptor{std::string{workspace},
-                                        std::string{provider_a}};
+    const ProviderDescriptor descriptor{std::string{workspace}, std::string{provider_a}};
     const auto descriptor_workspace = descriptor.workspaceIdentifier();
     const auto descriptor_identifier = descriptor.identifier();
     expect_ok(engine.registerProvider(session, descriptor));
@@ -1524,8 +1602,7 @@ TEST(MemoryProviderIsolationTest,
     EXPECT_EQ(snapshot_of(values.episodic), episodic_before);
     EXPECT_EQ(snapshot_of(values.procedural), procedural_before);
     const auto reflections_after =
-        snapshot_vector<Reflection, ReflectionSnapshot>(values.reflections,
-                                                        snapshot_of);
+        snapshot_vector<Reflection, ReflectionSnapshot>(values.reflections, snapshot_of);
     EXPECT_EQ(reflections_after, reflections_before);
     EXPECT_EQ(snapshot_of(request), request_before);
     EXPECT_EQ(descriptor.workspaceIdentifier(), descriptor_workspace);
@@ -1537,24 +1614,20 @@ TEST(MemoryProviderIsolationTest,
     EXPECT_EQ(snapshot_of(*exported.request()), detached);
 }
 
-TEST(MemoryProviderIsolationTest,
-     DetachedRequestsOutliveAndIgnoreEverySource) {
+TEST(MemoryProviderIsolationTest, DetachedRequestsOutliveAndIgnoreEverySource) {
     auto request_after_source_destruction = [] {
         AuthenticState local_values{std::string{workspace}};
         return local_values.request();
     }();
-    const auto destroyed_source_snapshot =
-        snapshot_of(request_after_source_destruction);
+    const auto destroyed_source_snapshot = snapshot_of(request_after_source_destruction);
 
     MemoryProviderEngine engine;
     ProviderSession destroyed_source_session{std::string{workspace}};
     expect_ok(engine.registerProvider(
         destroyed_source_session,
         ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
-    expect_ok(engine.validate(destroyed_source_session,
-                              request_after_source_destruction));
-    EXPECT_EQ(snapshot_of(request_after_source_destruction),
-              destroyed_source_snapshot);
+    expect_ok(engine.validate(destroyed_source_session, request_after_source_destruction));
+    EXPECT_EQ(snapshot_of(request_after_source_destruction), destroyed_source_snapshot);
 
     AuthenticState values{std::string{workspace}};
     const auto request = values.request();
@@ -1566,8 +1639,7 @@ TEST(MemoryProviderIsolationTest,
     require_ok(LongTermMemoryEngine{}.forget(values.long_term, "evidence-b"));
     require_ok(SemanticMemoryEngine{}.forget(values.semantic, "semantic-a"));
     require_ok(EpisodicMemoryEngine{}.forget(values.episodic, "episode-a"));
-    require_ok(
-        ProceduralMemoryEngine{}.forget(values.procedural, "procedure-a"));
+    require_ok(ProceduralMemoryEngine{}.forget(values.procedural, "procedure-a"));
     values.reflections.clear();
 
     ASSERT_TRUE(request_before_source_changes.memory.has_value());
@@ -1576,18 +1648,12 @@ TEST(MemoryProviderIsolationTest,
     ASSERT_TRUE(request_before_source_changes.semantic.has_value());
     ASSERT_TRUE(request_before_source_changes.episodic.has_value());
     ASSERT_TRUE(request_before_source_changes.procedural.has_value());
-    EXPECT_NE(snapshot_of(values.memory),
-              *request_before_source_changes.memory);
-    EXPECT_NE(snapshot_of(values.working),
-              *request_before_source_changes.working);
-    EXPECT_NE(snapshot_of(values.long_term),
-              *request_before_source_changes.long_term);
-    EXPECT_NE(snapshot_of(values.semantic),
-              *request_before_source_changes.semantic);
-    EXPECT_NE(snapshot_of(values.episodic),
-              *request_before_source_changes.episodic);
-    EXPECT_NE(snapshot_of(values.procedural),
-              *request_before_source_changes.procedural);
+    EXPECT_NE(snapshot_of(values.memory), *request_before_source_changes.memory);
+    EXPECT_NE(snapshot_of(values.working), *request_before_source_changes.working);
+    EXPECT_NE(snapshot_of(values.long_term), *request_before_source_changes.long_term);
+    EXPECT_NE(snapshot_of(values.semantic), *request_before_source_changes.semantic);
+    EXPECT_NE(snapshot_of(values.episodic), *request_before_source_changes.episodic);
+    EXPECT_NE(snapshot_of(values.procedural), *request_before_source_changes.procedural);
     EXPECT_TRUE(values.reflections.empty());
 
     EXPECT_EQ(snapshot_of(request), request_before_source_changes);
@@ -1599,12 +1665,11 @@ TEST(MemoryProviderIsolationTest,
     auto exported = engine.exportState(changed_source_session, request);
     expect_ok(exported);
     ASSERT_NE(exported.request(), nullptr);
-    EXPECT_EQ(snapshot_of(*exported.request()),
-              request_before_source_changes);
+    EXPECT_EQ(snapshot_of(*exported.request()), request_before_source_changes);
 }
 
-[[nodiscard]] std::pair<SessionSnapshot, ResultSnapshot> deterministic_history(
-    const std::string& workspace_identifier) {
+[[nodiscard]] std::pair<SessionSnapshot, ResultSnapshot>
+deterministic_history(const std::string& workspace_identifier) {
     AuthenticState values{workspace_identifier};
     auto request = values.request();
     ProviderSession session{workspace_identifier};
@@ -1634,8 +1699,7 @@ struct ConcurrentTransportSnapshot final {
     ProviderSession session{std::string{workspace}};
     MemoryProviderEngine engine;
     require_ok(engine.registerProvider(
-        session,
-        ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
+        session, ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
     auto result = engine.exportState(session, request);
     require_ok(result);
     if (result.request() == nullptr) {
@@ -1658,48 +1722,39 @@ TEST(MemoryProviderDeterminismTest, EquivalentHistoriesAreCompletelyEqual) {
     ProviderSession second_session{std::string{workspace}};
     MemoryProviderEngine first_engine;
     MemoryProviderEngine second_engine;
-    const ProviderDescriptor descriptor{std::string{workspace},
-                                        std::string{provider_a}};
+    const ProviderDescriptor descriptor{std::string{workspace}, std::string{provider_a}};
     require_ok(first_engine.registerProvider(first_session, descriptor));
     require_ok(second_engine.registerProvider(second_session, descriptor));
-    auto first_result = first_engine.exportState(first_session,
-                                                  first_values.request());
-    auto second_result = second_engine.exportState(second_session,
-                                                    second_values.request());
+    auto first_result = first_engine.exportState(first_session, first_values.request());
+    auto second_result = second_engine.exportState(second_session, second_values.request());
     EXPECT_EQ(snapshot_of(first_result), snapshot_of(second_result));
     EXPECT_EQ(snapshot_of(first_session), snapshot_of(second_session));
 }
 
 TEST(MemoryProviderConcurrencyTest, IndependentValuesSupportConcurrentUse) {
-    auto first = std::async(std::launch::async, [] {
-        return deterministic_history(std::string{workspace});
-    });
-    auto second = std::async(std::launch::async, [] {
-        return deterministic_history(std::string{workspace});
-    });
+    auto first = std::async(std::launch::async,
+                            [] { return deterministic_history(std::string{workspace}); });
+    auto second = std::async(std::launch::async,
+                             [] { return deterministic_history(std::string{workspace}); });
     EXPECT_EQ(first.get(), second.get());
 
     AuthenticState values{std::string{workspace}};
     ProviderSession session{std::string{workspace}};
     MemoryProviderEngine engine;
     require_ok(engine.registerProvider(
-        session,
-        ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
+        session, ProviderDescriptor{std::string{workspace}, std::string{provider_a}}));
     const auto before = snapshot_of(session);
     const ProviderSession& observed = session;
-    auto observation_a = std::async(std::launch::async, [&observed] {
-        return snapshot_of(observed);
-    });
-    auto observation_b = std::async(std::launch::async, [&observed] {
-        return snapshot_of(observed);
-    });
+    auto observation_a =
+        std::async(std::launch::async, [&observed] { return snapshot_of(observed); });
+    auto observation_b =
+        std::async(std::launch::async, [&observed] { return snapshot_of(observed); });
     EXPECT_EQ(observation_a.get(), before);
     EXPECT_EQ(observation_b.get(), before);
     EXPECT_EQ(snapshot_of(session), before);
 }
 
-TEST(MemoryProviderConcurrencyTest,
-     DistinctTransportsUseSourcesConcurrently) {
+TEST(MemoryProviderConcurrencyTest, DistinctTransportsUseSourcesConcurrently) {
     auto first = std::async(std::launch::async, concurrent_transport_history);
     auto second = std::async(std::launch::async, concurrent_transport_history);
     const auto first_history = first.get();

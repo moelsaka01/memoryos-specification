@@ -1,8 +1,7 @@
-#include <memoryos/memoryos.hpp>
-
 #include <fstream>
 #include <iostream>
 #include <iterator>
+#include <memoryos/memoryos.hpp>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -14,8 +13,7 @@ namespace {
     if (!input) {
         throw std::runtime_error{"cannot open the deterministic observation"};
     }
-    return {std::istreambuf_iterator<char>{input},
-            std::istreambuf_iterator<char>{}};
+    return {std::istreambuf_iterator<char>{input}, std::istreambuf_iterator<char>{}};
 }
 
 } // namespace
@@ -27,15 +25,11 @@ int main() {
         memoryos::ObserveOptions baselineOptions;
         baselineOptions.identifier = "cpp-explorer-baseline";
         const auto baseline = memory.observe(
-            workspace,
-            readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT),
-            std::move(baselineOptions));
+            workspace, readText(MEMORYOS_SDK_REFERENCE_SNAPSHOT), std::move(baselineOptions));
         memoryos::ObserveOptions candidateOptions;
         candidateOptions.identifier = "cpp-explorer-candidate";
         const auto candidate = memory.observe(
-            workspace,
-            readText(MEMORYOS_SDK_CHANGED_SNAPSHOT),
-            std::move(candidateOptions));
+            workspace, readText(MEMORYOS_SDK_CHANGED_SNAPSHOT), std::move(candidateOptions));
         const auto report = memory.regression(baseline, candidate);
         memoryos::InvestigationQuery query;
         query.category = "reflection";

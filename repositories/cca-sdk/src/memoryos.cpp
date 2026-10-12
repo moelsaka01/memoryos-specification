@@ -1,14 +1,13 @@
-#include <memoryos/memoryos.hpp>
-
-#include "client.hpp"
-#include "json.hpp"
-
 #include <algorithm>
 #include <array>
 #include <cstdlib>
 #include <iterator>
 #include <limits>
+#include <memoryos/memoryos.hpp>
 #include <utility>
+
+#include "client.hpp"
+#include "json.hpp"
 
 #ifndef MEMORYOS_SDK_DEFAULT_NODE_EXECUTABLE
 #define MEMORYOS_SDK_DEFAULT_NODE_EXECUTABLE "node"
@@ -36,8 +35,7 @@ using detail::Json;
 }
 
 [[noreturn]] void replayUnavailable() {
-    throw SdkError{
-        "INVALID_TRANSITION", "replay", "Replay is not prepared.", {}};
+    throw SdkError{"INVALID_TRANSITION", "replay", "Replay is not prepared.", {}};
 }
 
 [[noreturn]] void replaySessionMismatch() {
@@ -49,27 +47,21 @@ using detail::Json;
     };
 }
 
-[[nodiscard]] const std::string& requiredString(const Json& value,
-                                                std::string_view name) {
+[[nodiscard]] const std::string& requiredString(const Json& value, std::string_view name) {
     const Json* member = value.find(name);
     if (member == nullptr || !member->isString()) {
-        invalidProtocol("The Core host result omitted string member '" +
-                        std::string{name} + "'.");
+        invalidProtocol("The Core host result omitted string member '" + std::string{name} + "'.");
     }
     return member->asString();
 }
 
-[[nodiscard]] std::size_t requiredSize(const Json& value,
-                                       std::string_view name) {
+[[nodiscard]] std::size_t requiredSize(const Json& value, std::string_view name) {
     const Json* member = value.find(name);
-    if (member == nullptr || !member->isInteger() ||
-        member->asInteger() < 0) {
-        invalidProtocol("The Core host result omitted count member '" +
-                        std::string{name} + "'.");
+    if (member == nullptr || !member->isInteger() || member->asInteger() < 0) {
+        invalidProtocol("The Core host result omitted count member '" + std::string{name} + "'.");
     }
     const auto count = static_cast<std::uint64_t>(member->asInteger());
-    if (count > static_cast<std::uint64_t>(
-                    std::numeric_limits<std::size_t>::max())) {
+    if (count > static_cast<std::uint64_t>(std::numeric_limits<std::size_t>::max())) {
         invalidProtocol("The Core host returned an unrepresentable count.");
     }
     return static_cast<std::size_t>(count);
@@ -78,14 +70,13 @@ using detail::Json;
 [[nodiscard]] bool requiredBool(const Json& value, std::string_view name) {
     const Json* member = value.find(name);
     if (member == nullptr || !member->isBool()) {
-        invalidProtocol("The Core host result omitted Boolean member '" +
-                        std::string{name} + "'.");
+        invalidProtocol("The Core host result omitted Boolean member '" + std::string{name} + "'.");
     }
     return member->asBool();
 }
 
 [[nodiscard]] std::vector<Diagnostic> diagnosticsFrom(const Json* entries,
-                                                       std::string_view operation) {
+                                                      std::string_view operation) {
     std::vector<Diagnostic> result;
     if (entries == nullptr || !entries->isArray()) {
         return result;
@@ -99,21 +90,17 @@ using detail::Json;
         const Json* itemOperation = value.find("operation");
         const Json* message = value.find("message");
         result.push_back(Diagnostic{
-            code != nullptr && code->isString() ? code->asString()
-                                                : std::string{},
-            itemOperation != nullptr && itemOperation->isString()
-                ? itemOperation->asString()
-                : std::string{operation},
-            message != nullptr && message->isString() ? message->asString()
-                                                      : std::string{},
+            code != nullptr && code->isString() ? code->asString() : std::string{},
+            itemOperation != nullptr && itemOperation->isString() ? itemOperation->asString()
+                                                                  : std::string{operation},
+            message != nullptr && message->isString() ? message->asString() : std::string{},
             value.serialize(),
         });
     }
     return result;
 }
 
-[[nodiscard]] std::string base64Encode(
-    std::span<const std::uint8_t> bytes) {
+[[nodiscard]] std::string base64Encode(std::span<const std::uint8_t> bytes) {
     constexpr std::string_view alphabet{
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"};
     std::string output;
@@ -124,8 +111,7 @@ using detail::Json;
         const bool hasThird = index + 2U < bytes.size();
         const std::uint32_t second = hasSecond ? bytes[index + 1U] : 0U;
         const std::uint32_t third = hasThird ? bytes[index + 2U] : 0U;
-        const std::uint32_t value =
-            (first << 16U) | (second << 8U) | third;
+        const std::uint32_t value = (first << 16U) | (second << 8U) | third;
         output.push_back(alphabet[(value >> 18U) & 0x3FU]);
         output.push_back(alphabet[(value >> 12U) & 0x3FU]);
         output.push_back(hasSecond ? alphabet[(value >> 6U) & 0x3FU] : '=');
@@ -135,16 +121,20 @@ using detail::Json;
 }
 
 [[nodiscard]] int base64Value(char value) noexcept {
-    if (value >= 'A' && value <= 'Z') return value - 'A';
-    if (value >= 'a' && value <= 'z') return value - 'a' + 26;
-    if (value >= '0' && value <= '9') return value - '0' + 52;
-    if (value == '+') return 62;
-    if (value == '/') return 63;
+    if (value >= 'A' && value <= 'Z')
+        return value - 'A';
+    if (value >= 'a' && value <= 'z')
+        return value - 'a' + 26;
+    if (value >= '0' && value <= '9')
+        return value - '0' + 52;
+    if (value == '+')
+        return 62;
+    if (value == '/')
+        return 63;
     return -1;
 }
 
-[[nodiscard]] std::vector<std::uint8_t> base64Decode(
-    std::string_view text) {
+[[nodiscard]] std::vector<std::uint8_t> base64Decode(std::string_view text) {
     if (text.size() % 4U != 0U) {
         invalidProtocol("The Core host returned malformed Base64.");
     }
@@ -158,20 +148,17 @@ using detail::Json;
         const int second = base64Value(text[index + 1U]);
         const int third = padSecond ? 0 : base64Value(text[index + 2U]);
         const int fourth = padThird ? 0 : base64Value(text[index + 3U]);
-        if (first < 0 || second < 0 || third < 0 || fourth < 0 ||
-            (padSecond && !padThird) ||
+        if (first < 0 || second < 0 || third < 0 || fourth < 0 || (padSecond && !padThird) ||
             ((padSecond || padThird) && !finalGroup)) {
             invalidProtocol("The Core host returned malformed Base64.");
         }
-        const auto value =
-            (static_cast<std::uint32_t>(first) << 18U) |
-            (static_cast<std::uint32_t>(second) << 12U) |
-            (static_cast<std::uint32_t>(third) << 6U) |
-            static_cast<std::uint32_t>(fourth);
+        const auto value = (static_cast<std::uint32_t>(first) << 18U) |
+                           (static_cast<std::uint32_t>(second) << 12U) |
+                           (static_cast<std::uint32_t>(third) << 6U) |
+                           static_cast<std::uint32_t>(fourth);
         output.push_back(static_cast<std::uint8_t>((value >> 16U) & 0xFFU));
         if (!padSecond) {
-            output.push_back(
-                static_cast<std::uint8_t>((value >> 8U) & 0xFFU));
+            output.push_back(static_cast<std::uint8_t>((value >> 8U) & 0xFFU));
         }
         if (!padThird) {
             output.push_back(static_cast<std::uint8_t>(value & 0xFFU));
@@ -180,8 +167,7 @@ using detail::Json;
     return output;
 }
 
-[[nodiscard]] Json::Array extensionsJson(
-    const std::vector<std::string>& extensions) {
+[[nodiscard]] Json::Array extensionsJson(const std::vector<std::string>& extensions) {
     for (const auto& value : extensions) {
         if (value.empty()) {
             invalidArgument("Supported extension names must not be empty.");
@@ -192,8 +178,7 @@ using detail::Json;
 
 [[nodiscard]] std::filesystem::path environmentPath(const char* name) {
     const char* value = std::getenv(name);
-    return value != nullptr ? std::filesystem::path{value}
-                            : std::filesystem::path{};
+    return value != nullptr ? std::filesystem::path{value} : std::filesystem::path{};
 }
 
 [[nodiscard]] SdkOptions defaultOptions() {
@@ -206,8 +191,7 @@ using detail::Json;
     if (options.coreHost.empty()) {
         const std::filesystem::path sourceHost{MEMORYOS_SDK_DEFAULT_CORE_HOST};
         std::error_code error;
-        if (!sourceHost.empty() &&
-            std::filesystem::is_regular_file(sourceHost, error) && !error) {
+        if (!sourceHost.empty() && std::filesystem::is_regular_file(sourceHost, error) && !error) {
             options.coreHost = sourceHost;
         } else {
             options.coreHost = MEMORYOS_SDK_INSTALL_CORE_HOST;
@@ -262,13 +246,10 @@ struct Investigation::Impl final {
 
 namespace detail {
 
-Investigation investigationFrom(
-    const std::shared_ptr<detail::Client>& client,
-    const Json& result) {
+Investigation investigationFrom(const std::shared_ptr<detail::Client>& client, const Json& result) {
     const Json* value = result.find("investigation");
     const Json* log = result.find("transitionLog");
-    if (value == nullptr || !value->isObject() || log == nullptr ||
-        !log->isObject()) {
+    if (value == nullptr || !value->isObject() || log == nullptr || !log->isObject()) {
         invalidProtocol("The Core host omitted an investigation result.");
     }
     auto impl = std::make_shared<Investigation::Impl>();
@@ -297,11 +278,10 @@ Investigation investigationFrom(
     return Investigation{std::move(impl)};
 }
 
-VerificationResult verificationFrom(
-    const Json& value,
-    bool valid,
-    std::string_view operation,
-    const Json* diagnostics) {
+VerificationResult verificationFrom(const Json& value,
+                                    bool valid,
+                                    std::string_view operation,
+                                    const Json* diagnostics) {
     auto impl = std::make_shared<VerificationResult::Impl>();
     impl->valid = valid;
     impl->diagnostics = diagnosticsFrom(diagnostics, operation);
@@ -311,13 +291,11 @@ VerificationResult verificationFrom(
 
 } // namespace detail
 
-PolicyPreparationFailure::PolicyPreparationFailure(
-    std::string code,
-    std::string phase,
-    std::optional<std::string> artifactKind,
-    std::optional<std::string> limitIdentifier)
-    : code_(std::move(code)), phase_(std::move(phase)),
-      artifact_kind_(std::move(artifactKind)),
+PolicyPreparationFailure::PolicyPreparationFailure(std::string code,
+                                                   std::string phase,
+                                                   std::optional<std::string> artifactKind,
+                                                   std::optional<std::string> limitIdentifier)
+    : code_(std::move(code)), phase_(std::move(phase)), artifact_kind_(std::move(artifactKind)),
       limit_identifier_(std::move(limitIdentifier)) {}
 const std::string& PolicyPreparationFailure::code() const noexcept {
     return code_;
@@ -325,12 +303,10 @@ const std::string& PolicyPreparationFailure::code() const noexcept {
 const std::string& PolicyPreparationFailure::phase() const noexcept {
     return phase_;
 }
-const std::optional<std::string>&
-PolicyPreparationFailure::artifactKind() const noexcept {
+const std::optional<std::string>& PolicyPreparationFailure::artifactKind() const noexcept {
     return artifact_kind_;
 }
-const std::optional<std::string>&
-PolicyPreparationFailure::limitIdentifier() const noexcept {
+const std::optional<std::string>& PolicyPreparationFailure::limitIdentifier() const noexcept {
     return limit_identifier_;
 }
 std::string_view PolicyPreparationFailure::failureClass() const noexcept {
@@ -349,28 +325,30 @@ SdkError::SdkError(std::string code,
     : std::runtime_error(std::move(message)), code_(std::move(code)),
       operation_(std::move(operation)), diagnostics_(std::move(diagnostics)),
       phase_(std::move(phase)), artifact_kind_(std::move(artifactKind)),
-      limit_identifier_(std::move(limitIdentifier)),
-      failure_class_(std::move(failureClass)),
+      limit_identifier_(std::move(limitIdentifier)), failure_class_(std::move(failureClass)),
       verification_failure_(verificationFailure) {
     if (failure_class_ == "preparation") {
-        preparation_failure_.emplace(
-            PolicyPreparationFailure{
-                code_, phase_,
-                artifact_kind_.empty()
-                    ? std::nullopt
-                    : std::optional<std::string>{artifact_kind_},
-                limit_identifier_.empty()
-                    ? std::nullopt
-                    : std::optional<std::string>{limit_identifier_}});
+        preparation_failure_.emplace(PolicyPreparationFailure{
+            code_,
+            phase_,
+            artifact_kind_.empty() ? std::nullopt : std::optional<std::string>{artifact_kind_},
+            limit_identifier_.empty() ? std::nullopt
+                                      : std::optional<std::string>{limit_identifier_}});
     }
 }
 
-const std::string& SdkError::code() const noexcept { return code_; }
-const std::string& SdkError::operation() const noexcept { return operation_; }
+const std::string& SdkError::code() const noexcept {
+    return code_;
+}
+const std::string& SdkError::operation() const noexcept {
+    return operation_;
+}
 const std::vector<Diagnostic>& SdkError::diagnostics() const noexcept {
     return diagnostics_;
 }
-const std::string& SdkError::phase() const noexcept { return phase_; }
+const std::string& SdkError::phase() const noexcept {
+    return phase_;
+}
 const std::string& SdkError::artifactKind() const noexcept {
     return artifact_kind_;
 }
@@ -383,13 +361,11 @@ const std::string& SdkError::failureClass() const noexcept {
 bool SdkError::verificationFailure() const noexcept {
     return verification_failure_;
 }
-const std::optional<PolicyPreparationFailure>&
-SdkError::preparationFailure() const noexcept {
+const std::optional<PolicyPreparationFailure>& SdkError::preparationFailure() const noexcept {
     return preparation_failure_;
 }
 
-Workspace::Workspace(std::string identifier,
-                     std::weak_ptr<detail::Client> client)
+Workspace::Workspace(std::string identifier, std::weak_ptr<detail::Client> client)
     : identifier_(std::make_shared<const std::string>(std::move(identifier))),
       client_(std::move(client)) {}
 
@@ -397,40 +373,35 @@ const std::string& Workspace::identifier() const noexcept {
     return *identifier_;
 }
 
-MemoryInvestigationPackage::MemoryInvestigationPackage(
-    std::vector<std::uint8_t> bytes)
-    : bytes_(std::make_shared<const std::vector<std::uint8_t>>(
-          std::move(bytes))) {}
+MemoryInvestigationPackage::MemoryInvestigationPackage(std::vector<std::uint8_t> bytes)
+    : bytes_(std::make_shared<const std::vector<std::uint8_t>>(std::move(bytes))) {}
 
-MemoryInvestigationPackage::MemoryInvestigationPackage(
-    std::span<const std::byte> bytes) {
+MemoryInvestigationPackage::MemoryInvestigationPackage(std::span<const std::byte> bytes) {
     std::vector<std::uint8_t> converted;
     converted.reserve(bytes.size());
-    std::transform(bytes.begin(), bytes.end(), std::back_inserter(converted),
-                   [](std::byte value) { return std::to_integer<std::uint8_t>(value); });
-    bytes_ = std::make_shared<const std::vector<std::uint8_t>>(
-        std::move(converted));
+    std::transform(bytes.begin(), bytes.end(), std::back_inserter(converted), [](std::byte value) {
+        return std::to_integer<std::uint8_t>(value);
+    });
+    bytes_ = std::make_shared<const std::vector<std::uint8_t>>(std::move(converted));
 }
 
-std::span<const std::uint8_t>
-MemoryInvestigationPackage::bytes() const noexcept {
+std::span<const std::uint8_t> MemoryInvestigationPackage::bytes() const noexcept {
     return *bytes_;
 }
 
-VerificationResult::VerificationResult(std::shared_ptr<const Impl> impl)
-    : impl_(std::move(impl)) {}
+VerificationResult::VerificationResult(std::shared_ptr<const Impl> impl) : impl_(std::move(impl)) {}
 
-bool VerificationResult::valid() const noexcept { return impl_->valid; }
-const std::vector<Diagnostic>&
-VerificationResult::diagnostics() const noexcept {
+bool VerificationResult::valid() const noexcept {
+    return impl_->valid;
+}
+const std::vector<Diagnostic>& VerificationResult::diagnostics() const noexcept {
     return impl_->diagnostics;
 }
 const std::string& VerificationResult::canonicalJson() const noexcept {
     return impl_->canonical_json;
 }
 
-RegressionReport::RegressionReport(std::shared_ptr<const Impl> impl)
-    : impl_(std::move(impl)) {}
+RegressionReport::RegressionReport(std::shared_ptr<const Impl> impl) : impl_(std::move(impl)) {}
 const std::string& RegressionReport::identifier() const noexcept {
     return impl_->identifier;
 }
@@ -465,8 +436,7 @@ const std::string& InvestigationResult::canonicalJson() const noexcept {
     return impl_->canonical_json;
 }
 
-Checkpoint::Checkpoint(std::shared_ptr<const Impl> impl)
-    : impl_(std::move(impl)) {}
+Checkpoint::Checkpoint(std::shared_ptr<const Impl> impl) : impl_(std::move(impl)) {}
 const std::string& Checkpoint::identifier() const noexcept {
     return impl_->identifier;
 }
@@ -477,8 +447,7 @@ const std::string& Checkpoint::canonicalJson() const noexcept {
     return impl_->canonical_json;
 }
 
-Investigation::Investigation(std::shared_ptr<const Impl> impl)
-    : impl_(std::move(impl)) {}
+Investigation::Investigation(std::shared_ptr<const Impl> impl) : impl_(std::move(impl)) {}
 const std::string& Investigation::identifier() const noexcept {
     return impl_->identifier;
 }
@@ -488,7 +457,9 @@ const std::string& Investigation::workspaceIdentifier() const noexcept {
 const std::string& Investigation::lifecycle() const noexcept {
     return impl_->lifecycle;
 }
-const std::string& Investigation::phase() const noexcept { return impl_->phase; }
+const std::string& Investigation::phase() const noexcept {
+    return impl_->phase;
+}
 const std::string& Investigation::transitionLogDigest() const noexcept {
     return impl_->transition_log_digest;
 }
@@ -499,11 +470,9 @@ const std::string& Investigation::canonicalJson() const noexcept {
     return impl_->canonical_json;
 }
 
-Investigation Investigation::observe(std::string snapshotJson,
-                                     ObserveOptions options) const {
+Investigation Investigation::observe(std::string snapshotJson, ObserveOptions options) const {
     if (!options.identifier.empty()) {
-        invalidArgument(
-            "An appended Observation cannot replace the Investigation identifier.");
+        invalidArgument("An appended Observation cannot replace the Investigation identifier.");
     }
     Json snapshot;
     Json query;
@@ -525,8 +494,8 @@ Investigation Investigation::observe(std::string snapshotJson,
     if (!options.operation.empty()) {
         params.emplace("operation", Json{std::move(options.operation)});
     }
-    return detail::investigationFrom(
-        impl_->client, impl_->client->invoke("observe", std::move(params)));
+    return detail::investigationFrom(impl_->client,
+                                     impl_->client->invoke("observe", std::move(params)));
 }
 
 Investigation Investigation::trace(std::string selection) const {
@@ -538,31 +507,30 @@ Investigation Investigation::trace(std::string selection) const {
         {"selection", Json{std::move(selection)}},
     };
     return detail::investigationFrom(impl_->client,
-        impl_->client->invoke("trace", std::move(params)));
+                                     impl_->client->invoke("trace", std::move(params)));
 }
 
 ReplaySession Investigation::replay() const {
     Json::Object params{
         {"investigationIdentifier", Json{identifier()}},
     };
-    Investigation current = detail::investigationFrom(
-        impl_->client, impl_->client->invoke("load", std::move(params)));
+    Investigation current =
+        detail::investigationFrom(impl_->client, impl_->client->invoke("load", std::move(params)));
     if (current.impl_->active_replay_identifier.empty()) {
         replayUnavailable();
     }
     return ReplaySession{current, current.impl_->active_replay_identifier};
 }
 
-ComparisonSession Investigation::comparisonSession(
-    std::optional<std::string> evolutionIdentifier) const {
+ComparisonSession
+Investigation::comparisonSession(std::optional<std::string> evolutionIdentifier) const {
     if (impl_->source_kind == "native" && evolutionIdentifier.has_value()) {
         invalidArgument(
             "Native comparison requires an explicitly supplied null Evolution selector.");
     }
     if (impl_->source_kind == "mip" &&
         (!evolutionIdentifier.has_value() || evolutionIdentifier->empty())) {
-        invalidArgument(
-            "Package comparison requires an exact Cognitive Evolution identifier.");
+        invalidArgument("Package comparison requires an exact Cognitive Evolution identifier.");
     }
     if (impl_->source_kind != "native" && impl_->source_kind != "mip") {
         invalidProtocol("The Core host returned an unknown Investigation source kind.");
@@ -570,12 +538,10 @@ ComparisonSession Investigation::comparisonSession(
     return ComparisonSession{*this, std::move(evolutionIdentifier), false};
 }
 
-ComparisonSession Investigation::compare(
-    const ComparisonSession& session) const {
+ComparisonSession Investigation::compare(const ComparisonSession& session) const {
     if (session.investigation_.impl_->client != impl_->client ||
         session.investigation_.identifier() != identifier()) {
-        invalidArgument(
-            "A ComparisonSession belongs to a different investigation.");
+        invalidArgument("A ComparisonSession belongs to a different investigation.");
     }
     if (session.entered_) {
         invalidArgument("A ComparisonSession is already active.");
@@ -585,17 +551,15 @@ ComparisonSession Investigation::compare(
         {"evolutionIdentifier", Json{nullptr}},
     };
     if (session.evolution_identifier_.has_value()) {
-        command.at("evolutionIdentifier") =
-            Json{*session.evolution_identifier_};
+        command.at("evolutionIdentifier") = Json{*session.evolution_identifier_};
     }
     Json::Object params{
         {"command", Json{std::move(command)}},
         {"investigationIdentifier", Json{identifier()}},
     };
     return ComparisonSession{
-        detail::investigationFrom(
-            impl_->client,
-            impl_->client->invoke("compare", std::move(params))),
+        detail::investigationFrom(impl_->client,
+                                  impl_->client->invoke("compare", std::move(params))),
         session.evolution_identifier_,
         true,
     };
@@ -605,17 +569,17 @@ VerificationResult Investigation::verify() const {
     Json::Object params{
         {"investigationIdentifier", Json{identifier()}},
     };
-    const Json result =
-        impl_->client->invoke("verifyInvestigation", std::move(params));
+    const Json result = impl_->client->invoke("verifyInvestigation", std::move(params));
     const Json* verification = result.find("verification");
     const bool valid = verification != nullptr && verification->isObject() &&
-        verification->find("status") != nullptr &&
-        verification->find("status")->isString() &&
-        verification->find("status")->asString() == "passed";
-    return detail::verificationFrom(
-        result, valid, "verifyInvestigation",
-        !valid && verification != nullptr ? verification->find("checks")
-                                          : nullptr);
+                       verification->find("status") != nullptr &&
+                       verification->find("status")->isString() &&
+                       verification->find("status")->asString() == "passed";
+    return detail::verificationFrom(result,
+                                    valid,
+                                    "verifyInvestigation",
+                                    !valid && verification != nullptr ? verification->find("checks")
+                                                                      : nullptr);
 }
 
 Checkpoint Investigation::checkpoint() const {
@@ -626,8 +590,7 @@ Checkpoint Investigation::checkpoint() const {
     auto checkpoint = std::make_shared<Checkpoint::Impl>();
     checkpoint->client = impl_->client;
     checkpoint->identifier = requiredString(result, "checkpointToken");
-    checkpoint->investigation_identifier =
-        requiredString(result, "investigationIdentifier");
+    checkpoint->investigation_identifier = requiredString(result, "investigationIdentifier");
     checkpoint->canonical_json = result.serialize();
     return Checkpoint{std::move(checkpoint)};
 }
@@ -641,26 +604,23 @@ Investigation Investigation::restore(const Checkpoint& checkpoint) const {
     }
     Json::Object params{{"checkpointToken", Json{checkpoint.identifier()}}};
     return detail::investigationFrom(impl_->client,
-        impl_->client->invoke("restore", std::move(params)));
+                                     impl_->client->invoke("restore", std::move(params)));
 }
 
 Investigation Investigation::archive() const {
     Json::Object params{{"investigationIdentifier", Json{identifier()}}};
-    return detail::investigationFrom(
-        impl_->client, impl_->client->invoke("archive", std::move(params)));
+    return detail::investigationFrom(impl_->client,
+                                     impl_->client->invoke("archive", std::move(params)));
 }
 
 Investigation Investigation::returnToWorld() const {
     Json::Object params{{"investigationIdentifier", Json{identifier()}}};
-    return detail::investigationFrom(
-        impl_->client,
-        impl_->client->invoke("returnToWorld", std::move(params)));
+    return detail::investigationFrom(impl_->client,
+                                     impl_->client->invoke("returnToWorld", std::move(params)));
 }
 
-ReplaySession::ReplaySession(Investigation investigation,
-                             std::string replayIdentifier)
-    : investigation_(std::move(investigation)),
-      replay_identifier_(std::move(replayIdentifier)) {
+ReplaySession::ReplaySession(Investigation investigation, std::string replayIdentifier)
+    : investigation_(std::move(investigation)), replay_identifier_(std::move(replayIdentifier)) {
     if (replay_identifier_.empty() ||
         investigation_.impl_->active_replay_identifier != replay_identifier_) {
         replaySessionMismatch();
@@ -670,38 +630,45 @@ const Investigation& ReplaySession::investigation() const noexcept {
     return investigation_;
 }
 ReplaySession ReplaySession::command(std::string_view action) const {
-    Investigation next = detail::investigationFrom(
-        investigation_.impl_->client,
-        investigation_.impl_->client->invokeReplay(
-            investigation_.identifier(), replay_identifier_, action));
+    Investigation next =
+        detail::investigationFrom(investigation_.impl_->client,
+                                  investigation_.impl_->client->invokeReplay(
+                                      investigation_.identifier(), replay_identifier_, action));
     return ReplaySession{std::move(next), replay_identifier_};
 }
-ReplaySession ReplaySession::play() const { return command("play"); }
-ReplaySession ReplaySession::pause() const { return command("pause"); }
-ReplaySession ReplaySession::next() const { return command("next"); }
-ReplaySession ReplaySession::previous() const { return command("previous"); }
-ReplaySession ReplaySession::restart() const { return command("restart"); }
-ReplaySession ReplaySession::advance() const { return command("advance"); }
+ReplaySession ReplaySession::play() const {
+    return command("play");
+}
+ReplaySession ReplaySession::pause() const {
+    return command("pause");
+}
+ReplaySession ReplaySession::next() const {
+    return command("next");
+}
+ReplaySession ReplaySession::previous() const {
+    return command("previous");
+}
+ReplaySession ReplaySession::restart() const {
+    return command("restart");
+}
+ReplaySession ReplaySession::advance() const {
+    return command("advance");
+}
 
-ComparisonSession::ComparisonSession(
-    Investigation investigation,
-    std::optional<std::string> evolutionIdentifier,
-    bool entered)
+ComparisonSession::ComparisonSession(Investigation investigation,
+                                     std::optional<std::string> evolutionIdentifier,
+                                     bool entered)
     : investigation_(std::move(investigation)),
-      evolution_identifier_(std::move(evolutionIdentifier)),
-      entered_(entered) {}
+      evolution_identifier_(std::move(evolutionIdentifier)), entered_(entered) {}
 const Investigation& ComparisonSession::investigation() const noexcept {
     return investigation_;
 }
-const std::optional<std::string>&
-ComparisonSession::evolutionIdentifier() const noexcept {
+const std::optional<std::string>& ComparisonSession::evolutionIdentifier() const noexcept {
     return evolution_identifier_;
 }
-ComparisonSession ComparisonSession::command(std::string_view action,
-                                             std::string selector) const {
+ComparisonSession ComparisonSession::command(std::string_view action, std::string selector) const {
     if (!entered_) {
-        invalidArgument(
-            "Comparison must be activated through Investigation::compare first.");
+        invalidArgument("Comparison must be activated through Investigation::compare first.");
     }
     Json::Object command{{"action", Json{action}}};
     if (action == "start") {
@@ -728,44 +695,50 @@ ComparisonSession ComparisonSession::previousObservation() const {
 ComparisonSession ComparisonSession::nextObservation() const {
     return command("next");
 }
-ComparisonSession ComparisonSession::start(
-    std::string reflectionSelection) const {
-    if (reflectionSelection.empty()) invalidArgument("Reflection selection is required.");
+ComparisonSession ComparisonSession::start(std::string reflectionSelection) const {
+    if (reflectionSelection.empty())
+        invalidArgument("Reflection selection is required.");
     if (investigation_.impl_->source_kind != "native") {
-        invalidArgument(
-            "Package comparison requires a Comparative Reconstruction identifier.");
+        invalidArgument("Package comparison requires a Comparative Reconstruction identifier.");
     }
     return command("start", std::move(reflectionSelection));
 }
-ComparisonSession ComparisonSession::startPackage(
-    std::string comparativeIdentifier) const {
+ComparisonSession ComparisonSession::startPackage(std::string comparativeIdentifier) const {
     if (comparativeIdentifier.empty()) {
         invalidArgument("Comparative Reconstruction selection is required.");
     }
     if (investigation_.impl_->source_kind != "mip") {
-        invalidArgument(
-            "Native comparison requires an exact Reflection target node key.");
+        invalidArgument("Native comparison requires an exact Reflection target node key.");
     }
     return command("startPackage", std::move(comparativeIdentifier));
 }
-ComparisonSession ComparisonSession::play() const { return command("play"); }
-ComparisonSession ComparisonSession::pause() const { return command("pause"); }
-ComparisonSession ComparisonSession::next() const { return command("nextStep"); }
+ComparisonSession ComparisonSession::play() const {
+    return command("play");
+}
+ComparisonSession ComparisonSession::pause() const {
+    return command("pause");
+}
+ComparisonSession ComparisonSession::next() const {
+    return command("nextStep");
+}
 ComparisonSession ComparisonSession::previous() const {
     return command("previousStep");
 }
-ComparisonSession ComparisonSession::reset() const { return command("reset"); }
+ComparisonSession ComparisonSession::reset() const {
+    return command("reset");
+}
 ComparisonSession ComparisonSession::advance() const {
     return command("advance");
 }
-ComparisonSession ComparisonSession::back() const { return command("back"); }
+ComparisonSession ComparisonSession::back() const {
+    return command("back");
+}
 
 MemoryOS::MemoryOS() : MemoryOS(defaultOptions()) {}
 
 MemoryOS::MemoryOS(SdkOptions options) {
     if (options.nodeExecutable.empty() || options.coreHost.empty()) {
-        invalidArgument(
-            "A Node executable and private Investigation Core host are required.");
+        invalidArgument("A Node executable and private Investigation Core host are required.");
     }
     client_ = std::make_shared<detail::Client>(std::move(options));
 }
@@ -774,8 +747,7 @@ MemoryOS::~MemoryOS() = default;
 MemoryOS::MemoryOS(MemoryOS&&) noexcept = default;
 MemoryOS& MemoryOS::operator=(MemoryOS&&) noexcept = default;
 
-bool MemoryOS::ownsInvestigation(
-    const Investigation& investigation) const noexcept {
+bool MemoryOS::ownsInvestigation(const Investigation& investigation) const noexcept {
     return investigation.impl_->client == client_;
 }
 
@@ -815,13 +787,11 @@ Investigation MemoryOS::observe(const Workspace& workspace,
     if (!options.identifier.empty()) {
         params.emplace("identifier", Json{std::move(options.identifier)});
     }
-    return detail::investigationFrom(client_,
-        client_->invoke("observe", std::move(params)));
+    return detail::investigationFrom(client_, client_->invoke("observe", std::move(params)));
 }
 
-Investigation MemoryOS::importPackage(
-    const MemoryInvestigationPackage& package,
-    ImportOptions options) const {
+Investigation MemoryOS::importPackage(const MemoryInvestigationPackage& package,
+                                      ImportOptions options) const {
     Json::Object params{
         {"bytesBase64", Json{base64Encode(package.bytes())}},
         {"supportedExtensions", Json{extensionsJson(options.supportedExtensions)}},
@@ -829,13 +799,12 @@ Investigation MemoryOS::importPackage(
     if (!options.identifier.empty()) {
         params.emplace("identifier", Json{std::move(options.identifier)});
     }
-    return detail::investigationFrom(client_,
-        client_->invoke("importPackage", std::move(params)));
+    return detail::investigationFrom(client_, client_->invoke("importPackage", std::move(params)));
 }
 
-MemoryInvestigationPackage MemoryOS::exportPackage(
-    const Investigation& investigation,
-    std::optional<std::vector<std::string>> supportedExtensions) const {
+MemoryInvestigationPackage
+MemoryOS::exportPackage(const Investigation& investigation,
+                        std::optional<std::vector<std::string>> supportedExtensions) const {
     if (investigation.impl_->client != client_) {
         invalidArgument("An Investigation belongs to a different MemoryOS instance.");
     }
@@ -843,17 +812,14 @@ MemoryInvestigationPackage MemoryOS::exportPackage(
         {"investigationIdentifier", Json{investigation.identifier()}},
     };
     if (supportedExtensions.has_value()) {
-        params.emplace("supportedExtensions",
-                       Json{extensionsJson(*supportedExtensions)});
+        params.emplace("supportedExtensions", Json{extensionsJson(*supportedExtensions)});
     }
     const Json result = client_->invoke("exportPackage", std::move(params));
-    return MemoryInvestigationPackage{
-        base64Decode(requiredString(result, "bytesBase64"))};
+    return MemoryInvestigationPackage{base64Decode(requiredString(result, "bytesBase64"))};
 }
 
-VerificationResult MemoryOS::verifyPackage(
-    const MemoryInvestigationPackage& package,
-    std::vector<std::string> supportedExtensions) const {
+VerificationResult MemoryOS::verifyPackage(const MemoryInvestigationPackage& package,
+                                           std::vector<std::string> supportedExtensions) const {
     Json::Object params{
         {"bytesBase64", Json{base64Encode(package.bytes())}},
         {"supportedExtensions", Json{extensionsJson(supportedExtensions)}},
@@ -863,16 +829,14 @@ VerificationResult MemoryOS::verifyPackage(
     if (valid == nullptr || !valid->isBool()) {
         invalidProtocol("The Core host omitted package verification status.");
     }
-    return detail::verificationFrom(result, valid->asBool(), "verifyPackage",
-                            result.find("diagnostics"));
+    return detail::verificationFrom(
+        result, valid->asBool(), "verifyPackage", result.find("diagnostics"));
 }
 
-RegressionReport MemoryOS::regression(
-    const Investigation& baseline,
-    const Investigation& candidate) const {
+RegressionReport MemoryOS::regression(const Investigation& baseline,
+                                      const Investigation& candidate) const {
     if (baseline.impl_->client != client_ || candidate.impl_->client != client_) {
-        invalidArgument(
-            "Regression investigations belong to a different MemoryOS instance.");
+        invalidArgument("Regression investigations belong to a different MemoryOS instance.");
     }
     Json::Object params{
         {"baselineInvestigationIdentifier", Json{baseline.identifier()}},
@@ -890,30 +854,31 @@ RegressionReport MemoryOS::regression(
     const bool detected = requiredBool(*report, "regressionDetected");
     const Json* categories = report->find("categories");
     constexpr std::array<std::string_view, 8U> categoryNames{
-        "replay", "reflection", "evidence", "retrieval", "evolution",
-        "verification", "transition", "lifecycle",
+        "replay",
+        "reflection",
+        "evidence",
+        "retrieval",
+        "evolution",
+        "verification",
+        "transition",
+        "lifecycle",
     };
     bool validCategories = categories != nullptr && categories->isArray() &&
-        categories->asArray().size() == categoryNames.size();
+                           categories->asArray().size() == categoryNames.size();
     if (validCategories) {
         for (std::size_t index = 0U; index < categoryNames.size(); ++index) {
             const Json& category = categories->asArray()[index];
-            const Json* name = category.isObject()
-                ? category.find("category")
-                : nullptr;
-            if (name == nullptr || !name->isString() ||
-                name->asString() != categoryNames[index]) {
+            const Json* name = category.isObject() ? category.find("category") : nullptr;
+            if (name == nullptr || !name->isString() || name->asString() != categoryNames[index]) {
                 validCategories = false;
                 break;
             }
         }
     }
-    if (kind != "MemoryOSCognitiveRegressionReport" || version != "1.0.0" ||
-        identifier.empty() ||
+    if (kind != "MemoryOSCognitiveRegressionReport" || version != "1.0.0" || identifier.empty() ||
         (overall != "identical" && overall != "regressionDetected") ||
         detected != (overall == "regressionDetected") || !validCategories) {
-        invalidProtocol(
-            "The Core host returned an invalid Cognitive Regression report.");
+        invalidProtocol("The Core host returned an invalid Cognitive Regression report.");
     }
     auto impl = std::make_shared<RegressionReport::Impl>();
     impl->identifier = identifier;
@@ -923,11 +888,9 @@ RegressionReport MemoryOS::regression(
     return RegressionReport{std::move(impl)};
 }
 
-InvestigationResult MemoryOS::investigate(
-    const RegressionReport& report,
-    InvestigationQuery query) const {
-    const auto queryMember = [](std::optional<std::string> value,
-                                std::string_view name) {
+InvestigationResult MemoryOS::investigate(const RegressionReport& report,
+                                          InvestigationQuery query) const {
+    const auto queryMember = [](std::optional<std::string> value, std::string_view name) {
         if (value.has_value() && value->empty()) {
             invalidArgument("Investigation query '" + std::string{name} +
                             "' must be absent or a non-empty string.");
@@ -939,16 +902,13 @@ InvestigationResult MemoryOS::investigate(
     try {
         reportValue = Json::parse(report.canonicalJson());
     } catch (const std::exception&) {
-        invalidProtocol(
-            "The SDK-owned Cognitive Regression report is not valid JSON.");
+        invalidProtocol("The SDK-owned Cognitive Regression report is not valid JSON.");
     }
     Json::Object queryValue{
         {"category", queryMember(std::move(query.category), "category")},
         {"reflectionIdentifier",
-         queryMember(std::move(query.reflectionIdentifier),
-                     "reflectionIdentifier")},
-        {"transition",
-         queryMember(std::move(query.transition), "transition")},
+         queryMember(std::move(query.reflectionIdentifier), "reflectionIdentifier")},
+        {"transition", queryMember(std::move(query.transition), "transition")},
     };
     Json::Object params{
         {"query", Json{std::move(queryValue)}},
@@ -957,32 +917,26 @@ InvestigationResult MemoryOS::investigate(
     const Json response = client_->invoke("investigate", std::move(params));
     const Json* result = response.find("investigationResult");
     if (result == nullptr || !result->isObject()) {
-        invalidProtocol(
-            "The Core host omitted the Cognitive Investigation result.");
+        invalidProtocol("The Core host omitted the Cognitive Investigation result.");
     }
     const std::string& kind = requiredString(*result, "kind");
     const std::string& version = requiredString(*result, "version");
     const std::string& identifier = requiredString(*result, "identifier");
-    const std::string& regressionIdentifier =
-        requiredString(*result, "regressionIdentifier");
-    const std::string& workspaceIdentifier =
-        requiredString(*result, "workspaceIdentifier");
+    const std::string& regressionIdentifier = requiredString(*result, "regressionIdentifier");
+    const std::string& workspaceIdentifier = requiredString(*result, "workspaceIdentifier");
     const std::string& status = requiredString(*result, "status");
     const std::size_t matchCount = requiredSize(*result, "matchCount");
     const Json* normalizedQuery = result->find("query");
     const Json* matches = result->find("matches");
     const bool validStatus = status == "matched" || status == "empty";
-    const bool validCount = matches != nullptr && matches->isArray() &&
-        matches->asArray().size() == matchCount &&
-        ((status == "empty" && matchCount == 0U) ||
-         (status == "matched" && matchCount > 0U));
-    if (kind != "MemoryOSCognitiveInvestigationResult" ||
-        version != "1.0.0" || identifier.empty() ||
-        regressionIdentifier != report.identifier() ||
-        workspaceIdentifier.empty() || !validStatus || !validCount ||
-        normalizedQuery == nullptr || !normalizedQuery->isObject()) {
-        invalidProtocol(
-            "The Core host returned an invalid Cognitive Investigation result.");
+    const bool validCount =
+        matches != nullptr && matches->isArray() && matches->asArray().size() == matchCount &&
+        ((status == "empty" && matchCount == 0U) || (status == "matched" && matchCount > 0U));
+    if (kind != "MemoryOSCognitiveInvestigationResult" || version != "1.0.0" ||
+        identifier.empty() || regressionIdentifier != report.identifier() ||
+        workspaceIdentifier.empty() || !validStatus || !validCount || normalizedQuery == nullptr ||
+        !normalizedQuery->isObject()) {
+        invalidProtocol("The Core host returned an invalid Cognitive Investigation result.");
     }
     for (std::size_t index = 0U; index < matchCount; ++index) {
         const Json& match = matches->asArray()[index];
@@ -990,14 +944,11 @@ InvestigationResult MemoryOS::investigate(
         const Json* baseline = match.find("baseline");
         const Json* candidate = match.find("candidate");
         if (!match.isObject() || requiredSize(match, "index") != index ||
-            requiredString(match, "category").empty() ||
-            requiredString(match, "change").empty() || subject == nullptr ||
-            !subject->isObject() || baseline == nullptr ||
-            (!baseline->isNull() && !baseline->isObject()) ||
-            candidate == nullptr ||
+            requiredString(match, "category").empty() || requiredString(match, "change").empty() ||
+            subject == nullptr || !subject->isObject() || baseline == nullptr ||
+            (!baseline->isNull() && !baseline->isObject()) || candidate == nullptr ||
             (!candidate->isNull() && !candidate->isObject())) {
-            invalidProtocol(
-                "The Core host returned an invalid Cognitive Investigation match.");
+            invalidProtocol("The Core host returned an invalid Cognitive Investigation match.");
         }
     }
 
@@ -1016,8 +967,7 @@ Investigation MemoryOS::restore(const Checkpoint& checkpoint) const {
         invalidArgument("A checkpoint belongs to a different MemoryOS instance.");
     }
     Json::Object params{{"checkpointToken", Json{checkpoint.identifier()}}};
-    return detail::investigationFrom(
-        client_, client_->invoke("restore", std::move(params)));
+    return detail::investigationFrom(client_, client_->invoke("restore", std::move(params)));
 }
 
 } // namespace memoryos

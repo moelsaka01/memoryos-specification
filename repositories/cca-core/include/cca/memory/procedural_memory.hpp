@@ -16,11 +16,10 @@ class ProceduralMemoryPersistence;
 
 class Procedure {
   public:
-    Procedure(
-        std::string identifier,
-        std::string activity,
-        std::vector<std::string> steps,
-        std::vector<LongTermMemoryEntry> sourceEntries);
+    Procedure(std::string identifier,
+              std::string activity,
+              std::vector<std::string> steps,
+              std::vector<LongTermMemoryEntry> sourceEntries);
     ~Procedure();
     Procedure(const Procedure&);
     Procedure& operator=(const Procedure&);
@@ -31,8 +30,7 @@ class Procedure {
     const std::string& activity() const noexcept;
     const std::vector<std::string>& steps() const noexcept;
     const std::vector<LongTermMemoryEntry>& sourceEntries() const noexcept;
-    const std::vector<std::string>&
-    linkedProcedureIdentifiers() const noexcept;
+    const std::vector<std::string>& linkedProcedureIdentifiers() const noexcept;
 
   private:
     std::string identifier_;
@@ -107,32 +105,20 @@ class ProcedureResult {
 
 class ProceduralMemoryEngine {
   public:
-    ProcedureResult derive(
-        ProceduralMemory& memory,
-        const LongTermMemory& evidence,
-        Procedure procedure) const;
-    ProcedureResult compose(
-        ProceduralMemory& memory,
-        const LongTermMemory& evidence,
-        Procedure procedure) const;
-    ProcedureResult retrieve(
-        const ProceduralMemory& memory,
-        std::string_view identifier) const;
-    ProcedureResult search(
-        const ProceduralMemory& memory,
-        const ProcedureQuery& query) const;
-    ProcedureResult link(
-        ProceduralMemory& memory,
-        std::string_view firstProcedureIdentifier,
-        std::string_view secondProcedureIdentifier) const;
-    ProcedureResult update(
-        ProceduralMemory& memory,
-        std::string_view identifier,
-        std::string activity,
-        std::vector<std::string> steps) const;
-    ProcedureResult forget(
-        ProceduralMemory& memory,
-        std::string_view identifier) const;
+    ProcedureResult
+    derive(ProceduralMemory& memory, const LongTermMemory& evidence, Procedure procedure) const;
+    ProcedureResult
+    compose(ProceduralMemory& memory, const LongTermMemory& evidence, Procedure procedure) const;
+    ProcedureResult retrieve(const ProceduralMemory& memory, std::string_view identifier) const;
+    ProcedureResult search(const ProceduralMemory& memory, const ProcedureQuery& query) const;
+    ProcedureResult link(ProceduralMemory& memory,
+                         std::string_view firstProcedureIdentifier,
+                         std::string_view secondProcedureIdentifier) const;
+    ProcedureResult update(ProceduralMemory& memory,
+                           std::string_view identifier,
+                           std::string activity,
+                           std::vector<std::string> steps) const;
+    ProcedureResult forget(ProceduralMemory& memory, std::string_view identifier) const;
 };
 
 } // namespace cca::memory

@@ -50,8 +50,7 @@ class LongTermMemory {
 
     const std::string& workspaceIdentifier() const noexcept;
     std::size_t size() const noexcept;
-    const LongTermMemoryEntry* find(
-        std::string_view identifier) const noexcept;
+    const LongTermMemoryEntry* find(std::string_view identifier) const noexcept;
     const std::vector<LongTermMemoryEntry>& entries() const noexcept;
 
   private:
@@ -92,22 +91,14 @@ class LongTermMemoryResult {
 
 class LongTermMemoryEngine {
   public:
-    LongTermMemoryResult retain(LongTermMemory& memory,
-                                LongTermMemoryEntry entry) const;
-    LongTermMemoryResult store(LongTermMemory& memory,
-                               LongTermMemoryEntry entry) const;
-    LongTermMemoryResult retrieve(const LongTermMemory& memory,
-                                  std::string_view identifier) const;
-    LongTermMemoryResult search(
-        const LongTermMemory& memory,
-        const LongTermMemoryQuery& query) const;
-    LongTermMemoryResult archive(LongTermMemory& memory,
-                                 std::string_view identifier) const;
-    LongTermMemoryResult restore(
-        LongTermMemory& memory,
-        const LongTermMemory& preserved) const;
-    LongTermMemoryResult forget(LongTermMemory& memory,
-                                std::string_view identifier) const;
+    LongTermMemoryResult retain(LongTermMemory& memory, LongTermMemoryEntry entry) const;
+    LongTermMemoryResult store(LongTermMemory& memory, LongTermMemoryEntry entry) const;
+    LongTermMemoryResult retrieve(const LongTermMemory& memory, std::string_view identifier) const;
+    LongTermMemoryResult search(const LongTermMemory& memory,
+                                const LongTermMemoryQuery& query) const;
+    LongTermMemoryResult archive(LongTermMemory& memory, std::string_view identifier) const;
+    LongTermMemoryResult restore(LongTermMemory& memory, const LongTermMemory& preserved) const;
+    LongTermMemoryResult forget(LongTermMemory& memory, std::string_view identifier) const;
 };
 
 } // namespace cca::memory

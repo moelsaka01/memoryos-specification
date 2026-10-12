@@ -35,13 +35,14 @@ class UniqueHandle final {
   public:
     UniqueHandle() noexcept = default;
     explicit UniqueHandle(HANDLE value) noexcept : value_(value) {}
-    ~UniqueHandle() { reset(); }
+    ~UniqueHandle() {
+        reset();
+    }
 
     UniqueHandle(const UniqueHandle&) = delete;
     UniqueHandle& operator=(const UniqueHandle&) = delete;
 
-    UniqueHandle(UniqueHandle&& other) noexcept
-        : value_(std::exchange(other.value_, nullptr)) {}
+    UniqueHandle(UniqueHandle&& other) noexcept : value_(std::exchange(other.value_, nullptr)) {}
     UniqueHandle& operator=(UniqueHandle&& other) noexcept {
         if (this != &other) {
             reset();
@@ -50,7 +51,9 @@ class UniqueHandle final {
         return *this;
     }
 
-    [[nodiscard]] HANDLE get() const noexcept { return value_; }
+    [[nodiscard]] HANDLE get() const noexcept {
+        return value_;
+    }
     [[nodiscard]] HANDLE release() noexcept {
         return std::exchange(value_, nullptr);
     }
@@ -70,15 +73,17 @@ class UniqueHandle final {
         return {};
     }
     const int size = MultiByteToWideChar(
-        CP_UTF8, MB_ERR_INVALID_CHARS, value.data(),
-        static_cast<int>(value.size()), nullptr, 0);
+        CP_UTF8, MB_ERR_INVALID_CHARS, value.data(), static_cast<int>(value.size()), nullptr, 0);
     if (size <= 0) {
         transportFailure("a process path is not valid UTF-8");
     }
     std::wstring result(static_cast<std::size_t>(size), L'\0');
-    if (MultiByteToWideChar(
-            CP_UTF8, MB_ERR_INVALID_CHARS, value.data(),
-            static_cast<int>(value.size()), result.data(), size) != size) {
+    if (MultiByteToWideChar(CP_UTF8,
+                            MB_ERR_INVALID_CHARS,
+                            value.data(),
+                            static_cast<int>(value.size()),
+                            result.data(),
+                            size) != size) {
         transportFailure("a process path cannot be converted to UTF-16");
     }
     return result;
@@ -114,13 +119,14 @@ class UniqueFd final {
   public:
     UniqueFd() noexcept = default;
     explicit UniqueFd(int value) noexcept : value_(value) {}
-    ~UniqueFd() { reset(); }
+    ~UniqueFd() {
+        reset();
+    }
 
     UniqueFd(const UniqueFd&) = delete;
     UniqueFd& operator=(const UniqueFd&) = delete;
 
-    UniqueFd(UniqueFd&& other) noexcept
-        : value_(std::exchange(other.value_, -1)) {}
+    UniqueFd(UniqueFd&& other) noexcept : value_(std::exchange(other.value_, -1)) {}
     UniqueFd& operator=(UniqueFd&& other) noexcept {
         if (this != &other) {
             reset();
@@ -129,8 +135,12 @@ class UniqueFd final {
         return *this;
     }
 
-    [[nodiscard]] int get() const noexcept { return value_; }
-    [[nodiscard]] int release() noexcept { return std::exchange(value_, -1); }
+    [[nodiscard]] int get() const noexcept {
+        return value_;
+    }
+    [[nodiscard]] int release() noexcept {
+        return std::exchange(value_, -1);
+    }
     void reset(int value = -1) noexcept {
         if (value_ >= 0) {
             static_cast<void>(close(value_));
@@ -164,8 +174,7 @@ CoreProcess::CoreProcess(const std::filesystem::path& nodeExecutable,
                          const std::filesystem::path& coreHost)
     : impl_(std::make_unique<Impl>()) {
     if (nodeExecutable.empty() || coreHost.empty()) {
-        throw std::invalid_argument{
-            "MemoryOS SDK requires a Node executable and Core host path"};
+        throw std::invalid_argument{"MemoryOS SDK requires a Node executable and Core host path"};
     }
 
 #if defined(_WIN32)
@@ -175,8 +184,7 @@ CoreProcess::CoreProcess(const std::filesystem::path& nodeExecutable,
 
     HANDLE child_output_read = nullptr;
     HANDLE child_output_write = nullptr;
-    if (CreatePipe(&child_output_read, &child_output_write, &security, 0) ==
-        FALSE) {
+    if (CreatePipe(&child_output_read, &child_output_write, &security, 0) == FALSE) {
         transportFailure("cannot create the Core output pipe");
     }
     UniqueHandle output_read{child_output_read};
@@ -184,26 +192,21 @@ CoreProcess::CoreProcess(const std::filesystem::path& nodeExecutable,
 
     HANDLE child_input_read = nullptr;
     HANDLE child_input_write = nullptr;
-    if (CreatePipe(&child_input_read, &child_input_write, &security, 0) ==
-        FALSE) {
+    if (CreatePipe(&child_input_read, &child_input_write, &security, 0) == FALSE) {
         transportFailure("cannot create the Core input pipe");
     }
     UniqueHandle input_read{child_input_read};
     UniqueHandle input_write{child_input_write};
 
-    if (SetHandleInformation(output_read.get(), HANDLE_FLAG_INHERIT, 0) ==
-            FALSE ||
-        SetHandleInformation(input_write.get(), HANDLE_FLAG_INHERIT, 0) ==
-            FALSE) {
+    if (SetHandleInformation(output_read.get(), HANDLE_FLAG_INHERIT, 0) == FALSE ||
+        SetHandleInformation(input_write.get(), HANDLE_FLAG_INHERIT, 0) == FALSE) {
         transportFailure("cannot isolate the parent pipe handles");
     }
 
     const auto nodeBytes = nodeExecutable.u8string();
     const auto hostBytes = coreHost.u8string();
-    const std::string nodeText{
-        reinterpret_cast<const char*>(nodeBytes.data()), nodeBytes.size()};
-    const std::string hostText{
-        reinterpret_cast<const char*>(hostBytes.data()), hostBytes.size()};
+    const std::string nodeText{reinterpret_cast<const char*>(nodeBytes.data()), nodeBytes.size()};
+    const std::string hostText{reinterpret_cast<const char*>(hostBytes.data()), hostBytes.size()};
     const std::wstring node = utf8ToWide(nodeText);
     std::wstring command = quoteWindowsArgument(node);
     command.push_back(L' ');
@@ -218,8 +221,15 @@ CoreProcess::CoreProcess(const std::filesystem::path& nodeExecutable,
     startup.hStdError = GetStdHandle(STD_ERROR_HANDLE);
 
     PROCESS_INFORMATION process{};
-    if (CreateProcessW(node.c_str(), command.data(), nullptr, nullptr, TRUE,
-                       CREATE_NO_WINDOW, nullptr, nullptr, &startup,
+    if (CreateProcessW(node.c_str(),
+                       command.data(),
+                       nullptr,
+                       nullptr,
+                       TRUE,
+                       CREATE_NO_WINDOW,
+                       nullptr,
+                       nullptr,
+                       &startup,
                        &process) == FALSE) {
         transportFailure("cannot start the private Core host");
     }
@@ -230,24 +240,21 @@ CoreProcess::CoreProcess(const std::filesystem::path& nodeExecutable,
 #else
     int child_input[2]{};
     if (pipe(child_input) != 0) {
-        transportFailure(std::string{"cannot create Core pipes: "} +
-                         std::strerror(errno));
+        transportFailure(std::string{"cannot create Core pipes: "} + std::strerror(errno));
     }
     UniqueFd input_read{child_input[0]};
     UniqueFd input_write{child_input[1]};
 
     int child_output[2]{};
     if (pipe(child_output) != 0) {
-        transportFailure(std::string{"cannot create Core pipes: "} +
-                         std::strerror(errno));
+        transportFailure(std::string{"cannot create Core pipes: "} + std::strerror(errno));
     }
     UniqueFd output_read{child_output[0]};
     UniqueFd output_write{child_output[1]};
 
     const pid_t child = fork();
     if (child < 0) {
-        transportFailure(std::string{"cannot fork the Core host: "} +
-                         std::strerror(errno));
+        transportFailure(std::string{"cannot fork the Core host: "} + std::strerror(errno));
     }
     if (child == 0) {
         if (dup2(input_read.get(), STDIN_FILENO) < 0 ||
@@ -260,8 +267,7 @@ CoreProcess::CoreProcess(const std::filesystem::path& nodeExecutable,
         output_write.reset();
         const std::string node = nodeExecutable.string();
         const std::string host = coreHost.string();
-        execl(node.c_str(), node.c_str(), host.c_str(),
-              static_cast<char*>(nullptr));
+        execl(node.c_str(), node.c_str(), host.c_str(), static_cast<char*>(nullptr));
         _exit(127);
     }
     input_read.reset();
@@ -303,8 +309,7 @@ CoreProcess::~CoreProcess() {
 }
 
 void CoreProcess::writeLine(const std::string& line) {
-    if (line.size() > maximum_message_size ||
-        line.find('\n') != std::string::npos ||
+    if (line.size() > maximum_message_size || line.find('\n') != std::string::npos ||
         line.find('\r') != std::string::npos) {
         throw std::length_error{"MemoryOS Core request violates JSONL limits"};
     }
@@ -315,19 +320,19 @@ void CoreProcess::writeLine(const std::string& line) {
 #if defined(_WIN32)
         DWORD count = 0U;
         const auto remaining = framed.size() - written;
-        const DWORD chunk = static_cast<DWORD>(
-            (remaining > static_cast<std::size_t>(MAXDWORD))
-                ? static_cast<std::size_t>(MAXDWORD)
-                : remaining);
-        if (WriteFile(impl_->standard_input.get(), framed.data() + written,
-                      chunk, &count, nullptr) == FALSE || count == 0U) {
+        const DWORD chunk = static_cast<DWORD>((remaining > static_cast<std::size_t>(MAXDWORD))
+                                                   ? static_cast<std::size_t>(MAXDWORD)
+                                                   : remaining);
+        if (WriteFile(
+                impl_->standard_input.get(), framed.data() + written, chunk, &count, nullptr) ==
+                FALSE ||
+            count == 0U) {
             transportFailure("cannot write a request");
         }
         written += static_cast<std::size_t>(count);
 #else
-        const ssize_t count = write(impl_->standard_input,
-                                    framed.data() + written,
-                                    framed.size() - written);
+        const ssize_t count =
+            write(impl_->standard_input, framed.data() + written, framed.size() - written);
         if (count < 0 && errno == EINTR) {
             continue;
         }
@@ -344,8 +349,7 @@ std::string CoreProcess::readLine() {
         const auto newline = impl_->read_buffer.find('\n');
         if (newline != std::string::npos) {
             if (newline > maximum_message_size) {
-                throw std::length_error{
-                    "MemoryOS Core response exceeds JSONL limits"};
+                throw std::length_error{"MemoryOS Core response exceeds JSONL limits"};
             }
             std::string line = impl_->read_buffer.substr(0U, newline);
             impl_->read_buffer.erase(0U, newline + 1U);
@@ -360,25 +364,24 @@ std::string CoreProcess::readLine() {
         std::array<char, 8192U> buffer{};
 #if defined(_WIN32)
         DWORD count = 0U;
-        if (ReadFile(impl_->standard_output.get(), buffer.data(),
-                     static_cast<DWORD>(buffer.size()), &count, nullptr) ==
-                FALSE ||
+        if (ReadFile(impl_->standard_output.get(),
+                     buffer.data(),
+                     static_cast<DWORD>(buffer.size()),
+                     &count,
+                     nullptr) == FALSE ||
             count == 0U) {
             transportFailure("the Core host closed its output unexpectedly");
         }
-        impl_->read_buffer.append(buffer.data(),
-                                  static_cast<std::size_t>(count));
+        impl_->read_buffer.append(buffer.data(), static_cast<std::size_t>(count));
 #else
-        const ssize_t count =
-            read(impl_->standard_output, buffer.data(), buffer.size());
+        const ssize_t count = read(impl_->standard_output, buffer.data(), buffer.size());
         if (count < 0 && errno == EINTR) {
             continue;
         }
         if (count <= 0) {
             transportFailure("the Core host closed its output unexpectedly");
         }
-        impl_->read_buffer.append(buffer.data(),
-                                  static_cast<std::size_t>(count));
+        impl_->read_buffer.append(buffer.data(), static_cast<std::size_t>(count));
 #endif
     }
 }

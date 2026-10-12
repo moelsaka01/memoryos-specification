@@ -21,15 +21,14 @@ class Json final {
   public:
     using Array = std::vector<Json>;
     using Object = std::map<std::string, Json, std::less<>>;
-    using Value = std::variant<std::nullptr_t, bool, std::int64_t, double,
-                               std::string, Array, Object>;
+    using Value =
+        std::variant<std::nullptr_t, bool, std::int64_t, double, std::string, Array, Object>;
 
     Json() noexcept : value_(nullptr) {}
     Json(std::nullptr_t) noexcept : value_(nullptr) {}
     Json(bool value) noexcept : value_(value) {}
     Json(std::int64_t value) noexcept : value_(value) {}
-    Json(std::size_t value)
-        : value_(checked_integer(value)) {}
+    Json(std::size_t value) : value_(checked_integer(value)) {}
     Json(double value) : value_(checked_number(value)) {}
     Json(std::string value) : value_(std::move(value)) {}
     Json(std::string_view value) : value_(std::string{value}) {}
@@ -59,14 +58,18 @@ class Json final {
         return std::holds_alternative<Object>(value_);
     }
 
-    [[nodiscard]] bool asBool() const { return std::get<bool>(value_); }
+    [[nodiscard]] bool asBool() const {
+        return std::get<bool>(value_);
+    }
     [[nodiscard]] std::int64_t asInteger() const {
         return std::get<std::int64_t>(value_);
     }
     [[nodiscard]] const std::string& asString() const {
         return std::get<std::string>(value_);
     }
-    [[nodiscard]] const Array& asArray() const { return std::get<Array>(value_); }
+    [[nodiscard]] const Array& asArray() const {
+        return std::get<Array>(value_);
+    }
     [[nodiscard]] const Object& asObject() const {
         return std::get<Object>(value_);
     }
@@ -107,22 +110,15 @@ class Json final {
 
   private:
     template <typename Floating>
-    [[nodiscard]] static std::optional<Floating>
-    parseFloating(std::string_view token) {
+    [[nodiscard]] static std::optional<Floating> parseFloating(std::string_view token) {
         Floating value{};
         // Xcode 15.4's libc++ exposes integer but not floating-point from_chars.
-        if constexpr (requires(const char* first,
-                               const char* last,
-                               Floating& candidate) {
-                          std::from_chars(first,
-                                          last,
-                                          candidate,
-                                          std::chars_format::general);
+        if constexpr (requires(const char* first, const char* last, Floating& candidate) {
+                          std::from_chars(first, last, candidate, std::chars_format::general);
                       }) {
             const auto converted = std::from_chars(
                 token.data(), token.data() + token.size(), value, std::chars_format::general);
-            if (converted.ec != std::errc{} ||
-                converted.ptr != token.data() + token.size()) {
+            if (converted.ec != std::errc{} || converted.ptr != token.data() + token.size()) {
                 return std::nullopt;
             }
         } else {
@@ -130,8 +126,7 @@ class Json final {
             std::istringstream input{std::string{token}};
             input.imbue(std::locale::classic());
             input >> std::noskipws >> value;
-            if (input.fail() ||
-                input.rdbuf()->sgetc() != std::char_traits<char>::eof()) {
+            if (input.fail() || input.rdbuf()->sgetc() != std::char_traits<char>::eof()) {
                 return std::nullopt;
             }
         }
@@ -174,8 +169,7 @@ class Json final {
         void skipWhitespace() noexcept {
             while (!atEnd()) {
                 const char value = peek();
-                if (value != ' ' && value != '\n' && value != '\r' &&
-                    value != '\t') {
+                if (value != ' ' && value != '\n' && value != '\r' && value != '\t') {
                     break;
                 }
                 ++position_;
@@ -187,7 +181,9 @@ class Json final {
         }
 
       private:
-        [[nodiscard]] char peek() const { return source_[position_]; }
+        [[nodiscard]] char peek() const {
+            return source_[position_];
+        }
 
         [[nodiscard]] char consume() {
             if (atEnd()) {
@@ -238,15 +234,12 @@ class Json final {
                 output.push_back(static_cast<char>(0x80U | (codePoint & 0x3FU)));
             } else if (codePoint <= 0xFFFFU) {
                 output.push_back(static_cast<char>(0xE0U | (codePoint >> 12U)));
-                output.push_back(static_cast<char>(
-                    0x80U | ((codePoint >> 6U) & 0x3FU)));
+                output.push_back(static_cast<char>(0x80U | ((codePoint >> 6U) & 0x3FU)));
                 output.push_back(static_cast<char>(0x80U | (codePoint & 0x3FU)));
             } else if (codePoint <= 0x10FFFFU) {
                 output.push_back(static_cast<char>(0xF0U | (codePoint >> 18U)));
-                output.push_back(static_cast<char>(
-                    0x80U | ((codePoint >> 12U) & 0x3FU)));
-                output.push_back(static_cast<char>(
-                    0x80U | ((codePoint >> 6U) & 0x3FU)));
+                output.push_back(static_cast<char>(0x80U | ((codePoint >> 12U) & 0x3FU)));
+                output.push_back(static_cast<char>(0x80U | ((codePoint >> 6U) & 0x3FU)));
                 output.push_back(static_cast<char>(0x80U | (codePoint & 0x3FU)));
             } else {
                 throw std::invalid_argument{"Invalid JSON code point"};
@@ -257,8 +250,7 @@ class Json final {
             expect('"');
             std::string output;
             while (true) {
-                const unsigned char value =
-                    static_cast<unsigned char>(consume());
+                const unsigned char value = static_cast<unsigned char>(consume());
                 if (value == static_cast<unsigned char>('"')) {
                     return output;
                 }
@@ -271,33 +263,43 @@ class Json final {
                 }
                 const char escape = consume();
                 switch (escape) {
-                case '"': output.push_back('"'); break;
-                case '\\': output.push_back('\\'); break;
-                case '/': output.push_back('/'); break;
-                case 'b': output.push_back('\b'); break;
-                case 'f': output.push_back('\f'); break;
-                case 'n': output.push_back('\n'); break;
-                case 'r': output.push_back('\r'); break;
-                case 't': output.push_back('\t'); break;
+                case '"':
+                    output.push_back('"');
+                    break;
+                case '\\':
+                    output.push_back('\\');
+                    break;
+                case '/':
+                    output.push_back('/');
+                    break;
+                case 'b':
+                    output.push_back('\b');
+                    break;
+                case 'f':
+                    output.push_back('\f');
+                    break;
+                case 'n':
+                    output.push_back('\n');
+                    break;
+                case 'r':
+                    output.push_back('\r');
+                    break;
+                case 't':
+                    output.push_back('\t');
+                    break;
                 case 'u': {
                     std::uint32_t codePoint = parseHexCodeUnit();
                     if (codePoint >= 0xD800U && codePoint <= 0xDBFFU) {
                         if (consume() != '\\' || consume() != 'u') {
-                            throw std::invalid_argument{
-                                "Unpaired JSON high surrogate"};
+                            throw std::invalid_argument{"Unpaired JSON high surrogate"};
                         }
                         const std::uint32_t low = parseHexCodeUnit();
                         if (low < 0xDC00U || low > 0xDFFFU) {
-                            throw std::invalid_argument{
-                                "Unpaired JSON high surrogate"};
+                            throw std::invalid_argument{"Unpaired JSON high surrogate"};
                         }
-                        codePoint = 0x10000U +
-                            ((codePoint - 0xD800U) << 10U) +
-                            (low - 0xDC00U);
-                    } else if (codePoint >= 0xDC00U &&
-                               codePoint <= 0xDFFFU) {
-                        throw std::invalid_argument{
-                            "Unpaired JSON low surrogate"};
+                        codePoint = 0x10000U + ((codePoint - 0xD800U) << 10U) + (low - 0xDC00U);
+                    } else if (codePoint >= 0xDC00U && codePoint <= 0xDFFFU) {
+                        throw std::invalid_argument{"Unpaired JSON low surrogate"};
                     }
                     appendUtf8(output, codePoint);
                     break;
@@ -405,10 +407,9 @@ class Json final {
             const auto token = source_.substr(begin, position_ - begin);
             if (integral) {
                 std::int64_t integer = 0;
-                const auto converted = std::from_chars(
-                    token.data(), token.data() + token.size(), integer);
-                if (converted.ec == std::errc{} &&
-                    converted.ptr == token.data() + token.size()) {
+                const auto converted =
+                    std::from_chars(token.data(), token.data() + token.size(), integer);
+                if (converted.ec == std::errc{} && converted.ptr == token.data() + token.size()) {
                     return Json{integer};
                 }
             }
@@ -424,8 +425,7 @@ class Json final {
     };
 
     [[nodiscard]] static std::int64_t checked_integer(std::size_t value) {
-        constexpr auto maximum =
-            static_cast<std::size_t>(std::numeric_limits<std::int64_t>::max());
+        constexpr auto maximum = static_cast<std::size_t>(std::numeric_limits<std::int64_t>::max());
         if (value > maximum) {
             throw std::out_of_range{"JSON integer is out of range"};
         }
@@ -445,13 +445,27 @@ class Json final {
         for (const char rawCharacter : value) {
             const auto character = static_cast<unsigned char>(rawCharacter);
             switch (character) {
-            case '"': output.append("\\\""); break;
-            case '\\': output.append("\\\\"); break;
-            case '\b': output.append("\\b"); break;
-            case '\f': output.append("\\f"); break;
-            case '\n': output.append("\\n"); break;
-            case '\r': output.append("\\r"); break;
-            case '\t': output.append("\\t"); break;
+            case '"':
+                output.append("\\\"");
+                break;
+            case '\\':
+                output.append("\\\\");
+                break;
+            case '\b':
+                output.append("\\b");
+                break;
+            case '\f':
+                output.append("\\f");
+                break;
+            case '\n':
+                output.append("\\n");
+                break;
+            case '\r':
+                output.append("\\r");
+                break;
+            case '\t':
+                output.append("\\t");
+                break;
             default:
                 if (character < 0x20U) {
                     output.append("\\u00");
@@ -473,17 +487,17 @@ class Json final {
             output.append(value.asBool() ? "true" : "false");
         } else if (value.isInteger()) {
             char buffer[32]{};
-            const auto result = std::to_chars(
-                buffer, buffer + sizeof(buffer), value.asInteger());
+            const auto result = std::to_chars(buffer, buffer + sizeof(buffer), value.asInteger());
             if (result.ec != std::errc{}) {
                 throw std::runtime_error{"Failed to serialize JSON integer"};
             }
             output.append(buffer, result.ptr);
         } else if (std::holds_alternative<double>(value.value_)) {
             char buffer[64]{};
-            const auto result = std::to_chars(
-                buffer, buffer + sizeof(buffer),
-                std::get<double>(value.value_), std::chars_format::general);
+            const auto result = std::to_chars(buffer,
+                                              buffer + sizeof(buffer),
+                                              std::get<double>(value.value_),
+                                              std::chars_format::general);
             if (result.ec != std::errc{}) {
                 throw std::runtime_error{"Failed to serialize JSON number"};
             }

@@ -40,8 +40,7 @@ namespace {
 
 class ServiceRegistry::Impl final {
   public:
-    explicit Impl(Observability* observability_sink) noexcept
-        : observability(observability_sink) {}
+    explicit Impl(Observability* observability_sink) noexcept : observability(observability_sink) {}
 
     struct ContractRecord final {
         std::type_index interface_type;
