@@ -264,5 +264,6 @@ MO-1309 is tagged. Everything else on the Windows job passes except `mo1304-phas
   To be debugged on a Windows machine with a debugger (WinDbg / Visual Studio "break on access violation") after the 1.3.0 release.
 
 ## Coverage gate
-Recorded here if the `--fail-under-line 90` gate is not met: measured line coverage and the lowest-covered files (see the final
-report). The threshold is not lowered and no file is excluded. Status: pending the Coverage run on the latest head.
+Status: **gate met.** The Coverage job passed on head `dfbaf864` (run 38282490143) with `--fail-under-line 90` unchanged and no
+file excluded; no known issue to record. (If a later run misses the gate, record the measured coverage and lowest-covered files
+here; do not lower the threshold.)
