@@ -1,78 +1,211 @@
-# MemoryOS v1.2.1 Known Issues
+# MemoryOS v1.3.0 Known Issues
 
-No known issue compromises MemoryOS v1.2.1 runtime correctness,
-determinism, package integrity, investigation behavior, or architectural
-boundaries.
+This file lists the limits, qualifications and open items recorded for
+MemoryOS 1.3.0. Every item cites the document it comes from. Nothing here is a
+new finding; items are carried from the recorded disclosures. Release context:
+[RELEASE_NOTES.md](RELEASE_NOTES.md).
 
-## Resolved in v1.2.1 — v1.2.0 source publication inventory
+## Scope of the MO-1308 claim (H40, A6)
 
-| Field | Assessment |
+**Local single-user v1 only.** The MO-1308 history ledger is claimed for a
+local single-user v1 on native Windows 11 x64 with the pinned Node. It is
+integrity-checked, not authenticated, not encrypted and not signed. It is not
+claimed for multi-user, shared-storage or cloud use; those require a
+re-review before any such claim (MO-1309 inherits this, see below).
+
+- **H40.** The store is Node-only; a directory swap is detected after the
+  fact, never prevented. Residual swap windows between a check and the
+  filesystem call are the accepted H40 class.
+  Source: [MO-1308 disclosures](docs/mo1308-release-disclosures.md) (Q01 and
+  "Other recorded limits"); [CHANGELOG](CHANGELOG.md) MO-1308.
+- **A6 (rollback anchor).** Truncating the tail, or restoring an older valid
+  prefix, produces a ledger that still verifies; only an externally recorded
+  `headDigest` exposes it. Operators should record the `headDigest` of every
+  export outside the ledger and verify it externally (case 3C-A6: CONFIRMED).
+  Source: [MO-1308 disclosures](docs/mo1308-release-disclosures.md).
+
+## MO-1308 qualification outcomes (Q01 to Q15)
+
+Source for all rows: [MO-1308 release disclosures](docs/mo1308-release-disclosures.md).
+Outcomes are those recorded in the accepted generations `phase3a` (108/108),
+`phase3b` (26/26) and `phase3c` (67/67).
+
+| ID | Recorded outcome |
 |---|---|
-| Status | Resolved by v1.2.1 |
-| Impact | v1.2.0 clean clones and source archives could not reproduce the complete released build, test, and conformance inventory |
-| Scope | Distribution and conformance provenance only; no normative or product semantic change |
+| Q01 | DISCLOSED: Node-only store; directory swap detected after the fact, never prevented (H40). Local single-user v1 only; re-review before any multi-user, shared-storage or cloud use. |
+| Q02 | A failed exclusive create of a staging file is a typed IO failure and is never retried; the transient-lock and delete-pending hypotheses are not both resolved. Case 3A-E6 CONFIRMED (EPERM-versus-EEXIST behaviour); case 3A-F7 NOT_CONFIRMED (no staging EPERM in more than 1 of 10 runs with A10 staging names). |
+| Q03 | Tail truncation and rollback to an older valid prefix cannot be detected without an external head anchor (3C-A6). |
+| Q04 | 3C-E6 CONFIRMED: a staging remnant left by an interrupted append can survive a purge. |
+| Q05 | 3C-E7 CONFIRMED: after a purge the entry keeps its recordDigest, member names, lengths, digests and subjects. |
+| Q06 | 3C-E9 CONFIRMED: the tombstone authority reference is operator-chosen free text and is permanent. |
+| Q07 | 3C-E8 CONFIRMED: an export taken before a tombstone keeps the bytes; there is no import and no recall. |
+| Q08 | 3C-B5 CONFIRMED: an entry whose admission fields are forged, or whose bytes would fail admission, still verifies when the chain and member digests are consistent. |
+| Q09 | DISCLOSED: the incremental SHA-256 and the canonical module copy are first-party code, verified by FIPS 180-4 example messages, the CAVP Monte Carlo procedure computed against `node:crypto`, differential tests and a recorded independent review; official CAVP response files were not used. |
+| Q10 | Host latency under antivirus and indexers is heavy-tailed; an environment qualification, not a bound. |
+| Q11 | 3A-JC6 CONFIRMED: exporting 100,000 entries completes with the marker written last and takes on the order of 16 minutes on the reference host; a performance follow-up, not a defect. |
+| Q12 | 3C-C10 CONFIRMED: policy-evaluation admission is inspection-only and readiness-result admission is not a MO-1307 verification. |
+| Q13 | 3C-B3 CONFIRMED: a fully self-consistent forged chain verifies; integrity only, access control is the operator's filesystem responsibility (H07, H08). |
+| Q14 | DISCLOSED: the certification claims native Windows 11 x64 only (H45). |
+| Q15 | DISCLOSED: UNC, network, OneDrive and cloud-placeholder locations are observed, not claimed. |
 
-The v1.2.0 Git tree omitted already-intended Core and Studio source, registered
-tests, MIP fixtures, examples and benchmarks, required documentation, and the
-frozen Standard and MIP publication directories. Its conformance inventory also
-retained pre-CSP hashes for two Studio tests and the pre-CSP Studio JavaScript
-aggregate, while the released source tree contained the authoritative CSP-safe
-revisions.
+Also recorded in the same document: harness reviews have no open blocking
+finding; accepted non-blocking items include that 3A-G6 races only the first
+part of its swap schedule and that the 3B transitive-import check records but
+does not assert that the history authority reaches the Core through
+`investigation-policy-engine.js`. Rehearsals (3A r2-r11, 3B r1-r2, 3C r1-r5,
+3D r1-r2) are preserved and never accepted inputs.
 
-v1.2.1 restores the exact reviewed bytes, keeps the CSP-safe revisions, and
-publishes new evidence bound to the repaired tracked tree. It does not change
-CCA-MEMORYOS-1.0, CCA-MIP-1.0, Investigation Core, SDK, CLI, Cognitive
-Regression, Cognitive Investigation Explorer, lifecycle, or Studio semantics.
-The v1.2.0 commit, tag, manifest, and evidence remain immutable historical
-records and must not be relabeled as v1.2.1 evidence.
+## Sha256Stream input validation (MO-1308)
 
-## Observe → Trace discoverability
+`Sha256Stream.update` does not validate its argument. This is a non-blocking,
+latent item from the independent SHA-256 review, recorded
+`ACCEPTED_WITH_DISCLOSURE` with no production change.
+Source: [MO-1308 Phase 3C security record](docs/mo1308-phase3c-security.md)
+(case 3C-D9).
 
-| Field | Assessment |
+## MO-1309 disclosures
+
+Source for this section: [MO-1309 release disclosures](docs/mo1309-release-disclosures.md),
+candidate `74be815b`. MO-1309 is a read-only static presentation of one verified
+MO-1308 export; it is an integrity view as of generation, not evidence of
+authenticity, completeness, currency or approval.
+
+- **Q-STORE-INTEGRITY.** Verification is integrity only: a forged
+  self-consistent chain verifies; truncation and rollback are detectable only
+  through an externally recorded `headDigest`. The history is not encrypted, so
+  a hosted snapshot discloses entry metadata (identifiers, subjects, digests,
+  tombstone reasons, authority references) to anyone who can read it; access
+  control is the operator's. The MO-1308 claim (local single-user v1, native
+  Windows 11 x64, H40 re-review) is unchanged.
+- **Q-SCALE.** The certified scale is **10,000 entries**. Worst of five runs
+  on the reference host (budget in brackets): read 7.3 s (30 s), verify-only
+  7.8 s (30 s), view-model build 8.5 s (30 s), generation wall 25.9 s (60 s),
+  generator RSS 467 MB (1,100 MB), snapshot 8.9 MB (11 MB).
+- **Q-PERF-100K.** **100,000 entries are characterized only**, with no pass,
+  fail or support claim. One run: generation wall 363 s (about 6 minutes),
+  generator RSS 2,127 MB, snapshot 88.8 MB, page heap 98.9 MB.
+- **Q-HOST.** Performance numbers come from a non-idle laptop (CPU about
+  20–57 % before runs; Defender real-time monitoring on); the budgets were
+  derived from a cloud host. The browser was Edge 155.0.4283.45, not Chrome.
+- **Q-TOOLING.** Certifying campaigns 4A, 4B and 4C ran with tooling of
+  commits `68eed767` and `f8bcf30f`; later test/tooling fixes touch no product
+  byte; `mo1309-tools` was rerun at the candidate (32/32).
+- **Q-GATE-NODE.** The Node differential gate is `PASS_QUALIFIED_CLOUD_SUBSET`:
+  `tools/verify_workspace.py` exits 2 on both BF and the candidate when run
+  directly in a fresh worktree, so that rule is established by the CTest test
+  `cca.workspace.verify`, which passes on both. 0 regressions, 0 new failures,
+  15 shared failures identical at BF
+  ([classification](docs/mo1309-differential-classification.md)).
+- **Q-GATE-LONG-UNITS.** `mo1308_phase3b_test.mjs` and `mo1308_phase3d_test.mjs`
+  exceeded the gate's 900 s per-unit limit on BF and the candidate. Without
+  the limit, `mo1308_phase3b` is identical on both sides (17 of 21 pass; the
+  same four tests fail: A01, B02, N07, S03). `mo1308_phase3d_test` **hangs on
+  a clean BF checkout** (no output for 30 minutes, idle child `git.exe`) and
+  was stopped by hand and not run on the candidate. The owner accepted both as
+  unchanged; they were not retried.
+- **Q-CTEST.** The CTest differential is `PASS`: 317 registered, 2 excluded
+  (`cca_core_tests_NOT_BUILT`, the A3.1 MSVC C2607 waiver, and
+  `memoryos.sdk.cpp.regression.example`, blocked by Smart App Control, A3.3),
+  315 executed per side: 192 passed on both, 123 failed on both identically.
+  `cca_core_tests` does not compile with this MSVC and was not run. Native C++
+  verification belongs on a host without Smart App Control.
+- **Q-SHARED-FAILURES.** The 123 shared failures are the same set as in the
+  MO-1308 A3.2 record: 112 `*AllocationFailureTest` aborts, MCP integrity and
+  artifact failures, a hard-coded workspace path, the stale 1.2.1 pin, the
+  missing Standard publication, and `memoryos.standard.runtime.reference`
+  Not Run because of the waiver.
+- **Open follow-ups recorded by MO-1309:** `tools/verify_workspace.py` exiting 2
+  in a fresh worktree on BF and candidate; the shared failures; Windows CI
+  green with native C++ tests on a host without Smart App Control.
+
+## Export performance on the reference host
+
+Exporting 100,000 entries with the MO-1308 CLI takes about 16 minutes
+(MO-1308 Q11, case 3A-JC6) and remains a separate maintenance item (DB32).
+Sources: [MO-1308 disclosures](docs/mo1308-release-disclosures.md);
+[MO-1309 disclosures](docs/mo1309-release-disclosures.md) (Q-PERF-100K).
+
+## Smart App Control on the reference host
+
+Smart App Control is enforcing on the Windows 11 reference host and was left
+untouched. It blocks a build-dependent set of freshly built unsigned
+executables (amendment A3.3), which is why
+`memoryos.sdk.cpp.regression.example` is excluded from the MO-1309 CTest
+differential and why native C++ verification belongs on a host without Smart
+App Control. Sources: [MO-1308 Contract Freeze 1](docs/mo1308-contract-freeze-1.md)
+§33 (A3.3); [MO-1309 disclosures](docs/mo1309-release-disclosures.md) (Q-CTEST);
+[MO-1309 Phase 4 handoff](docs/mo1309-phase4-handoff.md).
+
+## Pre-release maintenance disclosures
+
+Source for this section: [docs/maint-pre-1.3-release.md](docs/maint-pre-1.3-release.md).
+
+### macOS pipe()/fcntl() window
+
+The `core_process.cpp` fd-inheritance fix makes the Core transport pipes
+close-on-exec. Linux uses `pipe2(O_CLOEXEC)` and has no window. On non-Linux
+POSIX (macOS) the pipes are created with `pipe()` and made close-on-exec by
+`fcntl(FD_CLOEXEC)` immediately afterwards; a microsecond window between the
+two calls remains in which a process forked by another thread could still
+inherit a pipe end. Owner decision: accepted, no process-wide spawn lock.
+
+### Reference-host-only suites and the NOT_RUN_ON_HOSTED_RUNNER sub-check
+
+Hosted CI excludes the following suites by exact name; they carry the CTest
+label `reference-host-only`, their bodies, inputs and pins are unchanged, and
+they run unchanged on the reference host:
+
+| Test | Excluded on hosted |
 |---|---|
-| Status | Open; planned for a future usability refinement |
-| Impact | Low |
-| Scope | First-time usability only |
+| `memoryos.standard.mo1304-phase2` | Linux, macOS, Windows, ASan, Coverage |
+| `memoryos.standard.mo1304-phase3-windows` | Linux, macOS, ASan, Coverage (still runs and passes on the Windows runner) |
+| `memoryos.standard.mo1305-phase3` | every hosted runner where it is registered (Windows only) |
 
-### Behavior
+`cca.workspace.verify` is **not** excluded. On hosted POSIX runners (Linux,
+macOS, ASan, Coverage) one sub-check, the independent MO-1304
+platform/parity validation of the Windows-11 receipt, is skipped and reported
+as `NOT_RUN_ON_HOSTED_RUNNER`; it is enforced on the reference host and on the
+Windows runner. The three receipt identity checks and every other check
+still run.
 
-Trace begins after the engineer selects a valid Reflection while in Observe.
-The deterministic workflow is fully functional, but this entry interaction
-may not be immediately obvious to a first-time user.
+### Windows access violation (open, deferred to post-1.3.0)
 
-### Workaround
+`MemoryProviderAllocationFailureTest.DescriptorWorkspaceFailureConstructionPreservesCompleteState`
+dies with `0xC0000005` on windows-2022 (`ci` preset, RelWithDebInfo, MSVC
+14.44); it was the only failing test (689/690) at head `58a7a807`.
+Deterministic; passes under MSVC AddressSanitizer and in a standalone `/Od`
+bisect build; no crash location is available from the hosted log. It is likely
+latent undefined behaviour in the test or the code it exercises
+(`memory_provider`); a product defect is **not ruled out**. Status: not fixed,
+not excluded; to be debugged with a Windows debugger after 1.3.0 (owner
+decision). Hosted Windows CI therefore shows this test failing.
 
-In Observe, select a Reflection node or its unambiguous owning Reflection
-aggregate or session. The validated Trace activates and enables Replay.
-Complete Replay and ensure that two observations exist before Compare becomes
-available.
+## Platform and certification qualifications of earlier milestones
 
-### Not affected
+- **MO-1303:** released under an external-infrastructure exception: macOS
+  hosted certification and three-platform parity NOT EXECUTED. Source:
+  [CHANGELOG](CHANGELOG.md).
+- **MO-1304:** macOS remains unsupported. Source: [CHANGELOG](CHANGELOG.md).
+- **MO-1305:** installed-package certification ran on the existing physical
+  Windows 11 x64 host only. Source: [CHANGELOG](CHANGELOG.md).
+- **MO-1306:** the GitHub integration is IMPLEMENTED and OFFLINE_VALIDATED but
+  NOT_CERTIFIED hosted. Source: [CHANGELOG](CHANGELOG.md),
+  [hosted scope correction](docs/mo1306-hosted-certification-scope-correction.md).
+- **MO-1307:** 7 of 639 conformance tests were disclosed stale-baseline tests
+  before the bound V2 correction (639/639). Source: [CHANGELOG](CHANGELOG.md),
+  [V2 correction](docs/mo1307-v2-stale-test-correction.md).
 
-- Runtime
-- Determinism
-- Cognitive Trace
-- Cognitive Replay
-- Cognitive Evolution
-- Comparative Reconstruction
-- Cognitive Regression
-- Cognitive Investigation Explorer
-- Memory Investigation Packages
-- Public APIs
-- MemoryOS architecture
+## Carried forward from v1.2.1
 
-## Source license
+These two items are carried unchanged from the v1.2.1 known-issues list; this
+release records no change to them.
 
-| Field | Assessment |
-|---|---|
-| Status | Pending authorized owner decision |
-| Impact | External source use and contribution terms are not granted |
-| Scope | Repository licensing only |
-
-The repository currently grants no software license. The
-[LICENSE](LICENSE) file is a notice, not an open-source grant. An authorized
-owner must select the copyright, source license, inbound contribution, and
-artifact terms.
-
-The separately published MemoryOS Standard is an open technical standard. Its
-publication does not grant a license to the Reference Implementation source.
+- **Observe → Trace discoverability.** Open, low impact, first-time usability
+  only. Trace begins after the engineer selects a valid Reflection while in
+  Observe. Workaround: select a Reflection node or its unambiguous owning
+  Reflection aggregate or session. Runtime, determinism and public APIs are not
+  affected.
+- **Source license.** Pending an authorized owner decision. The repository
+  grants no software license; [LICENSE](LICENSE) is a notice, not a grant. The
+  separately published MemoryOS Standard is an open technical standard and its
+  publication does not license the Reference Implementation source.

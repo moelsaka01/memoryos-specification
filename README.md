@@ -113,7 +113,7 @@ CCA-MIP-1.0, Investigation Core, SDK, CLI, Cognitive Regression, Cognitive
 Investigation Explorer, lifecycle, and Studio semantics are unchanged. The
 v1.2.0 commit, tag, manifest, and evidence remain immutable historical records.
 
-## MemoryOS 1.3 development
+## MemoryOS 1.3
 
 MO-1301 adds deterministic [Investigation Policies](docs/investigation-policies.md)
 for engineering operations. A closed Policy or Policy Set evaluates facts
@@ -122,10 +122,9 @@ Regression facts. Exact evidence, Evaluation Identity, Resource Profile,
 canonical outcome bytes, and stable PASS/FAIL/COULD_NOT_EVALUATE decisions are
 shared through SDK and CLI 1.1 surfaces.
 
-This work is unreleased. MemoryOS v1.2.1 remains the stable compatibility
-baseline and CCA-MEMORYOS-1.0 remains the published Standard. MO-1302 GitHub
-Actions integration and the candidate CCA-MEMORYOS-1.1 publication are separate
-later gates.
+MemoryOS 1.3 is released as v1.3.0 (see [RELEASE_NOTES.md](RELEASE_NOTES.md)
+and [KNOWN_ISSUES.md](KNOWN_ISSUES.md)). MemoryOS v1.2.1 is its compatibility
+baseline and CCA-MEMORYOS-1.0 remains the published Standard.
 
 ## MemoryOS v1.2 highlights
 
@@ -323,16 +322,14 @@ representation, process, persistence, and integration milestones.
 | **MemoryOS 1.1** | Added the Stable Semantic World, Cognitive Trace, Living Connectome, deterministic Replay, Cognitive Evolution, and Comparative Reconstruction. |
 | **MemoryOS 1.2** | Added MIP, runtime adapters, one Investigation Core, SDK, CLI, Cognitive Regression, Investigation Explorer, the MemoryOS Standard, and its Conformance Suite. |
 | **MemoryOS 1.2.1** | Corrected the v1.2 source and publication inventory and regenerated conformance provenance without changing MemoryOS semantics. |
-| **MemoryOS 1.3 (unreleased)** | Adds deterministic Investigation Policies through MO-1301; MO-1302 automation and final Standard 1.1 publication remain gated. |
+| **MemoryOS 1.3** | Released as v1.3.0: milestones MO-1301 to MO-1309 (Investigation Policies through the read-only Cloud Dashboard). See [RELEASE_NOTES.md](RELEASE_NOTES.md) and [KNOWN_ISSUES.md](KNOWN_ISSUES.md). |
 
 See [CHANGELOG.md](CHANGELOG.md) for milestone-level engineering history.
 
 ## Roadmap
 
-MemoryOS v1.2.1 is the corrected released platform baseline. MemoryOS 1.3
-begins with MO-1301 Investigation Policies and continues with the separately
-scoped MO-1302 CI integration while preserving deterministic investigation
-architecture.
+MemoryOS 1.3 is released as v1.3.0 (milestones MO-1301 to MO-1309). The next
+release scope requires a future authority; none is defined here.
 See [ROADMAP.md](ROADMAP.md) for the maintained product direction.
 
 ## Contributing

@@ -3,7 +3,14 @@
 This changelog records MemoryOS product milestones. Foundation-era workspace
 history remains available in `ROADMAP.md`.
 
-## MemoryOS 1.3 — Unreleased
+## MemoryOS 1.3 — v1.3.0
+
+Released as v1.3.0. MemoryOS 1.3 comprises milestones MO-1301 to MO-1309, each
+at its own annotated tag `memoryos-1.3-mo1301` to `memoryos-1.3-mo1309`, plus
+the pre-release maintenance below. See [RELEASE_NOTES.md](RELEASE_NOTES.md) for
+the tag table and compatibility notes and [KNOWN_ISSUES.md](KNOWN_ISSUES.md) for
+every disclosed limit. SDK and CLI declare 1.2.0 (MO-1308); released bundles
+are unchanged (MO-1308 R32, A1, A9.1).
 
 ### MO-1301 — Investigation Policies
 
@@ -17,8 +24,9 @@ integration, and an additive MemoryOS 1.3 conformance inventory.
 
 The frozen evaluator and normative artifacts remain version `1.0.0`; SDK and
 CLI product surfaces advance to `1.1.0`. No v1.2.1 contract or historical
-attestation is rewritten. MO-1302 GitHub Actions integration,
-CCA-MEMORYOS-1.1 publication, tagging, and release publication remain deferred.
+attestation is rewritten. At the time of MO-1301, MO-1302 GitHub Actions integration,
+CCA-MEMORYOS-1.1 publication, tagging, and release publication were deferred;
+MO-1302 onward are recorded below.
 
 ### MO-1302 — GitHub Actions and Deterministic CI Policy Gates
 
@@ -98,6 +106,42 @@ integrity-checked, not authenticated, encrypted or signed, and the Node-only
 store (H40) detects a concurrent directory swap after the fact rather than
 preventing it. See the [release disclosures](docs/mo1308-release-disclosures.md)
 and the [Contract Freeze](docs/mo1308-contract-freeze-1.md).
+
+### MO-1309 — Cloud Dashboard
+
+Released at annotated tag `memoryos-1.3-mo1309` (tag object
+`3cf8a61f1a3ee1e6c23291c356a9316195f2de20`), peeling to binding-only BF
+`97d84a1e84d8896d7d883810287c0fb063d6c376` (I3 `85f72601`). A static, offline,
+cloud-ready, strictly read-only dashboard over a verified MO-1308 history
+export, generated as one self-contained HTML file; MemoryOS ships no hosting,
+server, accounts, tenancy, billing or network access. Candidate `74be815b`;
+campaigns 4A, 4B and 4C accepted; the tag message records
+`CERTIFIED_READY_TO_TAG`. Certified scale: 10,000 entries; 100,000 entries are
+characterized only. See the [authority](docs/mo1309-cloud-dashboard.md), the
+[Phase 4 handoff](docs/mo1309-phase4-handoff.md) and the
+[release disclosures](docs/mo1309-release-disclosures.md).
+
+### Pre-release maintenance (PR #4)
+
+Merged as `dd058bfc` from `maint/pre-1.3-release` (head `6f07d40a`); record:
+[docs/maint-pre-1.3-release.md](docs/maint-pre-1.3-release.md).
+
+- Owner-approved product fix in `repositories/cca-sdk/src/core_process.cpp`
+  (POSIX): Core transport pipes are close-on-exec (`pipe2(O_CLOEXEC)` on Linux;
+  `pipe()` + `fcntl(FD_CLOEXEC)` elsewhere), fixing a hang when concurrently
+  started instances leaked pipe ends. Regression test
+  `MemoryOsSdkTransport.DoesNotLeakPipeEndsIntoLaterSpawnedProcesses`.
+  Disclosure: a microsecond `pipe()`/`fcntl()` window remains on macOS.
+- Test and CI fixes only (MSVC warnings and long paths, clang-format 18,
+  allocation-failure harness nothrow overloads, Node and npm setup, isolated
+  MCP test runner, canonical temp directories).
+- Reference-host-only suites excluded by exact name on hosted runners;
+  `NOT_RUN_ON_HOSTED_RUNNER` sub-check in `cca.workspace.verify` on hosted
+  POSIX runners.
+- Coverage tooling (gcovr 8.3 Cobertura output and GCC bug 68080 negative-hit
+  handling); Coverage meets the unchanged 90 % line gate (head `dfbaf864`).
+- Known issue deferred to post-1.3.0: Windows access violation in
+  `MemoryProviderAllocationFailureTest.DescriptorWorkspaceFailureConstructionPreservesCompleteState`.
 
 ## MemoryOS 1.2 — v1.2.1
 
