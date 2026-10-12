@@ -13,16 +13,6 @@
 #include <utility>
 #include <vector>
 
-#if defined(_MSC_VER) && !defined(__clang__)
-// MSVC 19.44 (windows-2022, /O2): DescriptorWorkspaceFailureConstructionPreservesCompleteState dies
-// with an access violation (0xC0000005) in the test body. It passes with /Od and under MSVC
-// AddressSanitizer (no report), and the other 111 allocation-failure sweeps pass optimized, so the
-// fault is optimizer-dependent and has not been attributed (latent test UB or an optimizer defect).
-// Optimization is disabled for this translation unit only; the sweep still injects a failure at
-// every allocation. Tracked in docs/maint-pre-1.3-release.md.
-#pragma optimize("", off)
-#endif
-
 // CCA-PROVIDERS-013 through CCA-PROVIDERS-017,
 // CCA-PROVIDERS-020 through CCA-PROVIDERS-032, CCA-PROVIDERS-035,
 // CCA-PROVIDERS-044, and CCA-PROVIDERS-045: exhaustively inject ordinary

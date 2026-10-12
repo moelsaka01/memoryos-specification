@@ -144,12 +144,3 @@ It has not been attributed to product code or to the harness; it needs a debugge
 ### CI infrastructure blips (not caused by this PR)
 - clang-tidy, run 38246010004: `curl: (22) ... 504` downloading `vcpkg-glibc` in `Bootstrap dependencies` (comment posted on PR #4).
 - Windows, run 38250034240: `Downloading vcpkg.exe ... Download failed, server returned an error` from GitHub releases in `Bootstrap dependencies (Windows)`, before any build, so the `/Od` optimizer experiment did not run. The run was superseded by the next push (a re-run is refused while any job of the run is still in progress).
-
-
-### Windows access violation: optimizer-dependent (round 6, head 1a359541)
-`MemoryProviderAllocationFailureTest.DescriptorWorkspaceFailureConstructionPreservesCompleteState` passes with `/Od`
-(exit 0) and under MSVC AddressSanitizer (no report) but dies with `0xC0000005` under `/O2`. Windows then ran 689/692
-(this test + the two evidence-bound suites). Mitigation, test code only: `#pragma optimize("", off)` for that one test
-translation unit on MSVC (coverage unchanged: a failure is still injected at every allocation). **Root cause is still
-unattributed** (latent test UB vs an MSVC optimizer defect); it should be examined with a Windows debugger on
-`cca_memory_provider_allocation_tests.exe` built RelWithDebInfo, and the pragma removed once resolved.
