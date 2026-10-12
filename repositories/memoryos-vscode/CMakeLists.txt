@@ -13,7 +13,7 @@ option(
 )
 
 find_program(MEMORYOS_VSCODE_NODE_EXECUTABLE NAMES node node.exe REQUIRED)
-find_program(MEMORYOS_VSCODE_NPM_EXECUTABLE NAMES npm npm.cmd REQUIRED)
+find_program(MEMORYOS_VSCODE_NPM_EXECUTABLE NAMES npm.cmd npm REQUIRED)
 
 add_custom_target(
   memoryos_vscode_check

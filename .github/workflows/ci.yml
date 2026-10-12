@@ -37,6 +37,18 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
+      - name: Use a canonical temporary directory
+        shell: bash
+        run: |
+          # The history store and the MCP integrity checks require a temp root whose canonical form equals its
+          # name. The runner defaults are aliases (Windows 8.3 'RUNNER~1', macOS /var -> /private/var).
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            echo "TEMP=${RUNNER_TEMP}" >> "$GITHUB_ENV"
+            echo "TMP=${RUNNER_TEMP}" >> "$GITHUB_ENV"
+          else
+            echo "TMPDIR=${RUNNER_TEMP}" >> "$GITHUB_ENV"
+          fi
+
       - name: Set up Python 3.12
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
@@ -94,6 +106,15 @@ jobs:
 
       - name: Test
         run: ctest --preset ci --timeout 600
+
+      - name: Diagnose the allocation-failure tests (Windows, on failure)
+        if: failure() && runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem out/build/ci -Recurse -Filter cca_process_allocation_tests.exe | Select-Object -First 1
+          & $exe.FullName --gtest_filter='*DefinitionConstruction*' 2>&1 | Select-Object -First 40
+          "exit code: $LASTEXITCODE (3 = abort/terminate, 0xC0000374 = heap corruption, 0xC00000FD = stack overflow)"
+          Get-WinEvent -FilterHashtable @{LogName='Application'; ProviderName='Windows Error Reporting','Application Error'} -MaxEvents 3 -ErrorAction SilentlyContinue | Format-List TimeCreated, Message
 
       - name: Install smoke test
         run: cmake --install out/build/ci --prefix out/stage
