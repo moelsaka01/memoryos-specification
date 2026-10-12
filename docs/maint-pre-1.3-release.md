@@ -153,3 +153,15 @@ change the result, so it was reverted: the product library `cca_memory.lib` stay
 optimizer-sensitive code may be **product code** (latent UB or an MSVC defect in `memory_provider.cpp` or what it inlines).
 This is a possible product finding and is not being papered over. The CI diagnostic now keeps `/O2` and forces `/Od` on one
 translation unit at a time (product file, then test file) to say which side owns it.
+
+
+### Windows access violation: status after round 9 (head 023eae65) - UNRESOLVED, no workaround in the tree
+The `/Od` mitigations (a test-side pragma, then `/Od` on the test source via CMake, confirmed applied by the compiler's
+D9025 notices) did **not** stop `MemoryProviderAllocationFailureTest.DescriptorWorkspaceFailureConstructionPreservesCompleteState`
+from dying with `0xC0000005` in the real `ci` build, even though the same switch passed in the standalone bisect build
+(default flags, `/WX` off, no preset). So the bisect results (all-`/Od`, product-file-`/Od`, test-file-`/Od` pass; MSVC ASan
+clean) are not a reliable guide: the behaviour moves with unrelated build differences, which is typical of a latent
+uninitialized/dangling access, not of a switch-controlled optimizer defect. Both mitigation commits were reverted (they
+did not work) and the bisect diagnostic step was removed. Windows is therefore 690/692 + this test; it needs a debugger
+session on a Windows machine (RelWithDebInfo, `cca_memory_provider_allocation_tests.exe`, WinDbg/VS "break on access violation").
+The surrounding evidence does not point at product code, but it has not been ruled out either.
