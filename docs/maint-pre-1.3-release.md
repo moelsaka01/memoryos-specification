@@ -139,3 +139,8 @@ It has not been attributed to product code or to the harness; it needs a debugge
 1. Owner decision on `repositories/cca-sdk/src/core_process.cpp` (pipes created without `O_CLOEXEC`; fix: `pipe2(..., O_CLOEXEC)` on Linux, `FD_CLOEXEC` under a spawn mutex elsewhere). Until then Linux/macOS Build-and-test, Coverage cannot be green.
 2. Read the `/Od` experiment on the next Windows run; if the crash disappears, it is optimizer-dependent: investigate that test body (and the harness) with a Windows debugger.
 3. Re-run clang-tidy once if it fails on the vcpkg download again.
+
+
+### CI infrastructure blips (not caused by this PR)
+- clang-tidy, run 38246010004: `curl: (22) ... 504` downloading `vcpkg-glibc` in `Bootstrap dependencies` (comment posted on PR #4).
+- Windows, run 38250034240: `Downloading vcpkg.exe ... Download failed, server returned an error` from GitHub releases in `Bootstrap dependencies (Windows)`, before any build, so the `/Od` optimizer experiment did not run. The run was superseded by the next push (a re-run is refused while any job of the run is still in progress).
