@@ -77,16 +77,20 @@ concept CanRecordCoreOutcome = requires(Type& observability) {
     observability.record_cleanup(RuntimeState::destroyed, RuntimeResult::success());
 };
 
-// MSVC 19.44 mis-evaluates access checking for a private member named inside a namespace-scope
-// requires-expression (it reports the member accessible, C2607). Detection through
-// expression SFINAE on a class template partial specialization is standards-equivalent
-// (an inaccessible member makes the substitution fail) and is evaluated correctly by MSVC.
+// MSVC 19.44 mis-evaluates access checking for a *default-argument* call of a private member named
+// in a dependent expression (a requires-expression or expression SFINAE): it reports
+// increment_metric(metric) accessible (C2607), while the same probes of the argument-less private
+// members above are evaluated correctly. The detector therefore passes every argument explicitly,
+// so no default argument is involved. The one-argument (default-argument) form is proven
+// non-callable on every compiler, MSVC included, by the configure-time compile-fail check in
+// tests/CMakeLists.txt (tests/compile_fail/).
 template <typename Type, typename = void> struct CoreMetricMutable : std::false_type {};
 
 template <typename Type>
 struct CoreMetricMutable<Type,
                          std::void_t<decltype(std::declval<Type&>().increment_metric(
-                             RuntimeMetric::cleanup_operations))>> : std::true_type {};
+                             RuntimeMetric::cleanup_operations, std::uint64_t{1}))>>
+    : std::true_type {};
 
 template <typename Type, typename = void> struct CoreMetricReadable : std::false_type {};
 
