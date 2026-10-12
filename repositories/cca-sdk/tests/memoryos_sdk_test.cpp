@@ -1,10 +1,13 @@
 #include <algorithm>
 #include <cctype>
+#include <chrono>
 #include <cstdint>
+#include <filesystem>
 #include <fstream>
 #include <future>
 #include <gtest/gtest.h>
 #include <iterator>
+#include <memory>
 #include <memoryos/memoryos.hpp>
 #include <optional>
 #include <stdexcept>
@@ -14,6 +17,14 @@
 #include <utility>
 #include <vector>
 
+#if !defined(_WIN32)
+#include <csignal>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#endif
+
+#include "../src/core_process.hpp"
 #include "../src/json.hpp"
 
 namespace {
@@ -940,5 +951,46 @@ TEST(MemoryOsSdk, KeepsConcurrentInstancesDeterministicAndIsolated) {
     EXPECT_EQ(firstResult.second, source);
     EXPECT_EQ(secondResult.second, source);
 }
+
+#if !defined(_WIN32)
+// A process spawned after a Core transport exists must not inherit the
+// transport's pipe ends. Before the pipes were close-on-exec, the bystander
+// below kept a copy of the host's standard-input write end, so destroying the
+// CoreProcess waited for the bystander to exit instead of seeing end-of-file.
+TEST(MemoryOsSdkTransport, DoesNotLeakPipeEndsIntoLaterSpawnedProcesses) {
+    namespace fs = std::filesystem;
+    constexpr const char* bystander_seconds = "20";
+    const auto directory =
+        fs::temp_directory_path() / ("memoryos-cloexec-" + std::to_string(getpid()));
+    fs::create_directories(directory);
+    const auto host = directory / "host.sh";
+    {
+        std::ofstream script{host};
+        script << "cat > /dev/null\n";
+    }
+
+    pid_t bystander = -1;
+    std::chrono::steady_clock::duration elapsed{};
+    {
+        auto transport = std::make_unique<memoryos::detail::CoreProcess>("/bin/sh", host);
+        bystander = fork();
+        ASSERT_GE(bystander, 0);
+        if (bystander == 0) {
+            execl("/bin/sleep", "sleep", bystander_seconds, static_cast<char*>(nullptr));
+            _exit(127);
+        }
+        const auto start = std::chrono::steady_clock::now();
+        transport.reset();
+        elapsed = std::chrono::steady_clock::now() - start;
+    }
+    static_cast<void>(kill(bystander, SIGKILL));
+    static_cast<void>(waitpid(bystander, nullptr, 0));
+    std::error_code ignored;
+    fs::remove_all(directory, ignored);
+
+    EXPECT_LT(elapsed, std::chrono::seconds{10})
+        << "the Core host kept running because a later-spawned process inherited its stdin pipe";
+}
+#endif
 
 } // namespace

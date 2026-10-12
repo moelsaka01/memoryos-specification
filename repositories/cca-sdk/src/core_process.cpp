@@ -15,6 +15,7 @@
 #include <cerrno>
 #include <csignal>
 #include <cstring>
+#include <fcntl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -152,6 +153,30 @@ class UniqueFd final {
     int value_{-1};
 };
 
+// Creates a pipe whose ends are close-on-exec, so that a process spawned
+// concurrently by another thread cannot inherit them and keep the Core host's
+// standard input open after this process closes it. The Core host itself still
+// receives its ends through dup2, which clears the flag on the duplicate.
+int createCloseOnExecPipe(int (&descriptors)[2]) noexcept {
+#if defined(__linux__)
+    return pipe2(descriptors, O_CLOEXEC);
+#else
+    if (pipe(descriptors) != 0) {
+        return -1;
+    }
+    for (const int descriptor : descriptors) {
+        if (fcntl(descriptor, F_SETFD, FD_CLOEXEC) != 0) {
+            const int saved = errno;
+            static_cast<void>(close(descriptors[0]));
+            static_cast<void>(close(descriptors[1]));
+            errno = saved;
+            return -1;
+        }
+    }
+    return 0;
+#endif
+}
+
 #endif
 
 } // namespace
@@ -239,14 +264,14 @@ CoreProcess::CoreProcess(const std::filesystem::path& nodeExecutable,
     impl_->standard_output.reset(output_read.release());
 #else
     int child_input[2]{};
-    if (pipe(child_input) != 0) {
+    if (createCloseOnExecPipe(child_input) != 0) {
         transportFailure(std::string{"cannot create Core pipes: "} + std::strerror(errno));
     }
     UniqueFd input_read{child_input[0]};
     UniqueFd input_write{child_input[1]};
 
     int child_output[2]{};
-    if (pipe(child_output) != 0) {
+    if (createCloseOnExecPipe(child_output) != 0) {
         transportFailure(std::string{"cannot create Core pipes: "} + std::strerror(errno));
     }
     UniqueFd output_read{child_output[0]};
