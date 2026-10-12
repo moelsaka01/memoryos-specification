@@ -87,3 +87,26 @@ Until then Linux and macOS Build-and-test, the sanitizer job and Coverage cannot
 
 Read the CI run for the head after 53e38461 (Windows build/test result first; then any further C4100 under
 `/WX`), fix what is test/CI-only, and wait for the owner's decision on the `core_process.cpp` fix.
+
+
+## CI rounds 2-3 on PR #4 (runs 75-78) - findings and fixes
+
+State at head 98f907a3 (previous heads: ab281cf2, 1f647734, 9bbfcbf6, 98926a61).
+
+| Area | Finding | Action |
+|------|---------|--------|
+| Windows build | MSVC now selected; cca-core, cca-sdk, tests compile under `/W4 /WX`. Two further errors found and fixed: C4996 `getenv` in `cca-sdk/src/memoryos.cpp` (scoped `_CRT_SECURE_NO_WARNINGS` on `memoryos_sdk`, MSVC only) and C2607 on `increment_metric` (MSVC mis-evaluates access for a default-argument call in a dependent context; detector now passes all arguments, and a configure-time `try_compile` compile-fail check proves the one-argument call is rejected, with a positive control) | `98f907a3`.. see git log |
+| Windows/macOS `memoryos.cli.unit`, MCP installed-tree | `MO1308_FILESYSTEM_BOUNDARY` / `MO1304_RUNTIME_INTEGRITY`: `os.tmpdir()` is not canonical on the runners (Windows 8.3 `RUNNER~1`, macOS `/var` -> `/private/var`) | `TEMP`/`TMP`/`TMPDIR` set to `RUNNER_TEMP` in CI |
+| Windows vscode package validation | `Process not started`: `find_program(npm npm.cmd)` picked the extensionless shim | prefer `npm.cmd` |
+| Ubuntu + ASan job killed ("runner received a shutdown signal") at `memoryos.standard.independent` | Not infrastructure: `canonicalArtifactBytes` used `assert.deepEqual` on two multi-MB Buffers; the suite mismatches them on purpose and Node's failure-message diff grew to >13 GB (pre-existing on main, masked until the sibling Standard checkout existed) | `Buffer.equals` + bounded message (`9bbfcbf6`); test 2.6 s / 207 MB |
+| `cca.memory_reflection.architecture` | my clang-format reflow removed whitespace that the API-012-HPP text check matches | three declarations kept inside `clang-format off/on` (`1f647734`) |
+| `mo1304-phase2` "bind their actual code" | REGRESSION I introduced in `6220f44a`: that evidence pins the bytes of every existing `memoryos-mcp/tests` and `scripts` file and the exact list of `*.test.mjs` | all pinned files restored (empty diff vs `84128231`); isolation moved into the new `scripts/run-isolated-tests.mjs` wrapper (copy -> assemble -> build .tgz -> run -> verify tracked measurements unchanged), used by `memoryos.mcp.foundation` (`98926a61`) |
+| Windows allocation-failure tests (~100) | die silently right after `[ RUN ]` under MSVC (non-zero exit, no message). Hypotheses: `std::terminate` from the MSVC debug-iterator proxy allocation in a noexcept path, or a CRT heap mismatch with the replaced `operator new/delete` | CI now runs one directly on failure and prints the exit code; fix pending that result |
+
+macOS completes without a hang now (no SDK failure there); its failures were the temp-directory class above plus the frozen-evidence tests.
+
+### Still open
+
+1. `core_process.cpp` pipe inheritance bug (Linux SDK hang) - needs the owner's decision; no production file has been changed.
+2. Windows allocation-failure tests - waiting for the diagnostic.
+3. Evidence-bound suites that cannot pass off the author's machine: `mo1304-phase2` (archive gzip bytes), `mo1304-phase3-windows` and `cca.workspace.verify` (validator uses POSIX path semantics; hash-pinned), `mo1305-phase3` (generation-time preconditions).
