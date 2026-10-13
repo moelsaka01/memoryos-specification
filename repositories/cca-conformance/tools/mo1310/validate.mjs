@@ -8,6 +8,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { matchKnownFailures } from "./known-failures.mjs";
 
 export const RECORD_PATH = "repositories/cca-conformance/mo1310-final-record.json";
 export const BINDING_PATH = "repositories/cca-conformance/mo1310-final-binding.json";
@@ -73,6 +74,11 @@ export function validate({ repo, recordPath = RECORD_PATH }) {
   const passing = (row) => row.exitCode === 0 && row.fail === 0 && row.pass > 0;
   for (const suite of manifest.suites) {
     const own = rows.filter((r) => r.suite === suite.id);
+    if (suite.expectedFailingTests) { // fails by design at the v1.3.0 baseline: exactly these test names fail, no other and none missing
+      const outcomes = own.map((r) => { try { return matchKnownFailures({ row: r, logText: read(path.posix.join(path.posix.dirname(rowsRef.path), r.log ?? "")).toString("utf8"), names: suite.expectedFailingTests.names }); } catch { return { ok: false, unexpected: [], missing: ["(log unreadable)"] }; } });
+      if (!outcomes.some((o) => o.ok)) { d4 = false; const last = outcomes[outcomes.length - 1] ?? { unexpected: [], missing: ["(no row)"] }; d4Problems.push(`${suite.id}: the failing tests differ from the pinned names (unexpected: ${last.unexpected.join("; ") || "none"}; missing: ${last.missing.join("; ") || "none"})`); }
+      continue;
+    }
     if (suite.expectedFailing) { // fails identically at the v1.3.0 baseline: exactly the pinned counts, never anything else
       const pinned = suite.expectedFailing;
       if (!own.some((r) => r.tests === pinned.tests && r.pass === pinned.pass && r.fail === pinned.fail && r.exitCode !== 0)) { d4 = false; d4Problems.push(`${suite.id}: pinned baseline counts ${pinned.pass}/${pinned.tests} not met`); }

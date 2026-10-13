@@ -6,6 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { REPO, runSuite } from "../mo1309/run-tests.mjs";
+import { matchKnownFailures } from "./known-failures.mjs";
 
 export const MANIFEST = path.join(REPO, "repositories", "cca-conformance", "mo1310-test-manifest.json");
 
@@ -38,8 +39,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   for (const suite of manifest.suites.filter((s) => wanted.length === 0 || wanted.includes(s.id))) {
     const row = runSuite({ suite: runnable(suite), outDir, commit, label: values("run-label")[0] ?? "" });
     const strict = suite.expect ? (row.tests === suite.expect.tests && row.pass === suite.expect.pass && row.fail === suite.expect.fail) : true;
-    const pinned = suite.expectedFailing ? (row.tests === suite.expectedFailing.tests && row.pass === suite.expectedFailing.pass && row.fail === suite.expectedFailing.fail && row.exitCode !== 0) : null;
-    process.stdout.write(`${row.suite} run ${row.run}: exit ${row.exitCode}, tests ${row.tests}, pass ${row.pass}, fail ${row.fail}${suite.expect ? (strict ? " (strict count met)" : " (STRICT COUNT NOT MET)") : ""}${pinned === null ? "" : pinned ? " (pinned baseline failures, identical to v1.3.0)" : " (PINNED BASELINE COUNTS NOT MET)"}\n`);
+    const pinned = suite.expectedFailingTests ? matchKnownFailures({ row, logText: fs.readFileSync(path.join(outDir, row.log), "utf8"), names: suite.expectedFailingTests.names }).ok : suite.expectedFailing ? (row.tests === suite.expectedFailing.tests && row.pass === suite.expectedFailing.pass && row.fail === suite.expectedFailing.fail && row.exitCode !== 0) : null;
+    process.stdout.write(`${row.suite} run ${row.run}: exit ${row.exitCode}, tests ${row.tests}, pass ${row.pass}, fail ${row.fail}${suite.expect ? (strict ? " (strict count met)" : " (STRICT COUNT NOT MET)") : ""}${pinned === null ? "" : pinned ? " (pinned baseline failures, identical to v1.3.0)" : " (PINNED BASELINE FAILURES NOT MET)"}\n`);
     if (pinned === null ? (row.exitCode !== 0 || !strict) : !pinned) failed = true;
   }
   process.exitCode = failed ? 1 : 0;

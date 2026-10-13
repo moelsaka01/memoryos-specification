@@ -86,6 +86,8 @@ const EV = "repositories/cca-conformance/evidence/mo1310";
 const RECORD = "repositories/cca-conformance/mo1310-final-record.json";
 const BINDING = "repositories/cca-conformance/mo1310-final-binding.json";
 
+// The failing-test summary as `node --test` prints it (spec reporter).
+const failLog = (names, total) => `✔ some passing test (1.5ms)\nℹ tests ${total}\n✖ failing tests:\n\n${names.map((n) => `test at tests\\x.mjs:1:1\n✖ ${n} (12.5ms)\n  AssertionError: x\n`).join("\n")}`;
 function scenario(mutate = () => {}) {
   const repo = fs.mkdtempSync(path.join(os.tmpdir(), "mo1310-validator-"));
   const git = (...args) => execFileSync("git", args, { cwd: repo, encoding: "utf8" }).trim();
@@ -94,16 +96,18 @@ function scenario(mutate = () => {}) {
   write("repositories/cca-studio/web/js/product.js", "export const x = 1;\n");
   write("repositories/cca-conformance/mo1310-test-manifest.json", JSON.stringify({ kind: "MO1310TestManifest", suites: [
     { id: "unit", cwd: "x", files: [] }, { id: "mo1307-strict", cwd: "x", nodeArgs: [], expect: { tests: 639, pass: 639, fail: 0 } },
-    { id: "pinned", cwd: "x", files: [], expectedFailing: { tests: 11, pass: 9, fail: 2 } }] }));
+    { id: "pinned", cwd: "x", files: [], expectedFailing: { tests: 11, pass: 9, fail: 2 } },
+    { id: "named", cwd: "x", files: [], expectedFailingTests: { names: ["K1 first audit", "K2 second audit"] } }] }));
   write("repositories/cca-conformance/mo1310-conformance-inventory.json", JSON.stringify({ campaign: { families: { "End to end": { cases: ["SH-E1"] }, Closure: { cases: ["SH-C1"] } } }, requirements: [
     { id: "SH01", cloud: { status: "COVERED", tests: [{ suite: "unit" }] }, windows: { families: ["End to end"] } },
     { id: "SH19", cloud: { status: "COVERED", tests: [{ suite: "unit" }] }, windows: { families: ["Closure"] } },
     { id: "SH23", cloud: { status: "COVERED", tests: [] }, windows: { families: [] } }] }));
   git("add", "-A"); git("commit", "-q", "-m", "candidate");
   const candidate = git("rev-parse", "HEAD");
-  const rowOf = (suite, run, counts) => { const log = write(`${EV}/regression/logs/${suite}-${run}.log`, `# tests ${counts.tests}\n# pass ${counts.pass}\n# fail ${counts.fail}\n`);
+  const rowOf = (suite, run, counts, logText = "") => { const log = write(`${EV}/regression/logs/${suite}-${run}.log`, `# tests ${counts.tests}\n# pass ${counts.pass}\n# fail ${counts.fail}\n${logText}`);
     return { row: 0, suite, run, commit: candidate, exitCode: counts.fail === 0 ? 0 : 1, ...counts, log: `logs/${suite}-${run}.log`, logSha256: sha(log) }; };
-  const rows = [rowOf("unit", 1, { tests: 5, pass: 5, fail: 0 }), rowOf("mo1307-strict", 1, { tests: 639, pass: 639, fail: 0 }), rowOf("pinned", 1, { tests: 11, pass: 9, fail: 2 })];
+  const rows = [rowOf("unit", 1, { tests: 5, pass: 5, fail: 0 }), rowOf("mo1307-strict", 1, { tests: 639, pass: 639, fail: 0 }), rowOf("pinned", 1, { tests: 11, pass: 9, fail: 2 }),
+    rowOf("named", 1, { tests: 20, pass: 18, fail: 2 }, failLog(["K1 first audit", "K2 second audit"], 20))];
   const rowsBytes = write(`${EV}/regression/rows.json`, JSON.stringify(rows));
   const receiptBytes = write(`${EV}/campaign/gen-1/mo1310-campaign-receipt.json`, JSON.stringify({ kind: "MO1310CampaignReceipt", certifying: true, accepted: true, commit: candidate, host: { platform: "win32", arch: "x64" },
     cases: [{ id: "SH-E1", outcome: "PASS" }, { id: "SH-C1", outcome: "PASS", nativeChangeProof: { baseline: BASELINE, nativePaths: [] } }] }));
@@ -151,6 +155,10 @@ test("SH23 each rule has a negative control: wrong platform, two accepted genera
     "SH-D4 strict count not met": [(c) => { c.rows[1] = { ...c.rowOf("mo1307-strict", 1, { tests: 639, pass: 632, fail: 7 }) }; rebindRows(c); }, ["SH-D4"]],
     "SH-D4 a pinned baseline suite with other counts": [(c) => { c.rows[2] = { ...c.rowOf("pinned", 1, { tests: 11, pass: 8, fail: 3 }) }; rebindRows(c); }, ["SH-D4"]],
     "SH-D4 a pinned baseline suite that now passes outright": [(c) => { c.rows[2] = { ...c.rowOf("pinned", 1, { tests: 11, pass: 11, fail: 0 }) }; rebindRows(c); }, ["SH-D4"]],
+    "SH-D4 a named baseline suite with an extra failing test": [(c) => { c.rows[3] = { ...c.rowOf("named", 1, { tests: 20, pass: 17, fail: 3 }, failLog(["K1 first audit", "K2 second audit", "K3 a new regression"], 20)) }; rebindRows(c); }, ["SH-D4"]],
+    "SH-D4 a named baseline suite where one pinned failure is missing from the run": [(c) => { c.rows[3] = { ...c.rowOf("named", 1, { tests: 19, pass: 18, fail: 1 }, failLog(["K1 first audit"], 19)) }; rebindRows(c); }, ["SH-D4"]],
+    "SH-D4 a named baseline suite swapping a pinned failure for another with the same count": [(c) => { c.rows[3] = { ...c.rowOf("named", 1, { tests: 20, pass: 18, fail: 2 }, failLog(["K1 first audit", "K9 other"], 20)) }; rebindRows(c); }, ["SH-D4"]],
+    "SH-D4 a named baseline suite that now passes outright": [(c) => { c.rows[3] = { ...c.rowOf("named", 1, { tests: 20, pass: 20, fail: 0 }) }; rebindRows(c); }, ["SH-D4"]],
     "SH-D4 a suite without a passing row": [(c) => { c.rows = c.rows.filter((r) => r.suite !== "unit"); rebindRows(c); }, ["SH-D4", "SH-D3"]],
     "SH-D5 native proof missing": [(c) => { const receipt = JSON.parse(fs.readFileSync(path.join(c.repo, `${EV}/campaign/gen-1/mo1310-campaign-receipt.json`), "utf8")); receipt.cases[1].nativeChangeProof.nativePaths = ["a.cpp"];
       const bytes = c.write(`${EV}/campaign/gen-1/mo1310-campaign-receipt.json`, JSON.stringify(receipt)); c.record.generations[0].receipt.sha256 = sha(bytes); }, ["SH-D5"]],
@@ -187,4 +195,29 @@ test("SH23 the assembler binds the evidence, copies accepted and certifying from
     fs.writeFileSync(path.join(ctx.repo, RECORD), JSON.stringify(record)); ctx.git("add", "-A"); ctx.git("commit", "-q", "-m", "assembled");
     assert.deepEqual(failing(validate({ repo: ctx.repo })), []);
   } finally { cleanup(ctx); }
+});
+
+test("SH23 the mo1308 baseline failures are pinned by exact name, the pin equals the Windows run at v1.3.0 and the candidate row, and the receipt binds its log", async () => {
+  const { failingTestNames, matchKnownFailures } = await import("../tools/mo1310/known-failures.mjs");
+  const manifest = readManifest();
+  const pin = manifest.suites.find((s) => s.id === "mo1308").expectedFailingTests;
+  assert.equal(pin.names.length, 7);
+  assert.deepEqual(pin.names.map((n) => n.slice(0, 3)).sort(), ["A01", "A02", "B01", "B02", "D03", "N07", "S03"]);
+  const evidence = path.join(REPO, "repositories/cca-conformance/evidence/mo1310");
+  const receipt = JSON.parse(fs.readFileSync(path.join(evidence, "baseline-mo1308/receipt.json"), "utf8"));
+  assert.equal(receipt.tree.commit, BASELINE);
+  const baselineLog = fs.readFileSync(path.join(evidence, receipt.log.path));
+  assert.equal(sha(baselineLog), receipt.log.sha256);
+  assert.deepEqual([...failingTestNames(baselineLog.toString("utf8"))].sort(), [...pin.names].sort());
+  assert.deepEqual({ tests: receipt.tests, pass: receipt.pass, fail: receipt.fail }, { tests: 221, pass: 214, fail: 7 });
+  const rows = JSON.parse(fs.readFileSync(path.join(evidence, "regression/rows.json"), "utf8"));
+  const row = rows.find((r) => r.suite === "mo1308");
+  const logText = fs.readFileSync(path.join(evidence, "regression", row.log), "utf8");
+  assert.equal(matchKnownFailures({ row, logText, names: pin.names }).ok, true);
+  // Negative controls on the real log: an eighth failure, a pinned failure absent, and a renamed one are all refused.
+  const withExtra = logText.replace("✖ failing tests:", "✖ failing tests:\n✖ Z99 a new failing test (1.0ms)");
+  assert.equal(matchKnownFailures({ row: { ...row, fail: 8, pass: row.pass - 1 }, logText: withExtra, names: pin.names }).ok, false);
+  const withoutOne = logText.split("\n").filter((l) => !l.startsWith("✖ S03 ")).join("\n");
+  assert.equal(matchKnownFailures({ row: { ...row, fail: 6, pass: row.pass + 1 }, logText: withoutOne, names: pin.names }).ok, false);
+  assert.equal(matchKnownFailures({ row, logText: logText.split("✖ S03 a complete").join("✖ S03 a renamed"), names: pin.names }).ok, false);
 });
