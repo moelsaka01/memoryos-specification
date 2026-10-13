@@ -1,0 +1,123 @@
+{
+  "kind": "MO1310TestManifest",
+  "version": "1.0.0",
+  "note": "The MemoryOS 1.3.1 retained-regression suites, run by path. repositories/cca-studio/package.json is pinned in released closures and is not edited; its own `npm test` is the studio-existing suite. Each suite is its own process and its own log; a rerun is its own row in the retained regression record (Freeze SH23). `nodeArgs` suites run under the pinned Node (the runner's own executable); `expect` is a strict count the validator enforces. `expectedFailing` pins the counts of a suite that fails identically at the v1.3.0 baseline; the validator accepts exactly those counts (and nothing else) for it.",
+  "suites": [
+    {
+      "id": "studio-history",
+      "cwd": "repositories/cca-studio",
+      "files": [
+        "tests/studio_history_unit_test.mjs",
+        "tests/studio_history_closure_test.mjs",
+        "tests/studio_history_differential_test.mjs"
+      ]
+    },
+    {
+      "id": "studio-history-browser",
+      "cwd": "repositories/cca-studio",
+      "files": [
+        "tests/studio_history_browser_test.mjs"
+      ]
+    },
+    {
+      "id": "studio-existing",
+      "cwd": "repositories/cca-studio",
+      "command": [
+        "npm",
+        "test",
+        "--silent"
+      ]
+    },
+    {
+      "id": "cli",
+      "cwd": "repositories/memoryos-cli",
+      "nodeArgs": [
+        "--test",
+        "--test-concurrency=1",
+        "tests/*.test.mjs"
+      ]
+    },
+    {
+      "id": "mo1308",
+      "cwd": "repositories/cca-conformance",
+      "nodeArgs": [
+        "--test",
+        "--test-concurrency=1",
+        "tests/mo1308_*_test.mjs"
+      ]
+    },
+    {
+      "id": "mo1309-dashboard-unit",
+      "cwd": "repositories/cca-studio",
+      "files": [
+        "tests/memoryos_dashboard_viewmodel_test.mjs",
+        "tests/memoryos_dashboard_wording_test.mjs",
+        "tests/memoryos_dashboard_separation_test.mjs",
+        "tests/memoryos_dashboard_page_test.mjs",
+        "tests/memoryos_dashboard_generator_test.mjs",
+        "tests/memoryos_dashboard_trust_test.mjs",
+        "tests/memoryos_dashboard_perf_test.mjs",
+        "tests/memoryos_dashboard_linear_test.mjs",
+        "tests/memoryos_dashboard_harness_test.mjs"
+      ]
+    },
+    {
+      "id": "mo1309-dashboard-browser",
+      "cwd": "repositories/cca-studio",
+      "files": [
+        "tests/memoryos_dashboard_browser_test.mjs"
+      ]
+    },
+    {
+      "id": "mo1309-dashboard-differential-10k",
+      "cwd": "repositories/cca-studio",
+      "files": [
+        "tests/memoryos_dashboard_linear_10k_test.mjs"
+      ]
+    },
+    {
+      "id": "mo1309-tools",
+      "cwd": "repositories/cca-conformance",
+      "files": [
+        "tests/mo1309_inventory_test.mjs",
+        "tests/mo1309_manifest_test.mjs",
+        "tests/mo1309_validator_test.mjs"
+      ]
+    },
+    {
+      "id": "mo1309-baseline-bound",
+      "cwd": "repositories/cca-conformance",
+      "files": [
+        "tests/mo1309_audit_test.mjs",
+        "tests/mo1309_campaigns_test.mjs"
+      ],
+      "expectedFailing": {
+        "tests": 11,
+        "pass": 9,
+        "fail": 2,
+        "reason": "Two MO-1309 tooling tests audit the whole tree against the MO-1308 BF (bf2fdc87): 'DB26 DB27 the whole milestone against BF' and '4B rehearsal passes in the cloud'. They fail identically at v1.3.0 (889f99e7), because the v1.3.0 release documents change README, KNOWN_ISSUES and RELEASE_NOTES, which that audit does not allow. The counts are pinned; any other result is a regression."
+      }
+    },
+    {
+      "id": "mo1310-tools",
+      "cwd": "repositories/cca-conformance",
+      "files": [
+        "tests/mo1310_tools_test.mjs"
+      ]
+    },
+    {
+      "id": "mo1307-strict",
+      "cwd": "repositories/cca-conformance",
+      "nodeArgs": [
+        "--test",
+        "--test-concurrency=1",
+        "tests/mo1307_*_test.mjs"
+      ],
+      "expect": {
+        "tests": 639,
+        "pass": 639,
+        "fail": 0
+      }
+    }
+  ]
+}

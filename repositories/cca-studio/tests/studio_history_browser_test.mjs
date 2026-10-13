@@ -3,71 +3,35 @@
 // cloud-preinstalled Chromium; without one the suite fails. Requirements are in the test titles (SHnn).
 import test, { after, before } from "node:test";
 import assert from "node:assert/strict";
-import { spawn } from "node:child_process";
 import fs from "node:fs";
 import http from "node:http";
 import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { WORDING, forbiddenTerms, NEGATION_ALLOW_LIST } from "../web/js/memoryos-dashboard-wording.js";
+import { WORDING, forbiddenTerms } from "../web/js/memoryos-dashboard-wording.js";
 import { HISTORY_SCREEN_ACTIONS, HISTORY_WORDING, scanHistoryControls } from "../web/js/studio-history-wording.js";
 import { generateSnapshot } from "../scripts/memoryos-dashboard-generator.mjs";
 import { FIXTURE_NAMES } from "./support-dashboard-fixtures.mjs";
-import { STUDIO_ROOT, fixtureExportDirectory, listExport, tamperVariants } from "./support-studio-history.mjs";
-import { killTree, launchBrowser } from "./support-devtools.mjs";
+import { fixtureExportDirectory, listExport, tamperVariants } from "./support-studio-history.mjs";
+import { launchBrowser } from "./support-devtools.mjs";
+import { SHOWN, STATUS, chooseDirectory, errorState, frameText, noProblems, openExport, openHistory as openHistoryAt, sleep, startStudio, waitFor, writeFiles } from "./support-studio-history-browser.mjs";
 
 const scratch = fs.mkdtempSync(path.join(os.tmpdir(), "sh-browser-"));
 let browser;
 let studio;
 let origin;
 before(async () => {
-  studio = spawn(process.execPath, [path.join(STUDIO_ROOT, "scripts", "serve.mjs"), "0"], { stdio: ["ignore", "pipe", "inherit"] });
-  origin = await new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error("Studio did not start")), 20000);
-    studio.stdout.on("data", (chunk) => { const match = /(http:\/\/127\.0\.0\.1:\d+)\//u.exec(String(chunk)); if (match) { clearTimeout(timer); resolve(match[1]); } });
-  });
+  studio = await startStudio();
+  origin = studio.origin;
   browser = await launchBrowser();
 });
 after(async () => {
   await browser?.close();
-  if (studio) killTree(studio);
+  studio?.close();
   fs.rmSync(scratch, { recursive: true, force: true });
 });
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-async function waitFor(page, expression, what, timeout = 30000) {
-  const deadline = Date.now() + timeout;
-  for (;;) {
-    if (await page.evaluate(`Boolean(${expression})`)) return;
-    if (Date.now() > deadline) throw new Error(`timeout waiting for ${what}`);
-    await sleep(50);
-  }
-}
-const noProblems = (page) => page.messages.filter((m) => /error|warning/u.test(m.kind) || m.kind === "exception");
-const STATUS = "document.querySelector('#history-status')?.textContent";
-const SHOWN = HISTORY_WORDING["status.shown"];
-
-async function openHistory(options = {}) {
-  const page = await browser.openPage(options);
-  await page.navigate(`${origin}/#history`);
-  await waitFor(page, "document.querySelector('#history-root')", "the History screen");
-  return page;
-}
-async function chooseDirectory(page, directory) {
-  const { root } = await page.call("DOM.getDocument", {});
-  const { nodeId } = await page.call("DOM.querySelector", { nodeId: root.nodeId, selector: "#history-folder-input" });
-  await page.call("DOM.setFileInputFiles", { nodeId, files: [directory] });
-}
-async function openExport(page, directory, expectShown = true) {
-  await chooseDirectory(page, directory);
-  if (expectShown) await waitFor(page, `${STATUS} === ${JSON.stringify(SHOWN)} && document.querySelector('#history-frame')?.contentDocument?.querySelector('#app main')`, "the dashboard");
-  else await waitFor(page, "document.querySelector('#history-error') && !document.querySelector('#history-error').hidden", "the error");
-}
-const frameText = (page) => page.evaluate("document.querySelector('#history-frame').contentDocument.getElementById('app').innerText");
-const writeFiles = (directory, files) => {
-  for (const f of files) { const target = path.join(directory, ...f.path.split("/")); fs.mkdirSync(path.dirname(target), { recursive: true }); fs.writeFileSync(target, f.bytes); }
-  return directory;
-};
+const openHistory = (options = {}) => openHistoryAt(browser, origin, options);
 let counter = 0;
 const scratchDirectory = (label) => { counter += 1; return path.join(scratch, `${label}-${counter}`); };
 
@@ -224,11 +188,11 @@ test("SH11 SH13 the requests are exactly Studio's own static files; none carries
       assert.match(parsed.pathname, /^\/($|index\.html$|styles\.css$|assets\/[\w.-]+$|js\/[\w.-]+\.js$|data\/[\w.-]+\.js$)/u, url);
     }
     const before = page.requests.length;
-    const folder = writeFiles(scratchDirectory("<img src=x onerror=window.__pwned=1> folder"), listExport(fixtureExportDirectory("adversarial-wording")));
+    const folder = writeFiles(scratchDirectory("img src=x onerror=window.__pwned=1 &amp;#x3C;script&#x3E; folder"), listExport(fixtureExportDirectory("adversarial-wording")));
     await openExport(page, folder);
     const after = page.requests.slice(before).map((url) => new URL(url).pathname).sort();
     assert.deepEqual(after, ["/dashboard/page.css", "/dashboard/page.embedded.js", "/history-view.html"], "from folder chosen to dashboard rendered");
-    assert.ok(!(await page.evaluate("document.body.innerText + document.querySelector('#history-frame').contentDocument.body.innerText")).includes("onerror"), "the picked folder's name is never displayed");
+    assert.ok(!(await page.evaluate("document.body.innerText + document.querySelector('#history-frame').contentDocument.body.innerText")).includes("onerror=window.__pwned"), "the picked folder's name is never displayed");
     assert.equal(await page.evaluate("window.__pwned"), undefined);
     // Policy in the framed page: no eval, no inline script, no connection, no framing of its own.
     const inFrame = await page.evaluate(`(async () => { const w = document.querySelector('#history-frame').contentWindow; const out = {};

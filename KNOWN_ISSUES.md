@@ -118,6 +118,21 @@ authenticity, completeness, currency or approval.
   in a fresh worktree on BF and candidate; the shared failures; Windows CI
   green with native C++ tests on a host without Smart App Control.
 
+## MemoryOS 1.3.1 (Studio History screen; pending certification)
+
+Not part of v1.3.0. Source: [MemoryOS 1.3.1 Freeze](docs/mo1310-studio-history-1.3.1.md) and
+[Windows plan](docs/release-1.3.1-windows-plan.md). These items are recorded at build time and will be restated in the 1.3.1 disclosures.
+
+- **MO-1308 verifier and browsers (Q-SAB-STANDIN).** The released MO-1308 modules reference `SharedArrayBuffer` without a `typeof` guard, so
+  the verifier throws in a page that is not cross-origin isolated. Studio compensates with a scoped stand-in during the single verification
+  call; no MO-1308 byte changes. A guard in the MO-1308 modules is a candidate for a later maintenance item.
+- **Folder access.** The File System Access directory handle exists in Chromium-family browsers only; other browsers use the read-only directory
+  input. The browser mediates permission; Studio cannot read a folder the user did not choose and keeps no handle.
+- **Static files.** "No network" for the History screen means no endpoint, no upload and no request carrying export data; Studio loads its own
+  static files, and the optional snapshot download fetches three of them on click.
+- **MO-1309 tooling tests tied to the MO-1308 BF.** Two tests audit the whole tree against `bf2fdc87` and fail identically at v1.3.0; the 1.3.1
+  regression pins their counts.
+
 ## Export performance on the reference host
 
 Exporting 100,000 entries with the MO-1308 CLI takes about 16 minutes

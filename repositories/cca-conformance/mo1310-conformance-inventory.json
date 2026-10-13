@@ -1,0 +1,870 @@
+{
+  "kind": "MO1310ConformanceInventory",
+  "version": "1.0.0",
+  "requirementSource": {
+    "path": "docs/mo1310-studio-history-1.3.1.md",
+    "sha256": "sha256:4c8c615ea0579c23e67ecb1f875c11af8f0d6d14de5845f1657a38abf85d8424"
+  },
+  "manifest": {
+    "path": "repositories/cca-conformance/mo1310-test-manifest.json",
+    "sha256": "sha256:7e1d718b2e8dcb57aa16055fd30a3581d379d041e39b2686026d5be3f74897c1"
+  },
+  "status": "CLOUD_COVERAGE_ONLY_NOT_CERTIFIED",
+  "campaign": {
+    "id": "SH",
+    "families": {
+      "End to end": {
+        "cases": [
+          "SH-E1",
+          "SH-E2",
+          "SH-E3",
+          "SH-E4",
+          "SH-E5",
+          "SH-E6",
+          "SH-E7"
+        ],
+        "requirements": [
+          "SH01",
+          "SH02",
+          "SH03",
+          "SH04",
+          "SH05",
+          "SH06",
+          "SH07",
+          "SH14",
+          "SH15",
+          "SH16",
+          "SH17",
+          "SH18"
+        ]
+      },
+      "Security and wording": {
+        "cases": [
+          "SH-S1",
+          "SH-S2",
+          "SH-S3",
+          "SH-S4",
+          "SH-S5"
+        ],
+        "requirements": [
+          "SH02",
+          "SH06",
+          "SH10",
+          "SH11",
+          "SH12",
+          "SH13"
+        ]
+      },
+      "Closure": {
+        "cases": [
+          "SH-C1",
+          "SH-C2",
+          "SH-C3",
+          "SH-C4",
+          "SH-C5"
+        ],
+        "requirements": [
+          "SH03",
+          "SH08",
+          "SH09",
+          "SH19",
+          "SH20",
+          "SH21",
+          "SH22"
+        ]
+      }
+    }
+  },
+  "requirements": [
+    {
+      "id": "SH01",
+      "text": "Studio's home gains a History nav entry that opens the History screen; every other route and the 358 existing Studio tests are unchanged",
+      "freezePhases": "2",
+      "freezeProvenBy": "Unit, browser, existing suite",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH01 SH12 the Studio nav entry is static markup that equals the registry"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH01 Studio's home keeps Mission Control and gains a History entry that opens the History screen and leaves it again"
+          },
+          {
+            "suite": "mo1310-tools",
+            "file": "repositories/cca-conformance/tests/mo1310_tools_test.mjs",
+            "title": "SH24 the committed inventory equals the rebuilt one and covers SH01 to SH24 from the Freeze, with the campaign families"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "End to end"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH02",
+      "text": "The only input is a folder the user chooses through `showDirectoryPicker` (read mode) or the directory `<input>`; no drag-and-drop, path, URL, remembered handle or automatic open",
+      "freezePhases": "2",
+      "freezeProvenBy": "Unit, browser, source scan",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH14 SH02 both browser routes and any listing order give the same view model bytes"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH02 SH16 the collectors accept only a layout folder: unknown directories, unknown kinds, files without a folder name are refused"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH10 SH11 SH02 the History modules use none of the forbidden APIs, take no storage, link or form, and only the screen fetches"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH02 SH04 SH07 SH12 SH13 SH14 every fixture opened through the directory input shows the MO-1309 dashboard, equal to the standalone page"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH16 SH02 SH14 the directory-handle route renders the same dashboard; a cancelled or denied picker and a missing picker change nothing"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "End to end",
+          "Security and wording"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH03",
+      "text": "Path classes, byte bounds and the entry limit come from one shared module, imported by Studio and the generator; unknown paths, oversize files and over-limit exports are refused with the generator's codes",
+      "freezePhases": "2",
+      "freezeProvenBy": "Unit, differential",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH03 the shared bounds module classifies exactly the export layout and agrees with the imported limits"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH03 SH06 the reader returns exactly the files the standalone generator reads, in the same order, for every fixture"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH03 the reader refuses what the generator refuses: unknown paths, oversize files, unsafe paths, duplicates, short reads; over-limit is DASH_LIMIT_EXCEEDED"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "End to end",
+          "Closure"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH04",
+      "text": "Verification is `verifyHistoryExport` over the in-memory bytes; on any defect nothing is rendered and the typed error carrying the MO-1308 code is shown",
+      "freezePhases": "2",
+      "freezeProvenBy": "Unit, browser",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH04 SH05 tampered exports are rejected with DASH_EXPORT_INVALID carrying an MO-1308 code, and nothing is built"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH04 the released verifier needs the stand-in only where the SharedArrayBuffer global is absent, and the stand-in is scoped"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH02 SH04 SH07 SH12 SH13 SH14 every fixture opened through the directory input shows the MO-1309 dashboard, equal to the standalone page"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH04 SH05 tampered and malformed exports are rejected inside Studio with the carried MO-1308 code; nothing is rendered and a shown export is removed"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "End to end"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH05",
+      "text": "Tampered exports (chain, member, manifest, marker, truncated tail) are rejected inside Studio with the carried MO-1308 code",
+      "freezePhases": "2",
+      "freezeProvenBy": "Browser, campaign",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH04 SH05 tampered exports are rejected with DASH_EXPORT_INVALID carrying an MO-1308 code, and nothing is built"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH04 SH05 tampered and malformed exports are rejected inside Studio with the carried MO-1308 code; nothing is rendered and a shown export is removed"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "End to end"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH06",
+      "text": "Each file is read exactly once and the view model is built only from those bytes; a swap after the read changes nothing",
+      "freezePhases": "2",
+      "freezeProvenBy": "Unit, campaign",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH03 SH06 the reader returns exactly the files the standalone generator reads, in the same order, for every fixture"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH06 the view model is built from the bytes read once: later changes to the source cannot reach it"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH06 SH10 SH17 nothing is stored or kept: no storage, no handle, the input is emptied, Clear and leaving the route drop everything"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "End to end",
+          "Security and wording"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH07",
+      "text": "The dashboard renders inside Studio by running the unmodified MO-1309 `page.js` behaviour, `page.css` and registry over the MO-1309 view model",
+      "freezePhases": "2",
+      "freezeProvenBy": "Browser, campaign",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH02 SH04 SH07 SH12 SH13 SH14 every fixture opened through the directory input shows the MO-1309 dashboard, equal to the standalone page"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "End to end"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH08",
+      "text": "`page.embedded.js` equals `page.js` with the registry spliced in; `page.js`, `page.css`, `page.html`, the dashboard modules and the MO-1308 modules equal their v1.3.0 blobs",
+      "freezePhases": "2",
+      "freezeProvenBy": "Derivation test, closure audit",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH08 page.embedded.js is exactly page.js with the registry spliced in, and the committed file is current"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH08 the MO-1309 page, the dashboard and MO-1308 modules and the lock files are byte-identical to v1.3.0"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "Closure"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH09",
+      "text": "The standalone generator's output is byte-identical to v1.3.0 on every fixture and corpus",
+      "freezePhases": "2",
+      "freezeProvenBy": "Differential, golden digests, campaign",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_differential_test.mjs",
+            "title": "SH09 the golden record covers every fixture and the corpora and names the v1.3.0 baseline"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_differential_test.mjs",
+            "title": "SH09 the refactored generator reproduces the golden v1.3.0 output byte for byte on every fixture and corpus"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_differential_test.mjs",
+            "title": "SH09 the v1.3.0 generator, extracted from the baseline commit, and the current generator write identical bytes"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "Closure"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH10",
+      "text": "The History screen is strictly read-only: closed action set, no write, append, tombstone, approve or reject control, no storage API, no kept handle",
+      "freezePhases": "2",
+      "freezeProvenBy": "Unit, browser, source scan",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH12 SH10 the Studio History registry is closed, clean under the MO-1309 forbidden-affordance rule, and every control action is in the closed set"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH10 SH11 SH02 the History modules use none of the forbidden APIs, take no storage, link or form, and only the screen fetches"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH12 SH10 the History screen's own chrome is registry text, every control is in the closed read-only set, and nothing is a link or form"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH06 SH10 SH17 nothing is stored or kept: no storage, no handle, the input is emptied, Clear and leaving the route drop everything"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH18 SH10 the screen is keyboard-operable with names from the registry and has no horizontal page scroll at 320, 768 and 1280 px"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "Security and wording"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH11",
+      "text": "No request leaves the Studio origin and none carries export data; the request set is the closed allow-list of section 8; the CSP posture of section 8 holds in Chromium",
+      "freezePhases": "2",
+      "freezeProvenBy": "Browser, campaign",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH10 SH11 SH02 the History modules use none of the forbidden APIs, take no storage, link or form, and only the screen fetches"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH11 SH13 the requests are exactly Studio's own static files; none carries export data; the policies hold in the browser"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "Security and wording"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH12",
+      "text": "Every History chrome string is a registry key; the forbidden-affordance scan passes on the registry and the rendered screen; adversarial words in data are inert",
+      "freezePhases": "2",
+      "freezeProvenBy": "Unit, browser, campaign",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH12 SH10 the Studio History registry is closed, clean under the MO-1309 forbidden-affordance rule, and every control action is in the closed set"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH01 SH12 the Studio nav entry is static markup that equals the registry"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH02 SH04 SH07 SH12 SH13 SH14 every fixture opened through the directory input shows the MO-1309 dashboard, equal to the standalone page"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH12 SH10 the History screen's own chrome is registry text, every control is in the closed read-only set, and nothing is a link or form"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "Security and wording"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH13",
+      "text": "Untrusted strings enter the DOM only as text; hostile strings in subjects and identifiers execute nothing and cause no request",
+      "freezePhases": "2",
+      "freezeProvenBy": "Browser, campaign",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH02 SH04 SH07 SH12 SH13 SH14 every fixture opened through the directory input shows the MO-1309 dashboard, equal to the standalone page"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH11 SH13 the requests are exactly Studio's own static files; none carries export data; the policies hold in the browser"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "Security and wording"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH14",
+      "text": "Same export bytes give the same view model and dashboard text for any file order and for either input route",
+      "freezePhases": "2",
+      "freezeProvenBy": "Unit, browser",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH14 SH02 both browser routes and any listing order give the same view model bytes"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH02 SH04 SH07 SH12 SH13 SH14 every fixture opened through the directory input shows the MO-1309 dashboard, equal to the standalone page"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH16 SH02 SH14 the directory-handle route renders the same dashboard; a cancelled or denied picker and a missing picker change nothing"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "End to end"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH15",
+      "text": "*Save dashboard snapshot* downloads bytes equal to the generator's snapshot for the same export",
+      "freezePhases": "2",
+      "freezeProvenBy": "Browser, campaign",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH15 Save dashboard snapshot downloads exactly the bytes the standalone generator writes"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "End to end"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH16",
+      "text": "A cancelled or denied picker and a missing `showDirectoryPicker` are neutral and change no state",
+      "freezePhases": "2",
+      "freezeProvenBy": "Unit, browser",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH02 SH16 the collectors accept only a layout folder: unknown directories, unknown kinds, files without a folder name are refused"
+          },
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH16 SH02 SH14 the directory-handle route renders the same dashboard; a cancelled or denied picker and a missing picker change nothing"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "End to end"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH17",
+      "text": "Clear, a new selection and leaving the route drop the data, the frame and any error",
+      "freezePhases": "2",
+      "freezeProvenBy": "Browser",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH06 SH10 SH17 nothing is stored or kept: no storage, no handle, the input is emptied, Clear and leaving the route drop everything"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "End to end"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH18",
+      "text": "The History screen is keyboard-operable with names from the registry and has no horizontal page scroll at 320, 768 and 1280 px",
+      "freezePhases": "2",
+      "freezeProvenBy": "Browser, campaign",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history-browser",
+            "file": "repositories/cca-studio/tests/studio_history_browser_test.mjs",
+            "title": "SH18 SH10 the screen is keyboard-operable with names from the registry and has no horizontal page scroll at 320, 768 and 1280 px"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "End to end"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH19",
+      "text": "No C or C++ file, CMake file or vcpkg manifest changed against v1.3.0",
+      "freezePhases": "2, 3",
+      "freezeProvenBy": "Static check, campaign",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH19 SH21 the History work adds no build step, dependency or package field"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_closure_test.mjs",
+            "title": "SH19 the classifier recognizes C, C++, CMake and vcpkg paths and nothing else (negative controls)"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_closure_test.mjs",
+            "title": "SH19 no C or C++ file, CMake file or vcpkg manifest differs from v1.3.0 (proof that the C++ CTest run may be skipped)"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "Closure"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH20",
+      "text": "No MO-1308 production blob changed",
+      "freezePhases": "2, 3",
+      "freezeProvenBy": "Closure audit, campaign",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_closure_test.mjs",
+            "title": "SH20 every MO-1308 production blob is the recorded one and unchanged from v1.3.0"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "Closure"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH21",
+      "text": "No new dependency, lockfile change or build step; released packages, closures and inventories unchanged",
+      "freezePhases": "2, 3",
+      "freezeProvenBy": "Closure audit, campaign",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH19 SH21 the History work adds no build step, dependency or package field"
+          },
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_closure_test.mjs",
+            "title": "SH21 no dependency, lock file or build-step file changed, and no file was removed or modified outside the documented list"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "Closure"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH22",
+      "text": "ARCHITECTURE §5/§13 carry the clause of section 4 and no other ARCHITECTURE change",
+      "freezePhases": "2",
+      "freezeProvenBy": "Static check",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "studio-history",
+            "file": "repositories/cca-studio/tests/studio_history_unit_test.mjs",
+            "title": "SH22 ARCHITECTURE carries the two 1.3.1 clauses and no other change"
+          }
+        ],
+        "records": []
+      },
+      "windows": {
+        "campaign": "SH",
+        "families": [
+          "Closure"
+        ],
+        "status": "PENDING_WINDOWS",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH23",
+      "text": "Every suite of the retained regression runs, each rerun as its own row with its own log binding",
+      "freezePhases": "3",
+      "freezeProvenBy": "Regression record",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "mo1310-tools",
+            "file": "repositories/cca-conformance/tests/mo1310_tools_test.mjs",
+            "title": "SH23 the manifest is well formed, every suite file exists, every History and MO-1309 suite is named, and the MO-1307 suite is strict"
+          },
+          {
+            "suite": "mo1310-tools",
+            "file": "repositories/cca-conformance/tests/mo1310_tools_test.mjs",
+            "title": "SH23 the campaign refuses a certifying run off the Windows host, off the pinned Node, from a dirty tree, into an existing or foreign directory"
+          },
+          {
+            "suite": "mo1310-tools",
+            "file": "repositories/cca-conformance/tests/mo1310_tools_test.mjs",
+            "title": "SH23 a consistent record reaches I3_VALID_PENDING_BF, a binding-only BF reaches CERTIFIED_READY_TO_TAG, and no tag is created"
+          },
+          {
+            "suite": "mo1310-tools",
+            "file": "repositories/cca-conformance/tests/mo1310_tools_test.mjs",
+            "title": "SH23 each rule has a negative control: wrong platform, two accepted generations, missing disposition, a stale log, a rerun without its own row, a missed strict count, no native proof, a missing disclosure"
+          },
+          {
+            "suite": "mo1310-tools",
+            "file": "repositories/cca-conformance/tests/mo1310_tools_test.mjs",
+            "title": "SH23 a rerun is its own numbered row and the validator accepts it"
+          },
+          {
+            "suite": "mo1310-tools",
+            "file": "repositories/cca-conformance/tests/mo1310_tools_test.mjs",
+            "title": "SH23 the assembler binds the evidence, copies accepted and certifying from the receipt and decides nothing"
+          }
+        ],
+        "records": [
+          "repositories/cca-conformance/tools/mo1310/validate.mjs",
+          "retained regression record rows with one log each"
+        ]
+      },
+      "windows": {
+        "campaign": null,
+        "families": [],
+        "status": "REGRESSION_ONLY",
+        "certifying": false
+      }
+    },
+    {
+      "id": "SH24",
+      "text": "The conformance inventory maps every SH requirement to cloud tests or records and to the Windows campaign",
+      "freezePhases": "3",
+      "freezeProvenBy": "Inventory check",
+      "cloud": {
+        "status": "COVERED",
+        "tests": [
+          {
+            "suite": "mo1310-tools",
+            "file": "repositories/cca-conformance/tests/mo1310_tools_test.mjs",
+            "title": "SH24 the committed inventory equals the rebuilt one and covers SH01 to SH24 from the Freeze, with the campaign families"
+          }
+        ],
+        "records": [
+          "repositories/cca-conformance/tools/mo1310/inventory.mjs check",
+          "repositories/cca-conformance/mo1310-conformance-inventory.json"
+        ]
+      },
+      "windows": {
+        "campaign": null,
+        "families": [],
+        "status": "REGRESSION_ONLY",
+        "certifying": false
+      }
+    }
+  ]
+}

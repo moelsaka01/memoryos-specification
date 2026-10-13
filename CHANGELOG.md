@@ -3,6 +3,15 @@
 This changelog records MemoryOS product milestones. Foundation-era workspace
 history remains available in `ROADMAP.md`.
 
+## MemoryOS 1.3.1 — Studio History screen (not yet released)
+
+In progress; certification runs later on the reference Windows host and the tag `v1.3.1` is a human decision. Studio's home gains a
+**History** entry: the user opens a MemoryOS history export folder through the browser's user-initiated folder access, Studio reads the files
+once into memory, verifies them with the MO-1308 verifier, and renders the MO-1309 dashboard inside Studio, read-only and without a network
+request beyond Studio's own static files. The MO-1309 generator's output is byte-identical to v1.3.0 and no MO-1308 production byte, C or C++
+file changed. See the [authority and Freeze](docs/mo1310-studio-history-1.3.1.md), the [handoff](docs/release-1.3.1-handoff.md) and the
+[Windows plan](docs/release-1.3.1-windows-plan.md).
+
 ## MemoryOS 1.3 — v1.3.0
 
 Released as v1.3.0. MemoryOS 1.3 comprises milestones MO-1301 to MO-1309, each
