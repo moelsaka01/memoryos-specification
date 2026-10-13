@@ -1,0 +1,35 @@
+# MemoryOS 1.3.1 release disclosures
+
+Written from recorded outcomes only. Candidate (last production commit): `c0c06c1b08bd68dd120d20210ba744ba3e83bb5a`; later commits change documents, tooling and evidence only (rule SH-D1). Binding B: `1d77559b02564a853cbf7c420bf45069d4e5eddc`. Baseline: tag `v1.3.0` → `889f99e72a5d41c242572cc052ab97b07cc10a24`.
+
+## What 1.3.1 is, and is not
+
+A Studio **History** screen: a read-only view of one MO-1308 history export that the user chooses as a folder (`showDirectoryPicker` in read mode, or the directory `<input>`). The bytes are read once, verified by the released `verifyHistoryExport`, turned into the MO-1309 view model and shown through the unmodified MO-1309 dashboard behaviour inside Studio. It writes nothing, stores nothing and approves nothing. The standalone MO-1309 generator's output is byte-identical to v1.3.0; no MO-1308 production byte, C or C++ file, dependency or lockfile changed. The integrity caveats of MO-1308 and MO-1309 are unchanged (the history is not authenticated, signed or encrypted; tail truncation and rollback are detectable only against an externally recorded head digest).
+
+## Certification record
+
+- **Campaign SH, `gen-1`** (the only generation; Windows 11 10.0.26200 x64, Node v24.21.0, Edge 155.0.4283.45): 17 of 17 cases PASS, `SH ACCEPTED` (SH-E1 to E7, SH-S1 to S5, SH-C1 to C5). Evidence: `evidence/mo1310/campaign/gen-1`.
+- **Retained regression** (`evidence/mo1310/regression`, label `windows`, each suite once): studio-history 22/22, studio-history-browser 9/9, studio-existing 358/358, cli 91/91, mo1309-dashboard-unit 75/75, -browser 13/13, -differential-10k 1/1, mo1309-tools 21/21, mo1310-tools 7/7, **MO-1307 strict 639/639**, mo1309-baseline-bound 9/11 (pinned, see Q-MO1309-BASELINE-BOUND) and mo1308 214/221 (see Q-MO1308-TREE-AUDITS).
+- **Differential gate against v1.3.0, Node subset** (`evidence/mo1310/differential`): `PASS_QUALIFIED_CLOUD_SUBSET`, 104 base units and 105 candidate units, 0 regressions, 0 new failures, 14 pre-existing failures identical at v1.3.0 (see Q-GATE-NODE). The C++ CTest run is **skipped on the recorded proof** of case SH-C1 (`nativeChangeProof`: no C, C++, CMake or vcpkg path differs from `889f99e7`).
+
+## Qualifications
+
+- **Q-SAB-STANDIN.** The released MO-1308 modules test byte arrays with `value.buffer instanceof SharedArrayBuffer` and no `typeof` guard. A page that is not cross-origin isolated (Studio, on `http://127.0.0.1`) has no such global, so the released verifier throws a `ReferenceError` there. MO-1308 bytes cannot change in 1.3.1, so Studio supplies a scoped stand-in for the duration of the one synchronous verification call (`web/js/studio-history-verify.js`; tested with a negative control that shows the released verifier failing without it). A guard in the MO-1308 modules is a maintenance follow-up (below).
+- **Q-STATIC-FILES.** "No network" means: no endpoint, no upload and no request that carries export data or the chosen folder's names. Studio is served by a static host and loads its own files. The pinned request set from "route open" to "dashboard rendered" is `GET`s from the Studio origin of `history-view.html`, `dashboard/page.css` and `dashboard/page.embedded.js`, and on *Save dashboard snapshot* only `dashboard/page.html`, `page.css` and `page.js`; every other origin and path is absent (case SH-S1). The one permitted `fetch` is the same-origin source load.
+- **Q-FOLDER-ACCESS.** Directory-handle access exists in Chromium-family browsers in a secure context; elsewhere the compatibility input is the route. The browser mediates the dialog and the permission.
+- **Q-NATIVE-PICKER.** Operator observation, not a certifying case. On the reference host, in Edge 155.0.4283.45, with Studio at `http://127.0.0.1:4173/`, the operator chose **History**, pressed **Choose export folder**, picked a real CLI-produced export (every record kind and a tombstone) in the native dialog, and reported that it worked as expected: the native dialog opened, the folder was chosen, the browser's confirmation prompt appeared and the verified dashboard was shown. The operator did not supply the prompt's wording, so none is recorded. The campaign itself exercises the handle code path with a conforming handle and the directory input with a real folder through the DevTools protocol; it does not automate the native dialog.
+- **Q-MO1309-BASELINE-BOUND.** Two MO-1309 tooling tests audit the whole tree against the MO-1308 BF and fail identically at v1.3.0; their counts are pinned (`mo1309-baseline-bound`, 9 of 11 pass).
+- **Q-MO1308-TREE-AUDITS.** The mo1308 suite has 7 failing tests on this host (A01, A02, B01, B02, N07, S03, D03). They are lineage and changed-path audits against the MO-1308 BF. The mo1308 suite is not a pinned suite in the regression tool, so the tool exits 1 for it. The cloud record had the same names at v1.3.0 (plus one more there). The Windows base-versus-candidate evidence for the underlying units is the differential gate. No MO-1308 production byte changed (SH-C1, closure test).
+- **Q-GATE-NODE.** The verdict name `PASS_QUALIFIED_CLOUD_SUBSET` is fixed by the tool. Here it means a Node-driven subset on the Windows host: `tools/verify_workspace.py` exits 2 when run directly in the fresh trees on both the baseline and the candidate (the same exit), and the C++ CTest run is skipped on the SH-C1 proof. All 14 pre-existing failures fail identically on the baseline (`failingOnlyOnBaseline` empty for each).
+
+## Preserved generations and interruptions
+
+No campaign generation was preserved: `gen-1` is the only one and is accepted. A first launch of the campaign stopped at once, before any output, because the parent of the one-shot output directory (`evidence/mo1310/campaign/`) did not exist; no case ran and no certifying output was created, so it is not a generation. The parent was created and `gen-1` was run once.
+
+## Follow-ups for a maintenance item (not edited in 1.3.1)
+
+1. Guard the `SharedArrayBuffer` references in the MO-1308 modules (`typeof SharedArrayBuffer !== "undefined"`), with a byte-identical-behaviour proof; Studio would then drop its stand-in (MO-1308 SharedArrayBuffer guard).
+2. Pin or retire the mo1308 tree-audit failures and the 14 shared pre-existing unit failures listed in the differential receipt.
+3. Make `campaign.mjs` create the parent of its output directory.
+
+No tag is created by anything in this record other than the owner-approved `v1.3.1` after the validator reports `CERTIFIED_READY_TO_TAG`.
