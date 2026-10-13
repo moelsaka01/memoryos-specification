@@ -5,6 +5,8 @@ import { fileURLToPath } from "node:url";
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
 const webRoot = resolve(scriptDirectory, "..", "web");
+// MemoryOS 1.3.1: the one document Studio frames itself (the History screen's dashboard host); every other response is unframeable.
+const historyFramePage = join(webRoot, "history-view.html");
 const requestedPort = Number.parseInt(process.argv[2] ?? process.env.CCA_STUDIO_PORT ?? "4173", 10);
 const port = Number.isInteger(requestedPort) && requestedPort >= 0 && requestedPort <= 65535
   ? requestedPort
@@ -50,7 +52,7 @@ const server = createServer((request, response) => {
   response.writeHead(200, {
     "Content-Type": mimeTypes[extname(filePath)] ?? "application/octet-stream",
     "Cache-Control": "no-store",
-    "Content-Security-Policy": "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+    "Content-Security-Policy": `default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors ${filePath === historyFramePage ? "'self'" : "'none'"}`,
     "Cross-Origin-Opener-Policy": "same-origin",
     "Referrer-Policy": "no-referrer",
     "X-Content-Type-Options": "nosniff",

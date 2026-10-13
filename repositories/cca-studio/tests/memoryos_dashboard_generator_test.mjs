@@ -353,8 +353,9 @@ test("the generator and assembler open no socket, read no clock, random source, 
   for (const pattern of [/node:/u, /\bprocess\b/u, /\bBuffer\b/u, /\bglobalThis\b/u, /\bwindow\b/u, /\bdocument\b/u]) assert.ok(!pattern.test(strip(snapshot)), `snapshot: ${pattern}`);
   const imports = (text) => [...text.matchAll(/^\s*import\s[^;]*?from\s+"([^"]+)"/gmu)].map((m) => m[1]).sort();
   assert.deepEqual(imports(snapshot), ["./memoryos-dashboard-contract.js", "./memoryos-dashboard-wording.js", "./mip-canonical.js"]);
-  assert.deepEqual(imports(generator), ["../web/js/memoryos-dashboard-contract.js", "../web/js/memoryos-dashboard-snapshot.js", "../web/js/memoryos-dashboard-viewmodel.js",
-    "../web/js/memoryos-history-contract.js", "node:fs", "node:path", "node:url"]);
+  // MemoryOS 1.3.1: the path classes and byte bounds moved, unchanged, into the browser-safe bounds module that Studio also imports.
+  assert.deepEqual(imports(generator), ["../web/js/memoryos-dashboard-contract.js", "../web/js/memoryos-dashboard-export-bounds.js", "../web/js/memoryos-dashboard-snapshot.js",
+    "../web/js/memoryos-dashboard-viewmodel.js", "../web/js/memoryos-history-contract.js", "node:fs", "node:path", "node:url"]);
   // Negative control: the scan catches a real violation.
   assert.ok(common.some((pattern) => pattern.test('import net from "node:net"; const t = Date.now();')));
   // The generator never calls the verifier's helpers itself: verification is the view-model unit's single call.

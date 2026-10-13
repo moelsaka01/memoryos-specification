@@ -13,6 +13,7 @@ import {
 } from "./graph-view-state.js";
 import { resolveCommandAdapter } from "./host-adapter.js";
 import { MemoryOS } from "./memoryos-sdk.js";
+import { historyWording } from "./studio-history-wording.js";
 
 let snapshot = cloneDetached(resolveSnapshot());
 const memoryOS = new MemoryOS();
@@ -48,6 +49,7 @@ const routeMetadata = Object.freeze({
   providers: ["Memory Providers", "Observe provider-neutral transport without provider implementation state."],
   provenance: ["Workspace Provenance", "Trace explicit evidence paths without inferred relationships."],
   validation: ["Validation State", "Observe Workspace, ordering, provenance, and boundary checks."],
+  history: [historyWording("route.title"), historyWording("route.description")],
 });
 
 const routeByFamily = Object.freeze({
@@ -1308,6 +1310,15 @@ function refreshComparativePresentation() {
   return true;
 }
 
+// MemoryOS 1.3.1: the History screen is loaded on first use, so Mission Control starts exactly as before.
+let historyScreen = null;
+async function showHistoryScreen() {
+  if (historyScreen === null) {
+    const { mountHistoryScreen } = await import("./studio-history-screen.js");
+    if (historyScreen === null) historyScreen = mountHistoryScreen({ container: document.querySelector("#history-screen") });
+  }
+}
+
 function renderRoute() {
   const [title, description] = routeMetadata[state.route];
   elements.shell.dataset.route = state.route;
@@ -1317,17 +1328,18 @@ function renderRoute() {
   document.title = `${title} · CCA Memory Studio`;
   document.querySelectorAll(".nav-item").forEach((item) => {
     const active = item.dataset.scope === state.route;
+    const historyItem = item.dataset.scope === "history"; // the History entry keeps its registry tooltip (MemoryOS 1.3.1)
     item.classList.toggle("is-active", active);
     if (active) {
       item.setAttribute("aria-current", "page");
       item.setAttribute("aria-disabled", "true");
       item.setAttribute("tabindex", "-1");
-      item.title = `${item.getAttribute("aria-label") ?? "This perspective"} is already active`;
+      item.title = historyItem ? historyWording("nav.tooltip") : `${item.getAttribute("aria-label") ?? "This perspective"} is already active`;
     } else {
       item.removeAttribute("aria-current");
       item.removeAttribute("aria-disabled");
       item.removeAttribute("tabindex");
-      item.title = item.getAttribute("aria-label") ?? "";
+      item.title = historyItem ? historyWording("nav.tooltip") : (item.getAttribute("aria-label") ?? "");
     }
   });
   const brand = document.querySelector(".brand");
@@ -1340,6 +1352,13 @@ function renderRoute() {
     brand?.removeAttribute("tabindex");
     if (brand) brand.title = "Return to Mission Control";
   }
+  if (state.route === "history") {
+    setInspectorClosed(true);
+    closeMobileNavigation();
+    void showHistoryScreen();
+    return;
+  }
+  if (historyScreen !== null) historyScreen.reset(); // leaving History drops the export (MemoryOS 1.3.1)
   elements.queryScope.value = scopeForRoute(["provenance", "validation"].includes(state.route) ? "complete" : state.route);
 
   if (state.sessionState === "Forgotten") {

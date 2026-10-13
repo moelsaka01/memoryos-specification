@@ -28,7 +28,10 @@ test("DB26 dashboard modules import only the MO-1308 history contract and ledger
   };
   for (const file of MODULES) assert.deepEqual(importsOf(file), allowed[file], file);
   // No module of the dashboard may be reached from MO-1308 or from the SDK (dependency direction, section 4.4).
-  for (const other of fs.readdirSync(webJs).filter((name) => name.endsWith(".js") && !name.startsWith("memoryos-dashboard-"))) {
+  // MemoryOS 1.3.1: the Studio History modules are downstream consumers of the dashboard (Studio -> dashboard), the one allowed direction;
+  // an exact list, so any other module that reaches the dashboard still fails here.
+  const downstream = new Set(["studio-history-reader.js", "studio-history-screen.js", "studio-history-verify.js", "studio-history-wording.js"]);
+  for (const other of fs.readdirSync(webJs).filter((name) => name.endsWith(".js") && !name.startsWith("memoryos-dashboard-") && !downstream.has(name))) {
     assert.ok(!/memoryos-dashboard-/u.test(source(other)), `${other} must not depend on the dashboard`);
   }
 });
@@ -89,7 +92,9 @@ test("DB31 ARCHITECTURE section 5 and section 13 carry exactly the two clauses o
   assert.ok(section5.indexOf("MO-1308 adds the Investigation History authority") < section5.indexOf("MO-1309 adds a downstream"), "after the MO-1308 paragraph");
   assert.ok(section5.indexOf("MO-1309 adds a downstream") < section5.indexOf("### `cca-sdk`"), "under cca-studio");
   assert.ok(section13.indexOf("MO-1308 is the separately approved exception") < section13.indexOf("MO-1309 is a narrow"), "appended after the MO-1308 paragraph");
-  assert.equal((architecture.match(/MO-1309/gu) ?? []).length, 2, "no other ARCHITECTURE change names MO-1309");
+  // MemoryOS 1.3.1 adds two clauses (Freeze mo1310 section 4) that name MO-1309 once each, so the count is 4; the 1.3.1 tests pin that those
+  // clauses are the ONLY other ARCHITECTURE change (the file minus them equals the v1.3.0 file).
+  assert.equal((architecture.match(/MO-1309/gu) ?? []).length, 4, "no other ARCHITECTURE change names MO-1309");
 });
 
 test("human-authority separation: readiness results and decision claims are described, never presented as approval", () => {

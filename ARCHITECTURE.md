@@ -180,6 +180,14 @@ export once, performs no network access, writes only an operator-named output
 file, owns no state, and never re-derives record semantics or appends,
 tombstones or approves anything.
 
+MemoryOS 1.3.1 lets Studio present a MO-1308 history export inside the same
+JavaScript boundary. The user opens an export folder through the browser's
+user-initiated folder access; Studio reads its files once into memory,
+verifies them with the MO-1308 verifier, and renders the MO-1309 dashboard
+modules. It is read-only, makes no request other than for Studio's own static
+files, stores nothing, and never appends, tombstones, approves or re-derives
+anything.
+
 Studio no longer imports the Investigation Core directly. Its only public
 investigation dependency is the in-process JavaScript MemoryOS SDK facade,
 which forwards every state-changing operation, regression request, and
@@ -404,6 +412,12 @@ that presents a verified MO-1308 export. It is not an exception for hosting: it
 does not authorize a server, hosting, accounts, tenancy, billing, a network
 service, a database or any write path to a ledger. An operator who hosts the
 generated file does so outside MemoryOS.
+
+MemoryOS 1.3.1 extends the MO-1309 clause only to a user-initiated, read-only
+read, by Studio, of an export folder the user selects. It does not authorize
+Studio to open, create, write, watch or remember a ledger store, a server,
+hosting, accounts, tenancy, billing, a network service, a database or any
+write path to a ledger. The store stays CLI-only (MO-1308 H06, H40).
 
 ## 14. Remaining decisions
 

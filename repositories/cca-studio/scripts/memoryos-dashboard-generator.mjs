@@ -7,7 +7,8 @@
 import nodeFs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { MEMORYOS_HISTORY_LAYOUT, MEMORYOS_HISTORY_LIMITS, RECORD_MEMBER_RULES } from "../web/js/memoryos-history-contract.js";
+import { MEMORYOS_HISTORY_LIMITS } from "../web/js/memoryos-history-contract.js";
+import { ENTRY_FILE, boundFor, byteOrder } from "../web/js/memoryos-dashboard-export-bounds.js";
 import { DASHBOARD_ERRORS, DashboardError } from "../web/js/memoryos-dashboard-contract.js";
 import { buildDashboardViewModel } from "../web/js/memoryos-dashboard-viewmodel.js";
 import { DASHBOARD_GENERATOR_VERSION, assembleSnapshot } from "../web/js/memoryos-dashboard-snapshot.js";
@@ -15,25 +16,7 @@ import { DASHBOARD_GENERATOR_VERSION, assembleSnapshot } from "../web/js/memoryo
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_PAGE_SOURCE_DIRECTORY = path.join(here, "..", "web", "dashboard");
 
-// ---- Bounds (imported limits only; Freeze section 12) ----
-const MARKER_BYTES = 1024;
-const MANIFEST_BYTES = 64 * 1024 * 1024; // the bound MO-1308 verification itself applies to the manifest
-const memberBound = (name) => Math.max(0, ...Object.values(RECORD_MEMBER_RULES).filter((rule) => rule.memberSets.some((set) => set.includes(name))).map((rule) => rule.memberBytes));
-const ENTRY_FILE = /^entries\/\d{20}\.json$/u;
-const RECORD_FILE = /^records\/[0-9a-f]{64}\/([^/]+)$/u;
-
-function boundFor(relativePath) {
-  if (relativePath === MEMORYOS_HISTORY_LAYOUT.descriptor) return MEMORYOS_HISTORY_LIMITS.descriptorBytes;
-  if (relativePath === MEMORYOS_HISTORY_LAYOUT.exportComplete) return MARKER_BYTES;
-  if (relativePath === MEMORYOS_HISTORY_LAYOUT.exportManifest) return MANIFEST_BYTES;
-  if (ENTRY_FILE.test(relativePath)) return MEMORYOS_HISTORY_LIMITS.entryBytes;
-  const record = RECORD_FILE.exec(relativePath);
-  if (record) { const bound = memberBound(record[1]); return bound > 0 ? bound : null; }
-  return null; // a path the export layout does not define
-}
-
-const byteOrder = (a, b) => (a < b ? -1 : a > b ? 1 : 0); // bytewise on the (ASCII) names; never locale-dependent
-
+// ---- Bounds (imported limits only; Freeze section 12; defined once in the browser-safe bounds module) ----
 // Reads every file of the export exactly once. `fs` is injectable so tests can count reads and swap the directory after the read.
 // Pass 1 lists the tree (lstat only, bytewise order) and checks the imported limits; pass 2 reads each listed file once.
 export function readExportDirectory(directory, fs = nodeFs) {

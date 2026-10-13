@@ -9102,3 +9102,20 @@ body:has(.neural-interface) {
     top: 246px;
   }
 }
+
+/* MemoryOS 1.3.1 History screen: Studio route #history. Neutral styling only; no state colour. */
+.history-screen { display: none; }
+.studio-shell[data-route="history"] .history-screen { display: block; padding: 1.25rem 1.5rem 2rem; }
+.studio-shell[data-route="history"] #session-banner,
+.studio-shell[data-route="history"] .query-bar,
+.studio-shell[data-route="history"] #view-root { display: none; }
+.history-screen h1 { font-size: 1.4rem; margin: 0 0 .75rem; }
+.history-screen h1:focus { outline: 2px solid var(--focus); outline-offset: 3px; }
+.history-controls { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0 .5rem; }
+.history-note { color: var(--text-secondary); max-width: 52rem; }
+.history-error { border: 1px solid var(--border); border-left: 4px solid var(--neutral); background: var(--surface-soft); padding: .75rem 1rem; margin: 1rem 0; max-width: 52rem; }
+.history-error[hidden] { display: none; }
+.history-error h2 { font-size: 1.05rem; margin: 0 0 .5rem; }
+.history-error dl { display: grid; grid-template-columns: max-content 1fr; gap: .25rem 1rem; margin: .5rem 0 0; }
+.history-error dd { margin: 0; font-family: ui-monospace, "Cascadia Mono", monospace; overflow-wrap: anywhere; }
+.history-frame { width: 100%; min-height: 70vh; border: 1px solid var(--border); border-radius: var(--radius); background: #fff; }
