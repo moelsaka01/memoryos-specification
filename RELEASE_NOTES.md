@@ -1,3 +1,34 @@
+# MemoryOS v1.3.1 Release Notes
+
+## Release status
+
+**Released as v1.3.1** (a Studio-only addition to MemoryOS 1.3; the v1.3.0 notes follow unchanged).
+
+| Identity | Value |
+|---|---|
+| Semantic version | 1.3.1 |
+| Release tag | v1.3.1, annotated, peels to BF `2781d93ff79f60a9f10614fcb793d3ea45c464fa` |
+| Baseline | v1.3.0 (`889f99e72a5d41c242572cc052ab97b07cc10a24`) |
+| Product commit | `c0c06c1b08bd68dd120d20210ba744ba3e83bb5a`; candidate `275f84f5`; I3 `267edcf1` |
+| Certification host | Windows 11 x64, Node v24.21.0, Edge 155.0.4283.45 |
+
+## What is new
+
+Studio's **History** screen opens a history export folder chosen by the user (`showDirectoryPicker` in read mode, or the directory input),
+reads each file once, verifies the export with the released MO-1308 verifier and shows the MO-1309 dashboard inside Studio. It is read-only and
+stores nothing. "No network" means no endpoint, no upload and no request that carries export data; Studio loads its own static files.
+
+## Certification record
+
+- Campaign SH `gen-1`: 17 of 17 cases pass (`SH ACCEPTED`).
+- Retained regression, each suite once: studio 358/358 plus 22/22 and 9/9 for History, cli 91/91, MO-1309 suites all passing, MO-1307 strict 639/639.
+- Differential gate against v1.3.0 (Node subset; C++ CTest skipped on the SH-C1 proof that no C, C++, CMake or vcpkg path changed): 0 regressions, 0 new failures.
+- Validator: `CERTIFIED_READY_TO_TAG`. Disclosures: [mo1310-release-disclosures.md](docs/mo1310-release-disclosures.md).
+
+Qualifications and known baseline failures are in [KNOWN_ISSUES.md](KNOWN_ISSUES.md). No MO-1308 production byte, C or C++ file, dependency or lockfile changed; the standalone MO-1309 generator's output is byte-identical to v1.3.0.
+
+---
+
 # MemoryOS v1.3.0 Release Notes
 
 ## Release status

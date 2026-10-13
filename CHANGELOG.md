@@ -3,14 +3,21 @@
 This changelog records MemoryOS product milestones. Foundation-era workspace
 history remains available in `ROADMAP.md`.
 
-## MemoryOS 1.3.1 — Studio History screen (not yet released)
+## MemoryOS 1.3.1 — Studio History screen
 
-In progress; certification runs later on the reference Windows host and the tag `v1.3.1` is a human decision. Studio's home gains a
-**History** entry: the user opens a MemoryOS history export folder through the browser's user-initiated folder access, Studio reads the files
-once into memory, verifies them with the MO-1308 verifier, and renders the MO-1309 dashboard inside Studio, read-only and without a network
-request beyond Studio's own static files. The MO-1309 generator's output is byte-identical to v1.3.0 and no MO-1308 production byte, C or C++
-file changed. See the [authority and Freeze](docs/mo1310-studio-history-1.3.1.md), the [handoff](docs/release-1.3.1-handoff.md) and the
-[Windows plan](docs/release-1.3.1-windows-plan.md).
+Released as v1.3.1 (annotated tag on `2781d93f`). Studio's home gains a **History** entry: the user opens a MemoryOS history export folder
+through the browser's user-initiated folder access, Studio reads the files once into memory, verifies them with the MO-1308 verifier, and
+renders the MO-1309 dashboard inside Studio, read-only and without a request that carries export data (Studio loads its own static files).
+The MO-1309 generator's output is byte-identical to v1.3.0 and no MO-1308 production byte, C or C++ file, dependency or lockfile changed.
+
+Certified on the Windows reference host (Windows 11 x64, Node v24.21.0, Edge 155.0.4283.45): campaign SH `gen-1` 17 of 17 cases pass; retained
+regression run once per suite (MO-1307 strict 639/639); differential gate against v1.3.0 `PASS_QUALIFIED_CLOUD_SUBSET` with no regression and
+no new failure; validator `CERTIFIED_READY_TO_TAG`. Owner decision OD-1 pins seven mo1308 tree-audit tests as known baseline failures by
+exact name. See the [authority and Freeze](docs/mo1310-studio-history-1.3.1.md), the [disclosures](docs/mo1310-release-disclosures.md), the
+[handoff](docs/release-1.3.1-handoff.md) and the [Windows plan](docs/release-1.3.1-windows-plan.md).
+
+Maintenance follow-up (not in 1.3.1): add a `typeof SharedArrayBuffer` guard to the MO-1308 modules (MO-1308 SharedArrayBuffer guard), with a
+byte-identical-behaviour proof, so Studio can drop its scoped stand-in (Q-SAB-STANDIN).
 
 ## MemoryOS 1.3 — v1.3.0
 

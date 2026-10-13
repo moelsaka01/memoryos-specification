@@ -1,3 +1,18 @@
+# MemoryOS v1.3.1 Known Issues
+
+Items added for 1.3.1 (source: [mo1310-release-disclosures.md](docs/mo1310-release-disclosures.md)); the v1.3.0 list follows unchanged.
+
+- **Q-SAB-STANDIN.** The released MO-1308 modules reference `SharedArrayBuffer` without a `typeof` guard, so the verifier throws in a page that is not cross-origin isolated. Studio supplies a scoped stand-in for the one synchronous verification call. Maintenance follow-up: guard the MO-1308 modules (MO-1308 SharedArrayBuffer guard), with a byte-identical-behaviour proof.
+- **Q-STATIC-FILES.** "No network" is defined as no endpoint, no upload and no request carrying export data; Studio loads its own static files from its origin.
+- **Q-FOLDER-ACCESS.** Directory-handle access exists only in Chromium-family browsers in a secure context; elsewhere use the directory input. The browser mediates the dialog and permission.
+- **Q-NATIVE-PICKER.** The native folder dialog is not automated; one operator observation in Edge on the reference host reported it worked as expected (no prompt wording was recorded).
+- **Q-MO1308-TREE-AUDITS (owner decision OD-1).** Seven mo1308 tests (A01, A02, B01, B02, N07, S03, D03) audit the whole tree against the MO-1308 binding and fail by design on any commit after `memoryos-1.3-mo1308`, including v1.3.0; they are pinned by exact name, with the same seven failing at v1.3.0 on the reference host.
+- **Q-MO1309-BASELINE-BOUND.** Two MO-1309 tooling tests fail identically at v1.3.0; their counts are pinned.
+- **Q-GATE-NODE.** The differential verdict name `PASS_QUALIFIED_CLOUD_SUBSET` is fixed by the tool; the C++ CTest run was skipped on the SH-C1 proof; 14 pre-existing unit failures are identical at v1.3.0.
+- **Q-TOOLING.** The certification tooling and manifest changed after the campaign and regression runs (owner decision OD-1); the product bytes are those of `c0c06c1b`.
+
+---
+
 # MemoryOS v1.3.0 Known Issues
 
 This file lists the limits, qualifications and open items recorded for
