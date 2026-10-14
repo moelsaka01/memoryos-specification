@@ -240,9 +240,12 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
     const entries = entryNames.map((name) => readFileBytes(join(root, STORE_LAYOUT.entries, name), STORE_LIMITS.entryBytes));
 
     const memberMap = new Map();
+    const recordDirs = new Map(); // hex -> file identity of the record directory as read (a purge deletes only inside this very directory)
     if (members) {
       for (const hex of listDirectory(join(root, STORE_LAYOUT.records)) ?? []) {
         if (!HEX64.test(hex)) fail("LEDGER_CORRUPT", "VERIFICATION");
+        const directoryStat = guarded("ACQUISITION", () => lstat(join(root, STORE_LAYOUT.records, hex)));
+        if (directoryStat !== null && directoryStat.isDirectory() && !directoryStat.isSymbolicLink()) recordDirs.set(hex, ownedBy(directoryStat));
         const files = listDirectory(join(root, STORE_LAYOUT.records, hex)) ?? [];
         if (files.length === 0) continue; // a purged record's emptied directory
         const read = [];
@@ -262,7 +265,7 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
       }
     }
     const pending = listDirectory(join(root, STORE_LAYOUT.pending)) ?? [];
-    return { descriptorBytes, entries, members: memberMap, pendingArtifacts: pending.length };
+    return { descriptorBytes, entries, members: memberMap, recordDirs, pendingArtifacts: pending.length };
   }
 
   // A consistent snapshot (section 10.2 purge ordering): the entry listing, the member listings and the entry
@@ -303,6 +306,10 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
   // Returns the new file's identity, or null when `skipExisting` is set and the name already exists.
   function writeFileExclusive(path, bytes, stage = "PUBLICATION", skipExisting = false) {
     return guarded(stage, () => {
+      // A link already at the name (planted: an exclusive create follows a dangling link on Windows and would create its target) is refused
+      // before any create. A swap after this check remains the H40-accepted, detected-after-the-fact case.
+      const planted = lstat(path);
+      if (planted !== null && planted.isSymbolicLink()) return boundary(stage);
       let fd;
       try {
         fd = fs.openSync(path, fs.constants.O_WRONLY | fs.constants.O_CREAT | fs.constants.O_EXCL | NO_FOLLOW, 0o644);
@@ -342,11 +349,13 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
     });
   }
 
-  // A staging name that cannot collide with a leftover: role plus the first free counter.
+  // A staging name that cannot collide with a leftover or with another writer: role, the writer's process id, and the first free counter.
+  // Two concurrent writers never contend for one staging name (a name still delete-pending after another writer removed it gave EPERM, A6
+  // hypothesis 2). The process id is neither a clock nor randomness (R35) and no byte of history depends on it.
   function stageFile(root, role, bytes) {
     ensureDirectory(join(root, STORE_LAYOUT.pending));
     for (let attempt = 0; attempt < 1000; attempt += 1) {
-      const path = join(root, STORE_LAYOUT.pending, `${role}.${attempt}`);
+      const path = join(root, STORE_LAYOUT.pending, `${role}.${process.pid}.${attempt}`);
       const identity = writeFileExclusive(path, bytes, "PUBLICATION", true);
       if (identity !== null) return { path, identity };
       // The name existed before this attempt: try the next free one.
@@ -464,11 +473,29 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
 
   const parseEntry = (bytes) => JSON.parse(new TextDecoder().decode(bytes));
 
-  function purgeMembers(root, target) {
+  // Before every deletion of a purge the record directory is proven to be the one that was read: neither it nor any ancestor is a link, the
+  // ledger root and the directory are their own canonical paths, and the directory's file identity is the one captured when the ledger was
+  // read. A swap after this check and before the deletion remains the H40-accepted race (Amendment A10); one that happened earlier is refused.
+  function assertPurgeBoundary(root, directory, expected) {
+    guarded("PUBLICATION", () => {
+      for (const component of [root, join(root, STORE_LAYOUT.records), directory]) {
+        const st = lstat(component);
+        if (st === null || st.isSymbolicLink() || !st.isDirectory()) boundary("PUBLICATION");
+      }
+      const st = lstat(directory);
+      if (expected !== undefined && !sameIdentity(ownedBy(st), expected)) boundary("PUBLICATION");
+    });
+    canonicalRoot(root, "PUBLICATION");
+    assertCanonical(directory, "PUBLICATION");
+  }
+
+  function purgeMembers(root, target, recordDirs) {
     const hex = target.record.recordDigest.slice("sha256:".length);
     const directory = join(root, STORE_LAYOUT.records, hex);
+    const expected = recordDirs.get(hex);
     for (const member of target.record.members) {
       const path = join(directory, member.name);
+      assertPurgeBoundary(root, directory, expected);
       const st = guarded("PUBLICATION", () => lstat(path));
       if (st === null) continue;
       if (st.isSymbolicLink() || !st.isFile()) boundary("PUBLICATION");
@@ -476,6 +503,7 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
     }
     // Removing the emptied directory is cosmetic and best effort: the purge is complete once every member is gone,
     // and an empty record directory is neither a record nor an anomaly.
+    assertPurgeBoundary(root, directory, expected);
     const left = listDirectory(directory, "PUBLICATION");
     if (left !== null && left.length === 0) {
       try { fs.rmdirSync(directory); } catch { /* an empty directory is harmless */ }
@@ -494,7 +522,7 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
         .find((entry) => entry.entryType === "TOMBSTONE" && entry.tombstone.targetIndex === targetIndex);
       if (committed === undefined || committed.tombstone.reason !== reason
           || committed.tombstone.authorityReference !== authorityReference) fail("TOMBSTONE_INVALID", "ADMISSION");
-      purgeMembers(root, target);
+      purgeMembers(root, target, state.recordDirs);
       return Object.freeze({ index: committed.index, entryDigest: committed.entryDigest });
     }
     const built = engine.tombstoneHistoryEntry({ ledger, targetIndex, reason, authorityReference });
@@ -506,7 +534,7 @@ export function createHistoryStore({ engine, fs = nodeFs, platform = process.pla
       fail("LEDGER_CONFLICT", "PUBLICATION");
     }
     discard(staged);
-    purgeMembers(root, target); // then every member of the target record is deleted
+    purgeMembers(root, target, state.recordDirs); // then every member of the target record is deleted
     return Object.freeze({ index: built.index, entryDigest: built.entryDigest });
   }
 
